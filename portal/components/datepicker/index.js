@@ -67,8 +67,8 @@
  className      可以为日历添加一个特殊的className
  *
  */
-require("./index.less");
-import BootstrapDatepicker from "../bootstrap-datepicker";
+require('./index.less');
+import BootstrapDatepicker from '../bootstrap-datepicker';
 import classNames from 'classnames';
 import Dropdown from 'rc-dropdown';
 import {Button, Radio, Popover, Icon} from 'antd';
@@ -78,26 +78,26 @@ const RadioGroup = Radio.Group;
 
 //季度中文字
 const QUARTER_CHINESE_TEXT_LIST = [
-    Intl.get("user.number.first", "一"),
-    Intl.get("user.number.second", "二"),
-    Intl.get("user.number.three", "三"),
-    Intl.get("user.number.four", "四")];
+    Intl.get('user.number.first', '一'),
+    Intl.get('user.number.second', '二'),
+    Intl.get('user.number.three', '三'),
+    Intl.get('user.number.four', '四')];
 //类型
 const PropTypes = React.PropTypes;
 //日期格式
 const DATE_FORMAT = Utils.DATE_FORMAT;
 
 //class的前缀
-const CLASS_PREFIX = "range-datepicker";
+const CLASS_PREFIX = 'range-datepicker';
 //日期范围不对的时候，闪烁的样式
-const SPLASH_CLASS = "range-datepicker-splash";
+const SPLASH_CLASS = 'range-datepicker-splash';
 //空函数
 function noop() {
 }
 /**
  * 选择类型
  */
-const timeRanges = ["all", "day", "week", "month", "quarter", "year", "custom"];
+const timeRanges = ['all', 'day', 'week', 'month', 'quarter', 'year', 'custom'];
 
 class DatePicker extends React.Component {
     constructor(props) {
@@ -107,7 +107,7 @@ class DatePicker extends React.Component {
         React.Children.forEach(props.children, function(item) {
             var value = item.props.value;
             var label = item.props.children;
-            if (value !== "all") {
+            if (value !== 'all') {
                 menu_lists.push({
                     name: label,
                     value: value
@@ -124,15 +124,15 @@ class DatePicker extends React.Component {
             menu_lists.push(allMenu);
         }
         menu_lists = _.uniq(menu_lists, (menu) => menu.value);
-        this.componentId = _.uniqueId("DatePicker");
+        this.componentId = _.uniqueId('DatePicker');
         //验证时间范围
-        let timeRange = props.range || "day";
+        let timeRange = props.range || 'day';
         var hasRange = _.find(timeRanges, function(range) {
             if (timeRange === range)
                 return true;
         });
         if (!hasRange) {
-            timeRange = "day";
+            timeRange = 'day';
         }
         //判断初始范围（range的值）是否在时间范围选择菜单（menu_lists）中
         var rangeExist = _.find(menu_lists, (menu) => menu.value === timeRange);
@@ -142,7 +142,7 @@ class DatePicker extends React.Component {
         }
         let timeObj, showYear = false;//初始时间及是否显示年日历
         if (timeRange === 'all') {
-            timeObj = {start_time: '', end_time: ""};
+            timeObj = {start_time: '', end_time: ''};
         } else {
             switch (timeRange) {
             case 'day':
@@ -186,8 +186,8 @@ class DatePicker extends React.Component {
             showYear: showYear,
             showYearRecord: showYear,
             //两个日历
-            showTwoCalendar: timeRange == "custom" ? true : false,
-            showTwoCalendarRecord: timeRange == "custom" ? true : false,
+            showTwoCalendar: timeRange == 'custom' ? true : false,
+            showTwoCalendarRecord: timeRange == 'custom' ? true : false,
             //显示天日历
             showDate: !showYear,
             showDateRecord: !showYear,
@@ -239,7 +239,7 @@ class DatePicker extends React.Component {
             label = target.name;
         }
         if (timeRange === 'all') {
-            this.props.onSelect("", "", timeRange, label);
+            this.props.onSelect('', '', timeRange, label);
         } else {
             const start_time_millis = Utils.getMilliseconds(start_time) + '';
             let end_time_millis = '0';
@@ -263,7 +263,7 @@ class DatePicker extends React.Component {
             time_moment = moment();
         }
         //如果是自定义时，需要展示两个日期选择器
-        if (whichRange === "custom") {
+        if (whichRange === 'custom') {
             options.showTwoCalendar = true;
             let customTimeObj = Utils.getCustomTime(this.state.start_time_record, this.state.end_time_record);
             options.start_time = customTimeObj.start_time;
@@ -278,19 +278,19 @@ class DatePicker extends React.Component {
         //还原数据
         options.showDate = false;
         options.showYear = false;
-        if (whichRange === "quarter") {
+        if (whichRange === 'quarter') {
             let quarter = time_moment.quarter() || this.state.quarter || 1;
             let year = time_moment.year() || new Date().getFullYear();
             let displayQuarterList = this.getDisplayQuarterList(year);
             options.quarter = quarter;
             options.displayQuarterList = displayQuarterList;
             options.showYear = true;
-        } else if (whichRange === "year") {
+        } else if (whichRange === 'year') {
             options.showYear = true;
         } else {
             options.showDate = true;
         }
-        this.showCalendar("click_radio", options);
+        this.showCalendar('click_radio', options);
     }
 
     //时间范围选择菜单
@@ -434,7 +434,7 @@ class DatePicker extends React.Component {
 
     //更换年
     onCalendarYearOK(time) {
-        if (this.state.timeRange === "quarter") {
+        if (this.state.timeRange === 'quarter') {
             var year = time.getFullYear();
             var displayQuarterList = this.getDisplayQuarterList(year);
             //如果上次选中的quarter在新的quarter里没有，则设置quarter为1
@@ -453,7 +453,7 @@ class DatePicker extends React.Component {
                 end_time: timeInfo.end_time,
                 displayQuarterList: displayQuarterList
             });
-        } else if (this.state.timeRange === "year") {
+        } else if (this.state.timeRange === 'year') {
             let year = time.getFullYear();
             let timeInfo = Utils.getYearTime(year);
             //如果超过当前时间则设置截止时间为当前时间
@@ -471,7 +471,7 @@ class DatePicker extends React.Component {
     //点击calendar之外区域
     checkClickCalendarLayer(event) {
         const target = event.target;
-        if (!$(target).closest("." + CLASS_PREFIX).length && !$(target).closest(".date_text").length) {
+        if (!$(target).closest('.' + CLASS_PREFIX).length && !$(target).closest('.date_text').length) {
             this.setState({
                 isShowCalendar: false
             });
@@ -481,7 +481,7 @@ class DatePicker extends React.Component {
     //点击calendar之外区域
     checkClickCalendarQuarterLayer(event) {
         const target = event.target;
-        if (!$(target).closest("." + CLASS_PREFIX).length && !$(target).closest(".date_text").length) {
+        if (!$(target).closest('.' + CLASS_PREFIX).length && !$(target).closest('.date_text').length) {
             this.setState({
                 showYear: false
             });
@@ -498,7 +498,7 @@ class DatePicker extends React.Component {
         let showYear = this.state.showYear;
         let timeRange = this.state.timeRange;
         //改变类型，点击时间范围radio
-        if (where == "click_radio" && options) {
+        if (where == 'click_radio' && options) {
             start_time = options.start_time ? options.start_time : start_time;
             end_time = options.end_time ? options.end_time : end_time;
             showTwoCalendar = options.showTwoCalendar;
@@ -506,25 +506,25 @@ class DatePicker extends React.Component {
             showYear = options.showYear;
             timeRange = options.timeRange ? options.timeRange : timeRange;
             //全部时间时，关闭日历，展示一个日历（还原），开始结束时间都为空
-            if (options.timeRange === "all") {
+            if (options.timeRange === 'all') {
                 isShowCalendar = false;
                 showTwoCalendar = false;
-                start_time = "";
-                end_time = "";
+                start_time = '';
+                end_time = '';
                 this.setState({
                     isShowCalendar,
                     showTwoCalendar,
                     start_time,
                     end_time,
-                    timeRange: "all",
-                    timeRangeRecord: "all",
+                    timeRange: 'all',
+                    timeRangeRecord: 'all',
                     start_time_record: start_time,
                     end_time_record: end_time,
                     showDateRecord: showDate,
                     showYearRecord: showYear,
                     showTwoCalendarRecord: showTwoCalendar
                 });
-                this.transportOuter(start_time, end_time, "all");
+                this.transportOuter(start_time, end_time, 'all');
                 return;
             }
         } else {
@@ -555,9 +555,9 @@ class DatePicker extends React.Component {
                 //根据现实时间选择器的数量设置外层宽度
                 var datepicker_wrap = $(this.refs.datepicker_wrap);
                 if (this.state.showTwoCalendar) {
-                    datepicker_wrap.addClass("datepicker_wrap_two");
+                    datepicker_wrap.addClass('datepicker_wrap_two');
                 } else {
-                    datepicker_wrap.removeClass("datepicker_wrap_two");
+                    datepicker_wrap.removeClass('datepicker_wrap_two');
                 }
                 //初始位置
                 datepicker_wrap.css({left: 0});
@@ -566,9 +566,9 @@ class DatePicker extends React.Component {
                 //设置高度
                 this.computeHeight(datepicker_wrap);
                 //删除arrow
-                var $datepicker = $(".datepicker", this.refs.datepicker_wrap);
+                var $datepicker = $('.datepicker', this.refs.datepicker_wrap);
                 if ($datepicker) {
-                    $datepicker.find(">.arrow").remove();
+                    $datepicker.find('>.arrow').remove();
                 }
             }
         });
@@ -590,14 +590,14 @@ class DatePicker extends React.Component {
             var overage = (wrapWidth + datepicker_pos_left + rightMargin) - (window_width + page_scroll_left);
             datepicker_wrap.css({left: -overage});
             //时间显示框位置
-            var datePicker = datepicker_wrap.parents(".range-datepicker");
+            var datePicker = datepicker_wrap.parents('.range-datepicker');
             var datepickerWidth = $(datePicker[0]).outerWidth();
             var datePickerLeft = $(datePicker[0]).offset().left;
             //日历选择区域的新位置
             wrapWidth = datepicker_wrap.outerWidth();
             var datepicker_pos_left = datepicker_wrap.offset().left;
             if ((datepicker_pos_left + wrapWidth) < (datePickerLeft + datepickerWidth)) {
-                datepicker_wrap.css({left: "", right: 0});
+                datepicker_wrap.css({left: '', right: 0});
             }
         }
     }
@@ -611,10 +611,10 @@ class DatePicker extends React.Component {
         var datepicker_wrap_height_withQuarter = 256;//有季度显示时，时间选择器最小高度
         var datepicker_wrap_height = datepicker_wrap.outerHeight();
         //当显示季度，并且当前高度小于等于最小高度时，使用最小高度
-        if (this.state.timeRange === "quarter" && (!datepicker_wrap_height || datepicker_wrap_height <= datepicker_wrap_height_withQuarter)) {
+        if (this.state.timeRange === 'quarter' && (!datepicker_wrap_height || datepicker_wrap_height <= datepicker_wrap_height_withQuarter)) {
             datepicker_wrap.css({height: datepicker_wrap_height_withQuarter});
         } else {
-            datepicker_wrap.css({height: "auto"});
+            datepicker_wrap.css({height: 'auto'});
         }
     }
 
@@ -628,17 +628,17 @@ class DatePicker extends React.Component {
         let dateSelectRange = this.props.dateSelectRange;
         let datepickerDisplay = (this.state.isShowCalendar) ? 'block' : 'none';
         //时间选择器类型，选择周或月时，能在一个选择器中展示两个日期，所以要展示一个datepicker，且展示两个日期，datepickerType设置为dateRange
-        let multidate = this.state.timeRange === "week" ? true : false;
-        let datepickerCls = multidate ? classNames("single_datepicker week_datepicker") : classNames("single_datepicker");
+        let multidate = this.state.timeRange === 'week' ? true : false;
+        let datepickerCls = multidate ? classNames('single_datepicker week_datepicker') : classNames('single_datepicker');
         return (
             <div ref="datepicker_wrap" className="datepicker_wrap" style={{display: datepickerDisplay}}>
                 <div className={cls} style={{display: this.state.showDate ? 'block' : 'none'}}>
                     <BootstrapDatepicker
                         id="firstBootstrapDatepicker"
                         multidate={multidate}
-                        monthMode={this.state.timeRange === "month" ? true : false}
-                        start_time={multidate ? moment(this.state.start_time, DATE_FORMAT).toDate() : ""}
-                        end_time={multidate ? moment(this.state.end_time, DATE_FORMAT).toDate() : ""}
+                        monthMode={this.state.timeRange === 'month' ? true : false}
+                        start_time={multidate ? moment(this.state.start_time, DATE_FORMAT).toDate() : ''}
+                        end_time={multidate ? moment(this.state.end_time, DATE_FORMAT).toDate() : ''}
                         className={datepickerCls}
                         value={moment(this.state.start_time, DATE_FORMAT).toDate()}
                         onChange={this.onCalendarOK.bind(this, 'start_time')}
@@ -674,7 +674,7 @@ class DatePicker extends React.Component {
     //展示时间范围类型区域
     renderDateRange() {
         const menu = this.renderMenus();
-        let range = "选择日期范围" + this.state.timeRange;
+        let range = '选择日期范围' + this.state.timeRange;
         return (
             <div className="period-type"
                 style={{display: (this.state.isShowCalendar || this.state.showYear) ? 'block' : 'none'}}>
@@ -682,7 +682,7 @@ class DatePicker extends React.Component {
                 <Button type="primary" className="btn_calendar_apply"
                     data-tracename={range}
                     onClick={this.calendarApply.bind(this)}>
-                    {Intl.get("common.sure", "确定")}
+                    {Intl.get('common.sure', '确定')}
                 </Button>
             </div>
         );
@@ -701,7 +701,7 @@ class DatePicker extends React.Component {
     renderDisplayDateText() {
         let timeObj = this.getDisplayDateText();
         if (this.state.timeRangeRecord === 'day' || this.state.timeRangeRecord === 'all') {
-            let time = this.state.timeRangeRecord === 'all' ? Intl.get("user.time.all", "全部时间") :
+            let time = this.state.timeRangeRecord === 'all' ? Intl.get('user.time.all', '全部时间') :
                 timeObj.start_time;
             return (
                 <span className="date_text">
@@ -741,13 +741,13 @@ class DatePicker extends React.Component {
         const end_time = timeInfo.end_time;
         // 设置state数据，并记录上一次的选择
         this.setAndRecordState({start_time, end_time, quarter});
-        this.transportOuter(timeInfo.start_time, timeInfo.end_time, "quarter");
+        this.transportOuter(timeInfo.start_time, timeInfo.end_time, 'quarter');
     }
 
     //获取第几季度
     getQuarterDisplayText() {
         let which = QUARTER_CHINESE_TEXT_LIST[this.state.quarter - 1];
-        return Intl.get("user.quarter.number", "第{}季度", {n: which});
+        return Intl.get('user.quarter.number', '第{}季度', {n: which});
     }
 
     //计算要显示的季度
@@ -756,7 +756,7 @@ class DatePicker extends React.Component {
             return QUARTER_CHINESE_TEXT_LIST;
         } else {
             return QUARTER_CHINESE_TEXT_LIST.filter(function(text, num) {
-                var startTime = moment().year(year).quarter(num + 1).startOf("quarter").toDate().getTime();
+                var startTime = moment().year(year).quarter(num + 1).startOf('quarter').toDate().getTime();
                 var now = new Date().getTime();
                 if (now >= startTime) {
                     return true;
@@ -773,7 +773,7 @@ class DatePicker extends React.Component {
         var menu = (<Menu
             prefixCls="ant-menu"
             onClick={this.onQuarterSelect.bind(this)}
-            className={CLASS_PREFIX + "-menu"}>
+            className={CLASS_PREFIX + '-menu'}>
             {
                 this.state.displayQuarterList.map((text, num) => {
                     var cls = classNames({
@@ -784,7 +784,7 @@ class DatePicker extends React.Component {
                             key={num + 1}
                             className={cls}
                         >
-                            {Intl.get("user.quarter.number", "第{n}季度", {n: text})}
+                            {Intl.get('user.quarter.number', '第{n}季度', {n: text})}
                         </MenuItem>
                     );
                 })
@@ -793,11 +793,11 @@ class DatePicker extends React.Component {
 
         return (this.state.showYear ? <Dropdown
             getPopupContainer={() => {
-                return document.getElementById(this.componentId + "_quarter");
+                return document.getElementById(this.componentId + '_quarter');
             }}
             overlay={menu}
             prefixCls="ant-dropdown">
-            <div className="quarter_wrap" id={this.componentId + "_quarter"}>
+            <div className="quarter_wrap" id={this.componentId + '_quarter'}>
                 <span className="range_text">{this.getQuarterDisplayText()}</span>
                 <em className="triangle"></em>
             </div>
@@ -832,9 +832,9 @@ class DatePicker extends React.Component {
                         <Icon type="calendar"/>
                         {popover}
                         <i className="click_left"
-                            onClick={this.showCalendar.bind(this, "click_date", options)}></i>
+                            onClick={this.showCalendar.bind(this, 'click_date', options)}></i>
                         <i className="click_right"
-                            onClick={this.showCalendar.bind(this, "click_date", options)}></i>
+                            onClick={this.showCalendar.bind(this, 'click_date', options)}></i>
                         {this.renderCalendar()}
                     </div>
                 </div>
@@ -848,15 +848,15 @@ class DatePicker extends React.Component {
  */
 function getDefaultProps() {
     //开始时间，默认今天
-    const start_time = "";
+    const start_time = '';
     //结束时间，默认今天往后推1年，12个月
-    const end_time = "";
+    const end_time = '';
     //范围，默认1年，12个月
     const range = 12;
     //选中的处理函数
     const onSelect = noop;
     //class名
-    const className = "";
+    const className = '';
     //是否结束时间为23:59:59
     const endTimeEndOfDay = true;
     //获取结束时间提示语
@@ -909,7 +909,7 @@ DatePicker.propTypes = {
 var DatePickerOption = React.createClass({
     getDefaultProps: function() {
         return {
-            value: ""
+            value: ''
         };
     },
     render: function() {

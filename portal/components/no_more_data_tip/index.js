@@ -1,7 +1,7 @@
-var Alert = require("antd").Alert;
-require("./index.less");
+var Alert = require('antd').Alert;
+require('./index.less');
 const CSS_ID_PREFIX = 'no_more_data_tip_';
-var insertStyle = require("../insert-style");
+var insertStyle = require('../insert-style');
 var NoMoreDataTip = React.createClass({
     getInitialState: function() {
         return {
@@ -23,7 +23,7 @@ var NoMoreDataTip = React.createClass({
     },
     getDefaultProps: function() {
         return {
-            message: Intl.get("common.no.more.data","没有更多数据了"),
+            message: Intl.get('common.no.more.data','没有更多数据了'),
             fontSize: 14,
             show: function(){}
         };

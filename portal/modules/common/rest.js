@@ -1,19 +1,19 @@
-const querystring = require("querystring");
-const restLogger = require("../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-const routes = require("./route");
-const _ = require("underscore");
+const querystring = require('querystring');
+const restLogger = require('../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+const routes = require('./route');
+const _ = require('underscore');
 
 routes.forEach(route => {
     exports[route.handler] = function(req, res) {
         const queryStr = querystring.stringify(req.query);
-        let url = queryStr ? route.path + "?" + queryStr : route.path;
+        let url = queryStr ? route.path + '?' + queryStr : route.path;
 
         if(!_.isEmpty(req.params)) {
             url = url.replace(/\:([a-zA-Z_\-0-9]+)/g,function($0,$1) {
                 let param = req.params[$1];
-                if (param.indexOf("=") > -1) param = param.replace(/=/g, "/");
-                if (param.indexOf("_null") > -1) param = "";
+                if (param.indexOf('=') > -1) param = param.replace(/=/g, '/');
+                if (param.indexOf('_null') > -1) param = '';
                 return param;
             });
         }
@@ -21,7 +21,7 @@ routes.forEach(route => {
         let data = req.body.reqData ? JSON.parse(req.body.reqData) : null;
         let method = route.method;
 
-        if (method === "delete") method = "del";
+        if (method === 'delete') method = 'del';
 
         let options = {
             url: url,
@@ -35,10 +35,10 @@ routes.forEach(route => {
             options,
             data
         )
-            .on("success", result => {
+            .on('success', result => {
                 res.status(200).json(result);
             })
-            .on("error", codeMessage => {
+            .on('error', codeMessage => {
                 res.status(500).json(codeMessage);
             });
     };

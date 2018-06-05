@@ -1,18 +1,18 @@
 
-var language = require("../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./app-selector-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./app-selector-zh_CN.less");
+var language = require('../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./app-selector-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./app-selector-zh_CN.less');
 }
-var classNames = require("classnames");
-var AppSelectorStore = require("./app-selector.store");
-var AppSelectorAction = require("./app-selector.action");
-var immutable = require("immutable");
-var insertStyle = require("../insert-style");
-var DefaultUserLogoTitle = require("../default-user-logo-title");
-var SearchList = require("../SearchList");
-var AppRolePermission = require("../user_manage_components/app-role-permission");
+var classNames = require('classnames');
+var AppSelectorStore = require('./app-selector.store');
+var AppSelectorAction = require('./app-selector.action');
+var immutable = require('immutable');
+var insertStyle = require('../insert-style');
+var DefaultUserLogoTitle = require('../default-user-logo-title');
+var SearchList = require('../SearchList');
+var AppRolePermission = require('../user_manage_components/app-role-permission');
 //应用选择器，在销售机会、用户管理中使用
 var AppSelector = React.createClass({
     //为了给选择器设置不同的尺寸
@@ -165,7 +165,7 @@ var AppSelector = React.createClass({
             //高度变化时触发回调
             onHeightChange: function(){},
             //应用主题
-            appTheme: "white"
+            appTheme: 'white'
         };
     },
     getUnchoosenApps: function() {
@@ -244,8 +244,8 @@ var AppSelector = React.createClass({
                 list={unchoosenApps}
                 nameProp="app_name"
                 onSelect={this.addApp}
-                notFoundContent={Intl.get("user.no.related.app", "无相关应用")}
-                noDataCoutent={Intl.get("user.no.app", "暂无应用")}
+                notFoundContent={Intl.get('user.no.related.app', '无相关应用')}
+                noDataCoutent={Intl.get('user.no.app', '暂无应用')}
             ></SearchList>
         );
         var selectedApp = this.state.selectedApp;
@@ -275,7 +275,7 @@ var AppSelector = React.createClass({
                     {
                         !doNotSetRolesAndPermission ?
                             (<div className={permissionNotSetClass} onClick={_this.showPermissionLayer.bind(_this,app)}>
-                                {language.lan() == "zh" ? null : Intl.get("user.setting.roles", "设置角色")}
+                                {language.lan() == 'zh' ? null : Intl.get('user.setting.roles', '设置角色')}
                             </div>) :
                             null
                     }
@@ -289,15 +289,15 @@ var AppSelector = React.createClass({
             var isLeft = this.state.arrow_position === 'left';
 
             dropListCls = classNames({
-                "application-list-div": true,
-                "application-list-div-left": isLeft,
+                'application-list-div': true,
+                'application-list-div-left': isLeft,
                 [this.props.appTheme]: true
             });
         }
         if(!selectedApps.length && !unchoosenApps.length) {
             return (
                 <div className="app-selector">
-                    <div className="app-selector-nodata">{Intl.get("common.no.data","暂无数据")}</div>
+                    <div className="app-selector-nodata">{Intl.get('common.no.data','暂无数据')}</div>
                 </div>
             );
         }

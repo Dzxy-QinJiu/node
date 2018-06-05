@@ -1,16 +1,16 @@
 /**
  * Created by wangliping on 2016/4/20.
  */
-var AppFormActions = require("../action/app-form-actions");
+var AppFormActions = require('../action/app-form-actions');
 
 
 function AppFormStore() {
     //是否正在保存应用
     this.isSaving = false;
     //是否保存成功,error:失败，success:成功
-    this.saveResult = "";
+    this.saveResult = '';
     //保存后的提示信息
-    this.saveMsg = "";
+    this.saveMsg = '';
     //应用所有者列表
     this.appOwnerList = [];
     //应用管理员
@@ -93,8 +93,8 @@ AppFormStore.prototype.editApp = function(resultObj) {
 
 //清空保存的提示信息
 AppFormStore.prototype.resetSaveResult = function() {
-    this.saveMsg = "";
-    this.saveResult = "";
+    this.saveMsg = '';
+    this.saveResult = '';
 };
 module.exports = alt.createStore(AppFormStore, 'AppFormStore');
 

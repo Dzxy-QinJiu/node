@@ -1,5 +1,5 @@
-require("./index.less");
-const img_src = require("../../modules/common/public/image/user-info-logo.jpg");
+require('./index.less');
+const img_src = require('../../modules/common/public/image/user-info-logo.jpg');
 import {Input,Icon,Checkbox,Alert} from 'antd';
 
 import immutable from 'immutable';
@@ -15,7 +15,7 @@ class SearchIconList extends React.Component {
         const totalList = this.expandListProp(props.totalList, selectedIds);
         this.searchCount = totalList.length;
         this.state = {
-            keyword: "",
+            keyword: '',
             totalList: totalList,
             selectedList: props.selectedList,
             onlyShowSelected: false,
@@ -133,7 +133,7 @@ class SearchIconList extends React.Component {
                         <SearchInput
                             ref="searchInput"
                             type="input"
-                            searchPlaceHolder={Intl.get("user.keyword.filter","输入关键词筛选")}
+                            searchPlaceHolder={Intl.get('user.keyword.filter','输入关键词筛选')}
                             searchOnTyped={true}
                             searchEvent={this.searchInputChange.bind(this)}
                         />
@@ -142,7 +142,7 @@ class SearchIconList extends React.Component {
                         <label>
                             <Checkbox defaultChecked={false} onChange={this.toggleOnlyShowSelected.bind(this)}/>
                             <span>
-                                {Intl.get("user.show.select","只显示选中")}
+                                {Intl.get('user.show.select','只显示选中')}
                             </span>
                         </label>
                     </div>
@@ -163,9 +163,9 @@ class SearchIconList extends React.Component {
                                 hide = !item.selected;
                             }
                             const cls = classNames({
-                                "icon-item": true,
-                                "selected": item.selected,
-                                "icon-hide": hide
+                                'icon-item': true,
+                                'selected': item.selected,
+                                'icon-hide': hide
                             });
 
                             return (
@@ -186,10 +186,10 @@ function noop(){}
 SearchIconList.defaultProps = {
     totalList: [],
     selectedList: [],
-    name_field: "app_name",
-    id_field: "app_id",
-    search_fields: ["app_name"],
-    notFoundContent: Intl.get("user.no.related.app","暂无符合条件的应用"),
+    name_field: 'app_name',
+    id_field: 'app_id',
+    search_fields: ['app_name'],
+    notFoundContent: Intl.get('user.no.related.app','暂无符合条件的应用'),
     onItemsChange: noop
 };
 

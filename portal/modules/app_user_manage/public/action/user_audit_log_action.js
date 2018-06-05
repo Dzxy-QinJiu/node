@@ -1,17 +1,17 @@
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
-var ShareObj = require("../util/app-id-share-util");
-var AppUserUtil = require("../util/app-user-util");
-import { storageUtil } from "ant-utils";
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
+var ShareObj = require('../util/app-id-share-util');
+var AppUserUtil = require('../util/app-user-util');
+import { storageUtil } from 'ant-utils';
 
 function UserAuditLogAction() {
     this.generateActions(
-        "getUserApp", // 获取用户的应用
-        "getAuditLogList", // 获取用户审计日志
-        "handleSearchEvent", // 处理搜索框中内容的变化
-        "changeSearchTime", // 某个时间内显示
+        'getUserApp', // 获取用户的应用
+        'getAuditLogList', // 获取用户审计日志
+        'handleSearchEvent', // 处理搜索框中内容的变化
+        'changeSearchTime', // 某个时间内显示
         'setUserLogSelectedAppId', //设置选中的appid
-        "setSort", // 设置排序选项
+        'setSort', // 设置排序选项
         'handleFilterUserType', // 用户类型的过滤
         'handleRefresh', //刷新用户审计日志
         'resetState',
@@ -52,7 +52,7 @@ function UserAuditLogAction() {
         userAuditLogAjax.getAuditLogList(searchObj).then(function(data) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch({loading: false, error: false, data: data});
-            if (callback && typeof callback == "function") {
+            if (callback && typeof callback == 'function') {
                 callback();
             }
         }, function(errorMsg) {

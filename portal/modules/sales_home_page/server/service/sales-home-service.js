@@ -1,39 +1,39 @@
 /**
  * Created by wangliping on 2016/9/6.
  */
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var salesObj = require("../dto/salesObj");
-var EventEmitter = require("events").EventEmitter;
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var salesObj = require('../dto/salesObj');
+var EventEmitter = require('events').EventEmitter;
 var Promise = require('bluebird');
-var _ = require("underscore");
+var _ = require('underscore');
 import querystring from 'querystring';
 var restApis = {
     //获取销售团队
-    getSalesTeamTree: "/rest/base/v1/group/teams/tree/:type",
+    getSalesTeamTree: '/rest/base/v1/group/teams/tree/:type',
     //获取销售-客户列表
-    getSalesCustomer: "/rest/base/v1/view/customer",
+    getSalesCustomer: '/rest/base/v1/view/customer',
     //获取销售-电话列表
-    getSalesPhone: "/rest/callrecord/v2/callrecord/query/:type/call_record/view",
+    getSalesPhone: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
     //获取销售-用户列表
-    getSalesUser: "/rest/base/v1/view/user",
+    getSalesUser: '/rest/base/v1/view/user',
     //获取销售-合同列表
-    getSalesContract: "/rest/base/v1/view/contract",
+    getSalesContract: '/rest/base/v1/view/contract',
     // 获取应用列表
-    getGrantApplications: "/rest/base/v1/application/grant_applications",
+    getGrantApplications: '/rest/base/v1/application/grant_applications',
     //获取即将过期用户列表
-    getExpireUser: "/rest/base/v1/view/expireuser",
+    getExpireUser: '/rest/base/v1/view/expireuser',
     //获取网站个性化配置 或对网站进行个性化设置
-    websiteConfig: "/rest/base/v1/user/website/config",
+    websiteConfig: '/rest/base/v1/user/website/config',
     //获取各销售对应的通话状态
-    getSalesCallStatus: "/rest/customer/v2/phone/phone/status/:user_ids",
+    getSalesCallStatus: '/rest/customer/v2/phone/phone/status/:user_ids',
     // 获取全部和客户电话的列表（团队）
     callRecordListUrl: '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取全部和客户电话的列表（所有的，包括不在团队里的数据）
     managerCallRcordListUrl: '/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     //获取个人资料中邮箱是否激活
-    getUserInfo: "/rest/base/v1/user/id",
+    getUserInfo: '/rest/base/v1/user/id',
 };
 exports.restUrls = restApis;
 
@@ -64,7 +64,7 @@ function getGrantApplications(req, res, status) {
 exports.getSalesTeamTree = function(req, res, type) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSalesTeamTree.replace(":type", type),
+            url: restApis.getSalesTeamTree.replace(':type', type),
             req: req,
             res: res
         }, null);
@@ -73,7 +73,7 @@ exports.getSalesTeamTree = function(req, res, type) {
 exports.getSalesCallStatus = function(req, res, queryObj) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSalesCallStatus.replace(":user_ids", queryObj.user_ids),
+            url: restApis.getSalesCallStatus.replace(':user_ids', queryObj.user_ids),
             req: req,
             res: res
         }, null);
@@ -89,7 +89,7 @@ exports.getSalesCustomer = function(req, res, timeRange) {
             success: function(eventEmitter, data) {
                 //处理数据
                 var salesCustomer = salesObj.toFrontSalesCustomer(data);
-                eventEmitter.emit("success", salesCustomer);
+                eventEmitter.emit('success', salesCustomer);
             }
         });
 };
@@ -98,14 +98,14 @@ exports.getSalesCustomer = function(req, res, timeRange) {
 exports.getSalesPhone = function(req, res, reqData, type) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSalesPhone.replace(":type", type),
+            url: restApis.getSalesPhone.replace(':type', type),
             req: req,
             res: res
         }, reqData, {
             success: function(eventEmitter, data) {
                 //处理数据
                 var salesPhone = salesObj.toFrontSalesPhone(data);
-                eventEmitter.emit("success", salesPhone);
+                eventEmitter.emit('success', salesPhone);
             }
         });
 };
@@ -121,7 +121,7 @@ exports.getSalesUser = function(req, res, timeRange) {
             success: function(eventEmitter, data) {
                 //处理数据
                 var salesUser = salesObj.toFrontSalesUser(data);
-                eventEmitter.emit("success", salesUser);
+                eventEmitter.emit('success', salesUser);
             }
         });
 };
@@ -142,10 +142,10 @@ exports.getExpireUser = function(req, res) {
     var url = restApis.getExpireUser;
     if (!_.isEmpty(queryObj)){
         if (queryObj.team_id){
-            url += "?team_id=" + queryObj.team_id;
+            url += '?team_id=' + queryObj.team_id;
         }
         if (queryObj.member_id){
-            url += "?member_id=" + queryObj.member_id;
+            url += '?member_id=' + queryObj.member_id;
         }
     }
     return restUtil.authRest.get(
@@ -157,7 +157,7 @@ exports.getExpireUser = function(req, res) {
             success: function(eventEmitter, data) {
                 //处理数据
                 var expireUser = salesObj.toFrontExpireUser(data);
-                eventEmitter.emit("success", expireUser);
+                eventEmitter.emit('success', expireUser);
             }
         });
 };
@@ -169,7 +169,7 @@ function getUserInfoEmail(req, res) {
     return new Promise((resolve, reject) => {
         restUtil.authRest.get(
             {
-                url: restApis.getUserInfo + "/" + userId,
+                url: restApis.getUserInfo + '/' + userId,
                 req: req,
                 res: res
             }, null, {
@@ -194,7 +194,7 @@ function getWebsiteConfig(req, res, responseObj) {
             }, null, {
                 success: function(eventEmitter, data) {
                     //有数据,并且设置了不提醒
-                    if (data && data.setting_notice_ignore === "yes"){
+                    if (data && data.setting_notice_ignore === 'yes'){
                         resolve(responseObj);
                     }else{
                         responseObj.isShowActiveEmail = true;
@@ -223,20 +223,20 @@ exports.getShowActiveEmailObj = function(req, res) {
             if (!data.email_enable) {
                 //获取个人配置
                 getWebsiteConfig(req, res, responseObj).then((responseObj) => {
-                    emitter.emit("success", responseObj);
+                    emitter.emit('success', responseObj);
                 }).catch((errorMsg) => {
-                    emitter.emit("error", errorMsg);
+                    emitter.emit('error', errorMsg);
                 });
             } else {
                 //有邮箱且邮箱已经激活，不提示
-                emitter.emit("success", responseObj);
+                emitter.emit('success', responseObj);
             }
         } else {
             //用户没有邮箱，提示添加邮箱
-            emitter.emit("success", responseObj);
+            emitter.emit('success', responseObj);
         }
     }).catch(function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 

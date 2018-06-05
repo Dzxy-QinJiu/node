@@ -1,4 +1,4 @@
-var weeklyReportAjax = require("../ajax/weekly-report-ajax");
+var weeklyReportAjax = require('../ajax/weekly-report-ajax');
 function weeklyReportDetailActions() {
     this.generateActions(
         'setInitState',//设置初始数据

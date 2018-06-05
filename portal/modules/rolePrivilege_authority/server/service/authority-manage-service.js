@@ -1,13 +1,13 @@
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var _ = require("underscore");
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var _ = require('underscore');
 var authorityRestApis = {
-    getAuthorityList: "/rest/base/v1/application/permissions",
-    editAuthorityGroupName: "/rest/base/v1/permission",
-    editAuthority: "/rest/base/v1/permission",
-    addAuthority: "/rest/base/v1/permission",
-    deleteAuthority: "/rest/base/v1/permission"
+    getAuthorityList: '/rest/base/v1/application/permissions',
+    editAuthorityGroupName: '/rest/base/v1/permission',
+    editAuthority: '/rest/base/v1/permission',
+    addAuthority: '/rest/base/v1/permission',
+    deleteAuthority: '/rest/base/v1/permission'
 };
 //删除超时时长
 var deleteTimeOut = 3 * 60 * 1000;
@@ -18,7 +18,7 @@ exports.urls = authorityRestApis;
 exports.getAuthorityList = function(req, res, clientID) {
     return restUtil.authRest.get(
         {
-            url: authorityRestApis.getAuthorityList + "/" + clientID,
+            url: authorityRestApis.getAuthorityList + '/' + clientID,
             req: req,
             res: res
         }, null, {
@@ -39,7 +39,7 @@ exports.getAuthorityList = function(req, res, clientID) {
                         });
                     }
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -48,7 +48,7 @@ exports.getAuthorityList = function(req, res, clientID) {
 exports.editAuthorityGroupName = function(req, res, authorityGroup) {
     return restUtil.authRest.put(
         {
-            url: authorityRestApis.editAuthorityGroupName + "/" + authorityGroup.classifyName,
+            url: authorityRestApis.editAuthorityGroupName + '/' + authorityGroup.classifyName,
             req: req,
             res: res
         },
@@ -77,7 +77,7 @@ exports.editAuthority = function(req, res, authority) {
                         permissionDatas: data.permission_datas || []
                     };
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -109,7 +109,7 @@ exports.addAuthority = function(req, res, authoritys) {
                         };
                     });
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         }
     );
@@ -119,7 +119,7 @@ exports.addAuthority = function(req, res, authoritys) {
 exports.deleteAuthority = function(req, res, authorityIds) {
     return restUtil.authRest.del(
         {
-            url: authorityRestApis.deleteAuthority + "/" + authorityIds,
+            url: authorityRestApis.deleteAuthority + '/' + authorityIds,
             req: req,
             res: res,
             timeout: deleteTimeOut

@@ -3,10 +3,10 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/24.
  */
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
-var clueAnalysisAjax = require("../ajax/clue-analysis-ajax");
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+var clueAnalysisAjax = require('../ajax/clue-analysis-ajax');
 const AUTHS = {
-    "GETALL": "CUSTOMER_ALL"
+    'GETALL': 'CUSTOMER_ALL'
 };
 function ClueAnalysisActions() {
     this.generateActions(
@@ -26,14 +26,14 @@ function ClueAnalysisActions() {
     };
     this.getCustomerById = function(customerId,label) {
         var rangParams = [{//时间范围参数
-            from: "",
-            to: "",
-            type: "time",
-            name: "start_time"
+            from: '',
+            to: '',
+            type: 'time',
+            name: 'start_time'
         }];
-        var queryObj = {"total_size": 1,"cursor": true,"id": ""};
+        var queryObj = {'total_size': 1,'cursor': true,'id': ''};
         var data = {
-            data: JSON.stringify({"id": customerId}),
+            data: JSON.stringify({'id': customerId}),
             rangParams: JSON.stringify(rangParams),
             queryObj: JSON.stringify(queryObj)
         };

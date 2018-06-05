@@ -1,14 +1,14 @@
 
-var language = require("../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./index-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./index-zh_CN.less");
+var language = require('../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./index-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./index-zh_CN.less');
 }
 var NoData = React.createClass({
     getDefaultProps: function() {
         return {
-            msg: Intl.get("organization.no.realms", "还没有安全域诶...")
+            msg: Intl.get('organization.no.realms', '还没有安全域诶...')
         };
     },
     render: function() {

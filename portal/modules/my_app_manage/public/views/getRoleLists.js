@@ -1,7 +1,7 @@
 /**
  * Created by zhshj on 2017/2/17.
  */
-var roleAjax = require("../../../common/public/ajax/role");
+var roleAjax = require('../../../common/public/ajax/role');
 
 //根据应用获取角色列表
 exports.getRoleList = function(appId) {
@@ -13,7 +13,7 @@ exports.getRoleList = function(appId) {
     }).error(function(xhr) {
         Deferred.reject(xhr.responseJSON);
     }).timeout(function(xhr) {
-        Deferred.reject("获取角色列表超时");
+        Deferred.reject('获取角色列表超时');
     });
     return Deferred.promise();
 };
@@ -28,7 +28,7 @@ exports.getPermissionMap = function(appId) {
     }).error(function(xhr) {
         Deferred.reject(xhr.responseJSON);
     }).timeout(function(xhr) {
-        Deferred.reject("获取权限组信息失败");
+        Deferred.reject('获取权限组信息失败');
     });
     return Deferred.promise();
 };

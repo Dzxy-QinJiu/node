@@ -2,10 +2,10 @@
  * 联系人的action
  */
 //联系人的ajax
-var contactAjax = require("../ajax/contact-ajax");
+var contactAjax = require('../ajax/contact-ajax');
 var crmStore = require('../store/crm-store');
 var CrmAction = require('./crm-actions');
-var util = require("../utils/contact-util");
+var util = require('../utils/contact-util');
 
 function ContactAction() {
 
@@ -52,12 +52,12 @@ function ContactAction() {
                 if (data && data.result) {
                     this.dispatch({list: data.result});
                 } else {
-                    this.dispatch({errorMsg: Intl.get("crm.contact.list.failed", "获取联系人列表失败")});
+                    this.dispatch({errorMsg: Intl.get('crm.contact.list.failed', '获取联系人列表失败')});
                 }
             }, (errorMsg) => {
                 this.dispatch({
                     isLoading: false,
-                    errorMsg: errorMsg || Intl.get("crm.contact.list.failed", "获取联系人列表失败")
+                    errorMsg: errorMsg || Intl.get('crm.contact.list.failed', '获取联系人列表失败')
                 });
             });
         }
@@ -78,7 +78,7 @@ function ContactAction() {
             if (data && _.isArray(data.result) && data.result[0]) {
                 result = {contact: data && data.result[0]};
             } else {
-                result = {errorMsg: Intl.get("crm.180", "添加联系人失败")};
+                result = {errorMsg: Intl.get('crm.180', '添加联系人失败')};
             }
             this.dispatch(result);
             if (_.isFunction(cb)) cb(result);
@@ -107,7 +107,7 @@ function ContactAction() {
                 this.dispatch({contact});
                 if (_.isFunction(cb)) cb({contact});
             } else {
-                let errorMsg = Intl.get("crm.181", "修改联系人失败");
+                let errorMsg = Intl.get('crm.181', '修改联系人失败');
                 this.dispatch({errorMsg, contact});
                 if (_.isFunction(cb)) cb({errorMsg});
             }
@@ -135,7 +135,7 @@ function ContactAction() {
             _this.dispatch(contactData);
             if (_.isFunction(cb)) cb();
         }, function(errorMsg) {
-            _this.dispatch("");
+            _this.dispatch('');
         });
     };
     //设置一个默认联系人

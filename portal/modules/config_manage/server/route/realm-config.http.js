@@ -7,24 +7,24 @@ module.exports = {
     module: 'config_manage/server/action/realm-config-controller',
     routes: [
         {
-            "method": "get",
-            "path": "/rest/getRealmStrategy",
-            "handler": "getRealmStrategy",
-            "passport": {
-                "needLogin": true
+            'method': 'get',
+            'path': '/rest/getRealmStrategy',
+            'handler': 'getRealmStrategy',
+            'passport': {
+                'needLogin': true
             },
-            "privileges": [
-                "GET_CONFIG_PWD_STRATEGY" // 获取安全域密码策略
+            'privileges': [
+                'GET_CONFIG_PWD_STRATEGY' // 获取安全域密码策略
             ]
         }, {
-            "method": "post",
-            "path": "/rest/setRealmStrategy",
-            "handler": "setRealmStrategy",
-            "passport": {
-                "needLogin": true
+            'method': 'post',
+            'path': '/rest/setRealmStrategy',
+            'handler': 'setRealmStrategy',
+            'passport': {
+                'needLogin': true
             },
-            "privileges": [
-                "CREATE_CONFIG_PWD_STRATEGY" // 设置安全域密码策略
+            'privileges': [
+                'CREATE_CONFIG_PWD_STRATEGY' // 设置安全域密码策略
             ]
         }
     ]

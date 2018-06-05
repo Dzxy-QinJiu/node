@@ -1,7 +1,7 @@
-var history = require("../history");
+var history = require('../history');
 var NotFound = React.createClass({
     componentWillMount: function() {
-        history.replaceState(null,"/",{});
+        history.replaceState(null,'/',{});
     },
     render: function() {
         return (

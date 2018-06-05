@@ -3,11 +3,11 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/12.
  */
-var addMoreInfoAction = require("../action/add-more-info-action");
-var addMoreInfoStore = require("../store/add-more-info-store");
-import TopTitleCMP from "./top-title-component";
-import BottomSaveCancelCMP from "./bottom-save-cancel-component";
-import {Form, Select, Icon, Input} from "antd";
+var addMoreInfoAction = require('../action/add-more-info-action');
+var addMoreInfoStore = require('../store/add-more-info-store');
+import TopTitleCMP from './top-title-component';
+import BottomSaveCancelCMP from './bottom-save-cancel-component';
+import {Form, Select, Icon, Input} from 'antd';
 const Option = Select.Option;
 var FormItem = Form.Item;
 const LAYOUT_CONST = {
@@ -20,7 +20,7 @@ class AddMoreInfo extends React.Component {
         super(props);
         this.state = {
             isSubmitting: true,
-            submittingErrMsg: ""
+            submittingErrMsg: ''
         };
     }
 
@@ -76,12 +76,12 @@ class AddMoreInfo extends React.Component {
         return (
             <div className="add-more-info-content-container" data-tracename="增加产品反馈">
                 <TopTitleCMP
-                    titleText={"+" + Intl.get("call.record.product.feedback", "产品反馈")}
+                    titleText={'+' + Intl.get('call.record.product.feedback', '产品反馈')}
                 />
                 {/*添加待办事项 产品反馈 竞品信息*/}
                 <div className="product-feedback-container">
                     <FormItem
-                        label={Intl.get("call.record.application.product", "应用产品")}
+                        label={Intl.get('call.record.application.product', '应用产品')}
                         id="product"
                         {...formItemLayout}
                     >
@@ -93,45 +93,45 @@ class AddMoreInfo extends React.Component {
                             getFieldDecorator('product', {
                                 rules: [{
                                     required: true,
-                                    message: Intl.get("call.record.feedback.prodcut", "请选择需要反馈的应用产品")
+                                    message: Intl.get('call.record.feedback.prodcut', '请选择需要反馈的应用产品')
                                 }],
                             })(
                                 <Select
                                     size="large"
-                                    placeholder={Intl.get("call.record.feedback.prodcut", "请选择需要反馈的应用产品")}
+                                    placeholder={Intl.get('call.record.feedback.prodcut', '请选择需要反馈的应用产品')}
                                 >
                                     {appListsOptions}
                                 </Select>
                             ))}
                     </FormItem>
                     <FormItem
-                        label={Intl.get("call.record.feedback.topic", "反馈主题")}
+                        label={Intl.get('call.record.feedback.topic', '反馈主题')}
                         id="topic"
                         {...formItemLayout}
                     >
                         {getFieldDecorator('topic', {
                             rules: [{
                                 required: true,
-                                message: Intl.get("call.record.input.feedback.topic", "请输入反馈主题"),
+                                message: Intl.get('call.record.input.feedback.topic', '请输入反馈主题'),
                                 whitespace: true
                             }],
                         })(
                             <Input
                                 name="topic"
                                 id="topic"
-                                placeholder={Intl.get("call.record.input.feedback.topic", "请输入反馈主题")}
+                                placeholder={Intl.get('call.record.input.feedback.topic', '请输入反馈主题')}
                             />
                         )}
                     </FormItem>
                     <FormItem
-                        label={Intl.get("call.record.feedback.content", "反馈内容")}
+                        label={Intl.get('call.record.feedback.content', '反馈内容')}
                         id="content"
                         {...formItemLayout}
                     >
                         {getFieldDecorator('content', {
                             rules: [{
                                 required: true,
-                                message: Intl.get("call.record.input.feedback.content", "请输入反馈内容"),
+                                message: Intl.get('call.record.input.feedback.content', '请输入反馈内容'),
                                 whitespace: true
                             }]
                         })(
@@ -139,7 +139,7 @@ class AddMoreInfo extends React.Component {
                                 type="textarea"
                                 id="content"
                                 rows="3"
-                                placeholder={Intl.get("call.record.input.feedback.content", "请输入反馈内容")}
+                                placeholder={Intl.get('call.record.input.feedback.content', '请输入反馈内容')}
                             />
                         )}
                     </FormItem>
@@ -156,7 +156,7 @@ class AddMoreInfo extends React.Component {
 
 }
 AddMoreInfo.defaultProps = {
-    isAddingAppFeedback: "",
-    addAppFeedbackErrMsg: "",
+    isAddingAppFeedback: '',
+    addAppFeedbackErrMsg: '',
 };
 export default Form.create()(AddMoreInfo);

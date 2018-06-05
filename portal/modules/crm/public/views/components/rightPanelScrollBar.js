@@ -4,7 +4,7 @@
  * Created by wangliping on 2018/5/4.
  */
 //滚动条
-import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 
 //高度常量
 const LAYOUT_CONSTANTS = {
@@ -26,9 +26,9 @@ class RightPanelScrollBar extends React.Component {
     render() {
         let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
         //减头部的客户基本信息高度
-        divHeight -= parseInt($(".basic-info-contianer").outerHeight(true));
-        if ($(".phone-alert-modal-title").size()) {
-            divHeight -= $(".phone-alert-modal-title").outerHeight(true);
+        divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
+        if ($('.phone-alert-modal-title').size()) {
+            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
         }
         //合并面板，去掉客户选择框的高度
         if (this.props.isMerge) {

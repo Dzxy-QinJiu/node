@@ -1,7 +1,7 @@
 /**
  * 联系人相关的ajax操作
  */
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 //获取联系人列表
 let contactListAjax;
 exports.getContactList = function(customerId) {
@@ -9,7 +9,7 @@ exports.getContactList = function(customerId) {
         contactListAjax.abort();
     }
     let type = 'user';//CRM_USER_LIST_CONTACTS
-    if (hasPrivilege("CRM_MANAGER_LIST_CONTACTS")) {
+    if (hasPrivilege('CRM_MANAGER_LIST_CONTACTS')) {
         type = 'manager';
     }
     var Deferred = $.Deferred();
@@ -23,7 +23,7 @@ exports.getContactList = function(customerId) {
         },
         error: function(error, errorText) {
             if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON || Intl.get("crm.contact.list.failed", "获取联系人列表失败"));
+                Deferred.reject(error && error.responseJSON || Intl.get('crm.contact.list.failed', '获取联系人列表失败'));
             }
         }
     });
@@ -43,7 +43,7 @@ exports.addContact = function(contact) {
             Deferred.resolve(contact);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("crm.180", "添加联系人失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('crm.180', '添加联系人失败'));
         }
     });
     return Deferred.promise();
@@ -61,7 +61,7 @@ exports.editContact = function(contact, editType) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("crm.181", "修改联系人失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('crm.181', '修改联系人失败'));
         }
     });
     return Deferred.promise();
@@ -78,7 +78,7 @@ exports.deleteContact = function(contact) {
             Deferred.resolve(contact);
         },
         error: function() {
-            Deferred.reject(Intl.get("crm.182", "删除联系人失败"));
+            Deferred.reject(Intl.get('crm.182', '删除联系人失败'));
         }
     });
     return Deferred.promise();

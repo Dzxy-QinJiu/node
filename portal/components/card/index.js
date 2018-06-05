@@ -1,22 +1,22 @@
 /**
  * Created by wangliping on 2015/12/23.
  */
-var language = require("../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
+var language = require('../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
     require('./card-es_VE.less');
-}else if (language.lan() == "zh"){
-    require("./card-zh_CN.less");
+}else if (language.lan() == 'zh'){
+    require('./card-zh_CN.less');
 }
-var CardItem = require("./cardItem");
-var Icon = require("antd").Icon;
-var DefaultUserLogoTitle = require("../default-user-logo-title");
+var CardItem = require('./cardItem');
+var Icon = require('antd').Icon;
+var DefaultUserLogoTitle = require('../default-user-logo-title');
 const DELETE_CREATEREALM_DELAYTIME = 4000;
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 
 var Card = React.createClass({
     getDefaultProps: function(){
         return {
-            cardWidth: "auto"
+            cardWidth: 'auto'
         };
     },
     selectCardEvent: function() {
@@ -30,17 +30,17 @@ var Card = React.createClass({
         }
     },
     showCardInfo: function(event) {
-        Trace.traceEvent(event,"查看应用详情");
+        Trace.traceEvent(event,'查看应用详情');
         var curCard = this.props.curCard;
         //curCard.id =='' 如果是在创建中的安全域card是不能点击的
-        if (event.target.className.indexOf("icon-role-auth-config") >= 0 || curCard.id == '') {
+        if (event.target.className.indexOf('icon-role-auth-config') >= 0 || curCard.id == '') {
             return;
         }
         this.props.showCardInfo(curCard);
     },
     showRightFullScreen: function(event) {
         event.stopPropagation();
-        Trace.traceEvent($(this.getDOMNode()).find(".icon-role-auth-config"),"查看应用角色列表和权限列表");
+        Trace.traceEvent($(this.getDOMNode()).find('.icon-role-auth-config'),'查看应用角色列表和权限列表');
         this.props.showRightFullScreen(this.props.curCard);
     },
 
@@ -53,7 +53,7 @@ var Card = React.createClass({
 
         for (var key in card) {
             if (card[key] instanceof Object && card[key].showOnCard) {
-                if (key == "date") {
+                if (key == 'date') {
                     cardItems.push(<CardItem key={key} cardItem={card[key]} noRihtValue={true}/>);
                 } else {
                     cardItems.push(<CardItem key={key} cardItem={card[key]}/>);
@@ -61,13 +61,13 @@ var Card = React.createClass({
             }
         }
         // 选择图标的样式设置
-        var iconClass = "select-icon";
+        var iconClass = 'select-icon';
         if (this.props.isSelect) {
-            iconClass += " active";
+            iconClass += ' active';
         }
         //禁用卡片的样式设置
         if (!card.status) {
-            iconClass += " select-icon-stop";
+            iconClass += ' select-icon-stop';
         }
         if (card.createMsg === 'error') {
             //右上角通知3s后关闭，在通知关闭后再在页面上移除创建失败的安全域card
@@ -75,7 +75,7 @@ var Card = React.createClass({
                 this.props.removeFailRealm(card.taskId);
             }, DELETE_CREATEREALM_DELAYTIME);
         }
-        var userName = card.userName ? card.userName.value : "";
+        var userName = card.userName ? card.userName.value : '';
         return (
             <div className="card-layout-container " style={{width: this.props.cardWidth}}>
                 <div className="card-box" onClick={this.showCardInfo}>
@@ -112,8 +112,8 @@ var Card = React.createClass({
                         <Icon className={iconClass} type="check-circle-o"
                             style={{display: this.props.bulkOpersShow ? 'block' : 'none'}}
                             onClick={this.selectCardEvent}/>
-                        {this.props.type == "myApp" ? (<div className="iconfont icon-role-auth-config"
-                            onClick={this.showRightFullScreen} title={Intl.get("my.app.role.auth.config.title","设置角色、权限")}></div>) : null}
+                        {this.props.type == 'myApp' ? (<div className="iconfont icon-role-auth-config"
+                            onClick={this.showRightFullScreen} title={Intl.get('my.app.role.auth.config.title','设置角色、权限')}></div>) : null}
                     </div>
                 </div>
             </div>

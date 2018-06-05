@@ -1,5 +1,5 @@
-import onlineUserListAjax from "../ajax";
-import { message } from "antd";
+import onlineUserListAjax from '../ajax';
+import { message } from 'antd';
 
 function OnlineUserListAction() {
 
@@ -25,11 +25,11 @@ function OnlineUserListAction() {
     this.kickUser = function(ids){
         onlineUserListAjax.kickUser(ids).then( (data) => {
             if(data){
-                message.success( Intl.get("user.online.kick.success", "踢出成功"));
+                message.success( Intl.get('user.online.kick.success', '踢出成功'));
                 this.dispatch(ids);
             }
         }, (errMsg) => {
-            message.error(errMsg || Intl.get("user.online.kick.error", "踢出失败"));
+            message.error(errMsg || Intl.get('user.online.kick.error', '踢出失败'));
         });
     };
 }

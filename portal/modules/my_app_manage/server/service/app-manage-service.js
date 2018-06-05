@@ -3,32 +3,32 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  * Created by wangliping on 2016/3/4.
  */
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var App = require("../dto/appObj");
-var _ = require("underscore");
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var App = require('../dto/appObj');
+var _ = require('underscore');
 var appRestApis = {
     //修改我的应用地址
-    modifyApp: "/rest/base/v1/application",
+    modifyApp: '/rest/base/v1/application',
     //刷新应用密钥
-    refreshSecret: "/rest/base/v1/application",
+    refreshSecret: '/rest/base/v1/application',
     //修改应用到期时间
-    updateExpireDate: "/rest/base/v1/application/expire_date",
+    updateExpireDate: '/rest/base/v1/application/expire_date',
     //通过id获取应用详细信息
-    getCurAppById: "/rest/base/v1/application/id",
+    getCurAppById: '/rest/base/v1/application/id',
     //获取我的应用地址列表
-    getUserMyApp: "/rest/base/v1/user/manage_apps",
+    getUserMyApp: '/rest/base/v1/user/manage_apps',
     // 导出权限
-    exportAuthorityList: "/rest/base/v1/permission/export",
+    exportAuthorityList: '/rest/base/v1/permission/export',
     // 导入权限
-    importAuthority: "/rest/base/v1/permission/import",
+    importAuthority: '/rest/base/v1/permission/import',
     // 导出角色
     exportRoleList: '/rest/base/v1/role/export',
     // 导入角色
-    importRole: "/rest/base/v1/role/import",
+    importRole: '/rest/base/v1/role/import',
     // 获取应用piwik收集key值
-    getCurAppKey: "/rest/base/v1/application/piwik/key",
+    getCurAppKey: '/rest/base/v1/application/piwik/key',
 };
 exports.urls = appRestApis;
 
@@ -49,7 +49,7 @@ exports.getMyAppList = function(req, res, condition) {
                     }
                     appListObj.data = curAppList;
                 }
-                eventEmitter.emit("success", appListObj);
+                eventEmitter.emit('success', appListObj);
             }
         });
 };
@@ -58,13 +58,13 @@ exports.getMyAppList = function(req, res, condition) {
 exports.getCurAppById = function(req, res, appId) {
     return restUtil.authRest.get(
         {
-            url: appRestApis.getCurAppById + "/" + appId,
+            url: appRestApis.getCurAppById + '/' + appId,
             req: req,
             res: res
         }, null, {
             success: function(eventEmitter, data) {
                 //处理数据
-                eventEmitter.emit("success", App.toFrontObject(data));
+                eventEmitter.emit('success', App.toFrontObject(data));
             }
         });
 };
@@ -84,7 +84,7 @@ exports.editApp = function(req, res, frontApp) {
 exports.refreshAppSecret = function(req, res, appId) {
     return restUtil.authRest.put(
         {
-            url: appRestApis.refreshSecret + "/" + appId + "/refresh_secret",
+            url: appRestApis.refreshSecret + '/' + appId + '/refresh_secret',
             req: req,
             res: res
         }, null);
@@ -103,12 +103,12 @@ exports.updateExpireDate = function(req, res, app) {
 exports.exportAuthorityList = function(req, res, clientID) {
     return restUtil.authRest.get(
         {
-            url: appRestApis.exportAuthorityList + "/" + clientID,
+            url: appRestApis.exportAuthorityList + '/' + clientID,
             req: req,
             res: res
         }, null, {
             success: function(eventEmitter, data) {
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -118,7 +118,7 @@ exports.exportAuthorityList = function(req, res, clientID) {
  */
 exports.uploadAuthority = function(req, res, clientID, data) {
     return restUtil.authRest.post({
-        url: appRestApis.importAuthority + "/" + clientID,
+        url: appRestApis.importAuthority + '/' + clientID,
         req: req,
         res: res
     }, data);
@@ -128,12 +128,12 @@ exports.uploadAuthority = function(req, res, clientID, data) {
 exports.exportRoleList = function(req, res, clientID) {
     return restUtil.authRest.get(
         {
-            url: appRestApis.exportRoleList + "/" + clientID,
+            url: appRestApis.exportRoleList + '/' + clientID,
             req: req,
             res: res
         }, null, {
             success: function(eventEmitter, data) {
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -143,7 +143,7 @@ exports.exportRoleList = function(req, res, clientID) {
  */
 exports.uploadRole = function(req, res, clientID, data) {
     return restUtil.authRest.post({
-        url: appRestApis.importRole + "/" + clientID,
+        url: appRestApis.importRole + '/' + clientID,
         req: req,
         res: res
     }, data);
@@ -151,7 +151,7 @@ exports.uploadRole = function(req, res, clientID, data) {
 // 获取用户类型配置
 exports.getCurAppKey = function(req, res, appId){
     return restUtil.authRest.get({
-        url: appRestApis.getCurAppKey + "/" + appId,
+        url: appRestApis.getCurAppKey + '/' + appId,
         req: req,
         res: res
     }, null);

@@ -3,59 +3,59 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  */
 
-"use strict";
-var crmService = require("../service/crm-manage-service");
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
+'use strict';
+var crmService = require('../service/crm-manage-service');
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 function templateFile(res, example, filename) {
-    var example = Buffer.concat([new Buffer("\xEF\xBB\xBF", "binary"), new Buffer(example)]);
-    res.setHeader("Content-disposition", "attachement; filename=" + filename);
-    res.setHeader("Content-Type", "application/csv");
+    var example = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(example)]);
+    res.setHeader('Content-disposition', 'attachement; filename=' + filename);
+    res.setHeader('Content-Type', 'application/csv');
     res.write(example);
     res.end();
 }
 
 var customerModel = {
-    "user_id": "string",
-    "user_name": "string",
-    "apps": [
-        "string"
+    'user_id': 'string',
+    'user_name': 'string',
+    'apps': [
+        'string'
     ],
-    "name": "string",
-    "start_time": "2016-03-04T02:24:51.011Z",
-    "last_contact_time": "2016-03-04T02:24:51.011Z",
-    "province": "string",
-    "city": "string",
-    "county": "string",
-    "address": "string",
-    "industry": "string",
-    "remarks": "string",
-    "sales_team": "string",
-    "sales_stages": {},
-    "app_user_ids": [
-        "string"
+    'name': 'string',
+    'start_time': '2016-03-04T02:24:51.011Z',
+    'last_contact_time': '2016-03-04T02:24:51.011Z',
+    'province': 'string',
+    'city': 'string',
+    'county': 'string',
+    'address': 'string',
+    'industry': 'string',
+    'remarks': 'string',
+    'sales_team': 'string',
+    'sales_stages': {},
+    'app_user_ids': [
+        'string'
     ],
-    "contract_amount": 0,
-    "gross_profit": 0,
-    "extensionRecord": "string",
-    "contacts": [
+    'contract_amount': 0,
+    'gross_profit': 0,
+    'extensionRecord': 'string',
+    'contacts': [
         {
-            "def_contancts": "string",
-            "name": "string",
-            "role": "string",
-            "phone": [
-                "string"
+            'def_contancts': 'string',
+            'name': 'string',
+            'role': 'string',
+            'phone': [
+                'string'
             ],
-            "mphone": [
-                "string"
+            'mphone': [
+                'string'
             ],
-            "qq": "string",
-            "email": "string",
-            "weChat": "string",
-            "department": "string",
-            "position": "string"
+            'qq': 'string',
+            'email': 'string',
+            'weChat': 'string',
+            'department': 'string',
+            'position': 'string'
         }
     ],
-    "sales_opportunities": []
+    'sales_opportunities': []
 };
 
 /*
@@ -63,18 +63,18 @@ var customerModel = {
  */
 exports.getCurCustomers = function(req, res) {
     crmService.getCustomerList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.json(err.message);
         });
 };
 //获取客户的用列表
 exports.getCrmUserList = function(req, res) {
     crmService.getCrmUserList(req, res, req.query)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message);
         });
 };
@@ -82,63 +82,63 @@ exports.getCrmUserList = function(req, res) {
 //根据客户名获取行政级别
 exports.getAdministrativeLevel = function(req, res) {
     crmService.getAdministrativeLevel(req, res, encodeURI(req.query.name))
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message);
         });
 };
 //获取筛选面板的行业列表
 exports.getFilterIndustries = function(req, res) {
     crmService.getFilterIndustries(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message);
         });
 };
 //获取筛选面板的销售角色列表
 exports.getFilterSalesRoleList = function(req, res) {
     crmService.getFilterSalesRoleList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message);
         });
 };
 //获取筛选面板的地域列表
 exports.getFilterProvinces = function(req, res) {
     crmService.getFilterProvinces(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message);
         });
 };
 //获取阶段标签列表
 exports.getStageTagList = function(req, res) {
     crmService.getStageTagList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });
 };
 //获取竞品列表
 exports.getCompetitorList = function(req, res) {
     crmService.getCompetitorList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });
 };
 //客户名、联系人电话唯一性的验证
 exports.checkOnlyCustomer = function(req, res) {
     crmService.checkOnlyCustomer(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -147,27 +147,27 @@ exports.checkOnlyCustomer = function(req, res) {
 exports.getCustomerById = function(req, res) {
     let customerId = req.params.customer_id;
     crmService.getCustomerById(req, res, customerId)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 //获取重复客户
 exports.getRepeatCustomerList = function(req, res) {
     crmService.getRepeatCustomerList(req, res, req.query)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 //通过重复客户的客户id获取重复客户
 exports.getRepeatCustomerById = function(req, res) {
     crmService.getRepeatCustomerById(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -175,9 +175,9 @@ exports.getRepeatCustomerById = function(req, res) {
 exports.deleteRepeatCustomer = function(req, res) {
     let customerIdArray = JSON.parse(req.body.ids);
     crmService.deleteRepeatCustomer(req, res, customerIdArray)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -186,9 +186,9 @@ exports.deleteRepeatCustomer = function(req, res) {
 exports.mergeRepeatCustomer = function(req, res) {
     let mergeObj = {customer: JSON.parse(req.body.customer), delete_customers: JSON.parse(req.body.delete_customers)};
     crmService.mergeRepeatCustomer(req, res, mergeObj)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -204,11 +204,11 @@ exports.addCustomer = function(req, res) {
             delete newCus[p];
         }
     }
-    newCus.contacts[0].def_contancts = "true";
+    newCus.contacts[0].def_contancts = 'true';
     crmService.addCustomer(req, res, newCus)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -216,9 +216,9 @@ exports.addCustomer = function(req, res) {
 exports.deleteCustomer = function(req, res) {
     var ids = JSON.parse(req.body.ids);
     crmService.deleteCustomer(req, res, ids)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.json(err.message);
         });
 };
@@ -226,9 +226,9 @@ exports.deleteCustomer = function(req, res) {
 exports.updateCustomer = function(req, res) {
     var newCus = JSON.parse(req.body.newCus);
     crmService.updateCustomer(req, res, newCus)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });
 };
@@ -236,17 +236,17 @@ exports.updateCustomer = function(req, res) {
 //转出客户的处理
 exports.transferCustomer = function(req, res) {
     crmService.transferCustomer(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });
 };
 
 exports.getCustomerList = function(req, res) {
-    crmManageServic.getCustomerList(req, res).on("success", function(data) {
+    crmManageServic.getCustomerList(req, res).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.json(codeMessage && codeMessage.message);
     });
 };
@@ -257,9 +257,9 @@ exports.getCustomerList = function(req, res) {
 exports.getDynamicList = function(req, res) {
     var customer_id = req.params.customer_id;
     crmService.getDynamicList(req, res, customer_id)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data.result);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.json(err.message);
         });
 };
@@ -271,10 +271,10 @@ exports.queryCustomer = function(req, res) {
     var reqData = req.body.reqData || req.body.data;
     var condition = JSON.parse(reqData);
     crmService.queryCustomer(req, res, condition)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
         })
-        .on("error", function(err) {
+        .on('error', function(err) {
             res.status(500).json(err.message);
         });
 };
@@ -282,49 +282,49 @@ exports.queryCustomer = function(req, res) {
 exports.uploadCustomers = function(req, res) {
     //调用上传请求服务
     crmService.uploadCustomers(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data.result);
         })
-        .on("error", function(err) {
+        .on('error', function(err) {
             res.json(err.message);
         });
 };
 
 // 处理导入客户模板文件
 exports.getCrmTemplate = function(req, res) {
-    var example = "手机号码,电话号码,客户名称,销售人员(填写分机),添加时间,其他电话,地址,备注,销售团队,项目预算," +
-        "联系人,QQ,邮箱,联系人角色,部门,职位,竞争对手,联系记录,下次联系时间,所属省份(必填),项目阶段(必填),行业\n" +
-        "18057331777,51265238850,浙江优选网络科技有限公司,8009,2016/1/29  13:22:39,,,了解产品,,,邱总,240953334," +
-        "240953334@qq.com,关键人,信息科技部,副经理,,,2016/2/4 14:00,浙江省,信息阶段,企业\n" +
-        "18306357808,6357364708,莘县地税局,8009,2016/9/18  10:10:28,,,10/10上门沟通,,,徐主任,540256834," +
-        "pxfybgs@163.com,信息科主任,信息科技部,,,,,山东省,意向阶段,税务局\n";
-    var filename = "crm_tmpl.csv";
+    var example = '手机号码,电话号码,客户名称,销售人员(填写分机),添加时间,其他电话,地址,备注,销售团队,项目预算,' +
+        '联系人,QQ,邮箱,联系人角色,部门,职位,竞争对手,联系记录,下次联系时间,所属省份(必填),项目阶段(必填),行业\n' +
+        '18057331777,51265238850,浙江优选网络科技有限公司,8009,2016/1/29  13:22:39,,,了解产品,,,邱总,240953334,' +
+        '240953334@qq.com,关键人,信息科技部,副经理,,,2016/2/4 14:00,浙江省,信息阶段,企业\n' +
+        '18306357808,6357364708,莘县地税局,8009,2016/9/18  10:10:28,,,10/10上门沟通,,,徐主任,540256834,' +
+        'pxfybgs@163.com,信息科主任,信息科技部,,,,,山东省,意向阶段,税务局\n';
+    var filename = 'crm_tmpl.csv';
     templateFile(res, example, filename);
 };
 
 
 // 拨打电话
 exports.callOut = function(req, res) {
-    crmService.callOut(req, res, req.body).on("success", function(data) {
+    crmService.callOut(req, res, req.body).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 获取电话座机号
 exports.getUserPhoneNumber = function(req, res) {
-    crmService.getUserPhoneNumber(req, res, req.params).on("success", function(data) {
+    crmService.getUserPhoneNumber(req, res, req.params).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 //标识能否继续添加客户
 exports.getCustomerLimit = function(req, res) {
-    crmService.getCustomerLimit(req, res).on("success", function(data) {
+    crmService.getCustomerLimit(req, res).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

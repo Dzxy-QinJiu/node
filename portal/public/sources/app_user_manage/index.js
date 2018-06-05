@@ -1,11 +1,11 @@
 /**
  * Created by zhoulianyi on  2016/3/14 13:14 .
  */
-var RightContent = require("../../../components/privilege/right-content");
-var Checker = require("../../../components/privilege/checker");
-var UserData = require("../../../public/sources/user-data");
-var AppUserManage = require("../../../modules/app_user_manage");
-var OrganizationManage = require("../../../modules/organization_manage");
+var RightContent = require('../../../components/privilege/right-content');
+var Checker = require('../../../components/privilege/checker');
+var UserData = require('../../../public/sources/user-data');
+var AppUserManage = require('../../../modules/app_user_manage');
+var OrganizationManage = require('../../../modules/organization_manage');
 import PositionManage from '../../../modules/position_manage';
 
 function getChildRoutes() {

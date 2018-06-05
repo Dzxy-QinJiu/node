@@ -1,8 +1,8 @@
-require("../css/index.less");
-const Spinner = require("CMP_DIR/spinner");
-const AlertTimer = require("CMP_DIR/alert-timer");
-import Trace from "LIB_DIR/trace";
-import {Icon, Alert} from "antd";
+require('../css/index.less');
+const Spinner = require('CMP_DIR/spinner');
+const AlertTimer = require('CMP_DIR/alert-timer');
+import Trace from 'LIB_DIR/trace';
+import {Icon, Alert} from 'antd';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 const competingProductManage = React.createClass({
     getInitialState: function() {
@@ -12,7 +12,7 @@ const competingProductManage = React.createClass({
             //点击竞品添加按钮的loading效果是否显示
             isAddloading: false,
             //当前正在删除的竞品
-            DeletingItem: "",
+            DeletingItem: '',
             //点击刷新按钮的loading效果是否显示
             isRefreshLoading: false,
             //加载失败的提示信息
@@ -72,13 +72,13 @@ const competingProductManage = React.createClass({
                 //在数组中删除当前正在删除的竞品
                 this.state.productList = _.filter(this.state.productList, (product) => product !== item);
                 this.setState({
-                    DeletingItem: "",
+                    DeletingItem: '',
                     productList: this.state.productList
                 });
             },
             error: (errorInfo) => {
                 this.setState({
-                    DeletingItem: "",
+                    DeletingItem: '',
                     deleteErrMsg: errorInfo.responseJSON
                 });
             }
@@ -87,7 +87,7 @@ const competingProductManage = React.createClass({
     },
     //增加竞品
     handleSubmit: function(e) {
-        Trace.traceEvent(e, "点击添加竞品按钮");
+        Trace.traceEvent(e, '点击添加竞品按钮');
         e.preventDefault();
         //输入的竞品名称去左右空格
         let product = $.trim(this.refs.addProduct.value);
@@ -184,20 +184,20 @@ const competingProductManage = React.createClass({
             </ul>);
         } else {//没有竞品时的提示
             return <Alert type="info" showIcon
-                message={Intl.get("config.manage.no.product", "暂无竞品配置，请添加！")}/>;
+                message={Intl.get('config.manage.no.product', '暂无竞品配置，请添加！')}/>;
         }
     },
     render: function() {
         return (
             <div className="box" data-tracename="竞品配置">
                 <div className="box-title">
-                    {Intl.get("config.manage.competing.product", "竞品管理")}&nbsp;&nbsp;
+                    {Intl.get('config.manage.competing.product', '竞品管理')}&nbsp;&nbsp;
                     <span
                         onClick={this.getProductList.bind(this)}
                         className="refresh"
                         data-tracename="点击获取竞品刷新按钮"
                     >
-                        <Icon type="reload" title={Intl.get("config.manage.reload.product", "重新获取竞品")}/>
+                        <Icon type="reload" title={Intl.get('config.manage.reload.product', '重新获取竞品')}/>
                     </span>
                     {this.state.deleteErrMsg ? this.handleDeleteIndustryFail() : null}
                 </div>
@@ -209,8 +209,8 @@ const competingProductManage = React.createClass({
                         <div>
                             <input className="mb-input" ref="addProduct"/>
                             <button className="btn mb-add-button" type="submit"
-                                disabled={this.state.isAddloading ? "disabled" : ""}>
-                                {Intl.get("common.add", "添加")}
+                                disabled={this.state.isAddloading ? 'disabled' : ''}>
+                                {Intl.get('common.add', '添加')}
                                 {this.state.isAddloading ?
                                     <Icon type="loading"/> : null}
                             </button>

@@ -1,9 +1,9 @@
 /**
  * Created by wangliping on 2016/3/30.
  */
-require("./index.less");
+require('./index.less');
 
-var classNames = require("classnames");
+var classNames = require('classnames');
 var PassStrengthBar = React.createClass({
     getDefaultProps: function() {
         return {
@@ -41,7 +41,7 @@ var PassStrengthBar = React.createClass({
 //密码强度是否展示的获取
 exports.getPassStrenth = function(value) {
 
-    if (typeof value !== "string") {
+    if (typeof value !== 'string') {
         return {passBarShow: false};
     }
     /**

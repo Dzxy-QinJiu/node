@@ -2,19 +2,19 @@
  * 合同列表
  */
 
-import { Table, Input, Select, Modal, message } from "antd";
-import TableUtil from "../../../components/antd-table-pagination";
+import { Table, Input, Select, Modal, message } from 'antd';
+import TableUtil from '../../../components/antd-table-pagination';
 import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
-import { getTeamName } from "./utils";
-const extend = require("extend");
-const userData = require("../../../public/sources/user-data");
+import { getTeamName } from './utils';
+const extend = require('extend');
+const userData = require('../../../public/sources/user-data');
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
-import { CONTRACT_STAGE, CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS } from "../consts";
-import { formatAmount, decimalToPercent } from "LIB_DIR/func";
-import { contractEmitter } from "../../../public/sources/utils/emitters";
-import routeList from "../common/route";
-import ajax from "../common/ajax";
-import Trace from "LIB_DIR/trace";
+import { CONTRACT_STAGE, CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS } from '../consts';
+import { formatAmount, decimalToPercent } from 'LIB_DIR/func';
+import { contractEmitter } from '../../../public/sources/utils/emitters';
+import routeList from '../common/route';
+import ajax from '../common/ajax';
+import Trace from 'LIB_DIR/trace';
 
 let searchTimeout = null;
 const LAYOUT_CONSTNTS = {
@@ -27,14 +27,14 @@ const List = React.createClass({
             rangeParams: [],
             isScrollTop: this.props.isScrollTop,
             sum: this.props.sum,
-            user_name: "all",
-            sales_name: "all",
-            sales_team: "all",
-            category: "all",
-            stage: "all",
+            user_name: 'all',
+            sales_name: 'all',
+            sales_team: 'all',
+            category: 'all',
+            stage: 'all',
             isPreviewShow: false,
             previewList: [],
-            selectedItemId: ""//选中的合同id
+            selectedItemId: ''//选中的合同id
         };
     },
     componentWillReceiveProps: function(nextProps) {
@@ -47,18 +47,18 @@ const List = React.createClass({
         if (nextProps.contractList.length && !nextProps.isRightPanelShow && nextProps.shouldRightPanelShow) {
             //加延时，等表格渲染完后再点击
             setTimeout(() => {
-                const td = $(".custom-tbody td")[0];
+                const td = $('.custom-tbody td')[0];
                 $(td).click();
             });
         }
     },
     componentDidMount: function() {
-        $(window).on("resize", this.setTableHeight);
+        $(window).on('resize', this.setTableHeight);
         TableUtil.zoomInSortArea(this.refs.listTable);
         contractEmitter.on(contractEmitter.IMPORT_CONTRACT, this.onContractImport);
     },
     componentWillUnmount: function() {
-        $(window).off("resize", this.setTableHeight);
+        $(window).off('resize', this.setTableHeight);
         contractEmitter.removeListener(contractEmitter.IMPORT_CONTRACT, this.onContractImport);
     },
     componentDidUpdate: function() {
@@ -69,20 +69,20 @@ const List = React.createClass({
     },
     setTableHeight: function() {
         let newHeight = $(window).height() 
-            - $(".custom-tbody").offset().top 
-            - $(".custom-tfoot").outerHeight() 
+            - $('.custom-tbody').offset().top 
+            - $('.custom-tfoot').outerHeight() 
             - LAYOUT_CONSTNTS.BOTTOM;
-        $(this.refs.listTable).find(".custom-tbody").height(newHeight);
+        $(this.refs.listTable).find('.custom-tbody').height(newHeight);
         this.refs.gemiScrollBar.update();
     },
     getRowKey: function(record, index) {
         return index;
     },
     onRowClick: function(record, index, e) {
-        if (e.currentTarget.className === "ant-table-selection-column") return;
-        const $tr = $(e.target).closest("tr");
-        $tr.addClass("current-row").siblings().removeClass("current-row");
-        const view = this.props.type === "cost" ? "detailCost" : "detail";
+        if (e.currentTarget.className === 'ant-table-selection-column') return;
+        const $tr = $(e.target).closest('tr');
+        $tr.addClass('current-row').siblings().removeClass('current-row');
+        const view = this.props.type === 'cost' ? 'detailCost' : 'detail';
         this.state.selectedItemId = record.id;
         this.setState(this.state);
         this.props.showRightPanel(view, index);
@@ -90,10 +90,10 @@ const List = React.createClass({
     //处理选中行的样式
     handleRowClassName: function(record, index) {
         if ((record.id == this.state.selectedItemId) && this.props.isRightPanelShow) {
-            return "current-row";
+            return 'current-row';
         }
         else {
-            return "";
+            return '';
         }
     },
     onChange: function(pagination, filters, sorter) {
@@ -102,7 +102,7 @@ const List = React.createClass({
     onFilterChange: function(field, value) {
         //value可能为undefined，需要处理一下
         if (!value) {
-            value = "";
+            value = '';
         } else if (moment.isDate(value)) {
             value = moment(value).valueOf();
         } else {
@@ -111,7 +111,7 @@ const List = React.createClass({
         }
 
         if (value) {
-            if ([">", "<", "="].indexOf(value) > -1) {
+            if (['>', '<', '='].indexOf(value) > -1) {
                 return;
             }
 
@@ -126,10 +126,10 @@ const List = React.createClass({
                 if (!param) {
                     param = {
                         name: field,
-                        type: "number",
+                        type: 'number',
                     };
                 }
-                if (operator === ">") {
+                if (operator === '>') {
                     param.from = value;
                     delete param.to;
                 } else {
@@ -162,7 +162,7 @@ const List = React.createClass({
 
         searchTimeout = setTimeout(() => {
             this.props.getContractList(true);
-            Trace.traceEvent(this.getDOMNode(),"按照" + field + "筛选");
+            Trace.traceEvent(this.getDOMNode(),'按照' + field + '筛选');
         }, 500);
     },
 
@@ -190,7 +190,7 @@ const List = React.createClass({
                 {value}
             </Option>);
         });
-        options.unshift(<Option key="all" title={Intl.get("common.all", "全部")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></Option>);
+        options.unshift(<Option key="all" title={Intl.get('common.all', '全部')}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></Option>);
 
         column.title = (
             <Select
@@ -208,7 +208,7 @@ const List = React.createClass({
     onFilterSelectChange: function(column, value) {
         let condition = this.state.condition;
 
-        if (value === "all") {
+        if (value === 'all') {
             delete condition[column];
         } else {
             condition[column] = value;
@@ -231,7 +231,7 @@ const List = React.createClass({
     },
 
     confirmImport(flag, cb) {
-        const route = _.find(routeList, route => route.handler === "uploadContractConfirm");
+        const route = _.find(routeList, route => route.handler === 'uploadContractConfirm');
 
         const params = {
             flag: flag,
@@ -246,7 +246,7 @@ const List = React.createClass({
         ajax(arg).then(result => {
             if (_.isFunction(cb)) cb();
         }, () => {
-            message.error(Intl.get("contract.86", "导入合同失败"));
+            message.error(Intl.get('contract.86', '导入合同失败'));
         });
     },
 
@@ -276,20 +276,20 @@ const List = React.createClass({
         const firstContract = this.props.contractList[0];
         const currentUser = userData.getUserData().nick_name;
         if (firstContract && firstContract.user_name === currentUser) {
-            columns = _.filter(columns, column => column.dataIndex !== "user_name");
+            columns = _.filter(columns, column => column.dataIndex !== 'user_name');
         }
 
-        if (this.props.type === "buy") {
+        if (this.props.type === 'buy') {
             //采购合同不显示成本、毛利、回款等字段
-            const excludeColumns = ["cost_price", "gross_profit", "total_amount", "total_gross_profit", "total_plan_amount", "total_invoice_amount"];
+            const excludeColumns = ['cost_price', 'gross_profit', 'total_amount', 'total_gross_profit', 'total_plan_amount', 'total_invoice_amount'];
 
             columns = _.filter(columns, column => {
                 return excludeColumns.indexOf(column.dataIndex) < 0;
             });
-        } else if (this.props.type === "repayment") {
+        } else if (this.props.type === 'repayment') {
             //定义回款表格列
             columns = REPAYMENT_COLUMNS;
-        } else if (this.props.type === "cost") {
+        } else if (this.props.type === 'cost') {
             //定义费用表格列
             columns = COST_COLUMNS;
         }
@@ -298,49 +298,49 @@ const List = React.createClass({
             column.key = column.dataIndex;
 
             //带表头搜索的列
-            const filterColumns = ["num", "customer_name", "user_name", "sales_team", "stage", "contract_amount", "cost_price", "gross_profit", "sales_name", "repayment_amount", "repayment_gross_profit"];
+            const filterColumns = ['num', 'customer_name', 'user_name', 'sales_team', 'stage', 'contract_amount', 'cost_price', 'gross_profit', 'sales_name', 'repayment_amount', 'repayment_gross_profit'];
 
             if (filterColumns.indexOf(column.dataIndex) > -1) {
                 column.hasFilter = true;
             }
 
-            if (column.dataIndex === "category" && this.props.type === "sell") {
+            if (column.dataIndex === 'category' && this.props.type === 'sell') {
                 column.hasFilter = true;
             }
 
-            if (column.dataIndex === "num") {
+            if (column.dataIndex === 'num') {
                 column.width = 120;
             }
 
-            if (column.dataIndex === "customer_name") {
+            if (column.dataIndex === 'customer_name') {
                 column.width = 160;
             }
 
-            if (["date", "start_time", "end_time", "total_invoice_amount"].indexOf(column.dataIndex) > -1) {
+            if (['date', 'start_time', 'end_time', 'total_invoice_amount'].indexOf(column.dataIndex) > -1) {
                 column.width = 90;
             }
 
-            if (["date", "start_time", "end_time", "repayment_date"].indexOf(column.dataIndex) > -1) {
+            if (['date', 'start_time', 'end_time', 'repayment_date'].indexOf(column.dataIndex) > -1) {
                 column.render = function(text) {
-                    let time = text ? moment(text).format(DATE_FORMAT) : "";
+                    let time = text ? moment(text).format(DATE_FORMAT) : '';
                     return <span>{time}</span>;
                 };
             }
 
-            if (["date", "start_time", "end_time", "repayment_date"].indexOf(column.dataIndex) > -1) {
+            if (['date', 'start_time', 'end_time', 'repayment_date'].indexOf(column.dataIndex) > -1) {
                 column.sorter = true;
             }
 
             if (column.sorter) {
-                column.className = "has-filter";
+                column.className = 'has-filter';
             }
 
-            if (["contract_amount", "cost_price", "gross_profit", "total_amount", "total_gross_profit", "total_plan_amount", "total_invoice_amount", "repayment_amount", "repayment_gross_profit", "cost"].indexOf(column.dataIndex) > -1) {
-                column.className = "number-value";
+            if (['contract_amount', 'cost_price', 'gross_profit', 'total_amount', 'total_gross_profit', 'total_plan_amount', 'total_invoice_amount', 'repayment_amount', 'repayment_gross_profit', 'cost'].indexOf(column.dataIndex) > -1) {
+                column.className = 'number-value';
                 column.render = function(text) {
-                    if (column.dataIndex === "cost") {
+                    if (column.dataIndex === 'cost') {
                         text = parseFloat(text);
-                        text = isNaN(text) ? "" : text.toFixed(2);
+                        text = isNaN(text) ? '' : text.toFixed(2);
                     } else {
                         text = formatAmount(text);
                     }
@@ -349,32 +349,32 @@ const List = React.createClass({
                 };
             }
 
-            if (["gross_profit_rate"].indexOf(column.dataIndex) > -1) {
-                column.className = "number-value";
+            if (['gross_profit_rate'].indexOf(column.dataIndex) > -1) {
+                column.className = 'number-value';
                 column.render = function(text) {
                     text = decimalToPercent(text);
                     return <span>{text}</span>;
                 };
             }
 
-            if (column.dataIndex === "contract_amount") {
-                column.className += " border-left";
+            if (column.dataIndex === 'contract_amount') {
+                column.className += ' border-left';
             }
 
-            if (column.dataIndex === "category") {
+            if (column.dataIndex === 'category') {
                 column.render = function(text) {
-                    text = text ? text : "";
+                    text = text ? text : '';
                     return <span>{text}</span>;
                 };
             }
 
             if (column.sorter) {
-                column.className = "has-filter";
+                column.className = 'has-filter';
             }
 
-            if (column.dataIndex === "repayment_is_first") {
+            if (column.dataIndex === 'repayment_is_first') {
                 column.render = function(text, record) {
-                    text = text === "true" ? Intl.get("user.yes", "是") : Intl.get("user.no", "否");
+                    text = text === 'true' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
                     return <span>{text}</span>;
                 };
             }
@@ -384,16 +384,16 @@ const List = React.createClass({
 
         const filterColumns = extend(true, [], columns).map(column => {
             if (column.hasFilter) {
-                if (column.dataIndex === "sales_team") {
-                    this.buildFilterSelect(column, this.props.teamList, "groupName");
-                } else if (column.dataIndex === "user_name") {
-                    this.buildFilterSelect(column, this.props.userList, "nick_name");
-                } else if (column.dataIndex === "sales_name") {
-                    this.buildFilterSelect(column, this.props.userList, "nick_name");
-                } else if (column.dataIndex === "category" && this.props.type === "sell") {
-                    const typeList = _.filter(this.props.typeList, type => type !== Intl.get("contract.9", "采购合同"));
+                if (column.dataIndex === 'sales_team') {
+                    this.buildFilterSelect(column, this.props.teamList, 'groupName');
+                } else if (column.dataIndex === 'user_name') {
+                    this.buildFilterSelect(column, this.props.userList, 'nick_name');
+                } else if (column.dataIndex === 'sales_name') {
+                    this.buildFilterSelect(column, this.props.userList, 'nick_name');
+                } else if (column.dataIndex === 'category' && this.props.type === 'sell') {
+                    const typeList = _.filter(this.props.typeList, type => type !== Intl.get('contract.9', '采购合同'));
                     this.buildFilterSelect(column, typeList);
-                } else if (column.dataIndex === "stage") {
+                } else if (column.dataIndex === 'stage') {
                     this.buildFilterSelect(column, CONTRACT_STAGE);
                 } else {
                     column.title = (
@@ -401,7 +401,7 @@ const List = React.createClass({
                     );
                 }
             } else {
-                column.title = "";
+                column.title = '';
             }
 
             if (column.sorter) delete column.sorter;
@@ -420,13 +420,13 @@ const List = React.createClass({
         });
         //将第一个不计算合计的单元格colSpan设置为所有不计算合计的单元格数量
         sumColumns.find(x => !x.title).colSpan = sumColumns.filter(x => !_.has(sum, x.dataIndex)).length;
-        let typeName = Intl.get("contract.125", "合同");
-        if (this.props.type === "repayment") {
-            typeName = Intl.get("contract.108", "回款");
+        let typeName = Intl.get('contract.125', '合同');
+        if (this.props.type === 'repayment') {
+            typeName = Intl.get('contract.108', '回款');
         }
 
-        if (this.props.type === "cost") {
-            typeName = Intl.get("contract.133", "费用");
+        if (this.props.type === 'cost') {
+            typeName = Intl.get('contract.133', '费用');
         }
 
         return (
@@ -473,11 +473,11 @@ const List = React.createClass({
                         <ReactIntl.FormattedMessage
                             id="contract.124"
                             values={{
-                                "num": this.props.contractCount + '',
-                                "type": typeName
+                                'num': this.props.contractCount + '',
+                                'type': typeName
                             }}
-                            defaultMessage={`共{num}个符合当前查询条件的{type}`} />
-                        {this.props.type === "cost" ? null : (
+                            defaultMessage={'共{num}个符合当前查询条件的{type}'} />
+                        {this.props.type === 'cost' ? null : (
                             <span>
                                 <span>, </span>
                                 <ReactIntl.FormattedMessage
@@ -504,8 +504,8 @@ const List = React.createClass({
                     visible={this.state.isPreviewShow}
                     width="90%"
                     prefixCls="contract-import-modal ant-modal"
-                    title={Intl.get("coontract.114", "导入合同") + Intl.get("common.preview", "预览")}
-                    okText={Intl.get("common.sure", "确定") + Intl.get("common.import", "导入")}
+                    title={Intl.get('coontract.114', '导入合同') + Intl.get('common.preview', '预览')}
+                    okText={Intl.get('common.sure', '确定') + Intl.get('common.import', '导入')}
                     onOk={this.doImport}
                     onCancel={this.cancelImport}
                 >

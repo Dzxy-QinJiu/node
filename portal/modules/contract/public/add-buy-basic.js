@@ -1,12 +1,12 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 采购合同基本信息添加表单
  */
 
-import { Form } from "antd";
-import ValidateMixin from "../../../mixins/ValidateMixin";
-import BasicMixin from "./mixin-basic";
+import { Form } from 'antd';
+import ValidateMixin from '../../../mixins/ValidateMixin';
+import BasicMixin from './mixin-basic';
 
 const AddBuyBasic = React.createClass({
     mixins: [ValidateMixin, BasicMixin],

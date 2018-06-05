@@ -1,5 +1,5 @@
-import { Select, Icon } from "antd";
-import SearchInput from "../../../components/searchInput";
+import { Select, Icon } from 'antd';
+import SearchInput from '../../../components/searchInput';
 
 const Filter = React.createClass({
     getInitialState: function() {
@@ -15,16 +15,16 @@ const Filter = React.createClass({
     render: function() {
         const searchFields = [
             {
-                name: Intl.get("crm.41", "客户名"),
-                field: "customer_name",
+                name: Intl.get('crm.41', '客户名'),
+                field: 'customer_name',
             },
             {
-                name: Intl.get("crm.6", "负责人"),
-                field: "user_name",
+                name: Intl.get('crm.6', '负责人'),
+                field: 'user_name',
             },
             {
-                name: Intl.get("contract.4", "甲方"),
-                field: "buyer",
+                name: Intl.get('contract.4', '甲方'),
+                field: 'buyer',
             },
         ];
 

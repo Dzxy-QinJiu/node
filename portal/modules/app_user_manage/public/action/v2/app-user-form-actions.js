@@ -19,17 +19,17 @@ class AppUserFormActions {
             //没有选中应用时，显示错误提示
             'showSelectedAppsError',
             //隐藏提交完成的（成功、失败）提示
-            "hideSubmitTip",
+            'hideSubmitTip',
             //保存应用的特殊配置
-            "saveAppsSetting",
+            'saveAppsSetting',
             // 添加应用时，没有选择角色的错误提示
             'noSelectRoleError',
             // 添加多个应用时，有应用没有选择角色的错误提示
             'someAppsNoSelectRoleError',
             //设置选中的组织
-            "setSelectedOrganization",
+            'setSelectedOrganization',
             //将应用的特殊配置同步到全局配置
-            "syncCustomAppSettingToGlobalSetting"
+            'syncCustomAppSettingToGlobalSetting'
         );
     }
     getCurrentRealmApps() {
@@ -61,7 +61,7 @@ class AppUserFormActions {
                 taskId: taskId,
                 total: userCount,
                 running: userCount,
-                typeText: Intl.get("user.add.user", "创建用户")
+                typeText: Intl.get('user.add.user', '创建用户')
             });
             //返回页面操作成功
             this.dispatch({error: false});

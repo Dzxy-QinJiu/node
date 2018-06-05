@@ -29,7 +29,7 @@ UserDetailChangeRecordStore.prototype.getUserDetailChangeRecord = function(resul
         this.changeRecord = [];
     } else {
         this.changeRecordLoading = false;
-        this.changeRecordErrMsg = "";
+        this.changeRecordErrMsg = '';
         this.changeRecord = result.data || [];
     }
 };

@@ -1,19 +1,19 @@
-var echarts = require("echarts-eefung");
+var echarts = require('echarts-eefung');
 var animationCount = 0;
-var LineChart = require("./linechart");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+var LineChart = require('./linechart');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 var AnalysisLinechartTimerange = React.createClass({
     echartInstance: null,
     getDefaultProps: function() {
         return {
             width: 500,
             height: 500,
-            className: "analysis-linechart-timerange",
+            className: 'analysis-linechart-timerange',
             style: {},
             formatter: function(){},
             dataList: [],
             noData: false,
-            unit: "day"
+            unit: 'day'
         };
     },
     renderChart: function() {

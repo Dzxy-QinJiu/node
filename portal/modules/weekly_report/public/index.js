@@ -3,24 +3,24 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/2/5.
  */
-import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import WeeklyReportAction from './action/weekly-report-actions';
 import WeeklyReportStore from './store/weekly-report-store';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import SearchInput from "CMP_DIR/searchInput";
-require("./css/index.less");
+import SearchInput from 'CMP_DIR/searchInput';
+require('./css/index.less');
 import Spinner from 'CMP_DIR/spinner';
-var classNames = require("classnames");
-var WeekReportUtil = require("./utils/weekly-report-utils");
-import WeeklyReportDetail from "./view/weekly-report-detail";
-import {Alert} from "antd";
+var classNames = require('classnames');
+var WeekReportUtil = require('./utils/weekly-report-utils');
+import WeeklyReportDetail from './view/weekly-report-detail';
+import {Alert} from 'antd';
 const WeeklyReport = React.createClass({
     getInitialState: function() {
         return {
             ...WeeklyReportStore.getState(),
-            nweek: "",//当前日期是今年的第几周
-            keywordValue: "",//跟据关键词进行搜索
+            nweek: '',//当前日期是今年的第几周
+            keywordValue: '',//跟据关键词进行搜索
         };
     },
     componentDidMount: function() {
@@ -44,17 +44,17 @@ const WeeklyReport = React.createClass({
     onSearchInputChange: function(keyword) {
         keyword = keyword ? keyword : '';
         if (keyword.trim() !== this.state.searchKeyword.trim()) {
-            Trace.traceEvent($(this.getDOMNode()).find(".search-content"), "根据关键词搜索");
+            Trace.traceEvent($(this.getDOMNode()).find('.search-content'), '根据关键词搜索');
             WeeklyReportAction.changeSearchInputValue(keyword);
         }
     },
     handleClickReportTitle: function(obj, idx) {
-        Trace.traceEvent($(this.getDOMNode()).find(".report-title-item"), "查看周报详情");
+        Trace.traceEvent($(this.getDOMNode()).find('.report-title-item'), '查看周报详情');
         WeeklyReportAction.setSelectedWeeklyReportItem({obj, idx});
     },
     handleErrResult: function() {
         var errMsg = <span>{this.state.teamList.errMsg}
-            <a onClick={this.getTeamMemberData}>{Intl.get("user.info.retry", "请重试")}</a></span>;
+            <a onClick={this.getTeamMemberData}>{Intl.get('user.info.retry', '请重试')}</a></span>;
         return (
             <Alert
                 message={errMsg}
@@ -76,8 +76,8 @@ const WeeklyReport = React.createClass({
                 return (
                     <ul className="report-title-list">
                         {_.map(this.state.teamDescArr, (teamItem, i) => {
-                            var Cls = classNames("report-title-item", {
-                                "current-item": teamItem.teamId === this.state.selectedReportItem.teamId && i === this.state.selectedReportItemIdx
+                            var Cls = classNames('report-title-item', {
+                                'current-item': teamItem.teamId === this.state.selectedReportItem.teamId && i === this.state.selectedReportItemIdx
                             });
                             return (
                                 <li className={Cls}
@@ -89,7 +89,7 @@ const WeeklyReport = React.createClass({
                     </ul>
                 );
             } else {
-                var noDataMsg = <span>{Intl.get("weekly.report.no.report", "暂无符合条件的周报")}</span>;
+                var noDataMsg = <span>{Intl.get('weekly.report.no.report', '暂无符合条件的周报')}</span>;
                 return <Alert
                     message={noDataMsg}
                     type="info"
@@ -112,7 +112,7 @@ const WeeklyReport = React.createClass({
                 <SearchInput
                     ref="searchInput"
                     type="input"
-                    searchPlaceHolder={Intl.get("user.search.placeholder", "请输入关键词搜索")}
+                    searchPlaceHolder={Intl.get('user.search.placeholder', '请输入关键词搜索')}
                     searchEvent={this.onSearchInputChange}
                 />
             </div>

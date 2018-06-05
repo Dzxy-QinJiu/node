@@ -1,5 +1,5 @@
-var appAjax = require("../ajax/app-ajax");
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var appAjax = require('../ajax/app-ajax');
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 function AppActions() {
     this.generateActions(
         'setCurApp',
@@ -43,10 +43,10 @@ function AppActions() {
             if (_.isObject(app)) {
                 _this.dispatch(app);
             } else {
-                _this.dispatch(Intl.get("app.get.app.detail.failed", "获取应用详情失败!"));
+                _this.dispatch(Intl.get('app.get.app.detail.failed', '获取应用详情失败!'));
             }
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("app.get.app.detail.failed", "获取应用详情失败!"));
+            _this.dispatch(errorMsg || Intl.get('app.get.app.detail.failed', '获取应用详情失败!'));
         });
     };
     

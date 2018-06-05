@@ -2,26 +2,26 @@
  * 用户分析
  * Created by wangliping on 2016/11/23.
  */
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-var OplateUserAnalysisAction = require("../../../oplate_user_analysis/public/action/oplate-user-analysis.action");
-var OplateUserAnalysisStore = require("../../../oplate_user_analysis/public/store/oplate-user-analysis.store");
-var CompositeLine = require("../../../oplate_user_analysis/public/views/composite-line");
-var BarChart = require("../../../oplate_user_analysis/public/views/bar");
-var ReverseBarChart = require("../../../oplate_user_analysis/public/views/reverse_bar");
-var SingleLineChart = require("../../../oplate_user_analysis/public/views/single_line");
-var emitter = require("../../../oplate_user_analysis/public/utils/emitter");
-let userData = require("../../../../public/sources/user-data");
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+var OplateUserAnalysisAction = require('../../../oplate_user_analysis/public/action/oplate-user-analysis.action');
+var OplateUserAnalysisStore = require('../../../oplate_user_analysis/public/store/oplate-user-analysis.store');
+var CompositeLine = require('../../../oplate_user_analysis/public/views/composite-line');
+var BarChart = require('../../../oplate_user_analysis/public/views/bar');
+var ReverseBarChart = require('../../../oplate_user_analysis/public/views/reverse_bar');
+var SingleLineChart = require('../../../oplate_user_analysis/public/views/single_line');
+var emitter = require('../../../oplate_user_analysis/public/utils/emitter');
+let userData = require('../../../../public/sources/user-data');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var DATE_FORMAT = oplateConsts.DATE_FORMAT;
-let chartLegend = [{name: Intl.get("common.official", "签约"), key: "formal"},
-    {name: Intl.get("common.trial", "试用"), key: "trial"},
-    {name: Intl.get("user.type.presented", "赠送"), key: "special"},
-    {name: Intl.get("user.type.train", "培训"), key: "training"},
-    {name: Intl.get("user.type.employee", "员工"), key: "internal"},
-    {name: Intl.get("user.unknown", "未知"), key: "unknown"}];
+let chartLegend = [{name: Intl.get('common.official', '签约'), key: 'formal'},
+    {name: Intl.get('common.trial', '试用'), key: 'trial'},
+    {name: Intl.get('user.type.presented', '赠送'), key: 'special'},
+    {name: Intl.get('user.type.train', '培训'), key: 'training'},
+    {name: Intl.get('user.type.employee', '员工'), key: 'internal'},
+    {name: Intl.get('user.unknown', '未知'), key: 'unknown'}];
 const CHART_HEIGHT = 214;
 const LEGEND_RIGHT = 20;
-var constantUtil = require("../util/constant");
+var constantUtil = require('../util/constant');
 //这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
 var delayConstant = constantUtil.DELAY.TIMERANG;
 //用户分析
@@ -65,12 +65,12 @@ var UserAnlyis = React.createClass({
         }
     },
     getDataType: function() {
-        if (hasPrivilege("GET_TEAM_LIST_ALL")) {
-            return "all";
-        } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS")) {
-            return "self";
+        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+            return 'all';
+        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+            return 'self';
         } else {
-            return "";
+            return '';
         }
     },
     getChartData: function() {
@@ -93,7 +93,7 @@ var UserAnlyis = React.createClass({
         }
         //获取总的统计分析数据
         //选择天时，不展示趋势图
-        if (this.state.timeType != "day") {
+        if (this.state.timeType != 'day') {
             OplateUserAnalysisAction.getAddedSummary(queryParams);
         }
         OplateUserAnalysisAction.getAddedZone(queryParams);
@@ -111,9 +111,9 @@ var UserAnlyis = React.createClass({
         OplateUserAnalysisStore.listen(this.onStateChange);
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
-        OplateUserAnalysisAction.changeCurrentTab("total");
+        OplateUserAnalysisAction.changeCurrentTab('total');
         this.getChartData();
-        $(".statistic-data-analysis .thumb").hide();
+        $('.statistic-data-analysis .thumb').hide();
     },
     componentWillUnmount: function() {
         OplateUserAnalysisStore.unlisten(this.onStateChange);
@@ -127,7 +127,7 @@ var UserAnlyis = React.createClass({
         if (this.state.startTime) {
             return moment(new Date(+this.state.startTime)).format(DATE_FORMAT);
         } else {
-            return "";
+            return '';
         }
     },
     getEndDateText: function() {
@@ -145,7 +145,7 @@ var UserAnlyis = React.createClass({
                 <CompositeLine
                     width={this.chartWidth}
                     list={list}
-                    title={Intl.get("user.analysis.total", "用户统计")}
+                    title={Intl.get('user.analysis.total', '用户统计')}
                     height={CHART_HEIGHT}
                     resultType={this.state.userAnalysis.resultType}
                 />
@@ -155,11 +155,11 @@ var UserAnlyis = React.createClass({
                 <SingleLineChart
                     width={this.chartWidth}
                     list={this.state.userAnalysis.data}
-                    title={Intl.get("user.analysis.total", "用户统计")}
+                    title={Intl.get('user.analysis.total', '用户统计')}
                     legend={[{
-                        name: Intl.get("user.analysis.formal", "正式"),
-                        key: "formal"
-                    }, {name: Intl.get("common.trial", "试用"), key: "trial"}]}
+                        name: Intl.get('user.analysis.formal', '正式'),
+                        key: 'formal'
+                    }, {name: Intl.get('common.trial', '试用'), key: 'trial'}]}
                     resultType={this.state.userAnalysis.resultType}
                 />
             );
@@ -173,7 +173,7 @@ var UserAnlyis = React.createClass({
             <BarChart
                 width={this.chartWidth}
                 list={this.state.zoneAnalysis.data}
-                title={Intl.get("user.analysis.address", "地域统计")}
+                title={Intl.get('user.analysis.address', '地域统计')}
                 height={CHART_HEIGHT}
                 legendRight={LEGEND_RIGHT}
                 legend={chartLegend}
@@ -187,24 +187,24 @@ var UserAnlyis = React.createClass({
 
     //获取通过点击统计图中的柱子跳转到用户列表时需传的参数
     getJumpProps: function() {
-        let analysis_filter_field = "sales_id", currShowSalesTeam = this.props.currShowSalesTeam;
+        let analysis_filter_field = 'sales_id', currShowSalesTeam = this.props.currShowSalesTeam;
         //当前展示的是下级团队还是团队内所有成员
         if (currShowSalesTeam) {
             if (_.isArray(currShowSalesTeam.child_groups) && currShowSalesTeam.child_groups.length) {
                 //查看当前选择销售团队内所有下级团队新增用户的统计数据
-                analysis_filter_field = "team_ids";
+                analysis_filter_field = 'team_ids';
             }
         } else if (!userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
             let originSalesTeamTree = this.state.originSalesTeamTree;
             if (_.isArray(originSalesTeamTree.child_groups) && originSalesTeamTree.child_groups.length) {
                 //首次进来时，如果不是销售就获取下级团队新增用户的统计数据
-                analysis_filter_field = "team_ids";
+                analysis_filter_field = 'team_ids';
             }
         }
         return {
-            url: "/user/list",
+            url: '/user/list',
             query: {
-                app_id: "",
+                app_id: '',
                 analysis_filter_field: analysis_filter_field
             }
         };
@@ -222,7 +222,7 @@ var UserAnlyis = React.createClass({
                 height={CHART_HEIGHT}
                 legendRight={LEGEND_RIGHT}
                 list={this.state.teamOrMemberAnalysis.data}
-                title={Intl.get("user.analysis.team", "团队统计")}
+                title={Intl.get('user.analysis.team', '团队统计')}
                 legend={chartLegend}
                 startDate={startDate}
                 endDate={endDate}
@@ -237,7 +237,7 @@ var UserAnlyis = React.createClass({
         return (
             <ReverseBarChart
                 list={this.state.industryAnalysis.data}
-                title={Intl.get("user.analysis.industry", "行业统计")}
+                title={Intl.get('user.analysis.industry', '行业统计')}
                 width={this.chartWidth}
                 height={CHART_HEIGHT}
                 legendRight={LEGEND_RIGHT}
@@ -253,33 +253,33 @@ var UserAnlyis = React.createClass({
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
             <div className="chart_list">
-                {this.state.timeType != "day" ? (
+                {this.state.timeType != 'day' ? (
                     <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get("user.analysis.user.add", "用户-新增")}>
+                        data-title={Intl.get('user.analysis.user.add', '用户-新增')}>
                         <div className="chart-holder" ref="chartWidthDom" data-tracename="用户-新增统计">
-                            <div className="title">{Intl.get("user.analysis.user.add", "用户-新增")}</div>
+                            <div className="title">{Intl.get('user.analysis.user.add', '用户-新增')}</div>
                             {this.getUserChart()}
                         </div>
                     </div>) : null}
                 <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
+                    data-title={Intl.get('user.analysis.location.add', '地域-新增')}>
                     <div className="chart-holder" data-tracename="地域-新增统计">
-                        <div className="title">{Intl.get("user.analysis.location.add", "地域-新增")}</div>
+                        <div className="title">{Intl.get('user.analysis.location.add', '地域-新增')}</div>
                         {this.getZoneChart()}
                     </div>
                 </div>
                 <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
+                    data-title={Intl.get('user.analysis.industry.add', '行业-新增')}>
                     <div className="chart-holder" data-tracename="行业-新增统计">
-                        <div className="title">{Intl.get("user.analysis.industry.add", "行业-新增")}</div>
+                        <div className="title">{Intl.get('user.analysis.industry.add', '行业-新增')}</div>
                         {this.getIndustryChart()}
                     </div>
                 </div>
                 {hideTeamChart ? null : (
                     <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
+                        data-title={Intl.get('user.analysis.team.add', '团队-新增')}>
                         <div className="chart-holder" data-tracename="团队-新增统计">
-                            <div className="title">{Intl.get("user.analysis.team.add", "团队-新增")}</div>
+                            <div className="title">{Intl.get('user.analysis.team.add', '团队-新增')}</div>
                             {this.getTeamChart()}
                         </div>
                     </div>)}

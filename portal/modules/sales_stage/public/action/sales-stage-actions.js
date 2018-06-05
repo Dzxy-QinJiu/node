@@ -1,5 +1,5 @@
-var salesStageAjax = require("../ajax/sales-stage-ajax");
-var userData = require("../../../../public/sources/user-data");
+var salesStageAjax = require('../ajax/sales-stage-ajax');
+var userData = require('../../../../public/sources/user-data');
 function SalesStageActions() {
     this.generateActions({
         'getSalesStageList': 'getSalesStageList',

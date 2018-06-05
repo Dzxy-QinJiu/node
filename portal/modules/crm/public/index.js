@@ -1,7 +1,7 @@
-var util = require("./utils/contact-util");
-let CustomerRepeat = require("./views/customer-repeat");
-let CrmList = require("./crm-list");
-import Trace from "LIB_DIR/trace";
+var util = require('./utils/contact-util');
+let CustomerRepeat = require('./views/customer-repeat');
+let CrmList = require('./crm-list');
+import Trace from 'LIB_DIR/trace';
 
 var CrmIndex = React.createClass({
     getInitialState: function() {
@@ -10,14 +10,14 @@ var CrmIndex = React.createClass({
         };
     },
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
     },
     componentWillUnmount: function() {
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
     },
     //展示重复客户界面的设置
     showRepeatCustomer: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".filter-block .customer-repeat-btn"),"点击客户查重按钮");
+        Trace.traceEvent($(this.getDOMNode()).find('.filter-block .customer-repeat-btn'),'点击客户查重按钮');
         this.setState({
             isRepeatCustomerShow: true
         });

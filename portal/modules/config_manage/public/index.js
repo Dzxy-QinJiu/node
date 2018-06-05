@@ -1,22 +1,22 @@
-var TopNav = require("CMP_DIR/top-nav");
-var Spinner = require("CMP_DIR/spinner");
-var Icon = require("antd").Icon;
-var Alert = require("antd").Alert;
-var AlertTimer = require("CMP_DIR/alert-timer");
-import IpConfig from "./views/ip-config";
-import RealmConfig from "./views/realm-config";
-import TeleConfig from "./views/tele-config";
-import Trace from "LIB_DIR/trace";
-import CompetingProductManage from "./views/competing-product";
-import SalesRoleManage from "./views/sales-role-manage";
-var PrivilegeChecker = require("CMP_DIR/privilege/checker").PrivilegeChecker;
-var GeminiScrollBar = require("CMP_DIR/react-gemini-scrollbar");
-require("./css/index.less");
+var TopNav = require('CMP_DIR/top-nav');
+var Spinner = require('CMP_DIR/spinner');
+var Icon = require('antd').Icon;
+var Alert = require('antd').Alert;
+var AlertTimer = require('CMP_DIR/alert-timer');
+import IpConfig from './views/ip-config';
+import RealmConfig from './views/realm-config';
+import TeleConfig from './views/tele-config';
+import Trace from 'LIB_DIR/trace';
+import CompetingProductManage from './views/competing-product';
+import SalesRoleManage from './views/sales-role-manage';
+var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
+var GeminiScrollBar = require('CMP_DIR/react-gemini-scrollbar');
+require('./css/index.less');
 const auths = {
-    STRATEGY: "GET_CONFIG_PWD_STRATEGY",// 获取安全域密码策略
-    TELECONFIG: "CUSTOMER_INVALID_PHONE_GET",// 获取客服电话权限
-    COMPETING_PRODUCT: "CRM_COMPETING_PRODUCT",//竞品管理权限
-    TEAM_ROLE_MANAGE: "TEAM_ROLE_MANAGE"//销售角色管理权限
+    STRATEGY: 'GET_CONFIG_PWD_STRATEGY',// 获取安全域密码策略
+    TELECONFIG: 'CUSTOMER_INVALID_PHONE_GET',// 获取客服电话权限
+    COMPETING_PRODUCT: 'CRM_COMPETING_PRODUCT',//竞品管理权限
+    TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE'//销售角色管理权限
 };
 var ConfigManage = React.createClass({
     getInitialState: function() {
@@ -114,13 +114,13 @@ var ConfigManage = React.createClass({
     },
     //增加行业标签
     handleSubmit: function(e) {
-        Trace.traceEvent(e, "点击添加行业按钮");
+        Trace.traceEvent(e, '点击添加行业按钮');
         var _this = this;
         e.preventDefault();
         //输入的行业名称去左右空格
         var text = $.trim(_this.refs.edit.value);
         //避免短时间多次点击添加按钮，将按钮类型改为button
-        $('#addIndustrySaveBtn').attr({"disabled": "disabled"});
+        $('#addIndustrySaveBtn').attr({'disabled': 'disabled'});
         //显示添加的loading效果
         _this.setState({
             isAddloading: 0
@@ -137,7 +137,7 @@ var ConfigManage = React.createClass({
                     TagLists: _this.state.TagLists,
                     isAddloading: -1
                 });
-                $('#addIndustrySaveBtn').removeAttr("disabled");
+                $('#addIndustrySaveBtn').removeAttr('disabled');
                 _this.refs.edit.value = '';
 
             },
@@ -157,7 +157,7 @@ var ConfigManage = React.createClass({
                 addErrMsg: '',
                 isAddloading: -1
             });
-            $("#addIndustrySaveBtn").removeAttr("disabled");
+            $('#addIndustrySaveBtn').removeAttr('disabled');
         };
         return (
             <div className="add-config-fail">
@@ -193,7 +193,7 @@ var ConfigManage = React.createClass({
 
     render: function() {
         var TagLists = this.state.TagLists;
-        var height = $(window).height() - $(".topNav").height();
+        var height = $(window).height() - $('.topNav').height();
         return (
             <div className="config-manage-container" data-tracename="配置">
                 <TopNav>
@@ -210,7 +210,7 @@ var ConfigManage = React.createClass({
                                     className="refresh"
                                     data-tracename="点击获取行业刷新按钮"
                                 >
-                                    <Icon type="reload" title={Intl.get("config.manage.reload.industry", "重新获取行业")}/>
+                                    <Icon type="reload" title={Intl.get('config.manage.reload.industry', '重新获取行业')}/>
                                 </span>
                                 {this.state.deleteErrMsg != '' ? this.handleDeleteIndustryFail() : null}
                             </div>
@@ -222,7 +222,7 @@ var ConfigManage = React.createClass({
                                 ) : (
                                     TagLists.length == 0 && this.state.isRefreshLoading == -1 ?
                                         (<Alert type="info" showIcon
-                                            message={Intl.get("config.manage.no.industry", "暂无行业配置，请添加！")}/>)
+                                            message={Intl.get('config.manage.no.industry', '暂无行业配置，请添加！')}/>)
                                         : (this.state.isRefreshLoading == -1 ? null : <Spinner/>)
                                 )}
 

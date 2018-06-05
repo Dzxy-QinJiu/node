@@ -1,19 +1,19 @@
 var DEFAULT_MAX_LOG_SIZE = 2048000,
     DEFAULT_LOG_BACKUP = global.config.logfileCount,
     DEFAULT_LOG_LEVEL = global.config.logLevel;
-var commonUtil = require("../portal/lib/utils/common-utils");
-var moment = require("moment");
-var _ = require("underscore");
+var commonUtil = require('../portal/lib/utils/common-utils');
+var moment = require('moment');
+var _ = require('underscore');
 
-var path = require("path"),
-    fs = require("fs");
+var path = require('path'),
+    fs = require('fs');
 var uuidV4 = require('uuid/v4');
 var serverIp = commonUtil.ip.getServerAddresses[0];
 
 var isProduction = config.isProduction, logDir;
 logDir = isProduction ?
-    path.resolve(__dirname, "../../data/") :
-    path.resolve(__dirname, "../data/");
+    path.resolve(__dirname, '../../data/') :
+    path.resolve(__dirname, '../data/');
 //是否是正式环境
 var formal = global.config.formal;
 
@@ -29,92 +29,92 @@ function getLogFilePath(fileName) {
  本地日志appenders
  */
 var localAppenders = [
-    {type: "console"},
+    {type: 'console'},
     //access.log是morgan做express访问日志用的
     {
-        type: "file",
-        filename: getLogFilePath("access.log"),
+        type: 'file',
+        filename: getLogFilePath('access.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "access",
+        category: 'access',
         logLevel: DEFAULT_LOG_LEVEL
     },
     {
-        type: "file",
-        filename: getLogFilePath("page.log"),
+        type: 'file',
+        filename: getLogFilePath('page.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "page",
+        category: 'page',
         logLevel: DEFAULT_LOG_LEVEL
     },
     //错误日志
     {
-        type: "file",
-        filename: getLogFilePath("error.log"),
+        type: 'file',
+        filename: getLogFilePath('error.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "error",
+        category: 'error',
         logLevel: DEFAULT_LOG_LEVEL
     },
     //rest请求代理日志
     {
-        type: "file",
-        filename: getLogFilePath("rest_time.log"),
+        type: 'file',
+        filename: getLogFilePath('rest_time.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "rest",
+        category: 'rest',
         logLevel: DEFAULT_LOG_LEVEL
     },
     //认证请求日志
     {
-        type: "file",
-        filename: getLogFilePath("auth.log"),
+        type: 'file',
+        filename: getLogFilePath('auth.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "auth",
+        category: 'auth',
         logLevel: DEFAULT_LOG_LEVEL
     },
     //session日志
     {
-        type: "file",
-        filename: getLogFilePath("session.log"),
+        type: 'file',
+        filename: getLogFilePath('session.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "session",
+        category: 'session',
         logLevel: DEFAULT_LOG_LEVEL
     },
     //测试 请求代理日志
     {
-        type: "file",
-        filename: getLogFilePath("rest_test.log"),
+        type: 'file',
+        filename: getLogFilePath('rest_test.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "test",
+        category: 'test',
         logLevel: DEFAULT_LOG_LEVEL
     },
     {
-        type: "file",
-        filename: getLogFilePath("push.log"),
+        type: 'file',
+        filename: getLogFilePath('push.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "push",
+        category: 'push',
         logLevel: DEFAULT_LOG_LEVEL
     },
     {
-        type: "file",
-        filename: getLogFilePath("batch.log"),
+        type: 'file',
+        filename: getLogFilePath('batch.log'),
         maxLogSize: DEFAULT_MAX_LOG_SIZE,
         backups: DEFAULT_LOG_BACKUP,
-        category: "batch",
+        category: 'batch',
         logLevel: DEFAULT_LOG_LEVEL
     }
 ];
 //远程日志es appender模板
 var esType = {
-    type: "log4js-elasticsearch",
+    type: 'log4js-elasticsearch',
     indexName: function(loggingEvent) {
         //es索引名称
-        return "oplateweb_write";
+        return 'oplateweb_write';
     },
     url: global.config.esUrl,
     logId: function(loggingEvent) {
@@ -123,7 +123,7 @@ var esType = {
     buffersize: 1024,
     timeout: 45000,
     layout: {
-        type: "logstash",
+        type: 'logstash',
         tags: [global.config.loggerTag],
         sourceHost: function(loggingEvent) {
             return serverIp;
@@ -133,7 +133,7 @@ var esType = {
 };
 //远程日志appender
 var remoteAppenders = _.map(localAppenders, function(item) {
-    if (item.type == "file") {
+    if (item.type == 'file') {
         var appender = _.extend({}, esType);
         //将不同类型日志生成es的type表
         appender.typeName = appender.category = item.category;
@@ -146,13 +146,13 @@ var remoteAppenders = _.map(localAppenders, function(item) {
 //包括Log4js的配置还有morgan的配置
 module.exports = {
     //log4js的配置文件
-    "log4js": {
+    'log4js': {
         //如果是产品环境则使用es的appender上传日志到es中,如果不是产品环境，使用本地文件记录日志
-        "appenders": (formal == "true" && global.config.esUrl) ? remoteAppenders : localAppenders
+        'appenders': (formal == 'true' && global.config.esUrl) ? remoteAppenders : localAppenders
     },
     morgan: {
         //这个是morgan的配置记录哪些http访问日志内容
         tokenParams: 'IP::remote-addr method::method url::url status::status responseTime::response-time contentLength::res[content-length] referrer::referrer userAgent::user-agent'
     },
-    defaultTypeId: "rest"
+    defaultTypeId: 'rest'
 };

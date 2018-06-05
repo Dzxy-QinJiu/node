@@ -1,11 +1,11 @@
-import CallRecord from "./views/call-record";
-import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
-import {RightPanel} from "../../../components/rightPanel";
+import CallRecord from './views/call-record';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {RightPanel} from '../../../components/rightPanel';
 import crmAjax from '../../crm/public/ajax';
-var callReordEmitter = require("../../../public/sources/utils/emitters").callReordEmitter;
+var callReordEmitter = require('../../../public/sources/utils/emitters').callReordEmitter;
 import {message} from 'antd';
-import Trace from "LIB_DIR/trace";
-import AppUserManage from "MOD_DIR/app_user_manage/public";
+import Trace from 'LIB_DIR/trace';
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
 
 const CallRecordList = React.createClass({
     getInitialState: function() {
@@ -31,10 +31,10 @@ const CallRecordList = React.createClass({
     componentDidMount: function() {
         var $wrap = $(this.refs.wrap);
         var _this = this;
-        $wrap.on("click", ".customer_column", function() {
-            var $customer_id_hidden = $(this).find(".customer_id_hidden");
+        $wrap.on('click', '.customer_column', function() {
+            var $customer_id_hidden = $(this).find('.customer_id_hidden');
             if ($customer_id_hidden[0]) {
-                Trace.traceEvent($(_this.getDOMNode()).find(".customer_column"), "打开客户详情");
+                Trace.traceEvent($(_this.getDOMNode()).find('.customer_column'), '打开客户详情');
                 _this.showRightPanel($customer_id_hidden.val());
             }
         });

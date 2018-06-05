@@ -1,8 +1,8 @@
-import { Button, Icon } from "antd";
-import Trace from "LIB_DIR/trace";
+import { Button, Icon } from 'antd';
+import Trace from 'LIB_DIR/trace';
 var SearchInput = require('../../../../components/searchInput');
-var FilterAction = require("../action/filter-actions");
-var FilterStore = require("../store/filter-store");
+var FilterAction = require('../action/filter-actions');
+var FilterStore = require('../store/filter-store');
 
 var CrmFilter = React.createClass({
     getInitialState: function() {
@@ -29,11 +29,11 @@ var CrmFilter = React.createClass({
     },
     togglePanel: function() {
         if (this.state.isPanelShow) {
-            Trace.traceEvent($(this.getDOMNode()).find(".ant-btn-ghost"),"关闭筛选面板");
+            Trace.traceEvent($(this.getDOMNode()).find('.ant-btn-ghost'),'关闭筛选面板');
             FilterAction.hidePanel();
             this.props.changeTableHeight();
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find(".ant-btn-ghost"),"打开筛选面板");
+            Trace.traceEvent($(this.getDOMNode()).find('.ant-btn-ghost'),'打开筛选面板');
             FilterAction.showPanel();
             this.props.changeTableHeight(true);
         }
@@ -41,20 +41,20 @@ var CrmFilter = React.createClass({
     render: function() {
         const searchFields = [
             {
-                name: Intl.get("crm.41", "客户名"),
-                field: "name"
+                name: Intl.get('crm.41', '客户名'),
+                field: 'name'
             },
             {
-                name: Intl.get("crm.6", "负责人"),
-                field: "user_name"
+                name: Intl.get('crm.6', '负责人'),
+                field: 'user_name'
             },
             {
-                name: Intl.get("common.phone", "电话"),
-                field: "phone"
+                name: Intl.get('common.phone', '电话'),
+                field: 'phone'
             },
             {
-                name: Intl.get("common.email", "邮箱"),
-                field: "email"
+                name: Intl.get('common.email', '邮箱'),
+                field: 'email'
             }
         ];
 
@@ -67,7 +67,7 @@ var CrmFilter = React.createClass({
                     searchEvent={this.searchEvent}
                 />
                 <Button type="ghost" onClick={this.togglePanel}>
-                    {Intl.get("common.filter", "筛选")} { this.state.isPanelShow ? <Icon type="up"/> : <Icon type="down"/> }
+                    {Intl.get('common.filter', '筛选')} { this.state.isPanelShow ? <Icon type="up"/> : <Icon type="down"/> }
                 </Button>
             </div>
         );

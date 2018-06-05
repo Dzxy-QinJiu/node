@@ -1,17 +1,17 @@
-import {Form, Input, Button, Select, Icon, message} from "antd";
-require("../../../../components/version-upgrade/version-upgrade-list.less");
-var rightPanelUtil = require("../../../../components/rightPanel");
+import {Form, Input, Button, Select, Icon, message} from 'antd';
+require('../../../../components/version-upgrade/version-upgrade-list.less');
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var VersionUpgradeLogStore = require("../store/version-upgrade-log-store");
-var VersionUpgradeLogAction = require("../action/version-upgrade-log-action");
-var VersionUpgradeForm = require("./version-upgrade-form");
-var VersionUpgradeList = require("../../../../components/version-upgrade");
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var AppStore = require("../store/app-store");
-var autosize = require("autosize");
-import Trace from "LIB_DIR/trace";
+var VersionUpgradeLogStore = require('../store/version-upgrade-log-store');
+var VersionUpgradeLogAction = require('../action/version-upgrade-log-action');
+var VersionUpgradeForm = require('./version-upgrade-form');
+var VersionUpgradeList = require('../../../../components/version-upgrade');
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var AppStore = require('../store/app-store');
+var autosize = require('autosize');
+import Trace from 'LIB_DIR/trace';
 
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -23,7 +23,7 @@ var VersionUpgradeLog = React.createClass({
 
     getDefaultProps: function() {
         return {
-            appId: ""
+            appId: ''
         };
     },
 
@@ -62,7 +62,7 @@ var VersionUpgradeLog = React.createClass({
     },
 
     addVersionUpgradeInfo: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".version-right-panel-addbtn"),"添加升级版本记录");
+        Trace.traceEvent($(this.getDOMNode()).find('.version-right-panel-addbtn'),'添加升级版本记录');
         this.setState({
             addVersionInfoShow: true,
             noDataShow: false
@@ -75,14 +75,14 @@ var VersionUpgradeLog = React.createClass({
     //关闭
     closePanel: function(e) {
         e.stopPropagation();
-        Trace.traceEvent(e,"关闭版本升级界面");
+        Trace.traceEvent(e,'关闭版本升级界面');
         this.props.closeRightPanel();
     },
 
     //返回详细信息展示页
     returnInfoPanel: function(e) {
         e.stopPropagation();
-        Trace.traceEvent(e,"返回到应用详情界面");
+        Trace.traceEvent(e,'返回到应用详情界面');
         this.props.returnInfoPanel();
     },
 

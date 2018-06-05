@@ -1,8 +1,8 @@
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var AppUserRestApis = {
-    getAppNoticeList: "/rest/base/v1/application/notice"
+    getAppNoticeList: '/rest/base/v1/application/notice'
 };
 
 exports.urls = AppUserRestApis;

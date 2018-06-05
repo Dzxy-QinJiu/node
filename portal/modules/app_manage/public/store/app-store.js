@@ -1,7 +1,7 @@
-var AppActions = require("../action/app-actions");
-var userData = require("../../../../public/sources/user-data");
-var AppFormStore = require("./app-form-store");
-var language = require("../../../../public/language/getLanguage");
+var AppActions = require('../action/app-actions');
+var userData = require('../../../../public/sources/user-data');
+var AppFormStore = require('./app-form-store');
+var language = require('../../../../public/language/getLanguage');
 
 var emptyApp = {
     id: '',
@@ -13,7 +13,7 @@ var emptyApp = {
     status: true
 };
 
-const DEFAULT_TAG = "全部";
+const DEFAULT_TAG = '全部';
 function AppStore() {
     //在 编辑/添加 状态的时候appFormShow为true
     this.appFormShow = false;
@@ -32,10 +32,10 @@ function AppStore() {
     //一页可显示的安全域的个数
     this.pageSize = 0;
     //查询内容
-    this.searchContent = "";
+    this.searchContent = '';
     //查询时间
-    this.startTime = "";
-    this.endTime = "";
+    this.startTime = '';
+    this.endTime = '';
     //加载数据中。。。
     this.isLoading = true;
     //右侧面板的开关
@@ -43,9 +43,9 @@ function AppStore() {
     //获取应用详细信息中。。。
     this.appIsLoading = false;
     //表单的类型：添加/修改
-    this.formType = "add";
+    this.formType = 'add';
     //获取应用列表时，错误/暂无（符合条件的）数据的提示
-    this.appListTipMsg = "";
+    this.appListTipMsg = '';
     //应用的标签列表
     this.appTagList = [];
     //应用的 标签：个数
@@ -53,7 +53,7 @@ function AppStore() {
     //应用的 状态：个数
     this.appStatusObj = {};
     //选中的状态
-    this.selectStatus = "";
+    this.selectStatus = '';
     //是否展示筛选面板
     this.isFilterPanelShow = false;
     //已选过滤标签
@@ -72,7 +72,7 @@ function AppStore() {
     // 系统公告
     this.appNoticePanelShow = false;
     //获取成员详情失败的错误提示
-    this.getAppDetailError = "";
+    this.getAppDetailError = '';
     this.isShowAppOverViewPanel = false; // 是否展示应用概览页
     this.AppOverViewAppId = ''; // 应用概览页的id
     this.appList = []; //应用列表
@@ -126,7 +126,7 @@ AppStore.prototype.getAppNameById = function(id) {
             }
         });
     }
-    return appName || Intl.get("app.app.no.secret", "暂无密令APP");
+    return appName || Intl.get('app.app.no.secret', '暂无密令APP');
 };
 
 
@@ -153,7 +153,7 @@ AppStore.prototype.getCurAppById = function(app) {
     if (_.isString(app)) {
         this.getAppDetailError = app;
     } else {
-        this.getAppDetailError = "";
+        this.getAppDetailError = '';
         this.currentApp = app;
         var curAppList = this.curAppList;
         for (var i = 0, len = curAppList.length; i < len; i++) {
@@ -195,13 +195,13 @@ AppStore.prototype.getCurAppList = function(appListObj) {
         this.appListSize = appListObj.list_size;
         if (this.appListSize > 0) {
             //清空提示
-            this.appListTipMsg = "";
+            this.appListTipMsg = '';
         } else {
             //搜索无数据时的处理
             if (this.searchContent || this.selectStatus || this.selectTag != DEFAULT_TAG) {
-                this.appListTipMsg = Intl.get("app.app.search.no.data", "没有符合条件的应用!");
+                this.appListTipMsg = Intl.get('app.app.search.no.data', '没有符合条件的应用!');
             } else {
-                this.appListTipMsg = Intl.get("my.app.no.app", "暂无应用!");
+                this.appListTipMsg = Intl.get('my.app.no.app', '暂无应用!');
             }
         }
         if (this.curPage == 1) {
@@ -323,7 +323,7 @@ AppStore.prototype.afterEditApp = function(appModified) {
 };
 
 AppStore.prototype.showAppForm = function(type) {
-    if (type === "add") {
+    if (type === 'add') {
         this.currentApp = emptyApp;
     }
     this.isAppFormShow = true;
@@ -395,7 +395,7 @@ AppStore.prototype.showAppInfo = function() {
     this.versionUpgradeShow = false;
     this.appNoticePanelShow = false;
     //展示详情时，先清空上次的错误提示
-    this.getAppDetailError = "";
+    this.getAppDetailError = '';
     this.userTypeConfigShow = false;
 };
 

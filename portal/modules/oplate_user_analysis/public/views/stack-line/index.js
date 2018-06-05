@@ -1,13 +1,13 @@
 /**
  * 堆叠折线图
  */
-var echarts = require("echarts-eefung");
-require("./index.less");
-var Spinner = require("../../../../../components/spinner");
-var immutable = require("immutable");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
-let chartUtil = require("../../utils/chart-util");
+var echarts = require('echarts-eefung');
+require('./index.less');
+var Spinner = require('../../../../../components/spinner');
+var immutable = require('immutable');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
+let chartUtil = require('../../utils/chart-util');
 import { packageTry } from 'LIB_DIR/func';
 var StackLineChart = React.createClass({
     echartInstance: null,
@@ -55,7 +55,7 @@ var StackLineChart = React.createClass({
             title: null,
             animation: false,
             tooltip: {
-                trigger: "axis",
+                trigger: 'axis',
                 show: true,
                 extraCssText: echartsTooltipCssText,
                 position: function(mousePointer, params, tooltipDom) {
@@ -144,9 +144,9 @@ var StackLineChart = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
         }
     },
     componentDidMount: function() {

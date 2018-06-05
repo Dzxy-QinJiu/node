@@ -3,9 +3,9 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  */
 
-"use strict";
+'use strict';
 
-var authorityManageServic = require("../service/authority-manage-service");
+var authorityManageServic = require('../service/authority-manage-service');
 var Promise = require('bluebird');
 
 /*
@@ -14,9 +14,9 @@ var Promise = require('bluebird');
 exports.getAuthorityList = function(req, res) {
     var clientID = req.params.client_id;
     authorityManageServic.getAuthorityList(req, res, clientID)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -27,12 +27,12 @@ exports.editAuthorityGroupName = function(req, res) {
 
     var authorityGroup = {
         classifyName: encodeURI(req.body.classifyName),
-        authorityIDs: req.body.authorityIDs ? req.body.authorityIDs.split(",") : []
+        authorityIDs: req.body.authorityIDs ? req.body.authorityIDs.split(',') : []
     };
     authorityManageServic.editAuthorityGroupName(req, res, authorityGroup)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -56,9 +56,9 @@ exports.addAuthority = function(req, res) {
         };
     });
     authorityManageServic.addAuthority(req, res, authoritys)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -79,9 +79,9 @@ exports.editAuthority = function(req, res) {
         client_id: req.body.clientId
     };
     authorityManageServic.editAuthority(req, res, authority)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -99,11 +99,11 @@ exports.deleteAuthority = function(req, res) {
     var promises = [];
     for (var i = 0; i < times; i++) {
         promises.push(new Promise((resolve, reject) => {
-            var ids = authorityIds.slice(i * count, (i + 1) * count).join(",");
+            var ids = authorityIds.slice(i * count, (i + 1) * count).join(',');
             authorityManageServic.deleteAuthority(req, res, ids)
-                .on("success", function(data) {
+                .on('success', function(data) {
                     resolve(data);
-                }).on("error", function(codeMessage) {
+                }).on('error', function(codeMessage) {
                     reject(codeMessage && codeMessage.message);
                 }
                 );

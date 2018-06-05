@@ -3,14 +3,14 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/1/3.
  */
-var Popover = require("antd").Popover;
-var classNames = require("classnames");
+var Popover = require('antd').Popover;
+var classNames = require('classnames');
 class CustomEvent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             visible: false,
-            curCustomerId: "",
+            curCustomerId: '',
         };
     }
 
@@ -28,9 +28,9 @@ class CustomEvent extends React.Component {
         return (
             <div className="customer-names-wrap">
                 {_.map(this.props.event.totalCustomerObj, (item) => {
-                    var listCls = classNames("list-item", {
-                        "has-handled": item.status == "handle",
-                        "selected-customer": item.customer_id == this.state.curCustomerId
+                    var listCls = classNames('list-item', {
+                        'has-handled': item.status == 'handle',
+                        'selected-customer': item.customer_id == this.state.curCustomerId
                     });
                     return (
                         <p className={listCls} onClick={this.handleClickEvent.bind(this, item.customer_id)}>

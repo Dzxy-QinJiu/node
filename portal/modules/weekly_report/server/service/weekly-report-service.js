@@ -1,27 +1,27 @@
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var Promise = require("bluebird");
-var EventEmitter = require("events").EventEmitter;
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var Promise = require('bluebird');
+var EventEmitter = require('events').EventEmitter;
 const restApis = {
     // 获取团队信息
     getSaleGroupTeams: '/rest/base/v1/group/teams/:type',
     // 获取成员信息
     getSaleMemberList: '/rest/base/v1/group/team/members/:type',
     // 获取电话的接通情况
-    getCallInfo: "/rest/callrecord/v2/callrecord/query/:type/call_record/view",
+    getCallInfo: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
     //添加, 更新，删除员工请假信息
-    AskForLeave: "/rest/callrecord/v2/askforleave",
+    AskForLeave: '/rest/callrecord/v2/askforleave',
     //合同报表统计
-    getContractInfo: "/rest/analysis/contract/report/contract/:type",
+    getContractInfo: '/rest/analysis/contract/report/contract/:type',
     //合同回款统计
-    getRepaymentInfo: "/rest/analysis/contract/report/repayment/:type",
+    getRepaymentInfo: '/rest/analysis/contract/report/repayment/:type',
     //区域覆盖情况统计
-    getRegionOverlay: "/rest/analysis/customer/v2/statistic/:type/region/overlay",
+    getRegionOverlay: '/rest/analysis/customer/v2/statistic/:type/region/overlay',
     //获取所有的销售阶段
-    getSalesStageList: "/rest/customer/v2/salestage",
+    getSalesStageList: '/rest/customer/v2/salestage',
     //销售阶段统计数据
-    getCustomerStage: "/rest/analysis/customer/v2/statistic/:type/weekly/customer/stage",
+    getCustomerStage: '/rest/analysis/customer/v2/statistic/:type/weekly/customer/stage',
 
 };
 
@@ -29,7 +29,7 @@ const restApis = {
 exports.getSaleGroupTeams = function(req, res, params) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSaleGroupTeams.replace(":type", params.type),
+            url: restApis.getSaleGroupTeams.replace(':type', params.type),
             req: req,
             res: res
         });
@@ -39,7 +39,7 @@ exports.getSaleGroupTeams = function(req, res, params) {
 exports.getSaleMemberList = function(req, res, params) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSaleMemberList.replace(":type", params.type),
+            url: restApis.getSaleMemberList.replace(':type', params.type),
             req: req,
             res: res
         });
@@ -48,7 +48,7 @@ exports.getSaleMemberList = function(req, res, params) {
 exports.getCallInfo = function(req, res, params, reqData) {
     return restUtil.authRest.get(
         {
-            url: restApis.getCallInfo.replace(":type", params.type),
+            url: restApis.getCallInfo.replace(':type', params.type),
             req: req,
             res: res
         }, reqData);
@@ -75,7 +75,7 @@ exports.updateAskForLeave = function(req, res, reqObj) {
 exports.deleteAskForLeave = function(req, res) {
     return restUtil.authRest.del(
         {
-            url: restApis.AskForLeave + "?ids=" + req.params.id,
+            url: restApis.AskForLeave + '?ids=' + req.params.id,
             req: req,
             res: res
         });
@@ -84,7 +84,7 @@ exports.deleteAskForLeave = function(req, res) {
 exports.getContractInfo = function(req, res, params, reqData) {
     return restUtil.authRest.get(
         {
-            url: restApis.getContractInfo.replace(":type", params.type),
+            url: restApis.getContractInfo.replace(':type', params.type),
             req: req,
             res: res
         }, reqData);
@@ -93,7 +93,7 @@ exports.getContractInfo = function(req, res, params, reqData) {
 exports.getRepaymentInfo = function(req, res, params, reqData) {
     return restUtil.authRest.get(
         {
-            url: restApis.getRepaymentInfo.replace(":type", params.type),
+            url: restApis.getRepaymentInfo.replace(':type', params.type),
             req: req,
             res: res
         }, reqData);
@@ -102,7 +102,7 @@ exports.getRepaymentInfo = function(req, res, params, reqData) {
 exports.getRegionOverlayInfo = function(req, res, params, reqData) {
     return restUtil.authRest.get(
         {
-            url: restApis.getRegionOverlay.replace(":type", params.type),
+            url: restApis.getRegionOverlay.replace(':type', params.type),
             req: req,
             res: res
         }, reqData);
@@ -130,7 +130,7 @@ function getCustomerStageInfo(req, res, params, reqData) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get(
             {
-                url: restApis.getCustomerStage.replace(":type", params.type),
+                url: restApis.getCustomerStage.replace(':type', params.type),
                 req: req,
                 res: res
             }, reqData, {
@@ -152,9 +152,9 @@ exports.getCustomerStageInfo = function(req, res, params, reqData) {
         var dataObj = {};
         dataObj = dataList[0] || {};
         dataObj.stageList = dataList[1] ? dataList[1].result : [];
-        emitter.emit("success", dataObj);
+        emitter.emit('success', dataObj);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };

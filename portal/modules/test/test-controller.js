@@ -1,8 +1,8 @@
 /**
  * Created by liwenjun on 2015/12/25.
  */
-var testLogger = require("../../lib/utils/logger").getLogger('test');
-var restUtil = require("ant-auth-request").restUtil(testLogger);
+var testLogger = require('../../lib/utils/logger').getLogger('test');
+var restUtil = require('ant-auth-request').restUtil(testLogger);
 
 var config = require('../../../conf/config');
 var test = require('./test');
@@ -12,69 +12,69 @@ var RestTest = {
 
         restUtil.authRest.get(
             {
-                url: "http://apis.baidu.com/heweather/weather/free",
+                url: 'http://apis.baidu.com/heweather/weather/free',
                 req: req,
                 res: res,
                 headers: {
                     apikey: '0a6ad5351a437539b21152daa5aba5d2'
                 }
             }, {
-                city: "jinan"
-            }).on("success", function(data) {
+                city: 'jinan'
+            }).on('success', function(data) {
             //济南的天气情况
             var jinanCond = data['HeWeather data service 3.0'][0].daily_forecast[0].cond.txt_d;
             //济南风向
-            var jinanWind = data['HeWeather data service 3.0'][0].daily_forecast[0].wind.dir + data['HeWeather data service 3.0'][0].daily_forecast[0].wind.spd + "级";
+            var jinanWind = data['HeWeather data service 3.0'][0].daily_forecast[0].wind.dir + data['HeWeather data service 3.0'][0].daily_forecast[0].wind.spd + '级';
             //济南最低温
             var jinanMin = data['HeWeather data service 3.0'][0].daily_forecast[0].tmp.min;
             //济南最高温
             var jinanMax = data['HeWeather data service 3.0'][0].daily_forecast[0].tmp.max;
             res.json({
-                "jinanCond": jinanCond,
-                "jinanMin": jinanMin,
-                "jinanMax": jinanMax
+                'jinanCond': jinanCond,
+                'jinanMin': jinanMin,
+                'jinanMax': jinanMax
             });
-        }).on("error", function(data) {
+        }).on('error', function(data) {
             res.json({
-                "data": data
+                'data': data
             });
         });
     },
     getToken: function(req, res) {
         restUtil.authRest.post(
             {
-                url: "http://172.19.100.17:80/token/access_token",
+                url: 'http://172.19.100.17:80/token/access_token',
                 req: req,
                 res: res
-            }, null).on("success", function(data) {
+            }, null).on('success', function(data) {
             res.json(data);
-        }).on("error", function(data) {
+        }).on('error', function(data) {
             res.json(data);
         });
     },
     test1: function(req, res) {
         restUtil.authRest.get(
             {
-                url: "http://localhost:9192/dev/test1",
+                url: 'http://localhost:9192/dev/test1',
                 req: req,
                 res: res
-            }).on("success", function(data) {
+            }).on('success', function(data) {
             // eslint-disable-next-line no-console
-            console.log("/test/test1  sucess " + data ? data.message ? data.message : data : "null");
+            console.log('/test/test1  sucess ' + data ? data.message ? data.message : data : 'null');
             res.status(200).json(data);
-        }).on("error", function(data) {
+        }).on('error', function(data) {
             res.status(500).json(arguments);
         });
     },
     test2: function(req, res) {
         restUtil.authRest.get(
             {
-                url: "dev/test2",
+                url: 'dev/test2',
                 req: req,
                 res: res
-            }).on("success", function(data) {
+            }).on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(data) {
+        }).on('error', function(data) {
             res.status(500).json(arguments);
         });
     },
@@ -82,30 +82,30 @@ var RestTest = {
         //使用getBasePath方法
         restUtil.authRest.post(
             {
-                url: "/rest/user",
+                url: '/rest/user',
                 req: req,
                 res: res
             }, {
-                name: "zhangsan",
-                password: "aaa"
-            }).on("success", function(data) {
+                name: 'zhangsan',
+                password: 'aaa'
+            }).on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(data) {
+        }).on('error', function(data) {
             res.status(500).json(data);
         });
     },
     downloadImg: function() {
         restUtil.baseRest.get(
             {
-                url: "https://www.baidu.com/img/bd_logo1.png",
+                url: 'https://www.baidu.com/img/bd_logo1.png',
                 req: req,
                 res: res,
-                "pipe-download-file": true
+                'pipe-download-file': true
             }, null
-        ).on("success", function(data) {
+        ).on('success', function(data) {
             //设置所下载文件的类型 Content-Type
-            res.writeHead(200, {"Content-Type": "image/png"});
-        }).on("error", function(codeMessage) {
+            res.writeHead(200, {'Content-Type': 'image/png'});
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
     }

@@ -1,12 +1,12 @@
-import OnlineUserFilterAction from "../action/filter";
+import OnlineUserFilterAction from '../action/filter';
 import AppUserUtil from '../../../app_user_manage/public/util/app-user-util';
-import { storageUtil } from "ant-utils";
+import { storageUtil } from 'ant-utils';
 
 function OnlineUserFilterStore() {
     this.condition = {
-        client_id: "",
-        tag: "",
-        is_expire: ""
+        client_id: '',
+        tag: '',
+        is_expire: ''
     };
 
     this.bindActions(OnlineUserFilterAction);

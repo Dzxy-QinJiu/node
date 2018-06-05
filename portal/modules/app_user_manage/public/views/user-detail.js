@@ -1,31 +1,31 @@
 
 
-var language = require("../../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/user-detail-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("../css/user-detail-zh_CN.less");
-    require("../css/third-party-app-config.less");
+var language = require('../../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('../css/user-detail-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('../css/user-detail-zh_CN.less');
+    require('../css/third-party-app-config.less');
 }
-var Tabs = require("antd").Tabs;
+var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
-var RightPanelClose = require("../../../../components/rightPanel").RightPanelClose;
-var AppUserAction = require("../action/app-user-actions");
-var AppUserDetailAction = require("../action/app-user-detail-actions");
-var UserDetailBasic = require("./user-detail-basic");
+var RightPanelClose = require('../../../../components/rightPanel').RightPanelClose;
+var AppUserAction = require('../action/app-user-actions');
+var AppUserDetailAction = require('../action/app-user-detail-actions');
+var UserDetailBasic = require('./user-detail-basic');
 var SingleUserLog = require('./single-user-log');
 import UserLoginAnalysis from './user-login-analysis';
 var UserDetailChangeRecord = require('./user-detail-change-record');
 var UserAbnormalLogin = require('./user-abnormal-login');
-var AppUserPanelSwitchStore = require("../store/app-user-panelswitch-store");
-var AppUserDetailStore = require("../store/app-user-detail-store");
-import UserDetailAddApp from "./v2/user-detail-add-app";
-var UserDetailEditApp = require("./v2/user-detail-edit-app");
-var SingleUserLogAction = require("../action/single_user_log_action");
-var AppUserUtil = require("../util/app-user-util");
-var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
+var AppUserPanelSwitchStore = require('../store/app-user-panelswitch-store');
+var AppUserDetailStore = require('../store/app-user-detail-store');
+import UserDetailAddApp from './v2/user-detail-add-app';
+var UserDetailEditApp = require('./v2/user-detail-edit-app');
+var SingleUserLogAction = require('../action/single_user_log_action');
+var AppUserUtil = require('../util/app-user-util');
+var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import ThirdPartyAppConfig from './third_app/third-party-app-config';
-import ThirdAppDetail from "./third_app/third-app-detail";
+import ThirdAppDetail from './third_app/third-app-detail';
 
 var UserDetail = React.createClass({
     getDefaultProps: function() {
@@ -39,7 +39,7 @@ var UserDetail = React.createClass({
     },
     getInitialState: function() {
         return {
-            activeKey: "1",//tab激活页的key
+            activeKey: '1',//tab激活页的key
             ...AppUserPanelSwitchStore.getState()
         };
     },
@@ -53,10 +53,10 @@ var UserDetail = React.createClass({
     panelSwitchLeft: function(timeout) {
         clearTimeout(this.panelSwitchTimeout);
         if(!timeout) {
-            $(this.refs.wrap).addClass("move_left");
+            $(this.refs.wrap).addClass('move_left');
         } else {
             this.panelSwitchTimeout = setTimeout(() => {
-                $(this.refs.wrap).addClass("move_left");
+                $(this.refs.wrap).addClass('move_left');
             },timeout);
         }
     },
@@ -64,21 +64,21 @@ var UserDetail = React.createClass({
     panelSwitchRight: function(timeout) {
         clearTimeout(this.panelSwitchTimeout);
         if(!timeout) {
-            $(this.refs.wrap).removeClass("move_left");
+            $(this.refs.wrap).removeClass('move_left');
         } else {
             this.panelSwitchTimeout = setTimeout(() => {
-                $(this.refs.wrap).removeClass("move_left");
+                $(this.refs.wrap).removeClass('move_left');
             } , timeout);
         }
     },
     componentDidMount: function() {
-        $(window).on("resize" , this.reLayout);
+        $(window).on('resize' , this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT , this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT , this.panelSwitchRight);
     },
     componentWillUnmount: function() {
-        $(window).off("resize" , this.reLayout);
+        $(window).off('resize' , this.reLayout);
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT , this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT , this.panelSwitchRight);
@@ -91,7 +91,7 @@ var UserDetail = React.createClass({
         }
         AppUserDetailAction.dismiss();
         SingleUserLogAction.dismiss();
-        emitter.emit("user_detail_close_right_panel");
+        emitter.emit('user_detail_close_right_panel');
     },
 
     changeTab: function(key){
@@ -130,23 +130,23 @@ var UserDetail = React.createClass({
             selectApp = _.find(this.props.appLists,app => app.app_id === this.props.selectedAppId);
         }
         var tabPaneList = [
-            <TabPane tab={Intl.get("user.basic.info", "基本资料")} key="1">
-                {this.state.activeKey == "1" ? <div className="user_manage_user_detail">
+            <TabPane tab={Intl.get('user.basic.info', '基本资料')} key="1">
+                {this.state.activeKey == '1' ? <div className="user_manage_user_detail">
                     <UserDetailBasic userId={this.props.userId} selectApp={selectApp}/>
                 </div> : null}
             </TabPane>
         ];
-        if(hasPrivilege("USER_AUDIT_LOG_LIST")) {
+        if(hasPrivilege('USER_AUDIT_LOG_LIST')) {
             tabPaneList.push(
                 <TabPane tab="用户分析" key="2">
-                    {this.state.activeKey == "2" ? <div className="user-analysis">
+                    {this.state.activeKey == '2' ? <div className="user-analysis">
                         <UserLoginAnalysis userId={this.props.userId} selectedAppId={this.props.selectedAppId}/>
                     </div> : null}
                 </TabPane>
             );
             tabPaneList.push(
                 <TabPane tab="审计日志" key="3">
-                    {this.state.activeKey == "3" ? <div className="user-log">
+                    {this.state.activeKey == '3' ? <div className="user-log">
                         <SingleUserLog 
                             userId={this.props.userId} 
                             selectedAppId={this.props.selectedAppId}
@@ -156,10 +156,10 @@ var UserDetail = React.createClass({
                 </TabPane>
             );
         }
-        if(hasPrivilege("USER_TIME_LINE")) {
+        if(hasPrivilege('USER_TIME_LINE')) {
             tabPaneList.push(
-                <TabPane tab={Intl.get("user.change.record", "变更记录")} key="4">
-                    {this.state.activeKey == "4" ? <div className="user_manage_user_record">
+                <TabPane tab={Intl.get('user.change.record', '变更记录')} key="4">
+                    {this.state.activeKey == '4' ? <div className="user_manage_user_record">
                         <UserDetailChangeRecord
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
@@ -169,10 +169,10 @@ var UserDetail = React.createClass({
             );
         }
         //异常登录isShownExceptionTab
-        if (hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && this.props.isShownExceptionTab){
+        if (hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && this.props.isShownExceptionTab){
             tabPaneList.push(
-                <TabPane tab={Intl.get("user.login.abnormal", "异常登录")} key="5">
-                    {this.state.activeKey == "5" ? <div className="user_manage_login_abnormal">
+                <TabPane tab={Intl.get('user.login.abnormal', '异常登录')} key="5">
+                    {this.state.activeKey == '5' ? <div className="user_manage_login_abnormal">
                         <UserAbnormalLogin
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
@@ -183,9 +183,9 @@ var UserDetail = React.createClass({
         }
 
         // 权限控制
-        if (hasPrivilege("GET_USER_THIRDPARTYS") || hasPrivilege("THIRD_PARTY_MANAGE")) {
+        if (hasPrivilege('GET_USER_THIRDPARTYS') || hasPrivilege('THIRD_PARTY_MANAGE')) {
             tabPaneList.push(
-                <TabPane tab={Intl.get("third.party.app", "开放应用平台")} key="6">
+                <TabPane tab={Intl.get('third.party.app', '开放应用平台')} key="6">
                     <div className="third_party_app_config">
                         <ThirdPartyAppConfig
                             userId={this.props.userId}

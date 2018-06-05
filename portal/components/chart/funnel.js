@@ -1,12 +1,12 @@
 /**
  * 漏斗图
  */
-var echarts = require("echarts-eefung");
-require("./style.less");
-var macronsTheme = require("./theme-macrons");
-var immutable = require("immutable");
-const querystring = require("querystring");
-import Trace from "LIB_DIR/trace";
+var echarts = require('echarts-eefung');
+require('./style.less');
+var macronsTheme = require('./theme-macrons');
+var immutable = require('immutable');
+const querystring = require('querystring');
+import Trace from 'LIB_DIR/trace';
 import { packageTry } from 'LIB_DIR/func';
 
 var FunnelChart = React.createClass({
@@ -14,7 +14,7 @@ var FunnelChart = React.createClass({
     getDefaultProps: function() {
         return {
             chartData: [],
-            title: "",
+            title: '',
             width: '100%',
             height: 600,
             resultType: 'loading',
@@ -26,13 +26,13 @@ var FunnelChart = React.createClass({
             x: 10,
             y: 10,
             data: this.props.chartData,
-            sort: this.props.sort || "descending",
-            minSize: this.props.minSize || "0%",
+            sort: this.props.sort || 'descending',
+            minSize: this.props.minSize || '0%',
             itemStyle: {
                 normal: {
                     label: {
                         textStyle: {
-                            color: "#506470"
+                            color: '#506470'
                         }
                     },
                     labelLine: {
@@ -51,15 +51,15 @@ var FunnelChart = React.createClass({
         let series2 = JSON.parse(JSON.stringify(series1));
 
         const formatter = (params) => {
-            const valueField = this.props.valueField || "value";
+            const valueField = this.props.valueField || 'value';
             return params.data[valueField];
         };
 
         series2.itemStyle.normal.label = {
             formatter,
-            position: "inside",
+            position: 'inside',
             textStyle: {
-                color: "#506470"
+                color: '#506470'
             }
         };
 
@@ -73,11 +73,11 @@ var FunnelChart = React.createClass({
         var option = {
             title: {
                 text: this.props.title,
-                x: "center",
-                y: "bottom",
+                x: 'center',
+                y: 'bottom',
                 textStyle: {
                     fontSize: 14,
-                    fontWeight: "normal"
+                    fontWeight: 'normal'
                 }
             },
             animation: false,
@@ -100,8 +100,8 @@ var FunnelChart = React.createClass({
         this.echartInstance.setOption(options, true);
         const jumpProps = this.props.jumpProps;
         if (jumpProps) {
-            this.echartInstance.on("click", params => {
-                Trace.traceEvent(params.event.event, "跳转到'" + params.name + "'用户列表");
+            this.echartInstance.on('click', params => {
+                Trace.traceEvent(params.event.event, '跳转到\'' + params.name + '\'用户列表');
                 let query = {
                     app_id: this.props.app_id,
                     login_begin_date: this.props.startTime,
@@ -112,7 +112,7 @@ var FunnelChart = React.createClass({
                 if (jumpProps.query) _.extend(query, jumpProps.query);
 
                 //跳转到用户列表
-                window.open(jumpProps.url + "?" + querystring.stringify(query));
+                window.open(jumpProps.url + '?' + querystring.stringify(query));
             });
         }
     },
@@ -140,7 +140,7 @@ var FunnelChart = React.createClass({
     },
     render: function() {
         return (
-            <div className="analysis-chart" ref="wrap" style={{width: this.props.width, float: "left"}}>
+            <div className="analysis-chart" ref="wrap" style={{width: this.props.width, float: 'left'}}>
                 <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
             </div>
         );

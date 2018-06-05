@@ -3,21 +3,21 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/16.
  */
-const hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
+const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 const AUTHS = {
-    "GETALL": "CLUECUSTOMER_QUERY_MANAGER",
-    "GETSELF": "CLUECUSTOMER_QUERY_USER"
+    'GETALL': 'CLUECUSTOMER_QUERY_MANAGER',
+    'GETSELF': 'CLUECUSTOMER_QUERY_USER'
 };
 const DISTRIBUTEAUTHS = {
-    "DISTRIBUTEALL": "CLUECUSTOMER_DISTRIBUTE_MANAGER",
-    "DISTRIBUTESELF": "CLUECUSTOMER_DISTRIBUTE_USER"
+    'DISTRIBUTEALL': 'CLUECUSTOMER_DISTRIBUTE_MANAGER',
+    'DISTRIBUTESELF': 'CLUECUSTOMER_DISTRIBUTE_USER'
 };
-let salesmanAjax = require("../../../common/public/ajax/salesman");
-let teamAjax = require("../../../common/public/ajax/team");
+let salesmanAjax = require('../../../common/public/ajax/salesman');
+let teamAjax = require('../../../common/public/ajax/team');
 //查询线索客户
 exports.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
     pageSize = pageSize || 20;
-    sorter = sorter ? sorter : {field: "id", order: "descend"};
+    sorter = sorter ? sorter : {field: 'id', order: 'descend'};
     var data = {
         clueCustomerTypeFilter: JSON.stringify(clueCustomerTypeFilter),
         rangParams: JSON.stringify(rangParams),
@@ -28,7 +28,7 @@ exports.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageS
     }
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/customer/v2/customer/range/clue/' + pageSize + "/" + sorter.field + "/" + sorter.order,
+        url: '/rest/customer/v2/customer/range/clue/' + pageSize + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
@@ -203,15 +203,15 @@ exports.updateCluecustomerDetail = function(submitObj) {
         //客户的id
         updateObj.id = submitObj.user_id;
         //联系人的id
-        updateObj.contacts = [{"id": submitObj.contact_id}];
+        updateObj.contacts = [{'id': submitObj.contact_id}];
         delete submitObj.contact_id;
         delete submitObj.user_id;
         for (var key in submitObj){
             //要更新的字段
             data.updateItem = key;
-            if (key == "contact_name"){
+            if (key == 'contact_name'){
                 //联系人的名字
-                updateObj.contacts[0]["name"] = submitObj[key];
+                updateObj.contacts[0]['name'] = submitObj[key];
             }else{
                 updateObj.contacts[0][key] = [submitObj[key]];
             }

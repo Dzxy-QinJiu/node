@@ -2,22 +2,22 @@
  * Created by zhoulianyi on  2016/5/30 12:19
  */
 //用户在线分析的ajax文件
-var UserOnlineAnalysisAjax = require("../ajax/user-online-analysis-ajax");
-var history = require("../../../../public/sources/history");
+var UserOnlineAnalysisAjax = require('../ajax/user-online-analysis-ajax');
+var history = require('../../../../public/sources/history');
 //用户在线分析的action
 function UserOnlineAnalysisAction() {
     //生成下面这些action
     this.generateActions(
         //一个应用为一个卡片，分页展示各个应用的用户在线统计数据
-        "getUserOnlineAnalysisList",
+        'getUserOnlineAnalysisList',
         //查看具体一个应用的用户统计数据,在右侧面板中显示这些数据
-        "viewUserOnlineAnalysisByAppId",
+        'viewUserOnlineAnalysisByAppId',
         //统计概括信息翻页
-        "analysisSummaryPaginationChange",
+        'analysisSummaryPaginationChange',
         //获取某个应用的浏览器统计
-        "getOnlineBrowserByApp",
+        'getOnlineBrowserByApp',
         //隐藏右侧面板
-        "hideRightPanel"
+        'hideRightPanel'
     );
     //一个应用为一个卡片，分页展示各个应用的用户在线统计数据
     this.getUserOnlineAnalysisList = function(queryObj) {

@@ -16,7 +16,7 @@ exports.getSystemNotices = function(queryObj, status) {
         },
         error: function(error, errorText) {
             if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON || Intl.get("notification.system.notice.failed", "获取系统消息列表失败"));
+                Deferred.reject(error && error.responseJSON || Intl.get('notification.system.notice.failed', '获取系统消息列表失败'));
             }
         }
     });

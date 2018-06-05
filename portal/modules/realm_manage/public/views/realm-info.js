@@ -3,24 +3,24 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/6/22.
  */
-var language = require("../../../../public/language/getLanguage");
+var language = require('../../../../public/language/getLanguage');
 require('PUB_DIR/css/card-info-common.less');
-if (language.lan() == "es" || language.lan() == "en") {
+if (language.lan() == 'es' || language.lan() == 'en') {
     require('PUB_DIR/css/card-info-es.less');
 }
-import {Spin,Icon,Pagination,Form,Input,Tag,Alert,Button} from "antd";
-var rightPanelUtil = require("../../../../components/rightPanel");
+import {Spin,Icon,Pagination,Form,Input,Tag,Alert,Button} from 'antd';
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelEdit = rightPanelUtil.RightPanelEdit;
 var RightPanelForbid = rightPanelUtil.RightPanelForbid;
 var RightPanelDelete = rightPanelUtil.RightPanelDelete;
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var HeadIcon = require("../../../../components/headIcon");
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var HeadIcon = require('../../../../components/headIcon');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var ModalDialog = require("../../../../components/ModalDialog");
+var ModalDialog = require('../../../../components/ModalDialog');
 import {defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 const messages = defineMessages({
     member_is_or_not: {id: 'member.is.or.not'}//"是否{modalStr}{modalType}"
 });
@@ -34,13 +34,13 @@ var RealmInfo = React.createClass({
     getInitialState: function() {
         return {
             realmInfo: $.extend(true, {}, this.props.realmInfo),
-            modalStr: "",//模态框提示内容
+            modalStr: '',//模态框提示内容
             isDel: false,//是否删除
             isSaving: false,//正在保存标签
             //是否保存成功,error:失败，success:成功
-            saveResult: "",
+            saveResult: '',
             //保存后的提示信息
-            saveMsg: "",
+            saveMsg: '',
             isShowSetOrUpdateEmailFlag: false, // 显示或更新邮箱服务器的设置的标志
             isShowSetOrUpdateSmsFlag: false, // 显示或更新短信服务器的设置的标志
             isShowSetOrUpdateWeChatFlag: false, // 显示或更新微信设置的标志
@@ -65,16 +65,16 @@ var RealmInfo = React.createClass({
         });
     },
     layout: function() {
-        var bHeight = $("body").height();
-        var formHeight = bHeight - $(".head-image-container").outerHeight(true);
+        var bHeight = $('body').height();
+        var formHeight = bHeight - $('.head-image-container').outerHeight(true);
         if (this.props.showAddMemberButton) {
             formHeight -= 80;
         }
-        $(".log-infor-scroll").height(formHeight);
+        $('.log-infor-scroll').height(formHeight);
     },
     showEditForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击编辑安全域按钮");
-        this.props.showEditForm("edit");
+        Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击编辑安全域按钮');
+        this.props.showEditForm('edit');
     },
     showVersionUpgradePanel: function() {
         this.props.showVersionUpgradePanel();
@@ -88,17 +88,17 @@ var RealmInfo = React.createClass({
     },
     //展示是否禁用、启用的模态框
     showForbidModalDialog: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击启用/禁用安全域按钮");
-        var modalStr = Intl.get("member.start.this", "启用此");
+        Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击启用/禁用安全域按钮');
+        var modalStr = Intl.get('member.start.this', '启用此');
         if (this.state.realmInfo.status == 1) {
-            modalStr = Intl.get("member.stop.this", "禁用此");
+            modalStr = Intl.get('member.stop.this', '禁用此');
         }
         this.setState({modalStr: modalStr, isDel: false});
         this.props.showModalDialog();
     },
     //展示是否删除的模态框
     showDelModalDialog: function() {
-        this.setState({modalStr: Intl.get("common.delete", "删除"), isDel: true});
+        this.setState({modalStr: Intl.get('common.delete', '删除'), isDel: true});
         this.props.showModalDialog();
     },
 
@@ -111,7 +111,7 @@ var RealmInfo = React.createClass({
                 status = 0;
             }
             this.props.updateStatus(this.props.realmInfo.id, status);
-            Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击确认按钮");
+            Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击确认按钮');
         }
     },
     renderRealmItems: function() {
@@ -170,16 +170,16 @@ var RealmInfo = React.createClass({
         );
     },
     closeRightPanel(e) {
-        Trace.traceEvent(e,"关闭安全域详情");
+        Trace.traceEvent(e,'关闭安全域详情');
         this.props.closeRightPanel(e);
     },
 
     // 设置或更新邮箱服务器配置信息
     handleSetOrUpdateEmail(flag, e) {
         if ( flag == 'update') {
-            Trace.traceEvent(e,"更新邮箱服务器配置信息");
+            Trace.traceEvent(e,'更新邮箱服务器配置信息');
         } else if (flag == 'set') {
-            Trace.traceEvent(e,"设置邮箱服务器配置信息");
+            Trace.traceEvent(e,'设置邮箱服务器配置信息');
         }
         this.setState({
             isShowSetOrUpdateEmailFlag: true
@@ -194,9 +194,9 @@ var RealmInfo = React.createClass({
     // 设置或更新短信服务器配置信息
     handleSetOrUpdateSms(flag, e) {
         if ( flag == 'update') {
-            Trace.traceEvent(e,"更新短信服务器配置信息");
+            Trace.traceEvent(e,'更新短信服务器配置信息');
         } else if (flag == 'set') {
-            Trace.traceEvent(e,"设置短信服务器配置信息");
+            Trace.traceEvent(e,'设置短信服务器配置信息');
         }
         this.setState({
             isShowSetOrUpdateSmsFlag: true
@@ -211,9 +211,9 @@ var RealmInfo = React.createClass({
     // 设置或更新微信配置信息
     handleSetOrUpdateWeChat(flag, e) {
         if ( flag == 'update') {
-            Trace.traceEvent(e,"更新微信配置信息");
+            Trace.traceEvent(e,'更新微信配置信息');
         } else if (flag == 'set') {
-            Trace.traceEvent(e,"设置微信配置信息");
+            Trace.traceEvent(e,'设置微信配置信息');
         }
         this.setState({
             isShowSetOrUpdateWeChatFlag: true
@@ -227,7 +227,7 @@ var RealmInfo = React.createClass({
 
     render: function() {
         //当前要展示的信息
-        var modalContent = this.formatMessage(messages.member_is_or_not,{modalStr: this.state.modalStr,modalType: this.props.modalType}); var className = "right-panel-content";
+        var modalContent = this.formatMessage(messages.member_is_or_not,{modalStr: this.state.modalStr,modalType: this.props.modalType}); var className = 'right-panel-content';
         if (!this.props.realmInfoShow) {
             if (this.props.realmFormShow ||
                     this.props.versionUpgradeShow ||
@@ -236,23 +236,23 @@ var RealmInfo = React.createClass({
                     this.props.userTypeConfigShow
             ) {
                 //展示form面板时，整体左移
-                className += " right-panel-content-slide";
+                className += ' right-panel-content-slide';
             }
         }
         let realmInfo = this.state.realmInfo;
-        var userName = realmInfo.userName ? realmInfo.userName : "";
+        var userName = realmInfo.userName ? realmInfo.userName : '';
         return (
             <div className={className}>
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <div className="edit-buttons">
                     {!this.props.showAddMemberButton ? (
-                        <PrivilegeChecker check={"REALM_MANAGE_EDIT_REALM"}>
+                        <PrivilegeChecker check={'REALM_MANAGE_EDIT_REALM'}>
                             <RightPanelEdit onClick={this.showEditForm}/>
                             <RightPanelForbid onClick={this.showForbidModalDialog}
                                 isActive={realmInfo.status == 0}/>
                         </PrivilegeChecker>
                     ) : null}
-                    <PrivilegeChecker check={"REALM_MANAGE_DELETE_REALM"}>
+                    <PrivilegeChecker check={'REALM_MANAGE_DELETE_REALM'}>
                         <RightPanelDelete onClick={this.showDelModalDialog}/>
                     </PrivilegeChecker>
                 </div>
@@ -347,7 +347,7 @@ var RealmInfo = React.createClass({
                                 </div>) :
                                     (<div className="sms-server">
                                         <div className="card-item">
-                                            <span className="card-item-left">{Intl.get("common.username", "用户名")}:</span>
+                                            <span className="card-item-left">{Intl.get('common.username', '用户名')}:</span>
                                             <span className="card-item-right">{realmInfo.config && realmInfo.config.sms_gate_username}</span>
                                         </div>
                                         <div className="card-item">

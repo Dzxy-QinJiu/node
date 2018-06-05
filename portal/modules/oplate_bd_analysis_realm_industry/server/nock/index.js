@@ -1,22 +1,22 @@
-var path = require("path");
-var restLogger = require("../../../../lib/utils/logger").getLogger('nock');
-var RestUtil = require("ant-auth-request").restUtil(restLogger)(restLogger);
-var nock = require("nock");
-var nockParser = require(path.resolve(portal_root_path , "./lib/utils/nockParser"));
-var moment = require("moment");
+var path = require('path');
+var restLogger = require('../../../../lib/utils/logger').getLogger('nock');
+var RestUtil = require('ant-auth-request').restUtil(restLogger)(restLogger);
+var nock = require('nock');
+var nockParser = require(path.resolve(portal_root_path , './lib/utils/nockParser'));
+var moment = require('moment');
 
 //行业分类
 var industrys = [
-    "计算机",
-    "贸易",
-    "制药",
-    "广告",
-    "房地产",
-    "专业服务",
-    "服务业",
-    "物流",
-    "能源",
-    "政府"
+    '计算机',
+    '贸易',
+    '制药',
+    '广告',
+    '房地产',
+    '专业服务',
+    '服务业',
+    '物流',
+    '能源',
+    '政府'
 ];
 
 //返回[开头、结束]的数字
@@ -41,7 +41,7 @@ function generateData() {
 
 var idx = 0;
 
-var RealmIndustryService = require("../service/realm-industry-service");
+var RealmIndustryService = require('../service/realm-industry-service');
 
 //nock数据设置
 exports.init = function() {

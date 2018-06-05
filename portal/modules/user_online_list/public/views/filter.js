@@ -1,12 +1,12 @@
-import OnlineUserFilterStore from "../store/filter";
-import OnlineUserFilterAction from "../action/filter";
-import OnlineUserListStore from "../store/list";
-import OnlineUserListAction from "../action/list";
-import { Select, Input, Icon, Button } from "antd";
-import SearchInput from "../../../../components/searchInput";
-import SelectFullWidth from "../../../../components/select-fullwidth";
-var ShareObj = require("../../../app_user_manage/public/util/app-id-share-util");
-import Trace from "LIB_DIR/trace";
+import OnlineUserFilterStore from '../store/filter';
+import OnlineUserFilterAction from '../action/filter';
+import OnlineUserListStore from '../store/list';
+import OnlineUserListAction from '../action/list';
+import { Select, Input, Icon, Button } from 'antd';
+import SearchInput from '../../../../components/searchInput';
+import SelectFullWidth from '../../../../components/select-fullwidth';
+var ShareObj = require('../../../app_user_manage/public/util/app-id-share-util');
+import Trace from 'LIB_DIR/trace';
 import RefreshButton from 'CMP_DIR/refresh-button';
 
 //应用下拉选项
@@ -21,19 +21,19 @@ let statusOptions = [];
 //搜索字段列表
 const searchFields = [
     {
-        name: Intl.get("common.username", "用户名"),
-        field: "user_name",
+        name: Intl.get('common.username', '用户名'),
+        field: 'user_name',
     },
     {
-        name: Intl.get("common.nickname", "昵称"),
-        field: "nick_name",
+        name: Intl.get('common.nickname', '昵称'),
+        field: 'nick_name',
     },
 ];
 
 if(!Oplate.hideSomeItem) {
     searchFields.push( {
-        name: Intl.get("common.ip.location", "IP归属地"),
-        field: "ip_address"
+        name: Intl.get('common.ip.location', 'IP归属地'),
+        field: 'ip_address'
     });
 }
 
@@ -68,7 +68,7 @@ const OnlineUserFilter = React.createClass({
         }
     },
     componentWillUnmount: function() {
-        ShareObj.share_online_app_id = "";
+        ShareObj.share_online_app_id = '';
         OnlineUserFilterStore.unlisten(this.onStoreChange);
     },
     onStoreChange: function() {
@@ -93,17 +93,17 @@ const OnlineUserFilter = React.createClass({
         OnlineUserFilterAction.setCondition({client_id: app});
         //选中某个应用后，再打开右侧详情的变更记录时，默认展示此应用
         this.props.appSelected({client_id: app});
-        Trace.traceEvent($(this.getDOMNode()).find(".search-select .ant-select"),"根据应用筛选");
+        Trace.traceEvent($(this.getDOMNode()).find('.search-select .ant-select'),'根据应用筛选');
         this.search();
     },
     typeSelected: function(type) {
         OnlineUserFilterAction.setCondition({tag: type});
-        Trace.traceEvent($(this.getDOMNode()).find(".search-select .ant-select"),"根据类型筛选");
+        Trace.traceEvent($(this.getDOMNode()).find('.search-select .ant-select'),'根据类型筛选');
         this.search();
     },
     statusSelected: function(status) {
         OnlineUserFilterAction.setCondition({is_expire: status});
-        Trace.traceEvent($(this.getDOMNode()).find(".search-select .ant-select"),"根据状态筛选");
+        Trace.traceEvent($(this.getDOMNode()).find('.search-select .ant-select'),'根据状态筛选');
         this.search();
     },
     handleRefresh: function() {
@@ -123,7 +123,7 @@ const OnlineUserFilter = React.createClass({
                         value={this.state.condition.client_id}
                         onChange={this.appSelected}
                         optionFilterProp="children"
-                        notFoundContent={!appOptions.length ? Intl.get("my.app.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
+                        notFoundContent={!appOptions.length ? Intl.get('my.app.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
                     >
                         {appOptions}
                     </SelectFullWidth>

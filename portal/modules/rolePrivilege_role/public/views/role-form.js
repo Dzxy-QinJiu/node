@@ -1,18 +1,18 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * Created by jinfeng on 2015/12/28.
  */
-var Link = require("react-router").Link;
-var Form = require("antd").Form;
-var Input = require("antd").Input;
-var Button = require("antd").Button;
-var Checkbox = require("antd").Checkbox;
+var Link = require('react-router').Link;
+var Form = require('antd').Form;
+var Input = require('antd').Input;
+var Button = require('antd').Button;
+var Checkbox = require('antd').Checkbox;
 var FormItem = Form.Item;
-var classNames = require("classnames");
-var AlertTimer = require("../../../../components/alert-timer");
-var Spinner = require("../../../../components/spinner");
-var rightPanelUtil = require("../../../../components/rightPanel/index");
+var classNames = require('classnames');
+var AlertTimer = require('../../../../components/alert-timer');
+var Spinner = require('../../../../components/spinner');
+var rightPanelUtil = require('../../../../components/rightPanel/index');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 var RightPanelCancel = rightPanelUtil.RightPanelCancel;
@@ -20,12 +20,12 @@ var RightPanelClose = rightPanelUtil.RightPanelClose;
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var RoleFormStore = require('../store/role-form-store');
 var RoleFormAction = require('../action/role-form-actions');
-var language = require("../../../../public/language/getLanguage");
-import Trace from "LIB_DIR/trace";
+var language = require('../../../../public/language/getLanguage');
+import Trace from 'LIB_DIR/trace';
 function noop() {
 }
 
-var TYPE_CONSTANT = "myApp";
+var TYPE_CONSTANT = 'myApp';
 let CONSTANTS = {
     PADDING_TOP: 26,
     ROLE_NAME_H: 55,
@@ -49,7 +49,7 @@ var RoleForm = React.createClass({
     },
     getFormData: function(props) {
         var formData = $.extend(true, {}, props.role);
-        if (props.formType == "add") {
+        if (props.formType == 'add') {
             formData.permissionGroups = $.extend(true, [], props.permissionGroups);
         }
         return formData;
@@ -113,14 +113,14 @@ var RoleForm = React.createClass({
     //取消事件
     handleCancel: function(e) {
         e.preventDefault();
-        Trace.traceEvent(e,"点击取消保存角色按钮");
+        Trace.traceEvent(e,'点击取消保存角色按钮');
         this.props.cancelRoleForm(e);
     },
 
     //保存角色信息
     handleSubmit: function(e) {
         e.preventDefault();
-        Trace.traceEvent(e,"点击保存角色按钮");
+        Trace.traceEvent(e,'点击保存角色按钮');
         var validation = this.refs.validation;
         var _this = this;
         validation.validate(function(valid) {
@@ -129,7 +129,7 @@ var RoleForm = React.createClass({
             } else {
                 var role = _this.state.formData;
                 RoleFormAction.setSavingFlag(true);
-                if (_this.props.formType == "add") {
+                if (_this.props.formType == 'add') {
                     //添加角色
                     if (_this.props.appId) {
                         //我的应用中 添加角色
@@ -176,9 +176,9 @@ var RoleForm = React.createClass({
     //全选、取消选中的处理
     handleSelectAllAuthority: function(curPermissionGroupName, flag) {
         if (flag) {
-            Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"选中全部的权限");
+            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'选中全部的权限');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"取消选中的权限");
+            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'取消选中的权限');
         }
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
@@ -201,7 +201,7 @@ var RoleForm = React.createClass({
 
     //反选
     reverseSelectAuthority: function(curPermissionGroupName) {
-        Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"反选权限");
+        Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'反选权限');
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
                 function(permisssionGroup) {
@@ -225,7 +225,7 @@ var RoleForm = React.createClass({
     //转到权限设置面板（我的应用中的处理）
     turnToAuthPanel: function(e) {
         this.handleCancel(e);
-        this.props.setShowRoleAuthType("authority");
+        this.props.setShowRoleAuthType('authority');
     },
     //展示收起单个权限组的处理
     toggleAuth: function(curPermissionGroupName) {
@@ -246,9 +246,9 @@ var RoleForm = React.createClass({
     //展示收起所有权限分组的处理
     toggleAllAuth: function() {
         if (this.state.allAuthIsShow ) {
-            Trace.traceEvent($(this.getDOMNode()).find(".form-authority-container"),"全部收起权限");
+            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-container'),'全部收起权限');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find(".form-authority-container"),"全部展开权限");
+            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-container'),'全部展开权限');
         }
 
         let allAuthIsShow = !this.state.allAuthIsShow;//展示、收起所有权限分组的切换
@@ -280,21 +280,21 @@ var RoleForm = React.createClass({
                 <Form horizontal className="role-form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
-                            label={Intl.get("common.role", "角色")}
+                            label={Intl.get('common.role', '角色')}
                             id="edit-roleName"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('roleName')}
-                            help={status.roleName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.roleName.errors && status.roleName.errors.join(','))}>
-                            <Validator rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
+                            help={status.roleName.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.roleName.errors && status.roleName.errors.join(','))}>
+                            <Validator rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')}]}>
                                 <Input name="roleName" id="edit-roleName" value={formData.roleName}
                                     onChange={this.setField.bind(this, 'roleName')}
-                                    placeholder={Intl.get("common.required.tip", "必填项*")}
+                                    placeholder={Intl.get('common.required.tip', '必填项*')}
                                 />
                             </Validator>
                         </FormItem>
                         <FormItem
-                            label={Intl.get("common.app.auth", "权限")}
+                            label={Intl.get('common.app.auth', '权限')}
                             prefixCls="role-auth-item ant-form"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 18}}
@@ -360,11 +360,11 @@ var RoleForm = React.createClass({
                             </div>) : (<div className="no-permissions-msg">
                                 <ReactIntl.FormattedMessage
                                     id="role.no.set.auth.add"
-                                    defaultMessage={`暂无权限,请先{add}`}
+                                    defaultMessage={'暂无权限,请先{add}'}
                                     values={{
-                                        "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}>{Intl.get("role.add.auth", "添加权限")}</a>) : (
+                                        'add': (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}>{Intl.get('role.add.auth', '添加权限')}</a>) : (
                                             <Link to="/backgroundManagement/authority" activeClassName="active">
-                                                {Intl.get("role.add.auth", "添加权限")}</Link>
+                                                {Intl.get('role.add.auth', '添加权限')}</Link>
                                         ))
                                     }}
                                 />

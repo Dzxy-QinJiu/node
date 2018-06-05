@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-var versionUpgradeLog = require("../service/version-upgrade-log-service");
+var versionUpgradeLog = require('../service/version-upgrade-log-service');
 var multiparty = require('multiparty');
-var fs = require("fs");
+var fs = require('fs');
 
 // 获取版本升级内容列表
 exports.getAppRecordsList = function(req, res) {
@@ -15,18 +15,18 @@ exports.getAppRecordsList = function(req, res) {
         page_size: page_size,
         page_num: page_num
     };
-    versionUpgradeLog.getAppRecordsList(req, res, queryObj).on("success", function(data) {
+    versionUpgradeLog.getAppRecordsList(req, res, queryObj).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 添加版本升级日志的版本号和升级内容
 exports.addAppVersion = function(req, res ) {
-    versionUpgradeLog.addAppVersion(req, res, req.body).on("success", function(data) {
+    versionUpgradeLog.addAppVersion(req, res, req.body).on('success', function(data) {
         res.status(200).json(true);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -65,12 +65,12 @@ exports.uploadVersionUpgrade = function(req, res){
             };
             //调用上传请求服务
             versionUpgradeLog.uploadVersionUpgrade(req, res,formData)
-                .on("success", function(data) {
+                .on('success', function(data) {
                     res.status(200).json(data);
                     // 删除临时文件
                     fs.unlinkSync(tmpPath);
                 })
-                .on("error", function(err) {
+                .on('error', function(err) {
                     res.status(500).json(false);
                     // 删除临时文件
                     fs.unlinkSync(tmpPath);
@@ -89,8 +89,8 @@ exports.getAppRecordFile = function(req, res) {
     var obj = {
         record_id: record_id
     };
-    versionUpgradeLog.getAppRecordFile(req, res, obj).on("error", function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message || "apk文件下载失败");
+    versionUpgradeLog.getAppRecordFile(req, res, obj).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message || 'apk文件下载失败');
     });
 };
 
@@ -98,9 +98,9 @@ exports.getAppRecordFile = function(req, res) {
 exports.deleteAppVersionRecord = function(req, res){
     var record_id = req.params.record_id;
     versionUpgradeLog.deleteAppVersionRecord(req, res, record_id)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );

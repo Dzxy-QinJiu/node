@@ -5,17 +5,17 @@ import Spinner from '../../../../components/spinner';
 import { Alert, Icon, Checkbox, Popconfirm, message } from 'antd';
 import { Radio } from 'antd';
 import AlertTimer from '../../../../components/alert-timer';
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 const RadioGroup = Radio.Group;
-const STRATEGYCONFIRMMSG = Intl.get("config.manage.realm.confirm","您确定要修改安全域密码策略吗？");
+const STRATEGYCONFIRMMSG = Intl.get('config.manage.realm.confirm','您确定要修改安全域密码策略吗？');
 const realmOptions = [
     {
-        label: "MD5",
-        value: "1"
+        label: 'MD5',
+        value: '1'
     },
     {
-        label: Intl.get("config.manage.realm.modifiedMD5", "删除前4位的MD5"),
-        value: "2"
+        label: Intl.get('config.manage.realm.modifiedMD5', '删除前4位的MD5'),
+        value: '2'
     }
 ];
 const RealmConfig = React.createClass({
@@ -25,7 +25,7 @@ const RealmConfig = React.createClass({
             setRealmConfigErrMsg: '', // 修改密码策略失败信息    
             getRealmConfigErrMsg: '',
             isLoading: false,
-            strategy: "1",
+            strategy: '1',
             showConfirm: false
         };
     },
@@ -75,8 +75,8 @@ const RealmConfig = React.createClass({
         RealmConfigAction.updateRealmStrategy({pwd_strategy: this.state.strategy});
     },
     confirm() {
-        let newVal = this.state.strategy == "1" ? "MD5" : "删除前4位的MD5";
-        Trace.traceEvent("密码策略","修改密码策略为'" + newVal + "'");
+        let newVal = this.state.strategy == '1' ? 'MD5' : '删除前4位的MD5';
+        Trace.traceEvent('密码策略','修改密码策略为\'' + newVal + '\'');
         this.save();
         this.setState({
             showConfirm: false
@@ -85,7 +85,7 @@ const RealmConfig = React.createClass({
     cancel() {
         this.setState({
             showConfirm: false,
-            strategy: this.strategy == "1" ? "2" : "1"
+            strategy: this.strategy == '1' ? '2' : '1'
         });
     },
     render() {
@@ -101,11 +101,11 @@ const RealmConfig = React.createClass({
                         title={STRATEGYCONFIRMMSG} 
                         onConfirm={this.confirm} 
                         onCancel={this.cancel} 
-                        okText={Intl.get("config.manage.realm.oktext","确定")} 
-                        cancelText={Intl.get("config.manage.realm.canceltext","取消")}>
+                        okText={Intl.get('config.manage.realm.oktext','确定')} 
+                        cancelText={Intl.get('config.manage.realm.canceltext','取消')}>
                         <RadioGroup
                             size="large"
-                            style={{ marginLeft: "65px", marginTop: "40px" }}
+                            style={{ marginLeft: '65px', marginTop: '40px' }}
                             onChange={this.onChange}
                             value={this.state.strategy}
                             options={realmOptions}

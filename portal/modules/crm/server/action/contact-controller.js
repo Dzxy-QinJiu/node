@@ -1,10 +1,10 @@
-var contactService = require("../service/contact-service");
+var contactService = require('../service/contact-service');
 
 exports.getContactList = function(req, res) {
     contactService.getContactList(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });
 };
@@ -15,9 +15,9 @@ exports.getContactList = function(req, res) {
  */
 exports.deleteContact = function(req, res) {
     contactService.deleteContact(req, res, req.params.contactId)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.json(err.message);
         });
 };
@@ -46,7 +46,7 @@ exports.addContact = function(req, res) {
         //qq: qq,
         //weChat: weChat,
         //email: email,
-        def_contancts: "false"
+        def_contancts: 'false'
     };
     if (phone.length > 0) {
         contact.phone = phone;
@@ -61,9 +61,9 @@ exports.addContact = function(req, res) {
         contact.email = email;
     }
     contactService.addContact(req, res, contact)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message);
         });
 };
@@ -98,22 +98,22 @@ exports.editContact = function(req, res) {
     };
     let editType = req.params.editType;
     switch (editType) {
-    case "phone"://只修改了电话
+    case 'phone'://只修改了电话
         contact = {
             customer_id: customer_id,
             id: id,
             phone: phone
         };
         break;
-    case "no_phone"://修改了除电话外的其他信息
+    case 'no_phone'://修改了除电话外的其他信息
         delete contact.phone;
         break;
-    case "all"://电话和其他信息都有修改
+    case 'all'://电话和其他信息都有修改
         break;
     }
-    contactService.updateContact(req, res, contact).on("success", function(data) {
+    contactService.updateContact(req, res, contact).on('success', function(data) {
         res.status(200).json(contact);
-    }).on("error", function(err) {
+    }).on('error', function(err) {
         res.status(500).json(err.message);
     });
 };
@@ -124,9 +124,9 @@ exports.editContact = function(req, res) {
 exports.setDefault = function(req, res) {
     var contactId = req.params.contactId;
     contactService.setDefault(req, res, contactId)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.json(err.message);
         });
 };

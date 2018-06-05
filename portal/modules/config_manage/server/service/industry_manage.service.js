@@ -1,13 +1,13 @@
 /**
  * Created by zhshj on 2017/2/6.
  */
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 var IndustryManageRestApis = {
     //行业列表
-    Industries: "/rest/base/v1/realm/config/industry"
+    Industries: '/rest/base/v1/realm/config/industry'
 };
 
 exports.urls = IndustryManageRestApis;

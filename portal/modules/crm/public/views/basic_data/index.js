@@ -1,28 +1,28 @@
 require('../../css/crm-basic.less');
-require("../../css/basic-edit-field.less");
-var CRMStore = require("../../store/basic-overview-store");
-var CRMAction = require("../../action/basic-overview-actions");
-var SalesTeamStore = require("../../../../sales_team/public/store/sales-team-store");
-var PrivilegeChecker = require("../../../../../components/privilege/checker").PrivilegeChecker;
-let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
+require('../../css/basic-edit-field.less');
+var CRMStore = require('../../store/basic-overview-store');
+var CRMAction = require('../../action/basic-overview-actions');
+var SalesTeamStore = require('../../../../sales_team/public/store/sales-team-store');
+var PrivilegeChecker = require('../../../../../components/privilege/checker').PrivilegeChecker;
+let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
-import {Tag, Spin} from "antd";
-var history = require("../../../../../public/sources/history");
-var FilterAction = require("../../action/filter-actions");
-let NameTextareaField = require("./name-textarea-field");
-let CommentTextareaField = require("./comment-textarea-field");
-let TagEditField = require("./tag-edit-field");
-let IndustrySelectField = require("./industry-select-field");
-let LocationSelectField = require("./location-select-field");
-let SalesSelectField = require("./sales-select-field");
-let CrmAction = require("../../action/crm-actions");
-let CrmRepeatAction = require("../../action/customer-repeat-action");
+import {Tag, Spin} from 'antd';
+var history = require('../../../../../public/sources/history');
+var FilterAction = require('../../action/filter-actions');
+let NameTextareaField = require('./name-textarea-field');
+let CommentTextareaField = require('./comment-textarea-field');
+let TagEditField = require('./tag-edit-field');
+let IndustrySelectField = require('./industry-select-field');
+let LocationSelectField = require('./location-select-field');
+let SalesSelectField = require('./sales-select-field');
+let CrmAction = require('../../action/crm-actions');
+let CrmRepeatAction = require('../../action/customer-repeat-action');
 import {defineMessages, injectIntl} from 'react-intl';
-import BasicEditInputField from "CMP_DIR/basic-edit-field/input";
-import BasicEditSelectField from "CMP_DIR/basic-edit-field/select";
-import crmUtil from "../../utils/crm-util";
-import CrmBasicAjax from "../../ajax/index";
-import userData from "PUB_DIR/sources/user-data";
+import BasicEditInputField from 'CMP_DIR/basic-edit-field/input';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
+import crmUtil from '../../utils/crm-util';
+import CrmBasicAjax from '../../ajax/index';
+import userData from 'PUB_DIR/sources/user-data';
 
 function getStateFromStore(isMerge) {
     return {
@@ -136,16 +136,16 @@ var BasicData = React.createClass({
     },
     getAdministrativeLevel: function(levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
-        return levelObj ? levelObj.level : "";
+        return levelObj ? levelObj.level : '';
     },
     //是否有转出客户的权限
     enableTransferCustomer: function() {
         let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
-        if (hasPrivilege("CRM_MANAGER_TRANSFER")) {
+        if (hasPrivilege('CRM_MANAGER_TRANSFER')) {
             enable = true;
-        } else if (hasPrivilege("CRM_USER_TRANSFER") && !isCommonSales) {
+        } else if (hasPrivilege('CRM_USER_TRANSFER') && !isCommonSales) {
             //销售主管有转出的权限
             enable = true;
         }
@@ -171,7 +171,7 @@ var BasicData = React.createClass({
                             <div className="crm-content-block">
                                 <div className="client-info-content">
                                     <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-name">
-                                        <dt>{Intl.get("crm.41", "客户名")}</dt>
+                                        <dt>{Intl.get('crm.41', '客户名')}</dt>
                                         <dd>
                                             <NameTextareaField
                                                 isMerge={this.props.isMerge}
@@ -179,7 +179,7 @@ var BasicData = React.createClass({
                                                 customerId={basicData.id}
                                                 name={basicData.name}
                                                 modifySuccess={this.editBasicSuccess}
-                                                disabled={hasPrivilege("CUSTOMER_UPDATE_NAME") ? false : true}
+                                                disabled={hasPrivilege('CUSTOMER_UPDATE_NAME') ? false : true}
                                             />
                                             {basicData.customer_label ? (
                                                 <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
@@ -188,13 +188,13 @@ var BasicData = React.createClass({
                                             {basicData.qualify_label ? (
                                                 <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
                                                     {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
+                                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                                             }
                                         </dd>
                                     </dl>
                                     { _.isArray(basicData.competing_products) && basicData.competing_products.length ? (
                                         <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-competing-products">
-                                            <dt>{Intl.get("crm.competing.products", "竞品")}</dt>
+                                            <dt>{Intl.get('crm.competing.products', '竞品')}</dt>
                                             <dd>
                                                 {basicData.competing_products.map((products, index) => {
                                                     return (<Tag key={index}
@@ -204,7 +204,7 @@ var BasicData = React.createClass({
                                         </dl>
                                     ) : null}
                                     <dl className="dl-horizontal crm-basic-item detail_item crm-basic-tags">
-                                        <dt>{Intl.get("common.tag", "标签")}</dt>
+                                        <dt>{Intl.get('common.tag', '标签')}</dt>
                                         <dd>
                                             <TagEditField
                                                 isMerge={this.props.isMerge}
@@ -212,12 +212,12 @@ var BasicData = React.createClass({
                                                 customerId={basicData.id}
                                                 labels={tagArray}
                                                 modifySuccess={this.editBasicSuccess}
-                                                disabled={hasPrivilege("CUSTOMER_UPDATE_LABEL") ? false : true}
+                                                disabled={hasPrivilege('CUSTOMER_UPDATE_LABEL') ? false : true}
                                             />
                                         </dd>
                                     </dl>
                                     <dl className="dl-horizontal crm-basic-item detail_item crm-basic-industry">
-                                        <dt>{Intl.get("realm.industry", "行业")}</dt>
+                                        <dt>{Intl.get('realm.industry', '行业')}</dt>
                                         <dd>
                                             <IndustrySelectField
                                                 isMerge={this.props.isMerge}
@@ -225,12 +225,12 @@ var BasicData = React.createClass({
                                                 customerId={basicData.id}
                                                 industry={basicData.industry}
                                                 modifySuccess={this.editBasicSuccess}
-                                                disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
+                                                disabled={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY') ? false : true}
                                             />
                                         </dd>
                                     </dl>
                                     <dl className="dl-horizontal crm-basic-item detail_item crm-basic-administrative-level">
-                                        <dt>{Intl.get("crm.administrative.level", "行政级别")}</dt>
+                                        <dt>{Intl.get('crm.administrative.level', '行政级别')}</dt>
                                         <dd>
                                             <BasicEditSelectField
                                                 isMerge={this.props.isMerge}
@@ -240,8 +240,8 @@ var BasicData = React.createClass({
                                                 value={level}
                                                 field="administrative_level"
                                                 selectOptions={this.getAdministrativeLevelOptions()}
-                                                disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
-                                                placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
+                                                disabled={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY') ? false : true}
+                                                placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
                                                 onSelectChange={this.onSelectAdministrativeLevel}
                                                 cancelEditField={this.cancelAdministrativeLevel}
                                                 saveEditSelect={CrmBasicAjax.updateCustomer}
@@ -250,7 +250,7 @@ var BasicData = React.createClass({
                                         </dd>
                                     </dl>
                                     <dl className="dl-horizontal crm-basic-item detail_item crm-basic-loaction">
-                                        <dt>{Intl.get("crm.96", "地域")}</dt>
+                                        <dt>{Intl.get('crm.96', '地域')}</dt>
                                         <dd>
                                             <LocationSelectField
                                                 isMerge={this.props.isMerge}
@@ -260,13 +260,13 @@ var BasicData = React.createClass({
                                                 city={basicData.city}
                                                 county={basicData.county}
                                                 modifySuccess={this.editBasicSuccess}
-                                                disabled={hasPrivilege("CUSTOMER_UPDATE_ADDRESS") ? false : true}
+                                                disabled={hasPrivilege('CUSTOMER_UPDATE_ADDRESS') ? false : true}
                                             />
                                         </dd>
                                     </dl>
                                     <dl className="dl-horizontal crm-basic-item detail_item crm-basic-address"
-                                        style={{whiteSpace: "normal", wordBreak: "break-all"}}>
-                                        <dt>{Intl.get("realm.address", "地址")}</dt>
+                                        style={{whiteSpace: 'normal', wordBreak: 'break-all'}}>
+                                        <dt>{Intl.get('realm.address', '地址')}</dt>
                                         <dd>
                                             <BasicEditInputField
                                                 isMerge={this.props.isMerge}
@@ -275,15 +275,15 @@ var BasicData = React.createClass({
                                                 value={basicData.address}
                                                 field="address"
                                                 type="text"
-                                                placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
-                                                disabled={hasPrivilege("CUSTOMER_UPDATE_ADDRESS") ? false : true}
+                                                placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                                                disabled={hasPrivilege('CUSTOMER_UPDATE_ADDRESS') ? false : true}
                                                 saveEditInput={CrmBasicAjax.updateCustomer}
                                                 modifySuccess={this.editBasicSuccess}
                                             />
                                         </dd>
                                     </dl>
                                     <dl className="dl-horizontal crm-basic-item detail_item crm-basic-remarks"
-                                        style={{whiteSpace: "normal", wordBreak: "break-all"}}>
+                                        style={{whiteSpace: 'normal', wordBreak: 'break-all'}}>
                                         <dt><ReactIntl.FormattedMessage id="common.remark" defaultMessage="备注"/></dt>
                                         <dd>
                                             <CommentTextareaField
@@ -292,14 +292,14 @@ var BasicData = React.createClass({
                                                 customerId={basicData.id}
                                                 remarks={basicData.remarks}
                                                 modifySuccess={this.editBasicSuccess}
-                                                disabled={hasPrivilege("CUSTOMER_UPDATE_REMARK") ? false : true}
+                                                disabled={hasPrivilege('CUSTOMER_UPDATE_REMARK') ? false : true}
                                             />
                                         </dd>
                                     </dl>
 
                                 </div>
                                 <SalesSelectField
-                                    enableEdit={hasPrivilege("CUSTOMER_UPDATE_SALES")}
+                                    enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES')}
                                     enableTransfer={this.enableTransferCustomer()}
                                     isMerge={this.props.isMerge}
                                     updateMergeCustomer={this.props.updateMergeCustomer}
@@ -318,9 +318,9 @@ var BasicData = React.createClass({
                                         <label>
                                             <ReactIntl.FormattedMessage
                                                 id="crm.198"
-                                                defaultMessage={`有{number}个用户`}
+                                                defaultMessage={'有{number}个用户'}
                                                 values={{
-                                                    "number": <span className=" statistic-num"> {userNum} </span>
+                                                    'number': <span className=" statistic-num"> {userNum} </span>
                                                 }}
                                             />
                                         </label>

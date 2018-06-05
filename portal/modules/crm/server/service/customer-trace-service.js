@@ -3,15 +3,15 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var restApis = {
     //获取客户跟踪记录
-    getCustomerTraceList: "/rest/callrecord/v2/callrecord/query/trace/customer",
+    getCustomerTraceList: '/rest/callrecord/v2/callrecord/query/trace/customer',
     // 添加客户跟踪记录
-    addCustomerTraceList: "/rest/callrecord/v2/callrecord/trace",
+    addCustomerTraceList: '/rest/callrecord/v2/callrecord/trace',
     // 更新客户跟踪记录
-    updateCustomerTraceList: "/rest/callrecord/v2/callrecord/trace",
+    updateCustomerTraceList: '/rest/callrecord/v2/callrecord/trace',
 };
 exports.restUrls = restApis;
 // 获取客户跟踪记录列表

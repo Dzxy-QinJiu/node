@@ -1,44 +1,44 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-var RightPanelClose = require("../../../../components/rightPanel").RightPanelClose;
-var RightPanelCancel = require("../../../../components/rightPanel").RightPanelCancel;
-var RightPanelSubmit = require("../../../../components/rightPanel").RightPanelSubmit;
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
+var RightPanelClose = require('../../../../components/rightPanel').RightPanelClose;
+var RightPanelCancel = require('../../../../components/rightPanel').RightPanelCancel;
+var RightPanelSubmit = require('../../../../components/rightPanel').RightPanelSubmit;
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 //app选择器，能选择权限
-var AppSelector = require("../../../../components/app-selector/app-selector");
-var AppRolePermission = require("../../../../components/user_manage_components/app-role-permission");
+var AppSelector = require('../../../../components/app-selector/app-selector');
+var AppRolePermission = require('../../../../components/user_manage_components/app-role-permission');
 var passwdStrengthFile = require('../../../../components/password-strength-bar');
 var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
 
-var AppUserUtil = require("../util/app-user-util");
-var AppUserAction = require("../action/app-user-actions");
-var AppUserStore = require("../store/app-user-store");
-var AppUserDetailAction = require("../action/app-user-detail-actions");
-var AppUserPanelSwitchAction = require("../action/app-user-panelswitch-actions");
-var UserDetailAddAppAction = require("../action/user-detail-add-app-actions");
-import UserDetailAddAppStore from "../store/user-detail-add-app-store";
+var AppUserUtil = require('../util/app-user-util');
+var AppUserAction = require('../action/app-user-actions');
+var AppUserStore = require('../store/app-user-store');
+var AppUserDetailAction = require('../action/app-user-detail-actions');
+var AppUserPanelSwitchAction = require('../action/app-user-panelswitch-actions');
+var UserDetailAddAppAction = require('../action/user-detail-add-app-actions');
+import UserDetailAddAppStore from '../store/user-detail-add-app-store';
 
-var CustomRadioGroup = require("../../../../components/custom_radio_group");
-import DateSelector from "../../../../components/date-selector";
-var crypto = require("crypto");
-var Tabs = require("antd").Tabs;
+var CustomRadioGroup = require('../../../../components/custom_radio_group');
+import DateSelector from '../../../../components/date-selector';
+var crypto = require('crypto');
+var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
-var Form = require("antd").Form;
+var Form = require('antd').Form;
 var FormItem = Form.Item;
-var Input = require("antd").Input;
-var InputNumber = require("antd").InputNumber;
-var Select = require("antd").Select;
+var Input = require('antd').Input;
+var InputNumber = require('antd').InputNumber;
+var Select = require('antd').Select;
 var Option = Select.Option;
-import { DatePicker } from "antd";
-import FieldMixin from "../../../../components/antd-form-fieldmixin";
-var Radio = require("antd").Radio;
+import { DatePicker } from 'antd';
+import FieldMixin from '../../../../components/antd-form-fieldmixin';
+var Radio = require('antd').Radio;
 var RadioGroup = Radio.Group;
-var AlertTimer = require("../../../../components/alert-timer");
-var Icon = require("antd").Icon;
-var Alert = require("antd").Alert;
-var privilegeChecker = require("../../../../components/privilege/checker");
-var AutosizeTextarea = require("../../../../components/autosize-textarea");
-var language = require("../../../../public/language/getLanguage");
+var AlertTimer = require('../../../../components/alert-timer');
+var Icon = require('antd').Icon;
+var Alert = require('antd').Alert;
+var privilegeChecker = require('../../../../components/privilege/checker');
+var AutosizeTextarea = require('../../../../components/autosize-textarea');
+var language = require('../../../../public/language/getLanguage');
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -46,7 +46,7 @@ LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
 var labelCol = {span: 4};
 var wrapperCol = {span: 11};
 
-var CustomerSuggest = require("./customer_suggest/customer_suggest");
+var CustomerSuggest = require('./customer_suggest/customer_suggest');
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
 
 var UserDetailAddApp = React.createClass({
@@ -65,9 +65,9 @@ var UserDetailAddApp = React.createClass({
         UserDetailAddAppAction.resetState();
     },
     md5: function(value) {
-        var md5Hash = crypto.createHash("md5");
+        var md5Hash = crypto.createHash('md5');
         md5Hash.update(value);
-        return md5Hash.digest("hex");
+        return md5Hash.digest('hex');
     },
     getDelayTimeMillis: function() {
         //延期周期
@@ -238,9 +238,9 @@ var UserDetailAddApp = React.createClass({
             if(!this.state.formData.batchSelectedApps.length) {
                 var appNotSelected = this.getBatchAppJsonList();
                 if(!appNotSelected.length) {
-                    UserDetailAddAppAction.setBatchSelectedAppError( Intl.get("user.select.user.tip", "请在用户列表中选择用户"));
+                    UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.select.user.tip', '请在用户列表中选择用户'));
                 } else {
-                    UserDetailAddAppAction.setBatchSelectedAppError( Intl.get("user.app.select.please", "请选择应用"));
+                    UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.app.select.please', '请选择应用'));
                 }
                 return;
             }
@@ -254,7 +254,7 @@ var UserDetailAddApp = React.createClass({
             }
             // 没有选择角色，则提示错误
             if(!this.state.formData.roles.length) {
-                UserDetailAddAppAction.batchChangePermissionNoSelectRoleError(Intl.get("user.role.select.tip", "至少选择一个角色"));
+                UserDetailAddAppAction.batchChangePermissionNoSelectRoleError(Intl.get('user.role.select.tip', '至少选择一个角色'));
                 return;
             } else {
                 UserDetailAddAppAction.batchChangePermissionNoSelectRoleError('');
@@ -319,7 +319,7 @@ var UserDetailAddApp = React.createClass({
         if(currentRows.length) {
             UserDetailAddAppAction.setBatchSelectedAppError(false);
         } else {
-            UserDetailAddAppAction.setBatchSelectedAppError( Intl.get("user.select.user.tip", "请在用户列表中选择用户"));
+            UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.select.user.tip', '请在用户列表中选择用户'));
         }
         //当前能够选中的应用列表
         var currentAppIdList = _.pluck(this.getBatchAppJsonList() , 'app_id');
@@ -368,7 +368,7 @@ var UserDetailAddApp = React.createClass({
         };
         if(this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get("user.operate.success", "操作成功")} type="success" showIcon onHide={hide}/>
+                <AlertTimer time={3000} message={Intl.get('user.operate.success', '操作成功')} type="success" showIcon onHide={hide}/>
             );
         }
         if(this.state.submitResult === 'error') {
@@ -474,53 +474,53 @@ var UserDetailAddApp = React.createClass({
         if(isAdmin) {
             //批量开通、修改应用
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_GRANT_APPLICATION)) {
-                options.push({name: Intl.get("user.batch.app.open", "开通产品"),value: "grant_application"});
+                options.push({name: Intl.get('user.batch.app.open', '开通产品'),value: 'grant_application'});
             }
             //批量修改密码
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_USER_PASSWORD)) {
-                options.push({name: Intl.get("common.edit.password", "修改密码"),value: "change_password"});
+                options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'change_password'});
             }
             //批量修改类型
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_TYPE)) {
-                options.push({name: Intl.get("user.batch.open.type", "开通类型"),value: "grant_type"});
+                options.push({name: Intl.get('user.batch.open.type', '开通类型'),value: 'grant_type'});
             }
             //批量修改开通状态
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_STATUS)) {
-                options.push({name: Intl.get("common.app.status", "开通状态"),value: "grant_status"});
+                options.push({name: Intl.get('common.app.status', '开通状态'),value: 'grant_status'});
             }
             //批量修改开通时间
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_PERIOD)) {
-                options.push({name: Intl.get("user.open.cycle", "开通周期"),value: "grant_period"});
+                options.push({name: Intl.get('user.open.cycle', '开通周期'),value: 'grant_period'});
             }
             //批量修改用户所属客户
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_USER_CUSTOMER)) {
-                options.push({name: Intl.get("common.belong.customer", "所属客户"),value: "grant_customer"});
+                options.push({name: Intl.get('common.belong.customer', '所属客户'),value: 'grant_customer'});
             }
             //批量修改角色、权限
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_ROLES)) {
-                options.push({name: Intl.get("user.batch.auth.set", "权限设置"),value: "grant_roles"});
+                options.push({name: Intl.get('user.batch.auth.set', '权限设置'),value: 'grant_roles'});
             }
         }
 
         if(this.hasDelayTimeTab()) {
             if(isAdmin) {
                 if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_DELAY)) {
-                    options.push({name: Intl.get("user.batch.delay", "批量延期") , value: "grant_delay"});
+                    options.push({name: Intl.get('user.batch.delay', '批量延期') , value: 'grant_delay'});
                 }
             } else {
-                options.push({name: Intl.get("user.batch.apply.delay", "申请延期") , value: "grant_delay"});
+                options.push({name: Intl.get('user.batch.apply.delay', '申请延期') , value: 'grant_delay'});
             }
         }
         if(!isAdmin) {
-            options.push({name: Intl.get("common.app.status", "开通状态"),value: "sales_grant_status"});
-            options.push({name: Intl.get("common.edit.password", "修改密码"),value: "sales_change_password"});
+            options.push({name: Intl.get('common.app.status', '开通状态'),value: 'sales_grant_status'});
+            options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'sales_change_password'});
         }
         return (
             <div className="user-batch-operator-style">
                 <div className="selected-number">
                     <ReactIntl.FormattedMessage
                         id="user.batch.selected.num"
-                        defaultMessage={`已选择{num}个用户`}
+                        defaultMessage={'已选择{num}个用户'}
                         values={{'num': <span className="the-number">{selectUserCount}</span>}}
                     />
                 </div>
@@ -554,7 +554,7 @@ var UserDetailAddApp = React.createClass({
         }
         var appNotSelected = this.state.app_list;
         var formData = this.state.formData;
-        var app_selector_id = _.uniqueId("app_selector");
+        var app_selector_id = _.uniqueId('app_selector');
         return (
             <div className="ant-form-item">
                 <label className="col-4"><ReactIntl.FormattedMessage id="common.add.app" defaultMessage="添加应用" /></label>
@@ -601,12 +601,12 @@ var UserDetailAddApp = React.createClass({
                 passBarShow: false,
                 passStrength: 'L'
             });
-            callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
         }
     },
     checkPass2: function(rule, value, callback) {
         if (value && value !== this.state.formData.password) {
-            callback( Intl.get("common.password.unequal", "两次输入密码不一致！"));
+            callback( Intl.get('common.password.unequal', '两次输入密码不一致！'));
         } else {
             callback();
         }
@@ -622,7 +622,7 @@ var UserDetailAddApp = React.createClass({
             <div>
                 <input type="password" name="password" style={{display: 'none'}}/>
                 <FormItem
-                    label={Intl.get("common.password", "密码")}
+                    label={Intl.get('common.password', '密码')}
                     id="password1"
                     labelCol={labelCol}
                     wrapperCol={wrapperCol}
@@ -639,7 +639,7 @@ var UserDetailAddApp = React.createClass({
                             type="password"
                             autoComplete="off"
                             value={formData.password}
-                            placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
+                            placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
                         />
                     </Validator>
                 </FormItem>
@@ -656,7 +656,7 @@ var UserDetailAddApp = React.createClass({
                         null
                 }
                 <FormItem
-                    label={Intl.get("common.confirm.password", "确认密码")}
+                    label={Intl.get('common.confirm.password', '确认密码')}
                     id="password2"
                     labelCol={labelCol}
                     wrapperCol={wrapperCol}
@@ -666,7 +666,7 @@ var UserDetailAddApp = React.createClass({
                 >
                     <Validator
                         rules={[
-                            {required: true,whitespace: true,message: Intl.get("common.password.unequal", "两次输入密码不一致！")},
+                            {required: true,whitespace: true,message: Intl.get('common.password.unequal', '两次输入密码不一致！')},
                             {validator: this.checkPass2}
                         ]}
                     >
@@ -676,7 +676,7 @@ var UserDetailAddApp = React.createClass({
                             type="password"
                             autoComplete="off"
                             value={formData.repassword}
-                            placeholder={Intl.get("common.input.confirm.password", "请输入确认密码")}
+                            placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
                             maxLength={18}
                         />
                     </Validator>
@@ -701,9 +701,9 @@ var UserDetailAddApp = React.createClass({
                 {this.renderMultiAppSelectBlock()}
                 { !Oplate.hideSomeItem &&
                 <FormItem
-                    label={Intl.get("user.batch.open.type", "开通类型")}
+                    label={Intl.get('user.batch.open.type', '开通类型')}
                     labelCol={labelCol}
-                    wrapperCol={{span: ((language.lan() == "es" || language.lan() == "en") ? 18 : 16)}}
+                    wrapperCol={{span: ((language.lan() == 'es' || language.lan() == 'en') ? 18 : 16)}}
                 >
                     <CustomRadioGroup
                         options={options}
@@ -732,7 +732,7 @@ var UserDetailAddApp = React.createClass({
             <div>
                 {this.renderMultiAppSelectBlock()}
                 <FormItem
-                    label={Intl.get("user.open.cycle", "开通周期")}
+                    label={Intl.get('user.open.cycle', '开通周期')}
                     labelCol={labelCol}
                     wrapperCol={{span: 20}}
                 >
@@ -740,7 +740,7 @@ var UserDetailAddApp = React.createClass({
                         disableDateBeforeRange={true}
                         disableDateBeforeToday={true}
                         endTimeEndOfDay={false}
-                        getEndTimeTip={function(date){return Intl.get("user.open.cycle.date.tip","将在{date}的0点到期",{'date': date});}}
+                        getEndTimeTip={function(date){return Intl.get('user.open.cycle.date.tip','将在{date}的0点到期',{'date': date});}}
                         range={formData.range}
                         onSelect={this.dateChange}>
                         <DateSelector.Option value="1w"><ReactIntl.FormattedMessage id="user.time.one.week" defaultMessage="1周" /></DateSelector.Option>
@@ -765,7 +765,7 @@ var UserDetailAddApp = React.createClass({
             <div>
                 {this.renderMultiAppSelectBlock()}
                 <FormItem
-                    label={Intl.get("user.expire.select", "到期可选")}
+                    label={Intl.get('user.expire.select', '到期可选')}
                     labelCol={labelCol}
                     wrapperCol={wrapperCol}
                 >
@@ -777,7 +777,7 @@ var UserDetailAddApp = React.createClass({
                     </RadioGroup>
                 </FormItem>
                 <FormItem
-                    label={Intl.get("common.app.status", "开通状态")}
+                    label={Intl.get('common.app.status', '开通状态')}
                     labelCol={labelCol}
                     wrapperCol={wrapperCol}
                 >
@@ -799,13 +799,13 @@ var UserDetailAddApp = React.createClass({
         return (
             <div>
                 <FormItem
-                    label={Intl.get("common.remark", "备注")}
+                    label={Intl.get('common.remark', '备注')}
                     labelCol={labelCol}
                     wrapperCol={{span: 13}}
                 >
                     <AutosizeTextarea
                         rows="5"
-                        onChange={this.remarkChange.bind(this , "passwordRemark")}
+                        onChange={this.remarkChange.bind(this , 'passwordRemark')}
                         value={this.state.formData.remark.passwordRemark}
                     />
                 </FormItem>
@@ -822,7 +822,7 @@ var UserDetailAddApp = React.createClass({
             <div>
                 {this.renderMultiAppSelectBlock()}
                 <FormItem
-                    label={Intl.get("common.app.status", "开通状态")}
+                    label={Intl.get('common.app.status', '开通状态')}
                     labelCol={labelCol}
                     wrapperCol={wrapperCol}
                 >
@@ -833,13 +833,13 @@ var UserDetailAddApp = React.createClass({
                     </RadioGroup>
                 </FormItem>
                 <FormItem
-                    label={Intl.get("common.remark", "备注")}
+                    label={Intl.get('common.remark', '备注')}
                     labelCol={labelCol}
                     wrapperCol={{span: 13}}
                 >
                     <AutosizeTextarea
                         rows="5"
-                        onChange={this.remarkChange.bind(this , "statusRemark")}
+                        onChange={this.remarkChange.bind(this , 'statusRemark')}
                         value={this.state.formData.remark.statusRemark}
                     />
                 </FormItem>
@@ -923,8 +923,8 @@ var UserDetailAddApp = React.createClass({
                 onChange={this.batchAppChange}
                 ref="batchAppSelect"
                 optionFilterProp="children"
-                notFoundContent={!batchApps.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
-                searchPlaceholder={Intl.get("user.app.select.please", "请选择应用")}
+                notFoundContent={!batchApps.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                searchPlaceholder={Intl.get('user.app.select.please', '请选择应用')}
             >
                 {batchApps}
             </Select>
@@ -938,7 +938,7 @@ var UserDetailAddApp = React.createClass({
         return (
             <div className="batch_app_select">
                 <FormItem
-                    label={Intl.get("common.app", "应用")}
+                    label={Intl.get('common.app', '应用')}
                     labelCol={labelCol}
                     wrapperCol={{span: 20}}
                 >
@@ -960,12 +960,12 @@ var UserDetailAddApp = React.createClass({
             return null;
         }
         var isSales = privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
-        var divWidth = (language.lan() == "zh") ? '80px' : '74px';
+        var divWidth = (language.lan() == 'zh') ? '80px' : '74px';
         let label = '';
         if (this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE) {
-            label = Intl.get(" user.time.end", "到期时间");
+            label = Intl.get(' user.time.end', '到期时间');
         } else {
-            label = Intl.get("common.delay.time", "延期时间");
+            label = Intl.get('common.delay.time', '延期时间');
         }
         return (
             <div>
@@ -977,7 +977,7 @@ var UserDetailAddApp = React.createClass({
                         wrapperCol={{span: 20}}
                     >
                         {this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE ? (
-                            <DatePicker placeholder={Intl.get("my.app.change.expire.time.placeholder", "请选择到期时间")}
+                            <DatePicker placeholder={Intl.get('my.app.change.expire.time.placeholder', '请选择到期时间')}
                                 onChange={this.setDelayDeadlineTime}
                                 disabledDate={this.disabledDate}
                                 defaultValue={moment(this.state.formData.delayDeadlineTime)}
@@ -1008,7 +1008,7 @@ var UserDetailAddApp = React.createClass({
                     </FormItem>
                 </div>
                 <FormItem
-                    label={Intl.get("user.expire.select", "到期可选")}
+                    label={Intl.get('user.expire.select', '到期可选')}
                     labelCol={labelCol}
                     wrapperCol={wrapperCol}
                 >
@@ -1023,13 +1023,13 @@ var UserDetailAddApp = React.createClass({
                 {
                     isSales ? (
                         <FormItem
-                            label={Intl.get("common.remark", "备注")}
+                            label={Intl.get('common.remark', '备注')}
                             labelCol={labelCol}
                             wrapperCol={{span: 13}}
                         >
                             <AutosizeTextarea
                                 rows="5"
-                                onChange={this.remarkChange.bind(this,"delayRemark")}
+                                onChange={this.remarkChange.bind(this,'delayRemark')}
                                 value={this.state.formData.remark.delayRemark}
                             />
                         </FormItem>
@@ -1044,7 +1044,7 @@ var UserDetailAddApp = React.createClass({
         }
         return (
             <FormItem
-                label={Intl.get("common.belong.customer", "所属客户")}
+                label={Intl.get('common.belong.customer', '所属客户')}
                 labelCol={labelCol}
                 wrapperCol={wrapperCol}
             >
@@ -1074,15 +1074,15 @@ var UserDetailAddApp = React.createClass({
         return (
             <div className="addapp_minor_items batch-role-permission">
                 <FormItem
-                    label={Intl.get("common.app", "应用")}
+                    label={Intl.get('common.app', '应用')}
                     labelCol={labelCol}
                     wrapperCol={{span: 20}}
                 >
                     <Select
-                        placeholder={Intl.get("user.app.select.please", "请选择应用")}
+                        placeholder={Intl.get('user.app.select.please', '请选择应用')}
                         value={selectedApp}
                         optionFilterProp="children"
-                        notFoundContent={!options.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
+                        notFoundContent={!options.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
                         onChange={UserDetailAddAppAction.rolePermissionAppChange}
                     >
                         {options}
@@ -1090,7 +1090,7 @@ var UserDetailAddApp = React.createClass({
                     {
                         this.state.roleSelectedAppError ?
                             <div className="batch-role-permission-apps">
-                                <Alert message={Intl.get("user.app.select.please", "请选择应用")} showIcon type="error"/>
+                                <Alert message={Intl.get('user.app.select.please', '请选择应用')} showIcon type="error"/>
                             </div> : null
                     }
                 </FormItem>
@@ -1128,13 +1128,13 @@ var UserDetailAddApp = React.createClass({
         var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
 
         return (
-            <div style={{height: "100%"}}>
+            <div style={{height: '100%'}}>
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <div className="user-detail-add-app">
                     <Form horizontal action="javascript:void(0)">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <Tabs defaultActiveKey="addapp">
-                                <TabPane tab={Intl.get("user.batch.change", "批量变更")} key="addapp">
+                                <TabPane tab={Intl.get('user.batch.change', '批量变更')} key="addapp">
                                     <div className="user_manage_user_detail_addapp" style={{height: fixedHeight}}>
                                         <GeminiScrollbar ref="gemini">
                                             <div className="addapp_major_items">
@@ -1144,7 +1144,7 @@ var UserDetailAddApp = React.createClass({
                                             </div>
                                             <div className="addapp_minor_items" style={{display: this.state.multipleSubType === 'grant_roles' ? 'none' : 'block'}}>
                                                 {
-                                                    this.renderAppsBlock("inner")
+                                                    this.renderAppsBlock('inner')
                                                 }
                                                 {
                                                     this.renderChangePassword()

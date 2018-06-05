@@ -1,4 +1,4 @@
-var _ = require("underscore");
+var _ = require('underscore');
 //用户审批列表转换
 exports.toRestObject = function(list) {
     var result = [];
@@ -6,7 +6,7 @@ exports.toRestObject = function(list) {
     list.forEach(function(item) {
         result.push({
             topic: item.topic,
-            presenter: item.producer ? item.producer.nick_name : "",
+            presenter: item.producer ? item.producer.nick_name : '',
             time: item.produce_date,
             id: item.id,
             order_id: item.message.order_id,
@@ -158,9 +158,9 @@ exports.toDetailRestObject = function(obj) {
 //这个代码提前出来，就不用重复写了
 function transformCustomerInfo(detail, result) {
     //客户数据
-    if (_.isString(detail.customer_name) && detail.customer_name && detail.customer_name.indexOf("、") < 0) {
+    if (_.isString(detail.customer_name) && detail.customer_name && detail.customer_name.indexOf('、') < 0) {
         result.customer_name = detail.customer_name;
-        if (_.isString(detail.customer_ids) && detail.customer_ids && detail.customer_ids.indexOf("、") < 0) {
+        if (_.isString(detail.customer_ids) && detail.customer_ids && detail.customer_ids.indexOf('、') < 0) {
             result.customer_id = detail.customer_ids;
         }
     }
@@ -218,7 +218,7 @@ exports.toDetailDelayRestObject = function(obj) {
         // 到期时间
         result.end_date = detail.end_date || '';
     }
-    if (detail.delay && detail.delay != "-1") {
+    if (detail.delay && detail.delay != '-1') {
         result.delayTime = detail.delay || '';
     }
     //增加特殊属性

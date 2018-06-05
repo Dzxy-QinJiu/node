@@ -2,10 +2,10 @@
  * 运营报告布局组件
  */
 
-import "./style.less";
-import TopNav from "../../components/top-nav";
-import AnalysisFilter from "../../components/analysis/filter";
-import { storageUtil } from "ant-utils";
+import './style.less';
+import TopNav from '../../components/top-nav';
+import AnalysisFilter from '../../components/analysis/filter';
+import { storageUtil } from 'ant-utils';
 
 const ReportLayout = React.createClass({
     render() {
@@ -13,9 +13,9 @@ const ReportLayout = React.createClass({
 
         //将原来在localStorage中存储的appId为用逗号分隔的综合的值改为"all"
         //以修复初次加载时app选择器只显示id，不显示应用名称的问题
-        if (storedAppId && storedAppId.indexOf(",") > -1) {
-            storedAppId = "all";
-            storageUtil.local.set(this.props.localStorageAppIdKey, "all");
+        if (storedAppId && storedAppId.indexOf(',') > -1) {
+            storedAppId = 'all';
+            storageUtil.local.set(this.props.localStorageAppIdKey, 'all');
         }
 
         return (

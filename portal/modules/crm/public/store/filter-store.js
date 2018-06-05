@@ -1,5 +1,5 @@
-var FilterActions = require("../action/filter-actions");
-import {CUSTOMER_TAGS} from "../utils/crm-util";
+var FilterActions = require('../action/filter-actions');
+import {CUSTOMER_TAGS} from '../utils/crm-util';
 function FilterStore() {
     this.appList = [];
     this.teamList = [];
@@ -12,20 +12,20 @@ function FilterStore() {
     this.salesRoleList = [];
     this.inputCondition = {};
     this.condition = {
-        sales_team_id: "",
-        industry: "",
-        province: "",
-        app_ids: [""],
-        labels: [""],//标签的筛选
-        customer_label: "",//阶段标签
-        member_role: "",//销售角色的筛选
-        competing_products: [""],//竞品的筛选
+        sales_team_id: '',
+        industry: '',
+        province: '',
+        app_ids: [''],
+        labels: [''],//标签的筛选
+        customer_label: '',//阶段标签
+        member_role: '',//销售角色的筛选
+        competing_products: [''],//竞品的筛选
         sales_opportunities: [{
-            sale_stages: "",
-            apps: [""]
+            sale_stages: '',
+            apps: ['']
         }],
-        administrative_level: "",//行政级别
-        otherSelectedItem: "",//其他类型的筛选
+        administrative_level: '',//行政级别
+        otherSelectedItem: '',//其他类型的筛选
     };
     this.isPanelShow = false;
 
@@ -55,7 +55,7 @@ FilterStore.prototype.getStageList = function(list) {
 };
 
 FilterStore.prototype.getStageTagList = function(data) {
-    let stageTagList = [{name: "", show_name: Intl.get("common.all", "全部")}];
+    let stageTagList = [{name: '', show_name: Intl.get('common.all', '全部')}];
     if (!data.errorMsg && _.isArray(data.list)) {
         let list = _.map(data.list, tag => {
             return {name: tag, show_name: tag};
@@ -80,7 +80,7 @@ FilterStore.prototype.getStageTagList = function(data) {
 };
 
 FilterStore.prototype.getSalesRoleList = function(data) {
-    let salesRoleList = [{name: "", show_name: Intl.get("common.all", "全部")}];
+    let salesRoleList = [{name: '', show_name: Intl.get('common.all', '全部')}];
     if (!data.errorMsg && _.isArray(data.list)) {
         let list = _.map(data.list, role => {
             return {name: role, show_name: role};

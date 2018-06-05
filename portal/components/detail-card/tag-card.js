@@ -2,21 +2,21 @@
  * 详情中信息展示的标签卡片
  * Created by wangliping on 2018/3/28.
  */
-require("./tag-card.less");
-import DetailCard from "./index";
-import classNames from "classnames";
-import {Button, Icon, Input, message} from "antd";
-import {DetailEditBtn} from "../rightPanel";
-import {isClueTag, isTurnOutTag, isHasCallBackTag} from "MOD_DIR/crm/public/utils/crm-util";
-import Trace from "LIB_DIR/trace";
-import {isDiffOfTwoArray} from "PUB_DIR/sources/utils/common-method-util";
+require('./tag-card.less');
+import DetailCard from './index';
+import classNames from 'classnames';
+import {Button, Icon, Input, message} from 'antd';
+import {DetailEditBtn} from '../rightPanel';
+import {isClueTag, isTurnOutTag, isHasCallBackTag} from 'MOD_DIR/crm/public/utils/crm-util';
+import Trace from 'LIB_DIR/trace';
+import {isDiffOfTwoArray} from 'PUB_DIR/sources/utils/common-method-util';
 class TagCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
-            displayType: "text",
-            submitErrorMsg: "",
+            displayType: 'text',
+            submitErrorMsg: '',
             enableEdit: this.props.enableEdit,
             tags: $.extend(true, [], this.props.tags),
             recommendTags: $.extend(true, [], this.props.recommendTags)
@@ -36,13 +36,13 @@ class TagCard extends React.Component {
         if (!tag) return;
         // ‘线索’、‘转出’、‘已回访’标签不可以添加
         if (isClueTag(tag) || isTurnOutTag(tag) || isHasCallBackTag(tag)) {
-            message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'{label}'标签", {label: tag}));
+            message.error(Intl.get('crm.sales.clue.add.disable', '不能手动添加\'{label}\'标签', {label: tag}));
             return;
         }
         this.toggleTag(tag, true);
         Trace.traceEvent($(ReactDOM.findDOMNode(this.refs.newTagAdd)), `添加新${this.props.title}`);
         //清空输入框
-        this.refs.newTag.refs.input.value = "";
+        this.refs.newTag.refs.input.value = '';
     }
 
     toggleTag(tag, isAdd) {
@@ -92,7 +92,7 @@ class TagCard extends React.Component {
             }, errorMsg => {
                 this.setState({
                     loading: false,
-                    submitErrorMsg: errorMsg || Intl.get("common.save.failed", "保存失败")
+                    submitErrorMsg: errorMsg || Intl.get('common.save.failed', '保存失败')
                 });
             });
         }
@@ -102,14 +102,14 @@ class TagCard extends React.Component {
         Trace.traceEvent(e, `取消对${this.props.title}的添加`);
         this.setState({
             tags: $.extend(true, [], this.props.tags),
-            displayType: "text",
+            displayType: 'text',
             submitErrorMsg: ''
         });
     }
 
     setEditable(e) {
         Trace.traceEvent(e, `点击设置${this.props.title}`);
-        this.setState({displayType: "edit"});
+        this.setState({displayType: 'edit'});
     }
 
     renderTagContent() {
@@ -126,7 +126,7 @@ class TagCard extends React.Component {
                     (<div className="inputWrap" ref="inputWrap">
                         <div className="tag-edit-block">
                             {unionTagsArray.map((tag, index) => {
-                                let className = classNames("common-tag", {"tag-selected": selectedTagsArray.indexOf(tag) > -1});
+                                let className = classNames('common-tag', {'tag-selected': selectedTagsArray.indexOf(tag) > -1});
                                 return (<span key={index} onClick={this.toggleTag.bind(this, tag, false)} ref={tag}
                                     className={className}>{tag}</span>);
                             })}
@@ -149,10 +149,10 @@ class TagCard extends React.Component {
         }
         return (<div className="tag-title-container">
             <span className="tag-title-text">{this.props.title}</span>
-            {this.props.noDataTip && this.state.displayType == "text" ?
+            {this.props.noDataTip && this.state.displayType == 'text' ?
                 <span className="no-tag-text">{this.props.noDataTip}</span> : null}
             {this.props.enableEdit && this.state.displayType === 'text' ?
-                <DetailEditBtn title={Intl.get("common.edit", "编辑")} onClick={(e) => {
+                <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={(e) => {
                     this.setEditable(e);
                 }}/> : null}
         </div>);
@@ -160,14 +160,14 @@ class TagCard extends React.Component {
 
     render() {
         //没有标签数据时，只展示标题、无数据的提示和编辑按钮
-        if (this.props.title && this.props.noDataTip && this.state.displayType === "text") {
+        if (this.props.title && this.props.noDataTip && this.state.displayType === 'text') {
             return (<DetailCard className="tag-card-container" content={this.renderTagTitle()}/>);
         }
         return (
             <DetailCard title={this.renderTagTitle()}
                 className="tag-card-container"
                 content={this.renderTagContent()}
-                isEdit={this.state.displayType === "edit"}
+                isEdit={this.state.displayType === 'edit'}
                 loading={this.state.loading}
                 saveErrorMsg={this.state.submitErrorMsg}
                 handleSubmit={this.handleSubmit.bind(this)}
@@ -178,11 +178,11 @@ class TagCard extends React.Component {
 }
 DetailCard.defaultProps = {
     title: null,//标题的展示内容 (string\ReactNode)
-    placeholder: "",//输入框的提示内容（string）
+    placeholder: '',//输入框的提示内容（string）
     tags: [], //标签(Array)
     recommendTags: [],//所有推荐标签的列表
     enableEdit: false,//能否编辑(Boolean)
-    noDataTip: "",//无数据时的提示
+    noDataTip: '',//无数据时的提示
     saveTags: function() {
     }//保存修改后的标签列表（Function）
 };

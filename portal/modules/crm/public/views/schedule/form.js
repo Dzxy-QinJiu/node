@@ -1,90 +1,90 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-require("../../css/schedule.less");
-var ScheduleStore = require("../../store/schedule-store");
-var ScheduleAction = require("../../action/schedule-action");
-var BatchChangeActions = require("../../action/batch-change-actions");
+require('../../css/schedule.less');
+var ScheduleStore = require('../../store/schedule-store');
+var ScheduleAction = require('../../action/schedule-action');
+var BatchChangeActions = require('../../action/batch-change-actions');
 var Spinner = require('../../../../../components/spinner');
 var AlertTimer = require('../../../../../components/alert-timer');
-import {Form, Input, Button, message, Select, Radio, Switch, TimePicker} from "antd";
+import {Form, Input, Button, message, Select, Radio, Switch, TimePicker} from 'antd';
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const FormItem = Form.Item;
-import "react-date-picker/index.css";
-import {DateFormatSpinnerInput} from "react-date-picker";
-import BootstrapDatepicker from "../../../../../components/bootstrap-datepicker";
-import ValidateMixin from "../../../../../mixins/ValidateMixin";
-import Trace from "LIB_DIR/trace";
-import {SELECT_FULL_OPTIONS, NO_SELECT_FULL_OPTIONS} from "PUB_DIR/sources/utils/consts";
+import 'react-date-picker/index.css';
+import {DateFormatSpinnerInput} from 'react-date-picker';
+import BootstrapDatepicker from '../../../../../components/bootstrap-datepicker';
+import ValidateMixin from '../../../../../mixins/ValidateMixin';
+import Trace from 'LIB_DIR/trace';
+import {SELECT_FULL_OPTIONS, NO_SELECT_FULL_OPTIONS} from 'PUB_DIR/sources/utils/consts';
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 const HOUR_MUNITE_FORMAT = oplateConsts.HOUR_MUNITE_FORMAT;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
-import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 const TIME_CONSTS = {
-    "ZERO": 0,
-    "ZERO_POINT_FIVE": 0.5,
-    "ONE": 1,
-    "TWO": 2,
-    "TWO_POINT_FIVE": 2.5,
-    "THREE": 3,
-    "ONE_POINT_FIVE": 1.5,
-    "FIVE": 5,
-    "FIVE_POINT_FIVE": 5.5,
-    "SEVERN": 7,
-    "TEN": 10,
-    "FIFTeen": 15,
-    "TWENTY_FOUR": 24,
-    "TWENTY_FOUR_POINT_FIVE": 24.5,
-    "THIRTY": 30,
-    "SIXTY": 60
+    'ZERO': 0,
+    'ZERO_POINT_FIVE': 0.5,
+    'ONE': 1,
+    'TWO': 2,
+    'TWO_POINT_FIVE': 2.5,
+    'THREE': 3,
+    'ONE_POINT_FIVE': 1.5,
+    'FIVE': 5,
+    'FIVE_POINT_FIVE': 5.5,
+    'SEVERN': 7,
+    'TEN': 10,
+    'FIFTeen': 15,
+    'TWENTY_FOUR': 24,
+    'TWENTY_FOUR_POINT_FIVE': 24.5,
+    'THIRTY': 30,
+    'SIXTY': 60
 };
 const TIME_TYPE_CONSTS = {
-    "NOT_REMIND": "not_remind",
-    "ONE_HOUR": "1h",
-    "TWO_HOURS": "2h",
-    "FIVE_HOURS": "5h",
-    "ONE_DAY": "1d",
-    "ONE_WEEK": "1w",
-    "AHEAD_5_MIN": "ahead_5min",
-    "AHEAD_10_MIN": "ahead_10min",
-    "AHEAD_15_MIN": "ahead_15min",
-    "AHEAD_30_MIN": "ahead_30min",
-    "AHEAD_1_H": "ahead_1h",
-    "THATDAY_10": "thatday_10",
-    "AHEAD_1DAY_10": "ahead_1day_10",
-    "AHEAD_2DAY_10": "ahead_2day_10",
-    "AHEAD_3DAY_10": "ahead_3day_10",
+    'NOT_REMIND': 'not_remind',
+    'ONE_HOUR': '1h',
+    'TWO_HOURS': '2h',
+    'FIVE_HOURS': '5h',
+    'ONE_DAY': '1d',
+    'ONE_WEEK': '1w',
+    'AHEAD_5_MIN': 'ahead_5min',
+    'AHEAD_10_MIN': 'ahead_10min',
+    'AHEAD_15_MIN': 'ahead_15min',
+    'AHEAD_30_MIN': 'ahead_30min',
+    'AHEAD_1_H': 'ahead_1h',
+    'THATDAY_10': 'thatday_10',
+    'AHEAD_1DAY_10': 'ahead_1day_10',
+    'AHEAD_2DAY_10': 'ahead_2day_10',
+    'AHEAD_3DAY_10': 'ahead_3day_10',
 
 };
 const CONTACT_TIMES = {
-    "1h": Intl.get("crm.alert.after.1.hours", "1小时后"),
-    "2h": Intl.get("crm.alert.after.2.hours", "2小时后"),
-    "5h": Intl.get("crm.alert.after.5.hours", "5小时后"),
-    "1d": Intl.get("crm.alert.after.1.day", "1天后"),
-    "1w": Intl.get("crm.alert.after.1.week", "1周后"),
-    "custom": Intl.get("user.time.custom", "自定义")
+    '1h': Intl.get('crm.alert.after.1.hours', '1小时后'),
+    '2h': Intl.get('crm.alert.after.2.hours', '2小时后'),
+    '5h': Intl.get('crm.alert.after.5.hours', '5小时后'),
+    '1d': Intl.get('crm.alert.after.1.day', '1天后'),
+    '1w': Intl.get('crm.alert.after.1.week', '1周后'),
+    'custom': Intl.get('user.time.custom', '自定义')
 };
 
 //日程类型
 const SCHEDULE_TYPES = [
-    {name: Intl.get("schedule.phone.connect", "电联"), value: "calls", iconCls: "icon-phone-call-out"},
-    {name: Intl.get("common.visit", "拜访"), value: "visit", iconCls: "icon-visit-briefcase"},
-    {name: Intl.get("common.others", "其他"), value: "other", iconCls: "icon-trace-other"}
+    {name: Intl.get('schedule.phone.connect', '电联'), value: 'calls', iconCls: 'icon-phone-call-out'},
+    {name: Intl.get('common.visit', '拜访'), value: 'visit', iconCls: 'icon-visit-briefcase'},
+    {name: Intl.get('common.others', '其他'), value: 'other', iconCls: 'icon-trace-other'}
 ];
 
 var CrmAlertForm = React.createClass({
     mixins: [ValidateMixin],
     getInitialState: function() {
         var formData = this.getInitialFormData();
-        var selectedAlertTimeRange = "not_remind";
+        var selectedAlertTimeRange = 'not_remind';
         return {
             formData: formData,
             isLoading: false,
             isMessageShow: false,
-            messageType: "success",
-            messageContent: "",
-            selectedTimeRange: "1h",//选中的联系时间
+            messageType: 'success',
+            messageContent: '',
+            selectedTimeRange: '1h',//选中的联系时间
             selectedAlertTimeRange: selectedAlertTimeRange,//选中的提醒时间的类型
             isSelectFullday: true//是否已经选择了全天
         };
@@ -92,15 +92,15 @@ var CrmAlertForm = React.createClass({
 
     getInitialFormData: function() {
         let formData = this.props.currentSchedule;
-        formData.topic = formData.topic || formData.customer_name || "";
+        formData.topic = formData.topic || formData.customer_name || '';
         //时间的默认值，用于编辑时使用
-        formData.scheduleType = formData.scheduleType || "calls";
+        formData.scheduleType = formData.scheduleType || 'calls';
         //联系的开始时间
-        formData.start_time = formData.start_time || moment().add(TIME_CONSTS.ONE, "h").valueOf();
+        formData.start_time = formData.start_time || moment().add(TIME_CONSTS.ONE, 'h').valueOf();
         //联系的结束时间
-        formData.end_time = formData.end_time || moment().add(TIME_CONSTS.ONE_POINT_FIVE, "h").valueOf();
+        formData.end_time = formData.end_time || moment().add(TIME_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
         //提醒时间
-        formData.alert_time = formData.alert_time || moment().add(TIME_CONSTS.ONE, "h").subtract(TIME_CONSTS.TEN, 'm').valueOf();
+        formData.alert_time = formData.alert_time || moment().add(TIME_CONSTS.ONE, 'h').subtract(TIME_CONSTS.TEN, 'm').valueOf();
         return formData;
     },
     //是否是今天
@@ -112,7 +112,7 @@ var CrmAlertForm = React.createClass({
     //是否是N天后
     isNDayLater: function(date, n) {
         const newTime = moment(date).format(DATE_FORMAT);
-        const isNDayLater = moment().add(n, "day").format(DATE_FORMAT);
+        const isNDayLater = moment().add(n, 'day').format(DATE_FORMAT);
         return (newTime == isNDayLater);
     },
     //更改开始日期
@@ -123,7 +123,7 @@ var CrmAlertForm = React.createClass({
             this.state.formData.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
             //并未选中全天这种状态
             if (!this.state.isSelectFullday) {
-                this.state.selectedAlertTimeRange = "not_remind";
+                this.state.selectedAlertTimeRange = 'not_remind';
             }
         } else {
             //是否选中全天的状态
@@ -136,52 +136,52 @@ var CrmAlertForm = React.createClass({
                 //原有时间
                 const dateTime = this.state.formData.start_time;
                 //获取原有时间里去除了日期之后的时间值部分
-                const timeValue = dateTime - moment(dateTime).startOf("day").valueOf();
+                const timeValue = dateTime - moment(dateTime).startOf('day').valueOf();
                 //用新选择的日期加上原有时间里的时间值部分得到新选择的时间值
                 const newTime = moment(date).valueOf() + timeValue;
                 //禁止选择小于当前时间的时间
                 if (newTime < moment().valueOf()) return;
                 //自定义的时候 修改开始时间的时候，把结束时间设置成比开始时间晚一分钟
                 this.state.formData.start_time = newTime;
-                this.state.formData.end_time = moment(newTime).add(TIME_CONSTS.ONE, "m").valueOf();
+                this.state.formData.end_time = moment(newTime).add(TIME_CONSTS.ONE, 'm').valueOf();
             }
         }
         this.setState(this.state);
-        Trace.traceEvent(this.getDOMNode(), "修改提醒日期");
+        Trace.traceEvent(this.getDOMNode(), '修改提醒日期');
     },
     //更改开始时间
     onScheduleStartTimeChange: function(momentTime, timeStr) {
         //用原有时间里的日期部分加上新选择的时间，组合出新选择的时间字符串
-        const newTimeStr = moment(this.state.formData.start_time).format(DATE_FORMAT) + " " + timeStr;
+        const newTimeStr = moment(this.state.formData.start_time).format(DATE_FORMAT) + ' ' + timeStr;
         //将时间字符串转换成unix时间戳
         const newTime = moment(newTimeStr).valueOf();
         //禁止选择小于当前时间的时间
         if (newTime < moment().valueOf()) {
-            message.warn(Intl.get("crm.alert.select.future.time", "请选择大于当前时间的时间"));
+            message.warn(Intl.get('crm.alert.select.future.time', '请选择大于当前时间的时间'));
             return;
         }
         this.state.formData.start_time = newTime;
-        this.state.formData.end_time = moment(newTime).add(TIME_CONSTS.ONE, "m").valueOf();
+        this.state.formData.end_time = moment(newTime).add(TIME_CONSTS.ONE, 'm').valueOf();
         this.setState(this.state);
-        Trace.traceEvent(this.getDOMNode(), "修改开始时间");
+        Trace.traceEvent(this.getDOMNode(), '修改开始时间');
 
     },
     //更改结束时间
     onScheduleEndTimeChange: function(momentTime, timeStr) {
         //用原有时间里的日期部分加上新选择的时间，组合出新选择的时间字符串
-        const newTimeStr = moment(this.state.formData.end_time).format(DATE_FORMAT) + " " + timeStr;
+        const newTimeStr = moment(this.state.formData.end_time).format(DATE_FORMAT) + ' ' + timeStr;
         //将时间字符串转换成unix时间戳
         const newTime = moment(newTimeStr).valueOf();
         //禁止选择小于当前时间的时间
         if (newTime < moment().valueOf()) {
-            message.warn(Intl.get("crm.alert.select.future.time", "请选择大于当前时间的时间"));
+            message.warn(Intl.get('crm.alert.select.future.time', '请选择大于当前时间的时间'));
             return;
         }
         this.state.formData.end_time = newTime;
         this.setState({
             formData: this.state.formData
         });
-        Trace.traceEvent(this.getDOMNode(), "修改结束时间");
+        Trace.traceEvent(this.getDOMNode(), '修改结束时间');
     },
 
     //添加联系计划
@@ -210,11 +210,11 @@ var CrmAlertForm = React.createClass({
                         //如果批量添加日程都成功了，就会把下拉面板关闭
                         if (count == totalLength) {
                             //提示全部添加成功
-                            message.success(Intl.get("batch.success.add.schedule", "所有联系计划均添加成功"));
+                            message.success(Intl.get('batch.success.add.schedule', '所有联系计划均添加成功'));
                             this.props.closeContent();
                         }
                     } else {
-                        message.error(Intl.get("batch.failed.add.schedule", "{customerName}添加联系计划失败", {customerName: submitObj.customer_name}), 60);
+                        message.error(Intl.get('batch.failed.add.schedule', '{customerName}添加联系计划失败', {customerName: submitObj.customer_name}), 60);
                     }
                 });
             });
@@ -222,10 +222,10 @@ var CrmAlertForm = React.createClass({
             //单独添加一个联系计划
             ScheduleAction.addSchedule(submitObj, (resData) => {
                 if (resData.id) {
-                    this.showMessage(Intl.get("user.user.add.success", "添加成功"));
+                    this.showMessage(Intl.get('user.user.add.success', '添加成功'));
                     ScheduleAction.afterAddSchedule(resData);
                 } else {
-                    this.showMessage(resData || Intl.get("crm.154", "添加失败"), "error");
+                    this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
                 }
                 this.setState({isLoading: false});
             });
@@ -242,10 +242,10 @@ var CrmAlertForm = React.createClass({
                 if (this.props.currentSchedule.id) {
                     ScheduleAction.editAlert(this.state.formData, (resData) => {
                         if (resData.code == 0) {
-                            this.showMessage(Intl.get("user.edit.success", "修改成功"));
+                            this.showMessage(Intl.get('user.edit.success', '修改成功'));
                             _.isFunction(this.props.getScheduleList) && this.props.getScheduleList();
                         } else {
-                            this.showMessage(Intl.get("common.edit.failed", "修改失败"), "error");
+                            this.showMessage(Intl.get('common.edit.failed', '修改失败'), 'error');
                         }
                         this.setState({isLoading: false});
                     });
@@ -260,36 +260,36 @@ var CrmAlertForm = React.createClass({
         this.setState({
             isLoading: false,
             isMessageShow: true,
-            messageType: type || "success",
-            messageContent: content || "",
+            messageType: type || 'success',
+            messageContent: content || '',
         });
     },
     //对应不同下拉框中的选项
     switchDiffSelectOptions(formData){
         var value = this.state.selectedAlertTimeRange;
-        var alert_time = "";
+        var alert_time = '';
         var start_time = formData.start_time;
         var end_time = formData.end_time;
         switch (value) {
         case TIME_TYPE_CONSTS.NOT_REMIND:
             //选择不提醒的时候，设置socketio_notice为false，alert_time字段也必须要传，所以传一个当前时间之后，结束时间之前的时间
-            alert_time = moment(end_time).subtract(TIME_CONSTS.ONE, "s").valueOf();
+            alert_time = moment(end_time).subtract(TIME_CONSTS.ONE, 's').valueOf();
             this.state.formData.socketio_notice = false;
             break;
         case TIME_TYPE_CONSTS.AHEAD_5_MIN:
-            alert_time = moment(start_time).subtract(TIME_CONSTS.FIVE, "m").valueOf();
+            alert_time = moment(start_time).subtract(TIME_CONSTS.FIVE, 'm').valueOf();
             break;
         case TIME_TYPE_CONSTS.AHEAD_10_MIN:
-            alert_time = moment(start_time).subtract(TIME_CONSTS.TEN, "m").valueOf();
+            alert_time = moment(start_time).subtract(TIME_CONSTS.TEN, 'm').valueOf();
             break;
         case TIME_TYPE_CONSTS.AHEAD_15_MIN:
-            alert_time = moment(start_time).subtract(TIME_CONSTS.FIFTeen, "m").valueOf();
+            alert_time = moment(start_time).subtract(TIME_CONSTS.FIFTeen, 'm').valueOf();
             break;
         case TIME_TYPE_CONSTS.AHEAD_30_MIN:
-            alert_time = moment(start_time).subtract(TIME_CONSTS.THIRTY, "m").valueOf();
+            alert_time = moment(start_time).subtract(TIME_CONSTS.THIRTY, 'm').valueOf();
             break;
         case TIME_TYPE_CONSTS.AHEAD_1_H:
-            alert_time = moment(start_time).subtract(TIME_CONSTS.ONE, "h").valueOf();
+            alert_time = moment(start_time).subtract(TIME_CONSTS.ONE, 'h').valueOf();
             break;
         case TIME_TYPE_CONSTS.THATDAY_10:
             alert_time = moment(start_time).set('hour', TIME_CONSTS.TEN).set('minute', TIME_CONSTS.ZERO).set('second', TIME_CONSTS.ZERO).valueOf();
@@ -309,43 +309,43 @@ var CrmAlertForm = React.createClass({
         delete submitObj.customer_name;
         delete submitObj.edit;
         if (formData.end_time <= formData.start_time) {
-            message.warn(Intl.get("crm.alert.finish.longer", "结束时间必须要大于开始时间"));
+            message.warn(Intl.get('crm.alert.finish.longer', '结束时间必须要大于开始时间'));
             return;
         }
         this.handleSubmit(submitObj);
     },
     handleSave: function() {
         var formData = this.state.formData;
-        if (this.state.selectedTimeRange !== "custom") {
+        if (this.state.selectedTimeRange !== 'custom') {
             switch (this.state.selectedTimeRange) {
             //根据不同的选择的不同的时间段类型，计算不同的开始时间
             case TIME_TYPE_CONSTS.ONE_HOUR:
-                formData.start_time = moment().add(TIME_CONSTS.ONE, "h").valueOf();
-                formData.end_time = moment().add(TIME_CONSTS.ONE_POINT_FIVE, "h").valueOf();
+                formData.start_time = moment().add(TIME_CONSTS.ONE, 'h').valueOf();
+                formData.end_time = moment().add(TIME_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
                 break;
             case TIME_TYPE_CONSTS.TWO_HOURS:
-                formData.start_time = moment().add(TIME_CONSTS.TWO, "h").valueOf();
-                formData.end_time = moment().add(TIME_CONSTS.TWO_POINT_FIVE, "h").valueOf();
+                formData.start_time = moment().add(TIME_CONSTS.TWO, 'h').valueOf();
+                formData.end_time = moment().add(TIME_CONSTS.TWO_POINT_FIVE, 'h').valueOf();
                 break;
             case TIME_TYPE_CONSTS.FIVE_HOURS:
-                formData.start_time = moment().add(TIME_CONSTS.FIVE, "h").valueOf();
-                formData.end_time = moment().add(TIME_CONSTS.FIVE_POINT_FIVE, "h").valueOf();
+                formData.start_time = moment().add(TIME_CONSTS.FIVE, 'h').valueOf();
+                formData.end_time = moment().add(TIME_CONSTS.FIVE_POINT_FIVE, 'h').valueOf();
                 break;
             case TIME_TYPE_CONSTS.ONE_DAY:
-                formData.start_time = moment().add(TIME_CONSTS.TWENTY_FOUR, "h").valueOf();
-                formData.end_time = moment().add(TIME_CONSTS.TWENTY_FOUR_POINT_FIVE, "h").valueOf();
+                formData.start_time = moment().add(TIME_CONSTS.TWENTY_FOUR, 'h').valueOf();
+                formData.end_time = moment().add(TIME_CONSTS.TWENTY_FOUR_POINT_FIVE, 'h').valueOf();
                 break;
             case TIME_TYPE_CONSTS.ONE_WEEK:
-                formData.start_time = moment().add(TIME_CONSTS.TWENTY_FOUR * TIME_CONSTS.SEVERN, "h").valueOf();
-                formData.end_time = moment().add((TIME_CONSTS.TWENTY_FOUR * TIME_CONSTS.SEVERN + TIME_CONSTS.ZERO_POINT_FIVE), "h").valueOf();
+                formData.start_time = moment().add(TIME_CONSTS.TWENTY_FOUR * TIME_CONSTS.SEVERN, 'h').valueOf();
+                formData.end_time = moment().add((TIME_CONSTS.TWENTY_FOUR * TIME_CONSTS.SEVERN + TIME_CONSTS.ZERO_POINT_FIVE), 'h').valueOf();
                 break;
             }
         }
         this.switchDiffSelectOptions(this.state.formData);
-        Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-sure"), "保存联系计划");
+        Trace.traceEvent($(this.getDOMNode()).find('.alert-btn-block .btn-primary-sure'), '保存联系计划');
     },
     handleCancel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-cancel"), "取消添加联系计划");
+        Trace.traceEvent($(this.getDOMNode()).find('.alert-btn-block .btn-primary-cancel'), '取消添加联系计划');
         //如果是批量添加联系计划,关闭后应该清空数据
         if (_.isArray(this.props.selectedCustomer)) {
             this.setState({
@@ -359,7 +359,7 @@ var CrmAlertForm = React.createClass({
     //修改日程类型
     handleTypeChange: function(event) {
         let value = event.target.value;
-        Trace.traceEvent($(this.getDOMNode()).find(".ant-select-selection__rendered"), "修改日程的类型为" + value);
+        Trace.traceEvent($(this.getDOMNode()).find('.ant-select-selection__rendered'), '修改日程的类型为' + value);
         this.state.formData.scheduleType = value;
         this.setState({
             formData: this.state.formData
@@ -367,9 +367,9 @@ var CrmAlertForm = React.createClass({
     },
     //修改选择的时间
     handleTimeRangeChange: function(value) {
-        Trace.traceEvent($(this.getDOMNode()).find(".ant-radio-button"), "修改联系时间为" + value);
+        Trace.traceEvent($(this.getDOMNode()).find('.ant-radio-button'), '修改联系时间为' + value);
         var formData = this.state.formData;
-        if (value == "custom") {
+        if (value == 'custom') {
             //选择自定义时，要把开始和结束时间改为当前时间
             formData.start_time = moment().valueOf();
             formData.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
@@ -378,13 +378,13 @@ var CrmAlertForm = React.createClass({
         }
         this.setState({
             selectedTimeRange: value,
-            selectedAlertTimeRange: "not_remind",//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
+            selectedAlertTimeRange: 'not_remind',//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
             formData: this.state.formData,
             isSelectFullday: this.state.isSelectFullday
         });
     },
     renderSelectFulldayOptions: function() {
-        if (this.state.selectedTimeRange == "1d") {
+        if (this.state.selectedTimeRange == '1d') {
             //如果选中的是一天，要把后面几个选项去掉
             let SELECT_FULL_OPTIONS_SPLICE = _.clone(SELECT_FULL_OPTIONS).splice(0, 2);
             return (
@@ -392,7 +392,7 @@ var CrmAlertForm = React.createClass({
                     return (<Option value={key.value}>{key.name}</Option>);
                 })
             );
-        } else if (this.state.selectedTimeRange == "1w") {
+        } else if (this.state.selectedTimeRange == '1w') {
             //一周后的提醒时间的下拉框选项
             return (
                 _.map(SELECT_FULL_OPTIONS, (key) => {
@@ -422,7 +422,7 @@ var CrmAlertForm = React.createClass({
         }
     },
     renderNotSelectFulldayOptions: function() {
-        if (this.state.selectedTimeRange == "custom") {
+        if (this.state.selectedTimeRange == 'custom') {
             var CLONE_NO_SELECT_FULL_OPTIONS = _.clone(NO_SELECT_FULL_OPTIONS);
             //自定义的时候
             var start_time = this.state.formData.start_time;
@@ -462,11 +462,11 @@ var CrmAlertForm = React.createClass({
     },
     //改变提醒时间的类型
     handleAlertTimeChange: function(value) {
-        Trace.traceEvent($(this.getDOMNode()).find(".ant-select-lg .ant-select-selection__rendered"), "修改提醒时间的类型为" + value);
+        Trace.traceEvent($(this.getDOMNode()).find('.ant-select-lg .ant-select-selection__rendered'), '修改提醒时间的类型为' + value);
         this.setState({
             selectedAlertTimeRange: value,
         });
-        if (value !== "not_remind") {
+        if (value !== 'not_remind') {
             this.state.formData.socketio_notice = true;
             this.setState({
                 formData: this.state.formData
@@ -489,7 +489,7 @@ var CrmAlertForm = React.createClass({
                         this.props.selectedCustomer ? null : (
                             <FormItem
                                 {...formItemLayout}
-                                label={Intl.get("crm.alert.topic", "标题")}
+                                label={Intl.get('crm.alert.topic', '标题')}
                             >
                                 <Validator rules={[{required: true}]}>
                                     <Input name="topic" value={formData.topic} disabled/>
@@ -498,7 +498,7 @@ var CrmAlertForm = React.createClass({
                     }
                     <FormItem
                         {...formItemLayout}
-                        label={Intl.get("common.type", "类型")}
+                        label={Intl.get('common.type', '类型')}
                     >
                         <RadioGroup onChange={this.handleTypeChange} value={formData.scheduleType}>
                             {_.map(SCHEDULE_TYPES, item => {
@@ -510,14 +510,14 @@ var CrmAlertForm = React.createClass({
                         </RadioGroup>
                     </FormItem>
                     <FormItem
-                        label={Intl.get("crm.177", "内容")}
+                        label={Intl.get('crm.177', '内容')}
                         {...formItemLayout}
-                        validateStatus={this.getValidateStatus("content")}
-                        help={this.getHelpMessage("content")}
+                        validateStatus={this.getValidateStatus('content')}
+                        help={this.getHelpMessage('content')}
                     >
                         <div className="content-wrap">
                             <Validator
-                                rules={[{required: true, message: Intl.get("crm.schedule.fill.content", "请填写联系内容")}]}
+                                rules={[{required: true, message: Intl.get('crm.schedule.fill.content', '请填写联系内容')}]}
 
                             >
                                 <Input
@@ -525,14 +525,14 @@ var CrmAlertForm = React.createClass({
                                     type="textarea"
                                     rows={2}
                                     value={formData.content}
-                                    onChange={this.setField.bind(this, "content")}
+                                    onChange={this.setField.bind(this, 'content')}
                                 />
                             </Validator>
                         </div>
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
-                        label={Intl.get("common.login.time", "时间")}
+                        label={Intl.get('common.login.time', '时间')}
                     >
                         {<Select onChange={this.handleTimeRangeChange} value={this.state.selectedTimeRange}>
                             {_.map(CONTACT_TIMES, (key, value) => {
@@ -541,11 +541,11 @@ var CrmAlertForm = React.createClass({
                         </Select>}
                     </FormItem>
 
-                    {this.state.selectedTimeRange == "custom" ?
+                    {this.state.selectedTimeRange == 'custom' ?
                         <div className="define-timerange-area">
                             <FormItem
                                 {...formItemLayout}
-                                label={Intl.get("crm.alert.full.day", "全天")}
+                                label={Intl.get('crm.alert.full.day', '全天')}
                             >
                                 <Switch
                                     defaultChecked={true}
@@ -556,15 +556,15 @@ var CrmAlertForm = React.createClass({
                             </FormItem>
                             <FormItem
                                 {...formItemLayout}
-                                label={Intl.get("crm.schedule.begin.time", "开始")}
+                                label={Intl.get('crm.schedule.begin.time', '开始')}
                             >
                                 <div>
                                     <BootstrapDatepicker
                                         className="begin-date-input"
                                         type="input"
                                         options={{
-                                            format: "yyyy-mm-dd",
-                                            startDate: moment().startOf("day").format(DATE_FORMAT)
+                                            format: 'yyyy-mm-dd',
+                                            startDate: moment().startOf('day').format(DATE_FORMAT)
                                         }}
                                         value={moment(formData.start_time).format(DATE_FORMAT)}
                                         onChange={this.onScheduleDateChange}
@@ -587,7 +587,7 @@ var CrmAlertForm = React.createClass({
                             {this.state.isSelectFullday ? null :
                                 <FormItem
                                     {...formItemLayout}
-                                    label={Intl.get("crm.schedule.end.time", "结束")}
+                                    label={Intl.get('crm.schedule.end.time', '结束')}
                                 >
                                     <TimePicker
                                         defaultValue={moment(formData.end_time, HOUR_MUNITE_FORMAT)}
@@ -599,19 +599,19 @@ var CrmAlertForm = React.createClass({
                         </div> : null}
                     <FormItem
                         {...formItemLayout}
-                        label={Intl.get("crm.40", "提醒")}
+                        label={Intl.get('crm.40', '提醒')}
                     >
                         <Select
                             value={this.state.selectedAlertTimeRange}
                             onChange={this.handleAlertTimeChange}>
-                            {(this.state.selectedTimeRange == "custom" && this.state.isSelectFullday) || this.state.selectedTimeRange == "1d" || this.state.selectedTimeRange == "1w" ? this.renderSelectFulldayOptions() : this.renderNotSelectFulldayOptions()}
+                            {(this.state.selectedTimeRange == 'custom' && this.state.isSelectFullday) || this.state.selectedTimeRange == '1d' || this.state.selectedTimeRange == '1w' ? this.renderSelectFulldayOptions() : this.renderNotSelectFulldayOptions()}
                         </Select>
 
                     </FormItem>
                     {/*如果是批量操作的时候，不需要展示保存和取消按钮，用原组件中有的保存和取消*/}
                     {this.props.selectedCustomer ? null :
                         <SaveCancelButton loading={this.state.isLoading}
-                            saveErrorMsg={this.state.messageType === "error" ? this.state.messageContent : ""}
+                            saveErrorMsg={this.state.messageType === 'error' ? this.state.messageContent : ''}
                             handleSubmit={this.handleSave}
                             handleCancel={this.handleCancel}/>
                     }

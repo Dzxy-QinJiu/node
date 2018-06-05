@@ -2,39 +2,39 @@
  * 添加用户的action
  */
 //用户管理的ajax
-var AppUserAjax = require("../ajax/app-user-ajax");
-var AppUserUtil = require("../util/app-user-util");
+var AppUserAjax = require('../ajax/app-user-ajax');
+var AppUserUtil = require('../util/app-user-util');
 
 function AppUserFormAction() {
     this.generateActions(
         //input的值改变
-        "setInputField",
+        'setInputField',
         //radio的值改变
-        "radioValueChange",
+        'radioValueChange',
         //自定义radio的值改变
-        "customRadioValueChange",
+        'customRadioValueChange',
         //选中客户
-        "customerChoosen",
+        'customerChoosen',
         //设置时间
-        "timeChange",
+        'timeChange',
         //获取应用列表
-        "getApps",
+        'getApps',
         //设置选中的应用
         'setSelectedApps',
         //重置
-        "resetState",
+        'resetState',
         //添加用户
-        "addAppUser",
+        'addAppUser',
         //隐藏提交提示
-        "hideSubmitTip",
+        'hideSubmitTip',
         //显示选择app的错误
-        "showAppError",
+        'showAppError',
         //不显示选择app的错误
-        "hideAppError",
+        'hideAppError',
         //显示客户错误
-        "showCustomerError",
+        'showCustomerError',
         //隐藏客户错误
-        "hideCustomerError"
+        'hideCustomerError'
     );
     /**
      * 获取应用列表

@@ -7,9 +7,9 @@ var userDetailChangeRecordAjax = require('../ajax/user-detail-change-record-ajax
 function UserDetailChangeRecordAction() {
     this.generateActions(
         // 获取用户详情变更记录
-        "setApp",
+        'setApp',
         // 获取用户的app列表
-        "getUserApp",
+        'getUserApp',
     );
     this.getUserDetailChangeRecord = function(searchObj) {
         this.dispatch({loading: true, error: false});

@@ -3,14 +3,14 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
-var customerTraceService = require("../service/customer-trace-service");
+var customerTraceService = require('../service/customer-trace-service');
 /*
 * 获取客户跟踪记录列表 */
 exports.getCustomerTraceList = function(req, res) {
     customerTraceService.getCustomerTraceList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message);
         });
 };
@@ -18,9 +18,9 @@ exports.getCustomerTraceList = function(req, res) {
 * 添加客户跟踪记录*/
 exports.addCustomerTraceList = function(req, res) {
     customerTraceService.addCustomerTraceList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -28,9 +28,9 @@ exports.addCustomerTraceList = function(req, res) {
  * 更新客户跟踪记录*/
 exports.updateCustomerTraceList = function(req, res) {
     customerTraceService.updateCustomerTraceList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };

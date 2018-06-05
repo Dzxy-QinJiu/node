@@ -12,7 +12,7 @@ const UserOverDraftField = {
         config = $.extend({
             isCustomSetting: false,
             appId: '',
-            globalOverDraft: "1"
+            globalOverDraft: '1'
         } , config);
 
         if(config.isCustomSetting && !config.appId) {

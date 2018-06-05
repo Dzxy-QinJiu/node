@@ -1,27 +1,27 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 // 添加版本升级日志信息
 import {Form, Input, Button, Checkbox, message, Icon} from 'antd';
 const FormItem = Form.Item;
-import FieldMixin from "../../../../components/antd-form-fieldmixin";
-var Markdown = require("../../../../components/markdown");
-var VersionUpgradeLogAction = require("../action/version-upgrade-log-action");
-const autosize = require("autosize");
-var Alert = require("antd").Alert;
-var inputStyle = require("bootstrap-filestyle");
-var versionAjax = require("../ajax/version-upgrade-log-ajax");
-import Trace from "LIB_DIR/trace";
+import FieldMixin from '../../../../components/antd-form-fieldmixin';
+var Markdown = require('../../../../components/markdown');
+var VersionUpgradeLogAction = require('../action/version-upgrade-log-action');
+const autosize = require('autosize');
+var Alert = require('antd').Alert;
+var inputStyle = require('bootstrap-filestyle');
+var versionAjax = require('../ajax/version-upgrade-log-ajax');
+import Trace from 'LIB_DIR/trace';
 
-const UPLOAD_ERROR_TIPS = Intl.get("common.upload.error", "上传失败，请重试!");
+const UPLOAD_ERROR_TIPS = Intl.get('common.upload.error', '上传失败，请重试!');
 
 var VersionUpgradeForm = React.createClass({
     mixins: [FieldMixin],
     getInitialState: function(){
         return {
             formData: {
-                version: "",
-                content: "",
-                apk: "",
+                version: '',
+                content: '',
+                apk: '',
                 forced: false
             },
             status: {
@@ -29,12 +29,12 @@ var VersionUpgradeForm = React.createClass({
                 content: {}
             },
             isPreview: false,
-            errorMessage: "",
+            errorMessage: '',
             isLoading: false
         };
     },
     componentDidMount: function() {
-        $(":file").filestyle({icon: false,buttonText: "上传应用"});
+        $(':file').filestyle({icon: false,buttonText: '上传应用'});
     },
 
     // 提交添加版本记录数据
@@ -43,14 +43,14 @@ var VersionUpgradeForm = React.createClass({
             isLoading: true
         });
         e.preventDefault();
-        Trace.traceEvent(e,"保存添加版本升级记录");
-        $("#uploadVersionUpgrade").attr("disabled", "disabled");
+        Trace.traceEvent(e,'保存添加版本升级记录');
+        $('#uploadVersionUpgrade').attr('disabled', 'disabled');
         var validation = this.refs.validation;
         validation.validate((valid) => {
             if(!valid){
                 return;
             } else {
-                if(this.state.formData.apk == ""){ // 只上传版本号和内容时
+                if(this.state.formData.apk == ''){ // 只上传版本号和内容时
                     var newContent = {
                         application_id: this.props.appId,
                         version: this.state.formData.version,
@@ -69,13 +69,13 @@ var VersionUpgradeForm = React.createClass({
                         });
                     });
                 }else {
-                    var formData = new FormData($("#add-version-upgrade-form")[0]);
+                    var formData = new FormData($('#add-version-upgrade-form')[0]);
                     formData.delete('forced');
-                    formData.append("application_id",this.props.appId);
+                    formData.append('application_id',this.props.appId);
                     if(this.state.formData.forced == false){
-                        formData.append("forced","false");
+                        formData.append('forced','false');
                     } else {
-                        formData.append("forced","true");
+                        formData.append('forced','true');
                     }
                     if(this.state.isPreview) {
                         formData.append('content', this.state.formData.content);
@@ -112,9 +112,9 @@ var VersionUpgradeForm = React.createClass({
         // 3s后错误提示消失，保存按钮可点击
         setTimeout(function(){
             _this.setState({
-                errorMessage: ""
+                errorMessage: ''
             });
-            $("#uploadVersionUpgrade").removeAttr("disabled");
+            $('#uploadVersionUpgrade').removeAttr('disabled');
         },3000);
         return <div className="alert-wrap">
             <Alert
@@ -127,7 +127,7 @@ var VersionUpgradeForm = React.createClass({
 
     handleCancel: function(e){
         e.preventDefault();
-        Trace.traceEvent(e,"取消添加版本升级记录");
+        Trace.traceEvent(e,'取消添加版本升级记录');
         VersionUpgradeLogAction.hideForm();
     },
 
@@ -171,7 +171,7 @@ var VersionUpgradeForm = React.createClass({
                                         id="version"
                                         placeholder="版本（必填项）"
                                         value={this.state.formData.version}
-                                        onChange={this.setField.bind(this, "version")}
+                                        onChange={this.setField.bind(this, 'version')}
                                     />
                                 </Validator>
 
@@ -192,7 +192,7 @@ var VersionUpgradeForm = React.createClass({
                                                 rows="3"
                                                 placeholder="升级内容（必填项，支持Markdown格式）"
                                                 value={this.state.formData.content}
-                                                onChange={this.setField.bind(this, "content")}
+                                                onChange={this.setField.bind(this, 'content')}
                                             />
                                         </Validator>
                                     </div>
@@ -228,7 +228,7 @@ var VersionUpgradeForm = React.createClass({
                                         value={this.state.formData.forced}
                                         onChange={this.handleCheckBox}
                                     />
-                                    <span style={{"fontSize": "14px","color": "#5d5d5d"}}>
+                                    <span style={{'fontSize': '14px','color': '#5d5d5d'}}>
                                             客户端强制升级
                                     </span>
                                 </FormItem>
@@ -241,7 +241,7 @@ var VersionUpgradeForm = React.createClass({
                                     {this.state.errorMessage != '' ? (
                                         this.saveDataErrorHandle()
                                     ) : null}
-                                    {!this.state.isPreview && this.state.formData.content != "" ? (
+                                    {!this.state.isPreview && this.state.formData.content != '' ? (
                                         <Button
                                             type="primary"
                                             onClick={this.togglePreview}

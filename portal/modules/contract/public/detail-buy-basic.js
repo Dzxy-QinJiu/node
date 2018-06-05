@@ -2,13 +2,13 @@
  * 采购合同基本信息展示及编辑页面
  */
 
-import rightPanelUtil from "../../../components/rightPanel";
+import rightPanelUtil from '../../../components/rightPanel';
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import { getTeamName } from "./utils";
-import AddBuyBasic from "./add-buy-basic";
+import { getTeamName } from './utils';
+import AddBuyBasic from './add-buy-basic';
 
 const DetailBuyBasic = React.createClass({
     getInitialState: function() {
@@ -43,9 +43,9 @@ const DetailBuyBasic = React.createClass({
     render: function() {
         const contract = this.props.contract;
 
-        const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : "";
+        const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : '';
 
-        const isEditBtnShow = !this.state.isFormShow && hasPrivilege("OPLATE_CONTRACT_UPDATE");
+        const isEditBtnShow = !this.state.isFormShow && hasPrivilege('OPLATE_CONTRACT_UPDATE');
 
         return (
             <div className="detail-basic">
@@ -73,36 +73,36 @@ const DetailBuyBasic = React.createClass({
                 ) : (
                     <div className="basic-info"> 
                         <div className="detail-item">
-                            {Intl.get("contract.24", "合同号")}:
+                            {Intl.get('contract.24', '合同号')}:
                             {contract.num}
                         </div>
                         <div className="detail-item">
-                            {Intl.get("crm.6", "负责人")}:
+                            {Intl.get('crm.6', '负责人')}:
                             {contract.user_name}
                         </div>
                         <div className="detail-item">
-                            {Intl.get("crm.113", "部门")}:
+                            {Intl.get('crm.113', '部门')}:
                             {contract.sales_team || getTeamName(this.props.teamList, contract.sales_team_id)}
                         </div>
                         <div className="detail-item">
-                            {Intl.get("contract.25", "合同额")}:
+                            {Intl.get('contract.25', '合同额')}:
                             {contract.contract_amount}
                             <ReactIntl.FormattedMessage id="contract.159" defaultMessage="元" />
                         </div>
                         <div className="detail-item">
-                            {Intl.get("contract.34", "签订时间")}:
+                            {Intl.get('contract.34', '签订时间')}:
                             {date}
                         </div>
                         <div className="detail-item">
-                            {Intl.get("contract.36", "合同阶段")}:
+                            {Intl.get('contract.36', '合同阶段')}:
                             {contract.stage}
                         </div>
                         <div className="detail-item">
-                            {Intl.get("contract.37", "合同类型")}:
+                            {Intl.get('contract.37', '合同类型')}:
                             {contract.category}
                         </div>
                         <div className="detail-item">
-                            {Intl.get("common.remark", "备注")}:
+                            {Intl.get('common.remark', '备注')}:
                             <div className="remarks">
                                 {contract.remarks}
                             </div>

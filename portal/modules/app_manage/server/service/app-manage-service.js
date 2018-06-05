@@ -3,20 +3,20 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  * Created by wangliping on 2016/3/4.
  */
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var App = require("../dto/appObj");
-var _ = require("underscore");
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var App = require('../dto/appObj');
+var _ = require('underscore');
 var appRestApis = {
     //添加应用地址
-    addApp: "/rest/base/v1/application",
+    addApp: '/rest/base/v1/application',
     //修改应用地址
-    modifyApp: "/rest/base/v1/application",
+    modifyApp: '/rest/base/v1/application',
     //获取应用地址列表
-    getApps: "/rest/base/v1/application",
+    getApps: '/rest/base/v1/application',
     //通过id获取应用详细信息
-    getCurAppById: "/rest/base/v1/application/id"
+    getCurAppById: '/rest/base/v1/application/id'
 };
 exports.urls = appRestApis;
 //获取应用
@@ -46,7 +46,7 @@ exports.getApps = function(req, res, condition, isGetAllApp) {
                     }
                     appListObj.data = curAppList;
                 }
-                eventEmitter.emit("success", appListObj);
+                eventEmitter.emit('success', appListObj);
             }
         });
 };
@@ -55,7 +55,7 @@ exports.getApps = function(req, res, condition, isGetAllApp) {
 exports.getCurAppById = function(req, res, appId) {
     return restUtil.authRest.get(
         {
-            url: appRestApis.getCurAppById + "/" + appId,
+            url: appRestApis.getCurAppById + '/' + appId,
             req: req,
             res: res
         }, null, {
@@ -64,7 +64,7 @@ exports.getCurAppById = function(req, res, appId) {
                 if (data) {
                     data = App.toFrontObject(data);
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -86,7 +86,7 @@ exports.addApp = function(req, res, frontApp) {
                     frontApp.id = data.client_id;
                     frontApp.owner = data.owner_id;
                 }
-                eventEmitter.emit("success", frontApp);
+                eventEmitter.emit('success', frontApp);
             }
         });
 };

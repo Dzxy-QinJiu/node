@@ -1,22 +1,22 @@
-var RightContent = require("../../../components/privilege/right-content");
-var RightCardsContainer = require("../../../components/rightCardsContainer");
-var AppStore = require("./store/app-store");
-var AppAction = require("./action/app-actions");
-var AddAppForm = require("./views/app-form");
-var AppInfo = require("./views/app-info");
-var rightPanelUtil = require("../../../components/rightPanel");
+var RightContent = require('../../../components/privilege/right-content');
+var RightCardsContainer = require('../../../components/rightCardsContainer');
+var AppStore = require('./store/app-store');
+var AppAction = require('./action/app-actions');
+var AddAppForm = require('./views/app-form');
+var AppInfo = require('./views/app-info');
+var rightPanelUtil = require('../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
-var AppFilterAdv = require("./views/app-filter-adv");
-var AppFormAction = require("./action/app-form-actions");
+var AppFilterAdv = require('./views/app-filter-adv');
+var AppFormAction = require('./action/app-form-actions');
 var VersionUpgradeLog = require('./views/version-upgrade-log');
 var UserTypeConfig = require('./views/user-type-config');
 var AppNotice = require('./views/app-notice');
-var Spinner = require("../../../components/spinner");
-var classNames = require("classnames");
-import Trace from "LIB_DIR/trace";
+var Spinner = require('../../../components/spinner');
+var classNames = require('classnames');
+import Trace from 'LIB_DIR/trace';
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
-var DEFAULT_TAG = "全部", DISABLE = "disable";
+var DEFAULT_TAG = '全部', DISABLE = 'disable';
 var AppManage = React.createClass({
     getInitialState: function() {
         return AppStore.getState();
@@ -26,12 +26,12 @@ var AppManage = React.createClass({
     },
 
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
         AppStore.listen(this.onChange);
     },
 
     componentWillUnmount: function() {
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
         AppStore.unlisten(this.onChange);
     },
     //获取搜索条件
@@ -58,7 +58,7 @@ var AppManage = React.createClass({
     events: {
         showAppForm: function(type) {
             if (type == 'add') {
-                Trace.traceEvent($(this.getDOMNode()).find(".right-cards-container"),"点击添加应用按钮");
+                Trace.traceEvent($(this.getDOMNode()).find('.right-cards-container'),'点击添加应用按钮');
             }
             //type：“edit”/"add"
             AppFormAction.setOwnerListLoading(true);
@@ -67,12 +67,12 @@ var AppManage = React.createClass({
             AppFormAction.getAppManagerList();
             AppFormAction.setAllAppListLoading(true);
             AppFormAction.getAllAppList();
-            if (type === "add") {
+            if (type === 'add') {
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
                 focusTimeout = setTimeout(function() {
-                    $("#name").focus();
+                    $('#name').focus();
                 }, 600);
             }
             AppAction.showAppForm(type);
@@ -94,7 +94,7 @@ var AppManage = React.createClass({
         
         //status:0->停用、1->启用
         updateAppStatus: function(appId, status) {
-            AppAction.updateAppStatus({id: appId, status: status}, "appManage");
+            AppAction.updateAppStatus({id: appId, status: status}, 'appManage');
         },
 
         //切换页数时，当前页展示数据的修改
@@ -122,9 +122,9 @@ var AppManage = React.createClass({
                 //获取应用的详情
                 AppAction.getCurAppById(app.id);
             });
-            if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
+            if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
                 if (!this.state.versionUpgradeShow && !this.state.appNoticePanelShow && !this.state.userTypeConfigShow) {
-                    $(".right-panel-content").removeClass("right-panel-content-slide");
+                    $('.right-panel-content').removeClass('right-panel-content-slide');
                     if (openTimeout) {
                         clearTimeout(openTimeout);
                     }
@@ -137,7 +137,7 @@ var AppManage = React.createClass({
             }
         },
         searchEvent: function(searchContent) {
-            Trace.traceEvent($(this.getDOMNode()).find(".search-input-block"),"按应用名/描述搜索应用");
+            Trace.traceEvent($(this.getDOMNode()).find('.search-input-block'),'按应用名/描述搜索应用');
             AppAction.updateCurPage(1);
             AppAction.updateSearchContent(searchContent);
             var searchObj = this.getSearchObj(1, this.state.pageSize, searchContent);
@@ -157,12 +157,12 @@ var AppManage = React.createClass({
         },
         //展示、收起标签筛选面板的处理
         toggleFilterPanel: function() {
-            Trace.traceEvent($(this.getDOMNode()).find(".tag-filter-btn"),"展示/收起标签筛选");
+            Trace.traceEvent($(this.getDOMNode()).find('.tag-filter-btn'),'展示/收起标签筛选');
             AppAction.toggleFilterPanel();
         },
         //设置选择的筛选标签，并筛选应用
         filterAppByTags: function(tag) {
-            Trace.traceEvent($(this.getDOMNode()).find(".search-input-block"),"按标签筛选应用");
+            Trace.traceEvent($(this.getDOMNode()).find('.search-input-block'),'按标签筛选应用');
             AppAction.setSelectTag(tag);
             AppAction.updateCurPage(1);
             var _this = this;
@@ -176,7 +176,7 @@ var AppManage = React.createClass({
         },
         //设置筛选状态，并筛选应用
         filterAppByStatus: function(status) {
-            Trace.traceEvent($(this.getDOMNode()).find(".search-input-block"),"按状态筛选应用");
+            Trace.traceEvent($(this.getDOMNode()).find('.search-input-block'),'按状态筛选应用');
             AppAction.setSelectStatus(status);
             AppAction.updateCurPage(1);
             var _this = this;
@@ -240,30 +240,30 @@ var AppManage = React.createClass({
                 name: app.name,
                 image: app.image,
                 appUrl: {
-                    label: "URL:",
+                    label: 'URL:',
                     value: app.appUrl,
                     showOnCard: true
                 },
                 status: app.status,
                 descr: {
-                    label: Intl.get("common.describe", "描述") + ':',
+                    label: Intl.get('common.describe', '描述') + ':',
                     value: app.descr,
                     showOnCard: true
                 },
                 appAuthMap: app.appAuthMap
             };
-            var createDate = app.createDate ? moment(app.createDate).format(oplateConsts.DATE_FORMAT) : "";
-            var expireDate = app.expireDate ? moment(app.expireDate).format(oplateConsts.DATE_FORMAT) : "";
+            var createDate = app.createDate ? moment(app.createDate).format(oplateConsts.DATE_FORMAT) : '';
+            var expireDate = app.expireDate ? moment(app.expireDate).format(oplateConsts.DATE_FORMAT) : '';
             if (expireDate) {
                 pageApp.date = {
-                    label: createDate + Intl.get("common.time.connector", " 至") + expireDate,
-                    value: "",
+                    label: createDate + Intl.get('common.time.connector', ' 至') + expireDate,
+                    value: '',
                     showOnCard: true
                 };
             } else {
                 pageApp.date = {
-                    label: createDate + Intl.get("common.time.connector", " 至 -"),
-                    value: "",
+                    label: createDate + Intl.get('common.time.connector', ' 至 -'),
+                    value: '',
                     showOnCard: true
                 };
             }
@@ -271,11 +271,11 @@ var AppManage = React.createClass({
         });
     },
     render: function() {
-        var modalType = Intl.get("common.app", "应用");
+        var modalType = Intl.get('common.app', '应用');
         var firstLoading = this.state.isLoading;
         var _this = this;
-        var slideClassName = classNames("right-panel-content", {
-            "right-panel-content-slide": (_this.state.appNoticePanelShow || _this.state.userTypeConfigShow)
+        var slideClassName = classNames('right-panel-content', {
+            'right-panel-content-slide': (_this.state.appNoticePanelShow || _this.state.userTypeConfigShow)
         });
         return (
             <div className="app_manage_style">
@@ -294,7 +294,7 @@ var AppManage = React.createClass({
                             listTipMsg={this.state.appListTipMsg}
                             curPage={this.state.curPage}
                             pageSize={this.state.pageSize}
-                            searchPlaceHolder={Intl.get("app.search.placeholder", "应用名/描述")}
+                            searchPlaceHolder={Intl.get('app.search.placeholder', '应用名/描述')}
                             updatePageSize={this.events.updatePageSize.bind(this)}
                             showCardForm={this.events.showAppForm.bind(this)}
                             hideCardForm={this.events.hideAppForm}
@@ -304,7 +304,7 @@ var AppManage = React.createClass({
                             showCardInfo={this.events.showAppInfo.bind(this)}
                             searchEvent={this.events.searchEvent.bind(this)}
                             modalType={modalType}
-                            addRoleStr={"APP_MANAGE_ADD_APP"}
+                            addRoleStr={'APP_MANAGE_ADD_APP'}
                             isPanelShow={this.state.isFilterPanelShow}
                             toggleFilterPanel={this.events.toggleFilterPanel.bind(this)}
                             type="appManage"

@@ -1,15 +1,15 @@
 /**
  * Created by zhoulianyi on  2016/5/29 15:42 .
  */
-require("./css/user_online_analysis.less");
-var TopNav = require("../../../components/top-nav");
-var url = require("url");
-var querystring = require("querystring");
-var AnalysisListView = require("./views/list");
-var AnalysisChartView = require("./views/chart");
-var RightPanel = require("../../../components/rightPanel").RightPanel;
-var AnalysisStore = require("./store/user-online-analysis-store");
-var insertStyle = require("../../../components/insert-style");
+require('./css/user_online_analysis.less');
+var TopNav = require('../../../components/top-nav');
+var url = require('url');
+var querystring = require('querystring');
+var AnalysisListView = require('./views/list');
+var AnalysisChartView = require('./views/chart');
+var RightPanel = require('../../../components/rightPanel').RightPanel;
+var AnalysisStore = require('./store/user-online-analysis-store');
+var insertStyle = require('../../../components/insert-style');
 
 //布局使用的配置
 var LAYOUT = {
@@ -26,7 +26,7 @@ var UserOnlineAnalysis = React.createClass({
     },
     componentDidMount: function() {
         AnalysisStore.listen(this.onStoreChange);
-        $(window).on("resize",this.onStoreChange);
+        $(window).on('resize',this.onStoreChange);
         this.dynamicStyle = insertStyle(`.user_online_analysis_panel.right-pannel-default{
                                             width:auto;
                                             left:75px;
@@ -37,7 +37,7 @@ var UserOnlineAnalysis = React.createClass({
     },
     componentWillUnmount: function() {
         AnalysisStore.unlisten(this.onStoreChange);
-        $(window).off("resize",this.onStoreChange);
+        $(window).off('resize',this.onStoreChange);
         this.dynamicStyle.destroy();
     },
     render: function() {

@@ -1,19 +1,19 @@
-require("../css/main-es_VE.less");
-var AppUserUtil = require("../util/app-user-util");
-var SearchInput = require("../../../../components/searchInput");
-var AppUserCustomerSwitchActions = require("../action/app-user-customer-switch-actions");
-var AppUserCustomerSwitchStore = require("../store/app-user-customer-switch-store");
-var TopNav = require("../../../../components/top-nav");
-var RightPanel = require("../../../../components/rightPanel").RightPanel;
-var RightPanelClose = require("../../../../components/rightPanel").RightPanelClose;
-var insertStyle = require("../../../../components/insert-style");
-var Spinner = require("../../../../components/spinner");
-var TableUtil = require("../../../../components/antd-table-pagination");
-import ApplyUser from "./v2/apply-user";
-var history = require("../../../../public/sources/history");
-var Table = require("antd").Table;
-var classNames = require("classnames");
-import { storageUtil } from "ant-utils";
+require('../css/main-es_VE.less');
+var AppUserUtil = require('../util/app-user-util');
+var SearchInput = require('../../../../components/searchInput');
+var AppUserCustomerSwitchActions = require('../action/app-user-customer-switch-actions');
+var AppUserCustomerSwitchStore = require('../store/app-user-customer-switch-store');
+var TopNav = require('../../../../components/top-nav');
+var RightPanel = require('../../../../components/rightPanel').RightPanel;
+var RightPanelClose = require('../../../../components/rightPanel').RightPanelClose;
+var insertStyle = require('../../../../components/insert-style');
+var Spinner = require('../../../../components/spinner');
+var TableUtil = require('../../../../components/antd-table-pagination');
+import ApplyUser from './v2/apply-user';
+var history = require('../../../../public/sources/history');
+var Table = require('antd').Table;
+var classNames = require('classnames');
+import { storageUtil } from 'ant-utils';
 var dynamicStyle;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -34,8 +34,8 @@ var AppUserCustomerSwitch = React.createClass({
         });
     },
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
-        $(window).on("resize", this.changeTableHeight);
+        $('body').css('overflow', 'hidden');
+        $(window).on('resize', this.changeTableHeight);
         AppUserCustomerSwitchStore.listen(this.onStoreChange);
         TableUtil.alignTheadTbody(this.refs.userListTable);
         this.fetchCustomerUserList();
@@ -53,8 +53,8 @@ var AppUserCustomerSwitch = React.createClass({
         this.updateJumpPageByJquery();
     },
     componentWillUnmount: function() {
-        $("body").css("overflow", "auto");
-        $(window).off("resize", this.changeTableHeight);
+        $('body').css('overflow', 'auto');
+        $(window).off('resize', this.changeTableHeight);
         AppUserCustomerSwitchStore.unlisten(this.onStoreChange);
         if (dynamicStyle) {
             dynamicStyle.destroy();
@@ -71,7 +71,7 @@ var AppUserCustomerSwitch = React.createClass({
     },
     back: function() {
         //返回客户列表
-        history.pushState({}, "/crm", {});
+        history.pushState({}, '/crm', {});
     },
     showApplyForm: function() {
         this.setState({
@@ -106,7 +106,7 @@ var AppUserCustomerSwitch = React.createClass({
         var _this = this;
         var columns = [
             {
-                title: Intl.get("common.username", "用户名"),
+                title: Intl.get('common.username', '用户名'),
                 dataIndex: 'user',
                 width: '22%',
                 key: 'user_name',
@@ -120,7 +120,7 @@ var AppUserCustomerSwitch = React.createClass({
                 }
             },
             {
-                title: Intl.get("common.belong.customer", "所属客户"),
+                title: Intl.get('common.belong.customer', '所属客户'),
                 dataIndex: 'customer',
                 width: '31%',
                 key: 'customer_name',
@@ -131,7 +131,7 @@ var AppUserCustomerSwitch = React.createClass({
                 }
             },
             {
-                title: Intl.get("common.belong.sales", "所属销售"),
+                title: Intl.get('common.belong.sales', '所属销售'),
                 dataIndex: 'sales',
                 width: '23%',
                 key: 'sales_name',
@@ -142,7 +142,7 @@ var AppUserCustomerSwitch = React.createClass({
                 }
             },
             {
-                title: Intl.get("common.app.name", "应用名称"),
+                title: Intl.get('common.app.name', '应用名称'),
                 dataIndex: 'apps',
                 width: '24%',
                 key: 'appName',
@@ -230,7 +230,7 @@ var AppUserCustomerSwitch = React.createClass({
                 <div className="summary_info">
                     <ReactIntl.FormattedMessage
                         id="user.total.data"
-                        defaultMessage={`共{number}个用户`}
+                        defaultMessage={'共{number}个用户'}
                         values={{
                             'number': this.state.customerUserCount || ' '
                         }}
@@ -303,7 +303,7 @@ var AppUserCustomerSwitch = React.createClass({
                 <RightPanel className="app_user_manage_rightpanel" showFlag={this.state.isShowRightPanel}>
                     <RightPanelClose onClick={this.hideRightPanel}/>
                     <ApplyUser
-                        appList={JSON.parse(storageUtil.local.get("oplateCrmAppList"))}
+                        appList={JSON.parse(storageUtil.local.get('oplateCrmAppList'))}
                         users={this.state.selectedCustomerUserRows}
                         customerId={this.props.params.customerId}
                         cancelApply={this.hideRightPanel}

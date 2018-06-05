@@ -24,7 +24,7 @@ exports.getRealmIndustryAnalysisData = function(startTime,endTime) {
         },
         //请求成功的回调函数
         success: function(list,text,xhr) {
-            var noIndustry = xhr.getResponseHeader("norealm");
+            var noIndustry = xhr.getResponseHeader('norealm');
             Deferred.resolve(list , !!noIndustry);
         }
     });

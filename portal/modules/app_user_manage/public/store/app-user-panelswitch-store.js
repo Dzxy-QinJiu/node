@@ -1,5 +1,5 @@
-var AppUserUtil = require("../util/app-user-util");
-var AppUserPanelSwitchActions = require("../action/app-user-panelswitch-actions");
+var AppUserUtil = require('../util/app-user-util');
+var AppUserPanelSwitchActions = require('../action/app-user-panelswitch-actions');
 
 //用户管理右侧面板切换使用的store
 function AppUserPanelSwitchStore() {

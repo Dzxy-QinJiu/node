@@ -3,14 +3,14 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/16.
  */
-require("../css/customer-notice-message.less");
-import ContactItem from "./contact-item";
-import {Tag, message, Icon, Button} from "antd";
-import crmUtil from "MOD_DIR/crm/public/utils/crm-util";
-import userData from "PUB_DIR/sources/user-data";
-import notificationAjax from "MOD_DIR/notification/public/ajax/notification-ajax";
-import Trace from "LIB_DIR/trace";
-import {getRelativeTime} from "PUB_DIR/sources/utils/common-method-util";
+require('../css/customer-notice-message.less');
+import ContactItem from './contact-item';
+import {Tag, message, Icon, Button} from 'antd';
+import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+import userData from 'PUB_DIR/sources/user-data';
+import notificationAjax from 'MOD_DIR/notification/public/ajax/notification-ajax';
+import Trace from 'LIB_DIR/trace';
+import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {
         super(props);
@@ -46,7 +46,7 @@ class CustomerNoticeMessage extends React.Component {
                 {customerMessage.qualify_label ? (
                     <Tag className={crmUtil.getCrmLabelCls(customerMessage.qualify_label)}>
                         {customerMessage.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                            customerMessage.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null}
+                            customerMessage.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null}
             </span>
         );
     }
@@ -67,7 +67,7 @@ class CustomerNoticeMessage extends React.Component {
                 <span className="user-name"
                     onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</span>
                 {item.app_name ?
-                    <span>{Intl.get("notification.system.login", "登录了") + item.app_name}</span> : ""}
+                    <span>{Intl.get('notification.system.login', '登录了') + item.app_name}</span> : ''}
             </div>;
         });
     }
@@ -79,7 +79,7 @@ class CustomerNoticeMessage extends React.Component {
 
     //处理系统消息
     handleSystemNotice(notice, e) {
-        Trace.traceEvent(e, "处理系统消息");
+        Trace.traceEvent(e, '处理系统消息');
         if (notice.isHandling) {
             return;
         }
@@ -95,7 +95,7 @@ class CustomerNoticeMessage extends React.Component {
             }
         }, errorMsg => {
             this.setHandlingFlag(notice, false);
-            message.error(errorMsg || Intl.get("notification.system.handle.failed", "将系统消息设为已处理失败"));
+            message.error(errorMsg || Intl.get('notification.system.handle.failed', '将系统消息设为已处理失败'));
         });
     }
 
@@ -108,7 +108,7 @@ class CustomerNoticeMessage extends React.Component {
         var customer_name = customerMessage.customer_name ? customerMessage.customer_name : customerMessage.name;
         var customer_id = customerMessage.customer_id ? customerMessage.customer_id : customerMessage.id;
         let loginUser = userData.getUserData();
-        let loginUserId = loginUser ? loginUser.user_id : "";//只可以处理自己的系统消息
+        let loginUserId = loginUser ? loginUser.user_id : '';//只可以处理自己的系统消息
         return (
             <div className="customer-notice-message-container customer-detail-item">
                 <div className="customer-notice-content">
@@ -122,7 +122,7 @@ class CustomerNoticeMessage extends React.Component {
                             loginUserId === customerMessage.member_id ?
                                 <Button type="primary" className="notice-handled-set"
                                     onClick={this.handleSystemNotice.bind(this, customerMessage)}>
-                                    {Intl.get("notification.system.handled.set", "处理")}{customerMessage.isHandling ?
+                                    {Intl.get('notification.system.handled.set', '处理')}{customerMessage.isHandling ?
                                         <Icon type="loading"/> : null}
                                 </Button> : null
                         }
@@ -134,7 +134,7 @@ class CustomerNoticeMessage extends React.Component {
                         {this.renderMessageContent(customerMessage)}
                         {customerMessage.detail.length > 3 ?
                             <p className="notice-detail-more" onClick={this.checkMore.bind(this, customerMessage)}>
-                                {customerMessage.showMore ? Intl.get("common.app.status.close", "关闭") : Intl.get("notification.system.more", "展开全部")}
+                                {customerMessage.showMore ? Intl.get('common.app.status.close', '关闭') : Intl.get('notification.system.more', '展开全部')}
                             </p> : null}
                     </div>}
                 </div>
@@ -147,7 +147,7 @@ class CustomerNoticeMessage extends React.Component {
 }
 
 CustomerNoticeMessage.defaultProps = {
-    noticeType: "",
+    noticeType: '',
     customerNoticeMessage: {},
     isRecentLoginCustomer: false,
     openCustomerDetail: function() {

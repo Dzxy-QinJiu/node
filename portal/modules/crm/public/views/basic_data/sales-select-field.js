@@ -1,11 +1,11 @@
 import {Icon, Alert, Select, message} from 'antd';
 let Option = Select.Option;
-let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
-let userData = require("../../../../../public/sources/user-data");
-let CrmBasicAjax = require("../../ajax/index");
+let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
+let userData = require('../../../../../public/sources/user-data');
+let CrmBasicAjax = require('../../ajax/index');
 import batchChangeAjax from '../../ajax/batch-change-ajax';
-import Trace from "LIB_DIR/trace";
-var CrmAction = require("../../action/crm-actions");
+import Trace from 'LIB_DIR/trace';
+var CrmAction = require('../../action/crm-actions');
 
 var SalesSelectField = React.createClass({
     getDefaultProps: function() {
@@ -34,7 +34,7 @@ var SalesSelectField = React.createClass({
     getInitialState: function() {
         return {
             list: [],//下拉列表中的数据
-            displayType: "text",
+            displayType: 'text',
             isLoadingList: true,//正在获取下拉列表中的数据
             enableEdit: this.props.enableEdit,
             enableTransfer: this.props.enableTransfer,
@@ -48,7 +48,7 @@ var SalesSelectField = React.createClass({
             salesTeamList: [],
             loading: false,
             submitErrorMsg: '',
-            salesRole: ""
+            salesRole: ''
         };
     },
     componentDidMount: function() {
@@ -77,11 +77,11 @@ var SalesSelectField = React.createClass({
                 enableEdit: nextProps.enableEdit,
                 enableTransfer: nextProps.enableTransfer,
                 list: [],//下拉列表中的数据
-                displayType: "text",
+                displayType: 'text',
                 isLoadingList: true,//正在获取下拉列表中的数据
                 loading: false,
                 submitErrorMsg: '',
-                salesRole: ""
+                salesRole: ''
             });
             if (!nextProps.hideSalesRole){
                 //获取销售对应的角色
@@ -126,7 +126,7 @@ var SalesSelectField = React.createClass({
             },
             error: (errorMsg) => {
                 this.setState({
-                    salesRole: "",
+                    salesRole: '',
                 });
             }
         });
@@ -160,11 +160,11 @@ var SalesSelectField = React.createClass({
         }
 
         this.state.userId = userId;
-        Trace.traceEvent(this.getDOMNode(), "修改销售人员及其团队");
+        Trace.traceEvent(this.getDOMNode(), '修改销售人员及其团队');
         //修改销售人员时，将其对应的所属团队及其相关团队列表一起修改
         const salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === userId);
         if (salesman) {
-            this.state.userName = salesman.user_info ? salesman.user_info.nick_name : "";
+            this.state.userName = salesman.user_info ? salesman.user_info.nick_name : '';
             if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
                 let teamList = salesman.user_groups.map(team => {
                     return {
@@ -185,7 +185,7 @@ var SalesSelectField = React.createClass({
 
     changeDisplayType: function(type) {
         if (type === 'text') {
-            Trace.traceEvent(this.getDOMNode(), "取消对销售人员/团队的修改");
+            Trace.traceEvent(this.getDOMNode(), '取消对销售人员/团队的修改');
             if (!this.props.hideSalesRole){
                 this.getSalesRoleByMemberId(this.props.userId);
             }
@@ -199,10 +199,10 @@ var SalesSelectField = React.createClass({
                 salesTeamId: this.props.salesTeamId,
                 salesTeamList: this.getSalesTeamList(this.props.userId, this.state.salesManList),
                 submitErrorMsg: '',
-                salesRole: ""
+                salesRole: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(), "点击设置销售按钮");
+            Trace.traceEvent(this.getDOMNode(), '点击设置销售按钮');
             this.setState({
                 displayType: type
             });
@@ -220,17 +220,17 @@ var SalesSelectField = React.createClass({
     submitData: function() {
         let submitData = {
             id: this.state.customerId,
-            type: "sales",
+            type: 'sales',
             user_id: this.state.userId,
             user_name: this.state.userName,
             sales_team_id: this.state.salesTeamId,
             sales_team: this.state.salesTeam
         };
-        Trace.traceEvent(this.getDOMNode(), "保存对销售人员/团队的修改");
+        Trace.traceEvent(this.getDOMNode(), '保存对销售人员/团队的修改');
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
-        } else if (this.state.displayType === "edit") {
+        } else if (this.state.displayType === 'edit') {
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.backToDisplay();
@@ -240,10 +240,10 @@ var SalesSelectField = React.createClass({
             }, errorMsg => {
                 this.setState({
                     loading: false,
-                    submitErrorMsg: errorMsg || Intl.get("crm.172", "修改客户所属销售失败")
+                    submitErrorMsg: errorMsg || Intl.get('crm.172', '修改客户所属销售失败')
                 });
             });
-        } else if (this.state.displayType === "transfer") {
+        } else if (this.state.displayType === 'transfer') {
             submitData.member_role = this.state.salesRole;
             CrmBasicAjax.transferCustomer(submitData).then(result => {
                 if (result) {
@@ -254,7 +254,7 @@ var SalesSelectField = React.createClass({
             }, errorMsg => {
                 this.setState({
                     loading: false,
-                    submitErrorMsg: errorMsg || Intl.get("crm.customer.transfer.failed", "转出客户失败")
+                    submitErrorMsg: errorMsg || Intl.get('crm.customer.transfer.failed', '转出客户失败')
                 });
             });
         }
@@ -269,12 +269,12 @@ var SalesSelectField = React.createClass({
             return;
         }
         //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
-        if (this.state.displayType === "edit" || this.state.displayType === "transfer"){
+        if (this.state.displayType === 'edit' || this.state.displayType === 'transfer'){
             this.setState({loading: true});
             CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
                 //result>0 ，不可转入或变更客户
                 if (_.isNumber(result) && result > 0){
-                    message.warn(Intl.get("crm.should.reduce.customer","该销售拥有客户数量已达到上限！"));
+                    message.warn(Intl.get('crm.should.reduce.customer','该销售拥有客户数量已达到上限！'));
                     this.setState({loading: false});
                 }else{
                     this.submitData();
@@ -288,7 +288,7 @@ var SalesSelectField = React.createClass({
     handleTeamChange: function(value) {
         const team = _.find(this.state.salesTeamList, item => item.group_id === value);
         this.state.salesTeamId = value;
-        this.state.salesTeam = team ? team.group_name : "";
+        this.state.salesTeam = team ? team.group_name : '';
         this.setState(this.state);
     },
 
@@ -305,10 +305,10 @@ var SalesSelectField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose"
+                <i title={Intl.get('common.save', '保存')} className="inline-block iconfont icon-choose"
                     onClick={this.handleSubmit}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                    onClick={this.changeDisplayType.bind(this, "text")}/>
+                <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
+                    onClick={this.changeDisplayType.bind(this, 'text')}/>
             </div>
         );
         return (<div className="crm-basic-sales-content client-info-content">
@@ -321,22 +321,22 @@ var SalesSelectField = React.createClass({
                             <span>{this.state.userName}</span>
 
                             {this.state.enableEdit ? (
-                                <i className="iconfont icon-update" title={Intl.get("crm.sales.change", "变更销售")}
-                                    onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
+                                <i className="iconfont icon-update" title={Intl.get('crm.sales.change', '变更销售')}
+                                    onClick={this.changeDisplayType.bind(this, 'edit')}/>) : null}
                             {this.state.enableTransfer && !this.state.isMerge ? (
                                 <span className="iconfont icon-transfer"
-                                    title={Intl.get("crm.qualified.roll.out", "转出")}
-                                    onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
+                                    title={Intl.get('crm.qualified.roll.out', '转出')}
+                                    onClick={this.changeDisplayType.bind(this, 'transfer')}/>) : null}
                         </div>
                     ) : (
                         <div className="basic-sales-edit-field">
                             <Select
-                                placeholder={Intl.get("crm.17", "请选择销售人员")}
+                                placeholder={Intl.get('crm.17', '请选择销售人员')}
                                 showSearch
                                 onChange={this.handleSalesManChange}
                                 value={this.state.userId}
                                 optionFilterProp="children"
-                                notFoundContent={salesmanOptions.length ? Intl.get("crm.30", "无相关销售") : Intl.get("crm.29", "暂无销售") }
+                                notFoundContent={salesmanOptions.length ? Intl.get('crm.30', '无相关销售') : Intl.get('crm.29', '暂无销售') }
                             >
                                 {salesmanOptions}
                             </Select>
@@ -361,7 +361,7 @@ var SalesSelectField = React.createClass({
                         </div>
                     ) : (
                         <div className="basic-sales-edit-field">
-                            <Select placeholder={Intl.get("crm.31", "请选择销售团队")} name="sales_team-select"
+                            <Select placeholder={Intl.get('crm.31', '请选择销售团队')} name="sales_team-select"
                                 value={this.state.salesTeamId}
                                 onChange={this.handleTeamChange}
                             >
@@ -374,7 +374,7 @@ var SalesSelectField = React.createClass({
                 </dd>
             </dl>
             {this.props.hideSalesRole ? null : <dl className="dl-horizontal crm-basic-item detail_item crm-basic-sales-role">
-                <dt>{Intl.get("crm.detail.sales.role", "销售角色")}</dt>
+                <dt>{Intl.get('crm.detail.sales.role', '销售角色')}</dt>
                 <dd>
                     {this.state.salesRole}
                 </dd>

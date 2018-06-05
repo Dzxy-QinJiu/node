@@ -6,21 +6,21 @@
 import WeeklyReportDetailAction from '../action/weekly-report-detail-actions';
 import WeeklyReportDetailStore from '../store/weekly-report-detail-store';
 import Spinner from 'CMP_DIR/spinner';
-import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
-import {AntcTable} from "antc";
-import {Alert, Button, Popconfirm, message} from "antd";
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import {AntcTable} from 'antc';
+import {Alert, Button, Popconfirm, message} from 'antd';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import AskForLeaveForm from "../view/ask-for-leave-form";
+import AskForLeaveForm from '../view/ask-for-leave-form';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-var classNames = require("classnames");
-import {LEALVE_OPTION} from "../utils/weekly-report-utils";
-var WeekReportUtil = require("../utils/weekly-report-utils");
-var userData = require("PUB_DIR/sources/user-data");
+var classNames = require('classnames');
+import {LEALVE_OPTION} from '../utils/weekly-report-utils';
+var WeekReportUtil = require('../utils/weekly-report-utils');
+var userData = require('PUB_DIR/sources/user-data');
 var CLASSNAMES = {
-    ALIGNLEFT: "table-data-align-left",
-    ALIGNRIGHT: "table-data-align-right"
+    ALIGNLEFT: 'table-data-align-left',
+    ALIGNRIGHT: 'table-data-align-right'
 };
-import {formatRoundingData} from "PUB_DIR/sources/utils/common-method-util";
+import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
 const WeeklyReportDetail = React.createClass({
     getDefaultProps() {
         return {
@@ -30,8 +30,8 @@ const WeeklyReportDetail = React.createClass({
     getInitialState() {
         return {
             selectedItem: this.props.selectedItem,
-            isAddingLeaveUserId: "",//正在添加请假信息的销售
-            formType: "add",//是添加请假信息还是修改请假信息
+            isAddingLeaveUserId: '',//正在添加请假信息的销售
+            formType: 'add',//是添加请假信息还是修改请假信息
             isEdittingItem: {},//正在编辑的请假信息
             ...WeeklyReportDetailStore.getState()
         };
@@ -49,7 +49,7 @@ const WeeklyReportDetail = React.createClass({
         if (nextProps.selectedItem.teamId !== this.state.selectedItem.teamId || nextProps.selectedItem.nWeek !== this.state.selectedItem.nWeek) {
             this.setState({
                 selectedItem: nextProps.selectedItem,
-                isAddingLeaveUserId: ""
+                isAddingLeaveUserId: ''
             }, () => {
                 this.getWeeklyReportData();
             });
@@ -57,7 +57,7 @@ const WeeklyReportDetail = React.createClass({
     },
     componentWillUnmount() {
         this.setState({
-            isAddingLeaveUserId: ""
+            isAddingLeaveUserId: ''
         });
         WeeklyReportDetailStore.unlisten(this.onStoreChange);
     },
@@ -81,14 +81,14 @@ const WeeklyReportDetail = React.createClass({
     //添加请假信息
     handleAddAskForLeave: function(userId) {
         this.setState({
-            formType: "add",
+            formType: 'add',
             isAddingLeaveUserId: userId
         });
     },
     //更新请假信息
     handleUpdateAskForLeave: function(item) {
         this.setState({
-            formType: "edit",
+            formType: 'edit',
             isEdittingItem: item
         });
 
@@ -120,10 +120,10 @@ const WeeklyReportDetail = React.createClass({
             } else {
                 item.leave_info_list = [
                     {
-                        "leave_time": addLeaveItem.leave_time,
-                        "leave_detail": addLeaveItem.leave_detail,
-                        "leave_days": addLeaveItem.leave_days,
-                        "id": addLeaveItem.id
+                        'leave_time': addLeaveItem.leave_time,
+                        'leave_detail': addLeaveItem.leave_detail,
+                        'leave_days': addLeaveItem.leave_days,
+                        'id': addLeaveItem.id
                     }];
             }
             //更新考核天数
@@ -134,14 +134,14 @@ const WeeklyReportDetail = React.createClass({
             item.average_time = formatRoundingData(item.total_time / item.real_work_day, 1);
             this.setState({
                 salesPhone: this.state.salesPhone,
-                isAddingLeaveUserId: "",
+                isAddingLeaveUserId: '',
             });
         }
     },
     //取消添加请假信息
     cancelAddLeave: function() {
         this.setState({
-            isAddingLeaveUserId: ""
+            isAddingLeaveUserId: ''
         });
     },
     //更新请假信息之后
@@ -178,7 +178,7 @@ const WeeklyReportDetail = React.createClass({
             });
             this.setState({
                 salesPhone: this.state.salesPhone,
-                formType: "add",
+                formType: 'add',
                 isEdittingItem: {}
             });
         }
@@ -186,7 +186,7 @@ const WeeklyReportDetail = React.createClass({
     //取消更新请假信息之后
     cancelUpdateLeave: function() {
         this.setState({
-            formType: "add",
+            formType: 'add',
             isEdittingItem: {}
         });
     },
@@ -234,7 +234,7 @@ const WeeklyReportDetail = React.createClass({
                     />
                 </div>) : <div>
                     <span className="text-wrap">
-                        {Intl.get("weekly.report.full.work.day", "全勤")}
+                        {Intl.get('weekly.report.full.work.day', '全勤')}
                     </span>
                     <i className="iconfont icon-update"
                         onClick={this.handleAddAskForLeave.bind(this, userId)}></i>
@@ -252,7 +252,7 @@ const WeeklyReportDetail = React.createClass({
                             return option.value === item.leave_detail;
                         });
                         //是否正在编辑某条请假信息
-                        var isFormShow = this.state.isEdittingItem.id === item.id && this.state.formType === "edit" ? true : false;
+                        var isFormShow = this.state.isEdittingItem.id === item.id && this.state.formType === 'edit' ? true : false;
                         if (isFormShow) {
                             return (
                                 <AskForLeaveForm
@@ -266,18 +266,18 @@ const WeeklyReportDetail = React.createClass({
                             //展示请假信息
                             return (
                                 <div>
-                                    <span>{moment(item.leave_time).format(oplateConsts.DATE_FORMAT) + leaveArr[0].label + Intl.get("weekly.report.n.days", "{n}天", {n: item.leave_days})}
+                                    <span>{moment(item.leave_time).format(oplateConsts.DATE_FORMAT) + leaveArr[0].label + Intl.get('weekly.report.n.days', '{n}天', {n: item.leave_days})}
                                     </span>
                                     <i className="iconfont icon-update"
                                         onClick={this.handleUpdateAskForLeave.bind(this, item)}></i>
                                     <Popconfirm
-                                        title={Intl.get("weekly.report.are.you.sure.del.remark", "确定要删除该条请假信息吗？")}
+                                        title={Intl.get('weekly.report.are.you.sure.del.remark', '确定要删除该条请假信息吗？')}
                                         onConfirm={this.handleRemoveAskForLeave.bind(this, item)}
-                                        okText={Intl.get("common.sure", "确认")}
-                                        cancelText={Intl.get("common.cancel", "取消")}
+                                        okText={Intl.get('common.sure', '确认')}
+                                        cancelText={Intl.get('common.cancel', '取消')}
                                     >
                                         <Button className="remove-ask-leave" icon="delete"
-                                            title={Intl.get("common.delete", "删除")}/>
+                                            title={Intl.get('common.delete', '删除')}/>
                                     </Popconfirm>
                                     {index === record.leave_info_list.length - 1 ? (this.state.isAddingLeaveUserId === userId ? null :
                                         <div className="iconfont icon-add"
@@ -303,50 +303,50 @@ const WeeklyReportDetail = React.createClass({
     //合同数据
     getContractListColumn: function() {
         let columns = [{
-            title: Intl.get("crm.6", "负责人"),
+            title: Intl.get('crm.6', '负责人'),
             dataIndex: 'nickName',
-            align: "left",
+            align: 'left',
         }, {
-            title: Intl.get("weekly.report.project", "项目"),
+            title: Intl.get('weekly.report.project', '项目'),
             dataIndex: 'customerName',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.assign.time", "签约时间"),
+            title: Intl.get('weekly.report.assign.time', '签约时间'),
             dataIndex: 'date',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.contract.account", "合同金额"),
+            title: Intl.get('weekly.report.contract.account', '合同金额'),
             dataIndex: 'amount',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("contract.109", "毛利"),
+            title: Intl.get('contract.109', '毛利'),
             dataIndex: 'grossProfit',
-            align: "right",
+            align: 'right',
         }];
         return columns;
     },
     //回款数据
     getRepaymentListColumn: function() {
         let columns = [{
-            title: Intl.get("crm.6", "负责人"),
+            title: Intl.get('crm.6', '负责人'),
             dataIndex: 'nickName',
-            align: "left",
+            align: 'left',
         }, {
-            title: Intl.get("weekly.report.project", "项目"),
+            title: Intl.get('weekly.report.project', '项目'),
             dataIndex: 'customerName',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("contract.122", "回款时间"),
+            title: Intl.get('contract.122', '回款时间'),
             dataIndex: 'date',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.repayment.account", "回款金额"),
+            title: Intl.get('weekly.report.repayment.account', '回款金额'),
             dataIndex: 'amount',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("contract.109", "毛利"),
+            title: Intl.get('contract.109', '毛利'),
             dataIndex: 'grossProfit',
-            align: "right",
+            align: 'right',
         }];
         return columns;
     },
@@ -354,39 +354,39 @@ const WeeklyReportDetail = React.createClass({
     getPhoneListColumn: function() {
         var _this = this;
         let columns = [{
-            title: Intl.get("user.salesman", "销售人员"),
+            title: Intl.get('user.salesman', '销售人员'),
             dataIndex: 'name',
-            align: "left",
+            align: 'left',
         }, {
-            title: Intl.get("weekly.report.total.duration", "本周总时长"),
+            title: Intl.get('weekly.report.total.duration', '本周总时长'),
             dataIndex: 'total_time',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.total.connected", "本周总接通数"),
+            title: Intl.get('weekly.report.total.connected', '本周总接通数'),
             dataIndex: 'total_callout_success',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("sales.home.average.duration", "日均时长"),
+            title: Intl.get('sales.home.average.duration', '日均时长'),
             dataIndex: 'average_time',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("sales.home.average.connected", "日均接通数"),
+            title: Intl.get('sales.home.average.connected', '日均接通数'),
             dataIndex: 'average_num',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.assessment.days", "考核天数",),
+            title: Intl.get('weekly.report.assessment.days', '考核天数',),
             dataIndex: 'real_work_day',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.attendance.remarks", "出勤备注"),
-            align: "left",
-            className: "ask-leave-remark",
+            title: Intl.get('weekly.report.attendance.remarks', '出勤备注'),
+            align: 'left',
+            className: 'ask-leave-remark',
             width: '300',
             render: function(text, record, index) {
                 var userObj = _.find(_this.props.memberList.list, (item) => {
                     return item.name === record.name;
                 });
-                var userId = userObj.id ? userObj.id : "";
+                var userId = userObj.id ? userObj.id : '';
                 //正在添加请假信息
                 var isAdding = _this.state.isAddingLeaveUserId === userId ? true : false;
                 //没有请假信息的时候,是全勤的
@@ -403,14 +403,14 @@ const WeeklyReportDetail = React.createClass({
     },
     getCustomerStageListColumn(){
         let columns = [{
-            title: Intl.get("user.salesman", "销售人员"),
+            title: Intl.get('user.salesman', '销售人员'),
             dataIndex: 'nick_name',
-            align: "left",
+            align: 'left',
         }];
         _.each(this.state.stageList, (stageItem) => {
             columns.push({
                 title: stageItem.name,
-                align: "right",
+                align: 'right',
                 render: (text) => {
                     var data = text.statistic_list;
                     //如果获取销售阶段完成并且没有出错时
@@ -424,25 +424,25 @@ const WeeklyReportDetail = React.createClass({
             });
         });
         columns.push({
-            title: Intl.get("common.summation", "合计"),
+            title: Intl.get('common.summation', '合计'),
             dataIndex: 'total',
-            align: "right",
+            align: 'right',
         });
         return columns;
     },
     getRegionOverlayListColumn(){
         let columns = [{
-            title: Intl.get("realm.select.address.province", "省份"),
+            title: Intl.get('realm.select.address.province', '省份'),
             dataIndex: 'province_name',
-            align: "left",
+            align: 'left',
         }, {
-            title: Intl.get("weekly.report.city.province", "地市/省"),
+            title: Intl.get('weekly.report.city.province', '地市/省'),
             dataIndex: 'city_count',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.open.account", "开通数"),
+            title: Intl.get('weekly.report.open.account', '开通数'),
             dataIndex: 'city_dredge_count',
-            align: "right",
+            align: 'right',
             render: function(text, record, index) {
                 return (
                     <span>
@@ -451,14 +451,14 @@ const WeeklyReportDetail = React.createClass({
                 );
             }
         }, {
-            title: Intl.get("weekly.report.overlay.radio", "覆盖比例"),
+            title: Intl.get('weekly.report.overlay.radio', '覆盖比例'),
             dataIndex: 'city_dredge_scale',
-            align: "right",
+            align: 'right',
             fixNum: 4
         }, {
-            title: Intl.get("weekly.report.login.count", "登录数"),
+            title: Intl.get('weekly.report.login.count', '登录数'),
             dataIndex: 'city_login_count',
-            align: "right",
+            align: 'right',
             render: function(text, record, index) {
                 return (
                     <span>
@@ -467,21 +467,21 @@ const WeeklyReportDetail = React.createClass({
                 );
             }
         }, {
-            title: Intl.get("weekly.report.active.radio", "活跃率"),
+            title: Intl.get('weekly.report.active.radio', '活跃率'),
             dataIndex: 'city_active_scale',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("crm.6", "负责人"),
+            title: Intl.get('crm.6', '负责人'),
             dataIndex: 'city_principal',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.district.country", "区县"),
+            title: Intl.get('weekly.report.district.country', '区县'),
             dataIndex: 'district_count',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("weekly.report.open.account", "开通数"),
+            title: Intl.get('weekly.report.open.account', '开通数'),
             dataIndex: 'district_dredge_count',
-            align: "right",
+            align: 'right',
             render: function(text, record, index) {
                 return (
                     <span>
@@ -490,14 +490,14 @@ const WeeklyReportDetail = React.createClass({
                 );
             }
         }, {
-            title: Intl.get("weekly.report.overlay.radio", "覆盖比例"),
+            title: Intl.get('weekly.report.overlay.radio', '覆盖比例'),
             dataIndex: 'district_dredge_scale',
-            align: "right",
+            align: 'right',
             fixNum: 4
         }, {
-            title: Intl.get("weekly.report.login.count", "登录数"),
+            title: Intl.get('weekly.report.login.count', '登录数'),
             dataIndex: 'district_login_count',
-            align: "right",
+            align: 'right',
             render: function(text, record, index) {
                 return (
                     <span>
@@ -506,28 +506,28 @@ const WeeklyReportDetail = React.createClass({
                 );
             }
         }, {
-            title: Intl.get("weekly.report.active.radio", "活跃率"),
+            title: Intl.get('weekly.report.active.radio', '活跃率'),
             dataIndex: 'district_active_scale',
-            align: "right",
+            align: 'right',
         }, {
-            title: Intl.get("crm.6", "负责人"),
+            title: Intl.get('crm.6', '负责人'),
             dataIndex: 'district_principal',
-            align: "right",
+            align: 'right',
         },];
         return columns;
     },
 
     getCallInfoAuth() {
-        let authType = "user";//CUSTOMER_CALLRECORD_STATISTIC_USER
-        if (hasPrivilege("CUSTOMER_CALLRECORD_STATISTIC_MANAGER")) {
-            authType = "manager";
+        let authType = 'user';//CUSTOMER_CALLRECORD_STATISTIC_USER
+        if (hasPrivilege('CUSTOMER_CALLRECORD_STATISTIC_MANAGER')) {
+            authType = 'manager';
         }
         return authType;
     },
     getContractType(){
-        let authType = "common";
+        let authType = 'common';
         if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
-            authType = "manager";
+            authType = 'manager';
         }
         return authType;
     },
@@ -579,7 +579,7 @@ const WeeklyReportDetail = React.createClass({
     },
     //渲染不同的表格
     renderDiffTypeTable(type){
-        var data = {}, retryFunction = "", columns = {};
+        var data = {}, retryFunction = '', columns = {};
         switch (type) {
         case 'callInfo'://电话接通率
             data = this.state.salesPhone;
@@ -617,7 +617,7 @@ const WeeklyReportDetail = React.createClass({
         } else if (data.errMsg) {
             var errMsg = <span>{data.errMsg}
                 <a onClick={retryFunction}>
-                    {Intl.get("user.info.retry", "请重试")}
+                    {Intl.get('user.info.retry', '请重试')}
                 </a></span>;
             return (
                 <Alert
@@ -657,7 +657,7 @@ const WeeklyReportDetail = React.createClass({
         return (
             <div className="weekly-report-detail-container">
                 <h4 className="total-title">
-                    {Intl.get("weekly.report.statics.duration", "统计周报内容，统计时间{startTime}至{endTime}", {
+                    {Intl.get('weekly.report.statics.duration', '统计周报内容，统计时间{startTime}至{endTime}', {
                         startTime: this.getStartAndEndTime().startTime,
                         endTime: this.getStartAndEndTime().endTime
                     })}
@@ -665,41 +665,41 @@ const WeeklyReportDetail = React.createClass({
                 <div className="tables-wrap" style={{height: divHeight}}>
                     <GeminiScrollbar>
                         <div className="call-info-wrap">
-                            <h4 className="item-title">{Intl.get("weekly.report.call.statics", "电话统计")}</h4>
+                            <h4 className="item-title">{Intl.get('weekly.report.call.statics', '电话统计')}</h4>
                             <div className="call-info-table-container">
-                                {this.renderDiffTypeTable("callInfo")}
+                                {this.renderDiffTypeTable('callInfo')}
                             </div>
                         </div>
                         <div className="customer-stage-info-wrap">
                             <h4 className="item-title">
-                                {Intl.get("weekly.report.customer.stage", "客户阶段")}
+                                {Intl.get('weekly.report.customer.stage', '客户阶段')}
                             </h4>
                             <div className="customer-stage-info-table-container">
-                                {this.renderDiffTypeTable("customerStageInfo")}
+                                {this.renderDiffTypeTable('customerStageInfo')}
                             </div>
                         </div>
                         <div className="region-overlay-info-wrap">
                             <h4 className="item-title">
-                                {Intl.get("weekly.report.region.overlay", "区域覆盖情况")}
+                                {Intl.get('weekly.report.region.overlay', '区域覆盖情况')}
                             </h4>
                             <div className="region-overlay-info-table-container">
-                                {this.renderDiffTypeTable("regionOverlay")}
+                                {this.renderDiffTypeTable('regionOverlay')}
                             </div>
                         </div>
                         <div className="contract-info-wrap">
                             <h4 className="item-title">
-                                {Intl.get("weekly.report.contract", "合同情况")}
+                                {Intl.get('weekly.report.contract', '合同情况')}
                             </h4>
                             <div className="contract-info-table-container">
-                                {this.renderDiffTypeTable("contactInfo")}
+                                {this.renderDiffTypeTable('contactInfo')}
                             </div>
                         </div>
                         <div className="repayment-info-wrap">
                             <h4 className="item-title">
-                                {Intl.get("weekly.report.repayment", "回款情况")}
+                                {Intl.get('weekly.report.repayment', '回款情况')}
                             </h4>
                             <div className="repayment-info-table-container">
-                                {this.renderDiffTypeTable("repaymentInfo")}
+                                {this.renderDiffTypeTable('repaymentInfo')}
                             </div>
                         </div>
                     </GeminiScrollbar>

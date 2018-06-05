@@ -1,5 +1,5 @@
-var userAjax = require("../ajax/user-ajax");
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var userAjax = require('../ajax/user-ajax');
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 function UserActions() {
     this.generateActions(
         'setInitialData',
@@ -45,10 +45,10 @@ function UserActions() {
             if (_.isObject(userObj)) {
                 _this.dispatch(userObj);
             } else {
-                _this.dispatch( Intl.get("member.get.detail.failed", "获取成员的详情失败!"));
+                _this.dispatch( Intl.get('member.get.detail.failed', '获取成员的详情失败!'));
             }
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("member.get.detail.failed", "获取成员的详情失败!"));
+            _this.dispatch(errorMsg || Intl.get('member.get.detail.failed', '获取成员的详情失败!'));
         });
     };
 

@@ -1,22 +1,22 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-"use strict";
+'use strict';
 const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var organizationRestApis = {
-    getOrganizationList: "/rest/base/v1/usergroup/list",
-    getOrganizationMemberList: "/rest/base/v1/usergroup/users",
-    getMemberList: "/rest/base/v1/user/search",
-    addMember: "/rest/base/v1/usergroup/user",
-    setUserToManager: "/rest/base/v1/usergroup/user/exchange",
-    setManagerToUser: "/rest/base/v1/usergroup/manager/exchange",
-    deleteGroup: "/rest/base/v1/usergroup",
-    editGroup: "/rest/base/v1/usergroup",
-    addGroup: "/rest/base/v1/usergroup",
-    addDepartment: "/rest/base/v1/usergroup/department",
-    addTeam: "/rest/base/v1/usergroup/team"
+    getOrganizationList: '/rest/base/v1/usergroup/list',
+    getOrganizationMemberList: '/rest/base/v1/usergroup/users',
+    getMemberList: '/rest/base/v1/user/search',
+    addMember: '/rest/base/v1/usergroup/user',
+    setUserToManager: '/rest/base/v1/usergroup/user/exchange',
+    setManagerToUser: '/rest/base/v1/usergroup/manager/exchange',
+    deleteGroup: '/rest/base/v1/usergroup',
+    editGroup: '/rest/base/v1/usergroup',
+    addGroup: '/rest/base/v1/usergroup',
+    addDepartment: '/rest/base/v1/usergroup/department',
+    addTeam: '/rest/base/v1/usergroup/team'
 };
 exports.urls = organizationRestApis;
 
@@ -50,7 +50,7 @@ function turnToFrontMember(data) {
 exports.getOrganizeMembersById = function(req, res, groupId) {
     return restUtil.authRest.get(
         {
-            url: organizationRestApis.getOrganizationMemberList + "/" + groupId,
+            url: organizationRestApis.getOrganizationMemberList + '/' + groupId,
             req: req,
             res: res
         },
@@ -58,7 +58,7 @@ exports.getOrganizeMembersById = function(req, res, groupId) {
         {
             success: function(eventEmitter, data) {
                 data = turnToFrontMember(data);
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -90,7 +90,7 @@ exports.getMemberList = function(req, res, queryObj) {
         {
             success: function(eventEmitter, data) {
                 data.data = turnToFrontUser(data.data);
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -107,7 +107,7 @@ exports.addMember = function(req, res, obj) {
 
 exports.editMember = function(req, res, obj, type) {
     let url = organizationRestApis.setUserToManager;
-    if (type == "manager") {
+    if (type == 'manager') {
         url = organizationRestApis.setManagerToUser;
     }
     return restUtil.authRest.put(
@@ -122,7 +122,7 @@ exports.editMember = function(req, res, obj, type) {
 exports.deleteGroup = function(req, res, groupId) {
     return restUtil.authRest.del(
         {
-            url: organizationRestApis.deleteGroup + "/" + groupId,
+            url: organizationRestApis.deleteGroup + '/' + groupId,
             req: req,
             res: res
         });

@@ -65,9 +65,9 @@ const ThreePartyAppConfig = React.createClass({
         var displayEstablishTime = '';
 
         if (app.create_time == '0') {
-            displayEstablishTime = Intl.get("user.nothing", "无");
+            displayEstablishTime = Intl.get('user.nothing', '无');
         } else if (establish_time === 'Invalid date') {
-            displayEstablishTime = Intl.get("common.unknown", "未知");
+            displayEstablishTime = Intl.get('common.unknown', '未知');
         } else {
             displayEstablishTime = establish_time;
         }
@@ -75,10 +75,10 @@ const ThreePartyAppConfig = React.createClass({
             <div className="rows-3">
                 <div className="app-prop-list">
                     <span className="app-title">{app.name}</span>
-                    <span className="app-info">{Intl.get("user.third.thirdapp.platform", "应用平台")}:{app.platform}</span>
-                    <span className="app-info">{Intl.get("user.third.thirdapp.type", "应用类型")}:{app.type}</span>
-                    <span className="app-info">{Intl.get("third.party.app.create.time", "创建时间")}: {displayEstablishTime}</span>
-                    <span className="app-info">{Intl.get("common.describe", "描述")}: {app.about}</span>
+                    <span className="app-info">{Intl.get('user.third.thirdapp.platform', '应用平台')}:{app.platform}</span>
+                    <span className="app-info">{Intl.get('user.third.thirdapp.type', '应用类型')}:{app.type}</span>
+                    <span className="app-info">{Intl.get('third.party.app.create.time', '创建时间')}: {displayEstablishTime}</span>
+                    <span className="app-info">{Intl.get('common.describe', '描述')}: {app.about}</span>
                 </div>
             </div>
         );
@@ -103,7 +103,7 @@ const ThreePartyAppConfig = React.createClass({
     },
     //获取应用列表段
     getAppsBlock() {
-        let className = "logo";
+        let className = 'logo';
         className += ' pull-left';
         return (
             <ul className="app_list">
@@ -124,7 +124,7 @@ const ThreePartyAppConfig = React.createClass({
                             {
                                 (app.status === 'disable') ? (
                                     <div className="is_disabled">
-                                        <span className="disabled_span">{Intl.get("common.stop", "停用")}</span>
+                                        <span className="disabled_span">{Intl.get('common.stop', '停用')}</span>
                                     </div>
                                 ) : null
                             }
@@ -135,7 +135,7 @@ const ThreePartyAppConfig = React.createClass({
                             >
                                 <a href="javascript:void(0)"
                                     onClick={this.showSingleAppDetail.bind(this, app)}
-                                    title={Intl.get("user.third.app.detail", "查看开放平台应用详情")}>
+                                    title={Intl.get('user.third.app.detail', '查看开放平台应用详情')}>
                                     <i className="iconfont icon-app-detail"></i>
                                 </a>
                             </PrivilegeChecker>
@@ -143,13 +143,13 @@ const ThreePartyAppConfig = React.createClass({
                     );
                 })) : (
                     <div>
-                        <span>{Intl.get("my.app.no.app", "暂无应用")}</span>
+                        <span>{Intl.get('my.app.no.app', '暂无应用')}</span>
                         <PrivilegeChecker
                             check="THIRD_PARTY_MANAGE" // 只有管理员可以查看应用详情、添加、编辑和停用应用
                             tagName="span"
                             className="operate"
                         >
-                            <span>，{Intl.get("common.yesno", "是否")}</span>{this.renderAddAppBtn()}
+                            <span>，{Intl.get('common.yesno', '是否')}</span>{this.renderAddAppBtn()}
                         </PrivilegeChecker>
                     </div>
                 )}

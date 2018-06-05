@@ -1,7 +1,7 @@
-var UserActions = require("../action/user-actions");
-var UserFormStore = require("../store/user-form-store");
-var userData = require("../../../../public/sources/user-data");
-var userInfoEmitter = require("../../../../public/sources/utils/emitters").userInfoEmitter;
+var UserActions = require('../action/user-actions');
+var UserFormStore = require('../store/user-form-store');
+var userData = require('../../../../public/sources/user-data');
+var userInfoEmitter = require('../../../../public/sources/utils/emitters').userInfoEmitter;
 var emptyUser = {
     id: '',
     name: '',
@@ -12,7 +12,7 @@ var emptyUser = {
     phone: '',
     email: '',
     role: [],
-    phoneOrder: ""
+    phoneOrder: ''
 };
 
 function UserStore() {
@@ -37,10 +37,10 @@ function UserStore() {
     //个人日志展示第几页
     this.logNum = 1;
     //查询内容
-    this.searchContent = "";
+    this.searchContent = '';
     //查询时间
-    this.startTime = "";
-    this.endTime = "";
+    this.startTime = '';
+    this.endTime = '';
     //加载数据中。。。
     this.isLoading = true;
     //右侧面板的开关
@@ -48,19 +48,19 @@ function UserStore() {
     //获取用户详情中。。。
     this.userIsLoading = false;
     //表单的类型：添加/修改
-    this.formType = "add";
+    this.formType = 'add';
     //获取成员列表时，错误/暂无（符合条件的）数据的提示
-    this.userListTipMsg = "";
+    this.userListTipMsg = '';
     //是否展示筛选面板
     this.isFilterPanelShow = false;
     //已选过滤角色
-    this.selectRole = "";
+    this.selectRole = '';
     //所有成员的总长度
     this.allUserTotal = 0;
     //筛选面板下的成员的角色列表
     this.userRoleList = [];
     //获取成员详情失败的错误提示
-    this.getUserDetailError = "";
+    this.getUserDetailError = '';
     this.isContinueAddButtonShow = false;
     this.bindActions(UserActions);
 
@@ -73,7 +73,7 @@ UserStore.prototype.setInitialData = function() {
 UserStore.prototype.setSelectRole = function(role) {
     //搜索框和角色不能联合查询
     this.selectRole = role;
-    this.searchContent = "";
+    this.searchContent = '';
 };
 //过滤面板是否展示的设置
 UserStore.prototype.toggleFilterPanel = function() {
@@ -128,13 +128,13 @@ UserStore.prototype.getCurUserList = function(userListObj) {
         }
         if (curUserList.length > 0) {
             //清空提示
-            this.userListTipMsg = "";
+            this.userListTipMsg = '';
         } else {
             //无数据时的处理
             if (this.searchContent) {
-                this.userListTipMsg = Intl.get("member.no.suitable.member", "没有符合条件的成员!");
+                this.userListTipMsg = Intl.get('member.no.suitable.member', '没有符合条件的成员!');
             } else {
-                this.userListTipMsg = Intl.get("common.no.member", "暂无成员") + '!';
+                this.userListTipMsg = Intl.get('common.no.member', '暂无成员') + '!';
             }
         }
         // this.curUserList = curUserList;
@@ -176,7 +176,7 @@ UserStore.prototype.getCurUserById = function(user) {
     if (_.isString(user)) {
         this.getUserDetailError = user;
     } else {
-        this.getUserDetailError = "";
+        this.getUserDetailError = '';
         this.currentUser = user;
         let curUser = _.find(this.curUserList, curUser => curUser.id == user.id);
         if (curUser){
@@ -273,7 +273,7 @@ UserStore.prototype.afterEditUser = function(modifiedUser) {
 };
 
 UserStore.prototype.showUserForm = function(type) {
-    if (type === "add") {
+    if (type === 'add') {
         this.currentUser = emptyUser;
     }
     this.formType = type;
@@ -295,7 +295,7 @@ UserStore.prototype.setUserLoading = function(flag) {
     this.userIsLoading = flag;
     if (flag) {
         //重新获取详情时，清空之前的错误提示
-        this.getUserDetailError = "";
+        this.getUserDetailError = '';
     }
 };
 
@@ -308,7 +308,7 @@ UserStore.prototype.showUserInfoPanel = function() {
 UserStore.prototype.updateSearchContent = function(searchContent) {
     //搜索框和角色不能联合查询
     this.searchContent = searchContent;
-    this.selectRole = "";
+    this.selectRole = '';
 
 };
 UserStore.prototype.closeRightPanel = function() {
@@ -332,7 +332,7 @@ UserStore.prototype.returnInfoPanel = function(newAddUser) {
             if (_.isArray(roleList) && roleList.length) {
                 let role = _.filter(roleList, role => newAddUser.roleIds.indexOf(role.roleId) != -1);
                 if (_.isArray(role) && role.length) {
-                    newAddUser.roleNames = _.pluck(role, "roleName");
+                    newAddUser.roleNames = _.pluck(role, 'roleName');
                 }
             }
         }
@@ -342,9 +342,9 @@ UserStore.prototype.returnInfoPanel = function(newAddUser) {
             if (_.isArray(userTeamList) && userTeamList.length) {
                 userTeam = _.find(userTeamList, team => team.group_id == newAddUser.teamId);
             }
-            newAddUser.teamName = userTeam ? userTeam.group_name : "";
+            newAddUser.teamName = userTeam ? userTeam.group_name : '';
         }
-        if (newAddUser.emailEnable == "false") {
+        if (newAddUser.emailEnable == 'false') {
             newAddUser.emailEnable = false;
         }
         this.currentUser = newAddUser;

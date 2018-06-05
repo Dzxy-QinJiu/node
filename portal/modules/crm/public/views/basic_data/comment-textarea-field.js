@@ -2,12 +2,12 @@
  * 显示、编辑 的组件
  * 可切换状态
  */
-import {Input,Icon} from "antd";
-let autosize = require("autosize");
-import FieldMixin from "../../../../../components/antd-form-fieldmixin";
+import {Input,Icon} from 'antd';
+let autosize = require('autosize');
+import FieldMixin from '../../../../../components/antd-form-fieldmixin';
 let AutosizeTextarea = require('../../../../../components/autosize-textarea');
-let CrmBasicAjax = require("../../ajax/index");
-import Trace from "LIB_DIR/trace";
+let CrmBasicAjax = require('../../ajax/index');
+import Trace from 'LIB_DIR/trace';
 let BasicEditInputField = React.createClass({
     mixins: [FieldMixin],
     getDefaultProps: function() {
@@ -24,7 +24,7 @@ let BasicEditInputField = React.createClass({
     getInitialState: function() {
         return {
             loading: false,
-            displayType: "text",
+            displayType: 'text',
             disabled: this.props.disabled,
             isMerge: this.props.isMerge,
             customerId: this.props.customerId,
@@ -44,9 +44,9 @@ let BasicEditInputField = React.createClass({
         }
     },
     setEditable: function() {
-        Trace.traceEvent(this.getDOMNode(),"点击设置备注按钮");
+        Trace.traceEvent(this.getDOMNode(),'点击设置备注按钮');
         this.setState({
-            displayType: "edit"
+            displayType: 'edit'
         });
     },
     //回到展示状态
@@ -65,10 +65,10 @@ let BasicEditInputField = React.createClass({
         }
         let submitData = {
             id: this.props.customerId,
-            type: "comment",
+            type: 'comment',
             remarks: $.trim(this.state.remarks)
         };
-        Trace.traceEvent(this.getDOMNode(),"点击保存备注按钮");
+        Trace.traceEvent(this.getDOMNode(),'点击保存备注按钮');
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
@@ -79,7 +79,7 @@ let BasicEditInputField = React.createClass({
                     this.setState({
                         loading: false,
                         displayType: 'text',
-                        submitErrorMsg: "",
+                        submitErrorMsg: '',
                         remarks: submitData.remarks
                     });
                     //更新列表中的客户名
@@ -88,7 +88,7 @@ let BasicEditInputField = React.createClass({
             }, errorMsg => {
                 this.setState({
                     loading: false,
-                    submitErrorMsg: errorMsg || Intl.get("crm.171", "修改客户备注失败")
+                    submitErrorMsg: errorMsg || Intl.get('crm.171', '修改客户备注失败')
                 });
             });
         }
@@ -96,10 +96,10 @@ let BasicEditInputField = React.createClass({
 
 
     handleCancel: function() {
-        Trace.traceEvent(this.getDOMNode(),"点击取消保存备注按钮");
+        Trace.traceEvent(this.getDOMNode(),'点击取消保存备注按钮');
         this.setState({
             remarks: this.props.remarks,
-            displayType: "text",
+            displayType: 'text',
             submitErrorMsg: '',
             loading: false
         });
@@ -115,7 +115,7 @@ let BasicEditInputField = React.createClass({
                 <span className="inline-block">{this.state.remarks}</span>
                 {
                     !this.props.disabled ? (
-                        <i className="inline-block iconfont icon-update" title={Intl.get("user.remark.set.tip", "设置备注")}
+                        <i className="inline-block iconfont icon-update" title={Intl.get('user.remark.set.tip', '设置备注')}
                             onClick={this.setEditable}/>
                     ) : null
                 }
@@ -131,8 +131,8 @@ let BasicEditInputField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={this.handleSubmit}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close" onClick={this.handleCancel}/>
+                <i title={Intl.get('common.save', '保存')} className="inline-block iconfont icon-choose" onClick={this.handleSubmit}/>
+                <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close" onClick={this.handleCancel}/>
             </div>
         );
 

@@ -1,28 +1,28 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * Created by xiaojinfeng on  2016/1/14 10:25 .
  */
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./css/user-password-es_VE.less");
-} else if (language.lan() == "zh") {
-    require("./css/user-password-zh_CN.less");
+var language = require('../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./css/user-password-es_VE.less');
+} else if (language.lan() == 'zh') {
+    require('./css/user-password-zh_CN.less');
 }
-var Button = require("antd").Button;
-var Form = require("antd").Form;
-var Input = require("antd").Input;
+var Button = require('antd').Button;
+var Form = require('antd').Form;
+var Input = require('antd').Input;
 var FormItem = Form.Item;
-var Col = require("antd").Col;
-var Icon = require("antd").Icon;
-var crypto = require("crypto");//用于密码md5
-var AlertTimer = require("../../../components/alert-timer");
+var Col = require('antd').Col;
+var Icon = require('antd').Icon;
+var crypto = require('crypto');//用于密码md5
+var AlertTimer = require('../../../components/alert-timer');
 
 //顶部导航
-var TopNav = require("../../../components/top-nav");
-var UserInfoStore = require("../../user_info/public/store/user-info-store");
-var UserInfoAction = require("../../user_info/public/action/user-info-actions");
-var userInfoAjax = require("../../user_info/public/ajax/user-info-ajax");
+var TopNav = require('../../../components/top-nav');
+var UserInfoStore = require('../../user_info/public/store/user-info-store');
+var UserInfoAction = require('../../user_info/public/action/user-info-actions');
+var userInfoAjax = require('../../user_info/public/ajax/user-info-ajax');
 var passwdStrengthFile = require('../../../components/password-strength-bar');
 var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
 
@@ -98,14 +98,14 @@ var UserPwdPage = React.createClass({
         }
     },
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
         UserInfoStore.listen(this.onChange);
         UserInfoAction.getUserInfo();
     },
     componentWillUnmount: function() {
-        $(window).unbind("resize");
+        $(window).unbind('resize');
         UserInfoStore.unlisten(this.onChange);
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
     },
 
 
@@ -140,7 +140,7 @@ var UserPwdPage = React.createClass({
                 passBarShow: false,
                 passStrength: 'L'
             });
-            callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
         }
     },
 
@@ -185,9 +185,9 @@ var UserPwdPage = React.createClass({
                     return;
                 } else {
                     var user = {
-                        userId: "",
-                        passwd: "",
-                        newPasswd: ""
+                        userId: '',
+                        passwd: '',
+                        newPasswd: ''
                     };
                     var userInfo = _this.state.formData;
                     user.newPasswd = _this.md5Hash(userInfo.newPasswd);
@@ -200,9 +200,9 @@ var UserPwdPage = React.createClass({
     },
 
     md5Hash: function(passwd) {
-        var md5Hash = crypto.createHash("md5");
+        var md5Hash = crypto.createHash('md5');
         md5Hash.update(passwd);
-        return md5Hash.digest("hex");
+        return md5Hash.digest('hex');
     },
 
     renderIndicator: function() {

@@ -2,32 +2,32 @@
  * 近期登录用户列表
  * Created by wangliping on 2017/8/31.
  */
-require("../css/recent-login-user-list.less");
-import {Select, Table} from "antd";
-import ShareObj from "../util/app-id-share-util";
-import SelectFullWidth from "CMP_DIR/select-fullwidth";
-import TopNav from "CMP_DIR/top-nav";
-import GeminiScrollBar from "CMP_DIR/react-gemini-scrollbar";
-import {RightPanelClose} from "CMP_DIR/rightPanel/index";
-import DatePicker from "CMP_DIR/datepicker";
+require('../css/recent-login-user-list.less');
+import {Select, Table} from 'antd';
+import ShareObj from '../util/app-id-share-util';
+import SelectFullWidth from 'CMP_DIR/select-fullwidth';
+import TopNav from 'CMP_DIR/top-nav';
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
+import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
+import DatePicker from 'CMP_DIR/datepicker';
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
-import {RightPanel} from "CMP_DIR/rightPanel";
-import {topNavEmitter} from "PUB_DIR/sources/utils/emitters";
-import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
-import {userTypeList, filterTypeList} from "PUB_DIR/sources/utils/consts";
+import {RightPanel} from 'CMP_DIR/rightPanel';
+import {topNavEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {userTypeList, filterTypeList} from 'PUB_DIR/sources/utils/consts';
 import {
     getUserByFromUserList,
     getAppNameList,
     getAppStatusList,
     getAccountTypeList,
     getTimeList
-} from "../util/app-user-util";
-import userAjax from "../ajax/app-user-ajax";
-import UserDetail from "./user-detail";
+} from '../util/app-user-util';
+import userAjax from '../ajax/app-user-ajax';
+import UserDetail from './user-detail';
 const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {setWebsiteConfig} from "LIB_DIR/utils/websiteConfig";
-import {storageUtil} from "ant-utils";
+import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
+import {storageUtil} from 'ant-utils';
 //存储个人配置的key
 const WEBSITE_CONFIG = oplateConsts.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG;
 //个人配置中存储的近期登录用户列表选择的应用id
@@ -44,44 +44,44 @@ class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
         let timeRange = this.getTodayTimeRange();
-        var defaultTeam = {group_id: "", group_name: Intl.get("user.list.all.teamlist", "全部团队")};
+        var defaultTeam = {group_id: '', group_name: Intl.get('user.list.all.teamlist', '全部团队')};
         var teamLists = _.flatten([[defaultTeam], this.props.teamlists]);
         this.state = {
             selectedAppId: this.getSelectedAppId(this.props),
             teamlists: teamLists,
             start_time: timeRange.start_time,
             end_time: timeRange.end_time,
-            user_type: "",
+            user_type: '',
             recentLoginUsers: [],
             totalUserSize: 0,
             pageNum: 1,//当前页数（第几页）
             isLoadingUserList: false,//是否正在获取近期登录用户列表
-            getUserListErrorMsg: "",//错误提示内容
+            getUserListErrorMsg: '',//错误提示内容
             listenScrollBottom: true,//是否监听滚动
             isShowUserDetail: false,//是否展示用户详情
             userId: '',//要查看详情的用户id
             curUserDetail: {},//当前要查看的用户详情
             isShownExceptionTab: false,//是否展示异常登录信息
-            filter_type: "", // 是否过期，默认（全部）
-            team_ids: "" //默认选中的团队(全部)
+            filter_type: '', // 是否过期，默认（全部）
+            team_ids: '' //默认选中的团队(全部)
         };
     }
 
     componentDidMount() {
         this.getRecentLoginUsers();
-        $(this.refs.recentLoginUsersTable).on("click", "tr", this.onRowClick.bind(this));
+        $(this.refs.recentLoginUsersTable).on('click', 'tr', this.onRowClick.bind(this));
     }
 
     onRowClick(event) {
         let target = event.target;
-        if ($(target).closest(".ant-table-selection-column").length) {
+        if ($(target).closest('.ant-table-selection-column').length) {
             return;
         }
-        let user_id = $(event.currentTarget).find(".hidden_user_id").val();
+        let user_id = $(event.currentTarget).find('.hidden_user_id').val();
         if (!user_id) {
             return;
         }
-        $(event.currentTarget).addClass("current_row").siblings().removeClass("current_row");
+        $(event.currentTarget).addClass('current_row').siblings().removeClass('current_row');
         let userObj = getUserByFromUserList(this.state.recentLoginUsers, user_id);
         userObj.isShownExceptionTab = _.find(userObj.apps, app => {
             return app.exception_mark_date;
@@ -97,14 +97,14 @@ class RecentLoginUsers extends React.Component {
         this.setState({
             isShowUserDetail: false
         });
-        $(".recent-login-users-table-wrap .current_row").removeClass("current_row");
+        $('.recent-login-users-table-wrap .current_row').removeClass('current_row');
     }
 
     getSelectedAppId(props) {
-        var selectedAppId = "";
+        var selectedAppId = '';
         //上次手动选中的appid
         let websitConfig = JSON.parse(storageUtil.local.get(WEBSITE_CONFIG));
-        let localSelectedAppId = websitConfig ? websitConfig[RECENT_LOGIN_USER_SELECTED_APP_ID] : "";
+        let localSelectedAppId = websitConfig ? websitConfig[RECENT_LOGIN_USER_SELECTED_APP_ID] : '';
         if (props.selectedAppId) {
             //如果外面选中一个应用，最近登录的用户，默认用此应用
             selectedAppId = props.selectedAppId;
@@ -113,7 +113,7 @@ class RecentLoginUsers extends React.Component {
             selectedAppId = localSelectedAppId;
         } else {
             //如果上面两种情况都没有，就用应用列表中第一个
-            selectedAppId = props.appList[0] ? props.appList[0].app_id : "";
+            selectedAppId = props.appList[0] ? props.appList[0].app_id : '';
         }
         return selectedAppId;
     }
@@ -173,7 +173,7 @@ class RecentLoginUsers extends React.Component {
             this.setState({
                 isLoadingUserList: false,
                 listenScrollBottom: false,
-                getUserListErrorMsg: errorMsg || Intl.get("user.list.get.failed", "获取用户列表失败")
+                getUserListErrorMsg: errorMsg || Intl.get('user.list.get.failed', '获取用户列表失败')
             });
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         });
@@ -194,7 +194,7 @@ class RecentLoginUsers extends React.Component {
         }
         this.setState({
             isLoadingUserList: false,
-            getUserListErrorMsg: "",
+            getUserListErrorMsg: '',
             recentLoginUsers: userList,
             totalUserSize: total,
             pageNum: this.state.pageNum,
@@ -241,7 +241,7 @@ class RecentLoginUsers extends React.Component {
         var _this = this;
         var columns = [
             {
-                title: Intl.get("common.username", "用户名"),
+                title: Intl.get('common.username', '用户名'),
                 dataIndex: 'account_name',
                 key: 'account_name',
                 width: null,
@@ -256,9 +256,9 @@ class RecentLoginUsers extends React.Component {
 
                     return (
                         <div title={user_name}>
-                            {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ?
+                            {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
                                 <i className="iconfont icon-warn-icon unnormal-login"
-                                    title={Intl.get("user.login.abnormal", "异常登录")}/> : null}
+                                    title={Intl.get('user.login.abnormal', '异常登录')}/> : null}
                             {user_name}
                             <input type="hidden" className="hidden_user_id" value={user_id}/>
                         </div>
@@ -266,7 +266,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("common.nickname", "昵称"),
+                title: Intl.get('common.nickname', '昵称'),
                 dataIndex: 'account_nickname',
                 key: 'account_nickname',
                 width: null,
@@ -282,7 +282,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("common.belong.customer", "所属客户"),
+                title: Intl.get('common.belong.customer', '所属客户'),
                 dataIndex: 'customer_name',
                 key: 'customer_name',
                 width: null,
@@ -296,7 +296,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("common.app.name", "应用名称"),
+                title: Intl.get('common.app.name', '应用名称'),
                 dataIndex: 'apps',
                 key: 'appName',
                 width: null,
@@ -305,7 +305,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("common.status", "状态"),
+                title: Intl.get('common.status', '状态'),
                 dataIndex: 'apps',
                 width: Oplate.hideUserManageItem ? '100px' : '75px',
                 key: 'status',
@@ -314,7 +314,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("common.type", "类型"),
+                title: Intl.get('common.type', '类型'),
                 dataIndex: 'apps',
                 width: '75px',
                 key: 'accountType',
@@ -323,7 +323,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("user.time.start", "开通时间"),
+                title: Intl.get('user.time.start', '开通时间'),
                 dataIndex: 'grant_create_date',
                 width: Oplate.hideUserManageItem ? '120px' : '85px',
                 key: 'grant_create_date',
@@ -334,7 +334,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("user.time.end", "到期时间"),
+                title: Intl.get('user.time.end', '到期时间'),
                 dataIndex: 'end_date',
                 width: Oplate.hideUserManageItem ? '120px' : '85px',
                 key: 'end_date',
@@ -345,7 +345,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("common.belong.sales", "所属销售"),
+                title: Intl.get('common.belong.sales', '所属销售'),
                 dataIndex: 'member_name',
                 width: '85px',
                 key: 'member_name',
@@ -358,7 +358,7 @@ class RecentLoginUsers extends React.Component {
                     );
                 }
             }, {
-                title: Intl.get("user.login.times", "登录次数"),
+                title: Intl.get('user.login.times', '登录次数'),
                 dataIndex: 'logins',
                 key: 'logins',
                 width: '100px',
@@ -374,7 +374,7 @@ class RecentLoginUsers extends React.Component {
                     );
                 }
             }, {
-                title: Intl.get("user.login.days", "登录天数"),
+                title: Intl.get('user.login.days', '登录天数'),
                 dataIndex: 'login_day_count',
                 key: 'login_day_count',
                 width: '100px',
@@ -391,7 +391,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get("common.remark", "备注"),
+                title: Intl.get('common.remark', '备注'),
                 dataIndex: 'user',
                 key: 'description',
                 width: null,
@@ -410,7 +410,7 @@ class RecentLoginUsers extends React.Component {
             start_time = moment('2010-01-01 00:00:00').valueOf();
         }
         if (!end_time) {
-            end_time = moment().endOf("day").valueOf();
+            end_time = moment().endOf('day').valueOf();
         }
         this.setState({start_time: start_time, end_time: end_time, pageNum: 1});
         setTimeout(() => this.getRecentLoginUsers());
@@ -445,14 +445,14 @@ class RecentLoginUsers extends React.Component {
                             disableDateAfterToday={true}
                             range="day"
                             onSelect={this.onSelectDate.bind(this)}>
-                            <DatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</DatePicker.Option>
-                            <DatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</DatePicker.Option>
-                            <DatePicker.Option value="week">{Intl.get("common.time.unit.week", "周")}</DatePicker.Option>
+                            <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                            <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                            <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
                             <DatePicker.Option
-                                value="month">{Intl.get("common.time.unit.month", "月")}</DatePicker.Option>
+                                value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
                             <DatePicker.Option
-                                value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
-                            <DatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</DatePicker.Option>
+                                value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                            <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                         </DatePicker>
                     </div>
                     <div className="inline-block recent-login-app-select">
@@ -462,7 +462,7 @@ class RecentLoginUsers extends React.Component {
                             minWidth={120}
                             value={this.state.selectedAppId}
                             onChange={this.onSelectedAppChange.bind(this)}
-                            notFoundContent={!appOptions.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
+                            notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
                         >
                             {appOptions}
                         </SelectFullWidth>
@@ -505,7 +505,7 @@ class RecentLoginUsers extends React.Component {
                             }
                         </SelectFullWidth>
                     </div>
-                    <RightPanelClose title={Intl.get("common.app.status.close", "关闭")}
+                    <RightPanelClose title={Intl.get('common.app.status.close', '关闭')}
                         onClick={this.props.hideRecentLoginPanel}/>
                 </TopNav>
                 <div className="recent-login-users-table-wrap splice-table">
@@ -528,7 +528,7 @@ class RecentLoginUsers extends React.Component {
                                 columns={columns}
                                 loading={this.state.isLoadingUserList}
                                 pagination={false}
-                                locale={{emptyText: this.state.getUserListErrorMsg || Intl.get("common.no.data", "暂无数据")}}
+                                locale={{emptyText: this.state.getUserListErrorMsg || Intl.get('common.no.data', '暂无数据')}}
                             />
                         </GeminiScrollBar>
                     </div>
@@ -536,7 +536,7 @@ class RecentLoginUsers extends React.Component {
                         <div className="summary_info">
                             <ReactIntl.FormattedMessage
                                 id="user.total.data"
-                                defaultMessage={`共{number}个用户`}
+                                defaultMessage={'共{number}个用户'}
                                 values={{
                                     'number': this.state.totalUserSize
                                 }}

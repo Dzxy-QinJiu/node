@@ -1,11 +1,11 @@
-var RightContent = require("../../../components/privilege/right-content");
-var Checker = require("../../../components/privilege/checker");
-var role = require("../../../modules/rolePrivilege_role");
-var authority = require("../../../modules/rolePrivilege_authority");
-var userManage = require("../../../modules/user_manage");
-var salesStage = require("../../../modules/sales_stage");
-var salesTeam = require("../../../modules/sales_team");
-var ConfigManage = require("../../../modules/config_manage");
+var RightContent = require('../../../components/privilege/right-content');
+var Checker = require('../../../components/privilege/checker');
+var role = require('../../../modules/rolePrivilege_role');
+var authority = require('../../../modules/rolePrivilege_authority');
+var userManage = require('../../../modules/user_manage');
+var salesStage = require('../../../modules/sales_stage');
+var salesTeam = require('../../../modules/sales_team');
+var ConfigManage = require('../../../modules/config_manage');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('background_management',

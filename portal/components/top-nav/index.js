@@ -1,28 +1,28 @@
 //引入用户数据
-var UserData = require("../../public/sources/user-data");
+var UserData = require('../../public/sources/user-data');
 //class名
-var classNames = require("classnames");
+var classNames = require('classnames');
 //顶部导航菜单的超链接
-var Link = require("react-router").Link;
-var Dropdown = require("antd").Dropdown;
-var topNavEmitter = require("../../public/sources/utils/emitters").topNavEmitter;
+var Link = require('react-router').Link;
+var Dropdown = require('antd').Dropdown;
+var topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
 //顶部导航外层div
 var TopNav = React.createClass({
     resizeHandler: function() {
         //找到外层节点
         var $wrap = $(ReactDOM.findDOMNode(this.refs.topNav));
         //找到菜单列表
-        var $topLinks = $wrap.find(".topnav-links-wrap");
+        var $topLinks = $wrap.find('.topnav-links-wrap');
         //找到所有显示出来的子节点
-        var childNodes = $wrap.children().filter(":visible");
+        var childNodes = $wrap.children().filter(':visible');
         //是否已经处于窄界面的下拉菜单显示状态
-        var isNarrowDropdownOn = $topLinks.hasClass("fixed-layout");
+        var isNarrowDropdownOn = $topLinks.hasClass('fixed-layout');
         //界面清理操作
         function cleanUp() {
             //将菜单节点设置为显示状态
-            $topLinks.removeAttr("hidden");
+            $topLinks.removeAttr('hidden');
             //下拉菜单归位
-            $topLinks.removeClass("fixed-layout");
+            $topLinks.removeClass('fixed-layout');
         }
         if(!$topLinks[0] || childNodes.length === 1) {
             cleanUp();
@@ -48,9 +48,9 @@ var TopNav = React.createClass({
         });
         //如果存在覆盖的情况，则将菜单节点变成汉堡包
         if(intersect) {
-            $topLinks.attr("hidden","true");
+            $topLinks.attr('hidden','true');
             if(isNarrowDropdownOn) {
-                $topLinks.addClass("fixed-layout");
+                $topLinks.addClass('fixed-layout');
             }
         }
     },
@@ -62,31 +62,31 @@ var TopNav = React.createClass({
     clickBodyEmptySpace: function(event) {
         var $target = $(event.target);
         var $topNav = $(ReactDOM.findDOMNode(this.refs.topNav));
-        var $topNavLinksWrap = $topNav.find(".topnav-links-wrap");
-        var $dropDown = $topNav.find(".topnav-links");
-        if($target.is(".navbar-toggle") || $.contains($dropDown[0] , $target[0])) {
+        var $topNavLinksWrap = $topNav.find('.topnav-links-wrap');
+        var $dropDown = $topNav.find('.topnav-links');
+        if($target.is('.navbar-toggle') || $.contains($dropDown[0] , $target[0])) {
             return;
         }
-        $("body").off("click" , this.clickBodyEmptySpace);
-        $topNavLinksWrap.removeClass("fixed-layout");
+        $('body').off('click' , this.clickBodyEmptySpace);
+        $topNavLinksWrap.removeClass('fixed-layout');
     },
     navBarToggle: function() {
         var $topNav = $(ReactDOM.findDOMNode(this));
-        var $topLinks = $topNav.find(".topnav-links-wrap");
-        $topLinks.toggleClass("fixed-layout");
-        if($topLinks.hasClass("fixed-layout")) {
-            $("body").on("click" , this.clickBodyEmptySpace);
+        var $topLinks = $topNav.find('.topnav-links-wrap');
+        $topLinks.toggleClass('fixed-layout');
+        if($topLinks.hasClass('fixed-layout')) {
+            $('body').on('click' , this.clickBodyEmptySpace);
         }
     },
     componentDidMount: function() {
-        $(window).on("resize" , this.resizeFunc);
-        $(ReactDOM.findDOMNode(this)).find(".navbar-toggle").on("click" , this.navBarToggle);
+        $(window).on('resize' , this.resizeFunc);
+        $(ReactDOM.findDOMNode(this)).find('.navbar-toggle').on('click' , this.navBarToggle);
         this.resizeFunc();
         topNavEmitter.on(topNavEmitter.RELAYOUT , this.resizeFunc);
     },
     componentWillUnmount: function() {
-        $(window).off("resize" , this.resizeFunc);
-        $("body").off("click" , this.clickBodyEmptySpace);
+        $(window).off('resize' , this.resizeFunc);
+        $('body').off('click' , this.clickBodyEmptySpace);
         topNavEmitter.removeListener(topNavEmitter.RELAYOUT , this.resizeFunc);
     },
     render: function() {
@@ -140,15 +140,15 @@ TopNav.MenuList = React.createClass({
                 <ul className="clearfix topnav-links">
                     {
                         subModules.map(function(menu, i) {
-                            var menuRoutePath = menu.routePath.replace(/\//g, "_");
-                            var icoClassName = "ico " + menuRoutePath + "_ico";
+                            var menuRoutePath = menu.routePath.replace(/\//g, '_');
+                            var icoClassName = 'ico ' + menuRoutePath + '_ico';
                             var cls = classNames(icoClassName, {
                                 'topNav-menu-item-selected': locationPath === menu.routePath
                             });
 
                             var liContent = (<Link to={`/${menu.routePath}`}
                                 activeClassName="active" ref="navLinks">{menu.name}</Link>);
-                            if (menuName == "myAppMenu" && menu.name == "我的应用") {
+                            if (menuName == 'myAppMenu' && menu.name == '我的应用') {
                                 liContent = (<Dropdown overlay={subMenu}>
                                     {liContent}
                                 </Dropdown>);

@@ -4,18 +4,18 @@
  * Created by 肖金峰 on 2016/2/3.
  */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var _ = require("underscore");
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var _ = require('underscore');
 var roleRestApis = {
-    getRoleList: "/rest/base/v1/application/roles",
-    addRole: "/rest/base/v1/role",
-    editRole: "/rest/base/v1/role",
-    deleteRole: "/rest/base/v1/role",
-    setDefaultRole: "/rest/base/v1/application/baserole/config",
-    getDefaultRole: "/rest/base/v1/application/baserole/config",
-    delDefaultRole: "/rest/base/v1/application/baserole/config"
+    getRoleList: '/rest/base/v1/application/roles',
+    addRole: '/rest/base/v1/role',
+    editRole: '/rest/base/v1/role',
+    deleteRole: '/rest/base/v1/role',
+    setDefaultRole: '/rest/base/v1/application/baserole/config',
+    getDefaultRole: '/rest/base/v1/application/baserole/config',
+    delDefaultRole: '/rest/base/v1/application/baserole/config'
 };
 exports.urls = roleRestApis;
 
@@ -23,7 +23,7 @@ exports.urls = roleRestApis;
 exports.getRoleList = function(req, res, clientID) {
     return restUtil.authRest.get(
         {
-            url: roleRestApis.getRoleList + "/" + clientID,
+            url: roleRestApis.getRoleList + '/' + clientID,
             req: req,
             res: res
         }, null, {
@@ -54,7 +54,7 @@ exports.getRoleList = function(req, res, clientID) {
                         });
                     }
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -85,7 +85,7 @@ exports.editRole = function(req, res, role) {
 exports.deleteRole = function(req, res, roleID) {
     return restUtil.authRest.del(
         {
-            url: roleRestApis.deleteRole + "/" + roleID,
+            url: roleRestApis.deleteRole + '/' + roleID,
             req: req,
             res: res
         },

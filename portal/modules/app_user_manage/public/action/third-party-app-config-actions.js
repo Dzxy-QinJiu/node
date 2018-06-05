@@ -1,4 +1,4 @@
-var ThirdAjax = require("../ajax/third-app-ajax");
+var ThirdAjax = require('../ajax/third-app-ajax');
 
 class ThreePartyAppConfigActions {
     constructor() {
@@ -13,7 +13,7 @@ class ThreePartyAppConfigActions {
             this.dispatch({loading: false, error: false, appConfigList: appConfigList});
         }, (errorMsg) => {
             this.dispatch({loading: false,error: true , appConfigErrorMsg: errorMsg ||
-            Intl.get("user.third.get.app.failed", "获取应用配置信息失败")});
+            Intl.get('user.third.get.app.failed', '获取应用配置信息失败')});
         });
     }
 

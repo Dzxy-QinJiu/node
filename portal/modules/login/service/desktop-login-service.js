@@ -1,36 +1,36 @@
-var restLogger = require("../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var config = require('../../../../conf/config');
 //后端国际化
-let BackendIntl = require("../../../lib/utils/backend_intl");
-const ipUtil = require("../../../lib/utils/common-utils").ip;
+let BackendIntl = require('../../../lib/utils/backend_intl');
+const ipUtil = require('../../../lib/utils/common-utils').ip;
 
 //定义url
 var urls = {
     //登录
-    login: "/auth2/authc/login",
+    login: '/auth2/authc/login',
     //获取验证码
-    getLoginCaptcha: "/auth2/authc/captcha/get",
+    getLoginCaptcha: '/auth2/authc/captcha/get',
     //刷新验证码
-    refreshLoginCaptcha: "/auth2/authc/captcha/refresh",
+    refreshLoginCaptcha: '/auth2/authc/captcha/refresh',
     //获取重置密码验证码
-    getResetPasswordCaptcha: "/auth2/authc/reset_password/captcha",
+    getResetPasswordCaptcha: '/auth2/authc/reset_password/captcha',
     //检查联系方式是否存在
-    checkContactInfoExists: "/auth2/rs/users/",
+    checkContactInfoExists: '/auth2/rs/users/',
     //获取操作码
-    getOperateCode: "/auth2/authc/reset_password/getPhoneAndEmail",
+    getOperateCode: '/auth2/authc/reset_password/getPhoneAndEmail',
     //发送验证信息
-    sendResetPasswordMsg: "/auth2/authc/reset_password/send_msg",
+    sendResetPasswordMsg: '/auth2/authc/reset_password/send_msg',
     //通过验证码换取临时票据
-    getTicket: "/auth2/authc/reset_password/ticket",
+    getTicket: '/auth2/authc/reset_password/ticket',
     //重置密码
-    resetPassword: "/auth2/authc/reset_password/update",
+    resetPassword: '/auth2/authc/reset_password/update',
     //根据ticket登录
-    loginWithTicket: "/auth2/authc/third_login/login",
+    loginWithTicket: '/auth2/authc/third_login/login',
     //获取扫码登录的二维码
-    getLoginQRCode: "/auth2/authc/scan_code/screen_code",
+    getLoginQRCode: '/auth2/authc/scan_code/screen_code',
     //通过扫码登录
-    loginByQRCode: "/auth2/authc/scan_code/login"
+    loginByQRCode: '/auth2/authc/scan_code/login'
 
 };
 //验证码的高和宽
@@ -83,7 +83,7 @@ exports.loginWithTicket = function(req, res, ticket) {
  */
 function loginTimeout(emitter, data) {
     if (emitter) {
-        emitter.emit("error", data);
+        emitter.emit('error', data);
     }
 }
 /*
@@ -94,9 +94,9 @@ function loginSuccess(emitter, data) {
         //如果未返回数据
         if (!data) {
             let backendIntl = new BackendIntl(req);
-            emitter.emit("error", backendIntl.get("login.service.error", "很抱歉,服务器出现了异常状况"));
+            emitter.emit('error', backendIntl.get('login.service.error', '很抱歉,服务器出现了异常状况'));
         } else {
-            emitter.emit("success", getLoginResult(data));
+            emitter.emit('success', getLoginResult(data));
         }
     }
 }
@@ -105,19 +105,19 @@ function getLoginResult(data) {
     //前端登录后所需数据结构
     var loginResult = {
         auth: {
-            client_id: "other",
-            realm_id: "",
-            access_token: "",
-            refresh_token: ""
+            client_id: 'other',
+            realm_id: '',
+            access_token: '',
+            refresh_token: ''
         },
-        nick_name: "",
+        nick_name: '',
         privileges: [],
-        user_id: "",
-        user_name: ""
+        user_id: '',
+        user_name: ''
     };
     if (data.token) {
-        loginResult.auth.access_token = data.token.access_token || "";
-        loginResult.auth.refresh_token = data.token.refresh_token || "";
+        loginResult.auth.access_token = data.token.access_token || '';
+        loginResult.auth.refresh_token = data.token.refresh_token || '';
     }
     var userData = data.user;
     if (userData) {
@@ -228,7 +228,7 @@ function getLoginFormData(username, password, captchaCode) {
 exports.checkContactInfoExists = function(req, res) {
     const contactType = req.query.contactType;
     const contactInfo = req.query.contactInfo;
-    const url = urls.checkContactInfoExists + contactType + "/" + contactInfo;
+    const url = urls.checkContactInfoExists + contactType + '/' + contactInfo;
 
     return restUtil.appAuthRest.get(
         {
@@ -368,13 +368,13 @@ exports.loginByQRCode = function(req, res, qrcode) {
                 //如果未返回数据
                 if (!data) {
                     let backendIntl = new BackendIntl(req);
-                    emitter.emit("error", backendIntl.get("login.service.error", "很抱歉,服务器出现了异常状况"));
+                    emitter.emit('error', backendIntl.get('login.service.error', '很抱歉,服务器出现了异常状况'));
                 } else {
-                    emitter.emit("success", getLoginResult(data));
+                    emitter.emit('success', getLoginResult(data));
                 }
             },
             timeout: function(emitter, data) {
-                emitter.emit("error", data);
+                emitter.emit('error', data);
             }
         });
 };

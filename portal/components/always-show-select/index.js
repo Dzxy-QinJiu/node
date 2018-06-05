@@ -12,28 +12,28 @@
  *          hasClearOption= {false}
  *       >
  */
-require("./index.less");
-import {Input, Icon} from "antd";
-import classNames from "classnames";
+require('./index.less');
+import {Input, Icon} from 'antd';
+import classNames from 'classnames';
 class AlwaysShowSelect extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: this.props.value || "",
-            searchVal: "",
+            value: this.props.value || '',
+            searchVal: '',
             isSearch: false
         };
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            value: nextProps.value || ""
+            value: nextProps.value || ''
         });
     }
 
     //选择某一项时
     onSelectChange = (data) => {
-        this.setState({value: data.value || "", isSearch: false, searchVal: ""});
+        this.setState({value: data.value || '', isSearch: false, searchVal: ''});
         this.props.onChange(data.value);
         //把选中项的名称也传出去
         this.props.getSelectContent(data.name);
@@ -42,26 +42,26 @@ class AlwaysShowSelect extends React.Component {
     onSearch = (e) => {
         let searchVal = e.target.value;
         this.setState({
-            value: "",
+            value: '',
             searchVal: searchVal
         });
     };
     //输入框获取焦点时
     inputFocus = () => {
-        this.setState({isSearch: true, value: ""});
+        this.setState({isSearch: true, value: ''});
     };
     //获取选择下拉选项
     getSelectOptions = (dataList) => {
         if (dataList.length) {
             let options = dataList.map(data => {
-                let className = classNames("select-item", {"item-active": data.value === this.state.value});
+                let className = classNames('select-item', {'item-active': data.value === this.state.value});
                 return (<li className={className}
                     onClick={this.onSelectChange.bind(this, data)}>{data.name}</li>);
             });
             if (this.props.hasClearOption) {//有清空选择的选项
-                let className = classNames("select-item", {"item-active": !this.state.value});
+                let className = classNames('select-item', {'item-active': !this.state.value});
                 options.unshift(<li className={className}
-                    onClick={this.onSelectChange.bind(this, {name: "", value: ""})}>&nbsp;</li>);
+                    onClick={this.onSelectChange.bind(this, {name: '', value: ''})}>&nbsp;</li>);
             }
             return options;
         } else {
@@ -72,7 +72,7 @@ class AlwaysShowSelect extends React.Component {
     render() {
         //获取搜索后的列表数据
         let dataList = _.filter(this.props.dataList, data => data.name.indexOf(this.state.searchVal) !== -1);
-        let inputVal = "";//输入框中显示的内容
+        let inputVal = '';//输入框中显示的内容
         if (this.state.isSearch) {
             //搜索状态下展示输入的搜索内容
             inputVal = this.state.searchVal;
@@ -100,11 +100,11 @@ class AlwaysShowSelect extends React.Component {
     }
 }
 AlwaysShowSelect.defaultProps = {
-    placeholder: "",
-    value: "",
+    placeholder: '',
+    value: '',
     hasClearOption: false,//是否有清空选择的选项
     dataList: [],//由{name：展示的内容,value：选择后需要保存的值}组成的下拉列表
-    notFoundContent: Intl.get("common.no.data", "暂无数据"),//未搜索到或列表为空时的提示信息
+    notFoundContent: Intl.get('common.no.data', '暂无数据'),//未搜索到或列表为空时的提示信息
     onChange: function() {
     },
     getSelectContent: function() {

@@ -1,31 +1,31 @@
-var OplateUserAnalysisAjax = require("../ajax/oplate-user-analysis.ajax");
+var OplateUserAnalysisAjax = require('../ajax/oplate-user-analysis.ajax');
 
 //用户分析的action
 function OplateUserAnalysisActions() {
     //创建action
     this.generateActions(
         //切换选中的应用
-        "changeSelectedApp",
+        'changeSelectedApp',
         //切换查询时间
-        "changeSearchTime",
+        'changeSearchTime',
         //切换tab
-        "changeCurrentTab",
+        'changeCurrentTab',
         //显示/隐藏 筛选区域
-        "toggleFilterArea",
+        'toggleFilterArea',
         //切换过滤条件选中状态
-        "toggleFilterParam",
+        'toggleFilterParam',
         //显示统计图没有数据
-        "showNoData",
+        'showNoData',
         // 点击用户类型图表获取对应的类型：试用、签约、员工、赠送、培训、未知
-        "setLinkageUserType",
+        'setLinkageUserType',
         // 点击应用的启停用图表获取对应的类型：启用、停用
-        "setLinkageAppStatus",
+        'setLinkageAppStatus',
         // 点击地域图表获取对应的地域
-        "setLinkageZone",
+        'setLinkageZone',
         // 点击行业图表获取对应的行业
-        "setLinkageIndustry",
+        'setLinkageIndustry',
         // 点击团队图表获取对应的团队
-        "setLinkageTeam"
+        'setLinkageTeam'
         
     );
     //统计数字（总用户、新增用户、过期用户、新增过期用户）

@@ -1,9 +1,9 @@
-var restLogger = require("../../../../lib/utils/logger").getLogger("rest");
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 //在线用户列表url抽取
 var urls = {
-    onlineUserList: "/rest/analysis/user/v1/online/list",
+    onlineUserList: '/rest/analysis/user/v1/online/list',
     onlineKickUser: '/rest/base/v1/user/grant/kickout'
 };
 
@@ -15,7 +15,7 @@ exports.getOnlineUserList = function(req, res) {
 
     //预处理查询条件
     for (var item in condition) {
-        if (condition[item] === "") {
+        if (condition[item] === '') {
             //值为空的去掉
             delete condition[item];
         }
@@ -23,12 +23,12 @@ exports.getOnlineUserList = function(req, res) {
 
     return restUtil.authRest.post(
         {
-            url: urls.onlineUserList + "/" + pageSize + "/" + pageNum,
+            url: urls.onlineUserList + '/' + pageSize + '/' + pageNum,
             req: req,
             res: res
         }, condition, {
             success: function(eventEmitter, data) {
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         }
     );

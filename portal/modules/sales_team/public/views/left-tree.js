@@ -1,17 +1,17 @@
 /**
  * Created by xiaojinfeng on 2016/04/11.
  */
-import {Icon,Button} from "antd";
-import commonMethodUtil from "../../../../public/sources/utils/common-method-util";
-var classNames = require("classnames");
-var GroupFrom = require("./edit-group-form");
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
+import {Icon,Button} from 'antd';
+import commonMethodUtil from '../../../../public/sources/utils/common-method-util';
+var classNames = require('classnames');
+var GroupFrom = require('./edit-group-form');
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var ModalDialog = require("../../../../components/ModalDialog");
-var AlertTimer = require("../../../../components/alert-timer");
-var SearchInput = require("../../../../components/searchInput");
-var SalesTeamAction = require("../action/sales-team-actions");
-import Trace from "LIB_DIR/trace";
+var ModalDialog = require('../../../../components/ModalDialog');
+var AlertTimer = require('../../../../components/alert-timer');
+var SearchInput = require('../../../../components/searchInput');
+var SalesTeamAction = require('../action/sales-team-actions');
+import Trace from 'LIB_DIR/trace';
 
 function noop() {
 }
@@ -27,16 +27,16 @@ var LeftTree = React.createClass({
     },
 
     editGroup: function(item) {
-        Trace.traceEvent($(this.getDOMNode()).find("ul.left-tree-ul .tree-operation-div .icon-update"),"编辑子团队");
+        Trace.traceEvent($(this.getDOMNode()).find('ul.left-tree-ul .tree-operation-div .icon-update'),'编辑子团队');
         SalesTeamAction.editGroup(item);
     },
     addGroup: function(item) {
-        Trace.traceEvent($(this.getDOMNode()).find("ul.left-tree-ul .tree-operation-div .icon-add"),"增加子团队");
+        Trace.traceEvent($(this.getDOMNode()).find('ul.left-tree-ul .tree-operation-div .icon-add'),'增加子团队');
         SalesTeamAction.addGroup(item);
     },
 
     deleteGroup: function(item) {
-        Trace.traceEvent($(this.getDOMNode()).find("ul.left-tree-ul .tree-operation-div .icon-delete"),"删除子团队");
+        Trace.traceEvent($(this.getDOMNode()).find('ul.left-tree-ul .tree-operation-div .icon-delete'),'删除子团队');
         SalesTeamAction.deleteGroup(item);
     },
 
@@ -45,7 +45,7 @@ var LeftTree = React.createClass({
             SalesTeamAction.cancelEditGroup(item);
         } else {
             SalesTeamAction.cancelAddGroup(item);
-            setTimeout(() => $(".sales-team-search-input-container .search-input").val(this.props.searchContent));
+            setTimeout(() => $('.sales-team-search-input-container .search-input').val(this.props.searchContent));
         }
     },
 
@@ -73,18 +73,18 @@ var LeftTree = React.createClass({
     },
 
     toggleGroupTree: function(item, event) {
-        Trace.traceEvent(event,"打开或者关闭子列表");
+        Trace.traceEvent(event,'打开或者关闭子列表');
         event.stopPropagation();
         var groupId = item.key;
         if (item.isEditGroup || item.isAddGroup) {
             return;
         }
 
-        if (event.target.className.indexOf("tree-operation-icon") != -1
-            || event.target.className.indexOf("tree-operation-btn-div-item") != -1
-            || event.target.className.indexOf("icon-operation") != -1
-            || event.target.className.indexOf("operation-btn-item-span") != -1
-            || event.target.className.indexOf("tree-operation-btn-div") != -1) {
+        if (event.target.className.indexOf('tree-operation-icon') != -1
+            || event.target.className.indexOf('tree-operation-btn-div-item') != -1
+            || event.target.className.indexOf('icon-operation') != -1
+            || event.target.className.indexOf('operation-btn-item-span') != -1
+            || event.target.className.indexOf('tree-operation-btn-div') != -1) {
             return;
         }
         SalesTeamAction.toggleGroupTree(groupId);
@@ -97,11 +97,11 @@ var LeftTree = React.createClass({
             return;
         }
 
-        if (event.target.className.indexOf("tree-operation-icon") != -1
-            || event.target.className.indexOf("tree-operation-btn-div-item") != -1
-            || event.target.className.indexOf("icon-operation") != -1
-            || event.target.className.indexOf("operation-btn-item-span") != -1
-            || event.target.className.indexOf("tree-operation-btn-div") != -1) {
+        if (event.target.className.indexOf('tree-operation-icon') != -1
+            || event.target.className.indexOf('tree-operation-btn-div-item') != -1
+            || event.target.className.indexOf('icon-operation') != -1
+            || event.target.className.indexOf('operation-btn-item-span') != -1
+            || event.target.className.indexOf('tree-operation-btn-div') != -1) {
             return;
         }
         //如果正在打开其他团队成员列表
@@ -117,11 +117,11 @@ var LeftTree = React.createClass({
         SalesTeamAction.setSelectSalesTeamGroup(groupId);
     },
     hideModalDialog: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-dialog .modal-footer"),"隐藏模态框");
+        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'隐藏模态框');
         SalesTeamAction.hideModalDialog(this.props.deleteGroupItem);
     },
     saveDeleteGroup: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-dialog .modal-footer"),"确定删除某团队");
+        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'确定删除某团队');
         SalesTeamAction.saveDeleteGroup(this.props.deleteGroupItem.key);
     },
     operationElement: function(item) {
@@ -169,7 +169,7 @@ var LeftTree = React.createClass({
                         <span className="sales-team-member-statistic"> (
                             <ReactIntl.FormattedMessage
                                 id="sales.team.member.count"
-                                defaultMessage={`{teamMemberCount}人`}
+                                defaultMessage={'{teamMemberCount}人'}
                                 values={{
                                     'teamMemberCount': teamMemberCount
                                 }}
@@ -179,19 +179,19 @@ var LeftTree = React.createClass({
                     <div className="tree-operation-div">
                         <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
                             <span className="icon-operation iconfont icon-add tree-operation-icon"
-                                title={Intl.get("sales.team.add.child.team", "添加子团队")}
+                                title={Intl.get('sales.team.add.child.team', '添加子团队')}
                                 onClick={this.addGroup.bind(this, item)}
                             />
                         </PrivilegeChecker>
                         <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
                             <span className="icon-operation iconfont icon-update tree-operation-icon"
-                                title={Intl.get("sales.team.edit.team", "编辑团队")}
+                                title={Intl.get('sales.team.edit.team', '编辑团队')}
                                 onClick={this.editGroup.bind(this, item)}
                             />
                         </PrivilegeChecker>
                         <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
                             <span className="icon-operation iconfont icon-delete tree-operation-icon"
-                                title={Intl.get("sales.team.del.team", "删除团队")}
+                                title={Intl.get('sales.team.del.team', '删除团队')}
                                 onClick={this.deleteGroup.bind(this, item)}
                             />
                         </PrivilegeChecker>
@@ -204,7 +204,7 @@ var LeftTree = React.createClass({
     treeElement: function(btnClass, item, type) {
 
         if (!type) {
-            btnClass += " no-has-children";
+            btnClass += ' no-has-children';
         }
 
         var formClass = 'group-form-div';
@@ -240,22 +240,22 @@ var LeftTree = React.createClass({
     searchEvent: function(searchContent) {
         searchContent = searchContent ? searchContent.trim() : '';
         if (searchContent) {
-            Trace.traceEvent($(this.getDOMNode()).find(".sales-team-root-add .search-input-container input"),"跟据团队名称搜索团队");
+            Trace.traceEvent($(this.getDOMNode()).find('.sales-team-root-add .search-input-container input'),'跟据团队名称搜索团队');
             //搜索内容的设置
             SalesTeamAction.setSearchContent(searchContent);
             //根据团队名称进行搜索
             SalesTeamAction.filterByTeamName(searchContent);
         } else if (this.props.searchContent) {
-            Trace.traceEvent($(this.getDOMNode()).find(".sales-team-root-add .search-input-container input"),"清空搜索内容");
+            Trace.traceEvent($(this.getDOMNode()).find('.sales-team-root-add .search-input-container input'),'清空搜索内容');
             //清空搜索条件时，还原所有团队及团队关系
             SalesTeamAction.resetSearchSalesTeam();
             //清空搜索内容
-            SalesTeamAction.setSearchContent("");
+            SalesTeamAction.setSearchContent('');
         }
     },
 
     addSalesTeamRoot: function(e) {
-        Trace.traceEvent(e,"添加团队");
+        Trace.traceEvent(e,'添加团队');
         SalesTeamAction.addSalesTeamRoot();
     },
     render: function() {
@@ -290,7 +290,7 @@ var LeftTree = React.createClass({
                 </li>
             );
         });
-        var modalContent = Intl.get("sales.team.whether.del.team", "是否删除此团队") + "?";
+        var modalContent = Intl.get('sales.team.whether.del.team', '是否删除此团队') + '?';
         var scrollHeight = this.props.containerHeight;
         if (this.props.isAddSalesTeamRoot) {
             scrollHeight -= 60;//60:添加根团队form表单的高度
@@ -311,7 +311,7 @@ var LeftTree = React.createClass({
                         </div>) : (<div>
                         <div className="sales-team-search-input-container">
                             <SearchInput
-                                searchPlaceHolder={Intl.get("sales.team.search.team.placeholder", "根据 团队名称 搜索团队")}
+                                searchPlaceHolder={Intl.get('sales.team.search.team.placeholder', '根据 团队名称 搜索团队')}
                                 searchEvent={this.searchEvent}
                             />
                         </div>

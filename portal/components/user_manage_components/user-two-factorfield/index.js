@@ -12,7 +12,7 @@ const UserTwoFactorField = {
         config = $.extend({
             isCustomSetting: false,
             appId: '',
-            globalTwoFactor: "1"
+            globalTwoFactor: '1'
         } , config);
 
         if(config.isCustomSetting && !config.appId) {

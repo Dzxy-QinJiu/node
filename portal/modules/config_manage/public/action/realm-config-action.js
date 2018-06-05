@@ -2,7 +2,7 @@
  *  IP配置action文件
  * */
 var RealmConfigAjax = require('../ajax/realm-config-ajax');
-import { message } from "antd";
+import { message } from 'antd';
 
 function RealmConfigActions(){
     this.generateActions(

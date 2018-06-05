@@ -47,33 +47,33 @@ exports.checkWav = function(str) {
 //返回录音url
 exports.getAudioRecordUrl = function(itemLocal, itemRecord, phoneType) {
     //播放长沙，济南和北京的录音
-    var local = "changsha", audioType = "";
-    if (itemLocal == "jinan") {
-        local = "jinan";
-    } else if (itemLocal == "beijing") {
-        local = "beijing";
+    var local = 'changsha', audioType = '';
+    if (itemLocal == 'jinan') {
+        local = 'jinan';
+    } else if (itemLocal == 'beijing') {
+        local = 'beijing';
     }
     //是否是wav格式的文件
     if (this.checkWav(itemRecord)) {
-        audioType = "";
+        audioType = '';
     } else {
-        audioType = ".mp3";
+        audioType = '.mp3';
     }
-    local = local ? local + "/" : "";
+    local = local ? local + '/' : '';
     //如果是录音类型是app类型的
-    if (phoneType === "app") {
-        return "/record/app/" + itemRecord + audioType;
+    if (phoneType === 'app') {
+        return '/record/app/' + itemRecord + audioType;
     } else {
-        return "/record/" + local + itemRecord + audioType;
+        return '/record/' + local + itemRecord + audioType;
     }
 };
 //去除json对象中的空白项
 const removeEmptyItem = function(obj) {
     _.each(obj, (v, k) => {
-        if (v === "") delete obj[k];
+        if (v === '') delete obj[k];
         if (_.isArray(v)) {
             _.each(v, (subv) => {
-                if (subv === "") delete obj[k];
+                if (subv === '') delete obj[k];
                 else if (_.isObject(subv)) {
                     removeEmptyItem(subv);
                     if (Object.keys(subv).length === 0) delete obj[k];
@@ -88,9 +88,9 @@ exports.removeEmptyItem = removeEmptyItem;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 exports.getParamByPrivilege = function() {
     let reqData = {};
-    if (hasPrivilege("GET_TEAM_LIST_ALL") || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
+    if (hasPrivilege('GET_TEAM_LIST_ALL') || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
         reqData.type = 'all';
-    } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS") || hasPrivilege('GET_TEAM_MEMBERS_MYTEAM_WITH_SUBTEAMS')) {
+    } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS') || hasPrivilege('GET_TEAM_MEMBERS_MYTEAM_WITH_SUBTEAMS')) {
         reqData.type = 'self';
     }
     return reqData;
@@ -107,19 +107,19 @@ exports.validateRequiredOne = function(item1, item2) {
     }
 };
 exports.getRelativeTime = function(time) {
-    var relativeTime = "";
+    var relativeTime = '';
     var todayStartTime = TimeStampUtil.getTodayTimeStamp().start_time;
     var todayEndTime = TimeStampUtil.getTodayTimeStamp().end_time;
     if (time >= todayStartTime && time <= todayEndTime) {
-        relativeTime = Intl.get("user.time.today", "今天");
+        relativeTime = Intl.get('user.time.today', '今天');
     } else if (time >= todayStartTime - 1 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime - 1 * oplateConsts.ONE_DAY_TIME_RANGE) {
-        relativeTime = Intl.get("user.time.yesterday", "昨天");
+        relativeTime = Intl.get('user.time.yesterday', '昨天');
     } else if (time >= todayStartTime - 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime - 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
-        relativeTime = Intl.get("sales.frontpage.before.yesterday", "前天");
+        relativeTime = Intl.get('sales.frontpage.before.yesterday', '前天');
     } else if (time >= todayStartTime + 1 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime + 1 * oplateConsts.ONE_DAY_TIME_RANGE) {
-        relativeTime = Intl.get("sales.frontpage.tomorrow", "明天");
+        relativeTime = Intl.get('sales.frontpage.tomorrow', '明天');
     } else if (time >= todayStartTime + 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime + 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
-        relativeTime = Intl.get("sales.frontpage.after.tomorrow", "后天");
+        relativeTime = Intl.get('sales.frontpage.after.tomorrow', '后天');
     } else {
         relativeTime = moment(time).format(oplateConsts.DATE_FORMAT);
     }
@@ -128,7 +128,7 @@ exports.getRelativeTime = function(time) {
 //对数字进行四舍五入保留n位小数的方法
 exports.formatRoundingData = function(data, n) {
     if (isNaN(data)) {
-        return "-";
+        return '-';
     } else {
         //均保留n位小数
         return data.toFixed(n);
@@ -137,7 +137,7 @@ exports.formatRoundingData = function(data, n) {
 //把数字转化成百分数，并进行四舍五入保留n位小数的方法
 exports.formatRoundingPercentData = function(data, n) {
     if (isNaN(data)) {
-        return "-";
+        return '-';
     } else {
         //小数格式转化为百分比
         data = data * 100;

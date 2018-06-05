@@ -2,20 +2,20 @@
  * ajax url定义
  */
 var urls = {
-    getGrantApplications: "/rest/base/v1/application/grant_applications",
-    getMyApplications: "/rest/base/v1/user/manage_apps",
+    getGrantApplications: '/rest/base/v1/application/grant_applications',
+    getMyApplications: '/rest/base/v1/user/manage_apps',
     getAddedTeam: 'rest/analysis/user/v1/:auth_type/added/team', //获取新增用户的团队统计
     // 获取当前应用的在线用户的地域数据
     getOnLineUserZone: '/rest/analysis/user/v1/online/onlineStatistics/:client_id/:select_mode',
     //获取应用的默认配置
-    getAppConfigPromise: "/rest/base/v1/application/extra/grantinfos"
+    getAppConfigPromise: '/rest/base/v1/application/extra/grantinfos'
 };
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var appDto = require("../dto/app");
-var _ = require("underscore");
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var appDto = require('../dto/app');
+var _ = require('underscore');
 var Promise = require('bluebird');
-var EventEmitter = require("events").EventEmitter;
+var EventEmitter = require('events').EventEmitter;
 
 //根据当前用户数据权限，获取应用列表
 exports.getGrantApplications = function(req,res,status) {
@@ -33,7 +33,7 @@ exports.getGrantApplications = function(req,res,status) {
             var responseList = list.map(function(originApp) {
                 return new appDto.App(originApp);
             });
-            emitter.emit("success" , responseList);
+            emitter.emit('success' , responseList);
         }
     });
 };
@@ -54,7 +54,7 @@ exports.getMyApplications = function(req,res) {
             var responseList = list.map(function(originApp) {
                 return new appDto.App(originApp);
             });
-            emitter.emit("success" , responseList);
+            emitter.emit('success' , responseList);
         }
     });
 };
@@ -63,7 +63,7 @@ function getTeamCount(req, res, queryParams, type) {
     let tempParams = _.clone(queryParams);
     let url = urls.getAddedTeam;
     if (tempParams.authType) {//common、manager
-        url = url.replace(":auth_type", tempParams.authType);
+        url = url.replace(':auth_type', tempParams.authType);
     }
     delete tempParams.authType;
     tempParams.type = type;
@@ -89,9 +89,9 @@ exports.getAddedTeam = (req, res, queryParams) => {
     var emitter = new EventEmitter();
     Promise.all([getTeamCount(req, res, queryParams, '试用用户'), getTeamCount(req, res, queryParams, '正式用户')]).then( (result) => {
         let data = handleTeamData(result[0], result[1]);
-        emitter.emit("success", data);
+        emitter.emit('success', data);
     }, (errorMsg) => {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -126,7 +126,7 @@ function handleTeamData(teamTrail, teamOfficial) {
 exports.getOnLineUserZone = (req, res, queryParams) => {
     return restUtil.authRest.get(
         {
-            url: urls.getOnLineUserZone.replace(":client_id", queryParams.client_id).replace(":select_mode", queryParams.select_mode),
+            url: urls.getOnLineUserZone.replace(':client_id', queryParams.client_id).replace(':select_mode', queryParams.select_mode),
             req: req,
             res: res
         });

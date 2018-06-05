@@ -1,8 +1,8 @@
 /**
  * Created by wangliping on 2016/4/20.
  */
-var appAjax = require("../ajax/app-ajax");
-var AppActions = require("./app-actions");
+var appAjax = require('../ajax/app-ajax');
+var AppActions = require('./app-actions');
 function AppFormActions() {
     this.generateActions(
         'setSaveFlag',//设置是否正在保存
@@ -33,10 +33,10 @@ function AppFormActions() {
         var _this = this;
         appAjax.addApp(app).then(function() {
             //保存成功后的处理
-            _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
+            _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功！')});
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
         });
     };
     //编辑应用
@@ -45,7 +45,7 @@ function AppFormActions() {
         appAjax.editApp(app).then(function(data) {
             if (data) {
                 //保存成功后的处理
-                _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
+                _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功！')});
                 if (app.managers) {
                     app.managers = JSON.parse(app.managers);
                 }
@@ -55,13 +55,13 @@ function AppFormActions() {
 
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
         });
     };
 
     //清空提示
     this.resetSaveResult = function(saveResult, isEditAppAuth) {
-        if (saveResult == "success" && !isEditAppAuth) {
+        if (saveResult == 'success' && !isEditAppAuth) {
             //修改成功后返回详情(修改应用权限成功不需要返回详情页)
             AppActions.returnInfoPanel();
         }

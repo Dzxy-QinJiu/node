@@ -1,16 +1,16 @@
 /**
  * Created by wangliping on 2016/4/18.
  */
-var UserFormActions = require("../action/user-form-actions");
+var UserFormActions = require('../action/user-form-actions');
 
 
 function UserFormStore() {
     //是否正在保存成员
     this.isSaving = false;
     //是否保存成功,error:失败，success:成功
-    this.saveResult = "";
+    this.saveResult = '';
     //保存后的提示信息
-    this.saveMsg = "";
+    this.saveMsg = '';
     this.userNameExist = false;//用户名是否已存在
     this.phoneExist = false;//电话是否已存在
     this.emailExist = false;//邮箱是否已存在
@@ -78,8 +78,8 @@ UserFormStore.prototype.editUser = function(resultObj) {
 
 //清空保存的提示信息
 UserFormStore.prototype.resetSaveResult = function() {
-    this.saveMsg = "";
-    this.saveResult = "";
+    this.saveMsg = '';
+    this.saveResult = '';
 };
 
 //用户名唯一性的验证

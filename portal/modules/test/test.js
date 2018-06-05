@@ -21,7 +21,7 @@ function start() {
         //.reply(400 , {
         //    error_code:11013
         //})
-        .reply(200, {token: "access_token"});
+        .reply(200, {token: 'access_token'});
 
     var authRestIndex = 0;
 
@@ -32,13 +32,13 @@ function start() {
             authRestIndex++;
             if (authRestIndex % 2 === 1) {
                 // eslint-disable-next-line no-console
-                console.log("authRestIndex=" + authRestIndex + ",code=400");
+                console.log('authRestIndex=' + authRestIndex + ',code=400');
                 return [400, {
                     error_code: 11012
                 }];
             } else {
                 // eslint-disable-next-line no-console
-                console.log("authRestIndex=" + authRestIndex + ",code=200");
+                console.log('authRestIndex=' + authRestIndex + ',code=200');
                 return [200, {
                     data: 'testData'
                 }];
@@ -57,9 +57,9 @@ function start() {
     nock('http://172.19.100.17:80')
         .persist()
         .post('/rest/user', {
-            name: "zhangsan",
-            password: "aaa"
-        }).reply(200, {name: "name must be lisi", pw: "password must start with a"});
+            name: 'zhangsan',
+            password: 'aaa'
+        }).reply(200, {name: 'name must be lisi', pw: 'password must start with a'});
 }
 
 start();

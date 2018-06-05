@@ -1,11 +1,11 @@
 var UserData;
-import Intl from "../intl/intl";
+import Intl from '../intl/intl';
 //通过ajax获取
 exports.getUserDataByAjax = function() {
     var deferred = $.Deferred();
 
     function ajax() {
-        $.getJSON("/user/data.js?callback=?").done(function(data) {
+        $.getJSON('/user/data.js?callback=?').done(function(data) {
             UserData = _.isObject(data) ? data : {};
             //语言环境的设置
             Oplate.lang = _.isObject(data) ? data.lang : 'zh_CN';
@@ -21,7 +21,7 @@ exports.getUserDataByAjax = function() {
             }
             //如果是403且是token过期，表示通过全局token处理返回的error，则会在全局处理，这里不再处理；
             //否则，表示自己的rest请求处理返回的错误，需要显示到界面上
-            if (data.status === 403 && errorMsg === Intl.get("errorcode.38", "Token过期")) {
+            if (data.status === 403 && errorMsg === Intl.get('errorcode.38', 'Token过期')) {
                 return;
             } else {
                 //其他错误显示到界面上
@@ -58,7 +58,7 @@ exports.hasRole = function(role) {
 //是否销售管理员
 exports.isSalesManager = function() {
     const roles = UserData.roles || [];
-    if (roles.indexOf("salesleader") > -1 || roles.indexOf("realm_manager") > -1) {
+    if (roles.indexOf('salesleader') > -1 || roles.indexOf('realm_manager') > -1) {
         return true;
     }
     return false;
@@ -76,28 +76,28 @@ exports.hasOnlyRole = function(role) {
 //角色常量
 exports.ROLE_CONSTANS = {
     //应用管理员
-    APP_ADMIN: "app_manager",
+    APP_ADMIN: 'app_manager',
     //应用所有者
-    APP_OWNER: "app_owner",
+    APP_OWNER: 'app_owner',
     //运营人员
-    OPERATION_PERSON: "operations",
+    OPERATION_PERSON: 'operations',
     //销售
-    SALES: "sales",
+    SALES: 'sales',
     //舆情秘书
-    SECRETARY: "salesmanager",
+    SECRETARY: 'salesmanager',
     //销售负责人
-    SALES_LEADER: "salesleader",
+    SALES_LEADER: 'salesleader',
     //域管理员
-    REALM_ADMIN: "realm_manager",
+    REALM_ADMIN: 'realm_manager',
     //域所有者
-    REALM_OWNER: "realm_owner",
+    REALM_OWNER: 'realm_owner',
     //oplate域管理员
-    OPLATE_REALM_ADMIN: "oplate_realm_manager",
+    OPLATE_REALM_ADMIN: 'oplate_realm_manager',
     //oplate域所有者
-    OPLATE_REALM_OWNER: "oplate_realm_owner",
+    OPLATE_REALM_OWNER: 'oplate_realm_owner',
     //合同管理员
-    CONTRACT_ADMIN: "contract_manager",
+    CONTRACT_ADMIN: 'contract_manager',
     //财务
-    ACCOUNTANT: "accountant"
+    ACCOUNTANT: 'accountant'
 };
 

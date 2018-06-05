@@ -1,12 +1,12 @@
-import {RightPanelClose} from "CMP_DIR/rightPanel/index";
-import {AntcTable} from "antc";
-import {Alert} from "antd";
+import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
+import {AntcTable} from 'antc';
+import {Alert} from 'antd';
 import Spinner from 'CMP_DIR/spinner';
-import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
-import rightPanelUtil from "CMP_DIR/rightPanel";
-var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import rightPanelUtil from 'CMP_DIR/rightPanel';
+var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 const RightPanel = rightPanelUtil.RightPanel;
-var AppUserManage = require("MOD_DIR/app_user_manage/public");
+var AppUserManage = require('MOD_DIR/app_user_manage/public');
 //计算距离所需布局距离
 const LAYOUT = {
     TOP: 150//顶部留白
@@ -17,8 +17,8 @@ class CustomerStageTable extends React.Component {
         super(props);
         this.state = {
             showRightPanel: false,
-            selectedCustomerId: "",
-            selectedCustomerIndex: "",
+            selectedCustomerId: '',
+            selectedCustomerIndex: '',
             isShowCustomerUserListPanel: false,
             CustomerInfoOfCurrUser: {},
             tableHeight: 0,
@@ -27,7 +27,7 @@ class CustomerStageTable extends React.Component {
 
     componentDidMount() {
         this.changeTableHeight();
-        $(window).on("resize", this.changeTableHeight);
+        $(window).on('resize', this.changeTableHeight);
     }
 
     //计算表格高度
@@ -37,7 +37,7 @@ class CustomerStageTable extends React.Component {
     }
 
     componentWillUnmount() {
-        $(window).off("resize", this.changeTableHeight);
+        $(window).off('resize', this.changeTableHeight);
     }
 
     hideRightPanel = () => {
@@ -61,10 +61,10 @@ class CustomerStageTable extends React.Component {
                 nickname: this.props.params.nickname
             },
             rang_params: [{
-                "from": moment(this.props.params.time).startOf('day').valueOf(),
-                "to": moment(this.props.params.time).endOf('day').valueOf(),
-                "name": "time",
-                "type": "time"
+                'from': moment(this.props.params.time).startOf('day').valueOf(),
+                'to': moment(this.props.params.time).endOf('day').valueOf(),
+                'name': 'time',
+                'type': 'time'
             }]
         });
     }
@@ -91,10 +91,10 @@ class CustomerStageTable extends React.Component {
         //处理选中行的样式
         const handleRowClassName = (record, index) => {
             if ((index == this.state.selectedCustomerIndex) && this.state.showRightPanel) {
-                return "current_row";
+                return 'current_row';
             }
             else {
-                return "";
+                return '';
             }
         };
         const {data, loading, errorMsg, lastId, listenScrollBottom} = this.props.result;
@@ -124,9 +124,9 @@ class CustomerStageTable extends React.Component {
         const renderStageCustomerList = () => {
             const columns = [
                 {
-                    dataIndex: "customer_name",
-                    key: "customer_name",
-                    title: Intl.get("crm.4", "客户名称"),
+                    dataIndex: 'customer_name',
+                    key: 'customer_name',
+                    title: Intl.get('crm.4', '客户名称'),
                     render: (text, item, index) => {
                         return (<span className="click-cell"
                             onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>);
@@ -134,9 +134,9 @@ class CustomerStageTable extends React.Component {
                     width: 100
                 },
                 {
-                    dataIndex: "label",
-                    key: "label",
-                    title: Intl.get("weekly.report.customer.stage", "客户阶段"),
+                    dataIndex: 'label',
+                    key: 'label',
+                    title: Intl.get('weekly.report.customer.stage', '客户阶段'),
                     width: 100
                 }
             ];
@@ -144,7 +144,7 @@ class CustomerStageTable extends React.Component {
                 <div className="stage-changed-customer-list-wrapper">
                     {renderErr()}
                     {renderSpiner()}
-                    <div className={hideTable ? "hide" : ""}>
+                    <div className={hideTable ? 'hide' : ''}>
                         <AntcTable
                             dropLoad={{
                                 loading: loadingNotFirst,
@@ -178,7 +178,7 @@ class CustomerStageTable extends React.Component {
             <div>
                 <div className="customer-table-close topNav">
                     <RightPanelClose
-                        title={Intl.get("common.app.status.close", "关闭")}
+                        title={Intl.get('common.app.status.close', '关闭')}
                         onClick={this.props.onClose}
                     />
                 </div>

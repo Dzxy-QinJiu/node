@@ -1,27 +1,27 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-require("../css/apply-user-form.less");
-require("../../../../public/css/antd-vertical-tabs.css");
-import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Select, message, Checkbox} from "antd";
+require('../css/apply-user-form.less');
+require('../../../../public/css/antd-vertical-tabs.css');
+import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Select, message, Checkbox} from 'antd';
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const RightPanelSubmit = require("../../../../components/rightPanel").RightPanelSubmit;
-const RightPanelCancel = require("../../../../components/rightPanel").RightPanelCancel;
+const RightPanelSubmit = require('../../../../components/rightPanel').RightPanelSubmit;
+const RightPanelCancel = require('../../../../components/rightPanel').RightPanelCancel;
 import UserTimeRangeField from '../../../../components/user_manage_components/user-time-rangefield';
-import ValidateMixin from "../../../../mixins/ValidateMixin";
-const Spinner = require("../../../../components/spinner");
-const history = require("../../../../public/sources/history");
-const OrderAction = require("../action/order-actions");
-const DatePickerUtils = require("../../../../components/date-selector/utils");
+import ValidateMixin from '../../../../mixins/ValidateMixin';
+const Spinner = require('../../../../components/spinner');
+const history = require('../../../../public/sources/history');
+const OrderAction = require('../action/order-actions');
+const DatePickerUtils = require('../../../../components/date-selector/utils');
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
-import commonAppAjax from "MOD_DIR/common/public/ajax/app";
-import contactAjax from "../ajax/contact-ajax";
+import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
+import contactAjax from '../ajax/contact-ajax';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 
-const applyTitles = [Intl.get("crm.100", "老用户申请试用用户"), Intl.get("crm.101", "老用户转签约用户"), Intl.get("common.apply.user.trial", "申请试用用户"), Intl.get("user.apply.user.official", "申请签约用户")];
+const applyTitles = [Intl.get('crm.100', '老用户申请试用用户'), Intl.get('crm.101', '老用户转签约用户'), Intl.get('common.apply.user.trial', '申请试用用户'), Intl.get('user.apply.user.official', '申请签约用户')];
 const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
 //顶部tab标题的高度
 const LAY_CONSTS = {
@@ -46,8 +46,8 @@ const ApplyUserForm = React.createClass({
 
     componentWillReceiveProps: function(nextProps) {
         this.buildFormData(nextProps);
-        let oldAppIds = _.pluck(this.props.apps, "client_id");
-        let newAppIds = _.pluck(nextProps.apps, "client_id");
+        let oldAppIds = _.pluck(this.props.apps, 'client_id');
+        let newAppIds = _.pluck(nextProps.apps, 'client_id');
         //获取newAppIds中，不存在于oldAppIds中的应用id
         let diffAppIds = _.difference(newAppIds, oldAppIds);
         //获取新增的应用的默认配置
@@ -64,9 +64,9 @@ const ApplyUserForm = React.createClass({
             customer_id: order.customer_id,
             order_id: order.id,
             sales_opportunity: order.sale_stages,
-            remark: "",
-            tag: isTrailUserType ? Intl.get("common.trial.user", "试用用户") : Intl.get("common.trial.official", "正式用户"),
-            user_name: "",
+            remark: '',
+            tag: isTrailUserType ? Intl.get('common.trial.user', '试用用户') : Intl.get('common.trial.official', '正式用户'),
+            user_name: '',
             nick_name: props.customerName
         };
         //获取的应用默认配置列表
@@ -79,7 +79,7 @@ const ApplyUserForm = React.createClass({
                 number: 1,
                 begin_date: begin_date,
                 end_date: end_date,
-                range: "0.5m",
+                range: '0.5m',
                 over_draft: isTrailUserType ? OVER_DRAFT_TYPES.UN_CHANGED : OVER_DRAFT_TYPES.STOP_USE, //0：到期不变，1：到期停用
             };
             if (_.isArray(appDefaultConfigList) && appDefaultConfigList.length) {
@@ -111,7 +111,7 @@ const ApplyUserForm = React.createClass({
     },
     //获取客户联系人列表
     getCustomerContacts: function() {
-        let customerId = this.state.formData ? this.state.formData.customer_id : "";
+        let customerId = this.state.formData ? this.state.formData.customer_id : '';
         if (!customerId) return;
         contactAjax.getContactList(customerId).then((data) => {
             let contactList = data && _.isArray(data.result) ? data.result : [];
@@ -180,7 +180,7 @@ const ApplyUserForm = React.createClass({
     onUserNameChange: function(e) {
         let userName = e.target.value.trim();
         this.state.formData.user_name = userName;
-        if (userName && userName.indexOf("@") != -1 && this.state.appFormData.number > 1) {
+        if (userName && userName.indexOf('@') != -1 && this.state.appFormData.number > 1) {
             //用户名是邮箱格式时，只能申请1个用户
             this.state.onlyOneUser = true;
         } else {
@@ -191,7 +191,7 @@ const ApplyUserForm = React.createClass({
 
     onCountChange: function(v) {
         let userName = this.state.formData.user_name;
-        if (userName && userName.indexOf("@") != -1 && v > 1) {
+        if (userName && userName.indexOf('@') != -1 && v > 1) {
             //用户名是邮箱格式时，只能申请1个用户
             this.state.onlyOneUser = true;
         } else {
@@ -246,7 +246,7 @@ const ApplyUserForm = React.createClass({
                 //添加申请邮件中用的应用名
                 if (_.isArray(this.props.apps)) {
                     var client_names = _.map(this.props.apps, (obj) => obj.client_name);
-                    submitData.email_app_names = client_names.join("、");
+                    submitData.email_app_names = client_names.join('、');
                 }
                 //添加申请邮件中用的客户名
                 submitData.email_customer_names = this.props.customerName;
@@ -255,10 +255,10 @@ const ApplyUserForm = React.createClass({
                 OrderAction.applyUser(submitData, {}, result => {
                     this.setState({isLoading: false});
                     if (result === true) {
-                        message.success(Intl.get("user.apply.success", "申请成功"));
+                        message.success(Intl.get('user.apply.success', '申请成功'));
                         this.handleCancel();
                     } else {
-                        message.error(result || Intl.get("common.apply.failed", "申请失败"));
+                        message.error(result || Intl.get('common.apply.failed', '申请失败'));
                     }
                 });
             }
@@ -300,7 +300,7 @@ const ApplyUserForm = React.createClass({
         }
     },
     renderUserNameInput: function(userName) {
-        const placeholder = Intl.get("user.username.write.tip", "请填写用户名");
+        const placeholder = Intl.get('user.username.write.tip', '请填写用户名');
         let input = (
             <Input
                 name="user_name"
@@ -360,7 +360,7 @@ const ApplyUserForm = React.createClass({
         const shadowLeft = appMarginLeft + appWidth;
         const timePickerConfig = {
             isCustomSetting: true,
-            appId: "applyUser"
+            appId: 'applyUser'
         };
 
         return (
@@ -373,11 +373,11 @@ const ApplyUserForm = React.createClass({
                                     <Validation ref="validation" onValidate={this.handleValidate}>
                                         <div className="user-name-textfield-block" ref="username_block">
                                             <FormItem
-                                                label={Intl.get("common.username", "用户名")}
+                                                label={Intl.get('common.username', '用户名')}
                                                 labelCol={{span: 4}}
                                                 wrapperCol={{span: 14}}
-                                                validateStatus={this.getValidateStatus("user_name")}
-                                                help={this.getHelpMessage("user_name")}
+                                                validateStatus={this.getValidateStatus('user_name')}
+                                                help={this.getHelpMessage('user_name')}
                                             >
                                                 <Validator rules={[{validator: this.checkUserExist}]}>
                                                     {this.renderUserNameInput(formData.user_name)}
@@ -385,31 +385,31 @@ const ApplyUserForm = React.createClass({
                                             </FormItem>
                                         </div>
                                         <FormItem
-                                            label={Intl.get("common.nickname", "昵称")}
+                                            label={Intl.get('common.nickname', '昵称')}
                                             labelCol={{span: 4}}
                                             wrapperCol={{span: 14}}
-                                            validateStatus={this.getValidateStatus("nick_name")}
-                                            help={this.getHelpMessage("nick_name")}
+                                            validateStatus={this.getValidateStatus('nick_name')}
+                                            help={this.getHelpMessage('nick_name')}
                                         >
                                             <Validator rules={[{
                                                 required: true,
-                                                message: Intl.get("user.nickname.write.tip", "请填写昵称")
+                                                message: Intl.get('user.nickname.write.tip', '请填写昵称')
                                             }]}>
                                                 <Input
                                                     name="nick_name"
-                                                    placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
+                                                    placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
                                                     value={formData.nick_name}
                                                     onChange={this.onNickNameChange}/>
                                             </Validator>
                                         </FormItem>
                                         <FormItem
-                                            label={Intl.get("common.remark", "备注")}
+                                            label={Intl.get('common.remark', '备注')}
                                             labelCol={{span: 4}}
                                             wrapperCol={{span: 14}}
                                         >
                                             <Input
                                                 type="textarea"
-                                                placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
+                                                placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
                                                 value={formData.remark}
                                                 onChange={this.onRemarkChange}/>
                                         </FormItem>
@@ -427,18 +427,18 @@ const ApplyUserForm = React.createClass({
                                                         <Checkbox checked={this.state.setAllChecked}
                                                             onChange={this.toggleCheckbox}/>
                                                         <span className="checkbox-title" onClick={this.toggleCheckbox}>
-                                                            {Intl.get("user.all.app.set", "设置到所有应用上")}
+                                                            {Intl.get('user.all.app.set', '设置到所有应用上')}
                                                         </span>
                                                         {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
                                                     </div>
                                                     <div className="app-tab-pane col-22">
                                                         <FormItem
-                                                            label={Intl.get("user.batch.open.count", "开通个数")}
+                                                            label={Intl.get('user.batch.open.count', '开通个数')}
                                                             labelCol={{span: 5}}
                                                             wrapperCol={{span: 19}}
                                                         >
                                                             <InputNumber
-                                                                prefixCls={this.state.onlyOneUser ? "number-error-border ant-input-number" : "ant-input-number"}
+                                                                prefixCls={this.state.onlyOneUser ? 'number-error-border ant-input-number' : 'ant-input-number'}
                                                                 value={appFormData.number}
                                                                 min={1}
                                                                 max={999}
@@ -446,16 +446,16 @@ const ApplyUserForm = React.createClass({
                                                         </FormItem>
                                                         {this.state.onlyOneUser ?
                                                             <div className="only-one-user-tip">
-                                                                {Intl.get("crm.201", "用户名是邮箱格式时，只能申请1个用户")}</div> : null}
+                                                                {Intl.get('crm.201', '用户名是邮箱格式时，只能申请1个用户')}</div> : null}
                                                         <FormItem
-                                                            label={Intl.get("user.open.cycle", "开通周期")}
+                                                            label={Intl.get('user.open.cycle', '开通周期')}
                                                             labelCol={{span: 5}}
                                                             wrapperCol={{span: 19}}
                                                         >
                                                             {this.renderUserTimeRangeBlock(timePickerConfig)}
                                                         </FormItem>
                                                         <FormItem
-                                                            label={Intl.get("user.expire.select", "到期可选")}
+                                                            label={Intl.get('user.expire.select', '到期可选')}
                                                             labelCol={{span: 5}}
                                                             wrapperCol={{span: 19}}
                                                         >

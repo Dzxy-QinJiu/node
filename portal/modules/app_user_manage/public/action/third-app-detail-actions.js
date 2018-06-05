@@ -1,7 +1,7 @@
 /**
  * 第三方应用编辑的action
  */
-var ThirdAjax = require("../ajax/third-app-ajax");
+var ThirdAjax = require('../ajax/third-app-ajax');
 
 const asyncDispatchProcessor = function(ajax) {
     return function(paramObj) {
@@ -18,13 +18,13 @@ const asyncDispatchProcessor = function(ajax) {
 
 function ThirdAppDetailActions() {
     this.generateActions(
-        "resetState",
-        "addApp",
-        "editApp",
-        "getAppDetail",
-        "changeAppStatus",
-        "changePanelStatus",
-        "getPlatforms"
+        'resetState',
+        'addApp',
+        'editApp',
+        'getAppDetail',
+        'changeAppStatus',
+        'changePanelStatus',
+        'getPlatforms'
     );
     //添加app
     this.addApp = asyncDispatchProcessor(ThirdAjax.addApp);

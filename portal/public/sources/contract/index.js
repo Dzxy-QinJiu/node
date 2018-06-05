@@ -1,9 +1,9 @@
-var RightContent = require("../../../components/privilege/right-content");
-var Checker = require("../../../components/privilege/checker");
+var RightContent = require('../../../components/privilege/right-content');
+var Checker = require('../../../components/privilege/checker');
 //合同列表
-var Contract = require("../../../modules/contract");
+var Contract = require('../../../modules/contract');
 //合同仪表盘
-var ContractDashboard = require("../../../modules/contract/dashboard-index");
+var ContractDashboard = require('../../../modules/contract/dashboard-index');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('contract',

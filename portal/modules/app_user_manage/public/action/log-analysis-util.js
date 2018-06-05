@@ -1,9 +1,9 @@
-var ShareObj = require("../util/app-id-share-util");
+var ShareObj = require('../util/app-id-share-util');
 
 exports.handleSelectAppId = (userOwnAppList) => {
     // 上一个用户选择应用id
     let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
-    let selectAppId = "";
+    let selectAppId = '';
     if (_.isArray(userOwnAppList) && userOwnAppList.length) {
         if (lastSelectAppId) {
             let index = _.indexOf(_.pluck(userOwnAppList, 'app_id'),lastSelectAppId);

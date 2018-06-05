@@ -1,15 +1,15 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-"use strict";
+'use strict';
 
-var SalesTeamManageServic = require("../service/sales-team-manage-service");
+var SalesTeamManageServic = require('../service/sales-team-manage-service');
 
 exports.getSalesTeamList = function(req, res) {
     SalesTeamManageServic.getSalesTeamList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -17,40 +17,40 @@ exports.getSalesTeamList = function(req, res) {
 exports.filterSalesTeamList = function(req, res) {
     var userName = encodeURI(req.params.user_name);
     SalesTeamManageServic.filterSalesTeamList(req, res, userName)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 
 exports.getSalesGoals = function(req, res) {
     SalesTeamManageServic.getSalesGoals(req, res, req.params.team_id)
-        .on("success", function(data) {
+        .on('success', function(data) {
             if (data) {
                 res.status(200).json(data);
             } else {
                 res.status(200).json({});
             }
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 
 exports.saveSalesGoals = function(req, res) {
     SalesTeamManageServic.saveSalesGoals(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 
 exports.getMemberList = function(req, res) {
     SalesTeamManageServic.getMemberList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -62,9 +62,9 @@ exports.addMember = function(req, res) {
         user_ids: JSON.parse(req.body.userIds)
     };
     SalesTeamManageServic.addMember(req, res, addMemberObj)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -72,9 +72,9 @@ exports.addMember = function(req, res) {
 
 exports.editMember = function(req, res) {
     SalesTeamManageServic.editMember(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -83,9 +83,9 @@ exports.editMember = function(req, res) {
 exports.deleteGroup = function(req, res) {
     var groupId = req.params.group_id;
     SalesTeamManageServic.deleteGroup(req, res, groupId)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -94,9 +94,9 @@ exports.deleteGroup = function(req, res) {
 exports.editGroup = function(req, res) {
     req.body.user_ids = req.body.user_ids ? JSON.parse(req.body.user_ids) : [];
     SalesTeamManageServic.editGroup(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -111,9 +111,9 @@ exports.addGroup = function(req, res) {
         salesTeam.parent_group = bodyData.parentGroup;
     }
     SalesTeamManageServic.addGroup(req, res, salesTeam)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );

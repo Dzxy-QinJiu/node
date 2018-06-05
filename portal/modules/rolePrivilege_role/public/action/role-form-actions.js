@@ -1,6 +1,6 @@
-var roleAjax = require("../ajax/role-ajax");
-var userData = require("../../../../public/sources/user-data");
-var RoleActions = require("./role-actions");
+var roleAjax = require('../ajax/role-ajax');
+var userData = require('../../../../public/sources/user-data');
+var RoleActions = require('./role-actions');
 
 //获取权限id
 function getAuhorityIds(role) {
@@ -41,10 +41,10 @@ function RoleFormActions() {
                 RoleActions.afterAddRole(role);
                 _this.dispatch();
             } else {
-                _this.dispatch( Intl.get("role.add.role.failed", "添加角色失败"));
+                _this.dispatch( Intl.get('role.add.role.failed', '添加角色失败'));
             }
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("role.add.role.failed", "添加角色失败"));
+            _this.dispatch(errorMsg || Intl.get('role.add.role.failed', '添加角色失败'));
         });
     };
 
@@ -63,10 +63,10 @@ function RoleFormActions() {
                 RoleActions.afterEditRole(role);
                 _this.dispatch();
             } else {
-                _this.dispatch( Intl.get("role.edit.role.failed", "修改角色失败"));
+                _this.dispatch( Intl.get('role.edit.role.failed', '修改角色失败'));
             }
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("role.edit.role.failed", "修改角色失败"));
+            _this.dispatch(errorMsg || Intl.get('role.edit.role.failed', '修改角色失败'));
         });
     };
 }

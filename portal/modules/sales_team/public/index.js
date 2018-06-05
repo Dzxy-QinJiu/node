@@ -1,26 +1,26 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-require("./css/sales-team.less");
-import {Icon,Input,Button} from "antd";
-var SalesTeamStore = require("./store/sales-team-store");
-var SalesTeamAction = require("./action/sales-team-actions");
-var Spinner = require("../../../components/spinner");
-var TopNav = require("../../../components/top-nav");
-var NoData = require("../../../components/analysis-nodata");
-var AlertTimer = require("../../../components/alert-timer");
-var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
-var LeftTree = require("./views/left-tree");
-var MemberList = require("./views/member-list");
-var SalesTeamAjax = require("./ajax/sales-team-ajax");
+require('./css/sales-team.less');
+import {Icon,Input,Button} from 'antd';
+var SalesTeamStore = require('./store/sales-team-store');
+var SalesTeamAction = require('./action/sales-team-actions');
+var Spinner = require('../../../components/spinner');
+var TopNav = require('../../../components/top-nav');
+var NoData = require('../../../components/analysis-nodata');
+var AlertTimer = require('../../../components/alert-timer');
+var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
+var LeftTree = require('./views/left-tree');
+var MemberList = require('./views/member-list');
+var SalesTeamAjax = require('./ajax/sales-team-ajax');
 var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var bootomHeight = 20; //距离底部高度
 var CONSTANT = {
-    SALES_TEAM_IS_NULL: "sales-team-is-null",//没有团队时的提示信息
-    SUCCESS: "success",
-    ERROR: "error",
-    SAVE_SUCCESS: Intl.get("common.save.success", "保存成功"),
-    SAVE_ERROR: Intl.get("common.save.failed", "保存失败")
+    SALES_TEAM_IS_NULL: 'sales-team-is-null',//没有团队时的提示信息
+    SUCCESS: 'success',
+    ERROR: 'error',
+    SAVE_SUCCESS: Intl.get('common.save.success', '保存成功'),
+    SAVE_ERROR: Intl.get('common.save.failed', '保存失败')
 };
 
 var SalesTeamPage = React.createClass({
@@ -29,10 +29,10 @@ var SalesTeamPage = React.createClass({
         data.containerHeight = this.containerHeightFnc();
         data.containerWidth = this.containerWidthFnc();
         data.windowHeight = this.windowHeightFnc();
-        data.salesTeamName = "";//添加团队时的团队名称
+        data.salesTeamName = '';//添加团队时的团队名称
         data.isSavingSalesTeam = false;//是否正在添加团队
-        data.saveSalesTeamMsg = "";//添加团队成功失败的提示
-        data.saveSalesTeamResult = "";//添加团队成功还是失败（success/error）
+        data.saveSalesTeamMsg = '';//添加团队成功失败的提示
+        data.saveSalesTeamResult = '';//添加团队成功还是失败（success/error）
         return data;
     },
 
@@ -53,8 +53,8 @@ var SalesTeamPage = React.createClass({
     },
 
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
-        $(window).on("resize", this.resizeWindow);
+        $('body').css('overflow', 'hidden');
+        $(window).on('resize', this.resizeWindow);
         SalesTeamStore.listen(this.onChange);
         SalesTeamAction.getTeamMemberCountList();
         SalesTeamAction.setSalesTeamLoading(true);
@@ -63,9 +63,9 @@ var SalesTeamPage = React.createClass({
     },
 
     componentWillUnmount: function() {
-        $(window).off("resize", this.resizeWindow);
+        $(window).off('resize', this.resizeWindow);
         SalesTeamStore.unlisten(this.onChange);
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
     },
 
     containerHeightFnc: function() {
@@ -127,8 +127,8 @@ var SalesTeamPage = React.createClass({
         if (this.state.saveSalesTeamResult == CONSTANT.SUCCESS) {
             SalesTeamAction.getSalesTeamList();
         }
-        this.state.saveSalesTeamMsg = "";
-        this.state.saveSalesTeamResult = "";
+        this.state.saveSalesTeamMsg = '';
+        this.state.saveSalesTeamResult = '';
     },
     //无团队时，添加团队面板的渲染
     renderAddSalesTeam: function() {
@@ -140,7 +140,7 @@ var SalesTeamPage = React.createClass({
                 <Input value={this.state.salesTeamName}
                     size="large"
                     onChange={this.onSalesTeamNameChange}
-                    placeholder={Intl.get("sales.team.search.placeholder", "请输入团队名称")}/>
+                    placeholder={Intl.get('sales.team.search.placeholder', '请输入团队名称')}/>
                 {this.state.saveSalesTeamMsg ? (<div className="indicator">
                     <AlertTimer time={this.state.saveSalesTeamResult == CONSTANT.ERROR ? 3000 : 600}
                         message={this.state.saveSalesTeamMsg}
@@ -149,7 +149,7 @@ var SalesTeamPage = React.createClass({
                 </div>) : null}
                 <Button type="primary" size="large" onClick={this.addSalesTeam}>
                     <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>
-                    {this.state.isSavingSalesTeam ? (<Icon type="loading"/>) : ""}
+                    {this.state.isSavingSalesTeam ? (<Icon type="loading"/>) : ''}
                 </Button>
             </div>
         </PrivilegeChecker>);

@@ -1,9 +1,9 @@
-require("./index.less");
-var ajax = require("./ajax");
-var SelectFullWidth = require("../select-fullwidth");
-var Select = require("antd").Select;
+require('./index.less');
+var ajax = require('./ajax');
+var SelectFullWidth = require('../select-fullwidth');
+var Select = require('antd').Select;
 var Option = Select.Option;
-var userData = require("../../public/sources/user-data");
+var userData = require('../../public/sources/user-data');
 var AnalysisAppSelector = React.createClass({
     //失败次数
     failCount: 0,
@@ -11,7 +11,7 @@ var AnalysisAppSelector = React.createClass({
         return {
             onSelectApp: function() {},
             //默认宽度没有限制
-            type: "user",
+            type: 'user',
             //是否默认选中第一个应用
             isSelectFirstApp: false
         };
@@ -21,10 +21,10 @@ var AnalysisAppSelector = React.createClass({
         if (this.props.isSelectFirstApp) return true;
 
         var privileges = userData.getUserData().privileges || [];
-        if(privileges.indexOf("APP_MANAGE_LIST_APPS") >= 0) {
+        if(privileges.indexOf('APP_MANAGE_LIST_APPS') >= 0) {
             return false;
         }
-        if(privileges.indexOf("USER_INFO_MYAPP") >= 0) {
+        if(privileges.indexOf('USER_INFO_MYAPP') >= 0) {
             return true;
         }
         return false;
@@ -76,14 +76,14 @@ var AnalysisAppSelector = React.createClass({
                     if(_this.isChoosenFirst()) {
                         _this.selectApp(list[0].id,hasAll,list);
                     } else {
-                        _this.selectApp("all",hasAll,list);
+                        _this.selectApp('all',hasAll,list);
                     }
                 }
             } else {
                 if(_this.props.type === 'user') {
-                    _this.selectApp("",hasAll,list);
+                    _this.selectApp('',hasAll,list);
                 } else {
-                    _this.selectApp("all",hasAll,list);
+                    _this.selectApp('all',hasAll,list);
                 }
             }
         });
@@ -102,7 +102,7 @@ var AnalysisAppSelector = React.createClass({
             );
         });
         if(this.state.hasAll && !this.props.isSelectFirstApp) {
-            options.unshift(<Option key="all" value="all">{Intl.get("oplate.user.analysis.22", "综合")}</Option>);
+            options.unshift(<Option key="all" value="all">{Intl.get('oplate.user.analysis.22', '综合')}</Option>);
         }
         return (
             <SelectFullWidth
@@ -112,7 +112,7 @@ var AnalysisAppSelector = React.createClass({
                 minWidth={150}
                 value={this.state.selectedApp}
                 onChange={this.onSelectedAppChange}
-                notFoundContent={!options.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
+                notFoundContent={!options.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
             >
                 {options}
             </SelectFullWidth>

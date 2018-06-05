@@ -1,17 +1,17 @@
-import Trace from "LIB_DIR/trace";
-import {AntcAreaSelection} from "antc";
-import {DetailEditBtn} from "../rightPanel";
-import SaveCancelButton from "../detail-card/save-cancel-button";
+import Trace from 'LIB_DIR/trace';
+import {AntcAreaSelection} from 'antc';
+import {DetailEditBtn} from '../rightPanel';
+import SaveCancelButton from '../detail-card/save-cancel-button';
 const LocationSelectField = React.createClass({
     getDefaultProps: function() {
         return {
-            id: "",
+            id: '',
             hasEditPrivilege: false,
-            province: "",
-            city: "",
-            county: "",
+            province: '',
+            city: '',
+            county: '',
             //编辑按钮的提示文案
-            editBtnTip: Intl.get("crm.175", "设置地域"),
+            editBtnTip: Intl.get('crm.175', '设置地域'),
             onChange: function() {
             },
             onModifySuccess: function() {
@@ -21,7 +21,7 @@ const LocationSelectField = React.createClass({
     getInitialState: function() {
         return {
             loading: false,//正在保存
-            displayType: "text",
+            displayType: 'text',
             id: this.props.id,
             province: this.props.province,
             city: this.props.city,
@@ -42,7 +42,7 @@ const LocationSelectField = React.createClass({
     },
     changeDisplayType: function(type) {
         if (type === 'text') {
-            Trace.traceEvent(this.getDOMNode(), "取消对地域的修改");
+            Trace.traceEvent(this.getDOMNode(), '取消对地域的修改');
             this.setState({
                 province: this.props.province,
                 city: this.props.city,
@@ -51,7 +51,7 @@ const LocationSelectField = React.createClass({
                 submitErrorMsg: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(), "点击设置地域按钮");
+            Trace.traceEvent(this.getDOMNode(), '点击设置地域按钮');
             this.setState({
                 loading: false,
                 displayType: type,
@@ -81,27 +81,27 @@ const LocationSelectField = React.createClass({
             city: this.state.city,
             county: this.state.county
         };
-        Trace.traceEvent(this.getDOMNode(), "保存对地域的修改");
+        Trace.traceEvent(this.getDOMNode(), '保存对地域的修改');
         this.props.saveEditLocation(submitData, () => {
             this.backToDisplay();
         }, (errorMsg) => {
             this.setState({
                 loading: false,
-                submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
+                submitErrorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
             });
         });
     },
     handleCancel: function(e) {
-        Trace.traceEvent(e, "取消对地域的修改");
-        this.changeDisplayType("text");
+        Trace.traceEvent(e, '取消对地域的修改');
+        this.changeDisplayType('text');
     },
     //更新地址
     updateLocation: function(address) {
         var location = address.split('/');
-        this.state.province = location[0] || "";
-        this.state.city = location[1] || "";
-        this.state.county = location[2] || "";
-        Trace.traceEvent(this.getDOMNode(), "修改地域");
+        this.state.province = location[0] || '';
+        this.state.city = location[1] || '';
+        this.state.county = location[2] || '';
+        Trace.traceEvent(this.getDOMNode(), '修改地域');
     },
     render: function() {
         var location = [];
@@ -120,14 +120,14 @@ const LocationSelectField = React.createClass({
                     <span className="inline-block basic-info-text">{location.join('/')}</span>
                     {this.props.hasEditPrivilege ? (
                         <DetailEditBtn title={this.props.editBtnTip}
-                            onClick={this.changeDisplayType.bind(this, "edit")}/>) : null
+                            onClick={this.changeDisplayType.bind(this, 'edit')}/>) : null
                     }
                 </div>
             );
         }
         return (<div className="basic-edit-field location-edit-field">
             <AntcAreaSelection labelCol="0" wrapperCol="24"
-                placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
+                placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
                 prov={this.state.province}
                 city={this.state.city}
                 county={this.state.county} updateLocation={this.updateLocation}/>

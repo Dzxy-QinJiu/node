@@ -1,9 +1,9 @@
-var UserAuditLogAction = require("../action/user_audit_log_action");
-var ShareObj = require("../util/app-id-share-util");
-var DateSelectorUtils = require("../../../../components/datepicker/utils");
-var AppUserUtil = require("../util/app-user-util");
-import { ALL_LOG_INFO, AUDIT_LOG} from "PUB_DIR/sources/utils/consts";
-import { storageUtil } from "ant-utils";
+var UserAuditLogAction = require('../action/user_audit_log_action');
+var ShareObj = require('../util/app-id-share-util');
+var DateSelectorUtils = require('../../../../components/datepicker/utils');
+var AppUserUtil = require('../util/app-user-util');
+import { ALL_LOG_INFO, AUDIT_LOG} from 'PUB_DIR/sources/utils/consts';
+import { storageUtil } from 'ant-utils';
 // 用户审计日志的store
 function UserAuditLogStore(){
     this.resetState();
@@ -14,13 +14,13 @@ UserAuditLogStore.prototype.resetAuditLog = function() {
     //是否是第一次加载，第一次加载的时候
     this.firstLoading = true;
     //是否处于loading状态
-    this.appUserListResult = "loading";
+    this.appUserListResult = 'loading';
     // 获取用户日志
     this.auditLogList = [];
     // 当前数据最后一条数据的id
     this.sortId = '';
     // 获取用户审计日志出错的处理
-    this.getUserLogErrorMsg = "";
+    this.getUserLogErrorMsg = '';
     // 每次加载日志的条数
     this.loadSize = 20;
     // 日志的总条数
@@ -82,15 +82,15 @@ UserAuditLogStore.prototype.getUserApp = function(result){
 // 获取用户审计日志的信息
 UserAuditLogStore.prototype.getAuditLogList = function(result) {
     if (result.loading){
-        this.appUserListResult = "loading";
-        this.getUserLogErrorMsg = "";
+        this.appUserListResult = 'loading';
+        this.getUserLogErrorMsg = '';
     }else if (result.error){
-        this.appUserListResult = "";
+        this.appUserListResult = '';
         this.getUserLogErrorMsg = result.errorMsg;
     } else {
         this.firstLoading = false;
-        this.appUserListResult = "";
-        this.getUserLogErrorMsg = "";
+        this.appUserListResult = '';
+        this.getUserLogErrorMsg = '';
         this.auditLogList = this.auditLogList.concat(result.data.user_logs);
         if (!result.data.user_logs.length) {
             this.listenScrollBottom = false;

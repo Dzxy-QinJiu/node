@@ -1,7 +1,7 @@
 
-"use strict";
+'use strict';
 
-var appNotice = require("../service/app-notice-service");
+var appNotice = require('../service/app-notice-service');
 
 exports.getAppNoticeList = function(req, res) {
     var application_id = req.query.application_id;
@@ -13,9 +13,9 @@ exports.getAppNoticeList = function(req, res) {
         page_size: page_size,
         page_num: page_num
     };
-    appNotice.getAppNoticeList(req, res, queryObj).on("success", function(data) {
+    appNotice.getAppNoticeList(req, res, queryObj).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

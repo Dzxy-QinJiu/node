@@ -1,9 +1,9 @@
 /**
  * Created by zhoulianyi on  2016/5/8 16:36.
  */
-var RightContent = require("../../../components/privilege/right-content");
-var Checker = require("../../../components/privilege/checker");
-var Notification = require("../../../modules/notification");
+var RightContent = require('../../../components/privilege/right-content');
+var Checker = require('../../../components/privilege/checker');
+var Notification = require('../../../modules/notification');
 
 
 function getChildRoutes() {

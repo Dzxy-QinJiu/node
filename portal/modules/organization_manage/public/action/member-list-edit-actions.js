@@ -1,9 +1,9 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-var OrganizationAjax = require("../ajax/organization-ajax");
-var OrganizationActions = require("./organization-actions");
-var SUCCESS = "success";
+var OrganizationAjax = require('../ajax/organization-ajax');
+var OrganizationActions = require('./organization-actions');
+var SUCCESS = 'success';
 function OrganizationMemberActions() {
 
     this.generateActions(
@@ -28,15 +28,15 @@ function OrganizationMemberActions() {
         var _this = this;
         OrganizationAjax.addMember(obj).then(function(data) {
             if (data) {
-                _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success")});
+                _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success')});
 
             } else {
-                _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed")});
+                _this.dispatch({saveResult: 'error', saveMsg: Intl.get('common.save.failed')});
             }
 
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed")});
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed')});
         });
     };
 
@@ -44,23 +44,23 @@ function OrganizationMemberActions() {
         var _this = this;
         OrganizationAjax.editMember(obj).then(function(data) {
             if (data) {
-                _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success")});
+                _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success')});
             } else {
-                _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed")});
+                _this.dispatch({saveResult: 'error', saveMsg: Intl.get('common.save.failed')});
             }
 
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed")});
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed')});
         });
     };
 
     this.clearSaveFlags = function(type, saveResult, obj) {
-        if (saveResult == "success") {
+        if (saveResult == 'success') {
             //刷新左侧树中该组织的人数
-            if (type == "add") {
+            if (type == 'add') {
                 OrganizationActions.afterAddMember(obj);
-            } else if (type == "edit") {
+            } else if (type == 'edit') {
                 OrganizationActions.afterEditMember(obj);
             }
             //刷新组织成员列表

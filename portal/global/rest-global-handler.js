@@ -2,12 +2,12 @@
  * 全局rest请求处理。
  * Created by liwenjun on 2015/12/25.
  */
-var userAuthRestEmitter = require("ant-auth-request").userAuthRestEmitter;
-var auth = require("../lib/utils/auth");
-var _ = require("underscore");
-var errors = require("ant-auth-request").constUtilErrors;
+var userAuthRestEmitter = require('ant-auth-request').userAuthRestEmitter;
+var auth = require('../lib/utils/auth');
+var _ = require('underscore');
+var errors = require('ant-auth-request').constUtilErrors;
 //发送到界面的错误信息
-var UI_CONST = require("../lib/utils/request-error-util");
+var UI_CONST = require('../lib/utils/request-error-util');
 
 /**
  * 返回403错误信息
@@ -26,7 +26,7 @@ function cleanAuthAndSendData(req, res, data) {
 //添加全局请求头
 //restManage.baseRest.addCustomGlobalHeader("test", "testvalue");
 
-userAuthRestEmitter.on("timeout", function(req, res, data) {//rest请求超时
+userAuthRestEmitter.on('timeout', function(req, res, data) {//rest请求超时
     res.status(data.httpCode).json(data.message);
 }).on(errors.REFRESH_TOKEN_SUCCESS, function(newToken, userBaseInfo, req) {//刷新token成功
     //复制一份用户数据

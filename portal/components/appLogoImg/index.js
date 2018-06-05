@@ -1,7 +1,7 @@
-var Tooltip = require("react-bootstrap").Tooltip;
-var OverlayTrigger = require("react-bootstrap").OverlayTrigger;
-var Ajax = require("./app-logo-ajax");
-var DefaultUserLogoTitle = require("../default-user-logo-title");
+var Tooltip = require('react-bootstrap').Tooltip;
+var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
+var Ajax = require('./app-logo-ajax');
+var DefaultUserLogoTitle = require('../default-user-logo-title');
 
 var AppLogoImg = React.createClass({
     propTypes: {

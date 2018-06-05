@@ -2,12 +2,12 @@ const ajaxPro = function(config) {
     let jqXHR = null;
     return function(param) {
         var Deferred = $.Deferred();
-        if (typeof param === "object") {
+        if (typeof param === 'object') {
             config.data = param;
         }        
         //默认格式为json
         if(!config.dataType) {
-            config.dataType = "json";
+            config.dataType = 'json';
         } 
         _.extend(config,{
             success: function(result) {

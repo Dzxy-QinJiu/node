@@ -1,10 +1,10 @@
 /**
  * Created by xiaojinfeng on  2015/12/25 11:04 .
  */
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var Button = require("antd").Button;
-var ModalDialog = require("../../../../components/ModalDialog");
-import Trace from "LIB_DIR/trace";
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var Button = require('antd').Button;
+var ModalDialog = require('../../../../components/ModalDialog');
+import Trace from 'LIB_DIR/trace';
 function noop() {
 }
 var SalesStageInfo = React.createClass({
@@ -17,7 +17,7 @@ var SalesStageInfo = React.createClass({
     },
 
     deleteSalesStage: function(salesStage) {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-dialog .modal-footer"),"确定删除某销售阶段");
+        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'确定删除某销售阶段');
         this.props.deleteSalesStage(salesStage);
     },
 
@@ -26,7 +26,7 @@ var SalesStageInfo = React.createClass({
     },
 
     hideSalesStageModalDialog: function(salesStage) {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-dialog .modal-footer"),"关闭删除销售阶段模态框");
+        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'关闭删除销售阶段模态框');
         this.props.hideSalesStageModalDialog(salesStage);
     },
 
@@ -46,7 +46,7 @@ var SalesStageInfo = React.createClass({
         var _this = this;
         var salesStage = this.props.salesStage;
         var width = this.props.width;
-        var modalContent = Intl.get("sales.stage.delete.sales.stage","确定删除这个销售阶段麽") + '?';
+        var modalContent = Intl.get('sales.stage.delete.sales.stage','确定删除这个销售阶段麽') + '?';
         return (
             <div className="sales-stage-timeline-item-content modal-container" style={{width: width}} data-tracename="销售阶段列表">
                 <div className="sales-stage-content" style={{width: width - 100}}>

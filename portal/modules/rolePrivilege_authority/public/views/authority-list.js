@@ -1,10 +1,10 @@
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var Button = require("antd").Button;
-var AlertTimer = require("../../../../components/alert-timer");
-var AuthorityAction = require("../action/authority-actions");
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var Button = require('antd').Button;
+var AlertTimer = require('../../../../components/alert-timer');
+var AuthorityAction = require('../action/authority-actions');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var ModalDialog = require("../../../../components/ModalDialog");
-import Trace from "LIB_DIR/trace";
+var ModalDialog = require('../../../../components/ModalDialog');
+import Trace from 'LIB_DIR/trace';
 
 function noop() {
 }
@@ -16,7 +16,7 @@ var AuthorityList = React.createClass({
             addAuthority: noop,
             deleteAuthority: noop,
             authorityGroup: {
-                permissionGroupName: "",
+                permissionGroupName: '',
                 permissionList: []
             }
         };
@@ -35,11 +35,11 @@ var AuthorityList = React.createClass({
     },
 
     showAddAuthorityForm: function(authorityGroup) {
-        this.props.showAddAuthorityForm(authorityGroup, "addAuthority");
+        this.props.showAddAuthorityForm(authorityGroup, 'addAuthority');
     },
 
     deleteAuthorityGroup: function(authorityGroup) {
-        Trace.traceEvent($(this.getDOMNode()).find(".authority-operation"),"点击删除权限");
+        Trace.traceEvent($(this.getDOMNode()).find('.authority-operation'),'点击删除权限');
         var authorityIds = [];
         if (authorityGroup && _.isArray(authorityGroup.permissionList) && authorityGroup.permissionList.length > 0) {
             authorityGroup.permissionList.forEach(function(authority) {
@@ -51,7 +51,7 @@ var AuthorityList = React.createClass({
 
     //编辑权限分组
     showAuthorityGroupForm: function(authorityGroup) {
-        Trace.traceEvent($(this.getDOMNode()).find(".icon-update"),"点击编辑权限分组");
+        Trace.traceEvent($(this.getDOMNode()).find('.icon-update'),'点击编辑权限分组');
         AuthorityAction.beforeEditAuthority(authorityGroup);
         this.props.showAuthorityGroupForm(authorityGroup);
     },
@@ -88,7 +88,7 @@ var AuthorityList = React.createClass({
         var authorityGroup = this.props.authorityGroup;
         authorityGroup.authorityIDs = [];
         var authorityListDivHeight = this.props.authorityListDivHeight;
-        var modalContentClassifyName = Intl.get("authority.del.group", "确定要删除这个权限组吗？");
+        var modalContentClassifyName = Intl.get('authority.del.group', '确定要删除这个权限组吗？');
 
         return (
             <div className="authority-container-div modal-container" style={{height: authorityListDivHeight}} data-tracename="权限列表">

@@ -1,15 +1,15 @@
 /**
  * 线图
  */
-var echarts = require("echarts-eefung");
-require("./index.less");
-var Color = require("color");
-var emitter = require("../../utils/emitter");
-var Spinner = require("../../../../../components/spinner");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
-var immutable = require("immutable");
-const querystring = require("querystring");
+var echarts = require('echarts-eefung');
+require('./index.less');
+var Color = require('color');
+var emitter = require('../../utils/emitter');
+var Spinner = require('../../../../../components/spinner');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
+var immutable = require('immutable');
+const querystring = require('querystring');
 import { packageTry } from 'LIB_DIR/func';
 
 var BarChart = React.createClass({
@@ -17,7 +17,7 @@ var BarChart = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: Intl.get("user.analysis.team", "团队统计"),
+            title: Intl.get('user.analysis.team', '团队统计'),
             width: '100%',
             height: 234,
             legendRight: 'auto',
@@ -34,7 +34,7 @@ var BarChart = React.createClass({
              *  {name : Intl.get("user.analysis.formal", "正式"),key : 'formal'}
              * ]
              */
-            legend: [{name: Intl.get("user.analysis.formal", "正式"),key: 'formal'}]
+            legend: [{name: Intl.get('user.analysis.formal', '正式'),key: 'formal'}]
         };
     },
     getLegend: function() {
@@ -107,7 +107,7 @@ var BarChart = React.createClass({
                         rotate: this.props.xAxisRotate,
                         formatter: function(text) {
                             if(text === 'unknown') {
-                                text = Intl.get("user.unknown", "未知");
+                                text = Intl.get('user.unknown', '未知');
                             } else if(!text) {
                                 text = 'null';
                             }
@@ -150,15 +150,15 @@ var BarChart = React.createClass({
                 if(!name) {
                     name = 'null';
                 } else if(name === 'unknown') {
-                    name = Intl.get("user.unknown", "未知");
+                    name = Intl.get('user.unknown', '未知');
                 }
                 var seriesName = obj.seriesName;
-                let timeDesc = Intl.get("operation.report.time.duration","至{time}为止",{time: _this.props.endDate});
+                let timeDesc = Intl.get('operation.report.time.duration','至{time}为止',{time: _this.props.endDate});
                 if(_this.props.startDate){
                     if(_this.props.startDate == _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     }else{
-                        timeDesc = _this.props.startDate + Intl.get("common.time.connector","至") + _this.props.endDate;
+                        timeDesc = _this.props.startDate + Intl.get('common.time.connector','至') + _this.props.endDate;
                     }
                 }
                 return `<div class="echarts-tooltip">
@@ -187,27 +187,27 @@ var BarChart = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
             var options = this.getEchartOptions();
             this.echartInstance.setOption(options,true);
             const startTime = this.props.startTime, endTime = this.props.endTime;
             if (_this.props.getJumpProps) {
-                this.echartInstance.on("click", params => {
+                this.echartInstance.on('click', params => {
                     const jumpProps = _this.props.getJumpProps();
                     let filterVal = params.name;
-                    if(jumpProps && jumpProps.query && jumpProps.query.analysis_filter_field == "sales_id"){
+                    if(jumpProps && jumpProps.query && jumpProps.query.analysis_filter_field == 'sales_id'){
                         filterVal = _this.props.getSaleIdByName(params.name);
                     }
                     let query = {
                         start_date: startTime,
                         end_date: endTime,
-                        analysis_filter_value: filterVal || ""
+                        analysis_filter_value: filterVal || ''
                     };
                     if (jumpProps.query) _.extend(query, jumpProps.query);
                     //跳转到用户列表
-                    window.open(jumpProps.url + "?" + querystring.stringify(query));
+                    window.open(jumpProps.url + '?' + querystring.stringify(query));
                 });
             }
         }

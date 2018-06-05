@@ -3,7 +3,7 @@
  * 说明：统计分析-安全域统计-当前安全域地域统计的 action文件 MVC中的C
  */
 //引入ajax
-var AnalysisRealmZoneAjax = require("../ajax/analysis-realm-zone-ajax");
+var AnalysisRealmZoneAjax = require('../ajax/analysis-realm-zone-ajax');
 //安全域地域统计的action
 function AnalysisRealmZoneActions() {
 

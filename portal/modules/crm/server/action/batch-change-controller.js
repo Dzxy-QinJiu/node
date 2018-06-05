@@ -1,10 +1,10 @@
-var batchChangeService = require("../service/batch-change-service");
+var batchChangeService = require('../service/batch-change-service');
 
 exports.getGroupList = function(req, res) {
     batchChangeService.getGroupList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.json(err.message);
         });
 };
@@ -28,18 +28,18 @@ exports.doBatch = function(req, res) {
         break;
     }
     batchChangeService.doBatch(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message || errorMsg);
         });
 };
 
 exports.getRecommendTags = function(req, res) {
     batchChangeService.getRecommendTags(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.json(err.message);
         });
 };
@@ -47,9 +47,9 @@ exports.getRecommendTags = function(req, res) {
 //获取行业列表
 exports.getIndustries = function(req,res) {
     batchChangeService.getIndustries(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.json(data);
-        }).on("error", function(err) {
+        }).on('error', function(err) {
             res.status(500).json(err.message);
         });
 };

@@ -2,7 +2,7 @@
  * Created by wangliping on 2016/2/22.
  * 应用实体
  */
-var _ = require("underscore");
+var _ = require('underscore');
 
 exports.toFrontSalesCustomer = function(data) {
     var salesCustomer = {};
@@ -16,7 +16,7 @@ exports.toFrontSalesCustomer = function(data) {
                 if (saleObj && _.isArray(saleObj.sale_stage_views) && saleObj.sale_stage_views.length > 0) {
                     stageList = saleObj.sale_stage_views.map(function(stage) {
                         return {
-                            stage: stage.sales_stage_name || "",//销售阶段
+                            stage: stage.sales_stage_name || '',//销售阶段
                             customerCount: stage.sales_stage_count || 0//客户数
                         };
                     });
@@ -44,7 +44,7 @@ exports.toFrontSalesUser = function(data) {
                 if (saleObj && _.isArray(saleObj.application_views) && saleObj.application_views.length > 0) {
                     appList = saleObj.application_views.map(function(app) {
                         return {
-                            appName: app.app_name || "",//应用名称
+                            appName: app.app_name || '',//应用名称
                             newFormalUser: app.official_num || 0,//新增正式用户
                             newTryUser: app.trial_num || 0,//新增试用用户
                             newTotalUser: (app.official_num || 0) + (app.trial_num || 0)//新增用户的统计

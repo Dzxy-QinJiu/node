@@ -1,27 +1,27 @@
-var RightContent = require("CMP_DIR/privilege/right-content");
-require("./css/index.less");
-var SalesHomeStore = require("./store/sales-home-store");
-var SalesHomeAction = require("./action/sales-home-actions");
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
-let TimeUtil = require("PUB_DIR/sources/utils/time-format-util");
+var RightContent = require('CMP_DIR/privilege/right-content');
+require('./css/index.less');
+var SalesHomeStore = require('./store/sales-home-store');
+var SalesHomeAction = require('./action/sales-home-actions');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+let TimeUtil = require('PUB_DIR/sources/utils/time-format-util');
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
-var classNames = require("classnames");
-import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
-import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE, CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
-import Trace from "LIB_DIR/trace";
-import ScheduleItem from "./view/schedule-item";
-import CustomerNoticeMessage from "./view/customer-notice-message";
-import WillExpireItem from "./view/will-expire-item";
-import NewDistributeCustomer from "./view/new-distribute-customer";
-import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
-import AppUserManage from "MOD_DIR/app_user_manage/public";
-import {RightPanel} from "CMP_DIR/rightPanel";
+var classNames = require('classnames');
+import CustomerRepeat from 'MOD_DIR/crm/public/views/customer-repeat';
+import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE, CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
+import Trace from 'LIB_DIR/trace';
+import ScheduleItem from './view/schedule-item';
+import CustomerNoticeMessage from './view/customer-notice-message';
+import WillExpireItem from './view/will-expire-item';
+import NewDistributeCustomer from './view/new-distribute-customer';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
+import {RightPanel} from 'CMP_DIR/rightPanel';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-var userData = require("PUB_DIR/sources/user-data");
+var userData = require('PUB_DIR/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
-import {getRelativeTime} from "PUB_DIR/sources/utils/common-method-util";
-import Spinner from "CMP_DIR/spinner";
+import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
+import Spinner from 'CMP_DIR/spinner';
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
@@ -31,8 +31,8 @@ var SalesHomePage = React.createClass({
         return {
             showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
             isShowRepeatCustomer: false,//是否展示重复客户
-            curShowCustomerId: "",//展示客户详情的客户id
-            curShowUserId: "",//展示用户详情的用户id
+            curShowCustomerId: '',//展示客户详情的客户id
+            curShowUserId: '',//展示用户详情的用户id
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             ...SalesHomeStore.getState()
@@ -46,9 +46,9 @@ var SalesHomePage = React.createClass({
         $(window).on('resize', this.windowResize);
         //给点击查看客户详情的客户加样式
         //之所以用jquery不用类名加样式，是因为客户会有重复的，通过customerId无法进行判断
-        $(".sales_home_content").on("click", ".sale-home-customer-name", function(e) {
-            $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
-            $(this).closest(".customer-detail-item").addClass("selected-customer-detail-item");
+        $('.sales_home_content').on('click', '.sale-home-customer-name', function(e) {
+            $('.selected-customer-detail-item').removeClass('selected-customer-detail-item');
+            $(this).closest('.customer-detail-item').addClass('selected-customer-detail-item');
         });
     },
     //缩放延时，避免页面卡顿
@@ -74,8 +74,8 @@ var SalesHomePage = React.createClass({
         });
     },
     closeRightCustomerPanel: function() {
-        $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
-        this.setState({curShowCustomerId: ""});
+        $('.selected-customer-detail-item').removeClass('selected-customer-detail-item');
+        this.setState({curShowCustomerId: ''});
     },
     ShowCustomerUserListPanel: function(data) {
         this.setState({
@@ -106,7 +106,7 @@ var SalesHomePage = React.createClass({
         this.setState({curShowUserId: user_id});
     },
     closeRightUserPanel: function() {
-        this.setState({curShowUserId: ""});
+        this.setState({curShowUserId: ''});
     },
     getSalesListData: function() {
         let queryParams = this.getQueryParams();
@@ -135,7 +135,7 @@ var SalesHomePage = React.createClass({
         //获取十天内即将到期的试用用户
         var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
         SalesHomeAction.getExpireCustomer({
-            tags: Intl.get("common.trial.user", "试用用户"),
+            tags: Intl.get('common.trial.user', '试用用户'),
             start_time: todayTimeRange.start_time,
             end_time: todayTimeRange.end_time + 9 * oplateConsts.ONE_DAY_TIME_RANGE,
             dataType: ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER
@@ -143,7 +143,7 @@ var SalesHomePage = React.createClass({
         //获取半年内即将到期的签约用户 30*6是取的半年的数据
         SalesHomeAction.getExpireCustomer(
             {
-                tags: Intl.get("common.trial.official", "正式用户"),
+                tags: Intl.get('common.trial.official', '正式用户'),
                 start_time: todayTimeRange.start_time,
                 end_time: todayTimeRange.end_time + 30 * 6 * oplateConsts.ONE_DAY_TIME_RANGE,
                 dataType: ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER
@@ -151,7 +151,7 @@ var SalesHomePage = React.createClass({
         );
         //获取过去十天内过期未处理试用客户
         SalesHomeAction.getExpireCustomer({
-            tags: Intl.get("common.trial.user", "试用用户"),
+            tags: Intl.get('common.trial.user', '试用用户'),
             start_time: todayTimeRange.start_time - 10 * oplateConsts.ONE_DAY_TIME_RANGE,
             end_time: todayTimeRange.end_time - oplateConsts.ONE_DAY_TIME_RANGE,
             dataType: ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER
@@ -167,12 +167,12 @@ var SalesHomePage = React.createClass({
             //把今天0点作为判断是否过期的时间点
             end_time: TimeStampUtil.getTodayTimeStamp().start_time,//今日早上的零点作为结束时间
             status: false,//日程的状态，未完成的日程
-            type: "missed_call"
+            type: 'missed_call'
         };
         if (lastId) {
             constObj.id = lastId;
         }
-        SalesHomeAction.getScheduleList(constObj, "missed_call");
+        SalesHomeAction.getScheduleList(constObj, 'missed_call');
     },
     //获取最近登录的客户
     getRecentLoginCustomers: function(lastId) {
@@ -208,7 +208,7 @@ var SalesHomePage = React.createClass({
             queryObj.id = lastId;
         }
         //获取新分配的客户
-        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: "0"}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
+        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
     },
     //获取今日的日程列表
     getScheduleListToday: function() {
@@ -218,7 +218,7 @@ var SalesHomePage = React.createClass({
             start_time: this.state.start_time,
             end_time: this.state.end_time,
         };
-        SalesHomeAction.getScheduleList(constObj, "today");
+        SalesHomeAction.getScheduleList(constObj, 'today');
     },
     //停用客户登录
     getAppIlleageLogin: function(lastId) {
@@ -257,7 +257,7 @@ var SalesHomePage = React.createClass({
         if (lastId) {
             constObj.id = lastId;
         }
-        SalesHomeAction.getScheduleList(constObj, "expired");
+        SalesHomeAction.getScheduleList(constObj, 'expired');
     },
 
     //获取查询参数
@@ -278,12 +278,12 @@ var SalesHomePage = React.createClass({
         return phoneParams;
     },
     getDataType: function() {
-        if (hasPrivilege("GET_TEAM_LIST_ALL")) {
-            return "all";
-        } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS")) {
-            return "self";
+        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+            return 'all';
+        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+            return 'self';
         } else {
-            return "";
+            return '';
         }
     },
     handleScrollBarBottom: function(listType) {
@@ -324,8 +324,8 @@ var SalesHomePage = React.createClass({
         return (
             <ul>
                 {_.map(ALL_CUSTOMER_LISTS_TYPE, (item) => {
-                    var cls = classNames("customer-item", {
-                        "selected-customer-item": item.value === this.state.showCustomerPanel
+                    var cls = classNames('customer-item', {
+                        'selected-customer-item': item.value === this.state.showCustomerPanel
                     });
                     //新分配客户和重复客户数量为0 时，不展示左侧标题
                     if (item.value === ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER && this.state.newDistributeCustomer.data.list.length === 0) {
@@ -431,13 +431,13 @@ var SalesHomePage = React.createClass({
             }
         }, (errMsg) => {
             this.setState({
-                errMsg: errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!")
+                errMsg: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
             });
         });
     },
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType: function(customerType) {
-        Trace.traceEvent($(this.getDOMNode()).find(".customer-item"), "打开" + customerType + "类型客户面板");
+        Trace.traceEvent($(this.getDOMNode()).find('.customer-item'), '打开' + customerType + '类型客户面板');
         GeminiScrollbar.scrollTo(this.refs.tableWrap, 0);
         this.setState({
             listenScrollBottom: true,
@@ -451,7 +451,7 @@ var SalesHomePage = React.createClass({
             return (
                 <div className="load-content">
                     <Spinner />
-                    <p className="abnornal-status-tip">{Intl.get("common.sales.frontpage.loading", "加载中")}</p>
+                    <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
                 </div>
             );
         } else if (dataObj.errMsg) {
@@ -467,7 +467,7 @@ var SalesHomePage = React.createClass({
             return (
                 <div className="no-data">
                     <i className="iconfont icon-no-data"></i>
-                    <p className="abnornal-status-tip">{Intl.get("common.sales.data.no.data", "暂无此类信息")}</p>
+                    <p className="abnornal-status-tip">{Intl.get('common.sales.data.no.data', '暂无此类信息')}</p>
                 </div>
             );
         } else {
@@ -493,7 +493,7 @@ var SalesHomePage = React.createClass({
                     {this.renderLoadingAndErrAndNodataContent(this.state.scheduleTodayObj)}
                     <GeminiScrollbar>
                         {notFulldaylist.length ? <div
-                            className="schedule-list-tip">{Intl.get("sales.frontpage.set.time", "定时")}</div> : null}
+                            className="schedule-list-tip">{Intl.get('sales.frontpage.set.time', '定时')}</div> : null}
                         {_.map(notFulldaylist, (item) => {
                             return (
                                 <ScheduleItem
@@ -509,7 +509,7 @@ var SalesHomePage = React.createClass({
                         })
                         }
                         {Fulldaylist.length ?
-                            <div className="schedule-list-tip">{Intl.get("crm.alert.full.day", "全天")}</div> : null}
+                            <div className="schedule-list-tip">{Intl.get('crm.alert.full.day', '全天')}</div> : null}
                         {_.map(Fulldaylist, (item) => {
                             return (
                                 <ScheduleItem
@@ -704,7 +704,7 @@ var SalesHomePage = React.createClass({
     },
     //不同类型的客户所对应的数据
     switchDiffCustomerTotalCount: function(type) {
-        var total = "";
+        var total = '';
         switch (type) {
         case ALL_LISTS_TYPE.SCHEDULE_TODAY:
             total = this.state.scheduleTodayObj.data.total;
@@ -745,8 +745,8 @@ var SalesHomePage = React.createClass({
     render: function() {
         var phoneData = this.state.phoneTotalObj.data;
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
-        var cls = classNames("customer-content-right", {
-            "has-repeat-customer": this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
+        var cls = classNames('customer-content-right', {
+            'has-repeat-customer': this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
         });
         return (
             <RightContent>
@@ -757,7 +757,7 @@ var SalesHomePage = React.createClass({
                                 <div className="statistic-total-content">
                                     <div className="content-right">
                                         <span>
-                                            {Intl.get("sales.frontpage.connected.range", "今日通话时长")}
+                                            {Intl.get('sales.frontpage.connected.range', '今日通话时长')}
                                         </span>
                                         <span className="data-container">
                                             <span className="phone-total-time phone-total-data">
@@ -771,7 +771,7 @@ var SalesHomePage = React.createClass({
                                 <div className="statistic-total-content">
                                     <div className="content-right">
                                         <span>
-                                            {Intl.get("sales.frontpage.connected.today", "今日接通电话")}
+                                            {Intl.get('sales.frontpage.connected.today', '今日接通电话')}
                                         </span>
                                         <span className="data-container">
                                             <span className="phone-total-count total-data-style">
@@ -784,7 +784,7 @@ var SalesHomePage = React.createClass({
                             <li>
                                 <div className="statistic-total-content">
                                     <div className="content-right">
-                                        <span>{Intl.get("sales.frontpage.contact.today", "今日已跟进客户")}</span>
+                                        <span>{Intl.get('sales.frontpage.contact.today', '今日已跟进客户')}</span>
                                         <span className="data-container">
                                             <span>
                                                 {this.state.customerContactTodayObj.data.total}
@@ -797,7 +797,7 @@ var SalesHomePage = React.createClass({
                             <li>
                                 <div className="statistic-total-content">
                                     <div className="content-right">
-                                        <span>{Intl.get("sales.frontpage.added.today", "今日新增客户")}</span>
+                                        <span>{Intl.get('sales.frontpage.added.today', '今日新增客户')}</span>
                                         <span className="data-container">
                                             <span>
                                                 {this.state.customerTotalObj.data.added}

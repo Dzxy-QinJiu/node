@@ -1,12 +1,12 @@
 /**
  * Created by xiaojinfeng on  2015/12/25 11:04 .
  */
-var AlertTimer = require("../../../../components/alert-timer");
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var Button = require("antd").Button;
-var ModalDialog = require("../../../../components/ModalDialog");
+var AlertTimer = require('../../../../components/alert-timer');
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var Button = require('antd').Button;
+var ModalDialog = require('../../../../components/ModalDialog');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 
 function noop() {
 }
@@ -29,13 +29,13 @@ var RoleList = React.createClass({
     },
     //编辑角色
     editRole: function(role) {
-        Trace.traceEvent($(this.getDOMNode()).find(".role-btn-class"),"点击编辑角色按钮");
+        Trace.traceEvent($(this.getDOMNode()).find('.role-btn-class'),'点击编辑角色按钮');
         this.props.editRole(role);
     },
 
     //删除角色
     deleteRole: function(role) {
-        Trace.traceEvent($(this.getDOMNode()).find(".role-title-div"),"删除角色");
+        Trace.traceEvent($(this.getDOMNode()).find('.role-title-div'),'删除角色');
         this.props.deleteRole(role);
     },
 
@@ -66,7 +66,7 @@ var RoleList = React.createClass({
         this.props.clearDelErrorMsg();
     },    
     turnToAuthPanel: function() {
-        this.props.setShowRoleAuthType("authority");
+        this.props.setShowRoleAuthType('authority');
     },
     //权限列表
     renderAuthList: function(role) {
@@ -105,11 +105,11 @@ var RoleList = React.createClass({
                     <div className="no-permissions-msg">
                         <ReactIntl.FormattedMessage
                             id="role.no.auth.set"
-                            defaultMessage={`未设置权限，请先{setting}`}
+                            defaultMessage={'未设置权限，请先{setting}'}
                             values={{
-                                "setting": <a onClick={_this.editRole.bind(_this, role)}
+                                'setting': <a onClick={_this.editRole.bind(_this, role)}
                                     data-tracename ="设置权限"
-                                >{Intl.get("role.set.auth", "设置权限")}</a>
+                                >{Intl.get('role.set.auth', '设置权限')}</a>
                             }}
                         />
                     </div>);
@@ -118,13 +118,13 @@ var RoleList = React.createClass({
             return (<div className="no-permissions-msg">
                 <ReactIntl.FormattedMessage
                     id="role.no.auth.add"
-                    defaultMessage={`未设置权限，请先{add}`}
+                    defaultMessage={'未设置权限，请先{add}'}
                     values={{
-                        "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}
+                        'add': (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}
                             data-tracename ="添加权限"
-                        >{Intl.get("role.add.auth", "添加权限")}</a>) : (
+                        >{Intl.get('role.add.auth', '添加权限')}</a>) : (
                             <Link to="/backgroundManagement/authority" activeClassName="active">
-                                {Intl.get("role.add.auth", "添加权限")}</Link>
+                                {Intl.get('role.add.auth', '添加权限')}</Link>
                         ))
                     }}
                 />
@@ -136,26 +136,26 @@ var RoleList = React.createClass({
         var _this = this;
         var role = this.props.role;
         var roleListDivHeight = this.props.roleListDivHeight;
-        var modalContent = Intl.get("role.del.role.tip", "确定要删除这个角色吗？");        
+        var modalContent = Intl.get('role.del.role.tip', '确定要删除这个角色吗？');        
         return (
             <div className="role-container-div modal-container" style={{ height: roleListDivHeight }}>
                 {
-                    role.isDefault == "1" ?
+                    role.isDefault == '1' ?
                         <div className="crm-contact-default">
                             <span><ReactIntl.FormattedMessage id="my_app" defaultMessage="默认" /></span>
                         </div> : null
                 }
                 <div className="role-title-div">
                     <div className="role-title-name">{role.roleName}</div>
-                    <div className="role-operation" style={{ width: "175px", marginRight: "11px" }}>
+                    <div className="role-operation" style={{ width: '175px', marginRight: '11px' }}>
                         {
-                            role.isDefault == "0" ?
+                            role.isDefault == '0' ?
                                 <PrivilegeChecker check={this.props.setDefaultRoleStr}>
                                     <Button type="primary"
                                         className="default-btn-fix" size="small"
                                         onClick={this.setDefault.bind(this, role)}
-                                        data-tracename={"将'" + role.roleName + "'设置为默认角色"}>
-                                        {Intl.get("role.default.set", "默认")}
+                                        data-tracename={'将\'' + role.roleName + '\'设置为默认角色'}>
+                                        {Intl.get('role.default.set', '默认')}
                                     </Button>
                                 </PrivilegeChecker>
                                 :
@@ -163,9 +163,9 @@ var RoleList = React.createClass({
                                     <Button type="primary"
                                         className="default-btn-fix" size="small"
                                         onClick={this.delDefault.bind(this, role)}
-                                        data-tracename={"将'" + role.roleName + "'移除默认角色"}
+                                        data-tracename={'将\'' + role.roleName + '\'移除默认角色'}
                                     >
-                                        {Intl.get("role.default.del", "取消默认")}
+                                        {Intl.get('role.default.del', '取消默认')}
                                     </Button>
                                 </PrivilegeChecker>
                         }

@@ -1,5 +1,5 @@
-import onlineUserListAjax from "../ajax";
-import Utils from "../utils";
+import onlineUserListAjax from '../ajax';
+import Utils from '../utils';
 function OnlineUserIndexAction() {
     this.generateActions(
         'setSelectedAppId'

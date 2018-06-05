@@ -4,19 +4,19 @@
  * Created by zhangshujuan on 2017/2/15.
  */
 // 查看
-require("../css/user-type-config.less");
+require('../css/user-type-config.less');
 import {Button, Icon} from 'antd';
-var _ = require("underscore");
-var Alert = require("antd").Alert;
-var getRoleLists = require("./getRoleLists");
-var rightPanelUtil = require("../../../../components/rightPanel");
+var _ = require('underscore');
+var Alert = require('antd').Alert;
+var getRoleLists = require('./getRoleLists');
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
 var RightPanelEdit = rightPanelUtil.RightPanelEdit;
-var Spinner = require("../../../../components/spinner");
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-import Trace from "LIB_DIR/trace";
+var Spinner = require('../../../../components/spinner');
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+import Trace from 'LIB_DIR/trace';
 //高度常量
 var LAYOUT_CONSTANTS = {
     RIGHT_PANEL_PADDING_TOP: 60,
@@ -26,9 +26,9 @@ var LAYOUT_CONSTANTS = {
 var UserTypeConfigList = React.createClass({
     getDefaultProps: function() {
         return {
-            appId: "",
+            appId: '',
             showData: [],
-            appName: ""
+            appName: ''
         };
     },
     getInitialState: function() {
@@ -161,7 +161,7 @@ var UserTypeConfigList = React.createClass({
     handleErrResult: function() {
         var _this = this;
         var errMsg = <span>{_this.state.errMsg}<a onClick={_this.retry}
-            style={{marginLeft: "20px",marginTop: "20px"}}>请重试</a></span>;
+            style={{marginLeft: '20px',marginTop: '20px'}}>请重试</a></span>;
         return (
             <div>
                 <Alert
@@ -243,12 +243,12 @@ var UserTypeConfigList = React.createClass({
                             </div>
                             <div className="content-item">
                                 <div className="item-lable">
-                                    {Intl.get("user.expire.status", "到期状态")}：
+                                    {Intl.get('user.expire.status', '到期状态')}：
                                 </div>
                                 <div className="item-content">
-                                    {item.over_draft == 0 && Intl.get("user.status.immutability", "不变")}
-                                    {item.over_draft == 1 && Intl.get("user.status.stop", "停用")}
-                                    {item.over_draft == 2 && Intl.get("user.status.degrade", "降级")}
+                                    {item.over_draft == 0 && Intl.get('user.status.immutability', '不变')}
+                                    {item.over_draft == 1 && Intl.get('user.status.stop', '停用')}
+                                    {item.over_draft == 2 && Intl.get('user.status.degrade', '降级')}
                                 </div>
                             </div>
                             <div className="content-item">
@@ -256,8 +256,8 @@ var UserTypeConfigList = React.createClass({
                                         多人登录：
                                 </div>
                                 <div className="item-content">
-                                    {item.mutilogin == 0 && "关闭"}
-                                    {item.mutilogin == 1 && "开启"}
+                                    {item.mutilogin == 0 && '关闭'}
+                                    {item.mutilogin == 1 && '开启'}
                                 </div>
                             </div>
                             <div className="content-item">
@@ -306,11 +306,11 @@ var UserTypeConfigList = React.createClass({
         );
     },
     closeRightPanel(e) {
-        Trace.traceEvent(e,"关闭用户类型界面");
+        Trace.traceEvent(e,'关闭用户类型界面');
         this.props.closeRightPanel(e);
     },
     returnInfoPanel(e) {
-        Trace.traceEvent(e,"返回到应用详情界面");
+        Trace.traceEvent(e,'返回到应用详情界面');
         this.props.returnInfoPanel();
     },
     render: function() {

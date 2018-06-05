@@ -1,22 +1,22 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-require("../../../../components/antd-table-pagination/index.less");
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var DefaultUserLogoTitle = require("../../../../components/default-user-logo-title");
-var Spinner = require("../../../../components/spinner");
-var AlertTimer = require("../../../../components/alert-timer");
+require('../../../../components/antd-table-pagination/index.less');
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var DefaultUserLogoTitle = require('../../../../components/default-user-logo-title');
+var Spinner = require('../../../../components/spinner');
+var AlertTimer = require('../../../../components/alert-timer');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var NoData = require("../../../../components/analysis-nodata");
-var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
-var SearchInput = require("../../../../components/searchInput");
+var NoData = require('../../../../components/analysis-nodata');
+var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
+var SearchInput = require('../../../../components/searchInput');
 var Table = require('antd').Table;
-var insertStyle = require("../../../../components/insert-style");
-var Button = require("antd").Button;
-var classNames = require("classnames");
-var OrganizationAction = require("../action/organization-actions");
-var MemberListEditAction = require("../action/member-list-edit-actions");
-var MemberListEditStore = require("../store/member-list-edit-store");
+var insertStyle = require('../../../../components/insert-style');
+var Button = require('antd').Button;
+var classNames = require('classnames');
+var OrganizationAction = require('../action/organization-actions');
+var MemberListEditAction = require('../action/member-list-edit-actions');
+var MemberListEditStore = require('../store/member-list-edit-store');
 
 import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
@@ -32,8 +32,8 @@ const messages = defineMessages({
 });
 //分页器
 var paginationintl = '';
-var language = require("../../../../public/language/getLanguage");
-if (language.lan() == "es") {
+var language = require('../../../../public/language/getLanguage');
+if (language.lan() == 'es') {
     paginationintl = {
         // Options.jsx
         items_per_page: '/página',//条/页
@@ -50,7 +50,7 @@ if (language.lan() == "es") {
         prev_5: '5 Páginas adelante',//向前 5 页
         next_5: '5 Páginas atrás'//向后 5 页
     };
-} else if (language.lan() == "en") {
+} else if (language.lan() == 'en') {
     paginationintl = {
         // Options.jsx
         items_per_page: '/page',
@@ -67,7 +67,7 @@ if (language.lan() == "es") {
         prev_5: 'Previsous 5 Pages',
         next_5: 'Next 5 Pages'
     };
-} else if (language.lan() == "zh") {
+} else if (language.lan() == 'zh') {
     paginationintl = {
         // Options.jsx
         items_per_page: '条/页',
@@ -90,9 +90,9 @@ if (language.lan() == "es") {
 import enUS from 'antd/lib/locale-provider/en_US';
 //成员的类型
 var MEMBER_TYPE = {
-        OWNER: "owner",//负责人
-        MANAGER: "manager",//管理员
-        USER: "user"//成员
+        OWNER: 'owner',//负责人
+        MANAGER: 'manager',//管理员
+        USER: 'user'//成员
     }, dynamicStyle;
 
 
@@ -114,7 +114,7 @@ var MemberList = React.createClass({
         var editMemberListState = MemberListEditStore.getState();
         return {
             ...editMemberListState,
-            searchValue: "",
+            searchValue: '',
             curShowTeamMemberObj: $.extend(true, {}, this.props.curShowTeamMemberObj),
             saveMemberListObj: {},//修改、添加时要保存的数据对象
             memberListHeight: this.getMemberListHeight()
@@ -137,7 +137,7 @@ var MemberList = React.createClass({
     },
     componentDidMount: function() {
         MemberListEditStore.listen(this.onChange);
-        $(window).on("resize", this.layout);
+        $(window).on('resize', this.layout);
         if (dynamicStyle) {
             dynamicStyle.destroy();
             dynamicStyle = null;
@@ -157,7 +157,7 @@ var MemberList = React.createClass({
     },
     componentWillUnmount: function() {
         MemberListEditStore.unlisten(this.onChange);
-        $(window).off("resize", this.layout);
+        $(window).off('resize', this.layout);
     },
     componentWillReceiveProps: function(nextProps) {
         this.setState(this.getInitialState());
@@ -249,7 +249,7 @@ var MemberList = React.createClass({
     },
     //确认的处理
     saveEditMember: function() {
-        var ownerId = "", userIds = [];
+        var ownerId = '', userIds = [];
         var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
         //负责人
         if (curShowTeamMemberObj.owner) {
@@ -285,7 +285,7 @@ var MemberList = React.createClass({
     saveAddMember: function() {
         var userIds = [], selectedMemberRows = this.state.selectedMemberRows;
         if (selectedMemberRows && selectedMemberRows.length > 0) {
-            userIds = _.pluck(selectedMemberRows, "key");
+            userIds = _.pluck(selectedMemberRows, 'key');
             //从新增成员中，过滤掉该组织中已存在的负责人或成员
             let curShowTeamMemberObj = this.state.curShowTeamMemberObj || {};
             //负责人的过滤
@@ -295,7 +295,7 @@ var MemberList = React.createClass({
             //成员的过滤
             if (_.isArray(curShowTeamMemberObj.users) && curShowTeamMemberObj.users.length) {
                 //取出该组织中的成员id
-                let curTeamUserIds = _.pluck(curShowTeamMemberObj.users, "userId");
+                let curTeamUserIds = _.pluck(curShowTeamMemberObj.users, 'userId');
                 //过滤掉该组织中已有的成员id
                 userIds = _.filter(userIds, userId => curTeamUserIds.indexOf(userId) < 0);
             }
@@ -349,23 +349,23 @@ var MemberList = React.createClass({
 
     //渲染成员头像及名称，memeber:成员信息，type:负责人/管理员/成员，hasSelectBtn:是否需要选择按钮
     renderMemberEle: function(organizationMember, type, hasSelectBtn) {
-        var selectBtnClass = "";
+        var selectBtnClass = '';
         //只展示的成员样式
-        var memberClass = "organization-member-info";
+        var memberClass = 'organization-member-info';
         if (hasSelectBtn) {
             selectBtnClass = classNames('select-icon-div iconfont icon-select-member', this.props.className, {
                 'select-member': organizationMember.selected
             });
             //带选择框的成员样式
-            memberClass = "operation-organization-member-info";
+            memberClass = 'operation-organization-member-info';
         }
-        let userName = organizationMember.userName ? organizationMember.userName : "";
+        let userName = organizationMember.userName ? organizationMember.userName : '';
         //没有昵称时，用用户名展示
         let nickName = organizationMember.nickName ? organizationMember.nickName : userName;
         return (
             <div className={memberClass} key={organizationMember.userId}
                 onClick={this.selectMember.bind(this, organizationMember)}>
-                <DefaultUserLogoTitle defaultImgClass={"organization-member-info-img"}
+                <DefaultUserLogoTitle defaultImgClass={'organization-member-info-img'}
                     userName={userName}
                     nickName={nickName}
                     userLogo={organizationMember.userLogo}
@@ -376,7 +376,7 @@ var MemberList = React.createClass({
                         defaultMessage="停用"/>
                     </div>) : null}
                 {type != MEMBER_TYPE.USER ?
-                    (<span className={"iconfont icon-sale-team-" + type}/> ) : null}
+                    (<span className={'iconfont icon-sale-team-' + type}/> ) : null}
                 <div className="organization-member-info-name-div">
                     {hasSelectBtn ? (<div className={selectBtnClass}></div>) : null}
                     <div className="organization-member-info-name" title={nickName}>
@@ -453,7 +453,7 @@ var MemberList = React.createClass({
     },
     //删除组织成员的处理
     delMember: function() {
-        if (!$("#del-member-btn").hasClass("member-btn-enable")) {
+        if (!$('#del-member-btn').hasClass('member-btn-enable')) {
             return;
         }
         var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
@@ -480,16 +480,16 @@ var MemberList = React.createClass({
         }
         var saveMemberListObj = {
             groupId: curShowTeamMemberObj.groupId,
-            operate: "delete"
+            operate: 'delete'
         };
         MemberListEditAction.setMemberListSaving(true);
         if (managerIds.length) {
             saveMemberListObj.userIds = JSON.stringify(managerIds);
-            saveMemberListObj.type = "manager";
+            saveMemberListObj.type = 'manager';
         }
         if (userIds.length) {
             saveMemberListObj.userIds = JSON.stringify(userIds);
-            saveMemberListObj.type = "user";
+            saveMemberListObj.type = 'user';
         }
         MemberListEditAction.editMember(saveMemberListObj);
         this.setState({saveMemberListObj: saveMemberListObj});
@@ -529,7 +529,7 @@ var MemberList = React.createClass({
     },
     //加为管理员的处理
     addManager: function() {
-        if (!$("#set-manager-btn").hasClass("member-btn-enable")) {
+        if (!$('#set-manager-btn').hasClass('member-btn-enable')) {
             return;
         }
         var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
@@ -548,8 +548,8 @@ var MemberList = React.createClass({
             var saveMemberListObj = {
                 groupId: curShowTeamMemberObj.groupId,
                 userIds: JSON.stringify(userIds),
-                operate: "exchange",
-                type: "user"
+                operate: 'exchange',
+                type: 'user'
             };
             MemberListEditAction.setMemberListSaving(true);
             MemberListEditAction.editMember(saveMemberListObj);
@@ -560,7 +560,7 @@ var MemberList = React.createClass({
 
     //加为成员的处理
     addUser: function() {
-        if (!$("#set-manager-btn").hasClass("member-btn-enable")) {
+        if (!$('#set-manager-btn').hasClass('member-btn-enable')) {
             return;
         }
         var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
@@ -578,8 +578,8 @@ var MemberList = React.createClass({
             var saveMemberListObj = {
                 groupId: curShowTeamMemberObj.groupId,
                 userIds: JSON.stringify(userIds),
-                operate: "exchange",
-                type: "manager"
+                operate: 'exchange',
+                type: 'manager'
             };
             MemberListEditAction.setMemberListSaving(true);
             MemberListEditAction.editMember(saveMemberListObj);
@@ -589,7 +589,7 @@ var MemberList = React.createClass({
     },
 
     hideSaveTooltip: function() {
-        var type = this.props.isAddMember ? "add" : "edit";
+        var type = this.props.isAddMember ? 'add' : 'edit';
         MemberListEditAction.clearSaveFlags(type, this.state.saveMemberListResult, this.state.saveMemberListObj);
     },
 
@@ -608,12 +608,12 @@ var MemberList = React.createClass({
         //}
 
         //删除按钮样式设置
-        let delMemberBtnCls = classNames("add-member-btn", {
-            "member-btn-enable": selectSizeObj.selectedSize && !(selectSizeObj.selectedManagerSize && selectSizeObj.selectedUserSize)
+        let delMemberBtnCls = classNames('add-member-btn', {
+            'member-btn-enable': selectSizeObj.selectedSize && !(selectSizeObj.selectedManagerSize && selectSizeObj.selectedUserSize)
         });
 
-        let editMemberBtnCls = classNames("add-member-btn", {
-            "member-btn-enable": selectSizeObj.selectedSize
+        let editMemberBtnCls = classNames('add-member-btn', {
+            'member-btn-enable': selectSizeObj.selectedSize
         });
 
         return (<div className="set-select-member-btns">
@@ -711,7 +711,7 @@ var MemberList = React.createClass({
         let saveResult = this.state.saveMemberListResult;
         return saveResult ?
             (<div className="indicator">
-                <AlertTimer time={saveResult === "error" ? 3000 : 600}
+                <AlertTimer time={saveResult === 'error' ? 3000 : 600}
                     message={this.state.saveMemberListMsg}
                     type={saveResult} showIcon
                     onHide={this.hideSaveTooltip}/>
@@ -723,17 +723,17 @@ var MemberList = React.createClass({
         if (this.props.isAddMember && this.state.selectedMemberRows.length === 0) {
             enable = false;
         }
-        let sureBtnCls = classNames("operation-bottom-btn", {
-            "operation-btn-enable": enable
+        let sureBtnCls = classNames('operation-bottom-btn', {
+            'operation-btn-enable': enable
         });
         return (<div className="operation-bottom-btn-div">
             {this.renderSaveMsg()}
             <Button type="ghost" className={sureBtnCls} onClick={this.handleOK}>
-                {Intl.get("common.add", "添加")}
+                {Intl.get('common.add', '添加')}
             </Button>
             <Button type="ghost" className="operation-bottom-btn operation-btn-enable"
                 onClick={this.handleCancel}>
-                {Intl.get("common.cancel", "取消")}
+                {Intl.get('common.cancel', '取消')}
             </Button>
         </div>);
     },
@@ -749,7 +749,7 @@ var MemberList = React.createClass({
         }
         var columns = this.getTableColumns();
         var pagination = this.getPagination();
-        var rowSelection = hasPrivilege("USER_ORGANIZATION_MEMBER_ADD") ? this.getRowSelection() : null;
+        var rowSelection = hasPrivilege('USER_ORGANIZATION_MEMBER_ADD') ? this.getRowSelection() : null;
         var tbodyHeight = selectMemberListH - 86;//86:th+pagination
         dynamicStyle = insertStyle('.organization-member-add-container .ant-table-body {height:' + tbodyHeight + 'px;overflow:auto;borderBottom:none;}');
 
@@ -807,7 +807,7 @@ var MemberList = React.createClass({
         }
     },
     cleanSearchInput: function() {
-        this.setState({searchValue: ""});
+        this.setState({searchValue: ''});
     },
     render: function() {
         var _this = this;
@@ -817,9 +817,9 @@ var MemberList = React.createClass({
             dynamicStyle.destroy();
             dynamicStyle = null;
         }
-        var title = this.state.curShowTeamMemberObj.groupName || "";
+        var title = this.state.curShowTeamMemberObj.groupName || '';
         if (this.props.isAddMember && title) {
-            title = Intl.get("organization.add.member","为“{title}”添加成员",{"title": title});
+            title = Intl.get('organization.add.member','为“{title}”添加成员',{'title': title});
         }
         return (
             <div className="organization-personnel"
@@ -846,7 +846,7 @@ var MemberList = React.createClass({
                 </div>
                 {this.state.isMemberListSaving ? (<div className="member-list-edit-block">
                     <Spinner className="isloading"/>
-                </div>) : ""}
+                </div>) : ''}
             </div>
         );
     }

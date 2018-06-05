@@ -1,14 +1,14 @@
 /**
  * Created by wangliping on 2015/12/23.
  */
-import {Icon} from "antd";
+import {Icon} from 'antd';
 
 var CardItem = React.createClass({
 
     render: function() {
-        var className = "card-item";
+        var className = 'card-item';
         if (this.props.className) {
-            className += " " + this.props.className;
+            className += ' ' + this.props.className;
         }
         return (
             <div className={className}>
@@ -20,7 +20,7 @@ var CardItem = React.createClass({
                 {this.props.hasRefreshBtn ? (
                     <a className="refresh-app-secret"
                         onClick={this.props.refreshAppSecret}>
-                        {Intl.get("common.refresh", "刷新")} {this.props.appSecretRefreshing ? (<Icon type="loading"/>) : null}</a>
+                        {Intl.get('common.refresh', '刷新')} {this.props.appSecretRefreshing ? (<Icon type="loading"/>) : null}</a>
                 ) : null}
             </div>
         );

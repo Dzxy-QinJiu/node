@@ -1,4 +1,4 @@
-import { removeCommaFromNum, parseAmount } from "LIB_DIR/func";
+import { removeCommaFromNum, parseAmount } from 'LIB_DIR/func';
 
 function merge() {
     var ret = {};
@@ -51,7 +51,7 @@ export default {
             value = e;
             const target = e && e.target;
             if (target) {
-                if (target.type === "checkbox") {
+                if (target.type === 'checkbox') {
                     value = target.checked;
                 } else {
                     value = target.value;
@@ -70,7 +70,7 @@ export default {
                 this.state.formData[field] = value;
             //否则就是多表单场景，需要给索引为index的表单的formData下的对应字段赋值
             } else {
-                this.state["formData" + index][field] = value;
+                this.state['formData' + index][field] = value;
             }
         }
 
@@ -79,18 +79,18 @@ export default {
 
     getValidateStatus: function(field) {
         const status = this.state.status;
-        let validateStatus = "";
+        let validateStatus = '';
         if (status[field] && status[field].errors) {
-            validateStatus = "error";
+            validateStatus = 'error';
         }
         return validateStatus;
     },
 
     getHelpMessage: function(field) {
         const status = this.state.status;
-        let helpMessage = "";
+        let helpMessage = '';
         if (status[field] && status[field].errors) {
-            helpMessage = status[field].errors.join(",");
+            helpMessage = status[field].errors.join(',');
         }
         return helpMessage;
     },
@@ -115,6 +115,6 @@ export default {
   
     //获取数字验证规则
     getNumberValidateRule() {
-        return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get("contract.45", "请填写数字")};
+        return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')};
     },
 };

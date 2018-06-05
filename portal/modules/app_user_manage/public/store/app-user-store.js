@@ -1,9 +1,9 @@
-var AppUserActions = require("../action/app-user-actions");
-var ShareObj = require("../util/app-id-share-util");
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
-var AppUserUtil = require("../util/app-user-util");
-var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
-import { storageUtil } from "ant-utils";
+var AppUserActions = require('../action/app-user-actions');
+var ShareObj = require('../util/app-id-share-util');
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
+var AppUserUtil = require('../util/app-user-util');
+var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
+import { storageUtil } from 'ant-utils';
 import { packageTry } from 'LIB_DIR/func';
 
 //app用户的store
@@ -15,9 +15,9 @@ function AppUserStore() {
 
 AppUserStore.prototype.resetState = function() {
     //是否处于loading状态
-    this.appUserListResult = "loading";
+    this.appUserListResult = 'loading';
     //获取app列表错误信息
-    this.getAppListErrorMsg = "";
+    this.getAppListErrorMsg = '';
     //应用数组
     this.appList = [];
     //应用用户数组
@@ -31,19 +31,19 @@ AppUserStore.prototype.resetState = function() {
     //应用用户总条数
     this.appUserCount = 0;
     //表单类型(添加/修改/空)
-    this.appUserFormType = "";
+    this.appUserFormType = '';
     //是否显示右侧面板
     this.isShowRightPanel = false;
     //获取app用户列表错误信息
-    this.getAppUserListErrorMsg = "";
+    this.getAppUserListErrorMsg = '';
     //要显示详情的用户
     this.detailUser = {};
     //添加app用户错误信息
-    this.addAppUserErrorMsg = "";
+    this.addAppUserErrorMsg = '';
     //选中的应用id(全部应用)
-    this.selectedAppId = "";
+    this.selectedAppId = '';
     //右侧面板类型
-    this.rightPanelType = "detail";
+    this.rightPanelType = 'detail';
     //选中的用户对象
     this.selectedUserRows = [];
     //选中的用户对象的副本，加载完新数据后，计算选中上一次已经选中的
@@ -58,7 +58,7 @@ AppUserStore.prototype.resetState = function() {
     //角色过滤相关属性
     this.filterRoles = {
         //只有oplate成员有GET_USERLIST_BY_ROLE权限，才在界面上显示
-        shouldShow: hasPrivilege("GET_USERLIST_BY_ROLE"),
+        shouldShow: hasPrivilege('GET_USERLIST_BY_ROLE'),
         //当前应用对应的角色列表
         roles: [],
         //选中的角色
@@ -123,7 +123,7 @@ AppUserStore.prototype.showBatchOperate = function() {
 //FromAction-获取App用户列表
 AppUserStore.prototype.getAppUserList = function(result) {
     if(result.loading) {
-        this.appUserListResult = "loading";
+        this.appUserListResult = 'loading';
         if(this.appUserPage === 1) {
             this.appUserList = [];
             this.listenScrollBottom = false;
@@ -133,12 +133,12 @@ AppUserStore.prototype.getAppUserList = function(result) {
             this.customer_id = result.customer_id;
         }
     } else if(result.error) {
-        this.appUserListResult = "error";
+        this.appUserListResult = 'error';
         this.getAppUserListErrorMsg = result.errorMsg;
         this.listenScrollBottom = false;
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
     } else {
-        this.appUserListResult = "";
+        this.appUserListResult = '';
         var currentList = result.data.data || [];
         if(!_.isArray(currentList)) {
             currentList = [];
@@ -175,7 +175,7 @@ AppUserStore.prototype.getAppUserList = function(result) {
         }
         //为appUserList添加key字段
         this.appUserList.forEach(function(item) {
-            item.key = item.user && item.user.user_id || _.uniqueId("user_list_");
+            item.key = item.user && item.user.user_id || _.uniqueId('user_list_');
         });
         //选中逻辑处理
         //上次选中了保存下来的备份
@@ -271,14 +271,14 @@ AppUserStore.prototype.showNoUserData = function() {
 //FromAction-显示App用户的表单
 AppUserStore.prototype.showAppUserForm = function() {
     this.isShowRightPanel = true;
-    this.rightPanelType = "addOrEditUser";
-    this.appUserFormType = "add";
+    this.rightPanelType = 'addOrEditUser';
+    this.appUserFormType = 'add';
     this.detailUser = {};
 };
 //FromAction-隐藏App用户的表单
 AppUserStore.prototype.closeRightPanel = function() {
     this.isShowRightPanel = false;
-    this.appUserFormType = "";
+    this.appUserFormType = '';
     this.detailUser = {};
 };
 //FromAction-设置右侧面板类型
@@ -335,7 +335,7 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
     var filterFieldMap = this.filterFieldMap;
     if(!value) {
         delete filterFieldMap[field];
-        if(field === "tag_all") {//标签筛选”全部“时，清空筛选对象中所有标签属性的值
+        if(field === 'tag_all') {//标签筛选”全部“时，清空筛选对象中所有标签属性的值
             delete filterFieldMap.create_tag;
             delete filterFieldMap.contract_tag;
             delete filterFieldMap.qualify_label;
@@ -356,21 +356,21 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
                 //如果原列表中没有该团队，将其加上
                 filterFieldMap[field].push(value);
             }
-        } else if(field === "create_tag"){
+        } else if(field === 'create_tag'){
             filterFieldMap.tag_all = value;
             filterFieldMap.create_tag = value;
-            filterFieldMap.contract_tag = "";
-            filterFieldMap.qualify_label = "";
-        } else if(field === "contract_tag"){
+            filterFieldMap.contract_tag = '';
+            filterFieldMap.qualify_label = '';
+        } else if(field === 'contract_tag'){
             filterFieldMap.tag_all = value;
             filterFieldMap.contract_tag = value;
-            filterFieldMap.create_tag = "";
-            filterFieldMap.qualify_label = "";
-        } else if(field === "qualify_label"){
+            filterFieldMap.create_tag = '';
+            filterFieldMap.qualify_label = '';
+        } else if(field === 'qualify_label'){
             filterFieldMap.tag_all = value;
             filterFieldMap.qualify_label = value;
-            filterFieldMap.create_tag = "";
-            filterFieldMap.contract_tag = "";
+            filterFieldMap.create_tag = '';
+            filterFieldMap.contract_tag = '';
         } else {
             filterFieldMap[field] = value;
         }
@@ -406,7 +406,7 @@ AppUserStore.prototype.updateDisableAllApps = function(updateInfo) {
         //将应用全部设置为禁用
         if(_.isArray(target_user.apps)) {
             _.each(target_user.apps , (app) => {
-                app.is_disabled = "true";
+                app.is_disabled = 'true';
             });
         }
     }
@@ -432,10 +432,10 @@ AppUserStore.prototype.updateAddAppInfo = function(updateInfo) {
 AppUserStore.prototype.updateAppField = function(result) {
     //修改的字段
     var appFields = [
-        "status",
-        "is_two_factor",
-        "multilogin",
-        "over_draft"
+        'status',
+        'is_two_factor',
+        'multilogin',
+        'over_draft'
     ];
     //先找用户
     var target_user_id = result.user_id;
@@ -473,7 +473,7 @@ AppUserStore.prototype.changeTableSort = function(sorter) {
 //显示申请用户的表单
 AppUserStore.prototype.showApplyUserForm = function() {
     this.isShowRightPanel = true;
-    this.rightPanelType = "applyUser";
+    this.rightPanelType = 'applyUser';
 };
 
 //批量推送，修改所属客户，更新用户列表
@@ -877,9 +877,9 @@ AppUserStore.prototype.batchPushChangeGrantUpdate = function(result) {
         if('status' in taskParams.data) {
             var statusText = taskParams.data.status + '';
             if(statusText === '0') {
-                targetEditApp.is_disabled = "true";
+                targetEditApp.is_disabled = 'true';
             } else if(statusText === '1') {
-                targetEditApp.is_disabled = "false";
+                targetEditApp.is_disabled = 'false';
             }
         }
         //更新user_type
@@ -1063,12 +1063,12 @@ AppUserStore.prototype.batchPushChangeUserCreate = function(result) {
                 appName = tmpApp.app_name;
             }
             //开始时间
-            var start_time = "";
+            var start_time = '';
             if(/^\d+$/.test(app.begin_date)) {
                 start_time = parseInt(app.begin_date);
             }
             //结束时间
-            var end_time = "";
+            var end_time = '';
             if(/^\d+$/.test(app.end_date)) {
                 end_time = parseInt(app.end_date);
             }

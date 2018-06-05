@@ -1,8 +1,8 @@
-import ajax from "../../../common/ajax";
-const routes = require("../../../common/route");
-const hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
+import ajax from '../../../common/ajax';
+const routes = require('../../../common/route');
+const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 const AUTHS = {
-    "GETALL": "CUSTOMER_ALL"
+    'GETALL': 'CUSTOMER_ALL'
 };
 //获取统计总数
 var summaryNumbersAjax;
@@ -84,7 +84,7 @@ exports.getSalesStageList = function() {
 
 //查询迁出客户
 exports.getTransferCustomers = function(paramObj) {
-    const handler = "getTransferCustomers";
+    const handler = 'getTransferCustomers';
     const route = routes.find(x => x.handler == handler);
     const { page_size, sort_field, order } = paramObj;
     let queryObj = $.extend(true, {}, paramObj.query);
@@ -104,13 +104,13 @@ exports.getTransferCustomers = function(paramObj) {
 
 //获取客户阶段变更数据
 exports.getStageChangeCustomers = function(paramObj) {
-    const handler = "getStageChangeCustomers";
+    const handler = 'getStageChangeCustomers';
     const route = routes.find(x => x.handler == handler);
     //普通销售权限
-    let type = "self";
+    let type = 'self';
     if (hasPrivilege(AUTHS.GETALL)) {
         //管理员权限
-        type = "all";
+        type = 'all';
     }
     return ajax({
         url: route.path,
@@ -124,13 +124,13 @@ exports.getStageChangeCustomers = function(paramObj) {
 
 //获取客户阶段变动的客户列表
 exports.getStageChangeCustomerList = function(paramObj) {
-    const handler = "getStageChangeCustomerList";
+    const handler = 'getStageChangeCustomerList';
     const route = routes.find(x => x.handler == handler);
     //普通销售权限
-    let type = "self";
+    let type = 'self';
     if (hasPrivilege(AUTHS.GETALL)) {
         //管理员权限
-        type = "all";
+        type = 'all';
     }
     let queryObj = paramObj.queryObj;
     return ajax({
@@ -147,13 +147,13 @@ exports.getStageChangeCustomerList = function(paramObj) {
 
 //获取客户阶段变动的客户列表
 exports.getIndustryCustomerOverlay = function(paramObj) {
-    const handler = "getIndustryCustomerOverlay";
+    const handler = 'getIndustryCustomerOverlay';
     const route = routes.find(x => x.handler == handler);
     //普通销售权限
-    let type = "self";
+    let type = 'self';
     if (hasPrivilege(AUTHS.GETALL)) {
         //管理员权限
-        type = "all";
+        type = 'all';
     }
     let queryObj = paramObj.queryObj;
     return ajax({
@@ -169,13 +169,13 @@ exports.getIndustryCustomerOverlay = function(paramObj) {
 
 //获取销售新开客户数
 exports.getNewCustomerCount = function(paramObj) {
-    const handler = "getNewCustomerCount";
+    const handler = 'getNewCustomerCount';
     const route = routes.find(x => x.handler == handler);
     //普通销售权限
-    let type = "common";
+    let type = 'common';
     if (hasPrivilege(AUTHS.GETALL)) {
         //管理员权限
-        type = "manager";
+        type = 'manager';
     }
     let queryObj = paramObj.queryObj;
     return ajax({
@@ -191,13 +191,13 @@ exports.getNewCustomerCount = function(paramObj) {
 
 //获取不同阶段客户数
 exports.getCustomerStageAnalysis = paramObj => {
-    const handler = "getCustomerStageAnalysis";
+    const handler = 'getCustomerStageAnalysis';
     const route = routes.find(x => x.handler == handler);
     //普通销售权限
-    let type = "common";
+    let type = 'common';
     if (hasPrivilege(AUTHS.GETALL)) {
         //管理员权限
-        type = "manager";
+        type = 'manager';
     }
     return ajax({
         url: route.path,

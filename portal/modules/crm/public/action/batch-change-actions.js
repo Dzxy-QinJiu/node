@@ -1,5 +1,5 @@
 var batchChangeAjax = require('../ajax/batch-change-ajax');
-let userData = require("../../../../public/sources/user-data");
+let userData = require('../../../../public/sources/user-data');
 
 function BatchChangeAction() {
     this.generateActions(
@@ -10,7 +10,7 @@ function BatchChangeAction() {
         'industryChange',
         'resetState',
         'clearSelectedTag',
-        "administrativeLevelChange",
+        'administrativeLevelChange',
         'setUnSelectDataTip',
         'locationChange'
     );

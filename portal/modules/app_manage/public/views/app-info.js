@@ -1,37 +1,37 @@
-var language = require("../../../../public/language/getLanguage");
+var language = require('../../../../public/language/getLanguage');
 require('PUB_DIR/css/card-info-common.less');
-if (language.lan() == "es" || language.lan() == "en") {
+if (language.lan() == 'es' || language.lan() == 'en') {
     require('PUB_DIR/css/card-info-es.less');
 }
-import {Spin,Icon,Pagination,Form,Input,Tag,Alert} from "antd";
+import {Spin,Icon,Pagination,Form,Input,Tag,Alert} from 'antd';
 var FormItem = Form.Item;
-var rightPanelUtil = require("../../../../components/rightPanel");
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelEdit = rightPanelUtil.RightPanelEdit;
 var RightPanelForbid = rightPanelUtil.RightPanelForbid;
 var RightPanelVersionUpgrade = rightPanelUtil.RightPanelVersionUpgrade;
 var RightPanelAppNotice = rightPanelUtil.RightPanelAppNotice;
 var RightPanelUserTypeConfig = rightPanelUtil.RightPanelUserTypeConfig;
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
-var HeadIcon = require("../../../../components/headIcon");
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
+var HeadIcon = require('../../../../components/headIcon');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var userData = require('../../../../public/sources/user-data');
-var ModalDialog = require("../../../../components/ModalDialog");
+var ModalDialog = require('../../../../components/ModalDialog');
 var saveTimer = null;
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 var AppInfo = React.createClass({
     getInitialState: function() {
         return {
             appInfo: $.extend(true, {}, this.props.appInfo),
             appTagList: this.props.appTagList,
-            modalStr: "",//模态框提示内容
+            modalStr: '',//模态框提示内容
             isDel: false,//是否删除
             isSaving: false,//正在保存标签
             //是否保存成功,error:失败，success:成功
-            saveResult: "",
+            saveResult: '',
             //保存后的提示信息
-            saveMsg: ""
+            saveMsg: ''
         };
     },
     componentWillReceiveProps: function(nextProps) {
@@ -50,36 +50,36 @@ var AppInfo = React.createClass({
         });
     },
     layout: function() {
-        var bHeight = $("body").height();
-        var formHeight = bHeight - $(".head-image-container").outerHeight(true);
+        var bHeight = $('body').height();
+        var formHeight = bHeight - $('.head-image-container').outerHeight(true);
         if (this.props.showAddMemberButton) {
             formHeight -= 80;
         }
-        $(".log-infor-scroll").height(formHeight);
+        $('.log-infor-scroll').height(formHeight);
     },
     showEditForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击编辑应用按钮");
-        this.props.showEditForm("edit");
+        Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击编辑应用按钮');
+        this.props.showEditForm('edit');
     },
     showVersionUpgradePanel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击查看版本升级按钮");
+        Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击查看版本升级按钮');
         this.props.showVersionUpgradePanel();
     },
     showAppNoticePanel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击查看应用公告按钮");
+        Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击查看应用公告按钮');
         this.props.showAppNoticePanel();
     },
     //展示用户类型设置页面
     showUserTypeConfigPanel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击查看用户类型按钮");
+        Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击查看用户类型按钮');
         this.props.showUserTypeConfigPanel();
     },
     //展示是否禁用、启用的模态框
     showForbidModalDialog: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击启用/禁用应用按钮");
-        var modalStr = Intl.get("member.start.this", "启用此");
+        Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击启用/禁用应用按钮');
+        var modalStr = Intl.get('member.start.this', '启用此');
         if (this.state.appInfo.status == 1) {
-            modalStr = Intl.get("member.stop.this", "禁用此");
+            modalStr = Intl.get('member.stop.this', '禁用此');
         }
         this.setState({modalStr: modalStr, isDel: false});
         this.props.showModalDialog();
@@ -93,7 +93,7 @@ var AppInfo = React.createClass({
                 status = 0;
             }
             this.props.updateStatus(this.props.appInfo.id, status);
-            Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击确认按钮");
+            Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击确认按钮');
         }
     },
     //按enter键添加标签
@@ -105,7 +105,7 @@ var AppInfo = React.createClass({
         if (!tag) return;
         this.toggleTag(tag, true);
         //清空输入框
-        this.refs.newTag.refs.input.value = "";
+        this.refs.newTag.refs.input.value = '';
     },
     //标签的选中与取消处理
     toggleTag: function(tag, isAdd) {
@@ -113,11 +113,11 @@ var AppInfo = React.createClass({
         let tags = this.state.appInfo.tags || [];
         if (tags.indexOf(tag) > -1) {
             if (isAdd) return;
-            Trace.traceEvent($(this.getDOMNode()).find(".block-tag-edit"),"点击取消标签");
+            Trace.traceEvent($(this.getDOMNode()).find('.block-tag-edit'),'点击取消标签');
             tags = tags.filter(theTag => theTag != tag);
         } else {
             if(!isAdd) {
-                Trace.traceEvent($(this.getDOMNode()).find(".block-tag-edit"),"点击选中标签");
+                Trace.traceEvent($(this.getDOMNode()).find('.block-tag-edit'),'点击选中标签');
             }
             tags.push(tag);
             if (this.state.appTagList.indexOf(tag) === -1) {
@@ -139,7 +139,7 @@ var AppInfo = React.createClass({
                 saveMsg: result.saveMsg
             });
             //保存成功后再修改
-            if (result.saveResult == "success") {
+            if (result.saveResult == 'success') {
                 _this.setState({appInfo: _this.state.appInfo});
             }
             //3s后清空提示信息
@@ -150,8 +150,8 @@ var AppInfo = React.createClass({
                 }
                 saveTimer = setTimeout(function() {
                     _this.setState({
-                        saveMsg: "",//保存组名的提示信息
-                        saveResult: ""//修改组名时的保存结果
+                        saveMsg: '',//保存组名的提示信息
+                        saveResult: ''//修改组名时的保存结果
                     });
                 }, 3000);
             }
@@ -165,12 +165,12 @@ var AppInfo = React.createClass({
         var selectedTagsArray = this.state.appInfo.tags || [];
         var appTagList = _.isArray(this.state.appTagList) ? this.state.appTagList : [];
         var unionTagsArray = _.union(appTagList, selectedTagsArray);
-        var tagsJsx = "";
+        var tagsJsx = '';
         if ( _.isArray(unionTagsArray) && unionTagsArray.length > 0) {
             var _this = this;
             tagsJsx = unionTagsArray.map(function(tag, index) {
-                let className = "app-tag";
-                className += selectedTagsArray.indexOf(tag) > -1 ? " tag-selected" : "";
+                let className = 'app-tag';
+                className += selectedTagsArray.indexOf(tag) > -1 ? ' tag-selected' : '';
                 return (
                     <span key={index} onClick={() => _this.toggleTag(tag)} className={className}>{tag}</span>
                 );
@@ -182,15 +182,15 @@ var AppInfo = React.createClass({
     renderAddTagsInput(){
         return (
             <div>
-                <Input placeholder={Intl.get("app.tag.placeholder", "按Enter键添加新标签")} ref="newTag"
+                <Input placeholder={Intl.get('app.tag.placeholder', '按Enter键添加新标签')} ref="newTag"
                     onKeyUp={this.addTag}
                 />
                 {this.state.isSaving ? (
-                    <div className="app-tag-saving">{Intl.get("app.add.tag", "正在添加标签...")} </div>) : ""}
+                    <div className="app-tag-saving">{Intl.get('app.add.tag', '正在添加标签...')} </div>) : ''}
                 {(!this.state.isSaving && this.state.saveResult) ? (
-                    <div className={"app-tag-save-" + this.state.saveResult}>
+                    <div className={'app-tag-save-' + this.state.saveResult}>
                         {this.state.saveMsg}
-                    </div>) : ""}
+                    </div>) : ''}
             </div>
         );
 
@@ -198,15 +198,15 @@ var AppInfo = React.createClass({
     //渲染应用信息
     renderAppItems: function() {
         let appInfo = this.state.appInfo;
-        var managers = Intl.get("app.app.no.managers", "暂无管理员");
+        var managers = Intl.get('app.app.no.managers', '暂无管理员');
         if (_.isArray(appInfo.managers)) {
             //应用详情中展示管理员姓名
-            managers = _.pluck(appInfo.managers, "managerName");
-            managers = managers.join(',') || Intl.get("app.app.no.managers", "暂无管理员");
+            managers = _.pluck(appInfo.managers, 'managerName');
+            managers = managers.join(',') || Intl.get('app.app.no.managers', '暂无管理员');
         }
-        let realmId = userData.getUserData().auth.realm_id || "";
-        var createDate = appInfo.createDate ? moment(appInfo.createDate).format(oplateConsts.DATE_FORMAT) : "";
-        var expireDate = appInfo.expireDate ? moment(appInfo.expireDate).format(oplateConsts.DATE_FORMAT) : "";
+        let realmId = userData.getUserData().auth.realm_id || '';
+        var createDate = appInfo.createDate ? moment(appInfo.createDate).format(oplateConsts.DATE_FORMAT) : '';
+        var expireDate = appInfo.expireDate ? moment(appInfo.expireDate).format(oplateConsts.DATE_FORMAT) : '';
         return (<div>
             <div className="card-item">
                 <span className="card-item-left"> URL:</span>
@@ -253,7 +253,7 @@ var AppInfo = React.createClass({
                         <span className="card-item-left"><ReactIntl.FormattedMessage id="common.captcha"
                             defaultMessage="验证码"/>:</span>
                         <span className="card-item-right">
-                            {Intl.get("secret.error", "密码输错") + "[" + (appInfo.captchaTime || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                            {Intl.get('secret.error', '密码输错') + '[' + (appInfo.captchaTime || ' ') + ']' + Intl.get('show.captcha', '次，出现验证码')}
                         </span>
                     </span>
 
@@ -265,7 +265,7 @@ var AppInfo = React.createClass({
             {language.lan() == 'es' ? (
                 <div className="card-item left-label-null-style">
                     <span className="card-item-right">
-                        {Intl.get("secret.error", "密码输错") + "[" + (appInfo.captchaTime || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                        {Intl.get('secret.error', '密码输错') + '[' + (appInfo.captchaTime || ' ') + ']' + Intl.get('show.captcha', '次，出现验证码')}
                     </span>
                 </div>
             ) : null}
@@ -273,13 +273,13 @@ var AppInfo = React.createClass({
             <div className="card-item left-label-null-style">
                 <span className="card-item-left">   </span>
                 <span className="card-item-right">
-                    {Intl.get("session.overclock", "session超频") + "[" + (appInfo.sessionCaptcha || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                    {Intl.get('session.overclock', 'session超频') + '[' + (appInfo.sessionCaptcha || ' ') + ']' + Intl.get('show.captcha', '次，出现验证码')}
                 </span>
             </div>
             <div className="card-item left-label-null-style">
                 <span className="card-item-left">   </span>
                 <span className="card-item-right">
-                    {Intl.get("ip.overclock", "IP超频") + "[" + (appInfo.ipCaptcha || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                    {Intl.get('ip.overclock', 'IP超频') + '[' + (appInfo.ipCaptcha || ' ') + ']' + Intl.get('show.captcha', '次，出现验证码')}
                 </span>
             </div>
             <div className="card-item">
@@ -292,22 +292,22 @@ var AppInfo = React.createClass({
             <div className="card-item">
                 <span
                     className="card-item-left"> {createDate}
-                    {Intl.get("common.time.connector", "至")}{expireDate}</span>
+                    {Intl.get('common.time.connector', '至')}{expireDate}</span>
             </div>
         </div>);
     },
     closeRightPanel(e) {
-        Trace.traceEvent(e,"关闭应用详情界面");
+        Trace.traceEvent(e,'关闭应用详情界面');
         this.props.closeRightPanel();
     },
     render: function() {
         //当前要展示的信息
         var appInfo = this.state.appInfo;
-        var modalContent = Intl.get("member.is.or.not","是否{modalStr}{modalType}",{
-            "modalStr": this.state.modalStr,
-            "modalType": this.props.modalType
+        var modalContent = Intl.get('member.is.or.not','是否{modalStr}{modalType}',{
+            'modalStr': this.state.modalStr,
+            'modalType': this.props.modalType
         });
-        var className = "right-panel-content";
+        var className = 'right-panel-content';
         if (!this.props.appInfoShow) {
             if (this.props.appFormShow ||
                     this.props.versionUpgradeShow ||
@@ -316,32 +316,32 @@ var AppInfo = React.createClass({
                     this.props.userTypeConfigShow
             ) {
                 //展示form面板时，整体左移
-                className += " right-panel-content-slide";
+                className += ' right-panel-content-slide';
             }
         }
 
-        var userName = this.state.appInfo.userName ? this.state.appInfo.userName.value : "";
+        var userName = this.state.appInfo.userName ? this.state.appInfo.userName.value : '';
         let labelCol = (language.lan() == 'zh' ? 3 : 4);
         return (
             <div className={className} data-tracename="查看应用详情">
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <div className="edit-buttons">
-                    <PrivilegeChecker check={"APP_MANAGE_EDIT_APP"}>
+                    <PrivilegeChecker check={'APP_MANAGE_EDIT_APP'}>
                         <RightPanelEdit onClick={this.showEditForm}/>
                         <RightPanelForbid onClick={this.showForbidModalDialog}
                             isActive={this.state.appInfo.status == 0}/>
                     </PrivilegeChecker>
                     {/**v8环境，不显示系统公告、版本升级记录、用户类型设置*/}
                     { !Oplate.hideSomeItem &&
-                        <PrivilegeChecker check={"GET_APPLICATION_RECORD" || "ADD_APPLICATION_RECORD"}>
+                        <PrivilegeChecker check={'GET_APPLICATION_RECORD' || 'ADD_APPLICATION_RECORD'}>
                             <RightPanelVersionUpgrade onClick={this.showVersionUpgradePanel}/>
                         </PrivilegeChecker>}
                     { !Oplate.hideSomeItem &&
-                        <PrivilegeChecker check={"GET_APPLICATION_NOTICE" || "ADD_APPLICATION_NOTICE"}>
+                        <PrivilegeChecker check={'GET_APPLICATION_NOTICE' || 'ADD_APPLICATION_NOTICE'}>
                             <RightPanelAppNotice onClick={this.showAppNoticePanel}/>
                         </PrivilegeChecker>}
                     { !Oplate.hideSomeItem &&
-                        <PrivilegeChecker check={"GET_APP_EXTRA_GRANTS"}>
+                        <PrivilegeChecker check={'GET_APP_EXTRA_GRANTS'}>
                             <RightPanelUserTypeConfig onClick={this.showUserTypeConfigPanel}/>
                         </PrivilegeChecker> }
                 </div>
@@ -360,11 +360,11 @@ var AppInfo = React.createClass({
                                 <Spin size="small"/>) : this.renderAppItems()
                             }
                         </div>
-                        {this.props.appTagList && hasPrivilege("APP_MANAGE_EDIT_APP") ? (
+                        {this.props.appTagList && hasPrivilege('APP_MANAGE_EDIT_APP') ? (
                             <Form horizontal className="card-info-tag-form" autoComplete="off"
                                 onSubmit={this.cancelEnter}>
                                 <FormItem
-                                    label={Intl.get("common.tag", "标签") + ": "}
+                                    label={Intl.get('common.tag', '标签') + ': '}
                                     labelCol={{span: labelCol}}
                                     wrapperCol={{span: 21}}
                                 >
@@ -374,7 +374,7 @@ var AppInfo = React.createClass({
                                     <div>
                                         {this.renderAddTagsInput()}
                                     </div>
-                                </FormItem></Form>) : ""
+                                </FormItem></Form>) : ''
                         }
                     </GeminiScrollbar>
                 </div>

@@ -1,7 +1,7 @@
-var UserApplyActions = require("../action/user-apply-actions");
-var notificationEmitter = require("../../../../public/sources/utils/emitters").notificationEmitter;
-import userData from "PUB_DIR/sources/user-data";
-import { storageUtil } from "ant-utils";
+var UserApplyActions = require('../action/user-apply-actions');
+var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
+import userData from 'PUB_DIR/sources/user-data';
+import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 
 //用户审批界面使用的store
@@ -17,14 +17,14 @@ UserApplyStore.prototype.resetState = function() {
     //申请列表
     this.applyListObj = {
         // "" loading error
-        loadingResult: "loading",
+        loadingResult: 'loading',
         //获取的列表
         list: [],
         //错误信息
-        errorMsg: ""
+        errorMsg: ''
     };
     this.pageSize = 20;//一次获取的条数
-    this.lastApplyId = "";//下拉加载数据时所需前一次获取的最后一个申请的id
+    this.lastApplyId = '';//下拉加载数据时所需前一次获取的最后一个申请的id
     //默认进去显示"申请列表"，筛选过后，再显示具体的标签
     this.ifClickedFilterLabel = false;
     //左侧选中的要查看详情的项
@@ -48,7 +48,7 @@ UserApplyStore.prototype.resetState = function() {
     //有未读回复的列表
     this.unreadReplyList = [];
     //处理申请操作失败
-    this.dealApplyError = "success";
+    this.dealApplyError = 'success';
     //是否查看未读回复的申请列表
     this.isCheckUnreadApplyList = false;
 
@@ -67,7 +67,7 @@ UserApplyStore.prototype.refreshUnreadReplyList = function(unreadReplyList) {
  * @param applyId：有值时只清除applyId对应的申请，不传时，清除当前登录用户所有的未读回复申请列表
  */
 UserApplyStore.prototype.clearUnreadReply = function(applyId) {
-    const APPLY_UNREAD_REPLY = "apply_unread_reply";
+    const APPLY_UNREAD_REPLY = 'apply_unread_reply';
     let userId = userData.getUserData().user_id;
     //获取sessionStorage中该用户的未读回复列表
     let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
@@ -122,7 +122,7 @@ UserApplyStore.prototype.getApplyList = function(obj) {
                 this.selectedDetailItem = applyList[0];
                 this.selectedDetailItemIdx = 0;
             }
-            this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : "";
+            this.lastApplyId = this.applyListObj.list.length ? _.last(this.applyListObj.list).id : '';
             this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
         } else if (!this.lastApplyId) {//获取第一页就没有数据时
             this.clearData();
@@ -165,7 +165,7 @@ UserApplyStore.prototype.setLastApplyId = function(applyId) {
 //更改用户审批筛选类型
 UserApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
-    this.lastApplyId = "";
+    this.lastApplyId = '';
     this.ifClickedFilterLabel = true;
     this.showUpdateTip = false;
     this.isCheckUnreadApplyList = false;
@@ -174,7 +174,7 @@ UserApplyStore.prototype.changeApplyListType = function(type) {
 //输入框的值改变
 UserApplyStore.prototype.changeSearchInputValue = function(value) {
     this.searchKeyword = value;
-    this.lastApplyId = "";
+    this.lastApplyId = '';
     this.showUpdateTip = false;
 };
 

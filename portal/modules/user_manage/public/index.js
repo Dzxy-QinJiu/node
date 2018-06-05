@@ -1,21 +1,21 @@
-var RightCardsContainer = require("../../../components/rightCardsContainer");
-var UserStore = require("./store/user-store");
-var UserAction = require("./action/user-actions");
-var AddUserForm = require("./views/user-form");
-var UserInfo = require("./views/user-info");
-var rightPanelUtil = require("../../../components/rightPanel");
+var RightCardsContainer = require('../../../components/rightCardsContainer');
+var UserStore = require('./store/user-store');
+var UserAction = require('./action/user-actions');
+var AddUserForm = require('./views/user-form');
+var UserInfo = require('./views/user-info');
+var rightPanelUtil = require('../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
-var TopNav = require("../../../components/top-nav");
-var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
-var UserFormAction = require("./action/user-form-actions");
-var Spinner = require("../../../components/spinner");
-var UserFilterAdv = require("./views/user-filter-adv");
+var TopNav = require('../../../components/top-nav');
+var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
+var UserFormAction = require('./action/user-form-actions');
+var Spinner = require('../../../components/spinner');
+var UserFilterAdv = require('./views/user-filter-adv');
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
 var CONSTANTS = {
     LOG_PAGE_SIZE: 11//个人操作日志一页展示的条数
 };
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 
 var UserManage = React.createClass({
     getInitialState: function() {
@@ -25,18 +25,18 @@ var UserManage = React.createClass({
         this.setState(UserStore.getState());
     },
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
         UserStore.listen(this.onChange);
     },
     componentWillUnmount: function() {
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
         UserStore.unlisten(this.onChange);
     },
     events: {
         showUserForm: function(type) {
             //type：“edit”/"add"
-            if (type === "add") {
-                Trace.traceEvent("成员管理","成员详情面板点击添加成员按钮");
+            if (type === 'add') {
+                Trace.traceEvent('成员管理','成员详情面板点击添加成员按钮');
                 //获取团队列表
                 if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
                     UserFormAction.setTeamListLoading(true);
@@ -49,7 +49,7 @@ var UserManage = React.createClass({
                     clearTimeout(focusTimeout);
                 }
                 focusTimeout = setTimeout(function() {
-                    $("#userName").focus();
+                    $('#userName').focus();
                 }, 600);
             }
             UserAction.showUserForm(type);
@@ -74,13 +74,13 @@ var UserManage = React.createClass({
             if (this.state.userIsLoading || this.state.logIsLoading) {
                 return;
             }
-            Trace.traceEvent("成员管理","点击查看成员详情");
+            Trace.traceEvent('成员管理','点击查看成员详情');
             UserAction.setCurUser(user.id);
             // //获取用户的详情
             UserAction.setUserLoading(true);
             UserAction.getCurUserById(user.id);
-            if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
-                $(".right-panel-content").removeClass("right-panel-content-slide");
+            if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
+                $('.right-panel-content').removeClass('right-panel-content-slide');
                 if (openTimeout) {
                     clearTimeout(openTimeout);
                 }
@@ -102,9 +102,9 @@ var UserManage = React.createClass({
 
         searchEvent: function(searchContent) {
             if (searchContent) {
-                Trace.traceEvent($(this.getDOMNode()).find(".search-input-container input"),"跟据用户名/昵称/电话/邮箱搜索成员");
+                Trace.traceEvent($(this.getDOMNode()).find('.search-input-container input'),'跟据用户名/昵称/电话/邮箱搜索成员');
             }else{
-                Trace.traceEvent($(this.getDOMNode()).find(".search-input-container input"),"清空搜索内容");
+                Trace.traceEvent($(this.getDOMNode()).find('.search-input-container input'),'清空搜索内容');
             }
             UserAction.updateCurPage(1);
             UserAction.updateSearchContent(searchContent);
@@ -146,11 +146,11 @@ var UserManage = React.createClass({
             UserAction.setSelectRole(role);
             UserAction.updateCurPage(1);
             //角色和搜索框的内容不能联合搜索，所以，通过角色筛选时，清空搜索框
-            $(".backgroundManagement_user_content .search-input").val("");
+            $('.backgroundManagement_user_content .search-input').val('');
             var searchObj = {
                 cur_page: 1,
                 page_size: this.state.pageSize,
-                search_content: "",
+                search_content: '',
                 role_param: role
             };
             UserAction.getCurUserList(searchObj);
@@ -164,17 +164,17 @@ var UserManage = React.createClass({
                 name: user.name,
                 image: user.image,
                 userName: {
-                    label: Intl.get("common.username", "用户名") + ' :',
+                    label: Intl.get('common.username', '用户名') + ' :',
                     value: user.userName,
                     showOnCard: true
                 },
                 phone: {
-                    label: Intl.get("common.phone", "电话") + ' :',
+                    label: Intl.get('common.phone', '电话') + ' :',
                     value: user.phone,
                     showOnCard: true
                 },
                 email: {
-                    label: Intl.get("common.email", "邮箱") + ' :',
+                    label: Intl.get('common.email', '邮箱') + ' :',
                     value: user.email,
                     showOnCard: true
                 },
@@ -207,7 +207,7 @@ var UserManage = React.createClass({
                     listTipMsg={this.state.userListTipMsg}
                     curPage={this.state.curPage}
                     pageSize={this.state.pageSize}
-                    searchPlaceHolder={Intl.get("member.search.placeholder", "用户名/昵称/电话/邮箱")}
+                    searchPlaceHolder={Intl.get('member.search.placeholder', '用户名/昵称/电话/邮箱')}
                     updatePageSize={this.events.updatePageSize.bind(this)}
                     hideCardForm={this.events.hideUserForm}
                     submitCardForm={this.events.submitUserForm}
@@ -222,7 +222,7 @@ var UserManage = React.createClass({
                     <TopNav>
                         <TopNav.MenuList />
                         <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block handle-btn-container"
-                            onClick={this.events.showUserForm.bind(this,"add")}
+                            onClick={this.events.showUserForm.bind(this,'add')}
                             data-tracename="添加成员" >
                             <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
                         </PrivilegeChecker>

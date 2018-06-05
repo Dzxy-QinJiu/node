@@ -1,7 +1,7 @@
 require('../css/user-login-analysis.less');
-var Spinner = require("../../../../components/spinner");
-var SelectFullWidth = require("../../../../components/select-fullwidth");
-var TimeSeriesBarChart = require("../../../../components/timeseries-barchart");
+var Spinner = require('../../../../components/spinner');
+var SelectFullWidth = require('../../../../components/select-fullwidth');
+var TimeSeriesBarChart = require('../../../../components/timeseries-barchart');
 var UserLoginAnalysisAction = require('../action/user-login-analysis-action');
 var UserLoginAnalysisStore = require('../store/user-login-analysis-store');
 import TimeUtil from '../../../../public/sources/utils/time-format-util';
@@ -88,7 +88,7 @@ const UserLoginAnalysis = React.createClass({
                         onSelect={this.onSelectedAppChange}
                         minWidth={120}
                         maxWidth={270}
-                        notFoundContent={Intl.get("common.not.found", "无法找到")}
+                        notFoundContent={Intl.get('common.not.found', '无法找到')}
                     >
                         { _.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
                             return (
@@ -111,12 +111,12 @@ const UserLoginAnalysis = React.createClass({
                 <div>
                     { loginFirst != -1 ? (
                         <div>
-                            {Intl.get("user.first.login", "首次登录")}：<span className="login-stress">{loginFirst}</span>
+                            {Intl.get('user.first.login', '首次登录')}：<span className="login-stress">{loginFirst}</span>
                         </div>
                     ) : null}
                     { loginLast != -1 ? (
                         <div>
-                            {Intl.get("user.last.login", "最近登录")}：<span className="login-stress">{loginLast}</span>
+                            {Intl.get('user.last.login', '最近登录')}：<span className="login-stress">{loginLast}</span>
                         </div>
                     ) : null
                     }
@@ -125,7 +125,7 @@ const UserLoginAnalysis = React.createClass({
         } else if (loginLast == -1 && loginFirst == -1) {
             return (
                 <div>
-                    {Intl.get("user.no.login", "用户暂无登录")}!
+                    {Intl.get('user.no.login', '用户暂无登录')}!
                 </div>
             );
         }
@@ -148,7 +148,7 @@ const UserLoginAnalysis = React.createClass({
                 <div className="login-info">
                     <div className="alert-tip">
                         {this.state.loginInfo.errorMsg}，
-                        <a href="javascript:void(0)" onClick={this.retryGetUserLoginInfo}>{Intl.get("common.retry", "重试")}</a>
+                        <a href="javascript:void(0)" onClick={this.retryGetUserLoginInfo}>{Intl.get('common.retry', '重试')}</a>
                     </div>
                 </div>
             );
@@ -157,11 +157,11 @@ const UserLoginAnalysis = React.createClass({
             return (
                 <div className="login-info">
                     <div>
-                        {Intl.get("user.login.times", "登录次数")}：<span className="login-stress">{count}</span>
+                        {Intl.get('user.login.times', '登录次数')}：<span className="login-stress">{count}</span>
                     </div>
                     { Oplate.hideSomeItem ? null : (
                         <div>
-                            {Intl.get("user.login.duration", "在线时长")}：<span className="login-stress">{timeObj.timeDescr}</span>
+                            {Intl.get('user.login.duration', '在线时长')}：<span className="login-stress">{timeObj.timeDescr}</span>
                         </div>
                     )}
                     { this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
@@ -182,7 +182,7 @@ const UserLoginAnalysis = React.createClass({
                 <div className="login-info">
                     <div className="alert-tip">
                         {this.state.loginChartInfo.errorMsg}，
-                        <a href="javascript:void(0)" onClick={this.retryGetLoginChart}>{Intl.get("common.retry", "重试")}</a>
+                        <a href="javascript:void(0)" onClick={this.retryGetLoginChart}>{Intl.get('common.retry', '重试')}</a>
                     </div>
                 </div>
             );
@@ -194,7 +194,7 @@ const UserLoginAnalysis = React.createClass({
                     {Oplate.hideSomeItem ? (
                         <div className="duration-chart">
                             {this.state.loginChartInfo.count ? (
-                                <div className="v8-chart-title"> {Intl.get("user.login.times", "登录次数")}</div>
+                                <div className="v8-chart-title"> {Intl.get('user.login.times', '登录次数')}</div>
                             ) : null}
                             {this.renderFrequencyChart()}
                         </div>
@@ -234,7 +234,7 @@ const UserLoginAnalysis = React.createClass({
         } else {
             return (
                 <div className="alert-tip">
-                    {Intl.get("common.no.data", "暂无数据")}
+                    {Intl.get('common.no.data', '暂无数据')}
                 </div>
             );
         }

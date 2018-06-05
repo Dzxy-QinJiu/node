@@ -3,36 +3,36 @@
  * 说明：统计分析-当前安全域-开通个数统计 react文件
  */
 //控制器
-var AnalysisRealmEstablishActions = require("./action/analysis-realm-establish-actions");
+var AnalysisRealmEstablishActions = require('./action/analysis-realm-establish-actions');
 //数据中心
-var AnalysisRealmEstablishStore = require("./store/analysis-realm-establish-store");
+var AnalysisRealmEstablishStore = require('./store/analysis-realm-establish-store');
 //加载中
-var Spinner = require("../../../components/spinner");
+var Spinner = require('../../../components/spinner');
 //没有数据
-var NoData = require("../../../components/analysis-nodata");
+var NoData = require('../../../components/analysis-nodata');
 //classNames
-import classNames from "classnames";
+import classNames from 'classnames';
 //日期选择器
-import DatePicker from "../../../components/datepicker";
+import DatePicker from '../../../components/datepicker';
 //时间线图
-var AnalysisLineChartTimeRange = require("../../../components/analysis-linechart-timerange");
+var AnalysisLineChartTimeRange = require('../../../components/analysis-linechart-timerange');
 //总数统计
-var AnalysisRealmCount = require("../../../components/analysis-realm-count");
+var AnalysisRealmCount = require('../../../components/analysis-realm-count');
 //顶部导航
-var TopNav = require("../../../components/top-nav");
+var TopNav = require('../../../components/top-nav');
 //统计分析菜单
-var AnalysisMenu = require("../../../components/analysis_menu");
+var AnalysisMenu = require('../../../components/analysis_menu');
 
 //css
-require("./css/index.less");
+require('./css/index.less');
 
 //线图的formatter
 function lineFormatter(obj) {
     var dateText = obj.name;
     var num = obj.value;
     return [
-        `${Intl.get("user.time.start","开通时间")}：${dateText}`,
-        `${Intl.get("user.batch.open.count", "开通个数")}：${num}`
+        `${Intl.get('user.time.start','开通时间')}：${dateText}`,
+        `${Intl.get('user.batch.open.count', '开通个数')}：${num}`
     ].join('<br />');
 }
 
@@ -150,11 +150,11 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
     //时间改变的时候触发
     onSelectDate: function(startTime , endTime,range , label) {
         if(range === 'all') {
-            AnalysisRealmEstablishActions.setRankListTitle(Intl.get("oplate_bd_analysis_realm_establish.5", "当前安全域开通总数"));
+            AnalysisRealmEstablishActions.setRankListTitle(Intl.get('oplate_bd_analysis_realm_establish.5', '当前安全域开通总数'));
         } else if(range === 'custom') {
-            AnalysisRealmEstablishActions.setRankListTitle(Intl.get("oplate_bd_analysis_realm_establish.6", "安全域开通总数"));
+            AnalysisRealmEstablishActions.setRankListTitle(Intl.get('oplate_bd_analysis_realm_establish.6', '安全域开通总数'));
         } else {
-            AnalysisRealmEstablishActions.setRankListTitle(label + Intl.get("oplate_bd_analysis_realm_establish.6","安全域开通总数"));
+            AnalysisRealmEstablishActions.setRankListTitle(label + Intl.get('oplate_bd_analysis_realm_establish.6','安全域开通总数'));
         }
         //设置开始时间
         AnalysisRealmEstablishActions.setStartTime(startTime);
@@ -221,12 +221,12 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
                                 disableDateAfterToday={true}
                                 range="all"
                                 onSelect={this.onSelectDate}>
-                                <DatePicker.Option value="all">{Intl.get("user.time.all","全部时间")}</DatePicker.Option>
-                                <DatePicker.Option value="week">{Intl.get("common.time.unit.week","周")}</DatePicker.Option>
-                                <DatePicker.Option value="month">{Intl.get("common.time.unit.month","月")}</DatePicker.Option>
-                                <DatePicker.Option value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
-                                <DatePicker.Option value="year">{Intl.get("common.time.unit.year","年")}</DatePicker.Option>
-                                <DatePicker.Option value="custom">{Intl.get("user.time.custom","自定义")}</DatePicker.Option>
+                                <DatePicker.Option value="all">{Intl.get('user.time.all','全部时间')}</DatePicker.Option>
+                                <DatePicker.Option value="week">{Intl.get('common.time.unit.week','周')}</DatePicker.Option>
+                                <DatePicker.Option value="month">{Intl.get('common.time.unit.month','月')}</DatePicker.Option>
+                                <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                                <DatePicker.Option value="year">{Intl.get('common.time.unit.year','年')}</DatePicker.Option>
+                                <DatePicker.Option value="custom">{Intl.get('user.time.custom','自定义')}</DatePicker.Option>
                             </DatePicker>
                             {/*计数*/}
                             <AnalysisRealmCount title={this.state.rankListTitle} total={this.state.realmEstablishTotalCount}/>

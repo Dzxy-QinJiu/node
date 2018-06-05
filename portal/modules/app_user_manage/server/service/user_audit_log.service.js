@@ -1,16 +1,16 @@
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var Promise = require('bluebird');
-var EventEmitter = require("events").EventEmitter;
+var EventEmitter = require('events').EventEmitter;
 var _ = require('underscore');
-var auth = require("../../../../lib/utils/auth");
+var auth = require('../../../../lib/utils/auth');
 
 var AppUserRestApis = {
     //获取用户审计日志列表
-    getUserLogs: "/rest/analysis/auditlog/v1/app/drop_down_load",
+    getUserLogs: '/rest/analysis/auditlog/v1/app/drop_down_load',
     // 获取单个用户审计日志列表
-    getSingleAuditLogList: "/rest/analysis/auditlog/v1/app/userdetail/",
+    getSingleAuditLogList: '/rest/analysis/auditlog/v1/app/userdetail/',
     // 获取用户登录时长
     getLoginDuration: '/rest/analysis/auditlog/v1/:app_id/loginlong/:user_id',
     // 获取用户登录次数
@@ -55,7 +55,7 @@ exports.getUserLoginInfo = function(req, res, obj){
         {'last': AppUserRestApis.getLastLoginTime } // 最后一次登录
     ];
     // 西语环境下，没有登录时长的统计
-    if ( auth.getLang() == "es_VE") {
+    if ( auth.getLang() == 'es_VE') {
         urlList = [{'count': AppUserRestApis.getLoginCount }, // 登录次数
             {'first': AppUserRestApis.getFirstLoginTime }, // 首次登录
             {'last': AppUserRestApis.getLastLoginTime } // 最后一次登录
@@ -63,9 +63,9 @@ exports.getUserLoginInfo = function(req, res, obj){
     }
     let loginList = handleLogin(req, res, obj, urlList);
     Promise.all(loginList).then( (results) => {
-        emitter.emit("success" , results);
+        emitter.emit('success' , results);
     }).catch( (errorMsg) => {
-        emitter.emit("error" , errorMsg);
+        emitter.emit('error' , errorMsg);
     } );
     return emitter;
 };
@@ -76,16 +76,16 @@ exports.getUserLoginChartInfo = function(req, res, obj){
         {'loginCount': AppUserRestApis.getLoginFrequency } // 登录频次统计
     ];
     // 西语环境下，没有登录时长的统计
-    if ( auth.getLang() == "es_VE") {
+    if ( auth.getLang() == 'es_VE') {
         urlList = [
             {'loginCount': AppUserRestApis.getLoginFrequency } // 登录频次统计
         ];
     }
     let loginList = handleLogin(req, res, obj, urlList);
     Promise.all(loginList).then( (results) => {
-        emitter.emit("success" , results);
+        emitter.emit('success' , results);
     }).catch( (errorMsg) => {
-        emitter.emit("error" , errorMsg);
+        emitter.emit('error' , errorMsg);
     } );
     return emitter;
 };
@@ -109,8 +109,8 @@ function handleLoginInfo(req, res, obj, url, param){
     return new Promise( (resolve, reject) => {
         return restUtil.authRest.get({
             url: url
-                .replace(":app_id", app_id )
-                .replace(":user_id",user_id),
+                .replace(':app_id', app_id )
+                .replace(':user_id',user_id),
             req: req,
             res: res
         }, tempObj, {
@@ -120,7 +120,7 @@ function handleLoginInfo(req, res, obj, url, param){
                     obj[param] = data;
                     resolve(obj);
                 } else {
-                    reject({message: "获取登录信息失败！"});
+                    reject({message: '获取登录信息失败！'});
                 }
             },
             error: function(eventEmitter , errorDesc) {

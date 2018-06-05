@@ -4,19 +4,19 @@ module.exports = {
     module: 'crm/server/action/crm-controller',
     routes: [
         {
-            "method": "get",
-            "path": "/rest/crm/download_template",
-            "handler": "getCrmTemplate",
-            "passport": {
-                "needLogin": true
+            'method': 'get',
+            'path': '/rest/crm/download_template',
+            'handler': 'getCrmTemplate',
+            'passport': {
+                'needLogin': true
             }
         },
         {
-            "method": "get",
-            "path": "/rest/crm/user_list",
-            "handler": "getCrmUserList",
-            "passport": {
-                "needLogin": true
+            'method': 'get',
+            'path': '/rest/crm/user_list',
+            'handler': 'getCrmUserList',
+            'passport': {
+                'needLogin': true
             }
         },
         {
@@ -152,14 +152,14 @@ module.exports = {
             privileges: []
         },
         {
-            "method": "get",
-            "path": "/rest/crm/:pageSize/:pageNum",
-            "handler": "getCurCustomers",
-            "passport": {
-                "needLogin": true
+            'method': 'get',
+            'path': '/rest/crm/:pageSize/:pageNum',
+            'handler': 'getCurCustomers',
+            'passport': {
+                'needLogin': true
             },
-            "privileges": [
-                "CRM_LIST_CUSTOMERS"
+            'privileges': [
+                'CRM_LIST_CUSTOMERS'
             ]
         },
         {
@@ -174,11 +174,11 @@ module.exports = {
             ]
         },
         {
-            "method": "post",
-            "path": "/rest/crm/customers",
-            "handler": "uploadCustomers",
-            "passport": {
-                "needLogin": true
+            'method': 'post',
+            'path': '/rest/crm/customers',
+            'handler': 'uploadCustomers',
+            'passport': {
+                'needLogin': true
             }
         },
         {
@@ -214,19 +214,19 @@ module.exports = {
             }
         },
         { // 拨打电话
-            "method": "post",
-            "path": "/rest/call/out",
-            "handler": "callOut",
-            "passport": {
-                "needLogin": true
+            'method': 'post',
+            'path': '/rest/call/out',
+            'handler': 'callOut',
+            'passport': {
+                'needLogin': true
             }
         },
         { // 获取电话座机号
-            "method": "get",
-            "path": "/rest/call/phone/:member_id",
-            "handler": "getUserPhoneNumber",
-            "passport": {
-                "needLogin": true
+            'method': 'get',
+            'path': '/rest/call/phone/:member_id',
+            'handler': 'getUserPhoneNumber',
+            'passport': {
+                'needLogin': true
             }
         },
         {

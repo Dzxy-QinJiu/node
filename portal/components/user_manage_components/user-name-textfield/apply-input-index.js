@@ -1,4 +1,4 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 渲染用户名输入框
@@ -41,11 +41,11 @@ const UserNameTextFieldMixin = {
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
                     validateStatus={this.renderValidateStyle('user_name')}
-                    help={status.user_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.user_name.errors && status.user_name.errors.join(','))}
+                    help={status.user_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.user_name.errors && status.user_name.errors.join(','))}
                 >
                     <Validator rules={validators}>
                         <Input name="user_name"
-                            placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
+                            placeholder={Intl.get('user.username.write.tip', '请填写用户名')}
                             value={formData.user_name}
                             onChange={this.setField.bind(this, 'user_name')}/>
                     </Validator>
@@ -60,7 +60,7 @@ const UserNameTextFieldMixin = {
         const status = this.state.status;
         const formData = this.state.formData;
 
-        let validators = [{required: true,message: Intl.get("user.nickname.write.tip", "请填写昵称")}];
+        let validators = [{required: true,message: Intl.get('user.nickname.write.tip', '请填写昵称')}];
 
         return (
             <div className="user-name-textfield-block" ref="username_block">
@@ -72,7 +72,7 @@ const UserNameTextFieldMixin = {
                 >
                     <Validator rules={validators}>
                         <Input name="nick_name"
-                            placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
+                            placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
                             value={formData.nick_name}
                             onChange={this.setField.bind(this, 'nick_name')}/>
                     </Validator>

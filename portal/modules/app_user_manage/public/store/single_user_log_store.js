@@ -1,7 +1,7 @@
 var SingleUserLogAction = require('../action/single_user_log_action');
-var ShareObj = require("../util/app-id-share-util");
-const datePickerUtils = require("CMP_DIR/datepicker/utils");
-import { ALL_LOG_INFO, AUDIT_LOG} from "PUB_DIR/sources/utils/consts";
+var ShareObj = require('../util/app-id-share-util');
+const datePickerUtils = require('CMP_DIR/datepicker/utils');
+import { ALL_LOG_INFO, AUDIT_LOG} from 'PUB_DIR/sources/utils/consts';
 
 function SingleUserLogStore(){
     //初始化state数据
@@ -16,7 +16,7 @@ SingleUserLogStore.prototype.logInitialState = function() {
     this.pageSize = 10;
     this.total = 0;
     this.auditLogList = [];
-    this.logListLoading = "loading";
+    this.logListLoading = 'loading';
     this.listenScrollBottom = true;
     // 获取单个用户日志失败的错误提示
     this.getUserLogErrorMsg = '';
@@ -67,13 +67,13 @@ SingleUserLogStore.prototype.changUserIdKeepSearch = function() {
 SingleUserLogStore.prototype.getSingleAuditLogList = function(result) {
     this.isLoading = false;
     if (result.loading){
-        this.logListLoading = "loading";
+        this.logListLoading = 'loading';
     } else if (result.error){
-        this.logListLoading = "";
+        this.logListLoading = '';
         this.getUserLogErrorMsg = result.errorMsg;
     } else {
-        this.getUserLogErrorMsg = "";
-        this.logListLoading = "";
+        this.getUserLogErrorMsg = '';
+        this.logListLoading = '';
         this.auditLogList = this.auditLogList.concat(result.data.user_logs);
         this.curPage++;
         this.total = result.data.total;
@@ -83,7 +83,7 @@ SingleUserLogStore.prototype.getSingleAuditLogList = function(result) {
 //获取用户应用列表
 SingleUserLogStore.prototype.getSingleUserAppList = function(obj) {
     if (obj.error) {
-        this.logListLoading = "";
+        this.logListLoading = '';
         this.getUserLogErrorMsg = obj.errorMsg || Intl.get('errorcode.53', '获取应用列表失败！');
     } else {
         this.selectedLogAppId = obj.appId;

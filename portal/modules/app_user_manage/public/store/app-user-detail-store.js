@@ -1,5 +1,5 @@
-var AppUserUtil = require("../util/app-user-util");
-var AppUserDetailActions = require("../action/app-user-detail-actions");
+var AppUserUtil = require('../util/app-user-util');
+var AppUserDetailActions = require('../action/app-user-detail-actions');
 
 //app用户详情的store
 function AppUserDetailStore() {
@@ -108,7 +108,7 @@ AppUserDetailStore.prototype.submitDisableAllApps = function(obj) {
             this.modalStatus.disable_all.errorMsg = obj.errorMsg;
         } else {
             this.modalStatus.disable_all.success = true;
-            this.modalStatus.disable_all.errorMsg = "";
+            this.modalStatus.disable_all.errorMsg = '';
             //修改成功后，重置“开通产品”状态
             this.initialUser.apps.forEach(function(item) {
                 item.is_disabled = 'true';
@@ -170,10 +170,10 @@ AppUserDetailStore.prototype.changeCustomer = function(customerObj) {
 AppUserDetailStore.prototype.changeAppFieldSuccess = function(result) {
     //修改的字段
     var appFields = [
-        "status",
-        "is_two_factor",
-        "multilogin",
-        "over_draft"
+        'status',
+        'is_two_factor',
+        'multilogin',
+        'over_draft'
     ];
     //遍历数组
     if(_.isArray(this.initialUser.apps)) {

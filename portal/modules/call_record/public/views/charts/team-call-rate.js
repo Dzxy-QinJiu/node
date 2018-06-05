@@ -1,12 +1,12 @@
 /**
  *   通话记录中， 114占比，柱状图展示
  * */
-var echarts = require("echarts-eefung");
-var moment = require("moment");
-import echartsTooltipCssText from "LIB_DIR/utils/echarts-tooltip-csstext";
-var immutable = require("immutable");
+var echarts = require('echarts-eefung');
+var moment = require('moment');
+import echartsTooltipCssText from 'LIB_DIR/utils/echarts-tooltip-csstext';
+var immutable = require('immutable');
 //macrons主题
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 var RateBarChart = React.createClass({
     echartInstance: null,

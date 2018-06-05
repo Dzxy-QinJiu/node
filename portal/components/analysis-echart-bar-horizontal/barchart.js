@@ -27,7 +27,7 @@ BarChart.prototype.judgeCreateData = function() {
     this.total = 0;
 };
 
-BarChart.prototype.colors = ["#f4bb4a", "#88af1e", "#c1e7ce", "#9230e5", "#f8d289", "#b6d9f7", "#0ebfe9", "#db0908", "#f88916", "#4dafde", "#f05050"];
+BarChart.prototype.colors = ['#f4bb4a', '#88af1e', '#c1e7ce', '#9230e5', '#f8d289', '#b6d9f7', '#0ebfe9', '#db0908', '#f88916', '#4dafde', '#f05050'];
 
 //排序，为了保证echart效果，必须变成升序
 BarChart.prototype.sort = function() {

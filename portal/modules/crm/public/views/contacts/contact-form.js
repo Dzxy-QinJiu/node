@@ -1,19 +1,19 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-import {Col, Form, Input, Icon, Radio} from "antd";
+import {Col, Form, Input, Icon, Radio} from 'antd';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-var ContactUtil = require("../../utils/contact-util");
-var ContactAction = require("../../action/contact-action");
-import PhoneInput from "CMP_DIR/phone-input";
-import Trace from "LIB_DIR/trace";
-import {isEqualArray} from "LIB_DIR/func";
-import CrmAction from "../../action/crm-actions";
-import {validateRequiredOne} from "PUB_DIR/sources/utils/common-method-util";
+var ContactUtil = require('../../utils/contact-util');
+var ContactAction = require('../../action/contact-action');
+import PhoneInput from 'CMP_DIR/phone-input';
+import Trace from 'LIB_DIR/trace';
+import {isEqualArray} from 'LIB_DIR/func';
+import CrmAction from '../../action/crm-actions';
+import {validateRequiredOne} from 'PUB_DIR/sources/utils/common-method-util';
 
-import DetailCard from "CMP_DIR/detail-card";
-import {DetailEditBtn} from "CMP_DIR/rightPanel";
-var uuid = require("uuid/v4");
+import DetailCard from 'CMP_DIR/detail-card';
+import {DetailEditBtn} from 'CMP_DIR/rightPanel';
+var uuid = require('uuid/v4');
 
 function cx(classNames) {
     if (typeof classNames === 'object') {
@@ -66,10 +66,10 @@ var ContactForm = React.createClass({
             role: {}
         };
 
-        this.formatContact("phone", contact.phone, formData, status);
-        this.formatContact("qq", contact.qq, formData, status);
-        this.formatContact("weChat", contact.weChat, formData, status);
-        this.formatContact("email", contact.email, formData, status);
+        this.formatContact('phone', contact.phone, formData, status);
+        this.formatContact('qq', contact.qq, formData, status);
+        this.formatContact('weChat', contact.weChat, formData, status);
+        this.formatContact('email', contact.email, formData, status);
 
         return {
             status: status,
@@ -99,40 +99,40 @@ var ContactForm = React.createClass({
     addContactWay: function(type) {
         var _this = this;
         return function() {
-            if (type === "phone") {
+            if (type === 'phone') {
                 _this.state.phoneInputIds.push(uuid());
                 _this.setState(_this.state);
             }
 
             ContactAction.addContactWay(_this.state.contact, type);
-            Trace.traceEvent(_this.getDOMNode(), "添加新建联系人的联系方式" + type);
+            Trace.traceEvent(_this.getDOMNode(), '添加新建联系人的联系方式' + type);
         };
     },
 
     removeContactWay: function(type, index) {
         var _this = this;
         return function() {
-            if (type === "phone") {
+            if (type === 'phone') {
                 _this.state.phoneInputIds.splice(index, 1);
             }
 
-            Trace.traceEvent(_this.getDOMNode(), "删除新建联系人的联系方式" + type);
+            Trace.traceEvent(_this.getDOMNode(), '删除新建联系人的联系方式' + type);
             _this.state.contact.contactWayAddObj[type] = _this.state.contact.contactWayAddObj[type].filter((x, idx) => idx != index);
             //删除的变量名
             const delKey = type + index;
-            _this.state.formData[delKey] = _this.state.formData[delKey] || "";
+            _this.state.formData[delKey] = _this.state.formData[delKey] || '';
             let sortedFormData = [];
             _.each(_this.state.formData, (value, key) => {
                 //当变量符合当前删除的类型时
                 if (key.indexOf(type) > -1) {
                     //取出变量名中的索引
-                    let innerNum = Number(key.replace(type, ""));
+                    let innerNum = Number(key.replace(type, ''));
                     //将当前类型下的变量按照索引顺序存放到数组中，便于进行item[i] = item[i+1]的操作
                     sortedFormData[innerNum] = {key: key, value: value};
                 }
             });
             //将稀疏数组转化为密集数组，并确保每一项的key均包含正确的索引
-            sortedFormData = Array.from(sortedFormData, (x, idx) => x ? x : {key: type + idx, value: ""});
+            sortedFormData = Array.from(sortedFormData, (x, idx) => x ? x : {key: type + idx, value: ''});
             sortedFormData.forEach((item, idx) => {
                 let innerNum = idx;
                 const propName = type + idx;
@@ -199,16 +199,16 @@ var ContactForm = React.createClass({
         for (var key in formData) {
             let contactVal = $.trim(formData[key]);
             if(contactVal){
-                if (key.indexOf("phone") != -1) {
+                if (key.indexOf('phone') != -1) {
                     phoneArray.push(contactVal);
                     delete formData[key];
-                } else if (key.indexOf("qq") != -1) {
+                } else if (key.indexOf('qq') != -1) {
                     qqArray.push(contactVal);
                     delete formData[key];
-                } else if (key.indexOf("weChat") != -1) {
+                } else if (key.indexOf('weChat') != -1) {
                     weChatArray.push(contactVal);
                     delete formData[key];
-                } else if (key.indexOf("email") != -1) {
+                } else if (key.indexOf('email') != -1) {
                     emailArray.push(contactVal);
                     delete formData[key];
                 }
@@ -240,15 +240,15 @@ var ContactForm = React.createClass({
             //添加联系人时，需要将客户名传过去，后端接口中需要
             formData.customer_name = this.props.customer_name;
             if (this.props.contactListLength === 0) {//添加的第一个联系人设为默认联系人
-                formData.def_contacts = "true";
+                formData.def_contacts = 'true';
             }
-            Trace.traceEvent(this.getDOMNode(), "保存新建联系人的信息");
+            Trace.traceEvent(this.getDOMNode(), '保存新建联系人的信息');
             ContactAction.submitAddContact(formData, (result) => {
                 this.afterSubmit(result);
             });
         } else {
             if (this.props.isMerge) {
-                Trace.traceEvent(this.getDOMNode(), "保存对当前联系人信息的修改");
+                Trace.traceEvent(this.getDOMNode(), '保存对当前联系人信息的修改');
                 //合并重复客户时的处理
                 this.props.updateMergeCustomerContact(formData);
                 ContactAction.hideEditContactForm(this.props.contact);
@@ -260,7 +260,7 @@ var ContactForm = React.createClass({
                     ContactAction.submitEditContact(formData, editType, (result) => {
                         this.afterSubmit(result);
                     });
-                    Trace.traceEvent(this.getDOMNode(), "保存对当前联系人信息的修改");
+                    Trace.traceEvent(this.getDOMNode(), '保存对当前联系人信息的修改');
                 } else {//没有修改时，直接关闭修改按钮即可
                     this.cancel();
                 }
@@ -284,20 +284,20 @@ var ContactForm = React.createClass({
         }
         //电话和其他信息都有修改
         if (isEditOtherInfo && isEditPhone) {
-            return "all";
+            return 'all';
         } else if (isEditPhone) {
-            return "phone";//只修改了电话
+            return 'phone';//只修改了电话
         } else if (isEditOtherInfo) {
-            return "no_phone";//只修改了除电话以外的信息
+            return 'no_phone';//只修改了除电话以外的信息
         } else {//没有修改
-            return "";
+            return '';
         }
     },
     //提交完数据后
     afterSubmit: function(result) {
         this.state.errorMsg = result.errorMsg || '';
         this.state.isLoading = false;
-        if (result.contact && result.contact.def_contancts === "true") {
+        if (result.contact && result.contact.def_contancts === 'true') {
             //只有在客户列表中才有更新列表中联系人的方法
             if (_.isFunction(this.props.updateCustomerDefContact)) {
                 //修改默认联系人的信息时，更新列表中的联系人数据
@@ -309,22 +309,22 @@ var ContactForm = React.createClass({
 
     cancel: function() {
         if (this.props.type === 'add') {
-            Trace.traceEvent($(this.getDOMNode()).find(".crm-contact-form-btns .form-cancel-btn"), "取消添加联系人");
+            Trace.traceEvent($(this.getDOMNode()).find('.crm-contact-form-btns .form-cancel-btn'), '取消添加联系人');
             ContactAction.hideAddContactForm();
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find(".crm-contact-form-btns .form-cancel-btn"), "取消更改联系人");
+            Trace.traceEvent($(this.getDOMNode()).find('.crm-contact-form-btns .form-cancel-btn'), '取消更改联系人');
             ContactAction.hideEditContactForm(this.props.contact);
         }
     },
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(), "新建/修改联系人的角色");
+        Trace.traceEvent(this.getDOMNode(), '新建/修改联系人的角色');
     },
     //获取当前已添加的电话列表
     getCurPhoneArray(){
         let formData = this.state.formData;
         let phoneArray = [];
         _.each(formData, (val, key) => {
-            if (key.indexOf("phone") !== -1) {
+            if (key.indexOf('phone') !== -1) {
                 phoneArray.push($.trim(val));
             }
         });
@@ -337,7 +337,7 @@ var ContactForm = React.createClass({
             validator: (rule, value, callback) => {
                 value = $.trim(value);
                 if (value) {
-                    let phone = value.replace("-", "");
+                    let phone = value.replace('-', '');
                     let contact = this.props.contact.contact;
                     let phoneArray = contact && _.isArray(contact.phone) ? contact.phone : [];
                     //该联系人原电话列表中不存在该电话
@@ -346,13 +346,13 @@ var ContactForm = React.createClass({
                         CrmAction.checkOnlyContactPhone(phone, data => {
                             if (_.isString(data)) {
                                 //唯一性验证出错了
-                                callback(Intl.get("crm.82", "电话唯一性验证出错了"));
+                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                             } else {
-                                if (_.isObject(data) && data.result === "true") {
+                                if (_.isObject(data) && data.result === 'true') {
                                     callback();
                                 } else {
                                     //已存在
-                                    callback(Intl.get("crm.83", "该电话已存在"));
+                                    callback(Intl.get('crm.83', '该电话已存在'));
                                 }
                             }
                         });
@@ -362,7 +362,7 @@ var ContactForm = React.createClass({
                         let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
                         if (phoneCount.length > 1) {
                             //该联系人中的电话列表已存在该电话，再添加时（重复添加）
-                            callback(Intl.get("crm.83", "该电话已存在"));
+                            callback(Intl.get('crm.83', '该电话已存在'));
                         } else {
                             // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
                             callback();
@@ -386,7 +386,7 @@ var ContactForm = React.createClass({
             return null;
         } else {
             return <div
-                className="validate-error-tip">{Intl.get("crm.contact.name.department", "联系人姓名和部门必填一项")}</div>;
+                className="validate-error-tip">{Intl.get('crm.contact.name.department', '联系人姓名和部门必填一项')}</div>;
         }
     },
     //添加、删除联系方式的按钮
@@ -409,25 +409,25 @@ var ContactForm = React.createClass({
      * @param status: 联系人表单数据的验证状态
      */
     renderPhoneInput(index, size, formData, status) {
-        const phoneKey = "phone" + index;
+        const phoneKey = 'phone' + index;
         if (!status[phoneKey]) {
-            formData[phoneKey] = "";
+            formData[phoneKey] = '';
             status[phoneKey] = {};
         }
         return (
             <PhoneInput
                 id={this.state.phoneInputIds[index]}
                 colon={false}
-                label={index ? " " : Intl.get("common.phone", "电话")}
+                label={index ? ' ' : Intl.get('common.phone', '电话')}
                 wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst)}
-                placeholder={Intl.get("crm.95", "请输入联系人电话")}
+                placeholder={Intl.get('crm.95', '请输入联系人电话')}
                 initialValue={formData[phoneKey]}
                 labelCol={{span: 2}}
                 wrapperCol={{span: 12}}
                 key={index}
                 validateRules={this.getPhoneInputValidateRules()}
                 onChange={this.setField.bind(this, phoneKey)}
-                suffix={this.renderContactWayBtns(index, size, "phone")}
+                suffix={this.renderContactWayBtns(index, size, 'phone')}
             />
         );
     },
@@ -446,7 +446,7 @@ var ContactForm = React.createClass({
         return (
             <FormItem
                 colon={false}
-                label={index ? " " : label}
+                label={index ? ' ' : label}
                 labelCol={{span: 2}}
                 wrapperCol={{span: 12}}
                 key={index}
@@ -469,20 +469,20 @@ var ContactForm = React.createClass({
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         colon={false}
-                        label={Intl.get("realm.change.owner.name", "姓名")}
+                        label={Intl.get('realm.change.owner.name', '姓名')}
                         labelCol={{span: 2}}
                         wrapperCol={{span: 22}}
                     >
                         <Col span={12} className="form-col-padding">
                             <FormItem validateStatus={this.renderValidateStyle('name')}
-                                help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}>
+                                help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}>
                                 <Validator rules={[{
                                     max: 50,
-                                    message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
+                                    message: Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')
                                 }]}>
                                     <Input name="name" value={formData.name}
                                         autocomplete="off"
-                                        placeholder={Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}
+                                        placeholder={Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')}
                                         onBlur={this.validateContactNameDepartment.bind(this)}
                                         onChange={this.setField.bind(this, 'name')}
                                     />
@@ -493,7 +493,7 @@ var ContactForm = React.createClass({
                             <FormItem>
                                 <Input name="department" value={formData.department}
                                     autocomplete="off"
-                                    placeholder={Intl.get("crm.contact.deparment.input", "请输入部门")}
+                                    placeholder={Intl.get('crm.contact.deparment.input', '请输入部门')}
                                     onBlur={this.validateContactNameDepartment.bind(this)}
                                     onChange={this.setField.bind(this, 'department')}
                                 />
@@ -503,7 +503,7 @@ var ContactForm = React.createClass({
                             <FormItem>
                                 <Input name="position" value={formData.position}
                                     autocomplete="off"
-                                    placeholder={Intl.get("crm.114", "请输入职位")}
+                                    placeholder={Intl.get('crm.114', '请输入职位')}
                                     onChange={this.setField.bind(this, 'position')}
                                 />
                             </FormItem>
@@ -513,12 +513,12 @@ var ContactForm = React.createClass({
                     <FormItem
                         className="contact-role-item"
                         colon={false}
-                        label={Intl.get("user.apply.detail.table.role", "角色")}
+                        label={Intl.get('user.apply.detail.table.role', '角色')}
                         labelCol={{span: 2}}
                         wrapperCol={{span: 22}}
                     >
                         <RadioGroup onChange={this.setField.bind(this, 'role')}
-                            value={formData.role ? formData.role : Intl.get("crm.115", "经办人")}>
+                            value={formData.role ? formData.role : Intl.get('crm.115', '经办人')}>
                             {ContactUtil.roleArray.map(function(role, index) {
                                 return (<Radio value={role} key={index}>{role}</Radio>);
                             })}
@@ -531,21 +531,21 @@ var ContactForm = React.createClass({
                     }
                     {//qq
                         _.isArray(contactWayAddObj.qq) && contactWayAddObj.qq.length ? contactWayAddObj.qq.map((qq, index) => {
-                            return this.renderContactWayInput("QQ", "qq", index, contactWayAddObj.qq.length, formData, status);
-                        }) : [this.renderContactWayInput("QQ", "qq", 0, 1, formData, status)]
+                            return this.renderContactWayInput('QQ', 'qq', index, contactWayAddObj.qq.length, formData, status);
+                        }) : [this.renderContactWayInput('QQ', 'qq', 0, 1, formData, status)]
                     }
                     {//微信
                         _.isArray(contactWayAddObj.weChat) && contactWayAddObj.weChat.length ? contactWayAddObj.weChat.map((weChat, index) => {
-                            return this.renderContactWayInput(Intl.get("crm.58", "微信"), "weChat", index, contactWayAddObj.weChat.length, formData, status);
-                        }) : [this.renderContactWayInput(Intl.get("crm.58", "微信"), "weChat", 0, 1, formData, status)]
+                            return this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', index, contactWayAddObj.weChat.length, formData, status);
+                        }) : [this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', 0, 1, formData, status)]
                     }
                     {//邮箱
                         _.isArray(contactWayAddObj.email) && contactWayAddObj.email.length ? contactWayAddObj.email.map((email, index) => {
-                            return this.renderContactWayInput(Intl.get("common.email", "邮箱"), "email", index, contactWayAddObj.email.length, formData, status);
-                        }) : [this.renderContactWayInput(Intl.get("common.email", "邮箱"), "email", 0, 1, formData, status)]
+                            return this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', index, contactWayAddObj.email.length, formData, status);
+                        }) : [this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', 0, 1, formData, status)]
                     }
                     {this.state.showNeedContact ?
-                        <div className="validate-error-tip">{Intl.get("crm.116", "请至少添加一种联系方式")} </div> : null}
+                        <div className="validate-error-tip">{Intl.get('crm.116', '请至少添加一种联系方式')} </div> : null}
                 </Validation>
             </Form>
         );

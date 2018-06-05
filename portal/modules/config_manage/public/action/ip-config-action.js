@@ -2,7 +2,7 @@
  *  IP配置action文件
  * */
 var IpConfigAjax = require('../ajax/ip-config-ajax');
-import { message } from "antd";
+import { message } from 'antd';
 
 function IpConfigActions(){
     this.generateActions(
@@ -25,12 +25,12 @@ function IpConfigActions(){
         IpConfigAjax.filterIp(status).then( (result) => {
             if (result) {
                 this.dispatch(status);
-                message.success(Intl.get("config.filter.ip.succss","过滤内网配置成功！"));
+                message.success(Intl.get('config.filter.ip.succss','过滤内网配置成功！'));
             } else {
-                message.error(Intl.get("config.filter.ip.err","过滤内网配置失败！"));
+                message.error(Intl.get('config.filter.ip.err','过滤内网配置失败！'));
             }
         }, (errorMsg) => {
-            message.error(errorMsg || Intl.get("config.filter.ip.err","过滤内网配置失败！"));
+            message.error(errorMsg || Intl.get('config.filter.ip.err','过滤内网配置失败！'));
         } );
     };
 
@@ -39,7 +39,7 @@ function IpConfigActions(){
             this.dispatch({error: false, status: result});
         }, (errorMsg) => {
             this.dispatch({error: true, errorMsg: errorMsg });
-            message.error(errorMsg || Intl.get("common.get.filter.ip.err","获取配置过滤网段失败！"));
+            message.error(errorMsg || Intl.get('common.get.filter.ip.err','获取配置过滤网段失败！'));
         } );
     };
 }

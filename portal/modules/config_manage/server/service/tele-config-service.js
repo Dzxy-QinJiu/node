@@ -2,13 +2,13 @@
  * 客服电话配置的service
  * */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var telePaths = {
-    add: "/rest/customer/v2/callrecord/invalid_phone",
-    del: "/rest/customer/v2/callrecord/invalid_phone/",
-    get: "/rest/customer/v2/callrecord/invalid_phone"
+    add: '/rest/customer/v2/callrecord/invalid_phone',
+    del: '/rest/customer/v2/callrecord/invalid_phone/',
+    get: '/rest/customer/v2/callrecord/invalid_phone'
 };
 
 exports.urls = telePaths;

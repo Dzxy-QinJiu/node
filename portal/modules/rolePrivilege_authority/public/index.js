@@ -2,25 +2,25 @@
  * Created by xiaojinfeng on  2015/12/22 16:59 .
  */
 
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./css/authority-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./css/authority-zh_CN.less");
+var language = require('../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./css/authority-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./css/authority-zh_CN.less');
 }
 var GeminiScrollbar = require('../../../components/react-gemini-scrollbar');
-var Button = require("antd").Button;
-var AuthorityStore = require("./store/authority-store");
-var AuthorityAction = require("./action/authority-actions");
-var AuthorityListView = require("./views/authority-list");
-var AuthorityGroupForm = require("./views/authority-group-form");
-var rightPanelUtil = require("../../../components/rightPanel/index");
+var Button = require('antd').Button;
+var AuthorityStore = require('./store/authority-store');
+var AuthorityAction = require('./action/authority-actions');
+var AuthorityListView = require('./views/authority-list');
+var AuthorityGroupForm = require('./views/authority-group-form');
+var rightPanelUtil = require('../../../components/rightPanel/index');
 var RightPanel = rightPanelUtil.RightPanel;
-var AuthorityForm = require("./views/authority-form");
-var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
-var TopNav = require("../../../components/top-nav");
-var Spinner = require("../../../components/spinner");
-var NoData = require("../../../components/analysis-nodata");
+var AuthorityForm = require('./views/authority-form');
+var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
+var TopNav = require('../../../components/top-nav');
+var Spinner = require('../../../components/spinner');
+var NoData = require('../../../components/analysis-nodata');
 function getStateFromStore(_this) {
     var storeState = AuthorityStore.getState();
     storeState.authorityContainerHeight = _this.authorityContainerHeightFnc();
@@ -40,13 +40,13 @@ var AuthorityPage = React.createClass({
         this.setState(datas);
     },
     componentDidMount: function() {
-        $(window).on("resize", this.resizeWindow);
+        $(window).on('resize', this.resizeWindow);
         AuthorityStore.listen(this.onChange);
         AuthorityAction.getAuthorityList();
         AuthorityAction.authorityInfo();
     },
     componentWillUnmount: function() {
-        $(window).off("resize", this.resizeWindow);
+        $(window).off('resize', this.resizeWindow);
         AuthorityStore.unlisten(this.onChange);
     },
 
@@ -62,7 +62,7 @@ var AuthorityPage = React.createClass({
     events: {
 
         showAddAuthorityGroupForm: function() {
-            AuthorityAction.showAuthorityForm("", "addAuthorityGroup");
+            AuthorityAction.showAuthorityForm('', 'addAuthorityGroup');
         },
 
         hideAuthorityForm: function() {
@@ -128,10 +128,10 @@ var AuthorityPage = React.createClass({
         var authorityGroupList = this.state.authorityGroupList || [];
         var height = this.state.authorityContainerHeight;
         var authorityListDivHeight = height - bootomHeight;
-        var authorityListElement = "";
+        var authorityListElement = '';
         if (authorityGroupList && authorityGroupList.length > 0) {
             authorityListElement = authorityGroupList.map(function(authorityGroup, i) {
-                var delAuthGroupErorrMsg = (authorityGroup.permissionGroupName == _this.state.delAuthGroupName ? _this.state.delAuthGroupErorrMsg : "");
+                var delAuthGroupErorrMsg = (authorityGroup.permissionGroupName == _this.state.delAuthGroupName ? _this.state.delAuthGroupErorrMsg : '');
                 return (
                     <div className="backgroundManagement_authority_content">
                         <AuthorityListView

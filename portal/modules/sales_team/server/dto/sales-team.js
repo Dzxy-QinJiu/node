@@ -3,7 +3,7 @@
  */
 function SalesTeam(opts) {
     this.id = opts.id;
-    this.teamName = opts.teamName || "unknown";
+    this.teamName = opts.teamName || 'unknown';
 }
 
 module.exports = SalesTeam;

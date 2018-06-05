@@ -1,5 +1,5 @@
-var ContactActions = require("../action/contact-action");
-var ContactUtils = require("../utils/contact-util");
+var ContactActions = require('../action/contact-action');
+var ContactUtils = require('../utils/contact-util');
 
 function ContactStore() {
     //联系人列表
@@ -41,9 +41,9 @@ ContactStore.prototype.setInitData = function() {
     this.contactListLoading = false;
     this.contactList = [];
     //获取联系人列表出错的提示，默认不出错
-    this.getContactListErrorMsg = "";
+    this.getContactListErrorMsg = '';
     //添加联系人出错的提示，默认不出错
-    this.submitAddContactErrorMsg = "";
+    this.submitAddContactErrorMsg = '';
 };
 
 //FromAction-通过ajax获取联系人列表
@@ -111,7 +111,7 @@ ContactStore.prototype.submitEditContact = function(result) {
         targetContact.submitEditContactErrorMsg = result.errorMsg;
     } else {
         this.hideEditContactForm(targetContact);
-        targetContact.submitEditContactErrorMsg = "";
+        targetContact.submitEditContactErrorMsg = '';
         //将修改后返回的联系人对象转换为界面上所需的数据格式
         let afterEditContact = ContactUtils.newViewContactObject(contact);
         targetContact.contact = afterEditContact.contact;//联系人对象
@@ -124,7 +124,7 @@ ContactStore.prototype.submitEditContact = function(result) {
 //FromAction-添加一个联系方式
 ContactStore.prototype.addContactWay = function(array) {
     var obj = array[0], type = array[1];
-    obj.contactWayAddObj[type].push("");
+    obj.contactWayAddObj[type].push('');
 };
 
 //FromAction-显示删除一个联系人的对话框
@@ -147,7 +147,7 @@ ContactStore.prototype.deleteContact = function(contactData) {
 ContactStore.prototype.toggleDefaultContact = function(contact) {
     ContactUtils.unsetDefaultContacts(this.contactList);
     let curContact = _.find(this.contactList, item => item.contact.id === contact.id);
-    curContact.contact.def_contancts = "true";
+    curContact.contact.def_contancts = 'true';
 };
 //展开、收起联系方式
 ContactStore.prototype.toggleContactWay = function(contact) {

@@ -3,14 +3,14 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  */
 
-"use strict";
+'use strict';
 
 require('../nock');
 var multiparty = require('multiparty');
-var fs = require("fs");
-var moment = require("moment");
+var fs = require('fs');
+var moment = require('moment');
 //域管理服务
-var appManageServic = require("../service/app-manage-service");
+var appManageServic = require('../service/app-manage-service');
 
 // 文件名乱码的处理
 function handleFileName(req, res, filename) {
@@ -45,17 +45,17 @@ exports.getMyAppList = function(req, res) {
         params.filter_content = filterContent;
     }
     appManageServic.getMyAppList(req, res, params === {} ? null : params)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 
 exports.getCurAppById = function(req, res) {
-    appManageServic.getCurAppById(req, res, req.params.app_id).on("success", function(data) {
+    appManageServic.getCurAppById(req, res, req.params.app_id).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -65,9 +65,9 @@ exports.getCurAppById = function(req, res) {
  */
 exports.editApp = function(req, res) {
     appManageServic.editApp(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -77,9 +77,9 @@ exports.editApp = function(req, res) {
  */
 exports.refreshAppSecret = function(req, res) {
     appManageServic.refreshAppSecret(req, res, req.params.app_id)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -88,9 +88,9 @@ exports.refreshAppSecret = function(req, res) {
 //修改应用到期时间
 exports.updateExpireDate = function(req, res) {
     appManageServic.updateExpireDate(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -99,13 +99,13 @@ exports.updateExpireDate = function(req, res) {
 // 导出权限
 exports.exportAuthorityList = function(req, res) {
     var clientID = req.params.client_id;
-    var clientAppName = "";
+    var clientAppName = '';
     // 以年月日的格式命名文件名比如：20161018
-    var date = moment(new Date()).format("YYYYMMDD");
-    appManageServic.getCurAppById(req, res, clientID).on("success", function(data) {
+    var date = moment(new Date()).format('YYYYMMDD');
+    appManageServic.getCurAppById(req, res, clientID).on('success', function(data) {
         clientAppName = data.name;
         appManageServic.exportAuthorityList(req, res, clientID)
-            .on("success", function(data) {
+            .on('success', function(data) {
                 // 导出文件的命名方式role-appName-date
                 var filename = 'auth-' + clientAppName + '-' + date + '.json';
                 // 数据
@@ -114,11 +114,11 @@ exports.exportAuthorityList = function(req, res) {
                 handleFileName(req, res, filename);
                 res.write(authorityData);
                 res.end();
-            }).on("error", function(codeMessage) {
+            }).on('error', function(codeMessage) {
                 res.status(500).json(codeMessage && codeMessage.message);
             });
-    }).on("error", function() {
-        res.status(500).json("导出权限失败");
+    }).on('error', function() {
+        res.status(500).json('导出权限失败');
     });
 };
 
@@ -126,30 +126,30 @@ exports.exportAuthorityList = function(req, res) {
 exports.exportAuthModuleFilename = function(req, res) {
     var example = [
         {
-            "classify_name": "应用管理",
-            "permission_apis": {
-                "v1/application/roles/*": "GET",
-                "v1/role/export/*": "GET"
+            'classify_name': '应用管理',
+            'permission_apis': {
+                'v1/application/roles/*': 'GET',
+                'v1/role/export/*': 'GET'
             },
-            "permission_define": "USER_INFO_MYAPP_ROLE_LIST",
-            "permission_name": "查看我的应用中的角色"
+            'permission_define': 'USER_INFO_MYAPP_ROLE_LIST',
+            'permission_name': '查看我的应用中的角色'
         },
         {
-            "classify_name": "应用管理",
-            "permission_apis": {
-                "v1/role": "PUT"
+            'classify_name': '应用管理',
+            'permission_apis': {
+                'v1/role': 'PUT'
             },
-            "permission_define": "USER_INFO_MYAPP_ROLE_EDIT",
-            "permission_name": "修改我的应用中的角色"
+            'permission_define': 'USER_INFO_MYAPP_ROLE_EDIT',
+            'permission_name': '修改我的应用中的角色'
         },
         {
-            "classify_name": "用户管理",
-            "permission_apis": {
-                "v1/application/permissions/*": "GET",
-                "v1/user/approve_grants": "POST"
+            'classify_name': '用户管理',
+            'permission_apis': {
+                'v1/application/permissions/*': 'GET',
+                'v1/user/approve_grants': 'POST'
             },
-            "permission_define": "APP_USER_APPLY_APPROVAL",
-            "permission_name": "审批申请消息"
+            'permission_define': 'APP_USER_APPLY_APPROVAL',
+            'permission_name': '审批申请消息'
         }
     ];
     var data = JSON.stringify(example, null, '\t');
@@ -174,9 +174,9 @@ exports.uploadAuthority = function(req, res) {
         var tmpPath = files['import_authority'][0].path;
         var data = fs.readFileSync(tmpPath, 'utf8');
         var importData = JSON.parse(data);
-        appManageServic.uploadAuthority(req, res, client_id, importData).on("success", function(message) {
+        appManageServic.uploadAuthority(req, res, client_id, importData).on('success', function(message) {
             res.json(message);
-        }).on("error", function(ret) {
+        }).on('error', function(ret) {
             res.status(500).json(ret);
         });
         // 删除临时文件
@@ -187,13 +187,13 @@ exports.uploadAuthority = function(req, res) {
 // 导出角色
 exports.exportRoleList = function(req, res) {
     var clientID = req.params.client_id;
-    var clientAppName = "";
+    var clientAppName = '';
     // 以年月日的格式命名文件名比如：20161018
-    var date = moment(new Date()).format("YYYYMMDD");
-    appManageServic.getCurAppById(req, res, clientID).on("success", function(data) {
+    var date = moment(new Date()).format('YYYYMMDD');
+    appManageServic.getCurAppById(req, res, clientID).on('success', function(data) {
         clientAppName = data.name;
         appManageServic.exportRoleList(req, res, clientID)
-            .on("success", function(data) {
+            .on('success', function(data) {
                 // 导出文件的命名方式role-appName-date
                 var filename = 'role-' + clientAppName + '-' + date + '.json';
                 // 数据
@@ -202,11 +202,11 @@ exports.exportRoleList = function(req, res) {
                 handleFileName(req, res, filename);
                 res.write(roleData);
                 res.end();
-            }).on("error", function(codeMessage) {
+            }).on('error', function(codeMessage) {
                 res.status(500).json(codeMessage && codeMessage.message);
             });
-    }).on("error", function() {
-        res.status(500).json("导出角色失败");
+    }).on('error', function() {
+        res.status(500).json('导出角色失败');
     });
 };
 
@@ -214,18 +214,18 @@ exports.exportRoleList = function(req, res) {
 exports.exportRoleModuleFilename = function(req, res) {
     var example = [
         {
-            "role_name": "应用管理员",
-            "permissions": [
-                "USER_ANALYSIS_INDUSTRY",
-                "APP_USER_LIST"
+            'role_name': '应用管理员',
+            'permissions': [
+                'USER_ANALYSIS_INDUSTRY',
+                'APP_USER_LIST'
             ]
         },
         {
-            "role_name": "域管理员",
-            "permissions": [
-                "USER_MANAGE_USE",
-                "USER_ANALYSIS_INDUSTRY",
-                "NOTIFICATION_APPLYFOR_LIST"
+            'role_name': '域管理员',
+            'permissions': [
+                'USER_MANAGE_USE',
+                'USER_ANALYSIS_INDUSTRY',
+                'NOTIFICATION_APPLYFOR_LIST'
             ]
         }
     ];
@@ -253,9 +253,9 @@ exports.uploadRole = function(req, res) {
         var data = fs.readFileSync(tmpPath, 'utf8');
         var importData = JSON.parse(data);
 
-        appManageServic.uploadRole(req, res, client_id, importData).on("success", function(message) {
+        appManageServic.uploadRole(req, res, client_id, importData).on('success', function(message) {
             res.json(message);
-        }).on("error", function(ret) {
+        }).on('error', function(ret) {
             res.status(500).json(ret);
         });
         // 删除临时文件
@@ -263,9 +263,9 @@ exports.uploadRole = function(req, res) {
     });
 };
 exports.getCurAppKey = function(req, res) {
-    appManageServic.getCurAppKey(req, res, req.params.app_id).on("success", function(data) {
+    appManageServic.getCurAppKey(req, res, req.params.app_id).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

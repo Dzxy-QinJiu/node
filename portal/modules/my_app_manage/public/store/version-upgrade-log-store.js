@@ -1,7 +1,7 @@
-var VersionUpgradeLogAction = require("../action/version-upgrade-log-action");
+var VersionUpgradeLogAction = require('../action/version-upgrade-log-action');
 
 function VersionUpgradeLogStore() {
-    this.appVersionListResult = "loading";
+    this.appVersionListResult = 'loading';
 
     this.resetState();
     
@@ -11,13 +11,13 @@ function VersionUpgradeLogStore() {
 // 获取版本记录列表
 VersionUpgradeLogStore.prototype.getAppRecordsList = function(resData){
     if (resData.loading){
-        this.appVersionListResult = "loading";
+        this.appVersionListResult = 'loading';
     }else if(resData.error){
         this.getAppRecordErrorMsg = resData.errorMsg;
-        this.appVersionListResult = "";
+        this.appVersionListResult = '';
     } else {
-        this.getAppRecordErrorMsg = "";
-        this.appVersionListResult = "";
+        this.getAppRecordErrorMsg = '';
+        this.appVersionListResult = '';
         var list = _.isArray(resData.resData.list) ? resData.resData.list : [];
         this.versionList = this.versionList.concat(list);
         this.curPage++;

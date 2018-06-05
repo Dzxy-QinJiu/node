@@ -5,7 +5,7 @@ import { Form, Input, Button } from 'antd';
 const FormItem = Form.Item;
 const RealmAjax = require('../ajax/realm-ajax');
 import {EMAIL, COMMON} from '../consts';
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 const AlertTimer = require('CMP_DIR/alert-timer');
 
 class EmailServerForm extends React.Component {
@@ -18,7 +18,7 @@ class EmailServerForm extends React.Component {
     }
     handleSubmit = (e) => {
         e.preventDefault();
-        Trace.traceEvent(e,"点击保存");
+        Trace.traceEvent(e,'点击保存');
         this.props.form.validateFields((err, values) => {
             if (err) {
                 return;

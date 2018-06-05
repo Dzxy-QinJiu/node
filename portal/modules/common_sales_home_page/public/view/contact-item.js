@@ -3,13 +3,13 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/19.
  */
-import {message} from "antd";
-require("../css/contact-item.less");
+import {message} from 'antd';
+require('../css/contact-item.less');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
-import Trace from "LIB_DIR/trace";
-import {isEqualArray} from "LIB_DIR/func";
-var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
-import classNames from "classnames";
+import Trace from 'LIB_DIR/trace';
+import {isEqualArray} from 'LIB_DIR/func';
+var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
+import classNames from 'classnames';
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
@@ -41,9 +41,9 @@ class ContactItem extends React.Component {
 
     // 自动拨号
     handleClickCallOut(phoneNumber, contactName, customerId) {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
         if (this.state.errMsg) {
-            message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
+            message.error(this.state.errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
         } else {
             if (this.state.callNumber) {
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
@@ -57,39 +57,39 @@ class ContactItem extends React.Component {
                 };
                 crmAjax.callOut(reqData).then((result) => {
                     if (result.code == 0) {
-                        message.success(Intl.get("crm.call.phone.success", "拨打成功"));
+                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                     }
                 }, (errMsg) => {
-                    message.error(errMsg || Intl.get("crm.call.phone.failed", "拨打失败"));
+                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
                 });
             } else {
-                message.error(Intl.get("crm.bind.phone", "请先绑定分机号！"));
+                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
             }
         }
     }
 
     renderContactsContent(contactDetail) {
-        var customerId = "";
-        if (this.props.itemType === "schedule") {
+        var customerId = '';
+        if (this.props.itemType === 'schedule') {
             customerId = this.state.customerData.customer_id;
         } else if (_.isArray(this.state.contacts) && this.state.contacts.length) {
             customerId = this.state.contacts[0].customer_id;
         }
         return (
             <div className="contact-content">
-                <div className="pull-left contact-label">{Intl.get("call.record.contacts", "联系人")}:</div>
+                <div className="pull-left contact-label">{Intl.get('call.record.contacts', '联系人')}:</div>
                 {_.map(contactDetail, (contactItem, idx) => {
-                    var contactName = $.trim(contactItem.name) || "";
+                    var contactName = $.trim(contactItem.name) || '';
                     return (
                         <div className="contact-container">
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
                                         var cls = classNames({
-                                            "contact-name": contactItem.name
+                                            'contact-name': contactItem.name
                                         });
                                         var text = <span className="call-out-tip"><i
-                                            className="iconfont icon-phone-call-out-tip"></i>{Intl.get("common.sales.frontpage.click.phone", "点击即可拨打。")}</span>;
+                                            className="iconfont icon-phone-call-out-tip"></i>{Intl.get('common.sales.frontpage.click.phone', '点击即可拨打。')}</span>;
                                         return (
                                             <span className="contact-item"
                                                 onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
@@ -125,7 +125,7 @@ class ContactItem extends React.Component {
 ContactItem.defaultProps = {
     contacts: [],//联系人信息
     customerData: {},//客户信息
-    itemType: "",
-    callNumber: "",//座机号
+    itemType: '',
+    callNumber: '',//座机号
 };
 export default ContactItem;

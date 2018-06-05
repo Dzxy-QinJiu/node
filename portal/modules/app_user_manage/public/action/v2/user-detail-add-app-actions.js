@@ -10,9 +10,9 @@ class UserDetailAddAppActions {
             'noSelectRoleError', // 添加应用时，没有选择角色的错误提示
             'someAppsNoSelectRoleError', // 添加多个应用时，有应用没有选择角色的错误提示
             //保存应用的特殊配置
-            "saveAppsSetting",
+            'saveAppsSetting',
             //将应用的特殊配置同步到全局配置
-            "syncCustomAppSettingToGlobalSetting"
+            'syncCustomAppSettingToGlobalSetting'
         );
     }
     getCurrentRealmApps() {

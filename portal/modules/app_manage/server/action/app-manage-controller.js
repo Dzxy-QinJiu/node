@@ -3,11 +3,11 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  */
 
-"use strict";
+'use strict';
 
 require('../nock');
 //域管理服务
-var appManageServic = require("../service/app-manage-service");
+var appManageServic = require('../service/app-manage-service');
 
 /*
  * show list app handler.
@@ -37,17 +37,17 @@ exports.getCurAppList = function(req, res) {
     if (status) {
         params.status = status;
     }
-    appManageServic.getApps(req, res, params === {} ? null : params, isGetAllApp).on("success", function(data) {
+    appManageServic.getApps(req, res, params === {} ? null : params, isGetAllApp).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.json(codeMessage && codeMessage.message);
     });
 };
 
 exports.getCurAppById = function(req, res) {
-    appManageServic.getCurAppById(req, res, req.params.app_id).on("success", function(data) {
+    appManageServic.getCurAppById(req, res, req.params.app_id).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -56,9 +56,9 @@ exports.getCurAppById = function(req, res) {
  * add app handler
  */
 exports.addApp = function(req, res) {
-    appManageServic.addApp(req, res, req.body). on("success", function(data) {
+    appManageServic.addApp(req, res, req.body). on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     }
     );
@@ -68,9 +68,9 @@ exports.addApp = function(req, res) {
  */
 exports.editApp = function(req, res) {
     appManageServic.editApp(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );

@@ -1,10 +1,10 @@
 export default function(arg) {
     let url = arg.url;
     const Deferred = $.Deferred();
-    const type = arg.type || "get";
-    let data = "";
+    const type = arg.type || 'get';
+    let data = '';
     if (arg.data) {
-        if (type === "get") {
+        if (type === 'get') {
             data = arg.data;
         }
         else {
@@ -19,12 +19,12 @@ export default function(arg) {
         });
         //下拉加载时，当前展示的最后条数据的id;
         if (arg.params && arg.params.lastId) {
-            url += "id=" + url.lastId;
+            url += 'id=' + url.lastId;
         }
     }
     $.ajax({
         url: url,
-        dataType: arg.dataType || "json",
+        dataType: arg.dataType || 'json',
         type: type,
         data: data,
         success: function(result) {

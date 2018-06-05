@@ -1,15 +1,15 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-require("./index.less");
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/form-basic-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("../css/form-basic-zh_CN.less");
+require('./index.less');
+var language = require('../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('../css/form-basic-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('../css/form-basic-zh_CN.less');
 }
 
-require("../../../public/css/antd-vertical-tabs.css");
+require('../../../public/css/antd-vertical-tabs.css');
 import {Tooltip,Tabs, Alert} from 'antd';
 const TabPane = Tabs.TabPane;
 import classNames from 'classnames';
@@ -150,21 +150,21 @@ const AppPropertySetting = React.createClass({
                 }
                 //检查用户类型
                 if(this.props.isSingleAppEdit) {
-                    checkSingleProp("user_type");
+                    checkSingleProp('user_type');
                 }
                 //检查到期停用
-                checkSingleProp("over_draft");
+                checkSingleProp('over_draft');
                 //检查二步验证
                 if(this.props.showIsTwoFactor) {
-                    checkSingleProp("is_two_factor");
+                    checkSingleProp('is_two_factor');
                 }
                 //检查用户状态（启用、停用）
                 if(this.props.isSingleAppEdit) {
-                    checkSingleProp("status");
+                    checkSingleProp('status');
                 }
                 //检查多人登录
                 if(this.props.showMultiLogin) {
-                    checkSingleProp("multilogin");
+                    checkSingleProp('multilogin');
                 }
                 //检查角色、权限
                 checkRolePermission();
@@ -223,20 +223,20 @@ const AppPropertySetting = React.createClass({
                 const appId = currentApp.app_id;
                 const originAppSetting = appPropSettingsMap[appId] || {};
                 if(this.props.isSingleAppEdit) {
-                    checkSingleProp("user_type");
+                    checkSingleProp('user_type');
                 }
                 if(this.props.showUserNumber) {
-                    checkSingleProp("number");
+                    checkSingleProp('number');
                 }
-                checkSingleProp("over_draft");
+                checkSingleProp('over_draft');
                 if(this.props.showIsTwoFactor) {
-                    checkSingleProp("is_two_factor");
+                    checkSingleProp('is_two_factor');
                 }
                 if(this.props.isSingleAppEdit) {
-                    checkSingleProp("status");
+                    checkSingleProp('status');
                 }
                 if(this.props.showMultiLogin) {
-                    checkSingleProp("multilogin");
+                    checkSingleProp('multilogin');
                 }
                 checkRolePermission();
                 checkTime();
@@ -269,7 +269,7 @@ const AppPropertySetting = React.createClass({
             const newState = {};
             let currentApp = _.isArray(nextProps.selectedApps) && nextProps.selectedApps[0] ? nextProps.selectedApps[0] : {};
             //新的当前应用的id数组
-            const currentAppIds = _.pluck(nextProps.selectedApps , "app_id");
+            const currentAppIds = _.pluck(nextProps.selectedApps , 'app_id');
             newState.currentApp = currentApp;
             this.setState(newState);
         }
@@ -327,7 +327,7 @@ const AppPropertySetting = React.createClass({
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
         return (
-            <div className={this.state.changeCurrentAppLoading ? "app-property-container-content change-current-app-loading" : "app-property-container-content"}>
+            <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
                 <div className="app-property-custom-settings">
                     <div className="app-property-content basic-data-form app-property-other-property"
                         style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block'}}
@@ -472,9 +472,9 @@ const AppPropertySetting = React.createClass({
         }
         //class名字
         const cls = classNames({
-            "app-property-setting": true,
+            'app-property-setting': true,
             //如果是单个应用的编辑，添加这个class
-            "single-app-edit": this.props.isSingleAppEdit
+            'single-app-edit': this.props.isSingleAppEdit
         });
         if(!this.props.selectedApps.length) {
             return null;

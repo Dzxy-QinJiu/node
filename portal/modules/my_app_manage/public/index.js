@@ -1,33 +1,33 @@
-require("../../../components/app-notice/app-notice-list.less");
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./css/index-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./css/index-zh_CN.less");
+require('../../../components/app-notice/app-notice-list.less');
+var language = require('../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./css/index-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./css/index-zh_CN.less');
 }
-var RightContent = require("../../../components/privilege/right-content");
-var RightCardsContainer = require("../../../components/rightCardsContainer");
-var rightPanelUtil = require("../../../components/rightPanel");
+var RightContent = require('../../../components/privilege/right-content');
+var RightCardsContainer = require('../../../components/rightCardsContainer');
+var rightPanelUtil = require('../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
-var EditAppForm = require("./views/app-form");
+var EditAppForm = require('./views/app-form');
 var VersionUpgradeLog = require('./views/version-upgrade-log');
 var AppNotice = require('./views/app-notice');
-var AppInfo = require("./views/app-info");
-var MyAppAuthRoleView = require("./views/auth-role-view");
-var AppAuthPanel = require("./views/app-auth-panel");
-var AppStore = require("./store/app-store");
-var AppAction = require("./action/app-actions");
-var AppFormAction = require("./action/app-form-actions");
+var AppInfo = require('./views/app-info');
+var MyAppAuthRoleView = require('./views/auth-role-view');
+var AppAuthPanel = require('./views/app-auth-panel');
+var AppStore = require('./store/app-store');
+var AppAction = require('./action/app-actions');
+var AppFormAction = require('./action/app-form-actions');
 var UserTypeConfig = require('./views/user-type-config');
-var Spinner = require("../../../components/spinner");
-var classNames = require("classnames");
+var Spinner = require('../../../components/spinner');
+var classNames = require('classnames');
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
 var AppCodeTrace = require('./views/app-code-trace');
 
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 //我的应用的自定义事件处理
-var myAppEmitter = require("../../../public/sources/utils/emitters").myAppEmitter;
+var myAppEmitter = require('../../../public/sources/utils/emitters').myAppEmitter;
 const FORMAT = oplateConsts.DATE_FORMAT;
 //构造搜索条件,搜索关键字：应用名、描述
 function constructorSearchObj(searchContent) {
@@ -47,7 +47,7 @@ var MyAppManage = React.createClass({
         this.setState(AppStore.getState());
     },
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
         AppStore.listen(this.onChange);
         //通过history.pushState({params}，“/myApp”,{urlParams});跳转过来时，params参数
         var locationState = this.props.location.state;
@@ -80,7 +80,7 @@ var MyAppManage = React.createClass({
         }
     },
     componentWillUnmount: function() {
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
         AppStore.unlisten(this.onChange);
         myAppEmitter.removeListener(myAppEmitter.GO_TO_ADD_ROLE, this.goToAddRole);
         myAppEmitter.removeListener(myAppEmitter.GO_TO_ADD_PERMISSION, this.goToAddPermission);
@@ -92,12 +92,12 @@ var MyAppManage = React.createClass({
             AppFormAction.setAllAppListLoading(true);
             AppFormAction.getAllAppList();
             //type：“edit”/"add"
-            if (type === "add") {
+            if (type === 'add') {
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
                 focusTimeout = setTimeout(function() {
-                    $("#name").focus();
+                    $('#name').focus();
                 }, 600);
             }
             AppAction.showAppForm(type);
@@ -153,9 +153,9 @@ var MyAppManage = React.createClass({
                 //获取应用的详情
                 AppAction.getCurAppById(app.id);
             });
-            if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
+            if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
                 if (!this.state.versionUpgradeShow && !this.state.appNoticePanelShow && !this.state.userTypeConfigShow && !this.state.appCodeTraceShow) {
-                    $(".right-panel-content").removeClass("right-panel-content-slide");
+                    $('.right-panel-content').removeClass('right-panel-content-slide');
                     if (openTimeout) {
                         clearTimeout(openTimeout);
                     }
@@ -184,7 +184,7 @@ var MyAppManage = React.createClass({
 
         closeDetailRightPanel(e) {
             e.stopPropagation();
-            Trace.traceEvent(e,"关闭应用详情界面");
+            Trace.traceEvent(e,'关闭应用详情界面');
             AppAction.closeRightPanel();
         },
 
@@ -200,14 +200,14 @@ var MyAppManage = React.createClass({
             AppAction.showAuthRolePanel(app.id);
         },
         closeAuthRolePanel: function(event) {
-            Trace.traceEvent(event,"关闭角色和权限界面");
+            Trace.traceEvent(event,'关闭角色和权限界面');
             AppAction.closeAuthRolePanel();
         },
         setShowRoleAuthType: function(type) {
             AppAction.setShowRoleAuthType(type);
         },
         showAppAuthPanel: function(event) {
-            Trace.traceEvent(event,"点击查看应用权限");
+            Trace.traceEvent(event,'点击查看应用权限');
             AppAction.showAppAuthPanel();
         },
         //刷新应用密钥
@@ -293,30 +293,30 @@ var MyAppManage = React.createClass({
                 name: app.name,
                 image: app.image,
                 appUrl: {
-                    label: "URL:",
+                    label: 'URL:',
                     value: app.appUrl,
                     showOnCard: true
                 },
                 status: app.status,
                 descr: {
-                    label: Intl.get("common.describe", "描述") + ':',
+                    label: Intl.get('common.describe', '描述') + ':',
                     value: app.descr,
                     showOnCard: true
                 },
                 appAuthMap: app.appAuthMap
             };
-            var createDate = app.createDate ? moment(app.createDate).format(FORMAT) : "";
-            var expireDate = app.expireDate ? moment(app.expireDate).format(FORMAT) : "";
+            var createDate = app.createDate ? moment(app.createDate).format(FORMAT) : '';
+            var expireDate = app.expireDate ? moment(app.expireDate).format(FORMAT) : '';
             if (expireDate) {
                 pageApp.date = {
-                    label: createDate + Intl.get("common.time.connector", " 至") + expireDate,
-                    value: "",
+                    label: createDate + Intl.get('common.time.connector', ' 至') + expireDate,
+                    value: '',
                     showOnCard: true
                 };
             } else {
                 pageApp.date = {
-                    label: createDate + Intl.get("common.time.connector", " 至 -"),
-                    value: "",
+                    label: createDate + Intl.get('common.time.connector', ' 至 -'),
+                    value: '',
                     showOnCard: true
                 };
             }
@@ -325,7 +325,7 @@ var MyAppManage = React.createClass({
 
     },
     render: function() {
-        var modalType = Intl.get("common.app", "应用");
+        var modalType = Intl.get('common.app', '应用');
         var authRoleView = null;
         var firstLoading = this.state.isLoading;
         if (this.state.isShowAuthRolePanel) {
@@ -335,8 +335,8 @@ var MyAppManage = React.createClass({
                 closeAuthRolePanel={this.events.closeAuthRolePanel}/>);
         }
         var _this = this;
-        var slideClassName = classNames("right-panel-content", {
-            "right-panel-content-slide": (
+        var slideClassName = classNames('right-panel-content', {
+            'right-panel-content-slide': (
                 _this.state.appFormShow ||
                 _this.state.appAuthPanelShow ||
                 _this.state.versionUpgradeShow ||

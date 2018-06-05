@@ -2,8 +2,8 @@
  * 版本升级日志的action
  */
 
-var versionAjax = require("../ajax/version-upgrade-log-ajax");
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var versionAjax = require('../ajax/version-upgrade-log-ajax');
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 function VersionUpgradeLogActions() {
     this.generateActions(
         'hideForm',

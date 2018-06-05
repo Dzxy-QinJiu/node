@@ -1,20 +1,20 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-import {Button, Form, Input, Icon, message} from "antd";
+import {Button, Form, Input, Icon, message} from 'antd';
 var FormItem = Form.Item;
-var HeadIcon = require("../../../../components/headIcon");
-var AlertTimer = require("../../../../components/alert-timer");
-var defaultPhoneIcon = require("../../../common/public/image/user-info-phone-icon.png");
-var UserInfoAction = require("../action/user-info-actions");
-var Alert = require("antd").Alert;
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var Spinner = require("../../../../components/spinner");
-import BasicEditSelectField from "CMP_DIR/basic-edit-field/select";
+var HeadIcon = require('../../../../components/headIcon');
+var AlertTimer = require('../../../../components/alert-timer');
+var defaultPhoneIcon = require('../../../common/public/image/user-info-phone-icon.png');
+var UserInfoAction = require('../action/user-info-actions');
+var Alert = require('antd').Alert;
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var Spinner = require('../../../../components/spinner');
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
 import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import { storageUtil } from "ant-utils";
+import { storageUtil } from 'ant-utils';
 
 const messages = defineMessages({
     common_email: {id: 'common.email'},//邮箱
@@ -29,9 +29,9 @@ const messages = defineMessages({
 
 });
 
-const langArray = [{key: "zh_CN", val: "简体中文"},
-    {key: "en_US", val: "English"},
-    {key: "es_VE", val: "Español"}];
+const langArray = [{key: 'zh_CN', val: '简体中文'},
+    {key: 'en_US', val: 'English'},
+    {key: 'es_VE', val: 'Español'}];
 function noop() {
 }
 function cx(classNames) {
@@ -50,41 +50,41 @@ var UserInfo = React.createClass({
             editUserInfo: noop,
             userInfoFormShow: false,
             userInfo: {
-                userId: "",
-                userName: "",
-                nickName: "",
-                password: "",
-                rePasswd: "",
-                newPasswd: "",
-                phone: "",
-                email: "",
-                rolesName: "",
-                roles: "",
-                reject: "",
+                userId: '',
+                userName: '',
+                nickName: '',
+                password: '',
+                rePasswd: '',
+                newPasswd: '',
+                phone: '',
+                email: '',
+                rolesName: '',
+                roles: '',
+                reject: '',
             }
         };
     },
     getInitialState: function() {
         return {
             status: {
-                userId: "",
-                userName: "",
-                nickName: "",
-                password: "",
-                rePasswd: "",
-                newPasswd: "",
-                phone: "",
-                email: "",
-                rolesName: "",
-                roles: "",
-                reject: "",
+                userId: '',
+                userName: '',
+                nickName: '',
+                password: '',
+                rePasswd: '',
+                newPasswd: '',
+                phone: '',
+                email: '',
+                rolesName: '',
+                roles: '',
+                reject: '',
 
             },
             formData: $.extend(true, {}, this.props.userInfo),
             userInfoFormShow: this.props.userInfoFormShow,
             isSaving: false,
-            saveErrorMsg: "",
-            lang: Oplate.lang || "zh_CN"
+            saveErrorMsg: '',
+            lang: Oplate.lang || 'zh_CN'
         };
     },
     componentWillReceiveProps: function(nextProps) {
@@ -136,7 +136,7 @@ var UserInfo = React.createClass({
         });
     },
     hideSaveTooltip: function() {
-        this.setState({saveErrorMsg: ""});
+        this.setState({saveErrorMsg: ''});
     },
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
@@ -184,7 +184,7 @@ var UserInfo = React.createClass({
                 message.error(resultObj.errorMsg);
             } else {
                 message.success(
-                    Intl.get("user.info.active.email", "激活邮件已发送至{email}",{"email": _this.state.formData.email})
+                    Intl.get('user.info.active.email', '激活邮件已发送至{email}',{'email': _this.state.formData.email})
                 );
             }
         });
@@ -209,7 +209,7 @@ var UserInfo = React.createClass({
     //设置邮箱订阅功能
     handleSubscribe: function() {
         var formData = this.state.formData;
-        var configObj = {"config": true};
+        var configObj = {'config': true};
         if (formData.reject < 1) {
             UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
         } else {
@@ -226,7 +226,7 @@ var UserInfo = React.createClass({
             return (<Icon type="loading"/>);
         } else if (this.props.realmErrorMsg) {
             var errMsg = <span>{this.props.realmErrorMsg}<a onClick={this.retryRealm}
-                style={{marginLeft: "20px", marginTop: "20px"}}>
+                style={{marginLeft: '20px', marginTop: '20px'}}>
                 <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
             </a></span>;
             return (
@@ -246,12 +246,12 @@ var UserInfo = React.createClass({
     },
     renderReceiveEmail: function() {
         var formData = this.state.formData;
-        if (formData.reject !== "" && formData.reject < 1) {
+        if (formData.reject !== '' && formData.reject < 1) {
             return (
                 <div>
                     <ReactIntl.FormattedMessage
                         id="user.info.reject.email"
-                        defaultMessage={`如果您不想接受审批通知邮件提醒，可以{cancel}`}
+                        defaultMessage={'如果您不想接受审批通知邮件提醒，可以{cancel}'}
                         values={{
                             'cancel': <a onClick={this.handleSubscribe}>
                                 <ReactIntl.FormattedMessage id="user.info.cancel.subscribe" defaultMessage="取消订阅"/>
@@ -265,7 +265,7 @@ var UserInfo = React.createClass({
                 <div>
                     <ReactIntl.FormattedMessage
                         id="user.info.receive.email"
-                        defaultMessage={`如果您想接受审批通知邮件提醒，可以{receive}`}
+                        defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
                         values={{
                             'receive': <a onClick={this.handleSubscribe}>
                                 <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
@@ -290,10 +290,10 @@ var UserInfo = React.createClass({
         this.setState({lang: lang});
     },
     cancelEditLang: function() {
-        this.setState({lang: Oplate.lang || "zh_CN"});
+        this.setState({lang: Oplate.lang || 'zh_CN'});
     },
     afterEditLangSuccess: function(user) {
-        storageUtil.local.set("userLang",user["language"]);
+        storageUtil.local.set('userLang',user['language']);
         //刷新界面，浏览器重新从服务器请求资源,在http请求头中不会包含缓存标记
         location.reload(true);
     },
@@ -302,7 +302,7 @@ var UserInfo = React.createClass({
         if (lang && lang.val) {
             return lang.val;
         } else {
-            return "";
+            return '';
         }
     },
     renderUserInfo: function() {
@@ -310,7 +310,7 @@ var UserInfo = React.createClass({
         var formData = this.state.formData;
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo}
-                style={{marginLeft: "20px", marginTop: "20px"}}>
+                style={{marginLeft: '20px', marginTop: '20px'}}>
                 <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
             </a></span>;
             return (
@@ -341,9 +341,9 @@ var UserInfo = React.createClass({
                                 <span>
                                     <ReactIntl.FormattedMessage
                                         id="user.info.no.email"
-                                        defaultMessage={`该用户没有任何邮箱信息，{add-email}`}
+                                        defaultMessage={'该用户没有任何邮箱信息，{add-email}'}
                                         values={{
-                                            "add-email": <a data-tracename="点击添加邮箱" onClick={_this.showUserInfoForm}>{Intl.get("user.info.add.email","添加邮箱")}</a>,}}/>
+                                            'add-email': <a data-tracename="点击添加邮箱" onClick={_this.showUserInfoForm}>{Intl.get('user.info.add.email','添加邮箱')}</a>,}}/>
                                 </span>}
                         </span>
                         {formData.email ? (formData.emailEnable ? <span>（
@@ -353,7 +353,7 @@ var UserInfo = React.createClass({
                                 （
                                 <ReactIntl.FormattedMessage
                                     id="user.info.no.active"
-                                    defaultMessage={`未激活，请{active}`}
+                                    defaultMessage={'未激活，请{active}'}
                                     values={{
                                         'active': <a onClick={_this.activeUserEmail} data-tracename="激活">
                                             <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
@@ -378,7 +378,7 @@ var UserInfo = React.createClass({
                         <span>{formData.rolesName}</span>
                     </div>
                     { !Oplate.hideSomeItem && <dl className="dl-horizontal user-info-item">
-                        <dt>{Intl.get("common.user.lang", "语言")}：</dt>
+                        <dt>{Intl.get('common.user.lang', '语言')}：</dt>
                         <dd>
                             <BasicEditSelectField
                                 id={formData.id}
@@ -386,7 +386,7 @@ var UserInfo = React.createClass({
                                 value={this.state.lang}
                                 field="language"
                                 selectOptions={this.getLangOptions()}
-                                disabled={hasPrivilege("MEMBER_LANGUAGE_SETTING") ? false : true}
+                                disabled={hasPrivilege('MEMBER_LANGUAGE_SETTING') ? false : true}
                                 onSelectChange={this.onSelectLang}
                                 cancelEditField={this.cancelEditLang}
                                 saveEditSelect={UserInfoAjax.setUserLanguage}
@@ -414,7 +414,7 @@ var UserInfo = React.createClass({
                 <div className="user-logo-div">
                     <Button className="user-info-btn-class icon-update iconfont"
                         onClick={_this.showUserInfoForm}
-                        style={{display: this.props.userInfoFormShow ? "none" : "block"}}
+                        style={{display: this.props.userInfoFormShow ? 'none' : 'block'}}
                         data-tracename="编辑个人资料"/>
                     <div className="user-info-logo">
                         {
@@ -432,7 +432,7 @@ var UserInfo = React.createClass({
                         }
                     </div>
                 </div>
-                <div className="edit-form-div" style={{display: this.props.userInfoFormShow ? "block" : "none"}}>
+                <div className="edit-form-div" style={{display: this.props.userInfoFormShow ? 'block' : 'none'}}>
                     <Form horizontal className="user-info-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
@@ -501,7 +501,7 @@ var UserInfo = React.createClass({
                                     this.state.saveErrorMsg ? (<div className="indicator">
                                         <AlertTimer time={3000}
                                             message={this.state.saveErrorMsg}
-                                            type={"error"} showIcon
+                                            type={'error'} showIcon
                                             onHide={this.hideSaveTooltip}/>
                                     </div>) : null)
                                 }
@@ -509,7 +509,7 @@ var UserInfo = React.createClass({
                         </Validation>
                     </Form>
                 </div>
-                <div className="user-info-bottom" style={{display: this.props.userInfoFormShow ? "none" : "block"}}>
+                <div className="user-info-bottom" style={{display: this.props.userInfoFormShow ? 'none' : 'block'}}>
                     {this.props.userInfoLoading ? ( <div className="user-info-tip">
                         <Spinner />
                     </div> ) : (
