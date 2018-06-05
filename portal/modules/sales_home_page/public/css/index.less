@@ -599,7 +599,10 @@
         margin: auto;
       }
       .tipitem {
-        margin-bottom: 30px;
+        margin-right: 5px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eeeeee;
         //提示标题
         .tiptitle {
           font-size: 14px;
@@ -616,8 +619,17 @@
             font-weight: bold;
             cursor: pointer;
           }
-          .office-user{
-            font-weight: bold;
+          .app-container{
+            overflow: hidden;
+            position: relative;
+            padding-right: 10px;
+            .app-name{
+              position: absolute;
+              bottom: 5px;
+            }
+            .app-num{
+              float: right;
+            }
           }
         }
 

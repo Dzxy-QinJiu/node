@@ -463,15 +463,17 @@ var en_VE = {
 
     "user.time.all": "Todo el tiempo",//全部时间
 
-    "user.time.today": "Hoy",//今天 
+    "user.time.today": "Hoy",//今天
+
+    "user.time.today1": "Hoy{expired}",//今日
 
     "user.time.yesterday": "Ayer",//昨天 
 
-    "user.time.this.week": "La semana presente",//本周 
+    "user.time.this.week": "La semana presente {expired}",//本周
 
     "user.time.prev.week": "La semana pasada",//上周 
 
-    "user.time.this.month": "El mes presente",//本月 
+    "user.time.this.month": "El mes presente {expired}",//本月
 
     "user.time.prev.month": "El mes pasado",//上月 
 
