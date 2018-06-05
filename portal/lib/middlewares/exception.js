@@ -10,9 +10,6 @@ let BackendIntl = require("../../lib/utils/backend_intl");
 let timeOut = 3000;
 module.exports = function (error, req, res, next) {
     if (error) {
-        var status = res.statusCode || 500;
-        var backendIntl = new BackendIntl(req.query.lang || undefined);
-        var msg = backendIntl.get("service.not.available", '对不起，服务暂时不可用。');
         let status = res.statusCode || 500;
         let backendIntl = new BackendIntl(req.query.lang || undefined);
         let msg = backendIntl.get("service.not.available", '对不起，服务暂时不可用。');
