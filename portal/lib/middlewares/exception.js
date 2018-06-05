@@ -4,16 +4,23 @@
  * Created by liwenjun on 2017/8/23.
  */
 //处理500错误
-var errorLogger = require("../utils/logger").getLogger('error');
+let errorLogger = require("../utils/logger").getLogger('error');
 let BackendIntl = require("../../lib/utils/backend_intl");
 
-module.exports = function(error, req, res, next) {
+let timeOut = 3000;
+module.exports = function (error, req, res, next) {
     if (error) {
-        var status = res.statusCode || 500;
-        var backendIntl = new BackendIntl(req.query.lang || undefined);
-        var msg = backendIntl.get("service.not.available", '对不起，服务暂时不可用。');
+        let status = res.statusCode || 500;
+        let backendIntl = new BackendIntl(req.query.lang || undefined);
+        let msg = backendIntl.get("service.not.available", '对不起，服务暂时不可用。');
         errorLogger.error(error || msg);
         res.writeHead(status, {'Content-Type': 'text/plain;charset=UTF-8'});
         res.end(msg);
+        //如果是线上产品，一定时间后退出系统，使openshift重新部署pod
+        if (config.isProduction) {
+            setTimeout(function () {
+                process.exit(1);
+            }, timeOut);
+        }
     }
 };
