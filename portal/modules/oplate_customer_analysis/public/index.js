@@ -172,7 +172,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             tabs: [
                 {
                     key: "total",
-                    title: Intl.get("oplate.user.analysis.11", "总客户"),
+                    title: Intl.get("oplate_customer_analysis.7", "总客户"),
                     layout: {
                         sm: 3,
                     },
@@ -180,7 +180,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 },
                 {
                     key: "added",
-                    title: Intl.get("oplate.user.analysis.12", "新增客户"),
+                    title: Intl.get("oplate_customer_analysis.8", "新增客户"),
                     layout: {
                         sm: 3,
                     },
