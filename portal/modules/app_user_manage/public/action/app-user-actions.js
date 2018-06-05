@@ -2,11 +2,11 @@
  * 应用用户的action
  */
 //联系人的ajax
-var AppUserAjax = require("../ajax/app-user-ajax");
-var AppUserUtil = require("../util/app-user-util");
-var UserData = require("../../../../public/sources/user-data");
-var ShareObj = require("../util/app-id-share-util");
-var rolesAjax = require("../../../common/public/ajax/role");
+var AppUserAjax = require('../ajax/app-user-ajax');
+var AppUserUtil = require('../util/app-user-util');
+var UserData = require('../../../../public/sources/user-data');
+var ShareObj = require('../util/app-id-share-util');
+var rolesAjax = require('../../../common/public/ajax/role');
 import { packageTry } from 'LIB_DIR/func';
 
 function AppUserAction() {
@@ -104,7 +104,7 @@ function AppUserAction() {
         _this.dispatch({loading: true});
         AppUserAjax.getApps().then(function(list) {
             //默认选中第一个
-            var selectedAppId = ShareObj.app_id || "";
+            var selectedAppId = ShareObj.app_id || '';
             _this.dispatch({error: false,result: list,selected_app_id: selectedAppId});
         } , function(errorMsg) {
             _this.dispatch({error: true,result: errorMsg});

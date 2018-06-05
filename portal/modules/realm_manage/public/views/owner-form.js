@@ -1,26 +1,26 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-require("../css/index.less");
-var Form = require("antd").Form;
-var Input = require("antd").Input;
-var Col = require("antd").Col;
+require('../css/index.less');
+var Form = require('antd').Form;
+var Input = require('antd').Input;
+var Col = require('antd').Col;
 var FormItem = Form.Item;
-var rightPanelUtil = require("../../../../components/rightPanel");
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 var RightPanelCancel = rightPanelUtil.RightPanelCancel;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var crypto = require("crypto");//用于密码md5
-var Spinner = require("../../../../components/spinner");
+var crypto = require('crypto');//用于密码md5
+var Spinner = require('../../../../components/spinner');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var passwdStrengthFile = require('../../../../components/password-strength-bar');
 var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
-var RealmFormStore = require("../store/realm-form-store");
-var RealmFormAction = require("../action/realm-form-actions");
-var RealmActions = require("../action/realm-actions");
-var AlertTimer = require("../../../../components/alert-timer");
-var classNames = require("classnames");
-import Trace from "LIB_DIR/trace";
+var RealmFormStore = require('../store/realm-form-store');
+var RealmFormAction = require('../action/realm-form-actions');
+var RealmActions = require('../action/realm-actions');
+var AlertTimer = require('../../../../components/alert-timer');
+var classNames = require('classnames');
+import Trace from 'LIB_DIR/trace';
 
 function noop() {
 }
@@ -38,12 +38,12 @@ var OwnerForm = React.createClass({
                 email: {}
             },
             formData: {
-                nick_name: "",
-                user_name: "",
-                password: "",
-                rePassword: "",
-                phone: "",
-                email: "",
+                nick_name: '',
+                user_name: '',
+                password: '',
+                rePassword: '',
+                phone: '',
+                email: '',
             },
             passBarShow: false,//是否显示密码强度
             passStrength: 'L',//密码强度
@@ -85,9 +85,9 @@ var OwnerForm = React.createClass({
         });
     },
     layout: function() {
-        var bHeight = $("body").height();
-        var formHeight = bHeight - $("form .head-image-container").outerHeight(true);
-        $(".realm-form-scroll").height(formHeight);
+        var bHeight = $('body').height();
+        var formHeight = bHeight - $('form .head-image-container').outerHeight(true);
+        $('.realm-form-scroll').height(formHeight);
     },
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
@@ -110,7 +110,7 @@ var OwnerForm = React.createClass({
     handleCancel: function(e) {
         e.preventDefault();
         Trace.traceEvent(e, '点击取消按钮');
-        if (this.props.formType == "edit") {
+        if (this.props.formType == 'edit') {
             this.props.returnInfoPanel();
         } else {
             this.props.closeRightPanel();
@@ -126,7 +126,7 @@ var OwnerForm = React.createClass({
         var validation = this.refs.validation;
         var _this = this;
         //必填一项的验证
-        this.checkPhoneEmail("owner");
+        this.checkPhoneEmail('owner');
         validation.validate(function(valid) {
             if (!valid) {
                 return;
@@ -138,9 +138,9 @@ var OwnerForm = React.createClass({
                 if (!_this.state.saveFlags.userNameExit && !_this.state.saveFlags.phoneExit && !_this.state.saveFlags.emailExit && !_this.state.saveFlags.userNameError && !_this.state.saveFlags.phoneError && !_this.state.saveFlags.emailError) {
                     //所有者各项唯一性验证均不存在且没有出错再添加
                     //密码MD5加密的处理
-                    var md5Hash = crypto.createHash("md5");
+                    var md5Hash = crypto.createHash('md5');
                     md5Hash.update(newOwner.password);
-                    newOwner.password = md5Hash.digest("hex");
+                    newOwner.password = md5Hash.digest('hex');
                     delete newOwner.rePassword;
                     newOwner.realm_id = _this.props.realm.id;
                     //设置正在保存中
@@ -177,13 +177,13 @@ var OwnerForm = React.createClass({
                 passBarShow: false,
                 passStrength: 'L'
             });
-            callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
         }
     },
 
     checkPass2(rule, value, callback) {
         if (value && value !== this.state.formData.password) {
-            callback( Intl.get("common.password.unequal", "两次输入密码不一致！"));
+            callback( Intl.get('common.password.unequal', '两次输入密码不一致！'));
         } else {
             callback();
         }
@@ -199,7 +199,7 @@ var OwnerForm = React.createClass({
                     (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
                 callback();
             } else {
-                callback(new Error( Intl.get("common.input.correct.phone", "请输入正确的电话号码")));
+                callback(new Error( Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
             }
         } else {
             callback();
@@ -213,7 +213,7 @@ var OwnerForm = React.createClass({
         if (value) {
             if (!/^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
                 .test(value)) {
-                callback(new Error( Intl.get("common.correct.email", "请输入正确的邮箱")));
+                callback(new Error( Intl.get('common.correct.email', '请输入正确的邮箱')));
             } else {
                 callback();
             }
@@ -229,13 +229,13 @@ var OwnerForm = React.createClass({
     },
     //返回详细信息展示页
     returnInfoPanel: function(e) {
-        Trace.traceEvent(e,"返回安全域详情界面");
+        Trace.traceEvent(e,'返回安全域详情界面');
         this.resetValidatFlags();
         this.props.returnInfoPanel(e);
     },
     //去掉保存后提示信息
     hideSaveTooltip: function() {
-        if (this.state.saveFlags.saveResult == "success") {
+        if (this.state.saveFlags.saveResult == 'success') {
             RealmActions.closeRightPanel();
         }
         RealmFormAction.resetSaveResult();
@@ -248,7 +248,7 @@ var OwnerForm = React.createClass({
         value = $.trim(value);
         if (value) {
             if (!(/^[A-Za-z0-9]\w+$/).test(value)) {
-                callback(new Error( Intl.get("member.check.member.name", "请输入数字、字母或下划线，首字母不能是下划线")));
+                callback(new Error( Intl.get('member.check.member.name', '请输入数字、字母或下划线，首字母不能是下划线')));
             } else {
                 callback();
             }
@@ -261,7 +261,7 @@ var OwnerForm = React.createClass({
         //电话、邮箱至少填一项的验证
         this.checkPhoneEmail(type);
         var phone = $.trim(this.state.formData.phone);
-        if (phone && type == "owner" && ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(phone)) ||
+        if (phone && type == 'owner' && ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(phone)) ||
                 (/^\d{3,4}\-\d{7,8}$/.test(phone)) || (/^400\-?\d{3}\-?\d{4}$/.test(phone)))) {
             //所有者的电话唯一性验证
             RealmFormAction.checkOnlyOwnerPhone(phone);
@@ -274,7 +274,7 @@ var OwnerForm = React.createClass({
     checkOnlyEmail: function(type) {
         //电话、邮箱至少填一项的验证
         this.checkPhoneEmail(type);
-        if (type == "owner") {
+        if (type == 'owner') {
             var email = $.trim(this.state.formData.email);
             if (email && /^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
                 .test(email)) {
@@ -319,7 +319,7 @@ var OwnerForm = React.createClass({
         } else if (this.state.saveFlags.userNameError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.username.is.unique" defaultMessage="用户名唯一性校验出错！" /></div>);
         } else {
-            return "";
+            return '';
         }
     },
 
@@ -330,7 +330,7 @@ var OwnerForm = React.createClass({
         } else if (this.state.saveFlags.phoneError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.phone.is.unique" defaultMessage="电话唯一性校验出错！" /></div>);
         } else {
-            return "";
+            return '';
         }
     },
 
@@ -341,26 +341,26 @@ var OwnerForm = React.createClass({
         } else if (this.state.saveFlags.emailError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="member.email.is.unique" defaultMessage="邮箱唯一性校验出错！" /></div>);
         } else {
-            return "";
+            return '';
         }
     },
 
     render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
-        var className = "right-panel-content";
+        var className = 'right-panel-content';
         if (this.props.ownerFormShow) {
-            if (this.props.formType == "add") {
-                className += " right-form-add";
-            } else if (this.props.formType == "edit") {
-                className += " right-panel-content-slide";
+            if (this.props.formType == 'add') {
+                className += ' right-form-add';
+            } else if (this.props.formType == 'edit') {
+                className += ' right-panel-content-slide';
             }
         }
         var saveResult = this.state.saveFlags.saveResult;
         return (
             <div className={className}>
                 <RightPanelClose onClick={this.closePanel}/>
-                {(this.props.formType == "add" || !this.props.ownerFormShow) ? null : (
+                {(this.props.formType == 'add' || !this.props.ownerFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <div className="realm-form-scroll" style={{width: '420px'}} data-tracename="更换所有者">
@@ -371,39 +371,39 @@ var OwnerForm = React.createClass({
                                     <div className="realm-owner-title">
                                         <ReactIntl.FormattedMessage
                                             id="realm.change.owner.title"
-                                            defaultMessage={`为安全域{realname}添加新所有者`}
+                                            defaultMessage={'为安全域{realname}添加新所有者'}
                                             values={{
-                                                "realname": this.props.realm.company
+                                                'realname': this.props.realm.company
                                             }}
                                         />
                                     </div>
                                     <FormItem
-                                        label={Intl.get("realm.change.owner.name", "姓名")}
+                                        label={Intl.get('realm.change.owner.name', '姓名')}
                                         id="owner-name"
                                         labelCol={{span: 4}}
                                         wrapperCol={{span: 17}}
                                         validateStatus={this.renderValidateStyle('nick_name')}
-                                        help={status.nick_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.nick_name.errors && status.nick_name.errors.join(','))}
+                                        help={status.nick_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.nick_name.errors && status.nick_name.errors.join(','))}
                                     >
                                         <Validator
-                                            rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
+                                            rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')}]}>
                                             <Input name="nick_name" id="nick_name" value={formData.nick_name}
                                                 placeholder="必填项*"
                                                 onChange={this.setField.bind(this, 'nick_name')}/>
                                         </Validator>
                                     </FormItem>
                                     <FormItem
-                                        label={Intl.get("common.username", "用户名")}
+                                        label={Intl.get('common.username', '用户名')}
                                         id="userName"
                                         labelCol={{span: 4}}
                                         wrapperCol={{span: 17}}
                                         validateStatus={this.renderValidateStyle('user_name')}
-                                        help={status.user_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.user_name.errors && status.user_name.errors.join(','))}
+                                        help={status.user_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.user_name.errors && status.user_name.errors.join(','))}
                                     >
                                         <Validator
-                                            rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")},{validator: this.checkUserName}]}>
+                                            rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')},{validator: this.checkUserName}]}>
                                             <Input name="user_name" id="user_name" value={formData.user_name}
-                                                className={this.state.saveFlags.userNameExit || this.state.saveFlags.userNameError ? "input-red-border" : ""}
+                                                className={this.state.saveFlags.userNameExit || this.state.saveFlags.userNameError ? 'input-red-border' : ''}
                                                 placeholder="必填项*"
                                                 onBlur={this.checkOnlyUserName}
                                                 onChange={this.setField.bind(this, 'user_name')}/>
@@ -411,7 +411,7 @@ var OwnerForm = React.createClass({
                                     </FormItem>
                                     {this.renderUserNameMsg()}
                                     < FormItem
-                                        label={Intl.get("common.password", "密码")}
+                                        label={Intl.get('common.password', '密码')}
                                         id="password"
                                         labelCol={{span: 4}}
                                         wrapperCol={{span: 17}}
@@ -430,14 +430,14 @@ var OwnerForm = React.createClass({
                                                 onCut={noop}
                                                 autoComplete="off"
                                                 value={formData.password}
-                                                placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
+                                                placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
                                             />
                                         </Validator>
                                     </FormItem>
                                     {this.state.passBarShow ?
                                         (<PasswdStrengthBar passStrength={this.state.passStrength}/>) : null}
                                     <FormItem
-                                        label={Intl.get("common.confirm.password", "确认密码")}
+                                        label={Intl.get('common.confirm.password', '确认密码')}
                                         id="password2"
                                         labelCol={{span: 4}}
                                         wrapperCol={{span: 17}}
@@ -445,7 +445,7 @@ var OwnerForm = React.createClass({
                                         help={status.rePassword.errors ? status.rePassword.errors.join(',') : null}
                                     >
                                         <Validator
-                                            rules={[{required: true,whitespace: true,message: Intl.get("common.password.unequal", "两次输入密码不一致！")}, {validator: this.checkPass2}]}
+                                            rules={[{required: true,whitespace: true,message: Intl.get('common.password.unequal', '两次输入密码不一致！')}, {validator: this.checkPass2}]}
                                         >
                                             <Input
                                                 name="rePassword"
@@ -457,51 +457,51 @@ var OwnerForm = React.createClass({
                                                 onCut={noop}
                                                 autoComplete="off"
                                                 value={formData.rePassword}
-                                                placeholder={Intl.get("common.input.confirm.password", "请输入确认密码")}
+                                                placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
                                                 maxLength={18}
                                             />
                                         </Validator>
                                     </FormItem>
 
                                     <FormItem
-                                        label={Intl.get("common.phone", "电话")}
+                                        label={Intl.get('common.phone', '电话')}
                                         id="owner-phone"
                                         labelCol={{span: 4}}
                                         wrapperCol={{span: 17}}
                                         validateStatus={this.renderValidateStyle('phone')}
-                                        help={status.phone.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.phone.errors && status.phone.errors.join(','))}
+                                        help={status.phone.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.phone.errors && status.phone.errors.join(','))}
                                     >
                                         <Validator rules={[{validator: this.checkPhone}]}>
                                             <Input name="phone" id="phone" value={formData.phone}
-                                                className={!this.state.phoneEmailCheck || this.state.saveFlags.phoneExit || this.state.saveFlags.phoneError ? "input-red-border" : ""}
-                                                placeholder={Intl.get("common.phone.email.tip", "电话、邮箱必填其中一项")}
+                                                className={!this.state.phoneEmailCheck || this.state.saveFlags.phoneExit || this.state.saveFlags.phoneError ? 'input-red-border' : ''}
+                                                placeholder={Intl.get('common.phone.email.tip', '电话、邮箱必填其中一项')}
                                                 onChange={this.setField.bind(this, 'phone')}
                                                 onBlur={this.checkOnlyPhone.bind(this,'owner')}
                                                 onFocus={this.resetPhoneEmailCheck.bind(this,'owner')}/>
                                         </Validator>
                                     </FormItem>
-                                    {this.state.phoneEmailCheck ? "" : (
+                                    {this.state.phoneEmailCheck ? '' : (
                                         <div className="phone-email-check"><ReactIntl.FormattedMessage id="realm.change.owner.phone.tip" defaultMessage="电话、邮箱必填一项！" /></div>)}
                                     {this.renderOwnerPhoneMsg()}
                                     <FormItem
-                                        label={Intl.get("common.email", "邮箱")}
+                                        label={Intl.get('common.email', '邮箱')}
                                         id="owner-email"
                                         labelCol={{span: 4}}
                                         wrapperCol={{span: 17}}
                                         validateStatus={this.renderValidateStyle('email')}
-                                        help={status.email.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.email.errors && status.email.errors.join(','))}
+                                        help={status.email.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.email.errors && status.email.errors.join(','))}
                                     >
                                         <Validator rules={[{validator: this.checkEmail}]}>
                                             <Input name="email" id="email" type="text"
-                                                className={!this.state.phoneEmailCheck || this.state.saveFlags.emailExit || this.state.saveFlags.emailError ? "input-red-border" : ""}
+                                                className={!this.state.phoneEmailCheck || this.state.saveFlags.emailExit || this.state.saveFlags.emailError ? 'input-red-border' : ''}
                                                 value={formData.email}
-                                                placeholder={Intl.get("common.phone.email.tip", "电话、邮箱必填其中一项")}
+                                                placeholder={Intl.get('common.phone.email.tip', '电话、邮箱必填其中一项')}
                                                 onChange={this.setField.bind(this, 'email')}
                                                 onBlur={this.checkOnlyEmail.bind(this,'owner')}
                                                 onFocus={this.resetPhoneEmailCheck.bind(this,'owner')}/>
                                         </Validator>
                                     </FormItem>
-                                    {this.state.phoneEmailCheck ? "" : (
+                                    {this.state.phoneEmailCheck ? '' : (
                                         <div className="phone-email-check"><ReactIntl.FormattedMessage id="realm.change.owner.phone.tip" defaultMessage="电话、邮箱必填一项！" /></div>)}
                                     {this.renderOwnerEmailMsg()}
                                 </div>
@@ -510,11 +510,11 @@ var OwnerForm = React.createClass({
                                     <div className="indicator">
                                         {saveResult ?
                                             (
-                                                <AlertTimer time={saveResult == "error" ? 3000 : 600}
+                                                <AlertTimer time={saveResult == 'error' ? 3000 : 600}
                                                     message={this.state.saveFlags.saveMsg}
                                                     type={this.state.saveFlags.saveResult} showIcon
                                                     onHide={this.hideSaveTooltip}/>
-                                            ) : ""
+                                            ) : ''
                                         }
                                     </div>
                                     <RightPanelCancel onClick={this.handleCancel}>

@@ -1,8 +1,8 @@
-var RoleStore = require("../../../rolePrivilege_role/public/store/role-store");
-var RoleAction = require("../../../rolePrivilege_role/public/action/role-actions");
-var RoleListView = require("../../../rolePrivilege_role/public/views/role-list");
-var Spinner = require("../../../../components/spinner");
-var NoData = require("../../../../components/analysis-nodata");
+var RoleStore = require('../../../rolePrivilege_role/public/store/role-store');
+var RoleAction = require('../../../rolePrivilege_role/public/action/role-actions');
+var RoleListView = require('../../../rolePrivilege_role/public/views/role-list');
+var Spinner = require('../../../../components/spinner');
+var NoData = require('../../../../components/analysis-nodata');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 function getStateFromStore() {
     var roleState = RoleStore.getState();
@@ -18,7 +18,7 @@ function getStateFromStore() {
 }
 
 var bootomHeight = 52; //距离底部高度
-var TYPE_CONSTANT = "myApp";
+var TYPE_CONSTANT = 'myApp';
 var UserRolePage = React.createClass({
     getInitialState: function() {
         return getStateFromStore(this);
@@ -34,9 +34,9 @@ var UserRolePage = React.createClass({
         RoleAction.getRoleList(this.props.curAppId, TYPE_CONSTANT);
     },
     componentWillUnmount: function() {
-        $(window).unbind("resize");
+        $(window).unbind('resize');
         RoleStore.unlisten(this.onChange);
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
     },
 
     events: {
@@ -90,11 +90,11 @@ var UserRolePage = React.createClass({
         var height = this.props.divHeight;
         var width = this.props.divWidth;
         var roleListDivHeight = height - bootomHeight;
-        var repoListElement = "";
+        var repoListElement = '';
         if (roleList && roleList.length > 0) {
             repoListElement = roleList.map(function(role, i) {
                 //给当前要删除的角色列表传入删除角色失败的内容
-                var delRoleErrorMsg = (role.roleId == _this.state.delRoleId) ? _this.state.delRoleErrorMsg : "";
+                var delRoleErrorMsg = (role.roleId == _this.state.delRoleId) ? _this.state.delRoleErrorMsg : '';
                 return (
                     <RoleListView
                         key={i}

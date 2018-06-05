@@ -1,12 +1,12 @@
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 var ThirdAppDetailUrls = {
     //添加app
-    addApp: "/rest/base/v1/user/thirdparty",
-    editApp: "/rest/base/v1/user/thirdparty",
-    changeAppStatus: "/rest/base/v1/user/thirdparty/status",
-    getAppDetail: "/rest/base/v1/user/thirdparty",
+    addApp: '/rest/base/v1/user/thirdparty',
+    editApp: '/rest/base/v1/user/thirdparty',
+    changeAppStatus: '/rest/base/v1/user/thirdparty/status',
+    getAppDetail: '/rest/base/v1/user/thirdparty',
     getAppConfigList: '/rest/base/v1/user/thirdpartys/', // 获取用户绑定的第三方平台列表
     getPlatforms: '/rest/base/v1/user/thirdpartys/platforms'
 };
@@ -44,7 +44,7 @@ exports.changeAppStatus = function(req, res, data){
 };
 exports.getAppDetail = function(req, res){
     return restUtil.authRest.get({
-        url: ThirdAppDetailUrls.getAppDetail + "/" + req.query.id,
+        url: ThirdAppDetailUrls.getAppDetail + '/' + req.query.id,
         req: req,
         res: res
     }, {});

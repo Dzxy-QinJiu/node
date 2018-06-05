@@ -1,14 +1,14 @@
-require("../../../../components/version-upgrade/version-upgrade-list.less");
-var Alert = require("antd").Alert;
-var rightPanelUtil = require("../../../../components/rightPanel");
+require('../../../../components/version-upgrade/version-upgrade-list.less');
+var Alert = require('antd').Alert;
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var VersionUpgradeLogStore = require("../store/version-upgrade-log-store");
-var VersionUpgradeLogAction = require("../action/version-upgrade-log-action");
-var VersionUpgradeList = require("../../../../components/version-upgrade");
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-var AppStore = require("../store/app-store");
-import Trace from "LIB_DIR/trace";
+var VersionUpgradeLogStore = require('../store/version-upgrade-log-store');
+var VersionUpgradeLogAction = require('../action/version-upgrade-log-action');
+var VersionUpgradeList = require('../../../../components/version-upgrade');
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+var AppStore = require('../store/app-store');
+import Trace from 'LIB_DIR/trace';
 
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -20,7 +20,7 @@ var VersionUpgradeLog = React.createClass({
 
     getDefaultProps: function(){
         return {
-            appId: ""
+            appId: ''
         };
     },
 
@@ -61,13 +61,13 @@ var VersionUpgradeLog = React.createClass({
 
     //关闭
     closePanel: function(e) {
-        Trace.traceEvent(e,"关闭版本升级界面");
+        Trace.traceEvent(e,'关闭版本升级界面');
         this.props.closeRightPanel(e);
     },
 
     //返回详细信息展示页
     returnInfoPanel: function(e) {
-        Trace.traceEvent(e,"返回到应用详情界面");
+        Trace.traceEvent(e,'返回到应用详情界面');
         this.props.returnInfoPanel(e);
     },
 
@@ -103,9 +103,9 @@ var VersionUpgradeLog = React.createClass({
     },
     
     render: function() {
-        var className = "app-record-style right-panel-content";
+        var className = 'app-record-style right-panel-content';
         if(this.props.versionUpgradeShow){
-            className += " right-panel-content-slide";
+            className += ' right-panel-content-slide';
         }
         var divHeight = $(window).height()
                 - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP

@@ -2,22 +2,22 @@
  * 客户查重界面
  * Created by wangliping on 2016/12/29.
  */
-import "../css/customer-repeat.less";
-import {Button, message, Tag, Icon, Input, Row, Col, Popconfirm, Alert} from "antd";
-import TopNav from"../../../../components/top-nav";
+import '../css/customer-repeat.less';
+import {Button, message, Tag, Icon, Input, Row, Col, Popconfirm, Alert} from 'antd';
+import TopNav from'../../../../components/top-nav';
 import Spinner from '../../../../components/spinner';
 import GeminiScrollBar from '../../../../components/react-gemini-scrollbar';
-import userData from "../../../../public/sources/user-data";
-import CustomerRepeatAction from "../action/customer-repeat-action";
-import CustomerRepeatStore from "../store/customer-repeat-store";
-import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
-import CrmRightMergePanel from "./crm-right-merge-panel";
+import userData from '../../../../public/sources/user-data';
+import CustomerRepeatAction from '../action/customer-repeat-action';
+import CustomerRepeatStore from '../store/customer-repeat-store';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import CrmRightMergePanel from './crm-right-merge-panel';
 import Privilege from '../../../../components/privilege/checker';
 import classNames from 'classnames';
-import AppUserManage from "MOD_DIR/app_user_manage/public";
-import {RightPanel} from "CMP_DIR/rightPanel";
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
+import {RightPanel} from 'CMP_DIR/rightPanel';
 let PrivilegeChecker = Privilege.PrivilegeChecker;
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 
 let CONSTANTS = {
     PADDING_TOP: 84,
@@ -51,20 +51,20 @@ let CustomerRepeat = React.createClass({
         });
         let _this = this;
         //点击客户列表某一行时打开对应的详情
-        $(this.refs.crmList).on("click", "tbody .has-filter", function() {
-            var $tr = $(this).closest("tr");
-            $tr.addClass("current-row").siblings().removeClass("current-row");
-            Trace.traceEvent($(_this.getDOMNode()).find(".current-row"), "点击查看客户详情");
-            var id = $tr.find(".record-id").text();
+        $(this.refs.crmList).on('click', 'tbody .has-filter', function() {
+            var $tr = $(this).closest('tr');
+            $tr.addClass('current-row').siblings().removeClass('current-row');
+            Trace.traceEvent($(_this.getDOMNode()).find('.current-row'), '点击查看客户详情');
+            var id = $tr.find('.record-id').text();
             _this.showRightPanel(id);
         });
     },
     componentDidUpdate: function() {
-        let curCustomerId = _.isObject(this.state.curCustomer) ? this.state.curCustomer.id : "";
+        let curCustomerId = _.isObject(this.state.curCustomer) ? this.state.curCustomer.id : '';
         if (curCustomerId && this.state.rightPanelIsShow) {
-            $(".customer-repeat-container .record-id").each(function() {
+            $('.customer-repeat-container .record-id').each(function() {
                 if ($(this).text() == curCustomerId) {
-                    $(this).closest("tr").addClass("current-row").siblings().removeClass("current-row");
+                    $(this).closest('tr').addClass('current-row').siblings().removeClass('current-row');
                     return false;
                 }
             });
@@ -79,7 +79,7 @@ let CustomerRepeat = React.createClass({
     //删除选中的重复的客户
     delRepeatCustomer: function(customer) {
         if (customer && customer.id) {
-            Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "删除重复客户");
+            Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '删除重复客户');
             CustomerRepeatAction.delRepeatCustomer([customer.id], result => {
                 if (result.error) {
                     message.error(result.errorMsg);
@@ -91,7 +91,7 @@ let CustomerRepeat = React.createClass({
     },
     //返回客户列表
     returnCustomerList: function(e) {
-        Trace.traceEvent(e, "点击返回按钮回到客户列表页面");
+        Trace.traceEvent(e, '点击返回按钮回到客户列表页面');
         this.props.closeRepeatCustomer();
         //重置获取数据页数，保证下次进来获取第一页数据时界面的刷新
         CustomerRepeatAction.resetPage();
@@ -118,7 +118,7 @@ let CustomerRepeat = React.createClass({
     },
     hideRightPanel: function() {
         CustomerRepeatAction.setRightPanelShow(false);
-        CustomerRepeatAction.setCurCustomer("");
+        CustomerRepeatAction.setCurCustomer('');
     },
     handleScrollBottom() {
         //下拉加载数据
@@ -137,18 +137,18 @@ let CustomerRepeat = React.createClass({
     },
     //获取删除客户时的确认提示
     getModalContent: function(customer) {
-        let modalContent = Intl.get("crm.43", "确定要是删除该客户吗?");
+        let modalContent = Intl.get('crm.43', '确定要是删除该客户吗?');
         if (customer) {
             let userSize = _.isArray(customer.app_user_ids) && customer.app_user_ids.length || 0;
             if (userSize > 0) {
-                modalContent = Intl.get("crm.44", "该客户已开通{count}个用户，删除后用户的客户关系将丢失，确定要删除该客户吗？", {count: userSize});
+                modalContent = Intl.get('crm.44', '该客户已开通{count}个用户，删除后用户的客户关系将丢失，确定要删除该客户吗？', {count: userSize});
             }
         }
         return modalContent;
     },
     showMergePanel: function(repeatList) {
         if (_.isArray(repeatList) && repeatList.length > 0) {
-            Trace.traceEvent($(this.getDOMNode()).find(".customer-merge-btn"), "点击合并按钮");
+            Trace.traceEvent($(this.getDOMNode()).find('.customer-merge-btn'), '点击合并按钮');
             CustomerRepeatAction.setMergeRepeatCustomers(repeatList);
             CustomerRepeatAction.setMergePanelShow(true);
         }
@@ -159,12 +159,12 @@ let CustomerRepeat = React.createClass({
 
     showSearchInput: function(key) {
         CustomerRepeatAction.toggleSearchInput({key: key, isShow: true});
-        if (key == "name") {
-            Trace.traceEvent($(this.getDOMNode()).find(".repeat-customer-search-icon"), "点击按客户名称搜索按钮");
-        } else if (key == "user_name") {
-            Trace.traceEvent($(this.getDOMNode()).find(".repeat-customer-search-icon"), "点击按负责人搜索按钮");
-        } else if (key == "remarks") {
-            Trace.traceEvent($(this.getDOMNode()).find(".repeat-customer-search-icon"), "点击按备注搜索按钮");
+        if (key == 'name') {
+            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按客户名称搜索按钮');
+        } else if (key == 'user_name') {
+            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按负责人搜索按钮');
+        } else if (key == 'remarks') {
+            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按备注搜索按钮');
         }
         //之前有搜索的内容时，先还原
         if (!_.isEmpty(this.state.filterObj)) {
@@ -200,18 +200,18 @@ let CustomerRepeat = React.createClass({
     },
     //清空过滤框中的内容
     clearFilterContent: function(filterKey) {
-        this.state.filterObj[filterKey] = "";
+        this.state.filterObj[filterKey] = '';
         //清空过滤框的内容，直接进行过滤
         this.filterRepeatCustomer(filterKey);
         delete this.state.filterObj[filterKey];
         CustomerRepeatAction.setFilterObj(this.state.filterObj);
         CustomerRepeatAction.toggleSearchInput({key: filterKey, isShow: false});
-        if (filterKey == "name") {
-            Trace.traceEvent($(this.getDOMNode()).find(".anticon-cross-circle-o"), "关闭客户名称后的搜索框");
-        } else if (filterKey == "user_name") {
-            Trace.traceEvent($(this.getDOMNode()).find(".anticon-cross-circle-o"), "关闭负责人后的搜索框");
+        if (filterKey == 'name') {
+            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭客户名称后的搜索框');
+        } else if (filterKey == 'user_name') {
+            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭负责人后的搜索框');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find(".anticon-cross-circle-o"), "关闭备注后的搜索框");
+            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭备注后的搜索框');
         }
     },
     onSearchInputKeyUp: function(filterKey) {
@@ -220,22 +220,22 @@ let CustomerRepeat = React.createClass({
         }
         searchInputTimeOut = setTimeout(() => {
             this.filterRepeatCustomer(filterKey);
-            if (filterKey == "name") {
-                Trace.traceEvent($(this.getDOMNode()).find("input"), "跟据客户名称过滤");
-            } else if (filterKey == "user_name") {
-                Trace.traceEvent($(this.getDOMNode()).find("input"), "跟据负责人过滤");
-            } else if (filterKey == "remarks") {
-                Trace.traceEvent($(this.getDOMNode()).find("input"), "跟据备注过滤");
+            if (filterKey == 'name') {
+                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据客户名称过滤');
+            } else if (filterKey == 'user_name') {
+                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据负责人过滤');
+            } else if (filterKey == 'remarks') {
+                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据备注过滤');
             }
         }, delayTime);
 
     },
     //filterKey:对应的过滤字段，columnLabel:该列的表头描述
     getSearchInput: function(filterKey, columnLabel) {
-        const placeholder = Intl.get("common.filter.by.key", "根据{key}过滤", {key: columnLabel});
+        const placeholder = Intl.get('common.filter.by.key', '根据{key}过滤', {key: columnLabel});
         let filterValue = this.state.filterObj[filterKey];
         return (<div className="filter-input-container">
-            <Input placeholder={placeholder} value={filterValue || ""}
+            <Input placeholder={placeholder} value={filterValue || ''}
                 onChange={this.onChangeFilterObj.bind(this, filterKey)}
                 onKeyUp={this.onSearchInputKeyUp.bind(this, filterKey)}
             />
@@ -262,18 +262,18 @@ let CustomerRepeat = React.createClass({
         return (<Row>
             <Col span={23}>
                 <Row>
-                    <Col span={5} className="repeat-customer-col">{Intl.get("crm.4", "客户名称")}</Col>
+                    <Col span={5} className="repeat-customer-col">{Intl.get('crm.4', '客户名称')}</Col>
                     <Col span={2}
-                        className="repeat-customer-col">{Intl.get("call.record.contacts", "联系人")}</Col>
-                    <Col span={3} className="repeat-customer-col">{Intl.get("crm.5", "联系方式")}</Col>
+                        className="repeat-customer-col">{Intl.get('call.record.contacts', '联系人')}</Col>
+                    <Col span={3} className="repeat-customer-col">{Intl.get('crm.5', '联系方式')}</Col>
                     <Col span={2}
-                        className="repeat-customer-col">{Intl.get("user.apply.detail.order", "订单")}</Col>
-                    <Col span={2} className="repeat-customer-col">{Intl.get("crm.6", "负责人")}</Col>
+                        className="repeat-customer-col">{Intl.get('user.apply.detail.order', '订单')}</Col>
+                    <Col span={2} className="repeat-customer-col">{Intl.get('crm.6', '负责人')}</Col>
                     <Col span={2}
-                        className="repeat-customer-col">{Intl.get("member.create.time", "创建时间")}</Col>
-                    <Col span={2} className="repeat-customer-col">{Intl.get("crm.7", "最后联系时间")}</Col>
+                        className="repeat-customer-col">{Intl.get('member.create.time', '创建时间')}</Col>
+                    <Col span={2} className="repeat-customer-col">{Intl.get('crm.7', '最后联系时间')}</Col>
                     <Col span={5}
-                        className="repeat-customer-col">{Intl.get("crm.last.trace.content", "最后跟进内容")}</Col>
+                        className="repeat-customer-col">{Intl.get('crm.last.trace.content', '最后跟进内容')}</Col>
                 </Row>
             </Col>
         </Row>);
@@ -286,8 +286,8 @@ let CustomerRepeat = React.createClass({
         }
     },
     getCustomerRow: function(customer) {
-        let customerNameCls = classNames("repeat-customer-col customer-name-click",
-            {"customer-name-active": this.state.curCustomer.id === customer.id});
+        let customerNameCls = classNames('repeat-customer-col customer-name-click',
+            {'customer-name-active': this.state.curCustomer.id === customer.id});
         return (
             <Row className="customer-row">
                 <Col span={5} className={customerNameCls}
@@ -309,10 +309,10 @@ let CustomerRepeat = React.createClass({
                     <PrivilegeChecker check="CUSTOMER_DELETE">
                         <Popconfirm title={this.getModalContent(customer)}
                             onConfirm={this.delRepeatCustomer.bind(this, customer)}
-                            okText={Intl.get("common.sure", "确认")}
-                            cancelText={Intl.get("common.cancel", "取消")}>
+                            okText={Intl.get('common.sure', '确认')}
+                            cancelText={Intl.get('common.cancel', '取消')}>
                             <Button className="repeat-del-btn" icon="delete"
-                                title={Intl.get("common.delete", "删除")}/>
+                                title={Intl.get('common.delete', '删除')}/>
                         </Popconfirm>
                     </PrivilegeChecker>
                 </Col>
@@ -330,10 +330,10 @@ let CustomerRepeat = React.createClass({
             </div>);
         } else if (_.isArray(repeatCustomerList) && repeatCustomerList.length) {
             return repeatCustomerList.map(repeatObj => {
-                let isPhoneRepeat = repeatObj.repeatList[0] && repeatObj.repeatList[0].repeat_type === "phone";
+                let isPhoneRepeat = repeatObj.repeatList[0] && repeatObj.repeatList[0].repeat_type === 'phone';
                 return (
                     <Row className="customer-repeat-row">
-                        {isPhoneRepeat ? <span className="phone-repeat-tag">{Intl.get("crm.repeat.phone","电话重复")}</span> : null}
+                        {isPhoneRepeat ? <span className="phone-repeat-tag">{Intl.get('crm.repeat.phone','电话重复')}</span> : null}
                         <Col span={23}>
                             {repeatObj.repeatList.map(customer => {
                                 return this.getCustomerRow(customer);
@@ -342,27 +342,27 @@ let CustomerRepeat = React.createClass({
                         <Col span={1}>
                             <PrivilegeChecker check="CUSTOMER_MERGE_CUSTOMER" className="repeat-merge-btn"
                                 onClick={this.showMergePanel.bind(this, repeatObj.repeatList)}>
-                                {Intl.get("crm.54", "合并")}
+                                {Intl.get('crm.54', '合并')}
                             </PrivilegeChecker>
                         </Col>
                     </Row>);
             });
         } else {
             return (
-                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get("common.no.data", "暂无数据")}/>
+                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.data', '暂无数据')}/>
                 </div>);
         }
     },
     render: function() {
         let tableData = this.state.repeatCustomerList;
-        const total = Intl.get("crm.14", "共{count}条记录", {count: this.state.repeatCustomersSize});
+        const total = Intl.get('crm.14', '共{count}条记录', {count: this.state.repeatCustomersSize});
         return (<div className="customer-repeat-container" data-tracename="客户查重页面">
             {!this.props.noNeedClose ? <TopNav>
                 <div className="return-btn-container" onClick={(e) => {
                     this.returnCustomerList(e);
                 }}>
                     <span className="iconfont icon-return-btn"/>
-                    <span className="return-btn-font">{Intl.get("crm.52", "返回")}</span>
+                    <span className="return-btn-font">{Intl.get('crm.52', '返回')}</span>
                 </div>
             </TopNav> : null}
             <div className="content-block customer-repeat-table splice-table">

@@ -34,13 +34,13 @@ class UserDetailAddAppStore {
             //结束时间
             end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
             //开通周期
-            range: "0.5m",
+            range: '0.5m',
             //到期停用
-            over_draft: "1",
+            over_draft: '1',
             //二步认证
-            is_two_factor: "0",
+            is_two_factor: '0',
             //多人登录
-            multilogin: "0"
+            multilogin: '0'
         };
         //选中的应用列表的数组
         this.selectedApps = [];
@@ -106,14 +106,14 @@ class UserDetailAddAppStore {
     //为用户添加应用
     addUserApps(result) {
         if(result.error) {
-            this.submitResult = "error";
+            this.submitResult = 'error';
             this.submitErrorMsg = result.errorMsg;
         } else {
-            this.submitErrorMsg = "";
+            this.submitErrorMsg = '';
             if(result.loading) {
-                this.submitResult = "loading";
+                this.submitResult = 'loading';
             } else {
-                this.submitResult = "success";
+                this.submitResult = 'success';
                 setTimeout(() => {
                     this.resetState();
                     AppUserPanelSwitchAction.resetState();
@@ -171,10 +171,10 @@ class UserDetailAddAppStore {
     }
     // 添加多个应用时，有应用没有选择角色的错误提示
     someAppsNoSelectRoleError(error) {
-        this.submitResult = "selectRoleError";
+        this.submitResult = 'selectRoleError';
         this.submitErrorMsg = error;
     }
 }
 
 //使用alt导出store
-export default alt.createStore(UserDetailAddAppStore , "UserDetailAddAppStoreV2");
+export default alt.createStore(UserDetailAddAppStore , 'UserDetailAddAppStoreV2');

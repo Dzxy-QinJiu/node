@@ -1,9 +1,9 @@
-var RoleFormActions = require("../action/role-form-actions");
+var RoleFormActions = require('../action/role-form-actions');
 
 function RoleFormStore() {
 
     this.isSaving = false;//是否正在保存
-    this.saveMsg = "";//保存结果的提示信息
+    this.saveMsg = '';//保存结果的提示信息
 
     this.bindActions(RoleFormActions);
 }
@@ -15,7 +15,7 @@ RoleFormStore.prototype.setSavingFlag = function(flag) {
 
 //清空保存结果和提示信息
 RoleFormStore.prototype.clearSaveFlags = function() {
-    this.saveMsg = "";
+    this.saveMsg = '';
 };
 
 //保存结果的处理

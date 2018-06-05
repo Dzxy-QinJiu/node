@@ -1,5 +1,5 @@
 //客户联系人的角色
-exports.roleArray = [Intl.get("crm.115", "经办人"), Intl.get("crm.184", "决策人"), Intl.get("crm.185", "关键人"), Intl.get("crm.186", "其他")];
+exports.roleArray = [Intl.get('crm.115', '经办人'), Intl.get('crm.184', '决策人'), Intl.get('crm.185', '关键人'), Intl.get('crm.186', '其他')];
 
 //获取一个空的视图中使用的联系人对象
 exports.getEmptyViewContactObject = function() {
@@ -9,7 +9,7 @@ exports.getEmptyViewContactObject = function() {
         //是否显示确认删除联系人的confirm
         isShowDeleteContactConfirm: false,
         //修改出错提示
-        submitEditContactErrorMsg: "",
+        submitEditContactErrorMsg: '',
         //联系人
         contact: {
             id: '',
@@ -24,10 +24,10 @@ exports.getEmptyViewContactObject = function() {
         },
         //联系方式的数组对象
         contactWayAddObj: {
-            phone: [""],//添加“电话”联系方式
-            email: [""],//添加“邮箱”联系方式
-            qq: [""],//添加“qq”联系方式
-            weChat: [""]//添加“微信”联系方式
+            phone: [''],//添加“电话”联系方式
+            email: [''],//添加“邮箱”联系方式
+            qq: [''],//添加“qq”联系方式
+            weChat: ['']//添加“微信”联系方式
         }
     };
 };
@@ -40,15 +40,15 @@ exports.newViewContactObject = function(contact) {
         //是否显示确认删除联系人的confirm
         isShowDeleteContactConfirm: false,
         //修改出错提示
-        submitEditContactErrorMsg: "",
+        submitEditContactErrorMsg: '',
         //服务器返回的联系人对象
         contact: contact,
         //联系方式的数组对象
         contactWayAddObj: {
-            phone: contact.phone ? contact.phone : [""],//添加“电话”联系方式
-            email: contact.email ? contact.email : [""],//添加“邮箱”联系方式
-            qq: contact.qq ? contact.qq : [""],//添加“qq”联系方式
-            weChat: contact.weChat ? contact.weChat : [""]//添加“微信”联系方式
+            phone: contact.phone ? contact.phone : [''],//添加“电话”联系方式
+            email: contact.email ? contact.email : [''],//添加“邮箱”联系方式
+            qq: contact.qq ? contact.qq : [''],//添加“qq”联系方式
+            weChat: contact.weChat ? contact.weChat : ['']//添加“微信”联系方式
         }
     };
 
@@ -81,7 +81,7 @@ exports.deleteContactFromContactListView = function(list, contact) {
 //将所有的默认联系人设置为非默认联系人
 exports.unsetDefaultContacts = function(list) {
     _.each(list, function(item) {
-        item.contact.def_contancts = "false";
+        item.contact.def_contancts = 'false';
     });
 };
 

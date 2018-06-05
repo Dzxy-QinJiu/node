@@ -4,11 +4,11 @@
  * 柱状图展示所有数据，饼图用于展示由于占比太小在柱状图上不好详细展示的那部分数据
  */
 
-var echarts = require("echarts-eefung");
-require("./style.less");
-import Spinner from "../spinner";
-import macronsTheme from "./theme-macrons";
-var immutable = require("immutable");
+var echarts = require('echarts-eefung');
+require('./style.less');
+import Spinner from '../spinner';
+import macronsTheme from './theme-macrons';
+var immutable = require('immutable');
 import { packageTry } from 'LIB_DIR/func';
 
 class AntcBarPieChart extends React.Component {
@@ -71,13 +71,13 @@ class AntcBarPieChart extends React.Component {
                 data: this.getLegendData()
             },
             grid: {
-                right: "60%",
+                right: '60%',
             },
             xAxis: {
-                data: [""],
+                data: [''],
             },
             yAxis: {
-                type: "value",
+                type: 'value',
                 splitLine: false,
                 splitArea: false,
             },
@@ -97,7 +97,7 @@ class AntcBarPieChart extends React.Component {
         const subField = this.props.subField;
 
         if (subField) {
-            let subData = _.chain(chartData).pluck(subField).flatten().sortBy("count").value();
+            let subData = _.chain(chartData).pluck(subField).flatten().sortBy('count').value();
 
             data = subData.slice(-this.props.maxSeries);
         }
@@ -110,7 +110,7 @@ class AntcBarPieChart extends React.Component {
         if (!legend) {
             const chartData = this.getChartData();
     
-            legend = _.pluck(chartData, "name");
+            legend = _.pluck(chartData, 'name');
         }
         return legend;
     }
@@ -128,7 +128,7 @@ class AntcBarPieChart extends React.Component {
             let descendChartData = JSON.parse(JSON.stringify(chartData)).reverse();
 
             //临界值(紧邻多数派的少数派中的第一个值)
-            let boundaryValue = "";
+            let boundaryValue = '';
             //累加值(用于判断临界值)
             let sum = 0;
             //多数派总数
@@ -175,7 +175,7 @@ class AntcBarPieChart extends React.Component {
                 const count = dataItem.count;
                 let barSerie = {
                     name: dataItem.name,
-                    type: "bar",
+                    type: 'bar',
                     stack: true,
                     barWidth: 40,
                     data: [count],
@@ -186,8 +186,8 @@ class AntcBarPieChart extends React.Component {
                     barSerie.label = {
                         normal: {
                             show: true,
-                            position: "left",
-                            formatter: "{a}: {c}"
+                            position: 'left',
+                            formatter: '{a}: {c}'
                         }
                     };
                 }
@@ -197,8 +197,8 @@ class AntcBarPieChart extends React.Component {
                     symbolSize: 0,
                     lineStyle: {
                         normal: {
-                            type: "dashed",
-                            color: "#666",
+                            type: 'dashed',
+                            color: '#666',
                         }
                     },
                 };
@@ -213,7 +213,7 @@ class AntcBarPieChart extends React.Component {
                                 coord: [0, count]
                             },
                             {
-                                x: "70%", y: "80%"
+                                x: '70%', y: '80%'
                             }
                         ]
                     ];
@@ -228,7 +228,7 @@ class AntcBarPieChart extends React.Component {
                             coord: [0, minorTotal]
                         },
                         {
-                            x: "60%", y: "8%"
+                            x: '60%', y: '8%'
                         }
                     ];
 
@@ -256,7 +256,7 @@ class AntcBarPieChart extends React.Component {
                     center: ['60%', '50%'],
                     label: {
                         normal: {
-                            formatter: "{b}: {c}"
+                            formatter: '{b}: {c}'
                         }
                     },
                     data: this.getSerieData(minorChartData),
@@ -297,9 +297,9 @@ class AntcBarPieChart extends React.Component {
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
             var options = this.getEchartOptions();
             this.echartInstance.setOption(options,true);
         }

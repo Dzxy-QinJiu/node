@@ -1,28 +1,28 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * Created by wangliping on 2017/8/23.
  * 添加销售线索面板
  */
-import { Form, Input, Select, message, DatePicker} from "antd";
+import { Form, Input, Select, message, DatePicker} from 'antd';
 const FormItem = Form.Item;
-import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from "CMP_DIR/rightPanel";
-import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
+import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from 'CMP_DIR/rightPanel';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
-import AlertTimer from "CMP_DIR/alert-timer";
-import Spinner from "CMP_DIR/spinner";
-import PhoneInput from "CMP_DIR/phone-input";
-import {nameRegex} from "PUB_DIR/sources/utils/consts";
-import ajax from "../../../crm/common/ajax";
-const routes = require("../../../crm/common/route");
-import {checkCustomerName,checkEmail} from "../utils/clue-customer-utils";
-import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
-var clueCustomerAction = require("../action/clue-customer-action");
-const PHONE_INPUT_ID = "phoneInput";
+import AlertTimer from 'CMP_DIR/alert-timer';
+import Spinner from 'CMP_DIR/spinner';
+import PhoneInput from 'CMP_DIR/phone-input';
+import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import ajax from '../../../crm/common/ajax';
+const routes = require('../../../crm/common/route');
+import {checkCustomerName,checkEmail} from '../utils/clue-customer-utils';
+import AssignClueAndSelectCustomer from './assign-clue-and-select-customer';
+var clueCustomerAction = require('../action/clue-customer-action');
+const PHONE_INPUT_ID = 'phoneInput';
 const SalesClueAddForm = React.createClass({
     mixins: [FieldMixin],
     getInitialState: function() {
-        const today = moment().format("YYYY-MM-DD");
+        const today = moment().format('YYYY-MM-DD');
         var defalutData = this.props.defaultClueData ? this.props.defaultClueData : {};
         return {
             status: {
@@ -38,30 +38,30 @@ const SalesClueAddForm = React.createClass({
                 source_time: {}//线索时间
             },
             formData: {
-                name: defalutData.name || "",//客户名称
-                contact_name: defalutData.name || "",//联系人
-                phone: defalutData.phone || "",//联系电话
-                email: defalutData.email || "",//邮箱
-                qq: defalutData.qq || "",//QQ
-                weChat: defalutData.weChat || "",//微信
-                clue_source: defalutData.clue_source || "",//线索来源
-                access_channel: defalutData.access_channel || "",//接入渠道
-                source: "",//线索描述
+                name: defalutData.name || '',//客户名称
+                contact_name: defalutData.name || '',//联系人
+                phone: defalutData.phone || '',//联系电话
+                email: defalutData.email || '',//邮箱
+                qq: defalutData.qq || '',//QQ
+                weChat: defalutData.weChat || '',//微信
+                clue_source: defalutData.clue_source || '',//线索来源
+                access_channel: defalutData.access_channel || '',//接入渠道
+                source: '',//线索描述
                 source_time: today,//线索时间，默认：今天
-                province: "",
-                city: "",
-                county: "",
-                location: "",
-                address: "",//详细地址
-                administrative_level: ""//行政区划
+                province: '',
+                city: '',
+                county: '',
+                location: '',
+                address: '',//详细地址
+                administrative_level: ''//行政区划
             },
             isSaving: false,
-            saveMsg: "",
-            saveResult: "",
+            saveMsg: '',
+            saveResult: '',
             isShowAssignAndRelate: false,//是否展示分配给某个销售或者关联客户的面板
             newAddClue: {},//新增加的线索
             clueNameExist: false,//线索名称是否存在
-            clueCustomerCheckErrMsg: ""//线索名称校验失败
+            clueCustomerCheckErrMsg: ''//线索名称校验失败
         };
     },
     //验证客户名是否重复
@@ -77,7 +77,7 @@ const SalesClueAddForm = React.createClass({
                         clueCustomerCheckErrMsg: data
                     });
                 } else {
-                    if (_.isObject(data) && data.result == "true") {
+                    if (_.isObject(data) && data.result == 'true') {
                         this.setState({
                             clueNameExist: false,
                             clueCustomerCheckErrMsg: ''
@@ -96,11 +96,11 @@ const SalesClueAddForm = React.createClass({
     },
     renderCheckClueNameMsg: function() {
         if (this.state.clueNameExist) {
-            return (<div className="clue-name-repeat">{Intl.get("clue.customer.check.repeat", "该线索名称已存在")}</div>);
+            return (<div className="clue-name-repeat">{Intl.get('clue.customer.check.repeat', '该线索名称已存在')}</div>);
         } else if (this.state.clueCustomerCheckErrMsg) {
-            return (<div className="clue-name-errmsg">{Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败")}</div>);
+            return (<div className="clue-name-errmsg">{Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败')}</div>);
         } else {
-            return "";
+            return '';
         }
     },
     getSubmitObj(){
@@ -123,7 +123,7 @@ const SalesClueAddForm = React.createClass({
             submitObj.app_user_id = this.props.appUserId;
         }
         //联系人及联系方式的处理
-        let contact = {def_contancts: "true"};
+        let contact = {def_contancts: 'true'};
         if (formData.contact_name) {
             contact.name = formData.contact_name;
         }
@@ -157,8 +157,8 @@ const SalesClueAddForm = React.createClass({
                     return;
                 } else {
                     let submitObj = this.getSubmitObj();
-                    let addRoute = _.find(routes, (route) => route.handler == "addSalesClue");
-                    this.setState({isSaving: true, saveMsg: "", saveResult: ""});
+                    let addRoute = _.find(routes, (route) => route.handler == 'addSalesClue');
+                    this.setState({isSaving: true, saveMsg: '', saveResult: ''});
                     ajax({
                         url: addRoute.path,
                         type: addRoute.method,
@@ -166,7 +166,7 @@ const SalesClueAddForm = React.createClass({
                     }).then(data => {
                         if (_.isObject(data) && data.code == 0) {
                             //添加成功
-                            this.setResultData(Intl.get("user.user.add.success", "添加成功"), "success");
+                            this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                             this.setState({
                                 newAddClue: data.result
                             });
@@ -184,11 +184,11 @@ const SalesClueAddForm = React.createClass({
                             //线索客户添加成功后的回调
                             _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                         } else {
-                            this.setResultData(Intl.get("crm.154", "添加失败"), "error");
+                            this.setResultData(Intl.get('crm.154', '添加失败'), 'error');
                         }
                     }, errorMsg => {
                         //添加失败
-                        this.setResultData(errorMsg || Intl.get("crm.154", "添加失败"), "error");
+                        this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
                     });
                 }
             });
@@ -204,14 +204,14 @@ const SalesClueAddForm = React.createClass({
     },
     //去掉保存后提示信息
     hideSaveTooltip: function() {
-        if (this.state.saveResult == "success") {
+        if (this.state.saveResult == 'success') {
             this.setState({
                 isShowAssignAndRelate: true
             });
         } else {
             this.setState({
-                saveMsg: "",
-                saveResult: ""
+                saveMsg: '',
+                saveResult: ''
             });
         }
     },
@@ -229,19 +229,19 @@ const SalesClueAddForm = React.createClass({
                     clueCustomerAction.checkOnlyContactPhone(value, data => {
                         if (_.isString(data)) {
                             //唯一性验证出错了
-                            callback(Intl.get("crm.82", "电话唯一性验证出错了"));
+                            callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                         } else {
-                            if (_.isObject(data) && data.result == "true") {
+                            if (_.isObject(data) && data.result == 'true') {
                                 callback();
                             } else {
                                 //已存在
-                                callback(Intl.get("crm.83", "该电话已存在"));
+                                callback(Intl.get('crm.83', '该电话已存在'));
                             }
                         }
                     });
                 } else {
                     if (!this.state.formData.qq && !this.state.formData.email && !this.state.formData.weChat) {
-                        callback(new Error(Intl.get("crm.clue.require.one", "电话、邮箱、QQ、微信必填一项")));
+                        callback(new Error(Intl.get('crm.clue.require.one', '电话、邮箱、QQ、微信必填一项')));
                     } else {
                         callback();
                     }
@@ -278,16 +278,16 @@ const SalesClueAddForm = React.createClass({
                     <Form horizontal className="crm-add-form sales-clue-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
-                                label={Intl.get("clue.customer.clue.name", "线索名称")}
+                                label={Intl.get('clue.customer.clue.name', '线索名称')}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                                 validateStatus={this.renderValidateStyle('name')}
-                                help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
+                                help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}
                             >
                                 <Validator rules={[{validator: checkCustomerName}]}>
                                     <Input name="name"
-                                        className={this.state.clueNameExist || this.state.clueCustomerCheckErrMsg ? "input-red-border" : ""}
-                                        placeholder={Intl.get("clue.customer.fillin.clue.name", "请填写线索名称")}
+                                        className={this.state.clueNameExist || this.state.clueCustomerCheckErrMsg ? 'input-red-border' : ''}
+                                        placeholder={Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')}
                                         value={formData.name}
                                         onBlur={this.checkOnlyClueCustomerName}
                                         onChange={this.setField.bind(this, 'name')}
@@ -296,11 +296,11 @@ const SalesClueAddForm = React.createClass({
                             </FormItem>
                             {this.renderCheckClueNameMsg()}
                             <FormItem
-                                label={Intl.get("call.record.contacts", "联系人")}
+                                label={Intl.get('call.record.contacts', '联系人')}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                             >
-                                <Input name="contact_name" placeholder={Intl.get("crm.90", "请输入姓名")}
+                                <Input name="contact_name" placeholder={Intl.get('crm.90', '请输入姓名')}
                                     value={formData.contact_name}
                                     onChange={this.setField.bind(this, 'contact_name')}
                                 />
@@ -308,7 +308,7 @@ const SalesClueAddForm = React.createClass({
 
                             <PhoneInput
                                 wrappedComponentRef={(inst) => this.phoneInputRef = inst}
-                                placeholder={Intl.get("crm.95", "请输入联系人电话")}
+                                placeholder={Intl.get('crm.95', '请输入联系人电话')}
                                 validateRules={this.getPhoneInputValidateRules()}
                                 onChange={this.setField.bind(this, 'phone')}
                                 initialValue={formData.phone}
@@ -316,16 +316,16 @@ const SalesClueAddForm = React.createClass({
                             />
 
                             <FormItem
-                                label={Intl.get("common.email", "邮箱")}
+                                label={Intl.get('common.email', '邮箱')}
                                 id="email"
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                                 validateStatus={this.renderValidateStyle('email')}
-                                help={status.email.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.email.errors && status.email.errors.join(','))}
+                                help={status.email.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.email.errors && status.email.errors.join(','))}
                             >
                                 <Validator rules={[{validator: checkEmail}]}>
                                     <Input name="email" value={formData.email}
-                                        placeholder={Intl.get("member.input.email", "请输入邮箱")}
+                                        placeholder={Intl.get('member.input.email', '请输入邮箱')}
                                         onChange={this.setNeedPhoneValidateValue.bind(this, 'email')}
                                     />
                                 </Validator>
@@ -337,31 +337,31 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Input name="qq" id="qq" type="text" value={formData.qq}
-                                    placeholder={Intl.get("member.input.qq", "请输入QQ号")}
+                                    placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                                     onChange={this.setNeedPhoneValidateValue.bind(this, 'qq')}
                                 />
                             </FormItem>
                             <FormItem
-                                label={Intl.get("crm.58", "微信")}
+                                label={Intl.get('crm.58', '微信')}
                                 id="weChat"
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                             >
                                 <Input name="weChat" id="weChat" type="text" value={formData.weChat}
-                                    placeholder={Intl.get("member.input.wechat", "请输入微信号")}
+                                    placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                     onChange={this.setNeedPhoneValidateValue.bind(this, 'weChat')}
                                 />
                             </FormItem>
 
                             <FormItem
                                 className="form-item-label"
-                                label={Intl.get("crm.sales.clue.source", "线索来源")}
+                                label={Intl.get('crm.sales.clue.source', '线索来源')}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
                                     filterOption={false}
-                                    searchPlaceholder={Intl.get("crm.clue.source.placeholder", "请选择或输入线索来源")}
+                                    searchPlaceholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
                                     name="clue_source"
                                     onChange={this.setField.bind(this, 'clue_source')}
                                     value={formData.clue_source}
@@ -377,13 +377,13 @@ const SalesClueAddForm = React.createClass({
 
                             <FormItem
                                 className="form-item-label"
-                                label={Intl.get("crm.sales.clue.access.channel", "接入渠道")}
+                                label={Intl.get('crm.sales.clue.access.channel', '接入渠道')}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
                                     filterOption={false}
-                                    searchPlaceholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
+                                    searchPlaceholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'access_channel')}
                                     value={formData.access_channel}
@@ -397,13 +397,13 @@ const SalesClueAddForm = React.createClass({
                             </FormItem>
                             <FormItem
                                 className="form-item-label"
-                                label={Intl.get("clue.customer.classify","线索分类")}
+                                label={Intl.get('clue.customer.classify','线索分类')}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
                                     filterOption={false}
-                                    searchPlaceholder={Intl.get("crm.clue.classify.placeholder", "请选择或输入线索分类")}
+                                    searchPlaceholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'clue_classify')}
                                     value={formData.clue_classify}
@@ -416,7 +416,7 @@ const SalesClueAddForm = React.createClass({
                                 </Select>
                             </FormItem>
                             <FormItem
-                                label={Intl.get("crm.sales.clue.descr", "线索描述")}
+                                label={Intl.get('crm.sales.clue.descr', '线索描述')}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                             >
@@ -427,7 +427,7 @@ const SalesClueAddForm = React.createClass({
                             </FormItem>
                             <FormItem
                                 className="form-item-label"
-                                label={Intl.get("crm.sales.clue.time", "线索时间")}
+                                label={Intl.get('crm.sales.clue.time', '线索时间')}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 10}}
                             >
@@ -440,19 +440,19 @@ const SalesClueAddForm = React.createClass({
                                 <div className="indicator">
                                     {saveResult ?
                                         (
-                                            <AlertTimer time={saveResult == "error" ? 3000 : 600}
+                                            <AlertTimer time={saveResult == 'error' ? 3000 : 600}
                                                 message={this.state.saveMsg}
                                                 type={saveResult} showIcon
                                                 onHide={this.hideSaveTooltip}/>
-                                        ) : ""
+                                        ) : ''
                                     }
                                 </div>
                                 <RightPanelCancel onClick={this.closeAddPanel} data-tracename="点击取消添加销售线索按钮">
-                                    {Intl.get("common.cancel", "取消")}
+                                    {Intl.get('common.cancel', '取消')}
                                 </RightPanelCancel>
                                 <RightPanelSubmit onClick={this.handleSubmit} disabled={this.state.isLoading}
                                     data-tracename="点击保存添加销售线索按钮">
-                                    {Intl.get("common.save", "保存")}
+                                    {Intl.get('common.save', '保存')}
                                 </RightPanelSubmit>
                             </FormItem>
                         </Validation>
@@ -460,7 +460,7 @@ const SalesClueAddForm = React.createClass({
                 </GeminiScrollbar>
                 {this.state.isSaving ? (<div className="right-pannel-block">
                     <Spinner className="right-panel-saving"/>
-                </div>) : ""}
+                </div>) : ''}
             </div>
         );
     },

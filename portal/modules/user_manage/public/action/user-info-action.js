@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/4/11.
  */
-var userAjax = require("../ajax/user-ajax");
+var userAjax = require('../ajax/user-ajax');
 function UserInfoActions() {
     this.generateActions(
         'setInitialData',
@@ -19,10 +19,10 @@ function UserInfoActions() {
             if (_.isObject(logListObj)) {
                 this.dispatch({logListObj: logListObj,condition: condition});
             } else {
-                this.dispatch( Intl.get("member.get.log.failed", "获取成员日志失败!"));
+                this.dispatch( Intl.get('member.get.log.failed', '获取成员日志失败!'));
             }
         }, (errorMsg) => {
-            this.dispatch(errorMsg || Intl.get("member.get.log.failed", "获取成员日志失败!"));
+            this.dispatch(errorMsg || Intl.get('member.get.log.failed', '获取成员日志失败!'));
         });
     };
     //获取销售目标和提成比例

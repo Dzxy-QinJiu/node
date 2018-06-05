@@ -3,12 +3,12 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/1/8.
  */
-import routeList from "../../modules/common/route";
-import ajax from "../../modules/common/ajax";
+import routeList from '../../modules/common/route';
+import ajax from '../../modules/common/ajax';
 
 //获取无效电话
 exports.getInvalidPhone = function(onSuccess, onError) {
-    const route = _.find(routeList, route => route.handler === "getInvalidPhone");
+    const route = _.find(routeList, route => route.handler === 'getInvalidPhone');
     const arg = {
         url: route.path,
         type: route.method,
@@ -25,7 +25,7 @@ exports.getInvalidPhone = function(onSuccess, onError) {
 };
 //添加为无效电话
 exports.addInvalidPhone = function(data, onSuccess, onError) {
-    const route = _.find(routeList, route => route.handler === "addInvalidPhone");
+    const route = _.find(routeList, route => route.handler === 'addInvalidPhone');
     const arg = {
         url: route.path,
         type: route.method,

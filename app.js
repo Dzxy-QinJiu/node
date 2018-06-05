@@ -1,27 +1,27 @@
 var config = global.config = require('./conf/config');
-var fs = require("fs");
+var fs = require('fs');
 //项目之外有配置文件,这种情况是线上真正部署的情况
-if (fs.existsSync("../oplate.config.js")) {
+if (fs.existsSync('../oplate.config.js')) {
     config = global.config = require('../oplate.config');
 }
 //定义全局常量
-global.oplateConsts = require("./portal/lib/consts");
+global.oplateConsts = require('./portal/lib/consts');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var compression = require("compression");
-var coordinator = require("./portal/lib/middlewares/coordinator-client");
-var commonUtils = require("./portal/lib/utils/common-utils");
-var auth = require("./portal/lib/utils/auth");
+var compression = require('compression');
+var coordinator = require('./portal/lib/middlewares/coordinator-client');
+var commonUtils = require('./portal/lib/utils/common-utils');
+var auth = require('./portal/lib/utils/auth');
 
 //让config模块使用conf/config.js里的配置，而不用去找config/default.js文件
 process.env.NODE_CONFIG = JSON.stringify(config);
 
 //让log4js-config模块使用conf/config.js里的配置，而不用去找config/app-logging.json文件
-require("log4js-config").init(function() {
-    return require("./conf/logger.js");
+require('log4js-config').init(function() {
+    return require('./conf/logger.js');
 });
 
 var app = express();
@@ -34,13 +34,13 @@ app.set('view engine', 'ejs');
 app.use(compression());
 
 var publicDir = path.join(__dirname, config.isProduction ? './dist' : './portal/public');
-if (fs.existsSync(path.join(publicDir, "favicons/favicon.ico"))) {
+if (fs.existsSync(path.join(publicDir, 'favicons/favicon.ico'))) {
     app.use(favicon(path.join(publicDir, 'favicons/favicon.ico')));
 }
 //dll文件（vendors）
 app.use('/dll', express.static(path.resolve(__dirname, './dll')));
 if (config.webpackMode !== 'production') {
-    require("./portal/staticfile-proxy")(app);
+    require('./portal/staticfile-proxy')(app);
     // require("./portal/lib/middlewares/webpack")(app);
 } else {
     app.use('/resources/', express.static(publicDir));
@@ -48,11 +48,11 @@ if (config.webpackMode !== 'production') {
 app.use('/static/', express.static(path.join(__dirname, './portal/static')));
 app.use('/upload/', express.static(path.join(__dirname, 'upload')));
 
-app.use(require("./portal/lib/middlewares/accesslog"));
+app.use(require('./portal/lib/middlewares/accesslog'));
 //handle request entity too large
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-app.use(cookieParser("83DHWG36"));
+app.use(cookieParser('83DHWG36'));
 
 //引用express-domain-middleware插件
 //该插件为每次请求的req和res创建一个单独的domain
@@ -61,34 +61,34 @@ app.use(require('express-domain-middleware'));
 //线上环境才添加追踪
 if (commonUtils.ip.isProductionEnvironment()) {
     //数据请求追踪
-    var dataTrace = require("distributed-trace-for-nodejs");
+    var dataTrace = require('distributed-trace-for-nodejs');
     dataTrace.init({
         zipkinUrl: config.traceConfig.zipkinUrl,
         serviceName: config.traceConfig.serviceName
     });
-    app.all("*", dataTrace.trace);
+    app.all('*', dataTrace.trace);
 }
 //引入session
-var sessionMiddleware = require("./portal/lib/middlewares/session");
+var sessionMiddleware = require('./portal/lib/middlewares/session');
 app.use(sessionMiddleware);
 //为程序添加res.error
-app.use(require("./portal/lib/middlewares/resError"));
+app.use(require('./portal/lib/middlewares/resError'));
 //异常添加处理
-app.use(require("./portal/lib/middlewares/exception"));
+app.use(require('./portal/lib/middlewares/exception'));
 
 //定义全局的portal路径
-global.portal_root_path = path.resolve(__dirname, "./portal");
+global.portal_root_path = path.resolve(__dirname, './portal');
 //定义全局的modules路径
-global.module_root_path = path.resolve(__dirname, "./portal/modules");
+global.module_root_path = path.resolve(__dirname, './portal/modules');
 //定义全局的配置文件路径
-global.config_root_path = path.resolve(__dirname, "./conf");
+global.config_root_path = path.resolve(__dirname, './conf');
 
 //初始化controller
-require("./portal/controller")(app);
+require('./portal/controller')(app);
 //处理404
-app.use(require("./portal/lib/middlewares/404"));
+app.use(require('./portal/lib/middlewares/404'));
 //处理uncaughtException
-var errorLogger = require("./portal/lib/utils/logger").getLogger("error");
+var errorLogger = require('./portal/lib/utils/logger').getLogger('error');
 process.on('uncaughtException', function(err) {
     errorLogger.error(err.stack || err.message || 'uncaughtException');
 });
@@ -103,10 +103,10 @@ var server = app.listen(app.get('port'), function() {
 });
 
 //初始化coordinator
-if (auth.getLang() !== "es_VE") {
+if (auth.getLang() !== 'es_VE') {
     coordinator(function() {
         //Coordinator启动后，创建socketIO,启动推送
-        require("./portal/modules/socketio").startSocketio(server);
+        require('./portal/modules/socketio').startSocketio(server);
     });
 }
 

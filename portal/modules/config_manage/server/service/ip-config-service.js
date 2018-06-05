@@ -2,9 +2,9 @@
  * IP配置的service
  * */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var IpConfigRestApis = {
     IpConfigPath: '/rest/base/v1/realm/config/ip', // IP配置路径（获取、添加和删除）
     filterLanIp: '/rest/base/v1/realm/config/lan_filter' // 安全域过滤内网网段（添加、获取）
@@ -33,7 +33,7 @@ exports.addIpConfigItem = function(req, res, addIpObj){
 // 删除IP配置
 exports.deleteIpConfigItem = function(req, res, id){
     return restUtil.authRest.del({
-        url: IpConfigRestApis.IpConfigPath + "/" + id,
+        url: IpConfigRestApis.IpConfigPath + '/' + id,
         req: req,
         res: res
     }, null);

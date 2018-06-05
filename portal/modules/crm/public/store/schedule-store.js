@@ -1,4 +1,4 @@
-var ScheduleActions = require("../action/schedule-action");
+var ScheduleActions = require('../action/schedule-action');
 
 function ScheduleStore() {
     //初始化state数据
@@ -11,27 +11,27 @@ ScheduleStore.prototype.resetState = function() {
     this.total = 0;//共获取的数据总数
     this.listenScrollBottom = true;//是否下拉加载
     //下拉加载要传的id
-    this.lastScheduleId = "";
+    this.lastScheduleId = '';
     //日程列表
     this.scheduleList = [];
     //正在获取日程管理列表
     this.isLoadingScheduleList = false;
     //获取日程管理列表出错
-    this.getScheduleListErrmsg = "";
+    this.getScheduleListErrmsg = '';
     this.alertListBak = [];
 };
 
 ScheduleStore.prototype.getScheduleList = function(result) {
     if (result.loading){
         this.isLoadingScheduleList = true;
-        this.getScheduleListErrmsg = "";
+        this.getScheduleListErrmsg = '';
     }else if (result.error){
         this.isLoadingScheduleList = false;
         this.getScheduleListErrmsg = result.errorMsg;
         this.scheduleList = [];
     }else{
         this.isLoadingScheduleList = false;
-        this.getScheduleListErrmsg = "";
+        this.getScheduleListErrmsg = '';
         var scheduleList = _.isArray(result.data.list) ? result.data.list : [];
         if (!this.lastScheduleId){
             this.scheduleList = scheduleList;
@@ -39,7 +39,7 @@ ScheduleStore.prototype.getScheduleList = function(result) {
             this.scheduleList = this.scheduleList.concat(scheduleList);
         }
         this.total = result.data.total;
-        this.lastScheduleId = this.scheduleList.length ? _.last(this.scheduleList).id : "";
+        this.lastScheduleId = this.scheduleList.length ? _.last(this.scheduleList).id : '';
         if (this.scheduleList.length == this.total){
             this.listenScrollBottom = false;
         }

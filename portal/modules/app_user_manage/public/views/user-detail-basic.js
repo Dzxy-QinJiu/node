@@ -1,29 +1,29 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-import {Alert, Icon} from "antd";
-import {Button as BootstrapButton, Modal as BootstrapModal} from "react-bootstrap";
-import UserStatusSwitch from "./user-status-switch";
-var AppUserDetailStore = require("../store/app-user-detail-store");
-var AppUserStore = require("../store/app-user-store");
-var AppUserDetailAction = require("../action/app-user-detail-actions");
-var AppUserPanelSwitchActions = require("../action/app-user-panelswitch-actions");
-var Spinner = require("CMP_DIR/spinner");
-var DefaultUserLogoTitle = require("CMP_DIR/default-user-logo-title");
-var PrivilegeChecker = require("CMP_DIR/privilege/checker").PrivilegeChecker;
-var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
-var AlertTimer = require("CMP_DIR/alert-timer");
-var UserDetailEditField = require("CMP_DIR/basic-edit-field/input");
-var AppUserUtil = require("../util/app-user-util");
+import {Alert, Icon} from 'antd';
+import {Button as BootstrapButton, Modal as BootstrapModal} from 'react-bootstrap';
+import UserStatusSwitch from './user-status-switch';
+var AppUserDetailStore = require('../store/app-user-detail-store');
+var AppUserStore = require('../store/app-user-store');
+var AppUserDetailAction = require('../action/app-user-detail-actions');
+var AppUserPanelSwitchActions = require('../action/app-user-panelswitch-actions');
+var Spinner = require('CMP_DIR/spinner');
+var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
+var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
+var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+var AlertTimer = require('CMP_DIR/alert-timer');
+var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
+var AppUserUtil = require('../util/app-user-util');
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
-var GeminiScrollbar = require("CMP_DIR/react-gemini-scrollbar");
-var measureText = require("PUB_DIR/sources/utils/measure-text");
-var Organization = require("./v2/organization");
-import UserCustomer from "CMP_DIR/user_manage_components/user-customer";
-import {getPassStrenth, passwordRegex} from "CMP_DIR/password-strength-bar";
-var UserDetailFieldSwitch = require("./user-detail-field-switch");
-var language = require("PUB_DIR/language/getLanguage");
-var AppUserAjax = require("../ajax/app-user-ajax");
+var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
+var measureText = require('PUB_DIR/sources/utils/measure-text');
+var Organization = require('./v2/organization');
+import UserCustomer from 'CMP_DIR/user_manage_components/user-customer';
+import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
+var UserDetailFieldSwitch = require('./user-detail-field-switch');
+var language = require('PUB_DIR/language/getLanguage');
+var AppUserAjax = require('../ajax/app-user-ajax');
 
 const FORMAT = oplateConsts.DATE_FORMAT;
 
@@ -76,7 +76,7 @@ var UserDetailBasic = React.createClass({
             (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
             callback();
         } else {
-            callback(new Error(Intl.get("common.input.correct.phone", "请输入正确的电话号码")));
+            callback(new Error(Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
         }
     },
     showDisableAllAppsModal: function() {
@@ -106,7 +106,7 @@ var UserDetailBasic = React.createClass({
             var hide = AppUserDetailAction.hideDisableSuccessMsg;
             return (
                 <AlertTimer
-                    message={Intl.get("user.all.stop.success", "全部停用成功")}
+                    message={Intl.get('user.all.stop.success', '全部停用成功')}
                     type="success"
                     showIcon
                     time={3000}
@@ -135,7 +135,7 @@ var UserDetailBasic = React.createClass({
                 className="a_button"
                 href="javascript:void(0)"
                 onClick={this.showDisableAllAppsModal}
-                title={Intl.get("user.app.all.stop", "停用该用户的全部应用")}
+                title={Intl.get('user.app.all.stop', '停用该用户的全部应用')}
             >
                 <ReactIntl.FormattedMessage id="user.all.stop" defaultMessage="全部停用"/>
             </PrivilegeChecker>
@@ -165,8 +165,8 @@ var UserDetailBasic = React.createClass({
     },
     renderMultiLogin: function(app) {
         var multilogin = /^[10]$/.test((app.multilogin + '')) ? app.multilogin + '' : '';
-        if (!hasPrivilege("APP_USER_EDIT")) {
-            return multilogin ? (multilogin === '1' ? Intl.get("common.app.status.open", "开启") : Intl.get("common.app.status.close", "关闭")) : multilogin;
+        if (!hasPrivilege('APP_USER_EDIT')) {
+            return multilogin ? (multilogin === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : multilogin;
         }
         if (!multilogin) {
             return multilogin;
@@ -179,16 +179,16 @@ var UserDetailBasic = React.createClass({
             unCheckedValue="0"
             checkedSubmitValue="1"
             unCheckedSubmitValue="0"
-            checkedChildren={Intl.get("user.open.code", "开")}
-            unCheckedChildren={Intl.get("user.close.code", "关")}
+            checkedChildren={Intl.get('user.open.code', '开')}
+            unCheckedChildren={Intl.get('user.close.code', '关')}
             field="mutilogin"
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
     },
     renderIsTwoFactor: function(app) {
         var is_two_factor = /^[10]$/.test((app.is_two_factor + '')) ? app.is_two_factor + '' : '';
-        if (!hasPrivilege("APP_USER_EDIT")) {
-            return is_two_factor ? (is_two_factor === '1' ? Intl.get("common.app.status.open", "开启") : Intl.get("common.app.status.close", "关闭")) : is_two_factor;
+        if (!hasPrivilege('APP_USER_EDIT')) {
+            return is_two_factor ? (is_two_factor === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : is_two_factor;
         }
         if (!is_two_factor) {
             return is_two_factor;
@@ -201,8 +201,8 @@ var UserDetailBasic = React.createClass({
             unCheckedValue="0"
             checkedSubmitValue="1"
             unCheckedSubmitValue="0"
-            checkedChildren={Intl.get("user.open.code", "开")}
-            unCheckedChildren={Intl.get("user.close.code", "关")}
+            checkedChildren={Intl.get('user.open.code', '开')}
+            unCheckedChildren={Intl.get('user.close.code', '关')}
             field="is_two_factor"
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
@@ -210,11 +210,11 @@ var UserDetailBasic = React.createClass({
     renderOverDraft: function(app) {
         var over_draft = /^[210]$/.test((app.over_draft + '')) ? app.over_draft + '' : '1';
         if (over_draft == '0') {
-            return Intl.get("user.status.immutability", "不变");
+            return Intl.get('user.status.immutability', '不变');
         } else if (over_draft == '1') {
-            return Intl.get("user.status.stop", "停用");
+            return Intl.get('user.status.stop', '停用');
         } else if (over_draft == '2') {
-            return Intl.get("user.status.degrade", "降级");
+            return Intl.get('user.status.degrade', '降级');
         }
 
     },
@@ -223,8 +223,8 @@ var UserDetailBasic = React.createClass({
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
         }
-        if (!hasPrivilege("APP_USER_EDIT")) {
-            return is_disabled ? (is_disabled === 'true' ? Intl.get("common.app.status.close", "关闭") : Intl.get("common.app.status.open", "开启")) : is_disabled;
+        if (!hasPrivilege('APP_USER_EDIT')) {
+            return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
         }
         if (!is_disabled) {
             return '';
@@ -237,8 +237,8 @@ var UserDetailBasic = React.createClass({
             unCheckedValue="true"
             checkedSubmitValue="1"
             unCheckedSubmitValue="0"
-            checkedChildren={Intl.get("user.open.code", "开")}
-            unCheckedChildren={Intl.get("user.close.code", "关")}
+            checkedChildren={Intl.get('user.open.code', '开')}
+            unCheckedChildren={Intl.get('user.close.code', '关')}
             field="status"
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
@@ -249,23 +249,23 @@ var UserDetailBasic = React.createClass({
         var establish_time = moment(new Date(+app.create_time)).format(FORMAT);
         var displayStartTime = '', displayEndTime = '', displayEstablishTime = '';
         if (app.start_time == '0') {
-            displayStartTime = Intl.get("user.nothing", "无");
+            displayStartTime = Intl.get('user.nothing', '无');
         } else if (start_time === 'Invalid date') {
-            displayStartTime = Intl.get("common.unknown", "未知");
+            displayStartTime = Intl.get('common.unknown', '未知');
         } else {
             displayStartTime = start_time;
         }
         if (app.end_time == '0') {
-            displayEndTime = Intl.get("user.nothing", "无");
+            displayEndTime = Intl.get('user.nothing', '无');
         } else if (end_time === 'Invalid date') {
-            displayEndTime = Intl.get("common.unknown", "未知");
+            displayEndTime = Intl.get('common.unknown', '未知');
         } else {
             displayEndTime = end_time;
         }
         if (app.create_time == '0') {
-            displayEstablishTime = Intl.get("user.nothing", "无");
+            displayEstablishTime = Intl.get('user.nothing', '无');
         } else if (establish_time === 'Invalid date') {
-            displayEstablishTime = Intl.get("common.unknown", "未知");
+            displayEstablishTime = Intl.get('common.unknown', '未知');
         } else {
             displayEstablishTime = establish_time;
         }
@@ -316,10 +316,10 @@ var UserDetailBasic = React.createClass({
             MARGIN_LEFT: 25
         };
         var despWidth = '';
-        var className = "logo";
-        if (language.lan() == "es" || language.lan() == "en") {
+        var className = 'logo';
+        if (language.lan() == 'es' || language.lan() == 'en') {
             despWidth = '89%';
-        } else if (language.lan() == "zh") {
+        } else if (language.lan() == 'zh') {
             className += ' pull-left';
             despWidth = LAYOUTS.ITEM_WIDTH - LAYOUTS.MARGIN_LEFT - maxWidth - 5;
         }
@@ -344,13 +344,13 @@ var UserDetailBasic = React.createClass({
                             {
                                 (app.is_disabled === 'true' || app.is_disabled === true) ? (
                                     <div className="is_disabled">
-                                        <span className="disabled_span">{Intl.get("common.stop", "停用")}</span>
+                                        <span className="disabled_span">{Intl.get('common.stop', '停用')}</span>
                                     </div>
                                 ) : null
                             }
                             {selectApp && selectApp.app_id == app.app_id && selectApp.qualify_label == 1 ? (
                                 <div className="qualified-tag-style">
-                                    <span className="qualified_span">{Intl.get("common.qualified", "合格")}</span>
+                                    <span className="qualified_span">{Intl.get('common.qualified', '合格')}</span>
                                 </div>) : null}
 
                             <PrivilegeChecker
@@ -360,7 +360,7 @@ var UserDetailBasic = React.createClass({
                             >
                                 <a href="javascript:void(0)"
                                     onClick={_this.editSingleApp.bind(_this, app)}
-                                    title={Intl.get("user.app.change", "变更应用")}>
+                                    title={Intl.get('user.app.change', '变更应用')}>
                                     <span className="iconfont icon-guanli"></span>
                                 </a>
                             </PrivilegeChecker>
@@ -435,7 +435,7 @@ var UserDetailBasic = React.createClass({
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_CUSTOMER_INFO, customerObj);
     },
     onPasswordDisplayTypeChange: function(type) {
-        if (type === "edit") {
+        if (type === 'edit') {
             this.setState({isConfirmPasswordShow: true});
         } else {
             this.setState({isConfirmPasswordShow: false});
@@ -449,7 +449,7 @@ var UserDetailBasic = React.createClass({
     },
     onConfirmPasswordDisplayTypeChange: function() {
         this.setState({isConfirmPasswordShow: false});
-        this.refs.password.setState({displayType: "text"});
+        this.refs.password.setState({displayType: 'text'});
     },
 
     //对密码 进行校验
@@ -465,7 +465,7 @@ var UserDetailBasic = React.createClass({
                     passStrength: 'L'
                 }
             });
-            callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
         }
     },
     //对确认密码 进行校验
@@ -479,8 +479,8 @@ var UserDetailBasic = React.createClass({
 
     renderUserStatus: function(user) {
         let userStatus = user.status;
-        if (!hasPrivilege("APP_USER_EDIT")) {
-            return userStatus === '1' ? Intl.get("common.enabled", "启用") : Intl.get("common.stop", "停用");
+        if (!hasPrivilege('APP_USER_EDIT')) {
+            return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
         return (<UserStatusSwitch userId={user.user_id} status={userStatus === '1' ? true : false}/>);
     },
@@ -513,7 +513,7 @@ var UserDetailBasic = React.createClass({
             <div>
                 <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
                     <dt>
-                        {Intl.get("common.username", "用户名")}
+                        {Intl.get('common.username', '用户名')}
                     </dt>
                     <dd>
                         <UserDetailEditField
@@ -527,7 +527,7 @@ var UserDetailBasic = React.createClass({
                 </dl>
                 <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
                     <dt>
-                        {Intl.get("common.nickname", "昵称")}
+                        {Intl.get('common.nickname', '昵称')}
                     </dt>
                     <dd>
                         <UserDetailEditField
@@ -536,17 +536,17 @@ var UserDetailBasic = React.createClass({
                             field="nick_name"
                             type="text"
                             modifySuccess={this.changeUserFieldSuccess}
-                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
-                            validators={[{required: true, message: Intl.get("user.nickname.write.tip", "请填写昵称")}]}
-                            placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
-                            title={Intl.get("user.nickname.set.tip", "设置昵称")}
+                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
+                            validators={[{required: true, message: Intl.get('user.nickname.write.tip', '请填写昵称')}]}
+                            placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
+                            title={Intl.get('user.nickname.set.tip', '设置昵称')}
                             saveEditInput={AppUserAjax.editAppUser}
                         />
                     </dd>
                 </dl>
                 <dl className="dl-horizontal user_detail_item detail_item user_detail_item_status">
                     <dt>
-                        {Intl.get("user.user.status", "用户状态")}
+                        {Intl.get('user.user.status', '用户状态')}
                     </dt>
                     <dd>
                         {this.renderUserStatus(userInfo)}
@@ -554,7 +554,7 @@ var UserDetailBasic = React.createClass({
                 </dl>
                 <dl className="dl-horizontal user_detail_item detail_item">
                     <dt>
-                        {Intl.get("common.email", "邮箱")}
+                        {Intl.get('common.email', '邮箱')}
                     </dt>
                     <dd>
                         <UserDetailEditField
@@ -562,21 +562,21 @@ var UserDetailBasic = React.createClass({
                             value={userInfo.email}
                             field="email"
                             type="text"
-                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
+                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
                             validators={[{
-                                type: "email",
+                                type: 'email',
                                 required: true,
-                                message: Intl.get("common.correct.email", "请输入正确的邮箱")
+                                message: Intl.get('common.correct.email', '请输入正确的邮箱')
                             }]}
-                            placeholder={Intl.get("member.input.email", "请输入邮箱")}
-                            title={Intl.get("user.email.set.tip", "修改邮箱")}
+                            placeholder={Intl.get('member.input.email', '请输入邮箱')}
+                            title={Intl.get('user.email.set.tip', '修改邮箱')}
                             saveEditInput={AppUserAjax.editAppUser}
                         />
                     </dd>
                 </dl>
                 <dl className="dl-horizontal user_detail_item detail_item">
                     <dt>
-                        {Intl.get("user.phone", "手机号")}
+                        {Intl.get('user.phone', '手机号')}
                     </dt>
                     <dd>
                         <UserDetailEditField
@@ -584,31 +584,31 @@ var UserDetailBasic = React.createClass({
                             value={userInfo.phone}
                             field="phone"
                             type="text"
-                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
+                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
                             validators={[{validator: this.checkPhone}]}
-                            placeholder={Intl.get("user.input.phone", "请输入手机号")}
-                            title={Intl.get("user.phone.set.tip", "修改手机号")}
+                            placeholder={Intl.get('user.input.phone', '请输入手机号')}
+                            title={Intl.get('user.phone.set.tip', '修改手机号')}
                             saveEditInput={AppUserAjax.editAppUser}
                         />
                     </dd>
                 </dl>
                 <dl className="dl-horizontal user_detail_item detail_item">
                     <dt>
-                        {Intl.get("common.password", "密码")}
+                        {Intl.get('common.password', '密码')}
                     </dt>
                     <dd>
                         <UserDetailEditField
                             ref="password"
                             user_id={userInfo.user_id}
-                            value={Intl.get("user.password.tip", "保密中")}
+                            value={Intl.get('user.password.tip', '保密中')}
                             field="password"
                             type="password"
                             hideButtonBlock={true}
                             showPasswordStrength={true}
-                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
+                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
                             validators={[{validator: this.checkPass}]}
-                            placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
-                            title={Intl.get("user.batch.password.reset", "重置密码")}
+                            placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
+                            title={Intl.get('user.batch.password.reset', '重置密码')}
                             onDisplayTypeChange={this.onPasswordDisplayTypeChange}
                             onValueChange={this.onPasswordValueChange}
                         />
@@ -617,7 +617,7 @@ var UserDetailBasic = React.createClass({
                 {this.state.isConfirmPasswordShow ? (
                     <dl className="dl-horizontal user_detail_item detail_item">
                         <dt>
-                            {Intl.get("common.confirm.password", "确认密码")}
+                            {Intl.get('common.confirm.password', '确认密码')}
                         </dt>
                         <dd>
                             <UserDetailEditField
@@ -626,7 +626,7 @@ var UserDetailBasic = React.createClass({
                                 displayType="edit"
                                 field="password"
                                 type="password"
-                                placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
+                                placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
                                 validators={[{validator: this.checkRePass}]}
                                 onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
                                 modifySuccess={this.onConfirmPasswordDisplayTypeChange}
@@ -647,7 +647,7 @@ var UserDetailBasic = React.createClass({
                 />
                 <dl className="dl-horizontal user_detail_item detail_item">
                     <dt>
-                        {Intl.get("user.organization", "组织")}
+                        {Intl.get('user.organization', '组织')}
                     </dt>
                     <dd>
                         <Organization
@@ -660,9 +660,9 @@ var UserDetailBasic = React.createClass({
                     </dd>
                 </dl>
                 <dl className="dl-horizontal user_detail_item detail_item"
-                    style={{whiteSpace: "normal", wordBreak: "break-all"}}>
+                    style={{whiteSpace: 'normal', wordBreak: 'break-all'}}>
                     <dt>
-                        {Intl.get("common.remark", "备注")}
+                        {Intl.get('common.remark', '备注')}
                     </dt>
                     <dd>
                         <UserDetailEditField
@@ -672,10 +672,10 @@ var UserDetailBasic = React.createClass({
                             field="description"
                             type="textarea"
                             modifySuccess={this.changeUserFieldSuccess}
-                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
-                            validators={[{message: Intl.get("user.remark.write.tip", "请填写备注")}]}
-                            placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
-                            title={Intl.get("user.remark.set.tip", "设置备注")}
+                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
+                            validators={[{message: Intl.get('user.remark.write.tip', '请填写备注')}]}
+                            placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
+                            title={Intl.get('user.remark.set.tip', '设置备注')}
                             saveEditInput={AppUserAjax.editAppUser}
                         />
                     </dd>
@@ -705,7 +705,7 @@ var UserDetailBasic = React.createClass({
                     </BootstrapModal.Header>
                     <BootstrapModal.Body>
                         <p>
-                            {Intl.get("user.account.disable.sure", "确认禁用账号吗")}
+                            {Intl.get('user.account.disable.sure', '确认禁用账号吗')}
                             ?</p>
                     </BootstrapModal.Body>
                     <BootstrapModal.Footer>

@@ -29,4 +29,4 @@ class ThreePartyAppConfigStore {
 }
 
 //使用alt导出store
-export default alt.createStore(ThreePartyAppConfigStore , "ThreePartyAppConfigStore");
+export default alt.createStore(ThreePartyAppConfigStore , 'ThreePartyAppConfigStore');

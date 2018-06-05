@@ -1,19 +1,19 @@
 /**
  * Created by xiaojinfeng on  2015/12/22 16:59 .
  */
-require("./css/sales-stage.less");
-var Button = require("antd").Button;
-var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
-var TopNav = require("../../../components/top-nav");
+require('./css/sales-stage.less');
+var Button = require('antd').Button;
+var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
+var TopNav = require('../../../components/top-nav');
 var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var leftWidth = 281; // 75+45+117+44 左侧导航宽度+右侧内容左边距+右侧右侧边距+销售阶段内容左侧边距
 
-var SalesStageStore = require("./store/sales-stage-store");
-var SalesStageAction = require("./action/sales-stage-actions");
-var SalesStageForm = require("./views/sales-stage-form");
-var SalesStageInfo = require("./views/sales-stage-info");
-var Spinner = require("../../../components/spinner");
-import Trace from "LIB_DIR/trace";
+var SalesStageStore = require('./store/sales-stage-store');
+var SalesStageAction = require('./action/sales-stage-actions');
+var SalesStageForm = require('./views/sales-stage-form');
+var SalesStageInfo = require('./views/sales-stage-info');
+var Spinner = require('../../../components/spinner');
+import Trace from 'LIB_DIR/trace';
 function getStateFromStore(_this) {
     return {
         salesStageList: SalesStageStore.getSalesStageListData(),
@@ -37,13 +37,13 @@ var SalesStagePage = React.createClass({
     },
 
     componentDidMount: function() {
-        $(window).on("resize", this.resizeWindow);
+        $(window).on('resize', this.resizeWindow);
         SalesStageStore.listen(this.onChange);
         SalesStageAction.getSalesStageList();
     },
 
     componentWillUnmount: function() {
-        $(window).off("resize", this.resizeWindow);
+        $(window).off('resize', this.resizeWindow);
         SalesStageStore.unlisten(this.onChange);
     },
 
@@ -95,7 +95,7 @@ var SalesStagePage = React.createClass({
             if (this.state.isSavingSalesStage) {
                 return;
             }
-            Trace.traceEvent($(this.getDOMNode()).find(".topNav .sales-stage-top-div:first-child span"),"变更销售阶段顺序");
+            Trace.traceEvent($(this.getDOMNode()).find('.topNav .sales-stage-top-div:first-child span'),'变更销售阶段顺序');
             SalesStageAction.showSalesStageEditOrder();
         },
 
@@ -103,7 +103,7 @@ var SalesStagePage = React.createClass({
             if (this.state.isSavingSalesStage) {
                 return;
             }
-            Trace.traceEvent($(this.getDOMNode()).find(".topNav .sales-stage-top-btn:last-child span"),"取消对销售阶段顺序更改的保存");
+            Trace.traceEvent($(this.getDOMNode()).find('.topNav .sales-stage-top-btn:last-child span'),'取消对销售阶段顺序更改的保存');
             SalesStageAction.hideSalesStageEditOrder();
         },
 
@@ -119,7 +119,7 @@ var SalesStagePage = React.createClass({
             if (this.state.isSavingSalesStage) {
                 return;
             }
-            Trace.traceEvent($(this.getDOMNode()).find(".topNav .sales-stage-top-btn:last-child span"),"保存对销售阶段的更改");
+            Trace.traceEvent($(this.getDOMNode()).find('.topNav .sales-stage-top-btn:last-child span'),'保存对销售阶段的更改');
             SalesStageAction.changeIsSavingSalesStage();
             SalesStageAction.saveSalesStageOrder(this.state.salesStageList);
         }
@@ -156,7 +156,7 @@ var SalesStagePage = React.createClass({
                                 </PrivilegeChecker>
                                 <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                        onClick={_this.events.showSalesStageForm.bind(this, "addSalesStage")}
+                                        onClick={_this.events.showSalesStageForm.bind(this, 'addSalesStage')}
                                         data-tracename="添加销售阶段"
                                     ><ReactIntl.FormattedMessage id="sales.stage.add.sales.stage" defaultMessage="添加销售阶段" /></Button>
                                 </PrivilegeChecker>

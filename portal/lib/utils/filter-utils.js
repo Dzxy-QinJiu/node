@@ -17,7 +17,7 @@ function getSelected(selected, curItem) {
         }
         //否则判断之前是否已选中
         else {
-            selected = selected.split(",");
+            selected = selected.split(',');
 
             //如果之前处于选中状态则取消选择
             if (selected.indexOf(curItem) > -1) {
@@ -28,7 +28,7 @@ function getSelected(selected, curItem) {
                 selected.push(curItem);
             }
     
-            selected = selected.join(",");
+            selected = selected.join(',');
         }
     }
 

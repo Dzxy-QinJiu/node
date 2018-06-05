@@ -1,15 +1,15 @@
-var restLogger = require("../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 //定义url
 var urls = {
     //登出
-    logout: "/auth2/authc/logout",
+    logout: '/auth2/authc/logout',
     //SSO登出
-    ssoLogout: "/auth2/authc/sso/logout"
+    ssoLogout: '/auth2/authc/sso/logout'
 };
 //用户Token的前缀
-var userTokenPrefix = "oauth2 ";
+var userTokenPrefix = 'oauth2 ';
 //导出url
 exports.urls = urls;
 /**
@@ -45,7 +45,7 @@ exports.ssoLogout = function(req, res) {
  */
 
 exports.sessionTimeout = function(sessionID, accessToken) {
-    var url = urls.ssoLogout + "?only_exit_current=yes";
+    var url = urls.ssoLogout + '?only_exit_current=yes';
     return restUtil.baseRest.get(
         {
             url: url,

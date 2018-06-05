@@ -3,46 +3,46 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/9/8.
  */
-import {Icon, Form, Input, Select, message, Button, Tag} from "antd";
+import {Icon, Form, Input, Select, message, Button, Tag} from 'antd';
 const CheckableTag = Tag.CheckableTag;
 const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
-var crmAjax = require("MOD_DIR/crm/public/ajax/index");
-var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
-var ContactUtil = require("MOD_DIR/crm/public/utils/contact-util");
-import {nameRegex} from "PUB_DIR/sources/utils/consts";
-var crmUtil = require("MOD_DIR/crm/public/utils/crm-util");
-import {isClueTag, isTurnOutTag} from "MOD_DIR/crm/public/utils/crm-util";
+var crmAjax = require('MOD_DIR/crm/public/ajax/index');
+var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
+var ContactUtil = require('MOD_DIR/crm/public/utils/contact-util');
+import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
+import {isClueTag, isTurnOutTag} from 'MOD_DIR/crm/public/utils/crm-util';
 var FormItem = Form.Item;
 var Option = Select.Option;
-var batchChangeAction = require("MOD_DIR/crm/public/action/batch-change-actions");
-require("./index.less");
-import PhoneInput from "CMP_DIR/phone-input";
-import {AntcAreaSelection} from "antc";
-const userData = require("PUB_DIR/sources/user-data");
+var batchChangeAction = require('MOD_DIR/crm/public/action/batch-change-actions');
+require('./index.less');
+import PhoneInput from 'CMP_DIR/phone-input';
+import {AntcAreaSelection} from 'antc';
+const userData = require('PUB_DIR/sources/user-data');
 const noop = function() {
 };
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import routeList from "../../modules/common/route";
-import ajax from "../../modules/common/ajax";
-const PHONE_INPUT_ID = "phoneInput";
+import routeList from '../../modules/common/route';
+import ajax from '../../modules/common/ajax';
+const PHONE_INPUT_ID = 'phoneInput';
 class AddCustomerForm extends React.Component {
     constructor(props) {
         super(props);
         var formData = {
-            name: "",//客户名称
+            name: '',//客户名称
             industry: [],//行业
-            province: "",
-            city: "",
-            county: "",
-            address: "",//详细地址
-            location: "",//经纬度
-            administrative_level: "",//行政区划 默认是企业，是4
-            remarks: "",//备注
-            contacts0_name: "",//联系人名称
-            contacts0_position: "",//联系人职位
-            contacts0_department: "",//联系人部门
-            contacts0_role: Intl.get("crm.115", "经办人"),//联系人角色
-            contacts0_phone: "",//联系人电话
+            province: '',
+            city: '',
+            county: '',
+            address: '',//详细地址
+            location: '',//经纬度
+            administrative_level: '',//行政区划 默认是企业，是4
+            remarks: '',//备注
+            contacts0_name: '',//联系人名称
+            contacts0_position: '',//联系人职位
+            contacts0_department: '',//联系人部门
+            contacts0_role: Intl.get('crm.115', '经办人'),//联系人角色
+            contacts0_phone: '',//联系人电话
             labels: []//选中的标签
         };
         this.state = {
@@ -51,7 +51,7 @@ class AddCustomerForm extends React.Component {
             customerNameExist: false,//客户名是否已存在
             existCustomerList: [],//已存在的客户列表
             checkNameError: false,//客户名唯一性验证出错
-            checkPhoneErrorMsg: "",//联系人电话验证提示信息
+            checkPhoneErrorMsg: '',//联系人电话验证提示信息
             isLoadingIndustry: false,//是否正在加载行业列表
             isLoadingTagLists: false,//是否正在加载
             formLayout: 'horizontal',//表单的布局方式
@@ -81,7 +81,7 @@ class AddCustomerForm extends React.Component {
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
-                list = _.pluck(list, "industry");
+                list = _.pluck(list, 'industry');
             }
             this.setState({isLoadingIndustry: false, industryList: list});
         });
@@ -92,7 +92,7 @@ class AddCustomerForm extends React.Component {
         batchChangeAction.getRecommendTags(result => {
             let list = _.isArray(result) ? result : [];
             list = _.filter(list, (item) => {
-                return item !== Intl.get("crm.sales.clue", "线索") && item != Intl.get("crm.qualified.roll.out", "转出");
+                return item !== Intl.get('crm.sales.clue', '线索') && item != Intl.get('crm.qualified.roll.out', '转出');
             });
             this.setState({isLoadingTagLists: false, tagList: list});
         });
@@ -106,7 +106,7 @@ class AddCustomerForm extends React.Component {
                 callback();
             } else {
                 this.setState({customerNameExist: false, checkNameError: false});
-                callback(Intl.get("crm.197", "客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间"));
+                callback(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间'));
             }
         } else {
             this.setState({customerNameExist: false, checkNameError: false});
@@ -117,7 +117,7 @@ class AddCustomerForm extends React.Component {
     getAdministrativeLevelByName = (customerName) => {
         crmAjax.getAdministrativeLevel({name: customerName}).then(result => {
             if (_.isEmpty(result)) return;
-            this.state.formData.administrative_level = result.level > 0 ? result.level + '' : "";
+            this.state.formData.administrative_level = result.level > 0 ? result.level + '' : '';
             this.setState({formData: this.state.formData});
         });
     };
@@ -131,7 +131,7 @@ class AddCustomerForm extends React.Component {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == "true") {
+                    if (data.result == 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
@@ -150,7 +150,7 @@ class AddCustomerForm extends React.Component {
     };
     //根据客户名在地理信息接口获取该客户的信息并填充到对应字段
     autofillGeoInfo = (customerName) => {
-        const route = _.find(routeList, route => route.handler === "getGeoInfo");
+        const route = _.find(routeList, route => route.handler === 'getGeoInfo');
         const arg = {
             url: route.path,
             query: {keywords: customerName}
@@ -192,7 +192,7 @@ class AddCustomerForm extends React.Component {
                         return;
                     } else {
                         //验证电话通过后，再把电话的值放在values中
-                        values.contacts0_phone = $.trim(phoneVal[PHONE_INPUT_ID].replace(/-/g, ""));
+                        values.contacts0_phone = $.trim(phoneVal[PHONE_INPUT_ID].replace(/-/g, ''));
                         this.addCustomer(values);
                     }
                 });
@@ -209,7 +209,7 @@ class AddCustomerForm extends React.Component {
                 isLoading: false
             });
             if (data.code == 0) {
-                message.success(Intl.get("user.user.add.success", "添加成功"));
+                message.success(Intl.get('user.user.add.success', '添加成功'));
                 if (_.isFunction(this.props.addOne)) {
                     this.props.addOne();
                 }
@@ -235,13 +235,13 @@ class AddCustomerForm extends React.Component {
             let customer;
             if (existSame) customer = list.splice(index, 1)[0];
             else customer = list.shift();
-            var curUserId = "";
+            var curUserId = '';
             if (userData.getUserData()) {
                 curUserId = userData.getUserData().user_id;
             }
             return (
                 <div className="tip-customer-exist">
-                    {Intl.get("call.record.customer", "客户")} {existSame ? Intl.get("crm.66", "已存在") : Intl.get("crm.67", "可能重复了")}，
+                    {Intl.get('call.record.customer', '客户')} {existSame ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，
 
                     {customer.user_id === curUserId ? (
                         <a href="javascript:void(0)"
@@ -252,7 +252,7 @@ class AddCustomerForm extends React.Component {
 
                     {list.length ? (
                         <div>
-                            {Intl.get("crm.68", "相似的客户还有")}:
+                            {Intl.get('crm.68', '相似的客户还有')}:
                             {list.map(customer => {
                                 return (
                                     <div>
@@ -276,20 +276,20 @@ class AddCustomerForm extends React.Component {
                 <div className="check-only-error"><ReactIntl.FormattedMessage id="crm.69" defaultMessage="客户名唯一性校验出错"/>！
                 </div>);
         } else {
-            return "";
+            return '';
         }
     };
     checkOnlyContactPhone = (rule, value, callback) => {
         CrmAction.checkOnlyContactPhone(value, data => {
             if (_.isString(data)) {
                 //唯一性验证出错了
-                callback(Intl.get("crm.82", "电话唯一性验证出错了"));
+                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
             } else {
-                if (_.isObject(data) && data.result == "true") {
+                if (_.isObject(data) && data.result == 'true') {
                     callback();
                 } else {
                     //已存在
-                    callback(Intl.get("crm.83", "该电话已存在"));
+                    callback(Intl.get('crm.83', '该电话已存在'));
                 }
             }
         });
@@ -304,15 +304,15 @@ class AddCustomerForm extends React.Component {
     //更新地址
     updateLocation = (address) => {
         var location = address.split('/');
-        this.state.formData.province = location[0] || "";
-        this.state.formData.city = location[1] || "";
-        this.state.formData.county = location[2] || "";
+        this.state.formData.province = location[0] || '';
+        this.state.formData.city = location[1] || '';
+        this.state.formData.county = location[2] || '';
     };
     //选择不同的级别
     handleChangeAdminLevel = (index) => {
         //如果点击原来选中的级别，会取消选中
         if (index == this.state.formData.administrative_level) {
-            this.state.formData.administrative_level = "";
+            this.state.formData.administrative_level = '';
         } else {
             this.state.formData.administrative_level = index;
         }
@@ -352,12 +352,12 @@ class AddCustomerForm extends React.Component {
         if (!tag) return;
         //”线索“、”转出“标签”不可以添加
         if (isClueTag(tag) || isTurnOutTag(tag)) {
-            message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'{label}'标签", {label: tag}));
+            message.error(Intl.get('crm.sales.clue.add.disable', '不能手动添加\'{label}\'标签', {label: tag}));
             return;
         }
         this.handleChangeSeletedTag(tag, true);
         //清空输入框
-        this.refs.newTag.refs.input.value = "";
+        this.refs.newTag.refs.input.value = '';
     };
     renderAdminLevel = () => {
         return (
@@ -414,26 +414,26 @@ class AddCustomerForm extends React.Component {
             return (<Option value={role} key={index}>{role}</Option>);
         });
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
-        var initialValue = this.props.phoneNum || "";
+        var initialValue = this.props.phoneNum || '';
         var fixedHeight = $(window).height() - this.props.scrollLayOut;
         return (
             <div id="add-customer-form-container" style={{height: fixedHeight}} data-tracename="增加客户页面">
                 <GeminiScrollbar>
                     <div className="scroll-bar-inner">
-                        <h4>+{Intl.get("sales.home.customer", "客户")}</h4>
+                        <h4>+{Intl.get('sales.home.customer', '客户')}</h4>
                         <div className="add-customer-info-container">
                             <Form layout="horizontal" className="add-customer-form">
                                 <div className="add-customer-info">
-                                    <h5>{Intl.get("user.basic.info", "基本资料")}</h5>
+                                    <h5>{Intl.get('user.basic.info', '基本资料')}</h5>
                                     <FormItem
                                         className="form-item-label"
-                                        label={Intl.get("crm.41", "客户名")}
+                                        label={Intl.get('crm.41', '客户名')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('name', {
                                             rules: [{
                                                 required: true,
-                                                message: Intl.get("crm.81", "请填写客户名称")
+                                                message: Intl.get('crm.81', '请填写客户名称')
                                             }, {validator: this.checkCustomerName,}],
                                             initialValue: formData.name
                                         })(
@@ -448,7 +448,7 @@ class AddCustomerForm extends React.Component {
                                     </FormItem>
                                     {this.renderCustomerNameMsg()}
                                     <FormItem
-                                        label={Intl.get("realm.industry", "行业")}
+                                        label={Intl.get('realm.industry', '行业')}
                                         id="industry"
                                         {...formItemLayout}
                                     >
@@ -458,15 +458,15 @@ class AddCustomerForm extends React.Component {
                                                 <Icon type="loading"/>
                                             </div>) : (
                                             getFieldDecorator('industry', {
-                                                rules: [{required: true, message: Intl.get("crm.22", "请选择行业")}],
+                                                rules: [{required: true, message: Intl.get('crm.22', '请选择行业')}],
                                             })(
                                                 <Select
                                                     showSearch
-                                                    placeholder={Intl.get("crm.22", "请选择行业")}
+                                                    placeholder={Intl.get('crm.22', '请选择行业')}
                                                     name="industry"
-                                                    searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
+                                                    searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
                                                     optionFilterProp="children"
-                                                    notFoundContent={!industryList.length ? Intl.get("crm.24", "暂无行业") : Intl.get("crm.23", "无相关行业")}
+                                                    notFoundContent={!industryList.length ? Intl.get('crm.24', '暂无行业') : Intl.get('crm.23', '无相关行业')}
                                                 >
                                                     {industryOptions}
                                                 </Select>
@@ -476,8 +476,8 @@ class AddCustomerForm extends React.Component {
                                         <AntcAreaSelection
                                             labelCol="7"
                                             wrapperCol="17"
-                                            label={Intl.get("realm.address", "地址")}
-                                            placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
+                                            label={Intl.get('realm.address', '地址')}
+                                            placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
                                             prov={formData.province}
                                             city={formData.city}
                                             county={formData.county}
@@ -492,18 +492,18 @@ class AddCustomerForm extends React.Component {
                                             initialValue: formData.address
                                         })(
                                             <Input name="address"
-                                                placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
+                                                placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
                                             />
                                         )}
                                     </FormItem>
                                     <FormItem
                                         id="tag"
-                                        label={Intl.get("common.tag", "标签")}
+                                        label={Intl.get('common.tag', '标签')}
                                         {...formItemLayout}
                                     >
                                         <Input
                                             name="tag"
-                                            placeholder={Intl.get("crm.28", "按Enter键添加新标签")}
+                                            placeholder={Intl.get('crm.28', '按Enter键添加新标签')}
                                             ref="newTag"
                                             onKeyUp={this.addTag}
                                         />
@@ -529,7 +529,7 @@ class AddCustomerForm extends React.Component {
                                         </div>
                                     </div>)}
                                     <FormItem
-                                        label={Intl.get("common.remark", "备注")}
+                                        label={Intl.get('common.remark', '备注')}
                                         id="remarks"
                                         {...formItemLayout}
                                     >
@@ -540,7 +540,7 @@ class AddCustomerForm extends React.Component {
                                         )}
                                     </FormItem>
                                     <FormItem
-                                        label={Intl.get("crm.administrative.level", "行政级别")}
+                                        label={Intl.get('crm.administrative.level', '行政级别')}
                                         {...formItemLayout}
                                         id="crm-admin-level"
                                     >
@@ -549,17 +549,17 @@ class AddCustomerForm extends React.Component {
                                 </div>
                                 <div className="add-customer-contact">
                                     <h5>
-                                        {Intl.get("call.record.contacts", "联系人")}
+                                        {Intl.get('call.record.contacts', '联系人')}
                                     </h5>
                                     <FormItem
-                                        label={Intl.get("call.record.contacts", "联系人")}
+                                        label={Intl.get('call.record.contacts', '联系人')}
                                         labelCol={{span: 8}}
                                         wrapperCol={{span: 16}}
                                     >
                                         {getFieldDecorator('contacts0_name', {rules: [{required: false}]})(
                                             <Input
                                                 name="contacts0_name"
-                                                placeholder={Intl.get("realm.change.owner.name", "姓名")}
+                                                placeholder={Intl.get('realm.change.owner.name', '姓名')}
                                                 data-tracename="填写联系人姓名"
                                             />
                                         )}
@@ -570,7 +570,7 @@ class AddCustomerForm extends React.Component {
                                     >
                                         {getFieldDecorator('contacts0_department', {rules: [{required: false}]})(
                                             <Input name="contacts0_department"
-                                                placeholder={Intl.get("operation.report.department", "部门",)}
+                                                placeholder={Intl.get('operation.report.department', '部门',)}
                                                 data-tracename="填写联系人部门"/>)}
                                     </FormItem>
                                     <FormItem
@@ -579,7 +579,7 @@ class AddCustomerForm extends React.Component {
                                     >
                                         {getFieldDecorator('contacts0_position', {rules: [{required: false}]})(
                                             <Input name="contacts0_position"
-                                                placeholder={Intl.get("crm.91", "职位")}
+                                                placeholder={Intl.get('crm.91', '职位')}
                                                 data-tracename="填写联系人职位"/>)}
                                     </FormItem>
                                     <FormItem
@@ -588,8 +588,8 @@ class AddCustomerForm extends React.Component {
                                     >
                                         {getFieldDecorator('contacts0_role',
                                             {
-                                                rules: [{required: true, message: Intl.get("crm.93", "请输入联系人角色")}],
-                                                initialValue: [ContactUtil.roleArray.length ? ContactUtil.roleArray[0] : ""]
+                                                rules: [{required: true, message: Intl.get('crm.93', '请输入联系人角色')}],
+                                                initialValue: [ContactUtil.roleArray.length ? ContactUtil.roleArray[0] : '']
                                             })(
                                             <Select
                                                 name="contacts0_role"
@@ -602,7 +602,7 @@ class AddCustomerForm extends React.Component {
                                     >
                                         <PhoneInput
                                             wrappedComponentRef={(inst) => this.phoneInputRef = inst}
-                                            placeholder={Intl.get("crm.95", "请输入联系人电话")}
+                                            placeholder={Intl.get('crm.95', '请输入联系人电话')}
                                             validateRules={this.getPhoneInputValidateRules()}
                                             initialValue={initialValue}
                                             onChange={this.setPhoneValue}
@@ -634,10 +634,10 @@ class AddCustomerForm extends React.Component {
     }
 }
 AddCustomerForm.defaultProps = {
-    phoneNum: "",
+    phoneNum: '',
     hideAddForm: noop,
     updateCustomer: noop,
     showRightPanel: noop,
-    scrollLayOut: ""
+    scrollLayOut: ''
 };
 export default Form.create()(AddCustomerForm);

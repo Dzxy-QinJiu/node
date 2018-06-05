@@ -2,18 +2,18 @@
  * 客户、用户、电话、合同统计总数
  * Created by wangliping on 2016/11/14.
  */
-let Icon = require("antd").Icon;
-let classNames = require("classnames");
-let SalesHomeAction = require("../action/sales-home-actions");
-let viewConstant = require("../util/constant").VIEW_CONSTANT;//视图常量
-let TimeUtil = require("../../../../public/sources/utils/time-format-util");
+let Icon = require('antd').Icon;
+let classNames = require('classnames');
+let SalesHomeAction = require('../action/sales-home-actions');
+let viewConstant = require('../util/constant').VIEW_CONSTANT;//视图常量
+let TimeUtil = require('../../../../public/sources/utils/time-format-util');
 let StatisticTotal = React.createClass({
     //渲染等待效果、暂无数据的提示
     renderTooltip: function(totalObj) {
-        if (totalObj.resultType == "loading") {
+        if (totalObj.resultType == 'loading') {
             return (<Icon type="loading"/>);
-        } else if (totalObj.resultType == "error") {
-            return (<div className="no-total-data">{Intl.get("sales.home.get.data.failed", "获取数据失败")}</div>);
+        } else if (totalObj.resultType == 'error') {
+            return (<div className="no-total-data">{Intl.get('sales.home.get.data.failed', '获取数据失败')}</div>);
         }
     },
     renderCustomerContent: function() {
@@ -25,14 +25,14 @@ let StatisticTotal = React.createClass({
         }
         return (<div className="statistic-total-content">
             <span className="crm-add-data add-data-style">
-                <span className="total-data-desc">{Intl.get("sales.home.new.add", "新增")}&nbsp;</span>
+                <span className="total-data-desc">{Intl.get('sales.home.new.add', '新增')}&nbsp;</span>
                 {customerData.added || 0}
             </span>
             <span className="crm-total-data total-data-style">
                 <ReactIntl.FormattedMessage
                     id="sales.home.total.count"
-                    defaultMessage={`共{count}个`}
-                    values={{"count": customerData.total || 0}}
+                    defaultMessage={'共{count}个'}
+                    values={{'count': customerData.total || 0}}
                 />
             </span>
         </div>);
@@ -47,14 +47,14 @@ let StatisticTotal = React.createClass({
         }
         return (<div className="statistic-total-content">
             <span className="user-add-data add-data-style">
-                <span className="total-data-desc">{Intl.get("sales.home.new.add", "新增")}&nbsp;</span>
+                <span className="total-data-desc">{Intl.get('sales.home.new.add', '新增')}&nbsp;</span>
                 {userData.added || 0}
             </span>
             <span className="user-total-data total-data-style">
                 <ReactIntl.FormattedMessage
                     id="sales.home.total.count"
-                    defaultMessage={`共{count}个`}
-                    values={{"count": userData.total || 0}}
+                    defaultMessage={'共{count}个'}
+                    values={{'count': userData.total || 0}}
                 />
             </span>
         </div>);
@@ -70,20 +70,20 @@ let StatisticTotal = React.createClass({
         return (<div className="statistic-total-content">
             <span className="phone-total-time phone-total-data">
                 {time.hours > 0 ? <span>{time.hours}<span
-                    className="total-data-desc">{Intl.get("user.time.hour", "小时")} </span></span> : null}
+                    className="total-data-desc">{Intl.get('user.time.hour', '小时')} </span></span> : null}
                 {time.minutes > 0 ?
                     <span>{time.minutes}<span
-                        className="total-data-desc">{Intl.get("user.time.minute", "分")} </span></span> : null}
+                        className="total-data-desc">{Intl.get('user.time.minute', '分')} </span></span> : null}
                 {time.second > 0 ? <span>{time.second}<span
-                    className="total-data-desc">{Intl.get("user.time.second", "秒")} </span></span> : null}
+                    className="total-data-desc">{Intl.get('user.time.second', '秒')} </span></span> : null}
                 {time.timeDescr == 0 ? time.timeDescr : null}
             </span>
 
             <span className="phone-total-count total-data-style">
                 <ReactIntl.FormattedMessage
                     id="sales.home.count"
-                    defaultMessage={`{count}个`}
-                    values={{"count": phoneData.totalCount || 0}}
+                    defaultMessage={'{count}个'}
+                    values={{'count': phoneData.totalCount || 0}}
                 />
             </span>
         </div>);
@@ -107,7 +107,7 @@ let StatisticTotal = React.createClass({
                 <span>
                     <ReactIntl.FormattedMessage
                         id='sales.home.total.count'
-                        defaultMessage={`共{template}个`}
+                        defaultMessage={'共{template}个'}
                         values={{'template': <span className='add-data-style'>{callBackRecord.total || '0'}</span>}}
                     />
                 </span>
@@ -121,31 +121,31 @@ let StatisticTotal = React.createClass({
 
     render: function() {
         //响应式样式 col-xs-12 col-sm-6 col-md-6 col-lg-3（四个框时的样式）
-        const autoResizeCls = "total-data-item col-xs-12 col-sm-6 col-md-6 col-lg-3";
+        const autoResizeCls = 'total-data-item col-xs-12 col-sm-6 col-md-6 col-lg-3';
         let activeView = this.props.activeView;
         return (
             <div className="statistic-total-data">
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.CUSTOMER)}
                         data-tracename="查看客户统计"
-                        className={classNames("total-data-container", {"total-data-item-active": activeView == viewConstant.CUSTOMER})}>
-                        <p>{Intl.get("sales.home.customer", "客户")}</p>
+                        className={classNames('total-data-container', {'total-data-item-active': activeView == viewConstant.CUSTOMER})}>
+                        <p>{Intl.get('sales.home.customer', '客户')}</p>
                         {this.renderCustomerContent()}
                     </div>
                 </div>
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.USER)}
                         data-tracename="查看用户统计"
-                        className={classNames("total-data-container", {"total-data-item-active": activeView == viewConstant.USER})}>
-                        <p>{Intl.get("sales.home.user", "用户")}</p>
+                        className={classNames('total-data-container', {'total-data-item-active': activeView == viewConstant.USER})}>
+                        <p>{Intl.get('sales.home.user', '用户')}</p>
                         {this.renderUserContent()}
                     </div>
                 </div>
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.PHONE)}
                         data-tracename="查看电话统计"
-                        className={classNames("total-data-container", {"total-data-item-active": activeView == viewConstant.PHONE})}>
-                        <p>{Intl.get("common.phone", "电话")}</p>
+                        className={classNames('total-data-container', {'total-data-item-active': activeView == viewConstant.PHONE})}>
+                        <p>{Intl.get('common.phone', '电话')}</p>
                         {this.renderPhoneContent()}
                     </div>
                 </div>  

@@ -1,15 +1,15 @@
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var CallObj = require('../dto/call-analysis');
-var _ = require("underscore");
+var _ = require('underscore');
 var Promise = require('bluebird');
-var EventEmitter = require("events").EventEmitter;
+var EventEmitter = require('events').EventEmitter;
 const restApis = {
     // 获取单次通话时长为top10的数据(团队)
     getCallDurTopTen: '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取单次通话时长为top10的数据（所有的，包括不在团队里的数据）
-    getManagerCallDurTopTen: "/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order",
+    getManagerCallDurTopTen: '/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取销售个人的top10
     getSingleUserCallDurTopTen: '/rest/callrecord/v2/callrecord/query/trace/user/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取通话数量和通话时长趋势图统计(团队)
@@ -19,11 +19,11 @@ const restApis = {
     //  获取通话数量和通话时长趋势图统计(销售个人)
     getSingleUserCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/user/:start_time/:end_time/:interval',
     // 获取电话的接通情况
-    getCallInfo: "/rest/callrecord/v2/callrecord/query/:type/call_record/view",
+    getCallInfo: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
     // 114占比(团队)
-    getTeamCallRate: "/rest/callrecord/v2/callrecord/term/:start_time/:end_time",
+    getTeamCallRate: '/rest/callrecord/v2/callrecord/term/:start_time/:end_time',
     // 114占比（个人）
-    getUserCallRate: "/rest/callrecord/v2/callrecord/term/user/:start_time/:end_time",
+    getUserCallRate: '/rest/callrecord/v2/callrecord/term/user/:start_time/:end_time',
     // 获取团队信息
     getSaleGroupTeams: '/rest/base/v1/group/teams/:type',
     // 获取成员信息
@@ -40,17 +40,17 @@ const restApis = {
  
 // 获取单次通话时长为top10的数据
 exports.getCallDurTopTen = function(req, res, params, reqBody) {
-    let url = params.type === "manager" ? restApis.getManagerCallDurTopTen : restApis.getCallDurTopTen;
+    let url = params.type === 'manager' ? restApis.getManagerCallDurTopTen : restApis.getCallDurTopTen;
     if (reqBody && reqBody.user_id) {
         url = restApis.getSingleUserCallDurTopTen;
     }
     return restUtil.authRest.post(
         {
-            url: url.replace(":start_time", params.start_time)
-                .replace(":end_time", params.end_time)
-                .replace(":page_size", params.page_size)
-                .replace(":sort_field", params.sort_field)
-                .replace(":sort_order", params.sort_order),
+            url: url.replace(':start_time', params.start_time)
+                .replace(':end_time', params.end_time)
+                .replace(':page_size', params.page_size)
+                .replace(':sort_field', params.sort_field)
+                .replace(':sort_order', params.sort_order),
             req: req,
             res: res
         }, reqBody);
@@ -65,7 +65,7 @@ exports.getCallCountAndDur = function(req, res, params, reqBody) {
     }
     return restUtil.authRest.post(
         {
-            url: url.replace(":start_time", params.start_time).replace(":end_time", params.end_time).replace(":interval", "day"),
+            url: url.replace(':start_time', params.start_time).replace(':end_time', params.end_time).replace(':interval', 'day'),
             req: req,
             res: res
         }, reqBody);
@@ -73,7 +73,7 @@ exports.getCallCountAndDur = function(req, res, params, reqBody) {
 exports.getCallCountAndDurSeperately = function(req, res, params, reqBody) {
     return restUtil.authRest.post(
         {
-            url: restApis.getTeamCallCountAndDur.replace(":start_time", params.start_time).replace(":end_time", params.end_time).replace(":interval", "day"),
+            url: restApis.getTeamCallCountAndDur.replace(':start_time', params.start_time).replace(':end_time', params.end_time).replace(':interval', 'day'),
             req: req,
             res: res
         }, reqBody, {
@@ -85,7 +85,7 @@ exports.getCallCountAndDurSeperately = function(req, res, params, reqBody) {
                         teamData: value
                     });
                 });
-                emitter.emit("success", list);
+                emitter.emit('success', list);
             }
         });
 };
@@ -93,7 +93,7 @@ exports.getCallCountAndDurSeperately = function(req, res, params, reqBody) {
 function batchGetCallInfo(req, res, params, reqData) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
-            url: restApis.getCallInfo.replace(":type", params.type),
+            url: restApis.getCallInfo.replace(':type', params.type),
             req: req,
             res: res
         }, reqData, {
@@ -151,9 +151,9 @@ exports.getCallInfo = function(req, res, params, reqData) {
                     allData.push(item);
                 });
             });
-            emitter.emit("success", {salesPhoneList: allData});
+            emitter.emit('success', {salesPhoneList: allData});
         }).catch((errorMsg) => {
-            emitter.emit("error", errorMsg);
+            emitter.emit('error', errorMsg);
         });
     } else {
         let promiseList = [batchGetCallInfo(req, res, params, reqData), getActiveSalesInTeams(req, res)];
@@ -168,9 +168,9 @@ exports.getCallInfo = function(req, res, params, reqData) {
                     data.memberTotal = team.available.user;
                 }
             });
-            emitter.emit("success", result);
+            emitter.emit('success', result);
         }).catch((errorMsg) => {
-            emitter.emit("error", errorMsg);
+            emitter.emit('error', errorMsg);
         });
     }
     return emitter;
@@ -186,16 +186,16 @@ exports.getCallRate = function(req, res, params, reqBody) {
     }
     const typeHandler = () => {
         if (req.body && req.body.filter_invalid_phone) {
-            return "?filter_invalid_phone=" + req.body.filter_invalid_phone;
+            return '?filter_invalid_phone=' + req.body.filter_invalid_phone;
         }
         else {
-            return "";
+            return '';
         }
     };
     return restUtil.authRest.post(
         {
-            url: url.replace(":start_time", params.start_time)
-                .replace(":end_time", params.end_time) + typeHandler(),
+            url: url.replace(':start_time', params.start_time)
+                .replace(':end_time', params.end_time) + typeHandler(),
             req: req,
             res: res
         }, reqBody);
@@ -205,7 +205,7 @@ exports.getCallRate = function(req, res, params, reqBody) {
 exports.getCallIntervalData = function(req, res, reqQuery) {
     return restUtil.authRest.get(
         {
-            url: restApis.getCallIntervalData.replace(":authType", req.params.authType),
+            url: restApis.getCallIntervalData.replace(':authType', req.params.authType),
             req: req,
             res: res
         }, reqQuery);
@@ -215,7 +215,7 @@ exports.getCallIntervalData = function(req, res, reqQuery) {
 exports.getCallTotalList = function(req, res, reqQuery) {
     return restUtil.authRest.get(
         {
-            url: restApis.getCallTotalList.replace(":authType", req.params.authType),
+            url: restApis.getCallTotalList.replace(':authType', req.params.authType),
             req: req,
             res: res
         }, reqQuery);
@@ -225,7 +225,7 @@ exports.getCallTotalList = function(req, res, reqQuery) {
 exports.getSaleGroupTeams = function(req, res, params) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSaleGroupTeams.replace(":type", params.type),
+            url: restApis.getSaleGroupTeams.replace(':type', params.type),
             req: req,
             res: res
         });
@@ -235,7 +235,7 @@ exports.getSaleGroupTeams = function(req, res, params) {
 exports.getSaleMemberList = function(req, res, params) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSaleMemberList.replace(":type", params.type),
+            url: restApis.getSaleMemberList.replace(':type', params.type),
             req: req,
             res: res
         });
@@ -245,7 +245,7 @@ exports.getSaleMemberList = function(req, res, params) {
 exports.getCallCustomerZoneStage = (req, res) => {
     return restUtil.authRest.get(
         {
-            url: restApis.getCallCustomerZoneStage.replace(":authType", req.params.authType),
+            url: restApis.getCallCustomerZoneStage.replace(':authType', req.params.authType),
             req: req,
             res: res
         }, req.query);

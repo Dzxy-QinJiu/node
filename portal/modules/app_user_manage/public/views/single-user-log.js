@@ -1,22 +1,22 @@
 require('../css/single-user-log.less');
 //时间范围选择
-import DatePicker from "../../../../components/datepicker";
-var Alert = require("antd").Alert;
+import DatePicker from '../../../../components/datepicker';
+var Alert = require('antd').Alert;
 // 加载时的动作显示
-var Spinner = require("../../../../components/spinner");
-var SelectFullWidth = require("../../../../components/select-fullwidth");
-var AppUserUtil = require("../util/app-user-util");
+var Spinner = require('../../../../components/spinner');
+var SelectFullWidth = require('../../../../components/select-fullwidth');
+var AppUserUtil = require('../util/app-user-util');
 //用户日志右侧面板常量
 var USER_LOG_LAYOUT_CONSTANTS = AppUserUtil.USER_LOG_LAYOUT_CONSTANTS;
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var SingleUserLogAction = require('../action/single_user_log_action');
 var SingleUserLogStore = require('../store/single_user_log_store');
-var SearchInput = require("../../../../components/searchInput");
+var SearchInput = require('../../../../components/searchInput');
 // 没有数据的提示信息
-var NoMoreDataTip = require("../../../../components/no_more_data_tip");
+var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
-import classNames from "classnames";
+import classNames from 'classnames';
 var SingleUserLog = React.createClass({
     getDefaultProps: function() {
         return {
@@ -153,15 +153,15 @@ var SingleUserLog = React.createClass({
                         start_time={this.state.startTime}
                         end_time ={this.state.endTime}
                     >
-                        <DatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</DatePicker.Option>
-                        <DatePicker.Option value="week">{Intl.get("common.time.unit.week", "周")}</DatePicker.Option>
-                        <DatePicker.Option value="month">{Intl.get("common.time.unit.month", "月")}</DatePicker.Option>
-                        <DatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</DatePicker.Option>
+                        <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                        <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                        <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                        <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                     </DatePicker>
                 </div>
                 <div className="search-content">
                     <SearchInput
-                        searchPlaceHolder={Intl.get("user.search.placeholder", "请输入关键词搜索")}
+                        searchPlaceHolder={Intl.get('user.search.placeholder', '请输入关键词搜索')}
                         searchEvent={this.handleSearchEvent}
                         ref="search"
                     />
@@ -175,7 +175,7 @@ var SingleUserLog = React.createClass({
                         onSelect={this.onSelectedAppChange}
                         minWidth={120}
                         maxWidth={270}
-                        notFoundContent={Intl.get("common.not.found", "无法找到")}
+                        notFoundContent={Intl.get('common.not.found', '无法找到')}
                     >
                         { _.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
                             return (
@@ -205,7 +205,7 @@ var SingleUserLog = React.createClass({
 
     // 日志列表信息
     userLogInformationBlock: function() {
-        if (this.state.logListLoading == "loading" && this.state.curPage == 1) {
+        if (this.state.logListLoading == 'loading' && this.state.curPage == 1) {
             return <Spinner />;
         }
         if (this.state.getUserLogErrorMsg) {
@@ -227,12 +227,12 @@ var SingleUserLog = React.createClass({
                         {this.renderSelectDateTips()}
                     </div>
                     { this.state.auditLogList.map((userLogInformation, index) => {
-                        let operateClass = classNames("iconfont",{
-                            "icon-down-twoline": !userLogInformation.detailShow,
-                            "icon-up-twoline": userLogInformation.detailShow
+                        let operateClass = classNames('iconfont',{
+                            'icon-down-twoline': !userLogInformation.detailShow,
+                            'icon-up-twoline': userLogInformation.detailShow
                         });
-                        let operateTitle = userLogInformation.detailShow ? Intl.get("crm.basic.detail.hide", "收起详情") :
-                            Intl.get("crm.basic.detail.show", "展开详情");
+                        let operateTitle = userLogInformation.detailShow ? Intl.get('crm.basic.detail.hide', '收起详情') :
+                            Intl.get('crm.basic.detail.show', '展开详情');
                         return (
                             <div className="log-info-item" key={index}>
                                 <p className="operation">
@@ -254,7 +254,7 @@ var SingleUserLog = React.createClass({
                                     <span className="log-detail">
                                         {userLogInformation.location} {userLogInformation.area}
                                     </span>
-                                    <span className="log-detail">{Intl.get("common.client", "客户端")}: {userLogInformation.os}</span>
+                                    <span className="log-detail">{Intl.get('common.client', '客户端')}: {userLogInformation.os}</span>
                                 </p>
                             </div>
                         );
@@ -264,7 +264,7 @@ var SingleUserLog = React.createClass({
         } else {
             return <div className="alert-wrap">
                 <Alert
-                    message={Intl.get("common.no.data", "暂无数据")}
+                    message={Intl.get('common.no.data', '暂无数据')}
                     type="info"
                     showIcon={true}
                 />
@@ -336,7 +336,7 @@ var SingleUserLog = React.createClass({
                 {
                     this.state.auditLogList.length ? (
                         <div className="total-summary">
-                            {Intl.get("common.total.data", "共{num}条数据", {"num": this.state.total})}
+                            {Intl.get('common.total.data', '共{num}条数据', {'num': this.state.total})}
                         </div>
                     ) : null
                 }

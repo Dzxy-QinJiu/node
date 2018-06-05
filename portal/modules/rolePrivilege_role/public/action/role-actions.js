@@ -1,10 +1,10 @@
-var roleAjax = require("../ajax/role-ajax");
+var roleAjax = require('../ajax/role-ajax');
 //var authorityAjax = require("../../../rolePrivilege_authority/public/ajax/authority-ajax");
-var userData = require("../../../../public/sources/user-data");
+var userData = require('../../../../public/sources/user-data');
 var userInfo = userData.getUserData();
-var PrivilegeUtil = require("../../../../components/privilege/checker");
+var PrivilegeUtil = require('../../../../components/privilege/checker');
 var hasPrivilege = PrivilegeUtil.hasPrivilege;
-import {message} from "antd";
+import {message} from 'antd';
 function RoleActions() {
     this.generateActions(
         'showRoleForm',//展示增加/修改角色 面板
@@ -21,7 +21,7 @@ function RoleActions() {
     //获取角色列表
     this.getRoleList = function(clientId, type) {
         var _this = this;
-        var clientID = "";
+        var clientID = '';
         if (clientId) {
             clientID = clientId;
         } else {
@@ -33,7 +33,7 @@ function RoleActions() {
             _this.dispatch(roleListObj);
 
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("role.get.role.list.failed", "获取角色列表失败"));
+            _this.dispatch(errorMsg || Intl.get('role.get.role.list.failed', '获取角色列表失败'));
         });
     };
     
@@ -46,14 +46,14 @@ function RoleActions() {
                 delRoleId: role.roleId
             };
             if (!data) {
-                delResultObj.delRoleMsg = Intl.get("role.del.role.failed", "删除角色失败");
+                delResultObj.delRoleMsg = Intl.get('role.del.role.failed', '删除角色失败');
             }
             _this.dispatch(delResultObj);
         }, function(errorMsg) {
             _this.dispatch({
                 delResult: false,
                 delRoleId: role.roleId,
-                delRoleMsg: errorMsg || Intl.get("role.del.role.failed", "删除角色失败")
+                delRoleMsg: errorMsg || Intl.get('role.del.role.failed', '删除角色失败')
             });
         });
     };
@@ -67,11 +67,11 @@ function RoleActions() {
                 setRoleId: param.base_role
             };
             if (!data) {
-                message.error(Intl.get("role.default.set.failed", "设置默认角色失败"));               
+                message.error(Intl.get('role.default.set.failed', '设置默认角色失败'));               
             }
             _this.dispatch(setResultObj);
         }, function(errorMsg) {
-            message.error(Intl.get("role.default.set.failed", "设置默认角色失败"));
+            message.error(Intl.get('role.default.set.failed', '设置默认角色失败'));
             _this.dispatch({
                 setResult: false,
                 setRoleId: param.base_role              
@@ -82,7 +82,7 @@ function RoleActions() {
     //查询默认角色
     this.getDefaultRole = function(clientId) {
         var _this = this;
-        const ROLE = "APPLICATION_BASE_ROLE_MANAGEMENT";//查询默认角色的权限
+        const ROLE = 'APPLICATION_BASE_ROLE_MANAGEMENT';//查询默认角色的权限
         //没有权限不发出请求
         if(!hasPrivilege(ROLE)) {
             _this.dispatch({
@@ -100,7 +100,7 @@ function RoleActions() {
                 result: false
             });
             if(errorMsg.status != 200) {
-                message.error(Intl.get("role.default.get.failed", "获取默认角色失败"));
+                message.error(Intl.get('role.default.get.failed', '获取默认角色失败'));
             }
         });
     };
@@ -113,11 +113,11 @@ function RoleActions() {
                 delResult: data//true:删除成功，false:删除失败
             };
             if (!data) {
-                message.error(Intl.get("role.default.del.failed", "取消默认角色失败"));                
+                message.error(Intl.get('role.default.del.failed', '取消默认角色失败'));                
             }
             _this.dispatch(delResultObj);
         }, function(errorMsg) {
-            message.error(Intl.get("role.default.del.failed", "取消默认角色失败"));
+            message.error(Intl.get('role.default.del.failed', '取消默认角色失败'));
             _this.dispatch({
                 delResult: false
             });

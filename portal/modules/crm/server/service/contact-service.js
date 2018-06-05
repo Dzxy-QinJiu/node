@@ -3,17 +3,17 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var EventEmitter = require("events").EventEmitter;
-const v2Url = "/rest/customer/v2/contacts";
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var EventEmitter = require('events').EventEmitter;
+const v2Url = '/rest/customer/v2/contacts';
 
 //获取联系人列表
 exports.getContactList = function(req, res, reqBody) {
     return restUtil.authRest.post(
         {
-            url: v2Url + "/query/" + req.params.type + "/all/10",
+            url: v2Url + '/query/' + req.params.type + '/all/10',
             req: req,
             res: res
         }, reqBody);
@@ -23,7 +23,7 @@ exports.getContactList = function(req, res, reqBody) {
 exports.setDefault = function(req, res, id) {
     return restUtil.authRest.post(
         {
-            url: v2Url + "/default/" + id,
+            url: v2Url + '/default/' + id,
             req: req,
             res: res
         }, null);
@@ -71,7 +71,7 @@ function updateContactPhone(req, res, newContact) {
     return new Promise((resolve, reject) => {
         restUtil.authRest.put(
             {
-                url: v2Url + "/phone",
+                url: v2Url + '/phone',
                 req: req,
                 res: res
             }, phoneContact, {
@@ -99,7 +99,7 @@ exports.addContact = function(req, res, newContact) {
 exports.deleteContact = function(req, res, ids) {
     return restUtil.authRest.del(
         {
-            url: v2Url + "/" + ids,
+            url: v2Url + '/' + ids,
             req: req,
             res: res
         }, null);

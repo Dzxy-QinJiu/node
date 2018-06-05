@@ -3,9 +3,9 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/16.
  */
-var scheduleManagementAjax = require("../ajax/schedule-management-ajax");
-var scrollBarEmitter = require("PUB_DIR/sources/utils/emitters").scrollBarEmitter;
-let userData = require("PUB_DIR/sources/user-data");
+var scheduleManagementAjax = require('../ajax/schedule-management-ajax');
+var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
+let userData = require('PUB_DIR/sources/user-data');
 function ScheduleManagementActions() {
     this.generateActions(
         'setInitState',
@@ -23,7 +23,7 @@ function ScheduleManagementActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errorMsg || Intl.get("schedule.expired.list.failed", "获取超时日程管理列表失败")
+                errorMsg: errorMsg || Intl.get('schedule.expired.list.failed', '获取超时日程管理列表失败')
             });
         });
     };
@@ -34,7 +34,7 @@ function ScheduleManagementActions() {
             cb(resData);
         }, (errMsg) => {
             this.dispatch({error: false, loading: false, result: resData});
-            cb(errMsg || Intl.get("crm.failed.alert.todo.list","修改待办事项状态失败"));
+            cb(errMsg || Intl.get('crm.failed.alert.todo.list','修改待办事项状态失败'));
         });
     };
 }

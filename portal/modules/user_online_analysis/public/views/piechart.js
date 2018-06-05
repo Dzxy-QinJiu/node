@@ -1,11 +1,11 @@
-var echarts = require("echarts-eefung");
-var colors = require("../utils/colors");
-var Color = require("color");
-var numberFormatter = require("../utils/number-formatter");
-var measureText = require("../../../../public/sources/utils/measure-text");
-var Spinner = require("../../../../components/spinner");
-var immutable = require("immutable");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+var echarts = require('echarts-eefung');
+var colors = require('../utils/colors');
+var Color = require('color');
+var numberFormatter = require('../utils/number-formatter');
+var measureText = require('../../../../public/sources/utils/measure-text');
+var Spinner = require('../../../../components/spinner');
+var immutable = require('immutable');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 
 //布局相关
@@ -54,11 +54,11 @@ var PieChart = React.createClass({
                 //修复tooltip不消失的问题
                 var title, color;
                 if(arr[0] === '详情') {
-                    var result = arr[1].split("-");
+                    var result = arr[1].split('-');
                     title = (result[0] === 'UNKNOWN' ? '未知' : result[0]) + ' ' + result[1];
                     color = result[2];
                 } else {
-                    var result = arr[1].split("-");
+                    var result = arr[1].split('-');
                     title = result[0];
                     color = result[1];
                 }
@@ -195,9 +195,9 @@ var PieChart = React.createClass({
             return;
         }
         if(!this.props.list.length) {
-            $(this.refs.chart).html(`<div class="nodata">${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class="nodata">${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
             var options = this.getEchartOptions();
             var dom = this.refs.chart;
             this.echartInstance = echarts.init(dom,macronsTheme);
@@ -206,13 +206,13 @@ var PieChart = React.createClass({
     },
     //图例鼠标悬浮
     legendMouseEnter: function(system , name , color , event) {
-        var $em = $(event.currentTarget).find("em");
-        var $span = $(event.currentTarget).find("span");
-        var $b = $(event.currentTarget).find("b");
+        var $em = $(event.currentTarget).find('em');
+        var $span = $(event.currentTarget).find('span');
+        var $b = $(event.currentTarget).find('b');
 
-        var em_bg_color = Color($em.css("background-color"));
-        var span_color = Color($span.css("color"));
-        var b_color = Color($b.css("color"));
+        var em_bg_color = Color($em.css('background-color'));
+        var span_color = Color($span.css('color'));
+        var b_color = Color($b.css('color'));
 
         var old_em_bg_color = em_bg_color.hexString();
         var old_span_color = span_color.hexString();
@@ -222,14 +222,14 @@ var PieChart = React.createClass({
         var darken_span_color = span_color.darken(0.3).hexString();
         var darken_b_color = b_color.darken(0.3).hexString();
 
-        $em.css("background-color" , darken_em_bg_color);
-        $span.css("color", darken_span_color);
-        $b.css("color", darken_b_color);
+        $em.css('background-color' , darken_em_bg_color);
+        $span.css('color', darken_span_color);
+        $b.css('color', darken_b_color);
 
         //记录原来的值
-        $em.data("background-color" , old_em_bg_color);
-        $span.data("color",old_span_color);
-        $b.data("color" , old_b_color);
+        $em.data('background-color' , old_em_bg_color);
+        $span.data('color',old_span_color);
+        $b.data('color' , old_b_color);
 
         //高亮series
         var serieses = this.echartInstance && this.echartInstance.getSeries();
@@ -252,17 +252,17 @@ var PieChart = React.createClass({
     },
     //图例鼠标离开
     legendMouseLeave: function(system , name , color , event) {
-        var $em = $(event.currentTarget).find("em");
-        var $span = $(event.currentTarget).find("span");
-        var $b = $(event.currentTarget).find("b");
+        var $em = $(event.currentTarget).find('em');
+        var $span = $(event.currentTarget).find('span');
+        var $b = $(event.currentTarget).find('b');
 
-        var em_bg_color = $em.data("background-color");
-        var span_color = $span.data("color");
-        var b_color = $b.data("color");
+        var em_bg_color = $em.data('background-color');
+        var span_color = $span.data('color');
+        var b_color = $b.data('color');
 
-        $em.css("background-color" , em_bg_color);
-        $span.css("color", span_color);
-        $b.css("color", b_color);
+        $em.css('background-color' , em_bg_color);
+        $span.css('color', span_color);
+        $b.css('color', b_color);
         //取消高亮series
         var serieses = this.echartInstance && this.echartInstance.getSeries();
         if(serieses) {
@@ -314,8 +314,8 @@ var PieChart = React.createClass({
                     return (
                         <ul className="ranklist" key={obj.name}>
                             <li
-                                onMouseEnter={_this.legendMouseEnter.bind(_this , "" , obj.name , totalColor)}
-                                onMouseLeave={_this.legendMouseLeave.bind(_this , "" , obj.name , totalColor)}
+                                onMouseEnter={_this.legendMouseEnter.bind(_this , '' , obj.name , totalColor)}
+                                onMouseLeave={_this.legendMouseLeave.bind(_this , '' , obj.name , totalColor)}
                             >
                                 <em style={{backgroundColor: totalColor}}></em>
                                 <span>{obj.name}</span>

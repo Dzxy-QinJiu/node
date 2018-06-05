@@ -1,33 +1,33 @@
-require("./index.less");
-var Spinner = require("../../spinner");
-var Ajax = require("./ajax");
+require('./index.less');
+var Spinner = require('../../spinner');
+var Ajax = require('./ajax');
 var appAjaxTrans = require('../../../modules/common/public/ajax/app');
-var Alert = require("antd").Alert;
-var Icon = require("antd").Icon;
-var history = require("../../../public/sources/history");
-var userData = require("../../../public/sources/user-data");
-var classNames = require("classnames");
-var Tabs = require("antd").Tabs;
+var Alert = require('antd').Alert;
+var Icon = require('antd').Icon;
+var history = require('../../../public/sources/history');
+var userData = require('../../../public/sources/user-data');
+var classNames = require('classnames');
+var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
-var Tooltip = require("antd").Tooltip;
-var myAppEmitter = require("../../../public/sources/utils/emitters").myAppEmitter;
+var Tooltip = require('antd').Tooltip;
+var myAppEmitter = require('../../../public/sources/utils/emitters').myAppEmitter;
 //常量
 var CONSTANTS = {
-    LOADING: "loading",
-    SUCCESS: "success",
-    ERROR: "error",
-    RELOAD: "reload",
-    INFO: "info",
-    TOOLTIP_TITLE: Intl.get("user.select.role.include.auth", "选中的角色中已包含此权限"),
-    TOOLTIP_PLACEMENT: "top",
-    ROLE_ERROR_MSG: Intl.get("user.curr.app.get.role.failed", "当前应用获取角色数据失败"),
-    PERMISSION_ERROR_MSG: Intl.get("user.curr.app.get.auth.failed", "当前应用获取权限数据失败"),
-    ROLE_PERMISSION_ERROR_MSG: Intl.get("user.curr.app.get.role.auth.failed", "当前应用获取角色、权限数据失败"),
-    NO_ROLE_PERMISSION_DATA: Intl.get("user.curr.app.no.role.auth.data", "当前应用没有角色和权限数据"),
-    NO_ROLE_DATA: Intl.get("user.curr.app.no.role", "当前应用没有角色数据"),
-    NO_PERMISSION_DATA: Intl.get("user.curr.app.no.auth", "当前应用没有权限数据"),
-    CONTACT_APP_ADMIN: Intl.get("user.contact.app.manager", "请联系应用管理员"),
-    RELOAD_TITLE: Intl.get("common.get.again", "重新获取")
+    LOADING: 'loading',
+    SUCCESS: 'success',
+    ERROR: 'error',
+    RELOAD: 'reload',
+    INFO: 'info',
+    TOOLTIP_TITLE: Intl.get('user.select.role.include.auth', '选中的角色中已包含此权限'),
+    TOOLTIP_PLACEMENT: 'top',
+    ROLE_ERROR_MSG: Intl.get('user.curr.app.get.role.failed', '当前应用获取角色数据失败'),
+    PERMISSION_ERROR_MSG: Intl.get('user.curr.app.get.auth.failed', '当前应用获取权限数据失败'),
+    ROLE_PERMISSION_ERROR_MSG: Intl.get('user.curr.app.get.role.auth.failed', '当前应用获取角色、权限数据失败'),
+    NO_ROLE_PERMISSION_DATA: Intl.get('user.curr.app.no.role.auth.data', '当前应用没有角色和权限数据'),
+    NO_ROLE_DATA: Intl.get('user.curr.app.no.role', '当前应用没有角色数据'),
+    NO_PERMISSION_DATA: Intl.get('user.curr.app.no.auth', '当前应用没有权限数据'),
+    CONTACT_APP_ADMIN: Intl.get('user.contact.app.manager', '请联系应用管理员'),
+    RELOAD_TITLE: Intl.get('common.get.again', '重新获取')
 };
 
 /**
@@ -77,7 +77,7 @@ var AppRolePermission = React.createClass({
         this.setState({
             ajaxRolesResult: CONSTANTS.LOADING,
             ajaxRolesList: [],
-            ajaxRolesErrorMsg: ""
+            ajaxRolesErrorMsg: ''
         });
         Ajax.getRoleList(app_id).then((ajaxRolesList) => {
             //计算selectedRolesAlreadyContainedPermissionIds
@@ -92,7 +92,7 @@ var AppRolePermission = React.createClass({
                 selectedRolesAlreadyContainedPermissionIds: selectedRolesAlreadyContainedPermissionIds,
                 ajaxRolesResult: CONSTANTS.SUCCESS,
                 ajaxRolesList: ajaxRolesList,
-                ajaxRolesErrorMsg: ""
+                ajaxRolesErrorMsg: ''
             });
         },(ajaxRolesErrorMsg) => {
             this.setState({
@@ -106,7 +106,7 @@ var AppRolePermission = React.createClass({
         this.setState({
             ajaxPermissionResult: CONSTANTS.LOADING,
             ajaxPermissionList: [],
-            ajaxPermissionErrorMsg: ""
+            ajaxPermissionErrorMsg: ''
         });
         Ajax.getPermissionMap(app_id).then((ajaxPermissionList) => {
             //计算defaultActivePermissionTabKey
@@ -124,7 +124,7 @@ var AppRolePermission = React.createClass({
                 defaultActivePermissionTabKey: defaultActivePermissionTabKey + '',
                 ajaxPermissionResult: CONSTANTS.SUCCESS,
                 ajaxPermissionList: ajaxPermissionList,
-                ajaxPermissionErrorMsg: ""
+                ajaxPermissionErrorMsg: ''
             });
         },(ajaxPermissionErrorMsg) => {
             this.setState({
@@ -328,15 +328,15 @@ var AppRolePermission = React.createClass({
         return <div className="app-role-permission-list">
             {state.ajaxRolesList.map((roleInfo) => {
                 const cls = classNames({
-                    "rounded_item": true,
-                    "selected": selectedRolesList.indexOf(roleInfo.role_id) >= 0
+                    'rounded_item': true,
+                    'selected': selectedRolesList.indexOf(roleInfo.role_id) >= 0
                 });
                 return (
                     <div key={roleInfo.role_id} className={cls} onClick={this.toggleSelectedRole.bind(this,roleInfo)}>{roleInfo.role_name}</div>
                 );
             })}
             {
-                state.ajaxPermissionList.length > 0 ? (<span className={advanceRoleClass} title={Intl.get("user.config.auth", "配置权限")} onClick={this.togglePermissionBlock}></span>) : null
+                state.ajaxPermissionList.length > 0 ? (<span className={advanceRoleClass} title={Intl.get('user.config.auth', '配置权限')} onClick={this.togglePermissionBlock}></span>) : null
             }
         </div>;
     },
@@ -396,7 +396,7 @@ var AppRolePermission = React.createClass({
                                         });
                                         const content = <div key={permission.permission_id} className={cls} onClick={this.toggleSelectedPermission.bind(this,permission)}>{permission.permission_name}</div>;
                                         return unselectable ? (
-                                            <Tooltip title={CONSTANTS.TOOLTIP_TITLE} placement={CONSTANTS.TOOLTIP_PLACEMENT} key={permission.permission_id + "_tip"}>
+                                            <Tooltip title={CONSTANTS.TOOLTIP_TITLE} placement={CONSTANTS.TOOLTIP_PLACEMENT} key={permission.permission_id + '_tip'}>
                                                 {content}
                                             </Tooltip>
                                         ) : content;
@@ -411,7 +411,7 @@ var AppRolePermission = React.createClass({
     },
     render: function() {
         return (
-            <div className={classNames("app-role-permission" , this.props.className)}>
+            <div className={classNames('app-role-permission' , this.props.className)}>
                 {this.renderRolePermissionView()}
             </div>
         );

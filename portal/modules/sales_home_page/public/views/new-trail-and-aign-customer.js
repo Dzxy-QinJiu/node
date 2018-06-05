@@ -1,18 +1,18 @@
-var GeminiScrollbar = require("CMP_DIR/react-gemini-scrollbar");
-import { Button, Spin, Alert } from "antd";
-import { AntcTable } from "antc";
-const Spinner = require("CMP_DIR/spinner");
+var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
+import { Button, Spin, Alert } from 'antd';
+import { AntcTable } from 'antc';
+const Spinner = require('CMP_DIR/spinner');
 const DEFAULT_TABLE_PAGESIZE = 10;
-import rightPanelUtil from "CMP_DIR/rightPanel";
+import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
-const CrmList = require("../../../crm/public/crm-list");
-import { RightPanelClose } from "CMP_DIR/rightPanel/index";
+const CrmList = require('../../../crm/public/crm-list');
+import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 
 class NewTrailCustomerTable extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            type: "",
+            type: '',
             isShowCustomerTable: false
         };
     }
@@ -23,7 +23,7 @@ class NewTrailCustomerTable extends React.Component {
     }
     handleStageNumClick(num, type) {
         //客户数为0时不打开客户列表面板
-        if (!num || num === "0") {
+        if (!num || num === '0') {
             return;
         }
         this.setState({
@@ -35,23 +35,23 @@ class NewTrailCustomerTable extends React.Component {
         const { result, getDataFromSelect, dataResultFromSelect } = this.props;
         const columns = [
             {
-                title: Intl.get("common.trial", "试用"),
-                dataIndex: "trial",
-                key: "trial",
+                title: Intl.get('common.trial', '试用'),
+                dataIndex: 'trial',
+                key: 'trial',
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, text, "试用")}>{text}</span>
+                            onClick={this.handleStageNumClick.bind(this, text, '试用')}>{text}</span>
                     );
                 }
             }, {
-                title: Intl.get("sales.stage.signed", "签约"),
-                dataIndex: "signed",
-                key: "signed",
+                title: Intl.get('sales.stage.signed', '签约'),
+                dataIndex: 'signed',
+                key: 'signed',
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, text, "签约")}>{text}</span>
+                            onClick={this.handleStageNumClick.bind(this, text, '签约')}>{text}</span>
                     );
                 }
             }
@@ -84,12 +84,12 @@ class NewTrailCustomerTable extends React.Component {
             rangParams: [{
                 from: this.props.params.startTime,
                 to: this.props.params.endTime,
-                type: "time",
-                name: "start_time"
+                type: 'time',
+                name: 'start_time'
             }],
             condition: {
                 customer_label: this.state.type,
-                term_fields: ["customer_label"],                
+                term_fields: ['customer_label'],                
             }
         };
         if (this.props.params.teamId) {
@@ -105,7 +105,7 @@ class NewTrailCustomerTable extends React.Component {
             >
                 <GeminiScrollbar>
                     <div className="title">
-                        {Intl.get("crm.sales.newTrailCustomer", "新开客户数统计")}
+                        {Intl.get('crm.sales.newTrailCustomer', '新开客户数统计')}
                     </div>
                     {renderErr()}
                     {renderSpiner()}
@@ -125,11 +125,11 @@ class NewTrailCustomerTable extends React.Component {
                         this.state.isShowCustomerTable ?
                             <div className="customer-table-close topNav">
                                 <RightPanelClose
-                                    title={Intl.get("common.app.status.close", "关闭")}
+                                    title={Intl.get('common.app.status.close', '关闭')}
                                     onClick={this.showCustomerTable.bind(this, false)}
                                 />
                                 <CrmList
-                                    location={{ query: "" }}
+                                    location={{ query: '' }}
                                     fromSalesHome={true}
                                     params={params}
                                 />

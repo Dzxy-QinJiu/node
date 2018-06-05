@@ -3,18 +3,18 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
-var language = require("../../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/user-detail-change-record-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("../css/user-detail-change-record-zh_CN.less");
+var language = require('../../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('../css/user-detail-change-record-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('../css/user-detail-change-record-zh_CN.less');
 }
-var UserDetailChangeRecordStore = require("../store/user-detail-change-record-store");
-var UserDetailChangeRecordAction = require("../action/user-detail-change-record-actions");
-var TimeLine = require("../../../../components/time-line");
+var UserDetailChangeRecordStore = require('../store/user-detail-change-record-store');
+var UserDetailChangeRecordAction = require('../action/user-detail-change-record-actions');
+var TimeLine = require('../../../../components/time-line');
 //滚动条
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-var Spinner = require("../../../../components/spinner");
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+var Spinner = require('../../../../components/spinner');
 import {Select,Alert} from 'antd';
 var Option = Select.Option;
 //高度常量
@@ -55,7 +55,7 @@ var UserDetailChangeRecord = React.createClass({
             var selectedApp = _.find(this.state.appLists,(item) => {
                 return item.app_id == appId;
             });
-            var appName = selectedApp && selectedApp.app_name ? selectedApp.app_name : "";
+            var appName = selectedApp && selectedApp.app_name ? selectedApp.app_name : '';
             if (appName){
                 UserDetailChangeRecordAction.setApp(appName);
             }
@@ -115,20 +115,20 @@ var UserDetailChangeRecord = React.createClass({
         }
         if (item.operate == 'GrantCreate' && item.detail){
             //授权的创建
-            desc += Intl.get("user.create.this.user", "创建了该用户");
+            desc += Intl.get('user.create.this.user', '创建了该用户');
             //角色描述
-            item.detail.roles && (role += Intl.get("user.role.is", "角色为{role}。",{"role": item.detail.roles}));
+            item.detail.roles && (role += Intl.get('user.role.is', '角色为{role}。',{'role': item.detail.roles}));
             //类型描述
-            item.detail.tags && (tags += Intl.get("user.tag.is", "类型为{tag}。",{"tag": tagName}));
+            item.detail.tags && (tags += Intl.get('user.tag.is', '类型为{tag}。',{'tag': tagName}));
             desc = desc + role + tags;
         }else if (item.operate == 'GrantUpdate' && item.detail){
             //授权的更新
             //修改了用户的状态
-            item.detail.status && (item.detail.status == 0 ? (status += Intl.get("user.disabled.this.user.on.app","停用了该用户在此应用的授权")) : (status += Intl.get("user.enabled.this.user.on.app","启用了该用户在此应用的授权")));
+            item.detail.status && (item.detail.status == 0 ? (status += Intl.get('user.disabled.this.user.on.app','停用了该用户在此应用的授权')) : (status += Intl.get('user.enabled.this.user.on.app','启用了该用户在此应用的授权')));
             //修改了用户的角色
-            item.detail.roles && (role += Intl.get("user.change.role.to", "修改了该用户的角色，改为{role}。",{"role": item.detail.roles}));
+            item.detail.roles && (role += Intl.get('user.change.role.to', '修改了该用户的角色，改为{role}。',{'role': item.detail.roles}));
             //修改了用户的类型
-            item.detail.tags && (tags += Intl.get("user.change.tag.to", "修改了该用户的类型，改为{tag}。",{"tag": tagName}));
+            item.detail.tags && (tags += Intl.get('user.change.tag.to', '修改了该用户的类型，改为{tag}。',{'tag': tagName}));
             //授权时间
             if (item.detail.begin){
                 begin = moment(parseFloat(item.detail.begin)).format(oplateConsts.DATE_FORMAT);
@@ -148,17 +148,17 @@ var UserDetailChangeRecord = React.createClass({
         }else if (item.operate == 'UserInfoUpdate' && item.detail){
             //基本信息的修改
             //修改了用户的状态
-            item.detail.status && (item.detail.status == 0 ? (status += Intl.get("user.disabled.this.user", "停用了该用户。")) : (status += Intl.get("user.enabled.this.user", "启用了该用户。")));
+            item.detail.status && (item.detail.status == 0 ? (status += Intl.get('user.disabled.this.user', '停用了该用户。')) : (status += Intl.get('user.enabled.this.user', '启用了该用户。')));
             //修改了昵称
-            item.detail.nick_name && (nickname += Intl.get("user.change.nick_name.to", "修改了该用户的昵称，改为{nick_name}。",{"nick_name": item.detail.nick_name}));
+            item.detail.nick_name && (nickname += Intl.get('user.change.nick_name.to', '修改了该用户的昵称，改为{nick_name}。',{'nick_name': item.detail.nick_name}));
             // 修改了密码
-            item.detail.password && (password += Intl.get("user.change.user.password", "修改了该用户的密码。"));
+            item.detail.password && (password += Intl.get('user.change.user.password', '修改了该用户的密码。'));
             // 修改了邮箱
-            item.detail.email && (email += Intl.get("user.change.email.to", "修改了该用户的邮箱，改为{email}。",{"email": item.detail.email}));
+            item.detail.email && (email += Intl.get('user.change.email.to', '修改了该用户的邮箱，改为{email}。',{'email': item.detail.email}));
             // 修改了备注
-            item.detail.phone && (phone += Intl.get("user.change.phone.to", "修改了该用户的电话，改为{phone}。",{"phone": item.detail.phone}));
+            item.detail.phone && (phone += Intl.get('user.change.phone.to', '修改了该用户的电话，改为{phone}。',{'phone': item.detail.phone}));
             // 修改了备注
-            item.detail.description && (description += Intl.get("user.change.desc.to", "修改了该用户的备注，改为{description}。",{"description": item.detail.description}));
+            item.detail.description && (description += Intl.get('user.change.desc.to', '修改了该用户的备注，改为{description}。',{'description': item.detail.description}));
             //
 
             desc = desc + status + nickname + password + email + phone + description;
@@ -174,7 +174,7 @@ var UserDetailChangeRecord = React.createClass({
     },
     handleChange: function(value) {
         const app = _.find(this.state.appLists, item => item.app_id === value);
-        const appName = app ? app.app_name : "";
+        const appName = app ? app.app_name : '';
         let queryObj = {
             user_id: this.props.userId,
             app_id: value + ',' + 'everyapp',
@@ -214,7 +214,7 @@ var UserDetailChangeRecord = React.createClass({
         }else if (this.state.getAppErrorMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.getAppErrorMsg}
-                <a onClick={this.retryRenderTraceRecord} style={{marginLeft: "20px",marginTop: "20px"}}>
+                <a onClick={this.retryRenderTraceRecord} style={{marginLeft: '20px',marginTop: '20px'}}>
                     <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
                 </a>
             </span>;
@@ -254,7 +254,7 @@ var UserDetailChangeRecord = React.createClass({
                         {this.getSelectOptions()}
                     </Select>
                     <Alert
-                        message={Intl.get("common.no.data", "暂无数据")}
+                        message={Intl.get('common.no.data', '暂无数据')}
                         type="info"
                         showIcon={true}
                     />
@@ -281,7 +281,7 @@ var UserDetailChangeRecord = React.createClass({
         }else if(this.state.changeRecordErrMsg && !this.state.changeRecordLoading){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.changeRecordErrMsg}
-                <a onClick={this.retryChangeRecord} style={{marginLeft: "20px",marginTop: "20px"}}>
+                <a onClick={this.retryChangeRecord} style={{marginLeft: '20px',marginTop: '20px'}}>
                     <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
                 </a>
             </span>;

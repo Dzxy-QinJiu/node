@@ -2,9 +2,9 @@
  * 应用选择器的store
  */
 
-var AppSelectorAction = require("./app-selector.action");
+var AppSelectorAction = require('./app-selector.action');
 var AppSelectorStoreMap = {};
-var extend = require("extend");
+var extend = require('extend');
 //深度克隆
 function deepClone(obj){
     if(_.isArray(obj)) {

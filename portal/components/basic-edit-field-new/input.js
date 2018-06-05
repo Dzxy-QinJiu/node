@@ -1,20 +1,20 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * input(输入框)显示、编辑 的组件
  * 可切换状态
  */
-require("./css/basic-edit-field.less");
-import {Form, Input} from "antd";
-var crypto = require("crypto");
-var classNames = require("classnames");
-var secretPassword = "";
+require('./css/basic-edit-field.less');
+import {Form, Input} from 'antd';
+var crypto = require('crypto');
+var classNames = require('classnames');
+var secretPassword = '';
 var FormItem = Form.Item;
-import FieldMixin from "../antd-form-fieldmixin/index";
-import {PassStrengthBar} from "../password-strength-bar";
-import Trace from "LIB_DIR/trace";
-import {DetailEditBtn} from "../rightPanel";
-import SaveCancelButton from "../detail-card/save-cancel-button";
+import FieldMixin from '../antd-form-fieldmixin/index';
+import {PassStrengthBar} from '../password-strength-bar';
+import Trace from 'LIB_DIR/trace';
+import {DetailEditBtn} from '../rightPanel';
+import SaveCancelButton from '../detail-card/save-cancel-button';
 
 const BasicEditField = React.createClass({
     mixins: [FieldMixin],
@@ -24,17 +24,17 @@ const BasicEditField = React.createClass({
             //类型 input、textarea或password、number
             type: 'input',
             //字段
-            field: "email",
+            field: 'email',
             //是否有修改权限
             hasEditPrivilege: false,
             //验证条件
             validators: [{}],
             //请填写
-            placeholder: Intl.get("user.email.write.tip", "请填写邮箱"),
+            placeholder: Intl.get('user.email.write.tip', '请填写邮箱'),
             //显示的值
             value: '',
             //编辑按钮的提示文案
-            editBtnTip: Intl.get("common.update", "修改"),
+            editBtnTip: Intl.get('common.update', '修改'),
             //修改成功
             modifySuccess: function() {
             },
@@ -59,7 +59,7 @@ const BasicEditField = React.createClass({
         }
         return {
             loading: false,
-            displayType: this.props.displayType || "text",
+            displayType: this.props.displayType || 'text',
             formData: {
                 input: this.props.value
             },
@@ -92,7 +92,7 @@ const BasicEditField = React.createClass({
         var formData = this.state.formData;
         formData.input = this.state.value;
         this.setState({
-            displayType: "edit",
+            displayType: 'edit',
             formData: formData,
             passStrength: {
                 passBarShow: false
@@ -102,25 +102,25 @@ const BasicEditField = React.createClass({
             var val = dom.value;
             if (dom.createTextRange) {//IE浏览器
                 var range = dom.createTextRange();
-                range.moveEnd("character", val.length);
-                range.moveStart("character", val.length);
+                range.moveEnd('character', val.length);
+                range.moveStart('character', val.length);
                 range.select();
             } else {//非IE浏览器
                 dom.setSelectionRange(val.length, val.length);
                 dom.focus();
             }
         });
-        this.props.onDisplayTypeChange("edit");
-        Trace.traceEvent(e, "点击编辑" + this.props.field);
+        this.props.onDisplayTypeChange('edit');
+        Trace.traceEvent(e, '点击编辑' + this.props.field);
     },
     md5: function(value) {
-        var md5Hash = crypto.createHash("md5");
+        var md5Hash = crypto.createHash('md5');
         md5Hash.update(value);
-        return md5Hash.digest("hex");
+        return md5Hash.digest('hex');
     },
     handleSubmit: function(e) {
         var validation = this.refs.validation;
-        Trace.traceEvent(e, "保存对" + this.props.field + "的修改");
+        Trace.traceEvent(e, '保存对' + this.props.field + '的修改');
         validation.validate(valid => {
             if (!valid) {
                 return;
@@ -150,7 +150,7 @@ const BasicEditField = React.createClass({
                 }, errorMsg => {
                     this.setState({
                         loading: false,
-                        submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
+                        submitErrorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
                     });
                 });
             } else {
@@ -167,11 +167,11 @@ const BasicEditField = React.createClass({
         this.setState({
             formData: formData,
             status: status,
-            displayType: "text",
+            displayType: 'text',
             submitErrorMsg: ''
         });
-        this.props.onDisplayTypeChange("text");
-        Trace.traceEvent(e, "取消对" + this.props.field + "的修改");
+        this.props.onDisplayTypeChange('text');
+        Trace.traceEvent(e, '取消对' + this.props.field + '的修改');
     },
     onFocusInput: function(type, event) {
         if (type === 'password') {
@@ -211,12 +211,12 @@ const BasicEditField = React.createClass({
             'editing': this.state.displayType === 'edit'
         });
 
-        var displayText = this.props.type === 'password' ? Intl.get("user.password.tip", "保密中") : this.state.value;
+        var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
 
         var textBlock = this.state.displayType === 'text' ? (
             <div>
                 <span className="inline-block basic-info-text">
-                    {displayText}{this.props.afterValTip ? this.props.afterValTip : ""}
+                    {displayText}{this.props.afterValTip ? this.props.afterValTip : ''}
                 </span>
                 {this.props.hasEditPrivilege ? (
                     <DetailEditBtn title={this.props.editBtnTip}
@@ -228,13 +228,13 @@ const BasicEditField = React.createClass({
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
                 <Form horizontal autoComplete="off">
-                    <input type="password" style={{display: "none"}} name="input" autoComplete="off"/>
+                    <input type="password" style={{display: 'none'}} name="input" autoComplete="off"/>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             labelCol={{span: 0}}
                             wrapperCol={{span: 24}}
                             validateStatus={this.renderValidateStyle('input')}
-                            help={status.input.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.input.errors && status.input.errors.join(','))}
+                            help={status.input.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.input.errors && status.input.errors.join(','))}
                         >
                             <Validator rules={this.props.validators}>
                                 {this.props.type === 'textarea' ?

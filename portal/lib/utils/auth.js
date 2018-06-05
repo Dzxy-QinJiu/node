@@ -1,6 +1,6 @@
-var Q = require("q");
-var UserDto = require("./user-dto");
-var _ = require("underscore");
+var Q = require('q');
+var UserDto = require('./user-dto');
+var _ = require('underscore');
 /*
  *
  * user
@@ -15,7 +15,7 @@ var _ = require("underscore");
 //获取token
 function getAccesstoken(req) {
     var user = UserDto.turnSessionDataToUser(req && req.session);
-    return (user && user.auth.access_token) || "";
+    return (user && user.auth.access_token) || '';
 }
 //获取用户信息
 function getUser(req) {
@@ -45,7 +45,7 @@ function saveUserInfo(req, user) {
     //用户信息保存到session中
     var userData = UserDto.toSessionData(req,user);
     req.session.user = userData.user;
-    req.session["_USER_TOKEN_"] = userData["_USER_TOKEN_"];
+    req.session['_USER_TOKEN_'] = userData['_USER_TOKEN_'];
     req.session.save(function() {
         deferred.resolve();
     });
@@ -73,29 +73,29 @@ function getLang() {
 //角色对应单词
 const ROLE_CONSTANTS = {
     //应用管理员
-    APP_ADMIN: "app_manager",
+    APP_ADMIN: 'app_manager',
     //应用所有者
-    APP_OWNER: "app_owner",
+    APP_OWNER: 'app_owner',
     //运营人员
-    OPERATION_PERSON: "operations",
+    OPERATION_PERSON: 'operations',
     //销售
-    SALES: "sales",
+    SALES: 'sales',
     //舆情秘书
-    SECRETARY: "salesmanager",
+    SECRETARY: 'salesmanager',
     //销售负责人
-    SALES_LEADER: "salesleader",
+    SALES_LEADER: 'salesleader',
     //域管理员
-    REALM_ADMIN: "realm_manager",
+    REALM_ADMIN: 'realm_manager',
     //域所有者
-    REALM_OWNER: "realm_owner",
+    REALM_OWNER: 'realm_owner',
     //oplate域管理员
-    OPLATE_REALM_ADMIN: "oplate_realm_manager",
+    OPLATE_REALM_ADMIN: 'oplate_realm_manager',
     //oplate域所有者
-    OPLATE_REALM_OWNER: "oplate_realm_owner",
+    OPLATE_REALM_OWNER: 'oplate_realm_owner',
     //合同管理员
-    CONTRACT_ADMIN: "contract_manager",
+    CONTRACT_ADMIN: 'contract_manager',
     //财务
-    ACCOUNTANT: "accountant"
+    ACCOUNTANT: 'accountant'
 };
 
 exports.hasRole = hasRole;

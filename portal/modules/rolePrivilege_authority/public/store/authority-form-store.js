@@ -1,15 +1,15 @@
-var AuthorityFormActions = require("../action/authority-form-actions");
+var AuthorityFormActions = require('../action/authority-form-actions');
 
 var saveTipTimer = null;
 function AuthorityFormStore() {
 
     this.isGroupSaving = false;//是否正在保存
-    this.saveGroupMsg = "";//保存结果的提示信息
-    this.saveGroupResult = "";//error、success
+    this.saveGroupMsg = '';//保存结果的提示信息
+    this.saveGroupResult = '';//error、success
 
     //添加、修改权限的标识
     this.isAuthoritySaving = false;
-    this.saveAuthorityMsg = "";
+    this.saveAuthorityMsg = '';
 
     this.bindActions(AuthorityFormActions);
 }
@@ -19,7 +19,7 @@ function AuthorityFormStore() {
  */
 //清空保存结果和提示信息
 AuthorityFormStore.prototype.clearSaveAuthorityFlags = function() {
-    this.saveAuthorityMsg = "";
+    this.saveAuthorityMsg = '';
 };
 
 //保存结果的处理
@@ -56,8 +56,8 @@ AuthorityFormStore.prototype.setGroupSavingFlag = function(flag) {
 
 //清空保存结果和提示信息
 AuthorityFormStore.prototype.clearSaveFlags = function() {
-    this.saveGroupMsg = "";
-    this.saveGroupResult = "";
+    this.saveGroupMsg = '';
+    this.saveGroupResult = '';
 };
 
 //保存结果的处理

@@ -1,11 +1,11 @@
 /**
  * onChange 选择行业后调用，会传入选择的行业名
  */
-const crmAjax = require("MOD_DIR/crm/public/ajax");
-import { Select, Spin, Alert } from "antd";
+const crmAjax = require('MOD_DIR/crm/public/ajax');
+import { Select, Spin, Alert } from 'antd';
 const Option = Select.Option;
 const defualtValueObj = {
-    industry: Intl.get("oplate_customer_analysis.allIndustries", "全部行业")
+    industry: Intl.get('oplate_customer_analysis.allIndustries', '全部行业')
 };
 class IndustrySelector extends React.Component {
     constructor(props) {
@@ -43,7 +43,7 @@ class IndustrySelector extends React.Component {
                 }).fail(err => {
                     this.setState({
                         loading: false,
-                        errorMsg: Intl.get("errorcode.118", "获取数据失败")
+                        errorMsg: Intl.get('errorcode.118', '获取数据失败')
                     });
                 });
         });

@@ -1,22 +1,22 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 创建用户
  */
 //右侧面板样式，上一步、下一步，滑动布局等
-var language = require("../../../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../../../components/user_manage_components/css/right-panel-es_VE.less");
-} else if (language.lan() == "zh") {
-    require("../../../../../components/user_manage_components/css/right-panel-zh_CN.less");
+var language = require('../../../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('../../../../../components/user_manage_components/css/right-panel-es_VE.less');
+} else if (language.lan() == 'zh') {
+    require('../../../../../components/user_manage_components/css/right-panel-zh_CN.less');
 }
 
 //表单样式，表单项高度，输入框宽度等
-var language = require("../../../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../../../components/user_manage_components/css/form-basic-es_VE.less");
-} else if (language.lan() == "zh") {
-    require("../../../../../components/user_manage_components/css/form-basic-zh_CN.less");
+var language = require('../../../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('../../../../../components/user_manage_components/css/form-basic-es_VE.less');
+} else if (language.lan() == 'zh') {
+    require('../../../../../components/user_manage_components/css/form-basic-zh_CN.less');
 }
 
 
@@ -52,7 +52,7 @@ import autosize from 'autosize';
 import UserNameTextFieldUtil from 'CMP_DIR/user_manage_components/user-name-textfield/util';
 import AppUserAjax from '../../ajax/app-user-ajax';
 import AppUserStore from '../../store/app-user-store';
-import SelectFullWidth from "CMP_DIR/select-fullwidth";
+import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 //动态添加的样式
 var dynamicStyle;
 var tempSuggestNames = [];
@@ -94,14 +94,14 @@ const AddOrEditUser = React.createClass({
     },
     componentDidMount() {
         AppUserFormStore.listen(this.onStoreChange);
-        $(window).on("resize", this.onStoreChange);
+        $(window).on('resize', this.onStoreChange);
         AppUserFormActions.getCurrentRealmApps();
-        var $textarea = $(this.refs.descriptionBlock).find("textarea");
+        var $textarea = $(this.refs.descriptionBlock).find('textarea');
         autosize($textarea[0]);
     },
     componentWillUnmount() {
         AppUserFormStore.unlisten(this.onStoreChange);
-        $(window).off("resize", this.onStoreChange);
+        $(window).off('resize', this.onStoreChange);
         dynamicStyle && dynamicStyle.destroy();
         dynamicStyle = null;
         tempSuggestNames = [];
@@ -110,7 +110,7 @@ const AddOrEditUser = React.createClass({
     isAddOnlyOneUser(){
         let formData = this.state.formData;
         //用户名为邮箱格式时，只能添加一个用户
-        return formData.user_name.indexOf("@") != -1 && formData.count_number > 1;
+        return formData.user_name.indexOf('@') != -1 && formData.count_number > 1;
     },
 
     // 添加一个用户时，是否渲染建议用户名
@@ -147,7 +147,7 @@ const AddOrEditUser = React.createClass({
         //首先检查表单
         validation.validate((valid) => {
             let hasError = false;
-            let onlyOneUser = formData.user_name.indexOf("@") != -1 && formData.count_number > 1;
+            let onlyOneUser = formData.user_name.indexOf('@') != -1 && formData.count_number > 1;
             if (!valid || this.isAddOnlyOneUser()) {
                 hasError = true;
             }
@@ -313,7 +313,7 @@ const AddOrEditUser = React.createClass({
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(products, selectedApps);
         if (noSelectRoleApps.length) {
-            AppUserFormActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName: noSelectRoleApps.join('、')}));
+            AppUserFormActions.someAppsNoSelectRoleError(Intl.get('user.add.apps.role.select.tip', '{appName}未设置角色', {appName: noSelectRoleApps.join('、')}));
             return;
         } else {
             AppUserFormActions.noSelectRoleError('');
@@ -383,8 +383,8 @@ const AddOrEditUser = React.createClass({
     getRestFieldValidator: function(field) {
         var _this = this;
         var TEXT_MAP = {
-            "phone": Intl.get("user.phone", "手机号"),
-            "email": Intl.get("common.email", "邮箱")
+            'phone': Intl.get('user.phone', '手机号'),
+            'email': Intl.get('common.email', '邮箱')
         };
         return function(rule, value, callback) {
             clearTimeout(_this.restFieldTimeoutMap[field]);
@@ -397,19 +397,19 @@ const AddOrEditUser = React.createClass({
             }
             if (field === 'phone') {
                 if (!(/^1[3|4|5|7|8][0-9]\d{8}$/.test(trimValue))) {
-                    callback(Intl.get("user.phone.validate.tip", "请输入正确格式的手机号"));
+                    callback(Intl.get('user.phone.validate.tip', '请输入正确格式的手机号'));
                     return;
                 }
             } else if (field === 'email') {
                 if (!/^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
                     .test(trimValue)) {
-                    callback(Intl.get("user.email.validate.tip", "请输入正确格式的邮箱"));
+                    callback(Intl.get('user.email.validate.tip', '请输入正确格式的邮箱'));
                     return;
                 }
             }
             _this.restFieldTimeoutMap[field] = setTimeout(() => {
                 _this.checkRestField(field, trimValue).then((userInfo) => {
-                    callback(TEXT_MAP[field] + "已存在");
+                    callback(TEXT_MAP[field] + '已存在');
                 }, () => {
                     callback();
                 });
@@ -440,7 +440,7 @@ const AddOrEditUser = React.createClass({
         if (this.state.sugNamesErrorMsg) {
             return (
                 <div className="suggest-name-tips">
-                    {Intl.get("user.check.fail", "用户名校验出错！")}
+                    {Intl.get('user.check.fail', '用户名校验出错！')}
                 </div>
             );
         } else if (suggestNames) {
@@ -450,7 +450,7 @@ const AddOrEditUser = React.createClass({
                     <div className="suggest-name-tips">
                         <ReactIntl.FormattedMessage
                             id="user.suggest.name.two"
-                            defaultMessage={`创建{user01}或{user02}?`}
+                            defaultMessage={'创建{user01}或{user02}?'}
                             values={{
                                 'user01': <a
                                     onClick={this.selectSuggestUserName.bind(this, suggestNames[0])}>{suggestNames[0]}</a>,
@@ -465,7 +465,7 @@ const AddOrEditUser = React.createClass({
                     <div className="suggest-name-tips">
                         <ReactIntl.FormattedMessage
                             id="user.exist.suggest.name"
-                            defaultMessage={`用户名{user}已存在，是否创建{user01}?`}
+                            defaultMessage={'用户名{user}已存在，是否创建{user01}?'}
                             values={{
                                 'user': user_name,
                                 'user01': <a
@@ -478,7 +478,7 @@ const AddOrEditUser = React.createClass({
             } else {
                 return (
                     <div className="suggest-name-tips">
-                        {Intl.get("user.exist.name", "用户名{user}已存在，请重新命名", {user: user_name})}
+                        {Intl.get('user.exist.name', '用户名{user}已存在，请重新命名', {user: user_name})}
                     </div>
                 );
             }
@@ -515,12 +515,12 @@ const AddOrEditUser = React.createClass({
                                 labelCol={{span: 0}}
                                 wrapperCol={{span: 24}}
                                 validateStatus={this.renderValidateStyle('user_name')}
-                                help={status.user_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.user_name.errors && status.user_name.errors.join(','))}
+                                help={status.user_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.user_name.errors && status.user_name.errors.join(','))}
                             >
                                 <Validator rules={{validator: this.checkUserValid}} ref="userNameValidator">
                                     <Input name="user_name"
                                         id="user_name"
-                                        placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
+                                        placeholder={Intl.get('user.username.write.tip', '请填写用户名')}
                                         value={formData.user_name}
                                         onChange={this.setField.bind(this, 'user_name')}
                                         onFocus={this.renameUser}
@@ -534,7 +534,7 @@ const AddOrEditUser = React.createClass({
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.count"
                             defaultMessage="数量"/></div>
                         <div
-                            className={this.isAddOnlyOneUser() ? "form-item-content only-one-user-border" : "form-item-content"}>
+                            className={this.isAddOnlyOneUser() ? 'form-item-content only-one-user-border' : 'form-item-content'}>
                             {this.renderUserCountNumberField()}
                             {this.isAddOnlyOneUser() ? <div className="only-one-user-tip">
 
@@ -554,14 +554,14 @@ const AddOrEditUser = React.createClass({
                                             labelCol={{span: 0}}
                                             wrapperCol={{span: 24}}
                                             validateStatus={this.renderValidateStyle('nick_name')}
-                                            help={status.nick_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.nick_name.errors && status.nick_name.errors.join(','))}
+                                            help={status.nick_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.nick_name.errors && status.nick_name.errors.join(','))}
                                         >
                                             <Validator rules={[{
                                                 required: true,
-                                                message: Intl.get("user.nickname.write.tip", "请填写昵称")
+                                                message: Intl.get('user.nickname.write.tip', '请填写昵称')
                                             }]}>
                                                 <Input name="nick_name"
-                                                    placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
+                                                    placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
                                                     value={formData.nick_name}
                                                     onChange={this.setField.bind(this, 'nick_name')}/>
                                             </Validator>
@@ -578,11 +578,11 @@ const AddOrEditUser = React.createClass({
                                             labelCol={{span: 0}}
                                             wrapperCol={{span: 24}}
                                             validateStatus={this.renderValidateStyle('phone')}
-                                            help={status.phone.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.phone.errors && status.phone.errors.join(','))}
+                                            help={status.phone.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.phone.errors && status.phone.errors.join(','))}
                                         >
                                             <Validator rules={[{validator: this.getRestFieldValidator('phone')}]}>
                                                 <Input name="phone"
-                                                    placeholder={Intl.get("user.phone.write.tip", "请填写手机号")}
+                                                    placeholder={Intl.get('user.phone.write.tip', '请填写手机号')}
                                                     value={formData.phone}
                                                     onChange={this.setField.bind(this, 'phone')}/>
                                             </Validator>
@@ -599,11 +599,11 @@ const AddOrEditUser = React.createClass({
                                             labelCol={{span: 0}}
                                             wrapperCol={{span: 24}}
                                             validateStatus={this.renderValidateStyle('email')}
-                                            help={status.email.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.email.errors && status.email.errors.join(','))}
+                                            help={status.email.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.email.errors && status.email.errors.join(','))}
                                         >
                                             <Validator rules={[{validator: this.getRestFieldValidator('email')}]}>
                                                 <Input name="email"
-                                                    placeholder={Intl.get("user.email.write.tip", "请填写邮箱")}
+                                                    placeholder={Intl.get('user.email.write.tip', '请填写邮箱')}
                                                     value={formData.email}
                                                     onChange={this.setField.bind(this, 'email')}/>
                                             </Validator>
@@ -751,7 +751,7 @@ const AddOrEditUser = React.createClass({
                                 message={<span>
                                     <ReactIntl.FormattedMessage
                                         id="user.app.list.error.tip"
-                                        defaultMessage={`应用列表获取失败，{retry}`}
+                                        defaultMessage={'应用列表获取失败，{retry}'}
                                         values={{
                                             'retry': <a href="javascript:void(0)"
                                                 onClick={AppUserFormActions.getCurrentRealmApps}><ReactIntl.FormattedMessage
@@ -763,7 +763,7 @@ const AddOrEditUser = React.createClass({
                             <SearchIconList
                                 totalList={this.state.currentRealmApps}
                                 onItemsChange={this.onAppsChange}
-                                notFoundContent={Intl.get("user.no.related.app", "无相关应用")}
+                                notFoundContent={Intl.get('user.no.related.app', '无相关应用')}
                             />
                         )
                     )
@@ -824,7 +824,7 @@ const AddOrEditUser = React.createClass({
         };
         if (this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get("user.user.add.success", "添加成功")} type="success" showIcon
+                <AlertTimer time={3000} message={Intl.get('user.user.add.success', '添加成功')} type="success" showIcon
                     onHide={hide}/>
             );
         }
@@ -865,7 +865,7 @@ const AddOrEditUser = React.createClass({
         });
         return (
             <div className="realm-list">
-                <span className="realm-list-title">{Intl.get("user.select.realm.title", '安全域')}</span>
+                <span className="realm-list-title">{Intl.get('user.select.realm.title', '安全域')}</span>
                 <SelectFullWidth
                     value={this.state.selectRealmId}
                     onSelect={this.onSelectedRealm}
@@ -884,16 +884,16 @@ const AddOrEditUser = React.createClass({
                 <Form horizontal>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <OperationSteps
-                            title={Intl.get("user.user.add", "添加用户")}
+                            title={Intl.get('user.user.add', '添加用户')}
                             current={this.state.step}
                         >
-                            <OperationSteps.Step action={Intl.get("user.user.basic", "基本信息")}></OperationSteps.Step>
+                            <OperationSteps.Step action={Intl.get('user.user.basic', '基本信息')}></OperationSteps.Step>
                             <OperationSteps.Step
-                                action={Intl.get("user.user.app.select", "选择应用")}></OperationSteps.Step>
-                            <OperationSteps.Step action={Intl.get("user.user.app.set", "应用设置")}></OperationSteps.Step>
+                                action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
+                            <OperationSteps.Step action={Intl.get('user.user.app.set', '应用设置')}></OperationSteps.Step>
                             {this.state.selectRealmId ?
                                 <OperationSteps.Step
-                                    action={Intl.get("user.select.realm", '选择安全域')}></OperationSteps.Step> : null}
+                                    action={Intl.get('user.select.realm', '选择安全域')}></OperationSteps.Step> : null}
                         </OperationSteps>
                         <Carousel
                             interval={0}

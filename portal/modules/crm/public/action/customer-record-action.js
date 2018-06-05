@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var customerRecordAjax = require('../ajax/customer-record-ajax');
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 function CustomerRecordAction() {
     this.generateActions(
         'setType',

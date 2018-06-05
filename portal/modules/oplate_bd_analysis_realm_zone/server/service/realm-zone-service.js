@@ -2,13 +2,13 @@
  * author:周连毅
  * 说明：统计分析-安全域分析-当前区域安全域分析 的service文件
  */
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 //定义url
 var urls = {
     //获取安全域数据
-    getRealmZone: "/rest/analysis/realm/v1/realm_zone"
+    getRealmZone: '/rest/analysis/realm/v1/realm_zone'
 };
 //导出url
 exports.urls = urls;
@@ -34,7 +34,7 @@ exports.getRealmZoneAnalysisData = function(req, res, startTime, endTime) {
                     ret.hasRealm = false;
                 }
 
-                emitter.emit("success" , ret);
+                emitter.emit('success' , ret);
             }
         });
 };

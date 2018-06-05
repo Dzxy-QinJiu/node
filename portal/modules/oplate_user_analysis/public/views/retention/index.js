@@ -1,17 +1,17 @@
 /**
  * 用户留存
  */
-require("./index.less");
-var Spinner = require("../../../../../components/spinner");
-var immutable = require("immutable");
-var Table = require("antd").Table;
+require('./index.less');
+var Spinner = require('../../../../../components/spinner');
+var immutable = require('immutable');
+var Table = require('antd').Table;
 
 var Retention = React.createClass({
     echartInstance: null,
     getDefaultProps: function() {
         return {
             data: [],
-            title: Intl.get("oplate.user.analysis.9", "用户留存"),
+            title: Intl.get('oplate.user.analysis.9', '用户留存'),
             height: 214,
             resultType: 'loading',
         };
@@ -26,9 +26,9 @@ var Retention = React.createClass({
         var tableColumns = this.props.data.columns.map((item) => {
             var title = item;
             if(item === 'date') {
-                title = Intl.get("common.login.time", "时间");
+                title = Intl.get('common.login.time', '时间');
             } else if(item === 'added') {
-                title = Intl.get("oplate.user.analysis.32", "新增数");
+                title = Intl.get('oplate.user.analysis.32', '新增数');
             }
             return {
                 title: title,

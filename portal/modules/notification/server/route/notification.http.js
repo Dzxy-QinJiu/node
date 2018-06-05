@@ -5,57 +5,57 @@
 
 module.exports = {
     //定义controller
-    module: "notification/server/action/notification.action",
+    module: 'notification/server/action/notification.action',
     //定义路由信息
     routes: [{
         //http方法
-        "method": "put",
+        'method': 'put',
         //清除未读数
-        "path": "/rest/notification/unread_num/:type",
+        'path': '/rest/notification/unread_num/:type',
         //action中的方法
-        "handler": "clearUnreadNum",
+        'handler': 'clearUnreadNum',
         //是否需要登录
-        "passport": {
-            "needLogin": true
+        'passport': {
+            'needLogin': true
         },
         //需要权限
-        "privileges": []
+        'privileges': []
     }, {
         //http方法
-        "method": "get",
+        'method': 'get',
         //获取申请消息、客户提醒未读数
-        "path": "/rest/notification/unread_num",
+        'path': '/rest/notification/unread_num',
         //action中的方法
-        "handler": "getUnreadCount",
+        'handler': 'getUnreadCount',
         //是否需要登录
-        "passport": {
-            "needLogin": true
+        'passport': {
+            'needLogin': true
         }
     }, {
         //http方法
-        "method": "get",
+        'method': 'get',
         //获取系统消息列表
-        "path": "/rest/notification/system/:status",
+        'path': '/rest/notification/system/:status',
         //action中的方法
-        "handler": "getSystemNotices",
+        'handler': 'getSystemNotices',
         //是否需要登录
-        "passport": {
-            "needLogin": true
+        'passport': {
+            'needLogin': true
         },
         //需要权限
-        "privileges": []
+        'privileges': []
     }, {
         //http方法
-        "method": "put",
+        'method': 'put',
         //获取系统消息列表
-        "path": "/rest/notification/system/handle/:noticeId",
+        'path': '/rest/notification/system/handle/:noticeId',
         //action中的方法
-        "handler": "handleSystemNotice",
+        'handler': 'handleSystemNotice',
         //是否需要登录
-        "passport": {
-            "needLogin": true
+        'passport': {
+            'needLogin': true
         },
         //需要权限
-        "privileges": []
+        'privileges': []
     }]
 };

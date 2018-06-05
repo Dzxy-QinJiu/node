@@ -1,11 +1,11 @@
-require("./github-markdown.css");
-const ReactMarkdown = require("react-markdown");
+require('./github-markdown.css');
+const ReactMarkdown = require('react-markdown');
 
 const Markdown = React.createClass({
     getDefaultProps: function() {
         return {
-            title: "",
-            source: "",
+            title: '',
+            source: '',
             onDoubleClick: function(){}
         };
     },

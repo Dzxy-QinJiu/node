@@ -1,13 +1,13 @@
-require("./cardList.less");
-var scrollBarEmitter = require("../../public/sources/utils/emitters").scrollBarEmitter;
-var cardEmitter = require("../../public/sources/utils/emitters").cardEmitter;
+require('./cardList.less');
+var scrollBarEmitter = require('../../public/sources/utils/emitters').scrollBarEmitter;
+var cardEmitter = require('../../public/sources/utils/emitters').cardEmitter;
 
-var Card = require("../card");
+var Card = require('../card');
 
 //没有数据
-var NoData = require("../analysis-nodata");
+var NoData = require('../analysis-nodata');
 //滚动条
-var GeminiScrollbar = require("../react-gemini-scrollbar");
+var GeminiScrollbar = require('../react-gemini-scrollbar');
 
 var CONSTANTS = {
     TOP_NAV_HEIGHT: 64,//头部导航的高度
@@ -25,8 +25,8 @@ var MINCARDWIDTH = 332;
 
 
 var TYPES = {
-    APP_MANAGE: "appManage",
-    USER_MANAGE: "userManage"
+    APP_MANAGE: 'appManage',
+    USER_MANAGE: 'userManage'
 };
 function noop() {
 }
@@ -42,12 +42,12 @@ var CardList = React.createClass({
     getInitialState: function() {
         return {
             listenScrollBottom: true,
-            cardWidth: "auto",
+            cardWidth: 'auto',
             loadedCardCount: 0
         };
     },
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
         // 初始加载卡片的个数
         var firstLoaderCount = this.getCardsCount();
         this.props.updatePageSize(firstLoaderCount);
@@ -56,7 +56,7 @@ var CardList = React.createClass({
         });
         // 初次加载
         this.props.changePageEvent(firstLoaderCount, 1);
-        $(window).on("resize", this.changeWindowSize);
+        $(window).on('resize', this.changeWindowSize);
         cardEmitter.on(cardEmitter.ADD_CARD, this.addCard);
     },
 
@@ -70,8 +70,8 @@ var CardList = React.createClass({
     },
 
     componentWillUnmount: function() {
-        $("body").css("overflow", "auto");
-        $(window).off("resize", this.changeWindowSize);
+        $('body').css('overflow', 'auto');
+        $(window).off('resize', this.changeWindowSize);
     },
 
     // 改变窗口
@@ -93,12 +93,12 @@ var CardList = React.createClass({
     // 获取卡片容器的高度
     getCardListHeight: function() {
         //右侧卡片区域的高度设置
-        var cardListHeight = $("body").height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
+        var cardListHeight = $('body').height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
         if (this.props.isPanelShow) {
             if (this.props.type == TYPES.APP_MANAGE) {
-                cardListHeight = cardListHeight - $(".app_content .app-filter-adv").outerHeight(true);
+                cardListHeight = cardListHeight - $('.app_content .app-filter-adv').outerHeight(true);
             } else if (this.props.type == TYPES.USER_MANAGE) {
-                cardListHeight = cardListHeight - $(".backgroundManagement_user_content .user-filter-adv").outerHeight(true);
+                cardListHeight = cardListHeight - $('.backgroundManagement_user_content .user-filter-adv').outerHeight(true);
             }
         }
         return cardListHeight;
@@ -127,7 +127,7 @@ var CardList = React.createClass({
     // 根据剩余空白宽度调整卡边的宽度
     adjustCardWidth: function() {
         var cardWidth = 0;
-        var cardListWidth = $(".card-list-content").width();
+        var cardListWidth = $('.card-list-content').width();
         // 根据固定卡片宽度计算可以放卡片的个数
         var everyRowCardCounts = Math.floor(cardListWidth / CARDCONSTANTS.CARD_WIDTH);
         // 计算空白宽度
@@ -165,7 +165,7 @@ var CardList = React.createClass({
         var newCardWidth = this.adjustCardWidth();
         // 计算卡片容器的高度和高度
         var cardListHeight = this.getCardListHeight();
-        var cardListWidth = $(".card-list-content").width();
+        var cardListWidth = $('.card-list-content').width();
         // 根据调整后卡片的宽度，重新计算一行可以放置卡片的个数
         var everyRowCardCounts = Math.floor(cardListWidth / newCardWidth);
         // 计算卡片容器中可以卡片的行数
@@ -249,7 +249,7 @@ var CardList = React.createClass({
         var _this = this;
         var bulkOpersShow = _this.props.bulkOpersShow;
         var curCardListLen = _this.props.curCardList.length;
-        var cards = "";
+        var cards = '';
         // 当前页中的应用列表遍历
         if (_this.props.curCardList && curCardListLen > 0) {
             cards = _this.props.curCardList.map(function(card, index) {
@@ -276,9 +276,9 @@ var CardList = React.createClass({
         var paddingTop = CONSTANTS.TOP_NAV_HEIGHT;
         if (this.props.isPanelShow) {
             if (this.props.type == TYPES.APP_MANAGE) {
-                paddingTop = paddingTop + $(".app_content .app-filter-adv").outerHeight(true);
+                paddingTop = paddingTop + $('.app_content .app-filter-adv').outerHeight(true);
             } else if (this.props.type == TYPES.USER_MANAGE) {
-                paddingTop = paddingTop + $(".backgroundManagement_user_content .user-filter-adv").outerHeight(true);
+                paddingTop = paddingTop + $('.backgroundManagement_user_content .user-filter-adv').outerHeight(true);
             }
         }
         return (

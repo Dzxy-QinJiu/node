@@ -1,8 +1,8 @@
 /**
  * 说明：统计分析-客户分析的service文件
  */
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 //定义url
 var urls = {
@@ -29,7 +29,7 @@ exports.getSummaryNumbers = function(req, res, queryParams) {
     let url = urls.getSummaryNumbers;
     if (queryParams.urltype == 'v2') {
         delete queryParams.urltype;
-        if (queryParams.dataType == "all") {
+        if (queryParams.dataType == 'all') {
             url = urls.v2.getAllSummaryNumbers;
         } else {
             url = urls.v2.getSummaryNumbers;
@@ -49,7 +49,7 @@ exports.getAnalysisData = function(req, res, queryParams) {
     let url = urls.getAnalysisData;
     if (queryParams.urltype == 'v2') {
         delete queryParams.urltype;
-        if (queryParams.dataType == "all") {
+        if (queryParams.dataType == 'all') {
             url = urls.v2.getAllAnalysisData;
         } else {
             url = urls.v2.getAnalysisData;
@@ -58,7 +58,7 @@ exports.getAnalysisData = function(req, res, queryParams) {
     }
     return restUtil.authRest.get(
         {
-            url: url + req.params.customerType + "/" + req.params.customerProperty,
+            url: url + req.params.customerType + '/' + req.params.customerProperty,
             req: req,
             res: res
         }, queryParams);

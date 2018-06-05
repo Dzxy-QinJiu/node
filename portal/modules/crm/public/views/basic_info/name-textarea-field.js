@@ -2,26 +2,26 @@
  * 编辑 客户名 的组件
  *
  */
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-import {Form, Button, Icon} from "antd";
+import {Form, Button, Icon} from 'antd';
 let FormItem = Form.Item;
-let crypto = require("crypto");
-let autosize = require("autosize");
-import FieldMixin from "../../../../../components/antd-form-fieldmixin";
-import {nameRegex} from "PUB_DIR/sources/utils/consts";
+let crypto = require('crypto');
+let autosize = require('autosize');
+import FieldMixin from '../../../../../components/antd-form-fieldmixin';
+import {nameRegex} from 'PUB_DIR/sources/utils/consts';
 let AutosizeTextarea = require('../../../../../components/autosize-textarea');
-let CrmAction = require("../../action/crm-actions");
-let CrmBasicAjax = require("../../ajax/index");
-import Trace from "LIB_DIR/trace";
-import userData from "PUB_DIR/sources/user-data";
-import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
+let CrmAction = require('../../action/crm-actions');
+let CrmBasicAjax = require('../../ajax/index');
+import Trace from 'LIB_DIR/trace';
+import userData from 'PUB_DIR/sources/user-data';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 let NameTextareaField = React.createClass({
     mixins: [FieldMixin],
     getDefaultProps: function() {
         return {
-            customerId: "",
-            name: "",
+            customerId: '',
+            name: '',
             //修改成功
             modifySuccess: function() {
             }
@@ -67,10 +67,10 @@ let NameTextareaField = React.createClass({
             if (!valid) {
                 return;
             }
-            Trace.traceEvent(e, "保存对客户名的修改");
+            Trace.traceEvent(e, '保存对客户名的修改');
             let submitData = {
                 id: this.state.customerId,
-                type: "name",
+                type: 'name',
                 name: $.trim(this.state.formData.name)
             };
             if (this.props.isMerge) {
@@ -87,7 +87,7 @@ let NameTextareaField = React.createClass({
                 }, errorMsg => {
                     this.setState({
                         loading: false,
-                        submitErrorMsg: errorMsg || Intl.get("crm.169", "修改客户名失败")
+                        submitErrorMsg: errorMsg || Intl.get('crm.169', '修改客户名失败')
                     });
                 });
             }
@@ -107,7 +107,7 @@ let NameTextareaField = React.createClass({
             loading: false
         });
         this.props.setEditNameFlag(false);
-        Trace.traceEvent(e, "取消对客户名的修改");
+        Trace.traceEvent(e, '取消对客户名的修改');
     },
 
     //客户名格式验证
@@ -118,11 +118,11 @@ let NameTextareaField = React.createClass({
                 callback();
             } else {
                 this.setState({submitErrorMsg: ''});
-                callback(new Error(Intl.get("crm.197", "客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间")));
+                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
             }
         } else {
             this.setState({submitErrorMsg: ''});
-            callback(new Error(Intl.get("crm.81", "请填写客户名称")));
+            callback(new Error(Intl.get('crm.81', '请填写客户名称')));
         }
     },
     //客户名唯一性验证
@@ -130,13 +130,13 @@ let NameTextareaField = React.createClass({
         var customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && customerName != this.props.name && nameRegex.test(customerName)) {
-            Trace.traceEvent(e, "修改客户名");
+            Trace.traceEvent(e, '修改客户名');
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == "true") {
+                    if (data.result == 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
@@ -164,7 +164,7 @@ let NameTextareaField = React.createClass({
 
             return (
                 <div className="tip-customer-exist">
-                    {Intl.get("call.record.customer", "客户")} {existSame ? Intl.get("crm.66", "已存在") : Intl.get("crm.67", "可能重复了")}，
+                    {Intl.get('call.record.customer', '客户')} {existSame ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，
 
                     {customer.user_id === curUserId ? (
                         <a href="javascript:void(0)"
@@ -175,7 +175,7 @@ let NameTextareaField = React.createClass({
 
                     {list.length ? (
                         <div>
-                            {Intl.get("crm.68", "相似的客户还有")}:
+                            {Intl.get('crm.68', '相似的客户还有')}:
                             {list.map(customer => {
                                 return (
                                     <div>
@@ -198,7 +198,7 @@ let NameTextareaField = React.createClass({
                 <div className="check-only-error"><ReactIntl.FormattedMessage id="crm.69" defaultMessage="客户名唯一性校验出错"/>！
                 </div>);
         } else {
-            return "";
+            return '';
         }
     },
     render: function() {
@@ -213,7 +213,7 @@ let NameTextareaField = React.createClass({
                         labelCol={{span: 0}}
                         wrapperCol={{span: 24}}
                         validateStatus={this.renderValidateStyle('name')}
-                        help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
+                        help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}
                     >
                         <Validator rules={[{validator: this.checkCustomerName}]}>
                             <AutosizeTextarea name="name" rows="1" value={formData.name} autoComplete="off"

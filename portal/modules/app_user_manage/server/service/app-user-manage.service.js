@@ -3,16 +3,16 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var customersDto = require("../dto/customers");
-var applyDto = require("../dto/apply");
-var replyDto = require("../dto/reply");
-var _ = require("underscore");
-var auth = require("../../../../lib/utils/auth");
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var customersDto = require('../dto/customers');
+var applyDto = require('../dto/apply');
+var replyDto = require('../dto/reply');
+var _ = require('underscore');
+var auth = require('../../../../lib/utils/auth');
 var Promise = require('bluebird');
-var EventEmitter = require("events").EventEmitter;
+var EventEmitter = require('events').EventEmitter;
 
 //常量定义
 var CONSTANTS = {
@@ -32,85 +32,85 @@ var CONSTANTS = {
 
 var AppUserRestApis = {
     //根据用户名获取用户信息
-    getUserByName: "/rest/base/v1/user/name",
+    getUserByName: '/rest/base/v1/user/name',
     //根据字段（邮箱，手机）检查用户是否存在
-    checkUserExist: "/rest/base/v1/user/:field",
+    checkUserExist: '/rest/base/v1/user/:field',
     //停用所有应用
-    disableApps: "/rest/base/v1/user/:user_id/app/0",
+    disableApps: '/rest/base/v1/user/:user_id/app/0',
     //添加用户
-    addUser: "/rest/base/v1/user/users",
+    addUser: '/rest/base/v1/user/users',
     //添加应用
-    addApp: "/rest/base/v1/user/grant_applications",
+    addApp: '/rest/base/v1/user/grant_applications',
     //修改引用
-    editApp: "/rest/base/v1/user/grant_application",
+    editApp: '/rest/base/v1/user/grant_application',
     //获取应用列表
-    getAppList: "/rest/base/v1/application",
+    getAppList: '/rest/base/v1/application',
     //获取用户列表
-    getUsers: "/rest/base/v1/user/search",
+    getUsers: '/rest/base/v1/user/search',
     //根据某个角色获取用户列表
-    getUsersByRoleId: "/rest/base/v1/user/role/userlist",
+    getUsersByRoleId: '/rest/base/v1/user/role/userlist',
     //获取用户详情
-    getUserDetail: "/rest/base/v1/user/:user_id/detail",
+    getUserDetail: '/rest/base/v1/user/:user_id/detail',
     //批量更新
-    batchUpdate: "/rest/base/v1/user/batch/:field",
+    batchUpdate: '/rest/base/v1/user/batch/:field',
     //修改用户信息
-    editAppUser: "/rest/base/v1/user/:user_id/detail",
+    editAppUser: '/rest/base/v1/user/:user_id/detail',
     //修改用户所属客户
-    editAppUserCustomer: "/rest/base/v1/user/belong/customer",
+    editAppUserCustomer: '/rest/base/v1/user/belong/customer',
     //获取用户审批列表
-    getApplyList: "/rest/base/v1/message/applylist",
+    getApplyList: '/rest/base/v1/message/applylist',
     //获取有未读回复的申请列表
-    getUnreadApplyList: "/rest/base/v1/message/applylist/comment/unread",
+    getUnreadApplyList: '/rest/base/v1/message/applylist/comment/unread',
     //获取申请单详情
-    getApplyDetail: "/rest/base/v1/message/apply/:apply_id",
+    getApplyDetail: '/rest/base/v1/message/apply/:apply_id',
     //审批申请单（新创建用户）
-    submitNewApply: "/rest/base/v1/user/approve_users",
+    submitNewApply: '/rest/base/v1/user/approve_users',
     //审批申请单（已有用户）
-    submitExistApply: "/rest/base/v1/user/approve_grants",
+    submitExistApply: '/rest/base/v1/user/approve_grants',
     // 申请用户
-    applyUser: "/rest/base/v1/user/apply_grants",
+    applyUser: '/rest/base/v1/user/apply_grants',
     //获取客户对应的用户列表
-    getCustomerUsers: "/rest/base/v1/user/customer/users",
+    getCustomerUsers: '/rest/base/v1/user/customer/users',
     //用户申请延期
-    applyDelayUser: "/rest/base/v1/user/grant/delay",
+    applyDelayUser: '/rest/base/v1/user/grant/delay',
     //批量用户延期
-    batchDelayUser: "/rest/base/v1/user/batch/grant/delay",
+    batchDelayUser: '/rest/base/v1/user/batch/grant/delay',
     //修改密码
-    changePassword: "/rest/base/v1/user/apply/user_password",
+    changePassword: '/rest/base/v1/user/apply/user_password',
     //用户申请修改其他类型
-    applyChangeOther: "/rest/base/v1/user/apply/else",
+    applyChangeOther: '/rest/base/v1/user/apply/else',
     //销售申请修改开通状态
-    applyChangeStatus: "/rest/base/v1/user/apply/grant_status",
+    applyChangeStatus: '/rest/base/v1/user/apply/grant_status',
     //审批用户延期
-    approveDelayUser: "/rest/base/v1/user/approve_delay",
+    approveDelayUser: '/rest/base/v1/user/approve_delay',
     //审批修改密码
-    submitApplyChangePassword: "/rest/base/v1/user/approve_password",
+    submitApplyChangePassword: '/rest/base/v1/user/approve_password',
     //审批其他类型的修改
-    submitApplyChangeOther: "/rest/base/v1/user/approve/sthelse",
+    submitApplyChangeOther: '/rest/base/v1/user/approve/sthelse',
     //审批开通状态
-    submitApplyGrantStatus: "/rest/base/v1/user/approve_status",
+    submitApplyGrantStatus: '/rest/base/v1/user/approve_status',
     //编辑用户应用单个字段
-    editAppDetail: "/rest/base/v1/user/grantdetail",
+    editAppDetail: '/rest/base/v1/user/grantdetail',
     //添加一条回复
-    addReply: "/rest/base/v1/message/apply/comment",
+    addReply: '/rest/base/v1/message/apply/comment',
     //获取回复列表
-    getReplyList: "/rest/base/v1/message/apply/comments",
+    getReplyList: '/rest/base/v1/message/apply/comments',
     //管理员批量添加、修改应用
-    BATCH_GRANT_APPLICATION: "/rest/base/v1/user/batch/grant/application",
+    BATCH_GRANT_APPLICATION: '/rest/base/v1/user/batch/grant/application',
     //管理员批量延期
-    BATCH_UPDATE_GRANT_DELAY: "/rest/base/v1/user/batch/grant/delay",
+    BATCH_UPDATE_GRANT_DELAY: '/rest/base/v1/user/batch/grant/delay',
     //管理员批量修改开通时间
-    BATCH_UPDATE_GRANT_PERIOD: "/rest/base/v1/user/batch/grant/period",
+    BATCH_UPDATE_GRANT_PERIOD: '/rest/base/v1/user/batch/grant/period',
     //管理员批量修改应用
-    BATCH_UPDATE_GRANT_ROLES: "/rest/base/v1/user/batch/grant/roles",
+    BATCH_UPDATE_GRANT_ROLES: '/rest/base/v1/user/batch/grant/roles',
     //管理员批量修改开通状态
-    BATCH_UPDATE_GRANT_STATUS: "/rest/base/v1/user/batch/grant/status",
+    BATCH_UPDATE_GRANT_STATUS: '/rest/base/v1/user/batch/grant/status',
     //管理员批量修改开通类型
-    BATCH_UPDATE_GRANT_TYPE: "/rest/base/v1/user/batch/grant/type",
+    BATCH_UPDATE_GRANT_TYPE: '/rest/base/v1/user/batch/grant/type',
     //管理员批量修改客户
-    BATCH_UPDATE_USER_CUSTOMER: "/rest/base/v1/user/batch/user/customer",
+    BATCH_UPDATE_USER_CUSTOMER: '/rest/base/v1/user/batch/user/customer',
     //管理员批量修改密码
-    BATCH_UPDATE_USER_PASSWORD: "/rest/base/v1/user/batch/user/password",
+    BATCH_UPDATE_USER_PASSWORD: '/rest/base/v1/user/batch/user/password',
     //获取团队列表
     getteamlists: '/rest/base/v1/group/myteam',
     // 撤销申请
@@ -128,7 +128,7 @@ var AppUserRestApis = {
     // 获取安全域信息列表
     getRealmList: '/rest/base/v1/realm/list',
     // 根据客户的id查询客户最后联系时间
-    getQueryCustomerById: "/rest/customer/v2/customer/query/10/id/ascend",
+    getQueryCustomerById: '/rest/customer/v2/customer/query/10/id/ascend',
 };
 
 exports.urls = AppUserRestApis;
@@ -147,7 +147,7 @@ exports.addUser = function(req, res, user) {
                 if (restResp.body && restResp.body.errorCode) {
                     errorCodeDesc.errorCode = restResp.body.errorCode;
                 }
-                eventEmitter.emit("error", errorCodeDesc);
+                eventEmitter.emit('error', errorCodeDesc);
             }
         });
 };
@@ -215,9 +215,9 @@ exports.getUsers = function(req, res, obj) {
         requestUrl = AppUserRestApis.getUsers;
     }
     getUsersList(req, res, obj, requestUrl).then((userBasicInfo) => {
-        emitter.emit("success", userBasicInfo);
+        emitter.emit('success', userBasicInfo);
     }).catch((errorMsg) => {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
 
     return emitter;
@@ -225,7 +225,7 @@ exports.getUsers = function(req, res, obj) {
 //获取用户详情
 exports.getUserDetail = function(req, res, user_id) {
     return restUtil.authRest.get({
-        url: AppUserRestApis.getUserDetail.replace(":user_id", user_id),
+        url: AppUserRestApis.getUserDetail.replace(':user_id', user_id),
         req: req,
         res: res,
     });
@@ -233,7 +233,7 @@ exports.getUserDetail = function(req, res, user_id) {
 //停用所有应用
 exports.disableAllApps = function(req, res, user_id) {
     return restUtil.authRest.put({
-        url: AppUserRestApis.disableApps.replace(":user_id", user_id),
+        url: AppUserRestApis.disableApps.replace(':user_id', user_id),
         req: req,
         res: res,
     });
@@ -297,7 +297,7 @@ exports.batchUpdate = function(req, res, field, data, application_ids) {
 exports.getApplyList = function(req, res, obj) {
     let url = AppUserRestApis.getApplyList;
     //获取有未读回复的申请列表
-    if (obj.isUnreadApply == "true") {
+    if (obj.isUnreadApply == 'true') {
         obj = {id: obj.id, page_size: obj.page_size};
         url = AppUserRestApis.getUnreadApplyList;
     } else {
@@ -314,7 +314,7 @@ exports.getApplyList = function(req, res, obj) {
                 var applyList = applyDto.toRestObject(data.list || []);
                 data.list = applyList;
             }
-            eventEmitter.emit("success", data);
+            eventEmitter.emit('success', data);
         }
     });
 };
@@ -339,7 +339,7 @@ exports.editAppUser = function(req, res, obj) {
         delete obj.user_id;
     }
     return restUtil.authRest.put({
-        url: requestUrl.replace(":user_id", user_id),
+        url: requestUrl.replace(':user_id', user_id),
         req: req,
         res: res,
     }, obj);
@@ -349,7 +349,7 @@ exports.editAppUser = function(req, res, obj) {
 exports.getCustomerUsers = function(req, res, obj) {
     obj = obj || {};
     return restUtil.authRest.get({
-        url: AppUserRestApis.getCustomerUsers + "/" + req.params.customer_id,
+        url: AppUserRestApis.getCustomerUsers + '/' + req.params.customer_id,
         req: req,
         res: res
     }, {
@@ -385,12 +385,12 @@ exports.getApplyDetail = function(req, res, apply_id) {
                     };
                     getAppExtraConfigInfo(req, res, obj).then((list) => {
                         let applyDetailInfo = getExtraAppInfo(applyBasicDetail, list);
-                        emitter.emit("success", applyDetailInfo);
+                        emitter.emit('success', applyDetailInfo);
                     }).catch((errorMsg) => {
-                        emitter.emit("error", errorMsg);
+                        emitter.emit('error', errorMsg);
                     });
                 } else {
-                    emitter.emit("success", applyBasicDetail);
+                    emitter.emit('success', applyBasicDetail);
                 }
             } else if (applyBasicDetail.approval_state == CONSTANTS.APPROVAL_STATE_PASS) { // 已通过
                 let roleIdsList = _.pluck(applyBasicDetail.apps, 'roles');
@@ -404,7 +404,7 @@ exports.getApplyDetail = function(req, res, apply_id) {
                     getAppRoleNames(req, res, roleObj).then((list) => {
                         if (permissionIdsArray.length == 0) { // 没有分配权限
                             let applyDetailInfo = getAppExtraRoleNames(applyBasicDetail, list);
-                            emitter.emit("success", applyDetailInfo);
+                            emitter.emit('success', applyDetailInfo);
                         } else {
                             let permissionObj = {
                                 ids: permissionIdsArray
@@ -412,23 +412,23 @@ exports.getApplyDetail = function(req, res, apply_id) {
                             let applyDetailRoleNames = getAppExtraRoleNames(applyBasicDetail, list);
                             getAppPermissionNames(req, res, permissionObj).then((list) => {
                                 let applyDetailInfo = getAppExtraPermissionNames(applyDetailRoleNames, list);
-                                emitter.emit("success", applyDetailInfo);
+                                emitter.emit('success', applyDetailInfo);
                             }).catch((errorMsg) => {
-                                emitter.emit("error", errorMsg);
+                                emitter.emit('error', errorMsg);
                             });
                         }
                     }).catch((errorMsg) => {
-                        emitter.emit("error", errorMsg);
+                        emitter.emit('error', errorMsg);
                     });
                 } else {
-                    emitter.emit("success", applyBasicDetail);
+                    emitter.emit('success', applyBasicDetail);
                 }
 
             } else { // 驳回、撤销
-                emitter.emit("success", applyBasicDetail);
+                emitter.emit('success', applyBasicDetail);
             }
         } else {
-            emitter.emit("success", applyBasicDetail);
+            emitter.emit('success', applyBasicDetail);
         }
     });
     return emitter;
@@ -474,7 +474,7 @@ function getApplyBasicDetail(req, res, apply_id) {
     };
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
-            url: AppUserRestApis.getApplyDetail.replace(":apply_id", apply_id),
+            url: AppUserRestApis.getApplyDetail.replace(':apply_id', apply_id),
             req: req,
             res: res
         }, obj, {
@@ -499,7 +499,7 @@ function getApplyBasicDetail(req, res, apply_id) {
                             resolve(detailObj);
                         }).catch((errorMsg) => {
                             resolve(detailObj);
-                            restLogger.error("根据客户的id查询客户最后联系时间失败：" + errorMsg);
+                            restLogger.error('根据客户的id查询客户最后联系时间失败：' + errorMsg);
                         });
                     } else {
                         resolve(detailObj);
@@ -654,9 +654,9 @@ exports.getUserByName = function(req, res, userName) {
             if (data && data.user_id) {
                 delete data.password;
                 delete data.password_salt;
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             } else {
-                eventEmitter.emit("success", {});
+                eventEmitter.emit('success', {});
             }
         }
     });
@@ -667,15 +667,15 @@ exports.checkUserExist = function(req, res, field, value) {
     var data = {};
     data[field] = value;
     return restUtil.authRest.get({
-        url: AppUserRestApis.checkUserExist.replace(":field", field),
+        url: AppUserRestApis.checkUserExist.replace(':field', field),
         req: req,
         res: res
     }, data, {
         success: function(eventEmitter, data) {
             if (data && data.user_id) {
-                eventEmitter.emit("success", true);
+                eventEmitter.emit('success', true);
             } else {
-                eventEmitter.emit("success", false);
+                eventEmitter.emit('success', false);
             }
         }
     });
@@ -739,10 +739,10 @@ exports.applyChangeStatus = function(req, res, requestObj) {
 exports.editAppDetail = function(req, res, requestObj) {
 
     var list = [
-        "status",
-        "is_two_factor",
-        "multilogin",
-        "status"
+        'status',
+        'is_two_factor',
+        'multilogin',
+        'status'
     ];
 
     for (var i = 0, len = list.length; i < len; i++) {
@@ -785,7 +785,7 @@ exports.getReplyList = function(req, res, apply_id) {
             if (data && data.list && data.list.length) {
                 list = replyDto.toRestObject(data.list);
             }
-            eventEmitter.emit("success", list);
+            eventEmitter.emit('success', list);
         }
     });
 };

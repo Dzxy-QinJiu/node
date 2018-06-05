@@ -1,10 +1,10 @@
-require("../css/chart.less");
-var RightPanelClose = require("../../../../components/rightPanel").RightPanelClose;
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-var AnalysisStore = require("../store/user-online-analysis-store");
-var AnalysisAction = require("../action/user-online-analysis-action");
-var PieChart = require("./piechart");
-var BarChart = require("./barchart");
+require('../css/chart.less');
+var RightPanelClose = require('../../../../components/rightPanel').RightPanelClose;
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+var AnalysisStore = require('../store/user-online-analysis-store');
+var AnalysisAction = require('../action/user-online-analysis-action');
+var PieChart = require('./piechart');
+var BarChart = require('./barchart');
 
 var LAYOUT = {
     //右侧面板顶部标题恒定高度(鹰击：更多在线统计)

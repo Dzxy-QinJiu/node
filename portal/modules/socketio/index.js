@@ -1,7 +1,7 @@
 // 引人socket.io客户端
 var ioClient = require('socket.io-client');
 // 记录推送相关的日志
-var logger = require("../../../portal/lib/utils/logger");
+var logger = require('../../../portal/lib/utils/logger');
 //推送日志
 var pushLogger = logger.getLogger('push');
 //批量操作日志
@@ -11,26 +11,26 @@ var cookie = require('cookie');
 //cookie解码器
 var cookieParser = require('cookie-parser');
 //推送消息数据(弹窗消息)
-var notifyChannel = "com.antfact.oplate.notify.socketio";
+var notifyChannel = 'com.antfact.oplate.notify.socketio';
 //登录踢出通道
-var offlineChannel = "com.antfact.oplate.notify.socketio.offline";
+var offlineChannel = 'com.antfact.oplate.notify.socketio.offline';
 //消息数推送频道(消息个数)
 //var messageCountChannel = "com.antfact.oplate.message.count.channel";
 //用户批量操作的消息
-var userBatchChannel = "com.antfact.oplate.batchtask";
+var userBatchChannel = 'com.antfact.oplate.batchtask';
 //电话拨号弹屏功能
-var phoneEventChannel = "com.antfact.oplate.phone.agent.event";
+var phoneEventChannel = 'com.antfact.oplate.phone.agent.event';
 //系统消息的推送通道
-const systemNoticeChannel = "com.antfact.ketao.notice";
+const systemNoticeChannel = 'com.antfact.ketao.notice';
 //待办日程提醒的推送通道
-const scheduleNoticeChannel = "com.antfact.ketao.schedule";
+const scheduleNoticeChannel = 'com.antfact.ketao.schedule';
 //申请审批未读回复的推送通道
-const applyUnreadReplyChannel = "com.antfact.ketao.apply.comment";
+const applyUnreadReplyChannel = 'com.antfact.ketao.apply.comment';
 //批量操作处理文件
-var userBatch = require("./batch");
-var _ = require("underscore");
+var userBatch = require('./batch');
+var _ = require('underscore');
 var auth = require('../../lib/utils/auth');
-var sessionExpireEmitter = require("../../public/sources/utils/emitters").sessionExpireEmitter;
+var sessionExpireEmitter = require('../../public/sources/utils/emitters').sessionExpireEmitter;
 
 var client = null;
 //存储用户id对应的socketId、token的对象
@@ -59,7 +59,7 @@ function getPushServerByEureka() {
     //优先使用环境变量中配置的推送服务地址（客套配）
     let pushServerUrl = global.config.pushServerAddress;
     if (pushServerUrl) {
-        pushLogger.info("与后台建立连接的服务地址：" + pushServerUrl);
+        pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
         return pushServerUrl;
     }
     //环境变量中没有配置的推送服务地址时，从协调服务中根据id获取
@@ -67,13 +67,13 @@ function getPushServerByEureka() {
     //根据appid获取某个可用服务地址
     var oplateServerUrl = global.config.coordinator.getServerByAppId(global.config.appId);
     if (oplateServerUrl) {
-        var strArray = oplateServerUrl.split(":");
+        var strArray = oplateServerUrl.split(':');
         if (_.isArray(strArray) && strArray.length) {
-            pushServerUrl = strArray[0] + ":" + strArray[1] + ":9093";
+            pushServerUrl = strArray[0] + ':' + strArray[1] + ':9093';
         }
 
     }
-    pushLogger.info("与后台建立连接的服务地址：" + pushServerUrl);
+    pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
     return pushServerUrl;
 }
 /**
@@ -81,7 +81,7 @@ function getPushServerByEureka() {
  * @param data 消息数据
  */
 function notifyChannelListener(data) {
-    pushLogger.debug("后端推送的消息数据:" + data);
+    pushLogger.debug('后端推送的消息数据:' + data);
     // 将查询结果返给浏览器
     var messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
@@ -94,7 +94,7 @@ function notifyChannelListener(data) {
                     socketArray.forEach(function(socketObj) {
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
-                            socket.emit("mes", messageObj);
+                            socket.emit('mes', messageObj);
                         }
                     });
                 }
@@ -118,7 +118,7 @@ function phoneEventChannelListener(data) {
             socketArray.forEach(function(socketObj) {
                 var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                 if (socket) {
-                    socket.emit("phonemsg", phonemsgObj);
+                    socket.emit('phonemsg', phonemsgObj);
                 }
             });
         }
@@ -132,7 +132,7 @@ function phoneEventChannelListener(data) {
  *
  * 日程管理提醒的消息监听器*/
 function scheduleAlertListener(data) {
-    pushLogger.debug("日程管理的消息推送：" + JSON.stringify(data));
+    pushLogger.debug('日程管理的消息推送：' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var scheduleAlertObj = data || {};
     if (scheduleAlertObj.member_id) {
@@ -142,7 +142,7 @@ function scheduleAlertListener(data) {
             socketArray.forEach(function(socketObj) {
                 var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                 if (socket) {
-                    socket.emit("scheduleAlertMsg", scheduleAlertObj);
+                    socket.emit('scheduleAlertMsg', scheduleAlertObj);
                 }
             });
         }
@@ -156,7 +156,7 @@ function scheduleAlertListener(data) {
  * @param data 踢出消息
  */
 function offlineChannelListener(data) {
-    pushLogger.debug("后端推送的登录踢出的数据:" + JSON.stringify(data));
+    pushLogger.debug('后端推送的登录踢出的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var userObj = data || {};
     if (userObj.user_id) {
@@ -190,7 +190,7 @@ function offlineChannelListener(data) {
                             newSocketArray.push(socketObj);
                         } else {
                             //推出消息后，设置socket对应的session失效
-                            socket.emit("offline", userObj);
+                            socket.emit('offline', userObj);
                             getSessionFromStore(socket, function(err, session) {
                                 if (!err && session) {
                                     session.destroy();
@@ -211,7 +211,7 @@ function offlineChannelListener(data) {
  * @param data 系统消息
  */
 function systemNoticeListener(notice) {
-    pushLogger.debug("后端推送的系统消息数据:" + JSON.stringify(notice));
+    pushLogger.debug('后端推送的系统消息数据:' + JSON.stringify(notice));
     if (notice && notice.member_id) {//消息接收者
         //找到消息接收者对应的socket，将数据推送到浏览器
         let socketArray = socketStore[notice.member_id] || [];
@@ -219,7 +219,7 @@ function systemNoticeListener(notice) {
             socketArray.forEach(function(socketObj) {
                 let socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                 if (socket) {
-                    socket.emit("system_notice", notice);
+                    socket.emit('system_notice', notice);
                 }
             });
         }
@@ -241,10 +241,10 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
-    pushLogger.debug("后端推送的申请审批未读回复数据:" + JSON.stringify(unreadList));
+    pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.isArray(unreadList) && unreadList.length) {
         //所有未读回复的列表按接收者分组{userId1:[{member_id,update_time...},{}],userId2:[{...},{...}]}
-        let memberUnreadObj = _.groupBy(unreadList, "member_id");
+        let memberUnreadObj = _.groupBy(unreadList, 'member_id');
         if (!_.isEmpty(memberUnreadObj)) {
             for (let memberId in memberUnreadObj) {
                 //找到消息接收者对应的socket，将数据推送到浏览器
@@ -260,7 +260,7 @@ function applyUnreadReplyListener(unreadList) {
                                     apply_id: unreadReply.apply_id
                                 };
                             });
-                            socket.emit("apply_unread_reply", memberUnreadReplyList);
+                            socket.emit('apply_unread_reply', memberUnreadReplyList);
                         }
                     });
                 }
@@ -350,9 +350,9 @@ module.exports.startSocketio = function(nodeServer) {
                     pushLogger.error('获取id为 %s 的session报错 %s', sid, JSON.stringify(err));
                 } else {
                     if (session) {
-                        pushLogger.error("session: %s", JSON.stringify(session));
+                        pushLogger.error('session: %s', JSON.stringify(session));
                     }
-                    pushLogger.error("sessionId %s 已退出", sid);
+                    pushLogger.error('sessionId %s 已退出', sid);
                 }
             }
         });
@@ -392,7 +392,7 @@ function sessionExpired(expiredObj) {
     let expiredUser = expiredObj && expiredObj.user;
     let expiredSessionId = expiredObj && expiredObj.sessionId;
     if (expiredUser && expiredSessionId) {
-        pushLogger.debug("session过期,过期用户:" + (expiredUser && expiredUser.nickname));
+        pushLogger.debug('session过期,过期用户:' + (expiredUser && expiredUser.nickname));
         var userId = expiredUser ? expiredUser.userid : '';
         if (userId) {
             //找到消息接收者对应的socket，将数据推送到浏览器
@@ -404,7 +404,7 @@ function sessionExpired(expiredObj) {
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
                             //推送session过期消息
-                            socket.emit("sessionExpired", expiredUser);
+                            socket.emit('sessionExpired', expiredUser);
                         }
                     }
                 });

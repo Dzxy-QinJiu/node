@@ -131,4 +131,4 @@ class PositionStore {
 }
 
 //使用alt导出store
-export default alt.createStore(PositionStore , "PositionStore");
+export default alt.createStore(PositionStore , 'PositionStore');

@@ -1,6 +1,6 @@
-var AppUserCustomerSwitchActions = require("../action/app-user-customer-switch-actions");
-var AppUserUtil = require("../util/app-user-util");
-import { storageUtil } from "ant-utils";
+var AppUserCustomerSwitchActions = require('../action/app-user-customer-switch-actions');
+var AppUserUtil = require('../util/app-user-util');
+import { storageUtil } from 'ant-utils';
 
 //客户对应的用户的store
 function AppUserCustomerSwitchStore() {
@@ -15,7 +15,7 @@ AppUserCustomerSwitchStore.prototype.resetState = function() {
     //是否是第一次加载，第一次加载的时候
     this.firstLoading = true;
     //是否处于loading状态
-    this.customerUserListResult = "loading";
+    this.customerUserListResult = 'loading';
     //客户对应的用户数组
     this.customerUserList = [];
     //客户信息
@@ -32,7 +32,7 @@ AppUserCustomerSwitchStore.prototype.resetState = function() {
     //是否显示右侧面板
     this.isShowRightPanel = false;
     //获取客户对应的用户的错误提示
-    this.getCustomerUserListErrorMsg = "";
+    this.getCustomerUserListErrorMsg = '';
     //关键词
     this.searchKeyword = '';
     //窗口高度
@@ -50,14 +50,14 @@ AppUserCustomerSwitchStore.prototype.getCustomerInfo = function(customerInfo) {
 AppUserCustomerSwitchStore.prototype.getCustomerUserList = function(result) {
     this.selectedCustomerUserRows = [];
     if (result.loading) {
-        this.customerUserListResult = "loading";
+        this.customerUserListResult = 'loading';
     } else if (result.error) {
         this.firstLoading = false;
-        this.customerUserListResult = "error";
+        this.customerUserListResult = 'error';
         this.getCustomerUserListErrorMsg = result.errorMsg;
     } else {
         this.firstLoading = false;
-        this.customerUserListResult = "";
+        this.customerUserListResult = '';
         this.customerUserList = result.data.data;
         this.customerUserCount = result.data.list_size;
     }

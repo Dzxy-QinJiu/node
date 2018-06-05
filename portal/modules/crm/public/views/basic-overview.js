@@ -1,29 +1,29 @@
 import '../css/basic-overview.less';
-import DetailCard from "CMP_DIR/detail-card";
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
-import TagCard from "CMP_DIR/detail-card/tag-card";
-import SalesTeamCard from "./basic_info/sales-team-card";
-import {isClueTag, isTurnOutTag, isHasCallBackTag} from "../utils/crm-util";
+import DetailCard from 'CMP_DIR/detail-card';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import TagCard from 'CMP_DIR/detail-card/tag-card';
+import SalesTeamCard from './basic_info/sales-team-card';
+import {isClueTag, isTurnOutTag, isHasCallBackTag} from '../utils/crm-util';
 import classNames from 'classnames';
-var basicOverviewStore = require("../store/basic-overview-store");
-var basicOverviewAction = require("../action/basic-overview-actions");
-var SalesTeamStore = require("../../../sales_team/public/store/sales-team-store");
-var PrivilegeChecker = require("CMP_DIR/privilege/checker").PrivilegeChecker;
+var basicOverviewStore = require('../store/basic-overview-store');
+var basicOverviewAction = require('../action/basic-overview-actions');
+var SalesTeamStore = require('../../../sales_team/public/store/sales-team-store');
+var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
-import {Tag, Spin, message} from "antd";
-var history = require("../../../../public/sources/history");
-var FilterAction = require("../action/filter-actions");
-let CrmAction = require("../action/crm-actions");
-let CrmRepeatAction = require("../action/customer-repeat-action");
-import crmUtil from "../utils/crm-util";
-import crmAjax from "../ajax";
-import batchAjax from "../ajax/batch-change-ajax";
-import userData from "PUB_DIR/sources/user-data";
+import {Tag, Spin, message} from 'antd';
+var history = require('../../../../public/sources/history');
+var FilterAction = require('../action/filter-actions');
+let CrmAction = require('../action/crm-actions');
+let CrmRepeatAction = require('../action/customer-repeat-action');
+import crmUtil from '../utils/crm-util';
+import crmAjax from '../ajax';
+import batchAjax from '../ajax/batch-change-ajax';
+import userData from 'PUB_DIR/sources/user-data';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import CustomerRecord from "./customer_record";
-import ScheduleItem from "./schedule/schedule-item";
-import Trace from "LIB_DIR/trace";
-import RightPanelScrollBar from "./components/rightPanelScrollBar";
+import CustomerRecord from './customer_record';
+import ScheduleItem from './schedule/schedule-item';
+import Trace from 'LIB_DIR/trace';
+import RightPanelScrollBar from './components/rightPanelScrollBar';
 
 var BasicOverview = React.createClass({
     getInitialState: function() {
@@ -79,9 +79,9 @@ var BasicOverview = React.createClass({
                 customer_id: curCustomer.id,
                 page_size: 100,
                 status: false,
-                type: "calls",
+                type: 'calls',
                 sort_field: 'start_time',
-                order: "ascend"
+                order: 'ascend'
             });
         }
     },
@@ -140,7 +140,7 @@ var BasicOverview = React.createClass({
     },
     getAdministrativeLevel: function(levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
-        return levelObj ? levelObj.level : "";
+        return levelObj ? levelObj.level : '';
     },
     //保存修改后的标签
     saveEditTags: function(tags, successFunc, errorFunc) {
@@ -148,7 +148,7 @@ var BasicOverview = React.createClass({
         tags = _.filter(tags, tag => !isClueTag(tag) && !isTurnOutTag(tag) && !isHasCallBackTag(tag));
         let submitData = {
             id: this.state.basicData.id,
-            type: "label",
+            type: 'label',
             labels: tags
         };
         if (this.props.isMerge) {
@@ -176,9 +176,9 @@ var BasicOverview = React.createClass({
         let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
-        if (hasPrivilege("CRM_MANAGER_TRANSFER")) {
+        if (hasPrivilege('CRM_MANAGER_TRANSFER')) {
             enable = true;
-        } else if (hasPrivilege("CRM_USER_TRANSFER") && !isCommonSales) {
+        } else if (hasPrivilege('CRM_USER_TRANSFER') && !isCommonSales) {
             //销售主管有转出的权限
             enable = true;
         }
@@ -193,14 +193,14 @@ var BasicOverview = React.createClass({
     //渲染有应用到期的提示
     renderExpireTip: function() {
         let crmUserList = this.state.crmUserList;
-        const TRIAL_TYPE = "试用用户";
+        const TRIAL_TYPE = '试用用户';
         let expireTrialUsers = [];//3天内到期的试用用户列表
         _.each(crmUserList, userObj => {
             let appList = userObj.apps;
             _.each(appList, app => {
                 let end_time = app.end_time;
                 //启用状态下，有到期时间的试用用户
-                if (app.is_disabled !== "true" && app.end_time && app.user_type === TRIAL_TYPE) {
+                if (app.is_disabled !== 'true' && app.end_time && app.user_type === TRIAL_TYPE) {
                     let duration = moment.duration(end_time - moment().valueOf());
                     let over_draft_days = duration.days();
                     if (over_draft_days < 3) {//概览页只提示3天内到期的试用用户
@@ -217,10 +217,10 @@ var BasicOverview = React.createClass({
                 <div className="app-expire-tip">
                     <span className="iconfont icon-warn-icon"/>
                     <span className="expire-tip-content">
-                        {Intl.get("crm.overview.expire.tip", "有应用{days}试用到期", {days: expireTrialUsers[0].overDraftTimeStr})}
+                        {Intl.get('crm.overview.expire.tip', '有应用{days}试用到期', {days: expireTrialUsers[0].overDraftTimeStr})}
                     </span>
                     <span className="iconfont icon-arrow-right" onClick={this.turnToUserList}
-                        title={Intl.get("call.record.show.customer.detail", "查看详情")}/>
+                        title={Intl.get('call.record.show.customer.detail', '查看详情')}/>
                 </div>);
             return (<DetailCard content={tip} className="expire-tip-contianer"/>);
         } else {
@@ -228,7 +228,7 @@ var BasicOverview = React.createClass({
         }
     },
     turnToUserList(){
-        if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey("4");
+        if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey('4');
     },
     refreshSrollbar(){
         //渲染完跟进记录列表后需要重新render来刷新滚动条（因为跟进记录渲染完成后不会走概览页的render，所以滚动条的高度计算还是一开始没有跟进记录时的界面高度）
@@ -259,19 +259,19 @@ var BasicOverview = React.createClass({
         }
         const reqData = {
             id: item.id,
-            status: item.status == "false" ? "handle" : "false",
+            status: item.status == 'false' ? 'handle' : 'false',
         };
-        var status = item.status == "false" ? "完成" : "未完成";
-        Trace.traceEvent($(this.getDOMNode()).find(".item-wrapper .ant-btn"), "修改联系计划的状态为" + status);
+        var status = item.status == 'false' ? '完成' : '未完成';
+        Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
         basicOverviewAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {
-                    "id": item.id,
-                    "status": reqData.status
+                    'id': item.id,
+                    'status': reqData.status
                 };
                 basicOverviewAction.afterHandleStatus(newStatusObj);
             } else {
-                message.error(resData || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败"));
+                message.error(resData || Intl.get('crm.failed.alert.todo.list', '修改待办事项状态失败'));
             }
         });
     },
@@ -288,7 +288,7 @@ var BasicOverview = React.createClass({
         if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return _.map(this.state.scheduleList, item => {
                 return (
-                    <DetailCard title={ item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : ""}
+                    <DetailCard title={ item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : ''}
                         content={this.renderScheduleItem(item)}/>);
             });
         }
@@ -308,7 +308,7 @@ var BasicOverview = React.createClass({
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
-                        enableEdit={hasPrivilege("CUSTOMER_UPDATE_SALES")}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES')}
                         enableTransfer={this.enableTransferCustomer()}
                         customerId={basicData.id}
                         userName={basicData.user_name}
@@ -319,23 +319,23 @@ var BasicOverview = React.createClass({
                     />
                     { _.isArray(basicData.competing_products) && basicData.competing_products.length ? (
                         <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-competing-products">
-                            <TagCard title={`${Intl.get("crm.competing.products", "竞品")}:`}
+                            <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
                                 tags={basicData.competing_products}
                                 enableEdit={false}
                             />
                         </dl>
                     ) : null}
-                    <TagCard title={`${Intl.get("common.tag", "标签")}:`}
-                        placeholder={Intl.get("crm.input.new.tag", "请输入新标签")}
+                    <TagCard title={`${Intl.get('common.tag', '标签')}:`}
+                        placeholder={Intl.get('crm.input.new.tag', '请输入新标签')}
                         data={basicData}
                         tags={tagArray}
                         recommendTags={this.state.recommendTags}
-                        enableEdit={hasPrivilege("CUSTOMER_UPDATE_LABEL")}
-                        noDataTip={tagArray.length ? "" : Intl.get("crm.detail.no.tag", "暂无标签")}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL')}
+                        noDataTip={tagArray.length ? '' : Intl.get('crm.detail.no.tag', '暂无标签')}
                         saveTags={this.saveEditTags}
                     />
                     {this.renderUnComplateScheduleList()}
-                    <DetailCard title={`${Intl.get("sales.frontpage.recent.record", "最新跟进")}:`}
+                    <DetailCard title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
                         content={this.renderCustomerRcord()}
                     />
                 </div>

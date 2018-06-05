@@ -19,10 +19,10 @@
  *  updatePaginationJumpNewPage [boolean] 是否修改表格中页码跳转
  * }
  */
-import { Table, Checkbox, Button, Alert } from "antd";
+import { Table, Checkbox, Button, Alert } from 'antd';
 const CheckboxGroup = Checkbox.Group;
 import ScrollLoad from 'CMP_DIR/scroll-load';
-require("./index.less");
+require('./index.less');
 
 const LIST_CONST = {
     //菜单距窗口底部距离
@@ -40,7 +40,7 @@ class AntcTable extends React.Component {
             finalColumns,
             tableKey,
             checkAll: rawColumns.length == finalColumns.length,
-            errorMsg: ""
+            errorMsg: ''
         };
         this.customizeEventHandler = this.customizeEventHandler.bind(this);
     }
@@ -54,13 +54,13 @@ class AntcTable extends React.Component {
             }
         }
         if (_.isFunction(this.props.setWebsiteConfig) && this.props.buttonIdRef) {
-            $("#" + this.props.buttonIdRef).on("click", this.customizeEventHandler);
+            $('#' + this.props.buttonIdRef).on('click', this.customizeEventHandler);
         }
     }
 
     componentWillUnmount() {
         if (_.isFunction(this.props.setWebsiteConfig) && this.props.buttonIdRef) {
-            $("#" + this.props.buttonIdRef).off("click", this.customizeEventHandler);
+            $('#' + this.props.buttonIdRef).off('click', this.customizeEventHandler);
         }
     }
     // 处理自定义显示列事件
@@ -70,7 +70,7 @@ class AntcTable extends React.Component {
         this.setState({
             showColumnList: !this.state.showColumnList
         }, () => {
-            const $list = $container.find(".customize-colums");
+            const $list = $container.find('.customize-colums');
             const top = $ele.offset().top + $ele.height();
             const height = ($(window).height() - top - $list.height()) < 0 ? $(window).height() - top - LIST_CONST.PADDING_BOTTOM : $list.height() + LIST_CONST.BUTTON_PADDING;
             var style = {
@@ -78,8 +78,8 @@ class AntcTable extends React.Component {
                 height
             };
             //右侧空间不足时出现在左侧
-            if (($("body").width() - $ele.offset().left) < $list.width()) {
-                style.right = $("body").width() - $ele.offset().left - $ele.width();
+            if (($('body').width() - $ele.offset().left) < $list.width()) {
+                style.right = $('body').width() - $ele.offset().left - $ele.width();
             } else {                
                 style.left = $ele.offset().left;
             }
@@ -90,25 +90,25 @@ class AntcTable extends React.Component {
 
     //放大排序区域
     zoomInSortArea(dom, setFilterCondition) {
-        if ($(dom).data("thead-sorter-zoomed")) {
+        if ($(dom).data('thead-sorter-zoomed')) {
             return;
         }
-        $(dom).on("click", ".has-sorter, .ant-table-column-sort", function(e) {
-            var filterUp = $(this).find(".ant-table-column-sorter-up")[0];
-            var filterDown = $(this).find(".ant-table-column-sorter-down")[0];
+        $(dom).on('click', '.has-sorter, .ant-table-column-sort', function(e) {
+            var filterUp = $(this).find('.ant-table-column-sorter-up')[0];
+            var filterDown = $(this).find('.ant-table-column-sorter-down')[0];
             $(filterDown).click(function(e) {
                 e.stopPropagation();
             });
             $(filterUp).click(function(e) {
                 e.stopPropagation();
             });
-            if ($(filterDown).hasClass("off")) {
+            if ($(filterDown).hasClass('off')) {
                 $(filterDown).click();
             } else {
                 $(filterUp).click();
             }
         });
-        $(dom).data("thead-sorter-zoomed", true);
+        $(dom).data('thead-sorter-zoomed', true);
     }
 
     // 表格中页码跳转
@@ -163,17 +163,17 @@ class AntcTable extends React.Component {
             }, result => {
                 if (result) {
                     this.setState({
-                        errorMsg: ""
+                        errorMsg: ''
                     });
                     this.handleBackClick();
                 } else {
                     this.setState({
-                        errorMsg: result.message || Intl.get("common.save.failed", "保存失败")
+                        errorMsg: result.message || Intl.get('common.save.failed', '保存失败')
                     });
                 }
             }, err => {
                 this.setState({
-                    errorMsg: err.message || Intl.get("common.save.failed", "保存失败")
+                    errorMsg: err.message || Intl.get('common.save.failed', '保存失败')
                 });
             });
         }
@@ -186,7 +186,7 @@ class AntcTable extends React.Component {
         });
     }
     columnsProcessor(props) {
-        const tableKey = location.pathname + "?id=" + props.buttonIdRef;
+        const tableKey = location.pathname + '?id=' + props.buttonIdRef;
         const { columns } = props;
         const websiteConfig = props.websiteConfig;
         let finalColumns = [];
@@ -224,14 +224,14 @@ class AntcTable extends React.Component {
         //为需要排序的列添加类，以便监听点击事件
         tableProps.columns.forEach(x => {
             if (x.sorter) {
-                x.className = x.className + " has-sorter";
+                x.className = x.className + ' has-sorter';
             }
         });
         const parseNum = num => {
             if (num) {
-                if (typeof num == "string") {
-                    return Number(num.replace("px", ""));
-                } else if (typeof num == "number") {
+                if (typeof num == 'string') {
+                    return Number(num.replace('px', ''));
+                } else if (typeof num == 'number') {
                     return num;
                 }
             } else {
@@ -248,7 +248,7 @@ class AntcTable extends React.Component {
             //当传入handleScrollBottom函数时，调用下拉加载
             if (this.props.dropLoad && _.isFunction(this.props.dropLoad.handleScrollBottom)) {
                 //下拉加载传入 出现滚动条容器的标识(selector)
-                const scrollLoadProps = $.extend({ selector: "div.ant-table-body", width }, this.props.dropLoad);
+                const scrollLoadProps = $.extend({ selector: 'div.ant-table-body', width }, this.props.dropLoad);
                 return (
                     <ScrollLoad {...scrollLoadProps}>
                         <Table
@@ -284,7 +284,7 @@ class AntcTable extends React.Component {
                                 onChange={this.onCheckAllChange}
                                 checked={this.state.checkAll}
                             >
-                                {Intl.get("authority.all.select", "全选")}
+                                {Intl.get('authority.all.select', '全选')}
                             </Checkbox>
                             <CheckboxGroup
                                 options={columnsOptions}
@@ -294,7 +294,7 @@ class AntcTable extends React.Component {
                             <div className="bar-bottom">
                                 {this.state.errorMsg ?
                                     <Alert message={this.state.errorMsg} type="error" showIcon /> : null}
-                                <Button type="primary" onClick={this.handleConfirm.bind(this)}>{Intl.get("common.save", "保存")}</Button>
+                                <Button type="primary" onClick={this.handleConfirm.bind(this)}>{Intl.get('common.save', '保存')}</Button>
                             </div>
                         </div>
                     </div> : null}

@@ -16,7 +16,7 @@ exports.getApplyList = function(obj) {
         },
         error: function(data,textStatus) {
             if(textStatus !== 'abort') {
-                Deferred.reject(data && data.message || Intl.get("common.get.user.apply.failed", "获取用户审批列表失败"));
+                Deferred.reject(data && data.message || Intl.get('common.get.user.apply.failed', '获取用户审批列表失败'));
             }
         }
     });
@@ -39,7 +39,7 @@ exports.getApplyDetail = function(id) {
         },
         error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
-                Deferred.reject(xhr && xhr.responseJSON || Intl.get("user.apply.detail.get.failed", "获取申请详情失败"));
+                Deferred.reject(xhr && xhr.responseJSON || Intl.get('user.apply.detail.get.failed', '获取申请详情失败'));
             }
         }
     });
@@ -61,7 +61,7 @@ exports.getReplyList = function(id) {
             Deferred.resolve(data);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("user.apply.reply.get.list.failed", "回复列表获取失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('user.apply.reply.get.list.failed', '回复列表获取失败'));
         }
     });
     return Deferred.promise();
@@ -83,7 +83,7 @@ exports.submitApply = function(obj) {
             Deferred.resolve(data);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("user.apply.detail.send.result.error", "申请结果发送失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('user.apply.detail.send.result.error', '申请结果发送失败'));
         }
     });
     return Deferred.promise();
@@ -102,7 +102,7 @@ exports.applyUser = function(data) {
             Deferred.resolve(result);
         },
         error: function() {
-            Deferred.reject( Intl.get("common.apply.failed", "申请失败"));
+            Deferred.reject( Intl.get('common.apply.failed', '申请失败'));
         }
     });
     return Deferred.promise();
@@ -110,7 +110,7 @@ exports.applyUser = function(data) {
 
 //添加回复
 exports.addReply = function(data) {
-    const ERROR_MSG = Intl.get("user.apply.reply.error", "添加回复失败");
+    const ERROR_MSG = Intl.get('user.apply.reply.error', '添加回复失败');
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser/add_reply',
@@ -129,7 +129,7 @@ exports.addReply = function(data) {
 
 // 撤销申请
 exports.saleBackoutApply = function(obj) {
-    const ERROR_MSG = Intl.get("user.apply.detail.backout.error", "撤销申请失败");
+    const ERROR_MSG = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser/backout_apply',

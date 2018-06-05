@@ -1,9 +1,9 @@
-var RightContent = require("../../../components/privilege/right-content");
-var Checker = require("../../../components/privilege/checker");
+var RightContent = require('../../../components/privilege/right-content');
+var Checker = require('../../../components/privilege/checker');
 
-var OPLATE_BD_ANALYSIS_REALM_ZONE = require("../../../modules/oplate_bd_analysis_realm_zone");
-var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = require("../../../modules/oplate_bd_analysis_realm_industry");
-var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = require("../../../modules/oplate_bd_analysis_realm_establish");
+var OPLATE_BD_ANALYSIS_REALM_ZONE = require('../../../modules/oplate_bd_analysis_realm_zone');
+var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = require('../../../modules/oplate_bd_analysis_realm_industry');
+var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = require('../../../modules/oplate_bd_analysis_realm_establish');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('analysis/realm',

@@ -25,7 +25,7 @@ exports.getRealmEstablishAnalysisData = function(startTime,endTime,unit) {
         },
         //成功回调
         success: function(list,text,xhr) {
-            var noEstablish = xhr.getResponseHeader("norealm");
+            var noEstablish = xhr.getResponseHeader('norealm');
             Deferred.resolve(list , !!noEstablish);
         },
         error: function() {

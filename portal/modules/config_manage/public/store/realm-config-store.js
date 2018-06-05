@@ -2,10 +2,10 @@ import RealmConfigAction from '../action/realm-config-action';
 
 class RealmConfigStore {
     constructor() {
-        this.strategy = "1"; // 密码策略
+        this.strategy = '1'; // 密码策略
         this.isLoading = false;
-        this.getRealmConfigErrMsg = "";
-        this.setRealmConfigErrMsg = "";
+        this.getRealmConfigErrMsg = '';
+        this.setRealmConfigErrMsg = '';
         this.bindActions(RealmConfigAction);
     }
     getRealmStrategy(result) {
@@ -16,13 +16,13 @@ class RealmConfigStore {
             this.getRealmConfigErrMsg = result.errorMsg;
         } else if(result.data) {
             this.isLoading = false;
-            this.getRealmConfigErrMsg = "";
+            this.getRealmConfigErrMsg = '';
             this.strategy = result.data.pwd_strategy;
             if(!this.strategy) {               
-                this.strategy = "1";
+                this.strategy = '1';
             }            
         } else {
-            this.getRealmConfigErrMsg = Intl.get("config.manage.realm.get.failed","获取密码策略失败");
+            this.getRealmConfigErrMsg = Intl.get('config.manage.realm.get.failed','获取密码策略失败');
         }
     }
 
@@ -37,7 +37,7 @@ class RealmConfigStore {
                 this.strategy = result.value.pwd_strategy;
             }
             else {
-                this.setRealmConfigErrMsg = Intl.get("config.manage.realm.update.failed","修改密码策略失败");
+                this.setRealmConfigErrMsg = Intl.get('config.manage.realm.update.failed','修改密码策略失败');
             }
         }
         else {
@@ -52,4 +52,4 @@ class RealmConfigStore {
 }
 
 //使用alt导出store
-export default alt.createStore(RealmConfigStore, "RealmConfigStore");
+export default alt.createStore(RealmConfigStore, 'RealmConfigStore');

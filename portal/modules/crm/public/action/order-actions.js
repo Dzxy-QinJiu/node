@@ -1,22 +1,22 @@
-import ajax from "../../common/ajax";
-import crmAjax from "../ajax/index";
-const routes = require("../../common/route");
-var appAjaxTrans = require("../../../common/public/ajax/app");
+import ajax from '../../common/ajax';
+import crmAjax from '../ajax/index';
+const routes = require('../../common/route');
+var appAjaxTrans = require('../../../common/public/ajax/app');
 
 function OrderActions() {
     this.generateActions(
-        "getMergeOrderList",
-        "showForm",
-        "hideForm",
-        "onChangeUserCheckBox",
-        "onChangeAppCheckBox",
-        "onChangeApplyType",
-        "setCrmUsersLoading",
-        "setPageNum",
-        "afterDelOrder",
-        "afterEditOrder",
-        "afterAddOrder",
-        "setOrderListLoading"
+        'getMergeOrderList',
+        'showForm',
+        'hideForm',
+        'onChangeUserCheckBox',
+        'onChangeAppCheckBox',
+        'onChangeApplyType',
+        'setCrmUsersLoading',
+        'setPageNum',
+        'afterDelOrder',
+        'afterEditOrder',
+        'afterAddOrder',
+        'setOrderListLoading'
     );
 
     routes.forEach(route => {
@@ -58,7 +58,7 @@ function OrderActions() {
     //获取客户下的用户列表
     this.getCrmUserList = function(reqData) {
         crmAjax.getCrmUserList(reqData).then((userData) => {
-            this.dispatch({errorMsg: "", result: userData});
+            this.dispatch({errorMsg: '', result: userData});
         }, (errorMsg) => {
             this.dispatch({errorMsg: errorMsg});
         });

@@ -14,12 +14,12 @@ const UserTypeRadioField = {
     },
     componentDidMount() {
         if(this.props.isSingleAppEdit) {
-            emitter.on("app_user_manage.edit_app.show_multilogin_error" , this.showMultiLoginError);
+            emitter.on('app_user_manage.edit_app.show_multilogin_error' , this.showMultiLoginError);
         }
     },
     componentWillUnmount() {
         if(this.props.isSingleAppEdit) {
-            emitter.removeListener("app_user_manage.edit_app.show_multilogin_error" , this.showMultiLoginError);
+            emitter.removeListener('app_user_manage.edit_app.show_multilogin_error' , this.showMultiLoginError);
         }
     },
     renderMultiLoginRadioBlock(config) {
@@ -27,7 +27,7 @@ const UserTypeRadioField = {
         config = $.extend({
             isCustomSetting: false,
             appId: '',
-            globalMultiLogin: "0"
+            globalMultiLogin: '0'
         },config);
 
         if(config.isCustomSetting && !config.appId) {

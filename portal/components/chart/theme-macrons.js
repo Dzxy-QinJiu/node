@@ -1,4 +1,4 @@
-import {DEFAULT_FONTFAMILY } from "./consts";
+import {DEFAULT_FONTFAMILY } from './consts';
 var theme = {
     // 默认色板
     color: [

@@ -1,17 +1,17 @@
-var UserInfoActions = require("../action/user-info-actions");
-var userInfoEmitter = require("../../../../public/sources/utils/emitters").userInfoEmitter;
+var UserInfoActions = require('../action/user-info-actions');
+var userInfoEmitter = require('../../../../public/sources/utils/emitters').userInfoEmitter;
 var emptyUserInfo = {
-    userId: "",
-    userName: "",
-    nickName: "",
-    password: "",
-    rePasswd: "",
-    newPasswd: "",
-    phone: "",
-    email: "",
-    roles: "",
-    rolesName: "",
-    reject: ""
+    userId: '',
+    userName: '',
+    nickName: '',
+    password: '',
+    rePasswd: '',
+    newPasswd: '',
+    phone: '',
+    email: '',
+    roles: '',
+    rolesName: '',
+    reject: ''
 };
 
 function UserInfoStore() {
@@ -28,27 +28,27 @@ function UserInfoStore() {
     //正在获取登录日志列表
     this.logLoading = true;
     //提交成功
-    this.submitResult = "";
+    this.submitResult = '';
     //错误提示
-    this.submitErrorMsg = "";
+    this.submitErrorMsg = '';
     // 当前数据最后一条数据的id
-    this.sortId = "";
+    this.sortId = '';
     // 每次加载的日志条数
     this.loadSize = 20;
     // 下拉加载
     this.listenScrollBottom = true;
     //获取操作记录失败的提示
-    this.logErrorMsg = "";
+    this.logErrorMsg = '';
     //用户所管理的安全域
     this.managedRealm = {};
     //正在获取安全域信息
     this.realmLoading = false;
     //获取安全域失败的提示
-    this.realmErrorMsg = "";
+    this.realmErrorMsg = '';
     //正在获取个人资料
     this.userInfoLoading = false;
     //获取个人资料失败的提示
-    this.userInfoErrorMsg = "";
+    this.userInfoErrorMsg = '';
 
 
     this.bindActions(UserInfoActions);
@@ -67,18 +67,18 @@ UserInfoStore.prototype.getLogList = function(logListObj) {
         if (_.isArray(logListObj.list) && logListObj.list.length > 0) {
             var processedLogList = logListObj.list.map(function(log) {
                 return {
-                    loginTime: log.timestamp ? moment(parseInt(log.timestamp)).format(oplateConsts.DATE_TIME_FORMAT) : "",
-                    loginAddress: (log.country && log.country != "null" ? log.country : "") + (log.province && log.province != "null" ? log.province : "") + (log.city && log.city != "null" ? log.city : ""),
-                    loginIP: log.ip && log.ip != "null" ? log.ip : "",
-                    loginBrowser: log.browser && log.browser != "null" ? log.browser : "",
-                    loginEquipment: log.device && log.device != "null" ? log.device : "",
-                    loginMessage: log.operate && log.operate != "null" ? log.operate : "",
-                    lastId: log.sortValuse || ""
+                    loginTime: log.timestamp ? moment(parseInt(log.timestamp)).format(oplateConsts.DATE_TIME_FORMAT) : '',
+                    loginAddress: (log.country && log.country != 'null' ? log.country : '') + (log.province && log.province != 'null' ? log.province : '') + (log.city && log.city != 'null' ? log.city : ''),
+                    loginIP: log.ip && log.ip != 'null' ? log.ip : '',
+                    loginBrowser: log.browser && log.browser != 'null' ? log.browser : '',
+                    loginEquipment: log.device && log.device != 'null' ? log.device : '',
+                    loginMessage: log.operate && log.operate != 'null' ? log.operate : '',
+                    lastId: log.sortValuse || ''
                 };
             });
             this.logList = this.logList.concat(processedLogList);
             var length = this.logList.length;
-            this.sortId = length > 0 ? this.logList[length - 1].lastId : ""; // 获取最后一条提成的id
+            this.sortId = length > 0 ? this.logList[length - 1].lastId : ''; // 获取最后一条提成的id
             // 若本次加载提成条数小于应该加载提成条数（loadSize=20），说明数据已加载完
             if (logListObj.list.length < this.loadSize) {
                 this.listenScrollBottom = false;
@@ -99,7 +99,7 @@ UserInfoStore.prototype.getUserInfo = function(result) {
         this.userInfo = emptyUserInfo;
         this.userInfoLoading = false;
     }else{
-        this.userInfoErrorMsg = "";
+        this.userInfoErrorMsg = '';
         if (result.loading){
             this.userInfoLoading = true;
         }else{
@@ -131,18 +131,18 @@ UserInfoStore.prototype.editUserInfo = function(modifiedUser) {
 UserInfoStore.prototype.editUserInfoPwd = function(result) {
 
     if (result.error) {
-        this.submitResult = "error";
+        this.submitResult = 'error';
         this.submitErrorMsg = result.errorMsg;
     } else {
-        this.submitErrorMsg = "";
+        this.submitErrorMsg = '';
         if (result.loading) {
-            this.submitResult = "loading";
+            this.submitResult = 'loading';
         } else {
             if (result.editFlag) {
-                this.submitResult = "success";
+                this.submitResult = 'success';
             } else {
-                this.submitResult = "error";
-                this.submitErrorMsg = Intl.get("user.info.edit.password.failed","密码修改失败");
+                this.submitResult = 'error';
+                this.submitErrorMsg = Intl.get('user.info.edit.password.failed','密码修改失败');
             }
         }
     }
@@ -156,7 +156,7 @@ UserInfoStore.prototype.getManagedRealm = function(result) {
         this.managedRealm = {};
         this.realmLoading = false;
     } else {
-        this.realmErrorMsg = "";
+        this.realmErrorMsg = '';
         if (result.loading) {
             this.realmLoading = true;
         } else {
@@ -168,8 +168,8 @@ UserInfoStore.prototype.getManagedRealm = function(result) {
 
 //隐藏提交提示
 UserInfoStore.prototype.hideSubmitTip = function() {
-    this.submitErrorMsg = "";
-    this.submitResult = "";
+    this.submitErrorMsg = '';
+    this.submitResult = '';
 };
 
-module.exports = alt.createStore(UserInfoStore, "UserInfoStore");
+module.exports = alt.createStore(UserInfoStore, 'UserInfoStore');

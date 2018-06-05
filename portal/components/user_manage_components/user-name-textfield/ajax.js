@@ -5,7 +5,7 @@ exports.userExists = function(userName) {
     userExistAjax && userExistAjax.abort();
     userExistAjax = $.ajax({
         url: '/rest/appuser/name/' + encodeURIComponent(userName),
-        dataType: "json",
+        dataType: 'json',
         success: (user) => {
             if(user && user.user_id) {
                 Deferred.resolve(user);
@@ -30,7 +30,7 @@ exports.checkUserName = function(obj) {
     checkUserNameAjax && checkUserNameAjax.abort();
     checkUserNameAjax = $.ajax({
         url: '/rest/apply/user_name/valid',
-        dataType: "json",
+        dataType: 'json',
         type: 'get',
         data: {
             user_name: obj.user_name,

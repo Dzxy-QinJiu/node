@@ -2,9 +2,9 @@
  * 权限验证
  */
 
-"use strict";
-var path = require("path");
-var auth = require(path.join(portal_root_path , "./lib/utils/auth"));
+'use strict';
+var path = require('path');
+var auth = require(path.join(portal_root_path , './lib/utils/auth'));
 var checkPrivileges = function(passport, requiredPrivilege) {
     return function(req, res, next) {
         // 无需登录的情况下，允许通过

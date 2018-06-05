@@ -1,14 +1,14 @@
-var echarts = require("echarts-eefung");
-var BarChart = require("./barchart");
+var echarts = require('echarts-eefung');
+var BarChart = require('./barchart');
 var animationCount = 0;
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 var AnalysisEchartBarHorizontal = React.createClass({
     echartInstance: null,
     getDefaultProps: function() {
         return {
             width: 500,
             height: 500,
-            className: "analysis-echart-bar-horizontal-wrapper",
+            className: 'analysis-echart-bar-horizontal-wrapper',
             style: {},
             formatter: function(){},
             dataList: [],

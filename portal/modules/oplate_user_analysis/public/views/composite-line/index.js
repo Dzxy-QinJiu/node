@@ -1,18 +1,18 @@
 /**
  * 线图
  */
-require("./index.less");
-var echarts = require("echarts-eefung");
+require('./index.less');
+var echarts = require('echarts-eefung');
 //各种颜色
-var colors = require("../../utils/colors");
-var Color = require("color");
-var emitter = require("../../utils/emitter");
-var Spinner = require("../../../../../components/spinner");
-var immutable = require("immutable");
-var Icon = require("antd").Icon;
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
-let chartUtil = require("../../utils/chart-util");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+var colors = require('../../utils/colors');
+var Color = require('color');
+var emitter = require('../../utils/emitter');
+var Spinner = require('../../../../../components/spinner');
+var immutable = require('immutable');
+var Icon = require('antd').Icon;
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
+let chartUtil = require('../../utils/chart-util');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 
 //布局使用的常量
@@ -38,7 +38,7 @@ var LineChart = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: Intl.get("customer.analysis.add.customer", "新增客户"),
+            title: Intl.get('customer.analysis.add.customer', '新增客户'),
             height: 214,
             resultType: 'loading',
             isShowSplitLine: false,
@@ -63,9 +63,9 @@ var LineChart = React.createClass({
     getLabel: function() {
         return {
             normal: {
-                show: typeof this.props.showLabel === "boolean" ? this.props.showLabel : false,
-                position: "top",
-                formatter: this.props.labelFormatter || "{c}"
+                show: typeof this.props.showLabel === 'boolean' ? this.props.showLabel : false,
+                position: 'top',
+                formatter: this.props.labelFormatter || '{c}'
             }
         };
     },
@@ -80,7 +80,7 @@ var LineChart = React.createClass({
             }
             var list = obj.data || [];
             //“综合”的app_name为空，突出显示“综合”
-            var symbolSize = obj.app_name === Intl.get("oplate.user.analysis.22", "综合") ? 2 : 0;
+            var symbolSize = obj.app_name === Intl.get('oplate.user.analysis.22', '综合') ? 2 : 0;
             var numbers = list.map(pointObj => {
                 return {
                     value: pointObj.count,
@@ -158,7 +158,7 @@ var LineChart = React.createClass({
             },
             xAxis: [
                 {
-                    type: "category",
+                    type: 'category',
                     splitArea: {
                         show: this.props.isShowSplitArea
                     },
@@ -185,7 +185,7 @@ var LineChart = React.createClass({
             ],
             yAxis: [
                 {
-                    type: "value",
+                    type: 'value',
                     splitArea: {
                         show: this.props.isShowSplitArea
                     },
@@ -231,9 +231,9 @@ var LineChart = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
         }
     },
     legendMouseTimeout: null,

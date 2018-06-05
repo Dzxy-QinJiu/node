@@ -2,8 +2,8 @@
  * 电话输入框组件
  */
 
-import { addHyphenToPhoneNumber } from "LIB_DIR/func";
-import { Form, Input } from "antd";
+import { addHyphenToPhoneNumber } from 'LIB_DIR/func';
+import { Form, Input } from 'antd';
 const FormItem = Form.Item;
 const noop = function() {};
 let instanceMap = {};
@@ -40,7 +40,7 @@ class PhoneInput extends React.Component {
             ) {
                 callback();
             } else {
-                callback(Intl.get("crm.196", "请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555"));
+                callback(Intl.get('crm.196', '请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555'));
             }
         };
     }
@@ -58,7 +58,7 @@ class PhoneInput extends React.Component {
 
         return (
             <FormItem
-                label={this.props.label ? this.props.label : Intl.get("common.phone", "电话")}
+                label={this.props.label ? this.props.label : Intl.get('common.phone', '电话')}
                 colon={this.props.colon}
                 key={this.props.id}
                 labelCol={this.props.labelCol}
@@ -67,7 +67,7 @@ class PhoneInput extends React.Component {
                 {getFieldDecorator(this.props.id, {
                     initialValue: addHyphenToPhoneNumber(this.props.initialValue),
                     rules: this.getRules(),
-                    validateTrigger: "onBlur",
+                    validateTrigger: 'onBlur',
                     validateFirst: true,
                 })(
                     <Input
@@ -82,11 +82,11 @@ class PhoneInput extends React.Component {
 }
 
 PhoneInput.defaultProps = {
-    label: "",
+    label: '',
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
-    placeholder: "",
-    initialValue: "",
+    placeholder: '',
+    initialValue: '',
     colon: true,
     suffix: null,
     onChange: noop,
@@ -102,7 +102,7 @@ const options = {
 
         let value = fields[props.id].value;
         let obj = { target: {} };
-        obj.target.value = value.replace(/-/g, "");
+        obj.target.value = value.replace(/-/g, '');
 
         props.onChange(obj);
     },
@@ -117,10 +117,10 @@ const options = {
 
             //win10自带中文输入法下，添加区号分隔符后，会自动在分隔符后加上一位数字，这里对这种情况做一下处理
             if (lastValue && /-$/.test(lastValue) && /-\d$/.test(currentValue) && interval < 100) {
-                currentValue = currentValue.replace(/\d$/, "");
+                currentValue = currentValue.replace(/\d$/, '');
             }
 
-            if (_.indexOf(instance.lastValue, "-") === -1) {
+            if (_.indexOf(instance.lastValue, '-') === -1) {
                 currentValue = addHyphenToPhoneNumber(currentValue, instance.initialValue);
             }
 

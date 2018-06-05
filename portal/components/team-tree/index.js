@@ -25,13 +25,13 @@
  * 可通过将disableEmitter属性设置为true来关闭事件发射，只用onTeamSelect等回调函数得到选中的团队id或成员id
  */
 
-require("./style.less");
-import routeList from "../../modules/common/route";
-import ajax from "../../modules/common/ajax";
-const Emitters = require("../../public/sources/utils/emitters");
-const salesmanAjax = require("../../modules/common/public/ajax/salesman");
+require('./style.less');
+import routeList from '../../modules/common/route';
+import ajax from '../../modules/common/ajax';
+const Emitters = require('../../public/sources/utils/emitters');
+const salesmanAjax = require('../../modules/common/public/ajax/salesman');
 const teamTreeEmitter = Emitters.teamTreeEmitter;
-import { Tree } from "antd";
+import { Tree } from 'antd';
 const TreeNode = Tree.TreeNode;
 const noop = function() {
 };
@@ -56,7 +56,7 @@ const TeamTree = React.createClass({
         this.getUserList();
     },
     getTeamList() {
-        const route = _.find(routeList, route => route.handler === "getTeamList");
+        const route = _.find(routeList, route => route.handler === 'getTeamList');
 
         const arg = {
             url: route.path,
@@ -170,9 +170,9 @@ const TeamTree = React.createClass({
                     className="breadcrumb-item"
                     onClick={this.showTeamTree}
                 >
-                    {Intl.get("user.user.team", "团队")}
+                    {Intl.get('user.user.team', '团队')}
                 </span>
-                {breadcrumb.length ? " / " : null}
+                {breadcrumb.length ? ' / ' : null}
                 {breadcrumb.map((item, index) => {
                     return (
                         <span
@@ -180,7 +180,7 @@ const TeamTree = React.createClass({
                             onClick={this.handleTeamSelect.bind(this, {selectedKeys: [item.group_id]})}
                         >
                             {item.group_name}
-                            {index + 1 !== breadcrumb.length ? " / " : null}
+                            {index + 1 !== breadcrumb.length ? ' / ' : null}
                         </span>
                     );
                 })}
@@ -190,7 +190,7 @@ const TeamTree = React.createClass({
     //显示从根节点开始的团队树
     showTeamTree() {
         if (!this.props.disableEmitter) {
-            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, "");
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, '');
         }
         delete this.state.teamMembers;
         this.state.breadcrumb = [];
@@ -202,7 +202,7 @@ const TeamTree = React.createClass({
     },
     //取消之前选中项的选中状态
     removeSelectState() {
-        $(".ant-tree-node-selected").children().click();
+        $('.ant-tree-node-selected').children().click();
     },
     render() {
         return (

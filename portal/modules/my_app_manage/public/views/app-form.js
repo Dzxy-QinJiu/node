@@ -1,30 +1,30 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-var language = require("../../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/index-es_VE.less");
-} else if (language.lan() == "zh") {
-    require("../css/index-zh_CN.less");
+var language = require('../../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('../css/index-es_VE.less');
+} else if (language.lan() == 'zh') {
+    require('../css/index-zh_CN.less');
 }
-import {Icon,Form,Input,Select,InputNumber,Radio} from "antd";
+import {Icon,Form,Input,Select,InputNumber,Radio} from 'antd';
 var RadioGroup = Radio.Group;
 var Option = Select.Option;
 var FormItem = Form.Item;
-var AlertTimer = require("../../../../components/alert-timer");
-var Spinner = require("../../../../components/spinner");
-var rightPanelUtil = require("../../../../components/rightPanel");
+var AlertTimer = require('../../../../components/alert-timer');
+var Spinner = require('../../../../components/spinner');
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 var RightPanelCancel = rightPanelUtil.RightPanelCancel;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var HeadIcon = require("../../../../components/headIcon");
+var HeadIcon = require('../../../../components/headIcon');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var AppFormStore = require("../store/app-form-store");
-var AppFormAction = require("../action/app-form-actions");
-var classNames = require("classnames");
-var userData = require("../../../../public/sources/user-data");
+var AppFormStore = require('../store/app-form-store');
+var AppFormAction = require('../action/app-form-actions');
+var classNames = require('classnames');
+var userData = require('../../../../public/sources/user-data');
 import { defineMessages,injectIntl} from 'react-intl';
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 
 function noop() {
 }
@@ -47,7 +47,7 @@ var AppForm = React.createClass({
     formatAppInfo: function(app) {
         let managers = [];
         if (_.isArray(app.managers) && app.managers.length) {
-            managers = _.pluck(app.managers, "managerId");
+            managers = _.pluck(app.managers, 'managerId');
         }
         return {
             id: app.id,
@@ -104,9 +104,9 @@ var AppForm = React.createClass({
     },
 
     layout: function() {
-        var bHeight = $("body").height();
-        var formHeight = bHeight - $("form .head-image-container").outerHeight(true);
-        $(".app-form-scroll").height(formHeight);
+        var bHeight = $('body').height();
+        var formHeight = bHeight - $('form .head-image-container').outerHeight(true);
+        $('.app-form-scroll').height(formHeight);
     },
 
     componentDidUpdate: function() {
@@ -130,8 +130,8 @@ var AppForm = React.createClass({
 
     handleCancel: function(e) {
         e.preventDefault();
-        Trace.traceEvent(e,"点击取消编辑按钮");
-        if (this.props.formType == "edit") {
+        Trace.traceEvent(e,'点击取消编辑按钮');
+        if (this.props.formType == 'edit') {
             this.props.returnInfoPanel(e);
         } else {
             this.props.closeRightPanel(e);
@@ -140,7 +140,7 @@ var AppForm = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
-        Trace.traceEvent(e,"点击保存编辑信息");
+        Trace.traceEvent(e,'点击保存编辑信息');
         var validation = this.refs.validation;
         var _this = this;
         validation.validate(function(valid) {
@@ -165,14 +165,14 @@ var AppForm = React.createClass({
     //关闭
     closePanel: function(e) {
         e.stopPropagation();
-        Trace.traceEvent(e,"关闭编辑界面");
+        Trace.traceEvent(e,'关闭编辑界面');
         this.props.closeRightPanel();
     },
 
     //返回详细信息展示页
     returnInfoPanel: function(e) {
         e.stopPropagation();
-        Trace.traceEvent(e,"返回应用详情界面");
+        Trace.traceEvent(e,'返回应用详情界面');
         this.props.returnInfoPanel();
     },
 
@@ -187,12 +187,12 @@ var AppForm = React.createClass({
         var managers = this.state.formData.managers;
         if (_.isArray(appManagerList) && appManagerList.length > 0) {
             options = appManagerList.map(function(user) {
-                var className = "";
+                var className = '';
                 //管理员（多选）选择后，从下拉列表中去掉已选的选项
                 if (_.isArray(managers) && managers.length > 0) {
                     managers.forEach(function(manager) {
                         if (manager == user.userId) {
-                            className = "manager-options-selected";
+                            className = 'manager-options-selected';
                         }
                     });
                 }
@@ -202,7 +202,7 @@ var AppForm = React.createClass({
             });
         } else {
             options = <Option disabled value="">
-                {Intl.get("app.app.no.managers", "暂无管理员") }
+                {Intl.get('app.app.no.managers', '暂无管理员') }
             </Option>;
         }
         return options;
@@ -243,7 +243,7 @@ var AppForm = React.createClass({
         return (
             <div data-tracename="编辑应用界面">
                 <RightPanelClose onClick={this.closePanel}/>
-                {(this.props.formType == "add" || !this.props.appFormShow) ? null : (
+                {(this.props.formType == 'add' || !this.props.appFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon headIcon={formData.image}
@@ -257,25 +257,25 @@ var AppForm = React.createClass({
                         <GeminiScrollbar className="geminiScrollbar-vertical">
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 <FormItem
-                                    label={Intl.get("common.definition", "名称")}
+                                    label={Intl.get('common.definition', '名称')}
                                     id="appName"
                                     labelCol={{span: labelCol}}
                                     wrapperCol={{span: 12}}
                                     validateStatus={this.renderValidateStyle('name')}
                                     help={
                                         status.name.isValidating ?
-                                            Intl.get("common.is.validiting", Intl.get("common.is.validiting", "正在校验中..")) :
+                                            Intl.get('common.is.validiting', Intl.get('common.is.validiting', '正在校验中..')) :
                                             (status.name.errors && status.name.errors.join(','))
                                     }
                                 >
                                     <Validator
                                         rules={[{required: true, min: 1, max: 20 ,
-                                            message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")
+                                            message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')
                                         }
                                         ]}
                                     >
                                         <Input name="name" id="name" value={formData.name}
-                                            placeholder={Intl.get("common.required.tip", "必填项*")}
+                                            placeholder={Intl.get('common.required.tip', '必填项*')}
                                             onChange={this.setField.bind(this, 'name')}
                                         />
                                     </Validator>
@@ -293,13 +293,13 @@ var AppForm = React.createClass({
                                 {isAppOwner ?
                                     (<div>
                                         <FormItem
-                                            label={Intl.get("common.status", "状态")}
+                                            label={Intl.get('common.status', '状态')}
                                             id="status"
                                             labelCol={{span: labelCol}}
                                             wrapperCol={{span: 12}}
                                         >
                                             <RadioGroup onChange={this.onStatusChange}
-                                                value={formData.status || formData.status == 0 ? formData.status.toString() : ""}>
+                                                value={formData.status || formData.status == 0 ? formData.status.toString() : ''}>
                                                 <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.enabled"
                                                     defaultMessage="启用"/></Radio>
                                                 <Radio key="0" value="0"><ReactIntl.FormattedMessage
@@ -307,14 +307,14 @@ var AppForm = React.createClass({
                                             </RadioGroup>
                                         </FormItem>
                                         <FormItem
-                                            label={Intl.get("common.managers", "管理员")}
+                                            label={Intl.get('common.managers', '管理员')}
                                             id="managers"
                                             labelCol={{span: labelCol}}
                                             wrapperCol={{span: 12}}
                                             validateStatus={this.renderValidateStyle('managers')}
                                             help={
                                                 status.managers.isValidating ?
-                                                    Intl.get("common.is.validiting", "正在校验中..") :
+                                                    Intl.get('common.is.validiting', '正在校验中..') :
                                                     (status.managers.errors && status.managers.errors.join(','))
                                             }
                                         >
@@ -326,8 +326,8 @@ var AppForm = React.createClass({
                                                 </div>) : (
                                                 <Select className="" multiple name="managers" id="managers"
                                                     optionFilterProp="children"
-                                                    searchPlaceholder={Intl.get("app.app.managers.placeholder", "请选择管理员*")}
-                                                    notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
+                                                    searchPlaceholder={Intl.get('app.app.managers.placeholder', '请选择管理员*')}
+                                                    notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
                                                     value={formData.managers}
                                                     onChange={this.setField.bind(this, 'managers')}
                                                 >
@@ -336,7 +336,7 @@ var AppForm = React.createClass({
                                         </FormItem>
                                     </div>) : null}
                                 <FormItem
-                                    label={Intl.get("common.secret.app", "密令APP")}
+                                    label={Intl.get('common.secret.app', '密令APP')}
                                     id="secretApp"
                                     labelCol={{span: labelCol}}
                                     wrapperCol={{span: 12}}
@@ -348,17 +348,17 @@ var AppForm = React.createClass({
                                             <Icon type="loading"/>
                                         </div>) : (
                                         <Select showSearch name="secretApp" id="secretApp"
-                                            placeholder={Intl.get("app.app.secret.placeholder", "请选择密令APP")}
+                                            placeholder={Intl.get('app.app.secret.placeholder', '请选择密令APP')}
                                             value={formData.secretApp}
                                             optionFilterProp="children"
-                                            notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
-                                            searchPlaceholder={Intl.get("app.app.secret.search.placeholder", "请输入应用名称进行过滤")}
+                                            notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                            searchPlaceholder={Intl.get('app.app.secret.search.placeholder', '请输入应用名称进行过滤')}
                                             onChange={this.setField.bind(this, 'secretApp')}>
                                             {this.renderSecretAppOptions()}
                                         </Select>)}
                                 </FormItem>
                                 <FormItem
-                                    label={Intl.get("common.describe", "描述")}
+                                    label={Intl.get('common.describe', '描述')}
                                     id="descr"
                                     labelCol={{span: labelCol}}
                                     wrapperCol={{span: 18}}
@@ -369,20 +369,20 @@ var AppForm = React.createClass({
                                 </FormItem>
                                 <div className="captcha-set-container">
                                     <FormItem
-                                        label={Intl.get("common.captcha", "验证码")}
+                                        label={Intl.get('common.captcha', '验证码')}
                                         id="captchaTime"
                                         labelCol={{span: labelCol}}
                                         wrapperCol={{span: wrapperCol}}
                                     >
                                         <ReactIntl.FormattedMessage
                                             id="common.password.verify"
-                                            defaultMessage={`{errpassword}{number}{captcha}`}
+                                            defaultMessage={'{errpassword}{number}{captcha}'}
                                             values={{
-                                                "errpassword": <span className="captcha-time-span">{Intl.get("secret.error", "密码输错")}</span>,
-                                                "number": <InputNumber min={1} max={100000} name="captchaTime" id="captchaTime"
+                                                'errpassword': <span className="captcha-time-span">{Intl.get('secret.error', '密码输错')}</span>,
+                                                'number': <InputNumber min={1} max={100000} name="captchaTime" id="captchaTime"
                                                     value={formData.captchaTime}
                                                     onChange={this.setField.bind(this, 'captchaTime')}/>,
-                                                "captcha": <span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
+                                                'captcha': <span className="captcha-time-span">{Intl.get('show.captcha', '次，出现验证码')}</span>
                                             }}
                                         />
                                     </FormItem>
@@ -394,13 +394,13 @@ var AppForm = React.createClass({
                                     >
                                         <ReactIntl.FormattedMessage
                                             id="common.session.verify"
-                                            defaultMessage={`{session}{number}{captcha}`}
+                                            defaultMessage={'{session}{number}{captcha}'}
                                             values={{
-                                                "session": <span className="captcha-time-span">{Intl.get("session.overclock", " session超频")}</span>,
-                                                "number": <InputNumber min={1} max={100000} name="sessionCaptcha" id="sessionCaptcha"
+                                                'session': <span className="captcha-time-span">{Intl.get('session.overclock', ' session超频')}</span>,
+                                                'number': <InputNumber min={1} max={100000} name="sessionCaptcha" id="sessionCaptcha"
                                                     value={formData.sessionCaptcha}
                                                     onChange={this.setField.bind(this, 'sessionCaptcha')}/>,
-                                                "captcha": <span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
+                                                'captcha': <span className="captcha-time-span">{Intl.get('show.captcha', '次，出现验证码')}</span>
                                             }}
                                         />
                                     </FormItem>
@@ -412,13 +412,13 @@ var AppForm = React.createClass({
                                     >
                                         <ReactIntl.FormattedMessage
                                             id="common.ip.verify"
-                                            defaultMessage={`{ip}{number}{captcha}`}
+                                            defaultMessage={'{ip}{number}{captcha}'}
                                             values={{
-                                                "ip": <span className="captcha-time-span">{Intl.get("ip.overclock", "IP超频")} </span>,
-                                                "number": <InputNumber min={1} max={100000} name="ipCaptcha" id="ipCaptcha"
+                                                'ip': <span className="captcha-time-span">{Intl.get('ip.overclock', 'IP超频')} </span>,
+                                                'number': <InputNumber min={1} max={100000} name="ipCaptcha" id="ipCaptcha"
                                                     value={formData.ipCaptcha}
                                                     onChange={this.setField.bind(this, 'ipCaptcha')}/>,
-                                                "captcha": <span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
+                                                'captcha': <span className="captcha-time-span">{Intl.get('show.captcha', '次，出现验证码')}</span>
                                             }}
                                         />
                                     </FormItem>
@@ -428,18 +428,18 @@ var AppForm = React.createClass({
                                     <div className="indicator">
                                         {saveResult ?
                                             (
-                                                <AlertTimer time={saveResult == "error" ? 3000 : 600}
+                                                <AlertTimer time={saveResult == 'error' ? 3000 : 600}
                                                     message={this.state.saveMsg}
                                                     type={this.state.saveResult} showIcon
                                                     onHide={this.hideSaveTooltip}/>
-                                            ) : ""
+                                            ) : ''
                                         }
                                     </div>
                                     <RightPanelCancel onClick={this.handleCancel}>
-                                        {Intl.get("common.cancel")}
+                                        {Intl.get('common.cancel')}
                                     </RightPanelCancel>
                                     <RightPanelSubmit onClick={this.handleSubmit}>
-                                        {Intl.get("common.sure")}
+                                        {Intl.get('common.sure')}
                                     </RightPanelSubmit>
                                 </FormItem>
                             </Validation>

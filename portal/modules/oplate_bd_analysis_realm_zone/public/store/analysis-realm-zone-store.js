@@ -3,7 +3,7 @@
  * 说明：统计分析-安全域分析-地域分析-Store MVC中的M
  */
 //引入Action
-var AnalysisRealmZoneActions = require("../action/analysis-realm-zone-actions");
+var AnalysisRealmZoneActions = require('../action/analysis-realm-zone-actions');
 
 //Store的class
 function AnalysisRealmZoneStore() {
@@ -22,7 +22,7 @@ function AnalysisRealmZoneStore() {
     //压根一个安全域也没有
     this.noRealmAtAll = false;
     //右侧排行榜的标题
-    this.rankListTitle = Intl.get("oplate_bd_analysis_realm_establish.5", "当前安全域开通总数");
+    this.rankListTitle = Intl.get('oplate_bd_analysis_realm_establish.5', '当前安全域开通总数');
     //绑定action方法
     this.bindListeners({
         //设置开始时间

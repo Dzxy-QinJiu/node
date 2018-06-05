@@ -1,21 +1,21 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * Created by wangliping on 2016/5/19.
  */
 import { Radio, Form, Input, Select, Icon} from 'antd';
 const RadioGroup = Radio.Group;
-var classNames = require("classnames");
+var classNames = require('classnames');
 var FormItem = Form.Item;
-var AlertTimer = require("../../../../components/alert-timer");
-var rightPanelUtil = require("../../../../components/rightPanel/index");
+var AlertTimer = require('../../../../components/alert-timer');
+var rightPanelUtil = require('../../../../components/rightPanel/index');
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 var RightPanelCancel = rightPanelUtil.RightPanelCancel;
-var userData = require("../../../../public/sources/user-data");
-var AuthorityFormAction = require("../action/authority-form-actions");
-var AuthorityFormStore = require("../store/authority-form-store");
-var language = require("../../../../public/language/getLanguage");
-import Trace from "LIB_DIR/trace";
+var userData = require('../../../../public/sources/user-data');
+var AuthorityFormAction = require('../action/authority-form-actions');
+var AuthorityFormStore = require('../store/authority-form-store');
+var language = require('../../../../public/language/getLanguage');
+import Trace from 'LIB_DIR/trace';
 function noop() {
 }
 
@@ -24,14 +24,14 @@ var AuthorityEditForm = React.createClass({
     getDefaultProps: function() {
         return {
             authority: {
-                permissionId: "",
-                permissionName: "",
-                permissionDefine: "",
-                permissionApis: "",
-                permissionApisKey: "",
-                permissionApisVal: "PUT",
-                permissionType: "REST",
-                classifyName: ""
+                permissionId: '',
+                permissionName: '',
+                permissionDefine: '',
+                permissionApis: '',
+                permissionApisKey: '',
+                permissionApisVal: 'PUT',
+                permissionType: 'REST',
+                classifyName: ''
             }
         };
     },
@@ -89,7 +89,7 @@ var AuthorityEditForm = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
-        Trace.traceEvent(e,"保存编辑权限详情");
+        Trace.traceEvent(e,'保存编辑权限详情');
         var _this = this;
         if (_this.state.isAuthoritySaving) {
             return;
@@ -101,7 +101,7 @@ var AuthorityEditForm = React.createClass({
             } else {
                 var formData = $.extend(true, {}, _this.state.formData);
                 var permissionApis = {};
-                if (formData.permissionType == "DATA") {//data类型只保存数据权限
+                if (formData.permissionType == 'DATA') {//data类型只保存数据权限
                     //判断formData，去掉空值，无论如何，都传过去，因为存在删除操作，传null的话，郑鹏飞java端不做操作
                     formData.permissionDatas = _.filter(formData.permissionDatas || [], function(str) {
                         return str.trim() !== '';
@@ -125,7 +125,7 @@ var AuthorityEditForm = React.createClass({
                             if (permissionApis[permission.permissionApiUrl]) {
                                 //如果已有该路径，该路径对应的value中没有当前方法名，则value+=,method
                                 if (permissionApis[permission.permissionApiUrl].indexOf(permission.permissionApiMethod) < 0) {
-                                    permissionApis[permission.permissionApiUrl] += "," + permission.permissionApiMethod;
+                                    permissionApis[permission.permissionApiUrl] += ',' + permission.permissionApiMethod;
                                 }
                             } else {
                                 //不存在改路径时，该路径对应的value就是其方法名
@@ -158,7 +158,7 @@ var AuthorityEditForm = React.createClass({
                 } else {
                     formData.clientId = userData.getUserData().auth.client_id;//登录用户的应用id
                 }
-                if (_this.props.formType == "edit") {
+                if (_this.props.formType == 'edit') {
                     delete formData.showEditFormFlag;
                     delete formData.showInfoFlag;
                     formData.permissionApis = JSON.stringify(permissionApis);
@@ -183,7 +183,7 @@ var AuthorityEditForm = React.createClass({
         var permissionApiArray = this.state.formData.permissionApiArray || [];
         //找到数组中对应的对象，更新method/url
         if (permissionApiArray[i] && _.isObject(permissionApiArray[i])) {
-            if (type == "url") {
+            if (type == 'url') {
                 if (newVal) {
                     delete permissionApiArray[i].isNull;
                 } else if (i == 0) {
@@ -192,7 +192,7 @@ var AuthorityEditForm = React.createClass({
                 }
                 permissionApiArray[i].permissionApiUrl = newVal;
             } else {
-                permissionApiArray[i].permissionApiMethod = newVal || "PUT";
+                permissionApiArray[i].permissionApiMethod = newVal || 'PUT';
             }
             this.state.formData.permissionApiArray = permissionApiArray;
             this.setState({
@@ -202,20 +202,20 @@ var AuthorityEditForm = React.createClass({
     },
     //选择服务地址的请求方式的处理
     onPermissionSelect: function(index, selectVal) {
-        this.updatePermissionApiObj(index, selectVal, "method");
+        this.updatePermissionApiObj(index, selectVal, 'method');
     },
     //服务地址输入的处理
     onPermissionInputChange: function(index, event) {
         var newKey = event.target.value;
-        this.updatePermissionApiObj(index, newKey, "url");
+        this.updatePermissionApiObj(index, newKey, 'url');
     },
     //添加一个服务地址的处理
     addPermissionApi: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".permission-inputgroup-btns-div"),"添加服务地址");
+        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'添加服务地址');
         var permissionApiArray = this.state.formData.permissionApiArray || [];
         permissionApiArray.push({
-            permissionApiUrl: "",
-            permissionApiMethod: "PUT"
+            permissionApiUrl: '',
+            permissionApiMethod: 'PUT'
         });
         this.state.formData.permissionApiArray = permissionApiArray;
         this.setState({
@@ -224,7 +224,7 @@ var AuthorityEditForm = React.createClass({
     },
     //删除服务地址
     delPermissionApi: function(index, event) {
-        Trace.traceEvent($(this.getDOMNode()).find(".permission-inputgroup-btns-div"),"删除服务地址");
+        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'删除服务地址');
         var value = event.target.value;
         if (value) {
             return;
@@ -268,9 +268,9 @@ var AuthorityEditForm = React.createClass({
                 <Option value="DELETE">DELETE</Option>
             </Select>
             <Input name="permissionApisKey" id="permissionApisKey"
-                className={permissionApi.isNull ? "auth-validate-error" : ""}
+                className={permissionApi.isNull ? 'auth-validate-error' : ''}
                 value={permissionApi.permissionApiUrl}
-                placeholder={index == 0 ? Intl.get("authority.need.write.one", "必填一项*") : ""}
+                placeholder={index == 0 ? Intl.get('authority.need.write.one', '必填一项*') : ''}
                 onBlur={index == 0 ? this.validatePermissionApi.bind(this,index) : noop}
                 onChange={this.onPermissionInputChange.bind(this,index)}
             />
@@ -318,7 +318,7 @@ var AuthorityEditForm = React.createClass({
     renderPermissionDatas: function() {
         var permissionDatas = this.state.formData.permissionDatas;
         if (!_.isArray(permissionDatas) || permissionDatas.length === 0) {
-            permissionDatas = this.state.formData.permissionDatas = [""];
+            permissionDatas = this.state.formData.permissionDatas = [''];
         }
         var _this = this;
         var onlyOneItem = permissionDatas.length === 1;
@@ -331,8 +331,8 @@ var AuthorityEditForm = React.createClass({
                     permissionDatas.map(function(str, index) {
                         return <div className="permissionData-item" key={index}>
                             <Input name="permissionData" id="permissionData"
-                                className={permissionDataNull && index == 0 ? "auth-validate-error" : ""}
-                                placeholder={index == 0 ? Intl.get("authority.need.write.one", "必填一项*") : ""}
+                                className={permissionDataNull && index == 0 ? 'auth-validate-error' : ''}
+                                placeholder={index == 0 ? Intl.get('authority.need.write.one', '必填一项*') : ''}
                                 value={permissionDatas[index]}
                                 onBlur={index == 0 ? _this.validatePermissionData.bind(this,index) : noop}
                                 onChange={_this.onPermissionDataChange.bind(_this , index)}
@@ -360,16 +360,16 @@ var AuthorityEditForm = React.createClass({
     },
     //添加一个数据权限
     addPermissionData: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".permission-inputgroup-btns-div"),"添加一个数据权限");
+        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'添加一个数据权限');
         var permissionDatas = this.state.formData.permissionDatas;
-        permissionDatas.push("");
+        permissionDatas.push('');
         this.setState({
             formData: this.state.formData
         });
     },
     //移除一个数据权限
     removePermissionData: function(index) {
-        Trace.traceEvent($(this.getDOMNode()).find(".permission-inputgroup-btns-div"),"移除一个数据权限");
+        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'移除一个数据权限');
         var permissionDatas = this.state.formData.permissionDatas;
         permissionDatas.splice(index, 1);
         this.setState({
@@ -379,7 +379,7 @@ var AuthorityEditForm = React.createClass({
     checkPermissionNameExist: function(rule, value, callback) {
         value = $.trim(value);
         const authority = this.props.authority;
-        const origName = _.isObject(authority) ? authority.permissionName : "";
+        const origName = _.isObject(authority) ? authority.permissionName : '';
         if (value === origName) {
             callback();
         } else {
@@ -387,7 +387,7 @@ var AuthorityEditForm = React.createClass({
                 return item.permissionName === value;
             });
             if (isExist) {
-                callback(new Error(Intl.get("authority.permission.exist", "该权限名已存在")));
+                callback(new Error(Intl.get('authority.permission.exist', '该权限名已存在')));
             } else {
                 callback();
             }
@@ -407,7 +407,7 @@ var AuthorityEditForm = React.createClass({
             });
         } else {
             //如果权限服务地址数组没有数据
-            var permissionApi = {permissionApiUrl: "", permissionApiMethod: "PUT"};
+            var permissionApi = {permissionApiUrl: '', permissionApiMethod: 'PUT'};
             //权限服务地址数组中默认加入一个服务地址对象
             this.state.formData.permissionApiArray = [permissionApi];
             //默认渲染一个空的服务地址url输入框和method选择框
@@ -433,41 +433,41 @@ var AuthorityEditForm = React.createClass({
                             onValidate={this.handleValidate}
                         >
                             <FormItem
-                                label={Intl.get("authority.auth.name", "权限名称")}
+                                label={Intl.get('authority.auth.name', '权限名称')}
                                 id="permissionName"
                                 labelCol={{span: labelCol}}
                                 wrapperCol={{span: 18}}
                                 validateStatus={_this.renderValidateStyle('permissionName')}
-                                help={status.permissionName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.permissionName.errors && status.permissionName.errors.join(','))}
+                                help={status.permissionName.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.permissionName.errors && status.permissionName.errors.join(','))}
                             >
                                 <Validator
-                                    rules={[{required: true, min: 1, max: 200, message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")},{validator: this.checkPermissionNameExist}]}>
+                                    rules={[{required: true, min: 1, max: 200, message: Intl.get('authority.input.length.tip', '最少1个字符,最多200个字符')},{validator: this.checkPermissionNameExist}]}>
                                     <Input name="permissionName" id="permissionName"
                                         value={formData.permissionName}
-                                        placeholder={Intl.get("common.required.tip", "必填项*")}
+                                        placeholder={Intl.get('common.required.tip', '必填项*')}
                                         onChange={_this.setField.bind(_this, 'permissionName')}
                                     />
                                 </Validator>
                             </FormItem>
                             <FormItem
-                                label={Intl.get("authority.auth.type", "权限类型")}
+                                label={Intl.get('authority.auth.type', '权限类型')}
                                 labelCol={{span: labelCol}}
                                 wrapperCol={{span: wrapperCol}}
                             >
                                 <RadioGroup onChange={_this.setField.bind(_this, 'permissionType')}
-                                    value={formData.permissionType || "REST"}>
+                                    value={formData.permissionType || 'REST'}>
                                     <Radio value="REST">REST</Radio>
                                     <Radio value="DATA">DATA</Radio>
                                 </RadioGroup>
                             </FormItem>
-                            {formData.permissionType === "DATA" ? (<FormItem
-                                label={Intl.get("authority.data.auth", "数据权限")}
+                            {formData.permissionType === 'DATA' ? (<FormItem
+                                label={Intl.get('authority.data.auth', '数据权限')}
                                 labelCol={{span: labelCol}}
                                 wrapperCol={{span: addressWrapperCol}}
                             >
                                 {this.renderPermissionDatas()}
                             </FormItem>) : (<FormItem
-                                label={Intl.get("authority.auth.api", "服务地址")}
+                                label={Intl.get('authority.auth.api', '服务地址')}
                                 id="permissionApis"
                                 labelCol={{span: labelCol}}
                                 wrapperCol={{span: addressWrapperCol}}
@@ -478,19 +478,19 @@ var AuthorityEditForm = React.createClass({
                             </FormItem>)}
 
                             <FormItem
-                                label={Intl.get("authority.auth.flag", "权限标识")}
+                                label={Intl.get('authority.auth.flag', '权限标识')}
                                 id="permissionDefine"
                                 labelCol={{span: labelCol}}
                                 wrapperCol={{span: authWrapperCol}}
                                 validateStatus={_this.renderValidateStyle('permissionDefine')}
-                                help={status.permissionDefine.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.permissionDefine.errors && status.permissionDefine.errors.join(','))}
+                                help={status.permissionDefine.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.permissionDefine.errors && status.permissionDefine.errors.join(','))}
                             >
                                 <Validator
-                                    rules={[{required: true, min: 1, max: 200, message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
+                                    rules={[{required: true, min: 1, max: 200, message: Intl.get('authority.input.length.tip', '最少1个字符,最多200个字符')}]}>
                                     <Input name="permissionDefine" id="permissionDefine"
                                         value={formData.permissionDefine}
                                         onChange={_this.setField.bind(_this, 'permissionDefine')}
-                                        placeholder={Intl.get("common.required.tip", "必填项*")}
+                                        placeholder={Intl.get('common.required.tip', '必填项*')}
                                     />
                                 </Validator>
                             </FormItem>

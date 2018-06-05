@@ -1,8 +1,8 @@
-require("./index.less");
+require('./index.less');
 var AnalysisRealmCount = React.createClass({
     getDefaultProps: function() {
         return {
-            title: "当前安全域开通总数",
+            title: '当前安全域开通总数',
             total: 0
         };
     },

@@ -9,9 +9,9 @@
  * @return {Function}
  * @api public
  */
-var util = require("util");
-var request = util._extend({}, {"rest": require('request')});
-var logger = require("./../utils/logger").getLogger('session');
+var util = require('util');
+var request = util._extend({}, {'rest': require('request')});
+var logger = require('./../utils/logger').getLogger('session');
 var noop = function() {
 };
 module.exports = function(session) {
@@ -21,8 +21,8 @@ module.exports = function(session) {
      */
 
     var Store = session.Store;
-    var url = "http://127.0.0.1/hazelcast/rest/maps/antlog_session/";
-    var headers = {"User-Agent": "Oplate's session rest client for nodejs"};
+    var url = 'http://127.0.0.1/hazelcast/rest/maps/antlog_session/';
+    var headers = {'User-Agent': 'Oplate\'s session rest client for nodejs'};
 
     /**
      * Initialize HazelcastStore with the given `options`.
@@ -52,25 +52,25 @@ module.exports = function(session) {
          */
         function getSessionData(url, sid, fn, headers, doNotRetry) {
             var startTime = Date.now();
-            logger.debug("fetching session (url:" + url + ")" + "  headers:" + JSON.stringify(headers));
+            logger.debug('fetching session (url:' + url + ')' + '  headers:' + JSON.stringify(headers));
             var self = this;
             var instance = request.get(url, {
                 headers: headers
             });
             instance.on('error', function(err, response) {
                 if (doNotRetry) {
-                    logger.error("fetch session (id:" + sid + ") has error (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
+                    logger.error('fetch session (id:' + sid + ') has error (httpStatus:%s): ', (response && response.statusCode ? response.statusCode : '未知'), err);
                     return fn && fn(err);
                 } else {
-                    logger.warn("fetch session (id:" + sid + ") has error (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
+                    logger.warn('fetch session (id:' + sid + ') has error (httpStatus:%s), and retry.', (response && response.statusCode ? response.statusCode : '未知'));
                     getSessionData.call(self, url, sid, fn, headers, true);
                 }
             }).on('fail', function(err, response) {
                 if (doNotRetry) {
-                    logger.error("fetch session (id:" + sid + ") is failed (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
+                    logger.error('fetch session (id:' + sid + ') is failed (httpStatus:%s): ', (response && response.statusCode ? response.statusCode : '未知'), err);
                     return fn && fn(err);
                 } else {
-                    logger.warn("fetch session (id:" + sid + ") is failed (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
+                    logger.warn('fetch session (id:' + sid + ') is failed (httpStatus:%s), and retry.', (response && response.statusCode ? response.statusCode : '未知'));
                     getSessionData.call(self, url, sid, fn, headers, true);
                 }
             }).on('success', function(result, response) {
@@ -78,7 +78,7 @@ module.exports = function(session) {
 
                 if (response.statusCode == 200) {
                     try {
-                        logger.debug("fetched session sid(%s) successfully, taking %s s,status:%s,result:%s",
+                        logger.debug('fetched session sid(%s) successfully, taking %s s,status:%s,result:%s',
                             sid, elapseTime / 1000, response.statusCode, result);
                         result = JSON.parse(result);
                         if (!result.expires || Date.now() < result.expires) {
@@ -87,12 +87,12 @@ module.exports = function(session) {
                             self.destroy(sid, fn);
                         }
                     } catch (err) {
-                        logger.warn("fetch session (id:" + sid + ") is success, but session data was malformed, so destroy it, reason: ", err);
+                        logger.warn('fetch session (id:' + sid + ') is success, but session data was malformed, so destroy it, reason: ', err);
                         self.destroy(sid, fn);
                         return fn && fn(err);
                     }
                 } else if (response.statusCode == 204) {
-                    logger.debug("fetched session sid(%s) successfully, taking %s s,status:%s,response:%s",
+                    logger.debug('fetched session sid(%s) successfully, taking %s s,status:%s,response:%s',
                         sid, elapseTime / 1000, response.statusCode, JSON.stringify(response));
                     return fn && fn();
                 }
@@ -128,29 +128,29 @@ module.exports = function(session) {
          */
         function setSessionData(url, sid, storeObj, fn, headers, doNotRetry) {
             var self = this, startTime = Date.now();
-            logger.debug("update session (sid:" + sid + ")" + ",  storeObj:" + storeObj + ",headers:" + JSON.stringify(headers));
+            logger.debug('update session (sid:' + sid + ')' + ',  storeObj:' + storeObj + ',headers:' + JSON.stringify(headers));
             var instance = request.post(url, {
                 body: storeObj,
                 headers: headers
             }).on('error', function(err, response) {
                 if (doNotRetry) {
-                    logger.error("update session (sid:" + sid + ") has error (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
+                    logger.error('update session (sid:' + sid + ') has error (httpStatus:%s): ', (response && response.statusCode ? response.statusCode : '未知'), err);
                     return fn && fn(err);
                 } else {
-                    logger.warn("update session (sid:" + sid + ") has error (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
+                    logger.warn('update session (sid:' + sid + ') has error (httpStatus:%s), and retry.', (response && response.statusCode ? response.statusCode : '未知'));
                     setSessionData.call(self, url, sid, storeObj, fn, headers, true);
                 }
             }).on('fail', function(err, response) {
                 if (doNotRetry) {
-                    logger.error("update session (sid:" + sid + ") is failed (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
+                    logger.error('update session (sid:' + sid + ') is failed (httpStatus:%s): ', (response && response.statusCode ? response.statusCode : '未知'), err);
                     return fn && fn(err);
                 } else {
-                    logger.warn("update session (sid:" + sid + ") is failed (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
+                    logger.warn('update session (sid:' + sid + ') is failed (httpStatus:%s), and retry.', (response && response.statusCode ? response.statusCode : '未知'));
                     setSessionData.call(self, url, sid, storeObj, fn, headers, true);
                 }
             }).on('success', function() {
                 var elapseTime = Date.now() - startTime;
-                logger.debug("update session (sid:%s) successfully! taking %s s", sid, elapseTime / 1000);
+                logger.debug('update session (sid:%s) successfully! taking %s s', sid, elapseTime / 1000);
                 return fn && fn();
             });
         }
@@ -176,7 +176,7 @@ module.exports = function(session) {
             } else {
                 storeObj.expires = Date.now() + self.defaultExpirationTime;
             }
-            storeObj["expires-hr"] = (new Date(storeObj.expires)).toTimeString();
+            storeObj['expires-hr'] = (new Date(storeObj.expires)).toTimeString();
             try {
                 storeObj = JSON.stringify(storeObj);
             } catch (er) {
@@ -194,28 +194,28 @@ module.exports = function(session) {
 
         function removeSeesionData(url, sid, fn, headers, doNotRetry) {
             var self = this, startTime = Date.now();
-            logger.debug("removing session (sid:" + sid + ") , headers:" + JSON.stringify(headers));
+            logger.debug('removing session (sid:' + sid + ') , headers:' + JSON.stringify(headers));
             var instance = request.del(url, {
                 headers: headers
             }).on('error', function(err, response) {
                 if (doNotRetry) {
-                    logger.error("remove session (sid:" + sid + ") has error (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
+                    logger.error('remove session (sid:' + sid + ') has error (httpStatus:%s): ', (response && response.statusCode ? response.statusCode : '未知'), err);
                     return fn && fn(err);
                 } else {
-                    logger.warn("remove session (sid:" + sid + ") has error (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
+                    logger.warn('remove session (sid:' + sid + ') has error (httpStatus:%s), and retry.', (response && response.statusCode ? response.statusCode : '未知'));
                     removeSeesionData.call(self, url, sid, fn, headers, true);
                 }
             }).on('fail', function(err, response) {
                 if (doNotRetry) {
-                    logger.error("remove session (sid:" + sid + ") is failed (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
+                    logger.error('remove session (sid:' + sid + ') is failed (httpStatus:%s): ', (response && response.statusCode ? response.statusCode : '未知'), err);
                     return fn && fn(err);
                 } else {
-                    logger.warn("remove session (sid:" + sid + ") is failed (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
+                    logger.warn('remove session (sid:' + sid + ') is failed (httpStatus:%s), and retry.', (response && response.statusCode ? response.statusCode : '未知'));
                     removeSeesionData.call(self, url, sid, fn, headers, true);
                 }
             }).on('success', function() {
                 var elapseTime = Date.now() - startTime;
-                logger.debug("removed session (sid:%s) successfully! taking %s s", sid, elapseTime / 1000);
+                logger.debug('removed session (sid:%s) successfully! taking %s s', sid, elapseTime / 1000);
                 return fn && fn();
             });
         }
@@ -236,7 +236,7 @@ module.exports = function(session) {
             baseRequest: function(url, options, method) {
                 var startTime = Date.now();
                 var instance = request.rest[method](url, options, function(error, response, body) {
-                    logger.debug("baseRequest taking %ss", ( Date.now() - startTime) / 1000);
+                    logger.debug('baseRequest taking %ss', ( Date.now() - startTime) / 1000);
                     if (!error && response) {
                         if (parseInt(response.statusCode) >= 400) {
                             instance.emit('fail', body, response);
@@ -248,16 +248,16 @@ module.exports = function(session) {
                 return instance;
             },
             get: function(url, options) {
-                return RequestOverride.baseRequest(url, options, "get");
+                return RequestOverride.baseRequest(url, options, 'get');
             },
             post: function(url, options) {
-                return RequestOverride.baseRequest(url, options, "post");
+                return RequestOverride.baseRequest(url, options, 'post');
             },
             put: function(url, options) {
-                return RequestOverride.baseRequest(url, options, "put");
+                return RequestOverride.baseRequest(url, options, 'put');
             },
             del: function(url, options) {
-                return RequestOverride.baseRequest(url, options, "del");
+                return RequestOverride.baseRequest(url, options, 'del');
             }
         };
         // 重载 get 方法

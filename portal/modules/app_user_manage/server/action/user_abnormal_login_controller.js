@@ -3,23 +3,23 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/8/8.
  */
-"use strict";
+'use strict';
 
-var userAbnormalLogin = require("../service/user_abnormal_login.service");
+var userAbnormalLogin = require('../service/user_abnormal_login.service');
 // 获取用户详情变更记录
 exports.getUserAbnormalLogin = function(req, res) {
-    userAbnormalLogin.getUserAbnormalLogin(req, res, req.query).on("success", function(data) {
+    userAbnormalLogin.getUserAbnormalLogin(req, res, req.query).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 // 忽略异常登录地
 exports.ignoreAbnormalLogin = (req, res) => {
     var id = req.body.id;
-    userAbnormalLogin.ignoreAbnormalLogin(req, res, id).on("success", (data) => {
+    userAbnormalLogin.ignoreAbnormalLogin(req, res, id).on('success', (data) => {
         res.status(200).json(data);
-    }).on("error", (codeMessage) => {
+    }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

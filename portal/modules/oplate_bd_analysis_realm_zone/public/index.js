@@ -3,29 +3,29 @@
  * 说明：统计分析-安全域分析-当前安全域地域分析界面
  */
 //控制器
-var AnalysisRealmZoneActions = require("./action/analysis-realm-zone-actions");
+var AnalysisRealmZoneActions = require('./action/analysis-realm-zone-actions');
 //数据中心
-var AnalysisRealmZoneStore = require("./store/analysis-realm-zone-store");
+var AnalysisRealmZoneStore = require('./store/analysis-realm-zone-store');
 //中国地图
-var ChinaMap = require("../../../components/china-map");
+var ChinaMap = require('../../../components/china-map');
 //排行榜
-var AnalysisRankList = require("../../../components/analysis-rank-list");
+var AnalysisRankList = require('../../../components/analysis-rank-list');
 //滚动条
 var GeminiScrollbar = require('../../../components/react-gemini-scrollbar');
 //加载中
-var Spinner = require("../../../components/spinner");
+var Spinner = require('../../../components/spinner');
 //没有数据
-var NoData = require("../../../components/analysis-nodata");
+var NoData = require('../../../components/analysis-nodata');
 //classNames
-import classNames from "classnames";
+import classNames from 'classnames';
 //日期选择器
-import DatePicker from "../../../components/datepicker";
+import DatePicker from '../../../components/datepicker';
 //顶部导航
-var TopNav = require("../../../components/top-nav");
+var TopNav = require('../../../components/top-nav');
 //统计分析的菜单
-var AnalysisMenu = require("../../../components/analysis_menu");
+var AnalysisMenu = require('../../../components/analysis_menu');
 //css
-require("./css/index.less");
+require('./css/index.less');
 
 
 
@@ -36,9 +36,9 @@ function mapFormatter(obj) {
         percent = '0%';
     }
     return [
-        Intl.get("oplate_bd_analysis_realm_zone.1","省份") + '：' + obj.name ,
-        Intl.get("oplate_bd_analysis_realm_industry.6","个数") + '：' + (isNaN(obj.value) ? 0 : obj.value),
-        Intl.get("oplate_bd_analysis_realm_industry.7","占比") + '：' + (isNaN(obj.value) ? '0%' : percent + '%')
+        Intl.get('oplate_bd_analysis_realm_zone.1','省份') + '：' + obj.name ,
+        Intl.get('oplate_bd_analysis_realm_industry.6','个数') + '：' + (isNaN(obj.value) ? 0 : obj.value),
+        Intl.get('oplate_bd_analysis_realm_industry.7','占比') + '：' + (isNaN(obj.value) ? '0%' : percent + '%')
     ].join('<br/>');
 }
 
@@ -153,11 +153,11 @@ var OPLATE_BD_ANALYSIS_REALM_ZONE = React.createClass({
     //时间改变的时候，触发重新查询
     onSelectDate: function(startTime , endTime , range , label) {
         if(range === 'all') {
-            AnalysisRealmZoneActions.setRankListTitle(Intl.get("oplate_bd_analysis_realm_establish.5", "当前安全域开通总数"));
+            AnalysisRealmZoneActions.setRankListTitle(Intl.get('oplate_bd_analysis_realm_establish.5', '当前安全域开通总数'));
         } else if(range === 'custom'){
-            AnalysisRealmZoneActions.setRankListTitle(Intl.get("oplate_bd_analysis_realm_establish.6", "安全域开通总数"));
+            AnalysisRealmZoneActions.setRankListTitle(Intl.get('oplate_bd_analysis_realm_establish.6', '安全域开通总数'));
         } else {
-            AnalysisRealmZoneActions.setRankListTitle(label + Intl.get("oplate_bd_analysis_realm_establish.6","安全域开通总数"));
+            AnalysisRealmZoneActions.setRankListTitle(label + Intl.get('oplate_bd_analysis_realm_establish.6','安全域开通总数'));
         }
         //更改store里的开始时间
         AnalysisRealmZoneActions.setStartTime(startTime);
@@ -225,12 +225,12 @@ var OPLATE_BD_ANALYSIS_REALM_ZONE = React.createClass({
                                     disableDateAfterToday={true}
                                     range="all"
                                     onSelect={this.onSelectDate}>
-                                    <DatePicker.Option value="all">{Intl.get("user.time.all","全部时间")}</DatePicker.Option>
-                                    <DatePicker.Option value="week">{Intl.get("common.time.unit.week","周")}</DatePicker.Option>
-                                    <DatePicker.Option value="month">{Intl.get("common.time.unit.month","月")}</DatePicker.Option>
-                                    <DatePicker.Option value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
-                                    <DatePicker.Option value="year">{Intl.get("common.time.unit.year","年")}</DatePicker.Option>
-                                    <DatePicker.Option value="custom">{Intl.get("user.time.custom","自定义")}</DatePicker.Option>
+                                    <DatePicker.Option value="all">{Intl.get('user.time.all','全部时间')}</DatePicker.Option>
+                                    <DatePicker.Option value="week">{Intl.get('common.time.unit.week','周')}</DatePicker.Option>
+                                    <DatePicker.Option value="month">{Intl.get('common.time.unit.month','月')}</DatePicker.Option>
+                                    <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                                    <DatePicker.Option value="year">{Intl.get('common.time.unit.year','年')}</DatePicker.Option>
+                                    <DatePicker.Option value="custom">{Intl.get('user.time.custom','自定义')}</DatePicker.Option>
                                 </DatePicker>
                             </div>
                             {/*如果处于loading状态，不显示地图,非loading状态，显示地图*/}

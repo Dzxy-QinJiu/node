@@ -4,14 +4,14 @@
  * Created by 肖金峰 on 2016/2/3.
  */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var salesStageRestApis = {
-    getSalesStageList: "/rest/customer/v2/salestage",
-    addSalesStage: "/rest/customer/v2/salestage",
-    editSalesStage: "/rest/customer/v2/salestage",
-    deleteSalesStage: "/rest/customer/v2/salestage"
+    getSalesStageList: '/rest/customer/v2/salestage',
+    addSalesStage: '/rest/customer/v2/salestage',
+    editSalesStage: '/rest/customer/v2/salestage',
+    deleteSalesStage: '/rest/customer/v2/salestage'
 };
 exports.urls = salesStageRestApis;
 
@@ -35,7 +35,7 @@ exports.addSalesStage = function(req, res, salesStage) {
         {
             success: function(eventEmitter, data) {
                 //处理数据
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -51,7 +51,7 @@ exports.editSalesStage = function(req, res, salesStageArray) {
         {
             success: function(eventEmitter, data) {
                 //处理数据
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -66,7 +66,7 @@ exports.deleteSalesStage = function(req, res, idsArray) {
         idsArray, {
             success: function(eventEmitter, data) {
                 //处理数据
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         }
     );

@@ -1,10 +1,10 @@
-require("./index.less");
+require('./index.less');
 var TitleAndNum = React.createClass({
     getDefaultProps: function() {
         return {
-            left_title: "新增用户",
-            right_title: "新增用户量",
-            number: "1132",
+            left_title: '新增用户',
+            right_title: '新增用户量',
+            number: '1132',
             hideRightPart: false
         };
     },

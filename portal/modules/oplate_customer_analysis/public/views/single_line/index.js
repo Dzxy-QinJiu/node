@@ -1,15 +1,15 @@
 /**
  * 线图
  */
-var echarts = require("echarts-eefung");
-require("./index.less");
-var Color = require("color");
-var emitter = require("../../utils/emitter");
-var Spinner = require("../../../../../components/spinner");
-var immutable = require("immutable");
+var echarts = require('echarts-eefung');
+require('./index.less');
+var Color = require('color');
+var emitter = require('../../utils/emitter');
+var Spinner = require('../../../../../components/spinner');
+var immutable = require('immutable');
 var COLORMULTIPLE = ['#1790cf','#1bb2d8'];
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 
 var SingleLineChart = React.createClass({
@@ -17,7 +17,7 @@ var SingleLineChart = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: Intl.get("oplate_customer_analysis.14", "客户统计"),
+            title: Intl.get('oplate_customer_analysis.14', '客户统计'),
             width: '100%',
             height: 214,
             resultType: 'loading',
@@ -38,7 +38,7 @@ var SingleLineChart = React.createClass({
             };
         }
         var legend = _.pluck(this.props.legend , 'name');
-        legend.push( Intl.get("oplate_customer_analysis.15", "客户总数"));
+        legend.push( Intl.get('oplate_customer_analysis.15', '客户总数'));
         return {
             show: false,
             data: legend
@@ -185,9 +185,9 @@ var SingleLineChart = React.createClass({
                 });
                 this.echartInstance = null;
             }
-            $(this.refs.chart).html("<div class='nodata'>" + Intl.get("common.no.data", "暂无数据") + "</div>");
+            $(this.refs.chart).html('<div class=\'nodata\'>' + Intl.get('common.no.data', '暂无数据') + '</div>');
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
         }
     },
     componentDidMount: function() {

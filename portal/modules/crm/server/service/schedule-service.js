@@ -1,8 +1,8 @@
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var restApis = {
     //日程管理相关路径
-    scheduleApis: "/rest/base/v1/schedule/",
+    scheduleApis: '/rest/base/v1/schedule/',
 };
 exports.restUrls = restApis;
 //获取日程管理列表
@@ -49,7 +49,7 @@ exports.deleteSchedule = function(req, res) {
 exports.handleScheduleStatus = function(req, res) {
     return restUtil.authRest.put(
         {
-            url: restApis.scheduleApis + "handle/" + req.params.scheduleId + '/' + req.params.status,
+            url: restApis.scheduleApis + 'handle/' + req.params.scheduleId + '/' + req.params.status,
             req: req,
             res: res
         }, null);

@@ -3,29 +3,29 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/4/17.
  */
-require("../../css/customer-users.less");
-import {Button, Checkbox, Alert} from "antd";
-import Trace from "LIB_DIR/trace";
-import Spinner from "CMP_DIR/spinner";
-import {RightPanel} from "CMP_DIR/rightPanel";
-import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
+require('../../css/customer-users.less');
+import {Button, Checkbox, Alert} from 'antd';
+import Trace from 'LIB_DIR/trace';
+import Spinner from 'CMP_DIR/spinner';
+import {RightPanel} from 'CMP_DIR/rightPanel';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
-import userData from "PUB_DIR/sources/user-data";
-import ApplyOpenAppPanel from "MOD_DIR/app_user_manage/public/views/v2/apply-user";
-import CrmUserApplyForm from "./crm-user-apply-form";
-import crmAjax from "../../ajax";
-import appAjaxTrans from "MOD_DIR/common/public/ajax/app";
-import classNames from "classnames";
-import NoDataTip from "../components/no-data-tip";
-import ErrorDataTip from "../components/error-data-tip";
+import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
+import userData from 'PUB_DIR/sources/user-data';
+import ApplyOpenAppPanel from 'MOD_DIR/app_user_manage/public/views/v2/apply-user';
+import CrmUserApplyForm from './crm-user-apply-form';
+import crmAjax from '../../ajax';
+import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
+import classNames from 'classnames';
+import NoDataTip from '../components/no-data-tip';
+import ErrorDataTip from '../components/error-data-tip';
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
-    STOP_USE: "stopUse",//停用
-    DELAY: "Delay",//延期
-    EDIT_PASSWORD: "editPassword",//修改密码
-    OTHER: "other",//其他类型
-    OPEN_APP: "openAPP"//开通应用
+    STOP_USE: 'stopUse',//停用
+    DELAY: 'Delay',//延期
+    EDIT_PASSWORD: 'editPassword',//修改密码
+    OTHER: 'other',//其他类型
+    OPEN_APP: 'openAPP'//开通应用
 };
 
 const LAYOUT = {
@@ -35,11 +35,11 @@ const LAYOUT = {
 };
 //用户类型的转换对象
 const USER_TYPE_MAP = {
-    "正式用户": Intl.get("common.official", "签约"),
-    "试用用户": Intl.get("common.trial", "试用"),
-    "special": Intl.get("user.type.presented", "赠送"),
-    "training": Intl.get("user.type.train", "培训"),
-    "internal": Intl.get("user.type.employee", "员工")
+    '正式用户': Intl.get('common.official', '签约'),
+    '试用用户': Intl.get('common.trial', '试用'),
+    'special': Intl.get('user.type.presented', '赠送'),
+    'training': Intl.get('user.type.train', '培训'),
+    'internal': Intl.get('user.type.employee', '员工')
 };
 class CustomerUsers extends React.Component {
     constructor(props) {
@@ -49,9 +49,9 @@ class CustomerUsers extends React.Component {
             pageNum: 1,
             crmUserList: [],
             total: 0,
-            errorMsg: "",//获取客户开通的用户列表的错误提示
+            errorMsg: '',//获取客户开通的用户列表的错误提示
             curCustomer: this.props.curCustomer,
-            applyType: "",//申请类型
+            applyType: '',//申请类型
             listenScrollBottom: true,//是否监听滚动
             appList: []
         };
@@ -109,7 +109,7 @@ class CustomerUsers extends React.Component {
         }
         this.setState({
             isLoading: false,
-            errorMsg: "",
+            errorMsg: '',
             pageNum: this.state.pageNum,
             crmUserList: crmUserList,
             total: this.state.total,
@@ -137,7 +137,7 @@ class CustomerUsers extends React.Component {
     }
 
     closeRightPanel() {
-        this.setState({applyType: ""});
+        this.setState({applyType: ''});
         if (_.isFunction(this.props.closeOpenAppPanel)) {
             this.props.closeOpenAppPanel();
         }
@@ -208,16 +208,16 @@ class CustomerUsers extends React.Component {
     }
 
     renderUserAppItem(app) {
-        let appName = app && app.app_name || "";
-        let overDraftCls = classNames("user-app-over-draft", {"user-app-stopped-status": app.is_disabled === "true"});
+        let appName = app && app.app_name || '';
+        let overDraftCls = classNames('user-app-over-draft', {'user-app-stopped-status': app.is_disabled === 'true'});
         let lastLoginTime = TimeUtil.getTimeStrFromNow(app.last_login_time);
         return (
             <span>
                 {app.app_logo ?
-                    (<img className="crm-user-app-logo" src={app.app_logo || ""} alt={appName}/>)
+                    (<img className="crm-user-app-logo" src={app.app_logo || ''} alt={appName}/>)
                     : (<span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>)
                 }
-                <span className="user-app-name">{appName || ""}</span>
+                <span className="user-app-name">{appName || ''}</span>
                 {/*<span className="user-app-type">{app.user_type ? USER_TYPE_MAP[app.user_type] : ""}</span>*/}
                 <span className="user-last-login">{lastLoginTime}</span>
                 <span className={overDraftCls}>{this.renderOverDraft(app)}</span>
@@ -227,7 +227,7 @@ class CustomerUsers extends React.Component {
     //用户的应用
     getUserAppOptions(userObj, isShowCheckbox) {
         let appList = userObj.apps;
-        let userId = userObj.user ? userObj.user.user_id : "";
+        let userId = userObj.user ? userObj.user.user_id : '';
         if (_.isArray(appList) && appList.length) {
             return appList.map((app) => {
                 if (isShowCheckbox) {
@@ -246,36 +246,36 @@ class CustomerUsers extends React.Component {
 
     //获取到期后的状态
     getOverDraftStatus(over_draft) {
-        let status = Intl.get("user.expire.immutability", "到期不变");
-        if (over_draft === "1") {
-            status = Intl.get("user.expire.stop", "到期停用");
-        } else if (over_draft === "2") {
-            status = Intl.get("user.expire.degrade", "到期降级");
+        let status = Intl.get('user.expire.immutability', '到期不变');
+        if (over_draft === '1') {
+            status = Intl.get('user.expire.stop', '到期停用');
+        } else if (over_draft === '2') {
+            status = Intl.get('user.expire.degrade', '到期降级');
         }
         return status;
     }
 
     getApplyBtnType(applyType) {
-        return this.state.applyType === applyType ? "primary" : "";
+        return this.state.applyType === applyType ? 'primary' : '';
     }
 
     handleMenuClick(applyType) {
-        let traceDescr = "";
+        let traceDescr = '';
         if (applyType === APPLY_TYPES.STOP_USE) {
-            traceDescr = "打开申请停用面板";
+            traceDescr = '打开申请停用面板';
         } else if (applyType === APPLY_TYPES.EDIT_PASSWORD) {
-            traceDescr = "打开申请修改密码面板";
+            traceDescr = '打开申请修改密码面板';
         } else if (applyType === APPLY_TYPES.DELAY) {
-            traceDescr = "打开申请延期面板";
+            traceDescr = '打开申请延期面板';
         } else if (applyType === APPLY_TYPES.OTHER) {
-            traceDescr = "打开申请其他类型面板";
+            traceDescr = '打开申请其他类型面板';
         } else if (applyType === APPLY_TYPES.OPEN_APP) {
-            traceDescr = "打开申请开通应用面板";
+            traceDescr = '打开申请开通应用面板';
             if (_.isFunction(this.props.showOpenAppForm)) {
                 this.props.showOpenAppForm(applyType);
             }
         }
-        Trace.traceEvent("客户详情", traceDescr);
+        Trace.traceEvent('客户详情', traceDescr);
         this.setState({applyType: applyType});
     }
 
@@ -310,23 +310,23 @@ class CustomerUsers extends React.Component {
                 <Button type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
                     onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
                     disabled={!applyFlag}>
-                    {Intl.get("common.stop", "停用")}
+                    {Intl.get('common.stop', '停用')}
                 </Button>
                 <Button type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
                     onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!applyFlag}>
-                    {Intl.get("crm.user.delay", "延期")}
+                    {Intl.get('crm.user.delay', '延期')}
                 </Button>
                 <Button type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
                     onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)} disabled={!applyFlag}>
-                    {Intl.get("common.edit.password", "修改密码")}
+                    {Intl.get('common.edit.password', '修改密码')}
                 </Button>
                 <Button type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
                     onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!applyFlag}>
-                    {Intl.get("crm.186", "其他")}
+                    {Intl.get('crm.186', '其他')}
                 </Button>
                 <Button type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
                     onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
-                    {Intl.get("user.app.open", "开通应用")}
+                    {Intl.get('user.app.open', '开通应用')}
                 </Button>
             </div>);
     }
@@ -353,12 +353,12 @@ class CustomerUsers extends React.Component {
     }
 
     renderOverDraft(app) {
-        if (app.is_disabled === "true") {
-            return Intl.get("user.status.stopped", "已停用");
+        if (app.is_disabled === 'true') {
+            return Intl.get('user.status.stopped', '已停用');
         } else {
             let end_time = app.end_time;
             if (end_time == 0) {
-                return Intl.get("user.overdue.not.forever", "永不过期");
+                return Intl.get('user.overdue.not.forever', '永不过期');
             } else if (end_time) {
                 const over_draft_status = this.getOverDraftStatus(app.over_draft);
                 let duration = moment.duration(end_time - moment().valueOf());
@@ -371,24 +371,24 @@ class CustomerUsers extends React.Component {
                         over_draft_days += duration.years() * 365;
                     }
                     if (over_draft_days > 0) {
-                        return `${Intl.get("oplate.user.analysis.25", "{count}天后", {count: over_draft_days})}${over_draft_status}`;
+                        return `${Intl.get('oplate.user.analysis.25', '{count}天后', {count: over_draft_days})}${over_draft_status}`;
                     } else {
                         let timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(duration / 1000));
-                        let timeDescr = "";
+                        let timeDescr = '';
                         if (timeObj.hours) {//xx小时
-                            timeDescr = timeObj.hours + Intl.get("user.time.hour", "小时");
+                            timeDescr = timeObj.hours + Intl.get('user.time.hour', '小时');
                         } else if (timeObj.minutes) {//xx分
-                            timeDescr = timeObj.minutes + Intl.get("common.app.minute", "分钟");
+                            timeDescr = timeObj.minutes + Intl.get('common.app.minute', '分钟');
                         } else if (timeObj.second) {//xx秒
-                            timeDescr = timeObj.minutes + Intl.get("user.time.second", "秒");
+                            timeDescr = timeObj.minutes + Intl.get('user.time.second', '秒');
                         }
-                        return `${Intl.get("oplate.user.analysis.40", "{time}后", {time: timeDescr})}${over_draft_status}`;
+                        return `${Intl.get('oplate.user.analysis.40', '{time}后', {time: timeDescr})}${over_draft_status}`;
                     }
                 } else {
-                    return Intl.get("user.status.expired", "已到期");
+                    return Intl.get('user.status.expired', '已到期');
                 }
             } else {
-                return "";
+                return '';
             }
         }
     }
@@ -396,10 +396,10 @@ class CustomerUsers extends React.Component {
     renderUserAppTitle() {
         return (
             <span>
-                <span className="user-app-name">{Intl.get("sales.frontpage.open.app", "已开通应用")}</span>
+                <span className="user-app-name">{Intl.get('sales.frontpage.open.app', '已开通应用')}</span>
                 {/*<span className="user-app-type">{Intl.get("user.user.type", "用户类型")}</span>*/}
-                <span className="user-last-login">{Intl.get("user.last.login", "最近登录")}</span>
-                <span className="user-app-over-draft">{Intl.get("sales.frontpage.expired.date", "到期情况")}</span>
+                <span className="user-last-login">{Intl.get('user.last.login', '最近登录')}</span>
+                <span className="user-app-over-draft">{Intl.get('sales.frontpage.expired.date', '到期情况')}</span>
             </span>
         );
     }
@@ -429,7 +429,7 @@ class CustomerUsers extends React.Component {
                             }
                         </div>
                         <div
-                            className={classNames("crm-user-apps-container", {"no-checkbox-apps-container": !isShowCheckbox})}>
+                            className={classNames('crm-user-apps-container', {'no-checkbox-apps-container': !isShowCheckbox})}>
                             <div className="crm-user-apps">
                                 <div className="apps-top-title">
                                     {isShowCheckbox ? (
@@ -447,7 +447,7 @@ class CustomerUsers extends React.Component {
             });
         } else {
             //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get("common.no.data", "暂无数据")}/>);
+            return (<NoDataTip tipContent={Intl.get('common.no.data', '暂无数据')}/>);
         }
     }
 
@@ -471,22 +471,22 @@ class CustomerUsers extends React.Component {
         }
         let divHeight = $(window).height() - LAYOUT.TOP_NAV_HEIGHT - LAYOUT.TOTAL_HEIGHT;
         //减头部的客户基本信息高度
-        divHeight -= parseInt($(".basic-info-contianer").outerHeight(true));
-        if ($(".phone-alert-modal-title").size()) {
-            divHeight -= $(".phone-alert-modal-title").outerHeight(true);
+        divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
+        if ($('.phone-alert-modal-title').size()) {
+            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
         }
         //减去申请延期\停用等表单的高度
         if (this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP) {
             divHeight -= LAYOUT.APPLY_FORM_HEIGHT;
         }
-        let userNumClass = classNames("user-total-tip", {"user-total-active": !this.props.isMerge && userNum});
+        let userNumClass = classNames('user-total-tip', {'user-total-active': !this.props.isMerge && userNum});
         return (<div className="crm-user-list-container" data-tracename="通用户页面">
             <div className="user-number">
                 <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
                     <ReactIntl.FormattedMessage
                         id="sales.home.total.count"
-                        defaultMessage={`共{count}个`}
-                        values={{"count": userNum || "0"}}
+                        defaultMessage={'共{count}个'}
+                        values={{'count': userNum || '0'}}
                     />
                 </span>
                 {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()

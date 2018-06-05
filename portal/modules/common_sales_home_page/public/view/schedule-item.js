@@ -3,11 +3,11 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/15.
  */
-require("../css/schedule-item.less");
-import SalesHomePageAction from "../action/sales-home-actions";
-import {Button, message} from "antd";
-import userData from "PUB_DIR/sources/user-data";
-import ContactItem from "./contact-item";
+require('../css/schedule-item.less');
+import SalesHomePageAction from '../action/sales-home-actions';
+import {Button, message} from 'antd';
+import userData from 'PUB_DIR/sources/user-data';
+import ContactItem from './contact-item';
 var user_id = userData.getUserData().user_id;
 class ScheduleItem extends React.Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class ScheduleItem extends React.Component {
         this.state = {
             scheduleItemDetail: this.props.scheduleItemDetail,
             handleStatusLoading: false,//正在提交修改日程的状态
-            isEdittingItemId: "",//正在修改状态的那条日程的id
+            isEdittingItemId: '',//正在修改状态的那条日程的id
         };
     }
 
@@ -35,7 +35,7 @@ class ScheduleItem extends React.Component {
         //点击日程列表中的标记为完成
         const reqData = {
             id: scheduleId,
-            status: "handle",
+            status: 'handle',
         };
         this.setState({
             handleStatusLoading: true,
@@ -44,7 +44,7 @@ class ScheduleItem extends React.Component {
         SalesHomePageAction.handleScheduleStatus(reqData, (resData) => {
             this.setState({
                 handleStatusLoading: false,
-                isEdittingItemId: ""
+                isEdittingItemId: ''
             });
             if (_.isBoolean(resData) && resData) {
                 //标记为完成后，把样式改成标记完成的样式
@@ -53,7 +53,7 @@ class ScheduleItem extends React.Component {
                     id: scheduleId
                 });
             } else {
-                message.error(resData || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败"));
+                message.error(resData || Intl.get('crm.failed.alert.todo.list', '修改待办事项状态失败'));
             }
         });
     }
@@ -62,11 +62,11 @@ class ScheduleItem extends React.Component {
         var schedule = this.state.scheduleItemDetail;
         //联系人的相关信息
         var contacts = schedule.contacts ? schedule.contacts : [];
-        var contactTime = moment(schedule.start_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) + "-" + moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT);
+        var contactTime = moment(schedule.start_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) + '-' + moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT);
         return (
             <div className="schedule-item-container customer-detail-item">
                 {this.props.isShowTopTitle ? <div className="schedule-top-panel">
-                    {Intl.get("sales.fromtpage.set.contact.time", "原定于{initialtime}联系", {initialtime: contactTime})}
+                    {Intl.get('sales.fromtpage.set.contact.time', '原定于{initialtime}联系', {initialtime: contactTime})}
                 </div> : null}
                 <div className="schedule-content-panel">
                     <div className="schedule-title">
@@ -79,10 +79,10 @@ class ScheduleItem extends React.Component {
 
                             {schedule.topic || schedule.customer_name}
                         </span>
-                        {user_id == schedule.member_id && schedule.status !== "handle" ?
+                        {user_id == schedule.member_id && schedule.status !== 'handle' ?
                             <Button type="primary" data-tracename="处理日程" size="small"
                                 onClick={this.handleFinishedSchedule.bind(this, schedule.id)}
-                            >{Intl.get("sales.frontpage.schedule.has.finished", "完成了")}</Button> : null}
+                            >{Intl.get('sales.frontpage.schedule.has.finished', '完成了')}</Button> : null}
 
                     </div>
                     <div className="schedule-content">

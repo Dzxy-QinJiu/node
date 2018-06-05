@@ -1,15 +1,15 @@
-var RightContent = require("../../../components/privilege/right-content");
-var RightCardsContainer = require("../../../components/rightCardsContainer");
-var rightPanelUtil = require("../../../components/rightPanel");
+var RightContent = require('../../../components/privilege/right-content');
+var RightCardsContainer = require('../../../components/rightCardsContainer');
+var rightPanelUtil = require('../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
-var RealmStore = require("./store/realm-store");
-var RealmAction = require("./action/realm-actions");
-var AddRealmForm = require("./views/realm-form");
-var OwnerForm = require("./views/owner-form");
-var RealmInfo = require("./views/realm-info");
-var Spinner = require("../../../components/spinner");
-var batchPushEmitter = require("../../../public/sources/utils/emitters").batchPushEmitter;
-import Trace from "LIB_DIR/trace";
+var RealmStore = require('./store/realm-store');
+var RealmAction = require('./action/realm-actions');
+var AddRealmForm = require('./views/realm-form');
+var OwnerForm = require('./views/owner-form');
+var RealmInfo = require('./views/realm-info');
+var Spinner = require('../../../components/spinner');
+var batchPushEmitter = require('../../../public/sources/utils/emitters').batchPushEmitter;
+import Trace from 'LIB_DIR/trace';
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
 //构造搜索条件,搜索关键字：安全域名称、域名
@@ -30,29 +30,29 @@ var RealmManage = React.createClass({
         this.setState(RealmStore.getState());
     },
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
         RealmStore.listen(this.onChange);
         //异步创建安全域
         batchPushEmitter.on(batchPushEmitter.TASK_REALM_CERATE, RealmAction.createRealms);
     },
        
     componentWillUnmount: function() {
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
         RealmStore.unlisten(this.onChange);
         batchPushEmitter.removeListener(batchPushEmitter.TASK_REALM_CERATE, RealmAction.createRealms);
     },
     events: {
         showRealmForm: function(type) {
-            if(type === "add") {
-                Trace.traceEvent("安全域管理","点击添加安全域按钮");
+            if(type === 'add') {
+                Trace.traceEvent('安全域管理','点击添加安全域按钮');
             }
             //type：“edit”/"add"
-            if (type === "add") {
+            if (type === 'add') {
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
                 focusTimeout = setTimeout(function() {
-                    $("#realmName").focus();
+                    $('#realmName').focus();
                 }, 600);
             }
             RealmAction.showRealmForm(type);
@@ -97,8 +97,8 @@ var RealmManage = React.createClass({
             RealmAction.setCurRealm(realm.id);
             //获取安全域的详情
             RealmAction.getCurRealmById(realm.id);
-            if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
-                $(".right-panel-content").removeClass("right-panel-content-slide");
+            if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
+                $('.right-panel-content').removeClass('right-panel-content-slide');
                 if (openTimeout) {
                     clearTimeout(openTimeout);
                 }
@@ -110,7 +110,7 @@ var RealmManage = React.createClass({
             }
         },
         searchEvent: function(searchContent) {
-            Trace.traceEvent($(this.getDOMNode()).find(".search-input-block"),"按安全域/域名搜索");
+            Trace.traceEvent($(this.getDOMNode()).find('.search-input-block'),'按安全域/域名搜索');
             RealmAction.updateCurPage(1);
             RealmAction.updateSearchContent(searchContent);
             var searchObj = {
@@ -147,17 +147,17 @@ var RealmManage = React.createClass({
                 name: realm.company,
                 image: realm.image,
                 realmName: {
-                    label: Intl.get("realm.name", "域名") + ':',
+                    label: Intl.get('realm.name', '域名') + ':',
                     value: realm.realmName,
                     showOnCard: true
                 },
                 phone: {
-                    label: Intl.get("common.phone", "电话") + ':',
+                    label: Intl.get('common.phone', '电话') + ':',
                     value: realm.phone,
                     showOnCard: true
                 },
                 profession: {
-                    label: Intl.get("realm.industry", "行业") + ':',
+                    label: Intl.get('realm.industry', '行业') + ':',
                     value: realm.profession,
                     showOnCard: true
                 },
@@ -170,9 +170,9 @@ var RealmManage = React.createClass({
     },
     render: function() {
         var currentRealm = JSON.parse(JSON.stringify(this.state.currentRealm));
-        var owner = currentRealm && currentRealm.owner || "";
+        var owner = currentRealm && currentRealm.owner || '';
         delete currentRealm.owner;
-        var modalType = Intl.get("user.info.realm", "安全域");
+        var modalType = Intl.get('user.info.realm', '安全域');
         var firstLoading = this.state.isLoading;
         return (
             <div className="realm_manage_style">
@@ -191,7 +191,7 @@ var RealmManage = React.createClass({
                             listTipMsg={this.state.realmListTipMsg}
                             curPage={this.state.curPage}
                             pageSize={this.state.pageSize}
-                            searchPlaceHolder={Intl.get("realm.search.placeholder", "安全域名称/域名")}
+                            searchPlaceHolder={Intl.get('realm.search.placeholder', '安全域名称/域名')}
                             updatePageSize={this.events.updatePageSize.bind(this)}
                             showCardForm={this.events.showRealmForm}
                             editCard={this.events.editRealm}
@@ -200,7 +200,7 @@ var RealmManage = React.createClass({
                             searchEvent={this.events.searchEvent.bind(this)}
                             removeFailRealm={this.events.removeFailRealm.bind(this)}
                             modalType={modalType}
-                            addRoleStr={"REALM_MANAGE_ADD_REALM"}
+                            addRoleStr={'REALM_MANAGE_ADD_REALM'}
                         >
                             <RightPanel className="white-space-nowrap" showFlag={this.state.rightPanelShow}>
                                 <RealmInfo

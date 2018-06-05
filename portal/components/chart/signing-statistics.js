@@ -2,9 +2,9 @@
  * 签单情况统计表
  */
 
-import { AntcTable } from "antc";
-import { parseAmount, exportToCsv } from "LIB_DIR/func";
-const querystring = require("querystring");
+import { AntcTable } from 'antc';
+import { parseAmount, exportToCsv } from 'LIB_DIR/func';
+const querystring = require('querystring');
 
 //团队分组列列宽
 const TEAM_COLUMN_WIDTH = 380;
@@ -16,7 +16,7 @@ class SigningStatistics extends React.Component {
             data: [],
             columns: [],
             //表格横向滚动时，滚动区域的宽度
-            scrollX: "100%",
+            scrollX: '100%',
         };
     }
 
@@ -35,11 +35,11 @@ class SigningStatistics extends React.Component {
     //将数据处理成适合表格渲染的格式
     processData(data) {
         const processedData = data.map((monthData, index) => {
-            let monthName = "";
+            let monthName = '';
             if (monthData.timestamp) {
-                monthName = (moment(monthData.timestamp).month() + 1) + Intl.get("common.time.unit.month", "月");
+                monthName = (moment(monthData.timestamp).month() + 1) + Intl.get('common.time.unit.month', '月');
             } else {
-                monthName = Intl.get("common.summation", "合计");
+                monthName = Intl.get('common.summation', '合计');
             }
 
             let processedMonthData = {
@@ -50,9 +50,9 @@ class SigningStatistics extends React.Component {
 
             const teams = this.sortTeams(monthData.teams);
             teams.forEach((team, index) => {
-                processedMonthData["amount" + index] = parseAmount( team.amount.toFixed(2) );
-                processedMonthData["gross_profit" + index] = parseAmount( team.gross_profit.toFixed(2) );
-                processedMonthData["gross_profit_margin" + index] = team.gross_profit_margin + "%";
+                processedMonthData['amount' + index] = parseAmount( team.amount.toFixed(2) );
+                processedMonthData['gross_profit' + index] = parseAmount( team.gross_profit.toFixed(2) );
+                processedMonthData['gross_profit_margin' + index] = team.gross_profit_margin + '%';
                 processedMonthData.teamNames.push(team.name);
             });
     
@@ -65,11 +65,11 @@ class SigningStatistics extends React.Component {
     //获取表格列定义
     getColumns(data) {
         let columns = [{
-            title: Intl.get("common.time.unit.the_sweep_month", "月份"),
-            fixed: "left",
+            title: Intl.get('common.time.unit.the_sweep_month', '月份'),
+            fixed: 'left',
             children: [{
-                title: "",
-                dataIndex: "month",
+                title: '',
+                dataIndex: 'month',
                 width: 50,
             }]
         }];
@@ -80,19 +80,19 @@ class SigningStatistics extends React.Component {
             return {
                 title: team.name,
                 children: [{
-                    title: Intl.get("contract.25", "合同额"),
-                    dataIndex: "amount" + index,
-                    className: "number-value clickable",
+                    title: Intl.get('contract.25', '合同额'),
+                    dataIndex: 'amount' + index,
+                    className: 'number-value clickable',
                     onCellClick: this.handleCellClick.bind(this, index),
                 }, {
-                    title: Intl.get("contract.27", "合同毛利"),
-                    dataIndex: "gross_profit" + index,
-                    className: "number-value clickable",
+                    title: Intl.get('contract.27', '合同毛利'),
+                    dataIndex: 'gross_profit' + index,
+                    className: 'number-value clickable',
                     onCellClick: this.handleCellClick.bind(this, index),
                 }, {
-                    title: Intl.get("common.gross_profit_rate", "毛利率"),
-                    dataIndex: "gross_profit_margin" + index,
-                    className: "number-value clickable",
+                    title: Intl.get('common.gross_profit_rate', '毛利率'),
+                    dataIndex: 'gross_profit_margin' + index,
+                    className: 'number-value clickable',
                     onCellClick: this.handleCellClick.bind(this, index),
                 }]
             };
@@ -107,7 +107,7 @@ class SigningStatistics extends React.Component {
     sortTeams(teams) {
         let processedTeams = JSON.parse(JSON.stringify(teams));
         const sum = processedTeams.splice(-1);
-        processedTeams = _.sortBy(processedTeams, "name");
+        processedTeams = _.sortBy(processedTeams, 'name');
         processedTeams = processedTeams.concat(sum);
         return processedTeams;
     }
@@ -120,8 +120,8 @@ class SigningStatistics extends React.Component {
             team_name: teamName,
         };
 
-        let targetUrl = "/contract/list";
-        targetUrl += "?" + querystring.stringify(paramObj);
+        let targetUrl = '/contract/list';
+        targetUrl += '?' + querystring.stringify(paramObj);
 
         window.open(targetUrl);
     }
@@ -135,10 +135,10 @@ class SigningStatistics extends React.Component {
             if (index === 0) {
                 row1.push(column.title);
             } else {
-                row1 = row1.concat(["", column.title, ""]);
+                row1 = row1.concat(['', column.title, '']);
             }
 
-            row2 = row2.concat( _.pluck(column.children, "title") );
+            row2 = row2.concat( _.pluck(column.children, 'title') );
         });
 
         rows.push(row1, row2);
@@ -150,22 +150,22 @@ class SigningStatistics extends React.Component {
             rows.push( _.values(rowObj) );
         });
 
-        exportToCsv("qiandan.csv", rows);
+        exportToCsv('qiandan.csv', rows);
     }
 
     render() {
-        const wrapStyle = { position: "relative" };
+        const wrapStyle = { position: 'relative' };
         const exportBtnStyle = {
-            position: "absolute",
+            position: 'absolute',
             top: -30,
             right: 10,
-            cursor: "pointer",
-            color: "#4d96d1",
+            cursor: 'pointer',
+            color: '#4d96d1',
         };
 
         return (
             <div style={wrapStyle}>
-                <span onClick={this.exportFile.bind(this)} style={exportBtnStyle}>{Intl.get("common.export", "导出")}</span>
+                <span onClick={this.exportFile.bind(this)} style={exportBtnStyle}>{Intl.get('common.export', '导出')}</span>
                 <AntcTable
                     columns={this.state.columns}
                     dataSource={this.state.data}

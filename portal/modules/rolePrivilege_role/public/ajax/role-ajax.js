@@ -1,4 +1,4 @@
-var TYPE_CONSTANT = "myApp";
+var TYPE_CONSTANT = 'myApp';
 //获取角色列表
 exports.getRoleList = function(clientID, type) {
     var Deferred = $.Deferred();
@@ -44,7 +44,7 @@ exports.addRole = function(role, type) {
 exports.setDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: "/rest/baserole/config",
+        url: '/rest/baserole/config',
         dataType: 'json',
         type: 'post',
         data: param,
@@ -62,7 +62,7 @@ exports.setDefaultRole = function(param) {
 exports.getDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: "/rest/baserole/config",
+        url: '/rest/baserole/config',
         dataType: 'json',
         type: 'get',   
         data: param,     
@@ -80,7 +80,7 @@ exports.getDefaultRole = function(param) {
 exports.delDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: "/rest/baserole/config",
+        url: '/rest/baserole/config',
         dataType: 'json',
         type: 'delete',
         data: param,

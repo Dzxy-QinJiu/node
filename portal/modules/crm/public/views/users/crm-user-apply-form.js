@@ -2,12 +2,12 @@
  * Created by wangliping on 2017/9/20.
  */
 import {Form, Icon, DatePicker, InputNumber, Select, Radio} from 'antd';
-import {RightPanelCancel, RightPanelSubmit} from "CMP_DIR/rightPanel";
-import language from "PUB_DIR/language/getLanguage";
-import AutosizeTextarea from "CMP_DIR/autosize-textarea";
-import AlertTimer from "CMP_DIR/alert-timer";
-import AppUserAjax from "MOD_DIR/app_user_manage/public/ajax/app-user-ajax";
-import Trace from "LIB_DIR/trace";
+import {RightPanelCancel, RightPanelSubmit} from 'CMP_DIR/rightPanel';
+import language from 'PUB_DIR/language/getLanguage';
+import AutosizeTextarea from 'CMP_DIR/autosize-textarea';
+import AlertTimer from 'CMP_DIR/alert-timer';
+import AppUserAjax from 'MOD_DIR/app_user_manage/public/ajax/app-user-ajax';
+import Trace from 'LIB_DIR/trace';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const labelCol = {span: 4};
@@ -23,25 +23,25 @@ class CrmUserApplyForm extends React.Component {
             //延迟时间输入框，默认是1
             delayTimeNumber: 1,
             //延期时间范围，默认是天
-            delayTimeRange: "days",
+            delayTimeRange: 'days',
             // 到期时间(选择到期时间)
             delayDeadlineTime: moment().add('days', 1).valueOf(),
             //到期不变
-            over_draft: "0",
+            over_draft: '0',
             //销售申请的备注
             remark: {
                 //延期备注
-                delayRemark: "",
+                delayRemark: '',
                 //启用、停用备注
-                statusRemark: "",
+                statusRemark: '',
                 //修改密码备注
-                passwordRemark: "",
+                passwordRemark: '',
                 //修改其他类型的备注
-                otherRemark: ""
+                otherRemark: ''
             }
         },
         isApplying: false,//正在申请中
-        applyErrorMsg: ""//申请报错的提示
+        applyErrorMsg: ''//申请报错的提示
     };
     //延期时间数字改变
     delayTimeNumberChange(value) {
@@ -113,7 +113,7 @@ class CrmUserApplyForm extends React.Component {
 
     //申请延期的数据提交
     submitDelayData() {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), "点击确定按钮(申请延期)");
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请延期)');
         let submitObj = this.getDelayData();
         //销售提交申请延期
         this.setState({isApplying: true});
@@ -122,7 +122,7 @@ class CrmUserApplyForm extends React.Component {
             if (result) {
                 this.props.closeApplyPanel();
             } else {
-                this.setState({applyErrorMsg: Intl.get("user.apply.delay.failed", "申请延期失败")});
+                this.setState({applyErrorMsg: Intl.get('user.apply.delay.failed', '申请延期失败')});
             }
         }, (errorMsg) => {
             this.setState({isApplying: false, applyErrorMsg: errorMsg});
@@ -182,13 +182,13 @@ class CrmUserApplyForm extends React.Component {
 
     // 申请停用
     submitStopUseData() {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), "点击确定按钮(申请停用)");
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请停用)');
         const selectedUserAppData = this.getSelectedUserAppData();
         const submitObj = {
             user_ids: selectedUserAppData.user_ids,
             application_ids: selectedUserAppData.application_ids,
             remark: this.state.formData.remark.statusRemark,
-            status: "0"
+            status: '0'
         };
 
         this.setState({isApplying: true});
@@ -198,7 +198,7 @@ class CrmUserApplyForm extends React.Component {
             if (result) {
                 this.props.closeApplyPanel();
             } else {
-                this.setState({applyErrorMsg: Intl.get("user.apply.status.failed", "申请修改开通状态失败")});
+                this.setState({applyErrorMsg: Intl.get('user.apply.status.failed', '申请修改开通状态失败')});
             }
         }, (errorMsg) => {
             this.setState({isApplying: false, applyErrorMsg: errorMsg});
@@ -207,7 +207,7 @@ class CrmUserApplyForm extends React.Component {
 
     //申请修改密码
     submitEditPasswordData() {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), "点击确定按钮(申请修改密码)");
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请修改密码)');
         const selectedUserAppData = this.getSelectedUserAppData();
         const submitObj = {
             user_ids: selectedUserAppData.user_ids,
@@ -220,7 +220,7 @@ class CrmUserApplyForm extends React.Component {
             if (result) {
                 this.props.closeApplyPanel();
             } else {
-                this.setState({applyErrorMsg: Intl.get("user.apply.password.failed", "申请修改密码失败")});
+                this.setState({applyErrorMsg: Intl.get('user.apply.password.failed', '申请修改密码失败')});
             }
         }, (errorMsg) => {
             this.setState({isApplying: false, applyErrorMsg: errorMsg});
@@ -229,7 +229,7 @@ class CrmUserApplyForm extends React.Component {
 
     //申请其他类型的修改
     submitEditOtherData() {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), "点击确定按钮(申请其他类型的修改)");
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请其他类型的修改)');
         const selectedUserAppData = this.getSelectedUserAppData();
         const submitObj = {
             user_ids: selectedUserAppData.user_ids,
@@ -242,7 +242,7 @@ class CrmUserApplyForm extends React.Component {
             if (result) {
                 this.props.closeApplyPanel();
             } else {
-                this.setState({applyErrorMsg: Intl.get("user.apply.password.failed", "申请其他类型的修改失败")});
+                this.setState({applyErrorMsg: Intl.get('user.apply.password.failed', '申请其他类型的修改失败')});
             }
         }, (errorMsg) => {
             this.setState({isApplying: false, applyErrorMsg: errorMsg});
@@ -271,12 +271,12 @@ class CrmUserApplyForm extends React.Component {
     }
 
     renderDelayForm() {
-        let divWidth = (language.lan() === "zh") ? '80px' : '74px';
+        let divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
         if (this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
-            label = Intl.get(" user.time.end", "到期时间");
+            label = Intl.get(' user.time.end', '到期时间');
         } else {
-            label = Intl.get("common.delay.time", "延期时间");
+            label = Intl.get('common.delay.time', '延期时间');
         }
         return (
             <Form>
@@ -287,7 +287,7 @@ class CrmUserApplyForm extends React.Component {
                         wrapperCol={{span: 20}}
                     >
                         {this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE ? (
-                            <DatePicker placeholder={Intl.get("my.app.change.expire.time.placeholder", "请选择到期时间")}
+                            <DatePicker placeholder={Intl.get('my.app.change.expire.time.placeholder', '请选择到期时间')}
                                 onChange={this.setDelayDeadlineTime.bind(this)}
                                 disabledDate={this.setDisabledDate}
                                 defaultValue={moment(this.state.formData.delayDeadlineTime)}
@@ -323,7 +323,7 @@ class CrmUserApplyForm extends React.Component {
                     </FormItem>
                 </div>
                 <FormItem
-                    label={Intl.get("user.expire.select", "到期可选")}
+                    label={Intl.get('user.expire.select', '到期可选')}
                     labelCol={labelCol}
                     wrapperCol={wrapperCol}
                 >
@@ -338,13 +338,13 @@ class CrmUserApplyForm extends React.Component {
                 </FormItem>
                 {/*申请延期要填备注，批量延期不需要填备注*/}
                 <FormItem
-                    label={Intl.get("common.remark", "备注")}
+                    label={Intl.get('common.remark', '备注')}
                     labelCol={labelCol}
                     wrapperCol={{span: 13}}
                 >
                     <AutosizeTextarea
                         rows="5"
-                        onChange={this.remarkChange.bind(this, "delayRemark")}
+                        onChange={this.remarkChange.bind(this, 'delayRemark')}
                         value={this.state.formData.remark.delayRemark}
                     />
                 </FormItem>
@@ -359,7 +359,7 @@ class CrmUserApplyForm extends React.Component {
             );
         }
         const hide = function() {
-            this.setState({applyErrorMsg: ""});
+            this.setState({applyErrorMsg: ''});
         };
         if (this.state.applyErrorMsg) {
             return (
@@ -375,7 +375,7 @@ class CrmUserApplyForm extends React.Component {
         return (
             <form>
                 <FormItem
-                    label={Intl.get("common.remark", "备注")}
+                    label={Intl.get('common.remark', '备注')}
                     labelCol={labelCol}
                     wrapperCol={{span: 13}}
                 >
@@ -390,7 +390,7 @@ class CrmUserApplyForm extends React.Component {
     }
 
     closeApplyPanel() {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), "点击取消按钮");
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击取消按钮');
         this.props.closeApplyPanel();
     }
 
@@ -400,9 +400,9 @@ class CrmUserApplyForm extends React.Component {
         return (
             <div className="crm-user-apply-form-container">
                 {applyType === APPLY_TYPES.DELAY ? this.renderDelayForm() :
-                    applyType === APPLY_TYPES.STOP_USE ? this.renderRemarkForm("statusRemark") :
-                        applyType === APPLY_TYPES.EDIT_PASSWORD ? this.renderRemarkForm("passwordRemark") :
-                            applyType === APPLY_TYPES.OTHER ? this.renderRemarkForm("otherRemark") : null}
+                    applyType === APPLY_TYPES.STOP_USE ? this.renderRemarkForm('statusRemark') :
+                        applyType === APPLY_TYPES.EDIT_PASSWORD ? this.renderRemarkForm('passwordRemark') :
+                            applyType === APPLY_TYPES.OTHER ? this.renderRemarkForm('otherRemark') : null}
                 <div className="pull-right">
                     <RightPanelCancel onClick={this.closeApplyPanel.bind(this)}>
                         <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>

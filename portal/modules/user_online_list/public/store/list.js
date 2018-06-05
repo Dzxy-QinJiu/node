@@ -1,4 +1,4 @@
-import OnlineUserListAction from "../action/list";
+import OnlineUserListAction from '../action/list';
 var _ = require('underscore');
 
 //存储在线用户列表
@@ -26,7 +26,7 @@ OnlineUserListStore.prototype.resetUserOnlineList = function() {
     //是否是初次加载
     this.isFirstTimeLoading = true;
     //是否加载出错
-    this.appListErrorMsg = "";
+    this.appListErrorMsg = '';
 };
 OnlineUserListStore.prototype.handleRefresh = function() {
     this.resetUserOnlineList();
@@ -35,13 +35,13 @@ OnlineUserListStore.prototype.handleRefresh = function() {
 OnlineUserListStore.prototype.getOnlineUserList = function(result) {
     if (result.loading) {
         this.isLoading = true;
-        this.appListErrorMsg = "";
+        this.appListErrorMsg = '';
     } else if (result.error) {
         this.isLoading = false;
         this.appListErrorMsg = result.error;
     } else {
         this.isLoading = false;
-        this.appListErrorMsg = "";
+        this.appListErrorMsg = '';
         this.isFirstTimeLoading = false;
 
         var data = result.data;

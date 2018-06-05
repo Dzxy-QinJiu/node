@@ -1,207 +1,207 @@
 /**
  * Created by 肖金峰 on 2016/01/29.
  */
-var Log = require("../dto/log");
+var Log = require('../dto/log');
 var uuid = require('uuid/v4');
 var nock = require('nock');
 var nockParser = require(require('path').join(portal_root_path, './lib/utils/nockParser'));
-var userInfoManageServic = require("../service/user-info-manage-service");
-var oldPwd = "88881234";
+var userInfoManageServic = require('../service/user-info-manage-service');
+var oldPwd = '88881234';
 
 var userInfo = {
     id: uuid(),
-    userName: "肖金峰",
-    passwd: "",
-    newPasswd: "",
-    rePasswd: "",
-    phone: "13843819438",
-    email: "13843819438@qq.com",
-    roleName: "oplateOwner"
+    userName: '肖金峰',
+    passwd: '',
+    newPasswd: '',
+    rePasswd: '',
+    phone: '13843819438',
+    email: '13843819438@qq.com',
+    roleName: 'oplateOwner'
 };
 var logList = [
     new Log({
         id: uuid(),
-        loginTime: "2013.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2013.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2023.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2023.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2033.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2033.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2043.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2043.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     }),
     new Log({
         id: uuid(),
-        loginTime: "2053.12.1 18:09:12",
-        loginAddress: "山东 济南",
-        loginIP: "102.3.1.2",
-        loginBrowser: "火狐",
-        loginEquipment: "电脑（win10）"
+        loginTime: '2053.12.1 18:09:12',
+        loginAddress: '山东 济南',
+        loginIP: '102.3.1.2',
+        loginBrowser: '火狐',
+        loginEquipment: '电脑（win10）'
     })
 ];
 exports.init = function() {
@@ -239,12 +239,12 @@ exports.init = function() {
 
             if (target) {
                 target.userName = userName;
-                target.passwd = "";
+                target.passwd = '';
                 target.phone = phone;
                 target.email = email;
                 target.roleName = roleName;
-                target.rePasswd = "";
-                target.newPasswd = "";
+                target.rePasswd = '';
+                target.newPasswd = '';
 
             }
 
@@ -271,12 +271,12 @@ exports.init = function() {
 
             if (target) {
                 target.userName = userName;
-                target.passwd = "";
+                target.passwd = '';
                 target.phone = phone;
                 target.email = email;
                 target.roleName = roleName;
-                target.newPasswd = "";
-                target.rePasswd = "";
+                target.newPasswd = '';
+                target.rePasswd = '';
             }
             return [200, target];
         });

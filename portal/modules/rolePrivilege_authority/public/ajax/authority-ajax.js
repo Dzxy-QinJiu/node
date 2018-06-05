@@ -1,4 +1,4 @@
-var TYPE_CONSTANT = "myApp";
+var TYPE_CONSTANT = 'myApp';
 //获取权限列表
 exports.getAuthorityList = function(clientID, type) {
     var Deferred = $.Deferred();

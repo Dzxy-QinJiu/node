@@ -4,22 +4,22 @@
  * Created by 肖金峰 on 2016/2/3.
  */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var _ = require("underscore");
-var auth = require("../../../../lib/utils/auth");
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var _ = require('underscore');
+var auth = require('../../../../lib/utils/auth');
 
 var userInfoRestApis = {
-    getUserInfo: "/rest/base/v1/user/id",
-    getLogList: "/rest/analysis/auditlog/v1/login/:user_name/drop_down_load",
-    editUserInfo: "/rest/base/v1/user/baseinfo",
-    setUserLanguage: "/rest/base/v1/user/member/language/setting",
-    checkUserInfoPwd: "/rest/base/checkUserInfoPwd",
-    editUserInfoPwd: "/rest/base/v1/user",
-    activeUserEmail: "/rest/base/v1/user/bunding/email",//邮箱激活接口
-    getManagedRealm: "/rest/base/v1/realm/managedrealm",//所管理的安全域
-    setSubscribeEmail: "/rest/base/v1/user/email/rejection"//是否订阅通知邮件
+    getUserInfo: '/rest/base/v1/user/id',
+    getLogList: '/rest/analysis/auditlog/v1/login/:user_name/drop_down_load',
+    editUserInfo: '/rest/base/v1/user/baseinfo',
+    setUserLanguage: '/rest/base/v1/user/member/language/setting',
+    checkUserInfoPwd: '/rest/base/checkUserInfoPwd',
+    editUserInfoPwd: '/rest/base/v1/user',
+    activeUserEmail: '/rest/base/v1/user/bunding/email',//邮箱激活接口
+    getManagedRealm: '/rest/base/v1/realm/managedrealm',//所管理的安全域
+    setSubscribeEmail: '/rest/base/v1/user/email/rejection'//是否订阅通知邮件
 
 };
 
@@ -28,7 +28,7 @@ exports.urls = userInfoRestApis;
 exports.getUserInfo = function(req, res, userId) {
     return restUtil.authRest.get(
         {
-            url: userInfoRestApis.getUserInfo + "/" + userId,
+            url: userInfoRestApis.getUserInfo + '/' + userId,
             req: req,
             res: res
         }, {}, {
@@ -36,33 +36,33 @@ exports.getUserInfo = function(req, res, userId) {
                 //处理数据
                 if (data) {
                     var roles = data.roles;
-                    var rolesName = "";
+                    var rolesName = '';
                     if (roles) {
-                        rolesName = _.pluck(roles, "role_name").join(",");
+                        rolesName = _.pluck(roles, 'role_name').join(',');
                     }
                     data = {
                         id: data.user_id,
-                        userName: data.user_name || "",
-                        nickName: data.nick_name || "",
-                        userLogo: data.user_logo || "",
-                        password: data.password || "密码******",
-                        repassWord: data.passWord || "密码******",
-                        phone: data.phone || "",
-                        email: data.email || "",
+                        userName: data.user_name || '',
+                        nickName: data.nick_name || '',
+                        userLogo: data.user_logo || '',
+                        password: data.password || '密码******',
+                        repassWord: data.passWord || '密码******',
+                        phone: data.phone || '',
+                        email: data.email || '',
                         emailEnable: data.email_enable,
                         rolesName: rolesName,
                         status: data.status,
                         reject: data.reject
                     };
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
 
 exports.getLogList = function(req, res) {
     let userName = auth.getUser(req).user_name;
-    let url = userInfoRestApis.getLogList.replace(":user_name", userName);
+    let url = userInfoRestApis.getLogList.replace(':user_name', userName);
     return restUtil.authRest.get(
         {
             url: url,
@@ -101,7 +101,7 @@ exports.setUserLanguage = function(req, res, userLang) {
 exports.editUserInfoPwd = function(req, res, object) {
     return restUtil.authRest.put(
         {
-            url: userInfoRestApis.editUserInfoPwd + "/" + object.userId + "/password",
+            url: userInfoRestApis.editUserInfoPwd + '/' + object.userId + '/password',
             req: req,
             res: res
         },
@@ -120,7 +120,7 @@ exports.checkUserInfoPwd = function(req, res, userInfoPasswd) {
         }, {
             success: function(eventEmitter, data) {
                 //处理数据
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         }
     );

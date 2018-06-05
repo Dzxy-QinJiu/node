@@ -1,4 +1,4 @@
-var CRMActions = require("../action/basic-overview-actions");
+var CRMActions = require('../action/basic-overview-actions');
 
 function CRMStore() {
     //基本资料
@@ -9,10 +9,10 @@ function CRMStore() {
     this.editShowFlag = false;
     this.crmUserList = [];//客户开通的用户列表
     this.isUserLoading = false;//是否正在获取客户开通的用户列表
-    this.userErrorMsg = "";//获取客户开通的用户列表的错误提示
+    this.userErrorMsg = '';//获取客户开通的用户列表的错误提示
     this.userTotal = 0;//客户开通的用户的总数
     this.isLoadingScheduleList = false;//是否正在获取未完成的日程列表
-    this.getScheduleListErrmsg = "";//获取未完成日程列表失败的提示
+    this.getScheduleListErrmsg = '';//获取未完成日程列表失败的提示
     this.scheduleList = [];//未完成的日程列表
     this.bindActions(CRMActions);
 }
@@ -24,13 +24,13 @@ CRMStore.prototype.setCrmUserList = function(list) {
 CRMStore.prototype.getCrmUserList = function(resultObj) {
     if (resultObj.loading) {
         this.isUserLoading = true;
-        this.userErrorMsg = "";
+        this.userErrorMsg = '';
     } else if (resultObj.errorMsg) {
         this.isUserLoading = false;
         this.userErrorMsg = resultObj.errorMsg;
     } else {
         this.isUserLoading = false;
-        this.userErrorMsg = "";
+        this.userErrorMsg = '';
         let resultData = resultObj.result;
         if (resultData && _.isArray(resultData.data)) {
             this.crmUserList = resultData.data;
@@ -41,14 +41,14 @@ CRMStore.prototype.getCrmUserList = function(resultObj) {
 CRMStore.prototype.getNotCompletedScheduleList = function(result) {
     if (result.loading) {
         this.isLoadingScheduleList = true;
-        this.getScheduleListErrmsg = "";
+        this.getScheduleListErrmsg = '';
     } else if (result.error) {
         this.isLoadingScheduleList = false;
         this.getScheduleListErrmsg = result.errorMsg;
         this.scheduleList = [];
     } else {
         this.isLoadingScheduleList = false;
-        this.getScheduleListErrmsg = "";
+        this.getScheduleListErrmsg = '';
         this.scheduleList = _.isArray(result.data.list) ? result.data.list : [];
     }
 };

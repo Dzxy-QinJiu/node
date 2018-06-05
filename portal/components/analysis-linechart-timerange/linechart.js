@@ -1,5 +1,5 @@
 
-var DateSelectorUtils = require("../date-selector/utils");
+var DateSelectorUtils = require('../date-selector/utils');
 function LineChart(opts) {
     this.dataList = opts.dataList;
     if(!_.isArray(this.dataList)) {
@@ -79,7 +79,7 @@ LineChart.prototype.getEchartOptions = function() {
         },
         xAxis: [
             {
-                type: "category",
+                type: 'category',
                 splitLine: {
                     lineStyle: {
                         color: '#f2f2f2'

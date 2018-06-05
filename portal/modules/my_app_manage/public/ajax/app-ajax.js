@@ -1,8 +1,8 @@
-var userAjaxTrans = require("../../../../modules/common/public/ajax/user");
+var userAjaxTrans = require('../../../../modules/common/public/ajax/user');
 //获取当前页的应用列表
 var myAppListAjax = null;
 
-var appAjaxTrans = require("../../../common/public/ajax/app");
+var appAjaxTrans = require('../../../common/public/ajax/app');
 
 //获取密令app列表
 exports.grantApplicationList = function() {
@@ -57,7 +57,7 @@ exports.getCurAppById = function(appId) {
 //获取应用管理员列表
 exports.getAppManagerList = function() {
     var Deferred = $.Deferred();
-    userAjaxTrans.getUserListByRoleAjax().sendRequest({role_type: "app_manager"}).
+    userAjaxTrans.getUserListByRoleAjax().sendRequest({role_type: 'app_manager'}).
         success(function(userList) {
             Deferred.resolve(userList);
         }).error(function(errorInfo) {

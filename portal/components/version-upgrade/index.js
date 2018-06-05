@@ -1,18 +1,18 @@
 // 查看版本升级日志信息
 
-var AlertTimer = require("../alert-timer");
-var Alert = require("antd").Alert;
-var Spinner = require("../spinner");
-var Markdown = require("../markdown");
-var rightPanelUtil = require("../rightPanel");
+var AlertTimer = require('../alert-timer');
+var Alert = require('antd').Alert;
+var Spinner = require('../spinner');
+var Markdown = require('../markdown');
+var rightPanelUtil = require('../rightPanel');
 var RightPanelAppVersionDelete = rightPanelUtil.RightPanelAppVersionDelete;
-var PrivilegeChecker = require("../privilege/checker").PrivilegeChecker;
+var PrivilegeChecker = require('../privilege/checker').PrivilegeChecker;
 import { Modal } from 'antd';
 const confirm = Modal.confirm;
-var versionAjax = require("../../modules/my_app_manage/public/ajax/version-upgrade-log-ajax");
-var VersionUpgradeLogAction = require("../../modules/my_app_manage/public/action/version-upgrade-log-action");
-var AppStore = require("../../modules/my_app_manage/public/store/app-store");
-import Trace from "LIB_DIR/trace";
+var versionAjax = require('../../modules/my_app_manage/public/ajax/version-upgrade-log-ajax');
+var VersionUpgradeLogAction = require('../../modules/my_app_manage/public/action/version-upgrade-log-action');
+var AppStore = require('../../modules/my_app_manage/public/store/app-store');
+import Trace from 'LIB_DIR/trace';
 
 var VersionUpgradeList = React.createClass({
     getInitialState: function(){
@@ -44,11 +44,11 @@ var VersionUpgradeList = React.createClass({
     },
     
     showVersionUpgradeDelete(record_id){
-        Trace.traceEvent($(this.getDOMNode()).find(".app-version-delete"),"删除升级版本记录");
+        Trace.traceEvent($(this.getDOMNode()).find('.app-version-delete'),'删除升级版本记录');
         confirm({
             title: '您是否确认要删除该条记录',
             onOk: () => {
-                Trace.traceEvent($(this.getDOMNode()).find(".app-version-delete"),"确定删除升级版本记录");
+                Trace.traceEvent($(this.getDOMNode()).find('.app-version-delete'),'确定删除升级版本记录');
                 versionAjax.deleteAppVersionRecord(record_id).then((result) => {
                     // 删除版本记录成功的处理
                     if(result){
@@ -62,7 +62,7 @@ var VersionUpgradeList = React.createClass({
                 });
             },
             onCancel: () => {
-                Trace.traceEvent($(this.getDOMNode()).find(".app-version-delete"),"取消删除升级版本记录");
+                Trace.traceEvent($(this.getDOMNode()).find('.app-version-delete'),'取消删除升级版本记录');
             }
         });
     },
@@ -97,7 +97,7 @@ var VersionUpgradeList = React.createClass({
     },
 
     render: function(){
-        if(this.props.appVersionListResult == "loading" && this.props.page == 1){
+        if(this.props.appVersionListResult == 'loading' && this.props.page == 1){
             return (<div>
                 <Spinner />
             </div>);
@@ -120,7 +120,7 @@ var VersionUpgradeList = React.createClass({
                     var record_id = item.id;
                     return (
                         <div className="version-content-item" key={index}>
-                            <PrivilegeChecker check={"DELETE_APPLICATION_RECORD"} className="app-version-delete">
+                            <PrivilegeChecker check={'DELETE_APPLICATION_RECORD'} className="app-version-delete">
                                 <RightPanelAppVersionDelete
                                     onClick={this.showVersionUpgradeDelete.bind(this, record_id)}
                                 />
@@ -134,7 +134,7 @@ var VersionUpgradeList = React.createClass({
                                 <div >
                                     应用：<br />
                                     <span className="upgrade-log-upload-apk">
-                                        <a href={"/rest/app/record/download_file/" + record_id }>
+                                        <a href={'/rest/app/record/download_file/' + record_id }>
                                             {item.file_name}
                                         </a>
                                         &nbsp;

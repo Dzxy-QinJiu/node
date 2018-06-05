@@ -1,18 +1,18 @@
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./css/main-es_VE.less");
-} else if (language.lan() == "zh") {
-    require("./css/main-zh_CN.less");
+var language = require('../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./css/main-es_VE.less');
+} else if (language.lan() == 'zh') {
+    require('./css/main-zh_CN.less');
 }
 //顶部导航
-var SystemNotification = require("./views/system");
+var SystemNotification = require('./views/system');
 
 var Notification = React.createClass({
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
     },
     componentWillUnmount: function() {
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
     },
     render: function() {
         return (

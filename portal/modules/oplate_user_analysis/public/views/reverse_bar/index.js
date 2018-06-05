@@ -1,17 +1,17 @@
 /**
  * 线图
  */
-var echarts = require("echarts-eefung");
-require("./index.less");
+var echarts = require('echarts-eefung');
+require('./index.less');
 //各种颜色
-var Color = require("color");
-var emitter = require("../../utils/emitter");
-var Spinner = require("../../../../../components/spinner");
-var immutable = require("immutable");
+var Color = require('color');
+var emitter = require('../../utils/emitter');
+var Spinner = require('../../../../../components/spinner');
+var immutable = require('immutable');
 var minHeight = 214;
-var textWidth = require("../../../../../public/sources/utils/measure-text");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
+var textWidth = require('../../../../../public/sources/utils/measure-text');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
 import { packageTry } from 'LIB_DIR/func';
 
 var BarChart = React.createClass({
@@ -19,7 +19,7 @@ var BarChart = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: Intl.get("oplate.user.analysis.33", "新增用户行业分布"),
+            title: Intl.get('oplate.user.analysis.33', '新增用户行业分布'),
             width: '100%',
             legendRight: 'auto',
             resultType: 'loading',
@@ -46,7 +46,7 @@ var BarChart = React.createClass({
             return 80;
         }
         var marginList = _.map(industry , function(text) {
-            text = text === 'unknown' ? Intl.get("user.unknown", "未知") : text;
+            text = text === 'unknown' ? Intl.get('user.unknown', '未知') : text;
             return textWidth.measureTextWidth(text , 12);
         });
         var maxMargin = _.max(marginList) + 20;
@@ -81,14 +81,14 @@ var BarChart = React.createClass({
                 if(!name) {
                     name = 'null';
                 } else if(name === 'unknown') {
-                    name = Intl.get("user.unknown", "未知");
+                    name = Intl.get('user.unknown', '未知');
                 }
-                let timeDesc = Intl.get("operation.report.time.duration","至{time}为止",{time: _this.props.endDate});
+                let timeDesc = Intl.get('operation.report.time.duration','至{time}为止',{time: _this.props.endDate});
                 if(_this.props.startDate){
                     if(_this.props.startDate == _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     }else{
-                        timeDesc = _this.props.startDate + Intl.get("common.time.connector","至") + _this.props.endDate;
+                        timeDesc = _this.props.startDate + Intl.get('common.time.connector','至') + _this.props.endDate;
                     }
                 }
                 return `<div class="echarts-tooltip">
@@ -137,7 +137,7 @@ var BarChart = React.createClass({
                         },
                         formatter: function(text) {
                             if(text === 'unknown') {
-                                text = Intl.get("user.unknown", "未知");
+                                text = Intl.get('user.unknown', '未知');
                             } else if(!text) {
                                 text = 'null';
                             }
@@ -186,11 +186,11 @@ var BarChart = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
             var options = this.getEchartOptions();
             this.echartInstance.setOption(options,true);
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
         }
     },
     componentDidMount: function() {

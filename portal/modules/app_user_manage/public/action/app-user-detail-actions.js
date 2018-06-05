@@ -2,36 +2,36 @@
  * 应用用户基本资料的action
  */
 //用户管理的ajax
-var AppUserAjax = require("../ajax/app-user-ajax");
-var AppUserUtil = require("../util/app-user-util");
+var AppUserAjax = require('../ajax/app-user-ajax');
+var AppUserUtil = require('../util/app-user-util');
 
 function AppUserDetailAction() {
 
     this.generateActions(
         //隐藏用户详情
-        "dismiss",
+        'dismiss',
         //获取用户详情
-        "getUserDetail",
+        'getUserDetail',
         //显示全部停用提示框
-        "showDisableAllAppsModal",
+        'showDisableAllAppsModal',
         //全部停用
-        "submitDisableAllApps",
+        'submitDisableAllApps',
         //取消全部禁用
-        "cancelAllAppsModal",
+        'cancelAllAppsModal',
         //取消显示停用成功
-        "hideDisableSuccessMsg",
+        'hideDisableSuccessMsg',
         //添加应用成功
-        "addAppSuccess",
+        'addAppSuccess',
         //修改应用成功,
-        "editAppSuccess",
+        'editAppSuccess',
         //修改(昵称，备注)成功
-        "changeUserFieldSuccess",
+        'changeUserFieldSuccess',
         //修改客户
-        "changeCustomer",
+        'changeCustomer',
         //修改用户组织
-        "changeUserOrganization",
+        'changeUserOrganization',
         //修改应用单个字段成功
-        "changeAppFieldSuccess"
+        'changeAppFieldSuccess'
     );
 
     //获取用户详情
@@ -40,7 +40,7 @@ function AppUserDetailAction() {
         AppUserAjax.getUserDetail(userId).then(function(userDetail) {
             _this.dispatch({loading: false,error: false,userDetail: userDetail});
         },function(errorMsg) {
-            _this.dispatch({loading: false,error: true , userDetailErrorMsg: errorMsg || Intl.get("user.get.user.detail.failed", "获取用户详情失败")});
+            _this.dispatch({loading: false,error: true , userDetailErrorMsg: errorMsg || Intl.get('user.get.user.detail.failed', '获取用户详情失败')});
         });
     };
 

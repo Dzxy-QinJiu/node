@@ -1,5 +1,5 @@
-import callRecordAjax from "../ajax/call-record-ajax";
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+import callRecordAjax from '../ajax/call-record-ajax';
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 function CallRecordActions() {
     this.generateActions(
         'resetState',

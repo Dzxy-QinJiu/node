@@ -3,16 +3,16 @@
  */
 //视图常量
 exports.VIEW_CONSTANT = {
-    CUSTOMER: "customer",
-    USER: "user",
-    PHONE: "phone",
-    CALL_BACK: "call_back",
+    CUSTOMER: 'customer',
+    USER: 'user',
+    PHONE: 'phone',
+    CALL_BACK: 'call_back',
 };
 //视图常量
 exports.SHOW_TYPE_CONSTANT = {
-    SALES_TEAM_LIST: "salesTeamList",
-    SALES_MEMBER_LIST: "salesMemberList",
-    SALESMAN: "salesman"
+    SALES_TEAM_LIST: 'salesTeamList',
+    SALES_MEMBER_LIST: 'salesMemberList',
+    SALESMAN: 'salesman'
 };
 
 //布局常量

@@ -15,8 +15,8 @@
  *           clearSelectData={}this.clearSelectTags()
  *      />
  */
-require("./index.less");
-import {Icon, Menu, Dropdown} from "antd";
+require('./index.less');
+import {Icon, Menu, Dropdown} from 'antd';
 class AntcDropdown extends React.Component {
     constructor(props) {
         super(props);
@@ -40,7 +40,7 @@ class AntcDropdown extends React.Component {
 
     handleMenuClick(e) {
         //点击选项时，如果不是关闭按钮时，不关闭操作面板
-        if (e.domEvent && !$(e.domEvent.target).hasClass("icon-close")) {
+        if (e.domEvent && !$(e.domEvent.target).hasClass('icon-close')) {
             this.setState({menuVisible: true});
         }
     }
@@ -90,12 +90,12 @@ class AntcDropdown extends React.Component {
 }
 AntcDropdown.defaultProps = {
     showMenu: false,//是否展示下拉菜单（boolean）
-    content: "",//Dropdown默认展示的内容（string|ReactNode）
-    overlayTitle: "",//下拉菜单中的标题（string|ReactNode）
-    overlayContent: "",//下拉菜单中要展示的内容（string|ReactNode）
-    okTitle: Intl.get("common.save", "保存"),//对号对应的title提示(string)
-    cancelTitle: Intl.get("common.cancel", "取消"),//叉号对应的title提示(string)
-    unSelectDataTip: "",//未选择数据保存时的提示信息
+    content: '',//Dropdown默认展示的内容（string|ReactNode）
+    overlayTitle: '',//下拉菜单中的标题（string|ReactNode）
+    overlayContent: '',//下拉菜单中要展示的内容（string|ReactNode）
+    okTitle: Intl.get('common.save', '保存'),//对号对应的title提示(string)
+    cancelTitle: Intl.get('common.cancel', '取消'),//叉号对应的title提示(string)
+    unSelectDataTip: '',//未选择数据保存时的提示信息
     isSaving: false,//是否正在保存数据（boolean）
     handleSubmit: function() {
     },//保存时的处理

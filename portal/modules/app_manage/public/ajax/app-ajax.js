@@ -1,4 +1,4 @@
-var userAjaxTrans = require("../../../../modules/common/public/ajax/user");
+var userAjaxTrans = require('../../../../modules/common/public/ajax/user');
 //获取当前页的应用列表
 var curAppListAjax = null;
 

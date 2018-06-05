@@ -1,4 +1,4 @@
-var DynamicActions = require("../action/dynamic-action");
+var DynamicActions = require('../action/dynamic-action');
 
 function DynamicStore() {
     this.dynamicList = [];

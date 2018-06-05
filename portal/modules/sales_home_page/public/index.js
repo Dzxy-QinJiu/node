@@ -1,36 +1,36 @@
-require("./css/index.less");
-const Emitters = require("PUB_DIR/sources/utils/emitters");
+require('./css/index.less');
+const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
-import {Table, Icon, Select, message} from "antd";
-import {AntcTable} from "antc";
-import Trace from "LIB_DIR/trace";
+import {Table, Icon, Select, message} from 'antd';
+import {AntcTable} from 'antc';
+import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
-var RightContent = require("../../../components/privilege/right-content");
-var SalesHomeStore = require("./store/sales-home-store");
-var SalesHomeAction = require("./action/sales-home-actions");
-var TopNav = require("../../../components/top-nav");
-import DatePicker from "../../../components/datepicker";
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
-import ActiveEmailTip from "./views/active-email-tip";
-var StatisticTotal = require("./views/statistic-total");
-var CrmRightList = require("./views/crm-right-list");
-import WillExpiredUsers from "./views/will-expire-user-list";
-var CustomerAnalysis = require("./views/customer-analysis");
-var UserAnalysis = require("./views/user-analysis");
-var constantUtil = require("./util/constant");
+var RightContent = require('../../../components/privilege/right-content');
+var SalesHomeStore = require('./store/sales-home-store');
+var SalesHomeAction = require('./action/sales-home-actions');
+var TopNav = require('../../../components/top-nav');
+import DatePicker from '../../../components/datepicker';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import ActiveEmailTip from './views/active-email-tip';
+var StatisticTotal = require('./views/statistic-total');
+var CrmRightList = require('./views/crm-right-list');
+import WillExpiredUsers from './views/will-expire-user-list';
+var CustomerAnalysis = require('./views/customer-analysis');
+var UserAnalysis = require('./views/user-analysis');
+var constantUtil = require('./util/constant');
 let showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;//当前展示的类型常量（销售团队列表、团队成员列表、销售的待办事宜）
 var viewConstant = constantUtil.VIEW_CONSTANT;//视图常量
 var layoutConstant = constantUtil.LAYOUTS;//布局常量
-var Spinner = require("CMP_DIR/spinner");
-import classNames from "classnames";
+var Spinner = require('CMP_DIR/spinner');
+import classNames from 'classnames';
 var scrollTimeout = null;
-import { storageUtil } from "ant-utils";
+import { storageUtil } from 'ant-utils';
 var pageId = oplateConsts.PAGE_ID.SALES_HOME;
-var key = "hamburger-button-flag";//用于记录展开或者关闭销售团队列表的状态
+var key = 'hamburger-button-flag';//用于记录展开或者关闭销售团队列表的状态
 import history from 'PUB_DIR/sources/history';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
-import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -64,12 +64,12 @@ var SalesHomePage = React.createClass({
         this.setState(SalesHomeStore.getState());
     },
     getDataType: function() {
-        if (hasPrivilege("GET_TEAM_LIST_ALL")) {
-            return "all";
-        } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS")) {
-            return "self";
+        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+            return 'all';
+        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+            return 'self';
         } else {
-            return "";
+            return '';
         }
     },
     componentDidMount: function() {
@@ -81,12 +81,12 @@ var SalesHomePage = React.createClass({
         this.refreshSalesListData();
         this.resizeLayout();
         $(window).resize(() => this.resizeLayout());
-        $(".statistic-data-analysis").mousewheel(function() {
-            $(".statistic-data-analysis .thumb").show();
+        $('.statistic-data-analysis').mousewheel(function() {
+            $('.statistic-data-analysis .thumb').show();
             if (scrollTimeout) {
                 clearTimeout(scrollTimeout);
             }
-            scrollTimeout = setTimeout(() => $(".statistic-data-analysis .thumb").hide(), 300);
+            scrollTimeout = setTimeout(() => $('.statistic-data-analysis .thumb').hide(), 300);
         });
         //获取是否能展示邮箱激活提示
         SalesHomeAction.getShowActiveEmailObj();
@@ -152,9 +152,9 @@ var SalesHomePage = React.createClass({
     },
     //通话总次数和总时长统计权限
     getCallTotalAuth(){
-        let authType = "user";//CALLRECORD_CUSTOMER_PHONE_STATISTIC_USER
-        if (hasPrivilege("CALLRECORD_CUSTOMER_PHONE_STATISTIC_MANAGER")) {
-            authType = "manager";
+        let authType = 'user';//CALLRECORD_CUSTOMER_PHONE_STATISTIC_USER
+        if (hasPrivilege('CALLRECORD_CUSTOMER_PHONE_STATISTIC_MANAGER')) {
+            authType = 'manager';
         }
         return authType;
     },
@@ -221,7 +221,7 @@ var SalesHomePage = React.createClass({
     // 设置获取回访列表的接口参数
     getCallBackList(queryParam) {
         let startTime = this.state.start_time ? this.state.start_time : moment('2010-01-01 00:00:00').valueOf(),
-            endTime = this.state.end_time ? this.state.end_time : moment().endOf("day").valueOf();
+            endTime = this.state.end_time ? this.state.end_time : moment().endOf('day').valueOf();
         let paramsObj = {
             params: {
                 start_time: startTime,
@@ -244,9 +244,9 @@ var SalesHomePage = React.createClass({
     //获取销售列的标题
     getSalesColumnTitle: function() {
         var userType = this.state.userType;
-        var label = Intl.get("sales.home.sales", "销售");
-        if (userType == "senior_leader") {
-            label = Intl.get("user.sales.team", "销售团队");
+        var label = Intl.get('sales.home.sales', '销售');
+        if (userType == 'senior_leader') {
+            label = Intl.get('user.sales.team', '销售团队');
         }
         return label;
     },
@@ -254,9 +254,9 @@ var SalesHomePage = React.createClass({
         let sorter = this.state.phoneSorter;
         let sortIcon = null;
         if (sorter.field === key) {
-            if (sorter.order === "descend") {
+            if (sorter.order === 'descend') {
                 sortIcon = <span className='iconfont icon-xiajiantou phone-sort-icon'/>;
-            } else if (sorter.order === "ascend") {
+            } else if (sorter.order === 'ascend') {
                 sortIcon = <span className='iconfont icon-jiantou-up phone-sort-icon'/>;
             }
         }
@@ -266,9 +266,9 @@ var SalesHomePage = React.createClass({
         let sorter = this.state.callBackSorter;
         let sortIcon = null;
         if (sorter.field === key) {
-            if (sorter.order === "descend") {
+            if (sorter.order === 'descend') {
                 sortIcon = <span className='iconfont icon-xiajiantou phone-sort-icon'/>;
-            } else if (sorter.order === "ascend") {
+            } else if (sorter.order === 'ascend') {
                 sortIcon = <span className='iconfont icon-jiantou-up phone-sort-icon'/>;
             }
         }
@@ -289,7 +289,7 @@ var SalesHomePage = React.createClass({
             key: 'sales_Name',
             width: num_col_width
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.total.duration", "总时长"), "totalTimeDescr"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.total.duration', '总时长'), 'totalTimeDescr'),
             dataIndex: 'totalTimeDescr',
             key: 'total_time',
             sorter: function(a, b) {
@@ -298,89 +298,89 @@ var SalesHomePage = React.createClass({
             className: 'has-filter table-data-align-right',
             width: this.getColumnMinWidth(num_col_width, 'totalTimeDescr')
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.total.connected", "总接通数"), "calloutSuccess"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.total.connected', '总接通数'), 'calloutSuccess'),
             dataIndex: 'calloutSuccess',
             key: 'callout_success',
             sorter: function(a, b) {
                 return a.calloutSuccess - b.calloutSuccess;
             },
             className: 'has-filter table-data-align-right',
-            width: this.getColumnMinWidth(num_col_width, "calloutSuccess")
+            width: this.getColumnMinWidth(num_col_width, 'calloutSuccess')
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.average.duration", "日均时长"), "averageTimeDescr"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.average.duration', '日均时长'), 'averageTimeDescr'),
             dataIndex: 'averageTimeDescr',
             key: 'average_time',
             sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
             },
             className: 'has-filter table-data-align-right',
-            width: this.getColumnMinWidth(num_col_width, "averageTimeDescr")
+            width: this.getColumnMinWidth(num_col_width, 'averageTimeDescr')
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.average.connected", "日均接通数"), "averageAnswer"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.average.connected', '日均接通数'), 'averageAnswer'),
             dataIndex: 'averageAnswer',
             key: 'average_answer',
             sorter: function(a, b) {
                 return a.averageAnswer - b.averageAnswer;
             },
             className: 'has-filter table-data-align-right',
-            width: this.getColumnMinWidth(col_width, "averageAnswer")
+            width: this.getColumnMinWidth(col_width, 'averageAnswer')
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callin", "呼入次数"), "callinCount"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin', '呼入次数'), 'callinCount'),
             dataIndex: 'callinCount',
             key: 'callin_count',
             sorter: function(a, b) {
                 return a.callinCount - b.callinCount;
             },
             className: 'has-filter table-data-align-right',
-            width: this.getColumnMinWidth(num_col_width, "callinCount")
+            width: this.getColumnMinWidth(num_col_width, 'callinCount')
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callin.success", "成功呼入"), "callinSuccess"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin.success', '成功呼入'), 'callinSuccess'),
             dataIndex: 'callinSuccess',
             key: 'callin_success',
             sorter: function(a, b) {
                 return a.callinSuccess - b.callinSuccess;
             },
             className: 'has-filter table-data-align-right',
-            width: this.getColumnMinWidth(num_col_width, "callinSuccess")
+            width: this.getColumnMinWidth(num_col_width, 'callinSuccess')
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callin.rate", "呼入接通率"), "callinRate"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin.rate', '呼入接通率'), 'callinRate'),
             dataIndex: 'callinRate',
             key: 'callin_rate',
             sorter: function(a, b) {
                 return a.callinRate - b.callinRate;
             },
             className: 'has-filter table-data-align-right',
-            width: this.getColumnMinWidth(col_width, "callinRate")
+            width: this.getColumnMinWidth(col_width, 'callinRate')
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callout", "呼出次数"), "calloutCount"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callout', '呼出次数'), 'calloutCount'),
             dataIndex: 'calloutCount',
             key: 'callout_count',
             sorter: function(a, b) {
                 return a.calloutCount - b.calloutCount;
             },
             className: 'has-filter table-data-align-right',
-            width: this.getColumnMinWidth(num_col_width, "calloutCount")
+            width: this.getColumnMinWidth(num_col_width, 'calloutCount')
         }, {
-            title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callout.rate", "呼出接通率"), "calloutRate"),
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callout.rate', '呼出接通率'), 'calloutRate'),
             dataIndex: 'calloutRate',
             key: 'callout_rate',
             sorter: function(a, b) {
                 return a.calloutRate - b.calloutRate;
             },
             className: 'has-filter table-data-align-right',
-            width: this.getColumnMinWidth(col_width, "calloutRate")
+            width: this.getColumnMinWidth(col_width, 'calloutRate')
         }];
         //当前展示的是客套类型的通话记录时，展示计费时长
         if (this.state.callType == CALL_TYPE_OPTION.APP) {
             columns.push({
-                title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.billing.time", "计费时长") + "(min)", "billingTime"),
+                title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.billing.time', '计费时长') + '(min)', 'billingTime'),
                 dataIndex: 'billingTime',
                 key: 'filling_time',
                 sorter: function(a, b) {
                     return a.billingTime - b.billingTime;
                 },
                 className: 'has-filter table-data-align-right',
-                width: this.getColumnMinWidth(120, "billingTime")
+                width: this.getColumnMinWidth(120, 'billingTime')
             });
         }
         return columns;
@@ -388,7 +388,7 @@ var SalesHomePage = React.createClass({
     getCallBackListColumn() {
         let columns = [
             {
-                title: this.getCallBackColumnTitle(Intl.get("common.callback.time", "回访时间"), 'call_date'),
+                title: this.getCallBackColumnTitle(Intl.get('common.callback.time', '回访时间'), 'call_date'),
                 dataIndex: 'call_date',
                 width: 100,
                 sorter: function(a, b) {
@@ -405,19 +405,19 @@ var SalesHomePage = React.createClass({
                 }
             },
             {
-                title: Intl.get("crm.41", "客户名"),
+                title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
                 width: 100,
                 className: 'table-data-align-right',
             },
             {
-                title: Intl.get("menu.trace", "跟进记录"),
+                title: Intl.get('menu.trace', '跟进记录'),
                 dataIndex: 'remark',
                 width: 100,
                 className: 'table-data-align-right',
             },
             {
-                title: Intl.get("common.callback.person", "回访人"),
+                title: Intl.get('common.callback.person', '回访人'),
                 dataIndex: 'nick_name',
                 width: 100,
                 className: 'table-data-align-right',
@@ -428,9 +428,9 @@ var SalesHomePage = React.createClass({
     //获取分析图表展示区所需的布局参数
     getChartLayoutParams: function() {
         let chartWidth = 0;
-        let chartListHeight = $(window).height() - $(".statistic-total-data").height() - layoutConstant.TOP - layoutConstant.BOTTOM;
+        let chartListHeight = $(window).height() - $('.statistic-total-data').height() - layoutConstant.TOP - layoutConstant.BOTTOM;
         let windowWidth = $(window).width();
-        let chartListContainerW = $(".statistic-data-analysis").width() - layoutConstant.CHART_PADDING;
+        let chartListContainerW = $('.statistic-data-analysis').width() - layoutConstant.CHART_PADDING;
         if (windowWidth >= Oplate.layout['screen-md']) {
             chartWidth = Math.floor(( chartListContainerW - layoutConstant.CHART_PADDING * 4) / 2);
         } else {
@@ -443,9 +443,9 @@ var SalesHomePage = React.createClass({
         let teamMemberList = this.state.salesTeamMembersObj.data;
         if (_.isArray(teamMemberList) && teamMemberList.length) {
             let sales = _.find(teamMemberList, member => member.nickName == name);
-            return sales ? sales.userId : "";
+            return sales ? sales.userId : '';
         } else {
-            return "";
+            return '';
         }
     },
 
@@ -472,7 +472,7 @@ var SalesHomePage = React.createClass({
         });
         this.getChangeCallTypeData();
         //发送点击事件
-        Trace.traceEvent("销售首页", "选择" + value + "类型");
+        Trace.traceEvent('销售首页', '选择' + value + '类型');
     },
 
     // 通话类型的筛选框
@@ -485,13 +485,13 @@ var SalesHomePage = React.createClass({
                     onChange={this.selectCallTypeValue}
                 >
                     <Option value={CALL_TYPE_OPTION.ALL}>
-                        <span>{Intl.get("user.online.all.type", "全部类型")}</span>
+                        <span>{Intl.get('user.online.all.type', '全部类型')}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.PHONE}>
-                        <span>{Intl.get("call.record.call.center", "呼叫中心")}</span>
+                        <span>{Intl.get('call.record.call.center', '呼叫中心')}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.APP}>
-                        <span>{Intl.get("common.ketao.app", "客套APP")}</span>
+                        <span>{Intl.get('common.ketao.app', '客套APP')}</span>
                     </Option>
                 </Select>
             </div>
@@ -542,13 +542,13 @@ var SalesHomePage = React.createClass({
                         />
                         {/*根据电话的排序的通话次数TOP10*/}
                         {this.renderCallTopTen(this.state.callTotalCountObj, {
-                            title: Intl.get("call.analysis.total.count", "通话总次数"),
-                            dataKey: "count"
+                            title: Intl.get('call.analysis.total.count', '通话总次数'),
+                            dataKey: 'count'
                         })}
                         {/*根据电话的排序的通话总时长TOP10*/}
                         {this.renderCallTopTen(this.state.callTotalTimeObj, {
-                            title: Intl.get("call.analysis.total.time", "通话总时长"),
-                            dataKey: "sum"
+                            title: Intl.get('call.analysis.total.time', '通话总时长'),
+                            dataKey: 'sum'
                         })}
                     </GeminiScrollbar>
                 </div>
@@ -637,7 +637,7 @@ var SalesHomePage = React.createClass({
     getCallDurTopColumn(titleObj){
         return [
             {
-                title: Intl.get("common.phone", "电话"),
+                title: Intl.get('common.phone', '电话'),
                 dataIndex: 'dst',
                 width: '120',
                 className: 'table-data-align-right',
@@ -649,16 +649,16 @@ var SalesHomePage = React.createClass({
                 className: 'table-data-align-right',
                 key: 'holding_time',
                 render: function(data) {
-                    return <div>{titleObj.dataKey === "count" ? data : TimeUtil.getFormatTime(data)}</div>;
+                    return <div>{titleObj.dataKey === 'count' ? data : TimeUtil.getFormatTime(data)}</div>;
                 }
             }, {
-                title: Intl.get("call.record.customer", "客户"),
+                title: Intl.get('call.record.customer', '客户'),
                 dataIndex: 'customer_name',
                 width: '250',
                 className: 'table-data-align-left',
                 key: 'customer_name'
             }, {
-                title: Intl.get("call.record.caller", "呼叫者"),
+                title: Intl.get('call.record.caller', '呼叫者'),
                 dataIndex: 'nick_name',
                 width: '70',
                 className: 'table-data-align-left',
@@ -703,7 +703,7 @@ var SalesHomePage = React.createClass({
     },
     //获取右侧销售团队列表的高度
     getSalesListHeight: function() {
-        let salesListHeight = "auto";
+        let salesListHeight = 'auto';
         if (this.state.scrollbarEnabled) {
             salesListHeight = $(window).height() - layoutConstant.TOP - layoutConstant.TITLE_HEIGHT;
         }
@@ -711,7 +711,7 @@ var SalesHomePage = React.createClass({
     },
     //获取左侧即将到期客户高度
     getWillExpireUserListHeight: function() {
-        let salesListHeight = "auto";
+        let salesListHeight = 'auto';
         if (this.state.scrollbarEnabled) {
             salesListHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.EXPIRE_TITLE_H - layoutConstant.BOTTOM;
         }
@@ -719,7 +719,7 @@ var SalesHomePage = React.createClass({
     },
     //点击 邮箱激活提示 中的不再提示，隐藏提示框
     hideActiveEmailTip: function() {
-        SalesHomeAction.setWebsiteConfig({"setting_notice_ignore": "yes"}, (errMsg) => {
+        SalesHomeAction.setWebsiteConfig({'setting_notice_ignore': 'yes'}, (errMsg) => {
             if (errMsg) {
                 //设置错误后的提示
                 message.error(errMsg);
@@ -741,7 +741,7 @@ var SalesHomePage = React.createClass({
                 message.error(resultObj.errorMsg);
             } else {
                 message.success(
-                    Intl.get("user.info.active.email", "激活邮件已发送至{email}", {"email": this.state.emailShowObj.email})
+                    Intl.get('user.info.active.email', '激活邮件已发送至{email}', {'email': this.state.emailShowObj.email})
                 );
             }
         });
@@ -762,7 +762,7 @@ var SalesHomePage = React.createClass({
     },
     //跳转到个人信息页面
     jumpToUserInfo: function() {
-        history.pushState({}, "/user_info_manage/user_info", {});
+        history.pushState({}, '/user_info_manage/user_info', {});
     },
     renderWillExpireUser: function() {
         return (
@@ -778,21 +778,21 @@ var SalesHomePage = React.createClass({
     },
     //渲染客户关系首页
     render: function() {
-        var crmSaleList = classNames("sale-list-zone", {
+        var crmSaleList = classNames('sale-list-zone', {
             'saleteam-list-show': this.state.isSaleTeamShow && this.state.notfirstLogin,
             'saleteam-list-hide': !this.state.isSaleTeamShow && this.state.notfirstLogin,
         });
-        var crmDataZone = classNames("crm-home-data-zone", {
-            "data-zone-small": this.state.isSaleTeamShow && this.state.notfirstLogin,
-            "data-zone-large": !this.state.isSaleTeamShow && this.state.notfirstLogin,
-            "first-login-show": !this.state.isSaleTeamShow && !this.state.notfirstLogin,
-            "is-sales-role": (this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman)
+        var crmDataZone = classNames('crm-home-data-zone', {
+            'data-zone-small': this.state.isSaleTeamShow && this.state.notfirstLogin,
+            'data-zone-large': !this.state.isSaleTeamShow && this.state.notfirstLogin,
+            'first-login-show': !this.state.isSaleTeamShow && !this.state.notfirstLogin,
+            'is-sales-role': (this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman)
         });
-        var hamburgerCls = classNames("iconfont", "icon-hamburger", {
-            "is-active": this.state.isSaleTeamShow,
+        var hamburgerCls = classNames('iconfont', 'icon-hamburger', {
+            'is-active': this.state.isSaleTeamShow,
         });
-        var title = (this.state.isSaleTeamShow ? Intl.get("sales.homepage.hide.teamlist", "隐藏团队列表") :
-            Intl.get("sales.homepage.show.teamlist", "展开团队列表"));
+        var title = (this.state.isSaleTeamShow ? Intl.get('sales.homepage.hide.teamlist', '隐藏团队列表') :
+            Intl.get('sales.homepage.show.teamlist', '展开团队列表'));
         return (<RightContent>
             <div className="sales_home_content" data-tracename="销售首页">
                 <TopNav>
@@ -801,15 +801,15 @@ var SalesHomePage = React.createClass({
                             disableDateAfterToday={true}
                             range="week"
                             onSelect={this.onSelectDate}>
-                            <DatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</DatePicker.Option>
-                            <DatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</DatePicker.Option>
-                            <DatePicker.Option value="week">{Intl.get("common.time.unit.week", "周")}</DatePicker.Option>
+                            <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                            <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                            <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
                             <DatePicker.Option
-                                value="month">{Intl.get("common.time.unit.month", "月")}</DatePicker.Option>
+                                value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
                             <DatePicker.Option
-                                value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
-                            <DatePicker.Option value="year">{Intl.get("common.time.unit.year", "年")}</DatePicker.Option>
-                            <DatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</DatePicker.Option>
+                                value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                            <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
+                            <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                         </DatePicker>
                     </div>
                     {(this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? null :
@@ -823,7 +823,7 @@ var SalesHomePage = React.createClass({
                         //</div>
                     }
                 </TopNav>
-                {this.state.salesTeamListObj.resultType == "loading" ?
+                {this.state.salesTeamListObj.resultType == 'loading' ?
                     <div className="spinner-container">
                         <Spinner/>
                     </div>

@@ -2,9 +2,9 @@
  * Created by zhshj on 2017/2/14.
  */
 
-"use strict";
+'use strict';
 
-var userTypeConfig = require("../service/user-type-config-service");
+var userTypeConfig = require('../service/user-type-config-service');
 
 exports.getUserTypeConfig = function(req, res) {
     var clientID = req.query.client_id;
@@ -17,25 +17,25 @@ exports.getUserTypeConfig = function(req, res) {
         obj.user_type = req.query.user_type;
     }
 
-    userTypeConfig.getUserTypeConfig(req, res, obj).on("success", function(data) {
+    userTypeConfig.getUserTypeConfig(req, res, obj).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 exports.addUserTypeConfig = function(req, res) {
 
-    userTypeConfig.addUserTypeConfig(req, res, req.body).on("success", function(data) {
+    userTypeConfig.addUserTypeConfig(req, res, req.body).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 exports.updateUserTypeConfig = function(req, res) {
 
-    userTypeConfig.updateUserTypeConfig(req, res, req.body).on("success", function(data) {
+    userTypeConfig.updateUserTypeConfig(req, res, req.body).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

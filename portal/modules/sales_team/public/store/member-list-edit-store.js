@@ -1,12 +1,12 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-var MemberListEdfitActions = require("../action/member-list-edit-actions");
+var MemberListEdfitActions = require('../action/member-list-edit-actions');
 
 function MemberListEditStore() {
     this.isMemberListSaving = false;//是否正在保存修改的成员列表
-    this.saveMemberListResult = "";//error，success
-    this.saveMemberListMsg = "";//保存结果的提示信息
+    this.saveMemberListResult = '';//error，success
+    this.saveMemberListMsg = '';//保存结果的提示信息
 
     this.bindActions(MemberListEdfitActions);
 }
@@ -18,8 +18,8 @@ MemberListEditStore.prototype.setMemberListSaving = function(flag) {
 
 //清空保存结果和提示信息
 MemberListEditStore.prototype.clearSaveFlags = function() {
-    this.saveMemberListResult = "";
-    this.saveMemberListMsg = "";
+    this.saveMemberListResult = '';
+    this.saveMemberListMsg = '';
 };
 
 //保存结果的处理

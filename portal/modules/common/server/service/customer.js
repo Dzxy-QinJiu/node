@@ -2,13 +2,13 @@
  * url定义
  */
 var urls = {
-    getCustomerSuggest: "/rest/customer/v2/customer/query/100/id/descend"
+    getCustomerSuggest: '/rest/customer/v2/customer/query/100/id/descend'
 };
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var customerDto = require("../dto/customer");
-var _ = require("underscore");
-var transformUtils = require("../utils/transform-fields");
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var customerDto = require('../dto/customer');
+var _ = require('underscore');
+var transformUtils = require('../utils/transform-fields');
 exports.getCustomerSuggest = function(req,res,q,fields) {
     return restUtil.authRest.post({
         url: urls.getCustomerSuggest,
@@ -25,7 +25,7 @@ exports.getCustomerSuggest = function(req,res,q,fields) {
                 return new customerDto.CustomerSuggest(originCustomer);
             });
             responseList = transformUtils.transformFields(responseList , fields);
-            emitter.emit("success" , responseList);
+            emitter.emit('success' , responseList);
         }
     });
 };

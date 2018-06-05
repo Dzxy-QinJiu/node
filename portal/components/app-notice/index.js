@@ -1,7 +1,7 @@
 // 查看系统公告信息
-var Alert = require("antd").Alert;
+var Alert = require('antd').Alert;
 // 加载时的动作显示
-var Spinner = require("../spinner");
+var Spinner = require('../spinner');
 var AppNoticeList = React.createClass({
 
     returnMsgErrorFromServer: function(){
@@ -28,7 +28,7 @@ var AppNoticeList = React.createClass({
     },
     
     render: function(){
-        if(this.props.appNoticeListResult == "loading" && this.props.page == 1){
+        if(this.props.appNoticeListResult == 'loading' && this.props.page == 1){
             return (<div>
                 <Spinner />
             </div>);
@@ -41,19 +41,19 @@ var AppNoticeList = React.createClass({
                 { this.props.list.length > 0 ? this.props.list.map(function(item, index){
                     return (
                         <div className="app-notice-item" key={index}>
-                            {item.type == "upgrade-notice" ? (
+                            {item.type == 'upgrade-notice' ? (
                                 <div className="app-notice-content">升级公告：<br />
                                     <pre className="display-notice-style">
                                         {item.content}
                                     </pre>
                                 </div>
-                            ) : (item.type == "maintain-notice" ? (
+                            ) : (item.type == 'maintain-notice' ? (
                                 <div className="app-notice-content">维护公告：<br />
                                     <pre className="display-notice-style">
                                         {item.content}
                                     </pre>
                                 </div>
-                            ) : (item.type == "fault-notice" ? (
+                            ) : (item.type == 'fault-notice' ? (
                                 <div className="app-notice-content">故障公告：<br />
                                     <pre className="display-notice-style">
                                         {item.content}

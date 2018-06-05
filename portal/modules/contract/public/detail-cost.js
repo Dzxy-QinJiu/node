@@ -1,21 +1,21 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 费用信息添加、展示及编辑页面
  */
 
-import routeList from "../common/route";
-import ajax from "../common/ajax";
-import { Form, Input, Icon, DatePicker, Button, Select, message, Row, Col } from "antd";
+import routeList from '../common/route';
+import ajax from '../common/ajax';
+import { Form, Input, Icon, DatePicker, Button, Select, message, Row, Col } from 'antd';
 const FormItem = Form.Item;
-import ValidateMixin from "../../../mixins/ValidateMixin";
-import rightPanelUtil from "../../../components/rightPanel";
+import ValidateMixin from '../../../mixins/ValidateMixin';
+import rightPanelUtil from '../../../components/rightPanel';
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelDelete = rightPanelUtil.RightPanelDelete;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import { DATE_FORMAT, OPERATE, COST_TYPE } from "../consts";
+import { DATE_FORMAT, OPERATE, COST_TYPE } from '../consts';
 
 const formItemLayout = {
     labelCol: { span: 4 },
@@ -54,10 +54,10 @@ const DetailCost = React.createClass({
     handleSubmit: function(type, id) {
         let data, params;
 
-        if (type === "delete") {
+        if (type === 'delete') {
             params = {id: id};
             this.editCost(type, data, params);
-        } else if (type === "add" || type === "update") {
+        } else if (type === 'add' || type === 'update') {
             data = this.state.formData;
 
             this.refs.validation.validate(valid => {
@@ -72,7 +72,7 @@ const DetailCost = React.createClass({
     editCost: function(type, data, params) {
         this.props.showLoading();
 
-        const handler = type + "Cost";
+        const handler = type + 'Cost';
         const route = _.find(routeList, route => route.handler === handler);
         const arg = {
             url: route.path,
@@ -86,24 +86,24 @@ const DetailCost = React.createClass({
             this.props.hideLoading();
 
             if (result.code === 0) {
-                message.success(OPERATE[type] + "费用信息成功");
+                message.success(OPERATE[type] + '费用信息成功');
 
-                if (type === "add") {
+                if (type === 'add') {
                     this.props.addContract(result.result);
                     this.props.hideRightPanel();
                 }
 
-                if (type === "update") {
+                if (type === 'update') {
                     this.props.refreshCurrentContract(this.props.cost.id);
                     this.hideForm();
                 }
 
-                if (type === "delete") {
+                if (type === 'delete') {
                     this.props.deleteContract(this.props.cost.id);
                     this.props.hideRightPanel();
                 }
             } else {
-                message.error(result.msg || OPERATE[type] + "费用信息失败");
+                message.error(result.msg || OPERATE[type] + '费用信息失败');
             }
         });
     },
@@ -115,20 +115,20 @@ const DetailCost = React.createClass({
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("user.salesman", "销售人员")}
-                validateStatus={this.getValidateStatus("sales_id")}
-                help={this.getHelpMessage("sales_id")}
+                label={Intl.get('user.salesman', '销售人员')}
+                validateStatus={this.getValidateStatus('sales_id')}
+                help={this.getHelpMessage('sales_id')}
             >
                 {this.state.isFormShow ? (
-                    <Validator rules={[{required: true, message: Intl.get("crm.17", "请选择销售人员")}]}>
+                    <Validator rules={[{required: true, message: Intl.get('crm.17', '请选择销售人员')}]}>
                         <Select
                             name="sales_id"
                             showSearch
                             optionFilterProp="children"
-                            placeholder={Intl.get("crm.17", "请选择销售人员")}
+                            placeholder={Intl.get('crm.17', '请选择销售人员')}
                             value={this.state.formData.sales_id}
                             onSelect={this.onUserChoosen}
-                            notFoundContent={Intl.get("crm.29", "暂无销售人员")}
+                            notFoundContent={Intl.get('crm.29', '暂无销售人员')}
                         >
                             {userOptions}
                         </Select>
@@ -160,16 +160,16 @@ const DetailCost = React.createClass({
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("user.sales.team", "销售团队")}
+                label={Intl.get('user.sales.team', '销售团队')}
             >
                 {this.state.isFormShow ? (
                     <Select
                         showSearch
                         optionFilterProp="children"
-                        placeholder={Intl.get("crm.31", "请选择销售团队")}
+                        placeholder={Intl.get('crm.31', '请选择销售团队')}
                         value={this.state.formData.sales_team_id}
                         onSelect={this.onTeamChoosen}
-                        notFoundContent={Intl.get("sale.home.no.team", "暂无销售团队")}
+                        notFoundContent={Intl.get('sale.home.no.team', '暂无销售团队')}
                     >
                         {teamOptions}
                     </Select>
@@ -197,16 +197,16 @@ const DetailCost = React.createClass({
         return (
             <FormItem 
                 {...formItemLayout2}
-                label={Intl.get("contract.133", "费用")}
-                validateStatus={this.getValidateStatus("cost")}
-                help={this.getHelpMessage("cost")}
+                label={Intl.get('contract.133', '费用')}
+                validateStatus={this.getValidateStatus('cost')}
+                help={this.getHelpMessage('cost')}
             >
                 {this.state.isFormShow ? (
-                    <Validator rules={[{required: true, message: Intl.get("contract.134", "请填写费用")}, this.getNumberValidateRule()]}>
+                    <Validator rules={[{required: true, message: Intl.get('contract.134', '请填写费用')}, this.getNumberValidateRule()]}>
                         <Input
                             name="cost"
                             value={this.parseAmount(this.state.formData.cost)}
-                            onChange={this.setField.bind(this, "cost")}
+                            onChange={this.setField.bind(this, 'cost')}
                         />
                     </Validator>
                 ) : (
@@ -225,12 +225,12 @@ const DetailCost = React.createClass({
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("common.login.time", "时间")}
+                label={Intl.get('common.login.time', '时间')}
             >
                 {this.state.isFormShow ? (
                     <DatePicker
                         value={moment(this.state.formData.date)}
-                        onChange={this.setField.bind(this, "date")}
+                        onChange={this.setField.bind(this, 'date')}
                     />
                 ) : (
                     <span className="value-text">
@@ -248,14 +248,14 @@ const DetailCost = React.createClass({
         return (
             <FormItem 
                 {...formItemLayout2}
-                label={Intl.get("contract.135", "费用类型")}
+                label={Intl.get('contract.135', '费用类型')}
             >
                 {this.state.isFormShow ? (
                     <Select
-                        placeholder={Intl.get("contract.136", "请选择费用类型")}
+                        placeholder={Intl.get('contract.136', '请选择费用类型')}
                         value={this.state.formData.type}
-                        onChange={this.setField.bind(this, "type")}
-                        notFoundContent={Intl.get("contract.137", "暂无费用类型")}
+                        onChange={this.setField.bind(this, 'type')}
+                        notFoundContent={Intl.get('contract.137', '暂无费用类型')}
                     >
                         {typeOptions}
                     </Select>
@@ -269,8 +269,8 @@ const DetailCost = React.createClass({
     },
     render: function() {
         //编辑按钮是否显示
-        const isEditBtnShow = !this.state.isFormShow && hasPrivilege("OPLATE_SALES_COST_ADD");
-        const detailOp = this.state.formData.id ? "update" : "add";
+        const isEditBtnShow = !this.state.isFormShow && hasPrivilege('OPLATE_SALES_COST_ADD');
+        const detailOp = this.state.formData.id ? 'update' : 'add';
 
         return (
             <div className="detail-cost">
@@ -280,7 +280,7 @@ const DetailCost = React.createClass({
                             onClick={this.showForm}
                         />
                         <RightPanelDelete 
-                            onClick={this.handleSubmit.bind(this, "delete", this.props.cost.id)}
+                            onClick={this.handleSubmit.bind(this, 'delete', this.props.cost.id)}
                         />
                     </div>
                 ) : null}

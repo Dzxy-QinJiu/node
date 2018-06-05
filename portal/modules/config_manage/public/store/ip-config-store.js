@@ -4,9 +4,9 @@ class IpConfigStore{
     constructor(){
         this.IpConfigList = []; // IP配置列表
         this.IpConfigloading = false;
-        this.getIpConfigErrMsg = ""; // 获取配置信息失败
-        this.getFilterIpStatus = ""; // 获取安全域过滤内网网段的状态，true是过滤，false是不过滤
-        this.filterErrMsg = ""; // 获取安全域过滤内网失败信息
+        this.getIpConfigErrMsg = ''; // 获取配置信息失败
+        this.getFilterIpStatus = ''; // 获取安全域过滤内网网段的状态，true是过滤，false是不过滤
+        this.filterErrMsg = ''; // 获取安全域过滤内网失败信息
         this.bindActions(IpConfigAction);
     }
     getIpConfigList(result) {
@@ -17,7 +17,7 @@ class IpConfigStore{
             this.getIpConfigErrMsg = result.errorMsg;
         } else {
             this.IpConfigloading = false;
-            this.getIpConfigErrMsg = "";
+            this.getIpConfigErrMsg = '';
             var ipList = _.isArray(result.resData) ? result.resData : [];
             this.IpConfigList = ipList;
         }
@@ -38,4 +38,4 @@ class IpConfigStore{
 }
 
 //使用alt导出store
-export default alt.createStore(IpConfigStore , "IpConfigStore");
+export default alt.createStore(IpConfigStore , 'IpConfigStore');

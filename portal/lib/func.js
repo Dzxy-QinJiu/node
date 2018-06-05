@@ -2,12 +2,12 @@
  * 通用函数
  */
 
-const calc = require("calculatorjs");
+const calc = require('calculatorjs');
 
 //去除数字中的逗号
 export const removeCommaFromNum = function(value) {
-    if (/^[0-9,.]+$/.test(value) && value.toString().indexOf(",") > -1) {
-        value = value.replace(/,/g, "");
+    if (/^[0-9,.]+$/.test(value) && value.toString().indexOf(',') > -1) {
+        value = value.replace(/,/g, '');
     }
 
     return value;
@@ -18,7 +18,7 @@ export const decimalToPercent = function(rawValue = 0) {
     let targetValue = parseFloat(rawValue);
 
     if (isNaN(targetValue)) {
-        targetValue = "";
+        targetValue = '';
     } else {
         targetValue = rawValue * 100;
 
@@ -27,7 +27,7 @@ export const decimalToPercent = function(rawValue = 0) {
             targetValue = targetValue.toFixed(2);
         }
 
-        targetValue = targetValue + "%";
+        targetValue = targetValue + '%';
     }
 
     return targetValue;
@@ -36,23 +36,23 @@ export const decimalToPercent = function(rawValue = 0) {
 //格式化金额，返回以万为单位的金额
 export const formatAmount = function(amount) {
     amount = parseFloat(amount);
-    amount = isNaN(amount) ? "" : calc.div(amount, 10000);
+    amount = isNaN(amount) ? '' : calc.div(amount, 10000);
 
     return amount;
 };
 
 //处理金额，未定义时赋空值及转成千分位格式等
 export const parseAmount = function(amount) {
-    if (isNaN(amount)) amount = "";
+    if (isNaN(amount)) amount = '';
 
     //每3位数字间用逗号分隔
-    amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     return amount;
 };
 
 //在电话号码区号与号码之间加横线分隔
-export const addHyphenToPhoneNumber = function(value = "", initialValue = "") {
+export const addHyphenToPhoneNumber = function(value = '', initialValue = '') {
     const matched = value.toString().match(/^(010|02\d|0[^012]\d{2})(\d*)$/);
 
     if (matched) {
@@ -66,7 +66,7 @@ export const addHyphenToPhoneNumber = function(value = "", initialValue = "") {
             //在编辑状态下使用时
             (initialValue && phoneCode.length === initialValue.length)
         ) {
-            value = areaCode + "-" + phoneCode;
+            value = areaCode + '-' + phoneCode;
         }
     }
 
@@ -98,18 +98,18 @@ export const exportToCsv = function(filename, rows) {
     }
 
     //避免在excel中打开时出现中文乱码
-    csvFile = "\ufeff" + csvFile;
+    csvFile = '\ufeff' + csvFile;
 
     var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
     if (navigator.msSaveBlob) { // IE 10+
         navigator.msSaveBlob(blob, filename);
     } else {
-        var link = document.createElement("a");
+        var link = document.createElement('a');
         if (link.download !== undefined) { // feature detection
             // Browsers that support HTML5 download attribute
             var url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", filename);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();

@@ -14,7 +14,7 @@ addLocaleData([...en, ...zh, ...es]);
 var areIntlLocalesSupported = require('intl-locales-supported');
 
 var localesSupports = [
-    "zh", "en", "es"
+    'zh', 'en', 'es'
 ];
 
 if (global.Intl) {

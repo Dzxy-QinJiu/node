@@ -6,11 +6,11 @@
 //获取跟踪的路线
 function getTraceLines(target) {
     var traces = {};
-    if (target && $(target).attr("data-tracename")) {
+    if (target && $(target).attr('data-tracename')) {
         var parentNames = getParentsTraceLines(target);
-        parentNames.push($(target).attr("data-tracename"));
+        parentNames.push($(target).attr('data-tracename'));
         traces.root = parentNames[0];
-        traces.traceLine = parentNames.join(">");
+        traces.traceLine = parentNames.join('>');
     }
     return traces;
 }
@@ -18,10 +18,10 @@ function getTraceLines(target) {
 function getParentsTraceLines(target) {
     var parentNames = [];
     if (target) {
-        var parents = $(target).parents("[data-tracename]");
+        var parents = $(target).parents('[data-tracename]');
         if (parents && parents.length > 0) {
             parentNames = parents.get().reverse().map(function(p) {
-                return $(p).attr("data-tracename");
+                return $(p).attr('data-tracename');
             });
         }
     }
@@ -33,13 +33,13 @@ module.exports = {
     eventHandler: function(event) {
         event = event || window.event;
         var target = event.target;
-        var tracename = $(target).attr("data-tracename");
+        var tracename = $(target).attr('data-tracename');
         //tracename属性不存在时，查找上一层父元素是否有tracename属性
         if (!tracename) {
             target = $(target).parent();
-            tracename = target.attr("data-tracename");
+            tracename = target.attr('data-tracename');
         }
-        if (tracename && typeof _paq == "object") {
+        if (tracename && typeof _paq == 'object') {
             var traceObj = getTraceLines(target);
             _paq.push(['trackEvent', traceObj.root || tracename, 'clicked', traceObj.traceLine || tracename]);
         }
@@ -71,7 +71,7 @@ module.exports = {
             return;
         var parentNames = [];
         //如果是字符串描述
-        if (typeof element == "string") {
+        if (typeof element == 'string') {
             parentNames.push(element);
         } else {
             let dom;
@@ -87,10 +87,10 @@ module.exports = {
         }
         parentNames.push(traceName);
         var traceObj = {
-            root: parentNames[0] || "",
-            traceLine: parentNames.join(">")
+            root: parentNames[0] || '',
+            traceLine: parentNames.join('>')
         };
-        if (typeof _paq == "object") {
+        if (typeof _paq == 'object') {
             _paq.push(['trackEvent', traceObj.root || traceName, 'clicked', traceObj.traceLine || traceName]);
         }
     }

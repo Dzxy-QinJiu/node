@@ -1,8 +1,8 @@
-var CallAnalysisActions = require("../action/call-analysis-action");
-import DateSelectorUtils from "CMP_DIR/datepicker/utils";
-import TimeUtil from "PUB_DIR/sources/utils/time-format-util";
+var CallAnalysisActions = require('../action/call-analysis-action');
+import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import userData from 'PUB_DIR/sources/user-data';
-import {formatRoundingPercentData} from "PUB_DIR/sources/utils/common-method-util";
+import {formatRoundingPercentData} from 'PUB_DIR/sources/utils/common-method-util';
 function CallAnalysisStore() {
     this.setInitState();
     this.bindActions(CallAnalysisActions);
@@ -12,7 +12,7 @@ function CallAnalysisStore() {
 CallAnalysisStore.prototype.setInitState = function() {
     this.loading = false; // 通话信息的loading
     //默认展示今天的时间
-    this.timeType = "day";
+    this.timeType = 'day';
     var timeRange = DateSelectorUtils.getTodayTime();
     //开始时间
     this.start_time = DateSelectorUtils.getMilliseconds(timeRange.start_time);
@@ -54,13 +54,13 @@ CallAnalysisStore.prototype.setInitState = function() {
 
     this.callRateList = {
         // 获取114占比的数据
-        "114": {
+        '114': {
             loading: false, // loading
             list: [],
             errMsg: '' // 获取失败的提示
         },
         // 获取客服电话的数据
-        "service": {
+        'service': {
             loading: false, // loading
             list: [],
             errMsg: '' // 获取失败的提示
@@ -103,7 +103,7 @@ CallAnalysisStore.prototype.getCallDurTopTen = function(result) {
     var callDurList = this.callDurList;
     callDurList.loading = result.loading;
     if (result.error) {
-        callDurList.errMsg = result.errMsg || Intl.get("call.record.top.failed", "获取通话时长TOP10失败");
+        callDurList.errMsg = result.errMsg || Intl.get('call.record.top.failed', '获取通话时长TOP10失败');
     } else {
         callDurList.errMsg = '';
         if (result.resData) {
@@ -122,8 +122,8 @@ CallAnalysisStore.prototype.getCallTotalList = function(dataObj) {
     callTotalCountObj.loading = dataObj.loading;
     callTotalTimeObj.loading = dataObj.loading;
     if (dataObj.error) {
-        callTotalCountObj.errMsg = dataObj.errMsg || Intl.get("call.analysis.total.count.failed", "获取通话总次数TOP10失败");
-        callTotalTimeObj.errMsg = dataObj.errMsg || Intl.get("call.analysis.total.time.failed", "获取通话总时长TOP10失败");
+        callTotalCountObj.errMsg = dataObj.errMsg || Intl.get('call.analysis.total.count.failed', '获取通话总次数TOP10失败');
+        callTotalTimeObj.errMsg = dataObj.errMsg || Intl.get('call.analysis.total.time.failed', '获取通话总时长TOP10失败');
     } else {
         callTotalCountObj.errMsg = '';
         callTotalTimeObj.errMsg = '';
@@ -152,7 +152,7 @@ CallAnalysisStore.prototype.getCallCountAndDur = function(result) {
     var callList = this.callList;
     callList.loading = result.loading;
     if (result.error) {
-        callList.errMsg = result.errMsg || Intl.get("call.record.trend.failed", '获取通话数量和通话时长数据失败！');
+        callList.errMsg = result.errMsg || Intl.get('call.record.trend.failed', '获取通话数量和通话时长数据失败！');
     } else {
         callList.errMsg = '';
         if (result.resData) {
@@ -175,7 +175,7 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function(result) {
     var eachTeamCallList = this.eachTeamCallList;
     eachTeamCallList.loading = result.loading;
     if (result.error) {
-        eachTeamCallList.errMsg = result.errMsg || Intl.get("call.record.trend.failed", '获取通话数量和通话时长数据失败！');
+        eachTeamCallList.errMsg = result.errMsg || Intl.get('call.record.trend.failed', '获取通话数量和通话时长数据失败！');
     } else {
         eachTeamCallList.errMsg = '';
         if (result.resData) {
@@ -213,7 +213,7 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function(result) {
 //数据判断
 function getData(data) {
     if (isNaN(data)) {
-        return "-";
+        return '-';
     } else {
         return data;
     }
@@ -221,7 +221,7 @@ function getData(data) {
 //获取计费时长
 function getBillingTime(seconds) {
     if (isNaN(seconds)) {
-        return "-";
+        return '-';
     } else {
         return Math.ceil(seconds / 60);
     }
@@ -238,7 +238,7 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
                 averageTimeFormated: TimeUtil.getFormatTime(salesPhone.averageTime),
-                name: salesPhone.name || "",//销售或者团队的名称
+                name: salesPhone.name || '',//销售或者团队的名称
                 totalAnswer: getData(salesPhone.totalAnswer),//总接通数
                 totalTime: getData(salesPhone.totalTime),//总时长
                 totalTimeFormated: TimeUtil.getFormatTime(salesPhone.totalTime),
@@ -275,13 +275,13 @@ CallAnalysisStore.prototype.changeSearchTime = function(timeObj) {
 // 114占比&客服电话
 CallAnalysisStore.prototype.getCallRate = function(result) {
     const nameMap = {
-        "service": Intl.get("call.record.service.phone", '客服电话'),
-        "114": Intl.get("call.record.service.phone", '114电话')
+        'service': Intl.get('call.record.service.phone', '客服电话'),
+        '114': Intl.get('call.record.service.phone', '114电话')
     };
     // 根据返回的字段，判断是团队还是成员
     this.callRateList[result.type].loading = result.loading;
     if (result.error) {
-        this.callRateList[result.type].errMsg = result.errMsg || Intl.get("call.record.service.phone.failed", '获取114占比失败！');
+        this.callRateList[result.type].errMsg = result.errMsg || Intl.get('call.record.service.phone.failed', '获取114占比失败！');
 
     } else if (result.resData) {
         if (result.resData.code == 0) {
@@ -291,7 +291,7 @@ CallAnalysisStore.prototype.getCallRate = function(result) {
                 if (resData.length == 1 && userData.getUserData().user_id == resData[0].user_id) { // 普通销售
                     const list = [
                         {
-                            name: Intl.get("call.record.valid.phone", '有效电话'),
+                            name: Intl.get('call.record.valid.phone', '有效电话'),
                             num: resData[0].valid_docs
                         },
                         {
@@ -324,7 +324,7 @@ CallAnalysisStore.prototype.getCallRate = function(result) {
 CallAnalysisStore.prototype.getCallIntervalData = function(result) {
     this.callIntervalData.loading = result.loading;
     if (result.error) {
-        this.callIntervalData.errMsg = result.errMsg || Intl.get("call.record.count.failed", "获取通话数量失败");
+        this.callIntervalData.errMsg = result.errMsg || Intl.get('call.record.count.failed', '获取通话数量失败');
         this.callIntervalData.timeList = [];
         this.callIntervalData.countList = [];
     } else {
@@ -382,7 +382,7 @@ CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
     if (result.error) {
         this.customerData.errMsg = result.errMsg;
     } else {
-        this.customerData.errMsg = "";
+        this.customerData.errMsg = '';
         let resData = result.resData;
         this.callZoneStageOriginalData = resData;
         if (_.isObject(resData) && resData.code === 0) {
@@ -428,7 +428,7 @@ CallAnalysisStore.prototype.showZoneDistribute = function(zone) {
         let sumData = OriginalData.sum;
         if (sumData && _.isArray(sumData) && sumData.length) {
             let zoneList = [];
-            if (zone === "") { // 全国范围
+            if (zone === '') { // 全国范围
                 _.each(OriginalData.sum, (item) => {
                     zoneList.push({name: item.name, value: item.count});
                 });

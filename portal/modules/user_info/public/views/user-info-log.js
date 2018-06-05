@@ -1,5 +1,5 @@
-import { AntcTable } from "antc";
-var Spinner = require("../../../../components/spinner");
+import { AntcTable } from 'antc';
+var Spinner = require('../../../../components/spinner');
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 const messages = defineMessages({
@@ -14,18 +14,18 @@ var UserInfoLog = React.createClass({
             this.props.logList.length >= 10 && !this.props.listenScrollBottom;
     },
     renderLoading() {
-        if (this.props.logLoading && this.props.sortId === "") {
+        if (this.props.logLoading && this.props.sortId === '') {
             return <Spinner className="isloading"/>;
         }
         return null;
     },
     renderLogTableContent() {
         var Columns = [{
-            title: Intl.get("common.login.time","时间"),
+            title: Intl.get('common.login.time','时间'),
             dataIndex: 'loginTime',
             width: '16%'
         }, {
-            title: Intl.get("user.info.login.address","地点"),
+            title: Intl.get('user.info.login.address','地点'),
             dataIndex: 'loginAddress',
             width: '16%'
         }, {
@@ -33,15 +33,15 @@ var UserInfoLog = React.createClass({
             dataIndex: 'loginIP',
             width: '16%'
         }, {
-            title: Intl.get("user.info.login.browser","浏览器"),
+            title: Intl.get('user.info.login.browser','浏览器'),
             dataIndex: 'loginBrowser',
             width: '16%'
         }, {
-            title: Intl.get("common.login.equipment","设备"),
+            title: Intl.get('common.login.equipment','设备'),
             dataIndex: 'loginEquipment',
             width: '16%'
         }, {
-            title: Intl.get("common.operate","操作"),
+            title: Intl.get('common.operate','操作'),
             dataIndex: 'loginMessage',
             width: '20%'
         }];
@@ -51,7 +51,7 @@ var UserInfoLog = React.createClass({
         let localeObj = {emptyText: this.props.logErrorMsg || this.formatMessage(messages.common_no_data)};
         let isLoading = this.props.logLoading;
         let doNotShow = false;
-        if (isLoading && this.props.sortId === "") {
+        if (isLoading && this.props.sortId === '') {
             doNotShow = true;
         }
         const dropLoadConfig = {
@@ -64,7 +64,7 @@ var UserInfoLog = React.createClass({
         return (
             <div className="user-log-list-table-wrap scroll-load"
 
-                style={{display: doNotShow ? "none" : "block"}}
+                style={{display: doNotShow ? 'none' : 'block'}}
             >
                 <div className="log-table" style={{ height: this.props.height }}>
                     <AntcTable
@@ -82,7 +82,7 @@ var UserInfoLog = React.createClass({
                 {
                     this.props.logTotal ?
                         <div className="summary-info">
-                            {Intl.get("user.log.total","共有{number}条日志记录", {number: this.props.logTotal})}
+                            {Intl.get('user.log.total','共有{number}条日志记录', {number: this.props.logTotal})}
                         </div> : null
                 }
 

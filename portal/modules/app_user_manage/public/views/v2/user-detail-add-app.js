@@ -1,9 +1,9 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-import {RightPanelClose,RightPanelReturn} from "../../../../../components/rightPanel";
+import {RightPanelClose,RightPanelReturn} from '../../../../../components/rightPanel';
 import {Form,Icon,Alert} from 'antd';
 import Spinner from '../../../../../components/spinner';
 import AlertTimer from '../../../../../components/alert-timer';
@@ -58,7 +58,7 @@ const UserDetailAddApp = React.createClass({
     componentDidMount() {
         UserDetailAddAppStore.listen(this.onStateChange);
         UserDetailAddAppActions.getCurrentRealmApps();
-        $(window).on("resize" , this.onStateChange);
+        $(window).on('resize' , this.onStateChange);
     },
     componentWillUnmount() {
         UserDetailAddAppStore.unlisten(this.onStateChange);
@@ -113,7 +113,7 @@ const UserDetailAddApp = React.createClass({
                 <Alert type="error" showIcon message={<span>
                     <ReactIntl.FormattedMessage
                         id="user.app.list.error.tip"
-                        defaultMessage={`应用列表获取失败，{retry}`}
+                        defaultMessage={'应用列表获取失败，{retry}'}
                         values={{
                             'retry': <a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
                     />
@@ -222,7 +222,7 @@ const UserDetailAddApp = React.createClass({
         };
         if(this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get("user.app.add.success", "添加应用成功")} type="success" showIcon onHide={hide}/>
+                <AlertTimer time={3000} message={Intl.get('user.app.add.success', '添加应用成功')} type="success" showIcon onHide={hide}/>
             );
         }
         if(this.state.submitResult === 'error') {
@@ -324,7 +324,7 @@ const UserDetailAddApp = React.createClass({
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(submitData, selectedApps);
         if (noSelectRoleApps.length) {
-            UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName: noSelectRoleApps.join('、') }));
+            UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get('user.add.apps.role.select.tip', '{appName}未设置角色', {appName: noSelectRoleApps.join('、') }));
             return;
         } else {
             UserDetailAddAppActions.noSelectRoleError('');
@@ -357,12 +357,12 @@ const UserDetailAddApp = React.createClass({
                 <Form horizontal>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <OperationSteps
-                            title={Intl.get("user.user.add", "添加用户")}
+                            title={Intl.get('user.user.add', '添加用户')}
                             current={this.state.step}
                         >
-                            <OperationSteps.Step action={Intl.get("user.user.app.select", "选择应用")}></OperationSteps.Step>
-                            <OperationSteps.Step action={Intl.get("user.user.info", "开通信息")}></OperationSteps.Step>
-                            <OperationSteps.Step action={Intl.get("user.user.app.set", "应用设置")}></OperationSteps.Step>
+                            <OperationSteps.Step action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
+                            <OperationSteps.Step action={Intl.get('user.user.info', '开通信息')}></OperationSteps.Step>
+                            <OperationSteps.Step action={Intl.get('user.user.app.set', '应用设置')}></OperationSteps.Step>
                         </OperationSteps>
                         <Carousel
                             interval={0}

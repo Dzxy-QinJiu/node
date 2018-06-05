@@ -1,19 +1,19 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 应付款信息添加表单
  */
 
-import { Form, Input, Select, Button, Icon } from "antd";
+import { Form, Input, Select, Button, Icon } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-import ValidateMixin from "../../../mixins/ValidateMixin";
+import ValidateMixin from '../../../mixins/ValidateMixin';
 
 const AddBuyPayment = React.createClass({
     mixins: [ValidateMixin],
     getInitialFormData: function() {
         return {
-            unit: "days",
+            unit: 'days',
         };
     },
     getInitialState: function() {
@@ -72,10 +72,10 @@ const AddBuyPayment = React.createClass({
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />
                         <FormItem 
-                            validateStatus={this.getValidateStatus("num")}
-                            help={this.getHelpMessage("num")}
+                            validateStatus={this.getValidateStatus('num')}
+                            help={this.getHelpMessage('num')}
                         >
-                            <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, {pattern: /^\d+$/, message: Intl.get("contract.45", "请填写数字")}]}>
+                            <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, {pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字')}]}>
                                 <Input
                                     name="num"
                                     value={this.state.formData.num}
@@ -91,17 +91,17 @@ const AddBuyPayment = React.createClass({
                             <Option key="weeks" value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
                             <Option key="months" value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
                         </Select>
-                        {Intl.get("contract.80","内")}，
-                        {Intl.get("contract.81","应付款")}
+                        {Intl.get('contract.80','内')}，
+                        {Intl.get('contract.81','应付款')}
                         <FormItem 
-                            validateStatus={this.getValidateStatus("amount")}
-                            help={this.getHelpMessage("amount")}
+                            validateStatus={this.getValidateStatus('amount')}
+                            help={this.getHelpMessage('amount')}
                         >
-                            <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule()]}>
+                            <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule()]}>
                                 <Input
                                     name="amount"
                                     value={this.state.formData.amount}
-                                    onChange={this.setField.bind(this, "amount")}
+                                    onChange={this.setField.bind(this, 'amount')}
                                 />
                             </Validator>
                         </FormItem>
@@ -110,7 +110,7 @@ const AddBuyPayment = React.createClass({
                             className="btn-primary-sure"
                             onClick={this.addPayment}
                         >
-                            <ReactIntl.FormattedMessage id="sales.team.add.sales.team" defaultMessage={Intl.get("common.add", "添加")} />
+                            <ReactIntl.FormattedMessage id="sales.team.add.sales.team" defaultMessage={Intl.get('common.add', '添加')} />
                         </Button>
                     </Validation>
                 </div>
@@ -121,15 +121,15 @@ const AddBuyPayment = React.createClass({
                             {this.state.payments.map((payment, index) => { return (
                                 <li key={index}>
                                     <div className="circle-button circle-button-minus"
-                                        title={Intl.get("common.delete", "删除")}
+                                        title={Intl.get('common.delete', '删除')}
                                         onClick={this.deletePayment.bind(this, index)}>
                                         <Icon type="minus"/>
                                     </div>
-                                    {Intl.get("contract.83","至")}
+                                    {Intl.get('contract.83','至')}
                                     {moment(payment.date).format(oplateConsts.DATE_FORMAT)}
                                     <ReactIntl.FormattedMessage
                                         id="contract.84"
-                                        defaultMessage={`应付金额{num}元`}
+                                        defaultMessage={'应付金额{num}元'}
                                         values={{'num': payment.amount}}
                                     />
                                 </li>

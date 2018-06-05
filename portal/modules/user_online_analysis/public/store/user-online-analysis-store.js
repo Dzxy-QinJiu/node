@@ -1,5 +1,5 @@
 //用户在线统计的action
-var UserOnlineAnalysisAction = require("../action/user-online-analysis-action");
+var UserOnlineAnalysisAction = require('../action/user-online-analysis-action');
 
 //app用户的store
 function UserOnlineAnalysisStore() {
@@ -57,15 +57,15 @@ UserOnlineAnalysisStore.prototype.resetState = function() {
     this.isShowRightPanel = false;
     //浏览器统计信息
     this.browserAnalysis = {
-        resultType: "loading",
-        errorMsg: "",
+        resultType: 'loading',
+        errorMsg: '',
         list: [],
         total: 0
     };
     //地域统计信息
     this.zoneAnalysis = {
-        resultType: "loading",
-        errorMsg: "",
+        resultType: 'loading',
+        errorMsg: '',
         list: [],
         total: 0
     };

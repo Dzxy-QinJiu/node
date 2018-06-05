@@ -1,6 +1,6 @@
-var salesHomeAjax = require("../ajax/sales-home-ajax");
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
-var scrollBarEmitter = require("PUB_DIR/sources/utils/emitters").scrollBarEmitter;
+var salesHomeAjax = require('../ajax/sales-home-ajax');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 
 function SalesHomeActions() {
     this.generateActions(
@@ -10,7 +10,7 @@ function SalesHomeActions() {
     );
     this.getPhoneTotal = function(reqData) {
         let type = 'manager';
-        if (hasPrivilege("CALL_RECORD_VIEW_USER")) {
+        if (hasPrivilege('CALL_RECORD_VIEW_USER')) {
             type = 'user';
         }
         this.dispatch({loading: true, error: false});
@@ -52,7 +52,7 @@ function SalesHomeActions() {
                 type: type,
                 error: true,
                 loading: false,
-                errorMsg: errorMsg || Intl.get("schedule.get.schedule.list.failed", "获取日程管理列表失败")
+                errorMsg: errorMsg || Intl.get('schedule.get.schedule.list.failed', '获取日程管理列表失败')
             });
         });
     };
@@ -85,7 +85,7 @@ function SalesHomeActions() {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false, error: false, resData: result});
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errMsg: errorMsg || Intl.get("crm.188", "获取重复客户列表失败!")});
+            this.dispatch({loading: false, error: true, errMsg: errorMsg || Intl.get('crm.188', '获取重复客户列表失败!')});
         });
     };
     //修改某条日程管理的状态
@@ -98,7 +98,7 @@ function SalesHomeActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errMsg || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败")
+                errorMsg: errMsg || Intl.get('crm.failed.alert.todo.list', '修改待办事项状态失败')
             });
             cb(errMsg);
         });
@@ -113,7 +113,7 @@ function SalesHomeActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errMsg: errMsg || Intl.get("sales.frontpage.fail.new.distribute.customer", "获取新分配的客户失败")
+                errMsg: errMsg || Intl.get('sales.frontpage.fail.new.distribute.customer', '获取新分配的客户失败')
             });
         });
     };
@@ -127,7 +127,7 @@ function SalesHomeActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errorMsg || Intl.get("failed.get.crm.list", "获取客户列表失败")
+                errorMsg: errorMsg || Intl.get('failed.get.crm.list', '获取客户列表失败')
             });
         });
     };

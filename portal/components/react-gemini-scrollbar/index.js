@@ -1,5 +1,5 @@
 'use strict';
-var scrollBarEmitter = require("../../public/sources/utils/emitters").scrollBarEmitter;
+var scrollBarEmitter = require('../../public/sources/utils/emitters').scrollBarEmitter;
 var _extends = Object.assign || function(target) {
     for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
@@ -24,14 +24,14 @@ function _objectWithoutProperties(obj, keys) {
 
 require('./jquery.mousewheel.js');
 
-var language = require("../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./gemini-scrollbar-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./gemini-scrollbar-zh_CN.less");
+var language = require('../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./gemini-scrollbar-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./gemini-scrollbar-zh_CN.less');
 }
 var GeminiScrollbar = require('./gemini-scrollbar');
-var Icon = require("antd").Icon;
+var Icon = require('antd').Icon;
 
 var ReactScrollBar = React.createClass({
     displayName: 'GeminiScrollbar',
@@ -205,7 +205,7 @@ var ReactScrollBar = React.createClass({
 });
 
 ReactScrollBar.scrollTo = function(dom, px) {
-    var $scrollbar = $(dom).find(".gm-scroll-view");
+    var $scrollbar = $(dom).find('.gm-scroll-view');
     if ($scrollbar[0]) {
         $scrollbar[0].scrollTop = px;
     }

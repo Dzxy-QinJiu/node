@@ -3,9 +3,9 @@
  */
 function SalesStage(opts) {
     this.id = opts.id;
-    this.name = opts.name || "unknown";
-    this.index = opts.index || "unknown";
-    this.description = opts.description || "unknown";
+    this.name = opts.name || 'unknown';
+    this.index = opts.index || 'unknown';
+    this.description = opts.description || 'unknown';
 }
 
 module.exports = SalesStage;

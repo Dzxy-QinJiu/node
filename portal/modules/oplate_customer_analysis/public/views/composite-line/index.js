@@ -1,17 +1,17 @@
 /**
  * 线图
  */
-require("./index.less");
-var echarts = require("echarts-eefung");
+require('./index.less');
+var echarts = require('echarts-eefung');
 //各种颜色
-var colors = require("../../utils/colors");
-var Color = require("color");
-var emitter = require("../../utils/emitter");
-var Spinner = require("../../../../../components/spinner");
-var immutable = require("immutable");
-var Icon = require("antd").Icon;
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+var colors = require('../../utils/colors');
+var Color = require('color');
+var emitter = require('../../utils/emitter');
+var Spinner = require('../../../../../components/spinner');
+var immutable = require('immutable');
+var Icon = require('antd').Icon;
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 
 //布局使用的常量
@@ -39,7 +39,7 @@ var LineChart = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: Intl.get("oplate_customer_analysis.8", "新增客户"),
+            title: Intl.get('oplate_customer_analysis.8', '新增客户'),
             height: 214,
             resultType: 'loading'
         };
@@ -55,7 +55,7 @@ var LineChart = React.createClass({
         }
         var startMoment = moment(new Date(+items[0].timestamp));
         var endMoment = moment(new Date(+items[items.length - 1].timestamp));
-        var biggerThanYear = startMoment.format("YYYY") != endMoment.format("YYYY");
+        var biggerThanYear = startMoment.format('YYYY') != endMoment.format('YYYY');
         if(biggerThanYear) {
             this.isBiggerThanYear = true;
         }
@@ -146,7 +146,7 @@ var LineChart = React.createClass({
             },
             xAxis: [
                 {
-                    type: "category",
+                    type: 'category',
                     splitLine: {
                         lineStyle: {
                             color: '#f2f2f2'
@@ -172,7 +172,7 @@ var LineChart = React.createClass({
             ],
             yAxis: [
                 {
-                    type: "value",
+                    type: 'value',
                     splitLine: {
                         lineStyle: {
                             color: '#f2f2f2'
@@ -218,9 +218,9 @@ var LineChart = React.createClass({
                 });
                 this.echartInstance = null;
             }
-            $(this.refs.chart).html("<div class='nodata'>" + Intl.get("common.no.data", "暂无数据") + "</div>");
+            $(this.refs.chart).html('<div class=\'nodata\'>' + Intl.get('common.no.data', '暂无数据') + '</div>');
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
         }
     },
     legendMouseenter: function(obj,idx,event) {

@@ -1,13 +1,13 @@
 /**
  * 线图
  */
-var echarts = require("echarts-eefung");
+var echarts = require('echarts-eefung');
 //各种颜色
-var colors = require("../utils/colors");
-var Color = require("color");
-var Spinner = require("../../../../components/spinner");
-var immutable = require("immutable");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+var colors = require('../utils/colors');
+var Color = require('color');
+var Spinner = require('../../../../components/spinner');
+var immutable = require('immutable');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 
 var BarChart = React.createClass({
@@ -147,9 +147,9 @@ var BarChart = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
         }
     },
     componentDidMount: function() {

@@ -1,7 +1,7 @@
-var SalesHomeActions = require("../action/sales-home-actions");
+var SalesHomeActions = require('../action/sales-home-actions');
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
-const STATUS = {UNHANDLED: "unhandled", HANDLED: "handled"};
-import {ALL_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
+const STATUS = {UNHANDLED: 'unhandled', HANDLED: 'handled'};
+import {ALL_LISTS_TYPE} from 'PUB_DIR/sources/utils/consts';
 function SalesHomeStore() {
     this.setInitState();
     this.bindActions(SalesHomeActions);
@@ -9,7 +9,7 @@ function SalesHomeStore() {
 //数据判断
 function getData(data) {
     if (isNaN(data)) {
-        return "-";
+        return '-';
     } else {
         return data;
     }
@@ -41,7 +41,7 @@ SalesHomeStore.prototype.setInitState = function() {
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //到今日过期的日程
@@ -51,7 +51,7 @@ SalesHomeStore.prototype.setInitState = function() {
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //拨入未接通的
@@ -61,7 +61,7 @@ SalesHomeStore.prototype.setInitState = function() {
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //关注客户登录
@@ -71,7 +71,7 @@ SalesHomeStore.prototype.setInitState = function() {
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //停用客户登录
@@ -81,7 +81,7 @@ SalesHomeStore.prototype.setInitState = function() {
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //最近登录的客户
@@ -91,93 +91,93 @@ SalesHomeStore.prototype.setInitState = function() {
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //重复客户列表
     this.repeatCustomerObj = {
         loading: true,
-        errMsg: "",
+        errMsg: '',
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //即将到期的签约用户
     this.willExpiredAssignCustomer = {
         loading: true,
-        errMsg: "",
+        errMsg: '',
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //已到期的试用客户
     this.hasExpiredTryCustomer = {
         loading: true,
-        errMsg: "",
+        errMsg: '',
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //即将到期的试用用户
     this.willExpiredTryCustomer = {
         loading: true,
-        errMsg: "",
+        errMsg: '',
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     //新分配的客户
     this.newDistributeCustomer = {
         loading: true,
-        errMsg: "",
+        errMsg: '',
         curPage: 1,
         data: {
             list: [],
-            total: ""
+            total: ''
         }
     };
     this.rangParams = [{//默认展示今天的数据
         from: TimeStampUtil.getTodayTimeStamp().start_time,
         to: TimeStampUtil.getTodayTimeStamp().end_time,
-        type: "time",
-        name: "last_contact_time"
+        type: 'time',
+        name: 'last_contact_time'
     }];
     //最近7天登录的客户
     this.rangParamsLogin = [{//默认展示今天的数据
         from: TimeStampUtil.getTodayTimeStamp().start_time - 7 * oplateConsts.ONE_DAY_TIME_RANGE,
         to: TimeStampUtil.getTodayTimeStamp().end_time,
-        type: "time",
-        name: "last_login_time"
+        type: 'time',
+        name: 'last_login_time'
     }];
     //新分配未联系的客户
     this.rangParamsDistribute = [{
         from: 0,
         to: moment().valueOf(),
-        type: "time",
-        name: "allot_time"
+        type: 'time',
+        name: 'allot_time'
     }];
     //最近登录的客户
     this.sorterLogin = {
-        field: "last_login_time",//排序字段
-        order: "descend"
+        field: 'last_login_time',//排序字段
+        order: 'descend'
     };
     //最近分配的客户
     this.sorterDistribute = {
-        field: "allot_time",
-        order: "descend"
+        field: 'allot_time',
+        order: 'descend'
     };
     this.page_size = 20;
     this.sorter = {
-        field: "last_contact_time",//排序字段
-        order: "descend"
+        field: 'last_contact_time',//排序字段
+        order: 'descend'
     };
     //开始时间
     this.start_time = TimeStampUtil.getTodayTimeStamp().start_time;
@@ -221,10 +221,10 @@ SalesHomeStore.prototype.getCustomerTotal = function(result) {
         customerTotalObj.data = result.resData;
         if (!_.isObject(customerTotalObj.data)) {
             customerTotalObj.data = {
-                "added": 0,
-                "dealed": 0,
-                "executed": 0,
-                "total": 0
+                'added': 0,
+                'dealed': 0,
+                'executed': 0,
+                'total': 0
             };
         }
     }
@@ -275,7 +275,7 @@ SalesHomeStore.prototype.getNewDistributeCustomer = function(result) {
 };
 //获取日程列表
 SalesHomeStore.prototype.getScheduleList = function(result) {
-    if (result.type === "expired") {
+    if (result.type === 'expired') {
         //获取的过期日程列表
         var scheduleExpiredTodayObj = this.scheduleExpiredTodayObj;
         scheduleExpiredTodayObj.loading = result.loading;
@@ -286,7 +286,7 @@ SalesHomeStore.prototype.getScheduleList = function(result) {
             scheduleExpiredTodayObj.data.total = result.resData.total;
             scheduleExpiredTodayObj.curPage++;
         }
-    }else if (result.type === "missed_call"){
+    }else if (result.type === 'missed_call'){
         //获取拨入未接通的电话
         var missCallObj = this.missCallObj;
         missCallObj.loading = result.loading;
@@ -297,7 +297,7 @@ SalesHomeStore.prototype.getScheduleList = function(result) {
             missCallObj.data.total = result.resData.total;
             missCallObj.curPage++;
         }
-    }else if (result.type === "today") {
+    }else if (result.type === 'today') {
         //获取今天的日程列表
         var scheduleTodayObj = this.scheduleTodayObj;
         scheduleTodayObj.loading = result.loading;
@@ -336,7 +336,7 @@ function processScheduleLists(list, isSort) {
 }
 //获取关注客户登录或者是停用客户登录
 SalesHomeStore.prototype.getSystemNotices = function(result) {
-    if (result.type === "concerCustomerLogin") {
+    if (result.type === 'concerCustomerLogin') {
         //获取的过期日程列表
         var concernCustomerObj = this.concernCustomerObj;
         concernCustomerObj.loading = result.loading;
@@ -347,7 +347,7 @@ SalesHomeStore.prototype.getSystemNotices = function(result) {
             concernCustomerObj.data.total = result.resData.total;
             concernCustomerObj.curPage++;
         }
-    } else if (result.type === "appIllegal") {
+    } else if (result.type === 'appIllegal') {
         //获取今天的日程列表
         var appIllegalObj = this.appIllegalObj;
         appIllegalObj.loading = result.loading;

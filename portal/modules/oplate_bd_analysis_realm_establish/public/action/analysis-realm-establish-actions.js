@@ -3,8 +3,8 @@
  * 说明：统计分析-当前安全域-开通个数统计 action文件，作为MVC里的c
  */
 //ajax请求文件
-var AnalysisRealmEstablishAjax = require("../ajax/analysis-realm-establish-ajax");
-var DateSelectorUtils = require("../../../../components/date-selector/utils");
+var AnalysisRealmEstablishAjax = require('../ajax/analysis-realm-establish-ajax');
+var DateSelectorUtils = require('../../../../components/date-selector/utils');
 //使用alt创建action的类
 function AnalysisRealmEstablishActions() {
 

@@ -1,5 +1,5 @@
-let CustomerRepeatAction = require("../action/customer-repeat-action");
-let CrmStore = require("./crm-store");
+let CustomerRepeatAction = require('../action/customer-repeat-action');
+let CrmStore = require('./crm-store');
 
 let PAGE_SIZE = 20;//一页展示的客户个数
 
@@ -13,7 +13,7 @@ function CustomerRepeatStore() {
     this.curCustomer = {};//当前要展示的客户
     this.repeatCustomersSize = 0;//重复客户的总数
     this.isLoadingRepeatCustomer = false;//是否正在加载重复客户
-    this.errorMsg = "";//获取重复客户列表失败的提示信息
+    this.errorMsg = '';//获取重复客户列表失败的提示信息
     this.listenScrollBottom = true;//是否监听下拉加载
     this.page = 1;//当前获取的是第几页的数据
     this.mergePanelIsShow = false;//是否展示客户合并面板
@@ -39,7 +39,7 @@ CustomerRepeatStore.prototype.editBasicSuccess = function(newBasic) {
     if (newBasic && newBasic.id) {
         let updateCustomer = _.find(this.originCustomerList, customer => customer.id == newBasic.id);
         for (var key in newBasic) {
-            if (newBasic[key] || newBasic[key] == "") {
+            if (newBasic[key] || newBasic[key] == '') {
                 updateCustomer[key] = newBasic[key];
             }
         }
@@ -58,7 +58,7 @@ CustomerRepeatStore.prototype.setFilterObj = function(filterObj) {
 CustomerRepeatStore.prototype.toggleSearchInput = function(keyObj) {
     this.filterObj = {};
     switch (keyObj.key) {
-    case "name":
+    case 'name':
         this.nameSearchIsShow = keyObj.isShow;
         if (keyObj.isShow) {
             //展示客户搜索时，关闭其他搜索
@@ -66,7 +66,7 @@ CustomerRepeatStore.prototype.toggleSearchInput = function(keyObj) {
             this.remarksSearchIsShow = false;
         }
         break;
-    case "user_name":
+    case 'user_name':
         this.userNameSearchIsShow = keyObj.isShow;
         if (keyObj.isShow) {
             //展示客户搜索时，关闭其他搜索
@@ -74,7 +74,7 @@ CustomerRepeatStore.prototype.toggleSearchInput = function(keyObj) {
             this.remarksSearchIsShow = false;
         }
         break;
-    case "remarks":
+    case 'remarks':
         this.remarksSearchIsShow = keyObj.isShow;
         if (keyObj.isShow) {
             //展示客户搜索时，关闭其他搜索
@@ -113,7 +113,7 @@ CustomerRepeatStore.prototype.getRepeatCustomerList = function(data) {
     if (_.isString(data)) {
         this.errorMsg = data;
     } else if (_.isObject(data) && data.result) {
-        this.errorMsg = "";
+        this.errorMsg = '';
         this.repeatCustomersSize = data.total || 0;
         if (data.code === 0) {
             var data_list = data && data.result;
@@ -151,8 +151,8 @@ CustomerRepeatStore.prototype.processForList = function(curCustomers) {
     return _.map(repeatCustomerObj, (repeatList, repeatId) => {
         if (_.isArray(repeatList) && repeatList.length) {
             repeatList = _.map(repeatList, customer => {
-                customer.start_time_str = customer.start_time ? moment(customer.start_time).format(oplateConsts.DATE_FORMAT) : "";
-                customer.last_contact_time_str = customer.last_contact_time ? moment(customer.last_contact_time).format(oplateConsts.DATE_FORMAT) : "";
+                customer.start_time_str = customer.start_time ? moment(customer.start_time).format(oplateConsts.DATE_FORMAT) : '';
+                customer.last_contact_time_str = customer.last_contact_time ? moment(customer.last_contact_time).format(oplateConsts.DATE_FORMAT) : '';
                 return customer;
             });
         }

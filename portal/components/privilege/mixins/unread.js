@@ -1,6 +1,6 @@
-var insertStyle = require("../../insert-style");
-var UserData = require("../../../public/sources/user-data");
-var notificationEmitter = require("../../../public/sources/utils/emitters").notificationEmitter;
+var insertStyle = require('../../insert-style');
+var UserData = require('../../../public/sources/user-data');
+var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
 var UnreadMixin = {
     dynamicStyle: null,
     //菜单切换时，重新获取未处理申请数
@@ -28,13 +28,13 @@ var UnreadMixin = {
             if (count > 0) {
                 var len = (count + '').length;
                 if (len >= 3) {
-                    styleText = `.sidebar-applyentry:before{content:'99+';display:block;padding:0 2px 0 2px;}`;
+                    styleText = '.sidebar-applyentry:before{content:\'99+\';display:block;padding:0 2px 0 2px;}';
                 } else {
                     styleText = `.sidebar-applyentry:before{content:'${count}';display:block}`;
                 }
 
             } else {
-                styleText = `.sidebar-applyentry:before{content:'';display:none}`;
+                styleText = '.sidebar-applyentry:before{content:\'\';display:none}';
             }
             //展示数字
             this.dynamicStyle = insertStyle(styleText);
@@ -50,7 +50,7 @@ var UnreadMixin = {
     shouldGetUnreadData: function() {
         var userData = UserData.getUserData();
         var privileges = userData.privileges || [];
-        if (privileges.indexOf("APP_USER_APPLY_LIST") >= 0) {
+        if (privileges.indexOf('APP_USER_APPLY_LIST') >= 0) {
             return true;
         }
         return false;

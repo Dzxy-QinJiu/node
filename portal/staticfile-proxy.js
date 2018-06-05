@@ -4,7 +4,7 @@
  * Created by liwenjun on 2016/9/12.
  */
 var isInited = false;
-var config = require("../conf/config");
+var config = require('../conf/config');
 var request = require('request');
 var proxyDir = config.staticFileProxyDir;
 module.exports = function(app) {

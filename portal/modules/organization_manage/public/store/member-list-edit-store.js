@@ -1,20 +1,20 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-var MemberListEditActions = require("../action/member-list-edit-actions");
+var MemberListEditActions = require('../action/member-list-edit-actions');
 function MemberListEditStore() {
 
     this.addMemberList = [];//添加成员时成员列表
     this.addMemberTotal = 0;//可添加组织成员的总长度
     this.addMemberPage = 1;//可添加组织成员列表的当前页数
     this.addMemberPageSize = 20;//可添加组织成员列表一页展示的条数
-    this.addMemberListTipMsg = "";//获取可添加成员列表时，错误/暂无数据的提示
+    this.addMemberListTipMsg = '';//获取可添加成员列表时，错误/暂无数据的提示
     this.isLoadingAddMemberList = false;//正在获取可添加成员列表
     //选中的成员
     this.selectedMemberRows = [];
     this.isMemberListSaving = false;//是否正在保存修改的成员列表
-    this.saveMemberListResult = "";//error，success
-    this.saveMemberListMsg = "";//保存结果的提示信息
+    this.saveMemberListResult = '';//error，success
+    this.saveMemberListMsg = '';//保存结果的提示信息
 
     this.bindActions(MemberListEditActions);
 }
@@ -62,10 +62,10 @@ MemberListEditStore.prototype.getMemberList = function(resultData) {
         this.addMemberTotal = resultData.total;
         if (_.isArray(curUserList) && curUserList.length > 0) {
             this.addMemberList = curUserList;
-            this.addMemberListTipMsg = "";
+            this.addMemberListTipMsg = '';
         } else {
             this.addMemberList = [];
-            this.addMemberListTipMsg = Intl.get("common.no.add.member");
+            this.addMemberListTipMsg = Intl.get('common.no.add.member');
         }
     }
 };
@@ -77,8 +77,8 @@ MemberListEditStore.prototype.setMemberListSaving = function(flag) {
 
 //清空保存结果和提示信息
 MemberListEditStore.prototype.clearSaveFlags = function() {
-    this.saveMemberListResult = "";
-    this.saveMemberListMsg = "";
+    this.saveMemberListResult = '';
+    this.saveMemberListMsg = '';
 };
 
 //保存结果的处理

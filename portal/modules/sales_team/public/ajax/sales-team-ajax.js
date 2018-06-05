@@ -1,7 +1,7 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-let teamAjax = require("../../../common/public/ajax/team");
+let teamAjax = require('../../../common/public/ajax/team');
 exports.getSalesTeamList = function() {
     var Deferred = $.Deferred();
     $.ajax({

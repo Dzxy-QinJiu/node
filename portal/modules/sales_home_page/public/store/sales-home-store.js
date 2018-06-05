@@ -1,10 +1,10 @@
-var SalesHomeActions = require("../action/sales-home-actions");
-var viewConstant = require("../util/constant").VIEW_CONSTANT;
-var showTypeConstant = require("../util/constant").SHOW_TYPE_CONSTANT;
-var DateSelectorUtils = require("../../../../components/datepicker/utils");
-var TimeUtil = require("../../../../public/sources/utils/time-format-util");
-let userData = require("../../../../public/sources/user-data");
-import {formatRoundingPercentData} from "PUB_DIR/sources/utils/common-method-util";
+var SalesHomeActions = require('../action/sales-home-actions');
+var viewConstant = require('../util/constant').VIEW_CONSTANT;
+var showTypeConstant = require('../util/constant').SHOW_TYPE_CONSTANT;
+var DateSelectorUtils = require('../../../../components/datepicker/utils');
+var TimeUtil = require('../../../../public/sources/utils/time-format-util');
+let userData = require('../../../../public/sources/user-data');
+import {formatRoundingPercentData} from 'PUB_DIR/sources/utils/common-method-util';
 function SalesHomeStore() {
     this.setInitState();
     this.bindActions(SalesHomeActions);
@@ -13,16 +13,16 @@ function SalesHomeStore() {
 //设置初始化数据
 SalesHomeStore.prototype.setInitState = function() {
     //设置客户、用户、电话、合同总数的初始化数据
-    this.setInitTotalData("loading");
+    this.setInitTotalData('loading');
     this.activeView = viewConstant.CUSTOMER;//默认展示客户分析视图
     //默认展示今天的时间
-    this.timeType = "day";
+    this.timeType = 'day';
     var timeRange = DateSelectorUtils.getTodayTime();
     //开始时间
     this.start_time = DateSelectorUtils.getMilliseconds(timeRange.start_time);
     //结束时间
     this.end_time = DateSelectorUtils.getMilliseconds(timeRange.end_time, true);
-    this.userType = "";//当前登录销售的角色，销售总监：senior_leader、销售经理：junior_leader
+    this.userType = '';//当前登录销售的角色，销售总监：senior_leader、销售经理：junior_leader
     this.saleStageList = [];//销售阶段列表
     this.salesCustomerList = [];//销售-客户列表
     this.salesPhoneList = [];//销售-电话列表
@@ -49,16 +49,16 @@ SalesHomeStore.prototype.setInitState = function() {
     this.originSalesTeamTree = {};//销售所在团队及其子团队树
     this.resetSalesTeamListObj();
     this.resetSalesTeamMembersObj();
-    this.currShowType = "";//当前展示的是销售团队列表、销售人员列表、销售的待办事宜
-    this.currShowSalesTeam = "";//当前选择的要展示的销售团队
-    this.currShowSalesman = "";//当前选择的要展示的销售人员
+    this.currShowType = '';//当前展示的是销售团队列表、销售人员列表、销售的待办事宜
+    this.currShowSalesTeam = '';//当前选择的要展示的销售团队
+    this.currShowSalesman = '';//当前选择的要展示的销售人员
     this.isLoadingCustomerList = false;//正在获取销售-客户列表
     this.isLoadingUserList = false;//正在获取销售-用户列表
     this.isLoadingPhoneList = false;//正在获取销售-电话列表
     this.errMsg = ''; //获取不同应用即将过期的试用用户或者签约用户失败后的提示
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
-    this.setWebConfigStatus = "";//设置个人配置的状态
+    this.setWebConfigStatus = '';//设置个人配置的状态
     this.salesCallStatus = {};//各销售对应的状态
     // 获取通话总次数TOP10的数据
     this.callTotalCountObj = {
@@ -106,8 +106,8 @@ SalesHomeStore.prototype.getCallTotalList = function(dataObj) {
     callTotalCountObj.loading = dataObj.loading;
     callTotalTimeObj.loading = dataObj.loading;
     if (dataObj.error) {
-        callTotalCountObj.errMsg = dataObj.errMsg || Intl.get("call.analysis.total.count.failed", "获取通话总次数TOP10失败");
-        callTotalTimeObj.errMsg = dataObj.errMsg || Intl.get("call.analysis.total.time.failed", "获取通话总时长TOP10失败");
+        callTotalCountObj.errMsg = dataObj.errMsg || Intl.get('call.analysis.total.count.failed', '获取通话总次数TOP10失败');
+        callTotalTimeObj.errMsg = dataObj.errMsg || Intl.get('call.analysis.total.time.failed', '获取通话总时长TOP10失败');
     } else {
         callTotalCountObj.errMsg = '';
         callTotalTimeObj.errMsg = '';
@@ -135,23 +135,23 @@ SalesHomeStore.prototype.getCallTotalList = function(dataObj) {
 //销售团队列表对象数据
 SalesHomeStore.prototype.resetSalesTeamListObj = function() {
     this.salesTeamListObj = {
-        resultType: "loading",
-        errorMsg: "",
+        resultType: 'loading',
+        errorMsg: '',
         data: []
     };
 };
 //销售团队成员列表对象数据
 SalesHomeStore.prototype.resetSalesTeamMembersObj = function() {
     this.salesTeamMembersObj = {
-        resultType: "loading",
-        errorMsg: "",
+        resultType: 'loading',
+        errorMsg: '',
         data: []
     };
 };
 
 //返回销售成员列表展示页
 SalesHomeStore.prototype.returnSalesMemberList = function() {
-    this.currShowSalesman = "";
+    this.currShowSalesman = '';
     this.currShowType = showTypeConstant.SALES_MEMBER_LIST;
 };
 //去掉原团队是正在展示列表的父团队的标识
@@ -191,12 +191,12 @@ SalesHomeStore.prototype.returnSalesTeamList = function(teamId) {
         delTeamFlag(this.originSalesTeamTree.child_groups);
         //返回到第一层团队
         this.salesTeamListObj.data = this.originSalesTeamTree.child_groups;
-        this.currShowSalesTeam = "";
+        this.currShowSalesTeam = '';
     } else {
         //递归遍历子团队，设置当前需要展示的团队列表
         this.setReturnTeamChilds(teamId, this.originSalesTeamTree.child_groups);
     }
-    this.currShowSalesman = "";
+    this.currShowSalesman = '';
     this.currShowType = showTypeConstant.SALES_TEAM_LIST;
 };
 
@@ -234,7 +234,7 @@ function getSalesCallStatusFunc(team) {
     }
     if (userIds.length > 0) {
         setTimeout(() => {
-            SalesHomeActions.getSalesCallStatus(userIds.join(","));
+            SalesHomeActions.getSalesCallStatus(userIds.join(','));
         });
     }
 }
@@ -260,18 +260,18 @@ SalesHomeStore.prototype.getSalesTeamList = function(result) {
         salesTeamListObj.resultType = '';
         salesTeamListObj.errorMsg = '';
         //管理员、运营人员展示所有的团队时的处理
-        if (result.type == "all") {
+        if (result.type == 'all') {
             if (_.isArray(result.resData) && result.resData.length) {
                 this.originSalesTeamTree = {
-                    group_id: "sales-team-list-parent-group-id",
-                    group_name: "销售团队列表",
+                    group_id: 'sales-team-list-parent-group-id',
+                    group_name: '销售团队列表',
                     child_groups: result.resData,
                     isCurrShowListParent: true//当前展示（团队）列表的父团队
                 };
                 salesTeamListObj.data = result.resData;
                 this.currShowType = showTypeConstant.SALES_TEAM_LIST;
             }
-        } else if (result.type == "self") {
+        } else if (result.type == 'self') {
             //展示销售所在团队及其子团队时的处理
             if (_.isArray(result.resData) && result.resData[0]) {
                 let teamObj = result.resData[0];//销售所在团队
@@ -364,13 +364,13 @@ SalesHomeStore.prototype.setActiveView = function(view) {
 SalesHomeStore.prototype.setInitTotalData = function(type) {
     //客户统计数据:总数、新增客户数、执行阶段客户、成交阶段客户
     this.customerTotalObj = {
-        resultType: type || "",
-        errorMsg: "",
+        resultType: type || '',
+        errorMsg: '',
         data: type === 'loading' ? {} : {
-            "total": 0,//总数
-            "added": 0,//新增客户数
-            "executed": 0,//执行阶段客户
-            "dealed": 0//成交阶段客户
+            'total': 0,//总数
+            'added': 0,//新增客户数
+            'executed': 0,//执行阶段客户
+            'dealed': 0//成交阶段客户
 
         }
     };
@@ -424,10 +424,10 @@ SalesHomeStore.prototype.getCustomerTotal = function(result) {
         customerTotalObj.data = result.resData;
         if (!_.isObject(customerTotalObj.data)) {
             customerTotalObj.data = {
-                "added": 0,
-                "dealed": 0,
-                "executed": 0,
-                "total": 0
+                'added': 0,
+                'dealed': 0,
+                'executed': 0,
+                'total': 0
             };
         }
     }
@@ -460,13 +460,13 @@ SalesHomeStore.prototype.getUserTotal = function(result) {
 //设置正在获取数据的标识
 SalesHomeStore.prototype.setListIsLoading = function(type) {
     switch (type) {
-    case "customer":
+    case 'customer':
         this.isLoadingCustomerList = true;
         break;
-    case "user":
+    case 'user':
         this.isLoadingUserList = true;
         break;
-    case "phone":
+    case 'phone':
         this.isLoadingPhoneList = true;
         break;
     }
@@ -478,7 +478,7 @@ SalesHomeStore.prototype.getSalesCustomerList = function(data) {
     if (data && _.isObject(data)) {
         this.userType = data && data.salesRole;
         this.saleStageList = _.isArray(data.saleStageList) ? data.saleStageList : [];
-        var customerData = [], _this = this, totalObj = {salesName: Intl.get("sales.home.total.compute", "总计")};
+        var customerData = [], _this = this, totalObj = {salesName: Intl.get('sales.home.total.compute', '总计')};
         if (_.isArray(data.salesCustomerList) && data.salesCustomerList.length > 0) {
             customerData = data.salesCustomerList.map(function(salesCustomer) {
                 var data = {salesName: salesCustomer.salesName};
@@ -509,7 +509,7 @@ SalesHomeStore.prototype.getSalesCustomerList = function(data) {
 //数据判断
 function getData(data) {
     if (isNaN(data)) {
-        return "-";
+        return '-';
     } else {
         return data;
     }
@@ -517,7 +517,7 @@ function getData(data) {
 //获取计费时长
 function getBillingTime(seconds) {
     if (isNaN(seconds)) {
-        return "-";
+        return '-';
     } else {
         return Math.ceil(seconds / 60);
     }
@@ -534,7 +534,7 @@ SalesHomeStore.prototype.getSalesPhoneList = function(result) {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
                 averageTimeDescr: TimeUtil.getFormatTime(salesPhone.averageTime),
-                salesName: salesPhone.salesName || "",//销售名称
+                salesName: salesPhone.salesName || '',//销售名称
                 totalAnswer: getData(salesPhone.totalAnswer),//总接通数
                 totalTime: getData(salesPhone.totalTime),//总时长
                 totalTimeDescr: TimeUtil.getFormatTime(salesPhone.totalTime),
@@ -589,7 +589,7 @@ SalesHomeStore.prototype.getSalesUserList = function(data) {
     if (data && _.isObject(data)) {
         this.userType = data.salesRole;
         this.salesUserList = _.isArray(data.salesUserList) ? data.salesUserList : [];
-        var userData = [], totalObj = {salesName: Intl.get("sales.home.total.compute", "总计")};
+        var userData = [], totalObj = {salesName: Intl.get('sales.home.total.compute', '总计')};
         if (_.isArray(data.salesUserList) && data.salesUserList.length > 0) {
             data.salesUserList.forEach(function(salesUser) {
                 salesUser.appList.forEach(function(app) {
@@ -646,7 +646,7 @@ SalesHomeStore.prototype.getShowActiveEmailObj = function(result) {
 //设置个人信息配置
 SalesHomeStore.prototype.setWebsiteConfig = function(userInfo) {
     if (userInfo.loading) {
-        this.setWebConfigStatus = "loading";
+        this.setWebConfigStatus = 'loading';
     }
 };
 // 获取回访列表
@@ -662,7 +662,7 @@ SalesHomeStore.prototype.getCallBackList = function(result) {
         callBackRecord.listenScrollBottom = false;
     } else {
         if (result.error) {
-            callBackRecord.errorMsg = result.errorMsg || Intl.get("call.record.get.failed", "获取通话记录失败");
+            callBackRecord.errorMsg = result.errorMsg || Intl.get('call.record.get.failed', '获取通话记录失败');
         } else {
             callBackRecord.errorMsg = '';
             callBackRecord.total = newData.total;

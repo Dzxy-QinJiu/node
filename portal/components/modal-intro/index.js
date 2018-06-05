@@ -3,8 +3,8 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/12/20.
  */
-var classNames = require("classnames");
-require("./index.less");
+var classNames = require('classnames');
+require('./index.less');
 class ModalIntro extends React.Component {
     constructor(props) {
         super(props);
@@ -31,14 +31,14 @@ class ModalIntro extends React.Component {
     calculateLayout = () => {
         var $introElement = this.state.$introElement;
         //圈出某个要引导元素的框
-        $("#modal-intro .modal-hole").height($introElement.outerHeight() + this.state.introModalLayout.holeGapHeight)
+        $('#modal-intro .modal-hole').height($introElement.outerHeight() + this.state.introModalLayout.holeGapHeight)
             .width($introElement.outerWidth() + this.state.introModalLayout.holeGapWidth)
             .css({
                 top: $introElement.offset().top + this.state.introModalLayout.holeGapTop,
                 left: $introElement.offset().left + this.state.introModalLayout.holeGapLeft,
             });
         //小蚂蚁和提示信息所占区域的样式
-        $("#modal-intro .modal-tip")
+        $('#modal-intro .modal-tip')
             .css({
                 top: $introElement.offset().top + this.state.introModalLayout.tipAreaTop,
                 left: $introElement.offset().left + this.state.introModalLayout.tipAreaLeft,
@@ -55,7 +55,7 @@ class ModalIntro extends React.Component {
     }
 
     render() {
-        var cls = classNames("modal-wrap-container", this.props.className,);
+        var cls = classNames('modal-wrap-container', this.props.className,);
         return (
             <div className={cls} id="modal-intro" data-tracename="引导元素的模态框">
                 <div className="modal-hole" onClick={this.props.handleOnclickHole} data-tracename="点击加引导的元素"></div>
@@ -74,9 +74,9 @@ class ModalIntro extends React.Component {
     }
 }
 ModalIntro.defaultProps = {
-    message: "",
+    message: '',
     introModalLayout: {},
-    $introElement: "",
+    $introElement: '',
     hideModalIntro: function() {},
     handleOnclickHole: function() {},
 };

@@ -1,16 +1,16 @@
 /**
  * Created by wangliping on 2015/12/29.
  */
-var language = require("../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./modalDialog-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./modalDialog-zh_CN.less");
+var language = require('../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./modalDialog-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./modalDialog-zh_CN.less');
 }
 //require("./modalDialog.less");
-var Modal = require("react-bootstrap").Modal;
-var Button = require("react-bootstrap").Button;
-var classNames = require("classnames");
+var Modal = require('react-bootstrap').Modal;
+var Button = require('react-bootstrap').Button;
+var classNames = require('classnames');
 
 var ModalDialog = React.createClass({
     delete: function() {
@@ -25,7 +25,7 @@ var ModalDialog = React.createClass({
             'transparentBgFlag modal': this.props.transparentBgFlag,
             'modal': !this.props.transparentBgFlag
         });
-        var closedModalTip = this.props.closedModalTip ? this.props.closedModalTip : "关闭模态框";
+        var closedModalTip = this.props.closedModalTip ? this.props.closedModalTip : '关闭模态框';
         return (
             <Modal
                 show={this.props.modalShow}
@@ -41,10 +41,10 @@ var ModalDialog = React.createClass({
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className="btn-ok" onClick={this.delete} >
-                        {Intl.get("common.sure")}
+                        {Intl.get('common.sure')}
                     </Button>
                     <Button className="btn-cancel" onClick={this.close} data-tracename={closedModalTip}>
-                        {Intl.get("common.cancel")}
+                        {Intl.get('common.cancel')}
                     </Button>
                 </Modal.Footer>
             </Modal>

@@ -1,14 +1,14 @@
 /**
  * 线图
  */
-var echarts = require("echarts-eefung");
-require("./index.less");
+var echarts = require('echarts-eefung');
+require('./index.less');
 //各种颜色
 const Spinner = require('../../spinner');
-var immutable = require("immutable");
-var echartsTooltipCssText = require("../../../lib/utils/echarts-tooltip-csstext");
+var immutable = require('immutable');
+var echartsTooltipCssText = require('../../../lib/utils/echarts-tooltip-csstext');
 //macrons主题
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 //时间格式化格式1
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 //时间格式化格式2
@@ -22,7 +22,7 @@ var AreaLine = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: Intl.get("operation.report.activity", "活跃度"),
+            title: Intl.get('operation.report.activity', '活跃度'),
             width: '100%',
             height: 240,
             resultType: 'loading',
@@ -58,7 +58,7 @@ var AreaLine = React.createClass({
         items = items.datas;
         var startMoment = moment(new Date(+items[0].timestamp));
         var endMoment = moment(new Date(+items[items.length - 1].timestamp));
-        var biggerThanYear = startMoment.format("YYYY") != endMoment.format("YYYY");
+        var biggerThanYear = startMoment.format('YYYY') != endMoment.format('YYYY');
         if(biggerThanYear) {
             this.isBiggerThanYear = true;
         }
@@ -76,11 +76,11 @@ var AreaLine = React.createClass({
         //普通线
         function getLine(name,list) {
             return {
-                symbol: "circle",
+                symbol: 'circle',
                 showAllSymbol: true,
                 name: name,
                 type: 'line',
-                data: _.pluck(list , "active")
+                data: _.pluck(list , 'active')
             };
         }
         var series = [];
@@ -134,31 +134,31 @@ var AreaLine = React.createClass({
                         weekEndText = moment(new Date(+endTime)).format(DATE_FORMAT);
                     } else {
                         weekStartText = moment(new Date(time)).format(DATE_FORMAT);
-                        weekEndText = moment(new Date(time)).add(7,"days").format(DATE_FORMAT);
+                        weekEndText = moment(new Date(time)).add(7,'days').format(DATE_FORMAT);
                     }
                     timeStr = `${weekStartText} - ${weekEndText}`;
                 }
                 var tableHtmlList = [];
-                tableHtmlList.push(`<div class="activation_tooltip custom-scrollbar">`);
+                tableHtmlList.push('<div class="activation_tooltip custom-scrollbar">');
                 tableHtmlList.push(`<p class="title">${timeStr}</p>`);
                 tableHtmlList.push(`<table class="table">
                                         <thead>
                                             <tr>`);
                 if(lines.length > 1) {
-                    tableHtmlList.push(`<th>${Intl.get("common.definition", "名称")}</th>`);
+                    tableHtmlList.push(`<th>${Intl.get('common.definition', '名称')}</th>`);
                 }
 
 
                 tableHtmlList.push(`
-                           <th>${Intl.get("operation.report.active.num", "活跃数(个)")}</th>
-                           <th>${Intl.get("operation.report.total.count", "总数(个)")}</th>
-                           <th>${Intl.get("operation.report.activity.unit", "活跃度(%)")}</th>
+                           <th>${Intl.get('operation.report.active.num', '活跃数(个)')}</th>
+                           <th>${Intl.get('operation.report.total.count', '总数(个)')}</th>
+                           <th>${Intl.get('operation.report.activity.unit', '活跃度(%)')}</th>
                         </tr>
                     </thead>
               `);
-                tableHtmlList.push(`<tbody>`);
+                tableHtmlList.push('<tbody>');
                 _this.props.list.map(function(line) {
-                    tableHtmlList.push(`<tr>`);
+                    tableHtmlList.push('<tr>');
                     if(lines.length > 1) {
                         tableHtmlList.push(`<td>${line.userName}</td>`);
                     }
@@ -170,7 +170,7 @@ var AreaLine = React.createClass({
                         <td class="number_text">${(percent * 100).toFixed(2)}</td>
                     </tr>`);
                 });
-                tableHtmlList.push(`</tbody></table></div>`);
+                tableHtmlList.push('</tbody></table></div>');
                 return tableHtmlList.join('');
             },
             extraCssText: echartsTooltipCssText
@@ -202,7 +202,7 @@ var AreaLine = React.createClass({
             },
             xAxis: [
                 {
-                    type: "category",
+                    type: 'category',
                     splitArea: {
                         show: false
                     },
@@ -227,10 +227,10 @@ var AreaLine = React.createClass({
             ],
             yAxis: [
                 {
-                    type: "value",
+                    type: 'value',
                     interval: yInterval,
                     max: max,
-                    name: Intl.get("operation.report.user.count", "用户数"),
+                    name: Intl.get('operation.report.user.count', '用户数'),
                     position: 'left',
                     splitArea: {
                         show: false
@@ -249,9 +249,9 @@ var AreaLine = React.createClass({
                     }
                 },
                 {
-                    type: "value",
+                    type: 'value',
                     position: 'right',
-                    name: Intl.get("operation.report.active", "活跃率"),
+                    name: Intl.get('operation.report.active', '活跃率'),
                     min: 0,
                     max: 100,
                     splitArea: {
@@ -303,9 +303,9 @@ var AreaLine = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
             this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
             var options = this.getEchartOptions();
             this.echartInstance.setOption(options,true);

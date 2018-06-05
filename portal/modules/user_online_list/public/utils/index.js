@@ -1,5 +1,5 @@
 //事件类
-var EventEmitter = require("events");
+var EventEmitter = require('events');
 //事件常量
 var EMITTER_CONSTANTS = {
     //应用列表加载完成

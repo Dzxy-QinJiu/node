@@ -1,4 +1,4 @@
-var _ = require("underscore");
+var _ = require('underscore');
 //对提供的数据，根据字段列表，进行转换
 /**
  *
@@ -9,7 +9,7 @@ exports.transformFields = function(list , fields) {
     var isObject = !_.isArray(list);
     var enumerateFields = [];
     if(typeof fields === 'string' && fields) {
-        enumerateFields = fields.split(",");
+        enumerateFields = fields.split(',');
     }
     var enumerateList = isObject ? [list] : (_.isArray(list) ? list : []);
     var resultList = [];

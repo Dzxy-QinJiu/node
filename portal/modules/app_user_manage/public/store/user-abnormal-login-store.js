@@ -31,7 +31,7 @@ UserAbnormalLoginStore.prototype.getUserAbnormalLogin = function(result) {
         this.abnormalLoginList = [];
     } else {
         this.abnormalLoginLoading = false;
-        this.abnormalLoginErrMsg = "";
+        this.abnormalLoginErrMsg = '';
         if (result.data.length < this.page_size){
             this.listenScrollBottom = false;
             this.isNoMoreTipShow = true;

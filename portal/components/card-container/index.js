@@ -5,7 +5,7 @@ require('./index.less');
 import { Radio} from 'antd';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-import { exportToCsv } from "LIB_DIR/func";
+import { exportToCsv } from 'LIB_DIR/func';
 
 class CardContainer extends React.Component {
     constructor(props) {
@@ -67,7 +67,7 @@ class CardContainer extends React.Component {
                         {
                             this.props.exportData && this.state.isShowExportFlag ? (
                                 <span className="export-file" onClick={this.exportFile.bind(this)}>
-                                    <i className="iconfont icon-export">{Intl.get("common.export", "导出")}</i>
+                                    <i className="iconfont icon-export">{Intl.get('common.export', '导出')}</i>
                                 </span>
                             ) : null
                         }

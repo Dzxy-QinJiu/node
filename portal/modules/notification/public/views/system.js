@@ -1,46 +1,46 @@
-require("../../../app_user_manage/public/css/main-zh_CN.less");
-import {Alert, Select, message, Icon} from "antd";
-import LAYOUT from "../utils/layout";
-import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
-import Spinner from "CMP_DIR/spinner";
-import notificationAjax from "../ajax/notification-ajax";
+require('../../../app_user_manage/public/css/main-zh_CN.less');
+import {Alert, Select, message, Icon} from 'antd';
+import LAYOUT from '../utils/layout';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import Spinner from 'CMP_DIR/spinner';
+import notificationAjax from '../ajax/notification-ajax';
 // 没有消息的提醒
-import NoMoreDataTip from "CMP_DIR/no_more_data_tip";
+import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
 //系统消息对应的几种类型
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from "PUB_DIR/sources/utils/consts";
-import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {RightPanel} from "CMP_DIR/rightPanel";
-import SelectFullWidth from "CMP_DIR/select-fullwidth";
-import TopNav from "CMP_DIR/top-nav";
-import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
-import userData from "PUB_DIR/sources/user-data";
+import {RightPanel} from 'CMP_DIR/rightPanel';
+import SelectFullWidth from 'CMP_DIR/select-fullwidth';
+import TopNav from 'CMP_DIR/top-nav';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import userData from 'PUB_DIR/sources/user-data';
 import UserDetail from '../../../app_user_manage/public/views/user-detail';
-import {notificationEmitter} from "PUB_DIR/sources/utils/emitters";
-import AppUserManage from "MOD_DIR/app_user_manage/public";
-import Trace from "LIB_DIR/trace";
+import {notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
+import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
 const PAGE_SIZE = 20;
-import {STATUS} from "PUB_DIR/sources/utils/consts";
+import {STATUS} from 'PUB_DIR/sources/utils/consts';
 const STATUS_ARRAY = [{
-    name: Intl.get("notification.system.untreated", "未处理"),
+    name: Intl.get('notification.system.untreated', '未处理'),
     value: STATUS.UNHANDLED
 }, {
-    name: Intl.get("notification.system.handled", "已处理"),
+    name: Intl.get('notification.system.handled', '已处理'),
     value: STATUS.HANDLED
 }];
 let SystemNotification = React.createClass({
     getInitialState: function() {
         return {
             isLoadingSystemNotices: false,//正在获取系统消息
-            loadSystemNoticesErrorMsg: "",//获取系统消息的错误提示
+            loadSystemNoticesErrorMsg: '',//获取系统消息的错误提示
             systemNotices: [],//系统消息列表
             totalSize: 0,//系统消息总数
-            lastSystemNoticeId: "",//用来下拉加载的当前展示的最后一个通知的id
+            lastSystemNoticeId: '',//用来下拉加载的当前展示的最后一个通知的id
             listenScrollBottom: true,//是否监听下拉加载
-            selectedNoticeType: "",//当前选中的要查看的通知类型
-            curShowCustomerId: "",//展示客户详情的客户id
-            curShowUserId: "",//展示用户详情的用户id
+            selectedNoticeType: '',//当前选中的要查看的通知类型
+            curShowCustomerId: '',//展示客户详情的客户id
+            curShowUserId: '',//展示用户详情的用户id
             status: STATUS.UNHANDLED,//未处理，handled:已处理
             showUpdateTip: false, //是否展示有新数据刷新的提示
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
@@ -51,13 +51,13 @@ let SystemNotification = React.createClass({
         this.getSystemNotices();
         //新系统消息的监听
         notificationEmitter.on(notificationEmitter.SYSTEM_NOTICE_UPDATED, this.pushDataListener);
-        $(window).on("resize", this.resizeWindowHeight);
+        $(window).on('resize', this.resizeWindowHeight);
     },
 
     componentWillUnmount: function() {
         //销毁时，删除新系统消息监听器
         notificationEmitter.removeListener(notificationEmitter.SYSTEM_NOTICE_UPDATED, this.pushDataListener);
-        $(window).off("resize", this.resizeWindowHeight);
+        $(window).off('resize', this.resizeWindowHeight);
     },
     //监听推送数据
     pushDataListener: function(data) {
@@ -79,7 +79,7 @@ let SystemNotification = React.createClass({
         notificationAjax.getSystemNotices(queryObj, this.state.status).then(result => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.state.isLoadingSystemNotices = false;
-            this.state.loadSystemNoticesErrorMsg = "";
+            this.state.loadSystemNoticesErrorMsg = '';
             if (result && _.isArray(result.list)) {
                 if (this.state.lastSystemNoticeId) {
                     //下拉加载时
@@ -89,7 +89,7 @@ let SystemNotification = React.createClass({
                     this.state.systemNotices = result.list;
                 }
                 this.state.totalSize = result.total || this.state.systemNotices.length;
-                this.state.lastSystemNoticeId = this.state.systemNotices.length ? _.last(this.state.systemNotices).id : "";
+                this.state.lastSystemNoticeId = this.state.systemNotices.length ? _.last(this.state.systemNotices).id : '';
             }
             //如果当前已获取的数据还不到总数，继续监听下拉加载，否则不监听下拉加载
             this.state.listenScrollBottom = this.state.totalSize > this.state.systemNotices.length;
@@ -97,7 +97,7 @@ let SystemNotification = React.createClass({
         }, errorMsg => {
             this.setState({
                 isLoadingSystemNotices: false,
-                loadSystemNoticesErrorMsg: errorMsg || Intl.get("notification.system.notice.failed", "获取系统消息列表失败")
+                loadSystemNoticesErrorMsg: errorMsg || Intl.get('notification.system.notice.failed', '获取系统消息列表失败')
             });
         });
     },
@@ -127,10 +127,10 @@ let SystemNotification = React.createClass({
         });
     },
     handleTypeChange: function(val) {
-        Trace.traceEvent($(this.getDOMNode()).find(".notification-type-select"), "类型筛选");
+        Trace.traceEvent($(this.getDOMNode()).find('.notification-type-select'), '类型筛选');
         this.setState({
             selectedNoticeType: val,
-            lastSystemNoticeId: ""
+            lastSystemNoticeId: ''
         });
         setTimeout(() => {
             this.getSystemNotices();
@@ -138,10 +138,10 @@ let SystemNotification = React.createClass({
 
     },
     handleStatusChange: function(status) {
-        Trace.traceEvent($(this.getDOMNode()).find(".notification-status-select"), "处理/未处理筛选");
+        Trace.traceEvent($(this.getDOMNode()).find('.notification-status-select'), '处理/未处理筛选');
         this.setState({
             status: status,
-            lastSystemNoticeId: ""
+            lastSystemNoticeId: ''
         });
         setTimeout(() => {
             this.getSystemNotices();
@@ -155,12 +155,12 @@ let SystemNotification = React.createClass({
                 <h5 className="system-notice-type">{SYSTEM_NOTICE_TYPE_MAP[notice.type]}</h5>
                 <div className="system-notice-descr">
                     <a onClick={this.openCustomerDetail.bind(this, notice.customer_id)}>{notice.customer_name}</a>
-                    {isOffsetLogin ? (Intl.get("notification.system.on", "在") + notice.content.current_location) : ""}
-                    {Intl.get("notification.system.use.account", "用账号")}
+                    {isOffsetLogin ? (Intl.get('notification.system.on', '在') + notice.content.current_location) : ''}
+                    {Intl.get('notification.system.use.account', '用账号')}
                     {notice.user_name ? (
                         <a onClick={this.openUserDetail.bind(this, notice.user_id)}>{notice.user_name}</a>) : null}
                     {notice.app_name ?
-                        <span>{Intl.get("notification.system.login", "登录了") + notice.app_name}</span> : ""}
+                        <span>{Intl.get('notification.system.login', '登录了') + notice.app_name}</span> : ''}
                 </div>
                 <div
                     className="system-notice-time">{moment(notice.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</div>
@@ -193,14 +193,14 @@ let SystemNotification = React.createClass({
             />);
         } else {//暂无数据
             return (<Alert
-                message={Intl.get("notification.has.no.system.data", "暂无系统消息数据")}
+                message={Intl.get('notification.has.no.system.data', '暂无系统消息数据')}
                 type="info"
                 showIcon={true}
             />);
         }
     },
     closeRightCustomerPanel: function() {
-        this.setState({curShowCustomerId: ""});
+        this.setState({curShowCustomerId: ''});
     },
     openUserDetail: function(user_id) {
         if (this.state.curShowCustomerId) {
@@ -220,9 +220,9 @@ let SystemNotification = React.createClass({
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
             return <div className="system-notice-item">
                 <a onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</a>
-                {isOffsetLogin ? (Intl.get("notification.system.on", "在") + item.content.current_location) : ""}
+                {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
                 {item.app_name ?
-                    <span>{Intl.get("notification.system.login", "登录了") + item.app_name}</span> : ""}
+                    <span>{Intl.get('notification.system.login', '登录了') + item.app_name}</span> : ''}
                 <span
                     className="system-notice-time">{moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
             </div>;
@@ -246,7 +246,7 @@ let SystemNotification = React.createClass({
     },
     //处理系统消息
     handleSystemNotice: function(notice, e) {
-        Trace.traceEvent(e, "处理系统消息");
+        Trace.traceEvent(e, '处理系统消息');
         if (notice.isHandling) {
             return;
         }
@@ -259,13 +259,13 @@ let SystemNotification = React.createClass({
             }
         }, errorMsg => {
             this.setHandlingFlag(notice, false);
-            message.error(errorMsg || Intl.get("notification.system.handle.failed", "将系统消息设为已处理失败"));
+            message.error(errorMsg || Intl.get('notification.system.handle.failed', '将系统消息设为已处理失败'));
         });
     },
     //未处理的系统消息
     renderUnHandledNotice: function(notice, idx) {
         let loginUser = userData.getUserData();
-        let loginUserId = loginUser ? loginUser.user_id : "";//只可以处理自己的系统消息
+        let loginUserId = loginUser ? loginUser.user_id : '';//只可以处理自己的系统消息
         return (
             <li key={idx} className="system-notice-unhandled-item">
                 <div className="system-notice-title">
@@ -276,14 +276,14 @@ let SystemNotification = React.createClass({
                     {this.renderUnHandledNoticeContent(notice)}
                     {notice.detail.length > 3 ?
                         <a className="notice-detail-more" onClick={this.checkMore.bind(this, notice)}>
-                            {notice.showMore ? Intl.get("common.app.status.close", "关闭") : Intl.get("notification.system.more", "展开全部")}
+                            {notice.showMore ? Intl.get('common.app.status.close', '关闭') : Intl.get('notification.system.more', '展开全部')}
                         </a> : null}
                     {notice.detail.length > 3 && loginUserId === notice.member_id ?
-                        <span className="notice-split-line">|</span> : ""}
+                        <span className="notice-split-line">|</span> : ''}
                     {
                         loginUserId === notice.member_id ?
                             <a className="notice-handled-set" onClick={this.handleSystemNotice.bind(this, notice)}>
-                                {Intl.get("notification.system.handled.set", "处理")}{notice.isHandling ?
+                                {Intl.get('notification.system.handled.set', '处理')}{notice.isHandling ?
                                     <Icon type="loading"/> : null}
                             </a> : null
                     }
@@ -292,11 +292,11 @@ let SystemNotification = React.createClass({
         );
     },
     closeRightUserPanel: function() {
-        this.setState({curShowUserId: ""});
+        this.setState({curShowUserId: ''});
     },
     refreshSystemNotice: function() {
         this.setState({
-            lastSystemNoticeId: "",
+            lastSystemNoticeId: '',
             showUpdateTip: false
         });
         setTimeout(() => {
@@ -309,7 +309,7 @@ let SystemNotification = React.createClass({
             return (<div className="system-notice-update">
                 <ReactIntl.FormattedMessage
                     id="notification.update"
-                    defaultMessage={`数据已更新，是否{refresh}`}
+                    defaultMessage={'数据已更新，是否{refresh}'}
                     values={{
                         'refresh': <a href="javascript:void(0)" onClick={this.refreshSystemNotice}>
                             <ReactIntl.FormattedMessage id="common.refresh" defaultMessage="刷新"/>
@@ -343,7 +343,7 @@ let SystemNotification = React.createClass({
                             value={this.state.selectedNoticeType}
                             onChange={this.handleTypeChange}
                         >
-                            <Option value="">{Intl.get("common.all", "全部")}</Option>
+                            <Option value="">{Intl.get('common.all', '全部')}</Option>
                             {_.map(SYSTEM_NOTICE_TYPE_MAP, (key, val) => {
                                 return (<Option value={val}>{key}</Option>);
                             })}
@@ -367,7 +367,7 @@ let SystemNotification = React.createClass({
                 </div>
                 {this.state.totalSize ?
                     <div className="summary_info">
-                        {Intl.get("notification.total.system.notice", "共{x}条系统消息", {x: this.state.totalSize})}
+                        {Intl.get('notification.total.system.notice', '共{x}条系统消息', {x: this.state.totalSize})}
                     </div> : null
                 }
                 {/*该客户下的用户列表*/}

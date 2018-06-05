@@ -1,6 +1,6 @@
-var AppActions = require("../action/app-actions");
-var userData = require("../../../../public/sources/user-data");
-var AppFormStore = require("./app-form-store");
+var AppActions = require('../action/app-actions');
+var userData = require('../../../../public/sources/user-data');
+var AppFormStore = require('./app-form-store');
 var emptyApp = {
     id: '',
     appName: '',
@@ -28,12 +28,12 @@ function AppStore() {
     //当前正在展示的是第几页的数据
     this.curPage = 1;
     //查询内容
-    this.searchContent = "";
+    this.searchContent = '';
     //一页展示的应用个数
     this.pageSize = 0;
     //查询时间
-    this.startTime = "";
-    this.endTime = "";
+    this.startTime = '';
+    this.endTime = '';
     //加载数据中。。。
     this.isLoading = true;
     //右侧面板的开关
@@ -43,14 +43,14 @@ function AppStore() {
     //获取应用详细信息中。。。
     this.appIsLoading = false;
     //表单的类型：添加/修改
-    this.formType = "add";
+    this.formType = 'add';
     //获取应用列表时，错误/暂无（符合条件的）数据的提示
-    this.appListTipMsg = "";
+    this.appListTipMsg = '';
     //所有app列表
     this.allAppList = [];
     this.isShowAuthRolePanel = false;//是否展示我的应用的角色、权限面板
-    this.showAuthoRoleAppId = "";//展示角色/权限的应用id
-    this.showRoleAuthType = "role";//打开角色权限时，展示角色设置面板还是权限设置面板(默认打开设置角色面板)
+    this.showAuthoRoleAppId = '';//展示角色/权限的应用id
+    this.showRoleAuthType = 'role';//打开角色权限时，展示角色设置面板还是权限设置面板(默认打开设置角色面板)
     // 是否要显示appForm，默认情况下显示APPForm
     this.isAppFormShow = true;
     this.versionUpgradeShow = false;
@@ -66,9 +66,9 @@ function AppStore() {
     //是否正在刷新应用密钥
     this.appSecretRefreshing = false;
     //生成应用piwik收集key值
-    this.appPiwikKey = "";
+    this.appPiwikKey = '';
     //生成应用piwik收集key值错误的提示
-    this.appPiwikKeyErrMsg = "";
+    this.appPiwikKeyErrMsg = '';
     //正在加载中
     this.getPiwikKeyLoading = false;
     //应用代码跟踪
@@ -137,8 +137,8 @@ AppStore.prototype.setShowRoleAuthType = function(type) {
 //关闭角色权限设置面板时的处理
 AppStore.prototype.closeAuthRolePanel = function() {
     this.isShowAuthRolePanel = false;
-    this.showAuthoRoleAppId = "";
-    this.showRoleAuthType = "role";
+    this.showAuthoRoleAppId = '';
+    this.showRoleAuthType = 'role';
 };
 
 AppStore.prototype.setCurAppDetail = function(appId) {
@@ -167,13 +167,13 @@ AppStore.prototype.getMyAppList = function(resultObj) {
         this.appListSize = resultObj.list_size || 0;
         if (curAppList.length > 0) {
             //清空提示
-            this.appListTipMsg = "";
+            this.appListTipMsg = '';
         } else {
             //无数据时的处理
             if (this.searchContent) {
-                this.appListTipMsg = Intl.get("app.app.search.no.data", "没有符合条件的应用!");
+                this.appListTipMsg = Intl.get('app.app.search.no.data', '没有符合条件的应用!');
             } else {
-                this.appListTipMsg = Intl.get("my.app.no.app", "暂无应用!");
+                this.appListTipMsg = Intl.get('my.app.no.app', '暂无应用!');
             }
         }
         if (this.curPage == 1) {
@@ -220,15 +220,15 @@ AppStore.prototype.closeAddPanel = function() {
 AppStore.prototype.getCurAppKeyById = function(result) {
     if (result.loading){
         this.getPiwikKeyLoading = result.loading;
-        this.appPiwikKeyErrMsg = "";
+        this.appPiwikKeyErrMsg = '';
     }else if (result.error){
-        this.appPiwikKey = "";
+        this.appPiwikKey = '';
         this.appPiwikKeyErrMsg = result.errorMsg;
         this.getPiwikKeyLoading = result.loading;
     }else if (_.isObject(result.data) && _.isString(result.data.key)){
         this.appPiwikKey = result.data.key;
         this.getPiwikKeyLoading = result.loading;
-        this.appPiwikKeyErrMsg = "";
+        this.appPiwikKeyErrMsg = '';
     }
 };
 //通过id获取其姓名
@@ -256,7 +256,7 @@ AppStore.prototype.getAppNameById = function(id) {
             appName = app.name;
         }
     }
-    return appName || Intl.get("app.app.no.secret", "暂无密令APP");
+    return appName || Intl.get('app.app.no.secret', '暂无密令APP');
 };
 
 //修改完app后，app信息的更新
@@ -301,7 +301,7 @@ AppStore.prototype.afterEditApp = function(appModified) {
 };
 
 AppStore.prototype.showAppForm = function(type) {
-    if (type === "add") {
+    if (type === 'add') {
         this.currentApp = emptyApp;
     }
     this.isAppFormShow = true;

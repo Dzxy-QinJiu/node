@@ -4,9 +4,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/5/4.
  */
-import {Button, Popover} from "antd";
+import {Button, Popover} from 'antd';
 import classNames from 'classnames';
-import userData from "PUB_DIR/sources/user-data";
+import userData from 'PUB_DIR/sources/user-data';
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 class ScheduleItem extends React.Component {
     constructor(props) {
@@ -15,36 +15,36 @@ class ScheduleItem extends React.Component {
 
     getScheduleShowObj(item) {
         let scheduleShowOb = {
-            iconClass: "",
-            title: "",
-            startTime: item.start_time ? moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : "",
-            endTime: item.end_time ? moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : "",
-            timeClass: ""
+            iconClass: '',
+            title: '',
+            startTime: item.start_time ? moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : '',
+            endTime: item.end_time ? moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : '',
+            timeClass: ''
         };
         switch (item.type) {
         case 'visit':
             scheduleShowOb.iconClass = 'icon-visit-briefcase';
-            scheduleShowOb.title = Intl.get("customer.visit", "拜访");
+            scheduleShowOb.title = Intl.get('customer.visit', '拜访');
             break;
         case 'calls':
             scheduleShowOb.iconClass = 'icon-phone-call-out';
-            scheduleShowOb.title = Intl.get("schedule.phone.connect", "电联");
+            scheduleShowOb.title = Intl.get('schedule.phone.connect', '电联');
             break;
         case 'other':
             scheduleShowOb.iconClass = 'icon-trace-other';
-            scheduleShowOb.title = Intl.get("customer.other", "其他");
+            scheduleShowOb.title = Intl.get('customer.other', '其他');
             break;
         }
         //未完成的日程样式
-        if (item.status == "false") {
+        if (item.status == 'false') {
             //今天的起始、结束时间(23:59:59+1)
             let today = {start_time: moment().startOf('day').valueOf(), end_time: moment().endOf('day').valueOf() + 1};
             //超期（今天之前的日程）
             if (item.end_time < today.start_time) {
-                scheduleShowOb.timeClass = "overdue-schedule-item";
+                scheduleShowOb.timeClass = 'overdue-schedule-item';
             } else if (item.start_time < item.end_time) {
                 //今天的日程
-                scheduleShowOb.timeClass = "today-schedule-item";
+                scheduleShowOb.timeClass = 'today-schedule-item';
             }
         }
         return scheduleShowOb;
@@ -53,7 +53,7 @@ class ScheduleItem extends React.Component {
     getContactPhoneArray(item) {
         let phoneArray = [];
         _.each(item.contacts, contact => {
-            let contactName = contact.name || "";
+            let contactName = contact.name || '';
             _.each(contact.phone, phone => {
                 if (phone) {
                     phoneArray.push({name: contactName, phone: phone});
@@ -88,11 +88,11 @@ class ScheduleItem extends React.Component {
         const phoneArray = this.getContactPhoneArray(item);
         return (
             <div
-                className={classNames(`schedule-item ${scheduleShowObj.timeClass}`, {"day-split-line": this.props.hasSplitLine})}>
+                className={classNames(`schedule-item ${scheduleShowObj.timeClass}`, {'day-split-line': this.props.hasSplitLine})}>
                 <div className="schedule-item-title">
                     <span className={`iconfont ${scheduleShowObj.iconClass}`}/>
                     <span className="schedule-time-stage">{scheduleShowObj.startTime}</span>
-                    {scheduleShowObj.startTime && scheduleShowObj.endTime ? "-" : null}
+                    {scheduleShowObj.startTime && scheduleShowObj.endTime ? '-' : null}
                     <span className="schedule-time-stage">{scheduleShowObj.endTime}</span>
                     <span className="schedule-type-text">{scheduleShowObj.title}</span>
                 </div>
@@ -101,28 +101,28 @@ class ScheduleItem extends React.Component {
                 </div>
                 {this.props.isMerge ? null : (
                     <div className="schedule-item-buttons">
-                        {item.type === "calls" && _.isArray(phoneArray) && phoneArray.length ? item.isShowContactPhone ? (
+                        {item.type === 'calls' && _.isArray(phoneArray) && phoneArray.length ? item.isShowContactPhone ? (
                             <div className="schedule-contact-phone-block">
                                 {_.map(phoneArray, obj => {
                                     return (
                                         <Button size="small">
-                                            {obj.name || ""}
+                                            {obj.name || ''}
                                             <span className="contact-phone">{obj.phone}</span>
                                             <span className="iconfont icon-phone-call-out"/>
                                         </Button>);
                                 })}
                                 <span className="iconfont icon-close"
-                                    title={Intl.get("common.app.status.close", "关闭")}
+                                    title={Intl.get('common.app.status.close', '关闭')}
                                     onClick={this.toggleScheduleContact.bind(this, item, false)}/>
                             </div>) : (
                             <Button className="schedule-contact-btn"
                                 onClick={this.toggleScheduleContact.bind(this, item, true)}
-                                size="small">{Intl.get("customer.contact.customer", "联系客户")}</Button>)
+                                size="small">{Intl.get('customer.contact.customer', '联系客户')}</Button>)
                             : null}
                         {user_id === item.member_id ?
                             <Button className="schedule-status-btn" onClick={this.handleItemStatus.bind(this, item)}
                                 size="small">
-                                {item.status == "false" ? Intl.get("crm.schedule.set.compelete","标为已完成") : Intl.get("crm.schedule.set.unfinished","标为未完成")}
+                                {item.status == 'false' ? Intl.get('crm.schedule.set.compelete','标为已完成') : Intl.get('crm.schedule.set.unfinished','标为未完成')}
                             </Button> : null}
                         <span className="right-handle-buttons">
                             {item.socketio_notice && item.alert_time ? (<Popover
@@ -134,7 +134,7 @@ class ScheduleItem extends React.Component {
                             {/*<DetailEditBtn  onClick={this.editSchedule.bind(this, item)}/>*/}
                             {/*只能删除自己创建的日程*/}
                             {user_id == item.member_id && !this.props.hideDelete && !this.props.isMerge ?
-                                <Popover content={Intl.get("common.delete", "删除")}
+                                <Popover content={Intl.get('common.delete', '删除')}
                                     trigger="hover" placement="bottom" overlayClassName="schedule-alert-time">
                                     <span className="iconfont icon-delete" data-tracename="点击删除日程按钮"
                                         onClick={this.deleteSchedule.bind(this, item.id)}/>

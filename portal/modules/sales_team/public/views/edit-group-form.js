@@ -1,19 +1,19 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * Created by xiaojinfeng on 2016/04/19.
  */
 
-var Form = require("antd").Form;
-var Input = require("antd").Input;
-var Select = require("antd").Select;
-var Button = require("antd").Button;
+var Form = require('antd').Form;
+var Input = require('antd').Input;
+var Select = require('antd').Select;
+var Button = require('antd').Button;
 var FormItem = Form.Item;
-var classNames = require("classnames");
-var AlertTimer = require("../../../../components/alert-timer");
-var Icon = require("antd").Icon;
-var SalesTeamActions = require("../action/sales-team-actions");
-import Trace from "LIB_DIR/trace";
+var classNames = require('classnames');
+var AlertTimer = require('../../../../components/alert-timer');
+var Icon = require('antd').Icon;
+var SalesTeamActions = require('../action/sales-team-actions');
+import Trace from 'LIB_DIR/trace';
 
 function noop() {
 }
@@ -36,15 +36,15 @@ var SalesTeamForm = React.createClass({
         if (salesTeam.isEditGroup) {
             return {
                 ...salesTeam,
-                saveTeamMsg: "",
-                saveTeamResult: "",
+                saveTeamMsg: '',
+                saveTeamResult: '',
                 isTeamSaving: false
             };
         } else {
             return {
                 title: '',
-                saveTeamMsg: "",
-                saveTeamResult: "",
+                saveTeamMsg: '',
+                saveTeamResult: '',
                 isTeamSaving: false
             };
         }
@@ -87,7 +87,7 @@ var SalesTeamForm = React.createClass({
 
     //取消事件
     handleCancel: function(e) {
-        Trace.traceEvent(e,"取消添加或编辑团队的修改");
+        Trace.traceEvent(e,'取消添加或编辑团队的修改');
         this.props.cancelSalesTeamForm();
     },
 
@@ -99,7 +99,7 @@ var SalesTeamForm = React.createClass({
             if (!valid) {
                 return;
             } else {
-                Trace.traceEvent(e,"保存添加或编辑团队的修改");
+                Trace.traceEvent(e,'保存添加或编辑团队的修改');
                 let formData = _this.state.formData;
                 if (formData.isEditGroup) {
                     let editGroupData = {
@@ -116,7 +116,7 @@ var SalesTeamForm = React.createClass({
                         formData.saveTeamResult = result.saveResult;
                         formData.isTeamSaving = false;
                         _this.setState({formData: formData});
-                        if (result.saveResult == "success") {
+                        if (result.saveResult == 'success') {
                             //保存成功后的处理
                             var salesTeam = _this.props.salesTeam;
                             if (salesTeam && salesTeam.isEditGroup) {
@@ -148,7 +148,7 @@ var SalesTeamForm = React.createClass({
                         formData.isTeamSaving = false;
                         _this.setState({formData: formData});
                         //添加成功后的处理
-                        if (result.saveResult === "success") {
+                        if (result.saveResult === 'success') {
                             if (_this.props.isAddRoot) {
                                 //添加根组织时的处理
                                 _this.props.cancelSalesTeamForm();
@@ -198,13 +198,13 @@ var SalesTeamForm = React.createClass({
 
     hideSaveTooltip: function() {
         let formData = this.state.formData;
-        formData.saveTeamResult = "";
-        formData.saveTeamMsg = "";
+        formData.saveTeamResult = '';
+        formData.saveTeamMsg = '';
         formData.isTeamSaving = false;
         this.setState({formData: formData});
     },
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(),"选择上级团队");
+        Trace.traceEvent(this.getDOMNode(),'选择上级团队');
     },
     render: function() {
         var _this = this;
@@ -219,40 +219,40 @@ var SalesTeamForm = React.createClass({
                 <Form horizontal className="form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
-                            label={Intl.get("common.definition", "名称")}
+                            label={Intl.get('common.definition', '名称')}
                             id="title"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('title')}
-                            help={status.title.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.title.errors && status.title.errors.join(','))}>
+                            help={status.title.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.title.errors && status.title.errors.join(','))}>
                             <Validator
-                                rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.rules", "最少1个字符,最多8个字符")}]}>
+                                rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.rules', '最少1个字符,最多8个字符')}]}>
                                 <Input name="title" id="title" value={formData.title}
                                     onChange={this.setField.bind(this, 'title')}
-                                    placeholder={Intl.get("common.required.tip", "必填项*")}
+                                    placeholder={Intl.get('common.required.tip', '必填项*')}
                                     data-tracename="填写团队名称"
                                 />
                             </Validator>
                         </FormItem>
                         {
                             formData.superiorTeam ? (<FormItem
-                                label={Intl.get("sales.team.sub.group", "上级团队")}
+                                label={Intl.get('sales.team.sub.group', '上级团队')}
                                 id="superiorTeam"
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle("superiorTeam")}
+                                validateStatus={this.renderValidateStyle('superiorTeam')}
                                 help={status.superiorTeam.errors ? status.superiorTeam.errors.join(',') : null}
                             >
                                 <Validator
-                                    rules={[{required: true, message: Intl.get("sales.team.select.sub.group", "请选择上级团队")}]}>
+                                    rules={[{required: true, message: Intl.get('sales.team.select.sub.group', '请选择上级团队')}]}>
                                     <Select size="large" style={{width: '100%'}}
                                         name="superiorTeam"
                                         value={formData.superiorTeam}
-                                        placeholder={Intl.get("sales.team.select.sub.group", "请选择上级团队")}
+                                        placeholder={Intl.get('sales.team.select.sub.group', '请选择上级团队')}
                                         showSearch
                                         optionFilterProp="children"
-                                        notFoundContent={Intl.get("common.not.found", "无法找到")}
-                                        searchPlaceholder={Intl.get("common.input.keyword", "输入关键词")}
+                                        notFoundContent={Intl.get('common.not.found', '无法找到')}
+                                        searchPlaceholder={Intl.get('common.input.keyword', '输入关键词')}
                                         onChange={this.handleSelect}
                                     >
                                         {this.renderSuperiorTeam()}
@@ -266,7 +266,7 @@ var SalesTeamForm = React.createClass({
                             wrapperCol={{span: 24}}>
                             {this.state.formData.isTeamSaving ? (<Icon type="loading"/>) : (
                                 editResult ? (<div className="indicator">
-                                    <AlertTimer time={editResult == "error" ? 3000 : 600}
+                                    <AlertTimer time={editResult == 'error' ? 3000 : 600}
                                         message={this.state.formData.saveTeamMsg}
                                         type={editResult} showIcon
                                         onHide={this.hideSaveTooltip}/>

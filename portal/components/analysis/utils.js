@@ -1,5 +1,5 @@
-import { DATE_FORMAT } from "./consts";
-import { parseAmount } from "LIB_DIR/func";
+import { DATE_FORMAT } from './consts';
+import { parseAmount } from 'LIB_DIR/func';
 
 //获取xx年xx月xx日格式的截至时间
 export function getEndDateText(endDate) {
@@ -10,24 +10,24 @@ export function getEndDateText(endDate) {
 export function processCustomerStageChartData(data) {
     const customerStages = [
         {
-            tagName: Intl.get("sales.stage.message", "信息"),
-            tagValue: "message",
+            tagName: Intl.get('sales.stage.message', '信息'),
+            tagValue: 'message',
         },
         {
-            tagName: Intl.get("sales.stage.intention", "意向"),
-            tagValue: "intention",
+            tagName: Intl.get('sales.stage.intention', '意向'),
+            tagValue: 'intention',
         },
         {
-            tagName: Intl.get("common.trial", "试用"),
-            tagValue: "trial",
+            tagName: Intl.get('common.trial', '试用'),
+            tagValue: 'trial',
         },
         {
-            tagName: Intl.get("common.qualified", "合格"),
-            tagValue: "qualified",
+            tagName: Intl.get('common.qualified', '合格'),
+            tagValue: 'qualified',
         },
         {
-            tagName: Intl.get("sales.stage.signed", "签约"),
-            tagValue: "signed",
+            tagName: Intl.get('sales.stage.signed', '签约'),
+            tagValue: 'signed',
         },
     ];
 
@@ -67,7 +67,7 @@ export function processOrderStageChartData(stageList, data) {
         stage.value = stage.total;
         if (_.isNumber(stage.budget)) {
             //对预算额做千分位分隔及加单位处理
-            stage.budget = parseAmount(stage.budget) + Intl.get("contract.139", "万");
+            stage.budget = parseAmount(stage.budget) + Intl.get('contract.139', '万');
         }
     });
 
@@ -82,7 +82,7 @@ export function processOrderStageChartData(stageList, data) {
     });
 
     //将维护阶段的统计数据加到处理后的数据的最后
-    let maintainStage = _.find(data, stage => stage.name === Intl.get("oplate_customer_analysis.6", "维护阶段"));
+    let maintainStage = _.find(data, stage => stage.name === Intl.get('oplate_customer_analysis.6', '维护阶段'));
     if (maintainStage) processedData.push(maintainStage);
 
     return processedData;

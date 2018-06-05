@@ -1,6 +1,6 @@
-"use strict";
-var ReactRouter = require("react-router");
-var DefaultUserLogoTitle = require("../default-user-logo-title");
+'use strict';
+var ReactRouter = require('react-router');
+var DefaultUserLogoTitle = require('../default-user-logo-title');
 var Link = ReactRouter.Link;
 // 头像组件
 var Avatar = React.createClass({
@@ -11,7 +11,7 @@ var Avatar = React.createClass({
             height: this.props.size ? this.props.size : 36
         };
         var aStyle = {
-            cursor: "default"
+            cursor: 'default'
         };
         return (
             <div className={this.props.className} style={ innerStyle }>
@@ -20,7 +20,7 @@ var Avatar = React.createClass({
                         userName={this.props.userName} nickName={this.props.nickName}
                         showName={this.props.showName} name={this.props.name}/>) :
                     (<a style={aStyle}><Img src={this.props.src} size={this.props.size} round={this.props.round}/>
-                        {this.props.showName ? <Name name={this.props.name}/> : ""}</a>)
+                        {this.props.showName ? <Name name={this.props.name}/> : ''}</a>)
                 }
             </div>
         );
@@ -34,7 +34,7 @@ var Aimg = React.createClass({
                 <Img alt={this.props.name} src={this.props.src} round={this.props.round}
                     userName={this.props.userName} nickName={this.props.nickName}
                 />
-                {this.props.showName ? <Name name={this.props.name}/> : ""}
+                {this.props.showName ? <Name name={this.props.name}/> : ''}
             </Link>
         );
     }
@@ -43,11 +43,11 @@ var Aimg = React.createClass({
 var Img = React.createClass({
     render: function() {
         var imgStyle = {
-            width: "100%",
-            height: "100%",
-            fontSize: "24px",
-            lineHeight: "45px",
-            borderRadius: this.props.round ? "50%" : 0
+            width: '100%',
+            height: '100%',
+            fontSize: '24px',
+            lineHeight: '45px',
+            borderRadius: this.props.round ? '50%' : 0
         };
         return (
             <DefaultUserLogoTitle
@@ -64,8 +64,8 @@ var Img = React.createClass({
 var Name = React.createClass({
     render: function() {
         var nameStyle = {
-            lineHeight: "20px",
-            color: "#fff"
+            lineHeight: '20px',
+            color: '#fff'
         };
         return (
             <label style={nameStyle}>{this.props.name}</label>

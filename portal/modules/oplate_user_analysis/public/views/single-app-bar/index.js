@@ -1,12 +1,12 @@
 /**
  * 饼图
  */
-var echarts = require("echarts-eefung");
-require("../bar/index.less");
-var Spinner = require("../../../../../components/spinner");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
-var immutable = require("immutable");
+var echarts = require('echarts-eefung');
+require('../bar/index.less');
+var Spinner = require('../../../../../components/spinner');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
+var immutable = require('immutable');
 import { packageTry } from 'LIB_DIR/func';
 
 var SingleAppBarChart = React.createClass({
@@ -14,7 +14,7 @@ var SingleAppBarChart = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: Intl.get("user.analysis.team", "团队统计"),
+            title: Intl.get('user.analysis.team', '团队统计'),
             width: '100%',
             height: 234,
             resultType: 'loading',
@@ -44,7 +44,7 @@ var SingleAppBarChart = React.createClass({
                 if(!name) {
                     name = 'null';
                 } else if(name === 'unknown') {
-                    name = Intl.get("user.unknown", "未知");
+                    name = Intl.get('user.unknown', '未知');
                 }
                 return `<div>
                            <span>${name}:${obj.value}</span>
@@ -105,7 +105,7 @@ var SingleAppBarChart = React.createClass({
                         rotate: this.props.xAxisRotate,
                         formatter: function(text) {
                             if(text === 'unknown') {
-                                text = Intl.get("user.unknown", "未知");
+                                text = Intl.get('user.unknown', '未知');
                             } else if(!text) {
                                 text = 'null';
                             }
@@ -161,12 +161,12 @@ var SingleAppBarChart = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
             var options = this.getEchartOptions();
             this.echartInstance.setOption(options,true);
-            this.echartInstance.on("click", params => {
+            this.echartInstance.on('click', params => {
                 this.props.getClickType(params.name);
             });
         }

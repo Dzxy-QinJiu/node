@@ -47,7 +47,7 @@ exports.getMemberList = function(queryObj) {
         },
         error: function(error, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(Intl.get("organization.get.add.organization.member.list.failed"));
+                Deferred.reject(Intl.get('organization.get.add.organization.member.list.failed'));
             }
         }
     });

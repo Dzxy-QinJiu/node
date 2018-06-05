@@ -1,9 +1,9 @@
-var AppUserUtil = require("../util/app-user-util");
-import UserDetailEditAppActions from "../action/user-detail-edit-app-actions";
-var userData = require("../../../../public/sources/user-data");
-var AppUserPanelSwitchAction = require("../action/app-user-panelswitch-actions");
-var AppUserDetailAction = require("../action/app-user-detail-actions");
-var AppUserAction = require("../action/app-user-actions");
+var AppUserUtil = require('../util/app-user-util');
+import UserDetailEditAppActions from '../action/user-detail-edit-app-actions';
+var userData = require('../../../../public/sources/user-data');
+var AppUserPanelSwitchAction = require('../action/app-user-panelswitch-actions');
+var AppUserDetailAction = require('../action/app-user-detail-actions');
+var AppUserAction = require('../action/app-user-actions');
 
 //用户详情修改应用的store
 function UserDetailEditAppStore() {
@@ -30,17 +30,17 @@ UserDetailEditAppStore.prototype.resetState = function() {
         //选中的应用列表
         selected_apps: [],
         //开户类型
-        user_type: "1",
+        user_type: '1',
         //开通周期
-        range: "12",
+        range: '12',
         //开通时间
         start_time: start_time,
         //到期时间
         end_time: end_time,
         //到期停用
-        over_draft: "1",
+        over_draft: '1',
         //账号状态
-        user_status: "1",
+        user_status: '1',
     };
     //提交状态("",success,error,loading)
     this.submitResult = '';
@@ -63,14 +63,14 @@ UserDetailEditAppStore.prototype.hideUserTypeError = function() {
 UserDetailEditAppStore.prototype.submitEditApp = function(result) {
     var _this = this;
     if(result.error) {
-        this.submitResult = "error";
+        this.submitResult = 'error';
         this.submitErrorMsg = result.errorMsg;
     } else {
-        this.submitErrorMsg = "";
+        this.submitErrorMsg = '';
         if(result.loading) {
-            this.submitResult = "loading";
+            this.submitResult = 'loading';
         } else {
-            this.submitResult = "success";
+            this.submitResult = 'success';
             setTimeout(function() {
                 _this.resetState();
                 if(result.multiple) {
@@ -106,8 +106,8 @@ UserDetailEditAppStore.prototype.setEditAppDefaultValue = function(appInfo) {
     this.formData.user_status = (appInfo.is_disabled === true || appInfo.is_disabled === 'true') ? '0' : '1';
     this.formData.user_type = appInfo.account_type;
     if(appInfo.end_time === '0' || appInfo.end_time === 0) {
-        this.formData.start_time = Intl.get("common.time.forever", "永久");
-        this.formData.end_time = Intl.get("common.time.forever", "永久");
+        this.formData.start_time = Intl.get('common.time.forever', '永久');
+        this.formData.end_time = Intl.get('common.time.forever', '永久');
         this.formData.range = 'forever';
     } else {
         var startMoment = moment(new Date(+appInfo.start_time));
@@ -116,8 +116,8 @@ UserDetailEditAppStore.prototype.setEditAppDefaultValue = function(appInfo) {
         endMoment.hours(0).minutes(0).seconds(0).milliseconds(0);
         this.formData.start_time = startMoment.format(FORMAT);
         this.formData.end_time = endMoment.format(FORMAT);
-        var range = endMoment.diff(startMoment , "months") + '';
-        if(["1","6","12"].indexOf(range) >= 0) {
+        var range = endMoment.diff(startMoment , 'months') + '';
+        if(['1','6','12'].indexOf(range) >= 0) {
             this.formData.range = range;
         } else {
             this.formData.range = 'custom';
@@ -140,18 +140,18 @@ UserDetailEditAppStore.prototype.customRadioValueChange = function({field,value}
         var oldRange = this.formData.range;
         var newRange = value;
         if(newRange === 'forever') {
-            this.formData.start_time = this.formData.end_time = Intl.get("common.time.forever", "永久");
+            this.formData.start_time = this.formData.end_time = Intl.get('common.time.forever', '永久');
         } else if(newRange === 'custom') {
             var now = moment().format(FORMAT);
-            if(this.formData.start_time === Intl.get("common.time.forever", "永久")) {
+            if(this.formData.start_time === Intl.get('common.time.forever', '永久')) {
                 this.formData.start_time = now;
             }
-            if(this.formData.end_time === Intl.get("common.time.forever", "永久")) {
-                this.formData.end_time = moment().add("1","year").format(FORMAT);
+            if(this.formData.end_time === Intl.get('common.time.forever', '永久')) {
+                this.formData.end_time = moment().add('1','year').format(FORMAT);
             }
         } else {
             var start_time = moment().format(FORMAT);
-            var end_time = moment().add(newRange,"month").format(FORMAT);
+            var end_time = moment().add(newRange,'month').format(FORMAT);
             this.formData.start_time = start_time;
             this.formData.end_time = end_time;
         }

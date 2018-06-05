@@ -4,26 +4,26 @@
  * Created by zhangshujuan on 2017/8/8.
  */
 module.exports = {
-    module: "app_user_manage/server/action/user_abnormal_login_controller",
+    module: 'app_user_manage/server/action/user_abnormal_login_controller',
     routes: [{
-        "method": "get",
-        "path": "/rest/user/abnormal_login",
-        "handler": "getUserAbnormalLogin",
-        "passport": {
-            "needLogin": true
+        'method': 'get',
+        'path': '/rest/user/abnormal_login',
+        'handler': 'getUserAbnormalLogin',
+        'passport': {
+            'needLogin': true
         },
-        "privileges": [
-            "GET_LOGIN_EXCEPTION_USERS"
+        'privileges': [
+            'GET_LOGIN_EXCEPTION_USERS'
         ]
     },{
-        "method": "post",
-        "path": "/rest/user/abnormal/ignore",
-        "handler": "ignoreAbnormalLogin",
-        "passport": {
-            "needLogin": true
+        'method': 'post',
+        'path': '/rest/user/abnormal/ignore',
+        'handler': 'ignoreAbnormalLogin',
+        'passport': {
+            'needLogin': true
         },
-        "privileges": [
-            "GET_LOGIN_EXCEPTION_USERS"
+        'privileges': [
+            'GET_LOGIN_EXCEPTION_USERS'
         ]
     }
     ]

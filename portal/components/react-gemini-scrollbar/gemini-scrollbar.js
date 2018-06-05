@@ -20,7 +20,7 @@
     };
 
     getScrollbarWidth = function getScrollbarWidth() {
-        var scrollDiv = document.createElement("div");
+        var scrollDiv = document.createElement('div');
         scrollDiv.className = CLASSNAMES.scrollbarWidthTest;
         document.body.appendChild(scrollDiv);
 
@@ -140,11 +140,11 @@
     };
 
     GeminiScrollbar.prototype.checkVerticalFlag = function checkVerticalFlag(e, _element) {
-        var $scrollVertical = $(e.target).parents(".geminiScrollbar-vertical").find(".gm-scrollbar.-vertical");
+        var $scrollVertical = $(e.target).parents('.geminiScrollbar-vertical').find('.gm-scrollbar.-vertical');
         //判断当前视图是否有竖向滚动条如果有判断 鼠标是否在竖向滚动条区域 否则直接触发横向滚动条事件
-        if ($(_element).find(".geminiScrollbar-vertical").length > 0) {
+        if ($(_element).find('.geminiScrollbar-vertical').length > 0) {
             // 判断竖向滚动条区域的竖向滚动条是否展示并且竖向滚动条高度大于0
-            if (!$scrollVertical.is(':visible') || $scrollVertical.find(".thumb").height() <= 0) {
+            if (!$scrollVertical.is(':visible') || $scrollVertical.find('.thumb').height() <= 0) {
                 return true;
             }
         } else {
@@ -238,7 +238,7 @@
 
         var _this = this;
         $(this.element).mousewheel(function(e, delta) {
-            var _elementScrollView = $(this).find(".gm-scroll-view")[0];
+            var _elementScrollView = $(this).find('.gm-scroll-view')[0];
             var scrollLeft = $(_elementScrollView).scrollLeft();
             if (_this.checkVerticalFlag(e, _elementScrollView)) {
                 if (delta > 0) {
@@ -329,7 +329,7 @@
                 return;
             }
         }
-        var $loading = $viewEle.find(".gm-bottom-loading");
+        var $loading = $viewEle.find('.gm-bottom-loading');
         if(!$loading[0]) return;
         var viewEleOffset = $viewEle.offset();
         var loadingOffset = $loading.offset();

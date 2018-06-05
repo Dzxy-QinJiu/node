@@ -3,11 +3,11 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/4/3.
  */
-import {InputNumber, Icon} from "antd";
-var classNames = require("classnames");
-var autosize = require("autosize");
-import Trace from "LIB_DIR/trace";
-require("../css/commission.less");
+import {InputNumber, Icon} from 'antd';
+var classNames = require('classnames');
+var autosize = require('autosize');
+import Trace from 'LIB_DIR/trace';
+require('../css/commission.less');
 var CommissionAndTarget = React.createClass({
     getDefaultProps: function() {
         return {
@@ -16,13 +16,13 @@ var CommissionAndTarget = React.createClass({
             //某个用户的详情
             userInfo: {},
             //字段
-            field: "",
+            field: '',
             //是否能修改
             disabled: false,
             //显示的值
-            value: "",
+            value: '',
             //提示文案
-            title: Intl.get("common.update", "修改"),
+            title: Intl.get('common.update', '修改'),
             setSalesGoals: function() {
             },
         };
@@ -32,9 +32,9 @@ var CommissionAndTarget = React.createClass({
             id: this.props.id,
             userInfo: $.extend(true,{},this.props.userInfo),
             loading: false,
-            displayType: this.props.displayType || "text",
+            displayType: this.props.displayType || 'text',
             initalValue: this.props.value,
-            value: "",
+            value: '',
             submitErrorMsg: '',
         };
     },
@@ -49,12 +49,12 @@ var CommissionAndTarget = React.createClass({
     },
     setEditable: function(e) {
         this.setState({
-            displayType: "edit",
+            displayType: 'edit',
         });
-        Trace.traceEvent(e, "点击编辑" + this.props.field);
+        Trace.traceEvent(e, '点击编辑' + this.props.field);
     },
     handleSubmit: function(e) {
-        Trace.traceEvent(e, "保存对" + this.props.field + "的修改");
+        Trace.traceEvent(e, '保存对' + this.props.field + '的修改');
         var value = this.state.value;
         this.setState({
             loading: true
@@ -95,23 +95,23 @@ var CommissionAndTarget = React.createClass({
             } else {
                 this.setState({
                     loading: false,
-                    submitErrorMsg: Intl.get("common.edit.failed", "修改失败")
+                    submitErrorMsg: Intl.get('common.edit.failed', '修改失败')
                 });
             }
         },(errorMsg) => {
             this.setState({
                 loading: false,
-                submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
+                submitErrorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
             });
         });
     },
 
     handleCancel: function(e) {
         this.setState({
-            displayType: "text",
+            displayType: 'text',
             submitErrorMsg: ''
         });
-        Trace.traceEvent(e, "取消对" + this.props.field + "的修改");
+        Trace.traceEvent(e, '取消对' + this.props.field + '的修改');
     },
     onInputChange: function(value) {
         this.setState({
@@ -149,11 +149,11 @@ var CommissionAndTarget = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.update", "修改")} className="inline-block iconfont icon-choose"
+                <i title={Intl.get('common.update', '修改')} className="inline-block iconfont icon-choose"
                     onClick={(e) => {
                         this.handleSubmit(e);
                     }}></i>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
+                <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
                     onClick={(e) => {
                         this.handleCancel(e);
                     }}></i>

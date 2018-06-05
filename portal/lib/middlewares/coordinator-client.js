@@ -4,13 +4,13 @@
  * Created by liwenjun on 2016/4/15.
  */
 var config = global.config;
-var Coordinator = require("coordinator-node-client");
+var Coordinator = require('coordinator-node-client');
 //  初始化 Coordinator客户端
 module.exports = function initCoordinator(callback) {
     //  初始化
     var client = new Coordinator(config.coordinatorConfig);
     // 启动前需要设置token，
-    client.setToken("123");
+    client.setToken('123');
     client.logger.level('info');
     client.start(function(error) {
         //error存在的时候启动失败，不存在的时候启动成功

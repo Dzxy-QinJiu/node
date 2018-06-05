@@ -1,16 +1,16 @@
-import { Icon} from "antd";
-require("../../../../components/app-notice/app-notice-list.less");
-var Alert = require("antd").Alert;
-var rightPanelUtil = require("../../../../components/rightPanel");
+import { Icon} from 'antd';
+require('../../../../components/app-notice/app-notice-list.less');
+var Alert = require('antd').Alert;
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
 var AppNoticeStore = require('../store/app-notice-store');
 var AppNoticeAction = require('../action/app-notice-action');
-var AppNoticeList = require("../../../../components/app-notice");
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-var AppStore = require("../store/app-store");
-var autosize = require("autosize");
-import Trace from "LIB_DIR/trace";
+var AppNoticeList = require('../../../../components/app-notice');
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+var AppStore = require('../store/app-store');
+var autosize = require('autosize');
+import Trace from 'LIB_DIR/trace';
 
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -22,7 +22,7 @@ var AppNotice = React.createClass({
 
     getDefaultProps: function() {
         return {
-            appId: ""
+            appId: ''
         };
     },
 
@@ -83,13 +83,13 @@ var AppNotice = React.createClass({
 
     //关闭
     closePanel: function(e) {
-        Trace.traceEvent(e,"关闭应用公告界面");
+        Trace.traceEvent(e,'关闭应用公告界面');
         this.props.closeRightPanel(e);
     },
 
     //返回详细信息展示页
     returnInfoPanel: function(e) {
-        Trace.traceEvent(e,"返回到应用详情界面");
+        Trace.traceEvent(e,'返回到应用详情界面');
         this.props.returnInfoPanel(e);
     },
 

@@ -1,9 +1,9 @@
-var AppUserUtil = require("../util/app-user-util");
-import UserDetailAddAppActions from "../action/user-detail-add-app-actions";
-var userData = require("../../../../public/sources/user-data");
-var AppUserAction = require("../action/app-user-actions");
-var DateSelectorUtils = require("../../../../components/date-selector/utils");
-var privilegeChecker = require("../../../../components/privilege/checker");
+var AppUserUtil = require('../util/app-user-util');
+import UserDetailAddAppActions from '../action/user-detail-add-app-actions';
+var userData = require('../../../../public/sources/user-data');
+var AppUserAction = require('../action/app-user-actions');
+var DateSelectorUtils = require('../../../../components/date-selector/utils');
+var privilegeChecker = require('../../../../components/privilege/checker');
 
 //用户详情添加应用的store
 function UserDetailAddAppStore() {
@@ -61,7 +61,7 @@ UserDetailAddAppStore.prototype.resetState = function() {
     //显示客户的错误提示
     this.show_customer_error = false;
     //提交成功
-    this.submitResult = "";
+    this.submitResult = '';
     //错误提示
     this.submitErrorMsg = '';
     //显示选择app的错误提示
@@ -94,19 +94,19 @@ UserDetailAddAppStore.prototype.resetState = function() {
         //开户类型
         user_type: AppUserUtil.USER_TYPE_VALUE_MAP.TRIAL_USER,
         //开通周期
-        range: "0.5m",
+        range: '0.5m',
         //开通时间
         start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
         //到期时间
         end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
         //到期不变
-        over_draft: "0",
+        over_draft: '0',
         //账号状态
-        user_status: "1",
+        user_status: '1',
         //密码
-        password: "",
+        password: '',
         //确认密码
-        repassword: "",
+        repassword: '',
         //角色
         roles: [],
         //权限
@@ -124,17 +124,17 @@ UserDetailAddAppStore.prototype.resetState = function() {
         //延迟时间输入框，默认是1
         delayTimeNumber: 1,
         //延期时间范围，默认是天
-        delayTimeRange: "days",
+        delayTimeRange: 'days',
         // 到期时间(选择到期时间)
         delayDeadlineTime: moment().add(1, 'days').valueOf(),
         //销售申请的备注
         remark: {
             //延期备注
-            delayRemark: "",
+            delayRemark: '',
             //启用、停用备注
-            statusRemark: "",
+            statusRemark: '',
             //修改密码备注
-            passwordRemark: ""
+            passwordRemark: ''
         },
         //批量审批选中的应用列表
         batchSelectedApps: [],
@@ -194,14 +194,14 @@ UserDetailAddAppStore.prototype.timeChange = function({start_time,end_time,range
 UserDetailAddAppStore.prototype.submitAddApp = function(result) {
     var _this = this;
     if(result.error) {
-        this.submitResult = "error";
+        this.submitResult = 'error';
         this.submitErrorMsg = result.errorMsg;
     } else {
-        this.submitErrorMsg = "";
+        this.submitErrorMsg = '';
         if(result.loading) {
-            this.submitResult = "loading";
+            this.submitResult = 'loading';
         } else {
-            this.submitResult = "success";
+            this.submitResult = 'success';
             setTimeout(function() {
                 _this.resetState();
                 AppUserAction.closeRightPanel();
@@ -212,8 +212,8 @@ UserDetailAddAppStore.prototype.submitAddApp = function(result) {
 
 //隐藏提交提示
 UserDetailAddAppStore.prototype.hideSubmitTip = function() {
-    this.submitErrorMsg = "";
-    this.submitResult = "";
+    this.submitErrorMsg = '';
+    this.submitResult = '';
 };
 //显示app错误提示
 UserDetailAddAppStore.prototype.showAppError = function() {
@@ -275,7 +275,7 @@ UserDetailAddAppStore.prototype.batchAppChange = function(appIds) {
     if(appIds.length) {
         this.batchSelectedAppError = false;
     } else {
-        this.batchSelectedAppError = Intl.get("user.app.select.please", "请选择应用");
+        this.batchSelectedAppError = Intl.get('user.app.select.please', '请选择应用');
     }
     //单独处理权限设置的选中
     //如果刚才选中的权限，在列表中不存在了，则将选中的应用置空，同时清空权限和角色

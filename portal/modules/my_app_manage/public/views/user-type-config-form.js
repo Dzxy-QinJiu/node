@@ -8,13 +8,13 @@ import {Form, Input, Button, Icon, Select} from 'antd';
 import UserOverDraftField from '../../../../components/user_manage_components/user-over-draftfield';
 import UserMultiLoginField from '../../../../components/user_manage_components/user-multilogin-radiofield';
 import AppRolePermission from '../../../../components/user_manage_components/app-role-permission';
-import FieldMixin from "../../../../components/antd-form-fieldmixin";
-var AlertTimer = require("../../../../components/alert-timer");
-require("../css/user-type-config.less");
-require("../../../../components/user_manage_components/css/form-basic-es_VE.less");
+import FieldMixin from '../../../../components/antd-form-fieldmixin';
+var AlertTimer = require('../../../../components/alert-timer');
+require('../css/user-type-config.less');
+require('../../../../components/user_manage_components/css/form-basic-es_VE.less');
 var timer = null;
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-import Trace from "LIB_DIR/trace";
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+import Trace from 'LIB_DIR/trace';
 
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -33,7 +33,7 @@ var UserTypeConfigForm = React.createClass({
             },
             handleSaveAppConfig: function() {
             },
-            appName: ""
+            appName: ''
         };
     },
     getInitialState: function() {
@@ -56,9 +56,9 @@ var UserTypeConfigForm = React.createClass({
                 valid_period: this.props.item.valid_period
             },
             //出错时的提示
-            errorMessage: "",
+            errorMessage: '',
             //修改或添加成功后的提示
-            successMessage: "",
+            successMessage: '',
             //点击提交按钮时的loading效果
             isLoading: false
         };
@@ -88,9 +88,9 @@ var UserTypeConfigForm = React.createClass({
         _this.setState({
             isLoading: true
         });
-        $("#usertypeconfigsave").attr('disabled', 'disabled');
+        $('#usertypeconfigsave').attr('disabled', 'disabled');
         e.preventDefault();
-        Trace.traceEvent(e, "保存配置用户类型");
+        Trace.traceEvent(e, '保存配置用户类型');
         //修改类型
         if (this.state.formData.id != '') {
             data.id = this.state.formData.id;
@@ -105,7 +105,7 @@ var UserTypeConfigForm = React.createClass({
                         isLoading: false,
                         successMessage: '保存成功'
                     });
-                    $("#usertypeconfigsave").removeAttr("disabled");
+                    $('#usertypeconfigsave').removeAttr('disabled');
                     if (timer) {
                         clearTimeout(timer);
                     }
@@ -119,7 +119,7 @@ var UserTypeConfigForm = React.createClass({
                         isLoading: false,
                         errorMessage: errorInfo.responseText
                     });
-                    $("#usertypeconfigsave").removeAttr("disabled");
+                    $('#usertypeconfigsave').removeAttr('disabled');
                 }
             });
         } else {
@@ -135,7 +135,7 @@ var UserTypeConfigForm = React.createClass({
                         isLoading: false,
                         successMessage: '保存成功'
                     });
-                    $("#usertypeconfigsave").removeAttr("disabled");
+                    $('#usertypeconfigsave').removeAttr('disabled');
                     setTimeout(function() {
                         _this.props.togglePageChange(false);
                     }, 2000);
@@ -145,7 +145,7 @@ var UserTypeConfigForm = React.createClass({
                         isLoading: false,
                         errorMessage: errorInfo.responseText
                     });
-                    $("#usertypeconfigsave").removeAttr("disabled");
+                    $('#usertypeconfigsave').removeAttr('disabled');
                 }
             });
         }
@@ -178,7 +178,7 @@ var UserTypeConfigForm = React.createClass({
     },
     //点击取消按钮，跳转页面
     handleCancel: function(e) {
-        Trace.traceEvent(e, "取消编辑配置用户类型");
+        Trace.traceEvent(e, '取消编辑配置用户类型');
         this.props.handleCancel();
         this.props.togglePageChange(false);
     },
@@ -278,7 +278,7 @@ var UserTypeConfigForm = React.createClass({
                                     </div>
                                 </div>
                                 <div className="form-item">
-                                    <div className="form-item-label">{Intl.get("user.expire.select", "到期可选")}</div>
+                                    <div className="form-item-label">{Intl.get('user.expire.select', '到期可选')}</div>
                                     <div className="form-item-content">
                                         {this.renderUserOverDraftBlock()}
                                     </div>

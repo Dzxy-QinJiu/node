@@ -1,8 +1,8 @@
 import Dropdown from 'rc-dropdown';
 import Menu, { Item as MenuItem} from 'rc-menu';
-require("./index.less");
-var classNames = require("classnames");
-var immutable = require("immutable");
+require('./index.less');
+var classNames = require('classnames');
+var immutable = require('immutable');
 //键盘按键
 var KeyCode = {
     DOWN: 40,
@@ -24,7 +24,7 @@ var LAYOUT = {
  */
 var SearchList = React.createClass({
     //唯一id，做相对定位用
-    searchListId: _.uniqueId("oplate-search-list"),
+    searchListId: _.uniqueId('oplate-search-list'),
     //React组件的名称
     displayName: 'SearchList',
     //获取默认属性
@@ -37,22 +37,22 @@ var SearchList = React.createClass({
             //选中的回调函数
             onSelect: function() {},
             //样式名
-            className: "",
+            className: '',
             //内联样式
             style: {},
             //展示内容的字段
             nameProp: 'name',
             //没有找到的提示
-            notFoundContent: Intl.get("common.not.found","无法找到"),
+            notFoundContent: Intl.get('common.not.found','无法找到'),
             //暂无数据提示
-            noDataCoutent: Intl.get("common.no.data","暂无数据")
+            noDataCoutent: Intl.get('common.no.data','暂无数据')
         };
     },
     //为传进来的list数据，添加一个uid属性
     expandUniqueKeyForList: function(list) {
         return list.map(function(obj) {
             var expandObj = {
-                uid: _.uniqueId("search-list-key"),
+                uid: _.uniqueId('search-list-key'),
                 data: obj
             };
             return expandObj;
@@ -73,13 +73,13 @@ var SearchList = React.createClass({
     },
     //根据dropdown的方向设置SearchList的class，以便调整搜索组件的样式
     setDirectionClassForSearchList: function() {
-        var isTopDirection = $(".ant-dropdown",this.refs.wrap).hasClass("ant-dropdown-placement-topLeft");
-        var isBottomDirection = $(".ant-dropdown",this.refs.wrap).hasClass("ant-dropdown-placement-bottomLeft");
+        var isTopDirection = $('.ant-dropdown',this.refs.wrap).hasClass('ant-dropdown-placement-topLeft');
+        var isBottomDirection = $('.ant-dropdown',this.refs.wrap).hasClass('ant-dropdown-placement-bottomLeft');
         if(isTopDirection) {
-            $(this.refs.wrap).removeClass("bottom-direction").addClass("top-direction");
+            $(this.refs.wrap).removeClass('bottom-direction').addClass('top-direction');
         }
         if(isBottomDirection) {
-            $(this.refs.wrap).removeClass("top-direction").addClass("bottom-direction");
+            $(this.refs.wrap).removeClass('top-direction').addClass('bottom-direction');
         }
     },
     //组件加载完毕时触发
@@ -167,11 +167,11 @@ var SearchList = React.createClass({
             }
             return;
         }
-        var direction = "down";
+        var direction = 'down';
         if(keyCode === KeyCode.UP) {
-            direction = "up";
+            direction = 'up';
         }
-        if(direction === "down") {
+        if(direction === 'down') {
             idx++;
             if(idx >= max) {
                 idx = 0;
@@ -185,8 +185,8 @@ var SearchList = React.createClass({
         this.setState({
             selectedIdx: idx
         } , function() {
-            var ul = $(".oplate-search-list-menu",this.refs.wrap)[0];
-            var elm = $("li.ant-dropdown-menu-item",ul)[idx];
+            var ul = $('.oplate-search-list-menu',this.refs.wrap)[0];
+            var elm = $('li.ant-dropdown-menu-item',ul)[idx];
             var pos = $(elm).position();
             if(pos.top >= 0 && (pos.top + LAYOUT.ITEM_HEIGHT) <= LAYOUT.MAX_HEIGHT) {
                 return;
@@ -194,7 +194,7 @@ var SearchList = React.createClass({
             ul.scrollTop = 0;
             pos = $(elm).position();
             var targetScrollTop = pos.top;
-            if(direction === "down") {
+            if(direction === 'down') {
                 if((targetScrollTop + LAYOUT.ITEM_HEIGHT - LAYOUT.MAX_HEIGHT) >= 0) {
                     targetScrollTop = targetScrollTop + LAYOUT.ITEM_HEIGHT - LAYOUT.MAX_HEIGHT;
                 }
@@ -208,7 +208,7 @@ var SearchList = React.createClass({
         });
     },
     render: function() {
-        var cls = classNames("oplate-search-list",this.props.className);
+        var cls = classNames('oplate-search-list',this.props.className);
         var nameProp = this.props.nameProp;
         var notFound = this.state.resultLists.length === 0 && this.state.itemLists.length > 0;
         var noData = this.state.itemLists.length === 0;

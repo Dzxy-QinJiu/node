@@ -1,14 +1,14 @@
 //用户详情添加switch切换逻辑
-var language = require("../../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/user-detail-field-switch-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("../css/user-detail-field-switch-zh_CN.less");
+var language = require('../../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('../css/user-detail-field-switch-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('../css/user-detail-field-switch-zh_CN.less');
 }
 
-var AppUserAjax = require("../ajax/app-user-ajax");
-var Icon = require("antd").Icon;
-var AlertTimer = require("../../../../components/alert-timer");
+var AppUserAjax = require('../ajax/app-user-ajax');
+var Icon = require('antd').Icon;
+var AlertTimer = require('../../../../components/alert-timer');
 /**
  * is_two_factor 二步认证
  * mutilogin     多人登录
@@ -18,7 +18,7 @@ var AlertTimer = require("../../../../components/alert-timer");
 
 const CLS = 'user-detail-field-switch';
 
-var Switch = require("antd").Switch;
+var Switch = require('antd').Switch;
 var UserDetailFieldSwitch = React.createClass({
     //获取默认属性
     getDefaultProps: function() {
@@ -34,9 +34,9 @@ var UserDetailFieldSwitch = React.createClass({
             //未选中状态下对应的值
             unCheckedValue: '0',
             //开启文字
-            checkedChildren: Intl.get("user.open.code", "开"),
+            checkedChildren: Intl.get('user.open.code', '开'),
             //关闭文字
-            unCheckedChildren: Intl.get("user.close.code", "关"),
+            unCheckedChildren: Intl.get('user.close.code', '关'),
             //选中状态下提交的值
             checkedSubmitValue: '1',
             //未选中状态下提交的值

@@ -1,15 +1,15 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-"use strict";
+'use strict';
 
-var OrganizationManageService = require("../service/organization-manage-service");
+var OrganizationManageService = require('../service/organization-manage-service');
 
 exports.getOrganizationList = function(req, res) {
     OrganizationManageService.getOrganizationList(req, res)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -17,9 +17,9 @@ exports.getOrganizationList = function(req, res) {
 exports.getOrganizeMembersById = function(req, res) {
     var groupId = req.params.group_id;
     OrganizationManageService.getOrganizeMembersById(req, res, groupId)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -28,9 +28,9 @@ exports.getOrganizeMembersById = function(req, res) {
  */
 exports.getMemberList = function(req, res) {
     OrganizationManageService.getMemberList(req, res, req.query)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -43,9 +43,9 @@ exports.addOrganizeMember = function(req, res) {
         user_ids: JSON.parse(req.body.userIds)
     };
     OrganizationManageService.addMember(req, res, addMemberObj)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -58,9 +58,9 @@ exports.editOrganizationMember = function(req, res) {
         operate: req.body.operate
     };
     OrganizationManageService.editMember(req, res, editMemberObj, req.body.type)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -69,9 +69,9 @@ exports.editOrganizationMember = function(req, res) {
 exports.deleteOrganization = function(req, res) {
     var groupId = req.params.group_id;
     OrganizationManageService.deleteGroup(req, res, groupId)
-        .on("success", function() {
+        .on('success', function() {
             res.status(200).json(true);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -80,9 +80,9 @@ exports.deleteOrganization = function(req, res) {
 exports.editOrganization = function(req, res) {
     req.body.user_ids = req.body.user_ids ? JSON.parse(req.body.user_ids) : [];
     OrganizationManageService.editGroup(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );
@@ -95,9 +95,9 @@ exports.addOrganization = function(req, res) {
     };
     const category = req.body.category;
     OrganizationManageService.addGroup(req, res, organization, category)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
         );

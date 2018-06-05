@@ -1,23 +1,23 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 // 添加应用系统公告的信息
 import {Form,Input, Radio,Icon} from 'antd';
 var RadioGroup = Radio.Group;
 var FormItem = Form.Item;
-var Button = require("antd").Button;
-import FieldMixin from "../../../../components/antd-form-fieldmixin";
-var NoticeAjax = require("../ajax/app-notice-ajax");
-var AppNoticeAction = require("../action/app-notice-action");
-var AlertTimer = require("../../../../components/alert-timer");
-import Trace from "LIB_DIR/trace";
+var Button = require('antd').Button;
+import FieldMixin from '../../../../components/antd-form-fieldmixin';
+var NoticeAjax = require('../ajax/app-notice-ajax');
+var AppNoticeAction = require('../action/app-notice-action');
+var AlertTimer = require('../../../../components/alert-timer');
+import Trace from 'LIB_DIR/trace';
 
 var AppNoticeForm = React.createClass({
     mixins: [FieldMixin],
     getInitialState: function(){
         return {
             formData: {
-                value: "upgrade-notice",
-                content: ""
+                value: 'upgrade-notice',
+                content: ''
             },
             status: {
                 content: {}
@@ -29,12 +29,12 @@ var AppNoticeForm = React.createClass({
 
     handleSubmit: function(e){
         e.preventDefault();
-        Trace.traceEvent(e,"保存添加公告信息");
+        Trace.traceEvent(e,'保存添加公告信息');
         var _this = this;
         this.setState({
             isLoading: true
         });
-        $("#appNoticeSaveBtn").attr("disabled", "disabled");
+        $('#appNoticeSaveBtn').attr('disabled', 'disabled');
         var validation = this.refs.validation;
         validation.validate(function(valid){
             if(!valid){
@@ -64,7 +64,7 @@ var AppNoticeForm = React.createClass({
     
     handleCancel: function(e){
         e.preventDefault();
-        Trace.traceEvent(e,"取消添加公告信息");
+        Trace.traceEvent(e,'取消添加公告信息');
         AppNoticeAction.hideForm();
     },
 
@@ -91,7 +91,7 @@ var AppNoticeForm = React.createClass({
             this.setState({
                 errMsg: ''
             });
-            $("#appNoticeSaveBtn").removeAttr("disabled");
+            $('#appNoticeSaveBtn').removeAttr('disabled');
         };
         return (
             <div className="add-notice-fail-tips">
@@ -148,7 +148,7 @@ var AppNoticeForm = React.createClass({
                                         rows="3"
                                         placeholder="必填项"
                                         value={this.state.formData.content}
-                                        onChange={this.setField.bind(this, "content")}
+                                        onChange={this.setField.bind(this, 'content')}
                                     />
                                 </Validator>
                             </FormItem>

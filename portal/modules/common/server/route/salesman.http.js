@@ -3,14 +3,14 @@
  */
 
 module.exports = {
-    module: "common/server/action/salesman",
+    module: 'common/server/action/salesman',
     routes: [{
-        "method": "get",
-        "path": "/rest/base/v1/group/childgroupusers",
-        "handler": "getSalesmanList",
-        "passport": {
-            "needLogin": true
+        'method': 'get',
+        'path': '/rest/base/v1/group/childgroupusers',
+        'handler': 'getSalesmanList',
+        'passport': {
+            'needLogin': true
         },
-        "privileges": []
+        'privileges': []
     }]
 };

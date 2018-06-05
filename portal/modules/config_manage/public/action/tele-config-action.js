@@ -2,7 +2,7 @@
  *  客服电话配置action文件
  * */
 var TeleConfigAjax = require('../ajax/tele-config-ajax');
-import { message } from "antd";
+import { message } from 'antd';
 
 function TeleConfigActions(){
     this.generateActions(

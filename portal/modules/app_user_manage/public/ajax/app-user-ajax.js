@@ -1,6 +1,6 @@
-var AppUserUtil = require("../util/app-user-util");
-var appAjaxTrans = require("../../../common/public/ajax/app");
-import { storageUtil } from "ant-utils";
+var AppUserUtil = require('../util/app-user-util');
+var appAjaxTrans = require('../../../common/public/ajax/app');
+import { storageUtil } from 'ant-utils';
 
 //获取近期登录的用户列表
 var recentLoginUsersAjax = null;
@@ -19,7 +19,7 @@ exports.getRecentLoginUsers = function(params) {
         },
         error: function(xhr , textStatus) {
             if(textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
+                Deferred.reject(xhr.responseJSON || Intl.get('user.list.get.failed', '获取用户列表失败'));
             }
         }
     });
@@ -70,7 +70,7 @@ exports.getAppUserList = function(obj) {
     //异常登录
     obj.user_exception = obj.user_exception || '',
     //团队id
-    obj.team_ids = (obj.team_ids && (obj.team_ids.join(","))) || '';
+    obj.team_ids = (obj.team_ids && (obj.team_ids.join(','))) || '';
 
     let queryObj = obj;
 
@@ -83,12 +83,12 @@ exports.getAppUserList = function(obj) {
         //一周内过期
         if(outdate === '1w') {
             queryObj.start_date = moment().valueOf();
-            queryObj.end_date = moment().add(7, "days").endOf("day").valueOf();
+            queryObj.end_date = moment().add(7, 'days').endOf('day').valueOf();
         } else {
             //过期的
-            if(outdate === "1") {
+            if(outdate === '1') {
                 queryObj.end_date = moment().valueOf();
-            } else if(outdate === "0") {
+            } else if(outdate === '0') {
                 //未过期的
                 queryObj.start_date = moment().valueOf();
             }
@@ -96,7 +96,7 @@ exports.getAppUserList = function(obj) {
     }
     var requestObj = {};
     for(var key in queryObj) {
-        if(queryObj[key] !== '' && key !== "tag_all") {
+        if(queryObj[key] !== '' && key !== 'tag_all') {
             requestObj[key] = queryObj[key];
         }
     }
@@ -117,7 +117,7 @@ exports.getAppUserList = function(obj) {
         },
         error: function(xhr , textStatus) {
             if(textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("user.app.user.list.failed", "获取应用的用户列表失败"));
+                Deferred.reject(xhr.responseJSON || Intl.get('user.app.user.list.failed', '获取应用的用户列表失败'));
             }
         }
     });
@@ -161,7 +161,7 @@ exports.addAppUser = function(user) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("user.add.user.failed", "添加用户失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('user.add.user.failed', '添加用户失败'));
         }
     });
     return Deferred.promise();
@@ -218,7 +218,7 @@ exports.getSalesTeams = function(clientId) {
             Deferred.resolve(list);
         },
         error: function(codeMessage) {
-            Deferred.reject(codeMessage && codeMessage.message || Intl.get("common.get.sale.lists.failed", "获取销售团队列表失败"));
+            Deferred.reject(codeMessage && codeMessage.message || Intl.get('common.get.sale.lists.failed', '获取销售团队列表失败'));
         }
     });
     return Deferred.promise();
@@ -237,7 +237,7 @@ exports.getTeamLists = function() {
             Deferred.resolve(teamlists);
         },
         error: function(codeMessage) {
-            Deferred.reject(codeMessage && codeMessage.message || Intl.get("common.get.team.list.failed", "获取团队列表失败"));
+            Deferred.reject(codeMessage && codeMessage.message || Intl.get('common.get.team.list.failed', '获取团队列表失败'));
         }
     });
     return Deferred.promise();
@@ -278,7 +278,7 @@ exports.disableAllAppsByUser = function(user_id) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || "全部停用失败");
+            Deferred.reject(xhr.responseJSON || '全部停用失败');
         }
     });
     return Deferred.promise();
@@ -289,7 +289,7 @@ exports.disableAllAppsByUser = function(user_id) {
  */
 exports.addApp = function(appList) {
     var Deferred = $.Deferred();
-    var DEFAULT_ERROR_MSG = "添加应用失败";
+    var DEFAULT_ERROR_MSG = '添加应用失败';
     $.ajax({
         url: '/rest/appuser/addapp',
         type: 'post',
@@ -329,7 +329,7 @@ exports.batchUpdate = function(field, submitData,selectedAppId) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            var errorMsg = xhr.responseJSON || "批量操作失败";
+            var errorMsg = xhr.responseJSON || '批量操作失败';
             Deferred.reject(errorMsg);
         }
     });
@@ -358,7 +358,7 @@ exports.getCustomerUserList = function(obj) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject((xhr && xhr.responseJSON) || Intl.get("user.crm.user.failed", "获取客户下的用户列表失败"));
+            Deferred.reject((xhr && xhr.responseJSON) || Intl.get('user.crm.user.failed', '获取客户下的用户列表失败'));
         }
     });
     return Deferred.promise();
@@ -367,7 +367,7 @@ exports.getCustomerUserList = function(obj) {
 //修改用户的单个应用
 exports.editApp = function(appInfo) {
     var Deferred = $.Deferred();
-    var DEFAULT_ERROR_MSG = Intl.get("user.edit.app.failed", "修改应用失败");
+    var DEFAULT_ERROR_MSG = Intl.get('user.edit.app.failed', '修改应用失败');
     $.ajax({
         url: '/rest/appuser/editapp',
         type: 'post',
@@ -401,7 +401,7 @@ exports.applyDelayTime = function(data) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("user.apply.delay.failed", "申请延期失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('user.apply.delay.failed', '申请延期失败'));
         }
     });
     return Deferred.promise();
@@ -418,7 +418,7 @@ exports.delayTime = function(data) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("user.batch.delay.failed", "批量延期失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('user.batch.delay.failed', '批量延期失败'));
         }
     });
     return Deferred.promise();
@@ -437,7 +437,7 @@ exports.applyUser = function(data) {
             Deferred.resolve(result);
         },
         error: function() {
-            Deferred.reject( Intl.get("common.apply.failed", "申请失败"));
+            Deferred.reject( Intl.get('common.apply.failed', '申请失败'));
         }
     });
     return Deferred.promise();
@@ -456,11 +456,11 @@ exports.editAppField = function(data) {
             if(result === true) {
                 Deferred.resolve(result);
             } else {
-                Deferred.reject( Intl.get("common.edit.failed", "修改失败"));
+                Deferred.reject( Intl.get('common.edit.failed', '修改失败'));
             }
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("common.edit.failed", "修改失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('common.edit.failed', '修改失败'));
         }
     });
     return Deferred.promise();
@@ -468,7 +468,7 @@ exports.editAppField = function(data) {
 
 //申请修改密码
 exports.applyChangePassword = function(data) {
-    const ERROR_MSG = Intl.get("user.apply.password.failed", "申请修改密码失败");
+    const ERROR_MSG = Intl.get('user.apply.password.failed', '申请修改密码失败');
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/apply/password',
@@ -492,7 +492,7 @@ exports.applyChangePassword = function(data) {
 
 //申请其他类型的修改
 exports.applyChangeOther = function(data) {
-    const ERROR_MSG = Intl.get("user.apply.other.failed", "申请修改其他类型失败");
+    const ERROR_MSG = Intl.get('user.apply.other.failed', '申请修改其他类型失败');
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/apply/other',
@@ -516,7 +516,7 @@ exports.applyChangeOther = function(data) {
 
 //申请启用、停用
 exports.salesApplyStatus = function(data) {
-    const ERROR_MSG = Intl.get("user.apply.status.failed", "申请修改开通状态失败");
+    const ERROR_MSG = Intl.get('user.apply.status.failed', '申请修改开通状态失败');
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/apply/status',

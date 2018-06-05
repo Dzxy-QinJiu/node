@@ -4,7 +4,7 @@ import TeleConfigAjax from '../ajax/tele-config-ajax';
 import Spinner from '../../../../components/spinner';
 import { Alert, Icon, Checkbox } from 'antd';
 import AlertTimer from '../../../../components/alert-timer';
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 const CHECKTELEMSG = Intl.get('config.manage.input.tele', '请输入有效的客服电话 ( eg:0531-88887755 , +8613688887755)');
 const REPEATMSG = Intl.get('config.manage.input.teleRepeat', '该电话号码已录入');
 //座机正则  
@@ -20,7 +20,7 @@ const TeleConfig = React.createClass({
             deleteErrMsg: '',
             isLoading: false,
             isAdding: false,
-            deleteTele: ""
+            deleteTele: ''
         };
     },
 
@@ -70,7 +70,7 @@ const TeleConfig = React.createClass({
             isAdding: true
         });
         var addTeleItem = $.trim(inputValue);
-        Trace.traceEvent(event,"添加客服电话");
+        Trace.traceEvent(event,'添加客服电话');
         TeleConfigAjax.addTele({ phone: addTeleItem }).then((result) => {
             this.state.telesList.unshift(addTeleItem);
             this.setState({
@@ -107,13 +107,13 @@ const TeleConfig = React.createClass({
         });
         TeleConfigAjax.delTele({ phone }).then((result) => {
             this.setState({
-                deleteTele: "",
+                deleteTele: '',
                 telesList: this.state.telesList.filter(x => x != phone)
             });
         }, (errMsg) => {
             this.setState({
                 deleteErrMsg: errMsg,
-                deleteTele: ""
+                deleteTele: ''
             });
         });
     },
@@ -157,7 +157,7 @@ const TeleConfig = React.createClass({
         if (!teleList || teleList.length == 0) {
             return <div className="no-ip-alert-wrap">
                 <Alert
-                    message={Intl.get("config.manage.no.tele", "暂无客服电话，请添加！")}
+                    message={Intl.get('config.manage.no.tele', '暂无客服电话，请添加！')}
                     type="info"
                     showIcon={true}
                 />
@@ -242,7 +242,7 @@ const TeleConfig = React.createClass({
 
     reloadGetTeleList() {
         this.setState({
-            deleteTele: ""
+            deleteTele: ''
         });
         this.getTeleList();
     },
@@ -261,7 +261,7 @@ const TeleConfig = React.createClass({
                     >
                         <Icon
                             type="reload"
-                            title={Intl.get("config.manage.reload.tele", "重新获取客服电话")}
+                            title={Intl.get('config.manage.reload.tele', '重新获取客服电话')}
                             id="reload-ip-config"
                         />
                     </span>

@@ -3,40 +3,40 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/16.
  */
-"use strict";
+'use strict';
 //上传超时时长
 var uploadTimeOut = 5 * 60 * 1000;
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 const restApis = {
     //获取线索来源
-    getClueSource: "/rest/customer/v2/clue/clue_source/100/1",
+    getClueSource: '/rest/customer/v2/clue/clue_source/100/1',
     //获取线索渠道
-    getClueChannel: "/rest/customer/v2/clue/access_channel/100/1",
+    getClueChannel: '/rest/customer/v2/clue/access_channel/100/1',
     //获取线索分类
-    getClueClassify: "/rest/customer/v2/clue/clue_classify/100/1",
+    getClueClassify: '/rest/customer/v2/clue/clue_classify/100/1',
     //查询线索客户用户查询
-    queryCluecustomer: "/rest/customer/v2/clue/query/user",
+    queryCluecustomer: '/rest/customer/v2/clue/query/user',
     //查询线索客户 管理员查询
-    queryCluecustomerManager: "/rest/customer/v2/clue/query/manager",
+    queryCluecustomerManager: '/rest/customer/v2/clue/query/manager',
     //添加跟进内容
-    addCluecustomerTrace: "/rest/customer/v2/clue/trace",
+    addCluecustomerTrace: '/rest/customer/v2/clue/trace',
     //把线索客户分配给对应的销售
-    distributeCluecustomerToSale: "/rest/customer/v2/clue/distribute/:type",
+    distributeCluecustomerToSale: '/rest/customer/v2/clue/distribute/:type',
     //对线索客户的详情进行更新
-    updateCluecustomerDetail: "/rest/customer/v2/clue/update/manager/:updateItem",
+    updateCluecustomerDetail: '/rest/customer/v2/clue/update/manager/:updateItem',
     //线索名、电话唯一性验证
-    checkOnlySalesClue: "/rest/customer/v2/clue/repeat/search",
+    checkOnlySalesClue: '/rest/customer/v2/clue/repeat/search',
     //将线索和客户进行关联
-    RelateClueAndCustomer: "/rest/customer/v2/customer/:type/customer_clue_relation",
+    RelateClueAndCustomer: '/rest/customer/v2/customer/:type/customer_clue_relation',
     //导入线索
-    upload: "/rest/customer/v2/clue/upload/preview",
+    upload: '/rest/customer/v2/clue/upload/preview',
     //确认导入线索预览
-    uploadClueConfirm: "/rest/customer/v2/clue/upload/confirm/:flag",
+    uploadClueConfirm: '/rest/customer/v2/clue/upload/confirm/:flag',
     //删除某条线索
-    deleteRepeatClue: "rest/customer/v2/clue/upload/preview/:index",
+    deleteRepeatClue: 'rest/customer/v2/clue/upload/preview/:index',
     //获取线索统计
-    getClueAnalysis: "/rest/analysis/customer/v2/clue/customer/label"
+    getClueAnalysis: '/rest/analysis/customer/v2/clue/customer/label'
 
 };
 //查询客户
@@ -47,9 +47,9 @@ exports.getClueCustomerList = function(req, res) {
     if (req.body.hasManageAuth){
         baseUrl = restApis.queryCluecustomerManager;
     }
-    baseUrl = baseUrl + "/" + req.params.pageSize + "/" + req.params.sortField + "/" + req.params.sortOrder;
+    baseUrl = baseUrl + '/' + req.params.pageSize + '/' + req.params.sortField + '/' + req.params.sortOrder;
     if (req.body.lastCustomerId) {
-        baseUrl += "?id=" + req.body.lastCustomerId;
+        baseUrl += '?id=' + req.body.lastCustomerId;
     }
     queryObj.rang_params = JSON.parse(req.body.rangParams);
     return restUtil.authRest.post(
@@ -99,14 +99,14 @@ exports.addCluecustomerTrace = function(req, res) {
 //添加跟进内容
 exports.distributeCluecustomerToSale = function(req, res) {
     var queryObj = req.body;
-    var type = "user";
+    var type = 'user';
     if (queryObj.hasDistributeAuth){
-        type = "manager";
+        type = 'manager';
     }
     delete queryObj.hasDistributeAuth;
     return restUtil.authRest.post(
         {
-            url: restApis.distributeCluecustomerToSale.replace(":type",type),
+            url: restApis.distributeCluecustomerToSale.replace(':type',type),
             req: req,
             res: res
         }, queryObj);
@@ -114,12 +114,12 @@ exports.distributeCluecustomerToSale = function(req, res) {
 //对线索客户的详情进行更新
 exports.updateCluecustomerDetail = function(req, res) {
     var updateItem = req.body.updateItem;
-    if (updateItem === "weChat"){
-        updateItem = "wechat";
+    if (updateItem === 'weChat'){
+        updateItem = 'wechat';
     }
     return restUtil.authRest.put(
         {
-            url: restApis.updateCluecustomerDetail.replace(":updateItem", updateItem),
+            url: restApis.updateCluecustomerDetail.replace(':updateItem', updateItem),
             req: req,
             res: res
         }, JSON.parse(req.body.updateObj));
@@ -138,7 +138,7 @@ exports.checkOnlySalesClue = function(req, res) {
 exports.relateClueAndCustomer = function(req, res) {
     return restUtil.authRest.put(
         {
-            url: restApis.RelateClueAndCustomer.replace(":type",req.params.type),
+            url: restApis.RelateClueAndCustomer.replace(':type',req.params.type),
             req: req,
             res: res
         }, req.body);
@@ -158,7 +158,7 @@ exports.uploadClues = function(req, res) {
 exports.confirmUploadClues = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: restApis.uploadClueConfirm.replace(":flag",req.params.flag),
+            url: restApis.uploadClueConfirm.replace(':flag',req.params.flag),
             req: req,
             res: res
         }, null);
@@ -167,7 +167,7 @@ exports.confirmUploadClues = function(req, res) {
 exports.deleteRepeatClue = function(req, res) {
     return restUtil.authRest.del(
         {
-            url: restApis.deleteRepeatClue.replace(":index",req.params.index),
+            url: restApis.deleteRepeatClue.replace(':index',req.params.index),
             req: req,
             res: res
         }, null);

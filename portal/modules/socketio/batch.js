@@ -1,8 +1,8 @@
-var _ = require("underscore");
+var _ = require('underscore');
 //后端国际化
-let BackendIntl = require("../../../portal/lib/utils/backend_intl");
+let BackendIntl = require('../../../portal/lib/utils/backend_intl');
 // 记录推送相关的日志
-var logger = require("../../../portal/lib/utils/logger");
+var logger = require('../../../portal/lib/utils/logger');
 //推送日志
 var pushLogger = logger.getLogger('push');
 
@@ -22,13 +22,13 @@ function getOperateTextMap(lang){
         task_grant_roles: backendIntl.get('user.batch.auth.set','权限设置'),//权限设置
         //客户管理-批量操作
         crm_batch_change_sales: backendIntl.get('crm.18','变更销售人员'),//变更销售人员
-        crm_batch_transfer_customer: backendIntl.get("crm.customer.transfer", "转出客户"),//转出客户
+        crm_batch_transfer_customer: backendIntl.get('crm.customer.transfer', '转出客户'),//转出客户
         crm_batch_change_labels: backendIntl.get('crm.206','更新标签'),//变更标签
         crm_batch_add_labels: backendIntl.get('crm.205','添加标签'),//添加标签
         crm_batch_remove_labels: backendIntl.get('crm.204','移除标签'),//移除标签,
         crm_batch_change_industry: backendIntl.get('crm.20','变更行业'),//变更行业
         crm_batch_change_address: backendIntl.get('crm.21','变更地域'),//变更地域
-        crm_batch_change_level: backendIntl.get("crm.administrative.level.change", "变更行政级别"),//变更行政级别
+        crm_batch_change_level: backendIntl.get('crm.administrative.level.change', '变更行政级别'),//变更行政级别
         //异步创建安全域
         task_realm_create: backendIntl.get('realm.create.realms','安全域创建')//安全域创建
     };
@@ -59,11 +59,11 @@ Batch.prototype.initParams = function(socketStore,ioServer) {
 };
 //批量处理监听器
 Batch.prototype.listener = function(data) {
-    pushLogger.info("收到的批量推送结果为:" + JSON.stringify(data));
+    pushLogger.info('收到的批量推送结果为:' + JSON.stringify(data));
     var {taskId,...props} = data;
     var strParts = taskId.split(/_/g);
     var userId = strParts[0];
-    var type = strParts.slice(2).join("_");
+    var type = strParts.slice(2).join('_');
     var clients = this.socketStore && this.socketStore[userId] || [];
     if(clients.length) {
         clients.forEach((socketObj) => {
@@ -74,7 +74,7 @@ Batch.prototype.listener = function(data) {
             if(socket) {
                 //  从session中获取用户的userId及token
                 getSessionFromStore(socket, function(err, session) {
-                    let lang = "zh_CN";
+                    let lang = 'zh_CN';
                     if (!err && session && session.lang) {
                         lang = session.lang;
                     }
@@ -106,7 +106,7 @@ Batch.prototype.listener = function(data) {
                         failed: data.failed,
                         failedTasks: failedTasks
                     };
-                    socket.emit("batchOperate" , messageObj);
+                    socket.emit('batchOperate' , messageObj);
                 });
 
             }

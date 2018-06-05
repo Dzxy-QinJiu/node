@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/10/19.
  */
 import { Alert, Button ,Icon} from 'antd';
-import classNames from "classnames";
+import classNames from 'classnames';
 function noop() {}
 class ActiveEmailTip extends React.Component {
     constructor(props){
@@ -42,20 +42,20 @@ class ActiveEmailTip extends React.Component {
             <div>
                 {this.props.addEmail ? <ReactIntl.FormattedMessage
                     id="sales.add.email.info"
-                    defaultMessage={`请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。`}
+                    defaultMessage={'请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。'}
                     values={{
                         'userinfo': <span className="jump-to-userinfo" onClick={this.props.jumpToUserInfo}>
-                            {Intl.get("user.info.user.info","个人资料")}
+                            {Intl.get('user.info.user.info','个人资料')}
                         </span>
                     }}
                 /> : <div>
                     <span>
-                        {Intl.get("sales.frontpage.active.info","请激活邮箱，以免影响收取审批邮件！")}
+                        {Intl.get('sales.frontpage.active.info','请激活邮箱，以免影响收取审批邮件！')}
                     </span>
-                    <Button type="primary" size="small" onClick={this.props.activeUserEmail}>{Intl.get("sales.frontpage.active.email","激活邮箱")}</Button>
+                    <Button type="primary" size="small" onClick={this.props.activeUserEmail}>{Intl.get('sales.frontpage.active.email','激活邮箱')}</Button>
                     <span className="no-tip" onClick={this.props.handleClickNoTip}>
-                        {Intl.get("sale.homepage.no.tip.more","不再提示")}
-                        {this.state.setWebConfigStatus === "loading" ? <Icon type="loading"/> : null}
+                        {Intl.get('sale.homepage.no.tip.more','不再提示')}
+                        {this.state.setWebConfigStatus === 'loading' ? <Icon type="loading"/> : null}
                     </span>
                 </div>}
 
@@ -70,7 +70,7 @@ class ActiveEmailTip extends React.Component {
 ActiveEmailTip.defaultProps = {
     isAnimateShow: false,
     isAnimateHide: false,
-    setWebConfigStatus: "",
+    setWebConfigStatus: '',
     handleClickNoTip: noop,
     activeUserEmail: noop,
     jumpToUserInfo: noop

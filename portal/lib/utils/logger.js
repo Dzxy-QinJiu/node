@@ -1,7 +1,7 @@
 var log4js = require('log4js')
-    , loggerConfig = require("../../../conf/logger")
-    , _ = require("underscore")
-    , fs = require("fs");
+    , loggerConfig = require('../../../conf/logger')
+    , _ = require('underscore')
+    , fs = require('fs');
 
 log4js.configure(loggerConfig.log4js);
 //获取logger的方法

@@ -1,18 +1,18 @@
-import "./css/index.less";
-import TopNav from "../../../components/top-nav";
-import OnlineUserList from "./views/list";
-import OnlineUserFilter from "./views/filter";
-import OnlineUserIndexStore from "./store";
-import OnlineUserIndexAction from "./action";
-import UserDetail from "../../app_user_manage/public/views/user-detail";
-import {RightPanel} from "../../../components/rightPanel";
-import {userTypeList} from "PUB_DIR/sources/utils/consts";
+import './css/index.less';
+import TopNav from '../../../components/top-nav';
+import OnlineUserList from './views/list';
+import OnlineUserFilter from './views/filter';
+import OnlineUserIndexStore from './store';
+import OnlineUserIndexAction from './action';
+import UserDetail from '../../app_user_manage/public/views/user-detail';
+import {RightPanel} from '../../../components/rightPanel';
+import {userTypeList} from 'PUB_DIR/sources/utils/consts';
 
 //生成状态下拉选项
 const statusList = [
-    {name: Intl.get("user.online.all.status", "全部状态"), value: ""},
-    {name: Intl.get("user.overdue.not", "未过期"), value: "0"},
-    {name: Intl.get("user.online.expired", "已过期"), value: "1"}
+    {name: Intl.get('user.online.all.status', '全部状态'), value: ''},
+    {name: Intl.get('user.overdue.not', '未过期'), value: '0'},
+    {name: Intl.get('user.online.expired', '已过期'), value: '1'}
 ];
 
 const UserOnlineList = React.createClass({
@@ -27,7 +27,7 @@ const UserOnlineList = React.createClass({
         };
     },
     closeRightPanel: function() {
-        $(this.refs.wrap).find(".current_row").removeClass("current_row");
+        $(this.refs.wrap).find('.current_row').removeClass('current_row');
         this.selectedUserId = '';
         this.showRightPanel = false;
         this.setState({
@@ -38,23 +38,23 @@ const UserOnlineList = React.createClass({
     componentWillMount: function() {
         OnlineUserIndexAction.getAppList();
         OnlineUserIndexStore.listen(this.onStoreChange);
-        emitter.on("user_detail_close_right_panel" , this.closeRightPanel);
+        emitter.on('user_detail_close_right_panel' , this.closeRightPanel);
     },
     componentWillUnmount: function() {
         OnlineUserIndexStore.unlisten(this.onStoreChange);
         this.selectedUserId = '';
         this.showRightPanel = false;
-        emitter.removeListener("user_detail_close_right_panel" , this.closeRightPanel);
+        emitter.removeListener('user_detail_close_right_panel' , this.closeRightPanel);
     },
     componentDidMount: function() {
         var $wrap = $(this.refs.wrap);
         var _this = this;
-        $wrap.on("click" , "td.show-user-detail" , function() {
-            $(this).closest("tr").siblings().removeClass("current_row");
-            var $tr = $(this).closest("tr");
-            var $user_id_hidden = $tr.find(".user_id_hidden");
+        $wrap.on('click' , 'td.show-user-detail' , function() {
+            $(this).closest('tr').siblings().removeClass('current_row');
+            var $tr = $(this).closest('tr');
+            var $user_id_hidden = $tr.find('.user_id_hidden');
             if($user_id_hidden[0]) {
-                $tr.addClass("current_row");
+                $tr.addClass('current_row');
                 var user_id = $user_id_hidden.val();
                 _this.selectedUserId = user_id;
                 _this.showRightPanel = true;

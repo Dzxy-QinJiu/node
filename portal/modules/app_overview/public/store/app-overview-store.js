@@ -26,8 +26,8 @@ class AppOverViewStore {
 
         //用户活跃度
         this.activeNess = {
-            dataType: "total",
-            dateRange: "daily", //数据类型（日活、周活、月活）默认是日活
+            dataType: 'total',
+            dateRange: 'daily', //数据类型（日活、周活、月活）默认是日活
             //loading error ''
             resultType: 'loading' || '',
             //错误信息
@@ -44,14 +44,14 @@ class AppOverViewStore {
         //团队统计
         this.teamAnalysis = {
             resultType: 'loading' || '',
-            dateRange: "today", //数据类型（今日、本周、本月）默认是今日
+            dateRange: 'today', //数据类型（今日、本周、本月）默认是今日
             errorMsg: '',
             data: []
         };
         // 地域统计(新增用户、在线用户和全部用户)
         this.zoneAnalysis = {
             resultType: 'loading' || '',
-            dateRange: "added", //数据类型（新增用户、在线用户和全部用户），默认是新增用户
+            dateRange: 'added', //数据类型（新增用户、在线用户和全部用户），默认是新增用户
             errorMsg: '',
             data: []
         };
@@ -86,10 +86,10 @@ class AppOverViewStore {
                 return userType.data = [{count: 0, name: '试用'},{count: 0, name: '签约'}];
             }
             userType.data = _.filter( result.data, (item) => {
-                if (item.name == Intl.get("common.trial.user", "试用用户")) {
-                    return item.name = Intl.get("common.trial", "试用");
-                } else if (item.name == Intl.get("common.trial.official", "正式用户")) {
-                    return item.name = Intl.get("common.official", "签约");
+                if (item.name == Intl.get('common.trial.user', '试用用户')) {
+                    return item.name = Intl.get('common.trial', '试用');
+                } else if (item.name == Intl.get('common.trial.official', '正式用户')) {
+                    return item.name = Intl.get('common.official', '签约');
                 }
             } );
         }
@@ -124,7 +124,7 @@ class AppOverViewStore {
             activeNess.data = [];
         } else if(result.error) {
             activeNess.resultType = 'error';
-            activeNess.errorMsg = result.errorMsg || Intl.get("contract.111", "获取数据失败");
+            activeNess.errorMsg = result.errorMsg || Intl.get('contract.111', '获取数据失败');
             activeNess.data = [];
         } else {
             activeNess.resultType = '';
@@ -218,4 +218,4 @@ class AppOverViewStore {
 }
 
 //使用alt导出store
-export default alt.createStore(AppOverViewStore , "AppOverViewStore");
+export default alt.createStore(AppOverViewStore , 'AppOverViewStore');

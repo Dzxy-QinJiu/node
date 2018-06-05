@@ -1,22 +1,22 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-require("../../css/apply-user-form.less");
-import {Form, Input, Radio, InputNumber, Icon, message, Checkbox, Tabs, Tooltip} from "antd";
+require('../../css/apply-user-form.less');
+import {Form, Input, Radio, InputNumber, Icon, message, Checkbox, Tabs, Tooltip} from 'antd';
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
-const RightPanelSubmit = require("../../../../../components/rightPanel").RightPanelSubmit;
-const RightPanelCancel = require("../../../../../components/rightPanel").RightPanelCancel;
+const RightPanelSubmit = require('../../../../../components/rightPanel').RightPanelSubmit;
+const RightPanelCancel = require('../../../../../components/rightPanel').RightPanelCancel;
 import UserTimeRangeField from '../../../../../components/user_manage_components/user-time-rangefield';
-import ValidateMixin from "../../../../../mixins/ValidateMixin";
-const DefaultUserLogoTitle = require("../../../../../components/default-user-logo-title");
-const AlertTimer = require("../../../../../components/alert-timer");
-const Spinner = require("../../../../../components/spinner");
-const history = require("../../../../../public/sources/history");
-const UserApplyAction = require("../../action/user-apply-actions");
+import ValidateMixin from '../../../../../mixins/ValidateMixin';
+const DefaultUserLogoTitle = require('../../../../../components/default-user-logo-title');
+const AlertTimer = require('../../../../../components/alert-timer');
+const Spinner = require('../../../../../components/spinner');
+const history = require('../../../../../public/sources/history');
+const UserApplyAction = require('../../action/user-apply-actions');
 import DateSelectorPicker from '../../../../../components/date-selector/utils';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
-import commonAppAjax from "MOD_DIR/common/public/ajax/app";
+import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
 const dayTime = 24 * 60 * 60 * 1000;
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
@@ -35,8 +35,8 @@ const ApplyUserForm = React.createClass({
 
     componentWillReceiveProps: function(nextProps) {
         this.buildFormData(nextProps);
-        let oldAppIds = _.pluck(this.props.apps, "client_id");
-        let newAppIds = _.pluck(nextProps.apps, "client_id");
+        let oldAppIds = _.pluck(this.props.apps, 'client_id');
+        let newAppIds = _.pluck(nextProps.apps, 'client_id');
         //获取newAppIds中，不存在于oldAppIds中的应用id
         let diffAppIds = _.difference(newAppIds, oldAppIds);
         //获取新增的应用的默认配置
@@ -44,13 +44,13 @@ const ApplyUserForm = React.createClass({
     },
 
     buildFormData: function(props) {
-        const users = _.pluck(props.users, "user");
+        const users = _.pluck(props.users, 'user');
         let formData = {
-            user_ids: _.pluck(users, "user_id"),
-            user_names: _.pluck(users, "user_name"),
+            user_ids: _.pluck(users, 'user_id'),
+            user_names: _.pluck(users, 'user_name'),
             customer_id: props.customerId,
-            remark: "",
-            tag: Intl.get("common.trial.official", "正式用户"),
+            remark: '',
+            tag: Intl.get('common.trial.official', '正式用户'),
         };
         let num = _.isArray(users) ? users.length : 1;
         //获取的应用默认配置列表
@@ -126,8 +126,8 @@ const ApplyUserForm = React.createClass({
             // 需要默认设置，试用->到期不变，正式：到期停用, 开通周期：半个月
             app.begin_date = begin_date;
             app.end_date = begin_date + 15 * dayTime;
-            app.range = "0.5m";
-            app.over_draft = userType === Intl.get("common.trial.official", "正式用户") ? OVER_DRAFT_TYPES.STOP_USE : OVER_DRAFT_TYPES.UN_CHANGED;
+            app.range = '0.5m';
+            app.over_draft = userType === Intl.get('common.trial.official', '正式用户') ? OVER_DRAFT_TYPES.STOP_USE : OVER_DRAFT_TYPES.UN_CHANGED;
         }
         return app;
     },
@@ -200,11 +200,11 @@ const ApplyUserForm = React.createClass({
                 UserApplyAction.applyUser(submitData, result => {
                     this.setState({isLoading: false});
                     if (result === true) {
-                        message.success(Intl.get("user.apply.success", "申请成功"));
+                        message.success(Intl.get('user.apply.success', '申请成功'));
                         this.handleCancel();
                     }
                     else {
-                        message.error(Intl.get("common.apply.failed", "申请失败"));
+                        message.error(Intl.get('common.apply.failed', '申请失败'));
                     }
                     if (_.isFunction(cb)) cb();
                 });
@@ -231,7 +231,7 @@ const ApplyUserForm = React.createClass({
         const appFormData = this.state.appFormData;
         const timePickerConfig = {
             isCustomSetting: true,
-            appId: "applyUser",
+            appId: 'applyUser',
         };
 
         return (
@@ -240,7 +240,7 @@ const ApplyUserForm = React.createClass({
                     <Form horizontal>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
-                                label={Intl.get("user.selected.user", "已选用户")}
+                                label={Intl.get('user.selected.user', '已选用户')}
                                 labelCol={{span: 4}}
                                 wrapperCol={{span: 14}}
                             >
@@ -251,22 +251,22 @@ const ApplyUserForm = React.createClass({
                                 })}
                             </FormItem>
                             <FormItem
-                                label={Intl.get("user.apply.type", "申请类型")}
+                                label={Intl.get('user.apply.type', '申请类型')}
                                 labelCol={{span: 4}}
                                 wrapperCol={{span: 14}}
                             >
                                 <RadioGroup onChange={this.onUserTypeChange}
                                     value={formData.tag}>
-                                    <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
-                                        {Intl.get("common.trial.user", "试用用户")}
+                                    <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
+                                        {Intl.get('common.trial.user', '试用用户')}
                                     </Radio>
-                                    <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}>
-                                        {Intl.get("user.signed.user", "签约用户")}
+                                    <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
+                                        {Intl.get('user.signed.user', '签约用户')}
                                     </Radio>
                                 </RadioGroup>
                             </FormItem>
                             <FormItem
-                                label={Intl.get("common.remark", "备注")}
+                                label={Intl.get('common.remark', '备注')}
                                 labelCol={{span: 4}}
                                 wrapperCol={{span: 14}}
                             >
@@ -288,7 +288,7 @@ const ApplyUserForm = React.createClass({
                                             <Checkbox checked={this.state.setAllChecked}
                                                 onChange={this.toggleCheckbox}/>
                                             <span className="checkbox-title" onClick={this.toggleCheckbox}>
-                                                {Intl.get("user.all.app.set", "设置到所有应用上")}
+                                                {Intl.get('user.all.app.set', '设置到所有应用上')}
                                             </span>
                                             {/*<span className="checkbox-notice">*/}
                                             {/*({Intl.get("user.set.single.app", "注：若想设置单个应用，请取消此项的勾选")})*/}
@@ -296,14 +296,14 @@ const ApplyUserForm = React.createClass({
                                         </div>
                                         <div className="app-tab-pane col-24">
                                             <FormItem
-                                                label={Intl.get("user.open.cycle", "开通周期")}
+                                                label={Intl.get('user.open.cycle', '开通周期')}
                                                 labelCol={{span: 5}}
                                                 wrapperCol={{span: 19}}
                                             >
                                                 {this.renderUserTimeRangeBlock(timePickerConfig)}
                                             </FormItem>
                                             <FormItem
-                                                label={Intl.get("user.expire.select", "到期可选")}
+                                                label={Intl.get('user.expire.select', '到期可选')}
                                                 labelCol={{span: 5}}
                                                 wrapperCol={{span: 19}}
                                             >

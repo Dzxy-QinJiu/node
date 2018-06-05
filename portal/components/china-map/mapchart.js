@@ -1,4 +1,4 @@
-import { mapColorList } from "LIB_DIR/func";
+import { mapColorList } from 'LIB_DIR/func';
 
 function MapChart(opts) {
     this.domWrap = opts.domWrap;
@@ -30,7 +30,7 @@ MapChart.prototype.getTooltipOptions = function() {
 
     function getTooltipDom() {
         if(!$tooltipDom || !$tooltipDom[0]) {
-            $tooltipDom = $(_this.domWrap).find(".echarts-tooltip");
+            $tooltipDom = $(_this.domWrap).find('.echarts-tooltip');
         }
     }
 
@@ -43,9 +43,9 @@ MapChart.prototype.getTooltipOptions = function() {
         formatter: function(obj) {
             getTooltipDom();
             if(obj.name === '南海诸岛') {
-                $tooltipDom.addClass("notshow");
+                $tooltipDom.addClass('notshow');
             } else {
-                $tooltipDom.removeClass("notshow");
+                $tooltipDom.removeClass('notshow');
             }
             var newObj = $.extend(true,{},obj);
             newObj.total = _this.total;

@@ -1,9 +1,9 @@
-import CallRecordActions from "../action/call-record-actions";
+import CallRecordActions from '../action/call-record-actions';
 import DateSelectorUtils from '../../../../components/datepicker/utils';
 
 function SalesCallRecordStore() {
     this.filter_phone = false;
-    this.phone_type = "all";
+    this.phone_type = 'all';
     // 是否显示通话分析, 默认情况下不显示
     this.isShowCallAnalysisPanel = false;
     this.resetState();
@@ -62,7 +62,7 @@ SalesCallRecordStore.prototype.getCallRecordList = function(serverData) {
         callRecord.errorMsg = '';
     } else {
         if (serverData.error) {
-            callRecord.errorMsg = serverData.errorMsg || Intl.get("call.record.get.failed", "获取通话记录失败");
+            callRecord.errorMsg = serverData.errorMsg || Intl.get('call.record.get.failed', '获取通话记录失败');
         } else {
             callRecord.errorMsg = '';
             callRecord.total = serverData.result.total;
@@ -132,7 +132,7 @@ SalesCallRecordStore.prototype.handleRefresh = function() {
 // 搜索电话号码号码时，提供推荐列表
 SalesCallRecordStore.prototype.getRecommendPhoneList = function(result) {
     if (result.error) {
-        this.recommendList.errMsg = result.errMsg || Intl.get("call.record.recommend.list", '获取推荐列表失败！');
+        this.recommendList.errMsg = result.errMsg || Intl.get('call.record.recommend.list', '获取推荐列表失败！');
     } else {
         this.recommendList.errMsg = '';
         if (result.resData) {

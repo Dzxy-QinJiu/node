@@ -1,7 +1,7 @@
-var echarts = require("echarts-eefung");
-var immutable = require("immutable");
+var echarts = require('echarts-eefung');
+var immutable = require('immutable');
 //macrons主题
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 var TimeSeriesLinechart = React.createClass({
     echartInstance: null,
@@ -71,7 +71,7 @@ var TimeSeriesLinechart = React.createClass({
         var data = [];
         if (this.props.isMutileLine) {
             var dataList = this.props.dataList;
-            data = _.pluck(dataList,"teamName");
+            data = _.pluck(dataList,'teamName');
         }
         return data;
     },
@@ -165,7 +165,7 @@ var TimeSeriesLinechart = React.createClass({
                             align: 'center'
                         },
                         formatter: () => { // 不显示x轴数值
-                            return "";
+                            return '';
                         }
                     },
                     data: this.getCategorys(),
@@ -188,7 +188,7 @@ var TimeSeriesLinechart = React.createClass({
                             color: '#939393'
                         },
                         formatter: () => { // 不显示y轴数值
-                            return "";
+                            return '';
                         }
                     },
                     axisTick: { // y轴不显示刻度

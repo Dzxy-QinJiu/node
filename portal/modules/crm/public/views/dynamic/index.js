@@ -1,10 +1,10 @@
 require('../../css/dynamic.less');
 //动态store
-var DynamicStore = require("../../store/dynamic-store");
+var DynamicStore = require('../../store/dynamic-store');
 //动态action
-var DynamicAction = require("../../action/dynamic-action");
-var TimeLine = require("../../../../../components/time-line");
-import RightPanelScrollBar from "../components/rightPanelScrollBar";
+var DynamicAction = require('../../action/dynamic-action');
+var TimeLine = require('../../../../../components/time-line');
+import RightPanelScrollBar from '../components/rightPanelScrollBar';
 
 var Dynamic = React.createClass({
     getInitialState: function() {
@@ -22,7 +22,7 @@ var Dynamic = React.createClass({
     componentDidMount: function() {
         DynamicStore.listen(this.onStoreChange);
         DynamicAction.getDynamicList(this.props.currentId);
-        $(window).on("resize", this.onStoreChange);
+        $(window).on('resize', this.onStoreChange);
     },
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.currentId !== this.props.currentId) {
@@ -33,11 +33,11 @@ var Dynamic = React.createClass({
     },
     componentWillUnmount: function() {
         DynamicStore.unlisten(this.onStoreChange);
-        $(window).off("resize", this.onStoreChange);
+        $(window).off('resize', this.onStoreChange);
     },
     timeLineItemRender: function(item) {
-        const call_time = Intl.get("crm.199",
-            "在{time}拨打了号码{phone} ，通话时长{duration} 秒",
+        const call_time = Intl.get('crm.199',
+            '在{time}拨打了号码{phone} ，通话时长{duration} 秒',
             {
                 time: moment(item.call_date).format(oplateConsts.TIME_FORMAT),
                 phone: item.dst,

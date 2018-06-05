@@ -1,4 +1,4 @@
-var history = require("../../public/sources/history");
+var history = require('../../public/sources/history');
 
 function getPathname() {
     return window.location.pathname.replace(/^\//, '');

@@ -1,26 +1,26 @@
-import "./style.less";
-import classNames from "classnames";
-import { message, Button, Icon, Modal, Radio, Select } from "antd";
+import './style.less';
+import classNames from 'classnames';
+import { message, Button, Icon, Modal, Radio, Select } from 'antd';
 const RadioGroup = Radio.Group;
-import ajax from "../common/ajax";
-import appAjaxTrans from "../../common/public/ajax/app";
-import teamAjaxTrans from "../../common/public/ajax/team";
-import routeList from "../common/route";
-import TopNav from "../../../components/top-nav";
-const Checker = require("../../../components/privilege/checker");
+import ajax from '../common/ajax';
+import appAjaxTrans from '../../common/public/ajax/app';
+import teamAjaxTrans from '../../common/public/ajax/team';
+import routeList from '../common/route';
+import TopNav from '../../../components/top-nav';
+const Checker = require('../../../components/privilege/checker');
 const PrivilegeChecker = Checker.PrivilegeChecker;
 const hasPrivilege = Checker.hasPrivilege;
-import Filter from "./filter";
-import List from "./list";
-import ContractRightPanel from "./right-panel";
-import ImportContractTemplate from "./import_contract_template";
-const scrollBarEmitter = require("../../../public/sources/utils/emitters").scrollBarEmitter;
+import Filter from './filter';
+import List from './list';
+import ContractRightPanel from './right-panel';
+import ImportContractTemplate from './import_contract_template';
+const scrollBarEmitter = require('../../../public/sources/utils/emitters').scrollBarEmitter;
 import DatePicker from '../../../components/datepicker';
-import rightPanelUtil from "../../../components/rightPanel";
-import Trace from "LIB_DIR/trace";
+import rightPanelUtil from '../../../components/rightPanel';
+import Trace from 'LIB_DIR/trace';
 const RightPanel = rightPanelUtil.RightPanel;
-const salesmanAjax = require("../../common/public/ajax/salesman");
-const querystring = require("querystring");
+const salesmanAjax = require('../../common/public/ajax/salesman');
+const querystring = require('querystring');
 
 const Contract = React.createClass({
     getInitialState: function() {
@@ -30,7 +30,7 @@ const Contract = React.createClass({
         //是否是从订单转过来的
         let isFromOrder = false;
         //判断条件中的PUSH是用来判断是否是通过history.pushState重定向过来的，重定向过来的location.action的值是PUSH，刷新页面的时候location.action的值是POP
-        if (orderGenerateContractId && location.action === "PUSH") {
+        if (orderGenerateContractId && location.action === 'PUSH') {
             isFromOrder = true;
         }
 
@@ -41,15 +41,15 @@ const Contract = React.createClass({
             userList: [],
             typeList: [],
             rangeParams: [],
-            type: "sell",
-            dateType: "date",
-            sum: "",
+            type: 'sell',
+            dateType: 'date',
+            sum: '',
             contractCount: 0,
             currentContract: {},
-            lastId: "",
-            sorter: {field: "date", order: "descend"},
+            lastId: '',
+            sorter: {field: 'date', order: 'descend'},
             listenScrollBottom: true,
-            rightPanelView: "",
+            rightPanelView: '',
             isRightPanelShow: false,
             isTheadFilterShow: false,
             isExportModalShow: false,
@@ -60,7 +60,7 @@ const Contract = React.createClass({
             isFromOrder: isFromOrder,
             //根据订单生成的合同id
             orderGenerateContractId: orderGenerateContractId,
-            exportRange: "filtered",
+            exportRange: 'filtered',
             contractTemplateRightPanelShow: false
         };
     },
@@ -75,7 +75,7 @@ const Contract = React.createClass({
         if ( _.isEmpty(queryParams) ) {
             this.getContractList(true);
         } else {
-            this.getContractList(true, "", queryParams);
+            this.getContractList(true, '', queryParams);
         }
     },
     getQueryParams: function() {
@@ -110,9 +110,9 @@ const Contract = React.createClass({
         }
         if (DateSelector) {
             DateSelector.setState({
-                range: "all",
-                start_time: "",
-                end_time: "",
+                range: 'all',
+                start_time: '',
+                end_time: '',
             });
         }
         ContractList.setState({condition: {}});
@@ -121,7 +121,7 @@ const Contract = React.createClass({
             isTheadFilterShow: false,
             contractList: [],
             rangeParams: [],
-            dateType: "date",
+            dateType: 'date',
         }, () => {
             this.getContractList(true);
         });
@@ -131,7 +131,7 @@ const Contract = React.createClass({
             this.setState({
                 isListLoading: true,
                 isScrollTop: true,
-                lastId: "",
+                lastId: '',
             });
         }
 
@@ -142,27 +142,27 @@ const Contract = React.createClass({
         }
 
         //当前tab页选中的是合同回款时，获取回款列表，否则查询合同
-        let handler = "queryContract";
+        let handler = 'queryContract';
         const viewType = this.state.type;
 
-        if (viewType === "repayment") {
-            handler = "getRepaymentList";
+        if (viewType === 'repayment') {
+            handler = 'getRepaymentList';
         }
 
-        if (viewType === "cost") {
-            handler = "queryCost";
+        if (viewType === 'cost') {
+            handler = 'queryCost';
         }
 
         const route = _.find(routeList, route => route.handler === handler);
         let url = route.path;
 
         if (!reset) {
-            url += "?id=" + this.state.lastId;
+            url += '?id=' + this.state.lastId;
         }
 
         const reqData = this.getCondition();
 
-        if (viewType === "cost") {
+        if (viewType === 'cost') {
             delete reqData.query.type;
         }
 
@@ -173,11 +173,11 @@ const Contract = React.createClass({
 
             if (timestamp) {
                 const momentObj = moment(timestamp);
-                const from = momentObj.startOf("month").valueOf();
-                const to = momentObj.endOf("month").valueOf();
+                const from = momentObj.startOf('month').valueOf();
+                const to = momentObj.endOf('month').valueOf();
                 reqData.rang_params = [{
-                    name: "date",
-                    type: "time",
+                    name: 'date',
+                    type: 'time',
                     from: from,
                     to: to,
                 }];
@@ -220,7 +220,7 @@ const Contract = React.createClass({
                 } else {
                     //若未找到，但新列表有值，则将打开的合同设为列表中的第一项
                     //若新列表为空，则置空
-                    this.state.currentContract = this.state.contractList[0] || "";
+                    this.state.currentContract = this.state.contractList[0] || '';
                 }
 
                 if (result.sum) this.state.sum = result.sum;
@@ -228,10 +228,10 @@ const Contract = React.createClass({
                 this.state.contractCount = result.total || 0;
                 this.state.listenScrollBottom = this.state.contractCount > this.state.contractList.length;
                 //获取回款列表时用于下拉加载分页的id用回款id，否则用合同id
-                const id = this.state.type === "repayment" ? "repayment_id" : "id";
-                this.state.lastId = list.length ? _.last(list)[id] : "";
+                const id = this.state.type === 'repayment' ? 'repayment_id' : 'id';
+                this.state.lastId = list.length ? _.last(list)[id] : '';
             } else {
-                message.error( Intl.get("contract.111", "获取数据失败"));
+                message.error( Intl.get('contract.111', '获取数据失败'));
             }
 
             //如果是从订单中点击查看合同过来的，自动打开右侧面板
@@ -248,18 +248,18 @@ const Contract = React.createClass({
         });
     },
     refreshCurrentContract: function(id) {
-        let handler = "queryContract";
+        let handler = 'queryContract';
 
-        if (this.state.type === "cost") {
-            handler = "queryCost";
+        if (this.state.type === 'cost') {
+            handler = 'queryCost';
         }
 
         const route = _.find(routeList, route => route.handler === handler);
 
         const params = {
             page_size: 1,
-            sort_field: "id",
-            order: "descend",
+            sort_field: 'id',
+            order: 'descend',
         };
 
         const arg = {
@@ -286,28 +286,28 @@ const Contract = React.createClass({
     },
     exportData: function() {
         let exportName = {
-            "sell": "导出销售合同",
-            "buy": "导出采购合同",
-            "repayment": "导出合同回款"
+            'sell': '导出销售合同',
+            'buy': '导出采购合同',
+            'repayment': '导出合同回款'
         };        
-        Trace.traceEvent("合同管理",exportName[this.state.type]);
-        const route = _.find(routeList, route => route.handler === "exportData");
+        Trace.traceEvent('合同管理',exportName[this.state.type]);
+        const route = _.find(routeList, route => route.handler === 'exportData');
 
         const params = {
             page_size: 10000,
-            sort_field: "date",
-            order: "descend",
+            sort_field: 'date',
+            order: 'descend',
         };
 
         const url = route.path.replace(/\:([a-z_\-0-9]+)/g,function($0,$1) {
             return params[$1];
         });
 
-        const reqData = this.state.exportRange === "all" ? {query: {type: this.state.type}} : this.getCondition();
+        const reqData = this.state.exportRange === 'all' ? {query: {type: this.state.type}} : this.getCondition();
 
-        let form = $("<form>", {action: url, method: "post"});
+        let form = $('<form>', {action: url, method: 'post'});
 
-        form.append($("<input>", {name: "reqData", value: JSON.stringify(reqData)}));
+        form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
 
         //将构造的表单添加到body上
         //Chrome 56 以后不在body上的表单不允许提交了
@@ -369,7 +369,7 @@ const Contract = React.createClass({
             });
     },
     getTypeList: function() {
-        const route = _.find(routeList, route => route.handler === "getContractTypeList");
+        const route = _.find(routeList, route => route.handler === 'getContractTypeList');
 
         const arg = {
             url: route.path,
@@ -384,10 +384,10 @@ const Contract = React.createClass({
         });
     },
     showRightPanel: function(view, rowIndex) {
-        Trace.traceEvent("合同管理","打开合同添加面板");
+        Trace.traceEvent('合同管理','打开合同添加面板');
         this.state.currentContract = !isNaN(rowIndex) ? this.state.contractList[rowIndex] : {};
         this.state.isRightPanelShow = true;
-        this.state.rightPanelView = view || "";
+        this.state.rightPanelView = view || '';
         this.setState(this.state);
     },
     hideRightPanel: function() {
@@ -396,7 +396,7 @@ const Contract = React.createClass({
         });
 
         //取消合同列表项选中状态
-        $(".custom-tbody .ant-table-row").removeClass("current-row");
+        $('.custom-tbody .ant-table-row').removeClass('current-row');
     },
     toggleTheadFilter: function() {
         this.setState({
@@ -450,7 +450,7 @@ const Contract = React.createClass({
                 from: startTime,
                 to: endTime,
                 name: this.state.dateType,
-                type: "time",
+                type: 'time',
             };
             this.state.rangeParams = [dateRangeParam];
         }
@@ -460,7 +460,7 @@ const Contract = React.createClass({
         });
     },
     onDateTypeChange: function(type) {
-        Trace.traceEvent("合同管理","选择签订时间" + type);
+        Trace.traceEvent('合同管理','选择签订时间' + type);
         const rangeParams = this.state.rangeParams;
 
         if (rangeParams[0]) rangeParams[0].name = type;
@@ -476,64 +476,64 @@ const Contract = React.createClass({
     render: function() {
         const getSubMenuClass = (type) => {
             return classNames({
-                "btn": true,
-                "current-active": this.state.type === type,
+                'btn': true,
+                'current-active': this.state.type === type,
             });
         };
 
         //点击添加合同按钮时，默认打开哪个视图
-        const addBtnView = this.state.type === "sell" ? "chooseType" : "buyForm";
+        const addBtnView = this.state.type === 'sell' ? 'chooseType' : 'buyForm';
 
         //时间类型
         let dateTypes = [{
-            field: "date",
-            name: Intl.get("contract.34", "签订时间")
+            field: 'date',
+            name: Intl.get('contract.34', '签订时间')
         }];
 
-        if (this.state.type === "repayment") {
+        if (this.state.type === 'repayment') {
             dateTypes = dateTypes.concat([{
-                field: "repayment_date",
-                name: Intl.get("contract.122", "回款时间")
+                field: 'repayment_date',
+                name: Intl.get('contract.122', '回款时间')
             }]);
         } else {
             dateTypes = dateTypes.concat([{
-                field: "start_time",
-                name: Intl.get("contract.120", "开始时间")
+                field: 'start_time',
+                name: Intl.get('contract.120', '开始时间')
             }, {
-                field: "end_time",
-                name: Intl.get("contract.105", "结束时间")
+                field: 'end_time',
+                name: Intl.get('contract.105', '结束时间')
             }]);
         }
 
-        const isContractView = ["sell", "buy"].indexOf(this.state.type ) > -1;
+        const isContractView = ['sell', 'buy'].indexOf(this.state.type ) > -1;
 
         return (
             <div className="contract-list" data-tracename="合同管理">
                 <TopNav>
                     <div className="pull-left sub-menu">
-                        <div className={getSubMenuClass("sell")} data-tracename="点击查看销售合同" onClick={this.showContractList.bind(this, "sell")}>
+                        <div className={getSubMenuClass('sell')} data-tracename="点击查看销售合同" onClick={this.showContractList.bind(this, 'sell')}>
                             <ReactIntl.FormattedMessage id="contract.112" defaultMessage="销售合同" />
                         </div>
-                        <div className={getSubMenuClass("buy")} data-tracename="点击查看采购合同" onClick={this.showContractList.bind(this, "buy")}>
+                        <div className={getSubMenuClass('buy')} data-tracename="点击查看采购合同" onClick={this.showContractList.bind(this, 'buy')}>
                             <ReactIntl.FormattedMessage id="contract.9" defaultMessage="采购合同" />
                         </div>
-                        <div className={getSubMenuClass("repayment")} data-tracename="点击查看合同回款" onClick={this.showContractList.bind(this, "repayment")}>
+                        <div className={getSubMenuClass('repayment')} data-tracename="点击查看合同回款" onClick={this.showContractList.bind(this, 'repayment')}>
                             <ReactIntl.FormattedMessage id="contract.102" defaultMessage="合同回款" />
                         </div>
-                        {hasPrivilege("OPLATE_SALES_COST_QUERY") ? (
-                            <div className={getSubMenuClass("cost")} data-tracename="点击查看销售费用" onClick={this.showContractList.bind(this, "cost")}>
+                        {hasPrivilege('OPLATE_SALES_COST_QUERY') ? (
+                            <div className={getSubMenuClass('cost')} data-tracename="点击查看销售费用" onClick={this.showContractList.bind(this, 'cost')}>
                                 <ReactIntl.FormattedMessage id="contract.128" defaultMessage="销售费用" />
                             </div>
                         ) : null}
                     </div>
                     <div className="privilege-btns">
-                        {isContractView || this.state.type === "repayment" ? (
+                        {isContractView || this.state.type === 'repayment' ? (
                             <PrivilegeChecker
                                 onClick={this.showExportModal}
                                 check="OPLATE_CONTRACT_QUERY"
                                 className="btn"
                             >
-                                {this.state.type === "repayment" ? (
+                                {this.state.type === 'repayment' ? (
                                     <ReactIntl.FormattedMessage id="contract.140" defaultMessage="导出回款" />
                                 ) : (
                                     <ReactIntl.FormattedMessage id="contract.113" defaultMessage="导出合同" />
@@ -541,13 +541,13 @@ const Contract = React.createClass({
                             </PrivilegeChecker>
                         ) : null}
 
-                        {this.state.type === "cost" ? (
+                        {this.state.type === 'cost' ? (
                             <PrivilegeChecker
                                 onClick={this.showExportModal}
                                 check="OPLATE_SALES_COST_QUERY"
                                 className="btn"
                             >
-                                {Intl.get("common.export", "导出")}{Intl.get("contract.133", "费用")}
+                                {Intl.get('common.export', '导出')}{Intl.get('contract.133', '费用')}
                             </PrivilegeChecker>
                         ) : null}
 
@@ -571,9 +571,9 @@ const Contract = React.createClass({
                             </PrivilegeChecker>
                         ) : null}
 
-                        {this.state.type === "cost" ? (
+                        {this.state.type === 'cost' ? (
                             <PrivilegeChecker
-                                onClick={this.showRightPanel.bind(this, "detailCost")}
+                                onClick={this.showRightPanel.bind(this, 'detailCost')}
                                 check="OPLATE_SALES_COST_ADD"
                                 className="btn"
                             >
@@ -581,7 +581,7 @@ const Contract = React.createClass({
                             </PrivilegeChecker>
                         ) : null}
                     </div>
-                    <div className="pull-right" style={this.state.type === "repayment" ? {marginRight: 40} : {}}>
+                    <div className="pull-right" style={this.state.type === 'repayment' ? {marginRight: 40} : {}}>
                         {isContractView ? (
                             <Filter
                                 ref="filter"
@@ -593,7 +593,7 @@ const Contract = React.createClass({
                             { this.state.isTheadFilterShow ? <Icon type="up" /> : <Icon type="down" /> }
                         </Button>
 
-                        {this.state.type !== "cost" ? (
+                        {this.state.type !== 'cost' ? (
                             <Select
                                 value={this.state.dateType}
                                 onChange={this.onDateTypeChange}
@@ -612,12 +612,12 @@ const Contract = React.createClass({
                                 range="all"
                                 onSelect={this.onDateChange}
                             >
-                                <DatePicker.Option value="all">{Intl.get("user.time.all","全部时间" )}</DatePicker.Option>
-                                <DatePicker.Option value="day">{Intl.get("common.time.unit.day","天" )}</DatePicker.Option>
-                                <DatePicker.Option value="week">{Intl.get("common.time.unit.week","周" )}</DatePicker.Option>
-                                <DatePicker.Option value="month">{Intl.get("common.time.unit.month","月" )}</DatePicker.Option>
-                                <DatePicker.Option value="quarter">{Intl.get("common.time.unit.quarter","季度" )}</DatePicker.Option>
-                                <DatePicker.Option value="custom">{Intl.get("user.time.custom","自定义" )}</DatePicker.Option>
+                                <DatePicker.Option value="all">{Intl.get('user.time.all','全部时间' )}</DatePicker.Option>
+                                <DatePicker.Option value="day">{Intl.get('common.time.unit.day','天' )}</DatePicker.Option>
+                                <DatePicker.Option value="week">{Intl.get('common.time.unit.week','周' )}</DatePicker.Option>
+                                <DatePicker.Option value="month">{Intl.get('common.time.unit.month','月' )}</DatePicker.Option>
+                                <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter','季度' )}</DatePicker.Option>
+                                <DatePicker.Option value="custom">{Intl.get('user.time.custom','自定义' )}</DatePicker.Option>
                             </DatePicker>
                         </div>
                     </div>
@@ -649,7 +649,7 @@ const Contract = React.createClass({
                 />
                 <RightPanel
                     showFlag={this.state.isRightPanelShow}
-                    className={"right-panel-" + this.state.type}
+                    className={'right-panel-' + this.state.type}
                 >
                     {this.state.isRightPanelShow ? (
                         <ContractRightPanel

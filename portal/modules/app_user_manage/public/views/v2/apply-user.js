@@ -2,11 +2,11 @@
  * 申请用户
  */
 //右侧面板样式，上一步、下一步，滑动布局等
-var language = require("../../../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../../../components/user_manage_components/css/right-panel-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("../../../../../components/user_manage_components/css/right-panel-zh_CN.less");
+var language = require('../../../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('../../../../../components/user_manage_components/css/right-panel-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('../../../../../components/user_manage_components/css/right-panel-zh_CN.less');
 }
 import {Carousel,CarouselItem} from 'react-bootstrap';
 import {RightPanelClose} from '../../../../../components/rightPanel';
@@ -108,9 +108,9 @@ const ApplyUser = React.createClass({
                     id_field="client_id"
                     name_field="client_name"
                     image_field="client_image"
-                    search_fields={["client_name"]}
+                    search_fields={['client_name']}
                     onItemsChange={this.onAppsChange}
-                    notFoundContent={Intl.get("user.no.related.app", "无相关应用")}
+                    notFoundContent={Intl.get('user.no.related.app', '无相关应用')}
                 />
                 {
                     !this.state.appValid ? (
@@ -132,11 +132,11 @@ const ApplyUser = React.createClass({
                 <RightPanelClose onClick={this.closeAppUserForm}/>
                 <div>
                     <OperationSteps
-                        title={Intl.get("user.apply.user", "申请用户")}
+                        title={Intl.get('user.apply.user', '申请用户')}
                         current={this.state.step}
                     >
-                        <OperationSteps.Step action={Intl.get("user.user.app.select", "选择应用")}></OperationSteps.Step>
-                        <OperationSteps.Step action={Intl.get("user.apply.user", "申请用户")}></OperationSteps.Step>
+                        <OperationSteps.Step action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
+                        <OperationSteps.Step action={Intl.get('user.apply.user', '申请用户')}></OperationSteps.Step>
                     </OperationSteps>
                     <Carousel
                         interval={0}

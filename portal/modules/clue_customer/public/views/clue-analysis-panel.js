@@ -3,17 +3,17 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/24.
  */
-var TopNav = require("CMP_DIR/top-nav");
-import rightPanelUtil from "CMP_DIR/rightPanel/index";
+var TopNav = require('CMP_DIR/top-nav');
+import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanel = rightPanelUtil.RightPanel;
 const RightPanelClose = rightPanelUtil.RightPanelClose;
-import ClueAnalysisStore from "../store/clue-analysis-store";
-import ClueAnalysisAction from "../action/clue-analysis-action";
-import DatePicker from "CMP_DIR/datepicker";
-import {AntcTable} from "antc";
-import { Select} from "antd";
+import ClueAnalysisStore from '../store/clue-analysis-store';
+import ClueAnalysisAction from '../action/clue-analysis-action';
+import DatePicker from 'CMP_DIR/datepicker';
+import {AntcTable} from 'antc';
+import { Select} from 'antd';
 const Option = Select.Option;
-import CustomerStageTable from "MOD_DIR/sales_home_page/public/views/customer-stage-table";
+import CustomerStageTable from 'MOD_DIR/sales_home_page/public/views/customer-stage-table';
 class ClueAnalysisPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -42,10 +42,10 @@ class ClueAnalysisPanel extends React.Component {
         if (!this.state.source_start_time){
             queryParams = {};
         }
-        if (this.state.selectedAccess !== Intl.get("common.all", "全部")){
+        if (this.state.selectedAccess !== Intl.get('common.all', '全部')){
             queryParams.access_channel = this.state.selectedAccess;
         }
-        if (this.state.selectedSource !== Intl.get("common.all", "全部")){
+        if (this.state.selectedSource !== Intl.get('common.all', '全部')){
             queryParams.clue_source = this.state.selectedSource;
         }
         ClueAnalysisAction.getClueAnalysis(queryParams);
@@ -78,18 +78,18 @@ class ClueAnalysisPanel extends React.Component {
 
     filterClueTypeSelect(){
         var accessChannelArr = _.extend([],this.props.accessChannelArray);
-        accessChannelArr.unshift(Intl.get("common.all", "全部"));
+        accessChannelArr.unshift(Intl.get('common.all', '全部'));
         const AccessOptions = accessChannelArr.map((x, idx) => (
             <Option key={idx} value={x}>{x}</Option>
         ));
         var clueSourceArr = _.extend([], this.props.clueSourceArray);
-        clueSourceArr.unshift(Intl.get("common.all", "全部"));
+        clueSourceArr.unshift(Intl.get('common.all', '全部'));
         const ClueOptions = clueSourceArr.map((x, idx) => (
             <Option key={idx} value={x}>{x}</Option>
         ));
         return (
             <div className="clue-select-container">
-                {Intl.get("crm.sales.clue.access.channel", "接入渠道")}：
+                {Intl.get('crm.sales.clue.access.channel', '接入渠道')}：
                 <Select
                     value={this.state.selectedAccess}
                     dropdownMatchSelectWidth={false}
@@ -97,7 +97,7 @@ class ClueAnalysisPanel extends React.Component {
                 >
                     {AccessOptions}
                 </Select>
-                {Intl.get("crm.sales.clue.source", "线索来源")}：
+                {Intl.get('crm.sales.clue.source', '线索来源')}：
                 <Select
                     value={this.state.selectedSource}
                     dropdownMatchSelectWidth={false}
@@ -110,7 +110,7 @@ class ClueAnalysisPanel extends React.Component {
         );
     }
     handleShowCustomerInfo = (ids, label) => {
-        var idsStr = ids.join(",");
+        var idsStr = ids.join(',');
         ClueAnalysisAction.getCustomerById(idsStr,label);
         this.setState({
             showCustomerIds: ids,
@@ -128,21 +128,21 @@ class ClueAnalysisPanel extends React.Component {
     //获取行政级别
     getAdministrativeLevel(levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
-        return levelObj ? levelObj.level : "";
+        return levelObj ? levelObj.level : '';
     }
     render() {
         const handleNum = num => {
             if (num && num > 0) {
-                return "+" + num;
+                return '+' + num;
             }
         };
         const columns = [
             {
-                title: Intl.get("sales.stage.intention", "意向"),
-                align: "right",
+                title: Intl.get('sales.stage.intention', '意向'),
+                align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get("sales.stage.intention", "意向")){
+                    if (record.label === Intl.get('sales.stage.intention', '意向')){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
@@ -152,11 +152,11 @@ class ClueAnalysisPanel extends React.Component {
 
                 }
             },{
-                title: Intl.get("common.trial", "试用"),
-                align: "right",
+                title: Intl.get('common.trial', '试用'),
+                align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get("common.trial", "试用")){
+                    if (record.label === Intl.get('common.trial', '试用')){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
@@ -166,11 +166,11 @@ class ClueAnalysisPanel extends React.Component {
 
                 }
             },{
-                title: Intl.get("common.trial.qualified", "试用合格"),
-                align: "right",
+                title: Intl.get('common.trial.qualified', '试用合格'),
+                align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get("common.trial.qualified", "试用合格")){
+                    if (record.label === Intl.get('common.trial.qualified', '试用合格')){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
@@ -180,11 +180,11 @@ class ClueAnalysisPanel extends React.Component {
 
                 }
             },{
-                title: Intl.get("sales.stage.signed", "签约"),
-                align: "right",
+                title: Intl.get('sales.stage.signed', '签约'),
+                align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get("sales.stage.signed", "签约")){
+                    if (record.label === Intl.get('sales.stage.signed', '签约')){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
@@ -194,11 +194,11 @@ class ClueAnalysisPanel extends React.Component {
 
                 }
             },{
-                title: Intl.get("sales.stage.lost", "流失"),
-                align: "right",
+                title: Intl.get('sales.stage.lost', '流失'),
+                align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get("sales.stage.lost", "流失")){
+                    if (record.label === Intl.get('sales.stage.lost', '流失')){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
@@ -213,7 +213,7 @@ class ClueAnalysisPanel extends React.Component {
             data: this.state.customersList,
             errorMsg: this.state.getCustomersErrMsg,
             loading: this.state.getCustomersLoading,
-            lastId: "",
+            lastId: '',
             listenScrollBottom: false
         };
         return (
@@ -221,21 +221,21 @@ class ClueAnalysisPanel extends React.Component {
                 <TopNav>
                     <div className="date-range-wrap">
                         <div className="consult-time">
-                            {Intl.get("clue.analysis.consult.time", "咨询时间：")}
+                            {Intl.get('clue.analysis.consult.time', '咨询时间：')}
                         </div>
                         <DatePicker
                             disableDateAfterToday={true}
                             range="year"
                             onSelect={this.onSelectDate}>
-                            <DatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</DatePicker.Option>
-                            <DatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</DatePicker.Option>
-                            <DatePicker.Option value="week">{Intl.get("common.time.unit.week", "周")}</DatePicker.Option>
+                            <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                            <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                            <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
                             <DatePicker.Option
-                                value="month">{Intl.get("common.time.unit.month", "月")}</DatePicker.Option>
+                                value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
                             <DatePicker.Option
-                                value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
-                            <DatePicker.Option value="year">{Intl.get("common.time.unit.year", "年")}</DatePicker.Option>
-                            <DatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</DatePicker.Option>
+                                value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                            <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
+                            <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                         </DatePicker>
                         <div className="filter-clue-wrap">
                             {this.filterClueTypeSelect()}

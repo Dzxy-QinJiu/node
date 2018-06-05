@@ -1,16 +1,16 @@
-require("./index.less");
-var classNames = require("classnames");
+require('./index.less');
+var classNames = require('classnames');
 var Spinner = React.createClass({
     //获取默认属性
     getDefaultProps: function() {
         return {
-            type: "load8"
+            type: 'load8'
         };
     },
     render: function() {
 
         if(this.props.type === 'load8') {
-            var cls = classNames("load8",this.props.className);
+            var cls = classNames('load8',this.props.className);
             return (
                 <div className={cls}>
                     <div className="loader8"></div>
@@ -18,7 +18,7 @@ var Spinner = React.createClass({
             );
         }
         if(this.props.type === 'line-spin') {
-            var cls = classNames("line-spin",this.props.className);
+            var cls = classNames('line-spin',this.props.className);
             return (
                 <div className={cls}>
                     <div className="translatePos">

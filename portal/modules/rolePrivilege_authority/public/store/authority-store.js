@@ -1,16 +1,16 @@
-var AuthorityActions = require("../action/authority-actions");
+var AuthorityActions = require('../action/authority-actions');
 
 var emptyAuthority = {
-    permissionId: "",
-    permissionName: "",
-    permissionDefine: "",
-    permissionApis: "",
-    permissionApisKey: "",
-    permissionApisVal: "PUT",
-    classifyName: ""
+    permissionId: '',
+    permissionName: '',
+    permissionDefine: '',
+    permissionApis: '',
+    permissionApisKey: '',
+    permissionApisVal: 'PUT',
+    classifyName: ''
 };
 var emptyAuthorityGroupInfo = {
-    classifyName: "",
+    classifyName: '',
     authorityIDs: []
 };
 var emptyAuthorityList = [];
@@ -33,11 +33,11 @@ function AuthorityStore() {
     //要编辑的权限组
     this.editAuthorityGroup = {};
     //获取权限列表的错误、无数据时的提示信息
-    this.listTipMsg = "";
-    this.delAuthGroupErrorMsg = "";//删除权限组失败的提示信息
-    this.delAuthGroupName = "";//要删除权限组的名称
-    this.delAuthErrorMsg = "";//删除权限失败的提示信息
-    this.searchContent = "",//搜索服务地址内容
+    this.listTipMsg = '';
+    this.delAuthGroupErrorMsg = '';//删除权限组失败的提示信息
+    this.delAuthGroupName = '';//要删除权限组的名称
+    this.delAuthErrorMsg = '';//删除权限失败的提示信息
+    this.searchContent = '',//搜索服务地址内容
 
     this.bindActions(AuthorityActions);
 }
@@ -84,9 +84,9 @@ AuthorityStore.prototype.getAuthorityList = function(authorityGroupsObj) {
     } else {
         this.authorityGroupList = this.refactorAuthorityGroups(authorityGroupsObj);
         if (this.authorityGroupList.length == 0) {
-            this.listTipMsg = Intl.get("authority.no.auth.list", "暂无权限列表！");
+            this.listTipMsg = Intl.get('authority.no.auth.list', '暂无权限列表！');
         } else {
-            this.listTipMsg = "";
+            this.listTipMsg = '';
         }
     }
 };
@@ -103,7 +103,7 @@ AuthorityStore.prototype.afterAddAuthority = function(authorityArray) {
                 //将权限服务地址的url和method对象存入数组中
                 if (value && _.isString(value)) {
                     //一个url对应一个或多个请求方式的处理
-                    value.split(",").forEach(function(method) {
+                    value.split(',').forEach(function(method) {
                         permissionApiArray.unshift({
                             permissionApiUrl: key,
                             permissionApiMethod: method
@@ -130,7 +130,7 @@ AuthorityStore.prototype.afterAddAuthority = function(authorityArray) {
 AuthorityStore.prototype.handlePermissionApis = function(permissionApiArray, key, value) {
     //一个url只对应一个或多个请求方式的处理
     if (value && _.isString(value)) {
-        value.split(",").forEach(function(method) {
+        value.split(',').forEach(function(method) {
             permissionApiArray.push({
                 permissionApiUrl: key,
                 permissionApiMethod: method
@@ -206,7 +206,7 @@ AuthorityStore.prototype.deleteAuthority = function(delResultObj) {
     }
 };
 AuthorityStore.prototype.clearDelAuthErrorMsg = function() {
-    this.delAuthErrorMsg = "";
+    this.delAuthErrorMsg = '';
 };
 
 
@@ -220,8 +220,8 @@ AuthorityStore.prototype.deleteAuthorityGroup = function(delResultObj) {
 };
 
 AuthorityStore.prototype.clearDelAuthGroupErrorMsg = function() {
-    this.delAuthGroupErrorMsg = "";
-    this.delAuthGroupName = "";
+    this.delAuthGroupErrorMsg = '';
+    this.delAuthGroupName = '';
 };
 
 //展示右侧编辑权限组面板
@@ -234,7 +234,7 @@ AuthorityStore.prototype.showAuthorityGroupForm = function(authorityGroup) {
 AuthorityStore.prototype.closeAuthorityGroupForm = function() {
     this.authorityGroupFormShow = false;
     this.editAuthorityGroup = {};
-    this.searchContent = "";
+    this.searchContent = '';
 };
 
 //展示右侧编辑面板
@@ -249,7 +249,7 @@ AuthorityStore.prototype.showAuthorityForm = function(obj) {
         this.authorityGroupInfo = emptyAuthorityGroupInfo;
     }
 
-    if (obj.flag == "addAuthorityGroup") {
+    if (obj.flag == 'addAuthorityGroup') {
         this.isAddAuthorityGroup = true;
     } else {
         this.isAddAuthorityGroup = false;
@@ -318,7 +318,7 @@ AuthorityStore.prototype.authorityInfo = function(authority) {
 //修改权限组名后的处理
 AuthorityStore.prototype.editAuthorityGroupName = function(authorityGroup) {
     var editAuthorityGroup = this.editAuthorityGroup;
-    if (authorityGroup.type != "turn") {
+    if (authorityGroup.type != 'turn') {
         //修改组名
         if (_.isArray(this.authorityGroupList) && this.authorityGroupList.length > 0) {
             this.authorityGroupList.forEach(function(group) {

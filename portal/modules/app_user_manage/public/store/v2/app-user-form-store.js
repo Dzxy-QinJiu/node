@@ -17,7 +17,7 @@ class AppUserFormStore {
         //当前安全域下的应用列表
         this.currentRealmApps = [];
         //选中的组织
-        this.organization = "";
+        this.organization = '';
         //应用列表获取状态
         this.currentRealmAppsResult = 'loading';
         //第三步应用的特殊配置，保存在这个map里
@@ -27,28 +27,28 @@ class AppUserFormStore {
         //表单数据
         this.formData = {
             //用户名
-            user_name: "",
+            user_name: '',
             //昵称
-            nick_name: "",
+            nick_name: '',
             //邮箱
-            email: "",
+            email: '',
             //手机号
-            phone: "",
+            phone: '',
             //个数
-            count_number: "1",
+            count_number: '1',
             //客户id
-            customer_id: "",
+            customer_id: '',
             //客户名
-            customer_name: "",
+            customer_name: '',
             //销售团队
             sales_team: {
-                id: "",
-                name: ""
+                id: '',
+                name: ''
             },
             //销售
             sales: {
-                id: "",
-                name: ""
+                id: '',
+                name: ''
             },
             //正式、试用
             user_type: AppUserUtil.USER_TYPE_VALUE_MAP.TRIAL_USER,
@@ -57,13 +57,13 @@ class AppUserFormStore {
             //结束时间
             end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
             //多人登录
-            multilogin: "0",
+            multilogin: '0',
             //开通周期 默认选中半个月
-            range: "0.5m",
+            range: '0.5m',
             //到期停用
-            over_draft: "1",
+            over_draft: '1',
             //二步认证
-            is_two_factor: "0",
+            is_two_factor: '0',
             //备注
             description: ''
         };
@@ -151,14 +151,14 @@ class AppUserFormStore {
     //添加用户
     addAppUser(result) {
         if(result.error) {
-            this.submitResult = "error";
+            this.submitResult = 'error';
             this.submitErrorMsg = result.errorMsg;
         } else {
-            this.submitErrorMsg = "";
+            this.submitErrorMsg = '';
             if(result.loading) {
-                this.submitResult = "loading";
+                this.submitResult = 'loading';
             } else {
-                this.submitResult = "success";
+                this.submitResult = 'success';
             }
         }
     }
@@ -212,10 +212,10 @@ class AppUserFormStore {
     }
     // 添加多个应用时，有应用没有选择角色的错误提示
     someAppsNoSelectRoleError(error) {
-        this.submitResult = "selectRoleError";
+        this.submitResult = 'selectRoleError';
         this.submitErrorMsg = error;
     }
 }
 
 //使用alt导出store
-export default alt.createStore(AppUserFormStore , "AppUserFormStoreV2");
+export default alt.createStore(AppUserFormStore , 'AppUserFormStoreV2');

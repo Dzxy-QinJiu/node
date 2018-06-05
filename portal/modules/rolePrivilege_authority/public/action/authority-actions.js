@@ -1,5 +1,5 @@
-var authorityAjax = require("../ajax/authority-ajax");
-var userData = require("../../../../public/sources/user-data");
+var authorityAjax = require('../ajax/authority-ajax');
+var userData = require('../../../../public/sources/user-data');
 
 function AuthorityActions() {
     this.generateActions(
@@ -27,7 +27,7 @@ function AuthorityActions() {
     //获取权限列表
     this.getAuthorityList = function(clientId, type) {
         var _this = this;
-        var clientID = "";
+        var clientID = '';
         if (clientId) {
             clientID = clientId;
         } else {
@@ -46,11 +46,11 @@ function AuthorityActions() {
         authorityAjax.editAuthorityGroupName(authorityGroup, type).then(function(data) {
             _this.dispatch(authorityGroup);
             if (callback) {
-                callback.call(_this, {saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")});
+                callback.call(_this, {saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功')});
             }
         }, function(errorMsg) {
             if (callback) {
-                callback.call(_this, {saveResult: "success", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
+                callback.call(_this, {saveResult: 'success', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
             }
         });
     };
@@ -67,13 +67,13 @@ function AuthorityActions() {
             } else {
                 _this.dispatch({
                     delResult: false,//删除失败
-                    delAuthMsg: Intl.get("authority.del.auth.failed", "删除权限失败")
+                    delAuthMsg: Intl.get('authority.del.auth.failed', '删除权限失败')
                 });
             }
         }, function(errorMsg) {
             _this.dispatch({
                 delResult: false,//删除失败
-                delAuthMsg: errorMsg || Intl.get("authority.del.auth.failed", "删除权限失败")
+                delAuthMsg: errorMsg || Intl.get('authority.del.auth.failed', '删除权限失败')
             });
         });
     };
@@ -89,14 +89,14 @@ function AuthorityActions() {
                 _this.dispatch({
                     delResult: false,//删除失败
                     delAuthGroupName: groupName,//删除权限组的组名
-                    delAuthGroupMsg: Intl.get("authority.del.group.failed", "删除权限组失败")
+                    delAuthGroupMsg: Intl.get('authority.del.group.failed', '删除权限组失败')
                 });
             }
         }, function(errorMsg) {
             _this.dispatch({
                 delResult: false,//删除失败
                 delAuthGroupName: groupName,//删除权限组的组名
-                delAuthGroupMsg: errorMsg || Intl.get("authority.del.group.failed", "删除权限组失败")
+                delAuthGroupMsg: errorMsg || Intl.get('authority.del.group.failed', '删除权限组失败')
             });
         });
     };

@@ -12,7 +12,7 @@ const UserCompanyRadioField = {
         config = $.extend({
             isCustomSetting: false,
             appId: '',
-            globalUserCompany: "0"
+            globalUserCompany: '0'
         } , config);
 
         if(config.isCustomSetting && !config.appId) {

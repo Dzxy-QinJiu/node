@@ -1,4 +1,4 @@
-var CRMActions = require("../action/basic-actions");
+var CRMActions = require('../action/basic-actions');
 
 function CRMStore() {
     //基本资料

@@ -3,13 +3,13 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/7/11.
  */
-var rightPanelUtil = require("../../../../components/rightPanel");
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var AppAction = require("./../action/app-actions");
-var AppStore = require("./../store/app-store");
-var Alert = require("antd").Alert;
-var Spinner = require("../../../../components/spinner");
+var AppAction = require('./../action/app-actions');
+var AppStore = require('./../store/app-store');
+var Alert = require('antd').Alert;
+var Spinner = require('../../../../components/spinner');
 require('../css/app-code-trace.less');
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {Icon} from 'antd';
@@ -53,7 +53,7 @@ var AppCodeTrace = React.createClass({
             </script>
         <!-- End Oplate Track Code -->
         `;
-        var tip = Intl.get("app.insert.code","我们建议您将下面的代码插入到<head>标签中。");
+        var tip = Intl.get('app.insert.code','我们建议您将下面的代码插入到<head>标签中。');
         return(
             <div className="app-code-trace-container">
                 <div className="topcontainer">
@@ -63,13 +63,13 @@ var AppCodeTrace = React.createClass({
                 <div className="app-code-trace-content">
 
                     <div className="app-code-trace">
-                        <h3>{Intl.get("rightpanel_codetrace","跟踪代码")}</h3>
+                        <h3>{Intl.get('rightpanel_codetrace','跟踪代码')}</h3>
                         <p className="app-code-tip">{tip}</p>
                         <div className="app-code-block">
                             <pre>
                                 <CopyToClipboard text={text}>
                                     <Icon type="copy" style={{cursor: 'pointer'}}
-                                        title={Intl.get("user.log.copy", "点击可复制")}/>
+                                        title={Intl.get('user.log.copy', '点击可复制')}/>
                                 </CopyToClipboard>
                                 <div className="app-code">
                                     {text}
@@ -92,7 +92,7 @@ var AppCodeTrace = React.createClass({
         }else if (this.state.appPiwikKeyErrMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.appPiwikKeyErrMsg}
-                <a onClick={this.retryGetAppKey} style={{marginLeft: "20px",marginTop: "20px"}}>
+                <a onClick={this.retryGetAppKey} style={{marginLeft: '20px',marginTop: '20px'}}>
                     <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
                 </a>
             </span>;

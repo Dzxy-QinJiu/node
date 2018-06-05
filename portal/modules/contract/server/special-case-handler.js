@@ -1,30 +1,30 @@
-const restHandler = require("../common/rest");
-const _ = require("underscore");
-const moment = require("moment");
-import Intl from "../../../public/intl/intl";
-import { DATE_FORMAT, CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS } from "../consts";
+const restHandler = require('../common/rest');
+const _ = require('underscore');
+const moment = require('moment');
+import Intl from '../../../public/intl/intl';
+import { DATE_FORMAT, CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS } from '../consts';
 
 //获取回款列表，并根据每条回款记录里的合同id，查询合同相关信息，然后将回款信息和合同信息进行组装
 //返回一个兼有回款信息和合同信息的列表
 const getRepaymentList = function(req, res, cb) {
     //回款字段前缀
-    const repayPrefix = "repayment_";
+    const repayPrefix = 'repayment_';
     //在url参数中去掉为合并合同和回款数据而添加的字段前缀，还原字段原本状态
-    req.params.sort_field = req.params.sort_field.replace(repayPrefix, "");
+    req.params.sort_field = req.params.sort_field.replace(repayPrefix, '');
     //解析body参数
     const reqData = JSON.parse(req.body.reqData);
     //先去掉type参数，该参数的值目前标识的是视图属性，不能直接用在查询里
     delete reqData.query.type;
 
     //签订时间查询参数
-    const dateRangeParam = _.find(reqData.rang_params, item => item.name === "date");
+    const dateRangeParam = _.find(reqData.rang_params, item => item.name === 'date');
 
     //回款字段值查询参数
     let repayQueryParams = {};
     //获取不带前缀的字段值并存入查询参数，同时在原始参数中删除该字段
     for (let key in reqData.query) {
         if (key.startsWith(repayPrefix)) {
-            const newKey = key.replace(repayPrefix, "");
+            const newKey = key.replace(repayPrefix, '');
             repayQueryParams[newKey] = reqData.query[key];
             delete reqData.query[key];
         }
@@ -36,7 +36,7 @@ const getRepaymentList = function(req, res, cb) {
     _.each(reqData.rang_params, item => {
         if (item.name.startsWith(repayPrefix)) {
             repayRangeParams.push({
-                name: item.name.replace(repayPrefix, ""),
+                name: item.name.replace(repayPrefix, ''),
                 from: item.from,
                 to: item.to,
             });
@@ -51,10 +51,10 @@ const getRepaymentList = function(req, res, cb) {
             rang_params: dateRangeParam ? [dateRangeParam] : [],
         };
         //指定合同类型，否则按合同号查询时，有的关键字会导致报错
-        contractReqData.query.type = "sell";
+        contractReqData.query.type = 'sell';
         req.body.reqData = JSON.stringify(contractReqData);
         //查询合同
-        restHandler.queryContract(req, res, false).on("success", contractResult => {
+        restHandler.queryContract(req, res, false).on('success', contractResult => {
             //合同列表
             let contractList = contractResult.list || [];
             //拼接列表
@@ -92,7 +92,7 @@ const getRepaymentList = function(req, res, cb) {
                             //将回款记录对象的键值加上前缀，避免跟合同对象中的键值重复
                             const procRepay = {};
                             for (let k in repay) {
-                                procRepay["repayment_" + k] = repay[k];
+                                procRepay['repayment_' + k] = repay[k];
                             }
     
                             //将回款记录对象与对应的合同对象进行组合
@@ -108,7 +108,7 @@ const getRepaymentList = function(req, res, cb) {
             } else {
                 cb(contractResult);
             }
-        }).on("error", codeMessage => {
+        }).on('error', codeMessage => {
             cb(codeMessage, 500);
         });
     //若未指定合同相关查询条件，则先查询回款
@@ -119,20 +119,20 @@ const getRepaymentList = function(req, res, cb) {
         };
         req.body.reqData = JSON.stringify(repayReqData);
         //查询回款
-        restHandler.queryRepayment(req, res, false).on("success", repayResult => {
+        restHandler.queryRepayment(req, res, false).on('success', repayResult => {
             //回款列表
             let repayList = repayResult.list || [];
     
             //如果回款列表有值，进行查询合同和组合数据的操作
             if (_.isArray(repayList) && repayList.length) {
                 //获取用于查询的合同ids
-                const contractIds = _.chain(repayList).pluck("contract_id").uniq().join(",");
+                const contractIds = _.chain(repayList).pluck('contract_id').uniq().join(',');
                 req.body.reqData = JSON.stringify({query: {id: contractIds}});
                 //将url query参数置空
                 req.query = {};
     
                 //查询合同
-                restHandler.queryContract(req, res, false).on("success", contractResult => {
+                restHandler.queryContract(req, res, false).on('success', contractResult => {
                     //得到合同列表
                     const contractList = contractResult.list || [];
     
@@ -145,7 +145,7 @@ const getRepaymentList = function(req, res, cb) {
                             //将回款记录对象的键值加上前缀，避免跟合同对象中的键值重复
                             const procRepay = {};
                             for (let k in repay) {
-                                procRepay["repayment_" + k] = repay[k];
+                                procRepay['repayment_' + k] = repay[k];
                             }
     
                             //将回款记录对象与对应的合同对象进行组合
@@ -156,13 +156,13 @@ const getRepaymentList = function(req, res, cb) {
                     } else {
                         cb(repayResult);
                     }
-                }).on("error", codeMessage => {
+                }).on('error', codeMessage => {
                     cb(codeMessage, 500);
                 });
             } else {
                 cb(repayResult);
             }
-        }).on("error", codeMessage => {
+        }).on('error', codeMessage => {
             cb(codeMessage, 500);
         });
     }
@@ -178,7 +178,7 @@ exports.getRepaymentList = function(req, res, next) {
 exports.exportData = function(req, res, next) {
     const reqData = JSON.parse(req.body.reqData);
     const type = reqData.query.type;
-    if (type === "repayment") {
+    if (type === 'repayment') {
         getRepaymentList(req, res, (result, code) => {
             if (code === 500) {
                 res.status(code).json(result);
@@ -186,39 +186,39 @@ exports.exportData = function(req, res, next) {
                 doExport(type, REPAYMENT_COLUMNS, result);
             }
         });
-    } else if (type === "cost") {
+    } else if (type === 'cost') {
         //解析body参数
         const reqData = JSON.parse(req.body.reqData);
         //去掉type参数，该参数的值标识的是视图属性，不能直接用在查询里
         delete reqData.query.type;
         req.body.reqData = JSON.stringify(reqData);
 
-        restHandler.queryCost(req, res, false).on("success", result => {
+        restHandler.queryCost(req, res, false).on('success', result => {
             doExport(type, COST_COLUMNS, result);
-        }).on("error", codeMessage => {
+        }).on('error', codeMessage => {
             res.status(500).json(codeMessage);
         });
     } else {
-        restHandler.queryContract(req, res, false).on("success", result => {
+        restHandler.queryContract(req, res, false).on('success', result => {
             doExport(type, CONTRACT_COLUMNS, result);
-        }).on("error", codeMessage => {
+        }).on('error', codeMessage => {
             res.status(500).json(codeMessage);
         });
     }
 
     //执行导出
     function doExport(type, columns, result) {
-        const columnTitles = _.pluck(columns, "title");
-        let fileName = "repayment";
-        const isContract = ["sell", "buy"].indexOf(type) > -1;
+        const columnTitles = _.pluck(columns, 'title');
+        let fileName = 'repayment';
+        const isContract = ['sell', 'buy'].indexOf(type) > -1;
 
         if (isContract) {
-            fileName = "contract";
-            columnTitles.push(Intl.get("common.app", "应用"));
+            fileName = 'contract';
+            columnTitles.push(Intl.get('common.app', '应用'));
         }
 
-        if (type === "cost") {
-            fileName = "cost";
+        if (type === 'cost') {
+            fileName = 'cost';
         }
 
         const head = columnTitles.join();
@@ -228,14 +228,14 @@ exports.exportData = function(req, res, next) {
         const rows = list.map(item => {
             const values = columns.map(column => {
                 let value = item[column.dataIndex];
-                if (!value && isNaN(value)) value = "";
+                if (!value && isNaN(value)) value = '';
 
-                if (value && ["date", "start_time", "end_time", "repayment_date"].indexOf(column.dataIndex) > -1) {
+                if (value && ['date', 'start_time', 'end_time', 'repayment_date'].indexOf(column.dataIndex) > -1) {
                     value = moment(value).format(DATE_FORMAT);
                 }
 
-                if (column.dataIndex === "repayment_is_first") {
-                    value = value === "true" ? Intl.get("user.yes", "是") : Intl.get("user.no", "否");
+                if (column.dataIndex === 'repayment_is_first') {
+                    value = value === 'true' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
                 }
 
                 return value;
@@ -245,21 +245,21 @@ exports.exportData = function(req, res, next) {
                 const products = item.products;
                 if (products && products.length) {
                     const productValues = products.map(product => {
-                        if (!product.name) return "";
-                        return `${Intl.get("common.app.name", "应用名称")}:${product.name} ${Intl.get("item.21", "版本号")}:${product.version || ""} ${Intl.get("common.app.count", "数量")}:${product.num || ""} ${Intl.get("item.23", "总价")}:${product.total_price || ""}`;
+                        if (!product.name) return '';
+                        return `${Intl.get('common.app.name', '应用名称')}:${product.name} ${Intl.get('item.21', '版本号')}:${product.version || ''} ${Intl.get('common.app.count', '数量')}:${product.num || ''} ${Intl.get('item.23', '总价')}:${product.total_price || ''}`;
                     });
-                    values.push(productValues.join("; "));
+                    values.push(productValues.join('; '));
                 }
             }
 
             return values.join();
         });
         csvArr = csvArr.concat(rows);
-        let csv = csvArr.join("\n");
+        let csv = csvArr.join('\n');
         //防止中文乱码
-        csv = Buffer.concat([new Buffer("\xEF\xBB\xBF", "binary"), new Buffer(csv)]);
-        res.setHeader("Content-disposition", "attachement; filename=" + fileName + ".csv");
-        res.setHeader("Content-Type", "application/csv");
+        csv = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(csv)]);
+        res.setHeader('Content-disposition', 'attachement; filename=' + fileName + '.csv');
+        res.setHeader('Content-Type', 'application/csv');
         res.send(csv);
     }
 };

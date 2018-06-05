@@ -3,8 +3,8 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/16.
  */
-require("../css/will-expire-customer.less");
-import ContactItem from "./contact-item";
+require('../css/will-expire-customer.less');
+import ContactItem from './contact-item';
 class WillExpireItem extends React.Component {
     constructor(props) {
         super(props);
@@ -36,7 +36,7 @@ class WillExpireItem extends React.Component {
                     </span>
                 </div>
                 <div className="will-customer-content">
-                    {Intl.get("common.sales.fronpage.user.login", "{relativedata}有应用到期", {
+                    {Intl.get('common.sales.fronpage.user.login', '{relativedata}有应用到期', {
                         relativedata: this.props.willExpiredTime
                     })}
                 </div>
@@ -54,7 +54,7 @@ WillExpireItem.defaultProps = {
     openCustomerDetail: function() {
 
     },
-    willExpiredTime: ""//即将到期的时间
+    willExpiredTime: ''//即将到期的时间
 
 
 };

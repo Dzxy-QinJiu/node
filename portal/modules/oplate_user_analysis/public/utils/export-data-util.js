@@ -108,9 +108,9 @@ export function handlePieChartData(processData) {
             userTypeArray.push(itemData.name);
         }
         if (itemData.key == 0) { // 在线时长统计
-            userTypeArray.push(Intl.get("oplate.user.analysis.7", "时长小于1小时"));
+            userTypeArray.push(Intl.get('oplate.user.analysis.7', '时长小于1小时'));
         } else if (itemData.key == 1) {
-            userTypeArray.push(Intl.get("oplate.user.analysis.8", "时长大于等于1小时"));
+            userTypeArray.push(Intl.get('oplate.user.analysis.8', '时长大于等于1小时'));
         }
         if(itemData.count){
             userTypeArray.push(itemData.count);
@@ -237,7 +237,7 @@ export function handleAppDownLoadData(processData, appTitleName) {
 export function handleZoneExportData(processData) {
     let exportData = [];
     if (_.isArray(processData) && processData.length) {
-        exportData.push(["地域","人数"]);    
+        exportData.push(['地域','人数']);    
         exportData = exportData.concat(processData.map(x => [
             x.name, x.value
         ]));
@@ -249,7 +249,7 @@ export function handleZoneExportData(processData) {
 export function handleDeviceExport(data) {
     let exportArr = [];
     if (_.isArray(data) && data.length) {
-        exportArr.push([Intl.get("common.login.equipment", "设备"),Intl.get("common.app.count", "数量")]);
+        exportArr.push([Intl.get('common.login.equipment', '设备'),Intl.get('common.app.count', '数量')]);
         exportArr = exportArr.concat(data.map(x => [
             x.name, x.count
         ]));
@@ -261,7 +261,7 @@ export function handleDeviceExport(data) {
 export function handleBrowserExport(data) {
     let exportArr = [];
     if (_.isArray(data) && data.length) {
-        exportArr.push([Intl.get("user.info.login.browser", "浏览器"),Intl.get("common.app.count", "数量")]);
+        exportArr.push([Intl.get('user.info.login.browser', '浏览器'),Intl.get('common.app.count', '数量')]);
         exportArr = exportArr.concat(data.map(x => [
             x.name, x.count
         ]));
@@ -272,7 +272,7 @@ export function handleBrowserExport(data) {
 export function handleLoginCountsExport(data) {
     let exportArr = [];
     if (_.isArray(data) && data.length) {
-        exportArr.push([Intl.get("user.login.time", "次数"), Intl.get("common.app.count", "数量")]);
+        exportArr.push([Intl.get('user.login.time', '次数'), Intl.get('common.app.count', '数量')]);
         exportArr = exportArr.concat(data);
     }
     return exportArr;
@@ -281,7 +281,7 @@ export function handleLoginCountsExport(data) {
 export function handleLoginDaysExport(data) {
     let exportArr = [];
     if (_.isArray(data) && data.length) {
-        exportArr.push([Intl.get("oplate.user.analysis.loginDays", "用户访问天数"), Intl.get("common.app.count", "数量")]);
+        exportArr.push([Intl.get('oplate.user.analysis.loginDays', '用户访问天数'), Intl.get('common.app.count', '数量')]);
         exportArr = exportArr.concat(data);
     }
     return exportArr;
@@ -290,7 +290,7 @@ export function handleLoginDaysExport(data) {
 export function handleLoginTimesExport(data) {
     let exportArr = [];
     if (_.isArray(data) && data.length) {
-        exportArr.push([Intl.get("oplate.user.analysis.loginTimes", "用户在线时间"), Intl.get("common.app.count", "数量")]);
+        exportArr.push([Intl.get('oplate.user.analysis.loginTimes', '用户在线时间'), Intl.get('common.app.count', '数量')]);
         exportArr = exportArr.concat(data.map(x => {
             return [x[0], (x[1] - 1) * 60]; 
         }));
@@ -301,7 +301,7 @@ export function handleLoginTimesExport(data) {
 export function handleAveTimesExport(data) {
     let exportArr = [];
     if (_.isArray(data) && data.length) {
-        exportArr.push([Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长"), Intl.get("common.app.count", "数量")]);
+        exportArr.push([Intl.get('oplate.user.analysis.averageLoginTimes', '平均在线时长'), Intl.get('common.app.count', '数量')]);
         exportArr = exportArr.concat(data.map(x => [
             x.name, x.count
         ]));

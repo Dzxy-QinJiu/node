@@ -1,15 +1,15 @@
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var Spinner = require("../../../../components/spinner");
-var NoData = require("../../../../components/analysis-nodata");
-var AuthorityStore = require("../../../rolePrivilege_authority/public/store/authority-store");
-var AuthorityAction = require("../../../rolePrivilege_authority/public/action/authority-actions");
-var AuthorityListView = require("../../../rolePrivilege_authority/public/views/authority-list");
-var AuthorityGroupForm = require("../../../rolePrivilege_authority/public/views/authority-group-form");
+var Spinner = require('../../../../components/spinner');
+var NoData = require('../../../../components/analysis-nodata');
+var AuthorityStore = require('../../../rolePrivilege_authority/public/store/authority-store');
+var AuthorityAction = require('../../../rolePrivilege_authority/public/action/authority-actions');
+var AuthorityListView = require('../../../rolePrivilege_authority/public/views/authority-list');
+var AuthorityGroupForm = require('../../../rolePrivilege_authority/public/views/authority-group-form');
 var bootomHeight = 52; //距离底部高度
 function getStateFromStore() {
     return AuthorityStore.getState();
 }
-var TYPE_CONSTANT = "myApp";
+var TYPE_CONSTANT = 'myApp';
 var UserInfoAuthority = React.createClass({
     getInitialState: function() {
         return getStateFromStore();
@@ -31,7 +31,7 @@ var UserInfoAuthority = React.createClass({
     events: {
 
         showAddAuthorityGroupForm: function() {
-            AuthorityAction.showAuthorityForm("", "addAuthorityGroup");
+            AuthorityAction.showAuthorityForm('', 'addAuthorityGroup');
         },
 
         hideAuthorityForm: function() {
@@ -97,10 +97,10 @@ var UserInfoAuthority = React.createClass({
         var width = this.props.divWidth;
 
         var authorityListDivHeight = height - bootomHeight;
-        var authorityListElement = "";
+        var authorityListElement = '';
         if (authorityGroupList && authorityGroupList.length > 0) {
             authorityListElement = authorityGroupList.map(function(authorityGroup, i) {
-                var delAuthGroupErrorMsg = (authorityGroup.permissionGroupName == _this.state.delAuthGroupName ? _this.state.delAuthGroupErrorMsg : "");
+                var delAuthGroupErrorMsg = (authorityGroup.permissionGroupName == _this.state.delAuthGroupName ? _this.state.delAuthGroupErrorMsg : '');
                 return (
                     <AuthorityListView
                         key={i}

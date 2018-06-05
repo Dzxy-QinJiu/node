@@ -1,15 +1,15 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * select(下拉选择框)显示、编辑 的组件
  * 可切换状态
  */
-require("./css/basic-edit-field.less");
-import {Form, Icon, Select} from "antd";
-var classNames = require("classnames");
-import FieldMixin from "../antd-form-fieldmixin";
+require('./css/basic-edit-field.less');
+import {Form, Icon, Select} from 'antd';
+var classNames = require('classnames');
+import FieldMixin from '../antd-form-fieldmixin';
 var FormItem = Form.Item;
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 
 let BasicEditSelectField = React.createClass({
     mixins: [FieldMixin],
@@ -23,13 +23,13 @@ let BasicEditSelectField = React.createClass({
             //是否匹配选项
             filterOption: true,
             //字段
-            field: "role",
+            field: 'role',
             //是否能修改
             disabled: false,
             //验证条件
             validators: [{}],
             //请填写
-            placeholder: Intl.get("member.select.role", "请选择角色"),
+            placeholder: Intl.get('member.select.role', '请选择角色'),
             //显示的值
             value: '',
             //展示内容（非编辑状态）
@@ -37,7 +37,7 @@ let BasicEditSelectField = React.createClass({
             //下拉列表中的选项
             selectOptions: [],
             //提示文案
-            title: Intl.get("common.update", "修改"),
+            title: Intl.get('common.update', '修改'),
             //修改成功
             modifySuccess: function() {
             },
@@ -56,7 +56,7 @@ let BasicEditSelectField = React.createClass({
     getInitialState: function() {
         return {
             loading: false,
-            displayType: this.props.displayType || "text",
+            displayType: this.props.displayType || 'text',
             displayText: this.props.displayText,
             formData: {
                 select: this.props.value
@@ -94,10 +94,10 @@ let BasicEditSelectField = React.createClass({
         var formData = this.state.formData;
         formData.select = this.props.value;
         this.setState({
-            displayType: "edit",
+            displayType: 'edit',
             formData: formData
         });
-        Trace.traceEvent(e,"点击编辑" + this.props.field);
+        Trace.traceEvent(e,'点击编辑' + this.props.field);
     },
     handleSubmit: function(e) {
         var validation = this.refs.validation;
@@ -107,7 +107,7 @@ let BasicEditSelectField = React.createClass({
             if (!valid) {
                 return;
             }
-            Trace.traceEvent(e,"保存对" + this.props.field + "的修改");
+            Trace.traceEvent(e,'保存对' + this.props.field + '的修改');
             var value = this.state.formData.select;
             var user = {id: this.props.id};
             user[this.props.field] = value;
@@ -133,14 +133,14 @@ let BasicEditSelectField = React.createClass({
                         }else{
                             _this.setState({
                                 loading: false,
-                                submitErrorMsg: ( Intl.get("common.edit.failed", "修改失败"))
+                                submitErrorMsg: ( Intl.get('common.edit.failed', '修改失败'))
                             });
                         }
 
                     }, function(errorObj) {
                         _this.setState({
                             loading: false,
-                            submitErrorMsg: errorObj.message || ( Intl.get("common.edit.failed", "修改失败"))
+                            submitErrorMsg: errorObj.message || ( Intl.get('common.edit.failed', '修改失败'))
                         });
                     });
                 }
@@ -150,7 +150,7 @@ let BasicEditSelectField = React.createClass({
         });
     },
     handleCancel: function(e) {
-        Trace.traceEvent(e,"取消对" + this.props.field + "修改");
+        Trace.traceEvent(e,'取消对' + this.props.field + '修改');
         var formData = this.state.formData;
         var status = this.state.status;
         formData.select = this.props.value;
@@ -158,7 +158,7 @@ let BasicEditSelectField = React.createClass({
         this.setState({
             formData: formData,
             status: status,
-            displayType: "text",
+            displayType: 'text',
             submitErrorMsg: ''
         });
         this.props.cancelEditField();
@@ -194,9 +194,9 @@ let BasicEditSelectField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.update", "修改")} className="inline-block iconfont icon-choose"
+                <i title={Intl.get('common.update', '修改')} className="inline-block iconfont icon-choose"
                     onClick={(e) => {this.handleSubmit(e);}}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
+                <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
                     onClick={(e) => {this.handleCancel(e);}}/>
             </div>
         );
@@ -210,7 +210,7 @@ let BasicEditSelectField = React.createClass({
                             labelCol={{span: 0}}
                             wrapperCol={{span: 24}}
                             validateStatus={this.renderValidateStyle('select')}
-                            help={status.select.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.select.errors && status.select.errors.join(','))}
+                            help={status.select.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.select.errors && status.select.errors.join(','))}
                         >
                             <Validator rules={this.props.validators}>
                                 <Select multiple={this.props.multiple}
@@ -222,7 +222,7 @@ let BasicEditSelectField = React.createClass({
                                     optionFilterProp="children"
                                     searchPlaceholder={this.props.placeholder}
                                     placeholder={this.props.placeholder}
-                                    notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
+                                    notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
                                     value={formData.select}
                                     onChange={this.onSelectChange}
                                     getPopupContainer={() => document.getElementById('area')}

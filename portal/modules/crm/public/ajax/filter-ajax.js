@@ -1,5 +1,5 @@
-import { hasPrivilege } from "CMP_DIR/privilege/checker";
-var appAjaxTrans = require("../../../common/public/ajax/app");
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+var appAjaxTrans = require('../../../common/public/ajax/app');
 exports.getAppList = function() {
     var Deferred = $.Deferred();
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(function(list) {
@@ -20,14 +20,14 @@ exports.getAppList = function() {
 };
 let salesTeamListAjax;
 exports.getTeamList = function() {
-    let type = "self";//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
-    if (hasPrivilege("GET_TEAM_LIST_ALL")) {
-        type = "all";
+    let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
+    if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        type = 'all';
     }
     salesTeamListAjax && salesTeamListAjax.abort();
     let Deferred = $.Deferred();
     $.ajax({
-        url: "/rest/crm/sales_team_tree",
+        url: '/rest/crm/sales_team_tree',
         dataType: 'json',
         type: 'get',
         data: {type: type},
@@ -81,7 +81,7 @@ exports.getTagList = function() {
     var pageSize = 100;
     var num = 1;
     let type = 'user';
-    if(hasPrivilege("CUSTOMER_MANAGER_LABEL_GET")){
+    if(hasPrivilege('CUSTOMER_MANAGER_LABEL_GET')){
         type = 'manager';
     }
     var Deferred = $.Deferred();
@@ -101,14 +101,14 @@ exports.getTagList = function() {
 //获取销售角色列表
 let salesRoleListAjax;
 exports.getSalesRoleList = function() {
-    let type = "user";//CRM_GET_USER_ROLE
-    if (hasPrivilege("CRM_GET_MANAGER_ROLE")) {
-        type = "manager";
+    let type = 'user';//CRM_GET_USER_ROLE
+    if (hasPrivilege('CRM_GET_MANAGER_ROLE')) {
+        type = 'manager';
     }
     salesRoleListAjax && salesRoleListAjax.abort();
     let Deferred = $.Deferred();
     salesRoleListAjax = $.ajax({
-        url: "/rest/crm_filter/:type/sales_role_list".replace(":type",type),
+        url: '/rest/crm_filter/:type/sales_role_list'.replace(':type',type),
         dataType: 'json',
         type: 'get',
         success: function(data) {
@@ -124,7 +124,7 @@ exports.getSalesRoleList = function() {
 };
 exports.getStageTagList = function() {
     let type = 'user';//CRM_USER_GET_CUSTOMER_CUSTOMER_LABEL
-    if(hasPrivilege("CRM_MANAGER_GET_CUSTOMER_CUSTOMER_LABEL")){
+    if(hasPrivilege('CRM_MANAGER_GET_CUSTOMER_CUSTOMER_LABEL')){
         type = 'manager';
     }
     let Deferred = $.Deferred();
@@ -144,7 +144,7 @@ exports.getStageTagList = function() {
 //获取竞品列表
 exports.getCompetitorList = function() {
     let type = 'user';//CUSTOMER_USER_COMPETING_PRODUCTS_GET
-    if(hasPrivilege("CUSTOMER_MANAGER_COMPETING_PRODUCTS_GET")){
+    if(hasPrivilege('CUSTOMER_MANAGER_COMPETING_PRODUCTS_GET')){
         type = 'manager';
     }
     let Deferred = $.Deferred();

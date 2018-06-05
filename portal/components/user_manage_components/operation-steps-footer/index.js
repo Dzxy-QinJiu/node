@@ -1,10 +1,10 @@
 
 
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./index-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./index-zh_CN.less");
+var language = require('../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./index-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./index-zh_CN.less');
 }
 const PropTypes = React.PropTypes;
 import Button from 'antd';
@@ -36,7 +36,7 @@ class OperationStepsFooter extends React.Component {
             return null;
         }
         return (
-            <RightPanelCancel onClick={this.turnStep.bind(this,"prev")}>{this.props.prevText}</RightPanelCancel>
+            <RightPanelCancel onClick={this.turnStep.bind(this,'prev')}>{this.props.prevText}</RightPanelCancel>
         );
     }
 
@@ -45,7 +45,7 @@ class OperationStepsFooter extends React.Component {
             return null;
         }
         return (
-            <RightPanelSubmit onClick={this.turnStep.bind(this,"next")}>{this.props.nextText}</RightPanelSubmit>
+            <RightPanelSubmit onClick={this.turnStep.bind(this,'next')}>{this.props.nextText}</RightPanelSubmit>
         );
     }
 
@@ -54,7 +54,7 @@ class OperationStepsFooter extends React.Component {
             return null;
         }
         return (
-            <RightPanelSubmit onClick={this.turnStep.bind(this,"finish")}
+            <RightPanelSubmit onClick={this.turnStep.bind(this,'finish')}
                 disabled={this.props.isSubmiting}>{this.props.finishText}</RightPanelSubmit>
         );
     }
@@ -62,7 +62,7 @@ class OperationStepsFooter extends React.Component {
     render() {
         const props = this.props;
         const {currentStep,totalStep,prevText,nextText,finishText,onStepChange,onFinish,children,className,...restProps} = props;
-        const cls = classNames("operation-steps-footer", className);
+        const cls = classNames('operation-steps-footer', className);
         return (
             <div className={cls} {...restProps}>
                 <div className="pull-left">{props.children}</div>
@@ -82,9 +82,9 @@ function noop() {
 OperationStepsFooter.defaultProps = {
     currentStep: 0,
     totalStep: 3,
-    prevText: Intl.get("user.user.add.back", "上一步"),
-    nextText: Intl.get("user.user.add.next", "下一步"),
-    finishText: Intl.get("user.user.add.finish", "完成"),
+    prevText: Intl.get('user.user.add.back', '上一步'),
+    nextText: Intl.get('user.user.add.next', '下一步'),
+    finishText: Intl.get('user.user.add.finish', '完成'),
     onStepChange: noop,
     onFinish: noop,
     className: ''

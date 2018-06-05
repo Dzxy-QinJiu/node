@@ -1,4 +1,4 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 合同基本资料相关面板共用部分
@@ -6,15 +6,15 @@ const Validator = Validation.Validator;
  * 包括共用状态和方法的定义以及共用字段的渲染
  */
 
-import { Form, Input, Select, DatePicker, Radio } from "antd";
+import { Form, Input, Select, DatePicker, Radio } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const AutosizeTextarea = require("../../../components/autosize-textarea");
-import ajax from "../common/ajax";
-import routeList from "../common/route";
-const customerAjax = require("../../common/public/ajax/customer");
-import { CATEGORY, CONTRACT_STAGE, STAGE_AUDIT, CONTRACT_LABEL, LABEL_NEW_SIGNING } from "../consts";
+const AutosizeTextarea = require('../../../components/autosize-textarea');
+import ajax from '../common/ajax';
+import routeList from '../common/route';
+const customerAjax = require('../../common/public/ajax/customer');
+import { CATEGORY, CONTRACT_STAGE, STAGE_AUDIT, CONTRACT_LABEL, LABEL_NEW_SIGNING } from '../consts';
 
 const formItemLayout = {
     labelCol: { span: 4 },
@@ -42,8 +42,8 @@ export default {
 
         this.state.formData[field] = value;
         //复制到甲方
-        if (field === "customer_name") {
-            this.state.formData["buyer"] = value;
+        if (field === 'customer_name') {
+            this.state.formData['buyer'] = value;
         }
         this.setState(this.state);
     },
@@ -66,7 +66,7 @@ export default {
         }, 500);
     },
     renderNumField: function() {
-        let rules = [{required: true, message: Intl.get("contract.57", "请填写合同号")}];
+        let rules = [{required: true, message: Intl.get('contract.57', '请填写合同号')}];
 
         if (this.props.validateNumRepeat) {
             rules.push({validator: this.checkNumExist});
@@ -75,16 +75,16 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("contract.24", "合同号")}
-                validateStatus={this.getValidateStatus("num")}
-                help={this.getHelpMessage("num")}
+                label={Intl.get('contract.24', '合同号')}
+                validateStatus={this.getValidateStatus('num')}
+                help={this.getHelpMessage('num')}
             >
                 <Validator trigger="onBlur" rules={rules}>
                     <Input
                         ref="num"
                         name="num"
                         value={this.state.formData.num}
-                        onChange={this.setField.bind(this, "num")}
+                        onChange={this.setField.bind(this, 'num')}
                     />
                 </Validator>
             </FormItem>
@@ -104,15 +104,15 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("crm.41", "客户名")}
-                validateStatus={this.getValidateStatus("customer_name")}
-                help={this.getHelpMessage("customer_name")}
+                label={Intl.get('crm.41', '客户名')}
+                validateStatus={this.getValidateStatus('customer_name')}
+                help={this.getHelpMessage('customer_name')}
             >
-                <Validator rules={[{required: true, message: Intl.get("contract.58", "请填写客户名")}]}>
+                <Validator rules={[{required: true, message: Intl.get('contract.58', '请填写客户名')}]}>
                     <Input
                         name="customer_name"
                         value={this.state.formData.customer_name}
-                        onChange={this.enterCustomer.bind(this, "customer_name")}
+                        onChange={this.enterCustomer.bind(this, 'customer_name')}
                     />
                 </Validator>
             </FormItem>
@@ -122,20 +122,20 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("common.belong.customer", "所属客户")}
-                validateStatus={this.getValidateStatus("oplate_customer_name")}
-                help={this.getHelpMessage("oplate_customer_name")}
+                label={Intl.get('common.belong.customer', '所属客户')}
+                validateStatus={this.getValidateStatus('oplate_customer_name')}
+                help={this.getHelpMessage('oplate_customer_name')}
             >
-                <Validator rules={[{required: true, message: Intl.get("contract.58", "请填写客户名")}]}>
+                <Validator rules={[{required: true, message: Intl.get('contract.58', '请填写客户名')}]}>
                     <Select
                         name="oplate_customer_name"
                         combobox
                         filterOption={false}
-                        searchPlaceholder={Intl.get("customer.search.by.customer.name", "请输入客户名称搜索")}
+                        searchPlaceholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                         value={this.state.formData.oplate_customer_name}
-                        onSearch={this.queryCustomer.bind(this, "oplate_customer_name")}
+                        onSearch={this.queryCustomer.bind(this, 'oplate_customer_name')}
                         onSelect={this.onCustomerChoosen}
-                        notFoundContent={Intl.get("contract.60", "暂无客户")}
+                        notFoundContent={Intl.get('contract.60', '暂无客户')}
                     >
                         {this.getCustomerOptions()}
                     </Select>
@@ -147,12 +147,12 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("contract.4", "甲方")}
+                label={Intl.get('contract.4', '甲方')}
             >
                 <Input
                     name="buyer"
                     value={this.state.formData.buyer}
-                    onChange={this.enterCustomer.bind(this, "buyer")}
+                    onChange={this.enterCustomer.bind(this, 'buyer')}
                 />
             </FormItem>
         );
@@ -165,19 +165,19 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("crm.6", "负责人")}
-                validateStatus={this.getValidateStatus("user_id")}
-                help={this.getHelpMessage("user_id")}
+                label={Intl.get('crm.6', '负责人')}
+                validateStatus={this.getValidateStatus('user_id')}
+                help={this.getHelpMessage('user_id')}
             >
-                <Validator rules={[{required: true, message: Intl.get("contract.63", "请选择负责人")}]}>
+                <Validator rules={[{required: true, message: Intl.get('contract.63', '请选择负责人')}]}>
                     <Select
                         name="user_id"
                         showSearch
                         optionFilterProp="children"
-                        placeholder={Intl.get("contract.63", "请选择负责人")}
+                        placeholder={Intl.get('contract.63', '请选择负责人')}
                         value={this.state.formData.user_id}
                         onSelect={this.onUserChoosen}
-                        notFoundContent={Intl.get("contract.64", "暂无负责人")}
+                        notFoundContent={Intl.get('contract.64', '暂无负责人')}
                     >
                         {userOptions}
                     </Select>
@@ -197,15 +197,15 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("crm.113", "部门")}
+                label={Intl.get('crm.113', '部门')}
             >
                 <Select
                     showSearch
                     optionFilterProp="children"
-                    placeholder={Intl.get("contract.67", "请选择部门")}
+                    placeholder={Intl.get('contract.67', '请选择部门')}
                     value={this.state.formData.sales_team_id}
                     onSelect={this.onTeamChoosen}
-                    notFoundContent={Intl.get("contract.68", "暂无部门")}
+                    notFoundContent={Intl.get('contract.68', '暂无部门')}
                 >
                     {teamOptions}
                 </Select>
@@ -217,14 +217,14 @@ export default {
             <FormItem 
                 {...formItemLayout2}
                 label="合同额"
-                validateStatus={this.getValidateStatus("contract_amount")}
-                help={this.getHelpMessage("contract_amount")}
+                validateStatus={this.getValidateStatus('contract_amount')}
+                help={this.getHelpMessage('contract_amount')}
             >
-                <Validator rules={[{required: true, message: Intl.get("contract.69", "请填写合同金额")}, this.getNumberValidateRule()]}>
+                <Validator rules={[{required: true, message: Intl.get('contract.69', '请填写合同金额')}, this.getNumberValidateRule()]}>
                     <Input
                         name="contract_amount"
                         value={this.parseAmount(this.state.formData.contract_amount)}
-                        onChange={this.setField.bind(this, "contract_amount")}
+                        onChange={this.setField.bind(this, 'contract_amount')}
                     />
                 </Validator>
             </FormItem>
@@ -238,11 +238,11 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("contract.34", "签订时间")}
+                label={Intl.get('contract.34', '签订时间')}
             >
                 <DatePicker
                     value={moment(this.state.formData.date)}
-                    onChange={this.setField.bind(this, "date")}
+                    onChange={this.setField.bind(this, 'date')}
                 />
             </FormItem>
         );
@@ -259,13 +259,13 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout2}
-                label={Intl.get("contract.36", "合同阶段")}
+                label={Intl.get('contract.36', '合同阶段')}
             >
                 <Select
-                    placeholder={Intl.get("contract.70", "请选择合同阶段")}
+                    placeholder={Intl.get('contract.70', '请选择合同阶段')}
                     value={this.state.formData.stage}
-                    onChange={this.setField.bind(this, "stage")}
-                    notFoundContent={Intl.get("contract.71", "暂无合同阶段")}
+                    onChange={this.setField.bind(this, 'stage')}
+                    notFoundContent={Intl.get('contract.71', '暂无合同阶段')}
                 >
                     {stageOptions}
                 </Select>
@@ -284,13 +284,13 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout2}
-                label={Intl.get("contract.164", "签约类型")}
+                label={Intl.get('contract.164', '签约类型')}
             >
                 <Select
-                    placeholder={Intl.get("contract.70", "请选择签约类型")}
+                    placeholder={Intl.get('contract.70', '请选择签约类型')}
                     value={this.state.formData.label}
-                    onChange={this.setField.bind(this, "label", "")}
-                    notFoundContent={Intl.get("contract.71", "暂无签约类型")}
+                    onChange={this.setField.bind(this, 'label', '')}
+                    notFoundContent={Intl.get('contract.71', '暂无签约类型')}
                 >
                     {labelOptions}
                 </Select>
@@ -305,13 +305,13 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout2}
-                label={Intl.get("contract.37", "合同类型")}
+                label={Intl.get('contract.37', '合同类型')}
             >
                 <Select
-                    placeholder={Intl.get("contract.72", "请选择合同类型")}
+                    placeholder={Intl.get('contract.72', '请选择合同类型')}
                     value={this.state.formData.category}
-                    onChange={this.setField.bind(this, "category")}
-                    notFoundContent={Intl.get("contract.73", "暂无合同类型")}
+                    onChange={this.setField.bind(this, 'category')}
+                    notFoundContent={Intl.get('contract.73', '暂无合同类型')}
                 >
                     {categoryOptions}
                 </Select>
@@ -322,11 +322,11 @@ export default {
         return (
             <FormItem 
                 {...formItemLayout}
-                label={Intl.get("common.remark", "备注")}
+                label={Intl.get('common.remark', '备注')}
             >
                 <AutosizeTextarea
                     value={this.state.formData.remarks}
-                    onChange={this.setField.bind(this, "remarks")}
+                    onChange={this.setField.bind(this, 'remarks')}
                 />
             </FormItem>
         );
@@ -348,7 +348,7 @@ export default {
         const selectedUser = _.find(this.props.userList, user => user.user_id === value);
 
         this.state.formData.user_id = value;
-        this.state.formData.user_name = selectedUser ? selectedUser.nick_name : "";
+        this.state.formData.user_name = selectedUser ? selectedUser.nick_name : '';
         if (selectedUser && selectedUser.group_id) {
             this.onTeamChoosen(selectedUser.group_id);
         }
@@ -361,14 +361,14 @@ export default {
     },
     //检查合同号是否已存在
     checkNumExist: function(rule, value, callback) {
-        value = value ? value.trim() : "";
+        value = value ? value.trim() : '';
 
         if (!value) {
             callback();
             return;
         }
 
-        const route = _.find(routeList, route => route.handler === "checkNumExist");
+        const route = _.find(routeList, route => route.handler === 'checkNumExist');
         const arg = {
             url: route.path,
             type: route.method,
@@ -376,8 +376,8 @@ export default {
         };
         
         ajax(arg).then(result => {
-            if (result && result.result === "true") {
-                callback(new Error( Intl.get("contract.74", "该合同号已存在")));
+            if (result && result.result === 'true') {
+                callback(new Error( Intl.get('contract.74', '该合同号已存在')));
             } else {
                 callback();
             }

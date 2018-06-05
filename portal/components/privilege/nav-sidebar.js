@@ -1,28 +1,28 @@
-require("./css/nav-sidebar.less");
-var userData = require("../../public/sources/user-data");
-var Link = require("react-router").Link;
-var Logo = require("../Logo/index.js");
-var Avatar = require("../Avatar/index.js");
-var LogOut = require("../../modules/logout/views/index.js");
-var url = require("url");
-var Popover = require("antd").Popover;
-var classNames = require("classnames");
-var insertStyle = require("../insert-style");
-var Icon = require("antd").Icon;
+require('./css/nav-sidebar.less');
+var userData = require('../../public/sources/user-data');
+var Link = require('react-router').Link;
+var Logo = require('../Logo/index.js');
+var Avatar = require('../Avatar/index.js');
+var LogOut = require('../../modules/logout/views/index.js');
+var url = require('url');
+var Popover = require('antd').Popover;
+var classNames = require('classnames');
+var insertStyle = require('../insert-style');
+var Icon = require('antd').Icon;
 var React = require('react');
-var userInfoEmitter = require("../../public/sources/utils/emitters").userInfoEmitter;
-var notificationEmitter = require("../../public/sources/utils/emitters").notificationEmitter;
-var _ = require("underscore");
-var UnreadMixin = require("./mixins/unread");
-var websiteConfig = require("../../lib/utils/websiteConfig");
+var userInfoEmitter = require('../../public/sources/utils/emitters').userInfoEmitter;
+var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
+var _ = require('underscore');
+var UnreadMixin = require('./mixins/unread');
+var websiteConfig = require('../../lib/utils/websiteConfig');
 var setWebsiteConfigModuleRecord = websiteConfig.setWebsiteConfigModuleRecord;
 var getLocalWebsiteConfigModuleRecord = websiteConfig.getLocalWebsiteConfigModuleRecord;
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
-let history = require("../../public/sources/history");
-import ModalIntro from "../modal-intro";
-import CONSTS from "LIB_DIR/consts";
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
-import { storageUtil } from "ant-utils";
+let history = require('../../public/sources/history');
+import ModalIntro from '../modal-intro';
+import CONSTS from 'LIB_DIR/consts';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 //需要加引导的模块
 const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -56,54 +56,54 @@ function getUserName() {
 
 //不需要在左侧图标列表中输出的链接
 var ExcludeLinkList = [
-    {"name": Intl.get("menu.sales.homepage", "销售主页"), path: "sales/home"},
-    {"name": Intl.get("common.my.app", "我的应用"), path: "my_app"},
-    {"name": Intl.get("menu.backend", "后台管理"), path: "background_management"},
-    {"name": Intl.get("menu.userinfo.manage", "个人信息管理"), path: "user_info_manage"},
-    {"name": Intl.get("menu.system.notification", "系统消息"), path: "notification_system"},
-    {"name": Intl.get("menu.appuser.apply", "用户审批"), path: "apply"}
+    {'name': Intl.get('menu.sales.homepage', '销售主页'), path: 'sales/home'},
+    {'name': Intl.get('common.my.app', '我的应用'), path: 'my_app'},
+    {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
+    {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
+    {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
+    {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'}
 ];
 
 //后台管理配置
 const BackendConfigLinkList = [
     {
-        name: Intl.get("menu.user", "成员管理"),
-        href: "/background_management/user",
-        key: "user",
-        privilege: "USER_MANAGE_LIST_USERS"
+        name: Intl.get('menu.user', '成员管理'),
+        href: '/background_management/user',
+        key: 'user',
+        privilege: 'USER_MANAGE_LIST_USERS'
     }, {
-        name: Intl.get("menu.salesstage", "销售阶段管理"),
-        href: "/background_management/sales_stage",
-        key: "sales_stage",
-        privilege: "BGM_SALES_STAGE_ADD"
+        name: Intl.get('menu.salesstage', '销售阶段管理'),
+        href: '/background_management/sales_stage',
+        key: 'sales_stage',
+        privilege: 'BGM_SALES_STAGE_ADD'
     }, {
-        name: Intl.get("menu.salesteam", "团队管理"),
-        href: "/background_management/sales_team",
-        key: "sales_team",
-        privilege: "BGM_SALES_TEAM_LIST"
+        name: Intl.get('menu.salesteam', '团队管理'),
+        href: '/background_management/sales_team',
+        key: 'sales_team',
+        privilege: 'BGM_SALES_TEAM_LIST'
     }, {
-        name: Intl.get("menu.config", "配置"),
-        href: "/background_management/configaration",
-        key: "configaration",
-        privilege: "CREATE_CONFIG_INDUSTRY"
+        name: Intl.get('menu.config', '配置'),
+        href: '/background_management/configaration',
+        key: 'configaration',
+        privilege: 'CREATE_CONFIG_INDUSTRY'
     }
 ];
 
 //通知类型
 var NotificationLinkList = [
     {
-        name: Intl.get("menu.system.notification", "系统消息"),
-        href: "/notification_system",
-        key: "notification_system",
+        name: Intl.get('menu.system.notification', '系统消息'),
+        href: '/notification_system',
+        key: 'notification_system',
         privilege: 'NOTIFICATION_SYSTEM_LIST'
     }
 ];
 //审批入口
 var applyentryLink = [
     {
-        name: Intl.get("menu.appuser.apply", "用户审批"),
-        href: "/apply",
-        key: "apply", privilege: "APP_USER_APPLY_LIST"
+        name: Intl.get('menu.appuser.apply', '用户审批'),
+        href: '/apply',
+        key: 'apply', privilege: 'APP_USER_APPLY_LIST'
     }
 ];
 
@@ -162,10 +162,10 @@ var NavSidebar = React.createClass({
                 system: 0
             },
             //需要加引导功能的某个元素
-            $introElement: "",
+            $introElement: '',
             isShowIntroModal: false,//是否展示引导的模态框
             introModalLayout: {},//模态框上蚂蚁及提示的展示样式
-            tipMessage: "",//提示内容
+            tipMessage: '',//提示内容
             hasUnreadReply: false,//是否有未读的回复
         };
     },
@@ -224,22 +224,22 @@ var NavSidebar = React.createClass({
     //确定要加引导的元素是日程管理的图标还是汉堡包按钮
     selectedIntroElement: function() {
         //查看汉堡包按钮是否存在
-        var hamburger = document.getElementById("hamburger");
+        var hamburger = document.getElementById('hamburger');
         var isHamburgerShow = hamburger.style.display;
         //要加引导的元素
-        var $introElement = "", introModalLayout = {};
-        if (isHamburgerShow == "none") {
-            $introElement = $("li." + menu.routePath + "_ico a i");
+        var $introElement = '', introModalLayout = {};
+        if (isHamburgerShow == 'none') {
+            $introElement = $('li.' + menu.routePath + '_ico a i');
             introModalLayout = commonIntroModalLayout;
-        } else if (isHamburgerShow == "block") {
-            $introElement = $("#hamburger");
+        } else if (isHamburgerShow == 'block') {
+            $introElement = $('#hamburger');
             introModalLayout = hamburgerIntroModalLayout;
         }
         //只有在要加引导的元素变化之后才会setState，如果元素不变，不需要更改状态
         if ($introElement !== this.state.$introElement) {
             this.setState({
                 isShowIntroModal: true,
-                tipMessage: Intl.get("schedule.tip.intro.message", "日程功能上线了，赶快点开看看吧！"),
+                tipMessage: Intl.get('schedule.tip.intro.message', '日程功能上线了，赶快点开看看吧！'),
                 $introElement: $introElement,
                 introModalLayout: introModalLayout
             });
@@ -279,7 +279,7 @@ var NavSidebar = React.createClass({
         this.setState({});
     },
     getHasUnreadReply: function() {
-        const APPLY_UNREAD_REPLY = "apply_unread_reply";
+        const APPLY_UNREAD_REPLY = 'apply_unread_reply';
         let userId = userData.getUserData().user_id;
         //获取sessionStore中已存的未读回复列表
         let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
@@ -339,9 +339,9 @@ var NavSidebar = React.createClass({
     getNotificationClass: function() {
         var urlInfo = url.parse(window.location.href);
         if (/^\/notification\//.test(urlInfo.pathname)) {
-            return "active";
+            return 'active';
         } else {
-            return "";
+            return '';
         }
     },
 
@@ -385,14 +385,14 @@ var NavSidebar = React.createClass({
         //个人资料部分
         var UserInfoLinkList = [
             {
-                name: Intl.get("user.info.user.info", "个人资料"),
-                href: "/user_info_manage/user_info",
-                key: "user_info"
+                name: Intl.get('user.info.user.info', '个人资料'),
+                href: '/user_info_manage/user_info',
+                key: 'user_info'
             },
             {
-                name: Intl.get("common.edit.password", "修改密码"),
-                href: "/user_info_manage/user_pwd",
-                key: "user_pwd"
+                name: Intl.get('common.edit.password', '修改密码'),
+                href: '/user_info_manage/user_pwd',
+                key: 'user_pwd'
             }
         ];
         return (
@@ -422,7 +422,7 @@ var NavSidebar = React.createClass({
         return (
             <div className="notification">
                 <Link to={notificationLinks[0].href} activeClassName="active">
-                    <i className="iconfont icon-tongzhi" title={Intl.get("menu.system.notification", "系统消息")}>
+                    <i className="iconfont icon-tongzhi" title={Intl.get('menu.system.notification', '系统消息')}>
                     </i>
                 </Link>
             </div>
@@ -436,10 +436,10 @@ var NavSidebar = React.createClass({
         return (
             <div className="sidebar-applyentry">
                 <Link to={applyLinks[0].href} activeClassName="active">
-                    <i className="iconfont icon-applyentry" title={Intl.get("menu.appuser.apply", "用户审批")}/>
+                    <i className="iconfont icon-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}/>
                     {this.state.messages.approve == 0 && this.state.hasUnreadReply ?
                         <span className="iconfont icon-apply-message-tip"
-                            title={Intl.get("user.apply.unread.reply", "有未读回复")}/> : null}
+                            title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
                 </Link>
             </div>
         );
@@ -520,7 +520,7 @@ var NavSidebar = React.createClass({
     },
     handleOnclickHole: function() {
         //跳转到新加模块界面
-        history.pushState({}, "/" + menu.routePath, {});
+        history.pushState({}, '/' + menu.routePath, {});
         this.saveModalClicked();
     },
     //将该模块存入后端并隐藏模态框
@@ -528,15 +528,15 @@ var NavSidebar = React.createClass({
         this.setState({
             isShowIntroModal: false
         });
-        setWebsiteConfigModuleRecord({"module_record": [menu.name]});
+        setWebsiteConfigModuleRecord({'module_record': [menu.name]});
     },
     hideModalIntro: function() {
         this.saveModalClicked();
     },
     render: function() {
         var windowHeight = this.navContainerHeightFnc();
-        const pathName = location.pathname.replace(/^\/|\/$/g, "");
-        var currentPageCategory = pathName.split("/")[0];
+        const pathName = location.pathname.replace(/^\/|\/$/g, '');
+        var currentPageCategory = pathName.split('/')[0];
         //不在左侧循环输出的链接
         var excludePathList = _.pluck(ExcludeLinkList, 'path');
         var _this = this;
@@ -559,7 +559,7 @@ var NavSidebar = React.createClass({
                                         return false;
                                     }).map(function(menu, i) {
                                         var category = menu.routePath.replace(/\/.*$/, '');
-                                        var extraClass = currentPageCategory === category && pathName !== "contract/dashboard" ? 'active' : '';
+                                        var extraClass = currentPageCategory === category && pathName !== 'contract/dashboard' ? 'active' : '';
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
                                         if (!(_.contains(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);
@@ -597,7 +597,7 @@ var NavSidebar = React.createClass({
                         {_this.getUserInfoBlock()}
                     </div>
                 </div>
-                {this.state.isShowIntroModal && hasPrivilege("MEMBER_SCHEDULE_MANAGE") ? <ModalIntro
+                {this.state.isShowIntroModal && hasPrivilege('MEMBER_SCHEDULE_MANAGE') ? <ModalIntro
                     introModalLayout={this.state.introModalLayout}
                     $introElement={this.state.$introElement}
                     handleOnclickHole={this.handleOnclickHole}

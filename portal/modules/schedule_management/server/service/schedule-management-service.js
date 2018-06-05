@@ -1,39 +1,39 @@
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var restApis = {
     //日程管理相关路径
-    scheduleApis: "/rest/base/v1/schedule/",
+    scheduleApis: '/rest/base/v1/schedule/',
 };
 exports.restUrls = restApis;
-var _ = require("underscore");
+var _ = require('underscore');
 //获取日程管理列表
 exports.getScheduleList = function(req, res) {
     var url = restApis.scheduleApis;
     if (req.query && req.query.page_size){
-        url = url + "list" + "?page_size=" + req.query.page_size;
+        url = url + 'list' + '?page_size=' + req.query.page_size;
         if (req.query && req.query.customer_id){
-            url = url + "&customer_id=" + req.query.customer_id;
+            url = url + '&customer_id=' + req.query.customer_id;
         }
         if (req.query && req.query.start_time){
-            url = url + "&start_time=" + req.query.start_time;
+            url = url + '&start_time=' + req.query.start_time;
         }
         if (req.query && req.query.end_time){
-            url = url + "&end_time=" + req.query.end_time;
+            url = url + '&end_time=' + req.query.end_time;
         }
         if (req.query && req.query.sort_field){
-            url = url + "&sort_field=" + req.query.sort_field;
+            url = url + '&sort_field=' + req.query.sort_field;
         }
         if (req.query && req.query.order){
-            url = url + "&order=" + req.query.order;
+            url = url + '&order=' + req.query.order;
         }
         if (req.query && (_.isBoolean(req.query.status) || req.query.status)){
-            url = url + "&status=" + req.query.status;
+            url = url + '&status=' + req.query.status;
         }
         if (req.query && req.query.id){
-            url = url + "&id=" + req.query.id;
+            url = url + '&id=' + req.query.id;
         }
         if (req.query && req.query.type){
-            url = url + "&type=" + req.query.type;
+            url = url + '&type=' + req.query.type;
         }
     }
 
@@ -48,7 +48,7 @@ exports.getScheduleList = function(req, res) {
 exports.handleScheduleStatus = function(req, res) {
     return restUtil.authRest.put(
         {
-            url: restApis.scheduleApis + "handle/" + req.params.scheduleId + '/' + req.params.status,
+            url: restApis.scheduleApis + 'handle/' + req.params.scheduleId + '/' + req.params.status,
             req: req,
             res: res
         }, null);

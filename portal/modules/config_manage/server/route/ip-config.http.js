@@ -8,58 +8,58 @@ module.exports = {
     routes: [
         {
             // 获取IP配置
-            "method": "get",
-            "path": "/rest/get/ip_config",
-            "handler": "getIpConfigList",
-            "passport": {
-                "needLogin": true
+            'method': 'get',
+            'path': '/rest/get/ip_config',
+            'handler': 'getIpConfigList',
+            'passport': {
+                'needLogin': true
             },
-            "privileges": [
-                "GET_CONFIG_IP" // 获取IP配置权限
+            'privileges': [
+                'GET_CONFIG_IP' // 获取IP配置权限
             ]
         }, {
             // 添加IP配置
-            "method": "post",
-            "path": "/rest/add/ip_config",
-            "handler": "addIpConfigItem",
-            "passport": {
-                "needLogin": true
+            'method': 'post',
+            'path': '/rest/add/ip_config',
+            'handler': 'addIpConfigItem',
+            'passport': {
+                'needLogin': true
             },
-            "privileges": [
-                "CREATE_CONFIG_IP" // 添加IP配置权限
+            'privileges': [
+                'CREATE_CONFIG_IP' // 添加IP配置权限
             ]
         }, {
             // 删除IP配置
-            "method": "delete",
-            "path": "/rest/delete/ip_config/:id",
-            "handler": "deleteIpConfigItem",
-            "passport": {
-                "needLogin": true
+            'method': 'delete',
+            'path': '/rest/delete/ip_config/:id',
+            'handler': 'deleteIpConfigItem',
+            'passport': {
+                'needLogin': true
             },
-            "privileges": [
-                "DELETE_CONFIG_IP" // 删除IP配置权限
+            'privileges': [
+                'DELETE_CONFIG_IP' // 删除IP配置权限
             ]
         }, {
             // 添加过滤内网ip
-            "method": "post",
-            "path": "/rest/filter/lan",
-            "handler": "filterIp",
-            "passport": {
-                "needLogin": true
+            'method': 'post',
+            'path': '/rest/filter/lan',
+            'handler': 'filterIp',
+            'passport': {
+                'needLogin': true
             },
-            "privileges": [
-                "CREATE_CONFIG_IP" // 添加过滤内网网段的权限
+            'privileges': [
+                'CREATE_CONFIG_IP' // 添加过滤内网网段的权限
             ]
         }, {
             // 获取安全域是否过滤内网网段
-            "method": "get",
-            "path": "/rest/get/config/filter/ip",
-            "handler": "getFilterIp",
-            "passport": {
-                "needLogin": true
+            'method': 'get',
+            'path': '/rest/get/config/filter/ip',
+            'handler': 'getFilterIp',
+            'passport': {
+                'needLogin': true
             },
-            "privileges": [
-                "GET_CONFIG_IP" // 获取安全域是否过滤内网网段的权限
+            'privileges': [
+                'GET_CONFIG_IP' // 获取安全域是否过滤内网网段的权限
             ]
         }
     ]

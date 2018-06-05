@@ -1,8 +1,8 @@
-const hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
+const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 const AUTHS = {
-    "GETALL": "CUSTOMER_ALL",
-    "UPDATE_ALL": "CUSTOMER_MANAGER_UPDATE_ALL",
-    "TRANSFER_MANAGER": "CRM_MANAGER_TRANSFER"
+    'GETALL': 'CUSTOMER_ALL',
+    'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
+    'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
 };
 //添加客户
 exports.addCustomer = function(newCus) {
@@ -43,9 +43,9 @@ exports.deleteCustomer = function(ids) {
 //更新客户（单项修改）
 exports.updateCustomer = function(newCus) {
     if (hasPrivilege(AUTHS.UPDATE_ALL)) {
-        newCus.urlType = "manager";
+        newCus.urlType = 'manager';
     } else {
-        newCus.urlType = "user";
+        newCus.urlType = 'user';
     }
     var Deferred = $.Deferred();
     $.ajax({
@@ -65,14 +65,14 @@ exports.updateCustomer = function(newCus) {
 
 //转出客户
 exports.transferCustomer = function(customer) {
-    let urlType = "user";// CRM_USER_TRANSFER
+    let urlType = 'user';// CRM_USER_TRANSFER
     if (hasPrivilege(AUTHS.TRANSFER_MANAGER)) {
-        urlType = "manager";
+        urlType = 'manager';
     }
     delete customer.type;
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/crm/:type/transfer_customer'.replace(":type", urlType),
+        url: '/rest/crm/:type/transfer_customer'.replace(':type', urlType),
         dataType: 'json',
         type: 'put',
         data: customer,
@@ -139,7 +139,7 @@ exports.getCustomerById = function(customerId) {
 //查询客户
 exports.queryCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {
     pageSize = pageSize || 10;
-    sorter = sorter ? sorter : {field: "id", order: "ascend"};
+    sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     var data = {
         data: JSON.stringify(condition),
         rangParams: JSON.stringify(rangParams),
@@ -151,7 +151,7 @@ exports.queryCustomer = function(condition, rangParams, pageSize, sorter, queryO
     var Deferred = $.Deferred();
 
     $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + "/" + sorter.field + "/" + sorter.order,
+        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
@@ -315,7 +315,7 @@ exports.getCrmUserList = function(reqData) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
+                Deferred.reject(xhr.responseJSON || Intl.get('user.list.get.failed', '获取用户列表失败'));
             }
         }
     });
@@ -324,14 +324,14 @@ exports.getCrmUserList = function(reqData) {
 //获取所在团队及下级团队列表
 let salesTeamListAjax;
 exports.getMyTeamWithSubteams = function() {
-    let type = "self";//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
-    if (hasPrivilege("GET_TEAM_LIST_ALL")) {
-        type = "all";
+    let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
+    if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        type = 'all';
     }
     salesTeamListAjax && salesTeamListAjax.abort();
     let Deferred = $.Deferred();
     $.ajax({
-        url: "/rest/crm/sales_team_tree",
+        url: '/rest/crm/sales_team_tree',
         dataType: 'json',
         type: 'get',
         data: {type: type},
@@ -352,7 +352,7 @@ exports.getCustomerLimit = function(reqData) {
     getCustomerLimitAjax && getCustomerLimitAjax.abort();
     let Deferred = $.Deferred();
     $.ajax({
-        url: "/rest/crm/limit",
+        url: '/rest/crm/limit',
         dataType: 'json',
         type: 'get',
         data: reqData,
