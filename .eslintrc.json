@@ -79,7 +79,7 @@
     //JSX中不允许使用箭头函数和bind
     "react/jsx-no-bind": 0,
     //防止在JSX中重复的props
-    "react/jsx-no-duplicate-props": 1,
+    "react/jsx-no-duplicate-props":1,
     //防止使用未包装的JSX字符串
     "react/jsx-no-literals": 0,
     //在JSX中禁止未声明的变量
@@ -89,9 +89,9 @@
     //强化props按字母排序
     "react/jsx-sort-props": 0,
     //防止反应被错误地标记为未使用
-    "react/jsx-uses-react": 0,
+    "react/jsx-uses-react": 1,
     //防止在JSX中使用的变量被错误地标记为未使用
-    "react/jsx-uses-vars": 0,
+    "react/jsx-uses-vars": 1,
     //防止使用危险的JSX属性
     "react/no-danger": 1,
     //防止在componentDidMount中使用setState
