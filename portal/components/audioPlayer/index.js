@@ -39,16 +39,16 @@ class AudioPlayer extends React.Component {
                     <div className="report-wrap">
                         <span className="report-tip">
                             {Intl.get("call.record.customer.phone", "这是一个客服电话")}
-                            {this.state.isShowReportButton ? "。" : "？"}
+                            {this.state.isShowReportButton ? "？" : "。"}
                         </span>
                         {this.state.isShowReportButton ?
-                            null :
                             <span className="report-button"
                                 onClick={this.props.handleAddInvalidPhone}
                                 data-tracename="上报客服电话"
                             >{Intl.get("call.record.report", "上报")}
                                 {this.props.isAddingInvalidPhone ? <Icon type="loading"/> : null}
-                            </span>}
+                            </span> : null
+                        }
                         {this.props.addingInvalidPhoneErrMsg ? (<AlertTimer time={2000}
                             message={this.props.addingInvalidPhoneErrMsg}
                             type='error' showIcon

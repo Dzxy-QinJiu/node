@@ -8,7 +8,7 @@ let errorLogger = require("../utils/logger").getLogger('error');
 let BackendIntl = require("../../lib/utils/backend_intl");
 
 let timeOut = 3000;
-module.exports = function (error, req, res, next) {
+module.exports = function(error, req, res, next) {
     if (error) {
         let status = res.statusCode || 500;
         let backendIntl = new BackendIntl(req.query.lang || undefined);
@@ -18,7 +18,7 @@ module.exports = function (error, req, res, next) {
         res.end(msg);
         //如果是线上产品，一定时间后退出系统，使openshift重新部署pod
         if (config.isProduction) {
-            setTimeout(function () {
+            setTimeout(function() {
                 process.exit(1);
             }, timeOut);
         }

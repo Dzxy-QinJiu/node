@@ -642,14 +642,11 @@ class PhonePanel extends React.Component {
     }
 }
 
-PhonePanel
-    .defaultProps = {
-        showFlag: false,
-        paramObj: {
-            call_params: null,//后端推送过来的电话状态相关的参数
-            customer_params: null//客户详情相关的参数
-        }
-    };
-export
-default
-PhonePanel;
+PhonePanel.defaultProps = {
+    showFlag: false,
+    paramObj: {
+        call_params: null,//后端推送过来的电话状态相关的参数
+        customer_params: null//客户详情相关的参数
+    }
+};
+export default PhonePanel;

@@ -36,6 +36,7 @@ let CALL_STATUS_MAP = {
 };
 let searchInputTimeOut = null;
 const delayTime = 800;
+var audioMsgEmitter = require("PUB_DIR/sources/utils/emitters").audioMsgEmitter;
 //计算布局的常量
 const LAYOUT_CONSTANTS = {
     PADDING_TOP: 66,
@@ -509,14 +510,23 @@ const CallRecord = React.createClass({
         }
         //给本条记录加上标识
         item.playSelected = true;
+        var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
+        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, item.dst) == -1;
+        audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
+            playingItemAddr: playItemAddr,
+            getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
+            addingInvalidPhoneErrMsg: this.state.addingInvalidPhoneErrMsg,
+            isAddingInvalidPhone: this.state.isAddingInvalidPhone,
+            isShowReportButton: isShowReportButton,
+            closeAudioPlayContainer: this.closeAudioPlayContainer,
+            handleAddInvalidPhone: this.handleAddInvalidPhone,
+            hideErrTooltip: this.hideErrTooltip,
+        });
         this.setState({
             callRecord: this.state.callRecord,
-            playingItemAddr: commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type),
+            playingItemAddr: playItemAddr,
             playingItemPhone: item.dst//正在播放的录音所属的电话号码
         }, () => {
-            if ($(".audio-play-container").height() < 45) {
-                $(".audio-play-container").animate({ height: '45px' }).css("border", "2px solid #eee");
-            }
             var audio = $("#audio")[0];
             if (audio) {
                 if (oldItemId && oldItemId == item.id) {
@@ -864,6 +874,10 @@ const CallRecord = React.createClass({
                 invalidPhoneLists: this.state.invalidPhoneLists,
                 addingInvalidPhoneErrMsg: ""
             });
+            //是否隐藏上报按钮
+            audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
+                isShowReportButton: false
+            });
         },(err) => {
             this.setState({
                 isAddingInvalidPhone: false,
@@ -947,25 +961,6 @@ const CallRecord = React.createClass({
                         phoneNumber={this.state.phoneNumber}
                     />
                 </div>
-                {/*
-                        底部播放器
-                    */}
-                <div className="audio-play-container">
-                    {this.state.playingItemAddr ? (
-                        <AudioPlayer
-                            playingItemAddr={this.state.playingItemAddr}
-                            getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
-                            addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
-                            isAddingInvalidPhone={this.state.isAddingInvalidPhone}
-                            isShowReportButton={isShowReportButton}
-                            closeAudioPlayContainer={this.closeAudioPlayContainer}
-                            handleAddInvalidPhone={this.handleAddInvalidPhone}
-                            hideErrTooltip={this.hideErrTooltip}
-                        />
-                    ) : null
-                    }
-                </div>
-
                 <RightPanel
                     className="call-analysis-panel"
                     showFlag={this.state.isShowCallAnalysisPanel}

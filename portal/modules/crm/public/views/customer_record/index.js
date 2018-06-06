@@ -59,7 +59,7 @@ const CALL_TYPE_MAP = {
 };
 
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
-
+var audioMsgEmitter = require("PUB_DIR/sources/utils/emitters").audioMsgEmitter;
 const CustomerRecord = React.createClass({
     getInitialState: function() {
         return {
@@ -385,9 +385,22 @@ const CustomerRecord = React.createClass({
         }
         //给本条记录加上标识
         item.playSelected = true;
+        var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
+        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, item.dst) == -1;
+        audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
+            playingItemAddr: playItemAddr,
+            getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
+            addingInvalidPhoneErrMsg: this.state.addingInvalidPhoneErrMsg,
+            isAddingInvalidPhone: this.state.isAddingInvalidPhone,
+            isShowReportButton: isShowReportButton,
+            closeAudioPlayContainer: this.closeAudioPlayContainer,
+            handleAddInvalidPhone: this.handleAddInvalidPhone,
+            hideErrTooltip: this.hideErrTooltip,
+        });
+
         this.setState({
             customerRecord: this.state.customerRecord,
-            playingItemAddr: commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type),
+            playingItemAddr: playItemAddr,
             playingItemPhone: item.dst //正在播放的录音所属的电话号码
         }, () => {
             var audio = $("#audio")[0];
@@ -491,6 +504,10 @@ const CustomerRecord = React.createClass({
                 invalidPhoneLists: this.state.invalidPhoneLists,
                 addingInvalidPhoneErrMsg: ""
             });
+            //是否隐藏上报按钮
+            audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
+                isShowReportButton: false
+            });
         }, (err) => {
             this.setState({
                 isAddingInvalidPhone: false,
@@ -549,8 +566,6 @@ const CustomerRecord = React.createClass({
             } else {//减共xxx条的高度
                 divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
             }
-            var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
-            var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
@@ -564,24 +579,6 @@ const CustomerRecord = React.createClass({
                             </GeminiScrollbar>
                         </div>)
                     }
-                    <div className="show-foot">
-                        {/* 底部播放器 */}
-                        <div className={cls}>
-                            {this.state.playingItemAddr ? (
-                                <AudioPlayer
-                                    playingItemAddr={this.state.playingItemAddr}
-                                    getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
-                                    addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
-                                    isAddingInvalidPhone={this.state.isAddingInvalidPhone}
-                                    isShowReportButton={isShowReportButton}
-                                    closeAudioPlayContainer={this.closeAudioPlayContainer}
-                                    handleAddInvalidPhone={this.handleAddInvalidPhone}
-                                    hideErrTooltip={this.hideErrTooltip}
-                                />
-                            ) : null
-                            }
-                        </div>
-                    </div>
                 </div>
             );
         }
@@ -653,7 +650,6 @@ const CustomerRecord = React.createClass({
         var modalContent = Intl.get("customer.confirm.trace", "是否添加此跟进内容？");
         var detail = $.trim(this.state.detailContent);
         var closedModalTip = $.trim(this.state.detailContent) ? "取消补充跟进内容" : "取消添加跟进内容";
-
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (

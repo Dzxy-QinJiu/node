@@ -310,6 +310,44 @@ body.macintosh, body.macintosh pre{
 .custom-scrollbar::-webkit-scrollbar-thumb:active{
   background:rgba(0, 0, 0, .3);
 }
+@btn_color: #8ba9c3;
+.audio-foot{
+  position: fixed;
+  bottom:0;
+  left:40%;
+  //底部录音播放状态的组件展示样式
+  .audio-play-container {
+    width: 360px;
+    height: 0;
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px #cac8c8;
+    .audio-player-wrap {
+      //录音播放插件
+      audio {
+        margin: 0 auto;
+      }
+      .iconfont.icon-close {
+        position: absolute;
+        height: 24px;
+        width: 24px;
+        top: 5px;
+        right: -5px;
+        color: @btn_color;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      //客服电话得提示及上报
+      .report-wrap {
+        font-size: 14px;
+        margin: 0 auto;
+        width: 180px;
+      }
+    }
+  }
+  .audio-play-container.is-playing-audio {
+    height: 60px;
+  }
+}
 
 /*noty plugin custom css start*/
 
