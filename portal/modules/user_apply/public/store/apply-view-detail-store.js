@@ -140,16 +140,16 @@ class ApplyViewDetailStore {
         var weeks = Math.floor(left_millis / WEEK_MILLIS);
         left_millis = left_millis - weeks * WEEK_MILLIS;
         var days = Math.floor(left_millis / DAY_MILLIS);
-        if(years != 0 && months == 0 && weeks == 0 && days == 0){
+        if(years !== 0 && months === 0 && weeks === 0 && days === 0){
             this.formData.delayTimeNumber = years;
             this.formData.delayTimeUnit = 'years';
-        }else if(years == 0 && months != 0 && weeks == 0 && days == 0){
+        }else if(years === 0 && months !== 0 && weeks === 0 && days === 0){
             this.formData.delayTimeNumber = months;
             this.formData.delayTimeUnit = 'months';
-        }else if(years == 0 && months == 0 && weeks != 0 && days == 0){
+        }else if(years === 0 && months === 0 && weeks !== 0 && days === 0){
             this.formData.delayTimeNumber = weeks;
             this.formData.delayTimeUnit = 'weeks';
-        }else if(years == 0 && months == 0 && weeks == 0 && days != 0){
+        }else if(years === 0 && months === 0 && weeks === 0 && days !== 0){
             this.formData.delayTimeNumber = days;
             this.formData.delayTimeUnit = 'days';
         }else{
@@ -188,7 +188,7 @@ class ApplyViewDetailStore {
                 this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
             }
             let delayTime = 0;
-            if(this.detailInfoObj.info.type == 'apply_grant_delay'){
+            if(this.detailInfoObj.info.type === 'apply_grant_delay'){
                 if (this.detailInfoObj.info.delayTime) { // 同步修改时间
                     delayTime = this.detailInfoObj.info.delayTime;
                     this.formData.delay_time = delayTime;
@@ -265,7 +265,7 @@ class ApplyViewDetailStore {
     }
     //计算右侧底部类型
     setBottomDisplayType() {
-        if(this.selectedDetailItem.isConsumed == 'true') {
+        if(this.selectedDetailItem.isConsumed === 'true') {
             this.detailBottomDisplayType = 'formtext';
         } else {
             this.detailBottomDisplayType = 'btn';
@@ -306,7 +306,7 @@ class ApplyViewDetailStore {
     }
     //保存用户名
     saveUserName(name) {
-        if (name != this.detailInfoObj.info.user_names[0]) {
+        if (name !== this.detailInfoObj.info.user_names[0]) {
             this.detailInfoObj.info.user_names[0] = name;
             this.isChangeUserName = true;
         }
@@ -393,8 +393,9 @@ class ApplyViewDetailStore {
     saveModifyDelayTime(delay) {
         this.returnDelayTimeShow = false;
         this.isModifyDelayTime = false;
-        if (this.formData.delayTimeUnit != 'custom') {
+        if (this.formData.delayTimeUnit !== 'custom') {
             this.formData.delay_time = delay;
+            // 当时间单位为天、周、月、年时，默认end_date一个具体的值（默认显示当前时间的第二天）
             this.formData.end_date = moment().add('days',1).valueOf();
         } else {
             this.formData.end_date = delay;
