@@ -13,6 +13,7 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
 import userData from "PUB_DIR/sources/user-data";
 import ApplyOpenAppPanel from "MOD_DIR/app_user_manage/public/views/v2/apply-user";
+import ApplyUserForm from "../apply-user-form";
 import CrmUserApplyForm from "./crm-user-apply-form";
 import crmAjax from "../../ajax";
 import appAjaxTrans from "MOD_DIR/common/public/ajax/app";
@@ -122,7 +123,7 @@ class CustomerUsers extends React.Component {
         appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(result => {
             let list = [];
             if (_.isArray(result) && result.length) {
-                list = result.map(function(app) {
+                list = result.map(function (app) {
                     return {
                         client_id: app.app_id,
                         client_name: app.app_name,
@@ -233,7 +234,7 @@ class CustomerUsers extends React.Component {
                 if (isShowCheckbox) {
                     return (
                         <Checkbox checked={app.checked}
-                            onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
+                                  onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
                             {this.renderUserAppItem(app)}
                         </Checkbox>);
                 } else {
@@ -271,9 +272,9 @@ class CustomerUsers extends React.Component {
             traceDescr = "打开申请其他类型面板";
         } else if (applyType === APPLY_TYPES.OPEN_APP) {
             traceDescr = "打开申请开通应用面板";
-            if (_.isFunction(this.props.showOpenAppForm)) {
-                this.props.showOpenAppForm(applyType);
-            }
+            // if (_.isFunction(this.props.showOpenAppForm)) {
+            //     this.props.showOpenAppForm(applyType);
+            // }
         }
         Trace.traceEvent("客户详情", traceDescr);
         this.setState({applyType: applyType});
@@ -308,24 +309,24 @@ class CustomerUsers extends React.Component {
         return (
             <div className="crm-user-apply-btns">
                 <Button type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
-                    disabled={!applyFlag}>
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
+                        disabled={!applyFlag}>
                     {Intl.get("common.stop", "停用")}
                 </Button>
                 <Button type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!applyFlag}>
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!applyFlag}>
                     {Intl.get("crm.user.delay", "延期")}
                 </Button>
                 <Button type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)} disabled={!applyFlag}>
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)} disabled={!applyFlag}>
                     {Intl.get("common.edit.password", "修改密码")}
                 </Button>
                 <Button type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!applyFlag}>
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!applyFlag}>
                     {Intl.get("crm.186", "其他")}
                 </Button>
                 <Button type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
                     {Intl.get("user.app.open", "开通应用")}
                 </Button>
             </div>);
@@ -350,6 +351,26 @@ class CustomerUsers extends React.Component {
             }
         }
         return rightPanelView;
+    }
+
+    renderUserApplyForm() {
+        let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
+        if (_.isArray(checkedUsers) && checkedUsers.length) {
+            //发邮件使用的数据
+            let emailData = this.getEmailData(checkedUsers);
+            return (
+                <ApplyUserForm
+                    applyFrom="crmUserList"
+                    apps={[]}
+                    appList={this.state.appList}
+                    users={checkedUsers}
+                    customerId={this.props.curCustomer.id}
+                    cancelApply={this.closeRightPanel.bind(this)}
+                    emailData={emailData}
+                />
+            );
+        }
+        return null;
     }
 
     renderOverDraft(app) {
@@ -410,7 +431,7 @@ class CustomerUsers extends React.Component {
         }
         if (this.state.errorMsg) {
             return <ErrorDataTip errorMsg={this.state.errorMsg} isRetry={true}
-                retryFunc={this.getCrmUserList.bind(this)}/>;
+                                 retryFunc={this.getCrmUserList.bind(this)}/>;
         }
         let isShowCheckbox = isApplyButtonShow && !this.props.isMerge;
         let crmUserList = this.state.crmUserList;
@@ -422,7 +443,7 @@ class CustomerUsers extends React.Component {
                         <div className="crm-user-name">
                             {isShowCheckbox ? (
                                 <Checkbox checked={user.checked}
-                                    onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
+                                          onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
                                     {user.user_name}({user.nick_name})
                                 </Checkbox>) :
                                 <span className="no-checkbox-text">{user.user_name}({user.nick_name})</span>
@@ -434,7 +455,7 @@ class CustomerUsers extends React.Component {
                                 <div className="apps-top-title">
                                     {isShowCheckbox ? (
                                         <Checkbox checked={user.checked}
-                                            onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
+                                                  onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
                                             {this.renderUserAppTitle()}
                                         </Checkbox>
                                     ) : (<label>{this.renderUserAppTitle()}</label>)}
@@ -492,20 +513,20 @@ class CustomerUsers extends React.Component {
                 {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
                     : null}
             </div>
-            {this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP ? (
+            {this.state.applyType === APPLY_TYPES.OPEN_APP ? this.renderUserApplyForm() : this.state.applyType ? (
                 <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
-                    closeApplyPanel={this.closeRightPanel.bind(this)}
-                    crmUserList={this.state.crmUserList}/>) : null}
+                                  closeApplyPanel={this.closeRightPanel.bind(this)}
+                                  crmUserList={this.state.crmUserList}/>) : null}
             <ul className="crm-user-list" style={{height: divHeight}}>
                 <GeminiScrollbar listenScrollBottom={this.state.listenScrollBottom}
-                    handleScrollBottom={this.handleScrollBottom.bind(this)}>
+                                 handleScrollBottom={this.handleScrollBottom.bind(this)}>
                     {this.renderCrmUserList(isApplyButtonShow)}
                 </GeminiScrollbar>
             </ul>
-            <RightPanel className="crm_user_apply_panel white-space-nowrap"
-                showFlag={this.state.applyType && this.state.applyType === APPLY_TYPES.OPEN_APP}>
-                {this.renderRightPanel()}
-            </RightPanel>
+            {/*<RightPanel className="crm_user_apply_panel white-space-nowrap"*/}
+            {/*showFlag={this.state.applyType && this.state.applyType === APPLY_TYPES.OPEN_APP}>*/}
+            {/*{this.renderRightPanel()}*/}
+            {/*</RightPanel>*/}
         </div>);
     }
 

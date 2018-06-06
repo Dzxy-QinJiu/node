@@ -21,20 +21,22 @@ class AppConfigForm extends React.Component {
         };
         return (
             <div className="app-config-content">
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get("user.batch.open.count", "开通个数")}
-                >
-                    <InputNumber
-                        prefixCls={appFormData.onlyOneUserTip ? "number-error-border ant-input-number" : "ant-input-number"}
-                        value={appFormData.number}
-                        min={1}
-                        max={999}
-                        onChange={this.props.onCountChange.bind(this, appFormData)}/>
-                </FormItem>
-                {appFormData.onlyOneUserTip ?
-                    <div className="only-one-user-tip">
-                        {Intl.get("crm.201", "用户名是邮箱格式时，只能申请1个用户")}</div> : null}
+                {this.props.needApplyNum ? (<div>
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("user.batch.open.count", "开通个数")}
+                    >
+                        <InputNumber
+                            prefixCls={appFormData.onlyOneUserTip ? "number-error-border ant-input-number" : "ant-input-number"}
+                            value={appFormData.number}
+                            min={1}
+                            max={999}
+                            onChange={this.props.onCountChange.bind(this, appFormData)}/>
+                    </FormItem>
+                    {appFormData.onlyOneUserTip ?
+                        <div className="only-one-user-tip">
+                            {Intl.get("crm.201", "用户名是邮箱格式时，只能申请1个用户")}</div> : null}
+                </div>) : null}
                 <FormItem
                     {...formItemLayout}
                     label={Intl.get("user.open.cycle", "开通周期")}
@@ -46,7 +48,7 @@ class AppConfigForm extends React.Component {
                     label={Intl.get("user.expire.select", "到期可选")}
                 >
                     <RadioGroup onChange={this.props.onOverDraftChange.bind(this, appFormData)}
-                        value={appFormData.over_draft ? appFormData.over_draft.toString() : "0"}>
+                                value={appFormData.over_draft ? appFormData.over_draft.toString() : "0"}>
                         <Radio key="1" value="1"><ReactIntl.FormattedMessage
                             id="user.status.stop" defaultMessage="停用"/></Radio>
                         <Radio key="2" value="2"><ReactIntl.FormattedMessage

@@ -18,8 +18,11 @@
       .ant-form-explain {
         float: none;
       }
-      input,textarea,.ant-select {
+      input, textarea, .ant-select {
         width: 100%;
+        .square-logo-tag {
+          padding: 0;
+        }
       }
     }
     .apply-user-label {
@@ -68,8 +71,8 @@
     form .ant-input-number {
       margin-top: 3px;
     }
-    form .number-error-border{
-      border-color:@error_tips_color;
+    form .number-error-border {
+      border-color: @error_tips_color;
     }
     form .ant-form-item .ant-select-selection--single .ant-select-selection__rendered {
       line-height: 32px;
@@ -174,7 +177,7 @@
       float: left;
       padding-top: 10px;
       background: #dde6ed;
-      .ant-form-item{
+      .ant-form-item {
         width: 100%;
         margin-right: 20px;
         padding: 0;
@@ -184,23 +187,23 @@
           padding-left: 0;
         }
       }
-      .only-one-user-tip{
+      .only-one-user-tip {
         padding-left: 95px;
         margin-top: -5px;
         margin-bottom: 5px;
-        color:@error_tips_color;
+        color: @error_tips_color;
       }
     }
     .app-user-info {
       padding-top: 15px;
       position: relative;
-      .app_name_tooltip{
+      .app_name_tooltip {
         max-width: 124px;
         overflow: hidden;
         white-space: nowrap;
-        text-overflow:ellipsis;
+        text-overflow: ellipsis;
       }
-      &>b{
+      & > b {
         position: absolute;
         border-left: 1px solid #E6EDEF;
       }
@@ -244,9 +247,9 @@
     }
     .ant-form-horizontal > .ant-form-item {
       .form-cancel-btn {
-        margin:0 15px 0 0;
+        margin: 0 15px 0 0;
       }
-      .form-submit-btn{
+      .form-submit-btn {
         margin-top: 0;
       }
     }

@@ -20,7 +20,7 @@ import classNames from "classnames";
 import ApplyUserForm from "../apply-user-form";
 
 const OrderItem = React.createClass({
-    getInitialState: function() {
+    getInitialState: function () {
         return {
             modalDialogFlag: false,//是否展示模态框
             modalContent: "",//模态框提示内容
@@ -33,13 +33,13 @@ const OrderItem = React.createClass({
             stage: this.props.order.sale_stages,
             formData: JSON.parse(JSON.stringify(this.props.order)),
             isShowApplyUserForm: false,//是否展示申请用户的表单
-            applyType: 2,//申请用户的类型，2：试用，3：签约
+            applyType: Intl.get("common.trial.user", "试用用户"),//申请用户的类型：试用用户、正式用户
             applyUserApps: [],//申请用户对应的应用列表
             customerName: this.props.customerName//申请用户时用客户名作为昵称
         };
     },
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps: function (nextProps) {
         if (nextProps.isMerge || nextProps.order && nextProps.order.id !== this.props.order.id) {
             this.setState({
                 formData: JSON.parse(JSON.stringify(nextProps.order)),
@@ -51,7 +51,7 @@ const OrderItem = React.createClass({
     },
 
     //展示是否删除的模态框
-    showDelModalDialog: function() {
+    showDelModalDialog: function () {
         this.setState({
             modalDialogFlag: true,
             modalContent: "确定要删除这个订单吗？",
@@ -60,44 +60,44 @@ const OrderItem = React.createClass({
         });
     },
 
-    hideModalDialog: function() {
+    hideModalDialog: function () {
         this.setState({
             modalDialogFlag: false
         });
     },
 
     //模态提示框确定后的处理
-    handleModalOK: function(order) {
+    handleModalOK: function (order) {
         Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确定删除订单");
         switch (this.state.modalDialogType) {
-        case 1:
-            //删除订单
-            if (this.props.isMerge) {
-                //合并客户时，删除订单
-                this.props.delMergeCustomerOrder(order.id);
-            } else {
-                this.setState({isLoading: true});
-                OrderAction.deleteOrder({}, {id: order.id}, result => {
-                    this.setState({isLoading: false});
-                    if (result.code === 0) {
-                        message.success(Intl.get("crm.138", "删除成功"));
-                        OrderAction.afterDelOrder(order.id);
-                        //稍后后再去重新获取数据，以防止后端更新未完成从而取到的还是旧数据
-                        setTimeout(() => {
-                            //删除订单后，更新客户列表中的客户信息
-                            this.props.refreshCustomerList(order.customer_id);
-                        }, 1000);
-                    }
-                    else {
-                        message.error(Intl.get("crm.139", "删除失败"));
-                    }
-                });
-            }
-            break;
+            case 1:
+                //删除订单
+                if (this.props.isMerge) {
+                    //合并客户时，删除订单
+                    this.props.delMergeCustomerOrder(order.id);
+                } else {
+                    this.setState({isLoading: true});
+                    OrderAction.deleteOrder({}, {id: order.id}, result => {
+                        this.setState({isLoading: false});
+                        if (result.code === 0) {
+                            message.success(Intl.get("crm.138", "删除成功"));
+                            OrderAction.afterDelOrder(order.id);
+                            //稍后后再去重新获取数据，以防止后端更新未完成从而取到的还是旧数据
+                            setTimeout(() => {
+                                //删除订单后，更新客户列表中的客户信息
+                                this.props.refreshCustomerList(order.customer_id);
+                            }, 1000);
+                        }
+                        else {
+                            message.error(Intl.get("crm.139", "删除失败"));
+                        }
+                    });
+                }
+                break;
         }
     },
 
-    showApplyForm: function(applyType, order, apps) {
+    showApplyForm: function (applyType, order, apps) {
         if (apps && !apps.length) {
             this.setState({isAlertShow: true});
             setTimeout(() => {
@@ -112,30 +112,30 @@ const OrderItem = React.createClass({
         });
         // this.props.showApplyUserForm(applyType, order, apps);
     },
-    cancelApply: function() {
+    cancelApply: function () {
         this.setState({
             isAlertShow: false,
             isShowApplyUserForm: false,
-            applyType: 2,
+            applyType: Intl.get("common.trial.user", "试用用户"),
             applyUserApps: []
         });
     },
-    showStageSelect: function() {
+    showStageSelect: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "编辑销售阶段");
         this.setState({isStageSelectShow: true});
     },
 
-    showAppPanel: function() {
+    showAppPanel: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".order-application-list .ant-btn-circle"), "修改应用");
         this.setState({isAppPanelShow: true});
     },
 
-    closeAppPanel: function() {
+    closeAppPanel: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "取消应用的修改");
         this.setState({isAppPanelShow: false, apps: this.state.formData.apps});
     },
 
-    onAppsChange: function(selectedApps) {
+    onAppsChange: function (selectedApps) {
         let oldAppList = _.isArray(this.state.apps) ? this.state.apps : [];
         if (selectedApps.length > oldAppList.length) {
             Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "选中某个应用");
@@ -148,7 +148,7 @@ const OrderItem = React.createClass({
     },
 
     //修改订单的预算、备注
-    saveOrderBasicInfo: function(saveObj, successFunc, errorFunc) {
+    saveOrderBasicInfo: function (saveObj, successFunc, errorFunc) {
         saveObj.customer_id = this.props.order.customer_id;
         if (this.props.isMerge) {
             if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(saveObj);
@@ -170,7 +170,7 @@ const OrderItem = React.createClass({
     },
 
     //修改订单的销售阶段
-    editOrderStage: function(saveObj, successFunc, errorFunc) {
+    editOrderStage: function (saveObj, successFunc, errorFunc) {
         let {customer_id, id, sale_stages} = {...saveObj, customer_id: this.props.order.customer_id};
         Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
         if (this.props.isMerge) {
@@ -198,7 +198,7 @@ const OrderItem = React.createClass({
         }
     },
     //修改订单的应用
-    editOrderApp: function() {
+    editOrderApp: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
         let reqData = JSON.parse(JSON.stringify(this.props.order));
         reqData.apps = this.state.apps;
@@ -229,7 +229,7 @@ const OrderItem = React.createClass({
     },
 
     //生成合同
-    generateContract: function() {
+    generateContract: function () {
         this.setState({isLoading: true});
 
         const route = _.find(routeList, route => route.handler === "generateContract");
@@ -245,24 +245,24 @@ const OrderItem = React.createClass({
         };
 
         ajax(arg).then(result => {
-            this.setState({isLoading: false});
+                this.setState({isLoading: false});
 
-            message.success(Intl.get("crm.140", "生成合同成功"));
-            //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                message.success(Intl.get("crm.140", "生成合同成功"));
+                //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
 
-            setTimeout(() => {
-                this.props.refreshCustomerList(this.props.order.customer_id);
-            }, 1000);
-        },
-        errorMsg => {
-            this.setState({isLoading: false});
+                setTimeout(() => {
+                    this.props.refreshCustomerList(this.props.order.customer_id);
+                }, 1000);
+            },
+            errorMsg => {
+                this.setState({isLoading: false});
 
-            message.error(errorMsg);
-        });
+                message.error(errorMsg);
+            });
     },
 
     //转到合同
-    gotoContract: function() {
+    gotoContract: function () {
         history.pushState({
             contractId: this.props.order.contract_id
         }, "/contract/list", {});
@@ -292,10 +292,10 @@ const OrderItem = React.createClass({
         //申请按钮文字
         let applyBtnText = "";
         //申请类型
-        let applyType = 2;
+        let applyType = Intl.get("common.trial.user", "试用用户");
         if ([Intl.get("crm.141", "成交阶段"), Intl.get("crm.142", "执行阶段")].indexOf(order.sale_stages) > -1) {
             applyBtnText = Intl.get("user.apply.user.official", "申请签约用户");
-            applyType = 3;
+            applyType = Intl.get("common.trial.official", "正式用户");
         } else if ([Intl.get("crm.143", "试用阶段"), Intl.get("crm.144", "立项报价阶段"), Intl.get("crm.145", "谈判阶段")].indexOf(order.sale_stages) > -1) {
             applyBtnText = Intl.get("common.apply.user.trial", "申请试用用户");
         }
@@ -355,14 +355,14 @@ const OrderItem = React.createClass({
                                 onItemsChange={this.onAppsChange}
                             />
                             <SaveCancelButton loading={this.state.isLoading}
-                                saveErrorMsg={this.state.submitErrorMsg}
-                                handleSubmit={this.editOrderApp}
-                                handleCancel={this.closeAppPanel}
+                                              saveErrorMsg={this.state.submitErrorMsg}
+                                              handleSubmit={this.editOrderApp}
+                                              handleCancel={this.closeAppPanel}
                             />
                         </div>
                     ) : (
                         <div className="order-application-div">
-                            {apps.map(function(app, i) {
+                            {apps.map(function (app, i) {
                                 return (
                                     <div className="app-item" key={i}>
                                         {app.client_name}
@@ -377,7 +377,7 @@ const OrderItem = React.createClass({
                     <div className="order-item-content">
                         <span className="order-key">{Intl.get("crm.150", "用户申请")}:</span>
                         <Button type="ghost" className="order-introduce-btn"
-                            onClick={this.showApplyForm.bind(this, applyType, order, apps)}
+                                onClick={this.showApplyForm.bind(this, applyType, order, apps)}
                         >
                             {applyBtnText}
                         </Button>
@@ -447,16 +447,16 @@ const OrderItem = React.createClass({
                     {this.state.modalDialogFlag ? (
                         <span className="item-delete-buttons">
                             <Button className="item-delete-cancel delete-button-style"
-                                onClick={this.hideModalDialog.bind(this, order)}>
+                                    onClick={this.hideModalDialog.bind(this, order)}>
                                 {Intl.get("common.cancel", "取消")}
                             </Button>
                             <Button className="item-delete-confirm delete-button-style"
-                                onClick={this.handleModalOK.bind(this, order)}>
+                                    onClick={this.handleModalOK.bind(this, order)}>
                                 {Intl.get("crm.contact.delete.confirm", "确认删除")}
                             </Button>
                         </span>) : (
                         <span className="iconfont icon-delete" title={Intl.get("common.delete", "删除")}
-                            data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
+                              data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
                     }
                 </span>
             </span>
@@ -469,11 +469,11 @@ const OrderItem = React.createClass({
         return (
             <div>
                 <DetailCard title={this.renderOrderTitle()}
-                    content={this.renderOrderContent()}
-                    className={containerClassName}/>
+                            content={this.renderOrderContent()}
+                            className={containerClassName}/>
                 {this.state.isShowApplyUserForm ? (
                     <ApplyUserForm
-                        applyType={this.state.applyType}
+                        userType={this.state.applyType}
                         apps={this.state.applyUserApps}
                         order={this.state.formData}
                         customerName={this.state.customerName}
