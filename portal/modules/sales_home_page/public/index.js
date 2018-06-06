@@ -41,7 +41,7 @@ var SalesHomePage = React.createClass({
         let stateData = SalesHomeStore.getState();
         var isSaleTeamShow = true;
         var flag = storageUtil.local.get(key, pageId);
-        if (flag == null) {
+        if (flag === null) {
             storageUtil.local.set(key, true, pageId);
             isSaleTeamShow = true;
         } else {
@@ -245,7 +245,7 @@ var SalesHomePage = React.createClass({
     getSalesColumnTitle: function() {
         var userType = this.state.userType;
         var label = Intl.get('sales.home.sales', '销售');
-        if (userType == 'senior_leader') {
+        if (userType === 'senior_leader') {
             label = Intl.get('user.sales.team', '销售团队');
         }
         return label;
@@ -371,7 +371,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(col_width, 'calloutRate')
         }];
         //当前展示的是客套类型的通话记录时，展示计费时长
-        if (this.state.callType == CALL_TYPE_OPTION.APP) {
+        if (this.state.callType === CALL_TYPE_OPTION.APP) {
             columns.push({
                 title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.billing.time', '计费时长') + '(min)', 'billingTime'),
                 dataIndex: 'billingTime',
@@ -442,7 +442,7 @@ var SalesHomePage = React.createClass({
     getSaleIdByName: function(name) {
         let teamMemberList = this.state.salesTeamMembersObj.data;
         if (_.isArray(teamMemberList) && teamMemberList.length) {
-            let sales = _.find(teamMemberList, member => member.nickName == name);
+            let sales = _.find(teamMemberList, member => member.nickName === name);
             return sales ? sales.userId : '';
         } else {
             return '';
@@ -460,11 +460,11 @@ var SalesHomePage = React.createClass({
 
     // 选择通话类型的值
     selectCallTypeValue(value){
-        if (value == CALL_TYPE_OPTION.PHONE) {
+        if (value === CALL_TYPE_OPTION.PHONE) {
             this.state.callType = CALL_TYPE_OPTION.PHONE;
-        } else if (value == CALL_TYPE_OPTION.APP) {
+        } else if (value === CALL_TYPE_OPTION.APP) {
             this.state.callType = CALL_TYPE_OPTION.APP;
-        } else if (value == CALL_TYPE_OPTION.ALL) {
+        } else if (value === CALL_TYPE_OPTION.ALL) {
             this.state.callType = CALL_TYPE_OPTION.ALL;
         }
         this.setState({
@@ -498,7 +498,7 @@ var SalesHomePage = React.createClass({
         );
     },
     getPhoneTableMinWidth: function() {
-        let tableMinWitdh = this.state.callType == CALL_TYPE_OPTION.APP ? 965 : 845;
+        let tableMinWitdh = this.state.callType === CALL_TYPE_OPTION.APP ? 965 : 845;
         //有排序的列，table的宽带需要加上排序按钮的宽度
         if (!_.isEmpty(this.state.phoneSorter)) {
             tableMinWitdh += SORT_ICON_WIDTH;
@@ -507,7 +507,7 @@ var SalesHomePage = React.createClass({
     },
     //渲染数据分析视图
     renderAnalysisView: function() {
-        if (this.state.activeView == viewConstant.CUSTOMER) {
+        if (this.state.activeView === viewConstant.CUSTOMER) {
             return (<CustomerAnalysis ref="customerView" startTime={this.state.start_time} endTime={this.state.end_time}
                 timeType={this.state.timeType}
                 scrollbarEnabled={this.state.scrollbarEnabled}
@@ -518,7 +518,7 @@ var SalesHomePage = React.createClass({
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
             />);
-        } else if (this.state.activeView == viewConstant.USER) {
+        } else if (this.state.activeView === viewConstant.USER) {
             return (<UserAnalysis ref="userView" startTime={this.state.start_time} endTime={this.state.end_time}
                 timeType={this.state.timeType}
                 scrollbarEnabled={this.state.scrollbarEnabled}
@@ -529,7 +529,7 @@ var SalesHomePage = React.createClass({
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
             />);
-        } else if (this.state.activeView == viewConstant.PHONE) {
+        } else if (this.state.activeView === viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
                 {this.filterCallTypeSelect()}
                 <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
@@ -681,10 +681,10 @@ var SalesHomePage = React.createClass({
         setTimeout(() => {
             //刷新统计数据
             this.refreshSalesListData();
-            if (this.state.activeView == viewConstant.CUSTOMER) {
+            if (this.state.activeView === viewConstant.CUSTOMER) {
                 //刷新客户分析数据
                 this.refs.customerView.getChartData();
-            } else if (this.state.activeView == viewConstant.USER) {
+            } else if (this.state.activeView === viewConstant.USER) {
                 //刷新用户分析数据
                 this.refs.userView.getChartData();
             }
@@ -692,11 +692,12 @@ var SalesHomePage = React.createClass({
     },
     //切换销售团队、销售时，刷新数据
     refreshDataByChangeSales: function() {
+        this.refreshSalesListData();
         //刷新统计数据
-        if (this.state.activeView == viewConstant.CUSTOMER) {
+        if (this.state.activeView === viewConstant.CUSTOMER) {
             //刷新客户分析数据
             this.refs.customerView.getChartData();
-        } else if (this.state.activeView == viewConstant.USER) {
+        } else if (this.state.activeView === viewConstant.USER) {
             //刷新用户分析数据
             this.refs.userView.getChartData();
         }
@@ -773,6 +774,8 @@ var SalesHomePage = React.createClass({
                 getWillExpireUserListHeight={this.getWillExpireUserListHeight}
                 scrollbarEnabled={this.state.scrollbarEnabled}
                 updateScrollBar={this.state.updateScrollBar}
+                member_id={this.state.currShowSalesman.userId}
+                team_id={this.state.currShowSalesTeam.group_id}
             />
         );
     },
@@ -786,7 +789,7 @@ var SalesHomePage = React.createClass({
             'data-zone-small': this.state.isSaleTeamShow && this.state.notfirstLogin,
             'data-zone-large': !this.state.isSaleTeamShow && this.state.notfirstLogin,
             'first-login-show': !this.state.isSaleTeamShow && !this.state.notfirstLogin,
-            'is-sales-role': (this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman)
+            'is-sales-role': (this.state.currShowType === showTypeConstant.SALESMAN && !this.state.currShowSalesman)
         });
         var hamburgerCls = classNames('iconfont', 'icon-hamburger', {
             'is-active': this.state.isSaleTeamShow,
@@ -812,7 +815,7 @@ var SalesHomePage = React.createClass({
                             <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                         </DatePicker>
                     </div>
-                    {(this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? null :
+                    {(this.state.currShowType === showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? null :
                         <div className="crm-home-teamlist-show-flag">
                             <span className={hamburgerCls} onClick={this.handleCrmTeamListShow} title={title}>
                             </span>
@@ -823,7 +826,7 @@ var SalesHomePage = React.createClass({
                         //</div>
                     }
                 </TopNav>
-                {this.state.salesTeamListObj.resultType == 'loading' ?
+                {this.state.salesTeamListObj.resultType === 'loading' ?
                     <div className="spinner-container">
                         <Spinner/>
                     </div>
@@ -856,7 +859,7 @@ var SalesHomePage = React.createClass({
                             </div>
                         </div>
                         {/*除了销售之外*/}
-                        {!(this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? (
+                        {!(this.state.currShowType === showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? (
                             <div className={crmSaleList}>
                                 <CrmRightList currShowType={this.state.currShowType}
                                     salesTeamListObj={this.state.salesTeamListObj}

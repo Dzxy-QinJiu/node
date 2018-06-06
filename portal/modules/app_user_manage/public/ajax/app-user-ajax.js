@@ -69,8 +69,10 @@ exports.getAppUserList = function(obj) {
     obj.end_date = obj.end_date || '',
     //异常登录
     obj.user_exception = obj.user_exception || '',
+    //销售id
+    obj.sales_id = obj.sales_id || '',
     //团队id
-    obj.team_ids = (obj.team_ids && (obj.team_ids.join(','))) || '';
+    obj.team_ids = obj.team_ids ? (_.isArray(obj.team_ids) ? obj.team_ids.join(',') : obj.team_ids) : '';
 
     let queryObj = obj;
 

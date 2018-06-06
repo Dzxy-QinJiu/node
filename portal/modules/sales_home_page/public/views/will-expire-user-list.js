@@ -46,27 +46,33 @@ class WillExpireUserList extends React.Component {
         SalesHomeAction.getExpireUser();
     }
 
-    gotoUserList(item, e){
+    gotoUserList(item,num, e){
         Trace.traceEvent(e, '跳转到用户列表');
-        //跳转到用户列表
-        history.pushState({
+        var jumpUserObj = {
             app_id: item.app_id,
             user_type: item.user_type,
             start_date: item.start_date,
             end_date: item.end_date,
-            page_size: item.total
-        }, '/user/list', {});
+            page_size: num
+        };
+        if (this.props.member_id){
+            jumpUserObj.sales_id = this.props.member_id;
+        }else if (this.props.team_id){
+            jumpUserObj.team_ids = this.props.team_id;
+        }
+        //跳转到用户列表
+        history.pushState(jumpUserObj, '/user/list', {});
     }
 
     showExpireUserItem(items) {
         return items.map((item) => {
-            let num = item.user_type == Intl.get('common.trial.official', '正式用户') ? item.formalNum : item.trialNum;
+            let num = item.user_type === Intl.get('common.trial.official', '正式用户') ? item.formalNum : item.trialNum;
             return (<div className="app-container">
                 <span className="app-name">
                     {item.app_name}
                 </span>
                 <span className="app-num">
-                    <i onClick={this.gotoUserList.bind(this, item)}>{num}</i>
+                    <i onClick={this.gotoUserList.bind(this, item, num)}>{num}</i>
                     {Intl.get('contract.22', '个')}
                 </span>
             </div>);
@@ -86,7 +92,7 @@ class WillExpireUserList extends React.Component {
             return <div>
                 <Spinner />
             </div>;
-        } else if (_this.props.errMsg != '') {
+        } else if (_this.props.errMsg !== '') {
             return <div>
                 <Alert
                     message={errMsg}
