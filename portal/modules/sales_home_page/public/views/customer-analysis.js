@@ -1165,4 +1165,4 @@ var CustomerAnalysis = React.createClass({
     }
 });
 //返回react对象
-module.exports = CustomerAnalysis;
+module.exports = CustomerAnalysis;
