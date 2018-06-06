@@ -395,7 +395,7 @@ class ApplyViewDetailStore {
         this.isModifyDelayTime = false;
         if (this.formData.delayTimeUnit != 'custom') {
             this.formData.delay_time = delay;
-            this.formData.end_date = '';
+            this.formData.end_date = moment().add('days',1).valueOf();
         } else {
             this.formData.end_date = delay;
             this.formData.delay_time = '';
@@ -410,7 +410,7 @@ class ApplyViewDetailStore {
         if (this.detailInfoObj.info.delayTime) {
             delayTime = this.detailInfoObj.info.delayTime;
             this.formData.delay_time = delayTime;
-            this.formData.end_date = '';
+            this.formData.end_date = moment().add('days',1).valueOf();
             this.getDelayDisplayTime(delayTime);
         } else {
             this.formData.delayTimeUnit = 'custom';
