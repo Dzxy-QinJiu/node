@@ -36,6 +36,15 @@ import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
 
+//从客户分析点击图表跳转过来时的参数和销售阶段名的映射
+const tabSaleStageMap = {
+    tried: '试用阶段',
+    projected: '立项报价阶段',
+    negotiated: '谈判阶段',
+    dealed: '成交阶段',
+    executed: '执行阶段'
+};
+
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 66 + 56,//表格容器上外边距 + 表头的高度
@@ -201,7 +210,7 @@ var Crm = React.createClass({
         if (query.analysis_filter_field) {
             var filterField = query.analysis_filter_field;
             var filterValue = query.analysis_filter_value;
-            filterValue = (filterValue == 'unknown' ? '未知' : filterValue);
+            filterValue = (filterValue === 'unknown' ? '未知' : filterValue);
             var startTime = parseFloat(query.login_begin_date);
             var endTime = parseFloat(query.login_end_date);
             var currentTime = parseFloat(query.current_date_timestamp);
@@ -216,10 +225,10 @@ var Crm = React.createClass({
                 FilterAction.setApp(filterAppId);
             }
             //如果是从新增客户跳转过去
-            if (saleStage == 'added') {
+            if (saleStage === 'added') {
                 this.setRange({startTime, endTime});
                 //如果是趋势图，则只取当前那一天的数据
-                if (filterField == 'trend') {
+                if (filterField === 'trend') {
                     startTime = currentTime - 8 * 60 * 60 * 1000;
                     endTime = currentTime + 16 * 60 * 60 * 1000 - 1;
                     this.setRange({startTime, endTime});
@@ -228,12 +237,14 @@ var Crm = React.createClass({
                 //其他三种情况都是累积数据
                 startTime = '';
                 this.setRange({startTime, endTime});
-                if (saleStage !== 'total') {
-                    //成交阶段或者执行阶段跳转过来的
-                    saleStage = (saleStage == 'dealed') ? '成交阶段' : '执行阶段';
-                    FilterAction.setStage(saleStage);
+
+                //根据从客户分析点击跳转带过来的客户类型参数得到对应的销售阶段名
+                const saleStageName = tabSaleStageMap[saleStage];
+
+                if (saleStageName) {
+                    FilterAction.setStage(saleStageName);
                 }
-                if (filterField == 'trend') {
+                if (filterField === 'trend') {
                     //趋势图的结束时间为当前选中那一天的结束时间
                     endTime = currentTime + 16 * 60 * 60 * 1000 - 1;
                     this.setEndRange(endTime);
@@ -271,7 +282,7 @@ var Crm = React.createClass({
     },
     setFilterField: function({filterField, filterValue}) {
         //展示的团队列表
-        if (filterField == 'team') {
+        if (filterField === 'team') {
             FilterAction.getTeamList((teams) => {
                 const team = _.find(teams, item => item.group_name === filterValue);
                 const teamId = team && team.group_id || '';
@@ -280,19 +291,19 @@ var Crm = React.createClass({
             });
         } else {
             //地域
-            if (filterField == 'zone') {
+            if (filterField === 'zone') {
                 FilterAction.setProvince(filterValue);
             }
             //销售阶段
-            if (filterField == 'stage') {
+            if (filterField === 'stage') {
                 FilterAction.setStage(filterValue);
             }
             //行业
-            if (filterField == 'industry') {
+            if (filterField === 'industry') {
                 FilterAction.setIndustry(filterValue);
             }
             //舆情秘书看到的团队成员列表
-            if (filterField == 'team_member') {
+            if (filterField === 'team_member') {
                 FilterAction.setInputCondition({user_name: filterValue});
                 this.state.crmFilterValue = filterValue;
             }
@@ -302,24 +313,6 @@ var Crm = React.createClass({
     componentDidUpdate: function() {
         if (this.state.isScrollTop) {
             this.scrollTop();
-        }
-        //若列表有数据且列表数据为全部数据且未显示“没有更多数据了”的提示
-        //根据是否有滚动条决定是否显示“没有更多数据了”的提示
-        if (this.state.customersSize && this.state.curPageCustomers.length === this.state.customersSize && !this.state.isNoMoreTipShow) {
-            //滚动条区域容器
-            const scrollWrap = $('.tbody .gm-scroll-view');
-            //滚动条区域内容
-            const scrollContent = scrollWrap.children();
-
-            //若内容高度大于容器高度，说明已显示滚动条
-            if (scrollContent.height() > scrollWrap.height()) {
-                //显示“没有更多数据了”的提示
-                this.setState({isNoMoreTipShow: true}, () => {
-                    //将控制是否显示“没有更多数据了”提示的标识设为假，
-                    //以使组件下次更新完成时能再做这个检测
-                    this.state.isNoMoreTipShow = false;
-                });
-            }
         }
     },
     componentWillUnmount: function() {
@@ -514,7 +507,7 @@ var Crm = React.createClass({
         let unexist = [];//存放未知行业、未知地域的数组
         if (condition.industry && condition.industry.length) {
             //未知行业的处理
-            if (condition.industry.indexOf(UNKNOWN) != -1) {
+            if (condition.industry.indexOf(UNKNOWN) !== -1) {
                 unexist.push('industry');
                 delete condition.industry;
             } else {//需精确匹配
@@ -522,17 +515,17 @@ var Crm = React.createClass({
             }
         }
         var saleStage = '';
-        if (condition.sales_opportunities && _.isArray(condition.sales_opportunities) && condition.sales_opportunities.length != 0) {
+        if (condition.sales_opportunities && _.isArray(condition.sales_opportunities) && condition.sales_opportunities.length !== 0) {
             saleStage = condition.sales_opportunities[0].sale_stages;
         }
-        if (saleStage && saleStage == UNKNOWN) {
+        if (saleStage && saleStage === UNKNOWN) {
             //未知销售阶段的处理
             condition.contain_sales_opportunity = 'false';
             delete condition.sales_opportunities;
         }
         //未知地域的处理
         if (condition.province) {
-            if (condition.province == UNKNOWN) {
+            if (condition.province === UNKNOWN) {
                 unexist.push('province');
                 delete condition.province;
             } else {//需精确匹配
@@ -598,7 +591,7 @@ var Crm = React.createClass({
                     term_fields.push('immutable_labels');//精确匹配
                 }
                 //剩下普通标签的筛选
-                if (condition.labels.length == 0) {
+                if (condition.labels.length === 0) {
                     delete condition.labels;
                 } else {
                     term_fields.push('labels');
@@ -710,7 +703,7 @@ var Crm = React.createClass({
     },
     //处理选中行的样式
     handleRowClassName: function(record, index) {
-        if ((record.id == this.state.currentId) && rightPanelShow) {
+        if ((record.id === this.state.currentId) && rightPanelShow) {
             return 'current-row';
         }
         else {
@@ -811,15 +804,12 @@ var Crm = React.createClass({
             </div>);
         }
     },
-    showNoMoreDataTip: function() {
-        return this.state.isNoMoreTipShow;
-    },
     onCustomerImport(list) {
         let member_id = userData.getUserData().user_id;
         //导入客户前先校验，是不是超过了本人的客户上限
         CrmAction.getCustomerLimit({member_id: member_id, num: list.length}, (result) => {
             if (_.isNumber(result)) {
-                if (result == 0) {
+                if (result === 0) {
                     //可以转入
                     this.setState({
                         isPreviewShow: true,
@@ -914,7 +904,7 @@ var Crm = React.createClass({
                     to: phoneNumber.replace('-', '')
                 };
                 crmAjax.callOut(reqData).then((result) => {
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                     }
                 }, (errMsg) => {
@@ -964,7 +954,7 @@ var Crm = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
         var currPageNum = this.state.pageNumBack;
         var curCustomerList = this.state.customersBack;
-        if (page == currPageNum) {
+        if (page === currPageNum) {
             return;
         } else {
             let selectedCustomer = this.state.selectedCustomer;
@@ -982,7 +972,7 @@ var Crm = React.createClass({
                 customerId = _.last(curCustomerList).id;
             } else {
                 //向前翻页
-                if (page != '1') {
+                if (page !== '1') {
                     pageValue = currPageNum - page;
                     cursor = false;
                     customerId = _.first(curCustomerList).id;
@@ -1004,14 +994,14 @@ var Crm = React.createClass({
             id: record.id,
             type: 'customer_interest',
         };
-        if (record.interest == 'true') {
+        if (record.interest === 'true') {
             interestObj.interest = 'false';
         } else {
             interestObj.interest = 'true';
         }
         //先更改星星的颜色,再发请求，这样页面不会显的比较卡
         var customerArr = _.find(this.state.curPageCustomers, (customer) => {
-            return record.id == customer.id;
+            return record.id === customer.id;
         });
         if (customerArr) {
             customerArr.interest = interestObj.interest;
@@ -1023,7 +1013,7 @@ var Crm = React.createClass({
             if (errorMsg) {
                 //将星星的颜色修改回原来的状态
                 if (customerArr) {
-                    customerArr.interest = interestObj.interest == 'true' ? 'false' : 'true';
+                    customerArr.interest = interestObj.interest === 'true' ? 'false' : 'true';
                 }
                 this.setState(
                     {curPageCustomers: this.state.curPageCustomers}
@@ -1131,8 +1121,8 @@ var Crm = React.createClass({
 
                     const className = record.name_repeat ? 'customer-repeat customer_name' : 'customer_name';
                     var interestClassName = 'iconfont focus-customer';
-                    interestClassName += (record.interest == 'true' ? ' icon-interested' : ' icon-uninterested');
-                    var title = (record.interest == 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));
+                    interestClassName += (record.interest === 'true' ? ' icon-interested' : ' icon-uninterested');
+                    var title = (record.interest === 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));
                     return (
                         <span>
                             <div className={className}>
@@ -1145,8 +1135,8 @@ var Crm = React.createClass({
                                 }
                                 {record.qualify_label ? (
                                     <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
-                                        {record.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                            record.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
+                                        {record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                            record.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                                 }
                                 {text}
                             </div>
@@ -1266,7 +1256,7 @@ var Crm = React.createClass({
 
         //只对域管理员开放删除功能
         if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
-            columns = _.filter(columns, column => column.title != Intl.get('common.operate', '操作'));
+            columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));
         }
         const tableScrollX = hasSecretaryAuth ? 1000 : 1080;
         //初始加载，客户列表数据还没有取到时，不显示表格
@@ -1342,13 +1332,9 @@ var Crm = React.createClass({
                                 emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.data', '暂无数据')) : ''
                             }}
                         />
-                        <NoMoreDataTip
-                            fontSize="12"
-                            show={this.showNoMoreDataTip}
-                        />
                     </div>
                 </div>
-                {this.state.isLoading && this.state.nextPageNum == 0 ? (
+                {this.state.isLoading && this.state.nextPageNum === 0 ? (
                     <div className="table-loading-wrap">
                         <Spinner />
                     </div>
