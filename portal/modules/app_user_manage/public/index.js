@@ -1,7 +1,7 @@
 var language = require('../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/main-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('./css/main-zh_CN.less');
 }
 import RecentLoginUsersPanel from './views/recent-login-user-list';
@@ -68,7 +68,7 @@ var AppUserManage = React.createClass({
             var app_id = this.props.location.state && this.props.location.state.app_id;
             var _this = this;
             //有客户名时，直接按照客户名查询，应用选中全部
-            if (this.props.location.action == 'PUSH') {
+            if (this.props.location.action === 'PUSH') {
                 //针对不同情况，查询用户列表
                 if (app_id) {
                     //从销售首页点击过期用户数字跳转过来时，有app_id
@@ -78,6 +78,8 @@ var AppUserManage = React.createClass({
                         start_date: _this.props.location.state && _this.props.location.state.start_date,
                         end_date: _this.props.location.state && _this.props.location.state.end_date,
                         page_size: _this.props.location.state && _this.props.location.state.page_size,
+                        sales_id: _this.props.location.state && _this.props.location.state.sales_id,
+                        team_ids: _this.props.location.state && _this.props.location.state.team_ids,
                         stopScroll: true
                     };
                     AppUserAction.getAppUserList(reqObj);
@@ -111,7 +113,7 @@ var AppUserManage = React.createClass({
                                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);
                             });
                         });
-                    } else if (filterField == 'sales_id') {
+                    } else if (filterField === 'sales_id') {
                         //通过销售首页点击团队成员统计图转过来的，查看某个销售对应的用户列表
                         AppUserAction.toggleSearchField({field: filterField, value: filterValue});
                         setTimeout(() => {
@@ -153,7 +155,7 @@ var AppUserManage = React.createClass({
     componentDidUpdate: function() {
         //如果当前路由是用户，上一次路由是用户审批时，重新获取应用列表
         var currentRoutePath = AppUserUtil.getCurrentView();
-        if (currentRoutePath == 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
+        if (currentRoutePath === 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
             //获取全部应用
             AppUserAction.getAppList();
             //查询所有用户

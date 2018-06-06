@@ -69,7 +69,7 @@ var CustomerAnalysis = React.createClass({
             endTime: nextProps.endTime,
             originSalesTeamTree: nextProps.originSalesTeamTree
         };
-        const timeChanged = (this.props.startTime != nextProps.startTime) || (this.props.endTime != nextProps.endTime);
+        const timeChanged = (this.props.startTime !== nextProps.startTime) || (this.props.endTime !== nextProps.endTime);
         this.setState(timeObj, () => {
             if (timeChanged) {
                 setTimeout(() => {
@@ -193,14 +193,14 @@ var CustomerAnalysis = React.createClass({
             customerPropertys.push('team');
         }
         //选择天时，不展示趋势图
-        if (this.state.timeType != 'day') {
+        if (this.state.timeType !== 'day') {
             customerPropertys.unshift('trend');
         }
         //获取各统计图数据
         customerPropertys.forEach(customerProperty => {
             let customerType = 'added';
             //销售阶段展示总数
-            if (customerProperty == 'stage') {
+            if (customerProperty === 'stage') {
                 customerType = 'total';
             }
             const reqData = _.extend({}, queryParams, {
@@ -619,7 +619,7 @@ var CustomerAnalysis = React.createClass({
             <div
                 className="chart-holder stage-change-customer-container scrollbar-container"
                 data-tracename="客户阶段变更统计"
-                style={{ maxHeight: (this.state.customerStage.data.length == 0) ? 'initial' : '540px' }}
+                style={{ maxHeight: (this.state.customerStage.data.length === 0) ? 'initial' : '540px' }}
             >
                 <GeminiScrollbar>
                     <div className="title">
@@ -701,7 +701,7 @@ var CustomerAnalysis = React.createClass({
         };
         //处理选中行的样式
         const handleRowClassName = (record, index) => {
-            if ((index == this.state.selectedCustomerIndex) && this.state.showRightPanel) {
+            if ((index === this.state.selectedCustomerIndex) && this.state.showRightPanel) {
                 return 'current_row';
             }
             else {
@@ -746,7 +746,7 @@ var CustomerAnalysis = React.createClass({
         const loadingFirst = this.state.transferCustomers.loading && !this.state.transferCustomers.lastId;
         const loadingNotFirst = this.state.transferCustomers.loading && this.state.transferCustomers.lastId;
         const renderLoadMore = () => {
-            if (loadingFirst || (!this.state.transferCustomers.data || this.state.transferCustomers.data.length == 0)) {
+            if (loadingFirst || (!this.state.transferCustomers.data || this.state.transferCustomers.data.length === 0)) {
                 return null;
             } else {
                 return (
@@ -792,7 +792,7 @@ var CustomerAnalysis = React.createClass({
             <div
                 className="chart-holder transfer-customer-container scrollbar-container"
                 data-tracename="转出客户统计"
-                style={{ maxHeight: (loadingFirst || this.state.transferCustomers.data.length == 0) ? 'initial' : '540px' }}
+                style={{ maxHeight: (loadingFirst || this.state.transferCustomers.data.length === 0) ? 'initial' : '540px' }}
             >
                 <GeminiScrollbar>
                     <div className="title">
@@ -850,15 +850,15 @@ var CustomerAnalysis = React.createClass({
                         width: 80,
                     },
                     {
-                        title: Intl.get('effective.customer.number': "有效客户数"),
+                        title: Intl.get('effective.customer.number', '有效客户数'),
                         dataIndex: 'valid',
                     },
                     {
-                        title: Intl.get('active.customer.number': "活跃客户数"),
+                        title: Intl.get('active.customer.number', '活跃客户数'),
                         dataIndex: 'active',
                     },
                     {
-                        title: Intl.get('effective.customer.activity.rate': "有效客户活跃率"),
+                        title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
                         dataIndex: 'active_rate',
                         render: text => {
                             return <span>{this.numToPercent(text)}</span>;
@@ -925,7 +925,7 @@ var CustomerAnalysis = React.createClass({
     //获取近一月活跃客户趋势图
     getLastMonthActiveCustomerChart() {
         const charts = [{
-            title: Intl.get('active.customer.trends.last.month': "近一月活跃客户趋势"),
+            title: Intl.get('active.customer.trends.last.month', '近一月活跃客户趋势'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
             ajaxInstanceFlag: 'lastMonthActiveCustomerTrend',
             layout: {
@@ -969,9 +969,9 @@ var CustomerAnalysis = React.createClass({
 
                     return `
                         ${dateStr}<br>
-                        ${Intl.get('active.customer.number': "活跃客户数")}: ${activeNum}<br>
-                        ${Intl.get('effective.customer.activity.rate': "有效客户活跃率")}: ${activeRate}<br>
-                        ${Intl.get('effective.customer.number': "有效客户数")}: ${effectiveNum}
+                        ${Intl.get('active.customer.number', '活跃客户数')}: ${activeNum}<br>
+                        ${Intl.get('effective.customer.activity.rate', '有效客户活跃率')}: ${activeRate}<br>
+                        ${Intl.get('effective.customer.number', '有效客户数')}: ${effectiveNum}
                     `;
                 };
             },
@@ -1040,12 +1040,12 @@ var CustomerAnalysis = React.createClass({
                     data-title="近一月活跃客户趋势">
                     <div className="chart-holder" data-tracename="近一月活跃客户趋势">
                         <div className="title">
-                            {Intl.get('active.customer.trends.last.month': "近一月活跃客户趋势")}
+                            {Intl.get('active.customer.trends.last.month', '近一月活跃客户趋势')}
                         </div>
                         {this.getLastMonthActiveCustomerChart()}
                     </div>
                 </div>
-                {this.state.timeType != 'day' ? (
+                {this.state.timeType !== 'day' ? (
                     <div className="analysis_chart col-md-6 col-sm-12"
                         data-title={Intl.get('customer.analysis.add.trend', '新增趋势')}>
                         <div className="chart-holder" ref="chartWidthDom" data-tracename="新增趋势统计">
@@ -1165,4 +1165,4 @@ var CustomerAnalysis = React.createClass({
     }
 });
 //返回react对象
-module.exports = CustomerAnalysis;
+module.exports = CustomerAnalysis;

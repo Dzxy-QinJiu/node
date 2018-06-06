@@ -361,7 +361,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                             teamItem.team_result.forEach(sale => {
                                 sale.team_name = teamItem.team_name;
                                 //list中已有当前数据的团队名，不展示对应单元格(rowSpan==0)
-                                if (list.find(item => item.team_name == teamItem.team_name)) {
+                                if (list.find(item => item.team_name === teamItem.team_name)) {
                                     sale.rowSpan = 0;
                                 } else {
                                     //为第一条存在团队名的数据设置列合并(rowSpan)
@@ -479,14 +479,14 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                         data.list.forEach(teamItem => {
                             teamItem.team_result.forEach((sale, index) => {
                                 sale.team_name = teamItem.team_name;
-                                if (list.find(item => item.team_name == teamItem.team_name)) {                    
+                                if (list.find(item => item.team_name === teamItem.team_name)) {
                                     sale.rowSpan = 0;
                                 } else {                    
                                     sale.rowSpan = teamItem.team_result.length;
                                 }
                                 list.push(sale);
                                 //在每个团队最后一个销售的数据后加上合计
-                                if (index == teamItem.team_result.length - 1) {
+                                if (index === teamItem.team_result.length - 1) {
                                     list.push($.extend({}, teamItem.team_total, {
                                         customer_name: Intl.get('sales.home.total.compute', '总计')
                                     }));
