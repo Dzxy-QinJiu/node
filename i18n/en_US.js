@@ -1274,6 +1274,8 @@ var en_US = {
     'crm.detail.get.error': 'Failure to get customer details',//获取客户详情失败
     'crm.schedule.set.compelete': 'Set to complete',//标为已完成
     'crm.schedule.set.unfinished': 'Set to unfinished',//标为未完成
+    'crm.trace.delivery.report': 'Report delivery',//舆情报送
+    'crm.trace.report.source': 'Original text',//原文
     // 客户管理end
 
     //客户分析 start

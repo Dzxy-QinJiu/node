@@ -4,9 +4,9 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var language = require('../../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../css/customer-trace-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('../../css/customer-trace-zh_CN.less');
 }
 import {Icon, Select, Alert, Button, message, Radio, Input, Menu, Dropdown} from 'antd';
@@ -30,6 +30,7 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import TimeLine from 'CMP_DIR/time-line-new';
 import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
+import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 var classNames = require('classnames');
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -55,6 +56,7 @@ const CALL_TYPE_MAP = {
     'app': Intl.get('customer.ketao.app', '客套app'),
     'visit': Intl.get('customer.visit', '拜访'),
     'call_back': Intl.get('common.callback', '回访'),
+    'data_report': Intl.get('crm.trace.delivery.report', '舆情报送'),
     'other': Intl.get('customer.other', '其他')
 };
 
@@ -74,6 +76,7 @@ const CustomerRecord = React.createClass({
             addRecordPanelShow: false,//是否展示添加跟进记录面板
             filterType: '',//跟进类型的过滤
             filterStatus: '',//通话状态的过滤
+            appList: [],//应用列表，用来展示舆情上报的应用名称
             ...CustomerRecordStore.getState()
         };
     },
@@ -103,6 +106,13 @@ const CustomerRecord = React.createClass({
                 invalidPhoneLists: [],
                 getInvalidPhoneErrMsg: err.message || Intl.get('call.record.get.invalid.phone.lists', '获取无效电话列表失败')
             });
+        });
+        this.getAppList();
+    },
+    getAppList: function() {
+        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(list => {
+            let appList = _.isArray(list) ? list : [];
+            this.setState({appList: appList});
         });
     },
     //获取所有联系人的联系电话
@@ -209,7 +219,7 @@ const CustomerRecord = React.createClass({
     saveAddTraceContent: function() {
         //顶部增加跟进记录的内容
         var customerId = this.state.customerId || '';
-        if (this.state.saveButtonType == 'add') {
+        if (this.state.saveButtonType === 'add') {
             Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确认添加跟进内容');
             //输入框中的内容
             var addcontent = $.trim(this.state.inputContent);
@@ -392,7 +402,7 @@ const CustomerRecord = React.createClass({
         }, () => {
             var audio = $('#audio')[0];
             if (audio) {
-                if (oldItemId && oldItemId == item.id) {
+                if (oldItemId && oldItemId === item.id) {
                     //点击当前正在播放的那条记录，重新播放
                     audio.currentTime = 0;
                 } else {
@@ -418,6 +428,55 @@ const CustomerRecord = React.createClass({
             playingItemPhone: ''
         });
     },
+    //获取应用名
+    getAppNameById: function(appId) {
+        if (appId) {
+            let app = _.find(this.state.appList, item => item.app_id === appId);
+            return app ? app.app_name : '';
+        }
+        return '';
+    },
+    renderReportContent: function(item) {
+        let reportObj = item.remark || {};
+        if (!_.isObject(reportObj)) return null;
+        //应用名称的获取
+        let appName = this.getAppNameById(reportObj.app_id || '');
+        let reportDoc = reportObj.doc || {};
+        const platformName = reportDoc.author ? reportDoc.author.platformName : '';//报告来源的平台（例：新浪微博）
+        let reportContent = reportDoc.content || '';//报告的内容
+        //报告内容中的url链接的处理
+        let splitArray = reportContent.split(' ');
+        let reportUrl = _.isArray(splitArray) && splitArray.length ? splitArray[0] : '';
+        if (reportUrl && reportUrl.indexOf('http') === -1) {//报告内容前面没有链接的网址
+            reportUrl = '';
+        } else {//有网址时,报告内容去掉url
+            reportContent = reportContent.replace(reportUrl, '');
+        }
+        return (
+            <div className="report-detail-content">
+                <div className="item-detail-content" id={item.id}>
+                    <div className="report-content-descr">
+                        {platformName ? `[${platformName}] ` : ''}
+                        <a href={reportUrl}>{reportUrl}</a>
+                        {reportContent}
+                    </div>
+                    <div>
+                        <a href={reportDoc.url || ''}>{Intl.get('crm.trace.report.source','原文')}</a>
+                        {reportDoc.dataTime ? <span className="trace-record-time">
+                            {moment(reportDoc.dataTime).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}
+                        </span> : null}
+                    </div>
+                </div>
+                <div className="item-bottom-content">
+                    <span className="sale-name">{reportObj.submitter_name || ''}</span>
+                    {appName ? (<span className="report-app-name"> - {appName}</span>) : null}
+                    <span className="trace-record-time">
+                        {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                    </span>
+                </div>
+            </div>
+        );
+    },
     renderTimeLineItem: function(item, hasSplitLine) {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
@@ -432,34 +491,36 @@ const CustomerRecord = React.createClass({
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     <span>{traceDsc}</span>
                 </p>
-                <div className="item-detail-content" id={item.id}>
-                    {item.remark ? item.remark : ( item.showAdd ? null :
-                        <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
-                            {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
-                        </span>)}
-                    {item.showAdd ? this.renderAddDetail(item) : null}
-                </div>
-                <div className="item-bottom-content">
-                    { item.billsec == 0 ? (/*未接听*/
-                        <span className="call-un-answer">
-                            {Intl.get('call.record.state.no.answer', '未接听')}
-                        </span>
-                    ) : /* 电话已接通并且有recording这个字段展示播放图标*/
-                        item.recording ? (<span className="audio-container">
-                            <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                title={Intl.get('call.record.play', '播放录音')}
-                                data-tracename="点击播放录音按钮">
-                                <span className="call-time-descr">
-                                    {TimeUtil.getFormatMinuteTime(item.billsec)}
-                                </span>
+                {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
+                    <div className="item-detail-content" id={item.id}>
+                        {item.remark ? item.remark : ( item.showAdd ? null :
+                            <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
+                                {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
+                            </span>)}
+                        {item.showAdd ? this.renderAddDetail(item) : null}
+                    </div>
+                    <div className="item-bottom-content">
+                        { item.billsec === 0 ? (/*未接听*/
+                            <span className="call-un-answer">
+                                {Intl.get('call.record.state.no.answer', '未接听')}
                             </span>
-                        </span>) : null
-                    }
-                    <span className="sale-name">{item.nick_name}</span>
-                    <span className="trace-record-time">
-                        {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
-                    </span>
-                </div>
+                        ) : /* 电话已接通并且有recording这个字段展示播放图标*/
+                            item.recording ? (<span className="audio-container">
+                                <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                    title={Intl.get('call.record.play', '播放录音')}
+                                    data-tracename="点击播放录音按钮">
+                                    <span className="call-time-descr">
+                                        {TimeUtil.getFormatMinuteTime(item.billsec)}
+                                    </span>
+                                </span>
+                            </span>) : null
+                        }
+                        <span className="sale-name">{item.nick_name}</span>
+                        <span className="trace-record-time">
+                            {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                        </span>
+                    </div>
+                </div>)}
             </div>
         );
     },
@@ -469,7 +530,7 @@ const CustomerRecord = React.createClass({
         if (length < this.state.total) {
             var lastId = this.state.customerRecord[length - 1].id;
             this.getCustomerTraceList(lastId);
-        } else if (length == this.state.total) {
+        } else if (length === this.state.total) {
             this.setState({
                 listenScrollBottom: false
             });
@@ -519,7 +580,7 @@ const CustomerRecord = React.createClass({
 
     renderCustomerRecordLists: function() {
         var recordLength = this.state.customerRecord.length;
-        if (this.state.customerRecordLoading && this.state.curPage == 1) {
+        if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
                 <div className="show-customer-trace">
@@ -532,7 +593,7 @@ const CustomerRecord = React.createClass({
                 <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
                     retryFunc={this.retryChangeRecord}/>
             );
-        } else if (recordLength == 0 && !this.state.customerRecordLoading) {
+        } else if (recordLength === 0 && !this.state.customerRecordLoading) {
             //加载完成，没有数据的情况
             return (<NoDataTip tipContent={Intl.get('common.no.data', '暂无数据')}/>);
         } else {
