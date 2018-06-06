@@ -33,6 +33,11 @@ const processForTrace = function(item) {
                 title = Intl.get('common.callback', '回访');
                 des = Intl.get('common.callback.customer', '回访客户');
                 break;
+            case 'data_report':
+                iconClass = 'icon-report-delivery';
+                title = Intl.get('crm.trace.delivery.report', '舆情报送');
+                des = Intl.get('crm.trace.delivery.report', '舆情报送');
+                break;
             case 'other':
                 iconClass = 'icon-trace-other';
                 title = Intl.get('customer.other', '其他');
@@ -56,7 +61,7 @@ const processForTrace = function(item) {
 };
 //是否是线索标签
 const isClueTag = function(tag){
-    return tag == Intl.get('crm.sales.clue','线索');
+    return tag === Intl.get('crm.sales.clue','线索');
 };
 //是否是试用合格后"转出"标签
 exports.isTurnOutTag = function(tag){
@@ -82,8 +87,8 @@ exports.getCrmLabelCls = function(customer_label) {
             'intent-tag-style': customer_label === LABEL_TYPES.INTENT_TAG,
             'trial-tag-style': customer_label === LABEL_TYPES.TRIAL_TAG,
             'sign-tag-style': customer_label === LABEL_TYPES.SIGN_TAG,
-            'qualified-tag-style': customer_label == 1,//合格
-            'history-qualified-tag-style': customer_label == 2,//曾经合格
+            'qualified-tag-style': customer_label === 1,//合格
+            'history-qualified-tag-style': customer_label === 2,//曾经合格
             'loss-tag-style': customer_label === LABEL_TYPES.LOSS_TAG,
         });
     }

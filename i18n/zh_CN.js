@@ -1292,6 +1292,8 @@ var zh_CN = {
     'crm.detail.get.error': '获取客户详情失败',
     'crm.schedule.set.compelete': '标为已完成',
     'crm.schedule.set.unfinished': '标为未完成',
+    'crm.trace.delivery.report': '舆情报送',
+    'crm.trace.report.source': '原文',
     // 客户管理end
 
     // 客户分析start
