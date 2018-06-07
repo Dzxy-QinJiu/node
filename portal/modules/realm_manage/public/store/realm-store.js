@@ -1,18 +1,18 @@
-var RealmActions = require("../action/realm-actions");
-var _ = require("underscore");
+var RealmActions = require('../action/realm-actions');
+var _ = require('underscore');
 var emptyRealm = {
     id: '',
-    realmName: "",
-    company: "",
-    image: "",
-    phone: "",
-    email: "",
-    location: "",
-    detailAddress: "",
-    profession: "",
-    startTime: "",
-    endTime: "",
-    comment: ""
+    realmName: '',
+    company: '',
+    image: '',
+    phone: '',
+    email: '',
+    location: '',
+    detailAddress: '',
+    profession: '',
+    startTime: '',
+    endTime: '',
+    comment: ''
 };
 
 
@@ -36,10 +36,10 @@ function RealmStore() {
     //安全域详细信息的展示
     this.realmInfoShow = false;
     //查询内容
-    this.searchContent = "";
+    this.searchContent = '';
     //查询时间
-    this.startTime = "";
-    this.endTime = "";
+    this.startTime = '';
+    this.endTime = '';
     //加载数据中。。。
     this.isLoading = true;
     //右侧面板的开关
@@ -47,9 +47,9 @@ function RealmStore() {
     //安全域详信息获取中。。。
     this.realmIsLoading = false;
     //表单的类型：添加/修改
-    this.formType = "add";
+    this.formType = 'add';
     //获取安全域列表时，错误/暂无（符合条件的）数据的提示
-    this.realmListTipMsg = "";
+    this.realmListTipMsg = '';
 
     this.bindActions(RealmActions);
 }
@@ -63,11 +63,11 @@ RealmStore.prototype.createRealms = function(result) {
         if (detail.tasks.length > 0){
             realm.id = detail.tasks[0].taskDetail.realmId;
             realm.status = 1;
-            realm.createMsg = "success";
+            realm.createMsg = 'success';
         }
     } else {
         //创建失败后，修改createMsg属性
-        realm.createMsg = "error";
+        realm.createMsg = 'error';
     }
 };
 //在页面上删除创建失败的安全域
@@ -114,13 +114,13 @@ RealmStore.prototype.getCurRealmList = function(realmListObj) {
         }
         if (curRealmList.length > 0) {
             //清空提示
-            this.realmListTipMsg = "";
+            this.realmListTipMsg = '';
         } else {
             //无数据时的处理
             if (this.searchContent) {
-                this.realmListTipMsg = Intl.get("realm.no.match.realm", "没有符合条件的安全域!");
+                this.realmListTipMsg = Intl.get('realm.no.match.realm', '没有符合条件的安全域!');
             } else {
-                this.realmListTipMsg = Intl.get("realm.no.realm", "暂无安全域!");
+                this.realmListTipMsg = Intl.get('realm.no.realm', '暂无安全域!');
             }
         }
 
@@ -155,14 +155,14 @@ RealmStore.prototype.closeAddPanel = function() {
 
 RealmStore.prototype.showOwnerForm = function(realm) {
     if (realm) this.currentRealm = realm;
-    else this.formType = "";
+    else this.formType = '';
 
     this.ownerFormShow = true;
 };
 
 RealmStore.prototype.infoPanel2OwnerForm = function() {
     this.realmInfoShow = false;
-    this.formType = "edit";
+    this.formType = 'edit';
 };
 
 RealmStore.prototype.updateRealmStatus = function(modifiedRealm) {
@@ -204,7 +204,7 @@ RealmStore.prototype.afterEditRealm = function(modifiedRealm) {
 
 RealmStore.prototype.showRealmForm = function(type) {
     //type：“edit”/"add"
-    if (type === "add") {
+    if (type === 'add') {
         this.currentRealm = emptyRealm;
     }
     this.formType = type;

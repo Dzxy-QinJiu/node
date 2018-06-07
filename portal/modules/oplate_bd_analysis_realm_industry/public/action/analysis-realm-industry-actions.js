@@ -3,7 +3,7 @@
  * 说明：统计分析-安全域分析-当前安全域行业分析 的action文件
  */
 //使用ajax获取数据
-var AnalysisRealmIndustryAjax = require("../ajax/analysis-realm-industry-ajax");
+var AnalysisRealmIndustryAjax = require('../ajax/analysis-realm-industry-ajax');
 //使用alt创建action的类
 function AnalysisRealmIndustryActions() {
 

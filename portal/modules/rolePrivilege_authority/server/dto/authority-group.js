@@ -3,7 +3,7 @@
  */
 function AuthorityGropName(opts) {
     this.id = opts.id;
-    this.classifyName = opts.classifyName || "unknown";
+    this.classifyName = opts.classifyName || 'unknown';
 }
 
 module.exports = AuthorityGropName;

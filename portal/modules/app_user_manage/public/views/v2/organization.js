@@ -1,4 +1,4 @@
-require("../../css/organization.less");
+require('../../css/organization.less');
 import {Icon,Alert,Select} from 'antd';
 import SelectFullWidth from '../../../../../components/select-fullwidth';
 import classNames from 'classnames';
@@ -26,14 +26,14 @@ var Organization = React.createClass({
             user_id: '',
             onChange: function(){},
             showBtn: false,
-            organization_id: "",
+            organization_id: '',
             onModifySuccess: function() {}
         };
     },
     getInitialState: function() {
         return {
             list: [],
-            displayType: "text",
+            displayType: 'text',
             organization_id: this.props.organization_id,
             organization_name: this.props.organization_name,
             submitType: '',
@@ -59,9 +59,9 @@ var Organization = React.createClass({
     onSelectChange: function(value,text) {
         var trimValue = $.trim(value);
         if(!trimValue) {
-            this.props.onChange("");
+            this.props.onChange('');
             this.setState({
-                organization_id: ""
+                organization_id: ''
             });
         } else {
             this.props.onChange(value);
@@ -129,7 +129,7 @@ var Organization = React.createClass({
                     setTimeout(() => {
                         this.setState({
                             submitType: '',
-                            displayType: "text",
+                            displayType: 'text',
                             errorMsg: '',
                             organization_name: organization_name
                         });
@@ -137,7 +137,7 @@ var Organization = React.createClass({
                 } else {
                     this.setState({
                         submitType: 'error',
-                        errorMsg: Intl.get("common.edit.failed", "修改失败")
+                        errorMsg: Intl.get('common.edit.failed', '修改失败')
                     });
                 }
             },
@@ -164,10 +164,10 @@ var Organization = React.createClass({
             });
         };
         if(this.state.submitType === 'success') {
-            return <AlertTimer message={Intl.get("user.edit.success", "修改成功")} type="success" onHide={onSuccessHide} showIcon/>;
+            return <AlertTimer message={Intl.get('user.edit.success', '修改成功')} type="success" onHide={onSuccessHide} showIcon/>;
         }
         if(this.state.submitType === 'error') {
-            return <Alert message={this.state.errorMsg || Intl.get("common.edit.failed", "修改失败")} type="error" showIcon/>;
+            return <Alert message={this.state.errorMsg || Intl.get('common.edit.failed', '修改失败')} type="error" showIcon/>;
         }
     },
     render: function() {
@@ -176,8 +176,8 @@ var Organization = React.createClass({
             return (
                 <div className="user-basic-edit-field">
                     <span>{this.state.organization_name}</span>
-                    { hasPrivilege("USER_ORGANIZATION_MEMBER_EDIT") && hasPrivilege("APP_USER_EDIT") ?
-                        <i className="iconfont icon-update" onClick={this.changeDisplayType.bind(this,"edit")}/>
+                    { hasPrivilege('USER_ORGANIZATION_MEMBER_EDIT') && hasPrivilege('APP_USER_EDIT') ?
+                        <i className="iconfont icon-update" onClick={this.changeDisplayType.bind(this,'edit')}/>
                         : null
                     }
                 </div>
@@ -195,12 +195,12 @@ var Organization = React.createClass({
                     optionFilterProp="children"
                     onChange={this.onSelectChange}
                     value={this.state.organization_id}
-                    notFoundContent={!options.length ? Intl.get("user.no.organization", "暂无组织") : Intl.get("user.no.related.organization", "无相关组织")}
+                    notFoundContent={!options.length ? Intl.get('user.no.organization', '暂无组织') : Intl.get('user.no.related.organization', '无相关组织')}
                 >
                     {options}
                 </SelectFullWidth>
                 {showBtn ? <span className="iconfont icon-choose" onClick={this.submit}></span> : null}
-                {showBtn ? <span className="iconfont icon-close" onClick={this.changeDisplayType.bind(this , "text")}></span> : null}
+                {showBtn ? <span className="iconfont icon-close" onClick={this.changeDisplayType.bind(this , 'text')}></span> : null}
                 {this.renderIndicator()}
             </div>
         );

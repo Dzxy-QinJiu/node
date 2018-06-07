@@ -3,7 +3,7 @@
  * 说明：统计分析-当前安全域-开通个数统计 的store文件，作为mvc中的m
  */
 //引入action
-var AnalysisRealmEstablishActions = require("../action/analysis-realm-establish-actions");
+var AnalysisRealmEstablishActions = require('../action/analysis-realm-establish-actions');
 
 //定义用alt创建store的类
 function AnalysisRealmEstablishStore() {
@@ -22,9 +22,9 @@ function AnalysisRealmEstablishStore() {
     //压根一个安全域也没有
     this.noRealmAtAll = false;
     //右侧排行榜的标题
-    this.rankListTitle = Intl.get("oplate_bd_analysis_realm_establish.5", "当前安全域开通总数");
+    this.rankListTitle = Intl.get('oplate_bd_analysis_realm_establish.5', '当前安全域开通总数');
     //默认按照自然日显示
-    this.unit = "day";
+    this.unit = 'day';
     //绑定action方法
     this.bindListeners({
         //设置开始时间

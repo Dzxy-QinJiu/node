@@ -3,19 +3,19 @@
  */
 
 
-var language = require("../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./index-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./index-zh_CN.less");
+var language = require('../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./index-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./index-zh_CN.less');
 }
-var classNames = require("classnames");
-var Button = require("antd").Button;
+var classNames = require('classnames');
+var Button = require('antd').Button;
 //渲染右侧推出面板
 var RightPanel = React.createClass({
 
     render: function() {
-        var btnClass = classNames("right-pannel-default", this.props.className, {
+        var btnClass = classNames('right-pannel-default', this.props.className, {
             'right-pannel-show': this.props.showFlag
         });
         return (
@@ -65,7 +65,7 @@ var RightPanelClose = React.createClass({
 var RightPanelEdit = React.createClass({
     render: function() {
         return (
-            <div {...this.props} className="icon-update circle-button iconfont" title={Intl.get("common.edit","编辑")}>
+            <div {...this.props} className="icon-update circle-button iconfont" title={Intl.get('common.edit','编辑')}>
             </div>
         );
     }
@@ -81,11 +81,11 @@ var DetailEditBtn = React.createClass({
 var RightPanelForbid = React.createClass({
 
     render: function() {
-        var className = "icon-forbid circle-button iconfont";
-        var title = Intl.get("common.disabled","禁用");
+        var className = 'icon-forbid circle-button iconfont';
+        var title = Intl.get('common.disabled','禁用');
         if (this.props.isActive) {
-            className += " active";
-            title = Intl.get("common.enabled","启用");
+            className += ' active';
+            title = Intl.get('common.enabled','启用');
         }
 
         return (
@@ -109,7 +109,7 @@ var RightPanelReturn = React.createClass({
 var RightPanelDelete = React.createClass({
     render: function() {
         return (
-            <div {...this.props} className="icon-delete circle-button iconfont" title={Intl.get("common.delete","删除")}>
+            <div {...this.props} className="icon-delete circle-button iconfont" title={Intl.get('common.delete','删除')}>
             </div>
         );
     }
@@ -119,7 +119,7 @@ var RightPanelDelete = React.createClass({
 var RightPanelVersionUpgrade = React.createClass({
     render: function() {
         return (
-            <div {...this.props} className="icon-upgrade circle-button iconfont" title={Intl.get("rightpanel_upgrade","升级记录")}>
+            <div {...this.props} className="icon-upgrade circle-button iconfont" title={Intl.get('rightpanel_upgrade','升级记录')}>
             </div>
         );
     }
@@ -129,7 +129,7 @@ var RightPanelVersionUpgrade = React.createClass({
 var RightPanelAppAuth = React.createClass({
     render: function() {
         return (
-            <div {...this.props} className="icon-app-auth circle-button iconfont" title={Intl.get("rightpanel_app_auth","应用权限")}>
+            <div {...this.props} className="icon-app-auth circle-button iconfont" title={Intl.get('rightpanel_app_auth','应用权限')}>
             </div>
         );
     }
@@ -139,7 +139,7 @@ var RightPanelAppAuth = React.createClass({
 var RightPanelAppNotice = React.createClass({
     render: function() {
         return (
-            <div {...this.props} className=" icon-notice circle-button iconfont" title={Intl.get("rightpanel_notice","公告")}>
+            <div {...this.props} className=" icon-notice circle-button iconfont" title={Intl.get('rightpanel_notice','公告')}>
             </div>
         );
     }
@@ -149,7 +149,7 @@ var RightPanelAppNotice = React.createClass({
 var RightPanelAppVersionDelete = React.createClass({
     render: function() {
         return (
-            <div {...this.props} className="icon-delete circle-button iconfont" title={Intl.get("rightpanel_delete_record","删除该记录")}>
+            <div {...this.props} className="icon-delete circle-button iconfont" title={Intl.get('rightpanel_delete_record','删除该记录')}>
             </div>
         );
     }
@@ -158,7 +158,7 @@ var RightPanelAppVersionDelete = React.createClass({
 var RightPanelUserTypeConfig = React.createClass({
     render: function() {
         return (
-            <div {...this.props} className="icon-usertypeconfig circle-button iconfont" title={Intl.get("rightpanel_usertypeconfig","用户类型设置")}>
+            <div {...this.props} className="icon-usertypeconfig circle-button iconfont" title={Intl.get('rightpanel_usertypeconfig','用户类型设置')}>
             </div>
         );
     }
@@ -167,7 +167,7 @@ var RightPanelUserTypeConfig = React.createClass({
 var RightPanelAppCodeTrace = React.createClass({
     render: function() {
         return (
-            <div {...this.props} className="icon-trace circle-button iconfont" title={Intl.get("rightpanel_codetrace","跟踪代码")}>
+            <div {...this.props} className="icon-trace circle-button iconfont" title={Intl.get('rightpanel_codetrace','跟踪代码')}>
             </div>
         );
     }

@@ -1,11 +1,11 @@
-var OperationReportAjax = require("../ajax/ajax");
+var OperationReportAjax = require('../ajax/ajax');
 
 //运营报告的action
 function OperationReportActions() {
     //创建action
     this.generateActions(
         //选择应用列表的设置
-        "setSelectAppList"
+        'setSelectAppList'
     );
     //获取应用列表
     this.getAppList = function(callback) {

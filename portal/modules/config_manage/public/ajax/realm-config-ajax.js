@@ -10,7 +10,7 @@ exports.getRealmStrategy = function(){
             Deferred.resolve(resData);
         },
         error: function(errorInfo){
-            Deferred.reject(errorInfo.responseJSON || Intl.get("config.manage.get.realm.failed", "获取密码策略失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.manage.get.realm.failed', '获取密码策略失败！'));
         }
     });
     return Deferred.promise();
@@ -28,7 +28,7 @@ exports.updateRealmStrategy = function(param){
             Deferred.resolve(resData);
         },
         error: function(errorInfo){
-            Deferred.reject(errorInfo.responseJSON || Intl.get("config.manage.set.realm.failed", "设置密码策略失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.manage.set.realm.failed', '设置密码策略失败！'));
         }
     });
     return Deferred.promise();

@@ -1,12 +1,12 @@
-var OplateCustomerAnalysisAjax = require("../ajax/oplate-customer-analysis.ajax");
+var OplateCustomerAnalysisAjax = require('../ajax/oplate-customer-analysis.ajax');
 const asyncDispatcher = function(ajax) {
     return function(paramObj) {
         var _this = this;
-        _this.dispatch({ errorMsg: "", loading: true });
+        _this.dispatch({ errorMsg: '', loading: true });
         return new Promise((resolve, reject) => {
             ajax(paramObj)
                 .then(function(data) {
-                    _this.dispatch({ loading: false, data, paramObj, errorMsg: "" });
+                    _this.dispatch({ loading: false, data, paramObj, errorMsg: '' });
                     resolve({ data });
                 })
                 .fail(function(errorMsg) {
@@ -21,21 +21,21 @@ function OplateCustomerAnalysisActions() {
     //创建action
     this.generateActions(
         //切换选中的应用
-        "changeSelectedApp",
+        'changeSelectedApp',
         //切换查询时间
-        "changeSearchTime",
+        'changeSearchTime',
         //切换tab
-        "changeCurrentTab",
+        'changeCurrentTab',
         //显示没有数据
-        "showNoData",
+        'showNoData',
         //清除chart数据
-        "resetChartData",
+        'resetChartData',
         //切换展示客户阶段点击数字打开的客户列表
-        "toggleStageCustomerList",
+        'toggleStageCustomerList',
         //切换销售团队
-        "teamChange",
+        'teamChange',
         //切换销售人员
-        "memberChange"
+        'memberChange'
     );
 
     //获取统计总数

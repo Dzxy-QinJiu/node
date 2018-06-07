@@ -1,4 +1,4 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 渲染用户名输入框
@@ -24,14 +24,14 @@ const UserNameTextFieldMixin = {
 
         this.userExistTimeout = setTimeout(() => {
             this.checkUserExistAjax(trimValue).then((userInfo) => {
-                callback(Intl.get("user.user.exist.tip", "用户已存在"));
-                const $explain = $(".ant-form-explain", this.refs.username_block);
-                var text = Intl.get("user.user.check", "查看该用户");
+                callback(Intl.get('user.user.exist.tip', '用户已存在'));
+                const $explain = $('.ant-form-explain', this.refs.username_block);
+                var text = Intl.get('user.user.check', '查看该用户');
                 var a = `<a href='javascript:void(0)' id='app_user_name_exist_view'>${text}</a>`;
                 $explain.html(
-                    Intl.get("user.user.exist.check.tip", "用户已存在，是否{check}?", {'check': a})
+                    Intl.get('user.user.exist.check.tip', '用户已存在，是否{check}?', {'check': a})
                 );
-                $("#app_user_name_exist_view").click((e) => {
+                $('#app_user_name_exist_view').click((e) => {
                     e.preventDefault();
                     var loc = window.location.href;
                     if (/\/user\/list/.test(loc)) {
@@ -44,7 +44,7 @@ const UserNameTextFieldMixin = {
                             }
                         });
                     } else {
-                        history.pushState({}, "/user/list", {});
+                        history.pushState({}, '/user/list', {});
                         //清除表单内容
                         AppUserFormActions.resetState();
                         //展示详情
@@ -77,11 +77,11 @@ const UserNameTextFieldMixin = {
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
                     validateStatus={this.renderValidateStyle('user_name')}
-                    help={status.user_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.user_name.errors && status.user_name.errors.join(','))}
+                    help={status.user_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.user_name.errors && status.user_name.errors.join(','))}
                 >
                     <Validator rules={validators}>
                         <Input name="user_name"
-                            placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
+                            placeholder={Intl.get('user.username.write.tip', '请填写用户名')}
                             value={formData.user_name}
                             onChange={this.setField.bind(this, 'user_name')}/>
                     </Validator>

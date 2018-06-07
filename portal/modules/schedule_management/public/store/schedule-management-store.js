@@ -3,9 +3,9 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/16.
  */
-var ScheduleManagementAction = require("../action/schedule-management-action");
-let userData = require("PUB_DIR/sources/user-data");
-import {addHyphenToPhoneNumber} from "LIB_DIR/func";
+var ScheduleManagementAction = require('../action/schedule-management-action');
+let userData = require('PUB_DIR/sources/user-data');
+import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const TimeStampUtil = require('PUB_DIR/sources/utils/time-stamp-util');
 function ScheduleManagementStore() {
     //初始化state数据
@@ -20,13 +20,13 @@ ScheduleManagementStore.prototype.setInitState = function() {
     this.scheduleExpiredList = [];//过期日程列表
     this.scheduleExpiredSize = 0;//过期日程列表的数量
     this.isLoadingScheduleExpired = false;//正在获取过期日程列表
-    this.scheduleExpiredErrMsg = "";//获取过期日程列表失败
+    this.scheduleExpiredErrMsg = '';//获取过期日程列表失败
     this.pageSize = 20;//一次获取日程列表的页数
-    this.lastScheduleExpiredId = "";//过期日程列表用于下拉加载的id
+    this.lastScheduleExpiredId = '';//过期日程列表用于下拉加载的id
     this.listenScrollBottom = true;//是否监听下拉加载
     this.handleStatusLoading = false;//正在修改日程的状态
-    this.handleStatusErrMsg = "";//修改日程状态失败
-    this.curViewDate = "";//当前页面展示的日期
+    this.handleStatusErrMsg = '';//修改日程状态失败
+    this.curViewDate = '';//当前页面展示的日期
 };
 //把数据转换成组件需要的类型
 ScheduleManagementStore.prototype.processForList = function(originList,dateType) {
@@ -53,7 +53,7 @@ ScheduleManagementStore.prototype.getScheduleList = function(data) {
     //超时未完成的列表
     if (data.loading) {
         this.isLoadingScheduleExpired = true;
-        this.scheduleExpiredErrMsg = "";
+        this.scheduleExpiredErrMsg = '';
     } else if (data.error) {
         this.isLoadingScheduleExpired = false;
         this.scheduleExpiredErrMsg = data.errorMsg;
@@ -65,7 +65,7 @@ ScheduleManagementStore.prototype.getScheduleList = function(data) {
         } else {
             this.scheduleExpiredList = list;
         }
-        this.lastScheduleExpiredId = this.scheduleExpiredList.length ? _.last(this.scheduleExpiredList).id : "";
+        this.lastScheduleExpiredId = this.scheduleExpiredList.length ? _.last(this.scheduleExpiredList).id : '';
 
         this.listenScrollBottom = this.scheduleExpiredSize > this.scheduleExpiredList.length;
         this.isLoadingScheduleExpired = false;
@@ -76,13 +76,13 @@ ScheduleManagementStore.prototype.getScheduleList = function(data) {
 ScheduleManagementStore.prototype.handleScheduleStatus = function(result) {
     if (result.loading) {
         this.handleStatusLoading = true;
-        this.handleStatusErrMsg = "";
+        this.handleStatusErrMsg = '';
     } else if (result.error) {
         this.handleStatusLoading = false;
         this.handleStatusErrMsg = result.errorMsg;
     } else {
         this.handleStatusLoading = false;
-        this.handleStatusErrMsg = "";
+        this.handleStatusErrMsg = '';
     }
 };
 //修改某个提醒的状态

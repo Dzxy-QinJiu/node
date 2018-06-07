@@ -18,7 +18,7 @@ exports.getIpConfigList = function(searchObj){
         },
         error: function(xhr, state){
             if('abort' !== state){
-                Deferred.reject(xhr.responseJSON || Intl.get("config.manage.get.ip.failed", "获取配置IP失败！") );
+                Deferred.reject(xhr.responseJSON || Intl.get('config.manage.get.ip.failed', '获取配置IP失败！') );
             }
         }
     });
@@ -42,7 +42,7 @@ exports.addIpConfigItem = function(addIpItem){
             Deferred.resolve(resData);
         },
         error: function(errorInfo){
-            Deferred.reject(errorInfo.responseJSON || Intl.get("config.manage.add.ip.failed", "添加配置IP失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.manage.add.ip.failed', '添加配置IP失败！'));
         }
     });
     return Deferred.promise();
@@ -60,7 +60,7 @@ exports.deleteIpConfigItem = function(id){
             Deferred.resolve(resData);
         },
         error: function(errorInfo) {
-            Deferred.reject(errorInfo.responseJSON || Intl.get("config.manage.del.ip.failed", "删除配置IP失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.manage.del.ip.failed', '删除配置IP失败！'));
         }
     });
     return Deferred.promise();
@@ -84,7 +84,7 @@ exports.filterIp = function(status) {
             Deferred.resolve(resData);
         },
         error: function(errorInfo) {
-            Deferred.reject(errorInfo.responseJSON || Intl.get("config.filter.inner.ip.failed", "过滤内网ip失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.filter.inner.ip.failed', '过滤内网ip失败！'));
         }
     });
     return Deferred.promise();
@@ -100,7 +100,7 @@ exports.getFilterIp = function() {
             Deferred.resolve(resData);
         },
         error: function(errorInfo){
-            Deferred.reject(errorInfo.responseJSON || Intl.get("common.get.filter.ip.err", "获取过滤内网失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('common.get.filter.ip.err', '获取过滤内网失败！'));
         }
     });
     return Deferred.promise();

@@ -2,8 +2,8 @@
  * 显示客户对应的用户的action
  */
 //用户的ajax
-var AppUserAjax = require("../ajax/app-user-ajax");
-var crmAjax = require("../../../crm/public/ajax");
+var AppUserAjax = require('../ajax/app-user-ajax');
+var crmAjax = require('../../../crm/public/ajax');
 
 function AppUserCustomerSwitchAction() {
 

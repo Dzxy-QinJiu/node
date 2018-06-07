@@ -3,9 +3,9 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/1/11.
  */
-import {Icon} from "antd";
-var AlertTimer = require("CMP_DIR/alert-timer");
-require("./index.less");
+import {Icon} from 'antd';
+var AlertTimer = require('CMP_DIR/alert-timer');
+require('./index.less');
 class AudioPlayer extends React.Component {
     constructor(props) {
         super(props);
@@ -66,10 +66,10 @@ class AudioPlayer extends React.Component {
 }
 AudioPlayer.defaultProps = {
     isShowReportButton: false,
-    playingItemAddr: "",//正在播放的录音的地址
-    getInvalidPhoneErrMsg: "",//获取无效电话失败的提示
-    addingInvalidPhoneErrMsg: "",//上报无效电话时出错
-    isAddingInvalidPhone: "",//正在添加无效电话
+    playingItemAddr: '',//正在播放的录音的地址
+    getInvalidPhoneErrMsg: '',//获取无效电话失败的提示
+    addingInvalidPhoneErrMsg: '',//上报无效电话时出错
+    isAddingInvalidPhone: '',//正在添加无效电话
     closeAudioPlayContainer: function() {
     },
     handleAddInvalidPhone: function() {

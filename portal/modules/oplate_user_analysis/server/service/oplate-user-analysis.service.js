@@ -2,12 +2,12 @@
  * author:周连毅
  * 说明：统计分析-用户分析的service文件
  */
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var Promise = require("bluebird");
-var auth = require("../../../../lib/utils/auth");
-var _ = require("underscore");
-var EventEmitter = require("events").EventEmitter;
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var Promise = require('bluebird');
+var auth = require('../../../../lib/utils/auth');
+var _ = require('underscore');
+var EventEmitter = require('events').EventEmitter;
 //定义url
 var urls = {
     // 获取 统计数字（总用户、新增用户、过期用户、新增过期用户）
@@ -67,19 +67,19 @@ var urls = {
     //过期用户登录时长统计
     getExpiredLoginLong: '/rest/analysis/user/v1/expired/login_long',
     //获取用户留存
-    getRetention: "/rest/analysis/user/v1/retention",
+    getRetention: '/rest/analysis/user/v1/retention',
     //获取团队列表
-    getTeams: "/rest/base/v1/group/myteam",
+    getTeams: '/rest/base/v1/group/myteam',
     //获取团队成员
-    getMembers: "/rest/base/v1/group/member",
+    getMembers: '/rest/base/v1/group/member',
     // 获取用户类型统计 analysis_type是指：总用户、新增用户、过期用户、新增过期用户
-    getUserTypeStatistics: "/rest/analysis/user/v1/:auth_type/:analysis_type/type",
+    getUserTypeStatistics: '/rest/analysis/user/v1/:auth_type/:analysis_type/type',
     // 获取应用的启停用统计 analysis_type是指：总用户、新增用户、过期用户、新增过期用户
-    getAppStatus: "/rest/analysis/user/v1/:auth_type/:analysis_type/status",
+    getAppStatus: '/rest/analysis/user/v1/:auth_type/:analysis_type/status',
     // 获取全部应用下的团队、地域和行业统计 analysis_type是指：总用户、新增用户、过期用户、新增过期用户
-    getAppsStatistics: "/rest/analysis/user/v1/:auth_type/apps/:analysis_type",
+    getAppsStatistics: '/rest/analysis/user/v1/:auth_type/apps/:analysis_type',
     // 获取应用下载的统计
-    getAppsDownloadStatistics: "/rest/base/v1/application/download/statistic",
+    getAppsDownloadStatistics: '/rest/base/v1/application/download/statistic',
     v2: {
         // 获取 统计数字（总用户、新增用户、过期用户、新增过期用户）
         getSummaryNumbers: '/rest/analysis/user/v2/summary',
@@ -116,15 +116,15 @@ exports.urls = urls;
 exports.getSummaryNumbers = function(req, res, queryParams) {
     let url = urls.getSummaryNumbers;
     //销售首页
-    if (queryParams.urltype == "v2") {
-        if (queryParams.dataType == "all") {
+    if (queryParams.urltype == 'v2') {
+        if (queryParams.dataType == 'all') {
             url = urls.v2.getAllSummaryNumbers;
         } else {
             url = urls.v2.getSummaryNumbers;
         }
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -141,11 +141,11 @@ exports.getSummaryNumbers = function(req, res, queryParams) {
 // 获取总用户的用户统计
 exports.getTotalSummary = function(req, res, queryParams) {
     let url = urls.getTotalSummary;
-    if (queryParams.urltype == "v2") {
+    if (queryParams.urltype == 'v2') {
         url = urls.v2.getTotalSummary;
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -161,15 +161,15 @@ exports.getTotalSummary = function(req, res, queryParams) {
 //获取新增用户的用户统计
 exports.getAddedSummary = function(req, res, queryParams) {
     let url = urls.getAddedSummary;
-    if (queryParams.urltype == "v2") {
-        if (queryParams.dataType == "all") {
+    if (queryParams.urltype == 'v2') {
+        if (queryParams.dataType == 'all') {
             url = urls.v2.getAllAddedSummary;
         } else {
             url = urls.v2.getAddedSummary;
         }
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -187,7 +187,7 @@ exports.getAddedSummary = function(req, res, queryParams) {
 exports.getExpiredSummary = function(req, res, queryParams) {
     let url = urls.getExpiredSummary;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -202,7 +202,7 @@ exports.getExpiredSummary = function(req, res, queryParams) {
 exports.getAddedExpiredSummary = function(req, res, queryParams) {
     let url = urls.getAddedExpiredSummary;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -216,11 +216,11 @@ exports.getAddedExpiredSummary = function(req, res, queryParams) {
 //获取总用户的团队统计
 exports.getTotalTeam = function(req, res, queryParams) {
     let url = urls.getTotalTeam;
-    if (queryParams.urltype == "v2") {
+    if (queryParams.urltype == 'v2') {
         url = urls.v2.getTotalTeam;
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -236,15 +236,15 @@ exports.getTotalTeam = function(req, res, queryParams) {
 //获取新增用户的团队统计
 exports.getAddedTeam = function(req, res, queryParams) {
     let url = urls.getAddedTeam;
-    if (queryParams.urltype == "v2") {
-        if (queryParams.dataType == "all") {
+    if (queryParams.urltype == 'v2') {
+        if (queryParams.dataType == 'all') {
             url = urls.v2.getAllAddedTeam;
         } else {
             url = urls.v2.getAddedTeam;
         }
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -262,7 +262,7 @@ exports.getAddedTeam = function(req, res, queryParams) {
 exports.getExpiredTeam = function(req, res, queryParams) {
     let url = urls.getExpiredTeam;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -277,7 +277,7 @@ exports.getExpiredTeam = function(req, res, queryParams) {
 exports.getAddedExpiredTeam = function(req, res, queryParams) {
     let url = urls.getAddedExpiredTeam;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -291,11 +291,11 @@ exports.getAddedExpiredTeam = function(req, res, queryParams) {
 //获取总用户的地域统计
 exports.getTotalZone = function(req, res, queryParams) {
     let url = urls.getTotalZone;
-    if (queryParams.urltype == "v2") {
+    if (queryParams.urltype == 'v2') {
         url = urls.v2.getTotalZone;
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -311,15 +311,15 @@ exports.getTotalZone = function(req, res, queryParams) {
 //获取新增用户的地域统计
 exports.getAddedZone = function(req, res, queryParams) {
     let url = urls.getAddedZone;
-    if (queryParams.urltype == "v2") {
-        if (queryParams.dataType == "all") {
+    if (queryParams.urltype == 'v2') {
+        if (queryParams.dataType == 'all') {
             url = urls.v2.getAllAddedZone;
         } else {
             url = urls.v2.getAddedZone;
         }
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -337,7 +337,7 @@ exports.getAddedZone = function(req, res, queryParams) {
 exports.getExpiredZone = function(req, res, queryParams) {
     let url = urls.getExpiredZone;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -352,7 +352,7 @@ exports.getExpiredZone = function(req, res, queryParams) {
 exports.getAddedExpiredZone = function(req, res, queryParams) {
     let url = urls.getAddedExpiredZone;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -366,11 +366,11 @@ exports.getAddedExpiredZone = function(req, res, queryParams) {
 //获取总用户的行业统计
 exports.getTotalIndustry = function(req, res, queryParams) {
     let url = urls.getTotalIndustry;
-    if (queryParams.urltype == "v2") {
+    if (queryParams.urltype == 'v2') {
         url = urls.v2.getTotalIndustry;
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -387,7 +387,7 @@ exports.getTotalIndustry = function(req, res, queryParams) {
 exports.getSalesOpenUserAnalysis = function(req, res, queryParams) {
     return restUtil.authRest.get(
         {
-            url: urls.getSalesOpenUserAnalysis.replace(":auth_type", queryParams.authType),
+            url: urls.getSalesOpenUserAnalysis.replace(':auth_type', queryParams.authType),
             req: req,
             res: res
         }, null);
@@ -396,14 +396,14 @@ exports.getSalesOpenUserAnalysis = function(req, res, queryParams) {
 //获取新增用户的行业统计
 exports.getAddedIndustry = function(req, res, queryParams) {
     let url = urls.getAddedIndustry;
-    if (queryParams.urltype == "v2") {
+    if (queryParams.urltype == 'v2') {
         url = urls.v2.getAddedIndustry;
-        if (queryParams.dataType == "all") {
+        if (queryParams.dataType == 'all') {
             url = urls.v2.getAllAddedIndustry;
         }
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -421,7 +421,7 @@ exports.getAddedIndustry = function(req, res, queryParams) {
 exports.getExpiredIndustry = function(req, res, queryParams) {
     let url = urls.getExpiredIndustry;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -436,7 +436,7 @@ exports.getExpiredIndustry = function(req, res, queryParams) {
 exports.getAddedExpiredIndustry = function(req, res, queryParams) {
     let url = urls.getAddedExpiredIndustry;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -477,7 +477,7 @@ function getMembers(req, res) {
                     list: [
                         {
                             id: user.user_id,
-                            name: ""
+                            name: ''
                         }
                     ]
                 });
@@ -509,7 +509,7 @@ function getMembers(req, res) {
                                         list: [
                                             {
                                                 id: user.user_id,
-                                                name: ""
+                                                name: ''
                                             }
                                         ]
                                     });
@@ -553,9 +553,9 @@ function getActiveNessLineData(req, res, reqParams, dataType, dataRange, authTyp
         }
         return restUtil.authRest.get(
             {
-                url: restUrl.replace(":app_id", reqParams.app_id)
-                    .replace(":auth_type", authType)
-                    .replace(":data_range", dataRange),
+                url: restUrl.replace(':app_id', reqParams.app_id)
+                    .replace(':auth_type', authType)
+                    .replace(':data_range', dataRange),
                 req: req,
                 res: res
             }, reqParams, {
@@ -604,23 +604,23 @@ exports.getActiveNess = function(req, res, dataType, dataRange, queryParams) {
                 promiseList.push(getActiveNessLineData(req, res, reqParam, dataType, dataRange, authType));
             });
             Promise.all(promiseList).then(function(lineList) {
-                emitter.emit("success", lineList);
+                emitter.emit('success', lineList);
             }, function(errorMsg) {
-                emitter.emit("error", errorMsg);
+                emitter.emit('error', errorMsg);
             });
         }, function(errorMsg) {
-            emitter.emit("error", errorMsg);
+            emitter.emit('error', errorMsg);
         });
         //如果不是销售，使用之前的逻辑
     } else {
         var reqParams = queryParams;
-        reqParams.userName = "";
+        reqParams.userName = '';
         var lines = [];
         getActiveNessLineData(req, res, reqParams, dataType, dataRange, authType).then(function(lineObj) {
             lines.push(lineObj);
-            emitter.emit("success", lines);
+            emitter.emit('success', lines);
         }, function(errorMsg) {
-            emitter.emit("error", errorMsg);
+            emitter.emit('error', errorMsg);
         });
     }
     return emitter;
@@ -632,7 +632,7 @@ exports.getActiveTime = function(req, res, queryParams) {
     let app_id = queryParams.app_id;
     return restUtil.authRest.get(
         {
-            url: urls.getActiveTime.replace(":app_id", app_id).replace(":interval", "weekly"),
+            url: urls.getActiveTime.replace(':app_id', app_id).replace(':interval', 'weekly'),
             req: req,
             res: res
         }, queryParams);
@@ -641,7 +641,7 @@ exports.getActiveTime = function(req, res, queryParams) {
 exports.getTotalMember = function(req, res, queryParams) {
     let url = urls.getTotalMember;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -655,14 +655,14 @@ exports.getTotalMember = function(req, res, queryParams) {
 //获取新增成员
 exports.getAddedMember = function(req, res, queryParams) {
     let url = urls.getAddedMember;
-    if (queryParams.urltype == "v2") {
+    if (queryParams.urltype == 'v2') {
         url = urls.v2.getAddedMember;
-        if (queryParams.dataType == "all") {
+        if (queryParams.dataType == 'all') {
             url = urls.v2.getAllAddedMember;
         }
     } else {//用户分析
         if (queryParams.authType) {//common、manager
-            url = url.replace(":auth_type", queryParams.authType);
+            url = url.replace(':auth_type', queryParams.authType);
         }
     }
     delete queryParams.urltype;
@@ -680,7 +680,7 @@ exports.getAddedMember = function(req, res, queryParams) {
 exports.getExpiredMember = function(req, res, queryParams) {
     let url = urls.getExpiredMember;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -695,7 +695,7 @@ exports.getExpiredMember = function(req, res, queryParams) {
 exports.getAddedExpiredMember = function(req, res, queryParams) {
     let url = urls.getAddedExpiredMember;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
@@ -742,12 +742,12 @@ exports.getRetention = function(req, res, queryParams) {
 exports.getUserTypeStatistics = function(req, res, analysis_type, queryParams) {
     let url = urls.getUserTypeStatistics;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
         {
-            url: url.replace(":analysis_type", analysis_type),
+            url: url.replace(':analysis_type', analysis_type),
             req: req,
             res: res
         }, queryParams);
@@ -757,12 +757,12 @@ exports.getUserTypeStatistics = function(req, res, analysis_type, queryParams) {
 exports.getAppStatus = function(req, res, analysis_type, queryParams) {
     let url = urls.getAppStatus;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
         {
-            url: url.replace(":analysis_type", analysis_type),
+            url: url.replace(':analysis_type', analysis_type),
             req: req,
             res: res
         }, queryParams);
@@ -772,12 +772,12 @@ exports.getAppStatus = function(req, res, analysis_type, queryParams) {
 exports.getAppsTeam = function(req, res, analysis_type, team, queryParams) {
     let url = urls.getAppsStatistics;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
         {
-            url: url.replace(":analysis_type", analysis_type) + '/' + team,
+            url: url.replace(':analysis_type', analysis_type) + '/' + team,
             req: req,
             res: res
         }, queryParams);
@@ -787,12 +787,12 @@ exports.getAppsTeam = function(req, res, analysis_type, team, queryParams) {
 exports.getAppsIndustry = function(req, res, analysis_type, industry, queryParams) {
     let url = urls.getAppsStatistics;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
         {
-            url: url.replace(":analysis_type", analysis_type) + '/' + industry,
+            url: url.replace(':analysis_type', analysis_type) + '/' + industry,
             req: req,
             res: res
         }, queryParams);
@@ -802,12 +802,12 @@ exports.getAppsIndustry = function(req, res, analysis_type, industry, queryParam
 exports.getAppsZone = function(req, res, analysis_type, zone, queryParams) {
     let url = urls.getAppsStatistics;
     if (queryParams.authType) {//common、manager
-        url = url.replace(":auth_type", queryParams.authType);
+        url = url.replace(':auth_type', queryParams.authType);
     }
     delete queryParams.authType;
     return restUtil.authRest.get(
         {
-            url: url.replace(":analysis_type", analysis_type) + '/' + zone,
+            url: url.replace(':analysis_type', analysis_type) + '/' + zone,
             req: req,
             res: res
         }, queryParams);

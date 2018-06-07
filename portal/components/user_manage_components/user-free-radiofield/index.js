@@ -12,7 +12,7 @@ const UserFreeRadioField = {
         config = $.extend({
             isCustomSetting: false,
             appId: '',
-            globalUserFree: "0"
+            globalUserFree: '0'
         } , config);
 
         if(config.isCustomSetting && !config.appId) {

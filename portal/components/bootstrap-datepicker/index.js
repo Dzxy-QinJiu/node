@@ -1,22 +1,22 @@
-require("bootstrap-datepicker");
-require("bootstrap-datepicker/dist/css/bootstrap-datepicker.css");
-var language = require("../../public/language/getLanguage");
+require('bootstrap-datepicker');
+require('bootstrap-datepicker/dist/css/bootstrap-datepicker.css');
+var language = require('../../public/language/getLanguage');
 var lang = 'zh-CN';
-if (language.lan() == "es") {
-    require("bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min");
+if (language.lan() == 'es') {
+    require('bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min');
     lang = 'es';
-} else if (language.lan() == "zh") {
-    require("bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min");
-} else if (language.lan() == "en") {
-    require("bootstrap-datepicker/dist/locales/bootstrap-datepicker.en-AU.min");
+} else if (language.lan() == 'zh') {
+    require('bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min');
+} else if (language.lan() == 'en') {
+    require('bootstrap-datepicker/dist/locales/bootstrap-datepicker.en-AU.min');
     lang = 'en-AU';
 }
 
 
-require("./index.less");
-var classNames = require("classnames");
-var YEAR_MODE = "years";
-var MONTH_MODE = "months";
+require('./index.less');
+var classNames = require('classnames');
+var YEAR_MODE = 'years';
+var MONTH_MODE = 'months';
 var BootstrapDatepicker = React.createClass({
     //获取日历初始化选项
     getDatepickerOptions: function(props) {
@@ -48,13 +48,13 @@ var BootstrapDatepicker = React.createClass({
         }
 
         if (props.disableDateBeforeRange) {
-            if (props.selectRange === "1w") { // 一周
-                options.startDate = moment().add(7 , "days").toDate();
-            } else if (props.selectRange === "0.5m") { // 半个月
-                options.startDate = moment().add(15 , "days").toDate();
+            if (props.selectRange === '1w') { // 一周
+                options.startDate = moment().add(7 , 'days').toDate();
+            } else if (props.selectRange === '0.5m') { // 半个月
+                options.startDate = moment().add(15 , 'days').toDate();
             } else if (/^\d+m$/.test(props.selectRange)) {
                 let num = props.selectRange.replace(/m$/,''); // 其他月份
-                options.startDate = moment().add(num , "months").toDate();
+                options.startDate = moment().add(num , 'months').toDate();
             } else { // 自定义、永久
                 options.startDate = new Date();
             }
@@ -75,22 +75,22 @@ var BootstrapDatepicker = React.createClass({
             $(this.refs.instanceDom).datepicker('update', this.state.value);
         }
         var _this = this;
-        $(this.refs.instanceDom).datepicker().on("changeDate", function(event) {
+        $(this.refs.instanceDom).datepicker().on('changeDate', function(event) {
             _this.state.value = event.date;
             _this.props.onChange(event.date);
         });
-        $(this.refs.instanceDom).find(".datepicker-inline").append('<span class="arrow"></span>');
+        $(this.refs.instanceDom).find('.datepicker-inline').append('<span class="arrow"></span>');
     },
     //重新设置
     resetDatePicker: function(nextProps) {
         if (nextProps.disableDateBeforeRange) {
             var options = this.getDatepickerOptions(nextProps);
-            $(this.refs.instanceDom).datepicker("destroy");
+            $(this.refs.instanceDom).datepicker('destroy');
             $(this.refs.instanceDom).datepicker(options);
         } else if (nextProps.onlyYear != this.props.onlyYear || nextProps.monthMode != this.props.monthMode
             || nextProps.multidate != this.props.multidate) {
             var options = this.getDatepickerOptions(nextProps);
-            $(this.refs.instanceDom).datepicker("destroy");
+            $(this.refs.instanceDom).datepicker('destroy');
             $(this.refs.instanceDom).datepicker(options);
             if (nextProps.multidate) {
                 $(this.refs.instanceDom).datepicker('update', nextProps.start_time, nextProps.end_time);
@@ -100,11 +100,11 @@ var BootstrapDatepicker = React.createClass({
         } else {
             if (nextProps.multidate) {
                 let changed = false;
-                if (!moment(this.props.start_time).isSame(moment(nextProps.start_time), "day")) {
+                if (!moment(this.props.start_time).isSame(moment(nextProps.start_time), 'day')) {
                     this.state.start_time = nextProps.start_time;
                     changed = true;
                 }
-                if (!moment(this.props.end_time).isSame(moment(nextProps.end_time), "day")) {
+                if (!moment(this.props.end_time).isSame(moment(nextProps.end_time), 'day')) {
                     this.state.end_time = nextProps.end_time;
                     changed = true;
                 }
@@ -112,7 +112,7 @@ var BootstrapDatepicker = React.createClass({
                     $(this.refs.instanceDom).datepicker('update', this.state.start_time, this.state.end_time);
                 }
             } else {
-                if (!moment(this.props.value).isSame(moment(nextProps.value), "day")) {
+                if (!moment(this.props.value).isSame(moment(nextProps.value), 'day')) {
                     var newValue = nextProps.value;
                     if (newValue === 'today') {
                         newValue = moment().toDate();
@@ -159,8 +159,8 @@ var BootstrapDatepicker = React.createClass({
         }
         return {
             value: value,
-            start_time: this.props.start_time || "",
-            end_time: this.props.end_time || ""
+            start_time: this.props.start_time || '',
+            end_time: this.props.end_time || ''
         };
     }
     ,
@@ -174,11 +174,11 @@ var BootstrapDatepicker = React.createClass({
     render: function() {
 
         const {children, value, onChange, className, ...props} = this.props;
-        var cls = classNames(className, "bootstrap-datepicker-wrap");
+        var cls = classNames(className, 'bootstrap-datepicker-wrap');
 
-        if (this.props.type === "input") {
+        if (this.props.type === 'input') {
             return (
-                <input ref="instanceDom" className={className + " bootstrap-datepicker-input"}/>
+                <input ref="instanceDom" className={className + ' bootstrap-datepicker-input'}/>
             );
         }
 

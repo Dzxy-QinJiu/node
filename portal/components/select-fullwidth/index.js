@@ -18,8 +18,8 @@
  *  minWidth用来指定select的最小宽度，非必传属性，默认值是120
  *  maxWidth用来指定select的最大宽度，非必传属性，默认值是500
  */
-var Select = require("antd").Select;
-var measureText = require("../../public/sources/utils/measure-text");
+var Select = require('antd').Select;
+var measureText = require('../../public/sources/utils/measure-text');
 var SelectFullWidth = React.createClass({
     getDefaultProps: function() {
         return {
@@ -39,9 +39,9 @@ var SelectFullWidth = React.createClass({
         //获取外层节点
         var wrapDom = ReactDOM.findDOMNode(this);
         //获取渲染出来的展示的文字节点
-        var $renderedDom = $(wrapDom).find(".ant-select-selection__rendered");
+        var $renderedDom = $(wrapDom).find('.ant-select-selection__rendered');
         //获取字体大小css样式
-        var fontSizeText = $renderedDom.css("font-size");
+        var fontSizeText = $renderedDom.css('font-size');
         //获取字体大小数字
         var fontSize = parseInt(fontSizeText);
         if(isNaN(fontSize)) {

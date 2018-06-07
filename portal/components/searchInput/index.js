@@ -56,9 +56,9 @@
  *          是否展示关闭按钮，点击搜索按钮出现搜索框后，点击关闭按钮隐藏搜索框时使用
  */
 
-require("./searchInput.less");
-import { Select, Icon } from "antd";
-import Trace from "LIB_DIR/trace";
+require('./searchInput.less');
+import { Select, Icon } from 'antd';
+import Trace from 'LIB_DIR/trace';
 
 let inputTimeOut = null;
 const delayTime = 500;
@@ -67,9 +67,9 @@ const PropTypes = React.PropTypes;
 const SearchInput = React.createClass({
     getDefaultProps: function() {
         return {
-            type: "input",
+            type: 'input',
             searchEvent: function() {},
-            searchPlaceholder: "",
+            searchPlaceholder: '',
             searchFields: [],
             searchOnTyped: false,
             hasCloseBtn: false
@@ -78,19 +78,19 @@ const SearchInput = React.createClass({
     getInitialState: function() {
         let state = {};
 
-        if (this.props.type === "select") {
+        if (this.props.type === 'select') {
             const searchFields = this.props.searchFields;
-            const names = _.pluck(searchFields, "name");
-            const fields = _.pluck(searchFields, "field");
+            const names = _.pluck(searchFields, 'name');
+            const fields = _.pluck(searchFields, 'field');
             let placeholder = this.props.searchPlaceholder;
             if (!placeholder && names.length) {
-                placeholder = names.length === 1 ? names[0] : names.join(" / ");
+                placeholder = names.length === 1 ? names[0] : names.join(' / ');
             }
 
             state = {
-                keyword: "",
+                keyword: '',
                 optionNames: names,
-                selectedField: "",
+                selectedField: '',
                 searchFields: fields,
                 placeholder: placeholder,
                 formData: {}
@@ -115,11 +115,11 @@ const SearchInput = React.createClass({
             });
 
             //清除选中状态
-            this.state.selectedField = "";
+            this.state.selectedField = '';
 
             //清空关键词时触发搜索
             if (!keyword) {
-                this.props.searchEvent("", "");
+                this.props.searchEvent('', '');
             }
         } else {
             //若设置了要求输入时即搜索则触发搜索
@@ -132,7 +132,7 @@ const SearchInput = React.createClass({
         this.setState(this.state);
     },
     onKeywordSelect: function(value, option) {
-        Trace.traceEvent(this.getDOMNode(),"按" + value + "搜索");
+        Trace.traceEvent(this.getDOMNode(),'按' + value + '搜索');
         const keyword = this.state.keyword.trim();
         const index = option.props.index;
         let formData = this.state.formData;
@@ -163,7 +163,7 @@ const SearchInput = React.createClass({
         }, delayTime);
     },
     onSearchButtonClick: function() {
-        if (this.props.type === "input") {
+        if (this.props.type === 'input') {
             if (this.refs.searchInput.value.trim()) {
                 this.searchEvent();
             }
@@ -186,15 +186,15 @@ const SearchInput = React.createClass({
         }
     },
     closeSearchInput: function() {
-        if (this.props.type === "input"){
+        if (this.props.type === 'input'){
             //在销售首页的右侧列表，会将整个搜索框都隐藏掉
             if (this.props.closeSearchInput){
                 this.props.closeSearchInput();
             }else{
                 this.props.searchEvent();
             }
-            this.refs.searchInput.value = "";
-        }else if(this.props.type === "select") {
+            this.refs.searchInput.value = '';
+        }else if(this.props.type === 'select') {
             this.setState({
                 keyword: '',
                 formData: {}
@@ -202,15 +202,15 @@ const SearchInput = React.createClass({
             this.state.keyword = '';
             this.state.formData = {};
             this.props.searchEvent();
-            Trace.traceEvent(this.getDOMNode(),"清除搜索条件");
+            Trace.traceEvent(this.getDOMNode(),'清除搜索条件');
         }
     },
     render: function() {
         let keywordOptions = [];
 
-        if (this.props.type === "select" && this.state.keyword.trim()) {
+        if (this.props.type === 'select' && this.state.keyword.trim()) {
             keywordOptions = this.state.optionNames.map((name, index) => {
-                const className = this.state.searchFields[index] === this.state.selectedField ? "selected" : "";
+                const className = this.state.searchFields[index] === this.state.selectedField ? 'selected' : '';
 
                 return <Option key={name} className={className}>根据 <b>{name}</b> 搜索</Option>;
             });
@@ -218,7 +218,7 @@ const SearchInput = React.createClass({
 
         return (
             <div className="search-input-container">
-                {this.props.type === "input" ? (
+                {this.props.type === 'input' ? (
                     <input type="text" placeholder={this.props.searchPlaceHolder} ref="searchInput"
                         onKeyUp={this.searchEvent}
                         className="search-input"/>
@@ -234,8 +234,8 @@ const SearchInput = React.createClass({
                         {keywordOptions}
                     </Select>
                 )}
-                {(this.props.type === "input" && this.refs.searchInput && this.refs.searchInput.value) ||
-                 (this.props.type === "select" && this.state.keyword) ? (
+                {(this.props.type === 'input' && this.refs.searchInput && this.refs.searchInput.value) ||
+                 (this.props.type === 'select' && this.state.keyword) ? (
                         <Icon type="cross-circle-o" className="search-icon" onClick={this.closeSearchInput}/>
                     ) : (<Icon type="search" className="search-icon" onClick={this.onSearchButtonClick}/>
                     )}

@@ -2,12 +2,12 @@
 //根据权限判断，如果是产品总经理，调用我的应用接口
 //如果是其他人，调用应用列表接口
 //如果是产品总经理，不显示全部应用
-var userData = require("../../public/sources/user-data");
-var appAjaxTrans = require("../../modules/common/public/ajax/app");
+var userData = require('../../public/sources/user-data');
+var appAjaxTrans = require('../../modules/common/public/ajax/app');
 exports.getAppList = function() {
     var Deferred = $.Deferred();
     var privileges = userData.getUserData().privileges || [];
-    var hasAll = privileges.indexOf("APP_MANAGE_LIST_APPS") >= 0 || privileges.indexOf("USER_INFO_MYAPP") < 0;
+    var hasAll = privileges.indexOf('APP_MANAGE_LIST_APPS') >= 0 || privileges.indexOf('USER_INFO_MYAPP') < 0;
     //调用统一的接口发请求
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().
         success(function(list) {

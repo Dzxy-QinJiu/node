@@ -1,11 +1,11 @@
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
-var commonUtil = require("./portal/lib/utils/common-utils");
+var commonUtil = require('./portal/lib/utils/common-utils');
 
 //代理服务器端口
 var config = require('./webpack.config');
-config.entry.app.unshift("webpack-dev-server/client?http://" + commonUtil.ip.getServerIp() + ":8081"); // 将热替换js内联进去
-config.entry.app.unshift("webpack/hot/only-dev-server");
+config.entry.app.unshift('webpack-dev-server/client?http://' + commonUtil.ip.getServerIp() + ':8081'); // 将热替换js内联进去
+config.entry.app.unshift('webpack/hot/only-dev-server');
 
 //dev server 端口
 var devServerPort = 8081;
@@ -22,7 +22,7 @@ new WebpackDevServer(webpack(config), {
         poll: 1000
     },
     headers: {
-        "Access-Control-Allow-Origin": "*",
+        'Access-Control-Allow-Origin': '*',
     },
 }).listen(8081, function(err, result) {
     if (err) {

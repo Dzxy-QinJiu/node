@@ -1,5 +1,5 @@
 
-var UserData = require("../../public/sources/user-data");
+var UserData = require('../../public/sources/user-data');
 
 //根据权限获取子路由
 function getChildRoutes(preRoutePath , fullModuleList) {
@@ -96,9 +96,9 @@ function hasPrivilege(list) {
 }
 
 function getDataAuthType() {
-    let type = "Common";//CUSTOMER_ANALYSIS_COMMON
-    if(hasPrivilege("CUSTOMER_ANALYSIS_MANAGER")){
-        type = "Manager";
+    let type = 'Common';//CUSTOMER_ANALYSIS_COMMON
+    if(hasPrivilege('CUSTOMER_ANALYSIS_MANAGER')){
+        type = 'Manager';
     }
     return type;
 }

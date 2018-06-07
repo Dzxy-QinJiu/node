@@ -5,13 +5,13 @@
  */
 var userAbnormalLoginAjax = require('../ajax/user-abnormal-login-ajax');
 var userDetailChangeRecordAjax = require('../ajax/user-detail-change-record-ajax');
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 
 function UserAbnormalLoginAction() {
     this.generateActions(
-        "resetState",//重置数据
-        "setApp",//设置应用的名称
-        "deleteAbnormalLoginInfo" // 删除某条异地登录的信息
+        'resetState',//重置数据
+        'setApp',//设置应用的名称
+        'deleteAbnormalLoginInfo' // 删除某条异地登录的信息
     );
     this.getUserAbnormalLogin = function(data) {
         this.dispatch({loading: true, error: false});

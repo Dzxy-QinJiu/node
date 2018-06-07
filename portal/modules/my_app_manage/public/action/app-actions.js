@@ -1,5 +1,5 @@
-var appAjax = require("../ajax/app-ajax");
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var appAjax = require('../ajax/app-ajax');
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 function AppActions() {
     this.generateActions(
         'setCurApp',
@@ -36,7 +36,7 @@ function AppActions() {
             scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("my.app.get.app.failed", "获取我的应用失败"));
+            _this.dispatch(errorMsg || Intl.get('my.app.get.app.failed', '获取我的应用失败'));
         });
     };
 
@@ -72,7 +72,7 @@ function AppActions() {
             }
         }, function(errorMsg) {
             if (callback) {
-                callback({error: true, errorMsg: errorMsg || Intl.get("my.app.change.expire.time.error", "修改应用到期时间失败")});
+                callback({error: true, errorMsg: errorMsg || Intl.get('my.app.change.expire.time.error', '修改应用到期时间失败')});
             }
         });
     };
@@ -82,7 +82,7 @@ function AppActions() {
         appAjax.getCurAppKeyById(appId).then(function(data) {
             _this.dispatch({error: false, loading: false, data: data});
         }, function(errorMsg) {
-            _this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get("app.get.app.key.failed","获取piwik信息失败")});
+            _this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get('app.get.app.key.failed','获取piwik信息失败')});
         });
     };
 

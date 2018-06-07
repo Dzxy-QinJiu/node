@@ -1,6 +1,6 @@
 var OplateUserAnalysisActions = require('../action/oplate-user-analysis.action');
 var DateSelectorUtils = require('../../../../components/datepicker/utils');
-var userData = require("../../../../public/sources/user-data");
+var userData = require('../../../../public/sources/user-data');
 
 //用户分析
 function OplateUserAnalysisStore() {
@@ -133,9 +133,9 @@ OplateUserAnalysisStore.prototype.resetChartData = function(type) {
     //用户活跃度
     this.activeNess = {
         //总用户、新用户、过期用户
-        dataType: "total",
+        dataType: 'total',
         //数据类型（日活、周活、月活）
-        dateRange: "daily",
+        dateRange: 'daily',
         //loading error ''
         resultType: type || '',
         //错误信息
@@ -239,7 +239,7 @@ OplateUserAnalysisStore.prototype.getTotalSummary =
                         //更改综合名称
                         _.find(userAnalysis.data, function(obj, idx) {
                             if (obj.app_name === '') {
-                                obj.app_name = Intl.get("oplate.user.analysis.22", "综合");
+                                obj.app_name = Intl.get('oplate.user.analysis.22', '综合');
                                 //将当前这个放到最头上
                                 userAnalysis.data.splice(idx, 1);
                                 userAnalysis.data.unshift(obj);
@@ -379,10 +379,10 @@ OplateUserAnalysisStore.prototype.getSalesOpenUserAnalysis = function(result) {
         salesOpenUserAnalysis.errorMsg = '';
         let salesOpenUserNumList = _.isArray(result.data) ? result.data : [];
         let salesUserApps = [];//各个销售开通用户对应的所有应用
-        let appTotalRowData = {member_name: Intl.get("sales.home.total.compute", "总计"), sales_team_name: "", total: 0};//最有一行的各应用用户数的总计
+        let appTotalRowData = {member_name: Intl.get('sales.home.total.compute', '总计'), sales_team_name: '', total: 0};//最有一行的各应用用户数的总计
         if (_.isArray(salesOpenUserNumList) && salesOpenUserNumList.length) {
             //取出所有销售下的appMap;
-            let appMapList = _.pluck(salesOpenUserNumList, "app_map");
+            let appMapList = _.pluck(salesOpenUserNumList, 'app_map');
             //取出所有appMap中的应用名
             _.each(appMapList, app_map => {
                 //应用名合并去重
@@ -432,7 +432,7 @@ OplateUserAnalysisStore.prototype.getUserActiveNess = function(result) {
         activeNess.data = [];
     } else if (result.error) {
         activeNess.resultType = 'error';
-        activeNess.errorMsg = result.errorMsg || Intl.get("contract.111", "获取数据失败");
+        activeNess.errorMsg = result.errorMsg || Intl.get('contract.111', '获取数据失败');
         activeNess.data = [];
     } else {
         activeNess.resultType = '';
@@ -507,22 +507,22 @@ OplateUserAnalysisStore.prototype.getRetention = function(result) {
         //结束时间的moment表示，用于计算时间区间包含的天数及确定时间格式
         const endTimeMoment = moment(new Date(+this.endTime));
         //时间区间包含的天数
-        const distance = Math.abs(startTimeMoment.diff(endTimeMoment, "days"));
+        const distance = Math.abs(startTimeMoment.diff(endTimeMoment, 'days'));
         //时间格式，分带年和不带年的两种格式
         const DATE_FORMAT = startTimeMoment.year() === endTimeMoment.year() ? DATE_FORMAT_WITHOUT_YEAR : DATE_FORMAT_WITH_YEAR;
 
         //填充时间戳、时间值及时间列名数组
         for (var i = 0; i <= distance; i++) {
-            const timestamp = startTimeMoment.clone().add(i, "days").valueOf();
+            const timestamp = startTimeMoment.clone().add(i, 'days').valueOf();
             const date = moment(timestamp).format(DATE_FORMAT);
             let column;
 
             if (i === 0) {
-                column = Intl.get("oplate.user.analysis.23", "当天");
+                column = Intl.get('oplate.user.analysis.23', '当天');
             } else if (i === 1) {
-                column = Intl.get("oplate.user.analysis.24", "次日");
+                column = Intl.get('oplate.user.analysis.24', '次日');
             } else {
-                column = Intl.get("oplate.user.analysis.25", "{count}天后", {count: i});
+                column = Intl.get('oplate.user.analysis.25', '{count}天后', {count: i});
             }
 
             timestamps.push(timestamp);
@@ -531,7 +531,7 @@ OplateUserAnalysisStore.prototype.getRetention = function(result) {
         }
 
         //用“时间”和“新增数”这两列加上时间相关列，构造表格列数组
-        columns = ["date", "added"].concat(dateColumns);
+        columns = ['date', 'added'].concat(dateColumns);
 
         //填充表格数据
         _.each(result.data, (dataItem, dataIndex) => {
@@ -565,7 +565,7 @@ OplateUserAnalysisStore.prototype.getRetention = function(result) {
                         //如果当前单元格没有对应的活跃点，且所在时间为将来的时间
                     } else {
                         //则将单元格的值赋为空
-                        cellValue = "";
+                        cellValue = '';
                     }
                 }
                 //将该活跃点的数据加入列表项
@@ -630,18 +630,18 @@ OplateUserAnalysisStore.prototype.getUserTypeStatistics = function(result) {
             return userType.data = [];
         }
         _.each(result.data, (item) => {
-            if (item.name == Intl.get("common.trial.official", "正式用户")) {
-                item.name = Intl.get("common.official", "签约");
-            } else if (item.name == Intl.get("common.trial.user", "试用用户")) {
-                item.name = Intl.get("common.trial", "试用");
+            if (item.name == Intl.get('common.trial.official', '正式用户')) {
+                item.name = Intl.get('common.official', '签约');
+            } else if (item.name == Intl.get('common.trial.user', '试用用户')) {
+                item.name = Intl.get('common.trial', '试用');
             } else if (item.name == 'special') {
-                item.name = Intl.get("user.type.presented", "赠送");
+                item.name = Intl.get('user.type.presented', '赠送');
             } else if (item.name == 'training') {
-                item.name = Intl.get("user.type.presented", "培训");
+                item.name = Intl.get('user.type.presented', '培训');
             } else if (item.name == 'internal') {
-                item.name = Intl.get("user.type.employee", "员工");
+                item.name = Intl.get('user.type.employee', '员工');
             } else if (item.name == 'unknown') {
-                item.name = Intl.get("common.unknown", "未知");
+                item.name = Intl.get('common.unknown', '未知');
             }
         });
         userType.data = result.data;
@@ -673,9 +673,9 @@ OplateUserAnalysisStore.prototype.getAppStatus = function(result) {
         });
         _.each(data, (item) => {
             if (item.name == '0') {
-                item.name = Intl.get("common.stop", "停用");
+                item.name = Intl.get('common.stop', '停用');
             } else if (item.name == '1') {
-                item.name = Intl.get("common.enabled", "启用");
+                item.name = Intl.get('common.enabled', '启用');
             }
         });
         appStatus.data = data;

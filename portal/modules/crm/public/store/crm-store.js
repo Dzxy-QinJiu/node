@@ -1,8 +1,8 @@
-var CrmActions = require("../action/crm-actions");
-var filterStore = require("./filter-store");
-var orderStore = require("./order-store");
-var crmUtil = require("./../utils/crm-util");
-import {addHyphenToPhoneNumber} from "LIB_DIR/func";
+var CrmActions = require('../action/crm-actions');
+var filterStore = require('./filter-store');
+var orderStore = require('./order-store');
+var crmUtil = require('./../utils/crm-util');
+import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 
 function CrmStore() {
     this.setInitialState();
@@ -41,17 +41,17 @@ CrmStore.prototype.setInitialState = function() {
     //加载数据中。。。
     this.isLoading = false;
     //加载错误后的提示
-    this.getErrMsg = "";
+    this.getErrMsg = '';
     //右侧面板是否展示
     this.rightPaneIsShow = false;
     //当前展示的客户的id
-    this.currentId = "";
+    this.currentId = '';
     //当前展示的客户
     this.curCustomer = {};
     //是否展示客户查重界面
     this.isRepeatCustomerShow = false;
     //向前或者向后翻页时传的id值
-    this.customerId = "";
+    this.customerId = '';
     //下次点击的页数
     this.nextPageNum = 0;
 };
@@ -111,7 +111,7 @@ CrmStore.prototype.getlastCurPageCustomers = function() {
 CrmStore.prototype.queryCustomer = function(data) {
     if (data.loading) {
         this.isLoading = true;
-        this.getErrMsg = "";
+        this.getErrMsg = '';
     } else if (data.error) {
         this.getErrMsg = data.errorMsg;
         this.isLoading = false;
@@ -121,7 +121,7 @@ CrmStore.prototype.queryCustomer = function(data) {
         this.curCustomers = [];
         this.customersSize = 0;
     } else {
-        this.getErrMsg = "";
+        this.getErrMsg = '';
         this.isLoading = false;
         data = data && data.result;
         let list = data && data.result;
@@ -163,16 +163,16 @@ CrmStore.prototype.editBasicSuccess = function(newBasic) {
     if (newBasic && newBasic.id) {
         let updateCustomer = _.find(this.curCustomers, customer => customer.id == newBasic.id);
         for (var key in newBasic) {
-            if (newBasic[key] || newBasic[key] == "") {
+            if (newBasic[key] || newBasic[key] == '') {
                 updateCustomer[key] = newBasic[key];
             }
-            if (key === "member_role") {//转出客户时，打上”转出“标签
+            if (key === 'member_role') {//转出客户时，打上”转出“标签
                 if (_.isArray(updateCustomer.immutable_labels)) {
-                    if (updateCustomer.immutable_labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) == -1) {
-                        updateCustomer.immutable_labels.push(Intl.get("crm.qualified.roll.out", "转出"));
+                    if (updateCustomer.immutable_labels.indexOf(Intl.get('crm.qualified.roll.out', '转出')) == -1) {
+                        updateCustomer.immutable_labels.push(Intl.get('crm.qualified.roll.out', '转出'));
                     }
                 } else {
-                    updateCustomer.immutable_labels = [Intl.get("crm.qualified.roll.out", "转出")];
+                    updateCustomer.immutable_labels = [Intl.get('crm.qualified.roll.out', '转出')];
                 }
 
             }
@@ -195,7 +195,7 @@ function getFilterStages() {
             return filterOrderList[0].sale_stages;
         }
     }
-    return "";
+    return '';
 }
 //获取根据销售阶段排序后的订单列表
 function getOrderListSortByStage(orderList) {
@@ -224,22 +224,22 @@ CrmStore.prototype.processForList = function(curCustomers) {
     let list = _.clone(curCustomers);
     for (let i = 0, len = list.length; i < len; i++) {
         let curCustomer = list[i] || {};
-        curCustomer.dynamic = curCustomer.customer_dynamic_dto ? curCustomer.customer_dynamic_dto.message : "";
-        curCustomer.start_time = curCustomer.start_time ? moment(curCustomer.start_time).format(oplateConsts.DATE_FORMAT) : "";
-        curCustomer.last_contact_time = curCustomer.last_contact_time ? moment(curCustomer.last_contact_time).format(oplateConsts.DATE_FORMAT) : "";
+        curCustomer.dynamic = curCustomer.customer_dynamic_dto ? curCustomer.customer_dynamic_dto.message : '';
+        curCustomer.start_time = curCustomer.start_time ? moment(curCustomer.start_time).format(oplateConsts.DATE_FORMAT) : '';
+        curCustomer.last_contact_time = curCustomer.last_contact_time ? moment(curCustomer.last_contact_time).format(oplateConsts.DATE_FORMAT) : '';
         let traceArray = curCustomer.customer_traces;
         if (_.isArray(traceArray)) {
-            curCustomer.trace = traceArray[0].remark ? traceArray[0].remark : "";
+            curCustomer.trace = traceArray[0].remark ? traceArray[0].remark : '';
         }
         //默认联系人（后端处理后，放入联系人列表中）
         if (_.isArray(curCustomer.contacts) && curCustomer.contacts[0]) {
             let contact = curCustomer.contacts[0];
             curCustomer.contact = contact.name;
-            curCustomer.contact_way = "";
+            curCustomer.contact_way = '';
             if (_.isArray(contact.phone)) {
                 contact.phone.forEach(function(phone) {
                     if (phone) {
-                        curCustomer.contact_way += addHyphenToPhoneNumber(phone) + "\n";
+                        curCustomer.contact_way += addHyphenToPhoneNumber(phone) + '\n';
                     }
                 });
             }
@@ -249,7 +249,7 @@ CrmStore.prototype.processForList = function(curCustomers) {
             //通过销售阶段进行筛选时,展示筛选条件中销售阶段高的订单
             //没有销售阶段的筛选时，展示订单列表中销售阶段高的订单
             //以上条件判断改到后端处理完后，放到入订单列表中
-            curCustomer.order = cop[0].sale_stages || "";
+            curCustomer.order = cop[0].sale_stages || '';
         }
     }
     return list;
@@ -310,7 +310,7 @@ CrmStore.prototype.batchChangeSalesman = function({taskInfo, taskParams, curCust
         return;
     }
     var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, "taskDefine");
+    var targetCustomers = _.pluck(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         //如果当前客户是需要更新的客户，才更新
@@ -322,14 +322,14 @@ CrmStore.prototype.batchChangeSalesman = function({taskInfo, taskParams, curCust
         customerInfo.user_name = sales_nick_name;
         customerInfo.sales_team = sales_team_name;
         customerInfo.sales_team_id = sales_team_id;
-        if (taskInfo.type == "crm_batch_transfer_customer") {
+        if (taskInfo.type == 'crm_batch_transfer_customer') {
             //批量转出客户时，打上”转出“标签
             if (_.isArray(customerInfo.immutable_labels)) {
-                if (customerInfo.immutable_labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) == -1) {
-                    customerInfo.immutable_labels.push(Intl.get("crm.qualified.roll.out", "转出"));
+                if (customerInfo.immutable_labels.indexOf(Intl.get('crm.qualified.roll.out', '转出')) == -1) {
+                    customerInfo.immutable_labels.push(Intl.get('crm.qualified.roll.out', '转出'));
                 }
             } else {
-                customerInfo.immutable_labels = [Intl.get("crm.qualified.roll.out", "转出")];
+                customerInfo.immutable_labels = [Intl.get('crm.qualified.roll.out', '转出')];
             }
         }
         var sales_opportunities = customerInfo.sales_opportunities || [];
@@ -370,7 +370,7 @@ CrmStore.prototype.batchChangeTags = function({taskInfo, taskParams, curCustomer
         return;
     }
     var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, "taskDefine");
+    var targetCustomers = _.pluck(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         var customerInfo = curCustomerListMap[customerId];
@@ -378,10 +378,10 @@ CrmStore.prototype.batchChangeTags = function({taskInfo, taskParams, curCustomer
         if (!customerInfo) {
             return;
         }
-        if (type == "change") {
+        if (type == 'change') {
             //更新标签，将新标签列表替换原标签列表
             customerInfo.labels = tags;
-        } else if (type == "add") {
+        } else if (type == 'add') {
             //添加标签
             if (_.isArray(customerInfo.labels) && customerInfo.labels.length) {
                 //原来存在标签列表，则合并去重
@@ -389,7 +389,7 @@ CrmStore.prototype.batchChangeTags = function({taskInfo, taskParams, curCustomer
             } else {
                 customerInfo.labels = tags;
             }
-        } else if (type == "remove") {
+        } else if (type == 'remove') {
             //移除标签
             if (_.isArray(customerInfo.labels) && customerInfo.labels.length) {
                 //返回存在于labels，不存在于tags中的标签（即：过滤掉tags里的标签）
@@ -424,7 +424,7 @@ CrmStore.prototype.batchChangeIndustry = function({taskInfo, taskParams, curCust
         return;
     }
     var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, "taskDefine");
+    var targetCustomers = _.pluck(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         var customerInfo = curCustomerListMap[customerId];
@@ -460,7 +460,7 @@ CrmStore.prototype.batchChangeLevel = function({taskInfo, taskParams, curCustome
         return;
     }
     var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, "taskDefine");
+    var targetCustomers = _.pluck(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         var customerInfo = curCustomerListMap[customerId];
@@ -498,7 +498,7 @@ CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCus
         return;
     }
     var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, "taskDefine");
+    var targetCustomers = _.pluck(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         var customerInfo = curCustomerListMap[customerId];

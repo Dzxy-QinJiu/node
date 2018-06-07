@@ -1,5 +1,5 @@
-const util = require("../utils/contact-util");
-const crmAjax = require("../ajax");
+const util = require('../utils/contact-util');
+const crmAjax = require('../ajax');
 const scheduleAjax = require('../ajax/schedule-ajax');
 function CRMActions() {
     this.generateActions(
@@ -15,11 +15,11 @@ function CRMActions() {
         });
     };
     this.getCrmUserList = function(queryParams) {
-        this.dispatch({errorMsg: "", loading: true});
+        this.dispatch({errorMsg: '', loading: true});
         crmAjax.getCrmUserList(queryParams).then((result) => {
-            this.dispatch({loading: false, errorMsg: "", result: result});
+            this.dispatch({loading: false, errorMsg: '', result: result});
         }, (errorMsg) => {
-            this.dispatch({loading: false, errorMsg: errorMsg || Intl.get("failed.get.crm.list", "获取客户列表失败")});
+            this.dispatch({loading: false, errorMsg: errorMsg || Intl.get('failed.get.crm.list', '获取客户列表失败')});
         });
     };
     this.getNotCompletedScheduleList = function(queryObj) {

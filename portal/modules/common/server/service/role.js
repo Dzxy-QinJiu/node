@@ -1,7 +1,7 @@
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var roleDto = require("../dto/role");
-var _ = require("underscore");
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var roleDto = require('../dto/role');
+var _ = require('underscore');
 //获取java端rest的地址
 var urls = {
     //根据应用获取角色列表
@@ -13,7 +13,7 @@ var urls = {
 //根据应用id获取角色
 exports.getRolesByAppId = function(req,res,app_id,with_permission_ids) {
     return restUtil.authRest.get({
-        url: urls.getRolesByAppId.replace(":app_id" , app_id),
+        url: urls.getRolesByAppId.replace(':app_id' , app_id),
         req: req,
         res: res
     },{},{
@@ -21,14 +21,14 @@ exports.getRolesByAppId = function(req,res,app_id,with_permission_ids) {
             list = list.map(function(obj) {
                 return new roleDto.Role(obj,with_permission_ids);
             });
-            emitter.emit("success" , list);
+            emitter.emit('success' , list);
         }
     });
 };
 //根据应用id获取权限
 exports.getPrivilegeGroupsByAppId = function(req,res,app_id) {
     return restUtil.authRest.get({
-        url: urls.getPrivilegeGroupsByAppId.replace(":app_id" , app_id),
+        url: urls.getPrivilegeGroupsByAppId.replace(':app_id' , app_id),
         req: req,
         res: res
     },{} , {
@@ -42,7 +42,7 @@ exports.getPrivilegeGroupsByAppId = function(req,res,app_id) {
                     permission_group_name: group_name
                 };
             });
-            emitter.emit("success" , list);
+            emitter.emit('success' , list);
         }
     });
 };

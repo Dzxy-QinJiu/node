@@ -14,8 +14,8 @@
         return 'some html here';
     }
  */
-var echarts = require("echarts-eefung");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+var echarts = require('echarts-eefung');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 var TimeSeriesBarchart = React.createClass({
     getDefaultProps: function() {
         return {
@@ -49,9 +49,9 @@ var TimeSeriesBarchart = React.createClass({
         // 增加两个数据点
         if(resultList.length >= 1) {
             var currentDate = resultList[0][0];
-            var yesterDay = moment(currentDate).subtract(1, "day");
+            var yesterDay = moment(currentDate).subtract(1, 'day');
             currentDate = resultList[resultList.length - 1][0];
-            var tomorrow = moment(currentDate).add(1, "day");
+            var tomorrow = moment(currentDate).add(1, 'day');
             resultList.push([
                 tomorrow.toDate(),
                 0

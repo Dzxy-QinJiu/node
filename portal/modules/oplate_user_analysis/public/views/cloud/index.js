@@ -2,12 +2,12 @@
  * 标签云
  * author:许宁
  */
-const cloud = require("wordcloud");
-const Spinner = require("CMP_DIR/spinner");
-const immutable = require("immutable");
+const cloud = require('wordcloud');
+const Spinner = require('CMP_DIR/spinner');
+const immutable = require('immutable');
 const CONSTS = {
-    FONT_COLOR: "#2b4352",//字体颜色
-    FONT_FAMILY: "SimHei"
+    FONT_COLOR: '#2b4352',//字体颜色
+    FONT_FAMILY: 'SimHei'
 };
 let options = {
     minSize: 8,

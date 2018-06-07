@@ -1,18 +1,18 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-import {Icon,Button} from "antd";
-var classNames = require("classnames");
-var GroupFrom = require("./edit-organization-form");
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
+import {Icon,Button} from 'antd';
+var classNames = require('classnames');
+var GroupFrom = require('./edit-organization-form');
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var ModalDialog = require("../../../../components/ModalDialog");
-var AlertTimer = require("../../../../components/alert-timer");
-var SearchInput = require("../../../../components/searchInput");
-var OrganizationAction = require("../action/organization-actions");
+var ModalDialog = require('../../../../components/ModalDialog');
+var AlertTimer = require('../../../../components/alert-timer');
+var SearchInput = require('../../../../components/searchInput');
+var OrganizationAction = require('../action/organization-actions');
 import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
-import commonMethodUtil from "../../../../public/sources/utils/common-method-util";
+import commonMethodUtil from '../../../../public/sources/utils/common-method-util';
 const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
 const messages = defineMessages({
     organization_add_child_organization: {id: 'organization.add.child.organization'},//添加子组织
@@ -54,7 +54,7 @@ var LeftTree = React.createClass({
             OrganizationAction.cancelEditGroup(item);
         } else {
             OrganizationAction.cancelAddGroup(item);
-            setTimeout(() => $(".organization-search-input-container .search-input").val(this.props.searchContent));
+            setTimeout(() => $('.organization-search-input-container .search-input').val(this.props.searchContent));
         }
     },
     bodyClickFun: function(e) {
@@ -87,11 +87,11 @@ var LeftTree = React.createClass({
             return;
         }
 
-        if (event.target.className.indexOf("tree-operation-icon") != -1
-            || event.target.className.indexOf("tree-operation-btn-div-item") != -1
-            || event.target.className.indexOf("icon-operation") != -1
-            || event.target.className.indexOf("operation-btn-item-span") != -1
-            || event.target.className.indexOf("tree-operation-btn-div") != -1) {
+        if (event.target.className.indexOf('tree-operation-icon') != -1
+            || event.target.className.indexOf('tree-operation-btn-div-item') != -1
+            || event.target.className.indexOf('icon-operation') != -1
+            || event.target.className.indexOf('operation-btn-item-span') != -1
+            || event.target.className.indexOf('tree-operation-btn-div') != -1) {
             return;
         }
         OrganizationAction.toggleGroupTree(groupId);
@@ -104,11 +104,11 @@ var LeftTree = React.createClass({
             return;
         }
 
-        if (event.target.className.indexOf("tree-operation-icon") != -1
-            || event.target.className.indexOf("tree-operation-btn-div-item") != -1
-            || event.target.className.indexOf("icon-operation") != -1
-            || event.target.className.indexOf("operation-btn-item-span") != -1
-            || event.target.className.indexOf("tree-operation-btn-div") != -1) {
+        if (event.target.className.indexOf('tree-operation-icon') != -1
+            || event.target.className.indexOf('tree-operation-btn-div-item') != -1
+            || event.target.className.indexOf('icon-operation') != -1
+            || event.target.className.indexOf('operation-btn-item-span') != -1
+            || event.target.className.indexOf('tree-operation-btn-div') != -1) {
             return;
         }
         //如果正在打开其他组织成员列表
@@ -159,11 +159,11 @@ var LeftTree = React.createClass({
         );
     },
     element: function(item, type) {
-        let iconflag = <i className="iconfont icon-zuzhi" title={Intl.get("user.organization","组织")}></i>;
+        let iconflag = <i className="iconfont icon-zuzhi" title={Intl.get('user.organization','组织')}></i>;
         if (item.category == CATEGORY_TYPE.DEPARTMENT) {
-            iconflag = <i className="iconfont icon-bumen" title={Intl.get("crm.113","部门")}></i>;
+            iconflag = <i className="iconfont icon-bumen" title={Intl.get('crm.113','部门')}></i>;
         } else if (item.category == CATEGORY_TYPE.TEAM){
-            iconflag = <i className="iconfont icon-team" title={Intl.get("call.record.team","团队")}></i>;
+            iconflag = <i className="iconfont icon-team" title={Intl.get('call.record.team','团队')}></i>;
         }
 
         //组织人数的统计,递归遍历组织，加上所有子组织的人数
@@ -192,18 +192,18 @@ var LeftTree = React.createClass({
                             item.category == CATEGORY_TYPE.TEAM ? null :
                                 <PrivilegeChecker check="USER_ORGANIZATION_ADD">
                                     <span className="icon-operation iconfont icon-add tree-operation-icon"
-                                        title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get("organization.add.department","添加部门") : Intl.get("common.add","添加")}
+                                        title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get('organization.add.department','添加部门') : Intl.get('common.add','添加')}
                                         onClick={this.addGroup.bind(this, item)}/>
                                 </PrivilegeChecker>
                         }
                         <PrivilegeChecker check="USER_ORGANIZATION_EDIT">
                             <span className="icon-operation iconfont icon-update tree-operation-icon"
-                                title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get("organization.edit.department","编辑部门") : item.category == CATEGORY_TYPE.TEAM ? Intl.get("organization.edit.team","编辑团队") : Intl.get("organization.edit.organization","编辑组织")}
+                                title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get('organization.edit.department','编辑部门') : item.category == CATEGORY_TYPE.TEAM ? Intl.get('organization.edit.team','编辑团队') : Intl.get('organization.edit.organization','编辑组织')}
                                 onClick={this.editGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                         <PrivilegeChecker check="USER_ORGANIZATION_DELETE">
                             <span className="icon-operation iconfont icon-delete tree-operation-icon"
-                                title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get("organization.del.department","删除部门") : item.category == CATEGORY_TYPE.TEAM ? Intl.get("organization.del.team","删除团队") : Intl.get("organization.del.organization","删除组织")}
+                                title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get('organization.del.department','删除部门') : item.category == CATEGORY_TYPE.TEAM ? Intl.get('organization.del.team','删除团队') : Intl.get('organization.del.organization','删除组织')}
                                 onClick={this.deleteGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                     </div>
@@ -215,7 +215,7 @@ var LeftTree = React.createClass({
     treeElement: function(btnClass, item, type) {
 
         if (!type) {
-            btnClass += " no-has-children";
+            btnClass += ' no-has-children';
         }
         let isMinusHeight = true;//是否减高度
         let parentGroup;//上级(修改部门时需要通过上级判断是否可以修改上级部门)
@@ -254,9 +254,9 @@ var LeftTree = React.createClass({
     },
     //隐藏搜索框
     clearSearchInput: function() {
-        OrganizationAction.setSearchContent("");
+        OrganizationAction.setSearchContent('');
         OrganizationAction.resetSearchOrganization();
-        $(".organization-search-input-container .search-input").val("");
+        $('.organization-search-input-container .search-input').val('');
     },
     //搜索组织的事件处理
     searchEvent: function(searchContent) {
@@ -271,7 +271,7 @@ var LeftTree = React.createClass({
             //清空根据组织名称进行搜索的搜索条件时，还原所有组织及组织关系
             OrganizationAction.resetSearchOrganization();
             //清空搜索内容
-            OrganizationAction.setSearchContent("");
+            OrganizationAction.setSearchContent('');
         }
     },
     render: function() {
@@ -306,7 +306,7 @@ var LeftTree = React.createClass({
                 </li>
             );
         });
-        var modalContent = Intl.get("organization.whether.del.organization", "确定要删除'{groupName}'？", {groupName: this.props.deleteGroupItem.title});
+        var modalContent = Intl.get('organization.whether.del.organization', '确定要删除\'{groupName}\'？', {groupName: this.props.deleteGroupItem.title});
         var scrollHeight = this.props.containerHeight;
         if (this.props.isAddOrganizationRoot) {
             scrollHeight -= 60;//60:添加根组织form表单的高度
@@ -332,7 +332,7 @@ var LeftTree = React.createClass({
 
                         </div>
                         <div className="add-root-organization-btn"
-                            title={Intl.get("organization.add.organization", "添加组织")}
+                            title={Intl.get('organization.add.organization', '添加组织')}
                             onClick={this.addOrganizationRoot}>
                             <span className="iconfont icon-add"/>
                         </div>

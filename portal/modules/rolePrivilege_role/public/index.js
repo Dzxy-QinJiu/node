@@ -2,22 +2,22 @@
  * Created by xiaojinfeng on  2015/12/22 16:59 .
  */
 
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./css/role-es_VE.less");
-} else if (language.lan() == "zh") {
-    require("./css/role-zh_CN.less");
+var language = require('../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./css/role-es_VE.less');
+} else if (language.lan() == 'zh') {
+    require('./css/role-zh_CN.less');
 }
-var Button = require("antd").Button;
-var RoleStore = require("./store/role-store");
-var RoleAction = require("./action/role-actions");
-var RoleListView = require("./views/role-list");
-var RoleForm = require("./views/role-form");
+var Button = require('antd').Button;
+var RoleStore = require('./store/role-store');
+var RoleAction = require('./action/role-actions');
+var RoleListView = require('./views/role-list');
+var RoleForm = require('./views/role-form');
 var GeminiScrollbar = require('../../../components/react-gemini-scrollbar');
-var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
-var TopNav = require("../../../components/top-nav");
-var Spinner = require("../../../components/spinner");
-var NoData = require("../../../components/analysis-nodata");
+var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
+var TopNav = require('../../../components/top-nav');
+var Spinner = require('../../../components/spinner');
+var NoData = require('../../../components/analysis-nodata');
 function getStateFromStore(_this) {
     var storeData = RoleStore.getState();
     storeData.roleContainerHeight = _this.roleContainerHeightFnc();
@@ -44,16 +44,16 @@ var RolePage = React.createClass({
     },
 
     componentDidMount: function() {
-        $(window).on("resize", this.resizeWindow);
+        $(window).on('resize', this.resizeWindow);
         RoleStore.listen(this.onChange);
         RoleAction.getRoleList();
         RoleAction.getDefaultRole();
     },
 
     componentWillUnmount: function() {
-        $(window).off("resize", this.resizeWindow);
+        $(window).off('resize', this.resizeWindow);
         RoleStore.unlisten(this.onChange);
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
     },
 
     roleContainerHeightFnc: function() {
@@ -105,12 +105,12 @@ var RolePage = React.createClass({
         var _this = this;
         var height = this.state.roleContainerHeight;
         var roleListDivHeight = height - bootomHeight;
-        var repoListElement = "";
+        var repoListElement = '';
         var roleList = this.state.roleList;
         if (roleList && roleList.length > 0) {
             repoListElement = roleList.map(function(role, i) {
                 //给当前要删除的角色列表传入删除角色失败的内容
-                var delRoleErrorMsg = (role.roleId == _this.state.delRoleId) ? _this.state.delRoleErrorMsg : "";
+                var delRoleErrorMsg = (role.roleId == _this.state.delRoleId) ? _this.state.delRoleErrorMsg : '';
                 return (
                     <div className="backgroundManagement_role_content">
                         <RoleListView

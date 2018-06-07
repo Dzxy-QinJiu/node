@@ -2,12 +2,12 @@
  * author:王丽平
  * 说明：统计分析-用户分析的service文件
  */
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var Promise = require("bluebird");
-var auth = require("../../../../lib/utils/auth");
-var _ = require("underscore");
-var EventEmitter = require("events").EventEmitter;
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var Promise = require('bluebird');
+var auth = require('../../../../lib/utils/auth');
+var _ = require('underscore');
+var EventEmitter = require('events').EventEmitter;
 //统一的路径前缀
 let URL_PREFIX = '/rest/analysis/user/v1/operation_report';
 //定义url
@@ -96,9 +96,9 @@ exports.getAppLoginUser = function(req, res, queryParams) {
     };
     let promiseList = [getDataPromise(req, res, queryParams, urls.getAppLoginUser), getDataPromise(req, res, lastWeekParams, urls.getAppLoginUser)];
     Promise.all(promiseList).then(function(resultList) {
-        emitter.emit("success", resultList);
+        emitter.emit('success', resultList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -113,9 +113,9 @@ exports.getAppNewTrialUser = function(req, res, queryParams) {
     };
     let promiseList = [getDataPromise(req, res, queryParams, urls.getAppNewTrialUser), getDataPromise(req, res, lastWeekParams, urls.getAppNewTrialUser)];
     Promise.all(promiseList).then(function(resultList) {
-        emitter.emit("success", resultList);
+        emitter.emit('success', resultList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -130,9 +130,9 @@ exports.getAppNewDelayUser = function(req, res, queryParams) {
     };
     let promiseList = [getDataPromise(req, res, queryParams, urls.getAppNewDelayUser), getDataPromise(req, res, lastWeekParams, urls.getAppNewDelayUser)];
     Promise.all(promiseList).then(function(resultList) {
-        emitter.emit("success", resultList);
+        emitter.emit('success', resultList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -147,9 +147,9 @@ exports.getAppLoginComparison = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppLoginComparison));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -163,9 +163,9 @@ exports.getAppWeeklyLoginTotalTime = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppWeeklyLoginTotalTime));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -180,9 +180,9 @@ exports.getAppExpiredLoginComparison = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppExpiredLoginComparison));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -196,9 +196,9 @@ exports.getAppFormalUserLoginComparison = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppFormalUserLoginComparison));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -213,9 +213,9 @@ exports.getAppNewUserComparison = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppNewUserComparison));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -229,9 +229,9 @@ exports.getAppNewDelayUserComparison = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppNewDelayUserComparison));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -245,9 +245,9 @@ exports.getUserActive = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getUserActive));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -262,9 +262,9 @@ exports.getUserDailyActive = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getUserDailyActive));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -279,9 +279,9 @@ exports.getTeamSignedLoginUser = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamSignedLoginUser));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -295,9 +295,9 @@ exports.getTeamLoginUser = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamLoginUser));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -312,9 +312,9 @@ exports.getTeamExpiredLoginUser = function(req, res, queryParams) {
     };
     let promiseList = [getPromiseListData(req, res, queryParams, urls.getTeamExpiredLoginUser), getPromiseListData(req, res, lastWeekParams, urls.getTeamExpiredLoginUser)];
     Promise.all(promiseList).then(function(resultList) {
-        emitter.emit("success", resultList);
+        emitter.emit('success', resultList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -346,9 +346,9 @@ exports.getTeamExpiredUserLoginTime = function(req, res, queryParams) {
     };
     let promiseList = [getPromiseListData(req, res, queryParams, urls.getTeamExpiredUserLoginTime), getPromiseListData(req, res, lastWeekParams, urls.getTeamExpiredUserLoginTime)];
     Promise.all(promiseList).then(function(resultList) {
-        emitter.emit("success", resultList);
+        emitter.emit('success', resultList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -362,9 +362,9 @@ exports.getTeamNewTrialUser = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamNewTrialUser));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -378,9 +378,9 @@ exports.getTeamNewDelayUser = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamNewDelayUser));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -396,9 +396,9 @@ exports.getTeamNewTrialLoginUser = function(req, res, queryParams) {
     };
     let promiseList = [getPromiseListData(req, res, queryParams, urls.getTeamNewTrialLoginUser), getPromiseListData(req, res, lastWeekParams, urls.getTeamNewTrialLoginUser)];
     Promise.all(promiseList).then(function(resultList) {
-        emitter.emit("success", resultList);
+        emitter.emit('success', resultList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -413,9 +413,9 @@ exports.getTeamNewDelayLoginUser = function(req, res, queryParams) {
     };
     let promiseList = [getPromiseListData(req, res, queryParams, urls.getTeamNewDelayLoginUser), getPromiseListData(req, res, lastWeekParams, urls.getTeamNewDelayLoginUser)];
     Promise.all(promiseList).then(function(resultList) {
-        emitter.emit("success", resultList);
+        emitter.emit('success', resultList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -429,9 +429,9 @@ exports.getTeamExceedLoginTime = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamExceedLoginTime));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };
@@ -445,9 +445,9 @@ exports.getTeamDelayUserLoginTime = function(req, res, queryParams) {
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamDelayUserLoginTime));
     });
     Promise.all(promiseList).then(function(lineList) {
-        emitter.emit("success", lineList);
+        emitter.emit('success', lineList);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };

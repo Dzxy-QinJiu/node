@@ -1,10 +1,10 @@
-import OnlineUserIndexAction from "../action";
+import OnlineUserIndexAction from '../action';
 //应用列表
 function OnlineUserIndexStore() {
     //应用列表
     this.appList = [];
     //某个选中应用的id
-    this.selectedAppId = "";
+    this.selectedAppId = '';
     //绑定action
     this.bindActions(OnlineUserIndexAction);
 }

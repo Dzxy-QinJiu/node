@@ -4,21 +4,21 @@
  */
 exports.App = function(opts) {
     this.appId = opts.client_id;
-    this.appName = opts.client_name || "";//应用名称
-    this.redirectUrl = opts.redirect_url || "";//应用URL
-    this.appLogo = opts.client_logo || "";//应用Logo
-    this.owner = opts.owner_id || "";//应用的所有者id
-    this.appDesc = opts.client_desc || "";//应用的描述
-    this.status = opts.status || "";//应用的状态
+    this.appName = opts.client_name || '';//应用名称
+    this.redirectUrl = opts.redirect_url || '';//应用URL
+    this.appLogo = opts.client_logo || '';//应用Logo
+    this.owner = opts.owner_id || '';//应用的所有者id
+    this.appDesc = opts.client_desc || '';//应用的描述
+    this.status = opts.status || '';//应用的状态
 };
 
 exports.toFrontObject = function(restObject) {
     var frontObj = {};
     frontObj.id = restObject.client_id;
-    frontObj.name = restObject.client_name || "";
-    frontObj.image = restObject.client_logo || "";
+    frontObj.name = restObject.client_name || '';
+    frontObj.image = restObject.client_logo || '';
     frontObj.status = restObject.status;
-    frontObj.appUrl = restObject.redirect_url || "";
+    frontObj.appUrl = restObject.redirect_url || '';
     //获取应用列表和保存后返回的是ownerName;
     frontObj.owner = restObject.owner_id;
     frontObj.descr = restObject.client_desc;
@@ -73,7 +73,7 @@ exports.toRestObject = function(frontObj) {
     if (frontObj.status || frontObj.status == 0) {
         restObject.status = frontObj.status;
     }
-    if (frontObj.descr || frontObj.descr === "") {
+    if (frontObj.descr || frontObj.descr === '') {
         restObject.client_desc = frontObj.descr;
     }
     if (frontObj.name) {

@@ -5,9 +5,9 @@
  *
  */
 
-require("./style.less");
+require('./style.less');
 
-import { Timeline } from "antd";
+import { Timeline } from 'antd';
 const PropTypes = React.PropTypes;
 
 const TimeLine = React.createClass({
@@ -18,7 +18,7 @@ const TimeLine = React.createClass({
             //是否按天分组
             groupByDay: false,
             //时间字段名
-            timeField: "",
+            timeField: '',
             //左侧是否用相对时间显示
             relativeDate: false,
             //渲染函数，根据回调返回的列表项数据，渲染列表项html
@@ -26,11 +26,11 @@ const TimeLine = React.createClass({
         };
     },
     render: function() {
-        let classNameArr = ["time-line"];
+        let classNameArr = ['time-line'];
 
-        if (this.props.groupByDay) classNameArr.push("group-by-day");
+        if (this.props.groupByDay) classNameArr.push('group-by-day');
 
-        const className = classNameArr.join(" ");
+        const className = classNameArr.join(' ');
 
         //前一条记录的时间值中的天
         let prevItemDay;
@@ -53,7 +53,7 @@ const TimeLine = React.createClass({
                             //该天是否第一次出现
                                 let isDayFirstApper = false;
                                 const curItemTime = item[timeField];
-                                curItemDay = moment(curItemTime).startOf("day").valueOf();
+                                curItemDay = moment(curItemTime).startOf('day').valueOf();
 
                                 //如果没有之前项，说明该天是第一次出现
                                 if (!prevItemDay) {
@@ -80,7 +80,7 @@ const TimeLine = React.createClass({
                             }
 
                             return (
-                                <Timeline.Item key={index} className={dayJsx ? "day-first-item" : ""}>
+                                <Timeline.Item key={index} className={dayJsx ? 'day-first-item' : ''}>
                                     {dayJsx}
                                     {this.props.render(item)}
                                 </Timeline.Item>

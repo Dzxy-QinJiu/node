@@ -1,10 +1,10 @@
 //通知的action
-var NotificationActions = require("../action/notification.action");
+var NotificationActions = require('../action/notification.action');
 
 //通知的store
 function NotificationStore() {
     //表示状态
-    this.notificationListResult = "loading";
+    this.notificationListResult = 'loading';
     //消息列表
     this.notificationList = [];
     //总共多少条
@@ -18,7 +18,7 @@ function NotificationStore() {
     //未读数已清
     this.isClearUnreadNum = false;
     //当前列表中最后一个notification的Id
-    this.lastNotificationId = "";
+    this.lastNotificationId = '';
     // 下拉加载
     this.listenScrollBottom = true;
     //未读数
@@ -28,7 +28,7 @@ function NotificationStore() {
 }
 //将最后一个
 NotificationStore.prototype.resetLastNotificationId = function() {
-    this.lastNotificationId = "";
+    this.lastNotificationId = '';
 };
 
 //清除未读数

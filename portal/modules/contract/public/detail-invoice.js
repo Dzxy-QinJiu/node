@@ -1,21 +1,21 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 发票信息添加、展示及编辑页面
  */
 
-import routeList from "../common/route";
-import ajax from "../common/ajax";
-import { Form, Input, Icon, DatePicker, Button, message } from "antd";
+import routeList from '../common/route';
+import ajax from '../common/ajax';
+import { Form, Input, Icon, DatePicker, Button, message } from 'antd';
 const FormItem = Form.Item;
-import ValidateMixin from "../../../mixins/ValidateMixin";
-import rightPanelUtil from "../../../components/rightPanel";
+import ValidateMixin from '../../../mixins/ValidateMixin';
+import rightPanelUtil from '../../../components/rightPanel';
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelDelete = rightPanelUtil.RightPanelDelete;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import { DATE_FORMAT, OPERATE } from "../consts";
+import { DATE_FORMAT, OPERATE } from '../consts';
 
 const DetailInvoice = React.createClass({
     mixins: [ValidateMixin],
@@ -29,7 +29,7 @@ const DetailInvoice = React.createClass({
     },
     showForm: function(index, invoice) {
         if (isNaN(index)) {
-            index = "";
+            index = '';
 
             let invoiceDetail = this.props.contract.invoice_detail;
 
@@ -41,35 +41,35 @@ const DetailInvoice = React.createClass({
 
             this.state.formData = invoiceDetail;
         } else {
-            const key = "formData" + index;
+            const key = 'formData' + index;
             this.state[key] = _.clone(invoice);
         }
 
-        this.state["isFormShow" + index] = true;
+        this.state['isFormShow' + index] = true;
         this.setState(this.state);
     },
     hideForm: function(index) {
-        if (isNaN(index)) index = "";
-        this.state["isFormShow" + index] = false;
+        if (isNaN(index)) index = '';
+        this.state['isFormShow' + index] = false;
         this.setState(this.state);
     },
     handleSubmit: function(type, index, target, id) {
         let data, params, cb;
 
-        if (type === "delete") {
+        if (type === 'delete') {
             params = {id: id};
             this.editInvoice(type, data, params, cb, target);
-        } else if (type === "add" || type === "update") {
-            if (isNaN(index)) index = "";
-            data = this.state["formData" + index];
+        } else if (type === 'add' || type === 'update') {
+            if (isNaN(index)) index = '';
+            data = this.state['formData' + index];
 
             cb = () => {
-                if (type === "update") {
+                if (type === 'update') {
                     this.hideForm(index);
                 }
             };
 
-            this.refs["validation" + index].validate(valid => {
+            this.refs['validation' + index].validate(valid => {
                 if (!valid) {
                     return;
                 } else {
@@ -81,9 +81,9 @@ const DetailInvoice = React.createClass({
     editInvoice: function(type, data, params, cb, target) {
         this.props.showLoading();
 
-        if (!target || _.isObject(target)) target = "";
+        if (!target || _.isObject(target)) target = '';
 
-        const handler = type + "Invoice" + target;
+        const handler = type + 'Invoice' + target;
         const route = _.find(routeList, route => route.handler === handler);
         const arg = {
             url: route.path,
@@ -96,20 +96,20 @@ const DetailInvoice = React.createClass({
             this.props.hideLoading();
 
             if (result.code === 0) {
-                const targetName = target ? Intl.get("contract.39", "发票额记录") : Intl.get("contract.40", "发票基本信息");
+                const targetName = target ? Intl.get('contract.39', '发票额记录') : Intl.get('contract.40', '发票基本信息');
 
-                message.success(OPERATE[type] + targetName + "成功");
+                message.success(OPERATE[type] + targetName + '成功');
                 this.props.refreshCurrentContract(this.props.contract.id);
                 if (_.isFunction(cb)) cb();
             } else {
-                message.error(result.msg || OPERATE[type] + targetName + "失败");
+                message.error(result.msg || OPERATE[type] + targetName + '失败');
             }
         });
     },
     renderForm: function(invoice, index) {
-        index = isNaN(index) ? "" : index;
-        const ref = "validation" + index;
-        const key = "formData" + index;
+        index = isNaN(index) ? '' : index;
+        const ref = 'validation' + index;
+        const key = 'formData' + index;
         let formData = this.state[key];
 
         if (_.isEmpty(formData) && !invoice) {
@@ -126,12 +126,12 @@ const DetailInvoice = React.createClass({
             <div className="render-form">
                 <Validation ref={ref} onValidate={this.handleValidate}>
                     <FormItem 
-                        validateStatus={this.getValidateStatus("date" + index)}
-                        help={this.getHelpMessage("date" + index)}
+                        validateStatus={this.getValidateStatus('date' + index)}
+                        help={this.getHelpMessage('date' + index)}
                     >
                         <DatePicker
-                            name={"date" + index}
-                            onChange={this.setField.bind(this, "date", index)}
+                            name={'date' + index}
+                            onChange={this.setField.bind(this, 'date', index)}
                             value={formData.date ? moment(formData.date) : moment()}
                             disabledDate={disabledDate}
                         />
@@ -140,14 +140,14 @@ const DetailInvoice = React.createClass({
                     <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
                 &nbsp;
                     <FormItem 
-                        validateStatus={this.getValidateStatus("amount" + index)}
-                        help={this.getHelpMessage("amount" + index)}
+                        validateStatus={this.getValidateStatus('amount' + index)}
+                        help={this.getHelpMessage('amount' + index)}
                     >
-                        <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule()]}>
+                        <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule()]}>
                             <Input
-                                name={"amount" + index}
+                                name={'amount' + index}
                                 value={this.parseAmount(formData.amount)}
-                                onChange={this.setField.bind(this, "amount", index)}
+                                onChange={this.setField.bind(this, 'amount', index)}
                             />
                         </Validator>
                     </FormItem>
@@ -169,9 +169,9 @@ const DetailInvoice = React.createClass({
         };
 
         //编辑按钮是否显示
-        const isEditBtnShow = !this.state.isFormShow && hasPrivilege("CONTRACT_INVOICE_DETAIL_ADD");
+        const isEditBtnShow = !this.state.isFormShow && hasPrivilege('CONTRACT_INVOICE_DETAIL_ADD');
 
-        const detailOp = invoiceDetail.id ? "update" : "add";
+        const detailOp = invoiceDetail.id ? 'update' : 'add';
 
         return (
             <div className="detail-invoice">
@@ -186,93 +186,93 @@ const DetailInvoice = React.createClass({
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("contract.47", "公司全称")}
-                                validateStatus={this.getValidateStatus("payer_name")}
-                                help={this.getHelpMessage("payer_name")}
+                                label={Intl.get('contract.47', '公司全称')}
+                                validateStatus={this.getValidateStatus('payer_name')}
+                                help={this.getHelpMessage('payer_name')}
                             >
-                                <Validator rules={[{required: true, message: Intl.get("contract.48", "请填写公司全称")}]}>
+                                <Validator rules={[{required: true, message: Intl.get('contract.48', '请填写公司全称')}]}>
                                     <Input
                                         name="payer_name"
                                         value={this.state.formData.payer_name}
-                                        onChange={this.setField.bind(this, "payer_name")}
+                                        onChange={this.setField.bind(this, 'payer_name')}
                                     />
                                 </Validator>
                             </FormItem>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("contract.49", "银行帐号")}
+                                label={Intl.get('contract.49', '银行帐号')}
                             >
                                 <Input
                                     value={this.state.formData.account_number}
-                                    onChange={this.setField.bind(this, "account_number")}
+                                    onChange={this.setField.bind(this, 'account_number')}
                                 />
                             </FormItem>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("contract.50", "开户行")}
+                                label={Intl.get('contract.50', '开户行')}
                             >
                                 <Input
                                     value={this.state.formData.opening_bank}
-                                    onChange={this.setField.bind(this, "opening_bank")}
+                                    onChange={this.setField.bind(this, 'opening_bank')}
                                 />
                             </FormItem>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("realm.address", "地址")}
+                                label={Intl.get('realm.address', '地址')}
                             >
                                 <Input
                                     value={this.state.formData.address}
-                                    onChange={this.setField.bind(this, "address")}
+                                    onChange={this.setField.bind(this, 'address')}
                                 />
                             </FormItem>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("common.phone", "电话")}
+                                label={Intl.get('common.phone', '电话')}
                             >
                                 <Input
                                     value={this.state.formData.phone}
-                                    onChange={this.setField.bind(this, "phone")}
+                                    onChange={this.setField.bind(this, 'phone')}
                                 />
                             </FormItem>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("contract.51", "邮寄地址")}
+                                label={Intl.get('contract.51', '邮寄地址')}
                             >
                                 <Input
                                     value={this.state.formData.email_address}
-                                    onChange={this.setField.bind(this, "email_address")}
+                                    onChange={this.setField.bind(this, 'email_address')}
                                 />
                             </FormItem>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("contract.52", "营业执照号码")}
+                                label={Intl.get('contract.52', '营业执照号码')}
                             >
                                 <Input
                                     value={this.state.formData.business_license_id}
-                                    onChange={this.setField.bind(this, "business_license_id")}
+                                    onChange={this.setField.bind(this, 'business_license_id')}
                                 />
                             </FormItem>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("contract.53", "组织机构代码")}
+                                label={Intl.get('contract.53', '组织机构代码')}
                             >
                                 <Input
                                     value={this.state.formData.organization_id}
-                                    onChange={this.setField.bind(this, "organization_id")}
+                                    onChange={this.setField.bind(this, 'organization_id')}
                                 />
                             </FormItem>
                             <FormItem 
                                 {...formItemLayout}
-                                label={Intl.get("contract.54", "纳税人识别号")}
+                                label={Intl.get('contract.54', '纳税人识别号')}
                             >
                                 <Input
                                     value={this.state.formData.taxpayer_id}
-                                    onChange={this.setField.bind(this, "taxpayer_id")}
+                                    onChange={this.setField.bind(this, 'taxpayer_id')}
                                 />
                             </FormItem>
                             <div className="op-buttons">
                                 <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
-                                <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp, "", "")}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                                <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp, '', '')}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
                             </div>
                         </Validation>
                     </Form>
@@ -297,12 +297,12 @@ const DetailInvoice = React.createClass({
                             </div>
                         )}
                         <div className="extra">
-                            {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT") ? (
+                            {hasPrivilege('CONTRACT_ADD_INVOICE_AMOUNT') ? (
                                 <div className="add-invoice">
-                                    {this.renderForm("", 0)}
+                                    {this.renderForm('', 0)}
                                     <Button
                                         className="btn-primary-sure btn-add-invoice"
-                                        onClick={this.handleSubmit.bind(this, "add", 0, "Amount")}
+                                        onClick={this.handleSubmit.bind(this, 'add', 0, 'Amount')}
                                     >
                                         <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
                                     </Button>
@@ -311,7 +311,7 @@ const DetailInvoice = React.createClass({
                             <ul>
                                 {invoices.map((invoice, index) => {
                                     index = index + 1;
-                                    const isFormShow = this.state["isFormShow" + index];
+                                    const isFormShow = this.state['isFormShow' + index];
     
                                     return (
                                         <li key={index}>
@@ -321,7 +321,7 @@ const DetailInvoice = React.createClass({
                                                 </span>
                                             ) : (
                                                 <span>
-                                                    {invoice.date ? moment(invoice.date).format(DATE_FORMAT) : ""}
+                                                    {invoice.date ? moment(invoice.date).format(DATE_FORMAT) : ''}
                                             &nbsp;
                                                     <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
                                             &nbsp;
@@ -332,22 +332,22 @@ const DetailInvoice = React.createClass({
                                                 </span>
                                             )}
             
-                                            {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT") ? (
+                                            {hasPrivilege('CONTRACT_ADD_INVOICE_AMOUNT') ? (
                                                 <span>
                                                     {isFormShow ? (
                                                         <span>
                                                             <Button
                                                                 shape="circle"
-                                                                title={Intl.get("common.save", "保存")}
+                                                                title={Intl.get('common.save', '保存')}
                                                                 className="btn-save"
-                                                                onClick={this.handleSubmit.bind(this, "update", index, "Amount")}
+                                                                onClick={this.handleSubmit.bind(this, 'update', index, 'Amount')}
                                                             >
                                                                 <Icon type="save"/>
                                                             </Button>
                                                             <Button
                                                                 shape="circle"
                                                                 className="btn-cancel"
-                                                                title={Intl.get("common.cancel", "取消")}
+                                                                title={Intl.get('common.cancel', '取消')}
                                                                 onClick={this.hideForm.bind(this, index)}
                                                             >
                                                                 <Icon type="cross"/>
@@ -359,8 +359,8 @@ const DetailInvoice = React.createClass({
                                                                 onClick={this.showForm.bind(this, index, invoice)}
                                                             />
                                                             <RightPanelDelete 
-                                                                title={Intl.get("common.delete", "删除")}
-                                                                onClick={this.handleSubmit.bind(this, "delete", index, "Amount", invoice.id)}
+                                                                title={Intl.get('common.delete', '删除')}
+                                                                onClick={this.handleSubmit.bind(this, 'delete', index, 'Amount', invoice.id)}
                                                             />
                                                         </span>
                                                     )}

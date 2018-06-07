@@ -3,7 +3,7 @@
  */
 
 //应用选择器的ajax
-var appSelectorAjax = require("./app-selector.ajax");
+var appSelectorAjax = require('./app-selector.ajax');
 var AppSelectorActionMap = {};
 
 function AppSelectorAction() {

@@ -1,4 +1,4 @@
-var appAjax = require("../../../common/public/ajax/app");
+var appAjax = require('../../../common/public/ajax/app');
 
 //获取在线用户列表
 var onlineUserListAjax;
@@ -6,9 +6,9 @@ exports.getOnlineUserList = function(pageSize, pageNum, condition) {
     var Deferred = $.Deferred();
     onlineUserListAjax && onlineUserListAjax.abort();
     onlineUserListAjax = $.ajax({
-        url: "/rest/online/list/" + pageSize + "/" + pageNum,
-        dataType: "json",
-        type: "post",
+        url: '/rest/online/list/' + pageSize + '/' + pageNum,
+        dataType: 'json',
+        type: 'post',
         success: function(data) {
             Deferred.resolve(data);
         },

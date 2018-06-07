@@ -1,5 +1,5 @@
-var EventEmitter = require("events");
-var CryptoJS = require("crypto-js");
+var EventEmitter = require('events');
+var CryptoJS = require('crypto-js');
 var UserData = require('../../../../public/sources/user-data').getUserData();
 //缓存在localStorage中的用户列表每页多少条的key
 exports.localStorageUserViewPageSizeKey = 'app_user_manage.user_view.page_size';
@@ -13,7 +13,7 @@ exports.saveSelectAppKeyUserId = JSON.stringify(UserData.user_id);
 //emitter使用的事件提取常量
 exports.EMITTER_CONSTANTS = {
     //回复列表滚动到最后
-    REPLY_LIST_SCROLL_TO_BOTTOM: "replyListScrollToBottom"
+    REPLY_LIST_SCROLL_TO_BOTTOM: 'replyListScrollToBottom'
 };
 
 //暴露一个emitter，做自定义事件
@@ -45,6 +45,6 @@ exports.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM = {
 
 //加密密码
 exports.encryptPassword = function(text) {
-    var ciphertext = CryptoJS.AES.encrypt(text , "apply_change_password");
+    var ciphertext = CryptoJS.AES.encrypt(text , 'apply_change_password');
     return ciphertext.toString();
 };

@@ -15,12 +15,12 @@ const UserTypeRadioField = {
     },
     componentDidMount() {
         if(this.props.isSingleAppEdit) {
-            emitter.on("app_user_manage.edit_app.show_user_type_error" , this.showUserTypeError);
+            emitter.on('app_user_manage.edit_app.show_user_type_error' , this.showUserTypeError);
         }
     },
     componentWillUnmount() {
         if(this.props.isSingleAppEdit) {
-            emitter.removeListener("app_user_manage.edit_app.show_user_type_error" , this.showUserTypeError);
+            emitter.removeListener('app_user_manage.edit_app.show_user_type_error' , this.showUserTypeError);
         }
     },
     renderUserTypeRadioBlock(config) {
@@ -28,7 +28,7 @@ const UserTypeRadioField = {
         config = $.extend({
             isCustomSetting: false,
             appId: '',
-            globalUserType: "1"
+            globalUserType: '1'
         },config);
 
         if(config.isCustomSetting && !config.appId) {

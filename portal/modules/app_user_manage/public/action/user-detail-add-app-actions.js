@@ -2,75 +2,75 @@
  * 添加用户的action
  */
 //用户管理的ajax
-var AppUserAjax = require("../ajax/app-user-ajax");
-var AppUserUtil = require("../util/app-user-util");
+var AppUserAjax = require('../ajax/app-user-ajax');
+var AppUserUtil = require('../util/app-user-util');
 //批量操作推送相关逻辑
-var batchOperate = require("../../../../public/sources/push/batch");
+var batchOperate = require('../../../../public/sources/push/batch');
 
 //操作对应关系
 var OperateTextMap = {
-    GRANT_DELAY: Intl.get("user.batch.delay", "批量延期"),
-    CHANGE_PASSWORD: Intl.get("common.edit.password", "修改密码"),
-    GRANT_CUSTOMER: Intl.get("common.belong.customer", "所属客户"),
-    GRANT_TYPE: Intl.get("user.batch.open.type", "开通类型"),
-    GRANT_STATUS: Intl.get("common.app.status", "开通状态"),
-    GRANT_PERIOD: Intl.get("user.open.cycle", "开通周期"),
-    GRANT_APPLICATION: Intl.get("user.batch.app.open", "开通产品"),
-    GRANT_ROLES: Intl.get("user.batch.auth.set", "权限设置")
+    GRANT_DELAY: Intl.get('user.batch.delay', '批量延期'),
+    CHANGE_PASSWORD: Intl.get('common.edit.password', '修改密码'),
+    GRANT_CUSTOMER: Intl.get('common.belong.customer', '所属客户'),
+    GRANT_TYPE: Intl.get('user.batch.open.type', '开通类型'),
+    GRANT_STATUS: Intl.get('common.app.status', '开通状态'),
+    GRANT_PERIOD: Intl.get('user.open.cycle', '开通周期'),
+    GRANT_APPLICATION: Intl.get('user.batch.app.open', '开通产品'),
+    GRANT_ROLES: Intl.get('user.batch.auth.set', '权限设置')
 };
 
 function UserDetailAddAppActions() {
     this.generateActions(
         //radio的值改变
-        "radioValueChange",
+        'radioValueChange',
         //自定义radio的值改变
-        "customRadioValueChange",
+        'customRadioValueChange',
         //设置时间
-        "timeChange",
+        'timeChange',
         //获取应用列表
-        "getApps",
+        'getApps',
         //设置选中的应用
         'setSelectedApps',
         //重置
-        "resetState",
+        'resetState',
         //隐藏提交提示
-        "hideSubmitTip",
+        'hideSubmitTip',
         //显示选择app的错误
-        "showAppError",
+        'showAppError',
         //显示客户错误
-        "showCustomerError",
+        'showCustomerError',
         //隐藏客户错误
-        "hideCustomerError",
+        'hideCustomerError',
         //不显示选择app的错误
-        "hideAppError",
+        'hideAppError',
         //提交添加应用
-        "submitAddApp",
+        'submitAddApp',
         //更换批量操作tab类型
-        "changeMultipleSubType",
+        'changeMultipleSubType',
         //更改重新选中的客户
-        "onCustomerChoosen",
+        'onCustomerChoosen',
         //权限，角色变化
-        "rolesPermissionsChange",
+        'rolesPermissionsChange',
         //延期数字变化
-        "delayTimeNumberChange",
+        'delayTimeNumberChange',
         //延期单位发生变化
-        "delayTimeRangeChange",
+        'delayTimeRangeChange',
         //延期时间改变
-        "delayTimeChange",
+        'delayTimeChange',
         //备注改变(延期备注、启用、应用备注、修改密码备注)
-        "remarkChange",
+        'remarkChange',
         //批量操作的应用改变
-        "batchAppChange",
+        'batchAppChange',
         //权限设置的应用改变
-        "rolePermissionAppChange",
+        'rolePermissionAppChange',
         //设置批量应用选择错误
-        "setBatchSelectedAppError",
+        'setBatchSelectedAppError',
         //设置权限角色设置应用选择错误
-        "setRolePermissionSelectedAppError",
+        'setRolePermissionSelectedAppError',
         // 批量变更权限没有选择角色错误
-        "batchChangePermissionNoSelectRoleError",
+        'batchChangePermissionNoSelectRoleError',
         //设置默认批量操作的选中的应用
-        "setDefaultBatchSelectedApps",
+        'setDefaultBatchSelectedApps',
         // 将延期时间设置为截止时间（具体到xx年xx月xx日）
         'setDelayDeadlineTime'
     );
@@ -97,16 +97,16 @@ function UserDetailAddAppActions() {
         var _this = this;
         _this.dispatch({loading: true});
         var field = 'grant_application';
-        var selectedAppId = "";
+        var selectedAppId = '';
         if(obj.subType) {
             field = obj.subType;
         }
-        if(field == "grant_type" ||
-            field == "grant_status" ||
-            field == "grant_period" ||
-            field == "grant_roles" ||
-            field == "grant_delay" ||
-            field == "sales_grant_status"
+        if(field == 'grant_type' ||
+            field == 'grant_status' ||
+            field == 'grant_period' ||
+            field == 'grant_roles' ||
+            field == 'grant_delay' ||
+            field == 'sales_grant_status'
         ){
             selectedAppId = obj.selectedAppId;
         }

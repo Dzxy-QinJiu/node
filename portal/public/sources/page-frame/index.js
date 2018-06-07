@@ -1,10 +1,10 @@
-var language = require("../../../public/language/getLanguage");
-import Trace from "LIB_DIR/trace";
+var language = require('../../../public/language/getLanguage');
+import Trace from 'LIB_DIR/trace';
 
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./index-es_VE.less");
-} else if (language.lan() == "zh") {
-    require("./index-zh_CN.less");
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./index-es_VE.less');
+} else if (language.lan() == 'zh') {
+    require('./index-zh_CN.less');
 }
 require("./oplate");
 var LeftMenu = require("../../../components/privilege/nav-sidebar");
@@ -27,7 +27,7 @@ var PageFrame = React.createClass({
         };
     },
     componentDidMount: function() {
-        Trace.addEventListener(window, "click", Trace.eventHandler);
+        Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
         //打开播放录音面板的事件监听
@@ -36,7 +36,7 @@ var PageFrame = React.createClass({
         audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
     },
     componentWillUnmount: function() {
-        Trace.detachEventListener(window, "click", Trace.eventHandler);
+        Trace.detachEventListener(window, 'click', Trace.eventHandler);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
@@ -53,9 +53,9 @@ var PageFrame = React.createClass({
     openPhonePanel: function(paramObj) {
         if (!this.state.phonePanelShow) {
             if (paramObj.call_params) {
-                Trace.traceEvent("电话弹屏", '弹出拨打电话的面板');
+                Trace.traceEvent('电话弹屏', '弹出拨打电话的面板');
             } else {
-                Trace.traceEvent("客户详情", '查看客户详情');
+                Trace.traceEvent('客户详情', '查看客户详情');
             }
         }
         this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});

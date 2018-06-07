@@ -1,31 +1,31 @@
 // require('../css/crm-right-panel.less');
 
-var Tabs = require("antd").Tabs;
+var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
-var rightPanelUtil = require("../../../../components/rightPanel/index");
+var rightPanelUtil = require('../../../../components/rightPanel/index');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var Contacts = require("./contacts");
-var Dynamic = require("./dynamic");
-var CrmSchedule = require("./schedule");
-var Order = require("./order");
-var ApplyUserForm = require("./apply-user-form");
-var CustomerRecord = require("./customer_record");
-var crmAjax = require("../ajax");
-import Trace from "LIB_DIR/trace";
-import {tabNameList} from "../utils/crm-util";
-import BasicInfo from "./basic_info";
-import BasicOverview from "./basic-overview";
-import CustomerUsers from "./users";
+var Contacts = require('./contacts');
+var Dynamic = require('./dynamic');
+var CrmSchedule = require('./schedule');
+var Order = require('./order');
+var ApplyUserForm = require('./apply-user-form');
+var CustomerRecord = require('./customer_record');
+var crmAjax = require('../ajax');
+import Trace from 'LIB_DIR/trace';
+import {tabNameList} from '../utils/crm-util';
+import BasicInfo from './basic_info';
+import BasicOverview from './basic-overview';
+import CustomerUsers from './users';
 const TAB_KEYS = {
-    OVERVIEW_TAB: "1",//概览页
-    CONTACT_TAB: "2",//联系人
-    TRACE_TAB: "3",//跟进记录
-    USER_TAB: "4",//用户
-    ORDER_TAB: "5",//订单
-    DYNAMIC_TAB: "6",//动态
-    SCHEDULE_TAB: "7",//日程（联系计划）
+    OVERVIEW_TAB: '1',//概览页
+    CONTACT_TAB: '2',//联系人
+    TRACE_TAB: '3',//跟进记录
+    USER_TAB: '4',//用户
+    ORDER_TAB: '5',//订单
+    DYNAMIC_TAB: '6',//动态
+    SCHEDULE_TAB: '7',//日程（联系计划）
 
 
 };
@@ -36,8 +36,8 @@ var CrmRightPanel = React.createClass({
             apps: [],
             curOrder: {},
             curCustomer: this.props.curCustomer,
-            tabsContainerHeight: "auto",
-            getCusomerResultdMsg: ""//获取客户详情后的失败或无数据的提示
+            tabsContainerHeight: 'auto',
+            getCusomerResultdMsg: ''//获取客户详情后的失败或无数据的提示
         };
     },
 
@@ -72,9 +72,9 @@ var CrmRightPanel = React.createClass({
     },
 
     setTabsContainerHeight: function() {
-        let tabsContainerHeight = $("body").height() - $(".basic-info-contianer").outerHeight(true);
-        if ($(".phone-alert-modal-title").size()) {
-            tabsContainerHeight -= $(".phone-alert-modal-title").outerHeight(true);
+        let tabsContainerHeight = $('body').height() - $('.basic-info-contianer').outerHeight(true);
+        if ($('.phone-alert-modal-title').size()) {
+            tabsContainerHeight -= $('.phone-alert-modal-title').outerHeight(true);
         }
         this.setState({tabsContainerHeight: tabsContainerHeight});
     },
@@ -84,13 +84,13 @@ var CrmRightPanel = React.createClass({
         crmAjax.queryCustomer(condition).then(resData => {
             if (resData && _.isArray(resData.result) && resData.result.length) {
                 this.state.curCustomer = resData.result[0];
-                this.state.getCusomerResultdMsg = "";
+                this.state.getCusomerResultdMsg = '';
             } else {
-                this.state.getCusomerResultdMsg = Intl.get("crm.detail.no.data", "该客户已被删除或转走");
+                this.state.getCusomerResultdMsg = Intl.get('crm.detail.no.data', '该客户已被删除或转走');
             }
             this.setState(this.state);
         }, () => {
-            this.state.getCusomerResultdMsg = Intl.get("crm.detail.get.error", "获取客户详情失败");
+            this.state.getCusomerResultdMsg = Intl.get('crm.detail.get.error', '获取客户详情失败');
             this.setState(this.state);
         });
     },
@@ -98,12 +98,12 @@ var CrmRightPanel = React.createClass({
     //展示申请用户界面
     showApplyUserForm: function(type, curOrder, apps) {
         if (_.isFunction(this.props.showApplyUserForm)) {
-            let customerName = this.state.curCustomer ? this.state.curCustomer.name : "";
+            let customerName = this.state.curCustomer ? this.state.curCustomer.name : '';
             this.props.showApplyUserForm(type, curOrder, apps, customerName);
         }
     },
     hideRightPanel: function(e) {
-        Trace.traceEvent(e, "关闭客户详情");
+        Trace.traceEvent(e, '关闭客户详情');
         this.props.hideRightPanel();
         this.setState({
             activeKey: TAB_KEYS.OVERVIEW_TAB
@@ -111,7 +111,7 @@ var CrmRightPanel = React.createClass({
     },
     //切换tab时的处理
     changeActiveKey: function(key) {
-        Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"), "查看" + tabNameList[key]);
+        Trace.traceEvent($(this.getDOMNode()).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + tabNameList[key]);
         this.setState({
             activeKey: key
         });
@@ -138,7 +138,7 @@ var CrmRightPanel = React.createClass({
                             onChange={this.changeActiveKey}
                         >
                             <TabPane
-                                tab={Intl.get("crm.basic.overview", "概览")}
+                                tab={Intl.get('crm.basic.overview', '概览')}
                                 key={TAB_KEYS.OVERVIEW_TAB}
                             >
                                 {this.state.activeKey === TAB_KEYS.OVERVIEW_TAB ? (
@@ -152,7 +152,7 @@ var CrmRightPanel = React.createClass({
                                 ) : null}
                             </TabPane>
                             <TabPane
-                                tab={Intl.get("call.record.contacts", "联系人")}
+                                tab={Intl.get('call.record.contacts', '联系人')}
                                 key={TAB_KEYS.CONTACT_TAB}
                             >
                                 {this.state.activeKey === TAB_KEYS.CONTACT_TAB ? (
@@ -164,7 +164,7 @@ var CrmRightPanel = React.createClass({
                                 ) : null}
                             </TabPane>
                             <TabPane
-                                tab={Intl.get("menu.trace", "跟进记录")}
+                                tab={Intl.get('menu.trace', '跟进记录')}
                                 key={TAB_KEYS.TRACE_TAB}
                             >
                                 {this.state.activeKey === TAB_KEYS.TRACE_TAB ? (
@@ -175,7 +175,7 @@ var CrmRightPanel = React.createClass({
                                 ) : null}
                             </TabPane>
                             <TabPane
-                                tab={Intl.get("crm.detail.user", "用户")}
+                                tab={Intl.get('crm.detail.user', '用户')}
                                 key={TAB_KEYS.USER_TAB}
                             >
                                 {this.state.activeKey === TAB_KEYS.USER_TAB ? (
@@ -190,7 +190,7 @@ var CrmRightPanel = React.createClass({
                                 ) : null}
                             </TabPane>
                             <TabPane
-                                tab={Intl.get("user.apply.detail.order", "订单")}
+                                tab={Intl.get('user.apply.detail.order', '订单')}
                                 key={TAB_KEYS.ORDER_TAB}
                             >
                                 {this.state.activeKey == TAB_KEYS.ORDER_TAB ? (
@@ -203,7 +203,7 @@ var CrmRightPanel = React.createClass({
                                 ) : null}
                             </TabPane>
                             <TabPane
-                                tab={Intl.get("crm.39", "动态")}
+                                tab={Intl.get('crm.39', '动态')}
                                 key={TAB_KEYS.DYNAMIC_TAB}
 
                             >
@@ -214,7 +214,7 @@ var CrmRightPanel = React.createClass({
                                 ) : null}
                             </TabPane>
                             <TabPane
-                                tab={Intl.get("crm.right.schedule", "联系计划")}
+                                tab={Intl.get('crm.right.schedule', '联系计划')}
                                 key={TAB_KEYS.SCHEDULE_TAB}
                             >
                                 {this.state.activeKey == TAB_KEYS.SCHEDULE_TAB ? (

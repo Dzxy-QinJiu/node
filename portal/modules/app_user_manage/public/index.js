@@ -1,39 +1,39 @@
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./css/main-es_VE.less");
-} else if (language.lan() == "zh") {
-    require("./css/main-zh_CN.less");
+var language = require('../../../public/language/getLanguage');
+if (language.lan() === 'es' || language.lan() === 'en') {
+    require('./css/main-es_VE.less');
+} else if (language.lan() === 'zh') {
+    require('./css/main-zh_CN.less');
 }
-import RecentLoginUsersPanel from "./views/recent-login-user-list";
-import {RightPanelReturn} from "CMP_DIR/rightPanel";
-var RightPanel = require("../../../components/rightPanel").RightPanel;
+import RecentLoginUsersPanel from './views/recent-login-user-list';
+import {RightPanelReturn} from 'CMP_DIR/rightPanel';
+var RightPanel = require('../../../components/rightPanel').RightPanel;
 //顶部导航
-var TopNav = require("../../../components/top-nav");
+var TopNav = require('../../../components/top-nav');
 
-var AppUserStore = require("./store/app-user-store");
-var AppUserPanelSwitchStore = require("./store/app-user-panelswitch-store");
-var AppUserAction = require("./action/app-user-actions");
-var AppUserUtil = require("./util/app-user-util");
+var AppUserStore = require('./store/app-user-store');
+var AppUserPanelSwitchStore = require('./store/app-user-panelswitch-store');
+var AppUserAction = require('./action/app-user-actions');
+var AppUserUtil = require('./util/app-user-util');
 
-var UserView = require("./views/user-view");
-var UserDetail = require("./views/user-detail");
-import AddOrEditUser from "./views/v2/add-or-edit-user";
-var UserAuditLog = require("./views/user-audit-log-show-user-detail");
+var UserView = require('./views/user-view');
+var UserDetail = require('./views/user-detail');
+import AddOrEditUser from './views/v2/add-or-edit-user';
+var UserAuditLog = require('./views/user-audit-log-show-user-detail');
 
-var Select = require("antd").Select;
-var Icon = require("antd").Icon;
-var SearchInput = require("../../../components/searchInput");
+var Select = require('antd').Select;
+var Icon = require('antd').Icon;
+var SearchInput = require('../../../components/searchInput');
 var Option = Select.Option;
-var classNames = require("classnames");
-import UserDetailAddApp from "./views/user-detail-add-app";
-var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
-var ShareObj = require("./util/app-id-share-util");
-var FilterBtn = require("../../../components/filter-btn");
-var hasPrivilege = require("../../../components/privilege/checker").hasPrivilege;
-var SelectFullWidth = require("../../../components/select-fullwidth");
-var Popover = require("antd").Popover;
-import ApplyUser from "./views/v2/apply-user";
-var topNavEmitter = require("../../../public/sources/utils/emitters").topNavEmitter;
+var classNames = require('classnames');
+import UserDetailAddApp from './views/user-detail-add-app';
+var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
+var ShareObj = require('./util/app-id-share-util');
+var FilterBtn = require('../../../components/filter-btn');
+var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
+var SelectFullWidth = require('../../../components/select-fullwidth');
+var Popover = require('antd').Popover;
+import ApplyUser from './views/v2/apply-user';
+var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
 
 /*用户管理界面外层容器*/
 var AppUserManage = React.createClass({
@@ -68,7 +68,7 @@ var AppUserManage = React.createClass({
             var app_id = this.props.location.state && this.props.location.state.app_id;
             var _this = this;
             //有客户名时，直接按照客户名查询，应用选中全部
-            if (this.props.location.action == 'PUSH') {
+            if (this.props.location.action === 'PUSH') {
                 //针对不同情况，查询用户列表
                 if (app_id) {
                     //从销售首页点击过期用户数字跳转过来时，有app_id
@@ -78,6 +78,8 @@ var AppUserManage = React.createClass({
                         start_date: _this.props.location.state && _this.props.location.state.start_date,
                         end_date: _this.props.location.state && _this.props.location.state.end_date,
                         page_size: _this.props.location.state && _this.props.location.state.page_size,
+                        sales_id: _this.props.location.state && _this.props.location.state.sales_id,
+                        team_ids: _this.props.location.state && _this.props.location.state.team_ids,
                         stopScroll: true
                     };
                     AppUserAction.getAppUserList(reqObj);
@@ -99,19 +101,19 @@ var AppUserManage = React.createClass({
                         AppUserAction.toggleSearchField({field: key, value: query[key]});
                     }
 
-                    if (filterField === "team_ids") {
-                        if (filterValue === "unknown") {
-                            AppUserAction.toggleSearchField({field: "is_filter_unknown_team", value: true});
+                    if (filterField === 'team_ids') {
+                        if (filterValue === 'unknown') {
+                            AppUserAction.toggleSearchField({field: 'is_filter_unknown_team', value: true});
                         }
                         AppUserAction.getTeamLists(teams => {
                             const team = _.find(teams, item => item.group_name === filterValue);
-                            const teamId = team && team.group_id || "";
+                            const teamId = team && team.group_id || '';
                             AppUserAction.toggleSearchField({field: filterField, value: teamId});
                             setTimeout(() => {
                                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);
                             });
                         });
-                    } else if (filterField == "sales_id") {
+                    } else if (filterField === 'sales_id') {
                         //通过销售首页点击团队成员统计图转过来的，查看某个销售对应的用户列表
                         AppUserAction.toggleSearchField({field: filterField, value: filterValue});
                         setTimeout(() => {
@@ -153,12 +155,12 @@ var AppUserManage = React.createClass({
     componentDidUpdate: function() {
         //如果当前路由是用户，上一次路由是用户审批时，重新获取应用列表
         var currentRoutePath = AppUserUtil.getCurrentView();
-        if (currentRoutePath == 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
+        if (currentRoutePath === 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
             //获取全部应用
             AppUserAction.getAppList();
             //查询所有用户
             let quryObj = {
-                app_id: ShareObj.app_id || ""
+                app_id: ShareObj.app_id || ''
             };
             //如果有选择的应用，则默认按创建时间排序
             if(ShareObj.app_id){//用户列表，选择某个应用后，切换到审计日志再回来时，列表需要排序
@@ -197,7 +199,7 @@ var AppUserManage = React.createClass({
         var list = appList.map(function(item) {
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
-        list.unshift(<Option value="" key="all" title={Intl.get("user.app.all", "全部应用")}><ReactIntl.FormattedMessage
+        list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage
             id="user.app.all" defaultMessage="全部应用"/></Option>);
         return list;
     },
@@ -256,7 +258,7 @@ var AppUserManage = React.createClass({
     },
     //是否有添加用户按钮
     addUserBtnCheckun: function() {
-        return hasPrivilege("APP_USER_ADD") && !this.state.customer_id;
+        return hasPrivilege('APP_USER_ADD') && !this.state.customer_id;
     },
     //销售选择用户的提示
     getUserRowsTooltip: function() {
@@ -320,11 +322,11 @@ var AppUserManage = React.createClass({
             //如果选择了用户，直接显示
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn add-btn-common"
-                    onClick={this.showBatchOperate}>{Intl.get("user.batch.change", "批量变更")}</div>;
+                    onClick={this.showBatchOperate}>{Intl.get('user.batch.change', '批量变更')}</div>;
             }
             //没有选择用户，加一个提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
-                <div className="inline-block add-btn add-btn-common gray">{Intl.get("user.batch.change", "批量变更")}</div>
+                <div className="inline-block add-btn add-btn-common gray">{Intl.get('user.batch.change', '批量变更')}</div>
             </Popover>;
         }
         return null;
@@ -461,7 +463,7 @@ var AppUserManage = React.createClass({
                             <div className={topNavLeftClass}>
                                 <RightPanelReturn onClick={this.hideCustomerUserList}/>
                                 <div className="customer_name_wrap">
-                                    {Intl.get("crm.customer.user", "{customer}客户的用户", {"customer": this.state.customer_name})}
+                                    {Intl.get('crm.customer.user', '{customer}客户的用户', {'customer': this.state.customer_name})}
                                 </div>
                             </div>
                             : null}
@@ -480,7 +482,7 @@ var AppUserManage = React.createClass({
                                     minWidth={120}
                                     value={this.state.selectedAppId}
                                     onChange={this.onSelectedAppChange}
-                                    notFoundContent={!appOptions.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
+                                    notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
                                 >
                                     {appOptions}
                                 </SelectFullWidth>
@@ -493,7 +495,7 @@ var AppUserManage = React.createClass({
                                         <SearchInput
                                             ref="searchInput"
                                             type="input"
-                                            searchPlaceHolder={Intl.get("user.search.placeholder", "请输入关键词搜索")}
+                                            searchPlaceHolder={Intl.get('user.search.placeholder', '请输入关键词搜索')}
                                             searchEvent={this.onSearchInputChange}
                                         />
                                     </div>
@@ -516,7 +518,7 @@ var AppUserManage = React.createClass({
                             <PrivilegeChecker
                                 onClick={this.addAppUser}
                                 check={this.addUserBtnCheckun}
-                                title={Intl.get("user.user.add", "添加用户")}
+                                title={Intl.get('user.user.add', '添加用户')}
                                 className="inline-block add-btn-mini">
                                 <Icon type="plus"/>
                             </PrivilegeChecker>

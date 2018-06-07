@@ -1,10 +1,10 @@
 /**
  * Created by wangliping on 2016/4/18.
  */
-var userData = require("../../../../public/sources/user-data");
-var userAjax = require("../ajax/user-ajax");
-var UserActions = require("./user-actions");
-var cardEmitter = require("../../../../public/sources/utils/emitters").cardEmitter;
+var userData = require('../../../../public/sources/user-data');
+var userAjax = require('../ajax/user-ajax');
+var UserActions = require('./user-actions');
+var cardEmitter = require('../../../../public/sources/utils/emitters').cardEmitter;
 
 function UserFormActions() {
     this.generateActions(
@@ -41,7 +41,7 @@ function UserFormActions() {
         userAjax.getUserTeamList(clientId).then(function(salesTeamList) {
             _this.dispatch(salesTeamList);
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("common.get.team.list.failed", "获取团队列表失败"));
+            _this.dispatch(errorMsg || Intl.get('common.get.team.list.failed', '获取团队列表失败'));
         });
     };
 
@@ -59,15 +59,15 @@ function UserFormActions() {
         var _this = this;
         userAjax.addUser(user).then(function(savedUser) {
             //保存成功后的处理
-            let email = Intl.get("member.add.member.email", "新增成员的邮箱");
+            let email = Intl.get('member.add.member.email', '新增成员的邮箱');
             if (savedUser && savedUser.email) {
                 email = savedUser.email;
             }
-            _this.dispatch({saveResult: "success", saveMsg: Intl.get("user.info.active.email", "激活邮件已发送至{email}",{email}), savedUser: savedUser});
+            _this.dispatch({saveResult: 'success', saveMsg: Intl.get('user.info.active.email', '激活邮件已发送至{email}',{email}), savedUser: savedUser});
 
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("member.add.failed", "添加失败！") });
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('member.add.failed', '添加失败！') });
         });
     };
     //编辑成员
@@ -77,26 +77,26 @@ function UserFormActions() {
             //修改成功data=true，false:修改失败
             if (data) {
                 //保存成功后的处理
-                _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
+                _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功！')});
                 //修改成功后刷新左侧列表对应成员卡片及其详情的数据
                 UserActions.afterEditUser(user);
             } else {
-                _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed", '保存失败!')});
+                _this.dispatch({saveResult: 'error', saveMsg: Intl.get('common.save.failed', '保存失败!')});
             }
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", '保存失败!')});
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败!')});
         });
     };
 
     //清空提示
     this.resetSaveResult = function(formType, saveResult) {
-        if (saveResult == "success") {
-            if (formType == "add") {
+        if (saveResult == 'success') {
+            if (formType == 'add') {
                 cardEmitter.emit(cardEmitter.ADD_CARD);
                 //清空搜索内容
-                UserActions.updateSearchContent("");
-            } else if (formType == "edit") {
+                UserActions.updateSearchContent('');
+            } else if (formType == 'edit') {
                 //修改成功后返回详情
                 UserActions.returnInfoPanel();
             }

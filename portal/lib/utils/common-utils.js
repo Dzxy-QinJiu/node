@@ -3,9 +3,9 @@
  * Created by wuyaoqian on 14-4-17.
  */
 
-"use strict";
+'use strict';
 
-var _ = require("underscore");
+var _ = require('underscore');
 
 var HtmlUtil = {
     /**
@@ -15,7 +15,7 @@ var HtmlUtil = {
      * @returns {*}
      */
     escape: function(content, useDefaultValue) {
-        return _.isString(content) ? content.replace(/</g, "&lt;").replace(/>/g, "&gt;") : (useDefaultValue ? "" : undefined);
+        return _.isString(content) ? content.replace(/</g, '&lt;').replace(/>/g, '&gt;') : (useDefaultValue ? '' : undefined);
     },
     /**
      * 将 html转义符号 转化为 html标签符号
@@ -24,7 +24,7 @@ var HtmlUtil = {
      * @returns {*}
      */
     unescape: function(content, useDefaultValue) {
-        return _.isString(content) ? content.replace(/\&lt;/g, "<").replace(/\&gt;/g, ">") : (useDefaultValue ? "" : undefined);
+        return _.isString(content) ? content.replace(/\&lt;/g, '<').replace(/\&gt;/g, '>') : (useDefaultValue ? '' : undefined);
     }
 };
 
@@ -36,7 +36,7 @@ var IPUtil = {
      */
     getClientIp: function(req) {
         if (!req || !req.headers || !req.connection || !req.socket) {
-            return "0.0.0.0";
+            return '0.0.0.0';
         }
         var ip = req.headers['x-real-ip'] || req.header('x-forwarded-for');
         if (ip) {
@@ -46,7 +46,7 @@ var IPUtil = {
         if (!ip) {
             ip = req.connection.remoteAddress ||
                 req.socket.remoteAddress ||
-                (req.connection.socket ? (req.connection.socket.remoteAddress ? req.connection.socket.remoteAddress : "0.0.0.0") : "0.0.0.0");
+                (req.connection.socket ? (req.connection.socket.remoteAddress ? req.connection.socket.remoteAddress : '0.0.0.0') : '0.0.0.0');
             var remoteIps = ip.split(':');
             ip = remoteIps[remoteIps.length - 1] ? remoteIps[remoteIps.length - 1] : ip;
         }
@@ -81,7 +81,7 @@ var IPUtil = {
                 return addresses[i];
             }
         }
-        return "127.0.0.1";
+        return '127.0.0.1';
     },
     /**
      * 如果当前机器ip有以172.19开头的，说明是工程中心的，返回true
@@ -100,7 +100,7 @@ var IPUtil = {
 };
 
 
-var fs = require("fs");
+var fs = require('fs');
 var FileUtil = {
     /**
      * 同步检测文件或目录是否存在

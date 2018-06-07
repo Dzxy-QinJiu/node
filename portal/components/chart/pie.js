@@ -1,11 +1,11 @@
 /**
  * 饼图
  */
-var echarts = require("echarts-eefung");
-require("./style.less");
-var macronsTheme = require("./theme-macrons");
-var echartsTooltipCssText = require("../../lib/utils/echarts-tooltip-csstext");
-var immutable = require("immutable");
+var echarts = require('echarts-eefung');
+require('./style.less');
+var macronsTheme = require('./theme-macrons');
+var echartsTooltipCssText = require('../../lib/utils/echarts-tooltip-csstext');
+var immutable = require('immutable');
 import { packageTry } from 'LIB_DIR/func';
 
 var PieChart = React.createClass({
@@ -25,7 +25,7 @@ var PieChart = React.createClass({
             tooltip: {
                 trigger: 'item',
                 extraCssText: echartsTooltipCssText,
-                formatter: "<div class='echarts-tooltip'>{b} : {c} ({d}%)</div>"
+                formatter: '<div class=\'echarts-tooltip\'>{b} : {c} ({d}%)</div>'
             },
             legend: {
                 orient: this.props.legendOrient || 'vertical',
@@ -45,10 +45,10 @@ var PieChart = React.createClass({
         if (!legend) {
             const data = this.props.dataField ? this.props.chartData[this.props.dataField] : this.props.chartData;
     
-            legend = _.pluck(data, "name");
+            legend = _.pluck(data, 'name');
             const subField = this.props.subField;
             if (subField) {
-                const subLegend = _.chain(data).pluck(subField).flatten().pluck("name").value();
+                const subLegend = _.chain(data).pluck(subField).flatten().pluck('name').value();
                 legend = legend.concat(subLegend);
             }
         }
@@ -64,7 +64,7 @@ var PieChart = React.createClass({
             data: [],
             label: {
                 normal: {
-                    formatter: "{c}"
+                    formatter: '{c}'
                 }
             },
             itemStyle: {
@@ -90,19 +90,19 @@ var PieChart = React.createClass({
         if (chartDataSeries) {
             series = _.map(chartDataSeries, (data, index) => {
                 const serie = JSON.parse(JSON.stringify(serieObj));
-                serie.radius = "50%";
+                serie.radius = '50%';
                 serie.data = this.getSerieData(data);
-                serie.center[0] = (20 + index * 40) + "%";
+                serie.center[0] = (20 + index * 40) + '%';
 
                 return serie;
             });
         } else if (subField) {
             const innerSerie = JSON.parse(JSON.stringify(serieObj));
-            innerSerie.radius = [0, "45%"];
+            innerSerie.radius = [0, '45%'];
             innerSerie.label = {
                 normal: {
                     show: false,
-                    position: "inner"
+                    position: 'inner'
                 }
             },
             innerSerie.labelLine = {
@@ -114,7 +114,7 @@ var PieChart = React.createClass({
             series.push(innerSerie);
 
             const outerSerie = JSON.parse(JSON.stringify(serieObj));
-            outerSerie.radius = ["50%", "70%"];
+            outerSerie.radius = ['50%', '70%'];
             const subData = _.chain(chartData).pluck(subField).flatten().value();
             outerSerie.data = this.getSerieData(subData);
             series.push(outerSerie);

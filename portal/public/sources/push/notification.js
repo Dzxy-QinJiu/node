@@ -1,4 +1,4 @@
-var noty = require("noty");
+var noty = require('noty');
 //显示通知
 function showNotification(options) {
     var {title,content,...props} = options;

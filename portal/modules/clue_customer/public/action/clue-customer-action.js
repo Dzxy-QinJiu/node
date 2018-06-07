@@ -3,28 +3,28 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/16.
  */
-var clueCustomerAjax = require("../ajax/clue-customer-ajax");
-var scrollBarEmitter = require("PUB_DIR/sources/utils/emitters").scrollBarEmitter;
-let userData = require("PUB_DIR/sources/user-data");
+var clueCustomerAjax = require('../ajax/clue-customer-ajax');
+var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
+let userData = require('PUB_DIR/sources/user-data');
 function ClueCustomerActions() {
     this.generateActions(
-        "setCurrentCustomer",
-        "setPageNum",
-        "afterAddSalesClue",
-        "getClueCustomerList",//获取线索客户列表
-        "getSalesManList",//获取销售团队列表
-        "addCluecustomerTrace",//添加或者更新跟进内容
-        "distributeCluecustomerToSale",//分配线索客户给某个销售
-        "setLastCustomerId",//用于设置下拉加载的最后一个客户的id
-        "setTimeRange",//设置开始和结束时间
-        "setFilterType",//设置筛选线索客户的类型
-        "setStatusLoading",
-        "setEdittingStatus",//是否是在编辑跟进内容状态
-        "setSalesMan",//获取销售人员及团队的id
-        "setSalesManName",//获取销售人员及团队的名字
-        "setUnSelectDataTip",//未选择销售人员的提醒信息
-        "afterEditCustomerDetail",//修改线索客户完成后更新列表中的信息
-        "updateClueProperty",//修改线索是否有效属性
+        'setCurrentCustomer',
+        'setPageNum',
+        'afterAddSalesClue',
+        'getClueCustomerList',//获取线索客户列表
+        'getSalesManList',//获取销售团队列表
+        'addCluecustomerTrace',//添加或者更新跟进内容
+        'distributeCluecustomerToSale',//分配线索客户给某个销售
+        'setLastCustomerId',//用于设置下拉加载的最后一个客户的id
+        'setTimeRange',//设置开始和结束时间
+        'setFilterType',//设置筛选线索客户的类型
+        'setStatusLoading',
+        'setEdittingStatus',//是否是在编辑跟进内容状态
+        'setSalesMan',//获取销售人员及团队的id
+        'setSalesManName',//获取销售人员及团队的名字
+        'setUnSelectDataTip',//未选择销售人员的提醒信息
+        'afterEditCustomerDetail',//修改线索客户完成后更新列表中的信息
+        'updateClueProperty',//修改线索是否有效属性
         'removeClueItem'//删除某条线索
     );
     //获取线索客户列表
@@ -39,7 +39,7 @@ function ClueCustomerActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errorMsg || Intl.get("failed.to.get.clue.customer.list", "获取线索客户列表失败")
+                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
             });
         });
     };
@@ -51,7 +51,7 @@ function ClueCustomerActions() {
             }
         }, function(errorMsg) {
             if (callback) {
-                callback(errorMsg || Intl.get("crm.194", "联系人电话唯一性验证失败"));
+                callback(errorMsg || Intl.get('crm.194', '联系人电话唯一性验证失败'));
             }
         });
     };
@@ -64,7 +64,7 @@ function ClueCustomerActions() {
         clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
             _.isFunction(callback) && callback(data);
         }, function(errorMsg) {
-            _.isFunction(callback) && callback(errorMsg || Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败"));
+            _.isFunction(callback) && callback(errorMsg || Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
         });
     };
     //获取销售列表
@@ -85,7 +85,7 @@ function ClueCustomerActions() {
             this.dispatch({error: false, loading: false, submitTip: result});
             _.isFunction(callback) && callback();
         },(errorMsg) => {
-            this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get("failed.submit.trace.content","添加跟进内容失败")});
+            this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get('failed.submit.trace.content','添加跟进内容失败')});
         });
     };
     //把线索客户分配给对应的销售
@@ -96,7 +96,7 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback();
         },(errorMsg) => {
             this.dispatch({error: true, loading: false});
-            _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get("failed.distribute.cluecustomer.to.sales","把线索客户分配给对应的销售失败")});
+            _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get('failed.distribute.cluecustomer.to.sales','把线索客户分配给对应的销售失败')});
         });
     };
     //标记线索是否有效
@@ -104,7 +104,7 @@ function ClueCustomerActions() {
         clueCustomerAjax.updateCluecustomerDetail(submitObj).then((result) => {
             _.isFunction(callback) && callback();
         },(errorMsg) => {
-            _.isFunction(callback) && callback(errorMsg || Intl.get("common.edit.failed", "修改失败"));
+            _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     };
 }

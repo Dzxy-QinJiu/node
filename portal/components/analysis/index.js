@@ -1,28 +1,28 @@
 /**
  * 分析组件
  */
-require("./style.less");
-import LineChart from "../chart/line";
-import BarChart from "../chart/bar";
-import PieChart from "../chart/pie";
-import { AntcBarPieChart, AntcHorizontalStageChart } from "antc";
-import Retention from "../chart/retention";
-import Funnel from "../chart/funnel";
-import Box from "../chart/box";
-import SigningStatistics from "../chart/signing-statistics";
-import routeList from "../../modules/common/route";
-import ajax from "../../modules/common/ajax";
-const Emitters = require("../../public/sources/utils/emitters");
+require('./style.less');
+import LineChart from '../chart/line';
+import BarChart from '../chart/bar';
+import PieChart from '../chart/pie';
+import { AntcBarPieChart, AntcHorizontalStageChart } from 'antc';
+import Retention from '../chart/retention';
+import Funnel from '../chart/funnel';
+import Box from '../chart/box';
+import SigningStatistics from '../chart/signing-statistics';
+import routeList from '../../modules/common/route';
+import ajax from '../../modules/common/ajax';
+const Emitters = require('../../public/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const appSelectorEmitter = Emitters.appSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
-const DateSelectorUtils = require("../datepicker/utils");
-import { getEndDateText } from "./utils";
-import { TIME_RANGE, USER_TYPE_LEGEND } from "./consts";
-var Spinner = require("../spinner");
-import * as exportUtil from "./export-data-util";
-import { capitalizeFirstLetter } from "LIB_DIR/func";
-import { storageUtil } from "ant-utils";
+const DateSelectorUtils = require('../datepicker/utils');
+import { getEndDateText } from './utils';
+import { TIME_RANGE, USER_TYPE_LEGEND } from './consts';
+var Spinner = require('../spinner');
+import * as exportUtil from './export-data-util';
+import { capitalizeFirstLetter } from 'LIB_DIR/func';
+import { storageUtil } from 'ant-utils';
 
 //图表类型映射关系
 const CHART_TYPE_MAP = {
@@ -40,8 +40,8 @@ const CHART_TYPE_MAP = {
 const Analysis = React.createClass({
     getDefaultProps() {
         return {
-            type: "total",
-            valueField: "value",
+            type: 'total',
+            valueField: 'value',
             sendRequest: true,
             reverseChart: false,
             errAndRightBothShow: false,//出错后的提示和正确时的展示同时显示出来
@@ -49,7 +49,7 @@ const Analysis = React.createClass({
         };
     },
     getInitialState() {
-        const funcName = "get" + TIME_RANGE + "Time";
+        const funcName = 'get' + TIME_RANGE + 'Time';
         //时间对象
         const timeObj = DateSelectorUtils[funcName](true);
         //开始时间
@@ -59,11 +59,11 @@ const Analysis = React.createClass({
         const endDate = getEndDateText();
         return {
             chartData: [],
-            app_id: "",
-            team_id: "",
+            app_id: '',
+            team_id: '',
             starttime: startTime,
             endtime: endTime,
-            resultType: "loading",
+            resultType: 'loading',
             endDate: endDate
         };
     },
@@ -103,7 +103,7 @@ const Analysis = React.createClass({
             this.getData();
         });
 
-        if (app_id.indexOf(",") > -1) app_id = "all";
+        if (app_id.indexOf(',') > -1) app_id = 'all';
 
         storageUtil.local.set(this.props.localStorageAppIdKey, app_id);
     },
@@ -113,12 +113,12 @@ const Analysis = React.createClass({
         });
     },
     onTeamChange(team_id) {
-        this.setState({team_id: team_id, member_id: ""}, () => {
+        this.setState({team_id: team_id, member_id: ''}, () => {
             this.getData();
         });
     },
     onMemberChange(member_id) {
-        this.setState({member_id: member_id, team_id: ""}, () => {
+        this.setState({member_id: member_id, team_id: ''}, () => {
             this.getData();
         });
     },
@@ -128,18 +128,18 @@ const Analysis = React.createClass({
     // 处理请求返回错误或请求成功但是返回错误的数据（{httpCode: 500, message: '获取数据错误'}）的情况
     handleErrorCase(props, errorMsg) {
         if (_.isFunction(props.processData)){
-            props.processData([], "error");
+            props.processData([], 'error');
         }
-        this.setState({chartData: [], resultType: "error",resultErrorMsg: errorMsg || Intl.get("contract.111", "获取数据失败")});
+        this.setState({chartData: [], resultType: 'error',resultErrorMsg: errorMsg || Intl.get('contract.111', '获取数据失败')});
     },
     getData(props = this.props) {
 
-        this.setState({resultType: "loading"});
+        this.setState({resultType: 'loading'});
         if (_.isFunction(props.processData)){
-            props.processData([],"loading");
+            props.processData([],'loading');
         }
 
-        const handler = props.handler || ("get" + props.target + "AnalysisData");
+        const handler = props.handler || ('get' + props.target + 'AnalysisData');
 
         const route = _.find(routeList, item => item.handler === handler);
 
@@ -154,7 +154,7 @@ const Analysis = React.createClass({
         const arg = {
             url: route.path,
             params: {
-                type: props.type === "app_id" ? this.state.app_id : props.type,
+                type: props.type === 'app_id' ? this.state.app_id : props.type,
                 property: props.property ? props.property : '_null',
             },
             query: {
@@ -179,7 +179,7 @@ const Analysis = React.createClass({
         }
 
         //用户总体活跃数分析接口所需的开始结束时间字段名和其他接口不一样，需要特别处理一下
-        if (props.property === "logined_user=active=daily") {
+        if (props.property === 'logined_user=active=daily') {
             arg.query.start_time = arg.query.starttime;
             arg.query.end_time = arg.query.endtime;
             delete arg.query.starttime;
@@ -189,15 +189,15 @@ const Analysis = React.createClass({
         if (props.query) _.extend(arg.query, props.query);
 
         //试用用户留存需根据查询时间段确定统计区间是天、周还是月
-        if (props.type === "trial" && props.property === "retention") {
-            const diffDay = moment(+arg.query.endtime).diff(moment(+arg.query.starttime), "day");
+        if (props.type === 'trial' && props.property === 'retention') {
+            const diffDay = moment(+arg.query.endtime).diff(moment(+arg.query.starttime), 'day');
 
             if (diffDay < 7) {
-                arg.query.interval = "daily";
+                arg.query.interval = 'daily';
             } else if (diffDay >= 7 && diffDay < 31) {
-                arg.query.interval = "weekly";
+                arg.query.interval = 'weekly';
             } else {
-                arg.query.interval = "monthly";
+                arg.query.interval = 'monthly';
             }
         }
 
@@ -206,9 +206,9 @@ const Analysis = React.createClass({
                 this.handleErrorCase(props, result.message);
             } else {
                 if (_.isFunction(props.processData)){
-                    result = props.processData(result,"");
+                    result = props.processData(result,'');
                 }
-                this.setState({ chartData: result, resultType: "",resultErrorMsg: ""});
+                this.setState({ chartData: result, resultType: '',resultErrorMsg: ''});
             }
         }, errorMsg => {
             this.handleErrorCase(props, errorMsg);
@@ -223,14 +223,14 @@ const Analysis = React.createClass({
         if (chartData && dataField2 !== undefined) chartData = chartData[dataField2];
         if (_.isEmpty(chartData)) {
             return <div className='nodata'>
-                {Intl.get("common.no.data", "暂无数据")}
+                {Intl.get('common.no.data', '暂无数据')}
             </div>;
         } else {
             return React.createElement(chartType, props, null);
         }
     },
     renderChartContent(chartType, props){
-        if (this.state.resultType === "loading"){
+        if (this.state.resultType === 'loading'){
             //如果不需要加loading效果
             if (this.props.notShowLoading){
                 return React.createElement(chartType, props, null);
@@ -241,11 +241,11 @@ const Analysis = React.createClass({
                     </div>
                 );
             }
-        }else if(this.state.resultType === "error") {
+        }else if(this.state.resultType === 'error') {
             //加载完成，出错的情况
             var errMsg = <div className="err-tip">{this.state.resultErrorMsg}
                 <a onClick={this.retryGetData}>
-                    {Intl.get("user.info.retry", "请重试")}
+                    {Intl.get('user.info.retry', '请重试')}
                 </a>
             </div>;
             if (this.props.errAndRightBothShow) {
@@ -264,7 +264,7 @@ const Analysis = React.createClass({
             }
         }else{
             return (
-                <div style={{height: "100%"}}>
+                <div style={{height: '100%'}}>
                     {this.renderAfterLoadingAndNoErr(chartType, props)}
                 </div>
             );
@@ -275,8 +275,8 @@ const Analysis = React.createClass({
         let processedData = this.state.chartData;
         let chartType = this.props.chartType;
         chartType = capitalizeFirstLetter(chartType);
-        const funcName = "handle" + chartType + "ChartData";
-        const valueField = this.props.valueField || "value";
+        const funcName = 'handle' + chartType + 'ChartData';
+        const valueField = this.props.valueField || 'value';
         const column = this.props.column;
 
         if (column) {
@@ -294,7 +294,7 @@ const Analysis = React.createClass({
     },
     render() {
         const props = {
-            title: this.props.title || "",
+            title: this.props.title || '',
             chartData: this.props.chartData || this.state.chartData,
             app_id: this.state.app_id,
             endDate: this.state.endDate,
@@ -304,7 +304,7 @@ const Analysis = React.createClass({
             reverseChart: this.props.reverseChart
         };
 
-        if (this.props.presetLegend === "userType") {
+        if (this.props.presetLegend === 'userType') {
             props.legend = USER_TYPE_LEGEND;
         }
 

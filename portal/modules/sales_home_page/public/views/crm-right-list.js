@@ -3,28 +3,28 @@
  * Created by wangliping on 2016/11/14.
  */
 import {Breadcrumb, Icon, Menu, Dropdown, message} from 'antd';
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
-import {COLOR_LIST} from "PUB_DIR/sources/utils/consts";
-import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
-var SearchInput = require("../../../../components/searchInput");
+import {getSalesTeamRoleList} from '../../../common/public/ajax/role';
+import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+var SearchInput = require('../../../../components/searchInput');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var OplateCustomerAnalysisAction = require("../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action");
-let userData = require("../../../../public/sources/user-data");
-let SalesHomeAction = require("../action/sales-home-actions");
-let constantUtil = require("../util/constant");
+var OplateCustomerAnalysisAction = require('../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action');
+let userData = require('../../../../public/sources/user-data');
+let SalesHomeAction = require('../action/sales-home-actions');
+let constantUtil = require('../util/constant');
 let showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;//当前展示的类型常量（销售团队列表、团队成员列表、销售的待办事宜）
-const Emitters = require("PUB_DIR/sources/utils/emitters");
+const Emitters = require('PUB_DIR/sources/utils/emitters');
 const teamTreeEmitter = Emitters.teamTreeEmitter;
-const TOP_TEAM_ID = "sales-team-list-parent-group-id";
+const TOP_TEAM_ID = 'sales-team-list-parent-group-id';
 var delayConstant = constantUtil.DELAY.TIMERANG;
-const CALLING_STATUS = "busy";//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
+const CALLING_STATUS = 'busy';//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
 let CrmRightList = React.createClass({
     getInitialState: function() {
         return {
             searchInputShow: false,
-            searchValue: "",
+            searchValue: '',
             updateScrollBar: false,
             salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj),//销售团队下的成员列表
             salesRoleList: []//销售角色列表
@@ -61,10 +61,10 @@ let CrmRightList = React.createClass({
     },
     //渲染等待效果、暂无数据的提示
     renderTooltip: function(resultType, errorMsg) {
-        if (resultType == "loading") {
+        if (resultType == 'loading') {
             return (<Icon type="loading"/>);
-        } else if (resultType == "error" || resultType == "noData") {
-            return (<div className="no-data-tip">{errorMsg || Intl.get("sales.home.get.data.failed", "获取数据失败")}</div>);
+        } else if (resultType == 'error' || resultType == 'noData') {
+            return (<div className="no-data-tip">{errorMsg || Intl.get('sales.home.get.data.failed', '获取数据失败')}</div>);
         }
     },
     //获取传入团队的所有子团队的group_id,数组第一项为传入团队的group_id
@@ -85,7 +85,7 @@ let CrmRightList = React.createClass({
     },
     //点击查看当前团队的数据
     selectSalesTeam: function(e, team) {
-        OplateCustomerAnalysisAction.resetChartData("loading");
+        OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.selectSalesTeam(team);
         let allChildTeamIds = [];
         //不是顶级的"销售团队列表"
@@ -98,30 +98,30 @@ let CrmRightList = React.createClass({
             this.props.refreshDataByChangeSales();
         });
         this.hideSearchInput();
-        Trace.traceEvent(e, "点击查看'" + team.group_name + "'团队的数据");
+        Trace.traceEvent(e, '点击查看\'' + team.group_name + '\'团队的数据');
     },
     //点击查看当前成员的数据
     selectSalesman: function(e, user) {
-        OplateCustomerAnalysisAction.resetChartData("loading");
+        OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.selectSalesman(user);
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, user.userId);
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
-        Trace.traceEvent(e, "点击查看'" + user.nickName + "销售人员的数据");
+        Trace.traceEvent(e, '点击查看\'' + user.nickName + '销售人员的数据');
     },
     //通过面包屑返回到销售团队列表
     returnSalesTeamList: function(e, team) {
-        OplateCustomerAnalysisAction.resetChartData("loading");
+        OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.returnSalesTeamList(team.group_id);
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
-        Trace.traceEvent(e, "返回'" + team.group_name + "'团队的数据");
+        Trace.traceEvent(e, '返回\'' + team.group_name + '\'团队的数据');
 
         let team_id = team.group_id;
-        if (team_id === "sales-team-list-parent-group-id") {
-            team_id = "";
+        if (team_id === 'sales-team-list-parent-group-id') {
+            team_id = '';
         }
         let allChildTeamIds = [];
         //不是顶级的"销售团队列表"
@@ -132,15 +132,15 @@ let CrmRightList = React.createClass({
     },
     //通过面包屑返回到销售成员列表
     returnSalesMemberList: function(e) {
-        OplateCustomerAnalysisAction.resetChartData("loading");
+        OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.returnSalesMemberList();
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
-        Trace.traceEvent(e, "返回销售成员列表");
+        Trace.traceEvent(e, '返回销售成员列表');
     },
     //获取销售的标题
     getSalesmanTitle: function() {
-        let salesTitle = "", originTeamTree = this.props.originSalesTeamTree;
+        let salesTitle = '', originTeamTree = this.props.originSalesTeamTree;
         if (this.props.currShowSalesman) {
             //通过点击销售团队成员列表中的成员跳到其用户提醒时
             let currShowTeam = this.props.currShowSalesTeam;
@@ -188,7 +188,7 @@ let CrmRightList = React.createClass({
 
     //获取销售团队/成员列表的标题
     getSalesListTitle: function() {
-        let salesTitle = "", originTeamTree = this.props.originSalesTeamTree;
+        let salesTitle = '', originTeamTree = this.props.originSalesTeamTree;
         if (this.props.currShowSalesTeam) {
             //通过点击销售团队列表中的销售团队转到其团队/成员列表时
             let titleItem = [];
@@ -235,7 +235,7 @@ let CrmRightList = React.createClass({
             data: {member_id: sales.userId, teamrole_id: selectRole.id},
             success: (result) => {
                 if (result) {
-                    message.success(Intl.get("user.info.setting.succeess", "设置成功！"));
+                    message.success(Intl.get('user.info.setting.succeess', '设置成功！'));
                     //更新store中对应成员的销售角色
                     SalesHomeAction.updateSalesTeamMembersObj(this.state.salesTeamMembersObj);
                 }
@@ -258,7 +258,7 @@ let CrmRightList = React.createClass({
     },
     //获取销售团队的成员列表
     renderSalesRole: function(salesman) {
-        let color = salesman.teamRoleColor || "#123";
+        let color = salesman.teamRoleColor || '#123';
         if (salesman.status == 0) {//停用的就展示灰色的方块
             return (<span className="sales-item-icon"/>);
         } else if (salesman.teamRoleName) {//有销售角色时，展示不同颜色的角色图标
@@ -266,17 +266,17 @@ let CrmRightList = React.createClass({
                 title={salesman.teamRoleName}/>);
         } else {//无销售角色时，展示“未设置角色”的图标
             return <span className="iconfont icon-role-set sales-role-icon"
-                title={Intl.get("sales.home.role.null", "未设置角色")}/>;
+                title={Intl.get('sales.home.role.null', '未设置角色')}/>;
         }
     },
     renderSalesRoleSetBtn: function(salesman) {
         let salesRoleList = this.state.salesRoleList;
-        if (salesman.status != 0 && hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") && _.isArray(salesRoleList) && salesRoleList.length) {
+        if (salesman.status != 0 && hasPrivilege('MEMBER_TEAM_ROLE_MANAGE') && _.isArray(salesRoleList) && salesRoleList.length) {
             return (
                 <Dropdown overlay={this.getSalesRoleMenus(salesman)}
                     getPopupContainer={() => document.getElementById('sales-member-li' + salesman.userId)}>
                     <span className="iconfont icon-role-auth-config"
-                        title={Intl.get("sales.home.set.role", "点此设置销售角色")}/>
+                        title={Intl.get('sales.home.set.role', '点此设置销售角色')}/>
                 </Dropdown>);
         } else {//停用的成员或没有设置角色权限或销售角色列表为空时，不展示设置角色按钮
             return null;
@@ -299,17 +299,17 @@ let CrmRightList = React.createClass({
                         let name = salesman.nickName;
                         if (salesman.status == 0) {
                             //停用状态
-                            name += " ( " + Intl.get("common.stop", "停用") + " ) ";
+                            name += ' ( ' + Intl.get('common.stop', '停用') + ' ) ';
                         }
                         salesListLi.push(
                             <div>
-                                <li key={salesman.userId} className={salesman.status == 0 ? "user-stop-li" : ""}
-                                    id={"sales-member-li" + salesman.userId}>
+                                <li key={salesman.userId} className={salesman.status == 0 ? 'user-stop-li' : ''}
+                                    id={'sales-member-li' + salesman.userId}>
                                     {this.renderSalesRole(salesman)}
                                     <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
                                     {salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
                                         <span className="iconfont icon-phone-waiting"
-                                            title={Intl.get("sales.status.calling", "正在打电话")}/>
+                                            title={Intl.get('sales.status.calling', '正在打电话')}/>
                                         : null }
                                     {this.renderSalesRoleSetBtn(salesman)}
                                 </li>
@@ -319,7 +319,7 @@ let CrmRightList = React.createClass({
                 });
             } else {
                 //无数据的提示
-                salesListLi = this.renderTooltip("noData", Intl.get("sales.home.no.sales", "暂无销售成员"));
+                salesListLi = this.renderTooltip('noData', Intl.get('sales.home.no.sales', '暂无销售成员'));
             }
         }
         return salesListLi;
@@ -341,7 +341,7 @@ let CrmRightList = React.createClass({
             });
         } else {
             //无数据的提示
-            salesListLi = this.renderTooltip("noData", Intl.get("sales.home.no.team", "暂无销售团队"));
+            salesListLi = this.renderTooltip('noData', Intl.get('sales.home.no.team', '暂无销售团队'));
         }
         return salesListLi;
     },
@@ -352,14 +352,14 @@ let CrmRightList = React.createClass({
         });
     },
     hideSearchInput: function() {
-        this.setState({searchInputShow: false, searchValue: ""});
+        this.setState({searchInputShow: false, searchValue: ''});
         //$(".sales-team-top .search-input").val("");
     },
     showSearchInput: function() {
         this.setState({searchInputShow: true});
     },
     renderListContent: function() {
-        let salesTitle = "", salesListLi = [], isShowSearch = true;
+        let salesTitle = '', salesListLi = [], isShowSearch = true;
         switch (this.props.currShowType) {
         case showTypeConstant.SALESMAN:
             //没有销售团队时，并且是普通销售或者舆情秘书时，展示过期用户提醒
@@ -367,7 +367,7 @@ let CrmRightList = React.createClass({
             isShowSearch = false;
             //如果是通过点击团队成员列表 显示出来的销售，什么都不展示
             if (this.props.currShowSalesman) {
-                salesListLi = "";
+                salesListLi = '';
             }
             break;
         case showTypeConstant.SALES_MEMBER_LIST:
@@ -387,7 +387,7 @@ let CrmRightList = React.createClass({
                 <div className="sales-team-top">
                     <span className="sales-team-title"> {salesTitle}</span>
                     {isShowSearch ? this.state.searchInputShow ? (
-                        <SearchInput searchPlaceHolder={Intl.get("sales.home.filter.tip", "请输入关键字进行过滤")}
+                        <SearchInput searchPlaceHolder={Intl.get('sales.home.filter.tip', '请输入关键字进行过滤')}
                             closeSearchInput={this.hideSearchInput}
                             searchEvent={this.searchEvent}/>) : (
                         <Icon type="search" className="search-sales-icon" onClick={this.showSearchInput}/>)

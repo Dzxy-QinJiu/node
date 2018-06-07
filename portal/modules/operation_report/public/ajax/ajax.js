@@ -1,6 +1,6 @@
 //获取应用列表
-let appAjaxTrans = require("../../../common/public/ajax/app");
-let teamAjaxTrans = require("../../../common/public/ajax/team");
+let appAjaxTrans = require('../../../common/public/ajax/app');
+let teamAjaxTrans = require('../../../common/public/ajax/team');
 exports.getAppList = function() {
     var Deferred = $.Deferred();
     //调用统一的接口发请求

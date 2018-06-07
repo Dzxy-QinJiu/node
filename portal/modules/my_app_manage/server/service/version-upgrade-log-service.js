@@ -1,12 +1,12 @@
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var AppUserRestApis = {
-    getAppRecordsList: "/rest/base/v1/application/records",
-    addAppVersion: "/rest/base/v1/application/record",
-    uploadVersionUpgrade: "/rest/base/v1/application/upload",
-    getAppRecordFile: "/rest/base/v1/application/record/download",
-    deleteAppVersionRecord: "/rest/base/v1/application/record/"
+    getAppRecordsList: '/rest/base/v1/application/records',
+    addAppVersion: '/rest/base/v1/application/record',
+    uploadVersionUpgrade: '/rest/base/v1/application/upload',
+    getAppRecordFile: '/rest/base/v1/application/record/download',
+    deleteAppVersionRecord: '/rest/base/v1/application/record/'
 };
 
 exports.urls = AppUserRestApis;
@@ -56,7 +56,7 @@ exports.getAppRecordFile = function(req, res, obj){
 // 删除版本升级记录
 exports.deleteAppVersionRecord = function(req, res, record_id){
     return restUtil.authRest.del({
-        url: AppUserRestApis.deleteAppVersionRecord + "/" + record_id,
+        url: AppUserRestApis.deleteAppVersionRecord + '/' + record_id,
         req: req,
         res: res,
     }, null);

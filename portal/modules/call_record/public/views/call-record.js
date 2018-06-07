@@ -1,38 +1,38 @@
-require("../css/index.less");
-require("CMP_DIR/antd-table-pagination/index.less");
-import RightContent from "CMP_DIR/privilege/right-content";
-import TopNav from "CMP_DIR/top-nav";
+require('../css/index.less');
+require('CMP_DIR/antd-table-pagination/index.less');
+import RightContent from 'CMP_DIR/privilege/right-content';
+import TopNav from 'CMP_DIR/top-nav';
 import CallRecordActions from '../action/call-record-actions';
 import CallRecordStore from '../store/call-record-store';
 import Spinner from 'CMP_DIR/spinner';
 import { Alert, Input, Icon, Button, Checkbox, Select, message, Popconfirm } from 'antd';
-import { AntcTable } from "antc";
+import { AntcTable } from 'antc';
 const Option = Select.Option;
-import DatePicker from "CMP_DIR/datepicker";
+import DatePicker from 'CMP_DIR/datepicker';
 import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
 import CallAddCustomerForm from './call-add-customer-form'; // 添加客户
 import userData from 'PUB_DIR/sources/user-data';
 import CrmAction from '../../../crm/public/action/crm-actions';
-import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import CallRecordAjax from '../ajax/call-record-ajax';
-var classNames = require("classnames");
-import rightPanelUtil from "CMP_DIR/rightPanel";
+var classNames = require('classnames');
+import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 import CallRecordAnalyis from './call-record-analysis';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import Trace from "LIB_DIR/trace";
-import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
+import Trace from 'LIB_DIR/trace';
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
-import AppUserManage from "MOD_DIR/app_user_manage/public";
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
 //获取无效电话的列表  设置某个电话为无效电话
-import {getInvalidPhone,addInvalidPhone} from "LIB_DIR/utils/invalidPhone";
-import AudioPlayer from "CMP_DIR/audioPlayer";
+import {getInvalidPhone,addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
+import AudioPlayer from 'CMP_DIR/audioPlayer';
 //接听状态
 let CALL_STATUS_MAP = {
-    'ANSWERED': Intl.get("call.record.state.answer", "已接听"),
-    'NO ANSWER': Intl.get("call.record.state.no.answer", "未接听"),
-    'BUSY': Intl.get("call.record.state.busy", "用户忙")
+    'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
+    'NO ANSWER': Intl.get('call.record.state.no.answer', '未接听'),
+    'BUSY': Intl.get('call.record.state.busy', '用户忙')
 };
 let searchInputTimeOut = null;
 const delayTime = 800;
@@ -68,20 +68,20 @@ const CALL_TYPE_OPTION = {
 //通话记录过滤类型
 const FILTER_OPTION = [
     {
-        value: "all",
-        label: Intl.get("common.all", "全部")
+        value: 'all',
+        label: Intl.get('common.all', '全部')
     },
     {
-        value: "customer",
-        label: Intl.get("call.record.filter.customer", "客户电话")
+        value: 'customer',
+        label: Intl.get('call.record.filter.customer', '客户电话')
     },
     {
-        value: "114",
-        label: Intl.get("call.record.filter.tip", "查号电话")
+        value: '114',
+        label: Intl.get('call.record.filter.tip', '查号电话')
     },
     {
-        value: "invalid",
-        label: Intl.get("call.record.filter.tip.service", "客服电话")
+        value: 'invalid',
+        label: Intl.get('call.record.filter.tip.service', '客服电话')
     }
 ];
 
@@ -103,45 +103,45 @@ const CallRecord = React.createClass({
             currentId: '', // 查看右侧详情的id
             callType: '', // 通话类型
             selectValue: '',
-            playingItemAddr: "",//正在播放的那条记录的地址
+            playingItemAddr: '',//正在播放的那条记录的地址
             showRightPanel: false,
-            seletedRecordId: "",//当前点击的记录id
+            seletedRecordId: '',//当前点击的记录id
             showTextEdit: {}, //展示跟进记录的编辑框
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             invalidPhoneLists: [],//无效电话列表
-            getInvalidPhoneErrMsg: "",//获取无效电话失败后的信息
-            playingItemPhone: "",//正在听的录音所属的电话号码
+            getInvalidPhoneErrMsg: '',//获取无效电话失败后的信息
+            playingItemPhone: '',//正在听的录音所属的电话号码
             isAddingInvalidPhone: false,//正在添加无效电话
-            addingInvalidPhoneErrMsg: "",//添加无效电话出错的情况
+            addingInvalidPhoneErrMsg: '',//添加无效电话出错的情况
         };
     },
 
     componentDidMount() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
         CallRecordStore.listen(this.onStoreChange);
         //获取无效电话号码列表
         getInvalidPhone((data) => {
             this.setState({
                 invalidPhoneLists: data.result,
-                getInvalidPhoneErrMsg: ""
+                getInvalidPhoneErrMsg: ''
             });
         },(err) => {
             this.setState({
                 invalidPhoneLists: [],
-                getInvalidPhoneErrMsg: err.message || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
+                getInvalidPhoneErrMsg: err.message || Intl.get('call.record.get.invalid.phone.lists', '获取无效电话列表失败')
             });
         });
         this.getCallListByAjax();
         this.getCallRecommendList();
         this.changeTableHeight();
-        $(window).on("resize", this.changeTableHeight);
+        $(window).on('resize', this.changeTableHeight);
     },
     componentWillUnmount() {
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
         CallRecordStore.unlisten(this.onStoreChange);
         CallRecordActions.resetState();
-        $(window).off("resize", this.changeTableHeight);
+        $(window).off('resize', this.changeTableHeight);
     },
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentId != prevProps.currentId) {
@@ -160,7 +160,7 @@ const CallRecord = React.createClass({
         }
         if (this.state.callRecord.total && this.state.callRecord.data_list.length === this.state.callRecord.total && !this.state.isNoMoreTipShow) {
             //滚动条区域容器
-            const scrollWrap = $(".call_record_wrap");
+            const scrollWrap = $('.call_record_wrap');
             //滚动条区域内容
             const scrollContent = scrollWrap.children();
             //若内容高度大于容器高度，说明已显示滚动条
@@ -230,11 +230,11 @@ const CallRecord = React.createClass({
     onSelectFilterObj(filterKey, value) {
         this.state.filterObj[filterKey] = value;
         if (value == CALL_TYPE_OPTION.PHONE) {
-            this.state.callType = <i className="iconfont icon-call-back" title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
+            this.state.callType = <i className="iconfont icon-call-back" title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
         } else if (value == CALL_TYPE_OPTION.APP) {
-            this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
+            this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get('common.ketao.app', '客套APP')}></i>;
         } else if (value == CALL_TYPE_OPTION.ALL) {
-            this.state.callType = <i className="iconfont icon-all" title={Intl.get("user.online.all.type", "全部类型")}></i>;
+            this.state.callType = <i className="iconfont icon-all" title={Intl.get('user.online.all.type', '全部类型')}></i>;
         } else if (value === CALL_TYPE_OPTION.CALL_BACK) {
             this.state.callType = <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
         }
@@ -265,7 +265,7 @@ const CallRecord = React.createClass({
         } else if (filterKey == 'sales_team') {
             Trace.traceEvent(event, '清空团队过滤框');
         }
-        this.state.filterObj[filterKey] = "";
+        this.state.filterObj[filterKey] = '';
         //清空过滤框的内容，直接进行过滤
         this.filterCallRecord(filterKey);
         delete this.state.filterObj[filterKey];
@@ -291,7 +291,7 @@ const CallRecord = React.createClass({
 
     // 通话类型和通话状态的选择框
     filterTypeStatusKeySelect(filterKey, columnLabel) {
-        const placeholder = Intl.get("call.record.search.placeholder", "根据{search}过滤", { search: columnLabel });
+        const placeholder = Intl.get('call.record.search.placeholder', '根据{search}过滤', { search: columnLabel });
         if (filterKey == 'disposition') { // 通话状态
             return (
                 <Select
@@ -302,10 +302,10 @@ const CallRecord = React.createClass({
                     onChange={this.onSelectFilterObj.bind(this, filterKey)}
                     onSelect={this.handleSelect.bind(this, filterKey)}
                 >
-                    <Option value={CALL_STATUS_OPTION.ALL}> {Intl.get("user.online.all.status", "全部状态")} </Option>
-                    <Option value={CALL_STATUS_OPTION.ANSWERED}> {Intl.get("call.record.state.answer", "已接听")} </Option>
-                    <Option value={CALL_STATUS_OPTION.MISSED}> {Intl.get("call.record.state.no.answer", "未接听")} </Option>
-                    <Option value={CALL_STATUS_OPTION.BUSY}> {Intl.get("call.record.state.busy", "用户忙")} </Option>
+                    <Option value={CALL_STATUS_OPTION.ALL}> {Intl.get('user.online.all.status', '全部状态')} </Option>
+                    <Option value={CALL_STATUS_OPTION.ANSWERED}> {Intl.get('call.record.state.answer', '已接听')} </Option>
+                    <Option value={CALL_STATUS_OPTION.MISSED}> {Intl.get('call.record.state.no.answer', '未接听')} </Option>
+                    <Option value={CALL_STATUS_OPTION.BUSY}> {Intl.get('call.record.state.busy', '用户忙')} </Option>
                 </Select>
             );
         } else if (filterKey == 'type') { // 通话类型
@@ -317,19 +317,19 @@ const CallRecord = React.createClass({
                     onChange={this.onSelectFilterObj.bind(this, filterKey)}
                     value={this.state.callType}
                     onSelect={this.handleSelect.bind(this, filterKey)}
-                    style={{minWidth: "50px"}}
+                    style={{minWidth: '50px'}}
                 >
                     <Option value={CALL_TYPE_OPTION.ALL}>
                         <i className="iconfont  icon-all"></i>
-                        <span>{Intl.get("user.online.all.type", "全部类型")}</span>
+                        <span>{Intl.get('user.online.all.type', '全部类型')}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.PHONE}>
                         <i className="iconfont  icon-call-back"></i>
-                        <span>{Intl.get("call.record.call.center", "呼叫中心")}</span>
+                        <span>{Intl.get('call.record.call.center', '呼叫中心')}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.APP}>
                         <i className="iconfont icon-ketao-app"></i>
-                        <span>{Intl.get("common.ketao.app", "客套APP")}</span>
+                        <span>{Intl.get('common.ketao.app', '客套APP')}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.CALL_BACK}>
                         <i className='iconfont icon-callback'></i>
@@ -386,8 +386,8 @@ const CallRecord = React.createClass({
                 {
                     from: this.state.start_time,
                     to: this.state.end_time,
-                    name: "call_date",
-                    type: "time"
+                    name: 'call_date',
+                    type: 'time'
                 }
             ]
         };
@@ -396,7 +396,7 @@ const CallRecord = React.createClass({
 
     // 搜索电话号码时，提供推荐列表
     getSearchPhoneRecommendList(filterKey, columnLabel) {
-        const placeholder = Intl.get("call.record.search.placeholder", "根据{search}过滤", { search: columnLabel });
+        const placeholder = Intl.get('call.record.search.placeholder', '根据{search}过滤', { search: columnLabel });
         const recommendList = this.state.recommendList.list;
         let searchContentOptions = [];
         if (_.isArray(recommendList) && recommendList.length) {
@@ -411,7 +411,7 @@ const CallRecord = React.createClass({
         }
         return this.state.isFilter ? (<div>
             <Select combobox
-                style={{ width: "140px" }}
+                style={{ width: '140px' }}
                 value={this.state.selectValue}
                 onSearch={this.handleChange}
                 searchPlaceholder={placeholder}
@@ -426,14 +426,14 @@ const CallRecord = React.createClass({
 
     //filterKey:对应的过滤字段，columnLabel:该列的表头描述
     getColumnTitle(filterKey, columnLabel) {
-        const placeholder = Intl.get("call.record.search.placeholder", "根据{search}过滤", { search: columnLabel });
+        const placeholder = Intl.get('call.record.search.placeholder', '根据{search}过滤', { search: columnLabel });
         let filterValue = this.state.filterObj[filterKey];
 
         return this.state.isFilter ? (<div className="filter-input-container">
             {filterKey == 'disposition' || filterKey == 'type' ? (
                 this.filterTypeStatusKeySelect(filterKey, columnLabel)
             ) : (
-                <Input placeholder={placeholder} value={filterValue || ""}
+                <Input placeholder={placeholder} value={filterValue || ''}
                     onChange={this.onChangeFilterObj.bind(this, filterKey)}
                     onKeyUp={this.onSearchInputKeyUp.bind(this, filterKey)}
                 />
@@ -452,7 +452,7 @@ const CallRecord = React.createClass({
     },
     // 隐藏添加客户和联系人面板
     hideAddCustomerForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".add-customer"), '关闭添加客户和联系人面板');
+        Trace.traceEvent($(this.getDOMNode()).find('.add-customer'), '关闭添加客户和联系人面板');
         this.setState({
             isAddFlag: false
         });
@@ -484,7 +484,7 @@ const CallRecord = React.createClass({
     hideRightPanel: function() {
         this.setState({
             rightPanelIsShow: false,
-            seletedRecordId: ""
+            seletedRecordId: ''
         });
     },
 
@@ -502,7 +502,7 @@ const CallRecord = React.createClass({
     //点击播放录音
     handleAudioPlay: function(item) {
         //如果是点击切换不同的录音，找到上次点击播放的那一条记录，把他的playSelected属性去掉
-        var oldItemId = "";
+        var oldItemId = '';
         var oldSelected = _.find(this.state.callRecord.data_list, function(item) { return item.playSelected; });
         if (oldSelected) {
             delete oldSelected.playSelected;
@@ -554,23 +554,23 @@ const CallRecord = React.createClass({
     getCallRecordColumns() {
         return [
             {
-                title: this.getColumnTitle("type", Intl.get("common.type", "类型")),
+                title: this.getColumnTitle('type', Intl.get('common.type', '类型')),
                 dataIndex: 'type',
                 key: 'type',
                 width: this.getCallTypeColumnWidth(),
                 render: (type, column) => {
-                    var cls = classNames("iconfont",{
-                        "icon-callrecord-out": column.call_type == "OU",//呼出的电话
-                        "icon-callrecord-in": column.call_type == "IN",//呼出的电话
-                        "icon-phone-call-out": !column.call_type
+                    var cls = classNames('iconfont',{
+                        'icon-callrecord-out': column.call_type == 'OU',//呼出的电话
+                        'icon-callrecord-in': column.call_type == 'IN',//呼出的电话
+                        'icon-phone-call-out': !column.call_type
                     });
                     let returnContent;
                     if (type === 'phone') {
-                        returnContent = <i className={cls} title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
+                        returnContent = <i className={cls} title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
                     } else if (type === 'call_back') {
                         returnContent = <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
                     } else {
-                        returnContent = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
+                        returnContent = <i className="iconfont icon-ketao-app" title={Intl.get('common.ketao.app', '客套APP')}></i>;
                     }
                     return (
                         <div className="icon-column">
@@ -579,55 +579,55 @@ const CallRecord = React.createClass({
                     );
                 }
             }, {
-                title: this.getColumnTitle("nick_name", Intl.get("call.record.caller", "呼叫者")),
+                title: this.getColumnTitle('nick_name', Intl.get('call.record.caller', '呼叫者')),
                 dataIndex: 'nick_name',
                 key: 'nick_name',
                 width: this.state.isFilter ? '150px' : '100px',
                 sorter: !this.state.isFilter,
                 className: this.state.isFilter ? 'call-user' : 'has-filter call-user has-sorter'
             }, {
-                title: this.getColumnTitle("sales_team", Intl.get("call.record.team", "团队")),
+                title: this.getColumnTitle('sales_team', Intl.get('call.record.team', '团队')),
                 dataIndex: 'sales_team',
                 width: this.state.isFilter ? 150 : 70,
                 key: 'sales_team'
             }, {
-                title: this.getSearchPhoneRecommendList("dst", Intl.get("common.phone", "电话")),
+                title: this.getSearchPhoneRecommendList('dst', Intl.get('common.phone', '电话')),
                 dataIndex: 'dst',
                 width: this.state.isFilter ? 150 : 120,
                 key: 'call_number'
             }, {
-                title: Intl.get("crm.96", "地域"),
+                title: Intl.get('crm.96', '地域'),
                 dataIndex: 'location',
                 key: 'location',
                 width: 100,
                 render: (text, column) => {
                     return (
                         <div>
-                            {column.province ? column.province + " " : ""}
-                            {column.city || ""}
+                            {column.province ? column.province + ' ' : ''}
+                            {column.city || ''}
                         </div>
                     );
                 }
             }, {
-                title: this.getColumnTitle("disposition", Intl.get("call.record.call.state", "通话状态")),
+                title: this.getColumnTitle('disposition', Intl.get('call.record.call.state', '通话状态')),
                 dataIndex: 'disposition',
                 key: 'call_state',
                 width: this.state.isFilter ? 150 : 90,
                 render: (callState, column) => {
-                    var cls = "iconfont icon-audio-play";
+                    var cls = 'iconfont icon-audio-play';
                     //playSelected表示当前正在播放的那条录音，图标显示红色
-                    cls += (column.playSelected ? " icon-selected" : "");
+                    cls += (column.playSelected ? ' icon-selected' : '');
                     return <div>
                         {CALL_STATUS_MAP[callState]}
                         {
                             /* 按是否有recording这个字段展示播放图标*/
                             column.recording && column.billsec != 0 ? <i className={cls} onClick={this.handleAudioPlay.bind(this, column)}
-                                title={Intl.get("call.record.play", "播放录音")} data-tracename="点击播放录音按钮"></i> : null
+                                title={Intl.get('call.record.play', '播放录音')} data-tracename="点击播放录音按钮"></i> : null
                         }
                     </div>;
                 }
             }, {
-                title: Intl.get("call.record.call.duration", "通话时长"),
+                title: Intl.get('call.record.call.duration', '通话时长'),
                 dataIndex: 'billsec',
                 key: 'holding_time',
                 sorter: true,
@@ -637,7 +637,7 @@ const CallRecord = React.createClass({
                     return <div>{TimeUtil.getFormatTime(billsec)}</div>;
                 }
             }, {
-                title: Intl.get("call.recoord.call.time", "拨打时间"),
+                title: Intl.get('call.recoord.call.time', '拨打时间'),
                 dataIndex: 'call_date',
                 key: 'call_date',
                 sorter: true,
@@ -652,7 +652,7 @@ const CallRecord = React.createClass({
                     );
                 }
             }, {
-                title: Intl.get("call.record.customer", "客户"),
+                title: Intl.get('call.record.customer', '客户'),
                 dataIndex: 'customer_name',
                 key: 'customer_name',
                 width: 100,
@@ -661,7 +661,7 @@ const CallRecord = React.createClass({
                     return (
                         <div>
                             {record.customer_name ? (
-                                <div title={Intl.get("call.record.customer.title", "点击可查看客户详情")}
+                                <div title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
                                     onClick={this.handleClickCustomer.bind(this, record)}
                                 >
                                     {record.customer_name}
@@ -679,24 +679,24 @@ const CallRecord = React.createClass({
                 }
 
             }, {
-                title: Intl.get("call.record.contacts", "联系人"),
+                title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'contact_name',
                 width: '120px',
                 key: 'contact_name'
             }, {
-                title: Intl.get("call.record.follow.content", "跟进内容"),
+                title: Intl.get('call.record.follow.content', '跟进内容'),
                 dataIndex: 'remark',
                 width: this.state.isFilter ? 180 : 150,
                 key: 'remark',
                 render: (text, record) => {
                     return (
                         <div className="add-content">
-                            <Popconfirm title={Intl.get("call.record.is.save.content.title", "是否保存跟进内容？")}
+                            <Popconfirm title={Intl.get('call.record.is.save.content.title', '是否保存跟进内容？')}
                                 visible={record.confirmVisible}
                                 onConfirm={this.handleContentSubmit.bind(this, record)}
                                 onCancel={this.cancelConfirm.bind(this, record, record.remark)}
-                                okText={Intl.get("user.yes", "是")}
-                                cancelText={Intl.get("user.no", "否")}
+                                okText={Intl.get('user.yes', '是')}
+                                cancelText={Intl.get('user.no', '否')}
                             >
                                 {
                                     record.showTextEdit ? <textarea
@@ -706,7 +706,7 @@ const CallRecord = React.createClass({
                                         defaultValue={record.remark}
                                         onBlur={this.toggleConfirm.bind(this, record, record.remark)}
                                         type="text"
-                                        id={"content" + record.id}
+                                        id={'content' + record.id}
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
                                     /> :
@@ -725,14 +725,14 @@ const CallRecord = React.createClass({
     // 检测回车，触发确认对话框
     checkEnter(id, event) {
         if (event.keyCode == 13) {
-            $(".new-custom-tbody #content" + id).blur();
+            $('.new-custom-tbody #content' + id).blur();
         }
     },
 
     // 失去焦点后，触发确认对话框
     toggleConfirm(record, oldValue) {
         const id = record.id;
-        let value = $(".new-custom-tbody #content" + id).val();
+        let value = $('.new-custom-tbody #content' + id).val();
         if (oldValue) { // 有内容时，对应的是修改
             if (value == oldValue) { // 没做修改，直接返回，不出现确认框
                 return;
@@ -750,11 +750,11 @@ const CallRecord = React.createClass({
     cancelConfirm(record, oldValue) {
         const id = record.id;
         Trace.traceEvent(this.getDOMNode(), '是否保存编辑的跟进内容，点击否');
-        let value = $(".new-custom-tbody #content" + id).val();
+        let value = $('.new-custom-tbody #content' + id).val();
         if (oldValue) { // oldValue是跟进内容原有的值，当有内容时
-            $(".new-custom-tbody #content" + id).val(oldValue);
+            $('.new-custom-tbody #content' + id).val(oldValue);
         } else {
-            $(".new-custom-tbody #content" + id).focus();
+            $('.new-custom-tbody #content' + id).focus();
         }
         this.handleClickTextArea(record);
         CallRecordActions.toggleConfirm({ id, flag: false }); // 确认框关闭
@@ -765,7 +765,7 @@ const CallRecord = React.createClass({
         const id = record.id;
         Trace.traceEvent(this.getDOMNode(), '是否保存编辑的跟进内容，点击是');
         CallRecordActions.toggleConfirm({ id, flag: false });
-        let value = $(".new-custom-tbody #content" + record.id).val();
+        let value = $('.new-custom-tbody #content' + record.id).val();
         let queryObj = {
             id: record.id,
             dst: record.dst,
@@ -779,9 +779,9 @@ const CallRecord = React.createClass({
             this.handleClickTextArea(record);
             if (result.result) {
                 CallRecordActions.updateCallContent(queryObj);
-                message.success(Intl.get("call.record.save.content.success", "保存跟进内容成功！"));
+                message.success(Intl.get('call.record.save.content.success', '保存跟进内容成功！'));
             } else {
-                message.error(Intl.get("call.record.save.content.error", "保存跟进内容失败！"));
+                message.error(Intl.get('call.record.save.content.error', '保存跟进内容失败！'));
             }
         });
     },
@@ -792,17 +792,17 @@ const CallRecord = React.createClass({
     // 过滤小于7位的号码，如114、12580...
     selectFilterPhone(value) {
         switch (value) {
-        case "114":
-            Trace.traceEvent("通话记录界面", '仅显示小于7位的号码');
+        case '114':
+            Trace.traceEvent('通话记录界面', '仅显示小于7位的号码');
             break;
-        case "customer":
-            Trace.traceEvent("通话记录界面", '仅显示客户电话');
+        case 'customer':
+            Trace.traceEvent('通话记录界面', '仅显示客户电话');
             break;
-        case "invalid":
-            Trace.traceEvent("通话记录界面", '仅显示客服电话');
+        case 'invalid':
+            Trace.traceEvent('通话记录界面', '仅显示客服电话');
             break;
         default:
-            Trace.traceEvent("通话记录界面", '显示全部电话');
+            Trace.traceEvent('通话记录界面', '显示全部电话');
             break;
         }
         CallRecordActions.filterPhone(value);
@@ -840,11 +840,11 @@ const CallRecord = React.createClass({
         }
         this.setState({
             callRecord: this.state.callRecord,
-            playingItemAddr: "",
-            playingItemPhone: ""
+            playingItemAddr: '',
+            playingItemPhone: ''
         });
         //隐藏播放窗口
-        $(".audio-play-container").animate({ height: '0' }).css("border", "0");
+        $('.audio-play-container').animate({ height: '0' }).css('border', '0');
     },
     ShowCustomerUserListPanel: function(data) {
         this.setState({
@@ -867,12 +867,12 @@ const CallRecord = React.createClass({
         this.setState({
             isAddingInvalidPhone: true
         });
-        addInvalidPhone({"phone": curPhone},() => {
+        addInvalidPhone({'phone': curPhone},() => {
             this.state.invalidPhoneLists.push(curPhone);
             this.setState({
                 isAddingInvalidPhone: false,
                 invalidPhoneLists: this.state.invalidPhoneLists,
-                addingInvalidPhoneErrMsg: ""
+                addingInvalidPhoneErrMsg: ''
             });
             //是否隐藏上报按钮
             audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
@@ -881,14 +881,14 @@ const CallRecord = React.createClass({
         },(err) => {
             this.setState({
                 isAddingInvalidPhone: false,
-                addingInvalidPhoneErrMsg: err.message || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
+                addingInvalidPhoneErrMsg: err.message || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
             });
         });
     },
     //提示框隐藏后的处理
     hideErrTooltip: function() {
         this.setState({
-            addingInvalidPhoneErrMsg: ""
+            addingInvalidPhoneErrMsg: ''
         });
     },
     render() {
@@ -905,15 +905,15 @@ const CallRecord = React.createClass({
                         disableDateAfterToday={true}
                         range="day"
                         onSelect={this.onSelectDate}>
-                        <DatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</DatePicker.Option>
-                        <DatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</DatePicker.Option>
-                        <DatePicker.Option value="week">{Intl.get("common.time.unit.week", "周")}</DatePicker.Option>
-                        <DatePicker.Option value="month">{Intl.get("common.time.unit.month", "月")}</DatePicker.Option>
-                        <DatePicker.Option value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
-                        <DatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</DatePicker.Option>
+                        <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                        <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                        <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                        <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                        <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                        <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                     </DatePicker>
                     <Button type="ghost" size="large" onClick={this.toggleFilter}
-                        className="search-btn">{this.state.isFilter ? Intl.get("call.record.cancel.search", "取消搜索") : Intl.get("sales.team.search", "搜索")}</Button>
+                        className="search-btn">{this.state.isFilter ? Intl.get('call.record.cancel.search', '取消搜索') : Intl.get('sales.team.search', '搜索')}</Button>
                     <div className="filter-phone-button">
                         <Select
                             className="filter-select-fix"
@@ -939,7 +939,7 @@ const CallRecord = React.createClass({
                             <div className="total_summary">
                                 <ReactIntl.FormattedMessage
                                     id="common.total.data"
-                                    defaultMessage={`共{num}条数据`}
+                                    defaultMessage={'共{num}条数据'}
                                     values={{
                                         'num': this.state.callRecord.total
                                     }}
@@ -1005,7 +1005,7 @@ const CallRecord = React.createClass({
             start_time = moment('2010-01-01 00:00:00').valueOf();
         }
         if (!end_time) {
-            end_time = moment().endOf("day").valueOf();
+            end_time = moment().endOf('day').valueOf();
         }
         this.updateStore({
             callRecord: callRecord,
@@ -1039,7 +1039,7 @@ const CallRecord = React.createClass({
             end_time: this.getReqParam(queryParam, 'end_time'),
             //page: _this.getCallListReqParam(queryParam, 'page'),
             page_size: 20,
-            lastId: queryParam ? queryParam.lastId : "",
+            lastId: queryParam ? queryParam.lastId : '',
             sort_field: this.getCallListReqParam(queryParam, 'sort_field'),
             sort_order: this.getCallListReqParam(queryParam, 'sort_order'),
             //电话记录类型
@@ -1072,10 +1072,10 @@ const CallRecord = React.createClass({
     //处理选中行的样式
     handleRowClassName: function(record, index) {
         if ((record.id == this.state.selectedRecordId) && this.state.showRightPanel) {
-            return "current_row";
+            return 'current_row';
         }
         else {
-            return "";
+            return '';
         }
     },
     renderCallRecordContent() {
@@ -1099,8 +1099,8 @@ const CallRecord = React.createClass({
             return this.state.callRecord.is_loading;
         };
 
-        const tableClassnames = classNames("new-custom-tbody",{
-            "hide-body": this.state.callRecord.is_loading && this.state.callRecord.page === 1 ,
+        const tableClassnames = classNames('new-custom-tbody',{
+            'hide-body': this.state.callRecord.is_loading && this.state.callRecord.page === 1 ,
         });
 
         const dropLoadConfig = {
@@ -1111,9 +1111,9 @@ const CallRecord = React.createClass({
         };
 
         return (
-            <div style={{ position: "relative" }}>
+            <div style={{ position: 'relative' }}>
                 <Spinner
-                    className={(this.state.callRecord.page === 1 && this.state.callRecord.is_loading) ? "spin-fix" : "hide"}
+                    className={(this.state.callRecord.page === 1 && this.state.callRecord.is_loading) ? 'spin-fix' : 'hide'}
                 />
                 <div
                     className={tableClassnames}

@@ -1,23 +1,23 @@
 var expires = config.session.maxAge;
 var sessionMapName = config.session.casterMapName;
-var exp_session = require("express-session");
-var sessionUtils = require("../utils/session-utils");
-var sessionKey = "sid";
+var exp_session = require('express-session');
+var sessionUtils = require('../utils/session-utils');
+var sessionKey = 'sid';
 var store = null;
-var CasterClientSDK = require("caster-client-sdk");
+var CasterClientSDK = require('caster-client-sdk');
 
 //有这些参数，就视为使用内存模式
-if (process.argv.indexOf("m") < 0
+if (process.argv.indexOf('m') < 0
     &&
-    process.argv.indexOf("-m") < 0
+    process.argv.indexOf('-m') < 0
     &&
-    process.argv.indexOf("--m") < 0
+    process.argv.indexOf('--m') < 0
     &&
-    process.argv.indexOf("memory") < 0
+    process.argv.indexOf('memory') < 0
     &&
-    process.argv.indexOf("-memory") < 0
+    process.argv.indexOf('-memory') < 0
     &&
-    process.argv.indexOf("--memory") < 0) {
+    process.argv.indexOf('--memory') < 0) {
     var CasterClientStore = CasterClientSDK.expressStore(exp_session);
 
     store = new CasterClientStore({

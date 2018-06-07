@@ -1,6 +1,6 @@
-import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
-const OrderActions = require("../action/order-actions");
-const routes = require("../../common/route");
+import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
+const OrderActions = require('../action/order-actions');
+const routes = require('../../common/route');
 
 function OrderStore() {
     this.orderListLoading = false;
@@ -10,8 +10,8 @@ function OrderStore() {
     this.isFormShow = false;
     this.crmUserList = [];
     this.isLoadingCrmUsers = false;//是否正在加载客户开通的用户列表
-    this.crmUsersErrorMsg = "";//获取客户开通的用户列表的错误提示
-    this.applyType = "";//申请类型
+    this.crmUsersErrorMsg = '';//获取客户开通的用户列表的错误提示
+    this.applyType = '';//申请类型
     this.listenScrollBottom = true;//是否监听滚动
     this.pageNum = 1;//当前是第几页
     this.pageSize = 20;//一页展示的条数
@@ -39,7 +39,7 @@ OrderStore.prototype.getCrmUserList = function(obj) {
         this.listenScrollBottom = false;
     } else {
         this.isLoadingCrmUsers = false;
-        this.crmUsersErrorMsg = "";
+        this.crmUsersErrorMsg = '';
         if (obj.result && _.isArray(obj.result.data)) {
             if (this.pageNum === 1) {
                 this.crmUserList = obj.result.data;

@@ -1,9 +1,9 @@
 /**
  * Created by wangliping on 2017/4/13.
  */
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-let _ = require("underscore");
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+let _ = require('underscore');
 
 /**
  * 根据团队id获取团队下的成员列表
@@ -18,13 +18,13 @@ let _ = require("underscore");
 exports.getSalesTeamMemberList = function(req, res, groupId, queryObj) {
     return restUtil.authRest.get(
         {
-            url: "/rest/base/v1/group/member/" + groupId,
+            url: '/rest/base/v1/group/member/' + groupId,
             req: req,
             res: res
         }, queryObj, {
             success: function(eventEmitter, data) {
                 data = turnToFrontMember(data);
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -33,7 +33,7 @@ exports.getSalesTeamMemberList = function(req, res, groupId, queryObj) {
 exports.getTeamMemberCountList = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: "/rest/base/v1/group/team/available/statistic",
+            url: '/rest/base/v1/group/team/available/statistic',
             req: req,
             res: res
         }, null);
@@ -43,7 +43,7 @@ exports.getTeamMemberCountList = function(req, res) {
 exports.getSalesTeamList = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: "/rest/base/v1/group/myteam",
+            url: '/rest/base/v1/group/myteam',
             req: req,
             res: res
         }, null, {
@@ -57,7 +57,7 @@ exports.getSalesTeamList = function(req, res) {
                         };
                     });
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };

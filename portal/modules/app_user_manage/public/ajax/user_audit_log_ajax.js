@@ -1,4 +1,4 @@
-var appAjaxTrans = require("../../../common/public/ajax/app");
+var appAjaxTrans = require('../../../common/public/ajax/app');
 
 //获取审计日志用户的应用
 exports.getUserApp = function(){

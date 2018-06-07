@@ -1,23 +1,23 @@
 import '../../css/crm-basic-info.less';
 import classNames from 'classnames';
-var CRMStore = require("../../store/basic-overview-store");
-var CRMAction = require("../../action/basic-overview-actions");
-var SalesTeamStore = require("../../../../sales_team/public/store/sales-team-store");
-var PrivilegeChecker = require("../../../../../components/privilege/checker").PrivilegeChecker;
-let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
-import {Tag} from "antd";
-var history = require("../../../../../public/sources/history");
-let NameTextareaField = require("./name-textarea-field");
-let CrmAction = require("../../action/crm-actions");
-let CrmRepeatAction = require("../../action/customer-repeat-action");
-import BasicEditInputField from "CMP_DIR/basic-edit-field-new/input";
-import BasicEditSelectField from "CMP_DIR/basic-edit-field-new/select";
-import LocationSelectField from "CMP_DIR/basic-edit-field-new/location-select";
-import crmUtil from "../../utils/crm-util";
-import CrmBasicAjax from "../../ajax/index";
-import userData from "PUB_DIR/sources/user-data";
-import {DetailEditBtn} from "CMP_DIR/rightPanel";
-import Trace from "LIB_DIR/trace";
+var CRMStore = require('../../store/basic-overview-store');
+var CRMAction = require('../../action/basic-overview-actions');
+var SalesTeamStore = require('../../../../sales_team/public/store/sales-team-store');
+var PrivilegeChecker = require('../../../../../components/privilege/checker').PrivilegeChecker;
+let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
+import {Tag} from 'antd';
+var history = require('../../../../../public/sources/history');
+let NameTextareaField = require('./name-textarea-field');
+let CrmAction = require('../../action/crm-actions');
+let CrmRepeatAction = require('../../action/customer-repeat-action');
+import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import LocationSelectField from 'CMP_DIR/basic-edit-field-new/location-select';
+import crmUtil from '../../utils/crm-util';
+import CrmBasicAjax from '../../ajax/index';
+import userData from 'PUB_DIR/sources/user-data';
+import {DetailEditBtn} from 'CMP_DIR/rightPanel';
+import Trace from 'LIB_DIR/trace';
 var BasicData = React.createClass({
     getInitialState: function() {
         return {
@@ -58,7 +58,7 @@ var BasicData = React.createClass({
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
-                list = _.pluck(list, "industry");
+                list = _.pluck(list, 'industry');
             }
             this.setState({isLoadingIndustryList: false, industryList: list});
         });
@@ -88,16 +88,16 @@ var BasicData = React.createClass({
     },
     getAdministrativeLevel: function(levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
-        return levelObj ? levelObj.level : "";
+        return levelObj ? levelObj.level : '';
     },
     //是否有转出客户的权限
     enableTransferCustomer: function() {
         let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
-        if (hasPrivilege("CRM_MANAGER_TRANSFER")) {
+        if (hasPrivilege('CRM_MANAGER_TRANSFER')) {
             enable = true;
-        } else if (hasPrivilege("CRM_USER_TRANSFER") && !isCommonSales) {
+        } else if (hasPrivilege('CRM_USER_TRANSFER') && !isCommonSales) {
             //销售主管有转出的权限
             enable = true;
         }
@@ -114,7 +114,7 @@ var BasicData = React.createClass({
     },
     //设置编辑客户名的标识
     setEditNameFlag: function(flag) {
-        Trace.traceEvent(this.getDOMNode(), flag ? "修改客户名" : "取消客户名的修改");
+        Trace.traceEvent(this.getDOMNode(), flag ? '修改客户名' : '取消客户名的修改');
         this.setState({editNameFlag: flag});
     },
 
@@ -140,16 +140,16 @@ var BasicData = React.createClass({
     },
     //关注客户的处理
     handleFocusCustomer: function(basicData) {
-        Trace.traceEvent(this.getDOMNode(), basicData.interest === "true" ? "取消关注客户" : "关注客户");
+        Trace.traceEvent(this.getDOMNode(), basicData.interest === 'true' ? '取消关注客户' : '关注客户');
         //请求数据
         let interestObj = {
             id: basicData.id,
-            type: "customer_interest",
+            type: 'customer_interest',
         };
-        if (basicData.interest == "true") {
-            interestObj.interest = "false";
+        if (basicData.interest == 'true') {
+            interestObj.interest = 'false';
         } else {
-            interestObj.interest = "true";
+            interestObj.interest = 'true';
         }
         basicData.interest = interestObj.interest;
         this.setState({basicData: basicData});
@@ -182,9 +182,9 @@ var BasicData = React.createClass({
                             value={level}
                             field="administrative_level"
                             selectOptions={this.getAdministrativeLevelOptions()}
-                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY")}
-                            placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
-                            saveEditSelect={this.saveEditBasicInfo.bind(this, "administrative_level")}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY')}
+                            placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
+                            saveEditSelect={this.saveEditBasicInfo.bind(this, 'administrative_level')}
                         />
                     </div>
                     <div className="basic-info-indestry basic-info-item">
@@ -196,10 +196,10 @@ var BasicData = React.createClass({
                             value={basicData.industry}
                             field="industry"
                             selectOptions={industryOptions}
-                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY")}
-                            placeholder={Intl.get("crm.22", "请选择行业")}
-                            editBtnTip={Intl.get("crm.163", "设置行业")}
-                            saveEditSelect={this.saveEditBasicInfo.bind(this, "industry")}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY')}
+                            placeholder={Intl.get('crm.22', '请选择行业')}
+                            editBtnTip={Intl.get('crm.163', '设置行业')}
+                            saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
                         />
                     </div>
                     <div className="basic-info-address basic-info-item">
@@ -209,8 +209,8 @@ var BasicData = React.createClass({
                             province={basicData.province}
                             city={basicData.city}
                             county={basicData.county}
-                            saveEditLocation={this.saveEditBasicInfo.bind(this, "address")}
-                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_ADDRESS")}
+                            saveEditLocation={this.saveEditBasicInfo.bind(this, 'address')}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS')}
                         />
                     </div>
                     <div className="basic-info-detail-address basic-info-item">
@@ -220,9 +220,9 @@ var BasicData = React.createClass({
                             value={basicData.address}
                             field="address"
                             type="input"
-                            placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
-                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_ADDRESS")}
-                            saveEditInput={this.saveEditBasicInfo.bind(this, "detail_address")}
+                            placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS')}
+                            saveEditInput={this.saveEditBasicInfo.bind(this, 'detail_address')}
                         />
                     </div>
                     <div className="basic-info-remark basic-info-item">
@@ -232,10 +232,10 @@ var BasicData = React.createClass({
                             type="textarea"
                             field="remarks"
                             value={basicData.remarks}
-                            editBtnTip={Intl.get("user.remark.set.tip", "设置备注")}
-                            placeholder={Intl.get("user.input.remark", "请输入备注")}
-                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_REMARK")}
-                            saveEditInput={this.saveEditBasicInfo.bind(this, "remarks")}
+                            editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
+                            placeholder={Intl.get('user.input.remark', '请输入备注')}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_REMARK')}
+                            saveEditInput={this.saveEditBasicInfo.bind(this, 'remarks')}
                         />
                     </div>
                 </div>
@@ -244,16 +244,16 @@ var BasicData = React.createClass({
     render: function() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
-        let interestFlag = basicData.interest === "true";
-        const interestClass = classNames("iconfont", {
-            "icon-interested": interestFlag,
-            "icon-uninterested": !interestFlag
+        let interestFlag = basicData.interest === 'true';
+        const interestClass = classNames('iconfont', {
+            'icon-interested': interestFlag,
+            'icon-uninterested': !interestFlag
         });
-        let interestTitle = interestFlag ? Intl.get("crm.customer.uninterested", "取消关注") :
-            Intl.get("crm.customer.interested", "添加关注");
+        let interestTitle = interestFlag ? Intl.get('crm.customer.uninterested', '取消关注') :
+            Intl.get('crm.customer.interested', '添加关注');
         if (this.props.isMerge) {
-            interestTitle = interestFlag ? Intl.get("crm.basic.concerned", "已关注") :
-                Intl.get("crm.basic.unconcerned", "未关注");
+            interestTitle = interestFlag ? Intl.get('crm.basic.concerned', '已关注') :
+                Intl.get('crm.basic.unconcerned', '未关注');
         }
         return (
             <div className="basic-info-contianer" data-trace="客户基本信息">
@@ -276,18 +276,18 @@ var BasicData = React.createClass({
                             {basicData.qualify_label ? (
                                 <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
                                     {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
+                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                             }
                             <span className="basic-name-text">{basicData.name}</span>
-                            {hasPrivilege("CUSTOMER_UPDATE_NAME") ? (
-                                <DetailEditBtn title={Intl.get("common.edit", "编辑")}
+                            {hasPrivilege('CUSTOMER_UPDATE_NAME') ? (
+                                <DetailEditBtn title={Intl.get('common.edit', '编辑')}
                                     onClick={this.setEditNameFlag.bind(this, true)}/>) : null}
                         </div>
                         <div className="basic-info-btns">
                             <span
-                                className={classNames("iconfont icon-detail-list", {"btn-active": this.state.showDetailFlag})}
-                                title={this.state.showDetailFlag ? Intl.get("crm.basic.detail.hide", "收起详情") :
-                                    Intl.get("crm.basic.detail.show", "展开详情")}
+                                className={classNames('iconfont icon-detail-list', {'btn-active': this.state.showDetailFlag})}
+                                title={this.state.showDetailFlag ? Intl.get('crm.basic.detail.hide', '收起详情') :
+                                    Intl.get('crm.basic.detail.show', '展开详情')}
                                 onClick={this.toggleBasicDetail}/>
                             {this.props.isMerge ? (
                                 <span className={interestClass} title={interestTitle}/> ) : (

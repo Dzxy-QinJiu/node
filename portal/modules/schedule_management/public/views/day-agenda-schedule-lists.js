@@ -3,25 +3,25 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/12/14.
  */
-import {Row, Col, Button, Icon, Popover,message} from "antd";
-import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
+import {Row, Col, Button, Icon, Popover,message} from 'antd';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import dates from 'date-arithmetic';
 import BigCalendar from 'react-big-calendar';
-var classNames = require("classnames");
-import userData from "PUB_DIR/sources/user-data";
+var classNames = require('classnames');
+import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
-import timeUtil from "PUB_DIR/sources/utils/time-format-util";
-var scheduleManagementStore = require("../store/schedule-management-store");
+import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
+var scheduleManagementStore = require('../store/schedule-management-store');
 //执行动画完毕后的时间
 const LAY_OUT = {
     SCHEDULE_CONTENT_HEIGHT: 600
 };
-var curWeek = "";//今天所在的周
-var scheduleManagementEmitter = require("PUB_DIR/sources/utils/emitters").scheduleManagementEmitter;
+var curWeek = '';//今天所在的周
+var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').scheduleManagementEmitter;
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
-import Trace from "LIB_DIR/trace";
-var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
-import {isEqualArray} from "LIB_DIR/func";
+import Trace from 'LIB_DIR/trace';
+var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
+import {isEqualArray} from 'LIB_DIR/func';
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -37,21 +37,21 @@ class DayAgendaScheduleLists extends React.Component {
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
         this.getUserPhoneNumber();
         //鼠标移入的时候，加上背景颜色
-        $("#content-block").on("mouseenter", ".list-item", (e) => {
-            if ($(".list-item.hover-item").length){
-                $(".list-item.hover-item").removeClass("hover-item");
+        $('#content-block').on('mouseenter', '.list-item', (e) => {
+            if ($('.list-item.hover-item').length){
+                $('.list-item.hover-item').removeClass('hover-item');
             }
-            $(e.target).closest(".list-item").addClass("hover-item");
+            $(e.target).closest('.list-item').addClass('hover-item');
         });
         //鼠标移出的时候，如果有popover还在显示，就不能去掉标识背景颜色的类，如果没有popover显示，才去掉这个类
-        $("#content-block").on("mouseleave",".schedule-items-content",(e) => {
+        $('#content-block').on('mouseleave','.schedule-items-content',(e) => {
             //调用popover隐藏方法比调用此方法慢，所以要加个延时
             setTimeout(() => {
-                if ($(".ant-popover:not(.ant-popover-hidden)").length){
+                if ($('.ant-popover:not(.ant-popover-hidden)').length){
                     return;
                 }else{
-                    if ($(".list-item.hover-item").length){
-                        $(".list-item.hover-item").removeClass("hover-item");
+                    if ($('.list-item.hover-item').length){
+                        $('.list-item.hover-item').removeClass('hover-item');
                     }
                 }
             },1000);
@@ -117,15 +117,15 @@ class DayAgendaScheduleLists extends React.Component {
             }
         }, (errMsg) => {
             this.setState({
-                errMsg: errMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!")
+                errMsg: errMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!')
             });
         });
     }
 
     handleClickCallOut = (phoneNumber, contactName, item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
         if (this.state.errMsg) {
-            message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
+            message.error(this.state.errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
         } else {
             if (this.state.callNumber) {
                 //把所拨打的联系人的姓名emitter出去
@@ -140,13 +140,13 @@ class DayAgendaScheduleLists extends React.Component {
                 };
                 crmAjax.callOut(reqData).then((result) => {
                     if (result.code == 0) {
-                        message.success(Intl.get("crm.call.phone.success", "拨打成功"));
+                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                     }
                 }, (errMsg) => {
-                    message.error(errMsg || Intl.get("crm.call.phone.failed", "拨打失败"));
+                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
                 });
             } else {
-                message.error(Intl.get("crm.bind.phone", "请先绑定分机号！"));
+                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
             }
         }
     };
@@ -155,8 +155,8 @@ class DayAgendaScheduleLists extends React.Component {
         return (
             <div className="contacts-containers">
                 {_.map(item.contacts,(contact) => {
-                    var cls = classNames("contacts-item",
-                        {"def-contact-item": contact.def_contancts === "true"});
+                    var cls = classNames('contacts-item',
+                        {'def-contact-item': contact.def_contancts === 'true'});
                     return (
                         <div className={cls}>
                             <div className="contacts-name-content">
@@ -169,7 +169,7 @@ class DayAgendaScheduleLists extends React.Component {
                                         <div className="phone-item">
                                             {phone}
                                             <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)}>
-                                                {Intl.get("schedule.call.out","拨打")}
+                                                {Intl.get('schedule.call.out','拨打')}
                                             </Button>
                                         </div>
                                     );
@@ -185,18 +185,18 @@ class DayAgendaScheduleLists extends React.Component {
     renderDayScheduleList() {
         return (
             _.map(this.state.scheduleList, (item, index) => {
-                var listCls = classNames("list-item", {
-                    "has-handled": item.status == "handle",
-                    "selected-customer": item.customer_id == this.state.curCustomerId
+                var listCls = classNames('list-item', {
+                    'has-handled': item.status == 'handle',
+                    'selected-customer': item.customer_id == this.state.curCustomerId
                 });
-                var itemCls = classNames("list-item-content", {});
-                var iconFontCls = classNames("iconfont", {
-                    "icon-phone-busy": item.type == "calls",
-                    "icon-schedule-visit": item.type == "visit",
-                    "icon-schedule-other": item.type == "other",
+                var itemCls = classNames('list-item-content', {});
+                var iconFontCls = classNames('iconfont', {
+                    'icon-phone-busy': item.type == 'calls',
+                    'icon-schedule-visit': item.type == 'visit',
+                    'icon-schedule-other': item.type == 'other',
                 });
-                var content = item.status == "handle" ? Intl.get("schedule.has.finished", "已完成") : (
-                    item.allDay ? Intl.get("crm.alert.full.day", "全天") : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
+                var content = item.status == 'handle' ? Intl.get('schedule.has.finished', '已完成') : (
+                    item.allDay ? Intl.get('crm.alert.full.day', '全天') : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + '-' + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
                 var customerContent = this.renderPopoverContent(item);
                 return (
@@ -223,12 +223,12 @@ class DayAgendaScheduleLists extends React.Component {
                                 </Col>
                                 <Col sm={10}>
                                     <div className="schedule-content-wrap">
-                                        {user_id == item.member_id && item.status !== "handle" ?
+                                        {user_id == item.member_id && item.status !== 'handle' ?
                                             <Button
                                                 type="primary"
                                                 onClick={this.props.handleScheduleItemStatus.bind(this, item)}
                                                 data-tracename="点击标记完成按钮"
-                                            >{Intl.get("schedule.list.mark.finish", "标记为完成")}
+                                            >{Intl.get('schedule.list.mark.finish', '标记为完成')}
                                                 {this.state.handleStatusLoading && item.id == this.state.isEdittingItemId ?
                                                     <Icon type="loading"/> : null}</Button> : null}
                                         <p className="schedule-content">{item.content}</p>
@@ -256,16 +256,16 @@ class DayAgendaScheduleLists extends React.Component {
                         </Row>
                         <Row>
                             <Col sm={4}>
-                                <span className="timerange">{Intl.get("common.login.time", "时间")}</span>
+                                <span className="timerange">{Intl.get('common.login.time', '时间')}</span>
                             </Col>
                             <Col sm={9}>
                                 <span className="todo">
-                                    {Intl.get("schedule.todo.list", "待办")}
+                                    {Intl.get('schedule.todo.list', '待办')}
                                 </span>
                             </Col>
                             <Col sm={10}>
                                 <span className="content">
-                                    {Intl.get("crm.177", "内容")}
+                                    {Intl.get('crm.177', '内容')}
                                 </span>
                             </Col>
                         </Row>
@@ -296,7 +296,7 @@ DayAgendaScheduleLists.title = (date, { formats, culture }) => {
     return `${moment(date).format(oplateConsts.DATE_FORMAT)}`;
 };
 DayAgendaScheduleLists.defaultProps = {
-    curCustomerId: "",
+    curCustomerId: '',
     updateScrollBar: false,
     handleScheduleItemStatus: function() {},
     showCustomerDetail: function() {}

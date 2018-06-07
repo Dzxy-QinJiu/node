@@ -3,9 +3,9 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/16.
  */
-require("../action/clue-customer-controller");
+require('../action/clue-customer-controller');
 module.exports = {
-    module: "clue_customer/server/action/clue-customer-controller",
+    module: 'clue_customer/server/action/clue-customer-controller',
     routes: [
         {//获取线索客户
             method: 'post',
@@ -84,42 +84,42 @@ module.exports = {
                 needLogin: true
             },
         },{
-            method: "get",
-            path: "/rest/clue/download_template",
-            handler: "getClueTemplate",
+            method: 'get',
+            path: '/rest/clue/download_template',
+            handler: 'getClueTemplate',
             passport: {
-                "needLogin": true
+                'needLogin': true
             }
         },
         {
-            method: "post",
-            path: "/rest/clue/upload",
-            handler: "uploadClues",
+            method: 'post',
+            path: '/rest/clue/upload',
+            handler: 'uploadClues',
             passport: {
-                "needLogin": true
+                'needLogin': true
             }
         },
         {
-            method: "get",
-            path: "/rest/clue/confirm/upload/:flag",
-            handler: "confirmUploadClues",
+            method: 'get',
+            path: '/rest/clue/confirm/upload/:flag',
+            handler: 'confirmUploadClues',
             passport: {
-                "needLogin": true
+                'needLogin': true
             }
         },{
-            method: "delete",
-            path: "/rest/clue/repeat/delete/:index",
-            handler: "deleteRepeatClue",
+            method: 'delete',
+            path: '/rest/clue/repeat/delete/:index',
+            handler: 'deleteRepeatClue',
             passport: {
-                "needLogin": true
+                'needLogin': true
             }
         },
         {
-            method: "post",
-            path: "/rest/clue/analysis",
-            handler: "getClueAnalysis",
+            method: 'post',
+            path: '/rest/clue/analysis',
+            handler: 'getClueAnalysis',
             passport: {
-                "needLogin": true
+                'needLogin': true
             }
         }
     ]

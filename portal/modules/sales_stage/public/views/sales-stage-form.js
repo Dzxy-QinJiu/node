@@ -1,16 +1,16 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * Created by jinfeng on 2015/12/28.
  */
 
-var Form = require("antd").Form;
-var Input = require("antd").Input;
-var Button = require("antd").Button;
-var Checkbox = require("antd").Checkbox;
+var Form = require('antd').Form;
+var Input = require('antd').Input;
+var Button = require('antd').Button;
+var Checkbox = require('antd').Checkbox;
 var FormItem = Form.Item;
 
-var rightPanelUtil = require("../../../../components/rightPanel/index");
+var rightPanelUtil = require('../../../../components/rightPanel/index');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 var RightPanelCancel = rightPanelUtil.RightPanelCancel;
@@ -112,17 +112,17 @@ var SalesStageForm = React.createClass({
                     <Form horizontal className="form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
-                                label={Intl.get("sales.stage.sales.stage", "销售阶段")}
+                                label={Intl.get('sales.stage.sales.stage', '销售阶段')}
                                 id="name"
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 18}}
                                 validateStatus={this.renderValidateStyle('name')}
                                 hasFeedback
-                                help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}>
-                                <Validator rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
+                                help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}>
+                                <Validator rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')}]}>
                                     <Input name="name" id="name" value={formData.name}
                                         onChange={this.setField.bind(this, 'name')}
-                                        placeholder={Intl.get("common.required.tip", "必填项*")}
+                                        placeholder={Intl.get('common.required.tip', '必填项*')}
                                         data-tracename="填写/编辑销售阶段"
                                     />
                                 </Validator>
@@ -130,16 +130,16 @@ var SalesStageForm = React.createClass({
 
 
                             <FormItem
-                                label={Intl.get("common.describe", "描述：")}
+                                label={Intl.get('common.describe', '描述：')}
                                 id="description"
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 18}}
                                 validateStatus={_this.renderValidateStyle('description')}
                                 hasFeedback
-                                help={status.description.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.description.errors && status.description.errors.join(','))}
+                                help={status.description.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.description.errors && status.description.errors.join(','))}
                             >
                                 <Validator
-                                    rules={[{required: true, min: 1, max: 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
+                                    rules={[{required: true, min: 1, max: 200 , message: Intl.get('authority.input.length.tip', '最少1个字符,最多200个字符')}]}>
                                     <Input name="description" id="description"
                                         value={formData.description}
                                         onChange={_this.setField.bind(_this, 'description')}

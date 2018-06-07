@@ -1,5 +1,5 @@
-var weeklyReportActions = require("../action/weekly-report-actions");
-import weeklyReportUtils from "../utils/weekly-report-utils";
+var weeklyReportActions = require('../action/weekly-report-actions');
+import weeklyReportUtils from '../utils/weekly-report-utils';
 function weeklyReportStore() {
     this.setInitState();
     this.bindActions(weeklyReportActions);
@@ -22,7 +22,7 @@ weeklyReportStore.prototype.setInitState = function() {
     this.initialTeamDescArr = [];//全部的团队周报描述列表
     this.selectedReportItem = {};//选中的团队周报
     this.selectedReportItemIdx = -1;//选中的团队周报下标
-    this.searchKeyword = "";//搜索的关键词
+    this.searchKeyword = '';//搜索的关键词
 };
 
 // 获取团队信息
@@ -44,7 +44,7 @@ weeklyReportStore.prototype.getSaleGroupTeams = function(result) {
                 _.map(resData, (item, index) => {
                     //得到团队描述的列表
                     this.teamDescArr.push({
-                        teamDsc: item.group_name + Intl.get("weekly.report.statics.report", "第{n}周统计周报", {n: i}),
+                        teamDsc: item.group_name + Intl.get('weekly.report.statics.report', '第{n}周统计周报', {n: i}),
                         teamId: item.group_id,
                         nWeek: i
                     });
@@ -100,7 +100,7 @@ function removeEmptyArrayEle(arr){
 weeklyReportStore.prototype.changeSearchInputValue = function(value) {
     this.searchKeyword = value;
     //把搜索的关键词按空格进行分割
-    var keyWordArr = value.trim().split(" ");
+    var keyWordArr = value.trim().split(' ');
     //去除查询条件中值为空的项
     removeEmptyArrayEle(keyWordArr);
     this.teamDescArr = _.filter(this.initialTeamDescArr, (teamItem) => {

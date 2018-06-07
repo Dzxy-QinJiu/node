@@ -1,6 +1,6 @@
-var callAnalysisAjax = require("../ajax/call-analysis-ajax");
+var callAnalysisAjax = require('../ajax/call-analysis-ajax');
 
-var _ = require("underscore");
+var _ = require('underscore');
 
 function CallAnalysisActions() {
     this.generateActions(
@@ -62,12 +62,12 @@ function CallAnalysisActions() {
 
     // 114占比
     this.getCallRate = function(reqData, reqBody) {
-        let type = "";
+        let type = '';
         if (reqBody.filter_invalid_phone) {
-            type = "service";
+            type = 'service';
         }
         else {
-            type = "114";
+            type = '114';
         }
         this.dispatch({loading: true, error: false, type});
         callAnalysisAjax.getCallRate(reqData, reqBody, type).then((resData) => {

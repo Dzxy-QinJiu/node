@@ -1,11 +1,11 @@
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 // 获取通话时长为TOP10的列表
 let callDurTopTenAjax = null;
 exports.getCallDurTopTen = function(reqData, reqBody) {
-    let auth_type = hasPrivilege("CUSTOMER_CALLRECORD_MANAGER_ONLY") ? "manager" : "user";
+    let auth_type = hasPrivilege('CUSTOMER_CALLRECORD_MANAGER_ONLY') ? 'manager' : 'user';
     callDurTopTenAjax && callDurTopTenAjax.abort();
     let url = '/rest/call/duration/top/ten/' + auth_type + '/' + reqData.start_time + '/' +
-        reqData.end_time + '/' + reqData.page_size + "/" + reqData.sort_field + "/" + reqData.sort_order;
+        reqData.end_time + '/' + reqData.page_size + '/' + reqData.sort_field + '/' + reqData.sort_order;
     var Deferred = $.Deferred();
     callDurTopTenAjax = $.ajax({
         url: url,
@@ -84,8 +84,8 @@ exports.getCallInfo = function(pathParam, reqData, type) {
 
 // 114占比
 let callRateAjax = {
-    "114": null,
-    "service": null
+    '114': null,
+    'service': null
 };
 exports.getCallRate = function(reqData, reqBody, type) {
     callRateAjax[type] && callRateAjax[type].abort();

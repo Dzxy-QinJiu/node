@@ -12,18 +12,18 @@ class ApplyViewDetailStore {
         //审批的详情数据
         this.detailInfoObj = {
             // "" loading error
-            loadingResult: "loading",
+            loadingResult: 'loading',
             //获取的详情信息
             info: {},
             //错误信息
-            errorMsg: ""
+            errorMsg: ''
         };
         //审批之后数据存储
         this.applyResult = {
             //提交状态  "" loading error success
-            submitType: "",
+            submitType: '',
             //错误信息
-            errorMsg: ""
+            errorMsg: ''
         };
         //是否显示右侧面板
         this.showRightPanel = false;
@@ -43,21 +43,21 @@ class ApplyViewDetailStore {
         this.applyIsExpanded = false;
         //用户名，昵称，审批备注，延期时间
         this.formData = {
-            user_name: "",
-            nick_name: "",
-            comment: "",
+            user_name: '',
+            nick_name: '',
+            comment: '',
             //延迟时间，默认数字是1
             delayTimeNumber: 1,
             //延期时间的单位，默认是天
-            delayTimeUnit: "days",
+            delayTimeUnit: 'days',
             // 到期时间(选择到期时间)
             end_date: moment().add('days',1).valueOf(),
             // 延期时间
             delay_time: '',
             //审批修改密码
-            apply_detail_password: "",
+            apply_detail_password: '',
             //确认密码
-            confirmPassword: ""
+            confirmPassword: ''
         };
         //各个应用的配置
         this.appsSetting = {};
@@ -84,18 +84,18 @@ class ApplyViewDetailStore {
         //回复列表
         this.replyListInfo = {
             //三种状态,loading,error,''
-            result: "loading",
+            result: 'loading',
             //列表数组
             list: [],
             //服务端错误信息
-            errorMsg: ""
+            errorMsg: ''
         };
         //回复表单
         this.replyFormInfo = {
             //三种状态,loading,error,success,''
-            result: "",
+            result: '',
             //服务端错误信息
-            errorMsg: ""
+            errorMsg: ''
         };
         // 是否显示没有设置角色的弹框(管理员批准的时候，
         // 如果是创建正式、创建试用、已有用户申请开通新应用正式、已有用户申请开通新应用试用，
@@ -140,21 +140,21 @@ class ApplyViewDetailStore {
         var weeks = Math.floor(left_millis / WEEK_MILLIS);
         left_millis = left_millis - weeks * WEEK_MILLIS;
         var days = Math.floor(left_millis / DAY_MILLIS);
-        if(years != 0 && months == 0 && weeks == 0 && days == 0){
+        if(years !== 0 && months === 0 && weeks === 0 && days === 0){
             this.formData.delayTimeNumber = years;
-            this.formData.delayTimeUnit = "years";
-        }else if(years == 0 && months != 0 && weeks == 0 && days == 0){
+            this.formData.delayTimeUnit = 'years';
+        }else if(years === 0 && months !== 0 && weeks === 0 && days === 0){
             this.formData.delayTimeNumber = months;
-            this.formData.delayTimeUnit = "months";
-        }else if(years == 0 && months == 0 && weeks != 0 && days == 0){
+            this.formData.delayTimeUnit = 'months';
+        }else if(years === 0 && months === 0 && weeks !== 0 && days === 0){
             this.formData.delayTimeNumber = weeks;
-            this.formData.delayTimeUnit = "weeks";
-        }else if(years == 0 && months == 0 && weeks == 0 && days != 0){
+            this.formData.delayTimeUnit = 'weeks';
+        }else if(years === 0 && months === 0 && weeks === 0 && days !== 0){
             this.formData.delayTimeNumber = days;
-            this.formData.delayTimeUnit = "days";
+            this.formData.delayTimeUnit = 'days';
         }else{
             this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;
-            this.formData.delayTimeUnit = "days";
+            this.formData.delayTimeUnit = 'days';
         }
     }
     
@@ -188,13 +188,13 @@ class ApplyViewDetailStore {
                 this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
             }
             let delayTime = 0;
-            if(this.detailInfoObj.info.type == 'apply_grant_delay'){
+            if(this.detailInfoObj.info.type === 'apply_grant_delay'){
                 if (this.detailInfoObj.info.delayTime) { // 同步修改时间
                     delayTime = this.detailInfoObj.info.delayTime;
                     this.formData.delay_time = delayTime;
                     this.getDelayDisplayTime(delayTime);
                 } else { // 到期时间，点开修改同步到自定义
-                    this.formData.delayTimeUnit = "custom";
+                    this.formData.delayTimeUnit = 'custom';
                     this.formData.end_date = this.detailInfoObj.info.end_date;
                 }
             }
@@ -219,12 +219,12 @@ class ApplyViewDetailStore {
                 var endMoment = moment(new Date(+end_time));
                 startMoment.hours(0).minutes(0).seconds(0).milliseconds(0);
                 endMoment.hours(0).minutes(0).seconds(0).milliseconds(0);
-                var rangeDiffMonth = endMoment.diff(startMoment , "months") + '';
-                if(["1","6","12"].indexOf(rangeDiffMonth) >= 0 && startMoment.format("D") === endMoment.format("D")) {
-                    range = rangeDiffMonth + "m";
+                var rangeDiffMonth = endMoment.diff(startMoment , 'months') + '';
+                if(['1','6','12'].indexOf(rangeDiffMonth) >= 0 && startMoment.format('D') === endMoment.format('D')) {
+                    range = rangeDiffMonth + 'm';
                 } else {
                     //判断天数，是7天(一周)还是15天(半个月)
-                    var rangeDiffDays = endMoment.diff(startMoment , "days") + '';
+                    var rangeDiffDays = endMoment.diff(startMoment , 'days') + '';
                     if(rangeDiffDays === '7') {
                         range = '1w';
                     } else if(rangeDiffDays === '15'){
@@ -265,7 +265,7 @@ class ApplyViewDetailStore {
     }
     //计算右侧底部类型
     setBottomDisplayType() {
-        if(this.selectedDetailItem.isConsumed == 'true') {
+        if(this.selectedDetailItem.isConsumed === 'true') {
             this.detailBottomDisplayType = 'formtext';
         } else {
             this.detailBottomDisplayType = 'btn';
@@ -306,7 +306,7 @@ class ApplyViewDetailStore {
     }
     //保存用户名
     saveUserName(name) {
-        if (name != this.detailInfoObj.info.user_names[0]) {
+        if (name !== this.detailInfoObj.info.user_names[0]) {
             this.detailInfoObj.info.user_names[0] = name;
             this.isChangeUserName = true;
         }
@@ -393,9 +393,10 @@ class ApplyViewDetailStore {
     saveModifyDelayTime(delay) {
         this.returnDelayTimeShow = false;
         this.isModifyDelayTime = false;
-        if (this.formData.delayTimeUnit != 'custom') {
+        if (this.formData.delayTimeUnit !== 'custom') {
             this.formData.delay_time = delay;
-            this.formData.end_date = '';
+            // 当时间单位为天、周、月、年时，默认end_date一个具体的值（默认显示当前时间的第二天）
+            this.formData.end_date = moment().add('days',1).valueOf();
         } else {
             this.formData.end_date = delay;
             this.formData.delay_time = '';
@@ -410,10 +411,10 @@ class ApplyViewDetailStore {
         if (this.detailInfoObj.info.delayTime) {
             delayTime = this.detailInfoObj.info.delayTime;
             this.formData.delay_time = delayTime;
-            this.formData.end_date = '';
+            this.formData.end_date = moment().add('days',1).valueOf();
             this.getDelayDisplayTime(delayTime);
         } else {
-            this.formData.delayTimeUnit = "custom";
+            this.formData.delayTimeUnit = 'custom';
             this.formData.end_date = this.detailInfoObj.info.end_date;
             this.formData.delay_time = '';
         }
@@ -461,7 +462,7 @@ class ApplyViewDetailStore {
             return;
         }
         this.replyFormInfo.result = 'error';
-        this.replyFormInfo.errorMsg = Intl.get("user.apply.reply.no.content", "请填写回复内容");
+        this.replyFormInfo.errorMsg = Intl.get('user.apply.reply.no.content', '请填写回复内容');
     }
     //隐藏回复输入框为空的错误
     hideReplyCommentEmptyError() {
@@ -492,8 +493,8 @@ class ApplyViewDetailStore {
         if(this.replyFormInfo.result === 'success') {
             //回复表单重置
             this.replyFormInfo = {
-                result: "",
-                errorMsg: ""
+                result: '',
+                errorMsg: ''
             };
         }
     }
@@ -525,4 +526,4 @@ class ApplyViewDetailStore {
 }
 
 //使用alt导出store
-export default alt.createStore(ApplyViewDetailStore , "ApplyViewDetailStoreV2");
+export default alt.createStore(ApplyViewDetailStore , 'ApplyViewDetailStoreV2');

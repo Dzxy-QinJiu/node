@@ -1,15 +1,15 @@
 /**
  * 线图
  */
-var echarts = require("echarts-eefung");
-require("./style.less");
-var macronsTheme = require("./theme-macrons");
-var echartsTooltipCssText = require("../../lib/utils/echarts-tooltip-csstext");
-var immutable = require("immutable");
+var echarts = require('echarts-eefung');
+require('./style.less');
+var macronsTheme = require('./theme-macrons');
+var echartsTooltipCssText = require('../../lib/utils/echarts-tooltip-csstext');
+var immutable = require('immutable');
 var COLORSINGLE = '#1790cf';
-const querystring = require("querystring");
-import { XAXIS_COLOR } from "./consts";
-import Trace from "LIB_DIR/trace";
+const querystring = require('querystring');
+import { XAXIS_COLOR } from './consts';
+import Trace from 'LIB_DIR/trace';
 import { packageTry } from 'LIB_DIR/func';
 
 var LineChart = React.createClass({
@@ -56,8 +56,8 @@ var LineChart = React.createClass({
         return {
             normal: {
                 show: this.props.showLabel || false,
-                position: "top",
-                formatter: this.props.labelFormatter || "{c}"
+                position: 'top',
+                formatter: this.props.labelFormatter || '{c}'
             }
         };
     },
@@ -73,7 +73,7 @@ var LineChart = React.createClass({
             if (list && dataField2 !== undefined) list = list[dataField2];
 
             series.push({
-                symbol: "circle",
+                symbol: 'circle',
                 showAllSymbol: true,
                 name: this.props.name,
                 type: 'line',
@@ -104,8 +104,8 @@ var LineChart = React.createClass({
             });
             //添加折线图，能够体现出趋势
             var line = {
-                name: Intl.get("app_operation.1", "用户总数"),
-                type: "line",
+                name: Intl.get('app_operation.1', '用户总数'),
+                type: 'line',
                 symbol: 'none',
                 smooth: true,
                 label: this.getLabel(),
@@ -122,7 +122,7 @@ var LineChart = React.createClass({
             title: null,
             animation: false,
             tooltip: {
-                trigger: "axis",
+                trigger: 'axis',
                 show: true,
                 extraCssText: echartsTooltipCssText,
             },
@@ -208,8 +208,8 @@ var LineChart = React.createClass({
         this.echartInstance.setOption(options,true);
         const jumpProps = this.props.jumpProps;
         if (jumpProps) {
-            this.echartInstance.on("click", params => {
-                Trace.traceEvent(params.event.event, "跳转到'" + params.name + "'用户列表");
+            this.echartInstance.on('click', params => {
+                Trace.traceEvent(params.event.event, '跳转到\'' + params.name + '\'用户列表');
                 let query = {
                     app_id: this.props.app_id,
                     login_begin_date: this.props.startTime,
@@ -219,7 +219,7 @@ var LineChart = React.createClass({
                 };
                 if (jumpProps.query) _.extend(query, jumpProps.query);
                 //跳转到用户列表
-                window.open(jumpProps.url + "?" + querystring.stringify(query));
+                window.open(jumpProps.url + '?' + querystring.stringify(query));
             });
         }
 

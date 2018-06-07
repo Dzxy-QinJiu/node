@@ -1,16 +1,16 @@
 
-var language = require("../../../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./customer_suggest-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./customer_suggest-zh_CN.less");
+var language = require('../../../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./customer_suggest-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./customer_suggest-zh_CN.less');
 }
-var Select = require("antd").Select;
-var Icon = require("antd").Icon;
-var Link = require("react-router").Link;
-var customerAjax = require("../../../../common/public/ajax/customer");
-var userData = require("../../../../../public/sources/user-data");
-var classNames = require("classnames");
+var Select = require('antd').Select;
+var Icon = require('antd').Icon;
+var Link = require('react-router').Link;
+var customerAjax = require('../../../../common/public/ajax/customer');
+var userData = require('../../../../../public/sources/user-data');
+var classNames = require('classnames');
 var CustomerSuggest = React.createClass({
     suggestTimer: null,
     getDefaultProps: function() {
@@ -96,22 +96,22 @@ var CustomerSuggest = React.createClass({
             Deferred.resolve(list);
         }).error(function(xhr,statusText) {
             if(statusText !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("errorcode.61","获取客户列表失败"));
+                Deferred.reject(xhr.responseJSON || Intl.get('errorcode.61','获取客户列表失败'));
             }
         }).timeout(function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get("errorcode.61","获取客户列表失败"));
+            Deferred.reject(xhr.responseJSON || Intl.get('errorcode.61','获取客户列表失败'));
         });
         return Deferred.promise();
     },
     //调整右侧面板客户联想宽度
     adjustDropDownRightPos: function() {
-        var $dropDown = $(".customer_combobox_search.ant-select-dropdown");
+        var $dropDown = $('.customer_combobox_search.ant-select-dropdown');
         if($dropDown[0]){
-            $dropDown.css("right","auto");
+            $dropDown.css('right','auto');
             var width = $dropDown.outerWidth();
             var posLeft = parseInt($dropDown.offset().left);
             if((posLeft + width) > $(window).width()) {
-                $dropDown.css("right",0);
+                $dropDown.css('right',0);
             }
         }
     },
@@ -210,7 +210,7 @@ var CustomerSuggest = React.createClass({
         }
     },
     getCustomerSearchInput: function() {
-        var $search_input = $(".ant-select-search__field",this.refs.customer_searchbox);
+        var $search_input = $('.ant-select-search__field',this.refs.customer_searchbox);
         return $search_input;
     },
     retrySuggest: function() {
@@ -233,8 +233,8 @@ var CustomerSuggest = React.createClass({
                 <div className="customer_suggest_tip customer_suggest_error_tip">
                     {
                         search_input_val ?
-                            Intl.get("user.customer.suggest.not.found","未找到该客户") :
-                            (this.props.required ? Intl.get("contract.59","请选择客户") : '')
+                            Intl.get('user.customer.suggest.not.found','未找到该客户') :
+                            (this.props.required ? Intl.get('contract.59','请选择客户') : '')
                     }
                 </div>
             );
@@ -246,14 +246,14 @@ var CustomerSuggest = React.createClass({
             if(this.state.result_type === 'error') {
                 return (
                     <div className="customer_suggest_tip">
-                        {this.state.suggest_error_msg}，{Intl.get("common.yesno","是否")}<a href="javascript:void(0)" onClick={this.retrySuggest}><ReactIntl.FormattedMessage id="common.retry" defaultMessage="重试" /></a>
+                        {this.state.suggest_error_msg}，{Intl.get('common.yesno','是否')}<a href="javascript:void(0)" onClick={this.retrySuggest}><ReactIntl.FormattedMessage id="common.retry" defaultMessage="重试" /></a>
                     </div>
                 );
             } else {
-                var canCreateCustomer = userData.getUserData().privileges.indexOf("CRM_CUSTOMER_INFO_EDIT") >= 0;
+                var canCreateCustomer = userData.getUserData().privileges.indexOf('CRM_CUSTOMER_INFO_EDIT') >= 0;
                 return (
                     <div className="customer_suggest_tip">
-                        {canCreateCustomer ? <span>{Intl.get("user.customer.suggest.not.found","未找到该客户")}，{Intl.get("common.yesno","是否")}<Link to="/crm?add=true">{Intl.get("user.customer.suggest.create.customer","创建客户")}？</Link></span> : <span>{Intl.get("user.customer.suggest.not.found","未找到该客户")}</span>}
+                        {canCreateCustomer ? <span>{Intl.get('user.customer.suggest.not.found','未找到该客户')}，{Intl.get('common.yesno','是否')}<Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer','创建客户')}？</Link></span> : <span>{Intl.get('user.customer.suggest.not.found','未找到该客户')}</span>}
                     </div>
                 );
             }
@@ -291,7 +291,7 @@ var CustomerSuggest = React.createClass({
         if(this.state.sales.name) {
             return (
                 <div ref="customer_searchbox" className="customer_searchbox_wrap customer_searchbox_text_wrap">
-                    <div className="customer_choosen" title={Intl.get("user.customer.suggest.reselect","点击重新选择")} onClick={this.resetCustomer}>
+                    <div className="customer_choosen" title={Intl.get('user.customer.suggest.reselect','点击重新选择')} onClick={this.resetCustomer}>
                         <span>{this.state.customer.name}</span>
                         <i className="iconfont"></i>
                     </div>
@@ -308,14 +308,14 @@ var CustomerSuggest = React.createClass({
                 <div ref="customer_searchbox" className={wrapClassName}>
                     <Select
                         combobox
-                        searchPlaceholder={Intl.get("customer.search.by.customer.name", "请输入客户名称搜索")}
+                        searchPlaceholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                         filterOption={false}
                         onSearch={this.suggestChange}
                         onChange={this.customerChoosen}
                         value={this.state.keyword}
                         dropdownMatchSelectWidth={false}
                         dropdownClassName="customer_combobox_search"
-                        notFoundContent={Intl.get("common.no.data", "暂无数据")}>
+                        notFoundContent={Intl.get('common.no.data', '暂无数据')}>
                         {
                             this.state.list.map(function(item) {
                                 return (

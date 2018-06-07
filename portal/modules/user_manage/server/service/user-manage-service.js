@@ -4,36 +4,36 @@
  * Created by liwenjun on 2016/2/1.
  */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var User = require("../dto/user");
-var _ = require("underscore");
-var auth = require("../../../../lib/utils/auth");
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var User = require('../dto/user');
+var _ = require('underscore');
+var auth = require('../../../../lib/utils/auth');
 
 var userRestApis = {
     //添加用户地址
-    addUser: "/rest/base/v1/user",
+    addUser: '/rest/base/v1/user',
     //修改用户地址
-    modifyUser: "/rest/base/v1/user/member/info",
+    modifyUser: '/rest/base/v1/user/member/info',
     //启/停用地址
-    updateUserStatus: "/rest/base/v1/user",
+    updateUserStatus: '/rest/base/v1/user',
     //获取用户列表地址
-    getUsers: "/rest/base/v1/user",
+    getUsers: '/rest/base/v1/user',
     //通过用户id获取用户信息
-    getUserById: "/rest/base/v1/user/id",
+    getUserById: '/rest/base/v1/user/id',
     //获取用户的操作日志
-    getUserLog: "/rest/analysis/auditlog/v1/all",
+    getUserLog: '/rest/analysis/auditlog/v1/all',
     //获取角色列表
-    getRoleList: "/rest/base/v1/application/role",
+    getRoleList: '/rest/base/v1/application/role',
     //成员属性唯一性验证的url
-    checkOnlyUser: "rest/base/v1/user/unique_info",
+    checkOnlyUser: 'rest/base/v1/user/unique_info',
     //修改成员的所属团队
-    updateUserTeam: "rest/base/v1/group/user",
+    updateUserTeam: 'rest/base/v1/group/user',
     //修改成员角色
-    updateUserRoles: "rest/base/v1/user/member/roles",
+    updateUserRoles: 'rest/base/v1/user/member/roles',
     //查询及添加个人销售目标
-    getAndSetSalesGoals: "/rest/contract/v2/goal/users"
+    getAndSetSalesGoals: '/rest/contract/v2/goal/users'
 };
 
 exports.urls = userRestApis;
@@ -63,7 +63,7 @@ exports.getUsers = function(req, res, condition, isGetAllUser) {
                     }
                 }
                 userListObj.data = curUserList;
-                eventEmitter.emit("success", userListObj);
+                eventEmitter.emit('success', userListObj);
             }
         });
 };
@@ -72,7 +72,7 @@ exports.getUsers = function(req, res, condition, isGetAllUser) {
 exports.getCurUserById = function(req, res, userId) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.getUserById + "/" + userId,
+            url: userRestApis.getUserById + '/' + userId,
             req: req,
             res: res
         }, null, {
@@ -81,7 +81,7 @@ exports.getCurUserById = function(req, res, userId) {
                 if (data) {
                     data = User.toFrontObject(data);
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -104,14 +104,14 @@ exports.addUser = function(req, res, frontUser) {
                 if (_.isObject(data)) {
                     frontUser.id = data.user_id;
                     if (_.isArray(data.roles) && data.roles.length) {
-                        frontUser.roleIds = _.pluck(data.roles, "role_id");
+                        frontUser.roleIds = _.pluck(data.roles, 'role_id');
                     } else {
                         frontUser.roleIds = [];
                     }
                     frontUser.teamId = data.team_id;
                     frontUser.status = data.status;
                 }
-                eventEmitter.emit("success", frontUser);
+                eventEmitter.emit('success', frontUser);
             }
         });
 };
@@ -130,7 +130,7 @@ exports.editUser = function(req, res, user) {
 exports.updateUserTeam = function(req, res, params) {
     return restUtil.authRest.put(
         {
-            url: userRestApis.updateUserTeam + "/" + params.user_id + "/" + params.group_id,
+            url: userRestApis.updateUserTeam + '/' + params.user_id + '/' + params.group_id,
             req: req,
             res: res
         }, null);
@@ -146,10 +146,10 @@ exports.updateUserRoles = function(req, res, user) {
 };
 //启停用户
 exports.updateUserStatus = function(req, res, frontUser) {
-    var flag = frontUser.status == 0 ? "disable" : "enable";//成员的启停
+    var flag = frontUser.status == 0 ? 'disable' : 'enable';//成员的启停
     return restUtil.authRest.put(
         {
-            url: userRestApis.updateUserStatus + "/" + frontUser.id + "/status/" + flag,
+            url: userRestApis.updateUserStatus + '/' + frontUser.id + '/status/' + flag,
             req: req,
             res: res
         }, null);
@@ -159,7 +159,7 @@ exports.updateUserStatus = function(req, res, frontUser) {
 exports.getUserLog = function(req, res, condition) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.getUserLog + "/" + condition.user_name + "/" + condition.page_size + "/" + condition.num,
+            url: userRestApis.getUserLog + '/' + condition.user_name + '/' + condition.page_size + '/' + condition.num,
             req: req,
             res: res
         },
@@ -174,7 +174,7 @@ exports.getUserLog = function(req, res, condition) {
                         };
                     });
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         }
     );
@@ -185,7 +185,7 @@ exports.getUserLog = function(req, res, condition) {
 exports.getRoleList = function(req, res, clientId) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.getRoleList + "/" + clientId,
+            url: userRestApis.getRoleList + '/' + clientId,
             req: req,
             res: res
         },
@@ -200,7 +200,7 @@ exports.getRoleList = function(req, res, clientId) {
                         };
                     });
                 }
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         }
     );
@@ -210,7 +210,7 @@ exports.getRoleList = function(req, res, clientId) {
 exports.checkOnlyUserName = function(req, res, userName) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.checkOnlyUser + "/username," + userName,
+            url: userRestApis.checkOnlyUser + '/username,' + userName,
             req: req,
             res: res
         }, null);
@@ -220,7 +220,7 @@ exports.checkOnlyUserName = function(req, res, userName) {
 exports.checkOnlyPhone = function(req, res, phone) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.checkOnlyUser + "/phone," + phone,
+            url: userRestApis.checkOnlyUser + '/phone,' + phone,
             req: req,
             res: res
         }, null);
@@ -230,7 +230,7 @@ exports.checkOnlyPhone = function(req, res, phone) {
 exports.checkOnlyEmail = function(req, res, email) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.checkOnlyUser + "/email," + email,
+            url: userRestApis.checkOnlyUser + '/email,' + email,
             req: req,
             res: res
         }, null);

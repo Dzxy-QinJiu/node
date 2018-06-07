@@ -3,19 +3,19 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/12/14.
  */
-var scheduleManagementStore = require("../store/schedule-management-store");
-var scheduleManagementAction = require("../action/schedule-management-action");
-import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
-var classNames = require("classnames");
-import {Alert, message, Button, Icon} from "antd";
+var scheduleManagementStore = require('../store/schedule-management-store');
+var scheduleManagementAction = require('../action/schedule-management-action');
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+var classNames = require('classnames');
+import {Alert, message, Button, Icon} from 'antd';
 // 没有消息的提醒
-var NoMoreDataTip = require("CMP_DIR/no_more_data_tip");
-var Spinner = require("CMP_DIR/spinner");
-import userData from "PUB_DIR/sources/user-data";
+var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
+var Spinner = require('CMP_DIR/spinner');
+import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
-var scheduleManagementEmitter = require("PUB_DIR/sources/utils/emitters").scheduleManagementEmitter;
-let history = require("PUB_DIR/sources/history");
+var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').scheduleManagementEmitter;
+let history = require('PUB_DIR/sources/history');
 const DELAY_RANGE = {
     ANIMATION: 1000,//动画结束的时间
 };
@@ -24,10 +24,10 @@ class ExpireScheduleLists extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            expired_start_time: "",//过期日程的开始时间
-            expired_end_time: "",//过期日程的结束时间
-            expired_status: "",//过期日程的状态
-            isEdittingItemId: "",//正在标记为完成的那一条日程
+            expired_start_time: '',//过期日程的开始时间
+            expired_end_time: '',//过期日程的结束时间
+            expired_status: '',//过期日程的状态
+            isEdittingItemId: '',//正在标记为完成的那一条日程
             isShowExpiredPanel: this.props.isShowExpiredPanel,
             isFirstLogin: this.props.isShowExpiredPanel,
             updateScrollBar: false,
@@ -104,7 +104,7 @@ class ExpireScheduleLists extends React.Component {
     handleMarkFinishStatus = (item) => {
         const reqData = {
             id: item.id,
-            status: "handle",
+            status: 'handle',
         };
         this.setState({
             isEdittingItemId: item.id
@@ -112,14 +112,14 @@ class ExpireScheduleLists extends React.Component {
         scheduleManagementAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {
-                    "id": item.id,
+                    'id': item.id,
                 };
                 this.setState({
-                    isEdittingItemId: ""
+                    isEdittingItemId: ''
                 });
                 scheduleManagementAction.afterHandleStatus(newStatusObj);
             } else {
-                message.error(resData || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败"));
+                message.error(resData || Intl.get('crm.failed.alert.todo.list', '修改待办事项状态失败'));
             }
         });
     };
@@ -128,10 +128,10 @@ class ExpireScheduleLists extends React.Component {
         return (
             <div>
                 {_.map(this.state.scheduleExpiredList, (item) => {
-                    var cls = classNames("iconfont", {
-                        "icon-schedule-visit": item.type == "visit",
-                        "icon-phone-busy": item.type == "calls",
-                        "icon-schedule-other": item.type == "other"
+                    var cls = classNames('iconfont', {
+                        'icon-schedule-visit': item.type == 'visit',
+                        'icon-phone-busy': item.type == 'calls',
+                        'icon-schedule-other': item.type == 'other'
                     });
                     return (
                         <div className="list-item" data-tracename="超期日程列表">
@@ -153,12 +153,12 @@ class ExpireScheduleLists extends React.Component {
                             </p>
                             <p className="item-schedule-content">
                                 <span>
-                                    <span className="label">{Intl.get("crm.177", "内容")}</span>
+                                    <span className="label">{Intl.get('crm.177', '内容')}</span>
                                     <span className="content">{item.content}</span>
                                 </span>
                                 {item.socketio_notice ?
                                     <span>
-                                        <span className="label">{Intl.get("schedule.list.remind", "提醒")}</span>
+                                        <span className="label">{Intl.get('schedule.list.remind', '提醒')}</span>
                                         <span
                                             className="content">{moment(item.alert_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</span>
                                     </span>
@@ -170,10 +170,10 @@ class ExpireScheduleLists extends React.Component {
                                     <Button type="primary"
                                         onClick={this.handleMarkFinishStatus.bind(this, item)}
                                         data-tracename="点击标记日程状态为完成"
-                                    >{Intl.get("schedule.list.mark.finish", "标记为完成")}
+                                    >{Intl.get('schedule.list.mark.finish', '标记为完成')}
                                         {this.state.handleStatusLoading ?
                                             <Icon type="loading"/> : null}</Button> :
-                                    <span>{Intl.get("schedule.create.person", "创建人")}: {item.member_nick}</span>}
+                                    <span>{Intl.get('schedule.create.person', '创建人')}: {item.member_nick}</span>}
                             </p>
                         </div>
                     );
@@ -203,7 +203,7 @@ class ExpireScheduleLists extends React.Component {
                 <span>
                     {this.state.scheduleExpiredErrMsg}，<a href="javascript:void(0)"
                         onClick={this.getExpiredScheduleList()}>
-                        {Intl.get("common.retry", "重试")}
+                        {Intl.get('common.retry', '重试')}
                     </a>
                 </span>
             );
@@ -220,7 +220,7 @@ class ExpireScheduleLists extends React.Component {
             return (
                 <div className="schedule-list-no-data">
                     <Alert
-                        message={Intl.get("common.no.data", "暂无数据")}
+                        message={Intl.get('common.no.data', '暂无数据')}
                         type="info"
                         showIcon={true}
                     />
@@ -228,8 +228,8 @@ class ExpireScheduleLists extends React.Component {
             );
         } else {
             var divHeight = $(window).height() - LAYOUT.PADDING_TOP;
-            var cls = classNames("list-container", {
-                "update-scrollbar": this.state.updateScrollBar
+            var cls = classNames('list-container', {
+                'update-scrollbar': this.state.updateScrollBar
             });
             if (this.state.updateScrollBar) {
                 return (
@@ -273,25 +273,25 @@ class ExpireScheduleLists extends React.Component {
     //点击添加待办按钮
     handleAddTodo = () => {
         //跳转到客户列表页面
-        history.pushState({}, "/crm", {});
+        history.pushState({}, '/crm', {});
     };
 
     render() {
         //左侧超期日程动画 如果没有数据，就不显示左侧面板
         var expiredCls = classNames({
-            "show-expire-panel": this.state.isShowExpiredPanel && !this.state.isFirstLogin,
-            "hide-expire-panel": !this.state.isShowExpiredPanel && !this.state.isFirstLogin,
-            "nodata-left-expired-panel": !this.state.isShowExpiredPanel && this.state.isFirstLogin
+            'show-expire-panel': this.state.isShowExpiredPanel && !this.state.isFirstLogin,
+            'hide-expire-panel': !this.state.isShowExpiredPanel && !this.state.isFirstLogin,
+            'nodata-left-expired-panel': !this.state.isShowExpiredPanel && this.state.isFirstLogin
         });
-        var cls = classNames("is-loading-schedule-list", {
-            "show-spinner": this.state.isLoadingScheduleExpired && !this.state.lastScheduleExpiredId
+        var cls = classNames('is-loading-schedule-list', {
+            'show-spinner': this.state.isLoadingScheduleExpired && !this.state.lastScheduleExpiredId
         });
-        var expiredTipContent = this.state.isShowExpiredPanel ? "《" : "》";
+        var expiredTipContent = this.state.isShowExpiredPanel ? '《' : '》';
         return (
             <div id="expire-list-content" data-tracename="超时未完成日程界面" className={expiredCls}>
                 <div className="expire-list-innerwrap">
                     <div className="expire-list-title">
-                        {Intl.get("schedule.expired.list", "超时未完成")}
+                        {Intl.get('schedule.expired.list', '超时未完成')}
                     </div>
                     <div className="expire-list-content">
                         <div className={cls}>
@@ -308,7 +308,7 @@ class ExpireScheduleLists extends React.Component {
                 </div>
                 {/*添加日程*/}
                 <div className="add-schedule-btn">
-                    <Button type="primary" onClick={this.handleAddTodo}>+ {Intl.get("shedule.list.add.todo", "待办")}</Button>
+                    <Button type="primary" onClick={this.handleAddTodo}>+ {Intl.get('shedule.list.add.todo', '待办')}</Button>
                 </div>
             </div>
         );

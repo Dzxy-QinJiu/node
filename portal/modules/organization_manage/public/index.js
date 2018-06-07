@@ -1,25 +1,25 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-var language = require("../../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./css/organization-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./css/organization-zh_CN.less");
+var language = require('../../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./css/organization-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./css/organization-zh_CN.less');
 }
-var OrganizationStore = require("./store/organization-store");
-var OrganizationAction = require("./action/organization-actions");
-var Spinner = require("../../../components/spinner");
-var TopNav = require("../../../components/top-nav");
-var LeftTree = require("./views/left-tree");
-var MemberList = require("./views/member-list");
-var OrganizationAjax = require("./ajax/organization-ajax");
-var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
-var NoData = require("../../../components/analysis-nodata");
-var AlertTimer = require("../../../components/alert-timer");
-var Icon = require("antd").Icon;
-var Button = require("antd").Button;
-var Input = require("antd").Input;
+var OrganizationStore = require('./store/organization-store');
+var OrganizationAction = require('./action/organization-actions');
+var Spinner = require('../../../components/spinner');
+var TopNav = require('../../../components/top-nav');
+var LeftTree = require('./views/left-tree');
+var MemberList = require('./views/member-list');
+var OrganizationAjax = require('./ajax/organization-ajax');
+var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
+var NoData = require('../../../components/analysis-nodata');
+var AlertTimer = require('../../../components/alert-timer');
+var Icon = require('antd').Icon;
+var Button = require('antd').Button;
+var Input = require('antd').Input;
 var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var bootomHeight = 30; //距离底部高度
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
@@ -31,11 +31,11 @@ const messages = defineMessages({
     organization_input_placeholder: {id: 'organization.input.placeholder'},//请输入组织名称
 });
 var CONSTANT = {
-    ORGANIZATION_IS_NULL: "organization-is-null",//没有组织时的提示信息
-    SUCCESS: "success",
-    ERROR: "error",
-    SAVE_SUCCESS: Intl.get("common.save.success"),
-    SAVE_ERROR: Intl.get("common.save.failed")
+    ORGANIZATION_IS_NULL: 'organization-is-null',//没有组织时的提示信息
+    SUCCESS: 'success',
+    ERROR: 'error',
+    SAVE_SUCCESS: Intl.get('common.save.success'),
+    SAVE_ERROR: Intl.get('common.save.failed')
 };
 
 var OrganizationPage = React.createClass({
@@ -45,10 +45,10 @@ var OrganizationPage = React.createClass({
         data.containerHeight = this.containerHeightFnc();
         data.containerWidth = this.containerWidthFnc();
         data.windowHeight = this.windowHeightFnc();
-        data.organizationName = "";//添加组织时的组织名称
+        data.organizationName = '';//添加组织时的组织名称
         data.isSavingOrganization = false;//是否正在添加组织
-        data.saveOrganizationMsg = "";//添加组织成功失败的提示
-        data.saveOrganizationResult = "";//添加组织成功还是失败（success/error）
+        data.saveOrganizationMsg = '';//添加组织成功失败的提示
+        data.saveOrganizationResult = '';//添加组织成功还是失败（success/error）
         return data;
     },
 
@@ -69,17 +69,17 @@ var OrganizationPage = React.createClass({
     },
 
     componentDidMount: function() {
-        $("body").css("overflow", "hidden");
-        $(window).on("resize", this.resizeWindow);
+        $('body').css('overflow', 'hidden');
+        $(window).on('resize', this.resizeWindow);
         OrganizationStore.listen(this.onChange);
         OrganizationAction.setOrganizationLoading(true);
         OrganizationAction.getOrganizationList();
     },
 
     componentWillUnmount: function() {
-        $(window).off("resize", this.resizeWindow);
+        $(window).off('resize', this.resizeWindow);
         OrganizationStore.unlisten(this.onChange);
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
     },
 
     containerHeightFnc: function() {
@@ -144,8 +144,8 @@ var OrganizationPage = React.createClass({
         if (this.state.saveOrganizationResult == CONSTANT.SUCCESS) {
             OrganizationAction.getOrganizationList();
         }
-        this.state.saveOrganizationMsg = "";
-        this.state.saveOrganizationResult = "";
+        this.state.saveOrganizationMsg = '';
+        this.state.saveOrganizationResult = '';
     },
     //无组织时，添加组织面板的渲染
     renderAddOrganization: function() {
@@ -168,7 +168,7 @@ var OrganizationPage = React.createClass({
                 <Button type="primary" size="large"
                     onClick={this.addOrganization}>
                     <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>{this.state.isSavingOrganization ? (
-                        <Icon type="loading"/>) : ""}</Button>
+                        <Icon type="loading"/>) : ''}</Button>
             </div>
         </PrivilegeChecker>);
     },

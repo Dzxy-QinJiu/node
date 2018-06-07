@@ -3,7 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
-var CustomerRecordActions = require("../action/customer-record-action");
+var CustomerRecordActions = require('../action/customer-record-action');
 
 function CustomerRecordStore() {
     //初始化state数据
@@ -36,36 +36,51 @@ CustomerRecordStore.prototype.resetState = function() {
     this.isEdit = false;//当前有一条数据处在编辑状态
     this.addDetailErrTip = '';//补充内容为空的提示
     this.modalDialogFlag = false;//是否显示模态框
-    this.saveButtonType = "";//点击增加跟进记录的保存还是补充跟进记录的保存
+    this.saveButtonType = '';//点击增加跟进记录的保存还是补充跟进记录的保存
     this.edittingItem = [];//当前正在编辑添加详情的那条跟进记录
-    this.lastPhoneTraceItemId = "";//最后一条电话类型的跟进记录
+    this.lastPhoneTraceItemId = '';//最后一条电话类型的跟进记录
 };
 //恢复默认状态
 CustomerRecordStore.prototype.dismiss = function() {
     this.resetState();
 };
 CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
-    this.addCustomerErrMsg = "";
-    this.addCustomerSuccMsg = "";
-    if (!result.loading){
+    this.addCustomerErrMsg = '';
+    this.addCustomerSuccMsg = '';
+    if (!result.loading) {
         this.customerRecordLoading = false;
-        if (result.error){
+        if (result.error) {
             this.customerRecordErrMsg = result.errorMsg;
             this.customerRecord = [];
         } else {
-            this.customerRecordErrMsg = "";
+            this.customerRecordErrMsg = '';
             this.curPage++;
             var customerRecord = _.isArray(result.data.result) ? result.data.result : [];
-            customerRecord.forEach(function(item){
+            _.each(customerRecord, item => {
                 item.showAdd = false;
+                //舆情报告内容的处理
+                if (item.type === 'data_report') {
+                    item.remark = item.remark ? JSON.parse(item.remark) : {};
+                    let curDocId = item.remark ? item.remark.doc_id : '';
+                    if (curDocId) {
+                        // 根据舆情报送内容中的doc_id，对报送的记录进行去重（存在一条报送记录同时报送给多人时，会产生多条报送相同的报送记录）
+                        let hasReport = _.some(this.customerRecord, record => record.remark && record.remark.doc_id === curDocId);
+                        if (!hasReport) {
+                            this.customerRecord.push(item);
+                        }
+                    } else {//没有doc_id,目前不知道会不会有此种情况，为了以防出现此种情况，先直接加入到列表中
+                        this.customerRecord.push(item);
+                    }
+                } else {
+                    this.customerRecord.push(item);
+                }
             });
-            this.customerRecord = this.customerRecord.concat(customerRecord);
             //过滤出所有电话类型的通话记录
-            var phoneTypeRecords = _.filter(this.customerRecord,(item) => {
-                return item.type === "phone";
+            var phoneTypeRecords = _.filter(this.customerRecord, (item) => {
+                return item.type === 'phone';
             });
             //找出最后一条电话跟进记录的id
-            if (phoneTypeRecords.length){
+            if (phoneTypeRecords.length) {
                 this.lastPhoneTraceItemId = _.first(phoneTypeRecords).id;
             }
             this.total = result.data.total;
@@ -75,15 +90,15 @@ CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
 CustomerRecordStore.prototype.addCustomerTrace = function(result) {
     if (result.loading) {
         this.addCustomerLoading = true;
-        this.addCustomerErrMsg = "";
-        this.addCustomerSuccMsg = "";
+        this.addCustomerErrMsg = '';
+        this.addCustomerSuccMsg = '';
     } else if (result.error) {
         this.addCustomerLoading = false;
         this.addCustomerErrMsg = result.errorMsg;
-        this.addCustomerSuccMsg = "";
+        this.addCustomerSuccMsg = '';
     } else {
         this.addCustomerLoading = false;
-        this.addCustomerErrMsg = "";
+        this.addCustomerErrMsg = '';
         this.addCustomerSuccMsg = result.data.msg;
         result.data.customer_trace.showAdd = false;
         this.customerRecord.unshift(result.data.customer_trace);
@@ -104,7 +119,7 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
         this.addDetailSuccMsg = '';
         var customerRecord = this.customerRecord;
         customerRecord.forEach(function(item) {
-            if (item.id == _this.updateId) {
+            if (item.id === _this.updateId) {
                 item.showAdd = true;
             }
         });
@@ -116,7 +131,7 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
         this.isEdit = false;
         var customerRecord = this.customerRecord;
         customerRecord.forEach(function(item) {
-            if (item.id == _this.updateId) {
+            if (item.id === _this.updateId) {
                 item.remark = _this.detailContent;
                 item.showAdd = false;
             }
@@ -125,18 +140,18 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
     }
 };
 CustomerRecordStore.prototype.setType = function(type) {
-    this.addCustomerErrMsg = "";
-    this.addCustomerSuccMsg = "";
+    this.addCustomerErrMsg = '';
+    this.addCustomerSuccMsg = '';
     this.selectedtracetype = type;
 };
 CustomerRecordStore.prototype.setContent = function(content) {
-    this.addCustomerErrMsg = "";
-    this.addCustomerSuccMsg = "";
+    this.addCustomerErrMsg = '';
+    this.addCustomerSuccMsg = '';
     this.inputContent = content;
 };
 CustomerRecordStore.prototype.setDetailContent = function(content) {
-    this.addCustomerErrMsg = "";
-    this.addCustomerSuccMsg = "";
+    this.addCustomerErrMsg = '';
+    this.addCustomerSuccMsg = '';
     this.detailContent = content;
     this.isEdit = true;
 };

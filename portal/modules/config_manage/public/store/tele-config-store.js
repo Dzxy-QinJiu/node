@@ -6,8 +6,8 @@ class TeleConfigStore {
         this.isLoading = false;
         this.isAdding = false;
         this.deleting = false;
-        this.getTelesErrMsg = "";
-        this.delTeleErrMsg = "";
+        this.getTelesErrMsg = '';
+        this.delTeleErrMsg = '';
         this.bindActions(TeleConfigAction);
     }
     getTeleList(result) {
@@ -19,7 +19,7 @@ class TeleConfigStore {
         } else {
             this.isLoading = false;
             this.telesList = result.data.result;
-            this.getTelesErrMsg = "";           
+            this.getTelesErrMsg = '';           
             
         }
     }
@@ -43,4 +43,4 @@ class TeleConfigStore {
 }
 
 //使用alt导出store
-export default alt.createStore(TeleConfigStore, "TeleConfigStore");
+export default alt.createStore(TeleConfigStore, 'TeleConfigStore');

@@ -3,21 +3,21 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by liwenjun on 2017/4/11.
  */
-"use strict";
+'use strict';
 
-var crypto = require("crypto");
-const classnames = require("classnames");
-import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
-import {Icon} from "antd";
+var crypto = require('crypto');
+const classnames = require('classnames');
+import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
+import {Icon} from 'antd';
 //常量定义
 const CAPTCHA = '/captcha';
 //错误信息提示
 const ERROR_MSGS = {
-    NO_SERVICE: Intl.get("login.error.retry", "登录服务暂时不可用，请稍后重试"),
-    ERROR_CAPTCHA: "error-captcha"//刷新验证码失败
+    NO_SERVICE: Intl.get('login.error.retry', '登录服务暂时不可用，请稍后重试'),
+    ERROR_CAPTCHA: 'error-captcha'//刷新验证码失败
 };
-var base64_prefix = "data:image/png;base64,";
-import { storageUtil } from "ant-utils";
+var base64_prefix = 'data:image/png;base64,';
+import { storageUtil } from 'ant-utils';
 
 var LoginForm = React.createClass({
     getInitialState: function() {
@@ -38,32 +38,32 @@ var LoginForm = React.createClass({
         var userName = $.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
-            this.props.setErrorMsg(Intl.get("login.write.username", "请输入用户名"));
+            this.props.setErrorMsg(Intl.get('login.write.username', '请输入用户名'));
             event.preventDefault();
             return false;
         }
         //记住登录名
-        storageUtil.local.set("last_login_name", userName);
+        storageUtil.local.set('last_login_name', userName);
         //客户分析,第一次登录的时候，默认展示全部应用
-        storageUtil.local.set("customer_analysis_stored_app_id", "all");
+        storageUtil.local.set('customer_analysis_stored_app_id', 'all');
         //获取输入的密码
         var value = this.refs.password_input.value;
         if (!value) {
             //密码不能为空
-            this.props.setErrorMsg(Intl.get("common.input.password", "请输入密码"));
+            this.props.setErrorMsg(Intl.get('common.input.password', '请输入密码'));
             event.preventDefault();
             return false;
         }
         //需要输入验证码，但未输入验证码时
         if (this.state.captchaCode && !this.refs.captcha_input.value) {
             //验证码不能为空
-            this.props.setErrorMsg(Intl.get("login.write.code", "请输入验证码"));
+            this.props.setErrorMsg(Intl.get('login.write.code', '请输入验证码'));
             //阻止缺省行为
             event.preventDefault();
             return false;
         }
         //做md5
-        var md5Hash = crypto.createHash("md5");
+        var md5Hash = crypto.createHash('md5');
         md5Hash.update(value);
         var newValue = md5Hash.digest('hex');
         //设置登录状态为登录中
@@ -81,15 +81,15 @@ var LoginForm = React.createClass({
     },
     //sso登录
     ssologin: function(userName, password) {
-        var lang = window.Oplate && window.Oplate.lang || "zh_CN";
-        var captcha = this.refs.captcha_input ? this.refs.captcha_input.value : "";
+        var lang = window.Oplate && window.Oplate.lang || 'zh_CN';
+        var captcha = this.refs.captcha_input ? this.refs.captcha_input.value : '';
         // 将登录界面中的用户名与密码提交到SSO应用中
         ssoLogin.login(userName, password, captcha).then((ticket) => {
             // 登录成功后的回调
-            sendMessage && sendMessage(userName + " sso登录成功,ticket=" + ticket);
-            window.location.href = callBackUrl + "?t=" + ticket + "&lang=" + lang;
+            sendMessage && sendMessage(userName + ' sso登录成功,ticket=' + ticket);
+            window.location.href = callBackUrl + '?t=' + ticket + '&lang=' + lang;
         }).catch((data) => {
-            sendMessage && sendMessage(userName + " sso登录失败,error:" + data && data.error);
+            sendMessage && sendMessage(userName + ' sso登录失败,error:' + data && data.error);
             this.props.setErrorMsg(data && data.error);
             this.setState({
                 logining: false,
@@ -102,7 +102,7 @@ var LoginForm = React.createClass({
     },
     //展示记录过的用户名，登录按钮变为可用
     showUserName: function() {
-        var userName = window.Oplate.initialProps.username || storageUtil.local.get("last_login_name") || '';
+        var userName = window.Oplate.initialProps.username || storageUtil.local.get('last_login_name') || '';
         this.setState({
             username: userName,
             loginButtonDisabled: false
@@ -121,16 +121,16 @@ var LoginForm = React.createClass({
     userNameChange: function(evt) {
         this.setState({
             username: evt.target.value
-        }, () => this.props.setErrorMsg(""));
+        }, () => this.props.setErrorMsg(''));
     },
     passwordChange: function(evt) {
         this.setState({
             password: evt.target.value
-        }, () => this.props.setErrorMsg(""));
+        }, () => this.props.setErrorMsg(''));
     },
     renderCaptchaBlock: function(hasWindow) {
         return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
-            <input placeholder={hasWindow ? Intl.get("common.captcha", "验证码") : null} type="text"
+            <input placeholder={hasWindow ? Intl.get('common.captcha', '验证码') : null} type="text"
                 name="retcode" autoComplete="off"
                 tabIndex="3"
                 ref="captcha_input" maxLength="4"/>
@@ -142,12 +142,12 @@ var LoginForm = React.createClass({
         if (hasWindow && window.Oplate && window.Oplate.useSso) {
             return (
                 <img ref="captcha_img" src={ this.state.captchaCode} width="120" height="40"
-                    title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
+                    title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
                     onClick={this.refreshCaptchaCode}/> );
         } else {
             return ( <img src={base64_prefix + this.state.captchaCode} width="120"
                 height="40"
-                title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
+                title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
                 onClick={this.refreshCaptchaCode}/>);
         }
     },
@@ -221,7 +221,7 @@ var LoginForm = React.createClass({
     },
 
     render: function() {
-        const loginButtonClassName = classnames("login-button", {"not-allowed": this.state.loginButtonDisabled});
+        const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
         const hasWindow = this.props.hasWindow;
 
@@ -230,7 +230,7 @@ var LoginForm = React.createClass({
                 <div className="input-area">
                     <div className="input-item">
                         <input
-                            placeholder={hasWindow ? Intl.get("login.username.phone.email", "用户名/手机/邮箱") : null}
+                            placeholder={hasWindow ? Intl.get('login.username.phone.email', '用户名/手机/邮箱') : null}
                             type="text"
                             name="username" autoComplete="off" tabIndex="1"
                             ref="username" value={this.state.username} onChange={this.userNameChange}
@@ -238,7 +238,7 @@ var LoginForm = React.createClass({
                     </div>
 
                     <div className="input-item">
-                        <input placeholder={hasWindow ? Intl.get("common.password", "密码") : null}
+                        <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
                             type="password" tabIndex="2"
                             ref="password_input"
                             onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
@@ -250,12 +250,12 @@ var LoginForm = React.createClass({
 
                 <input type="hidden" name="password" id="hidedInput" ref="password"/>
 
-                <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? "button" : "submit"}
+                <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
                     tabIndex="3"
                     disabled={this.state.loginButtonDisabled }
                     data-tracename="点击登录"
                 >
-                    {hasWindow ? Intl.get("login.login", "登录") : null}
+                    {hasWindow ? Intl.get('login.login', '登录') : null}
                     {this.state.logining ? <Icon type="loading"/> : null}
                 </button>
             </form>

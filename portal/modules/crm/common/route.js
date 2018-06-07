@@ -1,91 +1,91 @@
-const orderUrl = "/rest/customer/v2/salesopportunity";
+const orderUrl = '/rest/customer/v2/salesopportunity';
 //获取全部销售阶段，包括系统设置的和导入的旧数据中的
-const stageUrl = "/rest/customer/v2/salesopportunity/term/sale_stages";
+const stageUrl = '/rest/customer/v2/salesopportunity/term/sale_stages';
 //获取系统设置的销售阶段
-const sysStageUrl = "/rest/customer/v2/salestage";
-const applyUserUrl = "/rest/base/v1/user/apply_users";
-const queryCustomerUrl = "/rest/customer/v2/customer/query";
+const sysStageUrl = '/rest/customer/v2/salestage';
+const applyUserUrl = '/rest/base/v1/user/apply_users';
+const queryCustomerUrl = '/rest/customer/v2/customer/query';
 //添加销售线索
-const addSalesClueUrl = "/rest/customer/v2/clue";
+const addSalesClueUrl = '/rest/customer/v2/clue';
 
 module.exports = [{
-    "method": "post",
-    "path": orderUrl + "/query/:type/10",
-    "handler": "getOrderList",
-    "passport": {
-        "needLogin": true
+    'method': 'post',
+    'path': orderUrl + '/query/:type/10',
+    'handler': 'getOrderList',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    "method": "post",
-    "path": orderUrl,
-    "handler": "addOrder",
-    "passport": {
-        "needLogin": true
+    'method': 'post',
+    'path': orderUrl,
+    'handler': 'addOrder',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    "method": "put",
-    "path": orderUrl,
-    "handler": "editOrder",
-    "passport": {
-        "needLogin": true
+    'method': 'put',
+    'path': orderUrl,
+    'handler': 'editOrder',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    "method": "put",
-    "path": orderUrl + "/sale_stage",
-    "handler": "editOrderStage",
-    "passport": {
-        "needLogin": true
+    'method': 'put',
+    'path': orderUrl + '/sale_stage',
+    'handler': 'editOrderStage',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    "method": "delete",
-    "path": orderUrl + "/:id",
-    "handler": "deleteOrder",
-    "passport": {
-        "needLogin": true
+    'method': 'delete',
+    'path': orderUrl + '/:id',
+    'handler': 'deleteOrder',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    "method": "post",
-    "path": orderUrl + "/contract/:id",
-    "handler": "generateContract",
-    "passport": {
-        "needLogin": true
+    'method': 'post',
+    'path': orderUrl + '/contract/:id',
+    'handler': 'generateContract',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    "method": "post",
-    "path": applyUserUrl,
-    "handler": "applyUser",
-    "passport": {
-        "needLogin": true
+    'method': 'post',
+    'path': applyUserUrl,
+    'handler': 'applyUser',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    "method": "post",
-    "path": stageUrl,
-    "handler": "getStageList",
-    "passport": {
-        "needLogin": true
+    'method': 'post',
+    'path': stageUrl,
+    'handler': 'getStageList',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    "method": "get",
-    "path": sysStageUrl,
-    "handler": "getSysStageList",
-    "passport": {
-        "needLogin": true
+    'method': 'get',
+    'path': sysStageUrl,
+    'handler': 'getSysStageList',
+    'passport': {
+        'needLogin': true
     }
 }, {
-    method: "get",
+    method: 'get',
     path: queryCustomerUrl,
-    handler: "getCustomerById",
+    handler: 'getCustomerById',
     passport: {
         needLogin: true
     },
     privileges: [
-        "CRM_LIST_CUSTOMERS"
+        'CRM_LIST_CUSTOMERS'
     ]
 }, {
-    "method": "post",
-    "path": addSalesClueUrl,
-    "handler": "addSalesClue",
-    "passport": {
-        "needLogin": true
+    'method': 'post',
+    'path': addSalesClueUrl,
+    'handler': 'addSalesClue',
+    'passport': {
+        'needLogin': true
     }
 }];

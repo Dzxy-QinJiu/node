@@ -1,7 +1,7 @@
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import querystring from 'querystring';
 
-let teamAjax = require("../../../common/public/ajax/team");
+let teamAjax = require('../../../common/public/ajax/team');
 /**
  * 获取销售是什么角色
  * 普通销售：sales
@@ -251,7 +251,7 @@ exports.getExpireUser = function(queryObj) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("sales.home.get.expired.list.failed", "获取过期用户列表失败!"));
+                Deferred.reject(xhr.responseJSON || Intl.get('sales.home.get.expired.list.failed', '获取过期用户列表失败!'));
             }
         }
     });

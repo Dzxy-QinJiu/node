@@ -1,6 +1,6 @@
-const routes = require("../../route");
+const routes = require('../../route');
 
 module.exports = {
-    module: "common/rest",
+    module: 'common/rest',
     routes: routes
 };

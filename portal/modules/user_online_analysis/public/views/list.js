@@ -1,16 +1,16 @@
-require("../css/list.less");
-var AnalysisAction = require("../action/user-online-analysis-action");
-var AnalysisStore = require("../store/user-online-analysis-store");
-var Spinner = require("../../../../components/spinner");
-var Alert = require("antd").Alert;
-var AppLogoImg = require("../../../../components/appLogoImg");
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
-var Pagination = require("antd").Pagination;
-var classNames = require("classnames");
-var Icon = require("antd").Icon;
-var insertStyle = require("../../../../components/insert-style");
-var numberFormatter = require("../utils/number-formatter");
-var defaultIcon = require("../../../../components/default-image-base64").DefaultImageBase64;
+require('../css/list.less');
+var AnalysisAction = require('../action/user-online-analysis-action');
+var AnalysisStore = require('../store/user-online-analysis-store');
+var Spinner = require('../../../../components/spinner');
+var Alert = require('antd').Alert;
+var AppLogoImg = require('../../../../components/appLogoImg');
+var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
+var Pagination = require('antd').Pagination;
+var classNames = require('classnames');
+var Icon = require('antd').Icon;
+var insertStyle = require('../../../../components/insert-style');
+var numberFormatter = require('../utils/number-formatter');
+var defaultIcon = require('../../../../components/default-image-base64').DefaultImageBase64;
 
 //进行布局的对象
 var LAYOUT = {
@@ -47,7 +47,7 @@ var AnalysisListView = React.createClass({
     componentDidMount: function() {
         AnalysisStore.listen(this.onStoreChange);
         this.fetchAnalysisList();
-        this.dynamicStyle = insertStyle(".app-logo-img-tooltip.tooltip{margin-left:7px}");
+        this.dynamicStyle = insertStyle('.app-logo-img-tooltip.tooltip{margin-left:7px}');
     },
     //节点将要被移除
     componentWillUnmount: function() {

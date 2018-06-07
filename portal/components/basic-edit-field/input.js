@@ -1,19 +1,19 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * input(输入框)显示、编辑 的组件
  * 可切换状态
  */
-import {Form, Input, Icon} from "antd";
-var crypto = require("crypto");
-var classNames = require("classnames");
-var secretPassword = "";
+import {Form, Input, Icon} from 'antd';
+var crypto = require('crypto');
+var classNames = require('classnames');
+var secretPassword = '';
 var FormItem = Form.Item;
-import FieldMixin from "../antd-form-fieldmixin/index";
-import {PassStrengthBar} from "CMP_DIR/password-strength-bar";
-var autosize = require("autosize");
-import Trace from "LIB_DIR/trace";
-require("./css/basic-edit-field.less");
+import FieldMixin from '../antd-form-fieldmixin/index';
+import {PassStrengthBar} from 'CMP_DIR/password-strength-bar';
+var autosize = require('autosize');
+import Trace from 'LIB_DIR/trace';
+require('./css/basic-edit-field.less');
 
 var UserBasicEditField = React.createClass({
     mixins: [FieldMixin],
@@ -23,17 +23,17 @@ var UserBasicEditField = React.createClass({
             //类型 text或password
             type: 'text',
             //字段
-            field: "email",
+            field: 'email',
             //是否能修改
             disabled: false,
             //验证条件
             validators: [{}],
             //请填写
-            placeholder: Intl.get("user.email.write.tip", "请填写邮箱"),
+            placeholder: Intl.get('user.email.write.tip', '请填写邮箱'),
             //显示的值
             value: '',
             //提示文案
-            title: Intl.get("common.update", "修改"),
+            title: Intl.get('common.update', '修改'),
             //修改成功
             modifySuccess: function() {
             },
@@ -58,7 +58,7 @@ var UserBasicEditField = React.createClass({
         }
         return {
             loading: false,
-            displayType: this.props.displayType || "text",
+            displayType: this.props.displayType || 'text',
             formData: {
                 input: this.props.value
             },
@@ -91,7 +91,7 @@ var UserBasicEditField = React.createClass({
         var formData = this.state.formData;
         formData.input = this.state.value;
         this.setState({
-            displayType: "edit",
+            displayType: 'edit',
             formData: formData,
             passStrength: {
                 passBarShow: false
@@ -101,29 +101,29 @@ var UserBasicEditField = React.createClass({
             var val = dom.value;
             if (dom.createTextRange) {//IE浏览器
                 var range = dom.createTextRange();
-                range.moveEnd("character", val.length);
-                range.moveStart("character", val.length);
+                range.moveEnd('character', val.length);
+                range.moveStart('character', val.length);
                 range.select();
             } else {//非IE浏览器
                 dom.setSelectionRange(val.length, val.length);
                 dom.focus();
             }
             if (this.props.type === 'textarea') {
-                autosize($(this.refs.inputWrap).find("textarea")[0]);
+                autosize($(this.refs.inputWrap).find('textarea')[0]);
             }
         });
-        this.props.onDisplayTypeChange("edit");
-        Trace.traceEvent(e,"点击编辑" + this.props.field);
+        this.props.onDisplayTypeChange('edit');
+        Trace.traceEvent(e,'点击编辑' + this.props.field);
     },
     md5: function(value) {
-        var md5Hash = crypto.createHash("md5");
+        var md5Hash = crypto.createHash('md5');
         md5Hash.update(value);
-        return md5Hash.digest("hex");
+        return md5Hash.digest('hex');
     },
     handleSubmit: function(e) {
         var validation = this.refs.validation;
         var _this = this;
-        Trace.traceEvent(e,"保存对" + this.props.field + "的修改");
+        Trace.traceEvent(e,'保存对' + this.props.field + '的修改');
         validation.validate(function(valid) {
             if (!valid) {
                 return;
@@ -169,13 +169,13 @@ var UserBasicEditField = React.createClass({
                         } else {
                             _this.setState({
                                 loading: false,
-                                submitErrorMsg: Intl.get("common.edit.failed", "修改失败")
+                                submitErrorMsg: Intl.get('common.edit.failed', '修改失败')
                             });
                         }
                     }, function(errorMsg) {
                         _this.setState({
                             loading: false,
-                            submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
+                            submitErrorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
                         });
                     });
                 }
@@ -194,11 +194,11 @@ var UserBasicEditField = React.createClass({
         this.setState({
             formData: formData,
             status: status,
-            displayType: "text",
+            displayType: 'text',
             submitErrorMsg: ''
         });
-        this.props.onDisplayTypeChange("text");
-        Trace.traceEvent(e,"取消对" + this.props.field + "的修改");
+        this.props.onDisplayTypeChange('text');
+        Trace.traceEvent(e,'取消对' + this.props.field + '的修改');
     },
     onFocusInput: function(type, event) {
         if (type === 'password') {
@@ -238,12 +238,12 @@ var UserBasicEditField = React.createClass({
             'editing': this.state.displayType === 'edit'
         });
 
-        var displayText = this.props.type === 'password' ? Intl.get("user.password.tip", "保密中") : this.state.value;
+        var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
 
         var textBlock = this.state.displayType === 'text' ? (
             <div>
                 <span
-                    className="inline-block">{displayText}{this.props.afterValTip ? this.props.afterValTip : ""}</span>
+                    className="inline-block">{displayText}{this.props.afterValTip ? this.props.afterValTip : ''}</span>
                 {
                     !this.props.disabled ? (
                         <i className="inline-block iconfont icon-update" title={this.props.title}
@@ -262,9 +262,9 @@ var UserBasicEditField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.update", "修改")} className="inline-block iconfont icon-choose"
+                <i title={Intl.get('common.update', '修改')} className="inline-block iconfont icon-choose"
                     onClick={(e) => {this.handleSubmit(e);}}></i>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
+                <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
                     onClick={(e) => {this.handleCancel(e);}}></i>
             </div>
         );
@@ -273,14 +273,14 @@ var UserBasicEditField = React.createClass({
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
                 <Form horizontal autoComplete="off">
-                    <input type="password" style={{display: "none"}} name="input" autoComplete="off"/>
+                    <input type="password" style={{display: 'none'}} name="input" autoComplete="off"/>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label=""
                             labelCol={{span: 0}}
                             wrapperCol={{span: 24}}
                             validateStatus={this.renderValidateStyle('input')}
-                            help={status.input.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.input.errors && status.input.errors.join(','))}
+                            help={status.input.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.input.errors && status.input.errors.join(','))}
                         >
                             <Validator rules={this.props.validators}>
                                 <Input name="input"

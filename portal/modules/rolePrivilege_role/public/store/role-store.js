@@ -1,4 +1,4 @@
-var RoleActions = require("../action/role-actions");
+var RoleActions = require('../action/role-actions');
 var emptyRole = {
     roleId: '',
     roleName: '',
@@ -17,11 +17,11 @@ function RoleStore() {
     // 编辑/添加 状态时，需要提交的对象
     this.currentRole = emptyRole;
     //当前是添加还是编辑面板
-    this.formType = "add";
+    this.formType = 'add';
     //获取角色列表的错误、无数据时的提示信息
-    this.listTipMsg = "";
-    this.delRoleErrorMsg = "";//删除角色错误的提示信息
-    this.delRoleId = "";//要删除角色的id
+    this.listTipMsg = '';
+    this.delRoleErrorMsg = '';//删除角色错误的提示信息
+    this.delRoleId = '';//要删除角色的id
     this.bindActions(RoleActions);
     this.setDefaulting = false;//设置默认角色加载状态    
 }
@@ -76,10 +76,10 @@ RoleStore.prototype.getRoleList = function(roleListObj) {
         }
         if (_.isArray(roleListObj.roles) && roleListObj.roles.length > 0) {
             this.refactorRoleList(roleListObj.roles);
-            this.listTipMsg = "";
+            this.listTipMsg = '';
         } else {
             this.roleList = [];
-            this.listTipMsg = Intl.get("role.no.role.list", "暂无角色列表！");
+            this.listTipMsg = Intl.get('role.no.role.list', '暂无角色列表！');
         }
     }
 };
@@ -93,7 +93,7 @@ RoleStore.prototype.refactorRoleList = function(roles) {
             roleId: role.roleId,
             roleName: role.roleName,
             permissionGroups: rolePermissionGroups,
-            isDefault: "0"
+            isDefault: '0'
         };
     });
 };
@@ -131,7 +131,7 @@ RoleStore.prototype.afterAddRole = function(roleCreated) {
     this.roleList = addRoleArray.concat(this.roleList);
     this.roleFormShow = false;
     if (this.roleList.length > 0) {
-        this.listTipMsg = "";
+        this.listTipMsg = '';
     }
 };
 
@@ -159,9 +159,9 @@ RoleStore.prototype.deleteRole = function(delResultObj) {
             }
         });
         if (this.roleList.length == 0) {
-            this.listTipMsg = Intl.get("role.no.role.list", "暂无角色列表！");
+            this.listTipMsg = Intl.get('role.no.role.list', '暂无角色列表！');
         } else {
-            this.listTipMsg = "";
+            this.listTipMsg = '';
         }
     } else {
         //删除失败
@@ -171,8 +171,8 @@ RoleStore.prototype.deleteRole = function(delResultObj) {
 };
 
 RoleStore.prototype.clearDelErrorMsg = function() {
-    this.delRoleErrorMsg = "";
-    this.delRoleId = "";
+    this.delRoleErrorMsg = '';
+    this.delRoleId = '';
 };
 
 //展示添加修改角色面板
@@ -180,10 +180,10 @@ RoleStore.prototype.showRoleForm = function(role) {
     this.roleFormShow = true;
     if (role) {
         this.currentRole = role;
-        this.formType = "edit";
+        this.formType = 'edit';
     } else {
         this.currentRole = emptyRole;
-        this.formType = "add";
+        this.formType = 'add';
     }
 };
 
@@ -225,10 +225,10 @@ RoleStore.prototype.setDefaultRole = function(obj) {
     if (obj.setResult) {   
         this.roleList.forEach(x => {
             if (x.roleId == obj.setRoleId) {
-                x.isDefault = "1";
+                x.isDefault = '1';
             }
             else {
-                x.isDefault = "0";
+                x.isDefault = '0';
             }
         });
     }    
@@ -241,10 +241,10 @@ RoleStore.prototype.getDefaultRole = function(obj) {
     if (obj.result) {
         this.roleList.forEach(x => {
             if (x.roleId == obj.result.role_id) {
-                x.isDefault = "1";
+                x.isDefault = '1';
             }
             else {
-                x.isDefault = "0";
+                x.isDefault = '0';
             }
         });
     }   
@@ -253,7 +253,7 @@ RoleStore.prototype.getDefaultRole = function(obj) {
 //删除默认角色
 RoleStore.prototype.delDefaultRole = function(data) {
     if(data.delResult) {
-        this.roleList.forEach(x => x.isDefault = "0");
+        this.roleList.forEach(x => x.isDefault = '0');
     }
 };
 

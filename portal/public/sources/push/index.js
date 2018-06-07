@@ -3,25 +3,25 @@
  */
 
 require('./index.less');
-var Modal = require("antd").Modal;
-var batch = require("./batch");
+var Modal = require('antd').Modal;
+var batch = require('./batch');
 var io = require('socket.io-client');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后修改发送数据
-var notificationEmitter = require("../../../public/sources/utils/emitters").notificationEmitter;
-var notificationUtil = require("./notification");
-var socketEmitter = require("../../../public/sources/utils/emitters").socketEmitter;
-var phoneMsgEmitter = require("../../../public/sources/utils/emitters").phoneMsgEmitter;
-let ajaxGlobal = require("../jquery.ajax.global");
-var hasPrivilege = require("../../../components/privilege/checker").hasPrivilege;
+var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
+var notificationUtil = require('./notification');
+var socketEmitter = require('../../../public/sources/utils/emitters').socketEmitter;
+var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
+let ajaxGlobal = require('../jquery.ajax.global');
+var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import Translate from '../../intl/i18nTemplate';
 import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from '../utils/consts';
-import logoSrc from "./notification.png";
-import userData from "../user-data";
-import Trace from "LIB_DIR/trace";
-import {storageUtil} from "ant-utils";
+import logoSrc from './notification.png';
+import userData from '../user-data';
+import Trace from 'LIB_DIR/trace';
+import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
-import {message} from "antd";
+import {message} from 'antd';
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -31,7 +31,7 @@ const TIMEOUTDELAY = {
     phoneRenderDelay: 2000
 };
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
-let callNumber = "", getCallNumErrMsg = "";//用户的坐席号
+let callNumber = '', getCallNumErrMsg = '';//用户的坐席号
 //当前正在拨打的联系人信息，从点击事件emitter出来
 var contactNameObj = {};
 //socketIo对象
@@ -68,36 +68,36 @@ function updateUnreadByPushMessage(type, isAdd) {
 function listenOnMessage(data) {
     if (_.isObject(data)) {
         switch (data.message_type) {
-        case "apply":
+        case 'apply':
             //有新的未处理的申请消息时,只修改待审批数，不用展示
             //申请审批列表弹出，有新数据，是否刷新数据的提示
             notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
             //将待审批数加一（true）
-            updateUnreadByPushMessage("approve", true);
+            updateUnreadByPushMessage('approve', true);
             break;
-        case "reply":
+        case 'reply':
             //批复类型
-            if (!userData.hasRole("realm_manager")) {
+            if (!userData.hasRole('realm_manager')) {
                 //批复类型的通知，不通知管理员
                 notifyReplyInfo(data);
             }
             notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
             //将审批后的申请消息未读数加一（true）
-            updateUnreadByPushMessage("apply", true);
+            updateUnreadByPushMessage('apply', true);
             //待审批数减一
-            updateUnreadByPushMessage("approve", false);
+            updateUnreadByPushMessage('approve', false);
             break;
-        case "repay":
+        case 'repay':
             //回款类型
             //notifyRepayInfo(data);
             break;
-        case "customer":
+        case 'customer':
             //客户提醒(包含用户过期提醒)
             notifyCustomerInfo(data);
             //将客户提醒的未读数加一
-            updateUnreadByPushMessage("customer", true);
+            updateUnreadByPushMessage('customer', true);
             break;
-        case "system":
+        case 'system':
             //系统通知
             //notifySystemInfo(data);
             break;
@@ -109,22 +109,22 @@ function listenSystemNotice(notice) {
     if (_.isObject(notice)) {
         //申请消息列表弹出，有新数据，是否刷新数据的提示
         notificationEmitter.emit(notificationEmitter.SYSTEM_NOTICE_UPDATED, notice);
-        let title = notice.type ? SYSTEM_NOTICE_TYPE_MAP[notice.type] : "";
+        let title = notice.type ? SYSTEM_NOTICE_TYPE_MAP[notice.type] : '';
         let tipContent = notice.customer_name;//xxx（客户）
         //是否是异地登录的类型
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
         //异地登录
         if (isOffsetLogin) {
             //在 xxx (地名)
-            tipContent += Intl.get("notification.system.on", "在") + notice.content.current_location;
+            tipContent += Intl.get('notification.system.on', '在') + notice.content.current_location;
         }
         if (notice.user_name) {
             //用账号xxx
-            tipContent += Intl.get("notification.system.use.account", "用账号") + notice.user_name;
+            tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
         }
         if (notice.app_name) {
             //登录了 xxx (应用)
-            tipContent += Intl.get("notification.system.login", "登录了") + notice.app_name;
+            tipContent += Intl.get('notification.system.login', '登录了') + notice.app_name;
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {
@@ -139,7 +139,7 @@ function listenSystemNotice(notice) {
             notificationUtil.showNotification({
                 title: title,
                 content: tipContent,
-                closeWith: ["button"],
+                closeWith: ['button'],
                 timeout: TIMEOUTDELAY.closeTimeDelay
             });
         }
@@ -177,7 +177,7 @@ function documentIsHidden() {
 
 //获取申请用户的名称
 function getUserNames(message) {
-    let userNames = "";
+    let userNames = '';
     if (message.user_name) {
         userNames = message.user_name;
     } else if (message.user_names) {
@@ -191,17 +191,17 @@ function getUserNames(message) {
 //获取审批消息提醒中的内容
 function getReplyTipContent(data) {
     //审批的消息
-    let tipContent = "";
-    let approvalPerson = data.approval_person || "";//谁批复的
-    let salesName = data.message.sales_name || "";//谁发的申请(销售)
-    let customerName = data.message.customer_name || "";//给哪个客户开通的用户
-    let userType = data.message.tag || "";//申请用户的类型：正式、试用用户
+    let tipContent = '';
+    let approvalPerson = data.approval_person || '';//谁批复的
+    let salesName = data.message.sales_name || '';//谁发的申请(销售)
+    let customerName = data.message.customer_name || '';//给哪个客户开通的用户
+    let userType = data.message.tag || '';//申请用户的类型：正式、试用用户
     let userNames = getUserNames(data.message);//申请用户的名称
     switch (data.approval_state) {
-    case "pass"://审批通过
+    case 'pass'://审批通过
         // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-        tipContent = Intl.get("reply.pass.tip.content",
-            "{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+        tipContent = Intl.get('reply.pass.tip.content',
+            '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
                 approvalPerson: approvalPerson,
                 salesName: salesName,
                 customerName: customerName,
@@ -209,10 +209,10 @@ function getReplyTipContent(data) {
                 userNames: userNames
             });
         break;
-    case "reject"://审批驳回
+    case 'reject'://审批驳回
         //xxx 驳回了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-        tipContent = Intl.get("reply.reject.tip.content",
-            "{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+        tipContent = Intl.get('reply.reject.tip.content',
+            '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
                 approvalPerson: approvalPerson,
                 salesName: salesName,
                 customerName: customerName,
@@ -220,11 +220,11 @@ function getReplyTipContent(data) {
                 userNames: userNames
             });
         break;
-    case "cancel"://撤销申请
+    case 'cancel'://撤销申请
         //xxx撤销了 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
         //只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
-        tipContent = Intl.get("reply.cancel.tip.content",
-            "{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+        tipContent = Intl.get('reply.cancel.tip.content',
+            '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
                 approvalPerson: approvalPerson,
                 customerName: customerName,
                 userType: userType,
@@ -248,9 +248,9 @@ function setInitialPhoneObj() {
 function phoneEventListener(phonemsgObj) {
     sendMessage && sendMessage(JSON.stringify(phonemsgObj));
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
-    const PHONE_STATUS = ["ALERT", "ANSWERED", "phone", "call_back"];
+    const PHONE_STATUS = ['ALERT', 'ANSWERED', 'phone', 'call_back'];
     //过滤掉其他状态 只展示alert answered  phone状态的数据
-    if (hasPrivilege("CRM_LIST_CUSTOMERS") && PHONE_STATUS.indexOf(phonemsgObj.type) != -1) {
+    if (hasPrivilege('CRM_LIST_CUSTOMERS') && PHONE_STATUS.indexOf(phonemsgObj.type) != -1) {
         if (!phonemsgObj.customers) {
             phonemsgObj.customers = [];
         }
@@ -268,14 +268,14 @@ function canPopDesktop() {
 //点击拨打电话
 window.handleClickPhone = function(phoneObj) {
     //如果原来页面上有模态框，再拨打电话的时候把模态框关闭
-    var $modal = $("#phone-status-content");
+    var $modal = $('#phone-status-content');
     if ($modal && $modal.length > 0) {
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_MODAL);
     }
     var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName, customerId = phoneObj.customerId;
-    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".noty-container .noty-content .phone-item .icon-phone-call-out"), "拨打电话");
+    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .phone-item .icon-phone-call-out'), '拨打电话');
     if (getCallNumErrMsg) {
-        message.error(getCallNumErrMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!"));
+        message.error(getCallNumErrMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
     } else {
         if (callNumber) {
             phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
@@ -291,13 +291,13 @@ window.handleClickPhone = function(phoneObj) {
             };
             crmAjax.callOut(reqData).then((result) => {
                 if (result.code == 0) {
-                    message.success(Intl.get("crm.call.phone.success", "拨打成功"));
+                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                 }
             }, (errMsg) => {
-                message.error(errMsg || Intl.get("crm.call.phone.failed", "拨打失败"));
+                message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
             });
         } else {
-            message.error(Intl.get("crm.bind.phone", "请先绑定分机号！"));
+            message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
         }
     }
 };
@@ -310,7 +310,7 @@ function getUserPhoneNumber() {
             callNumber = result.phone_order;
         }
     }, (errMsg) => {
-        getCallNumErrMsg = errMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!");
+        getCallNumErrMsg = errMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!');
     });
 }
 function scheduleAlertListener(scheduleAlertMsg) {
@@ -324,17 +324,17 @@ function scheduleAlertListener(scheduleAlertMsg) {
             }
         });
     }
-    var title = Intl.get("customer.contact.somebody", "联系") + scheduleAlertMsg.customer_name;
-    var tipContent = scheduleAlertMsg.content || "";
+    var title = Intl.get('customer.contact.somebody', '联系') + scheduleAlertMsg.customer_name;
+    var tipContent = scheduleAlertMsg.content || '';
     if (canPopDesktop()) {
-        tipContent = tipContent + `\n`;
+        tipContent = tipContent + '\n';
         _.each(phoneArr, (phoneItem) => {
-            tipContent += phoneItem.customer_name + " " + phoneItem.phone;
+            tipContent += phoneItem.customer_name + ' ' + phoneItem.phone;
         });
         //桌面通知的展示
         showDesktopNotification(title, tipContent, true);
     } else {//系统弹出通知
-        var phoneHtml = "";
+        var phoneHtml = '';
         //获取用户的坐席号
         getUserPhoneNumber();
         _.each(phoneArr, (phoneItem) => {
@@ -343,13 +343,13 @@ function scheduleAlertListener(scheduleAlertMsg) {
                 contactName: phoneItem.customer_name,
                 customerId: phoneItem.customer_id
             };
-            phoneHtml += "<p class='phone-item'>" + "<i class='iconfont icon-phone-call-out' title='" + Intl.get("crm.click.call.phone", "点击拨打电话") + "' onclick='handleClickPhone(" + JSON.stringify(phoneObj) + ")'></i>" + "<span class='customer-name' title='" + phoneItem.customer_name + "'>" + phoneItem.customer_name + "</span>" + " " + phoneItem.phone + "</p>";
+            phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
         });
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
         notificationUtil.showNotification({
             title: title,
             content: tipContent,
-            closeWith: ["button"]
+            closeWith: ['button']
         });
     }
 }
@@ -361,7 +361,7 @@ function notifyReplyInfo(data) {
         approveTipCount++;
         //标签页不可见时，有桌面通知，且允许弹出桌面通知时
         if (canPopDesktop()) {//桌面通知的展示
-            showDesktopNotification(Intl.get("user.apply.approve", "用户申请审批"), getReplyTipContent(data));
+            showDesktopNotification(Intl.get('user.apply.approve', '用户申请审批'), getReplyTipContent(data));
         } else {//系统弹出通知
             let notify = NotificationType['exist'];
             //如果界面上没有提示框，就显示推送的具体内容
@@ -369,9 +369,9 @@ function notifyReplyInfo(data) {
                 //获取提醒提示框中的内容
                 let tipContent = getReplyTipContent(data);
                 notify = notificationUtil.showNotification({
-                    title: Intl.get("user.apply.approve", "用户申请审批"),
+                    title: Intl.get('user.apply.approve', '用户申请审批'),
                     content: tipContent,
-                    closeWith: ["button"],
+                    closeWith: ['button'],
                     timeout: TIMEOUTDELAY.closeTimeDelay,
                     callback: {
                         onClose: function() {
@@ -386,7 +386,7 @@ function notifyReplyInfo(data) {
                     //如果页面上存在提示框，只显示有多少条消息
                     let tipContent = '';
                     if (approveTipCount > 0) {
-                        tipContent = tipContent + `<p>${Intl.get("user.apply.approve.count", "有{approveCount}条审批消息", {approveCount: approveTipCount})}</p>`;
+                        tipContent = tipContent + `<p>${Intl.get('user.apply.approve.count', '有{approveCount}条审批消息', {approveCount: approveTipCount})}</p>`;
                     }
                     notificationUtil.updateText(notify, {
                         content: tipContent,
@@ -401,9 +401,9 @@ function notifyReplyInfo(data) {
  */
 function notifyRepayInfo(data) {
     notificationUtil.showNotification({
-        title: "回款提醒",
+        title: '回款提醒',
         content: data.topic,
-        closeWith: ["button"],
+        closeWith: ['button'],
         timeout: 5 * 1000
     });
 }
@@ -412,9 +412,9 @@ function notifyRepayInfo(data) {
  */
 function notifyCustomerInfo(data) {
     notificationUtil.showNotification({
-        title: "客户提醒",
+        title: '客户提醒',
         content: data.topic,
-        closeWith: ["button"],
+        closeWith: ['button'],
         timeout: 5 * 1000
     });
 }
@@ -435,13 +435,13 @@ function listenOnOffline(userObj) {
     });
     setTimeout(function() {
         //设置提示框的样式
-        var $modal = $("body >.ant-modal-container");
+        var $modal = $('body >.ant-modal-container');
         if ($modal && $modal.length > 0) {
-            $modal.addClass("offline-modal-container");
+            $modal.addClass('offline-modal-container');
         }
     }, 100);
     //解除 session失效提示的 事件绑定
-    $(document).off("ajaxError");
+    $(document).off('ajaxError');
 }
 
 /**
@@ -449,14 +449,14 @@ function listenOnOffline(userObj) {
  * @userObj 最新登录用户的信息
  */
 function getReloginTooltip(userObj) {
-    var tipMsg = ``;
-    if (userObj.country == "局域网") {
+    var tipMsg = '';
+    if (userObj.country == '局域网') {
         //局域网内登录时，提示ip
         tipMsg = `您的账号在局域网内IP为${userObj.ip}的机器上登录，如非本人操作，建议您尽快修改密码！`;
-    } else if (userObj.country == "IANA" || !(userObj.country || userObj.province || userObj.city)) {
-        tipMsg = `您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！`;
+    } else if (userObj.country == 'IANA' || !(userObj.country || userObj.province || userObj.city)) {
+        tipMsg = '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！';
     } else {
-        tipMsg = `您的账号在${userObj.country || ``} ${userObj.province || ``}${userObj.city || ``}登录，如非本人操作，建议您尽快修改密码！`;
+        tipMsg = `您的账号在${userObj.country || ''} ${userObj.province || ''}${userObj.city || ''}登录，如非本人操作，建议您尽快修改密码！`;
     }
     return tipMsg;
 }
@@ -527,27 +527,27 @@ function startSocketIo() {
  */
 function getMessageCount(callback) {
     //待审批数、及未读数的权限
-    if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") || hasPrivilege("APP_USER_APPLY_LIST")) {
-        let type = "";
-        if (userData.hasRole("salesmanager")) {
+    if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') || hasPrivilege('APP_USER_APPLY_LIST')) {
+        let type = '';
+        if (userData.hasRole('salesmanager')) {
             //只获取未读数，舆情秘书不展示待审批的申请
-            type = "unread";
+            type = 'unread';
         } else {
-            if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") && hasPrivilege("APP_USER_APPLY_LIST")) {
+            if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') && hasPrivilege('APP_USER_APPLY_LIST')) {
                 //获取未读数和未审批数
-                type = "all";
-            } else if (hasPrivilege("APP_USER_APPLY_LIST")) {
+                type = 'all';
+            } else if (hasPrivilege('APP_USER_APPLY_LIST')) {
                 //只获取待审批数
-                type = "unapproved";
-            } else if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST")) {
+                type = 'unapproved';
+            } else if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST')) {
                 //只获取未读数
-                type = "unread";
+                type = 'unread';
             }
         }
         //获取消息未读数
         getNotificationUnread({type: type}, callback);
     } else {
-        typeof callback === "function" && callback();
+        typeof callback === 'function' && callback();
     }
 
 }
@@ -562,7 +562,7 @@ function unreadListener() {
 }
 //申请审批未读回复的监听
 function applyUnreadReplyListener(applyUnreadReplyList) {
-    const APPLY_UNREAD_REPLY = "apply_unread_reply";
+    const APPLY_UNREAD_REPLY = 'apply_unread_reply';
     let userId = userData.getUserData().user_id;
     //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
     let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
@@ -628,12 +628,12 @@ function getNotificationUnread(queryObj, callback) {
             });
             //更新全局变量里存储的未读数，以便在业务逻辑里使用
             updateGlobalUnreadStorage(messages);
-            if (typeof callback === "function") {
+            if (typeof callback === 'function') {
                 callback();
             }
         },
         error: () => {
-            if (typeof callback === "function") {
+            if (typeof callback === 'function') {
                 callback();
             }
         }

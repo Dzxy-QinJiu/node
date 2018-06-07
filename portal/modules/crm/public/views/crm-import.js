@@ -1,6 +1,6 @@
-import { Upload, Icon, message } from "antd";
-import { crmEmitter } from "OPLATE_EMITTER";
-import Trace from "LIB_DIR/trace";
+import { Upload, Icon, message } from 'antd';
+import { crmEmitter } from 'OPLATE_EMITTER';
+import Trace from 'LIB_DIR/trace';
 
 var CrmImport = React.createClass({
     getInitialState() {
@@ -10,14 +10,14 @@ var CrmImport = React.createClass({
     },
     handleChange(info) {
         this.setState({isLoading: true});
-        if (info.file.status === "done") {
+        if (info.file.status === 'done') {
             const response = info.file.response;
-            Trace.traceEvent(this.getDOMNode(),"点击导入按钮");
+            Trace.traceEvent(this.getDOMNode(),'点击导入按钮');
             if (_.isArray(response) && response.length) {
                 crmEmitter.emit(crmEmitter.IMPORT_CUSTOMER, response);
                 this.props.closeCrmTemplatePanel();
             } else {
-                message.error(Intl.get("crm.99", "导入客户失败"));
+                message.error(Intl.get('crm.99', '导入客户失败'));
             }
 
             this.setState({isLoading: false});
@@ -33,7 +33,7 @@ var CrmImport = React.createClass({
         };
         return (
             <Upload {...props} className="import-crm">
-                {Intl.get("common.import", "导入")} {this.state.isLoading ? <Icon type="loading" style={{marginLeft: 8}}/> : null}
+                {Intl.get('common.import', '导入')} {this.state.isLoading ? <Icon type="loading" style={{marginLeft: 8}}/> : null}
             </Upload>
         );
     }

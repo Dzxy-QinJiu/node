@@ -4,27 +4,27 @@
  * Created by liwenjun on 2016/2/1.
  */
 
-"use strict";
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-import Realm from "../dto/realm";
-var _ = require("underscore");
-var auth = require("../../../../lib/utils/auth");
+'use strict';
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+import Realm from '../dto/realm';
+var _ = require('underscore');
+var auth = require('../../../../lib/utils/auth');
 var realmRestApis = {
     //添加安全域地址
-    addRealm: "/rest/base/v1/realm/only",
+    addRealm: '/rest/base/v1/realm/only',
     //添加所有者地址
-    addOwner: "/rest/base/v1/realm/owner",
+    addOwner: '/rest/base/v1/realm/owner',
     //修改安全域地址
-    modifyRealm: "/rest/base/v1/realm",
+    modifyRealm: '/rest/base/v1/realm',
     //启停安全域
-    updateRealmStatus: "/rest/base/v1/realm",
+    updateRealmStatus: '/rest/base/v1/realm',
     //获取安全域地址列表
-    getRealms: "/rest/base/v1/realm",
+    getRealms: '/rest/base/v1/realm',
     //通过id获取该安全域的详细信息
-    getCurRealmById: "rest/base/v1/realm",
+    getCurRealmById: 'rest/base/v1/realm',
     //所有者属性唯一性验证的url
-    checkOnlyUser: "rest/base/v1/user/unique_info",
+    checkOnlyUser: 'rest/base/v1/user/unique_info',
     // 修改安全域邮箱服务器设置信息
     settingEmailServer: '/rest/base/v1/realm/config/emailServer',
     // 修改安全域短信服务器配置信息
@@ -51,7 +51,7 @@ exports.getRealms = function(req, res, condition) {
                     }
                     realmListObj.data = curRealmList;
                 }
-                eventEmitter.emit("success", realmListObj);
+                eventEmitter.emit('success', realmListObj);
             }
         });
 };
@@ -59,13 +59,13 @@ exports.getRealms = function(req, res, condition) {
 exports.getCurRealmById = function(req, res, realmId) {
     return restUtil.authRest.get(
         {
-            url: realmRestApis.getCurRealmById + "/" + realmId,
+            url: realmRestApis.getCurRealmById + '/' + realmId,
             req: req,
             res: res
         }, null, {
             success: function(eventEmitter, data) {
                 //处理数据
-                eventEmitter.emit("success", Realm.toFrontObject(data));
+                eventEmitter.emit('success', Realm.toFrontObject(data));
             }
         });
 };
@@ -85,7 +85,7 @@ exports.addRealm = function(req, res, frontRealm) {
                 if (data) {
                     //为新增数据增加taskId属性
                     frontRealm.taskId = data;
-                    eventEmitter.emit("success", frontRealm);
+                    eventEmitter.emit('success', frontRealm);
                 }
 
 
@@ -96,7 +96,7 @@ exports.addRealm = function(req, res, frontRealm) {
 exports.addOwner = function(req, res, frontOwner) {
     return restUtil.authRest.post(
         {
-            url: realmRestApis.addOwner + "/" + frontOwner.realm_id,
+            url: realmRestApis.addOwner + '/' + frontOwner.realm_id,
             req: req,
             res: res,
             timeout: 60 * 1000
@@ -105,7 +105,7 @@ exports.addOwner = function(req, res, frontOwner) {
         {
             success: function(eventEmitter, data) {
                 //处理数据
-                eventEmitter.emit("success", data);
+                eventEmitter.emit('success', data);
             }
         });
 };
@@ -128,7 +128,7 @@ exports.editRealm = function(req, res, frontRealm) {
             success: function(eventEmitter, data) {
                 //处理数据
                 frontRealm.owner = data.owner;
-                eventEmitter.emit("success", frontRealm);
+                eventEmitter.emit('success', frontRealm);
             }
         }
     );
@@ -136,10 +136,10 @@ exports.editRealm = function(req, res, frontRealm) {
 
 //启停安全域
 exports.updateRealmStatus = function(req, res, frontRealm) {
-    var flag = frontRealm.status == 0 ? "disable" : "enable";//成员的启停
+    var flag = frontRealm.status == 0 ? 'disable' : 'enable';//成员的启停
     return restUtil.authRest.put(
         {
-            url: realmRestApis.updateRealmStatus + "/" + frontRealm.id + "/status/" + flag,
+            url: realmRestApis.updateRealmStatus + '/' + frontRealm.id + '/status/' + flag,
             req: req,
             res: res
         }, null);
@@ -155,7 +155,7 @@ exports.setServer = (req, res, realmId, reqBody, flag) => {
     }
     return restUtil.authRest.post(
         {
-            url: url + "/" + realmId,
+            url: url + '/' + realmId,
             req: req,
             res: res
         }, reqBody);

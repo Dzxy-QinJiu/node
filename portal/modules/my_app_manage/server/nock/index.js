@@ -5,9 +5,9 @@
 
 var nock = require('nock');
 var nockParser = require(require('path').join(portal_root_path, './lib/utils/nockParser'));
-var restUrl = require("../service/app-manage-service").urls;
+var restUrl = require('../service/app-manage-service').urls;
 
-var appData = require("./data");
+var appData = require('./data');
 
 exports.init = function() {
     //获取应用列表

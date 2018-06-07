@@ -1,28 +1,28 @@
-var crmAjax = require("../ajax");
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
-import {message} from "antd";
+var crmAjax = require('../ajax');
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
+import {message} from 'antd';
 
 function CrmActions() {
     this.generateActions(
         //设置初始值
-        "setInitialState",
-        "setLoadingState",
-        "setCurrentCustomer",
-        "setCustomerId",
-        "setRepeatCustomerShow",
-        "afterMergeCustomer",
+        'setInitialState',
+        'setLoadingState',
+        'setCurrentCustomer',
+        'setCustomerId',
+        'setRepeatCustomerShow',
+        'afterMergeCustomer',
         //删除订单后，更新客户列表中的客户信息
-        "updateAfterDelOrder",
+        'updateAfterDelOrder',
         //修改基本资料后，更新客户列表
-        "editBasicSuccess",
+        'editBasicSuccess',
         //设置页码
-        "setPageNum",
+        'setPageNum',
         //设置点击的页码
-        "setNextPageNum",
+        'setNextPageNum',
         //拨打电话完增加跟进记录成功后更新列表的跟进内容
-        "updateCurrentCustomerRemark",
+        'updateCurrentCustomerRemark',
         //修改默认联系人后，更新客户列表中该客户的默认联系人
-        "updateCustomerDefContact"
+        'updateCustomerDefContact'
     );
 
     this.queryCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {
@@ -34,7 +34,7 @@ function CrmActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errorMsg || Intl.get("failed.get.crm.list", "获取客户列表失败")
+                errorMsg: errorMsg || Intl.get('failed.get.crm.list', '获取客户列表失败')
             });
         });
     };
@@ -47,20 +47,20 @@ function CrmActions() {
             }
             cb(data);
         }, function(errorMsg) {
-            cb(errorMsg || Intl.get("crm.192", "添加客户失败!"));
+            cb(errorMsg || Intl.get('crm.192', '添加客户失败!'));
         });
     };
 
     this.deleteCustomer = function(ids) {
         crmAjax.deleteCustomer(ids).then((data) => {
             if (data && data.code === 0) {
-                message.success(Intl.get("crm.138", "删除成功"));
+                message.success(Intl.get('crm.138', '删除成功'));
                 this.dispatch(ids);
             } else {
-                message.error(data && data.msg || Intl.get("crm.139", "删除失败"));
+                message.error(data && data.msg || Intl.get('crm.139', '删除失败'));
             }
         }, (errMsg) => {
-            message.error(errMsg || Intl.get("crm.139", "删除失败"));
+            message.error(errMsg || Intl.get('crm.139', '删除失败'));
         });
     };
 
@@ -68,7 +68,7 @@ function CrmActions() {
         crmAjax.updateCustomer(newCus).then(result => {
             if (_.isFunction(cb)) cb();
         }, errorMsg => {
-            message.error(errorMsg || Intl.get("crm.customer.failed.interested", "修改失败"));
+            message.error(errorMsg || Intl.get('crm.customer.failed.interested', '修改失败'));
             if (_.isFunction(cb)) cb(errorMsg);
         });
     };
@@ -79,7 +79,7 @@ function CrmActions() {
         crmAjax.getCustomerById(customerId).then(function(data) {
             _this.dispatch(data);
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("crm.189", "更新客户列表失败!"));
+            _this.dispatch(errorMsg || Intl.get('crm.189', '更新客户列表失败!'));
         });
     };
     //客户名唯一性的验证
@@ -94,7 +94,7 @@ function CrmActions() {
             }
         }, function(errorMsg) {
             if (callback) {
-                callback(errorMsg || Intl.get("crm.193", "客户名唯一性验证失败！"));
+                callback(errorMsg || Intl.get('crm.193', '客户名唯一性验证失败！'));
             }
         });
     };
@@ -106,7 +106,7 @@ function CrmActions() {
             }
         }, function(errorMsg) {
             if (callback) {
-                callback(errorMsg || Intl.get("crm.194", "联系人电话唯一性验证失败"));
+                callback(errorMsg || Intl.get('crm.194', '联系人电话唯一性验证失败'));
             }
         });
     };

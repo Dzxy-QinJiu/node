@@ -17,7 +17,7 @@ exports.getRealmZoneAnalysisData = function(startTime,endTime) {
             endtime: end_time
         },
         success: function(list,text,xhr) {
-            var noRealm = xhr.getResponseHeader("norealm");
+            var noRealm = xhr.getResponseHeader('norealm');
             Deferred.resolve(list , !!noRealm);
         }
     });

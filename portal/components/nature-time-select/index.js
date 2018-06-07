@@ -1,5 +1,5 @@
-require("./index.less");
-import { Select, InputNumber,Radio } from "antd";
+require('./index.less');
+import { Select, InputNumber,Radio } from 'antd';
 var RadioButton = Radio.Button;
 var RadioGroup = Radio.Group;
 function noop() {
@@ -10,10 +10,10 @@ var TimeSelect = React.createClass({
     getDefaultProps: function() {
         return {
             showTimeTypeSelect: false,//是否展示年、月、周的类型选择
-            timeType: "week",//时间类型的选择（年：year，月：month，周：week）
-            yearTime: "",//xxxx年
-            monthTime: "",//xx月
-            weekTime: "",//xx(传参数时，不用带周)
+            timeType: 'week',//时间类型的选择（年：year，月：month，周：week）
+            yearTime: '',//xxxx年
+            monthTime: '',//xx月
+            weekTime: '',//xx(传参数时，不用带周)
             onChangeTimeType: noop,//时间类型选择的事件处理方法
             onChangeYear: noop,//年的选择处理方法
             onChangeMonth: noop,//月的选择处理方法
@@ -29,19 +29,19 @@ var TimeSelect = React.createClass({
     },
     //获取周的开始结束时间
     getWeekTimeRange: function(yearTime, weekTime) {
-        let weekStartTime = "", weekEndTime = "";
+        let weekStartTime = '', weekEndTime = '';
         //当前年中的第几周的日期
         let curYear = JSON.stringify(parseInt(yearTime));
-        let firstDay = moment(curYear + "-01-01").format(DATE_FORMAT);
+        let firstDay = moment(curYear + '-01-01').format(DATE_FORMAT);
         //第一天是第几周
         let firstDayWeek = moment(firstDay).week();
-        let firstWeekFirstDay = "";//该年第一周的第一天
+        let firstWeekFirstDay = '';//该年第一周的第一天
         if (firstDayWeek == 1) {
             //该年的第一天就是该年第一周的第一天
             firstWeekFirstDay = moment(firstDay).format(DATE_FORMAT);
         } else {
             //该年的第一天在去年最后一周里,那么该年第一周的第一天则是下一周的开始时间
-            firstWeekFirstDay = moment(firstDay).add(7, 'days').startOf("week").format(oplateConsts.DATE_FORMAT);
+            firstWeekFirstDay = moment(firstDay).add(7, 'days').startOf('week').format(oplateConsts.DATE_FORMAT);
         }
         weekStartTime = moment(firstWeekFirstDay).add(7 * (weekTime - 1), 'days').format(oplateConsts.DATE_FORMAT);
         weekEndTime = moment(weekStartTime).add(6, 'days').format(oplateConsts.DATE_FORMAT);
@@ -85,11 +85,11 @@ var TimeSelect = React.createClass({
                             {this.renderYearOptions()}
                         </Select>
                     </div>
-                    {this.props.timeType == "month" ? (<div className="month-select-div">
+                    {this.props.timeType == 'month' ? (<div className="month-select-div">
                         <Select value={this.props.monthTime} onChange={this.props.onChangeMonth}>
                             {this.renderMonthOptions()}
                         </Select>
-                    </div>) : this.props.timeType == "week" ? (<div className="week-select-div">
+                    </div>) : this.props.timeType == 'week' ? (<div className="week-select-div">
                         <div className="week-time-label">第</div>
                         <InputNumber min={1} max={60} value={this.props.weekTime} onChange={this.props.onChangeWeek}/>
                         <div className="week-time-label week-time-content">

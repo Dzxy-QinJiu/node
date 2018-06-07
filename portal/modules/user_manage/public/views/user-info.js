@@ -1,41 +1,41 @@
 /**
  * Created by wangliping on 2016/11/8.
  */
-var language = require("../../../../public/language/getLanguage");
+var language = require('../../../../public/language/getLanguage');
 require('PUB_DIR/css/card-info-common.less');
-if (language.lan() == "es" || language.lan() == "en") {
+if (language.lan() == 'es' || language.lan() == 'en') {
     require('PUB_DIR/css/card-info-es.less');
 }
-import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message} from "antd";
-import {getPassStrenth, passwordRegex} from "CMP_DIR/password-strength-bar";
+import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message} from 'antd';
+import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
 var Option = Select.Option;
-var rightPanelUtil = require("../../../../components/rightPanel");
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelForbid = rightPanelUtil.RightPanelForbid;
-var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-var UserDetailEditField = require("../../../../components/basic-edit-field/input");
-var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
-var BasicEditSelectField = require("../../../../components/basic-edit-field/select");
-var HeadIcon = require("../../../../components/headIcon");
+var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+var UserDetailEditField = require('../../../../components/basic-edit-field/input');
+var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
+var BasicEditSelectField = require('../../../../components/basic-edit-field/select');
+var HeadIcon = require('../../../../components/headIcon');
 import UserLog from './user-log';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var ModalDialog = require("../../../../components/ModalDialog");
-var UserFormStore = require("../store/user-form-store");
-var UserInfoStore = require("../store/user-info-store");
-var UserInfoAjax = require("../ajax/user-ajax");
-var UserAction = require("../action/user-actions");
-var UserInfoAction = require("../action/user-info-action");
-import Trace from "LIB_DIR/trace";
-import CommissionAndTarget from "./commission-and-target";
-const UserData = require("PUB_DIR/sources/user-data");
-import RadioCard from "../views/radio-card";
+var ModalDialog = require('../../../../components/ModalDialog');
+var UserFormStore = require('../store/user-form-store');
+var UserInfoStore = require('../store/user-info-store');
+var UserInfoAjax = require('../ajax/user-ajax');
+var UserAction = require('../action/user-actions');
+var UserInfoAction = require('../action/user-info-action');
+import Trace from 'LIB_DIR/trace';
+import CommissionAndTarget from './commission-and-target';
+const UserData = require('PUB_DIR/sources/user-data');
+import RadioCard from '../views/radio-card';
 
 var UserInfo = React.createClass({
     getInitialState: function() {
         return {
             userInfo: $.extend(true, {}, this.props.userInfo),
-            userBasicDetail: {id: "",createDate: ""},//要传用户的id和用户的创建时间
-            modalStr: "",//模态框提示内容
+            userBasicDetail: {id: '',createDate: ''},//要传用户的id和用户的创建时间
+            modalStr: '',//模态框提示内容
             isDel: false,//是否删除
             userTeamList: UserFormStore.getState().userTeamList,
             roleList: UserFormStore.getState().roleList,
@@ -99,29 +99,29 @@ var UserInfo = React.createClass({
 
     },
     layout: function() {
-        var bHeight = $("body").height();
-        var formHeight = bHeight - $(".head-image-container").outerHeight(true);
+        var bHeight = $('body').height();
+        var formHeight = bHeight - $('.head-image-container').outerHeight(true);
         if (this.props.isContinueAddButtonShow) {
             formHeight -= 80;
         }
-        $(".log-infor-scroll").height(formHeight);
+        $('.log-infor-scroll').height(formHeight);
     },
     //展示是否禁用、启用的模态框
     showForbidModalDialog: function(e) {
-        var modalStr = Intl.get("member.start.this", "启用此");
+        var modalStr = Intl.get('member.start.this', '启用此');
         if (this.state.userInfo.status == 1) {
-            modalStr = Intl.get("member.stop.this", "禁用此");
+            modalStr = Intl.get('member.stop.this', '禁用此');
         }
-        Trace.traceEvent(e, "点击" + modalStr + "成员");
+        Trace.traceEvent(e, '点击' + modalStr + '成员');
         this.setState({modalStr: modalStr, isDel: false});
         this.showModalDialog();
     },
     forbidCard: function(e) {
-        var modalStr = Intl.get("member.start.this", "启用此");
+        var modalStr = Intl.get('member.start.this', '启用此');
         if (this.state.userInfo.status == 1) {
-            modalStr = Intl.get("member.stop.this", "禁用此");
+            modalStr = Intl.get('member.stop.this', '禁用此');
         }
-        Trace.traceEvent(e, "点击确认" + modalStr + "成员");
+        Trace.traceEvent(e, '点击确认' + modalStr + '成员');
         if (this.state.isDel) {
             this.props.deleteCard(this.props.userInfo.id);
         } else {
@@ -148,7 +148,7 @@ var UserInfo = React.createClass({
     },
     //团队的选择事件
     onSelectTeam: function(teamId) {
-        Trace.traceEvent(this.getDOMNode(), "选择所属团队");
+        Trace.traceEvent(this.getDOMNode(), '选择所属团队');
         this.state.userInfo.teamId = teamId;
         this.setState({userInfo: this.state.userInfo});
     },
@@ -191,11 +191,11 @@ var UserInfo = React.createClass({
         var roleList = this.state.roleList;
         if (_.isArray(roleList) && roleList.length > 0) {
             roleOptions = roleList.map(function(role) {
-                var className = "";
+                var className = '';
                 if (_.isArray(userInfo.roleIds) && userInfo.roleIds.length > 0) {
                     userInfo.roleIds.forEach(function(roleId) {
                         if (role.roleId == roleId) {
-                            className = "role-options-selected";
+                            className = 'role-options-selected';
                         }
                     });
                 }
@@ -205,12 +205,12 @@ var UserInfo = React.createClass({
 
             });
         } else {
-            roleOptions = [<Option value="" key="role">{Intl.get("member.no.role", "暂无角色")}</Option>];
+            roleOptions = [<Option value="" key="role">{Intl.get('member.no.role', '暂无角色')}</Option>];
         }
         return roleOptions;
     },
     selectRole: function(roleIds) {
-        Trace.traceEvent(this.getDOMNode(), "选择角色");
+        Trace.traceEvent(this.getDOMNode(), '选择角色');
         this.state.userInfo.roleIds = roleIds;
         this.setState({userInfo: this.state.userInfo});
     },
@@ -220,7 +220,7 @@ var UserInfo = React.createClass({
     },
 
     onPasswordDisplayTypeChange: function(type) {
-        if (type === "edit") {
+        if (type === 'edit') {
             this.setState({isConfirmPasswordShow: true});
         } else {
             this.setState({isConfirmPasswordShow: false});
@@ -234,7 +234,7 @@ var UserInfo = React.createClass({
     },
     onConfirmPasswordDisplayTypeChange: function() {
         this.setState({isConfirmPasswordShow: false});
-        this.refs.password.setState({displayType: "text"});
+        this.refs.password.setState({displayType: 'text'});
     },
 
     //对密码 进行校验
@@ -250,7 +250,7 @@ var UserInfo = React.createClass({
                     passStrength: 'L'
                 }
             });
-            callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
         }
     },
     //对确认密码 进行校验
@@ -270,7 +270,7 @@ var UserInfo = React.createClass({
                     (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
                 callback();
             } else {
-                callback(new Error(Intl.get("common.input.correct.phone", "请输入正确的电话号码")));
+                callback(new Error(Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
             }
         } else {
             callback();
@@ -282,7 +282,7 @@ var UserInfo = React.createClass({
         if (_.isArray(roleList) && roleList.length > 0) {
             return this.state.userInfo.id;
         }
-        return "";
+        return '';
     },
     getTeamUserId: function() {
         let userTeamList = this.state.userTeamList;
@@ -290,7 +290,7 @@ var UserInfo = React.createClass({
         if (_.isArray(userTeamList) && userTeamList.length > 0) {
             return this.state.userInfo.id;
         }
-        return "";
+        return '';
     },
     afterModifySuccess: function(updateObj) {
         this.setState({
@@ -301,16 +301,16 @@ var UserInfo = React.createClass({
     renderUserItems: function() {
         let userInfo = this.state.userInfo;
         let roleSelectOptions = this.getRoleSelectOptions(userInfo);
-        let roleNames = "", isSales = false;
+        let roleNames = '', isSales = false;
         if (_.isArray(userInfo.roleNames) && userInfo.roleNames.length) {
-            if (_.indexOf(userInfo.roleNames, Intl.get("sales.home.sales", "销售")) > -1) {
+            if (_.indexOf(userInfo.roleNames, Intl.get('sales.home.sales', '销售')) > -1) {
                 //是否是销售角色
                 isSales = true;
             }
             roleNames = userInfo.roleNames.join(',');
 
         }
-        var commissionRadio = "", goal = "", recordId = "",
+        var commissionRadio = '', goal = '', recordId = '',
             saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio;
         if (saleGoalsAndCommissionRadio.id) {
             //某条销售目标和提成比例的id
@@ -325,7 +325,7 @@ var UserInfo = React.createClass({
         return (
             <div data-tracename="用户详情面板">
                 <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("common.username", "用户名")}</dt>
+                    <dt>{Intl.get('common.username', '用户名')}</dt>
                     <dd>
                         <UserDetailEditField
                             user_id={userInfo.id}
@@ -337,7 +337,7 @@ var UserInfo = React.createClass({
                 </dl>
 
                 <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("realm.change.owner.name", "姓名")}</dt>
+                    <dt>{Intl.get('realm.change.owner.name', '姓名')}</dt>
                     <dd>
                         <UserDetailEditField
                             user_id={userInfo.id}
@@ -345,34 +345,34 @@ var UserInfo = React.createClass({
                             field="nick_name"
                             type="text"
                             modifySuccess={this.changeUserFieldSuccess}
-                            disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO") ? false : true}
+                            disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
                             validators={[{
                                 required: true,
                                 min: 1,
                                 max: 20,
-                                message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")
+                                message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')
                             }]}
-                            placeholder={Intl.get("common.required.tip", "必填项*")}
+                            placeholder={Intl.get('common.required.tip', '必填项*')}
                             saveEditInput={UserInfoAjax.editUser}
                         />
                     </dd>
                 </dl>
 
                 <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("common.password", "密码")}</dt>
+                    <dt>{Intl.get('common.password', '密码')}</dt>
                     <dd>
                         <UserDetailEditField
                             ref="password"
                             user_id={userInfo.id}
-                            value={Intl.get("user.password.tip", "保密中")}
+                            value={Intl.get('user.password.tip', '保密中')}
                             field="password"
                             type="password"
                             hideButtonBlock={true}
                             showPasswordStrength={true}
-                            disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO") ? false : true}
+                            disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
                             validators={[{validator: this.checkPass}]}
-                            placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
-                            title={Intl.get("user.batch.password.reset", "重置密码")}
+                            placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
+                            title={Intl.get('user.batch.password.reset', '重置密码')}
                             onDisplayTypeChange={this.onPasswordDisplayTypeChange}
                             onValueChange={this.onPasswordValueChange}
                         />
@@ -381,7 +381,7 @@ var UserInfo = React.createClass({
                 {this.state.isConfirmPasswordShow ? (
                     <dl className="dl-horizontal detail_item member-detail-item">
                         <dt>
-                            {Intl.get("common.confirm.password", "确认密码")}
+                            {Intl.get('common.confirm.password', '确认密码')}
                         </dt>
                         <dd>
                             <UserDetailEditField
@@ -390,7 +390,7 @@ var UserInfo = React.createClass({
                                 displayType="edit"
                                 field="password"
                                 type="password"
-                                placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
+                                placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
                                 validators={[{validator: this.checkRePass}]}
                                 onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
                                 modifySuccess={this.onConfirmPasswordDisplayTypeChange}
@@ -400,37 +400,37 @@ var UserInfo = React.createClass({
                     </dl>
                 ) : null}
                 <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("common.phone", "电话")}</dt>
+                    <dt>{Intl.get('common.phone', '电话')}</dt>
                     <dd>
                         <UserDetailEditField
                             user_id={userInfo.id}
                             value={userInfo.phone}
                             field="phone"
                             type="text"
-                            disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO") ? false : true}
+                            disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
                             validators={[{validator: this.checkPhone}]}
-                            placeholder={Intl.get("user.input.phone", "请输入手机号")}
+                            placeholder={Intl.get('user.input.phone', '请输入手机号')}
                             saveEditInput={UserInfoAjax.editUser}
                             modifySuccess={this.changeUserFieldSuccess}
                         />
                     </dd>
                 </dl>
                 <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("common.email", "邮箱")}</dt>
+                    <dt>{Intl.get('common.email', '邮箱')}</dt>
                     <dd>
                         <UserDetailEditField
                             user_id={userInfo.id}
                             value={userInfo.email}
-                            afterValTip={' (' + (userInfo.emailEnable ? Intl.get("common.actived", "已激活") : Intl.get("member.not.actived", "未激活")) + ')'}
+                            afterValTip={' (' + (userInfo.emailEnable ? Intl.get('common.actived', '已激活') : Intl.get('member.not.actived', '未激活')) + ')'}
                             field="email"
                             type="text"
-                            disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO") ? false : true}
+                            disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
                             validators={[{
-                                type: "email",
+                                type: 'email',
                                 required: true,
-                                message: Intl.get("common.correct.email", "请输入正确的邮箱")
+                                message: Intl.get('common.correct.email', '请输入正确的邮箱')
                             }]}
-                            placeholder={Intl.get("member.input.email", "请输入邮箱")}
+                            placeholder={Intl.get('member.input.email', '请输入邮箱')}
                             saveEditInput={UserInfoAjax.editUser}
                             modifySuccess={this.changeUserFieldSuccess}
                         />
@@ -438,7 +438,7 @@ var UserInfo = React.createClass({
                 </dl>
 
                 <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("common.role", "角色")}</dt>
+                    <dt>{Intl.get('common.role', '角色')}</dt>
                     <dd>
                         <BasicEditSelectField
                             id={userInfo.id}
@@ -447,13 +447,13 @@ var UserInfo = React.createClass({
                             multiple={true}
                             field="role"
                             selectOptions={roleSelectOptions}
-                            disabled={hasPrivilege("UPDATE_MEMBER_ROLE") ? false : true}
+                            disabled={hasPrivilege('UPDATE_MEMBER_ROLE') ? false : true}
                             validators={[{
                                 required: true,
-                                message: Intl.get("member.select.role", "请选择角色"),
+                                message: Intl.get('member.select.role', '请选择角色'),
                                 type: 'array'
                             }]}
-                            placeholder={Intl.get("member.select.role", "请选择角色")}
+                            placeholder={Intl.get('member.select.role', '请选择角色')}
                             onSelectChange={this.selectRole}
                             cancelEditField={this.cancelEditRole}
                             saveEditSelect={UserInfoAjax.updateUserRoles}
@@ -463,7 +463,7 @@ var UserInfo = React.createClass({
                 </dl>
                 {/** v8环境下，不显示所属团队*/}
                 { !Oplate.hideSomeItem && <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("common.belong.team", "所属团队")}</dt>
+                    <dt>{Intl.get('common.belong.team', '所属团队')}</dt>
                     <dd>
                         <BasicEditSelectField
                             id={userInfo.id}
@@ -471,9 +471,9 @@ var UserInfo = React.createClass({
                             value={userInfo.teamId}
                             field="team"
                             selectOptions={this.getTeamOptions()}
-                            disabled={hasPrivilege("USER_MANAGE_EDIT_USER") ? false : true}
-                            placeholder={Intl.get("member.select.group", "请选择团队")}
-                            validators={[{message: Intl.get("member.select.group", "请选择团队")}]}
+                            disabled={hasPrivilege('USER_MANAGE_EDIT_USER') ? false : true}
+                            placeholder={Intl.get('member.select.group', '请选择团队')}
+                            validators={[{message: Intl.get('member.select.group', '请选择团队')}]}
                             onSelectChange={this.onSelectTeam}
                             cancelEditField={this.cancelEditTeam}
                             saveEditSelect={UserInfoAjax.updateUserTeam}
@@ -482,31 +482,31 @@ var UserInfo = React.createClass({
                     </dd>
                 </dl> }
                 {isSales ? <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("sales.team.sales.goal", "销售目标")}</dt>
+                    <dt>{Intl.get('sales.team.sales.goal', '销售目标')}</dt>
                     <dd>
                         <CommissionAndTarget
                             id={recordId}
-                            field={"goal"}
+                            field={'goal'}
                             userInfo = {this.state.userInfo}
                             setSalesGoals={UserInfoAjax.setSalesGoals}
                             value={goal}
                             displayType={'text'}
                             min={0}
-                            countTip={Intl.get("contract.82", "元")}
+                            countTip={Intl.get('contract.82', '元')}
                             afterModifySuccess={this.afterModifySuccess}
                         />
                     </dd>
                 </dl> : null}
                 <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("user.manage.phone.order", "坐席号")}</dt>
+                    <dt>{Intl.get('user.manage.phone.order', '坐席号')}</dt>
                     <dd>{userInfo.phoneOrder}</dd>
                 </dl>
                 <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get("member.create.time", "创建时间")}</dt>
+                    <dt>{Intl.get('member.create.time', '创建时间')}</dt>
                     <dd>
                         <UserDetailEditField
                             user_id={userInfo.id}
-                            value={userInfo.createDate ? moment(userInfo.createDate).format(oplateConsts.DATE_FORMAT) : ""}
+                            value={userInfo.createDate ? moment(userInfo.createDate).format(oplateConsts.DATE_FORMAT) : ''}
                             field="createDate"
                             disabled={true}
                         />
@@ -516,12 +516,12 @@ var UserInfo = React.createClass({
         );
     },
     uploadImg: function(src) {
-        Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "点击上传头像");
+        Trace.traceEvent($(this.getDOMNode()).find('.upload-img-select'), '点击上传头像');
         this.state.userInfo.image = src;
         this.setState({userInfo: this.state.userInfo, showSaveIconTip: true});
     },
     saveUserIcon: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "保存上传头像");
+        Trace.traceEvent($(this.getDOMNode()).find('.upload-img-select'), '保存上传头像');
         this.setState({showSaveIconTip: false});
         let userInfo = this.state.userInfo;
         if (userInfo.image && userInfo.image != this.props.userInfo.image) {
@@ -529,12 +529,12 @@ var UserInfo = React.createClass({
             UserInfoAjax.editUser(editObj).then(function(result) {
                 //上传成功
                 if (result) {
-                    message.success(Intl.get("common.upload.success", "上传成功！"));
+                    message.success(Intl.get('common.upload.success', '上传成功！'));
                     UserAction.afterEditUser(editObj);
                 }
             }, function(errorObj) {
                 //上传失败
-                message.error(errorObj.message || Intl.get("common.upload.error", "上传失败，请重试!"));
+                message.error(errorObj.message || Intl.get('common.upload.error', '上传失败，请重试!'));
             });
         }
     },
@@ -558,11 +558,11 @@ var UserInfo = React.createClass({
     },
     //隐藏模态框
     hideModalDialog: function() {
-        Trace.traceEvent($(".log-infor-scroll"), "关闭模态框");
+        Trace.traceEvent($('.log-infor-scroll'), '关闭模态框');
         UserInfoAction.hideModalDialog();
     },
     cancelEditIcon: function() {
-        Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "取消头像的保存");
+        Trace.traceEvent($(this.getDOMNode()).find('.upload-img-select'), '取消头像的保存');
         this.state.userInfo.image = this.props.userInfo.image;
         this.setState({userInfo: this.state.userInfo, showSaveIconTip: false});
     },
@@ -582,29 +582,29 @@ var UserInfo = React.createClass({
                 logItems.push(<UserLog key={i} log={logList[i]}/>);
             }
         } else {
-            logItems = Intl.get("common.no.data", "暂无数据");
+            logItems = Intl.get('common.no.data', '暂无数据');
         }
-        var modalContent = Intl.get("member.is.or.not", "是否{modalStr}{modalType}", {
-            "modalStr": this.state.modalStr,
-            "modalType": Intl.get("member.member", "成员")
+        var modalContent = Intl.get('member.is.or.not', '是否{modalStr}{modalType}', {
+            'modalStr': this.state.modalStr,
+            'modalType': Intl.get('member.member', '成员')
         });
-        var className = "right-panel-content";
+        var className = 'right-panel-content';
 
         if (!this.props.userInfoShow && this.props.userFormShow) {
             //展示form面板时，整体左移
-            className += " right-panel-content-slide";
+            className += ' right-panel-content-slide';
         }
 
-        var userName = this.state.userInfo.userName ? this.state.userInfo.userName : "";
+        var userName = this.state.userInfo.userName ? this.state.userInfo.userName : '';
         let isSales = false;
         if (_.isArray(userInfo.roleNames) && userInfo.roleNames.length) {
-            if (_.indexOf(userInfo.roleNames, Intl.get("sales.home.sales", "销售")) > -1) {
+            if (_.indexOf(userInfo.roleNames, Intl.get('sales.home.sales', '销售')) > -1) {
                 //是否是销售角色
                 isSales = true;
             }
         }
-        var commissionRadio = "", goal = "", recordId = "",
-            saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = "", renewalCommissionRatio = "";
+        var commissionRadio = '', goal = '', recordId = '',
+            saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = '', renewalCommissionRatio = '';
         if ((saleGoalsAndCommissionRadio.commission_ratio && saleGoalsAndCommissionRadio.commission_ratio > -1) || saleGoalsAndCommissionRadio.commission_ratio === 0) {
             //提成比例
             commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
@@ -626,7 +626,7 @@ var UserInfo = React.createClass({
                 <RightPanelClose onClick={this.props.closeRightPanel} data-tracename="点击关闭成员详情"/>
                 {user_id !== loginUserInfo.user_id ? <div className="edit-buttons">
                     {!this.props.isContinueAddButtonShow ? (
-                        <PrivilegeChecker check={"USER_MANAGE_EDIT_USER"}>
+                        <PrivilegeChecker check={'USER_MANAGE_EDIT_USER'}>
                             <RightPanelForbid onClick={(e) => {
                                 this.showForbidModalDialog(e);
                             }}
@@ -679,12 +679,12 @@ var UserInfo = React.createClass({
                             {this.state.logTotal / this.state.page_size > 1 ? (
                                 <Pagination current={this.state.logNum} total={this.state.logTotal}
                                     pageSize={this.state.page_size} size="small"
-                                    onChange={this.changeLogNum}/>) : ""}
+                                    onChange={this.changeLogNum}/>) : ''}
                         </div>
                     </GeminiScrollbar>
                 </div>
                 {this.props.isContinueAddButtonShow ? (
-                    <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, "add")}>
+                    <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, 'add')}>
                         <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
                             defaultMessage="添加成员"/></span>
                     </div>

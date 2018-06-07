@@ -1,12 +1,12 @@
 /**
  * 漏斗图
  */
-var echarts = require("echarts-eefung");
-require("./index.less");
-var colors = require("../../utils/colors");
-var Spinner = require("../../../../../components/spinner");
-var immutable = require("immutable");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+var echarts = require('echarts-eefung');
+require('./index.less');
+var colors = require('../../utils/colors');
+var Spinner = require('../../../../../components/spinner');
+var immutable = require('immutable');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 
 var FunnelChart = React.createClass({
@@ -14,7 +14,7 @@ var FunnelChart = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: "",
+            title: '',
             width: '100%',
             height: 600,
             resultType: 'loading',
@@ -26,14 +26,14 @@ var FunnelChart = React.createClass({
             x: 10,
             y: 10,
             data: this.props.list,
-            sort: this.props.sort || "descending",
+            sort: this.props.sort || 'descending',
             max: this.props.max || 100,
-            minSize: this.props.minSize || "0%",
+            minSize: this.props.minSize || '0%',
             itemStyle: {
                 normal: {
                     label: {
                         textStyle: {
-                            color: "#506470"
+                            color: '#506470'
                         }
                     },
                     labelLine: {
@@ -49,9 +49,9 @@ var FunnelChart = React.createClass({
 
         series2.itemStyle.normal.label = {
             formatter: function(params) { return params.data.total; },
-            position: "inside",
+            position: 'inside',
             textStyle: {
-                color: "#506470"
+                color: '#506470'
             }
         };
 
@@ -65,11 +65,11 @@ var FunnelChart = React.createClass({
         var option = {
             title: {
                 text: this.props.title,
-                x: "center",
-                y: "bottom",
+                x: 'center',
+                y: 'bottom',
                 textStyle: {
                     fontSize: 14,
-                    fontWeight: "normal"
+                    fontWeight: 'normal'
                 }
             },
             animation: false,
@@ -101,9 +101,9 @@ var FunnelChart = React.createClass({
                 });
                 this.echartInstance = null;
             }
-            $(this.refs.chart).html("<div class='nodata'>" + Intl.get("common.no.data", "暂无数据") + "</div>");
+            $(this.refs.chart).html('<div class=\'nodata\'>' + Intl.get('common.no.data', '暂无数据') + '</div>');
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
         }
     },
     componentDidMount: function() {
@@ -131,7 +131,7 @@ var FunnelChart = React.createClass({
     render: function() {
         var _this = this;
         return (
-            <div className="analysis_funnel_chart" ref="wrap" style={{width: this.props.width, float: "left"}}>
+            <div className="analysis_funnel_chart" ref="wrap" style={{width: this.props.width, float: 'left'}}>
                 {this.props.resultType === 'loading' ?
                     (
                         <div className="loadwrap" style={{height: this.props.height}}>

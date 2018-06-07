@@ -1,11 +1,11 @@
-require("./index.less");
-var RightContent = require("../../../components/privilege/right-content");
-var Checker = require("../../../components/privilege/checker");
+require('./index.less');
+var RightContent = require('../../../components/privilege/right-content');
+var Checker = require('../../../components/privilege/checker');
 
-var OPLATE_USER_ANALYSIS_SUMMARY = require("../../../modules/oplate_user_analysis_summary");
-var OPLATE_USER_ANALYSIS_ZONE = require("../../../modules/oplate_user_analysis_zone");
-var OPLATE_USER_ANALYSIS_INDUSTRY = require("../../../modules/oplate_user_analysis_industry");
-var OPLATE_USER_ANALYSIS_ACTIVE = require("../../../modules/oplate_user_analysis_active");
+var OPLATE_USER_ANALYSIS_SUMMARY = require('../../../modules/oplate_user_analysis_summary');
+var OPLATE_USER_ANALYSIS_ZONE = require('../../../modules/oplate_user_analysis_zone');
+var OPLATE_USER_ANALYSIS_INDUSTRY = require('../../../modules/oplate_user_analysis_industry');
+var OPLATE_USER_ANALYSIS_ACTIVE = require('../../../modules/oplate_user_analysis_active');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('analysis/user',

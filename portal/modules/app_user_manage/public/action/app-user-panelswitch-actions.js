@@ -4,9 +4,9 @@
 function AppUserPanelSwitchActions() {
     this.generateActions(
         //添加应用
-        "switchToAddAppPanel",
-        "cancelAddAppPanel",
-        "submitAddAppPanel",
+        'switchToAddAppPanel',
+        'cancelAddAppPanel',
+        'submitAddAppPanel',
         //修改应用
         'switchToEditAppPanel',
         'cancelEditAppPanel',
@@ -14,7 +14,7 @@ function AppUserPanelSwitchActions() {
         // 第三方应用配置
         'switchToThirdAppPanel',
         //重置
-        "resetState"
+        'resetState'
     );
 }
 

@@ -1,11 +1,11 @@
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 //获取当前用户下属销售团队列表
 exports.getGroupList = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: "/rest/base/v1/group/child_groups",
+            url: '/rest/base/v1/group/child_groups',
             req: req,
             res: res
         }, null);
@@ -14,7 +14,7 @@ exports.getGroupList = function(req, res) {
 //客户批量操作
 exports.doBatch = function(req,res) {
     return restUtil.authRest.put({
-        url: "/rest/customer/v2/customer/batch/customer?type=" + req.query.type,
+        url: '/rest/customer/v2/customer/batch/customer?type=' + req.query.type,
         req: req,
         res: res
     } , req.body);
@@ -27,7 +27,7 @@ exports.getRecommendTags = function(req, res) {
     var type = req.params.type;
     return restUtil.authRest.get(
         {
-            url: "/rest/customer/v2/customer/label/" + type + "/proposal/" + pageSize + "/" + num,
+            url: '/rest/customer/v2/customer/label/' + type + '/proposal/' + pageSize + '/' + num,
             req: req,
             res: res
         }, null);
@@ -37,7 +37,7 @@ exports.getRecommendTags = function(req, res) {
 exports.getIndustries = function(req,res) {
     return restUtil.authRest.get(
         {
-            url: "/rest/base/v1/realm/config/industry?page_size=1000",
+            url: '/rest/base/v1/realm/config/industry?page_size=1000',
             req: req,
             res: res
         });

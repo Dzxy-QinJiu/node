@@ -2,7 +2,7 @@
  * 日程管理的action
  */
 var scheduleAjax = require('../ajax/schedule-ajax');
-var scrollBarEmitter = require("PUB_DIR/sources/utils/emitters").scrollBarEmitter;
+var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 function ScheduleAction() {
     this.generateActions(
         'resetState',

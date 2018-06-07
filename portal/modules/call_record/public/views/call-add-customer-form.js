@@ -1,39 +1,39 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-import {Icon,Form,Input,Select,message}from "antd";
-var rightPanelUtil = require("../../../../components/rightPanel");
+import {Icon,Form,Input,Select,message}from 'antd';
+var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 var RightPanelCancel = rightPanelUtil.RightPanelCancel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var FormItem = Form.Item;
 var Option = Select.Option;
-var CrmAction = require("../../../crm/public/action/crm-actions");
-import {nameRegex} from "PUB_DIR/sources/utils/consts";
-var ContactUtil = require("../../../crm/public/utils/contact-util");
+var CrmAction = require('../../../crm/public/action/crm-actions');
+import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+var ContactUtil = require('../../../crm/public/utils/contact-util');
 var Spinner = require('../../../../components/spinner');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import routeList from "../../../common/route";
-import ajax from "../../../common/ajax";
-const userData = require("../../../../public/sources/user-data");
+import routeList from '../../../common/route';
+import ajax from '../../../common/ajax';
+const userData = require('../../../../public/sources/user-data');
 var CallRecordAction = require('../action/call-record-actions');
-var classNames = require("classnames");
-import Trace from "LIB_DIR/trace";
-import { AntcAreaSelection } from "antc";
+var classNames = require('classnames');
+import Trace from 'LIB_DIR/trace';
+import { AntcAreaSelection } from 'antc';
 
 var CallAddCustomerForm = React.createClass({
     mixins: [Validation.FieldMixin],
     getInitialState: function() {
         var formData = {
-            name: "",//客户名称
+            name: '',//客户名称
             industry: [],//行业
-            province: "",
-            city: "",
-            county: "",
-            remarks: "",//备注
-            contacts0_name: "",//联系人名称
-            contacts0_position: "",//联系人职位
-            contacts0_role: Intl.get("crm.115", "经办人"),//联系人角色
+            province: '',
+            city: '',
+            county: '',
+            remarks: '',//备注
+            contacts0_name: '',//联系人名称
+            contacts0_position: '',//联系人职位
+            contacts0_role: Intl.get('crm.115', '经办人'),//联系人角色
             contacts0_phone: this.transPhoneNumber(this.props.phoneNumber)//联系人电话
         };
         return {
@@ -59,7 +59,7 @@ var CallAddCustomerForm = React.createClass({
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
-                list = _.pluck(list, "industry");
+                list = _.pluck(list, 'industry');
             }
             this.setState({isLoadingIndustry: false, industryList: list});
         });
@@ -67,7 +67,7 @@ var CallAddCustomerForm = React.createClass({
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
-        var arr = item.split(".");
+        var arr = item.split('.');
         if (arr[1]) {
             status = status.contacts[0];
             item = arr[1];
@@ -85,9 +85,9 @@ var CallAddCustomerForm = React.createClass({
     //更新地址
     updateLocation: function(address) {
         var location = address.split('/');
-        this.state.formData.province = location[0] || "";
-        this.state.formData.city = location[1] || "";
-        this.state.formData.county = location[2] || "";
+        this.state.formData.province = location[0] || '';
+        this.state.formData.city = location[1] || '';
+        this.state.formData.county = location[2] || '';
     },
 
     //提交修改
@@ -109,7 +109,7 @@ var CallAddCustomerForm = React.createClass({
                     if (result.code == 0) {
                         formData.contacts0_phone = _this.props.phoneNumber;
                         CallRecordAction.updateCallRecord(formData);
-                        message.success( Intl.get("user.user.add.success", "添加成功"));
+                        message.success( Intl.get('user.user.add.success', '添加成功'));
                         _this.props.addOne();
                         _this.setState(_this.getInitialState());
                     } else {
@@ -128,7 +128,7 @@ var CallAddCustomerForm = React.createClass({
 
     //根据客户名在地理信息接口获取该客户的信息并填充到对应字段
     autofillGeoInfo: function(customerName) {
-        const route = _.find(routeList, route => route.handler === "getGeoInfo");
+        const route = _.find(routeList, route => route.handler === 'getGeoInfo');
 
         const arg = {
             url: route.path,
@@ -158,7 +158,7 @@ var CallAddCustomerForm = React.createClass({
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == "true") {
+                    if (data.result == 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
@@ -189,7 +189,7 @@ var CallAddCustomerForm = React.createClass({
 
             return (
                 <div className="tip-customer-exist">
-                    {Intl.get("call.record.customer", "客户")} {existSame ? Intl.get("crm.66", "已存在") : Intl.get("crm.67", "可能重复了")}，
+                    {Intl.get('call.record.customer', '客户')} {existSame ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，
 
                     {customer.user_id === curUserId ? (
                         <a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
@@ -199,7 +199,7 @@ var CallAddCustomerForm = React.createClass({
 
                     {list.length ? (
                         <div>
-                            {Intl.get("crm.68", "相似的客户还有")}:
+                            {Intl.get('crm.68', '相似的客户还有')}:
                             {list.map(customer => {
                                 return (
                                     <div>
@@ -218,7 +218,7 @@ var CallAddCustomerForm = React.createClass({
         } else if (this.state.checkNameError) {
             return (<div className="check-only-error"><ReactIntl.FormattedMessage id="crm.69" defaultMessage="客户名唯一性校验出错" />！</div>);
         } else {
-            return "";
+            return '';
         }
     },
     //客户名格式验证
@@ -229,11 +229,11 @@ var CallAddCustomerForm = React.createClass({
                 callback();
             } else {
                 this.setState({customerNameExist: false, checkNameError: false});
-                callback(new Error(Intl.get("crm.197", "客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间")));
+                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
             }
         } else {
             this.setState({customerNameExist: false, checkNameError: false});
-            callback(new Error( Intl.get("crm.81", "请填写客户名称")));
+            callback(new Error( Intl.get('crm.81', '请填写客户名称')));
         }
     },
 
@@ -252,12 +252,12 @@ var CallAddCustomerForm = React.createClass({
 
         let threeAreaRegex = /^0[1|2]\d{8,9}$/; // 3位区号
         if (threeAreaRegex.test(phoneNumber)) {
-            transNumber = phoneNumber.substring(0,3) + "-" + phoneNumber.substring(3);
+            transNumber = phoneNumber.substring(0,3) + '-' + phoneNumber.substring(3);
             return transNumber;
         }
         let fourAreaRegex = /^0[3|4|5|6|7|8|9]\d{9,10}$/; // 4位区号
         if (fourAreaRegex.test(phoneNumber)) {
-            transNumber = phoneNumber.substring(0,4) + "-" + phoneNumber.substring(4);
+            transNumber = phoneNumber.substring(0,4) + '-' + phoneNumber.substring(4);
             return transNumber;
         }
         transNumber = phoneNumber;
@@ -290,12 +290,12 @@ var CallAddCustomerForm = React.createClass({
                 <Form horizontal className="crm-add-form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
-                            label={Intl.get("crm.4", "客户名称")}
+                            label={Intl.get('crm.4', '客户名称')}
                             id="crm-name"
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('name')}
-                            help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
+                            help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}
                         >
                             <Validator
                                 rules={[{validator: this.checkCustomerName}]}>
@@ -308,21 +308,21 @@ var CallAddCustomerForm = React.createClass({
                         </FormItem>
                         {this.renderCustomerNameMsg()}
                         <FormItem
-                            label={Intl.get("realm.industry", "行业")}
+                            label={Intl.get('realm.industry', '行业')}
                             id="industry"
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('industry')}
-                            help={status.industry.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.industry.errors && status.industry.errors.join(','))}
+                            help={status.industry.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.industry.errors && status.industry.errors.join(','))}
                         >
                             {this.state.isLoadingIndustry ? (
                                 <div className="industry-list-loading"><ReactIntl.FormattedMessage id="crm.88" defaultMessage="正在获取行业列表" /><Icon type="loading"/></div>) : (
                                 <Validator
-                                    rules={[{required: true, message: Intl.get("crm.22", "请选择行业")}]}>
-                                    <Select showSearch placeholder={Intl.get("crm.22", "请选择行业")} name="industry"
-                                        searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
+                                    rules={[{required: true, message: Intl.get('crm.22', '请选择行业')}]}>
+                                    <Select showSearch placeholder={Intl.get('crm.22', '请选择行业')} name="industry"
+                                        searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
                                         optionFilterProp="children"
-                                        notFoundContent={!industryList.length ? Intl.get("crm.24", "暂无行业") : Intl.get("crm.23", "无相关行业")}
+                                        notFoundContent={!industryList.length ? Intl.get('crm.24', '暂无行业') : Intl.get('crm.23', '无相关行业')}
                                         onChange={this.setField.bind(this, 'industry')}
                                         value={formData.industry}
                                         onSelect={this.handleSelect.bind(this, 'industry')}
@@ -335,7 +335,7 @@ var CallAddCustomerForm = React.createClass({
                             city={formData.city}
                             county={formData.county} updateLocation={this.updateLocation}/>
                         < FormItem
-                            label={Intl.get("common.remark", "备注")}
+                            label={Intl.get('common.remark', '备注')}
                             id="remarks"
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
@@ -350,39 +350,39 @@ var CallAddCustomerForm = React.createClass({
                             <ReactIntl.FormattedMessage id="call.record.contacts" defaultMessage="联系人" />
                         </div>
                         <FormItem
-                            label={Intl.get("realm.change.owner.name", "姓名")}
+                            label={Intl.get('realm.change.owner.name', '姓名')}
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('contacts0_name')}
-                            help={status.contacts0_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
+                            help={status.contacts0_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
                         >
-                            <Validator rules={[{required: false,min: 1,max: 50, message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}]}>
-                                <Input name="contacts0_name" placeholder={Intl.get("crm.90", "请输入姓名")} value={formData.contacts0_name}
+                            <Validator rules={[{required: false,min: 1,max: 50, message: Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')}]}>
+                                <Input name="contacts0_name" placeholder={Intl.get('crm.90', '请输入姓名')} value={formData.contacts0_name}
                                     onChange={this.setField.bind(this, 'contacts0_name')}/>
                             </Validator>
                         </FormItem>
                         <FormItem
-                            label={Intl.get("crm.91", "职位")}
+                            label={Intl.get('crm.91', '职位')}
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('contacts0_position')}
-                            help={status.contacts0_position.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
+                            help={status.contacts0_position.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
                         >
-                            <Validator rules={[{required: false,min: 1, message: Intl.get("crm.92", "请输入联系人职位")}]}>
-                                <Input name="contacts0_position" placeholder={Intl.get("crm.92", "请输入联系人职位")}
+                            <Validator rules={[{required: false,min: 1, message: Intl.get('crm.92', '请输入联系人职位')}]}>
+                                <Input name="contacts0_position" placeholder={Intl.get('crm.92', '请输入联系人职位')}
                                     value={formData.contacts0_position}
                                     onChange={this.setField.bind(this, 'contacts0_position')}/>
                             </Validator>
                         </FormItem>
                         <FormItem
-                            label={Intl.get("user.apply.detail.table.role", "角色")}
+                            label={Intl.get('user.apply.detail.table.role', '角色')}
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('contacts0_role')}
-                            help={status.contacts0_role.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
+                            help={status.contacts0_role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
                         >
-                            <Validator rules={[{required: true,min: 1, message: Intl.get("crm.93", "请输入联系人角色")}]}>
-                                <Select name="contacts0_role" placeholder={Intl.get("crm.94", "请输入角色")}
+                            <Validator rules={[{required: true,min: 1, message: Intl.get('crm.93', '请输入联系人角色')}]}>
+                                <Select name="contacts0_role" placeholder={Intl.get('crm.94', '请输入角色')}
                                     value={this.state.formData.contacts0_role}
                                     onChange={this.setField.bind(this, 'contacts0_role')}
                                     onSelect={this.handleSelect.bind(this, 'contacts0_role')}

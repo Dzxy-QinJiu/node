@@ -5,16 +5,16 @@
  * 新版时间线组件（新版客户详情的日程、跟进记录）
  * 使用方法：<TimeLine list="..." render="..." ... />
  */
-require("./style.less");
-import classNames from "classnames";
+require('./style.less');
+import classNames from 'classnames';
 const PropTypes = React.PropTypes;
 class TimeLine extends React.Component {
     renderLine() {
-        let classNameArr = ["time-line"];
+        let classNameArr = ['time-line'];
 
-        if (this.props.groupByDay) classNameArr.push("group-by-day");
+        if (this.props.groupByDay) classNameArr.push('group-by-day');
 
-        const className = classNameArr.join(" ");
+        const className = classNameArr.join(' ');
 
         //前一条记录的时间值中的天
         let prevItemDay;
@@ -37,7 +37,7 @@ class TimeLine extends React.Component {
                                 //该天是否第一次出现
                                 let isDayFirstApper = false;
                                 const curItemTime = item[timeField];
-                                curItemDay = moment(curItemTime).startOf("day").valueOf();
+                                curItemDay = moment(curItemTime).startOf('day').valueOf();
 
                                 //如果没有之前项，说明该天是第一次出现
                                 if (!prevItemDay) {
@@ -64,7 +64,7 @@ class TimeLine extends React.Component {
                             }
 
                             return (
-                                <Timeline.Item key={index} className={dayJsx ? "day-first-item" : ""}>
+                                <Timeline.Item key={index} className={dayJsx ? 'day-first-item' : ''}>
                                     {dayJsx}
                                     {this.props.render(item)}
                                 </Timeline.Item>
@@ -87,7 +87,7 @@ class TimeLine extends React.Component {
             //如果当前项的年（天）和之前项的（天）不同，说明该年(天)是第一次出现
             if (curItemTime !== prevItemTime) isFirstApper = true;
         }
-        let timeStr = "";
+        let timeStr = '';
         if (isFirstApper && curItemTime) {
             if (relativeDate) {
                 timeStr = moment(curItemTime).fromNow();
@@ -109,7 +109,7 @@ class TimeLine extends React.Component {
         let curItemDay;
         //时间线数据
         let dataList = this.props.list;
-        const YEAR_TIME_FORMAT = oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get("common.time.unit.year", "年");
+        const YEAR_TIME_FORMAT = oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get('common.time.unit.year', '年');
         if (_.isArray(dataList) && dataList.length) {
             return (<div className="time-line">
                 {dataList.map((item, index) => {
@@ -121,14 +121,14 @@ class TimeLine extends React.Component {
                     if (timeField && item[timeField]) {
                         //处理按天分组逻辑
                         if (groupByDay) {
-                            curItemDay = moment(item[timeField]).startOf("day").valueOf();
+                            curItemDay = moment(item[timeField]).startOf('day').valueOf();
                             dayStr = this.getFirstAppearTimeStr(curItemDay, prevItemDay, oplateConsts.DATE_MONTH_DAY_FORMAT, relativeDate);
                             //将当前项保存下来，以备下次循环中使用
                             prevItemDay = curItemDay;
                         }
                         //处理按年分组逻辑
                         if (groupByYear && !relativeDate) {
-                            curItemYear = moment(item[timeField]).startOf("year").valueOf();
+                            curItemYear = moment(item[timeField]).startOf('year').valueOf();
                             yearStr = this.getFirstAppearTimeStr(curItemYear, prevItemYear, YEAR_TIME_FORMAT, relativeDate);
                             //将当前项保存下来，以备下次循环中使用
                             prevItemYear = curItemYear;
@@ -172,7 +172,7 @@ TimeLine.defaultProps = {
     //是否按年分组
     groupByYear: false,
     //时间字段名
-    timeField: "",
+    timeField: '',
     //左侧是否用相对时间显示
     relativeDate: false,
     //渲染函数，根据回调返回的列表项数据，渲染列表项html

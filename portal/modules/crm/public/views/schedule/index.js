@@ -1,26 +1,26 @@
-require("../../css/schedule.less");
-var ScheduleStore = require("../../store/schedule-store");
-var ScheduleAction = require("../../action/schedule-action");
-var CrmScheduleForm = require("./form");
-import {Icon, message, Button, Alert, Popover} from "antd";
-var GeminiScrollbar = require("../../../../../components/react-gemini-scrollbar");
-var TimeLine = require("CMP_DIR/time-line-new");
-import Trace from "LIB_DIR/trace";
+require('../../css/schedule.less');
+var ScheduleStore = require('../../store/schedule-store');
+var ScheduleAction = require('../../action/schedule-action');
+var CrmScheduleForm = require('./form');
+import {Icon, message, Button, Alert, Popover} from 'antd';
+var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
+var TimeLine = require('CMP_DIR/time-line-new');
+import Trace from 'LIB_DIR/trace';
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
-import userData from "PUB_DIR/sources/user-data";
+import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
 import Spinner from 'CMP_DIR/spinner';
 import classNames from 'classnames';
-import DetailCard from "CMP_DIR/detail-card";
-import {DetailEditBtn} from "CMP_DIR/rightPanel";
-import ScheduleItem from "./schedule-item";
-import RightPanelScrollBar from "../components/rightPanelScrollBar";
-import NoDataTip from "../components/no-data-tip";
-import ErrorDataTip from "../components/error-data-tip";
+import DetailCard from 'CMP_DIR/detail-card';
+import {DetailEditBtn} from 'CMP_DIR/rightPanel';
+import ScheduleItem from './schedule-item';
+import RightPanelScrollBar from '../components/rightPanelScrollBar';
+import NoDataTip from '../components/no-data-tip';
+import ErrorDataTip from '../components/error-data-tip';
 var CrmSchedule = React.createClass({
     getInitialState: function() {
         return {
-            customerId: this.props.curCustomer.id || "",
+            customerId: this.props.curCustomer.id || '',
             ...ScheduleStore.getState()
         };
     },
@@ -66,10 +66,10 @@ var CrmSchedule = React.createClass({
         const newSchedule = {
             customer_id: this.props.curCustomer.id,
             customer_name: this.props.curCustomer.name,
-            start_time: "",
-            end_time: "",
-            alert_time: "",
-            topic: "",
+            start_time: '',
+            end_time: '',
+            alert_time: '',
+            topic: '',
             edit: true
         };
         ScheduleAction.showAddForm(newSchedule);
@@ -77,7 +77,7 @@ var CrmSchedule = React.createClass({
         GeminiScrollbar.scrollTo(this.refs.alertWrap, 0);
     },
     editSchedule: function(alert) {
-        Trace.traceEvent(this.getDOMNode(), "编辑联系计划");
+        Trace.traceEvent(this.getDOMNode(), '编辑联系计划');
         ScheduleAction.showEditForm(alert);
     },
     //修改状态
@@ -88,25 +88,25 @@ var CrmSchedule = React.createClass({
         }
         const reqData = {
             id: item.id,
-            status: item.status == "false" ? "handle" : "false",
+            status: item.status == 'false' ? 'handle' : 'false',
         };
-        var status = item.status == "false" ? "完成" : "未完成";
-        Trace.traceEvent($(this.getDOMNode()).find(".item-wrapper .ant-btn"), "修改联系计划的状态为" + status);
+        var status = item.status == 'false' ? '完成' : '未完成';
+        Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
         ScheduleAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {
-                    "id": item.id,
-                    "status": reqData.status
+                    'id': item.id,
+                    'status': reqData.status
                 };
                 ScheduleAction.afterHandleStatus(newStatusObj);
             } else {
-                message.error(resData || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败"));
+                message.error(resData || Intl.get('crm.failed.alert.todo.list', '修改待办事项状态失败'));
             }
         });
     },
     deleteSchedule: function(id) {
         const reqData = {id: id};
-        Trace.traceEvent($(this.getDOMNode()).find(".item-wrapper .anticon-delete"), "删除联系计划");
+        Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .anticon-delete'), '删除联系计划');
         ScheduleAction.deleteSchedule(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 ScheduleAction.afterDelSchedule(id);
@@ -114,7 +114,7 @@ var CrmSchedule = React.createClass({
                     scheduleList: this.state.scheduleList
                 });
             } else {
-                message.error(Intl.get("crm.139", "删除失败"));
+                message.error(Intl.get('crm.139', '删除失败'));
             }
         });
     },
@@ -128,10 +128,10 @@ var CrmSchedule = React.createClass({
     },
     updateScheduleList: function(newItem, type) {
         //如果是新增一个提醒
-        if (type == "add") {
+        if (type == 'add') {
             newItem.edit = false;
             this.state.scheduleList.unshift(newItem);
-        } else if (type == "delete") {
+        } else if (type == 'delete') {
             this.state.scheduleList = _.filter(this.state.scheduleList, (list) => {
                 return list.id !== newItem.id;
             });
@@ -196,16 +196,16 @@ var CrmSchedule = React.createClass({
                 />);
         } else {
             //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get("common.no.data", "暂无数据")}/>);
+            return (<NoDataTip tipContent={Intl.get('common.no.data', '暂无数据')}/>);
         }
     },
     renderScheduleTitle(){
         return (
             <div className="schedule-title">
-                <span>{Intl.get("crm.right.schedule", "联系计划")}:</span>
+                <span>{Intl.get('crm.right.schedule', '联系计划')}:</span>
                 {this.props.isMerge ? null : (
                     <span className="iconfont icon-add schedule-add-btn"
-                        title={Intl.get("crm.214", "添加联系计划")}
+                        title={Intl.get('crm.214', '添加联系计划')}
                         onClick={this.addSchedule}/>)
                 }
             </div>);

@@ -5,23 +5,23 @@
  */
 
 // 引入 sso-login.js
-import SSOClient from "component-util/lib/sso-login";
+import SSOClient from 'component-util/lib/sso-login';
 
-let lang = "", clientId, callBackUrl = "/ssologin";
-let hasWindow = !(typeof window === "undefined");
+let lang = '', clientId, callBackUrl = '/ssologin';
+let hasWindow = !(typeof window === 'undefined');
 
 if (hasWindow) {
-    lang = window.Oplate && window.Oplate.lang || "zh_CN";
-    clientId = window.Oplate && window.Oplate.clientId || "";
-    callBackUrl = window.location.origin + "/ssologin";
+    lang = window.Oplate && window.Oplate.lang || 'zh_CN';
+    clientId = window.Oplate && window.Oplate.clientId || '';
+    callBackUrl = window.location.origin + '/ssologin';
 }
 const ssoLogin = new SSOClient({
     // SSO所在的服务器
-    ssoOrigin: "https://oplate-sso.antfact.com",
+    ssoOrigin: 'https://oplate-sso.antfact.com',
     // 待接入应用的 client_id
     clientId: clientId,
     // 指定语言（用于登录失败时，返回的出错提示所使用的语言，如：zh-CN）
-    lang: lang.replace("_", "-"),
+    lang: lang.replace('_', '-'),
     // 登录成功后的回调地址
     callBackUrl: callBackUrl
 }, {

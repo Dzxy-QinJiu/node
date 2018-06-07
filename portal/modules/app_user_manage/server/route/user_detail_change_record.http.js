@@ -4,16 +4,16 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 module.exports = {
-    module: "app_user_manage/server/action/user_detail_change_record_controller",
+    module: 'app_user_manage/server/action/user_detail_change_record_controller',
     routes: [{
-        "method": "get",
-        "path": "/rest/user/record",
-        "handler": "getUserDetailChangeRecord",
-        "passport": {
-            "needLogin": true
+        'method': 'get',
+        'path': '/rest/user/record',
+        'handler': 'getUserDetailChangeRecord',
+        'passport': {
+            'needLogin': true
         },
-        "privileges": [
-            "USER_TIME_LINE"
+        'privileges': [
+            'USER_TIME_LINE'
         ]
     },]
 };

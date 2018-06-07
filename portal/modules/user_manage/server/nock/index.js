@@ -5,8 +5,8 @@
 
 var nock = require('nock');
 var nockParser = require(require('path').join(portal_root_path, './lib/utils/nockParser'));
-var restUrl = require("../service/user-manage-service").urls;
-var userData = require("./data");
+var restUrl = require('../service/user-manage-service').urls;
+var userData = require('./data');
 function init() {
     //获取用户列表
     nock(config.nockUrl)

@@ -4,7 +4,7 @@ import IpConfigAjax from '../ajax/ip-config-ajax';
 import Spinner from '../../../../components/spinner';
 import { Alert,Icon, Checkbox } from 'antd';
 import AlertTimer from '../../../../components/alert-timer';
-import Trace from "LIB_DIR/trace";
+import Trace from 'LIB_DIR/trace';
 const CHECKIPMSG = Intl.get('config.manage.input.ip','请输入有效的IP（eg:192.168.1.9）');
 
 const IpConfig = React.createClass({
@@ -39,13 +39,13 @@ const IpConfig = React.createClass({
     
     // 提交保存按钮
     handleSubmit(event){
-        Trace.traceEvent(event,"点击添加IP按钮");
+        Trace.traceEvent(event,'点击添加IP按钮');
         var _this = this;
         this.setState({
             isLoading: true
         });
         event.preventDefault();
-        $("#addIpConfigSaveBtn").attr("disabled", "disabled");
+        $('#addIpConfigSaveBtn').attr('disabled', 'disabled');
         var addIpItem = $.trim(this.refs.addIpItem.value );
         IpConfigAjax.addIpConfigItem(addIpItem).then((result) => {
             this.setState({
@@ -53,7 +53,7 @@ const IpConfig = React.createClass({
             });
             this.getIpConfigList();
             this.refs.addIpItem.value = '';
-            $("#addIpConfigSaveBtn").removeAttr("disabled");
+            $('#addIpConfigSaveBtn').removeAttr('disabled');
         }, (errMsg) => {
             this.setState({
                 addIpErrMsg: errMsg,
@@ -130,7 +130,7 @@ const IpConfig = React.createClass({
         if(_.isArray(ipList) && !ipList.length) {
             return <div className="no-ip-alert-wrap">
                 <Alert
-                    message={Intl.get("config.manage.no.ip", "暂无IP配置，请添加！")}
+                    message={Intl.get('config.manage.no.ip', '暂无IP配置，请添加！')}
                     type="info"
                     showIcon={true}
                 />
@@ -171,12 +171,12 @@ const IpConfig = React.createClass({
             this.setState({
                 addIpErrMsg: CHECKIPMSG
             });
-            $("#addIpConfigSaveBtn").attr("disabled", "disabled");
+            $('#addIpConfigSaveBtn').attr('disabled', 'disabled');
         } else {
             this.setState({
                 addIpErrMsg: ''
             });
-            $("#addIpConfigSaveBtn").removeAttr("disabled");
+            $('#addIpConfigSaveBtn').removeAttr('disabled');
         }
     },
 
@@ -185,7 +185,7 @@ const IpConfig = React.createClass({
             this.setState({
                 addIpErrMsg: ''
             });
-            $("#addIpConfigSaveBtn").removeAttr("disabled");
+            $('#addIpConfigSaveBtn').removeAttr('disabled');
         }
     },
 
@@ -235,7 +235,7 @@ const IpConfig = React.createClass({
                     >
                         <Icon
                             type="reload"
-                            title={Intl.get("config.manage.reload.ip", "重新获取IP")}
+                            title={Intl.get('config.manage.reload.ip', '重新获取IP')}
                             id="reload-ip-config"
                         />
                     </span>

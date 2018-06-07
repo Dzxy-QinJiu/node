@@ -1,7 +1,7 @@
 //用户状态添加switch切换逻辑
-import {Icon,Switch} from "antd";
-const AppUserAjax = require("../ajax/app-user-ajax");
-const AlertTimer = require("CMP_DIR/alert-timer");
+import {Icon,Switch} from 'antd';
+const AppUserAjax = require('../ajax/app-user-ajax');
+const AlertTimer = require('CMP_DIR/alert-timer');
 import language from 'PUB_DIR/language/getLanguage';
 
 const UserStatusFieldSwitch = React.createClass({
@@ -48,7 +48,7 @@ const UserStatusFieldSwitch = React.createClass({
     saveUserStatus: function() {
         let submitObj = {
             user_id: this.props.userId,
-            status: this.state.status ? "1" : "0"
+            status: this.state.status ? '1' : '0'
         };
         this.setState({resultType: 'loading', errorMsg: ''});
         //提交数据
@@ -58,13 +58,13 @@ const UserStatusFieldSwitch = React.createClass({
             } else {
                 this.setState({
                     resultType: 'error',
-                    errorMsg: Intl.get("common.edit.failed", "修改失败"),
+                    errorMsg: Intl.get('common.edit.failed', '修改失败'),
                 });
             }
         }, (errorMsg) => {
             this.setState({
                 resultType: 'error',
-                errorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
+                errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
             });
         });
     },
@@ -72,14 +72,14 @@ const UserStatusFieldSwitch = React.createClass({
     render: function() {
         return (
             <div>
-                {language.lan() == "es" ? (
+                {language.lan() == 'es' ? (
                     <Switch checked={this.state.status} onChange={this.changeUserStatus}
                         checkedChildren={<Icon type="check" />}
                         unCheckedChildren={<Icon type="cross" />} />
                 ) : (
                     <Switch checked={this.state.status} onChange={this.changeUserStatus}
-                        checkedChildren={Intl.get("common.enabled", "启用")}
-                        unCheckedChildren={Intl.get("common.stop", "停用")}/>
+                        checkedChildren={Intl.get('common.enabled', '启用')}
+                        unCheckedChildren={Intl.get('common.stop', '停用')}/>
                 )}
                 {this.state.resultType === 'loading' ? <Icon type="loading"/> : null}
                 {this.state.resultType === 'error' ? <AlertTimer time={2000} message={this.state.errorMsg} type="error"

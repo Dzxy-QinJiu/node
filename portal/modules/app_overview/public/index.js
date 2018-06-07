@@ -10,17 +10,17 @@ const AreaLine = require('CMP_DIR/chart/arealine'); // 活跃度
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import { Table, Row, Col} from 'antd';
 const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import AppOverViewActions from './action/app-overview-actions';
 import AppOverViewStore from './store/app-overview-store';
-const history = require("PUB_DIR/sources/history");
+const history = require('PUB_DIR/sources/history');
 const AppUserAction = require('../../app_user_manage/public/action/app-user-actions');
 const AppOverViewAjax = require('./ajax/app-overview-ajax');
 const Spinner = require('CMP_DIR/spinner');
 const TimeStampUtil = require('PUB_DIR/sources/utils/time-stamp-util');
 const AppUserUtil = require('../../app_user_manage/public/util/app-user-util');
-import SelectFullWidth from "CMP_DIR/select-fullwidth";
-import { storageUtil } from "ant-utils";
+import SelectFullWidth from 'CMP_DIR/select-fullwidth';
+import { storageUtil } from 'ant-utils';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -30,8 +30,8 @@ var LAYOUT_CONSTANTS = {
 //地图的formatter
 function mapFormatter(obj) {
     return [
-        Intl.get("oplate_bd_analysis_realm_zone.1","省份") + '：' + obj.name ,
-        Intl.get("oplate_bd_analysis_realm_industry.6","个数") + '：' + (isNaN(obj.value) ? 0 : obj.value)
+        Intl.get('oplate_bd_analysis_realm_zone.1','省份') + '：' + obj.name ,
+        Intl.get('oplate_bd_analysis_realm_industry.6','个数') + '：' + (isNaN(obj.value) ? 0 : obj.value)
     ].join('<br/>');
 }
 
@@ -104,9 +104,9 @@ const AppOverView = React.createClass({
     },
     // 用户总数、新增用户数、活跃度、新增用户（团队和地域）共同的参数
     getCommonQueryParams() {
-        let type = "common";//USER_ANALYSIS_COMMON
-        if (hasPrivilege("USER_ANALYSIS_MANAGER")) {
-            type = "manager";
+        let type = 'common';//USER_ANALYSIS_COMMON
+        if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+            type = 'manager';
         }
         let queryParams = {
             app_id: this.state.app_id,
@@ -138,17 +138,17 @@ const AppOverView = React.createClass({
         AppOverViewActions.getOnlineUserList(1, 1, {client_id: this.state.app_id}); // 当前在线用户数
         AppOverViewActions.getRecentLoginUsers(this.getTodayOnlineParams()); // 今日上线用户数
         let userCountParams = this.getQueryParams(TimeStampUtil.getNearlyWeekTimeStamp());
-        AppOverViewActions.getUserTypeStatistics("total", userCountParams); // 用户总数
-        AppOverViewActions.getAddedUserTypeStatistics("added", userCountParams); // 新增用户
+        AppOverViewActions.getUserTypeStatistics('total', userCountParams); // 用户总数
+        AppOverViewActions.getAddedUserTypeStatistics('added', userCountParams); // 新增用户
     },
     // 获取活跃度
     getAppActiveNess(getAppActiveNess, timeStamp) {
         let activeParams = this.getQueryParams(timeStamp);
-        AppOverViewActions.getUserActiveNess("total", getAppActiveNess, activeParams);
+        AppOverViewActions.getUserActiveNess('total', getAppActiveNess, activeParams);
     },
     commonActiveUserRate(timeStamp, dateRange) {
         let queryParams = this.getQueryParams(timeStamp);
-        AppOverViewAjax.getUserActiveNess("total", dateRange, queryParams).then( (result) => {
+        AppOverViewAjax.getUserActiveNess('total', dateRange, queryParams).then( (result) => {
             if (_.isArray(result) && result.length) {
                 let resData = result[0].datas && _.isArray(result[0].datas) && result[0].datas[0];
                 if (dateRange == 'weekly') {
@@ -452,7 +452,7 @@ const AppOverView = React.createClass({
                             minWidth={120}
                             value={this.state.app_id}
                             onChange={this.onSelectedAppChange.bind(this)}
-                            notFoundContent={!appOptions.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
+                            notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
                         >
                             {appOptions}
                         </SelectFullWidth>

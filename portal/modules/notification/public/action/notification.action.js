@@ -2,9 +2,9 @@
  * 系统通知的action
  */
 //联系人的ajax
-var NotificationAjax = require("../ajax/notification-ajax");
-var notificationEmitter = require("../../../../public/sources/utils/emitters").notificationEmitter;
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var NotificationAjax = require('../ajax/notification-ajax');
+var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 //更新全局未读数
@@ -32,13 +32,13 @@ function NotificationAction() {
 
     //清除未读数
     this.clearUnreadNum = function(type, callback) {
-        let clearTip = Intl.get("notification.clear.unread.failed", "全部标为已读失败！"), error = true;
+        let clearTip = Intl.get('notification.clear.unread.failed', '全部标为已读失败！'), error = true;
         NotificationAjax.clearUnreadNum(type).then(data => {
             if (data) {
                 //清除未读数后，更新申请消息/客户提醒的未读数
                 updateUnread(type, 0);
                 error = false;
-                clearTip = Intl.get("notification.clear.unread.success", "全部标为已读成功！");
+                clearTip = Intl.get('notification.clear.unread.success', '全部标为已读成功！');
             }
             if (callback) {
                 callback({error: error, clearTip: clearTip});

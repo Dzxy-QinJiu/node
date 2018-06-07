@@ -1,15 +1,15 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 销售合同基本信息添加表单
  */
 
-import { Form, Input, Select, DatePicker, Radio } from "antd";
+import { Form, Input, Select, DatePicker, Radio } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-import ValidateMixin from "../../../mixins/ValidateMixin";
-import BasicMixin from "./mixin-basic";
+import ValidateMixin from '../../../mixins/ValidateMixin';
+import BasicMixin from './mixin-basic';
 
 const AddBasic = React.createClass({
     mixins: [ValidateMixin, BasicMixin],
@@ -36,10 +36,10 @@ const AddBasic = React.createClass({
 
         //根据合同额和成本额计算毛利
         let calProfit = formData.contract_amount - formData.cost_price;
-        if (isNaN(calProfit) || calProfit < 0) calProfit = "0";
+        if (isNaN(calProfit) || calProfit < 0) calProfit = '0';
         formData.gross_profit = parseFloat(calProfit).toFixed(2);
 
-        if (!formData.need_invoice) formData.need_invoice = "true";
+        if (!formData.need_invoice) formData.need_invoice = 'true';
 
         return (
             <Form horizontal className="add-basic" data-tracename="添加合同>基本信息">
@@ -52,33 +52,33 @@ const AddBasic = React.createClass({
                     {this.renderAmountField()}
                     <FormItem 
                         {...formItemLayout2}
-                        label={Intl.get("contract.153", "成本额")}
-                        validateStatus={this.getValidateStatus("cost_price")}
-                        help={this.getHelpMessage("cost_price")}
+                        label={Intl.get('contract.153', '成本额')}
+                        validateStatus={this.getValidateStatus('cost_price')}
+                        help={this.getHelpMessage('cost_price')}
                     >
                         <Validator rules={[this.getNumberValidateRule()]}>
                             <Input
                                 name="cost_price"
                                 value={this.parseAmount(formData.cost_price)}
-                                onChange={this.setField.bind(this, "cost_price")}
+                                onChange={this.setField.bind(this, 'cost_price')}
                             />
                         </Validator>
                     </FormItem>
                     <FormItem 
                         {...formItemLayout2}
-                        label={Intl.get("contract.165", "成本构成")}
+                        label={Intl.get('contract.165', '成本构成')}
                     >
                         <Input
                             name="cost_structure"
                             value={this.parseAmount(formData.cost_structure)}
-                            onChange={this.setField.bind(this, "cost_structure")}
+                            onChange={this.setField.bind(this, 'cost_structure')}
                         />
                     </FormItem>
                     <FormItem 
                         {...formItemLayout2}
-                        label={Intl.get("contract.154", "合同毛利")}
-                        validateStatus={this.getValidateStatus("gross_profit")}
-                        help={this.getHelpMessage("gross_profit")}
+                        label={Intl.get('contract.154', '合同毛利')}
+                        validateStatus={this.getValidateStatus('gross_profit')}
+                        help={this.getHelpMessage('gross_profit')}
                     >
                         <Validator rules={[this.getNumberValidateRule()]}>
                             <Input
@@ -91,30 +91,30 @@ const AddBasic = React.createClass({
                     {this.renderDateField()}
                     <FormItem 
                         {...formItemLayout}
-                        label={Intl.get("contract.35", "起始时间")}
+                        label={Intl.get('contract.35', '起始时间')}
                     >
                         <DatePicker
-                            value={formData.start_time ? moment(formData.start_time) : ""}
-                            onChange={this.setField.bind(this, "start_time")}
+                            value={formData.start_time ? moment(formData.start_time) : ''}
+                            onChange={this.setField.bind(this, 'start_time')}
                         />
                     </FormItem>
                     <FormItem 
                         {...formItemLayout}
-                        label={Intl.get("contract.105", "结束时间")}
+                        label={Intl.get('contract.105', '结束时间')}
                     >
                         <DatePicker
-                            value={formData.end_time ? moment(formData.end_time) : ""}
-                            onChange={this.setField.bind(this, "end_time")}
+                            value={formData.end_time ? moment(formData.end_time) : ''}
+                            onChange={this.setField.bind(this, 'end_time')}
                         />
                     </FormItem>
                     <FormItem 
                         {...formItemLayout2}
-                        label={Intl.get("contract.106", "份数（份）")}
+                        label={Intl.get('contract.106', '份数（份）')}
                     >
                         <Select
                             placeholder="1--10"
                             value={formData.copy_number}
-                            onChange={this.setField.bind(this, "copy_number")}
+                            onChange={this.setField.bind(this, 'copy_number')}
                         >
                             {copyNumArray.map(copyNum => { return (
                                 <Option key={copyNum} value={copyNum}>{copyNum}</Option>
@@ -123,11 +123,11 @@ const AddBasic = React.createClass({
                     </FormItem>
                     <FormItem 
                         {...formItemLayout2}
-                        label={Intl.get("contract.107", "开发票")}
+                        label={Intl.get('contract.107', '开发票')}
                     >
                         <RadioGroup
                             value={formData.need_invoice}
-                            onChange={this.setField.bind(this, "need_invoice")}
+                            onChange={this.setField.bind(this, 'need_invoice')}
                         >
                             <Radio key="1" value="true"><ReactIntl.FormattedMessage id="user.yes" defaultMessage="是" /></Radio>
                             <Radio key="2" value="false"><ReactIntl.FormattedMessage id="user.no" defaultMessage="否" /></Radio>

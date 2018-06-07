@@ -1,12 +1,12 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Icon, Alert, Select, Form} from 'antd';
 let FormItem = Form.Item;
 let Option = Select.Option;
 let CrmAction = require('../../action/crm-actions');
 import FieldMixin from '../../../../../components/antd-form-fieldmixin';
-let CrmBasicAjax = require("../../ajax/index");
-import Trace from "LIB_DIR/trace";
+let CrmBasicAjax = require('../../ajax/index');
+import Trace from 'LIB_DIR/trace';
 
 var IndustrySelectField = React.createClass({
     mixins: [FieldMixin],
@@ -25,7 +25,7 @@ var IndustrySelectField = React.createClass({
     getInitialState: function() {
         return {
             loading: false,//正在保存
-            displayType: "text",
+            displayType: 'text',
             disabled: this.props.disabled,
             isMerge: this.props.isMerge,
             customerId: this.props.customerId,
@@ -56,7 +56,7 @@ var IndustrySelectField = React.createClass({
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
-                list = _.pluck(list, "industry");
+                list = _.pluck(list, 'industry');
             }
             this.setState({isLoadingList: false, list: list});
         });
@@ -75,18 +75,18 @@ var IndustrySelectField = React.createClass({
     },
     changeDisplayType: function(type) {
         if (type === 'text') {
-            Trace.traceEvent(this.getDOMNode(),"取消对行业的修改");
+            Trace.traceEvent(this.getDOMNode(),'取消对行业的修改');
             this.state.formData.industry = this.props.industry;
             this.setState({
                 formData: this.state.formData,
                 displayType: type,
-                submitErrorMsg: ""
+                submitErrorMsg: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(),"设置行业");
+            Trace.traceEvent(this.getDOMNode(),'设置行业');
             this.setState({
                 displayType: type,
-                submitErrorMsg: "",
+                submitErrorMsg: '',
                 loading: false
             });
         }
@@ -115,10 +115,10 @@ var IndustrySelectField = React.createClass({
             } else {
                 let submitData = {
                     id: this.state.customerId,
-                    type: "industry",
+                    type: 'industry',
                     industry: this.state.formData.industry
                 };
-                Trace.traceEvent(this.getDOMNode(),"保存对行业的修改");
+                Trace.traceEvent(this.getDOMNode(),'保存对行业的修改');
                 if (this.props.isMerge) {
                     this.props.updateMergeCustomer(submitData);
                     this.backToDisplay();
@@ -133,7 +133,7 @@ var IndustrySelectField = React.createClass({
                     }, errorMsg => {
                         this.setState({
                             loading: false,
-                            submitErrorMsg: errorMsg || Intl.get("crm.162", "修改客户行业失败")
+                            submitErrorMsg: errorMsg || Intl.get('crm.162', '修改客户行业失败')
                         });
                     });
                 }
@@ -141,15 +141,15 @@ var IndustrySelectField = React.createClass({
         });
     },
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(),"选择行业");
+        Trace.traceEvent(this.getDOMNode(),'选择行业');
     },
     render: function() {
         if (this.state.displayType === 'text') {
             return (
                 <div className="basic-industry-field">
                     <span>{this.state.formData.industry}</span>
-                    <i className="iconfont icon-update" title={Intl.get("crm.163", "设置行业")}
-                        onClick={this.changeDisplayType.bind(this , "edit")}/>
+                    <i className="iconfont icon-update" title={Intl.get('crm.163', '设置行业')}
+                        onClick={this.changeDisplayType.bind(this , 'edit')}/>
                 </div>
             );
         }
@@ -159,9 +159,9 @@ var IndustrySelectField = React.createClass({
             <Icon type="loading"/>
         ) : !this.state.isLoadingList ? (
             <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={this.handleSubmit}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                    onClick={this.changeDisplayType.bind(this,"text")}/>
+                <i title={Intl.get('common.save', '保存')} className="inline-block iconfont icon-choose" onClick={this.handleSubmit}/>
+                <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
+                    onClick={this.changeDisplayType.bind(this,'text')}/>
             </div>
         ) : null;
 
@@ -172,16 +172,16 @@ var IndustrySelectField = React.createClass({
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
                     validateStatus={this.renderValidateStyle('industry')}
-                    help={status.industry.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.industry.errors && status.industry.errors.join(','))}
+                    help={status.industry.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.industry.errors && status.industry.errors.join(','))}
                 >
                     {this.state.isLoadingList ? (
                         <div className="industry-list-loading"><ReactIntl.FormattedMessage id="crm.88" defaultMessage="正在获取行业列表" /><Icon type="loading"/></div>) : (
                         <Validator
-                            rules={[{required: true, message: Intl.get("crm.22", "请选择行业")}]}>
-                            <Select showSearch placeholder={Intl.get("crm.22", "请选择行业")} name="industry"
-                                searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
+                            rules={[{required: true, message: Intl.get('crm.22', '请选择行业')}]}>
+                            <Select showSearch placeholder={Intl.get('crm.22', '请选择行业')} name="industry"
+                                searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
                                 optionFilterProp="children"
-                                notFoundContent={this.state.list.length ? Intl.get("crm.23", "无相关行业") : Intl.get("crm.24", "暂无行业")}
+                                notFoundContent={this.state.list.length ? Intl.get('crm.23', '无相关行业') : Intl.get('crm.24', '暂无行业')}
                                 value={this.state.formData.industry}
                                 onChange={this.setField.bind(this, 'industry')}
                                 onSelect={this.handleSelect}

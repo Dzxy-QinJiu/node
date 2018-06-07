@@ -2,8 +2,8 @@
  * 应用的系统公告的action
  */
 
-var noticeAjax = require("../ajax/app-notice-ajax");
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var noticeAjax = require('../ajax/app-notice-ajax');
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 
 function AppNoticeActions(){
     this.generateActions(

@@ -7,21 +7,21 @@ import zh_CN from '../../../i18n/zh_CN';
 import en_US from '../../../i18n/en_US';
 import es_VE from '../../../i18n/es_VE';
 const defaultLanguage = 'zh_CN'; // 缺省语言
-import { storageUtil } from "ant-utils";
+import { storageUtil } from 'ant-utils';
 const Local = {
     getNavigatorLanguage(){
         //获取浏览器语言
-        var lang = typeof navigator == "object" && navigator.language;
+        var lang = typeof navigator == 'object' && navigator.language;
         //如果设置了语言，以设置为准
-        if (typeof Oplate == "object" && Oplate.lang) {
+        if (typeof Oplate == 'object' && Oplate.lang) {
             lang = Oplate.lang;
-        } else if (typeof localStorage == "object") {
-            lang = storageUtil.local.get("userLang");
+        } else if (typeof localStorage == 'object') {
+            lang = storageUtil.local.get('userLang');
         }
         return lang || defaultLanguage;
     },
     getLanguageCode(language){
-        if (typeof language == "string")
+        if (typeof language == 'string')
             return language && language.toLowerCase().split(/[_-]+/)[0];
         else return language;
     },

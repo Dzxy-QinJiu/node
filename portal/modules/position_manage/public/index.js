@@ -1,4 +1,4 @@
-require("./css/index.less");
+require('./css/index.less');
 import TopNav from 'CMP_DIR/top-nav'; //顶部导航
 import { Button, Table} from 'antd';
 import { RightPanel } from 'CMP_DIR/rightPanel';
@@ -8,10 +8,10 @@ import AddPositionForm from './views/position-form';
 import PositionInfo from './views/position-info';
 import Spinner from 'CMP_DIR/spinner';
 const AntTableCommon = require('CMP_DIR/antd-table-pagination'); // 调整表格的head和body对齐
-import ScrollLoad from "CMP_DIR/scroll-load";
+import ScrollLoad from 'CMP_DIR/scroll-load';
 import { topNavEmitter } from 'OPLATE_EMITTER';
 import * as LANGLOBAL from './consts';
-import SearchInput from "CMP_DIR/searchInput";
+import SearchInput from 'CMP_DIR/searchInput';
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 150,
@@ -20,12 +20,12 @@ const LAYOUT_CONSTANTS = {
 //搜索字段列表
 const searchFields = [
     {
-        name: Intl.get("common.username", "用户名"),
-        field: "nick_name"
+        name: Intl.get('common.username', '用户名'),
+        field: 'nick_name'
     },
     {
         name: LANGLOBAL.POSITION.number,
-        field: "phone_order"
+        field: 'phone_order'
     }
 ];
 const PositionManage = React.createClass({
@@ -63,7 +63,7 @@ const PositionManage = React.createClass({
         PositionAction.getPhoneOrderList(reqObj); // 获取座席号列表
     },
     componentDidMount() {
-        $("body").css("overflow", "hidden");
+        $('body').css('overflow', 'hidden');
         PositionStore.listen(this.onStoreChange);
         AntTableCommon.zoomInSortArea(this.refs.positionListTable);
         PositionAction.getRealmList(); // 获取安全域列表
@@ -71,7 +71,7 @@ const PositionManage = React.createClass({
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     },
     componentWillUnmount() {
-        $("body").css("overflow", "auto");
+        $('body').css('overflow', 'auto');
         PositionStore.unlisten(this.onStoreChange);
     },
     // 打开详情面板
@@ -84,7 +84,7 @@ const PositionManage = React.createClass({
     },
     // 关闭右侧详情面板
     closeRightDetailPanel() {
-        $("tr").removeClass("current-row");
+        $('tr').removeClass('current-row');
         this.setState({
             isShowDetailRightPanel: false
         });
@@ -177,10 +177,10 @@ const PositionManage = React.createClass({
     },
     handleRowClassName(record, index) {
         if ((index == this.state.selectedRowIndex) && this.state.isShowDetailRightPanel) {
-            return "current-row";
+            return 'current-row';
         }
         else {
-            return "";
+            return '';
         }
     },
     renderTableContent() {
@@ -211,7 +211,7 @@ const PositionManage = React.createClass({
                             onChange={this.handleTableChange}
                             onRowClick={this.handleRowClick}
                             rowClassName={this.handleRowClassName}
-                            locale={{ emptyText: Intl.get("common.no.data", "暂无数据") }}
+                            locale={{ emptyText: Intl.get('common.no.data', '暂无数据') }}
                             scroll={{ y: tableHeight}}
                             pagination={false}
                         />
@@ -242,7 +242,7 @@ const PositionManage = React.createClass({
                         />
                         <div className="add-position-btn">
                             <Button type="ghost" onClick={this.handleAddPosition}>
-                                {Intl.get("user.add.position", "添加座席号")}
+                                {Intl.get('user.add.position', '添加座席号')}
                             </Button>
                         </div>
                     </div>

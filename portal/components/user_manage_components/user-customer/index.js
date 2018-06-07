@@ -1,4 +1,4 @@
-require("./index.less");
+require('./index.less');
 import classNames from 'classnames';
 import {Icon,Alert} from 'antd';
 import CustomerSuggest from '../../../modules/app_user_manage/public/views/customer_suggest/customer_suggest';
@@ -7,7 +7,7 @@ import {hasPrivilege} from '../../privilege/checker';
 
 const PropTypes = React.PropTypes;
 //class的前缀
-const CLASS_PREFIX = "user-customer";
+const CLASS_PREFIX = 'user-customer';
 //空函数
 function noop(){}
 /**
@@ -22,7 +22,7 @@ function noop(){}
 class UserCustomer extends React.Component{
     constructor(props){
         super(props);
-        this.componentId = _.uniqueId("UserCustomer");
+        this.componentId = _.uniqueId('UserCustomer');
         this.state = {
             //客户id
             customer_id: this.props.customer_id,
@@ -47,12 +47,12 @@ class UserCustomer extends React.Component{
     componentWillReceiveProps(nextProps){
         //外层传进来新的客户、销售、销售团队数据的时候，更新这些字段
         var propList = [
-            "customer_id",
-            "customer_name",
-            "sales_id",
-            "sales_name",
-            "sales_team_id",
-            "sales_team_name"
+            'customer_id',
+            'customer_name',
+            'sales_id',
+            'sales_name',
+            'sales_team_id',
+            'sales_team_name'
         ];
         const newState = {};
         _.each(propList , (prop) => {
@@ -113,7 +113,7 @@ class UserCustomer extends React.Component{
     hideCustomerError() {
         this.setState({
             show_customer_error: false,
-            submitType: "",
+            submitType: '',
             error_message: ''
         });
     }
@@ -139,7 +139,7 @@ class UserCustomer extends React.Component{
         if(this.state.submitType === 'loading') {
             return;
         }
-        var $input = $(".ant-select-search__field",this.refs.wrap);
+        var $input = $('.ant-select-search__field',this.refs.wrap);
         var input_val = $input[0] && $input.val();
         if(input_val !== undefined) {
             if(!input_val) {
@@ -190,7 +190,7 @@ class UserCustomer extends React.Component{
                     });
                 } else {
                     _this.setState({
-                        error_message: Intl.get("common.edit.failed", "修改失败"),
+                        error_message: Intl.get('common.edit.failed', '修改失败'),
                         submitType: 'error'
                     });
                 }
@@ -198,7 +198,7 @@ class UserCustomer extends React.Component{
             error: function(xhr) {
                 _this.setState({
                     submitType: 'error',
-                    error_message: xhr.responseJSON || Intl.get("common.edit.failed", "修改失败")
+                    error_message: xhr.responseJSON || Intl.get('common.edit.failed', '修改失败')
                 });
             }
         });
@@ -215,7 +215,7 @@ class UserCustomer extends React.Component{
             });
         };
         if(this.state.submitType === 'success') {
-            return <AlertTimer message={Intl.get("user.edit.success", "修改成功")} type="success" onHide={onSuccessHide} showIcon/>;
+            return <AlertTimer message={Intl.get('user.edit.success', '修改成功')} type="success" onHide={onSuccessHide} showIcon/>;
         }
         if(this.state.submitType === 'error') {
             return <Alert message={this.state.error_message} type="error" showIcon/>;
@@ -227,13 +227,13 @@ class UserCustomer extends React.Component{
 
         if(this.state.displayType === 'text') {
             //有修改用户的权限或者有修改用户所属客户的权限，并且有查询客户列表的权限时，才可以修改用户的所属客户
-            var canEdit = (hasPrivilege("APP_USER_EDIT") || hasPrivilege("CHANGE_USER_CUSTOMER")) && hasPrivilege("CRM_LIST_CUSTOMERS");
+            var canEdit = (hasPrivilege('APP_USER_EDIT') || hasPrivilege('CHANGE_USER_CUSTOMER')) && hasPrivilege('CRM_LIST_CUSTOMERS');
             return (
                 <div className="user-basic-edit-field">
                     <span>{this.props.customer_name}</span>
                     {
                         canEdit ? <i className="iconfont icon-update"
-                            onClick={this.changeDisplayType.bind(this,"select")}></i> : null
+                            onClick={this.changeDisplayType.bind(this,'select')}></i> : null
                     }
                 </div>
             );
@@ -247,7 +247,7 @@ class UserCustomer extends React.Component{
             <div className={cls} {...restProps} ref="wrap">
                 {this.renderCustomerBlock()}
                 {showBtnBool ? <span className="iconfont icon-choose" onClick={this.submit.bind(this)}></span> : null}
-                {showBtnBool ? <span className="iconfont icon-close" onClick={this.changeDisplayType.bind(this , "text")}></span> : null}
+                {showBtnBool ? <span className="iconfont icon-close" onClick={this.changeDisplayType.bind(this , 'text')}></span> : null}
                 {this.renderIndicator()}
             </div>
         );
@@ -273,7 +273,7 @@ class UserCustomer extends React.Component{
                 }
                 <dl className="dl-horizontal user_detail_item  detail_item">
                     <dt>
-                        {Intl.get("call.record.customer","客户")}
+                        {Intl.get('call.record.customer','客户')}
                     </dt>
                     <dd>
                         {this.renderUserCustomer()}
@@ -289,17 +289,17 @@ class UserCustomer extends React.Component{
  */
 function getDefaultProps(){
     //客户id
-    const customer_id = "";
+    const customer_id = '';
     //客户name
-    const customer_name = "";
+    const customer_name = '';
     //保存成功的处理函数
     const onChangeSuccess = noop;
     //class名
-    const className = "";
+    const className = '';
     //显示类型
-    const displayType = "text";
+    const displayType = 'text';
     //用户id
-    const user_id = "";
+    const user_id = '';
     return {customer_id,customer_name,onChangeSuccess,className,displayType,user_id};
 }
 

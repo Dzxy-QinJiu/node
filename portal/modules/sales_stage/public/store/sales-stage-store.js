@@ -1,4 +1,4 @@
-var SalesStageActions = require("../action/sales-stage-actions");
+var SalesStageActions = require('../action/sales-stage-actions');
 
 var emptySalesStage = {
     id: '',
@@ -79,7 +79,7 @@ SalesStageStore.prototype.getSalesStageList = function(salesStageList) {
 //添加销售阶段
 SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
     var _this = this;
-    if (typeof salesStageCreated !== "string") {
+    if (typeof salesStageCreated !== 'string') {
         $.each(salesStageCreated, function(i, salesStage) {
             _this.salesStageList.push(salesStage);
         });
@@ -91,7 +91,7 @@ SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
 SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
 
     var _this = this;
-    if (typeof salesStageModified !== "string") {
+    if (typeof salesStageModified !== 'string') {
         $.each(salesStageModified, function(i, salesStage) {
             var target = _.find(_this.salesStageList, function(item) {
                 if (item.id === salesStage.id) {
@@ -109,7 +109,7 @@ SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
 
 SalesStageStore.prototype.saveSalesStageOrder = function(salesStageModified) {
 
-    if (typeof salesStageModified !== "string") {
+    if (typeof salesStageModified !== 'string') {
         this.salesStageList = salesStageModified;
     }
 
@@ -172,7 +172,7 @@ SalesStageStore.prototype.salesStageOrderDown = function(salesStage) {
 //展示右侧编辑面板
 SalesStageStore.prototype.showSalesStageForm = function(salesStage) {
     this.salesStageFormShow = true;
-    if (salesStage === "addSalesStage") {
+    if (salesStage === 'addSalesStage') {
         this.currentSalesStage = emptySalesStage;
     } else {
         this.currentSalesStage = salesStage;

@@ -1,16 +1,16 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * Created by wangliping on 2016/10/18.
  */
 
-import {Radio,Form,Input,Select,Button,Icon} from "antd";
+import {Radio,Form,Input,Select,Button,Icon} from 'antd';
 const RadioGroup = Radio.Group;
 var FormItem = Form.Item;
-var classNames = require("classnames");
-var AlertTimer = require("../../../../components/alert-timer");
-var OrganizationActions = require("../action/organization-actions");
-var language = require("PUB_DIR/language/getLanguage");
+var classNames = require('classnames');
+var AlertTimer = require('../../../../components/alert-timer');
+var OrganizationActions = require('../action/organization-actions');
+var language = require('PUB_DIR/language/getLanguage');
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
@@ -45,16 +45,16 @@ var OrganizationForm = React.createClass({
         if (organization.isEditGroup) {
             return {
                 ...organization,
-                saveOrganizationMsg: "",
-                saveOrganizationResult: "",
+                saveOrganizationMsg: '',
+                saveOrganizationResult: '',
                 isOrganizationSaving: false
             };
         } else {
             return {
                 title: '',
                 category: CATEGORY_TYPE.DEPARTMENT,
-                saveOrganizationMsg: "",
-                saveOrganizationResult: "",
+                saveOrganizationMsg: '',
+                saveOrganizationResult: '',
                 isOrganizationSaving: false
             };
         }
@@ -122,7 +122,7 @@ var OrganizationForm = React.createClass({
                         formData.saveOrganizationResult = result.saveResult;
                         formData.isOrganizationSaving = false;
                         _this.setState({formData: formData});
-                        if (result.saveResult == "success") {
+                        if (result.saveResult == 'success') {
                             //保存成功后的处理
                             var organization = _this.props.organization;
                             if (organization && organization.isEditGroup) {
@@ -163,7 +163,7 @@ var OrganizationForm = React.createClass({
                         formData.saveOrganizationResult = result.saveResult;
                         formData.isOrganizationSaving = false;
                         _this.setState({formData: formData});
-                        if (result.saveResult === "success") {
+                        if (result.saveResult === 'success') {
                             //添加成功后的处理
                             if (_this.props.isAddRoot) {
                                 //添加根组织时的处理
@@ -213,8 +213,8 @@ var OrganizationForm = React.createClass({
 
     hideSaveTooltip: function() {
         let formData = this.state.formData;
-        formData.saveOrganizationResult = "";
-        formData.saveOrganizationMsg = "";
+        formData.saveOrganizationResult = '';
+        formData.saveOrganizationMsg = '';
         formData.isOrganizationSaving = false;
         this.setState({formData: formData});
     },
@@ -243,14 +243,14 @@ var OrganizationForm = React.createClass({
                                 <FormItem
                                     label=" "
                                     id="category"
-                                    labelCol={{span: language.lan() == "zh" ? 5 : 1}}
-                                    wrapperCol={{span: language.lan() == "zh" ? 18 : 23}}
+                                    labelCol={{span: language.lan() == 'zh' ? 5 : 1}}
+                                    wrapperCol={{span: language.lan() == 'zh' ? 18 : 23}}
                                     colon={false}
                                 >
                                     <RadioGroup onChange={this.onCategoryChange}
                                         value={formData.category}>
-                                        <Radio value={CATEGORY_TYPE.DEPARTMENT}>{Intl.get("crm.113", "部门")}</Radio>
-                                        <Radio value={CATEGORY_TYPE.TEAM}>{Intl.get("user.user.team", "团队")}</Radio>
+                                        <Radio value={CATEGORY_TYPE.DEPARTMENT}>{Intl.get('crm.113', '部门')}</Radio>
+                                        <Radio value={CATEGORY_TYPE.TEAM}>{Intl.get('user.user.team', '团队')}</Radio>
                                     </RadioGroup>
                                 </FormItem> : null}
                         <FormItem
@@ -270,19 +270,19 @@ var OrganizationForm = React.createClass({
                         {//修改部门，上级也是部门时，可以修改上级部门
                             formData.isEditGroup && formData.category == CATEGORY_TYPE.DEPARTMENT && this.props.parentGroup.category == CATEGORY_TYPE.DEPARTMENT ? (
                                 <FormItem
-                                    label={Intl.get("organization.parent.department", "上级部门")}
+                                    label={Intl.get('organization.parent.department', '上级部门')}
                                     id="superiorTeam"
                                     labelCol={{span: 5}}
                                     wrapperCol={{span: 18}}
-                                    validateStatus={this.renderValidateStyle("superiorTeam")}
+                                    validateStatus={this.renderValidateStyle('superiorTeam')}
                                     help={status.superiorTeam.errors ? status.superiorTeam.errors.join(',') : null}
                                 >
                                     <Validator
-                                        rules={[{required: true, message: Intl.get("organization.select.parent.department", "请选择上级部门")}]}>
+                                        rules={[{required: true, message: Intl.get('organization.select.parent.department', '请选择上级部门')}]}>
                                         <Select size="large" style={{width: '100%'}}
                                             name="superiorTeam"
                                             value={formData.superiorTeam}
-                                            placeholder={Intl.get("organization.select.parent.department", "请选择上级部门")}
+                                            placeholder={Intl.get('organization.select.parent.department', '请选择上级部门')}
                                             showSearch
                                             optionFilterProp="children"
                                             notFoundContent={this.formatMessage(messages.common_not_found)}
@@ -299,7 +299,7 @@ var OrganizationForm = React.createClass({
                             wrapperCol={{span: 23}}>
                             {this.state.formData.isOrganizationSaving ? (<Icon type="loading"/>) : (
                                 editResult ? (<div className="indicator">
-                                    <AlertTimer time={editResult == "error" ? 3000 : 600}
+                                    <AlertTimer time={editResult == 'error' ? 3000 : 600}
                                         message={this.state.formData.saveOrganizationMsg}
                                         type={editResult} showIcon
                                         onHide={this.hideSaveTooltip}/>

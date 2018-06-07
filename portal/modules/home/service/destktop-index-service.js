@@ -1,14 +1,14 @@
-var path = require("path");
-var LeftMenus = require(path.join(config_root_path, "menu.js"));
-var auth = require(path.join(portal_root_path, "./lib/utils/auth"));
-var treeWalk = require("tree-walk");
-var _ = require("underscore");
-var mapToObj = require(path.join(portal_root_path, "./lib/utils/mapToObj"));
-var fs = require("fs");
-var request = require("request");
-var restLogger = require("../../../lib/utils/logger").getLogger('rest');
-var pageLogger = require("../../../lib/utils/logger").getLogger('page');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
+var path = require('path');
+var LeftMenus = require(path.join(config_root_path, 'menu.js'));
+var auth = require(path.join(portal_root_path, './lib/utils/auth'));
+var treeWalk = require('tree-walk');
+var _ = require('underscore');
+var mapToObj = require(path.join(portal_root_path, './lib/utils/mapToObj'));
+var fs = require('fs');
+var request = require('request');
+var restLogger = require('../../../lib/utils/logger').getLogger('rest');
+var pageLogger = require('../../../lib/utils/logger').getLogger('page');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 var EventEmitter = require('events');
 function _getLeftMenus(req) {
     let leftMenus = new LeftMenus(req);
@@ -19,7 +19,7 @@ function _getPrivilegeModuleMap(req) {
     var map = {};
     let MenusAll = _getLeftMenus(req);
     treeWalk.preorder(MenusAll, function(value, key, parent) {
-        if (key === "privileges") {
+        if (key === 'privileges') {
             var privilegeList = value, moduleId = parent.id.toLowerCase();
             _.each(privilegeList, function(privilege) {
                 map[privilege] = moduleId;
@@ -34,7 +34,7 @@ function _getSubMenuMap(req) {
     var map = {};
     let MenusAll = _getLeftMenus(req);
     treeWalk.preorder(MenusAll, function(value, key, parent) {
-        if (key === "subMenu" && value && value.length) {
+        if (key === 'subMenu' && value && value.length) {
             var subMenus = value;
             _.each(subMenus, function(menu) {
                 map[menu.id] = parent.id;
@@ -49,7 +49,7 @@ function _getObjectById(id, req) {
     var obj;
     let MenusAll = _getLeftMenus(req);
     treeWalk.preorder(MenusAll, function(value, key, parent) {
-        if (key === "id" && value === id) {
+        if (key === 'id' && value === id) {
             obj = parent;
         }
     });
@@ -63,7 +63,7 @@ function _getMenuChained(req) {
     var unshiftName;
     let MenusAll = _getLeftMenus(req);
     treeWalk.preorder(MenusAll, function(value, key, parent) {
-        if (key === "showPrivileges" && value && value.length) {
+        if (key === 'showPrivileges' && value && value.length) {
             var privileges = value;
             var list = [];
             var target = parent;
@@ -223,7 +223,7 @@ function getDataPromise(req, res, url, pathParams, queryObj) {
     //url中的参数处理
     if (pathParams) {
         for (let key in pathParams) {
-            url += "/" + pathParams[key];
+            url += '/' + pathParams[key];
         }
     }
     let resultObj = {errorData: null, successData: null};
@@ -258,7 +258,7 @@ exports.getUserInfo = function(req, res, userId) {
     let promiseList = [getUserBasicInfo, getUserRole];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
-    let hasGetAllTeamPrivilege = userPrivileges.indexOf("GET_TEAM_LIST_ALL") !== -1;
+    let hasGetAllTeamPrivilege = userPrivileges.indexOf('GET_TEAM_LIST_ALL') !== -1;
     //没有获取所有团队数据的权限,通过获取我所在的团队及下级团队来判断是否是普通销售
     if (!hasGetAllTeamPrivilege) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
@@ -277,12 +277,12 @@ exports.getUserInfo = function(req, res, userId) {
                 let teamTreeList = resultList[2] && resultList[2].successData;
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
             }
-            emitter.emit("success", userData);
+            emitter.emit('success', userData);
         } else if (userInfoResult.errorData) {//只有用户信息获取失败时，才返回失败信息
-            emitter.emit("error", userInfoResult.errorData);
+            emitter.emit('error', userInfoResult.errorData);
         }
     }).catch(errorObj => {
-        emitter.emit("error", errorObj);
+        emitter.emit('error', errorObj);
     });
     return emitter;
 };
@@ -322,7 +322,7 @@ exports.activeEmail = function(req, res, activeCode) {
             req: req,
             res: res,
             json: false,
-            headers: {accept: "text/html"}
+            headers: {accept: 'text/html'}
         }, {code: activeCode});
 };
 //获取用户语言
@@ -344,11 +344,11 @@ exports.recordLog = function(req, res, message) {
     pageLogger.info(message);
 };
 var userInfoRestApis = {
-    getUserInfo: "/rest/base/v1/user/id",
-    getMemberRoles: "/rest/base/v1/user/member/roles",
-    activeEmail: "/rest/base/v1/user/email/confirm",
-    getUserLanguage: "/rest/base/v1/user/member/language/setting",
-    getMyTeamWithSubteams: "/rest/base/v1/group/teams/tree/self"
+    getUserInfo: '/rest/base/v1/user/id',
+    getMemberRoles: '/rest/base/v1/user/member/roles',
+    activeEmail: '/rest/base/v1/user/email/confirm',
+    getUserLanguage: '/rest/base/v1/user/member/language/setting',
+    getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self'
 };
 
 exports.getSidebarMenus = getSidebarMenus;

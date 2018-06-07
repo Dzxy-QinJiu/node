@@ -1,4 +1,4 @@
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 //获取今日电话统计数据
 var getPhoneTotalAjax;
 exports.getPhoneTotal = function(reqData, type) {
@@ -44,13 +44,13 @@ exports.getCustomerTotal = function(reqData) {
 var getTodayContactCustomerAjax = null;
 exports.getTodayContactCustomer = function(rangParams, pageSize, sorter) {
     pageSize = pageSize || 10;
-    sorter = sorter ? sorter : {field: "id", order: "ascend"};
+    sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     var Deferred = $.Deferred();
     var data = {
         rangParams: JSON.stringify(rangParams),
     };
     getTodayContactCustomerAjax = $.ajax({
-        url: '/rest/contact_customer/' + pageSize + "/" + sorter.field + "/" + sorter.order,
+        url: '/rest/contact_customer/' + pageSize + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
@@ -59,7 +59,7 @@ exports.getTodayContactCustomer = function(rangParams, pageSize, sorter) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("errorcode.61", "获取客户列表失败"));
+                Deferred.reject(xhr.responseJSON || Intl.get('errorcode.61', '获取客户列表失败'));
             }
         }
     });
@@ -79,7 +79,7 @@ exports.getScheduleList = function(queryObj) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("errorcode.61", "获取客户列表失败"));
+                Deferred.reject(xhr.responseJSON || Intl.get('errorcode.61', '获取客户列表失败'));
             }
         }
     });
@@ -87,14 +87,14 @@ exports.getScheduleList = function(queryObj) {
 };
 //最近登录的客户
 const AUTHS = {
-    "GETALL": "CUSTOMER_ALL",
-    "UPDATE_ALL": "CUSTOMER_MANAGER_UPDATE_ALL",
-    "TRANSFER_MANAGER": "CRM_MANAGER_TRANSFER"
+    'GETALL': 'CUSTOMER_ALL',
+    'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
+    'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
 };
 //最近登录的客户
 exports.getRecentLoginCustomers = function(condition, rangParams, pageSize, sorter, queryObj) {
     pageSize = pageSize || 10;
-    sorter = sorter ? sorter : {field: "id", order: "ascend"};
+    sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     var data = {
         data: JSON.stringify(condition),
         rangParams: JSON.stringify(rangParams),
@@ -106,7 +106,7 @@ exports.getRecentLoginCustomers = function(condition, rangParams, pageSize, sort
     var Deferred = $.Deferred();
 
     $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + "/" + sorter.field + "/" + sorter.order,
+        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
@@ -132,7 +132,7 @@ exports.getSystemNotices = function(queryObj, status) {
         },
         error: function(error, errorText) {
             if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON || Intl.get("notification.system.notice.failed", "获取系统消息列表失败"));
+                Deferred.reject(error && error.responseJSON || Intl.get('notification.system.notice.failed', '获取系统消息列表失败'));
             }
         }
     });
@@ -171,7 +171,7 @@ exports.getCrmUserList = function(reqData) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
+                Deferred.reject(xhr.responseJSON || Intl.get('user.list.get.failed', '获取用户列表失败'));
             }
         }
     });
@@ -182,7 +182,7 @@ exports.getCrmUserList = function(reqData) {
 exports.getExpireCustomer = function(data) {
     var Deferred = $.Deferred();
     //普通销售，销售领导和舆情秘书用common，其他的用manager
-    let type = hasPrivilege("KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER") ? "manager" : "common";
+    let type = hasPrivilege('KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER') ? 'manager' : 'common';
     $.ajax({
         url: '/rest/get_expire_customer/' + type,
         dataType: 'json',
@@ -264,7 +264,7 @@ exports.getNewDistributeCustomer = function(condition, rangParams, pageSize, sor
         getNewDistributeCustomerAjax.abort();
     }
     pageSize = pageSize || 20;
-    sorter = sorter ? sorter : {field: "id", order: "ascend"};
+    sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     var data = {
         data: JSON.stringify(condition),
         rangParams: JSON.stringify(rangParams),
@@ -275,7 +275,7 @@ exports.getNewDistributeCustomer = function(condition, rangParams, pageSize, sor
     }
     var Deferred = $.Deferred();
     getNewDistributeCustomerAjax = $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + "/" + sorter.field + "/" + sorter.order,
+        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,

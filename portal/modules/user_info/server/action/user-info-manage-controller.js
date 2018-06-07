@@ -1,35 +1,35 @@
 /**
  * Created by xiaojinfeng on  2015/12/25 11:11 .
  */
-"use strict";
-var userInfoManageServic = require("../service/user-info-manage-service");
-var oldPwd = "88881234";
+'use strict';
+var userInfoManageServic = require('../service/user-info-manage-service');
+var oldPwd = '88881234';
 
 //获取用户信息
 exports.getUserInfo = function(req, res) {
     var userId = req.params.user_id;
     userInfoManageServic.getUserInfo(req, res, userId)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 
 //获取登录日志
 exports.getLogList = function(req, res) {
-    userInfoManageServic.getLogList(req, res).on("success", function(data) {
+    userInfoManageServic.getLogList(req, res).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //激活邮箱
 exports.activeUserEmail = function(req, res) {
-    userInfoManageServic.activeUserEmail(req, res).on("success", function(data) {
+    userInfoManageServic.activeUserEmail(req, res).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -45,17 +45,17 @@ exports.editUserInfo = function(req, res) {
     };
 
     userInfoManageServic.editUserInfo(req, res, userInfo)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 exports.setUserLanguage = function(req, res) {
     userInfoManageServic.setUserLanguage(req, res, req.body)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
@@ -94,9 +94,9 @@ exports.editUserInfoPwd = function(req, res) {
     };
 
     userInfoManageServic.editUserInfoPwd(req, res, object)
-        .on("success", function(data) {
+        .on('success', function(data) {
             res.status(200).json(data);
-        }).on("error", function(codeMessage) {
+        }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage.message);
         });
 
@@ -104,18 +104,18 @@ exports.editUserInfoPwd = function(req, res) {
 
 //获得所管理的安全域
 exports.getManagedRealm = function(req, res) {
-    userInfoManageServic.getManagedRealm(req, res).on("success", function(data) {
+    userInfoManageServic.getManagedRealm(req, res).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 //设置订阅通知邮件
 exports.setSubscribeEmail = function(req, res) {
     var config = req.body.config;
-    userInfoManageServic.setSubscribeEmail(req, res, config).on("success", function(data) {
+    userInfoManageServic.setSubscribeEmail(req, res, config).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

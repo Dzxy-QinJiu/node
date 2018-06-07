@@ -5,8 +5,8 @@
  */
 //rest请求错误后，返回到界面的描述
 const UI_CONST = {
-    LOGIN_ONLY_ONE: "login-only-one-error",//被他人踢出
-    KICKED_BY_ADMIN: "kicked-by-admin-error",//被管理员踢出
-    TOKEN_EXPIRED: "token-expired"//token过期
+    LOGIN_ONLY_ONE: 'login-only-one-error',//被他人踢出
+    KICKED_BY_ADMIN: 'kicked-by-admin-error',//被管理员踢出
+    TOKEN_EXPIRED: 'token-expired'//token过期
 };
 module.exports = UI_CONST;

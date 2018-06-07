@@ -1,209 +1,209 @@
-var User = require("../dto/user").User;
+var User = require('../dto/user').User;
 var uuid = require('uuid/v4');
 
 var userList = [
     new User({
         userId: uuid(),
-        userName: "333",
-        nickName: "333",
-        userLogo: "",
+        userName: '333',
+        nickName: '333',
+        userLogo: '',
         //passwd: "333",
         //rePasswd:"333",
-        phone: "400-996-9796",
-        email: "huangsanwei@eefung.com",
+        phone: '400-996-9796',
+        email: 'huangsanwei@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "b2e3a691-d6fb-4e69-8d29-753fcd5f0249",
-            "roleName": "oplateAdmin "
+            'roleId': 'b2e3a691-d6fb-4e69-8d29-753fcd5f0249',
+            'roleName': 'oplateAdmin '
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "222",
-        userName: "222",
-        userLogo: "",
+        nickName: '222',
+        userName: '222',
+        userLogo: '',
         //passwd: "222",
         //rePasswd: "222",
-        phone: "400-996-9796",
-        email: "zhangming@antrol.com",
+        phone: '400-996-9796',
+        email: 'zhangming@antrol.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: true,
         roles: [{
-            "roleId": "b2e3a691-d6fb-4e69-8d29-753fcd5f0249",
-            "roleName": "oplateAdmin "
+            'roleId': 'b2e3a691-d6fb-4e69-8d29-753fcd5f0249',
+            'roleName': 'oplateAdmin '
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "111",
-        userName: "111",
-        userLogo: "",
+        nickName: '111',
+        userName: '111',
+        userLogo: '',
         //passwd: "111",
         //rePasswd: "111",
-        phone: "0731-83050659",
-        email: "huangxingke@eefung.com",
+        phone: '0731-83050659',
+        email: 'huangxingke@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "b2e3a691-d6fb-4e69-8d29-753fcd5f0249",
-            "roleName": "oplateAdmin "
+            'roleId': 'b2e3a691-d6fb-4e69-8d29-753fcd5f0249',
+            'roleName': 'oplateAdmin '
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "aaa",
-        userName: "aaaaa",
-        userLogo: "",
+        nickName: 'aaa',
+        userName: 'aaaaa',
+        userLogo: '',
         //passwd: "aaaaa",
         //rePasswd: "aaaaa",
-        phone: "15550029901",
-        email: "aaa@eefung.com",
+        phone: '15550029901',
+        email: 'aaa@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "b2e3a691-d6fb-4e69-8d29-753fcd5f0249",
-            "roleName": "oplateAdmin "
+            'roleId': 'b2e3a691-d6fb-4e69-8d29-753fcd5f0249',
+            'roleName': 'oplateAdmin '
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "bbb",
-        userName: "bbbbb",
-        userLogo: "",
+        nickName: 'bbb',
+        userName: 'bbbbb',
+        userLogo: '',
         //passwd: "bbbbb",
         //rePasswd: "bbbbb",
-        phone: "15550029902",
-        email: "bbbbb@eefung.com",
+        phone: '15550029902',
+        email: 'bbbbb@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "2fade248-77ce-4eab-94be-eafea26d5815",
-            "roleName": "oplateAanlyst"
+            'roleId': '2fade248-77ce-4eab-94be-eafea26d5815',
+            'roleName': 'oplateAanlyst'
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "ccc",
-        userName: "cccccc",
-        userLogo: "",
+        nickName: 'ccc',
+        userName: 'cccccc',
+        userLogo: '',
         //passwd: "ccccc",
         //rePasswd: "ccccc",
-        phone: "15550029903",
-        email: "ccc@eefung.com",
+        phone: '15550029903',
+        email: 'ccc@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "2fade248-77ce-4eab-94be-eafea26d5815",
-            "roleName": "oplateAanlyst"
+            'roleId': '2fade248-77ce-4eab-94be-eafea26d5815',
+            'roleName': 'oplateAanlyst'
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "ddd",
-        userName: "ddddd",
-        userLogo: "",
+        nickName: 'ddd',
+        userName: 'ddddd',
+        userLogo: '',
         //passwd: "dddddddd",
         //rePasswd: "dddddddd",
-        phone: "15550029904",
-        email: "dddddd@eefung.com",
+        phone: '15550029904',
+        email: 'dddddd@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "2fade248-77ce-4eab-94be-eafea26d5815",
-            "roleName": "oplateAanlyst"
+            'roleId': '2fade248-77ce-4eab-94be-eafea26d5815',
+            'roleName': 'oplateAanlyst'
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "eee",
-        userName: "eee",
-        userLogo: "",
+        nickName: 'eee',
+        userName: 'eee',
+        userLogo: '',
         //passwd: "eeeee",
         //rePasswd: "eeeee",
-        phone: "15550029905",
-        email: "eeee@eefung.com",
+        phone: '15550029905',
+        email: 'eeee@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "2fade248-77ce-4eab-94be-eafea26d5815",
-            "roleName": "oplateAanlyst"
+            'roleId': '2fade248-77ce-4eab-94be-eafea26d5815',
+            'roleName': 'oplateAanlyst'
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "fff",
-        userName: "fff",
-        userLogo: "",
+        nickName: 'fff',
+        userName: 'fff',
+        userLogo: '',
         //passwd: "ffffff",
         //rePasswd: "ffffff",
-        phone: "15550029906",
-        email: "fff@eefung.com",
+        phone: '15550029906',
+        email: 'fff@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: true,
         roles: [{
-            "roleId": "2fade248-77ce-4eab-94be-eafea26d5815",
-            "roleName": "oplateAanlyst"
+            'roleId': '2fade248-77ce-4eab-94be-eafea26d5815',
+            'roleName': 'oplateAanlyst'
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "ggg",
-        userName: "ggg",
-        userLogo: "",
+        nickName: 'ggg',
+        userName: 'ggg',
+        userLogo: '',
         //passwd: "ggg",
         //rePasswd: "ggg",
-        phone: "15550029907",
-        email: "ggg@eefung.com",
+        phone: '15550029907',
+        email: 'ggg@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "2fade248-77ce-4eab-94be-eafea26d5815",
-            "roleName": "oplateAanlyst"
+            'roleId': '2fade248-77ce-4eab-94be-eafea26d5815',
+            'roleName': 'oplateAanlyst'
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "hhh",
-        userName: "hhh",
-        userLogo: "",
+        nickName: 'hhh',
+        userName: 'hhh',
+        userLogo: '',
         //passwd: "hhh",
         //rePasswd: "hhh",
-        phone: "15550029908",
-        email: "hhh@eefung.com",
+        phone: '15550029908',
+        email: 'hhh@eefung.com',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
         //isStop: false,
         roles: [{
-            "roleId": "2fade248-77ce-4eab-94be-eafea26d5815",
-            "roleName": "oplateAanlyst"
+            'roleId': '2fade248-77ce-4eab-94be-eafea26d5815',
+            'roleName': 'oplateAanlyst'
         }]
     }),
     new User({
         userId: uuid(),
-        nickName: "iii",
-        userName: "iii",
-        userLogo: "",
+        nickName: 'iii',
+        userName: 'iii',
+        userLogo: '',
         //passwd: "iii",
         //rePasswd: "iii",
-        phone: "15550029909",
+        phone: '15550029909',
         //startTime: "2015.12.13 15:18",
         //endTime: "2015.12.24 15:18",
-        email: "iii@eefung.com",
+        email: 'iii@eefung.com',
         //isStop: false,
         roles: [{
-            "roleId": "2fade248-77ce-4eab-94be-eafea26d5815",
-            "roleName": "oplateAanlyst"
+            'roleId': '2fade248-77ce-4eab-94be-eafea26d5815',
+            'roleName': 'oplateAanlyst'
         }]
     })
 ];
@@ -211,50 +211,50 @@ var logList = [
     {
         id: 1,
         userId: 1,
-        logInfo: "登录系统成功",
-        logTime: "2015.12.13 15:18:01"
+        logInfo: '登录系统成功',
+        logTime: '2015.12.13 15:18:01'
     }, {
         id: 2,
         userId: 2,
-        logInfo: "成功修改用户资料",
-        logTime: "2015.08.13 15:18:01"
+        logInfo: '成功修改用户资料',
+        logTime: '2015.08.13 15:18:01'
     }, {
         id: 3,
         userId: 3,
-        logInfo: "登录系统成功",
-        logTime: "2015.06.13 15:18:01"
+        logInfo: '登录系统成功',
+        logTime: '2015.06.13 15:18:01'
     }, {
         id: 4,
         userId: 4,
-        logInfo: "登录系统成功",
-        logTime: "2015.02.1 15:18:01"
+        logInfo: '登录系统成功',
+        logTime: '2015.02.1 15:18:01'
     }, {
         id: 5,
         userId: 5,
-        logInfo: "成功修改用户资料",
-        logTime: "2015.01.13 15:22:01"
+        logInfo: '成功修改用户资料',
+        logTime: '2015.01.13 15:22:01'
     }, {
         id: 6,
         userId: 6,
-        logInfo: "登录系统成功",
-        logTime: "2015.01.13 05:18:01"
+        logInfo: '登录系统成功',
+        logTime: '2015.01.13 05:18:01'
     }, {
         id: 7,
         userId: 7,
-        logInfo: "登录系统成功",
-        logTime: "2015.01.13 01:18:01"
+        logInfo: '登录系统成功',
+        logTime: '2015.01.13 01:18:01'
     }
 ];
 
 var roles = [{
-    roleId: "6da377fb-ac01-4789-8b17-08810a8b3a7e",
-    roleName: "oplateOwner"
+    roleId: '6da377fb-ac01-4789-8b17-08810a8b3a7e',
+    roleName: 'oplateOwner'
 }, {
-    roleId: "b2e3a691-d6fb-4e69-8d29-753fcd5f0249",
-    roleName: "oplateAdmin"
+    roleId: 'b2e3a691-d6fb-4e69-8d29-753fcd5f0249',
+    roleName: 'oplateAdmin'
 }, {
-    roleId: "2fade248-77ce-4eab-94be-eafea26d5815",
-    roleName: "oplateAanlyst"
+    roleId: '2fade248-77ce-4eab-94be-eafea26d5815',
+    roleName: 'oplateAanlyst'
 }];
 
 //获取用户列表所需数据
@@ -331,7 +331,7 @@ var editUser = function(user) {
         target.userName = user.userName;
         target.nickName = user.nickName;
         target.userLogo = user.userLogo;
-        if (target.password && target.password !== "密码") {
+        if (target.password && target.password !== '密码') {
             target.password = user.password;
         }
         target.phone = user.phone;
@@ -364,11 +364,11 @@ var getRoles = function() {
 };
 
 module.exports = {
-    "userList": userList,
-    "getUsers": getUsers,
-    "addUser": addUser,
-    "editUser": editUser,
-    "getUserLog": getUserLog,
-    "deleteUser": deleteUser,
-    "getRoles": getRoles
+    'userList': userList,
+    'getUsers': getUsers,
+    'addUser': addUser,
+    'editUser': editUser,
+    'getUserLog': getUserLog,
+    'deleteUser': deleteUser,
+    'getRoles': getRoles
 };

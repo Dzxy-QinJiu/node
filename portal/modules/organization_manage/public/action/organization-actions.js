@@ -1,7 +1,7 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-var OrganizationAjax = require("../ajax/organization-ajax");
+var OrganizationAjax = require('../ajax/organization-ajax');
 
 function OrganizationAction() {
 
@@ -39,7 +39,7 @@ function OrganizationAction() {
         OrganizationAjax.getOrganizationList().then(function(list) {
             _this.dispatch(list);
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("organization.get.organization.list.failed"));
+            _this.dispatch(errorMsg || Intl.get('organization.get.organization.list.failed'));
         });
     };
 
@@ -49,7 +49,7 @@ function OrganizationAction() {
         OrganizationAjax.getOrganizationMemberList(teamId).then(function(list) {
             _this.dispatch(list);
         }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("organization.get.organization.member.list.failed"));
+            _this.dispatch(errorMsg || Intl.get('organization.get.organization.member.list.failed'));
         });
     };
 
@@ -60,7 +60,7 @@ function OrganizationAction() {
             //_this.actions.getMemberList();
             _this.dispatch({success: true, groupId: groupId});
         }, function(errorMsg) {
-            _this.dispatch({success: false, errorMsg: errorMsg || Intl.get("organization.save.delete.group.failed")});
+            _this.dispatch({success: false, errorMsg: errorMsg || Intl.get('organization.save.delete.group.failed')});
         });
     };
 
@@ -69,16 +69,16 @@ function OrganizationAction() {
         OrganizationAjax.addGroup(organization).then(function(data) {
             if (data) {
                 if (callback) {
-                    callback({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")}, data);
+                    callback({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功')}, data);
                 }
             } else {
                 if (callback) {
-                    callback({saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")});
+                    callback({saveResult: 'error', saveMsg: Intl.get('common.save.failed', '保存失败')});
                 }
             }
         }, function(errorMsg) {
             if (callback) {
-                callback({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
+                callback({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
             }
         });
     };
@@ -88,16 +88,16 @@ function OrganizationAction() {
         OrganizationAjax.editGroup(organization).then(function(data) {
             if (data) {
                 if (callback) {
-                    callback({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")});
+                    callback({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功')});
                 }
             } else {
                 if (callback) {
-                    callback({saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")});
+                    callback({saveResult: 'error', saveMsg: Intl.get('common.save.failed', '保存失败')});
                 }
             }
         }, function(errorMsg) {
             if (callback) {
-                callback({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
+                callback({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
             }
         });
     };

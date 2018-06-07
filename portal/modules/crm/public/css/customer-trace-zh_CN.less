@@ -8,6 +8,7 @@
 @other_icon_color: #8da8c5;
 @split_line_color: #f5f5f5;
 @hover_color: #2196f3;
+@report_delivery_color: #f7a33f;
 .customer-container {
   .trace-top-block {
     //共xxx条
@@ -62,6 +63,10 @@
         .iconfont.icon-visit-briefcase {
           color: @icon_visit_color;
         }
+        .iconfont.icon-report-delivery {
+          font-size: 18px;
+          color: @report_delivery_color;
+        }
       }
       textarea {
         width: 350px;
@@ -95,6 +100,27 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
+      }
+      //舆情报送的内容
+      .report-detail-content{
+        //舆情报送的内容展示样式
+        .report-content-descr{
+          padding-bottom: 6px;
+          overflow:hidden;
+          text-overflow:ellipsis;
+          display:-webkit-box;
+          -webkit-box-orient:vertical;
+          -webkit-line-clamp:2;
+        }
+        .trace-record-time{
+          float: right;
+        }
+        .item-bottom-content{
+          margin-top:0;
+          .report-app-name{
+            font-size: 12px;
+          }
+        }
       }
       //跟进内容
       .item-detail-content {

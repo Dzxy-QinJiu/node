@@ -92,7 +92,7 @@ exports.editUser = function(user) {
 exports.updateUserTeam = function(user) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/user/user_team/' + user.id + "/" + user.team,
+        url: '/rest/user/user_team/' + user.id + '/' + user.team,
         dataType: 'json',
         type: 'put',
         success: function(userModified) {

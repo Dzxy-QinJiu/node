@@ -1,11 +1,11 @@
-require("./index.less");
+require('./index.less');
 
 var CustomRadioGroup = React.createClass({
     getDefaultProps: function() {
         return {
             options: [],
             extraData: {},
-            value: "",
+            value: '',
             marginRight: 30,
             padding: 14,
             onChange: function() {},
@@ -38,9 +38,9 @@ var CustomRadioGroup = React.createClass({
             <div className="custom_radio_group">
                 {
                     this.props.options.map(function(option) {
-                        var cls = "custom_radio";
+                        var cls = 'custom_radio';
                         if(value == option.value) {
-                            cls += " custom_radio_active";
+                            cls += ' custom_radio_active';
                         }
                         return (
                             <div className={cls} style={{marginRight: props.marginRight,paddingLeft: props.padding,paddingRight: props.padding}} onClick={_this.onClickRadio.bind(_this , option.value , option.name)} key={option.value}>

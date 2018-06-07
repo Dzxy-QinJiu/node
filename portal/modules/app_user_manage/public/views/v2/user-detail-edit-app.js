@@ -8,7 +8,7 @@ import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
 import AppPropertySetting from '../../../../../components/user_manage_components/app-property-setting';
 import {Tabs,Icon,Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
-import {RightPanelClose,RightPanelReturn} from "../../../../../components/rightPanel";
+import {RightPanelClose,RightPanelReturn} from '../../../../../components/rightPanel';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
 
@@ -30,12 +30,12 @@ const UserDetailEditApp = React.createClass({
     },
     componentDidMount() {
         UserDetailEditAppStore.listen(this.onStoreChange);
-        $(window).on("resize" , this.onStoreChange);
+        $(window).on('resize' , this.onStoreChange);
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
     },
     componentWillUnmount() {
         UserDetailEditAppStore.unlisten(this.onStoreChange);
-        $(window).off("resize" , this.onStoreChange);
+        $(window).off('resize' , this.onStoreChange);
     },
     cancel() {
         if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
@@ -95,7 +95,7 @@ const UserDetailEditApp = React.createClass({
             }
         });
         if(!hasValue) {
-            emitter.emit("app_user_manage.edit_app.show_user_type_error");//user-type-radiofield/index.js
+            emitter.emit('app_user_manage.edit_app.show_user_type_error');//user-type-radiofield/index.js
             return;
         }
         //要提交的数据
@@ -125,7 +125,7 @@ const UserDetailEditApp = React.createClass({
         if (submitData.roles.length) {
             UserDetailEditAppActions.setAppNoSelectRoleError('');
         } else {
-            UserDetailEditAppActions.setAppNoSelectRoleError(Intl.get("user.role.select.tip", "至少选择一个角色"));
+            UserDetailEditAppActions.setAppNoSelectRoleError(Intl.get('user.role.select.tip', '至少选择一个角色'));
             return;
         }
         let changeAppInfo = this.getChangeAppInfo(submitData);
@@ -157,7 +157,7 @@ const UserDetailEditApp = React.createClass({
         };
         if(this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get("user.app.edit.success", "修改应用成功")} type="success" showIcon onHide={hide}/>
+                <AlertTimer time={3000} message={Intl.get('user.app.edit.success', '修改应用成功')} type="success" showIcon onHide={hide}/>
             );
         }
         if(this.state.submitResult === 'error') {
@@ -172,7 +172,7 @@ const UserDetailEditApp = React.createClass({
     render() {
         const height = $(window).height() - LAYOUT.TAB_TOP_HEIGHT - LAYOUT.TAB_BOTTOM_PADDING;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height: "100%"}}>
+            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height: '100%'}}>
                 <RightPanelReturn onClick={this.cancel}/>
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <Tabs defaultActiveKey="editapp">
@@ -189,8 +189,8 @@ const UserDetailEditApp = React.createClass({
                 </Tabs>
                 <OperationStepsFooter
                     currentStep={2}
-                    prevText={Intl.get("common.cancel", "取消")}
-                    finishText={Intl.get("common.confirm", "确认")}
+                    prevText={Intl.get('common.cancel', '取消')}
+                    finishText={Intl.get('common.confirm', '确认')}
                     onStepChange={this.cancel}
                     onFinish={this.onFinish}
                 >

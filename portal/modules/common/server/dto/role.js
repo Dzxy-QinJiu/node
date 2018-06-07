@@ -1,4 +1,4 @@
-var _ = require("underscore");
+var _ = require('underscore');
 //角色实体
 exports.Role = function(obj,with_permission_ids) {
     this.role_id = obj.role_id || '';

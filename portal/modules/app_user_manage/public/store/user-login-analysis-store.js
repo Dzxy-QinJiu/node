@@ -1,5 +1,5 @@
 var UserLoginAnalysisAction = require('../action/user-login-analysis-action');
-var ShareObj = require("../util/app-id-share-util");
+var ShareObj = require('../util/app-id-share-util');
 
 function UserLoginAnalysisStore(){
     this.userOwnAppArray = [];
@@ -14,17 +14,17 @@ UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
     this.isLoading = true; 
     // 用户登录信息（时长、次数、首次和最后一次登录时间）
     this.loginInfo = {
-        duration: "" , // 时长
-        count: "", // 次数
-        first: "", // 首次登录时间
-        last: "", // 最后一次登录时间
-        errorMsg: "" //错误信息
+        duration: '' , // 时长
+        count: '', // 次数
+        first: '', // 首次登录时间
+        last: '', // 最后一次登录时间
+        errorMsg: '' //错误信息
     };
     // 登录时长、登录次数
     this.loginChartInfo = {
-        loginDuration: "", // 登录时长统计
-        loginCount: "", // 登录次数统计
-        errorMsg: "" //错误信息
+        loginDuration: '', // 登录时长统计
+        loginCount: '', // 登录次数统计
+        errorMsg: '' //错误信息
     };
 };
 //恢复默认状态

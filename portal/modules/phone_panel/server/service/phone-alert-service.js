@@ -3,14 +3,14 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/12.
  */
-var restLogger = require("../../../../lib/utils/logger").getLogger("rest");
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var EventEmitter = require("events").EventEmitter;
-var Promise = require("bluebird");
-var _ = require("underscore");
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var EventEmitter = require('events').EventEmitter;
+var Promise = require('bluebird');
+var _ = require('underscore');
 var urls = {
-    getAppLists: "/rest/base/v1/application/grant_applications",
-    addAppFeedback: "/rest/base/v1/notice/customer/application/feedback",
+    getAppLists: '/rest/base/v1/application/grant_applications',
+    addAppFeedback: '/rest/base/v1/notice/customer/application/feedback',
 };
 // 获取应用列表
 exports.getAppLists = function(req, res) {
@@ -43,9 +43,9 @@ exports.addAppFeedback = function(req, res, reqBody) {
     };
     promiseList.push(addFeedbackPromise(req, res, feedbackObj));
     Promise.all(promiseList).then(function(result) {
-        emitter.emit("success", result);
+        emitter.emit('success', result);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };

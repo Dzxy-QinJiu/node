@@ -106,10 +106,10 @@
                 //检查请求头，并检查是否需要添加fields头，只获取指定的字段
                 if(!opts.headers && requestCfg.fields.length) {
                     opts.headers = {
-                        fields: requestCfg.fields.join(",")
+                        fields: requestCfg.fields.join(',')
                     };
                 } else if(opts.headers && requestCfg.fields.length && !opts.headers.fields) {
-                    opts.headers.fields = requestCfg.fields.join(",");
+                    opts.headers.fields = requestCfg.fields.join(',');
                 }
                 //将jquery的ajax结果保存下来
                 var ajaxRet = $.ajax(opts);

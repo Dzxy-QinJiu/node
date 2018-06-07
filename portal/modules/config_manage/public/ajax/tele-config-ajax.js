@@ -10,7 +10,7 @@ exports.getTeleList = function(param) {
             Deferred.resolve(result);
         },
         error: function(errorInfo){
-            Deferred.reject(errorInfo.responseJSON || Intl.get("config.manage.get.tele.failed", "查询客服电话失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.manage.get.tele.failed', '查询客服电话失败！'));
         }
     });
     return Deferred.promise();
@@ -27,7 +27,7 @@ exports.addTele = function(param) {
             Deferred.resolve(resData);
         },
         error: function(errorInfo){
-            Deferred.reject(errorInfo.responseJSON || Intl.get("config.manage.add.tele.failed", "添加客服电话失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.manage.add.tele.failed', '添加客服电话失败！'));
         }
     });
     return Deferred.promise();
@@ -44,7 +44,7 @@ exports.delTele = function(param) {
             Deferred.resolve(resData);
         },
         error: function(errorInfo){
-            Deferred.reject(errorInfo.responseJSON || Intl.get("config.manage.add.tele.failed", "删除客服电话失败！"));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.manage.add.tele.failed', '删除客服电话失败！'));
         }
     });
     return Deferred.promise();

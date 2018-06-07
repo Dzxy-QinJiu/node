@@ -5,22 +5,22 @@
 
 module.exports = {
     //定义controller
-    module: "oplate_bd_analysis_realm_zone/server/action/realm-zone-controller",
+    module: 'oplate_bd_analysis_realm_zone/server/action/realm-zone-controller',
     //定义路由信息
     routes: [{
         //http方法
-        "method": "get",
+        'method': 'get',
         //路径
-        "path": "/rest/analysis/realm-zone",
+        'path': '/rest/analysis/realm-zone',
         //action中的方法
-        "handler": "getRealmZoneAnalysisData",
+        'handler': 'getRealmZoneAnalysisData',
         //是否需要登录
-        "passport": {
-            "needLogin": true
+        'passport': {
+            'needLogin': true
         },
         //需要权限
-        "privileges": [
-            "OPLATE_BD_ANALYSIS_REALM_ZONE"
+        'privileges': [
+            'OPLATE_BD_ANALYSIS_REALM_ZONE'
         ]
     }]
 };

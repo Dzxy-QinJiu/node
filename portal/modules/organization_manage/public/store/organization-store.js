@@ -1,9 +1,9 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-var OrganizationAction = require("../action/organization-actions");
+var OrganizationAction = require('../action/organization-actions');
 //没有组织时的提示信息
-var organizationIsNull = "organization-is-null";
+var organizationIsNull = 'organization-is-null';
 function OrganizationStore() {
     this.organizationList = [];//组织分组列表
     this.organizationListArray = [];//组织分组树形列表
@@ -16,11 +16,11 @@ function OrganizationStore() {
     this.showMemberOperationBtn = true;
     this.isLoadingOrganization = false;//正在加载组织
     this.isLoadingTeamMember = false;//正在加载组织成员
-    this.teamMemberListTipMsg = "";//获取组织成员列表时，错误/暂无数据的提示
-    this.organizationLisTipMsg = "";//获取组织列表时，错误/暂无数据的提示
-    this.delOrganizationErrorMsg = "";//删除组织失败时的提示信息
+    this.teamMemberListTipMsg = '';//获取组织成员列表时，错误/暂无数据的提示
+    this.organizationLisTipMsg = '';//获取组织列表时，错误/暂无数据的提示
+    this.delOrganizationErrorMsg = '';//删除组织失败时的提示信息
     this.isAddOrganizationRoot = false;//是否是添加根组织
-    this.searchContent = "";//搜索内容
+    this.searchContent = '';//搜索内容
 
     this.bindActions(OrganizationAction);
 }
@@ -118,7 +118,7 @@ OrganizationStore.prototype.findGroupByIdAddGroup = function(treeGroupList, pare
 OrganizationStore.prototype.refreshGroupListAfterAdd = function(addGroup) {
     //新组织所有者的处理,新增组织时，返回的负责人为“null”,
     // “null”是后台接口避免免组织负责人为当前添加组织的成员设置的值（解决一人存在多个组织中的问题）
-    if (addGroup.owner_id && addGroup.owner_id == "null") {
+    if (addGroup.owner_id && addGroup.owner_id == 'null') {
         delete addGroup.owner_id;
     }
     this.organizationList.push(addGroup);
@@ -170,7 +170,7 @@ OrganizationStore.prototype.findGroupByIdEditName = function(treeGroupList, edit
 //设置正在加载组织的标志
 OrganizationStore.prototype.setOrganizationLoading = function(flag) {
     this.isLoadingOrganization = flag;
-    this.organizationLisTipMsg = "";
+    this.organizationLisTipMsg = '';
 };
 
 //获取组织分组列表
@@ -182,7 +182,7 @@ OrganizationStore.prototype.getOrganizationList = function(resultData) {
     } else {
         if (_.isArray(resultData) && resultData.length > 0) {
             this.showMemberOperationBtn = false;
-            this.organizationLisTipMsg = "";
+            this.organizationLisTipMsg = '';
             this.organizationList = resultData;
             this.organizationTree();
         } else {
@@ -200,7 +200,7 @@ OrganizationStore.prototype.getOrganizationList = function(resultData) {
 //设置正在获取组织成员的标志
 OrganizationStore.prototype.setTeamMemberLoading = function(flag) {
     this.isLoadingTeamMember = flag;
-    this.teamMemberListTipMsg = "";
+    this.teamMemberListTipMsg = '';
 };
 
 //修改组织成员成功后的处理
@@ -215,9 +215,9 @@ OrganizationStore.prototype.afterEditMember = function(data) {
             }
         });
         let useIds = data.userIds ? JSON.parse(data.userIds) : [];
-        if (data.operate == "exchange") {
+        if (data.operate == 'exchange') {
             //修改
-            if (data.type == "user") {
+            if (data.type == 'user') {
                 //成员设为管理员
                 if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
                     curShowTeam.manager_ids = curShowTeam.manager_ids.concat(useIds);
@@ -236,7 +236,7 @@ OrganizationStore.prototype.afterEditMember = function(data) {
             }
         } else {
             //删除
-            if (data.type == "user") {
+            if (data.type == 'user') {
                 //成员
                 curShowTeam.user_ids = _.difference(curShowTeam.user_ids, useIds);
             } else {
@@ -303,7 +303,7 @@ OrganizationStore.prototype.getOrganizationMemberList = function(resultData) {
     } else {
         if (_.isArray(resultData) && resultData.length > 0) {
             this.organizationMemberList = resultData;
-            this.teamMemberListTipMsg = "";
+            this.teamMemberListTipMsg = '';
             var _this = this;
             //当前展示组的信息
             var curTeamId = _this.curShowTeamMemberObj.groupId;
@@ -354,7 +354,7 @@ OrganizationStore.prototype.getOrganizationMemberList = function(resultData) {
             }
         } else {
             //暂无数据的提示
-            this.teamMemberListTipMsg = Intl.get("common.no.member");
+            this.teamMemberListTipMsg = Intl.get('common.no.member');
             this.organizationMemberList = [];
         }
     }
@@ -404,7 +404,7 @@ OrganizationStore.prototype.setSelectOrganizationGroup = function(selectOrganiza
             return true;
         }
     });
-    this.curShowTeamMemberObj.groupName = curOrganization ? curOrganization.group_name : "";
+    this.curShowTeamMemberObj.groupName = curOrganization ? curOrganization.group_name : '';
 };
 
 //是否展示组编辑菜单
@@ -445,7 +445,7 @@ OrganizationStore.prototype.saveDeleteGroup = function(result) {
 
 //清楚删除失败的提示信息
 OrganizationStore.prototype.clearDelGroupErrorMsg = function() {
-    this.delOrganizationErrorMsg = "";
+    this.delOrganizationErrorMsg = '';
 };
 
 OrganizationStore.prototype.addOrganizationRoot = function() {
@@ -480,7 +480,7 @@ OrganizationStore.prototype.cancelAddGroup = function(item) {
 };
 
 OrganizationStore.prototype.selectTree = function(groupId) {
-    var parentGroup = "";
+    var parentGroup = '';
     this.organizationList.map(function(item, key) {
         if (item.group_id == groupId) {
             item.select = true;
@@ -503,7 +503,7 @@ OrganizationStore.prototype.selectTree = function(groupId) {
 };
 
 OrganizationStore.prototype.toggleGroupTree = function(groupId) {
-    var parentGroup = "";
+    var parentGroup = '';
     this.organizationList.map(function(item, key) {
         if (item.group_id == groupId) {
             item.isLiSelect = !item.isLiSelect;
@@ -528,7 +528,7 @@ OrganizationStore.prototype.setSearchOrganizationTree = function() {
 };
 
 OrganizationStore.prototype.checkIsLiSelect = function(parentGroup) {
-    var nowParentGroup = "";
+    var nowParentGroup = '';
     (this.organizationList).map(function(item, key) {
         if (item.group_id == parentGroup) {
             item.isLiSelect = true;

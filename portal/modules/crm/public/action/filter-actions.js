@@ -11,7 +11,7 @@ function FilterAction() {
         'setIndustry',
         'setProvince',
         'setContact',
-        "setRange",
+        'setRange',
         'setInputCondition',
         'setClue',
         'setLevel',
@@ -25,7 +25,7 @@ function FilterAction() {
         var _this = this;
         FilterAjax.getAppList().then(function(list) {
             list = _.isArray(list) ? list : [];
-            list.unshift({client_id: "", client_name: Intl.get("common.all", "全部")});
+            list.unshift({client_id: '', client_name: Intl.get('common.all', '全部')});
             _this.dispatch(list);
         }, function(errorMsg) {
             // eslint-disable-next-line no-console
@@ -37,7 +37,7 @@ function FilterAction() {
         var _this = this;
         FilterAjax.getTeamList().then(function(list) {
             list = _.isArray(list) ? list : [];
-            list.unshift({group_id: "", group_name: Intl.get("common.all", "全部")});
+            list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
             _this.dispatch(list);
             if (_.isFunction(cb)) cb(list);
         }, function(errorMsg) {
@@ -66,19 +66,19 @@ function FilterAction() {
                 return {name: tag, show_name: tag};
             });
             list.unshift({
-                name: Intl.get("crm.tag.unknown", "未打标签的客户"),
-                show_name: Intl.get("crm.tag.unknown", "未打标签的客户")
+                name: Intl.get('crm.tag.unknown', '未打标签的客户'),
+                show_name: Intl.get('crm.tag.unknown', '未打标签的客户')
             });
-            list.unshift({name: "", show_name: Intl.get("common.all", "全部")});
+            list.unshift({name: '', show_name: Intl.get('common.all', '全部')});
             _this.dispatch(list);
         }, function(errorMsg) {
-            this.dispatch([{name: "", show_name: Intl.get("common.all", "全部")}]);
+            this.dispatch([{name: '', show_name: Intl.get('common.all', '全部')}]);
         });
     };
     //获取阶段标签列表
     this.getStageTagList = function() {
         FilterAjax.getStageTagList().then((list) => {
-            this.dispatch({errorMsg: "", list: list});
+            this.dispatch({errorMsg: '', list: list});
         }, (errorMsg) => {
             this.dispatch({errorMsg: errorMsg, list: []});
         });
@@ -86,7 +86,7 @@ function FilterAction() {
     //获取销售角色列表
     this.getSalesRoleList = function() {
         FilterAjax.getSalesRoleList().then((list) => {
-            this.dispatch({errorMsg: "", list: list});
+            this.dispatch({errorMsg: '', list: list});
         }, (errorMsg) => {
             this.dispatch({errorMsg: errorMsg, list: []});
         });
@@ -98,10 +98,10 @@ function FilterAction() {
             competitorList = competitorList.map(tag => {
                 return {name: tag, show_name: tag};
             });
-            competitorList.unshift({name: "", show_name: Intl.get("common.all", "全部")});
+            competitorList.unshift({name: '', show_name: Intl.get('common.all', '全部')});
             this.dispatch(competitorList);
         }, (errorMsg) => {
-            this.dispatch([{name: "", show_name: Intl.get("common.all", "全部")}]);
+            this.dispatch([{name: '', show_name: Intl.get('common.all', '全部')}]);
         });
     };
     //获取行业列表

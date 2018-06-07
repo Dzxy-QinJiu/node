@@ -1,21 +1,21 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 计划回款信息添加表单
  */
 
-import { Form, Input, Select, Button, Icon } from "antd";
+import { Form, Input, Select, Button, Icon } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-import ValidateMixin from "../../../mixins/ValidateMixin";
-import { numberAddNoMoreThan } from "../../../lib/validator/rules";
+import ValidateMixin from '../../../mixins/ValidateMixin';
+import { numberAddNoMoreThan } from '../../../lib/validator/rules';
 
 const AddRepayment = React.createClass({
     mixins: [ValidateMixin],
     getInitialFormData: function() {
         return {
-            type: "repay_plan",
-            unit: "days",
+            type: 'repay_plan',
+            unit: 'days',
         };
     },
     getInitialState: function() {
@@ -88,10 +88,10 @@ const AddRepayment = React.createClass({
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />
                         <FormItem 
-                            validateStatus={this.getValidateStatus("num")}
-                            help={this.getHelpMessage("num")}
+                            validateStatus={this.getValidateStatus('num')}
+                            help={this.getHelpMessage('num')}
                         >
-                            <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, {pattern: /^\d+$/, message: Intl.get("contract.45", "请填写数字")}]}>
+                            <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, {pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字')}]}>
                                 <Input
                                     name="num"
                                     value={this.state.formData.num}
@@ -109,14 +109,14 @@ const AddRepayment = React.createClass({
                         </Select>
                     内，应收回款
                         <FormItem 
-                            validateStatus={this.getValidateStatus("amount")}
-                            help={this.getHelpMessage("amount")}
+                            validateStatus={this.getValidateStatus('amount')}
+                            help={this.getHelpMessage('amount')}
                         >
-                            <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, contractAmount, repaymentsAmount, Intl.get("contract.161", "已超合同额"))]}>
+                            <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, contractAmount, repaymentsAmount, Intl.get('contract.161', '已超合同额'))]}>
                                 <Input
                                     name="amount"
                                     value={this.state.formData.amount}
-                                    onChange={this.setField.bind(this, "amount")}
+                                    onChange={this.setField.bind(this, 'amount')}
                                 />
                             </Validator>
                         </FormItem>
@@ -136,11 +136,11 @@ const AddRepayment = React.createClass({
                             {this.state.repayments.map((repayment, index) => { return (
                                 <li key={index}>
                                     <div className="circle-button circle-button-minus"
-                                        title={Intl.get("common.delete", "删除")}
+                                        title={Intl.get('common.delete', '删除')}
                                         onClick={this.deleteRepayment.bind(this, index)}>
                                         <Icon type="minus"/>
                                     </div>
-                                    {Intl.get("contract.83", "至")}{moment(repayment.date).format(oplateConsts.DATE_FORMAT)} {Intl.get("contract.94", "应收金额")}{repayment.amount}{Intl.get("contract.155", "元")}
+                                    {Intl.get('contract.83', '至')}{moment(repayment.date).format(oplateConsts.DATE_FORMAT)} {Intl.get('contract.94', '应收金额')}{repayment.amount}{Intl.get('contract.155', '元')}
                                 </li>
                             );})}
                         </ul>

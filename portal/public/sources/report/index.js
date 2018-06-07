@@ -1,9 +1,9 @@
-var RightContent = require("../../../components/privilege/right-content");
-var Checker = require("../../../components/privilege/checker");
+var RightContent = require('../../../components/privilege/right-content');
+var Checker = require('../../../components/privilege/checker');
 
-var OPERATION_REPORT = require("../../../modules/operation_report");
+var OPERATION_REPORT = require('../../../modules/operation_report');
 
-var APP_OPERATION_REPORT = require("../../../modules/report/app_operation");
+var APP_OPERATION_REPORT = require('../../../modules/report/app_operation');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('report',

@@ -1,13 +1,13 @@
 /**
  * 饼图
  */
-var echarts = require("echarts-eefung");
-require("./index.less");
-var Color = require("color");
-var Spinner = require("../../../../../components/spinner");
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
-var immutable = require("immutable");
+var echarts = require('echarts-eefung');
+require('./index.less');
+var Color = require('color');
+var Spinner = require('../../../../../components/spinner');
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
+var immutable = require('immutable');
 import { packageTry } from 'LIB_DIR/func';
 
 var PieChart = React.createClass({
@@ -16,7 +16,7 @@ var PieChart = React.createClass({
         return {
             data: [],
             legend: [],
-            title: Intl.get("oplate.user.analysis.6", "在线时长统计"),
+            title: Intl.get('oplate.user.analysis.6', '在线时长统计'),
             width: '100%',
             height: 214,
             resultType: 'loading',
@@ -32,7 +32,7 @@ var PieChart = React.createClass({
             tooltip: {
                 trigger: 'item',
                 extraCssText: echartsTooltipCssText,
-                formatter: "<div class='echarts-tooltip'>{b} : {c} ({d}%)</div>"
+                formatter: '<div class=\'echarts-tooltip\'>{b} : {c} ({d}%)</div>'
             },
             legend: {
                 orient: 'vertical',
@@ -49,7 +49,7 @@ var PieChart = React.createClass({
                     data: this.getSeries(),
                     label: {
                         normal: {
-                            formatter: "{c}"
+                            formatter: '{c}'
                         }
                     },
                     itemStyle: {
@@ -90,12 +90,12 @@ var PieChart = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data','暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
             var options = this.getEchartOptions();
             this.echartInstance.setOption(options,true);
-            this.echartInstance.on("click", params => {
+            this.echartInstance.on('click', params => {
                 this.props.getClickType(params.name);
             });
         }

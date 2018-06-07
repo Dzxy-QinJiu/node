@@ -1,4 +1,4 @@
-var Alert = require("antd").Alert;
+var Alert = require('antd').Alert;
 var AlertTimer = React.createClass({
     isUnmount: false,
     getDefaultProps: function() {

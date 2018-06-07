@@ -1,72 +1,72 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 已回款信息展示及编辑页面
  */
 
-import { Form, Input, Button, DatePicker, Icon, message, Checkbox } from "antd";
+import { Form, Input, Button, DatePicker, Icon, message, Checkbox } from 'antd';
 const FormItem = Form.Item;
-import ValidateMixin from "../../../mixins/ValidateMixin";
+import ValidateMixin from '../../../mixins/ValidateMixin';
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import rightPanelUtil from "../../../components/rightPanel";
+import rightPanelUtil from '../../../components/rightPanel';
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelDelete = rightPanelUtil.RightPanelDelete;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
-import { DATE_FORMAT, OPERATE } from "../consts";
-import routeList from "../common/route";
-import ajax from "../common/ajax";
+import { DATE_FORMAT, OPERATE } from '../consts';
+import routeList from '../common/route';
+import ajax from '../common/ajax';
 import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
-import { numberAddNoMoreThan } from "../../../lib/validator/rules";
+import { numberAddNoMoreThan } from '../../../lib/validator/rules';
 
 const DetailRepayment = React.createClass({
     mixins: [ValidateMixin],
     componentDidMount: function() {
-        $(window).on("resize", this.setContentHeight);
+        $(window).on('resize', this.setContentHeight);
         //加一个延时，等dom渲染完后再设置内容高度，否则会设置不正确
         setTimeout(() => {
             this.setContentHeight();
         });
     },
     componentWillUnmount: function() {
-        $(window).off("resize", this.setContentHeight);
+        $(window).off('resize', this.setContentHeight);
     },
     setContentHeight: function() {
-        const wrapper = $(".finance-list");
+        const wrapper = $('.finance-list');
         //新高度 = 窗口高度 - 容器距窗口顶部的距离 - 底部留空
         wrapper.height($(window).height() - wrapper.offset().top - 20);
         this.refs.gemiScrollBar.update();
     },
     showForm: function(index, repayment) {
-        const key = "formData" + index;
+        const key = 'formData' + index;
         this.state[key] = _.clone(repayment);
-        this.state["isFormShow" + index] = true;
+        this.state['isFormShow' + index] = true;
         this.setState(this.state);
     },
     hideForm: function(index) {
-        this.state["isFormShow" + index] = false;
+        this.state['isFormShow' + index] = false;
         this.setState(this.state);
     },
     handleSubmit: function(type, index, id) {
         let data;
 
-        if (type === "delete") {
+        if (type === 'delete') {
             data = [id];
             this.editRepayment(type, data);
-        } else if (type === "add" || type === "update") {
-            if (isNaN(index)) index = "";
-            data = this.state["formData" + index];
-            const params = {contractId: this.props.contract.id, type: "repay"};
+        } else if (type === 'add' || type === 'update') {
+            if (isNaN(index)) index = '';
+            data = this.state['formData' + index];
+            const params = {contractId: this.props.contract.id, type: 'repay'};
 
-            this.refs["validation" + index].validate(valid => {
+            this.refs['validation' + index].validate(valid => {
                 if (!valid) {
                     return;
                 } else {
                     this.editRepayment(type, data, params, () => {
                         //清空表单
-                        this.state["formData" + index] = {};
+                        this.state['formData' + index] = {};
                         this.setState(this.state);
-                        if (type === "update") {
+                        if (type === 'update') {
                             this.hideForm(index);
                         }
                     });
@@ -77,7 +77,7 @@ const DetailRepayment = React.createClass({
     editRepayment: function(type, data, params, cb) {
         this.props.showLoading();
 
-        const handler = type + "Repayment";
+        const handler = type + 'Repayment';
         const route = _.find(routeList, route => route.handler === handler);
         let arg = {
             url: route.path,
@@ -90,22 +90,22 @@ const DetailRepayment = React.createClass({
             this.props.hideLoading();
 
             if (result.code === 0) {
-                message.success(OPERATE[type] + "成功");
+                message.success(OPERATE[type] + '成功');
                 this.props.refreshCurrentContract(this.props.contract.id);
                 if (_.isFunction(cb)) cb();
             } else {
-                message.error(result.msg || OPERATE[type] + "失败");
+                message.error(result.msg || OPERATE[type] + '失败');
             }
         });
     },
     renderForm: function(repayment, index) {
-        index = isNaN(index) ? "" : index;
-        const ref = "validation" + index;
-        const key = "formData" + index;
+        index = isNaN(index) ? '' : index;
+        const ref = 'validation' + index;
+        const key = 'formData' + index;
         let formData = this.state[key];
 
         if (!formData && !repayment) {
-            formData = this.state[key] = {type: "repay"};
+            formData = this.state[key] = {type: 'repay'};
             formData.date = moment().valueOf();
         }
 
@@ -117,40 +117,40 @@ const DetailRepayment = React.createClass({
         return (
             <Validation ref={ref} onValidate={this.handleValidate}>
                 <FormItem 
-                    validateStatus={this.getValidateStatus("date" + index)}
-                    help={this.getHelpMessage("date" + index)}
+                    validateStatus={this.getValidateStatus('date' + index)}
+                    help={this.getHelpMessage('date' + index)}
                 >
                     <DatePicker
-                        name={"date" + index}
-                        onChange={this.setField.bind(this, "date", index)}
+                        name={'date' + index}
+                        onChange={this.setField.bind(this, 'date', index)}
                         value={formData.date ? moment(formData.date) : moment()}
                         disabledDate={disabledDate}
                     />
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
                 <FormItem 
-                    validateStatus={this.getValidateStatus("amount" + index)}
-                    help={this.getHelpMessage("amount" + index)}
+                    validateStatus={this.getValidateStatus('amount' + index)}
+                    help={this.getHelpMessage('amount' + index)}
                 >
-                    <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get("contract.161", "已超合同额"))]}>
+                    <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]}>
                         <Input
-                            name={"amount" + index}
+                            name={'amount' + index}
                             value={this.parseAmount(formData.amount)}
-                            onChange={this.setField.bind(this, "amount", index)}
+                            onChange={this.setField.bind(this, 'amount', index)}
                         />
                     </Validator>
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />,
                 <ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
                 <FormItem 
-                    validateStatus={this.getValidateStatus("gross_profit" + index)}
-                    help={this.getHelpMessage("gross_profit" + index)}
+                    validateStatus={this.getValidateStatus('gross_profit' + index)}
+                    help={this.getHelpMessage('gross_profit' + index)}
                 >
-                    <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule()]}>
+                    <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule()]}>
                         <Input
-                            name={"gross_profit" + index}
+                            name={'gross_profit' + index}
                             value={this.parseAmount(formData.gross_profit)}
-                            onChange={this.setField.bind(this, "gross_profit", index)}
+                            onChange={this.setField.bind(this, 'gross_profit', index)}
                         />
                     </Validator>
                 </FormItem>
@@ -159,10 +159,10 @@ const DetailRepayment = React.createClass({
                 >
                     <Checkbox
                         name="is_first"
-                        checked={["true", true].indexOf(formData.is_first) > -1}
-                        onChange={this.setField.bind(this, "is_first", index)}
+                        checked={['true', true].indexOf(formData.is_first) > -1}
+                        onChange={this.setField.bind(this, 'is_first', index)}
                     >
-                        {Intl.get("contract.167", "首笔回款")}
+                        {Intl.get('contract.167', '首笔回款')}
                     </Checkbox>
                 </FormItem>
             </Validation>
@@ -173,12 +173,12 @@ const DetailRepayment = React.createClass({
         repayments = _.sortBy(repayments, item => item.date).reverse();
         return (
             <div className="detail-repayments">
-                {hasPrivilege("OPLATE_REPAYMENT_ADD") ? (
+                {hasPrivilege('OPLATE_REPAYMENT_ADD') ? (
                     <div className="add-finance">
                         {this.renderForm()}
                         <Button
                             className="btn-primary-sure"
-                            onClick={this.handleSubmit.bind(this, "add")}
+                            onClick={this.handleSubmit.bind(this, 'add')}
                         >
                             <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
                         </Button>
@@ -189,7 +189,7 @@ const DetailRepayment = React.createClass({
                     <GeminiScrollBar ref="gemiScrollBar">
                         <ul>
                             {repayments.map((repayment, index) => {
-                                const isFormShow = this.state["isFormShow" + index];
+                                const isFormShow = this.state['isFormShow' + index];
 
                                 return (
                                     <li key={index}>
@@ -199,14 +199,14 @@ const DetailRepayment = React.createClass({
                                             </span>
                                         ) : (
                                             <span>
-                                                {repayment.date ? moment(repayment.date).format(DATE_FORMAT) : ""}
+                                                {repayment.date ? moment(repayment.date).format(DATE_FORMAT) : ''}
                                         &nbsp;
                                                 <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
                                                 {repayment.amount || 0}
                                                 <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />，<ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
                                                 {repayment.gross_profit || 0}
                                                 <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                                                {repayment.is_first === "true" ? (
+                                                {repayment.is_first === 'true' ? (
                                                     <span>
                                         , <ReactIntl.FormattedMessage id="contract.167" defaultMessage="首笔回款" />
                                                     </span>
@@ -214,22 +214,22 @@ const DetailRepayment = React.createClass({
                                             </span>
                                         )}
         
-                                        {hasPrivilege("OPLATE_REPAYMENT_ADD") ? (
+                                        {hasPrivilege('OPLATE_REPAYMENT_ADD') ? (
                                             <span>
                                                 {isFormShow ? (
                                                     <span>
                                                         <Button
                                                             shape="circle"
-                                                            title={Intl.get("common.save", "保存")}
+                                                            title={Intl.get('common.save', '保存')}
                                                             className="btn-save"
-                                                            onClick={this.handleSubmit.bind(this, "update", index)}
+                                                            onClick={this.handleSubmit.bind(this, 'update', index)}
                                                         >
                                                             <Icon type="save"/>
                                                         </Button>
                                                         <Button
                                                             shape="circle"
                                                             className="btn-cancel"
-                                                            title={Intl.get("common.cancel", "取消")}
+                                                            title={Intl.get('common.cancel', '取消')}
                                                             onClick={this.hideForm.bind(this, index)}
                                                         >
                                                             <Icon type="cross"/>
@@ -241,8 +241,8 @@ const DetailRepayment = React.createClass({
                                                             onClick={this.showForm.bind(this, index, repayment)}
                                                         />
                                                         <RightPanelDelete 
-                                                            title={Intl.get("common.delete", "删除")}
-                                                            onClick={this.handleSubmit.bind(this, "delete", index, repayment.id)}
+                                                            title={Intl.get('common.delete', '删除')}
+                                                            onClick={this.handleSubmit.bind(this, 'delete', index, repayment.id)}
                                                         />
                                                     </span>
                                                 )}

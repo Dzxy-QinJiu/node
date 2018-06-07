@@ -2,29 +2,29 @@
  * Created by wangliping on 2016/1/6.
  */
 
-var language = require("../../public/language/getLanguage");
-if (language.lan() == "es" || language.lan() == "en") {
-    require("./rightCardsContainer-es_VE.less");
-}else if (language.lan() == "zh"){
-    require("./rightCardsContainer-zh_CN.less");
+var language = require('../../public/language/getLanguage');
+if (language.lan() == 'es' || language.lan() == 'en') {
+    require('./rightCardsContainer-es_VE.less');
+}else if (language.lan() == 'zh'){
+    require('./rightCardsContainer-zh_CN.less');
 }
 
-var PrivilegeChecker = require("../privilege/checker").PrivilegeChecker;
-var CardListView = require("../cardList");
-var SearchInput = require("../searchInput");
-var Icon = require("antd").Icon;
-var Button = require("antd").Button;
+var PrivilegeChecker = require('../privilege/checker').PrivilegeChecker;
+var CardListView = require('../cardList');
+var SearchInput = require('../searchInput');
+var Icon = require('antd').Icon;
+var Button = require('antd').Button;
 
 var CONSTANTS = {
-    APP_MANAGE: "appManage",
-    MY_APP: "myApp",
-    USER_MANAGE: "userManage"
+    APP_MANAGE: 'appManage',
+    MY_APP: 'myApp',
+    USER_MANAGE: 'userManage'
 };
 
 var RihgtCardsContainer = React.createClass({
 
     showCardForm: function() {
-        this.props.showCardForm("add");
+        this.props.showCardForm('add');
     },
 
     render: function() {
@@ -55,8 +55,8 @@ var RihgtCardsContainer = React.createClass({
                             onClick={this.showCardForm}>
                             {
                                 this.props.type == CONSTANTS.APP_MANAGE ?
-                                    Intl.get("common.add.app", "添加应用")
-                                    : Intl.get("common.add", "添加") + this.props.modalType
+                                    Intl.get('common.add.app', '添加应用')
+                                    : Intl.get('common.add', '添加') + this.props.modalType
 
                             }
                         </PrivilegeChecker>

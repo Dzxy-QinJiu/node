@@ -3,8 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/24.
  */
-var ClueAnalysisAction = require("../action/clue-analysis-action");
-import DateSelectorUtils from "CMP_DIR/datepicker/utils";
+var ClueAnalysisAction = require('../action/clue-analysis-action');
+import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
 function ClueAnalysisStore() {
     //初始化state数据
     this.setInitState();
@@ -21,8 +21,8 @@ ClueAnalysisStore.prototype.setInitState = function() {
     this.source_start_time = moment().startOf('year').valueOf();
     //结束时间
     this.source_end_time = moment().valueOf();
-    this.selectedAccess = Intl.get("common.all", "全部");
-    this.selectedSource = Intl.get("common.all", "全部");
+    this.selectedAccess = Intl.get('common.all', '全部');
+    this.selectedSource = Intl.get('common.all', '全部');
 
 };
 ClueAnalysisStore.prototype.changeSearchTime = function(timeObj) {
@@ -40,26 +40,26 @@ ClueAnalysisStore.prototype.changeSource = function(source) {
 ClueAnalysisStore.prototype.getClueAnalysis = function(result) {
     if (result.loading) {
         this.getClueAnalysisLoading = true;
-        this.getClueAnalysisErrMsg = "";
+        this.getClueAnalysisErrMsg = '';
     } else if (result.error) {
         this.getClueAnalysisLoading = false;
         this.getClueAnalysisErrMsg = result.errorMsg;
     } else {
         this.getClueAnalysisLoading = false;
-        this.getClueAnalysisErrMsg = "";
+        this.getClueAnalysisErrMsg = '';
         this.clueAnalysisList = result.data;
     }
 };
 ClueAnalysisStore.prototype.getCustomerById = function(result) {
     if (result.loading) {
         this.getCustomersLoading = true;
-        this.getCustomersErrMsg = "";
+        this.getCustomersErrMsg = '';
     } else if (result.error) {
         this.getCustomersLoading = false;
         this.getCustomersErrMsg = result.errorMsg;
     } else {
         this.getCustomersLoading = false;
-        this.getCustomersErrMsg = "";
+        this.getCustomersErrMsg = '';
         if (_.isArray(result.data.result)){
             this.customersList = result.data.result;
             _.each(this.customersList,(item) => {

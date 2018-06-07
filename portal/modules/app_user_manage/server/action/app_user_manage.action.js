@@ -1,27 +1,27 @@
-var AppUserService = require("../service/app-user-manage.service");
-var extend = require("extend");
-var CryptoJS = require("crypto-js");
+var AppUserService = require('../service/app-user-manage.service');
+var extend = require('extend');
+var CryptoJS = require('crypto-js');
 /**
  * 获取应用用户列表
  */
 exports.getAppUserList = function(req, res) {
     var queryObj = extend(true, {}, req.query);
     for (var key in queryObj) {
-        if (typeof queryObj[key] === 'string' && key.indexOf("id") < 0) {
+        if (typeof queryObj[key] === 'string' && key.indexOf('id') < 0) {
             queryObj[key] = queryObj[key].trim().toLowerCase();
         }
     }
-    AppUserService.getUsers(req, res, queryObj).on("success", function(data) {
+    AppUserService.getUsers(req, res, queryObj).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 //获取近期登录用户列表
 exports.getRecentLoginUsers = function(req, res) {
-    AppUserService.getRecentLoginUsers(req, res, req.query).on("success", function(data) {
+    AppUserService.getRecentLoginUsers(req, res, req.query).on('success', function(data) {
         res.status(200).json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -30,9 +30,9 @@ exports.getRecentLoginUsers = function(req, res) {
  * 添加应用用户
  */
 exports.addAppUser = function(req, res) {
-    AppUserService.addUser(req, res, req.body).on("success", function(data) {
+    AppUserService.addUser(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -41,18 +41,18 @@ exports.addAppUser = function(req, res) {
  * 根据用户名获取用户信息
  */
 exports.getUserByName = function(req, res) {
-    AppUserService.getUserByName(req, res, req.params.name).on("success", function(data) {
+    AppUserService.getUserByName(req, res, req.params.name).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //检查用户是否存在
 exports.checkUserExist = function(req, res) {
-    AppUserService.checkUserExist(req, res, req.params.field, req.params.value).on("success", function(data) {
+    AppUserService.checkUserExist(req, res, req.params.field, req.params.value).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -62,18 +62,18 @@ exports.checkUserExist = function(req, res) {
  */
 exports.editAppUser = function(req, res) {
     var obj = req.body;
-    AppUserService.editAppUser(req, res, obj).on("success", function(data) {
+    AppUserService.editAppUser(req, res, obj).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 //获取用户详情
 exports.getUserDetail = function(req, res) {
     var user_id = req.params.id;
-    AppUserService.getUserDetail(req, res, user_id).on("success", function(data) {
+    AppUserService.getUserDetail(req, res, user_id).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -82,9 +82,9 @@ exports.getUserDetail = function(req, res) {
  */
 exports.disableAllApps = function(req, res) {
     var user_id = req.body.user_id;
-    AppUserService.disableAllApps(req, res, user_id).on("success", function(data) {
+    AppUserService.disableAllApps(req, res, user_id).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -97,9 +97,9 @@ exports.batchUpdate = function(req, res) {
     var data = req.body.data;
     var application_ids = req.body.application_ids;
 
-    AppUserService.batchUpdate(req, res, field, data, application_ids).on("success", function(data) {
+    AppUserService.batchUpdate(req, res, field, data, application_ids).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 
@@ -108,9 +108,9 @@ exports.batchUpdate = function(req, res) {
  * 获取客户对应的用户
  */
 exports.getCustomerUsers = function(req, res) {
-    AppUserService.getCustomerUsers(req, res, req.query).on("success", function(data) {
+    AppUserService.getCustomerUsers(req, res, req.query).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 
@@ -118,9 +118,9 @@ exports.getCustomerUsers = function(req, res) {
 
 //获取用户申请列表
 exports.getApplyList = function(req, res) {
-    AppUserService.getApplyList(req, res, req.query).on("success", function(data) {
+    AppUserService.getApplyList(req, res, req.query).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -134,9 +134,9 @@ exports.getApplyDetail = function(req, res, next) {
         return;
     }
     //获取申请单详情
-    AppUserService.getApplyDetail(req, res, apply_id).on("success", function(data) {
+    AppUserService.getApplyDetail(req, res, apply_id).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -181,22 +181,22 @@ exports.submitApply = function(req, res) {
     }
 
     //发请求进行审批
-    AppUserService.submitApply(req, res, requestObj).on("success", function(data) {
+    AppUserService.submitApply(req, res, requestObj).on('success', function(data) {
         if (data === true) {
             res.json(data);
         } else {
-            res.status(500).json("审批失败");
+            res.status(500).json('审批失败');
         }
-    }).on("error", function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message || "审批失败");
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message || '审批失败');
     });
 };
 //为用户添加应用
 exports.addApp = function(req, res) {
     //发请求，添加应用
-    AppUserService.addApp(req, res, req.body).on("success", function(data) {
+    AppUserService.addApp(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -204,9 +204,9 @@ exports.addApp = function(req, res) {
 //为用户修改应用
 exports.editApp = function(req, res) {
     //发请求，修改应用
-    AppUserService.editApp(req, res, req.body).on("success", function(data) {
+    AppUserService.editApp(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -214,62 +214,62 @@ exports.editApp = function(req, res) {
 //申请用户
 exports.applyUser = function(req, res) {
     const requestObj = JSON.parse(req.body.reqData);
-    AppUserService.applyUser(req, res, requestObj).on("success", function(data) {
+    AppUserService.applyUser(req, res, requestObj).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //申请用户延期
 exports.applyDelayUser = function(req, res) {
-    AppUserService.applyDelayUser(req, res, req.body).on("success", function(data) {
+    AppUserService.applyDelayUser(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 //批量用户延期
 exports.batchDelayUser = function(req, res) {
-    AppUserService.batchDelayUser(req, res, req.body).on("success", function(data) {
+    AppUserService.batchDelayUser(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //修改用户单个应用详情
 exports.editAppDetail = function(req, res) {
-    AppUserService.editAppDetail(req, res, req.body).on("success", function(data) {
+    AppUserService.editAppDetail(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //申请修改密码
 exports.applyChangePassword = function(req, res) {
-    AppUserService.applyChangePassword(req, res, req.body).on("success", function(data) {
+    AppUserService.applyChangePassword(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //申请修改其他类型
 exports.applyChangeOther = function(req, res) {
-    AppUserService.applyChangeOther(req, res, req.body).on("success", function(data) {
+    AppUserService.applyChangeOther(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //申请修改开通状态
 exports.applyChangeStatus = function(req, res) {
-    AppUserService.applyChangeStatus(req, res, req.body).on("success", function(data) {
+    AppUserService.applyChangeStatus(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -278,9 +278,9 @@ exports.applyChangeStatus = function(req, res) {
 exports.getReplyList = function(req, res) {
     //申请单id
     var apply_id = req.params.apply_id;
-    AppUserService.getReplyList(req, res, apply_id).on("success", function(data) {
+    AppUserService.getReplyList(req, res, apply_id).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -296,53 +296,53 @@ exports.addReply = function(req, res) {
     //提交给后台的数据
     var submitObj = {apply_id, comment, notice_url};
     //添加一条回复
-    AppUserService.addReply(req, res, submitObj).on("success", function(data) {
+    AppUserService.addReply(req, res, submitObj).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //获取团队列表
 exports.getteamlists = function(req, res) {
-    AppUserService.getteamlists(req, res).on("success", function(data) {
+    AppUserService.getteamlists(req, res).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 撤销申请
 exports.saleBackoutApply = function(req, res) {
-    AppUserService.saleBackoutApply(req, res, req.body).on("success", function(data) {
+    AppUserService.saleBackoutApply(req, res, req.body).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 exports.checkUserName = function(req, res) {
-    AppUserService.checkUserName(req, res, req.query).on("success", function(data) {
+    AppUserService.checkUserName(req, res, req.query).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 添加一个用户时，提示用户名信息
 exports.addOneUserSuggestName = function(req, res) {
-    AppUserService.addOneUserSuggestName(req, res, req.query).on("success", function(data) {
+    AppUserService.addOneUserSuggestName(req, res, req.query).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 获取安全域信息列表
 exports.getRealmList = function(req, res) {
-    AppUserService.getRealmList(req, res).on("success", function(data) {
+    AppUserService.getRealmList(req, res).on('success', function(data) {
         res.json(data);
-    }).on("error", function(codeMessage) {
+    }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

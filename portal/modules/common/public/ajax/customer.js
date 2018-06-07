@@ -7,5 +7,5 @@ trans.register('customer_suggest' , {url: '/rest/global/customer_suggest',type: 
 //requestConfig可以指定获取字段列表 比如只获取客户id和客户名称
 //getCustomerSuggestListAjax({fields : ["customer_id","customer_name"]})
 exports.getCustomerSuggestListAjax = function(requestConfig) {
-    return trans.getAjax("customer_suggest",requestConfig);
+    return trans.getAjax('customer_suggest',requestConfig);
 };

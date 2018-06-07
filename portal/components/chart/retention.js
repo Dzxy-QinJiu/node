@@ -1,9 +1,9 @@
 /**
  * 用户留存
  */
-require("./style.less");
-var immutable = require("immutable");
-var Table = require("antd").Table;
+require('./style.less');
+var immutable = require('immutable');
+var Table = require('antd').Table;
 
 //日期
 const DATE_FORMAT_WITH_YEAR = oplateConsts.DATE_FORMAT;
@@ -14,7 +14,7 @@ var Retention = React.createClass({
     getDefaultProps: function() {
         return {
             chartData: [],
-            title: Intl.get("oplate.user.analysis.9", "用户留存"),
+            title: Intl.get('oplate.user.analysis.9', '用户留存'),
             height: 214,
             resultType: 'loading',
         };
@@ -24,27 +24,27 @@ var Retention = React.createClass({
 
         if (index === 0) {
             if (diffDay < 7) {
-                columnName = Intl.get("oplate.user.analysis.23", "当天");
+                columnName = Intl.get('oplate.user.analysis.23', '当天');
             } else if (diffDay >= 7 && diffDay < 31) {
-                columnName = Intl.get("oplate.user.analysis.34", "当周");
+                columnName = Intl.get('oplate.user.analysis.34', '当周');
             } else {
-                columnName = Intl.get("oplate.user.analysis.37", "当月");
+                columnName = Intl.get('oplate.user.analysis.37', '当月');
             }
         } else if (index === 1) {
             if (diffDay < 7) {
-                columnName = Intl.get("oplate.user.analysis.24", "次日");
+                columnName = Intl.get('oplate.user.analysis.24', '次日');
             } else if (diffDay >= 7 && diffDay < 31) {
-                columnName = Intl.get("oplate.user.analysis.35", "次周");
+                columnName = Intl.get('oplate.user.analysis.35', '次周');
             } else {
-                columnName = Intl.get("oplate.user.analysis.38", "次月");
+                columnName = Intl.get('oplate.user.analysis.38', '次月');
             }
         } else {
             if (diffDay < 7) {
-                columnName = Intl.get("oplate.user.analysis.25", "{count}天后",{count: index});
+                columnName = Intl.get('oplate.user.analysis.25', '{count}天后',{count: index});
             } else if (diffDay >= 7 && diffDay < 31) {
-                columnName = Intl.get("oplate.user.analysis.36", "{count}周后",{count: index});
+                columnName = Intl.get('oplate.user.analysis.36', '{count}周后',{count: index});
             } else {
-                columnName = Intl.get("oplate.user.analysis.39", "{count}月后",{count: index});
+                columnName = Intl.get('oplate.user.analysis.39', '{count}月后',{count: index});
             }
         }
 
@@ -58,7 +58,7 @@ var Retention = React.createClass({
     },
     renderTable: function() {
         if (!_.isArray(this.props.chartData) || !this.props.chartData.length) {
-            return (<div className="nodata">{Intl.get("common.no.data","暂无数据")}</div>);
+            return (<div className="nodata">{Intl.get('common.no.data','暂无数据')}</div>);
         }
 
         //表格列
@@ -76,7 +76,7 @@ var Retention = React.createClass({
         //结束时间的moment表示，用于计算时间区间包含的天数及确定时间格式
         const endTimeMoment = moment(+this.props.endTime);
         //时间区间包含的天数
-        const diffDay = endTimeMoment.diff(startTimeMoment, "days");
+        const diffDay = endTimeMoment.diff(startTimeMoment, 'days');
         //时间格式，分带年和不带年的两种格式
         const DATE_FORMAT = startTimeMoment.year() === endTimeMoment.year() ? DATE_FORMAT_WITHOUT_YEAR : DATE_FORMAT_WITH_YEAR;
 
@@ -115,14 +115,14 @@ var Retention = React.createClass({
         });
 
         //用“时间”和“新增数”这两列加上时间相关列，构造表格列数组
-        columns = ["date", "added"].concat(dateColumns);
+        columns = ['date', 'added'].concat(dateColumns);
 
         var tableColumns = columns.map((item) => {
             var title = item;
             if(item === 'date') {
-                title = Intl.get("common.login.time", "时间");
+                title = Intl.get('common.login.time', '时间');
             } else if(item === 'added') {
-                title = Intl.get("oplate.user.analysis.32", "新增数");
+                title = Intl.get('oplate.user.analysis.32', '新增数');
             }
             return {
                 title: title,

@@ -1,9 +1,9 @@
-var path = require("path");
-var restLogger = require("../../../../lib/utils/logger").getLogger('nock');
-var RestUtil = require("ant-auth-request").restUtil(restLogger)(restLogger);
-var nock = require("nock");
-var nockParser = require(path.resolve(portal_root_path , "./lib/utils/nockParser"));
-var moment = require("moment");
+var path = require('path');
+var restLogger = require('../../../../lib/utils/logger').getLogger('nock');
+var RestUtil = require('ant-auth-request').restUtil(restLogger)(restLogger);
+var nock = require('nock');
+var nockParser = require(path.resolve(portal_root_path , './lib/utils/nockParser'));
+var moment = require('moment');
 
 //生成数据
 function generateData() {
@@ -22,7 +22,7 @@ function generateData() {
 
 var idx = 0;
 
-var RealmEstablishService = require("../service/realm-establish-service");
+var RealmEstablishService = require('../service/realm-establish-service');
 
 //nock数据设置
 exports.init = function() {

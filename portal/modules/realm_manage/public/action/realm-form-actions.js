@@ -2,8 +2,8 @@
  * Created by wangliping on 2016/4/13.
  */
 
-var realmAjax = require("../ajax/realm-ajax");
-var RealmActions = require("./realm-actions");
+var realmAjax = require('../ajax/realm-ajax');
+var RealmActions = require('./realm-actions');
 
 function RealmFormActions() {
     this.generateActions(
@@ -21,16 +21,16 @@ function RealmFormActions() {
         var _this = this;
         realmAjax.addRealm(realm).then(function(list) {
             //保存成功后的处理
-            _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
+            _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功！')});
             //清空搜索内容
-            RealmActions.updateSearchContent("");
+            RealmActions.updateSearchContent('');
             //将新创建的放在原有列表之前
             RealmActions.expandRealmLists(list);
-            cb({saveResult: "success" , taskId: list.taskId});
+            cb({saveResult: 'success' , taskId: list.taskId});
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
-            cb({saveResult: "error", msg: errorMsg});
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
+            cb({saveResult: 'error', msg: errorMsg});
         });
     };
 
@@ -40,18 +40,18 @@ function RealmFormActions() {
         var _this = this;
         realmAjax.addOwner(owner).then(function() {
             //保存成功后的处理
-            _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
+            _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功！')});
             //清空搜索内容
-            RealmActions.updateSearchContent("");
+            RealmActions.updateSearchContent('');
             //添加成功后获取第一页的数据
             RealmActions.getCurRealmList({
                 cur_page: 1,
                 page_size: 16,
-                search_content: ""
+                search_content: ''
             });
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
         });
     };
     //编辑安全域
@@ -59,22 +59,22 @@ function RealmFormActions() {
         var _this = this;
         realmAjax.editRealm(realm).then(function(realmModified) {
             //保存成功后的处理
-            _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
+            _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功！')});
             //修改成功后刷新左侧列表对应安全域卡片及其详情的数据
             RealmActions.afterEditRealm(realmModified);
         }, function(errorMsg) {
             //保存失败后的处理
-            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
+            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
         });
     };
 
     //清空提示
     this.resetSaveResult = function(formType, saveResult, realm) {
-        if (saveResult == "success") {
-            if (formType == "add") {
+        if (saveResult == 'success') {
+            if (formType == 'add') {
                 //添加成功后关闭右侧面板
                 RealmActions.showOwnerForm(realm);
-            } else if (formType == "edit") {
+            } else if (formType == 'edit') {
                 //修改成功后返回详情
                 RealmActions.returnInfoPanel();
             }

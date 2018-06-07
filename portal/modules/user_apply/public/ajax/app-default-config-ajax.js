@@ -13,7 +13,7 @@ exports.getApplyAppDefaultInfo = function(obj) {
             Deferred.resolve(result);
         },
         error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON || Intl.get("user.apply.detail.get.config.failed", "获取应用默认配置失败！"));
+            Deferred.reject(errorMsg.responseJSON || Intl.get('user.apply.detail.get.config.failed', '获取应用默认配置失败！'));
         }
     });
 

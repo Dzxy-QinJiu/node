@@ -86,8 +86,8 @@
      className      可以为日历添加一个特殊的className
  *
  */
-require("./index.less");
-import BootstrapDatepicker from "../bootstrap-datepicker";
+require('./index.less');
+import BootstrapDatepicker from '../bootstrap-datepicker';
 import Dropdown from 'rc-dropdown';
 import Menu, { Item as MenuItem} from 'rc-menu';
 import classNames from 'classnames';
@@ -95,7 +95,7 @@ import {Popover,Icon} from 'antd';
 import Utils from './utils';
 
 //季度中文字
-const QUARTER_CHINESE_TEXT_LIST = ["一","二","三","四"];
+const QUARTER_CHINESE_TEXT_LIST = ['一','二','三','四'];
 //类型
 const PropTypes = React.PropTypes;
 //下拉菜单宽度
@@ -126,15 +126,15 @@ const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 //    {name:"季度",value : "seasons"}
 
 //class的前缀
-const CLASS_PREFIX = "user-opening-daterange";
+const CLASS_PREFIX = 'user-opening-daterange';
 //日期范围不对的时候，闪烁的样式
-const SPLASH_CLASS = "user-opening-daterange-splash";
+const SPLASH_CLASS = 'user-opening-daterange-splash';
 //最近xxx时间正则表达式
 const lastRangeRegex = /\-(\d+)([mw])/;
 //星期、月份对应关系
 const momentMap = {
-    "w": "weeks",
-    "m": "months"
+    'w': 'weeks',
+    'm': 'months'
 };
 //空函数
 function noop(){}
@@ -156,7 +156,7 @@ class DateSelector extends React.Component{
                 value: value
             });
         });
-        this.componentId = _.uniqueId("DateSelector");
+        this.componentId = _.uniqueId('DateSelector');
 
         let start_time, end_time;
 
@@ -203,12 +203,12 @@ class DateSelector extends React.Component{
                 end_time = Utils.getDateStr(props.end_time);
             } else {
                 if(props.range === '1w') {
-                    end_time = Utils.getDateStr(moment().add(7 , "days").toDate().getTime());
+                    end_time = Utils.getDateStr(moment().add(7 , 'days').toDate().getTime());
                 } else if(props.range === '0.5m') {
-                    end_time = Utils.getDateStr(moment().add(15 , "days").toDate().getTime());
+                    end_time = Utils.getDateStr(moment().add(15 , 'days').toDate().getTime());
                 } else if(/^\d+m$/.test(props.range)){
                     var num = props.range.replace(/m$/,'');
-                    end_time = Utils.getDateStr(moment().add(num , "month").toDate().getTime());
+                    end_time = Utils.getDateStr(moment().add(num , 'month').toDate().getTime());
                 }
             }
         }
@@ -219,7 +219,7 @@ class DateSelector extends React.Component{
             //时间范围
             range: props.range,
             //季度
-            quarter: "",
+            quarter: '',
             //是否显示日历
             showCalendar: false,
             //显示季度日历
@@ -266,7 +266,7 @@ class DateSelector extends React.Component{
             label = target.name;
         }
         if(range === 'all') {
-            this.props.onSelect("","",range,label);
+            this.props.onSelect('','',range,label);
         } else {
             const start_time_millis = Utils.getMilliseconds(start_time) + '';
             let end_time_millis = '0';
@@ -296,7 +296,7 @@ class DateSelector extends React.Component{
             //是否需要过期重新计算
             const needRecalculate = this.props.expiredRecalculate && moment(endTime, DATE_FORMAT).isBefore(moment());
             //如果开始时间是0，或需要过期重新计算，则使用当前时间
-            if(this.state.start_time === 0 || this.state.start_time === "0" || needRecalculate) {
+            if(this.state.start_time === 0 || this.state.start_time === '0' || needRecalculate) {
                 start_time_moment = moment();
             } else {
                 start_time_moment = moment(this.state.start_time,DATE_FORMAT);
@@ -305,13 +305,13 @@ class DateSelector extends React.Component{
             //结束时间是开始时间+月份
             let end_time;
             //结束时间判断，特殊处理1周
-            if(calculateRange === "1w") {
-                end_time = start_time_moment.add(7 , "days").format(DATE_FORMAT);
-            } else if(calculateRange === "0.5m") {
-                end_time = start_time_moment.add(15 , "days").format(DATE_FORMAT);
+            if(calculateRange === '1w') {
+                end_time = start_time_moment.add(7 , 'days').format(DATE_FORMAT);
+            } else if(calculateRange === '0.5m') {
+                end_time = start_time_moment.add(15 , 'days').format(DATE_FORMAT);
             } else if(/^\d+m$/.test(calculateRange)) {
                 var num = calculateRange.replace(/m$/,'');
-                end_time = start_time_moment.add(num , "month").format(DATE_FORMAT);
+                end_time = start_time_moment.add(num , 'month').format(DATE_FORMAT);
             }
             //隐藏日历
             const showCalendar = false;
@@ -381,7 +381,7 @@ class DateSelector extends React.Component{
             } else
             //上次是永久，按12个月计算开始、结束时间
             if(lastRange === 'forever') {
-                calculateRange = "12m";
+                calculateRange = '12m';
                 return resetStartEndDate();
             } else {
                 const showCalendar = false;
@@ -425,7 +425,7 @@ class DateSelector extends React.Component{
             <Menu
                 prefixCls="ant-menu"
                 onClick={this.onRangeSelect.bind(this)}
-                className={CLASS_PREFIX + "-menu"}>
+                className={CLASS_PREFIX + '-menu'}>
                 {menuLists}
             </Menu>
         );
@@ -442,13 +442,13 @@ class DateSelector extends React.Component{
     }
     getStartTimeDisplayText() {
         if(this.state.start_time === '0') {
-            return Intl.get("data.selector.none", "无");
+            return Intl.get('data.selector.none', '无');
         }
         return this.state.start_time;
     }
     getEndTimeDisplayText() {
         if(this.state.end_time === '0'){
-            return Intl.get("data.selector.none", "无");
+            return Intl.get('data.selector.none', '无');
         }
         return this.state.end_time;
     }
@@ -473,9 +473,9 @@ class DateSelector extends React.Component{
                 }
             } else {
                 if(this.state.range === '1w') {
-                    end_time = start_time_moment.add(7 , "days").format(DATE_FORMAT);
+                    end_time = start_time_moment.add(7 , 'days').format(DATE_FORMAT);
                 } else if(this.state.range === '0.5m') {
-                    end_time = start_time_moment.add(15, "days").format(DATE_FORMAT);
+                    end_time = start_time_moment.add(15, 'days').format(DATE_FORMAT);
                 }else if(lastRangeRegex.test(this.state.range)) {
                     var result = lastRangeRegex.exec(this.state.range);
                     var unit = momentMap[result[2]];
@@ -483,7 +483,7 @@ class DateSelector extends React.Component{
                 }else if(this.state.range !== 'forever'){
                     if(/^\d+m$/.test(this.state.range)) {
                         var num = this.state.range.replace(/m$/ , '');
-                        end_time = start_time_moment.add(num , "month").format(DATE_FORMAT);
+                        end_time = start_time_moment.add(num , 'month').format(DATE_FORMAT);
                     }
                 }
             }
@@ -509,9 +509,9 @@ class DateSelector extends React.Component{
                 }
             } else {
                 if(this.state.range === '1w') {
-                    start_time = end_time_moment.subtract(7 , "days").format(DATE_FORMAT);
+                    start_time = end_time_moment.subtract(7 , 'days').format(DATE_FORMAT);
                 } else if(this.state.range === '0.5m') {
-                    start_time = end_time_moment.subtract(15 , "days").format(DATE_FORMAT);
+                    start_time = end_time_moment.subtract(15 , 'days').format(DATE_FORMAT);
                 } else if(lastRangeRegex.test(this.state.range)) {
                     var result = lastRangeRegex.exec(this.state.range);
                     var unit = momentMap[result[2]];
@@ -519,7 +519,7 @@ class DateSelector extends React.Component{
                 }else if(this.state.range !== 'forever'){
                     if(/^\d+m$/.test(this.state.range)) {
                         var num = this.state.range.replace(/m$/ , '');
-                        start_time = end_time_moment.subtract(num , "month").format(DATE_FORMAT);
+                        start_time = end_time_moment.subtract(num , 'month').format(DATE_FORMAT);
                     }
                 }
             }
@@ -545,7 +545,7 @@ class DateSelector extends React.Component{
             showQuarterCalendar: false,
             displayQuarterList: displayQuarterList
         });
-        this.transportOuter(timeInfo.start_time , timeInfo.end_time , "quarter");
+        this.transportOuter(timeInfo.start_time , timeInfo.end_time , 'quarter');
     }
     //双calendar更换时间
     onRangeCalendarOK(which,time) {
@@ -580,7 +580,7 @@ class DateSelector extends React.Component{
     }
     checkClickCalendarLayer(event) {
         const target = event.target;
-        if(!$(target).closest("." + CLASS_PREFIX).length && !$(target).closest(".date_text").length) {
+        if(!$(target).closest('.' + CLASS_PREFIX).length && !$(target).closest('.date_text').length) {
             this.setState({
                 showCalendar: false
             });
@@ -588,7 +588,7 @@ class DateSelector extends React.Component{
     }
     checkClickCalendarQuarterLayer(event) {
         const target = event.target;
-        if(!$(target).closest("." + CLASS_PREFIX).length && !$(target).closest(".date_text").length) {
+        if(!$(target).closest('.' + CLASS_PREFIX).length && !$(target).closest('.date_text').length) {
             this.setState({
                 showQuarterCalendar: false
             });
@@ -620,22 +620,22 @@ class DateSelector extends React.Component{
             }
             //当datepicker恢复原位，基于原始位置计算
             var $datepickers = $('.datepicker-inline',this.refs.datepicker_wrap);
-            $datepickers.css("left",0);
+            $datepickers.css('left',0);
             //保留句柄，以便当日历超出窗口时，重新调整其位置
             var $datepicker,$arrow;
             //根据dom做定位
             if(which === 'start_time') {
-                $datepicker = $(".datepicker:eq(0)",this.refs.datepicker_wrap);
+                $datepicker = $('.datepicker:eq(0)',this.refs.datepicker_wrap);
                 var $left_span = $(event.target);
-                $arrow = $datepicker.find(">.arrow");
+                $arrow = $datepicker.find('>.arrow');
                 var target_left_pos = Math.floor(($left_span.outerWidth()) / 2) - $arrow.outerWidth();
-                $arrow.css("left",target_left_pos);
+                $arrow.css('left',target_left_pos);
             } else {
-                $datepicker = $(".datepicker:eq(1)",this.refs.datepicker_wrap);
+                $datepicker = $('.datepicker:eq(1)',this.refs.datepicker_wrap);
                 var $right_span = $(event.target);
-                $arrow = $datepicker.find(">.arrow");
+                $arrow = $datepicker.find('>.arrow');
                 var target_left_pos = $right_span.outerWidth() * 1.5 - 0.5 * $arrow.outerWidth();
-                $arrow.css("left",target_left_pos);
+                $arrow.css('left',target_left_pos);
             }
             //检查如果datepicker在屏幕之外，则向左移动datepicker，同时移动箭头样式
             var datepicker_pos = $datepicker.offset();
@@ -644,10 +644,10 @@ class DateSelector extends React.Component{
             var page_scroll_left = $(document).scrollLeft();
             if((datepicker_pos.left + datepicker_width) > (window_width + page_scroll_left + 20)) {
                 var over_width = Math.floor(datepicker_pos.left + datepicker_width - window_width - page_scroll_left + 20);
-                var date_origin_left = parseInt($datepicker.css("left")) || 0;
-                $datepicker.css("left" , (date_origin_left - over_width) + 'px');
-                var arrow_origin_left = parseInt($arrow.css("left")) || 0;
-                $arrow.css("left" , arrow_origin_left + over_width);
+                var date_origin_left = parseInt($datepicker.css('left')) || 0;
+                $datepicker.css('left' , (date_origin_left - over_width) + 'px');
+                var arrow_origin_left = parseInt($arrow.css('left')) || 0;
+                $arrow.css('left' , arrow_origin_left + over_width);
             }
         });
     }
@@ -777,7 +777,7 @@ class DateSelector extends React.Component{
             start_time: timeInfo.start_time,
             end_time: timeInfo.end_time
         });
-        this.transportOuter(timeInfo.start_time , timeInfo.end_time , "quarter");
+        this.transportOuter(timeInfo.start_time , timeInfo.end_time , 'quarter');
     }
     //获取第几季度
     getQuarterDisplayText() {
@@ -789,7 +789,7 @@ class DateSelector extends React.Component{
             return QUARTER_CHINESE_TEXT_LIST;
         } else {
             return QUARTER_CHINESE_TEXT_LIST.filter(function(text,num) {
-                var startTime = moment().year(year).quarter(num + 1).startOf("quarter").toDate().getTime();
+                var startTime = moment().year(year).quarter(num + 1).startOf('quarter').toDate().getTime();
                 var now = new Date().getTime();
                 if(now >= startTime) {
                     return true;
@@ -805,7 +805,7 @@ class DateSelector extends React.Component{
         var menu = (<Menu
             prefixCls="ant-menu"
             onClick={this.onQuarterSelect.bind(this)}
-            className={CLASS_PREFIX + "-menu"}>
+            className={CLASS_PREFIX + '-menu'}>
             {
                 this.state.displayQuarterList.map((text,num) => {
                     var cls = classNames({
@@ -824,10 +824,10 @@ class DateSelector extends React.Component{
         </Menu>);
 
         return (<Dropdown
-            getPopupContainer={() => {return document.getElementById(this.componentId + "_quarter");}}
+            getPopupContainer={() => {return document.getElementById(this.componentId + '_quarter');}}
             overlay={menu}
             prefixCls="ant-dropdown">
-            <div className="quarter_wrap" id={this.componentId + "_quarter"}>
+            <div className="quarter_wrap" id={this.componentId + '_quarter'}>
                 <span className="range_text">{this.getQuarterDisplayText()}</span>
                 <em className="triangle"></em>
             </div>
@@ -857,10 +857,10 @@ class DateSelector extends React.Component{
             <div className={cls} {...restProps}>
                 <div className="border_wrap">
                     <Dropdown
-                        getPopupContainer={() => {return document.getElementById(this.componentId + "_range");}}
+                        getPopupContainer={() => {return document.getElementById(this.componentId + '_range');}}
                         overlay={menu}
                         prefixCls="ant-dropdown">
-                        <div className="range_wrap" id={this.componentId + "_range"}>
+                        <div className="range_wrap" id={this.componentId + '_range'}>
                             <span className="range_text">{this.getRangeDisplayText()}</span>
                             <em className="triangle"></em>
                         </div>
@@ -869,8 +869,8 @@ class DateSelector extends React.Component{
                         {this.renderDisplayDateText()}
                         <Icon type="calendar" />
                         {popover}
-                        <i className="click_left" onClick={this.showCalendar.bind(this , "start_time")}></i>
-                        <i className="click_right" onClick={this.showCalendar.bind(this , "end_time")}></i>
+                        <i className="click_left" onClick={this.showCalendar.bind(this , 'start_time')}></i>
+                        <i className="click_right" onClick={this.showCalendar.bind(this , 'end_time')}></i>
                         <i className="click_year" onClick={this.showYearCalendar.bind(this)}></i>
                         {this.renderCalendar()}
                     </div>
@@ -886,15 +886,15 @@ class DateSelector extends React.Component{
  */
 function getDefaultProps(){
     //开始时间，默认今天
-    const start_time = "";
+    const start_time = '';
     //结束时间，默认今天往后推1年，12个月
-    const end_time = "";
+    const end_time = '';
     //范围，默认1年，12个月
     const range = 12;
     //选中的处理函数
     const onSelect = noop;
     //class名
-    const className = "";
+    const className = '';
     //是否结束时间为23:59:59
     const endTimeEndOfDay = true;
     //获取结束时间提示语
@@ -942,7 +942,7 @@ DateSelector.propTypes = {
 var DateSelectorOption = React.createClass({
     getDefaultProps: function() {
         return {
-            value: ""
+            value: ''
         };
     },
     render: function(){

@@ -7,30 +7,30 @@ exports.secondsToHourMinuteSecond = function(timeSeconds) {
     let hours = Math.floor(timeSeconds / (60 * 60));//小时数
     let minutes = Math.floor((timeSeconds - hours * 60 * 60) / 60);//分钟数
     let seconds = timeSeconds - hours * 60 * 60 - minutes * 60;//秒数
-    let timeDescr = "";//转换后的时间描述
+    let timeDescr = '';//转换后的时间描述
     if (hours > 0) {
-        timeDescr = hours + Intl.get("user.time.hour", "小时");
+        timeDescr = hours + Intl.get('user.time.hour', '小时');
     }
     if (minutes > 0) {
-        timeDescr += minutes + Intl.get("user.time.minute", "分");
+        timeDescr += minutes + Intl.get('user.time.minute', '分');
     }
     if (seconds > 0) {
-        timeDescr += seconds + Intl.get("user.time.second", "秒");
+        timeDescr += seconds + Intl.get('user.time.second', '秒');
     }
     return {
         hours: hours,
         minutes: minutes,
         second: seconds,
-        timeDescr: timeDescr || "0"
+        timeDescr: timeDescr || '0'
     };
 };
 //将数字时间改为字符串
 function getStringTime(time) {
-    let timeStr = "" + time;
+    let timeStr = '' + time;
     if (timeStr.length >= 2) {
         return timeStr;
     } else {//不到两位数时，前面补0
-        return ("0" + timeStr).slice(-2);
+        return ('0' + timeStr).slice(-2);
     }
 }
 //获取01:02:00（1小时2分钟）格式的时间
@@ -85,25 +85,25 @@ exports.getCurrentWeek = function(time) {
     var Week = moment(time).format('dddd');
     switch (Week) {
     case 'Monday':
-        Week = Intl.get("schedule.user.time.monday", "星期一");
+        Week = Intl.get('schedule.user.time.monday', '星期一');
         break;
     case 'Tuesday':
-        Week = Intl.get("schedule.user.time.tuesday", "星期二");
+        Week = Intl.get('schedule.user.time.tuesday', '星期二');
         break;
     case 'Wednesday':
-        Week = Intl.get("schedule.user.time.wednesday", "星期三");
+        Week = Intl.get('schedule.user.time.wednesday', '星期三');
         break;
     case 'Thursday':
-        Week = Intl.get("schedule.user.time.thursday", "星期四");
+        Week = Intl.get('schedule.user.time.thursday', '星期四');
         break;
     case 'Friday':
-        Week = Intl.get("schedule.user.time.friday", "星期五");
+        Week = Intl.get('schedule.user.time.friday', '星期五');
         break;
     case 'Saturday':
-        Week = Intl.get("schedule.user.time.saturday", "星期六");
+        Week = Intl.get('schedule.user.time.saturday', '星期六');
         break;
     case 'Sunday':
-        Week = Intl.get("schedule.user.time.sunday", "星期日");
+        Week = Intl.get('schedule.user.time.sunday', '星期日');
         break;
     default:
         break;
@@ -113,7 +113,7 @@ exports.getCurrentWeek = function(time) {
 
 //获取所传时间是xx:xx:xx(今天)、昨天、前天还是xx天（月、年）前
 exports.getTimeStrFromNow = function(time) {
-    let timeStr = "";
+    let timeStr = '';
     if (time) {
         //今天
         let today = {start_time: moment().startOf('day').valueOf(), end_time: moment().endOf('day').valueOf()};
@@ -122,10 +122,10 @@ exports.getTimeStrFromNow = function(time) {
             timeStr = moment(time).format(oplateConsts.TIME_FORMAT);
         } else if (time >= today.start_time - oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time - oplateConsts.ONE_DAY_TIME_RANGE) {
             //昨天
-            timeStr = Intl.get("user.time.yesterday", "昨天");
+            timeStr = Intl.get('user.time.yesterday', '昨天');
         } else if (time >= today.start_time - 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time - 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
             //前天
-            timeStr = Intl.get("sales.frontpage.before.yesterday", "前天");
+            timeStr = Intl.get('sales.frontpage.before.yesterday', '前天');
         } else {
             timeStr = moment(time).fromNow();
         }
@@ -135,19 +135,19 @@ exports.getTimeStrFromNow = function(time) {
 
 //获取所传时间是今天、明天、后天还是xxx天后
 exports.getFutureTimeStr = function(time) {
-    let timeStr = "";
+    let timeStr = '';
     if (time) {
         //今天的起始、结束时间(23:59:59+1)
         let today = {start_time: moment().startOf('day').valueOf(), end_time: moment().endOf('day').valueOf() + 1};
         if (time > today.start_time && time <= today.end_time) {
             //今天
-            timeStr = Intl.get("user.time.today", "今天");
+            timeStr = Intl.get('user.time.today', '今天');
         } else if (time > today.start_time + oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time + oplateConsts.ONE_DAY_TIME_RANGE) {
             //明天
-            timeStr = Intl.get("sales.frontpage.tomorrow", "明天");
+            timeStr = Intl.get('sales.frontpage.tomorrow', '明天');
         } else if (time > today.start_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
             //后天
-            timeStr = Intl.get("sales.frontpage.after.tomorrow", "后天");
+            timeStr = Intl.get('sales.frontpage.after.tomorrow', '后天');
         } else {
             let duration = moment.duration(time - moment().valueOf());
             if (duration > 0) {
@@ -159,7 +159,7 @@ exports.getFutureTimeStr = function(time) {
                     over_draft_days += duration.years() * 365;
                 }
                 if (over_draft_days > 0) {
-                    timeStr = Intl.get("oplate.user.analysis.25", "{count}天后", {count: over_draft_days});
+                    timeStr = Intl.get('oplate.user.analysis.25', '{count}天后', {count: over_draft_days});
                 }
             }
         }

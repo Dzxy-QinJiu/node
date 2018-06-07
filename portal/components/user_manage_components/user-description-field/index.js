@@ -14,7 +14,7 @@ const UserDescriptionField = {
                 labelCol={{span: 0}}
                 wrapperCol={{span: 24}}
             >
-                <Input rows="3" type="textarea" placeholder={Intl.get("user.input.remark","请输入备注")} value={formData.description} onChange={this.setField.bind(this , 'description')}/>
+                <Input rows="3" type="textarea" placeholder={Intl.get('user.input.remark','请输入备注')} value={formData.description} onChange={this.setField.bind(this , 'description')}/>
             </FormItem>
         );
     }

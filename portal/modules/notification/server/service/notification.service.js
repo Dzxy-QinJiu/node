@@ -1,29 +1,29 @@
-var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("ant-auth-request").restUtil(restLogger);
-var EventEmitter = require("events").EventEmitter;
-var Promise = require("bluebird");
+var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+var EventEmitter = require('events').EventEmitter;
+var Promise = require('bluebird');
 
 //通知相关的api
 var NotificationRestApis = {
     //清除未读数
-    clearUnreadNum: "/rest/base/v1/message/notice/:type/clean",
+    clearUnreadNum: '/rest/base/v1/message/notice/:type/clean',
     //获取客户提醒、申请消息未读数
-    getUnreadCount: "/rest/base/v1/message/notice/unread",
+    getUnreadCount: '/rest/base/v1/message/notice/unread',
     //获取申请的待审批数
-    getUnapprovedCount: "/rest/base/v1/message/applylist?page_size=0&approval_state=false",
+    getUnapprovedCount: '/rest/base/v1/message/applylist?page_size=0&approval_state=false',
     //获取系统消息列表(未处理)
-    getUnHandledSystemNotices: "/rest/base/v1/notice/customernotice/grouping",
+    getUnHandledSystemNotices: '/rest/base/v1/notice/customernotice/grouping',
     //获取系统消息列表(已处理)
-    getHandledSystemNotices: "/rest/base/v1/notice/customernotice/history",
+    getHandledSystemNotices: '/rest/base/v1/notice/customernotice/history',
     //将系统消息设为已处理
-    handleSystemNotice: "/rest/base/v1/notice/customernotice/handle/:noticeId"
+    handleSystemNotice: '/rest/base/v1/notice/customernotice/handle/:noticeId'
 };
 exports.urls = NotificationRestApis;
 
 //获取系统消息列表
 exports.getSystemNotices = function(req, res, queryObj) {
     let url = NotificationRestApis.getUnHandledSystemNotices;//未处理的系统消息
-    if (req.params.status === "handled") {//已处理
+    if (req.params.status === 'handled') {//已处理
         url = NotificationRestApis.getHandledSystemNotices;
     }
     return restUtil.authRest.get({
@@ -35,7 +35,7 @@ exports.getSystemNotices = function(req, res, queryObj) {
 //将系统消息设为已处理
 exports.handleSystemNotice = function(req, res, noticeId) {
     return restUtil.authRest.put({
-        url: NotificationRestApis.handleSystemNotice.replace(":noticeId", noticeId),
+        url: NotificationRestApis.handleSystemNotice.replace(':noticeId', noticeId),
         req: req,
         res: res
     }, null);
@@ -43,7 +43,7 @@ exports.handleSystemNotice = function(req, res, noticeId) {
 //清除未读数
 exports.clearUnreadNum = function(req, res, type) {
     return restUtil.authRest.put({
-        url: NotificationRestApis.clearUnreadNum.replace(":type", type),
+        url: NotificationRestApis.clearUnreadNum.replace(':type', type),
         req: req,
         res: res
     });
@@ -52,10 +52,10 @@ exports.clearUnreadNum = function(req, res, type) {
 exports.getUnreadCount = function(req, res, queryObj) {
     var emitter = new EventEmitter();
     let promiseList = [];
-    if (queryObj.type == "unread") {
+    if (queryObj.type == 'unread') {
         //只获取未读数
         promiseList.push(getUnreadInfoCount(req, res));
-    } else if (queryObj.type == "unapproved") {
+    } else if (queryObj.type == 'unapproved') {
         //只获取待审批数
         promiseList.push(getUnapprovedCount(req, res));
     } else {
@@ -65,10 +65,10 @@ exports.getUnreadCount = function(req, res, queryObj) {
     }
     Promise.all(promiseList).then(function(dataList) {
         var unreadObj = {};
-        if (queryObj.type == "unread") {
+        if (queryObj.type == 'unread') {
             //只获取未读数
             unreadObj = dataList[0] || {};
-        } else if (queryObj.type == "unapproved") {
+        } else if (queryObj.type == 'unapproved') {
             //只获取待审批数
             unreadObj.approve = dataList[1] ? dataList[1].total || 0 : 0;
         } else {
@@ -81,9 +81,9 @@ exports.getUnreadCount = function(req, res, queryObj) {
             unreadObj = dataList[0] || {};
             unreadObj.approve = dataList[1] ? dataList[1].total || 0 : 0;
         }
-        emitter.emit("success", unreadObj);
+        emitter.emit('success', unreadObj);
     }, function(errorMsg) {
-        emitter.emit("error", errorMsg);
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 };

@@ -1,18 +1,18 @@
 /**
  * 线图
  */
-var echarts = require("echarts-eefung");
-require("./index.less");
-import {Icon,Radio} from "antd";
+var echarts = require('echarts-eefung');
+require('./index.less');
+import {Icon,Radio} from 'antd';
 //各种颜色
-var colors = require("../../../../oplate_user_analysis/public/utils/colors");
-var Color = require("color");
-var Spinner = require("../../../../../components/spinner");
-var immutable = require("immutable");
-var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
+var colors = require('../../../../oplate_user_analysis/public/utils/colors');
+var Color = require('color');
+var Spinner = require('../../../../../components/spinner');
+var immutable = require('immutable');
+var echartsTooltipCssText = require('../../../../../lib/utils/echarts-tooltip-csstext');
 var RadioGroup = Radio.Group;
 //macrons主题
-import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 import { packageTry } from 'LIB_DIR/func';
 
 //时间格式化格式1
@@ -36,7 +36,7 @@ var AreaLineChart = React.createClass({
     getDefaultProps: function() {
         return {
             list: [],
-            title: Intl.get("operation.report.activity", "活跃度"),
+            title: Intl.get('operation.report.activity', '活跃度'),
             width: '100%',
             height: 214,
             resultType: 'loading',
@@ -75,7 +75,7 @@ var AreaLineChart = React.createClass({
         items = items.datas;
         var startMoment = moment(new Date(+items[0].timestamp));
         var endMoment = moment(new Date(+items[items.length - 1].timestamp));
-        var biggerThanYear = startMoment.format("YYYY") != endMoment.format("YYYY");
+        var biggerThanYear = startMoment.format('YYYY') != endMoment.format('YYYY');
         if (biggerThanYear) {
             this.isBiggerThanYear = true;
         }
@@ -91,9 +91,9 @@ var AreaLineChart = React.createClass({
     getLabel: function() {
         return {
             normal: {
-                show: typeof this.props.showLabel === "boolean" ? this.props.showLabel : false,
-                position: "top",
-                formatter: this.props.labelFormatter || "{c}"
+                show: typeof this.props.showLabel === 'boolean' ? this.props.showLabel : false,
+                position: 'top',
+                formatter: this.props.labelFormatter || '{c}'
             }
         };
     },
@@ -102,7 +102,7 @@ var AreaLineChart = React.createClass({
         //普通线
         function getLine(name, list, color) {
             return {
-                symbol: "circle",
+                symbol: 'circle',
                 showAllSymbol: true,
                 name: name,
                 type: 'line',
@@ -115,7 +115,7 @@ var AreaLineChart = React.createClass({
                         color: color
                     }
                 },
-                data: _.pluck(list, "active")
+                data: _.pluck(list, 'active')
             };
         }
 
@@ -175,27 +175,27 @@ var AreaLineChart = React.createClass({
                         weekEndText = moment(new Date(+endTime)).format(DATE_FORMAT);
                     } else {
                         weekStartText = moment(new Date(time)).format(DATE_FORMAT);
-                        weekEndText = moment(new Date(time)).add(7, "days").format(DATE_FORMAT);
+                        weekEndText = moment(new Date(time)).add(7, 'days').format(DATE_FORMAT);
                     }
-                    timeStr = `${weekStartText} ${Intl.get("common.time.connector","至")} ${weekEndText}`;
+                    timeStr = `${weekStartText} ${Intl.get('common.time.connector','至')} ${weekEndText}`;
                 }
                 var tableHtmlList = [];
-                tableHtmlList.push(`<div class="activation_tooltip custom-scrollbar">`);
+                tableHtmlList.push('<div class="activation_tooltip custom-scrollbar">');
                 tableHtmlList.push(`<p class="title">${timeStr}</p>`);
                 tableHtmlList.push(`<table class="table">
                                         <thead>
                                             <tr>`);
                 tableHtmlList.push(`
-                            <th>${Intl.get("common.definition", "名称")}</th>
-                            <th>${Intl.get("operation.report.active.num", "活跃数(个)")}</th>
-                            <th>${Intl.get("operation.report.total.count", "总数(个)")}</th>
-                            <th>${Intl.get("operation.report.activity.unit", "活跃度(%)")}</th>
+                            <th>${Intl.get('common.definition', '名称')}</th>
+                            <th>${Intl.get('operation.report.active.num', '活跃数(个)')}</th>
+                            <th>${Intl.get('operation.report.total.count', '总数(个)')}</th>
+                            <th>${Intl.get('operation.report.activity.unit', '活跃度(%)')}</th>
                         </tr>
                     </thead>
               `);
-                tableHtmlList.push(`<tbody>`);
+                tableHtmlList.push('<tbody>');
                 _this.props.list.map(function(line) {
-                    tableHtmlList.push(`<tr>`);
+                    tableHtmlList.push('<tr>');
                     var active = line.datas[idx] && line.datas[idx].active || 0;
                     var total = line.datas[idx] && line.datas[idx].total || 0;
                     var percent = line.datas[idx] && line.datas[idx].percent || 0;
@@ -205,7 +205,7 @@ var AreaLineChart = React.createClass({
                         <td class="number_text">${(percent * 100).toFixed(2)}</td>
                     </tr>`);
                 });
-                tableHtmlList.push(`</tbody></table></div>`);
+                tableHtmlList.push('</tbody></table></div>');
                 return tableHtmlList.join('');
             },
             extraCssText: echartsTooltipCssText
@@ -225,7 +225,7 @@ var AreaLineChart = React.createClass({
             },
             xAxis: [
                 {
-                    type: "category",
+                    type: 'category',
                     splitLine: {
                         lineStyle: {
                             color: '#f2f2f2'
@@ -251,8 +251,8 @@ var AreaLineChart = React.createClass({
             ],
             yAxis: [
                 {
-                    type: "value",
-                    name: Intl.get("operation.report.user.count", "用户数"),
+                    type: 'value',
+                    name: Intl.get('operation.report.user.count', '用户数'),
                     position: 'left',
                     splitLine: {
                         lineStyle: {
@@ -272,9 +272,9 @@ var AreaLineChart = React.createClass({
                     }
                 },
                 {
-                    type: "value",
+                    type: 'value',
                     position: 'right',
-                    name: Intl.get("operation.report.active", "活跃率"),
+                    name: Intl.get('operation.report.active', '活跃率'),
                     min: 0,
                     max: 100,
                     splitLine: {
@@ -326,9 +326,9 @@ var AreaLineChart = React.createClass({
                     this.echartInstance.dispose();
                 });
             }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data", "暂无数据")}</div>`);
+            $(this.refs.chart).html(`<div class='nodata'>${Intl.get('common.no.data', '暂无数据')}</div>`);
         } else {
-            $(this.refs.chart).find(".nodata").remove();
+            $(this.refs.chart).find('.nodata').remove();
             this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
             var options = this.getEchartOptions();
             this.echartInstance.setOption(options, true);

@@ -1,5 +1,5 @@
 //通知工具类
-var notificationUtil = require("./notification");
+var notificationUtil = require('./notification');
 
 //taskId 与 通知插件 的对应关系 // taskId : notificationInstance
 var NotificationMap = {};
@@ -10,10 +10,10 @@ var NotificationMap = {};
 //这个notyCloseTimeoutMap就是存储taskId与timeout之间的对应关系
 var notyCloseTimeoutMap = {};
 //批量操作的emitter
-var batchPushEmitter = require("../utils/emitters").batchPushEmitter;
+var batchPushEmitter = require('../utils/emitters').batchPushEmitter;
 //批量操作完成后，自动关闭的延迟时间（ms）
 const BATCH_FINISH_AUTOCLOSE_TIMEOUT = 4000;
-import { storageUtil } from "ant-utils";
+import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 //批量操作监听器
 /**
@@ -144,7 +144,7 @@ function renderNotify(title,content,taskId) {
         notify = notificationUtil.showNotification({
             title: title,
             content: content,
-            closeWith: ["button"],
+            closeWith: ['button'],
             callback: {
                 onClose: function() {
                     removeTaskIdFromList(taskId);

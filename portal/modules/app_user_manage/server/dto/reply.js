@@ -1,8 +1,8 @@
 /**
  * 转换成前端使用的对象
  */
-var _ = require("underscore");
-var moment = require("moment");
+var _ = require('underscore');
+var moment = require('moment');
 exports.toRestObject = function(list) {
     var result = [];
     list = list || [];

@@ -1,8 +1,8 @@
-var salesHomeAjax = require("../ajax/sales-home-ajax");
-var userData = require("../../../../public/sources/user-data");
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
+var salesHomeAjax = require('../ajax/sales-home-ajax');
+var userData = require('../../../../public/sources/user-data');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
-var _ = require("underscore");
+var _ = require('underscore');
 
 function SalesHomeActions() {
     this.generateActions(
@@ -143,7 +143,7 @@ function SalesHomeActions() {
     this.getSalesPhoneList = function(reqData) {
         var _this = this;
         let type = 'manager';
-        if (hasPrivilege("CALL_RECORD_VIEW_USER")) {
+        if (hasPrivilege('CALL_RECORD_VIEW_USER')) {
             type = 'user';
         }
         _this.dispatch({loading: true, error: false});
@@ -199,12 +199,12 @@ function SalesHomeActions() {
                 if (data) {
                     callback({error: false, data: data});
                 } else {
-                    callback({error: true, errorMsg: Intl.get("user.info.active.user.email.failed","激活失败")});
+                    callback({error: true, errorMsg: Intl.get('user.info.active.user.email.failed','激活失败')});
                 }
             }
         }, function(errorMsg) {
             if (callback) {
-                callback({error: true, errorMsg: errorMsg || Intl.get("user.info.active.user.email.failed","激活失败")});
+                callback({error: true, errorMsg: errorMsg || Intl.get('user.info.active.user.email.failed','激活失败')});
             }
         });
     };
@@ -217,7 +217,7 @@ function SalesHomeActions() {
             }
         },(errorMsg) => {
             if (callback && _.isFunction(callback)){
-                callback(errorMsg || Intl.get("failed.set.no.email.tip","设置不再提示邮箱激活提醒失败"));
+                callback(errorMsg || Intl.get('failed.set.no.email.tip','设置不再提示邮箱激活提醒失败'));
             }
         }
         );

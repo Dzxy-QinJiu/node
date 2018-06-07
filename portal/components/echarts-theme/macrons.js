@@ -1,4 +1,4 @@
-var DEFAULT_FONTFAMILY = "SimHei";
+var DEFAULT_FONTFAMILY = 'SimHei';
 var theme = {
     // 默认色板
     color: [

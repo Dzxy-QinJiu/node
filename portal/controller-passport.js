@@ -2,8 +2,8 @@
  * 登录验证
  */
 
-"use strict";
-var logger = require("../portal/lib/utils/logger");
+'use strict';
+var logger = require('../portal/lib/utils/logger');
 //访问日志
 var accessLogger = logger.getLogger('access');
 
@@ -12,12 +12,12 @@ var checkLogin = function(passport) {
         // 登入登出的一种特殊检测
         if (/^\/login/i.test(req.url)) {
             if (req.session.user) {
-                return res.redirect("/");
+                return res.redirect('/');
             }
             return next();
         } else if (/^\/logout/i.test(req.url)) {
             if (!req.session.user) {
-                return res.redirect("/login");
+                return res.redirect('/login');
             }
             return next();
         }
@@ -29,16 +29,16 @@ var checkLogin = function(passport) {
             //如果是ajax请求  “X-Requested-With” header field is “XMLHttpRequest”,
             // indicating that the request was issued by a client library such as jQuery.
             if (req.xhr) {
-                accessLogger.error("sessionId:" + req.sessionID + ",用户未登录,url=" + req.url + ",sendStatus 401");
+                accessLogger.error('sessionId:' + req.sessionID + ',用户未登录,url=' + req.url + ',sendStatus 401');
                 res.sendStatus(401);
             } else {
                 ///处理转页的情况
                 dealTurnPage(req);
                 if (global.config.useSso) {
                     //sso登录的情况下，超时需要加stopcheck参数，防止再次sso校验登录
-                    res.redirect("/login?stopcheck=true");
+                    res.redirect('/login?stopcheck=true');
                 } else {
-                    res.redirect("/login");
+                    res.redirect('/login');
                 }
             }
         }

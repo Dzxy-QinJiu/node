@@ -1,12 +1,12 @@
 /**
  * Created by zhoulianyi on  2016/5/29 15:37.
  */
-var RightContent = require("../../../components/privilege/right-content");
-var Checker = require("../../../components/privilege/checker");
+var RightContent = require('../../../components/privilege/right-content');
+var Checker = require('../../../components/privilege/checker');
 //用户在线统计
-var UserOnlineAnalysis = require("../../../modules/user_online_analysis");
+var UserOnlineAnalysis = require('../../../modules/user_online_analysis');
 //用户在线列表
-var UserOnlineList = require("../../../modules/user_online_list");
+var UserOnlineList = require('../../../modules/user_online_list');
 
 
 function getChildRoutes() {

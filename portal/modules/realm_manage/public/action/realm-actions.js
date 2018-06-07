@@ -1,5 +1,5 @@
-var realmAjax = require("../ajax/realm-ajax");
-var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
+var realmAjax = require('../ajax/realm-ajax');
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 function RealmActions() {
     this.generateActions(
         'closeAddPanel',

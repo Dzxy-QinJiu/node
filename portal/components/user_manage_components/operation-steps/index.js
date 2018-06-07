@@ -5,13 +5,13 @@
          <OperationSteps.Step action={Intl.get("user.user.app.set", "应用设置")} />
    </OperationSteps>
  */
-var language = require("../../../public/language/getLanguage");
+var language = require('../../../public/language/getLanguage');
 require('./index.less');
-if (language.lan() == "es" || language.lan() == "en") {
+if (language.lan() == 'es' || language.lan() == 'en') {
     require('./index-es.less');
 }
 const PropTypes = React.PropTypes;
-import classNames from "classnames";
+import classNames from 'classnames';
 //步骤条
 class OperationSteps extends React.Component {
     //构造器
@@ -21,7 +21,7 @@ class OperationSteps extends React.Component {
     render(){
         const props = this.props;
         const {children,className,current,style,title,...restProps} = props;
-        const cls = classNames("operation-steps","clearfix",`operation-steps-current-${current}`,className);
+        const cls = classNames('operation-steps','clearfix',`operation-steps-current-${current}`,className);
         return (
             <div className={cls} style={style} {...restProps}>
                 <span className="operation-steps-title">{title}</span>
@@ -61,7 +61,7 @@ class OperationStep extends React.Component {
     render(){
         const props = this.props;
         const {className,action,style,children,...restProps} = props;
-        var cls = classNames("operation-steps-action",className);
+        var cls = classNames('operation-steps-action',className);
         return (
             <li className={cls} style={style} {...restProps}>
                 {this.props.action}
@@ -79,8 +79,8 @@ OperationStep.propTypes = {
 };
 //步骤的默认属性
 OperationStep.defaultProps = {
-    action: "",
-    className: "",
+    action: '',
+    className: '',
     style: {},
     activeDot: false
 };

@@ -49,8 +49,8 @@ exports.addAppVersion = function(versionContent){
 exports.addUploadVersion = function(formData){
     var Deferred = $.Deferred();
     $.ajax({
-        url: "/rest/my_app/upload/version_upgrade",
-        type: "POST",
+        url: '/rest/my_app/upload/version_upgrade',
+        type: 'POST',
         data: formData,
         contentType: false,
         processData: false,
@@ -76,7 +76,7 @@ exports.deleteAppVersionRecord = function(recordId){
             Deferred.resolve(result);
         },
         error: function(errorInfo) {
-            Deferred.reject(errorInfo.responseJSON || "该记录删除失败！");
+            Deferred.reject(errorInfo.responseJSON || '该记录删除失败！');
         }
     });
     return Deferred.promise();

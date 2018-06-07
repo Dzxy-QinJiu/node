@@ -1,4 +1,4 @@
-var appAjaxTrans = require("../../../../modules/common/public/ajax/app");
+var appAjaxTrans = require('../../../../modules/common/public/ajax/app');
 // 获取应用列表
 exports.getAppList = function() {
     var Deferred = $.Deferred();
@@ -20,9 +20,9 @@ exports.getOnlineUserList = (pageSize, pageNum, condition) => {
     var Deferred = $.Deferred();
     onlineUserListAjax && onlineUserListAjax.abort();
     onlineUserListAjax = $.ajax({
-        url: "/rest/online/list/" + pageSize + "/" + pageNum,
-        dataType: "json",
-        type: "post",
+        url: '/rest/online/list/' + pageSize + '/' + pageNum,
+        dataType: 'json',
+        type: 'post',
         success: (data) => {
             Deferred.resolve(data);
         },
@@ -53,7 +53,7 @@ exports.getRecentLoginUsers = (params) => {
         },
         error: (xhr , textStatus) => {
             if(textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
+                Deferred.reject(xhr.responseJSON || Intl.get('user.list.get.failed', '获取用户列表失败'));
             }
         }
     });

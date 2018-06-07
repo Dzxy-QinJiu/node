@@ -1,6 +1,6 @@
-import { hasPrivilege } from "CMP_DIR/privilege/checker";
-let teamAjax = require("../../../common/public/ajax/team");
-let salesmanAjax = require("../../../common/public/ajax/salesman");
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+let teamAjax = require('../../../common/public/ajax/team');
+let salesmanAjax = require('../../../common/public/ajax/salesman');
 //获取销售人员列表
 exports.getSalesManList = function() {
     var Deferred = $.Deferred();
@@ -55,7 +55,7 @@ exports.getRecommendTags = function() {
     var pageSize = 100;
     var num = 1;
     let type = 'user';
-    if(hasPrivilege("CUSTOMER_MANAGER_LABEL_GET")){
+    if(hasPrivilege('CUSTOMER_MANAGER_LABEL_GET')){
         type = 'manager';
     }
     var Deferred = $.Deferred();

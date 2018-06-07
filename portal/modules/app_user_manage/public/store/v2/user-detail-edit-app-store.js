@@ -37,20 +37,20 @@ class UserDetailEditAppStore {
         } else {
             var startMoment = moment(new Date(+start_time));
             var endMoment = moment(new Date(+end_time));
-            startMoment.startOf("day");
-            endMoment.startOf("day");
-            var rangeDiffMonth = endMoment.diff(startMoment , "months") + '';
-            if(["1","6","12"].indexOf(rangeDiffMonth) >= 0 && startMoment.format("D") === endMoment.format("D")) {
-                range = rangeDiffMonth + "m";
+            startMoment.startOf('day');
+            endMoment.startOf('day');
+            var rangeDiffMonth = endMoment.diff(startMoment , 'months') + '';
+            if(['1','6','12'].indexOf(rangeDiffMonth) >= 0 && startMoment.format('D') === endMoment.format('D')) {
+                range = rangeDiffMonth + 'm';
             } else {
                 //判断是7天(一周)还是15天(半个月)
-                var rangeDiffDays = endMoment.diff(startMoment , "days") + "";
-                if(rangeDiffDays === "7") {
-                    range = "1w";
-                } else if(rangeDiffDays === "15") {
-                    range = "0.5m";
+                var rangeDiffDays = endMoment.diff(startMoment , 'days') + '';
+                if(rangeDiffDays === '7') {
+                    range = '1w';
+                } else if(rangeDiffDays === '15') {
+                    range = '0.5m';
                 } else {
-                    range = "custom";
+                    range = 'custom';
                 }
             }
         }
@@ -78,14 +78,14 @@ class UserDetailEditAppStore {
     //修改应用完成
     editUserApps(result) {
         if(result.error) {
-            this.submitResult = "error";
+            this.submitResult = 'error';
             this.submitErrorMsg = result.errorMsg;
         } else {
-            this.submitErrorMsg = "";
+            this.submitErrorMsg = '';
             if(result.loading) {
-                this.submitResult = "loading";
+                this.submitResult = 'loading';
             } else {
-                this.submitResult = "success";
+                this.submitResult = 'success';
                 setTimeout(() => {
                     this.resetState();
                     AppUserPanelSwitchAction.resetState();
@@ -101,4 +101,4 @@ class UserDetailEditAppStore {
 }
 
 //使用alt导出store
-export default alt.createStore(UserDetailEditAppStore , "UserDetailEditAppStoreV2");
+export default alt.createStore(UserDetailEditAppStore , 'UserDetailEditAppStoreV2');

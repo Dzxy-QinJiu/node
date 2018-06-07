@@ -1,19 +1,19 @@
-const Validation = require("rc-form-validation");
+const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
  * 显示、编辑 的组件
  * 可切换状态
  */
-import {Form,Input,Icon} from "antd";
+import {Form,Input,Icon} from 'antd';
 let FormItem = Form.Item;
-let crypto = require("crypto");
-let autosize = require("autosize");
-import FieldMixin from "../../../../../components/antd-form-fieldmixin";
-import {nameRegex} from "PUB_DIR/sources/utils/consts";
+let crypto = require('crypto');
+let autosize = require('autosize');
+import FieldMixin from '../../../../../components/antd-form-fieldmixin';
+import {nameRegex} from 'PUB_DIR/sources/utils/consts';
 let AutosizeTextarea = require('../../../../../components/autosize-textarea');
-let CrmAction = require("../../action/crm-actions");
-let CrmBasicAjax = require("../../ajax/index");
-import Trace from "LIB_DIR/trace";
+let CrmAction = require('../../action/crm-actions');
+let CrmBasicAjax = require('../../ajax/index');
+import Trace from 'LIB_DIR/trace';
 
 let NameTextareaField = React.createClass({
     mixins: [FieldMixin],
@@ -21,8 +21,8 @@ let NameTextareaField = React.createClass({
         return {
             //是否能修改
             disabled: false,
-            customerId: "",
-            name: "",
+            customerId: '',
+            name: '',
             //修改成功
             modifySuccess: function() {
             }
@@ -31,7 +31,7 @@ let NameTextareaField = React.createClass({
     getInitialState: function() {
         return {
             loading: false,
-            displayType: "text",
+            displayType: 'text',
             disabled: this.props.disabled,
             isMerge: this.props.isMerge,
             customerId: this.props.customerId,
@@ -56,8 +56,8 @@ let NameTextareaField = React.createClass({
         }
     },
     setEditable: function(e) {
-        Trace.traceEvent(e,"点击设置客户名");
-        this.setState({displayType: "edit"});
+        Trace.traceEvent(e,'点击设置客户名');
+        this.setState({displayType: 'edit'});
     },
     //回到展示状态
     backToDisplay: function() {
@@ -79,10 +79,10 @@ let NameTextareaField = React.createClass({
             if (!valid) {
                 return;
             }
-            Trace.traceEvent(e,"保存对客户名的修改");
+            Trace.traceEvent(e,'保存对客户名的修改');
             let submitData = {
                 id: this.state.customerId,
-                type: "name",
+                type: 'name',
                 name: $.trim(this.state.formData.name)
             };
             if (this.props.isMerge) {
@@ -99,7 +99,7 @@ let NameTextareaField = React.createClass({
                 }, errorMsg => {
                     this.setState({
                         loading: false,
-                        submitErrorMsg: errorMsg || Intl.get("crm.169", "修改客户名失败")
+                        submitErrorMsg: errorMsg || Intl.get('crm.169', '修改客户名失败')
                     });
                 });
             }
@@ -115,11 +115,11 @@ let NameTextareaField = React.createClass({
         this.setState({
             formData: formData,
             status: status,
-            displayType: "text",
+            displayType: 'text',
             submitErrorMsg: '',
             loading: false
         });
-        Trace.traceEvent(e,"取消对客户名的修改");
+        Trace.traceEvent(e,'取消对客户名的修改');
     },
 
     //客户名格式验证
@@ -130,11 +130,11 @@ let NameTextareaField = React.createClass({
                 callback();
             } else {
                 this.setState({submitErrorMsg: ''});
-                callback(new Error(Intl.get("crm.197", "客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间")));
+                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
             }
         } else {
             this.setState({submitErrorMsg: ''});
-            callback(new Error( Intl.get("crm.81", "请填写客户名称")));
+            callback(new Error( Intl.get('crm.81', '请填写客户名称')));
         }
     },
     render: function() {
@@ -145,7 +145,7 @@ let NameTextareaField = React.createClass({
                 <span className="inline-block">{formData.name}</span>
                 {
                     !this.state.disabled ? (
-                        <i className="inline-block iconfont icon-update" title={Intl.get("crm.170", "设置客户名")}
+                        <i className="inline-block iconfont icon-update" title={Intl.get('crm.170', '设置客户名')}
                             onClick={(e) => this.setEditable(e)}/>
                     ) : null
                 }
@@ -157,8 +157,8 @@ let NameTextareaField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close" onClick={(e) => {this.handleCancel(e);}}/>
+                <i title={Intl.get('common.save', '保存')} className="inline-block iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}}/>
+                <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close" onClick={(e) => {this.handleCancel(e);}}/>
             </div>
         );
 
@@ -173,7 +173,7 @@ let NameTextareaField = React.createClass({
                             labelCol={{span: 0}}
                             wrapperCol={{span: 24}}
                             validateStatus={this.renderValidateStyle('name')}
-                            help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
+                            help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}
                         >
                             <Validator rules={[{validator: this.checkCustomerName}]}>
                                 <AutosizeTextarea name="name" rows="1" value={formData.name} autoComplete="off"

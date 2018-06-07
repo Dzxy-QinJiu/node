@@ -1,5 +1,5 @@
-var weeklyReportDetailActions = require("../action/weekly-report-detail-actions");
-import {formatRoundingData} from "PUB_DIR/sources/utils/common-method-util";
+var weeklyReportDetailActions = require('../action/weekly-report-detail-actions');
+import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
 function weeklyReportDetailStore() {
     this.setInitState();
     this.bindActions(weeklyReportDetailActions);
@@ -18,38 +18,38 @@ weeklyReportDetailStore.prototype.setInitState = function() {
     this.salesPhone = {
         list: [],
         loading: false,
-        errMsg: ""//获取数据失败
+        errMsg: ''//获取数据失败
     };
     //合同统计
     this.contractData = {
         list: [],
         loading: false,
-        errMsg: ""//获取数据失败
+        errMsg: ''//获取数据失败
     };
     //回款统计
     this.repaymentData = {
         list: [],
         loading: false,
-        errMsg: ""//获取数据失败
+        errMsg: ''//获取数据失败
     };
     //地域分布统计
     this.regionOverlayData = {
         list: [],
         loading: false,
-        errMsg: ""//获取数据失败
+        errMsg: ''//获取数据失败
     };
     //客户阶段分布统计
     this.customerStageData = {
         list: [],
         loading: false,
-        errMsg: "",//获取数据失败
+        errMsg: '',//获取数据失败
     };
     //销售阶段
     this.salesStageList = [];
     //保存员工请假信息
     this.addAskForLeave = {
         submitting: false,//正在保存
-        errMsg: "" //保存出错
+        errMsg: '' //保存出错
     };
 
 };

@@ -3,38 +3,38 @@
  */
 
 require('../css/crm-batch-change.less');
-var BatchChangeStore = require("../store/batch-change-store");
-var crmStore = require("../store/crm-store");
-var BatchChangeActions = require("../action/batch-change-actions");
-import {AntcAreaSelection} from "antc";
-import {Input, Select, message, Radio, Button} from "antd";
-import ValidateMixin from "../../../../mixins/ValidateMixin";
+var BatchChangeStore = require('../store/batch-change-store');
+var crmStore = require('../store/crm-store');
+var BatchChangeActions = require('../action/batch-change-actions');
+import {AntcAreaSelection} from 'antc';
+import {Input, Select, message, Radio, Button} from 'antd';
+import ValidateMixin from '../../../../mixins/ValidateMixin';
 const RadioGroup = Radio.Group;
 var Option = Select.Option;
-var userData = require("../../../../public/sources/user-data");
-var batchOperate = require("../../../../public/sources/push/batch");
-import Trace from "LIB_DIR/trace";
-import {isClueTag, isTurnOutTag} from "../utils/crm-util";
-import AntcDropdown from "CMP_DIR/antc-dropdown";
-import AlwaysShowSelect from "CMP_DIR/always-show-select";
-import crmUtil from "../utils/crm-util";
-var CrmAction = require("../action/crm-actions");
+var userData = require('../../../../public/sources/user-data');
+var batchOperate = require('../../../../public/sources/push/batch');
+import Trace from 'LIB_DIR/trace';
+import {isClueTag, isTurnOutTag} from '../utils/crm-util';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import crmUtil from '../utils/crm-util';
+var CrmAction = require('../action/crm-actions');
 const BATCH_OPERATE_TYPE = {
-    CHANGE_SALES: "changeSales",//变更销售人员
-    USER: "user",//变更销售人员url中传的type
-    TRANSFER_CUSTOMER: "transfer_customer",//转出客户和url中传的type
-    CHANGE_TAG: "changeTag",//更新标签
-    CHANGE_LABEL: "change_label",//更新标签url中传的type
-    ADD_TAG: "addTag",//添加标签
-    ADD_LABEL: "add_label",//添加标签url中传的type
-    REMOVE_TAG: "removeTag",//移除标签
-    REMOVE_LABEL: "remove_label", //移除标签url中传的type
-    CHANGE_INDUSTRY: "changeIndustry",//变更行业
-    CHANGE_TERRITORY: "changeTerritory",//变更地域
-    CHANGE_ADMINISTRATIVE_LEVEL: "changeAdministrativeLevel",//变更行政级别
-    ADD_SCHEDULE_LISTS: "addScheduleLists",
+    CHANGE_SALES: 'changeSales',//变更销售人员
+    USER: 'user',//变更销售人员url中传的type
+    TRANSFER_CUSTOMER: 'transfer_customer',//转出客户和url中传的type
+    CHANGE_TAG: 'changeTag',//更新标签
+    CHANGE_LABEL: 'change_label',//更新标签url中传的type
+    ADD_TAG: 'addTag',//添加标签
+    ADD_LABEL: 'add_label',//添加标签url中传的type
+    REMOVE_TAG: 'removeTag',//移除标签
+    REMOVE_LABEL: 'remove_label', //移除标签url中传的type
+    CHANGE_INDUSTRY: 'changeIndustry',//变更行业
+    CHANGE_TERRITORY: 'changeTerritory',//变更地域
+    CHANGE_ADMINISTRATIVE_LEVEL: 'changeAdministrativeLevel',//变更行政级别
+    ADD_SCHEDULE_LISTS: 'addScheduleLists',
 };
-var CrmScheduleForm = require("./schedule/form");
+var CrmScheduleForm = require('./schedule/form');
 
 var CrmBatchChange = React.createClass({
     mixins: [ValidateMixin],
@@ -57,21 +57,21 @@ var CrmBatchChange = React.createClass({
         BatchChangeStore.unlisten(this.onStoreChange);
     },
     setCurrentTab: function(tab) {
-        Trace.traceEvent($(this.getDOMNode()).find(".op-type"), "点击切换变更类型");
+        Trace.traceEvent($(this.getDOMNode()).find('.op-type'), '点击切换变更类型');
         BatchChangeActions.setCurrentTab(tab);
         if (tab === BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS) {
             this.state.stopContentHide = true;
         }
     },
     onSalesmanChange: function(sales_man) {
-        Trace.traceEvent($(this.getDOMNode()).find(".change-salesman"), "点击切换销售人员");
+        Trace.traceEvent($(this.getDOMNode()).find('.change-salesman'), '点击切换销售人员');
         BatchChangeActions.setSalesMan(sales_man);
     },
     getSalesBatchParams: function() {
-        let salesId = "", teamId = "", salesName = "", teamName = "";
+        let salesId = '', teamId = '', salesName = '', teamName = '';
         //客户所属销售团队的修改
         //销售id和所属团队的id
-        let idArray = this.state.sales_man.split("&&");
+        let idArray = this.state.sales_man.split('&&');
         if (_.isArray(idArray) && idArray.length) {
             salesId = idArray[0];
             teamId = idArray[1];
@@ -79,7 +79,7 @@ var CrmBatchChange = React.createClass({
         //销售昵称和所属团队的团队名称
         let salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === salesId);
         if (salesman) {
-            salesName = salesman.user_info ? salesman.user_info.nick_name : "";
+            salesName = salesman.user_info ? salesman.user_info.nick_name : '';
             if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
                 let salesTeam = _.find(salesman.user_groups, team => team.group_id === teamId);
                 if (salesTeam) {
@@ -102,12 +102,12 @@ var CrmBatchChange = React.createClass({
     doTransfer: function(transferType, title) {
         if (!this.state.sales_man) {
             // message.error(Intl.get("crm.17", "请选择销售人员"));
-            BatchChangeActions.setUnSelectDataTip(Intl.get("crm.17", "请选择销售人员"));
+            BatchChangeActions.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
             return;
         }
         BatchChangeActions.setLoadingState(true);
         //如果是批量变更或者转出所属销售的，需要先看一下该销售已经拥有的客户数量再加上这些是否已经达到上限
-        var member_id = this.state.sales_man.split("&&")[0];
+        var member_id = this.state.sales_man.split('&&')[0];
         if (transferType == BATCH_OPERATE_TYPE.USER || transferType == BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER){
             //如果是选中全部的客户，要用全部客户的数量
             var selectedCustomerNum = this.props.selectedCustomer.length;
@@ -117,7 +117,7 @@ var CrmBatchChange = React.createClass({
             CrmAction.getCustomerLimit({member_id: member_id, num: selectedCustomerNum}, (result) => {
                 if (_.isNumber(result) && result > 0){
                     //超过销售拥有客户的上限
-                    var warningTip = transferType == BATCH_OPERATE_TYPE.USER ? Intl.get("crm.change.over.limit", "变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售",{num: result}) : Intl.get("crm.transfer.over.limit", "转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出",{num: result});
+                    var warningTip = transferType == BATCH_OPERATE_TYPE.USER ? Intl.get('crm.change.over.limit', '变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售',{num: result}) : Intl.get('crm.transfer.over.limit', '转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出',{num: result});
                     message.warn(warningTip);
                     BatchChangeActions.setLoadingState(false);
                 }else{
@@ -132,7 +132,7 @@ var CrmBatchChange = React.createClass({
         let condition = {
             query_param: {},
             update_param: {
-                user_id: this.state.sales_man.split("&&")[0]
+                user_id: this.state.sales_man.split('&&')[0]
             }
         };
         //选中全部搜索结果时，将搜索条件传给后端
@@ -192,11 +192,11 @@ var CrmBatchChange = React.createClass({
         if (!tag) return;
         //”线索“、”转出“标签，不可以添加
         if (isClueTag(tag) || isTurnOutTag(tag)) {
-            message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'{label}'标签", {label: tag}));
+            message.error(Intl.get('crm.sales.clue.add.disable', '不能手动添加\'{label}\'标签', {label: tag}));
             return;
         }
         this.toggleTag(tag, true);
-        Trace.traceEvent(e, "按enter键添加新标签");
+        Trace.traceEvent(e, '按enter键添加新标签');
 
     },
     toggleTag: function(tag, isAdd) {
@@ -206,7 +206,7 @@ var CrmBatchChange = React.createClass({
     //批量更新标签
     doChangeTag: function(type, typeText) {
         if (!_.isArray(this.state.tags) || !this.state.tags.length) {
-            BatchChangeActions.setUnSelectDataTip(Intl.get("crm.212", "请选择标签"));
+            BatchChangeActions.setUnSelectDataTip(Intl.get('crm.212', '请选择标签'));
             return;
         }
         BatchChangeActions.setLoadingState(true);
@@ -266,7 +266,7 @@ var CrmBatchChange = React.createClass({
     doChangeIndustry: function() {
         let industryStr = this.state.selected_industries.join(',');
         if (!industryStr) {
-            BatchChangeActions.setUnSelectDataTip(Intl.get("crm.22", "请选择行业"));
+            BatchChangeActions.setUnSelectDataTip(Intl.get('crm.22', '请选择行业'));
             return;
         }
         BatchChangeActions.setLoadingState(true);
@@ -287,7 +287,7 @@ var CrmBatchChange = React.createClass({
                 return customer.id;
             });
         }
-        BatchChangeActions.doBatch("industry", condition, (result) => {
+        BatchChangeActions.doBatch('industry', condition, (result) => {
             BatchChangeActions.setLoadingState(false);
             if (result.code == 0) {
                 //批量操作参数
@@ -311,7 +311,7 @@ var CrmBatchChange = React.createClass({
                     taskId: result.taskId,
                     total: totalSelectedSize,
                     running: totalSelectedSize,
-                    typeText: Intl.get("crm.20", "变更行业")
+                    typeText: Intl.get('crm.20', '变更行业')
                 });
                 //隐藏批量变更行业面板
                 this.refs.changeIndustry.handleCancel();
@@ -325,7 +325,7 @@ var CrmBatchChange = React.createClass({
     doChangeTerritory: function() {
         let territoryObj = this.state.territoryObj;
         if (!territoryObj.city && !territoryObj.county && !territoryObj.province) {
-            BatchChangeActions.setUnSelectDataTip(Intl.get("realm.edit.address.placeholder", "请选择地址"));
+            BatchChangeActions.setUnSelectDataTip(Intl.get('realm.edit.address.placeholder', '请选择地址'));
             return;
         }
         BatchChangeActions.setLoadingState(true);
@@ -344,7 +344,7 @@ var CrmBatchChange = React.createClass({
                 return customer.id;
             });
         }
-        BatchChangeActions.doBatch("address", condition, (result) => {
+        BatchChangeActions.doBatch('address', condition, (result) => {
             BatchChangeActions.setLoadingState(false);
             if (result.code == 0) {
                 //批量操作参数
@@ -366,12 +366,12 @@ var CrmBatchChange = React.createClass({
                     taskId: result.taskId,
                     total: totalSelectedSize,
                     running: totalSelectedSize,
-                    typeText: Intl.get("crm.21", "变更地域")
+                    typeText: Intl.get('crm.21', '变更地域')
                 });
                 //隐藏批量变更地域面板
                 this.refs.changeAddress.handleCancel();
                 //清空选择的地域信息
-                this.updateLocation("");
+                this.updateLocation('');
             } else {
                 var errorMsg = result.msg;
                 message.error(errorMsg);
@@ -385,7 +385,7 @@ var CrmBatchChange = React.createClass({
         let condition = {
             query_param: {},
             update_param: {
-                administrative_level: administrativeLevel || ""
+                administrative_level: administrativeLevel || ''
             }
         };
         //选中全部搜索结果时，将搜索条件传给后端
@@ -399,7 +399,7 @@ var CrmBatchChange = React.createClass({
                 return customer.id;
             });
         }
-        BatchChangeActions.doBatch("administrative_level", condition, (result) => {
+        BatchChangeActions.doBatch('administrative_level', condition, (result) => {
             BatchChangeActions.setLoadingState(false);
             if (result.code == 0) {
                 //批量操作参数
@@ -423,7 +423,7 @@ var CrmBatchChange = React.createClass({
                     taskId: result.taskId,
                     total: totalSelectedSize,
                     running: totalSelectedSize,
-                    typeText: Intl.get("crm.administrative.level.change", "变更行政级别")
+                    typeText: Intl.get('crm.administrative.level.change', '变更行政级别')
                 });
                 //隐藏批量变更行业面板
                 this.refs.changeAdministrativeLevel.handleCancel();
@@ -451,23 +451,23 @@ var CrmBatchChange = React.createClass({
         this.refs.crmScheduleForm.handleCancel();
     },
     handleSubmit: function(e) {
-        Trace.traceEvent(e, "点击变更按钮");
+        Trace.traceEvent(e, '点击变更按钮');
         var currentTab = this.state.currentTab;
         switch (currentTab) {
         case BATCH_OPERATE_TYPE.CHANGE_SALES:
-            this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get("crm.18", "变更销售人员"));
+            this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get('crm.18', '变更销售人员'));
             break;
         case BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER:
-            this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get("crm.customer.transfer", "转出客户"));
+            this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get('crm.customer.transfer', '转出客户'));
             break;
         case BATCH_OPERATE_TYPE.CHANGE_TAG:
-            this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get("crm.206", "更新标签"));
+            this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get('crm.206', '更新标签'));
             break;
         case BATCH_OPERATE_TYPE.ADD_TAG:
-            this.doChangeTag(BATCH_OPERATE_TYPE.ADD_LABEL, Intl.get("crm.205", "添加标签"));
+            this.doChangeTag(BATCH_OPERATE_TYPE.ADD_LABEL, Intl.get('crm.205', '添加标签'));
             break;
         case BATCH_OPERATE_TYPE.REMOVE_TAG:
-            this.doChangeTag(BATCH_OPERATE_TYPE.REMOVE_LABEL, Intl.get("crm.204", "移除标签"));
+            this.doChangeTag(BATCH_OPERATE_TYPE.REMOVE_LABEL, Intl.get('crm.204', '移除标签'));
             break;
         case BATCH_OPERATE_TYPE.CHANGE_INDUSTRY:
             this.doChangeIndustry();
@@ -487,7 +487,7 @@ var CrmBatchChange = React.createClass({
         }
     },
     industryChange: function(industry) {
-        Trace.traceEvent($(this.getDOMNode()).find(".block-industry-edit"), "选择行业");
+        Trace.traceEvent($(this.getDOMNode()).find('.block-industry-edit'), '选择行业');
         BatchChangeActions.industryChange([industry]);
     },
     renderIndustryBlock: function() {
@@ -500,10 +500,10 @@ var CrmBatchChange = React.createClass({
         return (
             <div className="op-pane change-industry">
                 <AlwaysShowSelect
-                    placeholder={Intl.get("crm.22", "请选择行业")}
+                    placeholder={Intl.get('crm.22', '请选择行业')}
                     value={this.state.selected_industries.join(',')}
                     onChange={this.industryChange}
-                    notFoundContent={dataList.length ? Intl.get("crm.23", "无相关行业") : Intl.get("crm.24", "暂无行业")}
+                    notFoundContent={dataList.length ? Intl.get('crm.23', '无相关行业') : Intl.get('crm.24', '暂无行业')}
                     dataList={dataList}
                 />
             </div>
@@ -516,11 +516,11 @@ var CrmBatchChange = React.createClass({
         return (
             <div className="op-pane change-administrative-level">
                 <AlwaysShowSelect
-                    placeholder={Intl.get("crm.select.level", "请选择行政级别")}
+                    placeholder={Intl.get('crm.select.level', '请选择行政级别')}
                     value={this.state.administrative_level}
                     hasClearOption={true}
                     onChange={this.administrativeLevelChange}
-                    notFoundContent={Intl.get("crm.no.level", "无相关行政级别")}
+                    notFoundContent={Intl.get('crm.no.level', '无相关行政级别')}
                     dataList={dataList}
                 />
             </div>
@@ -529,7 +529,7 @@ var CrmBatchChange = React.createClass({
     //更新地址
     updateLocation: function(address) {
         BatchChangeActions.locationChange(address);
-        Trace.traceEvent($(this.getDOMNode()).find(".change-territory"), "选择地址");
+        Trace.traceEvent($(this.getDOMNode()).find('.change-territory'), '选择地址');
     },
     //标签变更类型的切换
     onChangeTag: function(e, v) {
@@ -545,8 +545,8 @@ var CrmBatchChange = React.createClass({
                 //销售与所属团队的组合数据，用来区分哪个团队中的销售
                 teamArray.forEach(team => {
                     dataList.push({
-                        name: salesman.user_info.nick_name + "(" + team.group_name + ")",
-                        value: salesman.user_info.user_id + "&&" + team.group_id
+                        name: salesman.user_info.nick_name + '(' + team.group_name + ')',
+                        value: salesman.user_info.user_id + '&&' + team.group_id
                     });
                 });
             }
@@ -554,10 +554,10 @@ var CrmBatchChange = React.createClass({
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
-                    placeholder={Intl.get("crm.17", "请选择销售人员")}
+                    placeholder={Intl.get('crm.17', '请选择销售人员')}
                     value={this.state.sales_man}
                     onChange={this.onSalesmanChange}
-                    notFoundContent={dataList.length ? Intl.get("crm.29", "暂无销售") : Intl.get("crm.30", "无相关销售")}
+                    notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
                     dataList={dataList}
                 />
             </div>
@@ -570,10 +570,10 @@ var CrmBatchChange = React.createClass({
         const newSchedule = {
             customer_id: selectedCustomer[0].id,
             customer_name: selectedCustomer[0].name,
-            start_time: "",
-            end_time: "",
-            alert_time: "",
-            topic: "",
+            start_time: '',
+            end_time: '',
+            alert_time: '',
+            topic: '',
             edit: true
         };
         return (
@@ -605,10 +605,10 @@ var CrmBatchChange = React.createClass({
         let recommendTagsArray = _.isArray(this.state.recommendTags) ? this.state.recommendTags : [];
         let unionTagsArray = _.union(recommendTagsArray, selectedTagsArray);
         //过滤掉“线索”、“转出”标签，“线索“、“转出”标签不可添加、修改、删除
-        unionTagsArray = _.filter(unionTagsArray, tag => tag != Intl.get("crm.sales.clue", "线索") && tag != Intl.get("crm.qualified.roll.out", "转出"));
+        unionTagsArray = _.filter(unionTagsArray, tag => tag != Intl.get('crm.sales.clue', '线索') && tag != Intl.get('crm.qualified.roll.out', '转出'));
         let tagsJsx = unionTagsArray.map((tag, index) => {
-            let className = "customer-tag";
-            className += selectedTagsArray.indexOf(tag) > -1 ? " tag-selected" : "";
+            let className = 'customer-tag';
+            className += selectedTagsArray.indexOf(tag) > -1 ? ' tag-selected' : '';
             return (<span key={index} onClick={() => this.toggleTag(tag)} className={className}
                 data-tracename="点击选中/取消选中某个标签">{tag}</span>);
         });
@@ -616,29 +616,29 @@ var CrmBatchChange = React.createClass({
             <div className="op-pane change-tag">
                 <RadioGroup onChange={this.onChangeTag} value={this.state.currentTab}>
                     <Radio
-                        value={BATCH_OPERATE_TYPE.CHANGE_TAG}>{Intl.get("crm.206", "更新标签")}</Radio>
-                    <Radio value={BATCH_OPERATE_TYPE.ADD_TAG}>{Intl.get("crm.205", "添加标签")}</Radio>
+                        value={BATCH_OPERATE_TYPE.CHANGE_TAG}>{Intl.get('crm.206', '更新标签')}</Radio>
+                    <Radio value={BATCH_OPERATE_TYPE.ADD_TAG}>{Intl.get('crm.205', '添加标签')}</Radio>
                     <Radio
-                        value={BATCH_OPERATE_TYPE.REMOVE_TAG}>{Intl.get("crm.204", "移除标签")}</Radio>
+                        value={BATCH_OPERATE_TYPE.REMOVE_TAG}>{Intl.get('crm.204', '移除标签')}</Radio>
                 </RadioGroup>
                 <div className="block-tag-edit">
                     {tagsJsx}
                 </div>
                 {this.state.currentTab == BATCH_OPERATE_TYPE.CHANGE_TAG || this.state.currentTab == BATCH_OPERATE_TYPE.ADD_TAG ? (
-                    <Input placeholder={Intl.get("crm.28", "按Enter键添加新标签")}
-                        onChange={this.setField.bind(this, "tag")}
+                    <Input placeholder={Intl.get('crm.28', '按Enter键添加新标签')}
+                        onChange={this.setField.bind(this, 'tag')}
                         value={this.state.formData.tag}
                         onKeyUp={this.addTag}
                     />
-                ) : ""}
+                ) : ''}
             </div>
         );
     },
     clearSelectSales: function() {
-        BatchChangeActions.setSalesMan("");
+        BatchChangeActions.setSalesMan('');
     },
     clearSelectLocation: function() {
-        BatchChangeActions.locationChange("");
+        BatchChangeActions.locationChange('');
     },
     clearSelectIndustry: function() {
         BatchChangeActions.industryChange([]);
@@ -652,79 +652,79 @@ var CrmBatchChange = React.createClass({
     render: function() {
         const changeBtns = {
             tag: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TAG)}>{Intl.get("crm.19", "变更标签")}</Button>),
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TAG)}>{Intl.get('crm.19', '变更标签')}</Button>),
             industry: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_INDUSTRY)}>{Intl.get("crm.20", "变更行业")}</Button>),
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_INDUSTRY)}>{Intl.get('crm.20', '变更行业')}</Button>),
             administrativeLevel: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL)}>{Intl.get("crm.administrative.level.change", "变更行政级别")}</Button>),
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL)}>{Intl.get('crm.administrative.level.change', '变更行政级别')}</Button>),
             address: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TERRITORY)}>{Intl.get("crm.21", "变更地域")}</Button>),
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TERRITORY)}>{Intl.get('crm.21', '变更地域')}</Button>),
             sales: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_SALES)}>{Intl.get("crm.18", "变更销售人员")}</Button>),
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_SALES)}>{Intl.get('crm.18', '变更销售人员')}</Button>),
             transfer: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER)}>{Intl.get("crm.qualified.roll.out", "转出")}</Button>),
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER)}>{Intl.get('crm.qualified.roll.out', '转出')}</Button>),
             schedule: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>{Intl.get("crm.214", "添加联系计划")}</Button>)
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>{Intl.get('crm.214', '添加联系计划')}</Button>)
         };
         return (
             <div className="crm-batch-change-container">
                 <AntcDropdown
                     ref="changeTag"
                     content={changeBtns.tag}
-                    overlayTitle={Intl.get("common.tag", "标签")}
+                    overlayTitle={Intl.get('common.tag', '标签')}
                     isSaving={this.state.isLoading}
                     overlayContent={this.renderTagChangeBlock()}
                     handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get("crm.32", "变更")}
-                    cancelTitle={Intl.get("common.cancel", "取消")}
+                    okTitle={Intl.get('crm.32', '变更')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
                     unSelectDataTip={this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectTags}
                 />
                 <AntcDropdown
                     ref="changeIndustry"
                     content={changeBtns.industry}
-                    overlayTitle={Intl.get("realm.industry", "行业")}
+                    overlayTitle={Intl.get('realm.industry', '行业')}
                     isSaving={this.state.isLoading}
                     overlayContent={this.renderIndustryBlock()}
                     handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get("crm.32", "变更")}
-                    cancelTitle={Intl.get("common.cancel", "取消")}
+                    okTitle={Intl.get('crm.32', '变更')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
                     unSelectDataTip={this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectIndustry}
                 />
                 <AntcDropdown
                     ref="changeAdministrativeLevel"
                     content={changeBtns.administrativeLevel}
-                    overlayTitle={Intl.get("crm.administrative.level.change", "变更行政级别")}
+                    overlayTitle={Intl.get('crm.administrative.level.change', '变更行政级别')}
                     isSaving={this.state.isLoading}
                     overlayContent={this.renderAdministrativeLevelBlock()}
                     handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get("crm.32", "变更")}
-                    cancelTitle={Intl.get("common.cancel", "取消")}
+                    okTitle={Intl.get('crm.32', '变更')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
                     unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.administrativeLevelChange.bind(this, "")}
+                    clearSelectData={this.administrativeLevelChange.bind(this, '')}
                 />
                 <AntcDropdown
                     ref="changeAddress"
                     content={changeBtns.address}
-                    overlayTitle={Intl.get("realm.address", "地址")}
+                    overlayTitle={Intl.get('realm.address', '地址')}
                     isSaving={this.state.isLoading}
                     overlayContent={this.renderAddressBlock()}
                     handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get("crm.32", "变更")}
-                    cancelTitle={Intl.get("common.cancel", "取消")}
+                    okTitle={Intl.get('crm.32', '变更')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
                     unSelectDataTip={this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectLocation}
                 />
                 <AntcDropdown
                     ref="changeSales"
                     content={changeBtns.sales}
-                    overlayTitle={Intl.get("user.salesman", "销售人员")}
+                    overlayTitle={Intl.get('user.salesman', '销售人员')}
                     isSaving={this.state.isLoading}
                     overlayContent={this.renderSalesBlock()}
                     handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get("crm.32", "变更")}
-                    cancelTitle={Intl.get("common.cancel", "取消")}
+                    okTitle={Intl.get('crm.32', '变更')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
                     unSelectDataTip={this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectSales}
                 />
@@ -732,12 +732,12 @@ var CrmBatchChange = React.createClass({
                     !userData.getUserData().isCommonSales ? (<AntcDropdown
                         ref="transferCustomer"
                         content={changeBtns.transfer}
-                        overlayTitle={Intl.get("user.salesman", "销售人员")}
+                        overlayTitle={Intl.get('user.salesman', '销售人员')}
                         isSaving={this.state.isLoading}
                         overlayContent={this.renderSalesBlock()}
                         handleSubmit={this.handleSubmit}
-                        okTitle={Intl.get("crm.qualified.roll.out", "转出")}
-                        cancelTitle={Intl.get("common.cancel", "取消")}
+                        okTitle={Intl.get('crm.qualified.roll.out', '转出')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
                         unSelectDataTip={this.state.unSelectDataTip}
                         clearSelectData={this.clearSelectSales}
                     />) : null
@@ -746,12 +746,12 @@ var CrmBatchChange = React.createClass({
                     ref="addSchedule"
                     stopContentHide={this.state.stopContentHide}
                     content={changeBtns.schedule}
-                    overlayTitle={Intl.get("crm.214", "添加联系计划")}
+                    overlayTitle={Intl.get('crm.214', '添加联系计划')}
                     isSaving={this.state.isLoading}
                     overlayContent={this.renderScheduleLists()}
                     handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get("common.add", "添加")}
-                    cancelTitle={Intl.get("common.cancel", "取消")}
+                    okTitle={Intl.get('common.add', '添加')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
                     clearSelectData={this.cancelAddSchedule}
                 />
             </div>

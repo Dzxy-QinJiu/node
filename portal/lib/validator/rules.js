@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/6/15.
  */
 
-import { removeCommaFromNum } from "LIB_DIR/func";
+import { removeCommaFromNum } from 'LIB_DIR/func';
 
 //校验输入值加基础值是否大于最大值
 //参数说明：

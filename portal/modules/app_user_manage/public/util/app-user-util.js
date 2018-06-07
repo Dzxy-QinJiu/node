@@ -1,9 +1,9 @@
-var EventEmitter = require("events");
-var CryptoJS = require("crypto-js");
-var classNames = require("classnames");
+var EventEmitter = require('events');
+var CryptoJS = require('crypto-js');
+var classNames = require('classnames');
 var UserData = require('../../../../public/sources/user-data').getUserData();
-import { ALL_LOG_INFO } from "PUB_DIR/sources/utils/consts";
-import { storageUtil } from "ant-utils";
+import { ALL_LOG_INFO } from 'PUB_DIR/sources/utils/consts';
+import { storageUtil } from 'ant-utils';
 import { packageTry } from 'LIB_DIR/func';
 //缓存在localStorage中的用户列表每页多少条的key
 exports.localStorageUserViewPageSizeKey = 'app_user_manage.user_view.page_size';
@@ -12,11 +12,11 @@ exports.localStorageCustomerViewPageSizeKey = 'app_user_manage.customer_view.pag
 //缓存在localStorage中的用户审计日志列表每页多少条的key
 exports.localStorageLogViewPageSizeKey = 'app_user_manage.log_view.page_size';
 // 审计日志和在线用户选择应用时，将应用保存到localStorage中，将当前用户user_id作为key
-exports.saveSelectAppKeyUserId = UserData ? UserData.user_id : "";
+exports.saveSelectAppKeyUserId = UserData ? UserData.user_id : '';
 // 获取存储在localStorage中的审计日志和在线用户应用的对象
 exports.getLocalStorageObj = function(property ,selectApp){
     let localObj = {};
-    let localValue = storageUtil.local.get(JSON.stringify(UserData ? UserData.user_id : ""));
+    let localValue = storageUtil.local.get(JSON.stringify(UserData ? UserData.user_id : ''));
     if(localValue){
         localObj = JSON.parse(localValue);
     }
@@ -35,32 +35,32 @@ exports.EMITTER_CONSTANTS = {
     //移除表格当前行样式
     REMOVE_CURRENT_ROW_CLASS: 'removeCurrentRowClass',
     //编辑单个应用
-    UPDATE_APP_INFO: "updateAppInfo",
+    UPDATE_APP_INFO: 'updateAppInfo',
     //全部停用
-    UPDATE_DISABLE_ALL_APPS: "updateDisableAllApps",
+    UPDATE_DISABLE_ALL_APPS: 'updateDisableAllApps',
     //添加应用之后，更新应用列表
-    UPDATE_ADD_APP_INFO: "updateAddAppInfo",
+    UPDATE_ADD_APP_INFO: 'updateAddAppInfo',
     //向右滑动面板
-    PANEL_SWITCH_RIGHT: "panelSwitchRight",
+    PANEL_SWITCH_RIGHT: 'panelSwitchRight',
     //向左滑动面板
-    PANEL_SWITCH_LEFT: "panelSwitchLeft",
+    PANEL_SWITCH_LEFT: 'panelSwitchLeft',
     //更新应用单个字段
-    UPDATE_APP_FIELD: "updateAppField",
+    UPDATE_APP_FIELD: 'updateAppField',
     //选中的行改变
-    SELECTED_USER_ROW_CHANGE: "selectedUserRowChange",
+    SELECTED_USER_ROW_CHANGE: 'selectedUserRowChange',
     //用户列表滚动条置顶
-    CHANGE_USER_LIST_SCROLL_TOP: "changeUserListScrollTop",
+    CHANGE_USER_LIST_SCROLL_TOP: 'changeUserListScrollTop',
     //回复列表滚动到最后
-    REPLY_LIST_SCROLL_TO_BOTTOM: "replyListScrollToBottom"
+    REPLY_LIST_SCROLL_TO_BOTTOM: 'replyListScrollToBottom'
 };
 
 //获取当前视图
 exports.getCurrentView = function() {
     //当前界面视图
-    var currentView = "user";
+    var currentView = 'user';
     //从href中获取
-    if (window.location.href.indexOf("/user/log") >= 0){
-        currentView = "log";
+    if (window.location.href.indexOf('/user/log') >= 0){
+        currentView = 'log';
     }
     return currentView;
 };
@@ -91,20 +91,20 @@ exports.getCustomerUserType = function() {
 
 //用户类型常量(数据库中的值)
 const USER_TYPE_VALUE_MAP = {
-    TRIAL_USER: "试用用户", //试用
-    SIGN_USER: "正式用户", //签约
-    PRESENT_USER: "special", //赠送
-    TRAINING_USER: "training",//培训
-    EMPLOYEE_USER: "internal"//员工
+    TRIAL_USER: '试用用户', //试用
+    SIGN_USER: '正式用户', //签约
+    PRESENT_USER: 'special', //赠送
+    TRAINING_USER: 'training',//培训
+    EMPLOYEE_USER: 'internal'//员工
 };
 
 //用户类型文本的map
 const USER_TYPE_TEXT_MAP = {
-    TRIAL_USER: Intl.get("common.trial", "试用"),
-    SIGN_USER: Intl.get("common.official", "签约"),
-    PRESENT_USER: Intl.get("user.type.presented", "赠送"),
-    TRAINING_USER: Intl.get("user.type.train", "培训"),
-    EMPLOYEE_USER: Intl.get("user.type.employee", "员工")
+    TRIAL_USER: Intl.get('common.trial', '试用'),
+    SIGN_USER: Intl.get('common.official', '签约'),
+    PRESENT_USER: Intl.get('user.type.presented', '赠送'),
+    TRAINING_USER: Intl.get('user.type.train', '培训'),
+    EMPLOYEE_USER: Intl.get('user.type.employee', '员工')
 };
 
 //用户类型的值常量
@@ -122,24 +122,24 @@ exports.getUserTypeText = getUserTypeText;
 //批量操作权限
 var BATCH_PRIVILEGE = {
     //管理员有批量管理用户的权限
-    ADMIN: "USER_BATCH_OPERATE",
-    SALES: "GRANT_DELAY_APPLY",
+    ADMIN: 'USER_BATCH_OPERATE',
+    SALES: 'GRANT_DELAY_APPLY',
     //批量开通、修改应用
-    BATCH_GRANT_APPLICATION: "BATCH_GRANT_APPLICATION",
+    BATCH_GRANT_APPLICATION: 'BATCH_GRANT_APPLICATION',
     //批量延期
-    BATCH_UPDATE_GRANT_DELAY: "BATCH_UPDATE_GRANT_DELAY",
+    BATCH_UPDATE_GRANT_DELAY: 'BATCH_UPDATE_GRANT_DELAY',
     //批量修改开通时间
-    BATCH_UPDATE_GRANT_PERIOD: "BATCH_UPDATE_GRANT_PERIOD",
+    BATCH_UPDATE_GRANT_PERIOD: 'BATCH_UPDATE_GRANT_PERIOD',
     //批量修改角色
-    BATCH_UPDATE_GRANT_ROLES: "BATCH_UPDATE_GRANT_ROLES",
+    BATCH_UPDATE_GRANT_ROLES: 'BATCH_UPDATE_GRANT_ROLES',
     //批量修改开通状态
-    BATCH_UPDATE_GRANT_STATUS: "BATCH_UPDATE_GRANT_STATUS",
+    BATCH_UPDATE_GRANT_STATUS: 'BATCH_UPDATE_GRANT_STATUS',
     //批量修改类型
-    BATCH_UPDATE_GRANT_TYPE: "BATCH_UPDATE_GRANT_TYPE",
+    BATCH_UPDATE_GRANT_TYPE: 'BATCH_UPDATE_GRANT_TYPE',
     //批量修改用户所属客户
-    BATCH_UPDATE_USER_CUSTOMER: "BATCH_UPDATE_USER_CUSTOMER",
+    BATCH_UPDATE_USER_CUSTOMER: 'BATCH_UPDATE_USER_CUSTOMER',
     //批量修改密码
-    BATCH_UPDATE_USER_PASSWORD: "BATCH_UPDATE_USER_PASSWORD",
+    BATCH_UPDATE_USER_PASSWORD: 'BATCH_UPDATE_USER_PASSWORD',
 
 };
 
@@ -237,10 +237,10 @@ exports.getTimeList = function(field,rowData) {
         appList = apps.map(function(app, i) {
             let time = moment(new Date(+app[field])).format(oplateConsts.DATE_FORMAT);
             if(time === 'Invalid date') {
-                time = Intl.get("common.unknown", "未知");
+                time = Intl.get('common.unknown', '未知');
             }
             if(app[field] == 0) {
-                time = Intl.get("user.nothing", "无");
+                time = Intl.get('user.nothing', '无');
             }
             return (
                 <li key={i} className={cls} title={time}>
@@ -263,8 +263,8 @@ exports.getAppStatusList = function(apps,rowData) {
             app_ellipsis: apps.length > 1
         });
         appList = apps.map(function(app, i) {
-            var text = app.is_disabled === true || app.is_disabled === 'true' ? Intl.get("common.stop", "停用") : (app.is_disabled === false || app.is_disabled === 'false' ? Intl.get("common.enabled", "启用") : '');
-            var disabled = (text === Intl.get("common.stop", "停用") ? 'is_disabled' : '');
+            var text = app.is_disabled === true || app.is_disabled === 'true' ? Intl.get('common.stop', '停用') : (app.is_disabled === false || app.is_disabled === 'false' ? Intl.get('common.enabled', '启用') : '');
+            var disabled = (text === Intl.get('common.stop', '停用') ? 'is_disabled' : '');
             return (
                 <li key={i} className={cls + ' ' + disabled} title={text}>
                     {text ? text : <span>&nbsp;</span>}
