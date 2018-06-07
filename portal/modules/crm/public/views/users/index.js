@@ -20,6 +20,7 @@ import appAjaxTrans from "MOD_DIR/common/public/ajax/app";
 import classNames from "classnames";
 import NoDataTip from "../components/no-data-tip";
 import ErrorDataTip from "../components/error-data-tip";
+import RightPanelScrollBar from "../components/rightPanelScrollBar";
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
     STOP_USE: "stopUse",//停用
@@ -30,7 +31,7 @@ const APPLY_TYPES = {
 };
 
 const LAYOUT = {
-    TOP_NAV_HEIGHT: 52 + 8,//52：头部导航的高度，8：导航的下边距
+    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
     TOTAL_HEIGHT: 24 + 8,// 24:共xxx个的高度,8:共xxx个的下边距
     APPLY_FORM_HEIGHT: 198 + 10//198:申请表单的高度,10:表单的上边距
 };
@@ -496,10 +497,6 @@ class CustomerUsers extends React.Component {
         if ($(".phone-alert-modal-title").size()) {
             divHeight -= $(".phone-alert-modal-title").outerHeight(true);
         }
-        //减去申请延期\停用等表单的高度
-        if (this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP) {
-            divHeight -= LAYOUT.APPLY_FORM_HEIGHT;
-        }
         let userNumClass = classNames("user-total-tip", {"user-total-active": !this.props.isMerge && userNum});
         return (<div className="crm-user-list-container" data-tracename="通用户页面">
             <div className="user-number">
@@ -513,16 +510,18 @@ class CustomerUsers extends React.Component {
                 {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
                     : null}
             </div>
-            {this.state.applyType === APPLY_TYPES.OPEN_APP ? this.renderUserApplyForm() : this.state.applyType ? (
-                <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
-                                  closeApplyPanel={this.closeRightPanel.bind(this)}
-                                  crmUserList={this.state.crmUserList}/>) : null}
-            <ul className="crm-user-list" style={{height: divHeight}}>
+            <div className="crm-user-scroll-wrap" style={{height: divHeight}}>
                 <GeminiScrollbar listenScrollBottom={this.state.listenScrollBottom}
                                  handleScrollBottom={this.handleScrollBottom.bind(this)}>
-                    {this.renderCrmUserList(isApplyButtonShow)}
+                    {this.state.applyType === APPLY_TYPES.OPEN_APP ? this.renderUserApplyForm() : this.state.applyType ? (
+                        <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
+                                          closeApplyPanel={this.closeRightPanel.bind(this)}
+                                          crmUserList={this.state.crmUserList}/>) : null}
+                    <ul className="crm-user-list">
+                        {this.renderCrmUserList(isApplyButtonShow)}
+                    </ul>
                 </GeminiScrollbar>
-            </ul>
+            </div>
             {/*<RightPanel className="crm_user_apply_panel white-space-nowrap"*/}
             {/*showFlag={this.state.applyType && this.state.applyType === APPLY_TYPES.OPEN_APP}>*/}
             {/*{this.renderRightPanel()}*/}

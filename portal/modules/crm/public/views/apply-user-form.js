@@ -50,7 +50,7 @@ const ApplyUserForm = React.createClass({
 
     componentWillReceiveProps: function (nextProps) {
         this.buildFormData(nextProps, nextProps.apps);
-        let oldAppIds = _.pluck(this.props.apps, "client_id");
+        let oldAppIds = _.pluck(this.state.apps, "client_id");
         let newAppIds = _.pluck(nextProps.apps, "client_id");
         //获取newAppIds中，不存在于oldAppIds中的应用id
         let diffAppIds = _.difference(newAppIds, oldAppIds);
@@ -256,7 +256,6 @@ const ApplyUserForm = React.createClass({
                 //有只能申请一个的验证提示时，没有通过验证，不能提交（用户名是邮箱格式时，只能开通一个用户）
                 if (hasOnlyOneUserTip) return;
                 this.setState({isLoading: true});
-                this.state.formData.user_name = this.state.formData.user_name.trim();
                 //统一配置
                 if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
                     let appFormData = _.isArray(submitData.products) && submitData.products[0] ? submitData.products[0] : {};
@@ -274,8 +273,8 @@ const ApplyUserForm = React.createClass({
                 }
                 submitData.products = JSON.stringify(submitData.products);
                 //添加申请邮件中用的应用名
-                if (_.isArray(this.props.apps)) {
-                    var client_names = _.map(this.props.apps, (obj) => obj.client_name);
+                if (_.isArray(this.state.apps)) {
+                    var client_names = _.map(this.state.apps, (obj) => obj.client_name);
                     submitData.email_app_names = client_names.join("、");
                 }
 
@@ -288,6 +287,7 @@ const ApplyUserForm = React.createClass({
         });
     },
     applyUserFromOder: function (submitData) {
+        submitData.user_name = submitData.user_name.trim();
         //添加申请邮件中用的客户名
         submitData.email_customer_names = this.props.customerName;
         //添加申请邮件中用的用户名
@@ -319,7 +319,6 @@ const ApplyUserForm = React.createClass({
             else {
                 message.error(Intl.get("common.apply.failed", "申请失败"));
             }
-            if (_.isFunction(cb)) cb();
         });
     },
 
@@ -455,14 +454,14 @@ const ApplyUserForm = React.createClass({
                         label={Intl.get("common.app", "应用")}
                         required
                     >
-                        { _.map(this.props.apps, app => {
+                        { _.map(this.state.apps, app => {
                             return (
                                 <SquareLogoTag name={app ? app.client_name : ""}
                                                logo={app ? app.client_logo : ""}
                                 />);
                         })}
                     </FormItem>
-                    <ApplyUserAppConfig apps={this.props.apps}
+                    <ApplyUserAppConfig apps={this.state.apps}
                                         appsFormData={formData.products}
                                         configType={this.state.configType}
                                         changeConfigType={this.changeConfigType}
@@ -489,12 +488,17 @@ const ApplyUserForm = React.createClass({
         this.buildFormData(this.props, this.state.apps);
         this.setState({apps: this.state.apps});
     },
-    getAppOptions: function () {
+    getAppOptions: function (selectAppIds) {
         let appList = this.props.appList;
         if (_.isArray(appList) && appList.length) {
             return _.map(appList, app => {
                 let appId = app ? app.client_id : "";
-                return (<Option key={appId} value={appId}>
+                var className = "";
+                //下拉选项中，过滤掉已选的应用
+                if (_.isArray(selectAppIds) && selectAppIds.length && selectAppIds.indexOf(appId) !== -1) {
+                    className = "app-options-selected";
+                }
+                return (<Option className={className} key={appId} value={appId}>
                     <SquareLogoTag
                         name={app ? app.client_name : ""}
                         logo={app ? app.client_logo : ""}
@@ -514,60 +518,63 @@ const ApplyUserForm = React.createClass({
         let selectAppIds = _.pluck(this.state.apps, 'client_id');
         return (
             <Form horizontal className="apply-user-form">
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get("user.selected.user", "已选用户")}
-                >
-                    {_.map(formData.user_names, name => {
-                        return (
-                            <p className="user-name-item">{name}</p>
-                        );
-                    })}
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get("user.apply.type", "申请类型")}
-                >
-                    <RadioGroup onChange={this.onUserTypeChange}
-                                value={formData.tag}>
-                        <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
-                            {Intl.get("common.trial.user", "试用用户")}
-                        </Radio>
-                        <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}>
-                            {Intl.get("user.signed.user", "签约用户")}
-                        </Radio>
-                    </RadioGroup>
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get("common.app", "应用")}
-                    required
-                >
-                    <Select
-                        mode="tags"
-                        placeholder={Intl.get("user.app.select.please", "请选择应用")}
-                        value={selectAppIds}
-                        onChange={this.handleChangeApps.bind(this)}
+                <Validation ref="validation" onValidate={this.handleValidate}>
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("user.selected.user", "已选用户")}
                     >
-                        {this.getAppOptions()}
-                    </Select>
-                </FormItem>
-                <ApplyUserAppConfig apps={this.state.apps}
-                                    appsFormData={formData.products}
-                                    configType={this.state.configType}
-                                    changeConfigType={this.changeConfigType}
-                                    renderAppConfigForm={this.renderAppConfigForm.bind(this)}
-                />
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get("common.remark", "备注")}
-                >
-                    <Input
-                        type="textarea"
-                        placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
-                        value={formData.remark}
-                        onChange={this.onRemarkChange}/>
-                </FormItem>
+                        {_.map(formData.user_names, name => {
+                            return (
+                                <p className="user-name-item">{name}</p>
+                            );
+                        })}
+                    </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("user.apply.type", "申请类型")}
+                    >
+                        <RadioGroup onChange={this.onUserTypeChange}
+                                    value={formData.tag}>
+                            <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
+                                {Intl.get("common.trial.user", "试用用户")}
+                            </Radio>
+                            <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}>
+                                {Intl.get("user.signed.user", "签约用户")}
+                            </Radio>
+                        </RadioGroup>
+                    </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("common.app", "应用")}
+                        required
+                    >
+                        <Select
+                            mode="tags"
+                            placeholder={Intl.get("user.app.select.please", "请选择应用")}
+                            value={selectAppIds}
+                            onChange={this.handleChangeApps.bind(this)}
+                        >
+                            {this.getAppOptions(selectAppIds)}
+                        </Select>
+                    </FormItem>
+                    {_.isArray(selectAppIds) && selectAppIds.length ? (
+                        <ApplyUserAppConfig apps={this.state.apps}
+                                            appsFormData={formData.products}
+                                            configType={this.state.configType}
+                                            changeConfigType={this.changeConfigType}
+                                            renderAppConfigForm={this.renderAppConfigForm.bind(this)}
+                        />) : null}
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("common.remark", "备注")}
+                    >
+                        <Input
+                            type="textarea"
+                            placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
+                            value={formData.remark}
+                            onChange={this.onRemarkChange}/>
+                    </FormItem>
+                </Validation>
             </Form >
         );
     },
