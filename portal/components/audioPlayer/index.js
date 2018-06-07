@@ -27,35 +27,39 @@ class AudioPlayer extends React.Component {
             });
         }
     }
+
     render() {
         return (
-            <div className="audio-player-wrap" data-tracename="播放录音界面">
-                <audio id="audio" width="320" controls="controls" autoplay="autoplay"
-                    src={this.state.playingItemAddr}>
-                </audio>
-                <i className="iconfont icon-close close-panel" onClick={this.props.closeAudioPlayContainer} data-tracename="关闭播放录音"></i>
-                {/*如果获取无效电话出错时，不要显示上报电话区域*/}
-                {this.props.getInvalidPhoneErrMsg ? null :
-                    <div className="report-wrap">
+            <div className="audio-foot">
+                <div className="audio-player-wrap" data-tracename="播放录音界面">
+                    <audio id="audio" width="320" controls="controls" autoplay="autoplay"
+                           src={this.state.playingItemAddr}>
+                    </audio>
+                    <i className="iconfont icon-close close-panel" onClick={this.props.closeAudioPlayContainer}
+                       data-tracename="关闭播放录音"></i>
+                    {/*如果获取无效电话出错时，不要显示上报电话区域*/}
+                    {this.props.getInvalidPhoneErrMsg ? null :
+                        <div className="report-wrap">
                         <span className="report-tip">
                             {Intl.get("call.record.customer.phone", "这是一个客服电话")}
                             {this.state.isShowReportButton ? "？" : "。"}
                         </span>
-                        {this.state.isShowReportButton ?
-                            <span className="report-button"
-                                onClick={this.props.handleAddInvalidPhone}
-                                data-tracename="上报客服电话"
-                            >{Intl.get("call.record.report", "上报")}
-                                {this.props.isAddingInvalidPhone ? <Icon type="loading"/> : null}
+                            {this.state.isShowReportButton ?
+                                <span className="report-button"
+                                      onClick={this.props.handleAddInvalidPhone}
+                                      data-tracename="上报客服电话"
+                                >{Intl.get("call.record.report", "上报")}
+                                    {this.props.isAddingInvalidPhone ? <Icon type="loading"/> : null}
                             </span> : null
-                        }
-                        {this.props.addingInvalidPhoneErrMsg ? (<AlertTimer time={2000}
-                            message={this.props.addingInvalidPhoneErrMsg}
-                            type='error' showIcon
-                            onHide={this.props.hideErrTooltip}/>) : null
-                        }
-                    </div>}
+                            }
+                            {this.props.addingInvalidPhoneErrMsg ? (<AlertTimer time={2000}
+                                                                                message={this.props.addingInvalidPhoneErrMsg}
+                                                                                type='error' showIcon
+                                                                                onHide={this.props.hideErrTooltip}/>) : null
+                            }
+                        </div>}
 
+                </div>
             </div>
         );
     }

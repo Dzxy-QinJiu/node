@@ -38,11 +38,11 @@ var PageFrame = React.createClass({
     componentWillUnmount: function() {
         Trace.detachEventListener(window, "click", Trace.eventHandler);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
-        audioMsgEmitter.on(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
-        audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
+        audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
+        audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
     },
-    openAudioPanel: function(paramObj) {
-        this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, paramObj)});
+    openAudioPanel: function(audioParamObj) {
+        this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj)});
     },
     hideReportBtn: function(btnShowFlag) {
         this.state.audioParamObj.isShowReportButton = btnShowFlag.isShowReportButton;
@@ -66,13 +66,12 @@ var PageFrame = React.createClass({
     },
     closeAudioPanel: function() {
         this.setState({audioPanelShow: false, audioParamObj: {}});
-        if (_.isFunction(this.state.audioParamObj.closeAudioPlayContainer)){
+        if (this.state.audioParamObj && _.isFunction(this.state.audioParamObj.closeAudioPlayContainer)){
             this.state.audioParamObj.closeAudioPlayContainer();
         }
     },
     render: function() {
         var audioParamObj = this.state.audioParamObj;
-        var cls = classNames("audio-play-container", {"is-playing-audio": audioParamObj.playingItemAddr});
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -87,22 +86,18 @@ var PageFrame = React.createClass({
                                 closePhonePanel={this.closePhonePanel}/>) : null}
                     </div>
                 </div>
-                <div className="audio-foot">
-                    <div className={cls}>
-                        {this.state.audioPanelShow ? (
-                            <AudioPlayer
-                                playingItemAddr={audioParamObj.playingItemAddr}
-                                getInvalidPhoneErrMsg={audioParamObj.getInvalidPhoneErrMsg}
-                                addingInvalidPhoneErrMsg={audioParamObj.addingInvalidPhoneErrMsg}
-                                isAddingInvalidPhone={audioParamObj.isAddingInvalidPhone}
-                                isShowReportButton={audioParamObj.isShowReportButton}
-                                closeAudioPlayContainer={this.closeAudioPanel}
-                                handleAddInvalidPhone={audioParamObj.handleAddInvalidPhone}
-                                hideErrTooltip={audioParamObj.hideErrTooltip}
-                            />
-                        ) : null}
-                    </div>
-                </div>
+                {this.state.audioPanelShow && audioParamObj ? (
+                    <AudioPlayer
+                        playingItemAddr={audioParamObj.playingItemAddr}
+                        getInvalidPhoneErrMsg={audioParamObj.getInvalidPhoneErrMsg}
+                        addingInvalidPhoneErrMsg={audioParamObj.addingInvalidPhoneErrMsg}
+                        isAddingInvalidPhone={audioParamObj.isAddingInvalidPhone}
+                        isShowReportButton={audioParamObj.isShowReportButton}
+                        closeAudioPlayContainer={this.closeAudioPanel}
+                        handleAddInvalidPhone={audioParamObj.handleAddInvalidPhone}
+                        hideErrTooltip={audioParamObj.hideErrTooltip}
+                    />
+                ) : null}
             </div>
         );
     }
