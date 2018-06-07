@@ -79,12 +79,17 @@ const ApplyUserForm = React.createClass({
             const users = _.pluck(props.users, "user");
             formData = {
                 customer_id: props.customerId,
-                user_ids: _.pluck(users, "user_id"),
-                user_names: _.pluck(users, "user_name"),
                 tag: Intl.get("common.trial.official", "正式用户"),
                 remark: "",
             };
-            num = _.isArray(users) ? users.length : 1;
+            if (_.isArray(users) && users.length) {//已有用户开通应用
+                num = users.length;
+                formData.user_ids = _.pluck(users, "user_id");
+                formData.user_names = _.pluck(users, "user_name");
+            } else {//开通新用户
+                formData.user_name = "";
+                formData.nick_name = props.customerName;
+            }
         }
         //构造应用数据
         formData.products = apps.map(app => {
@@ -102,13 +107,19 @@ const ApplyUserForm = React.createClass({
             return formData;
         }
     },
+    isApplyNewUsers: function () {
+        let selectUsers = this.props.users;
+        //从用户列表中过来的，没有选择的用户时，说明是申请新用户
+        return this.state.applyFrom === "crmUserList" && !(_.isArray(selectUsers) && selectUsers.length);
+    },
     componentDidMount: function () {
         let appList = this.props.apps;
         if (_.isArray(appList) && appList.length) {
             //获取各应用的默认设置
             this.getAppsDefaultConfig(_.pluck(appList, 'client_id'));
         }
-        if (this.props.applyFrom === "order") {
+        //从订单中过来，或者是申请新用户时，需要获取联系人中的邮箱作为用户名的推荐选项
+        if (this.props.applyFrom === "order" || this.isApplyNewUsers()) {
             this.getCustomerContacts();
         }
     },
@@ -262,7 +273,7 @@ const ApplyUserForm = React.createClass({
                     submitData.products = _.map(submitData.products, app => {
                         return {
                             client_id: app.client_id,
-                            number: this.state.applyFrom === "order" ? appFormData.number : app.num,
+                            number: this.state.applyFrom === "order" || this.isApplyNewUsers() ? appFormData.number : app.num,
                             begin_date: appFormData.begin_date,
                             end_date: appFormData.end_date,
                             over_draft: appFormData.over_draft
@@ -330,7 +341,7 @@ const ApplyUserForm = React.createClass({
     getApplyUserCount(){
         let appFormData = _.isArray(this.state.formData.products) ? this.state.formData.products[0] : {};
         //TODO 获取验证时所需的开通个数
-        return appFormData.number || 1;
+        return appFormData ? appFormData.number : 1;
     },
     checkUserExist(rule, value, callback) {
         let customer_id = this.state.formData.customer_id;
@@ -402,12 +413,66 @@ const ApplyUserForm = React.createClass({
             appId: "applyUser"
         };
         return (<AppConfigForm appFormData={appFormData}
-                               needApplyNum={this.state.applyFrom === "order"}
+                               needApplyNum={this.state.applyFrom === "order" || this.isApplyNewUsers()}
                                timePickerConfig={timePickerConfig}
                                renderUserTimeRangeBlock={this.renderUserTimeRangeBlock}
                                onCountChange={this.onCountChange}
                                onOverDraftChange={this.onOverDraftChange}/>);
     },
+    //从订单中申请用户或申请新用户时，用户名和昵称输入框的渲染
+    renderUserNamesInputs: function (formData, formItemLayout) {
+        return (
+            <div>
+                <div className="user-name-textfield-block" ref="username_block">
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("common.username", "用户名")}
+                        validateStatus={this.getValidateStatus("user_name")}
+                        help={this.getHelpMessage("user_name")}
+                        required
+                    >
+                        <Validator rules={[{validator: this.checkUserExist}]}>
+                            {this.renderUserNameInput(formData.user_name)}
+                        </Validator>
+                    </FormItem>
+                </div>
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get("common.nickname", "昵称")}
+                    validateStatus={this.getValidateStatus("nick_name")}
+                    help={this.getHelpMessage("nick_name")}
+                    required
+                >
+                    <Validator rules={[{
+                        required: true,
+                        message: Intl.get("user.nickname.write.tip", "请填写昵称")
+                    }]}>
+                        <Input
+                            name="nick_name"
+                            placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
+                            value={formData.nick_name}
+                            onChange={this.onNickNameChange}/>
+                    </Validator>
+                </FormItem>
+            </div>);
+    },
+    /**
+     * 申请表单的渲染
+     * 1、从订单中申请试用、签约用户时，
+     *    1）用户名、昵称需要自己输入（用户名推荐用联系人中的邮箱）
+     *    2）申请类型，已根据订单的阶段确定，成交之前的阶段申请的是‘试用用户’，成交及以后的阶段申请的是‘签约用户’
+     *    3）应用只展示不可选，用订单中的应用
+     *
+     * 2、从用户列表中，申请新用户时，
+     *    1）用户名、昵称需要自己输入（用户名推荐用联系人中的邮箱）
+     *    2）申请类型，需要自己选申请的是‘试用用户’还是‘签约用户’
+     *    3）应用从所有的应用列表中自己选择
+     *
+     * 3、从用户列表中，选择已有用户开通新应用时，
+     *    1）用户名、昵称，用选择的已有用户的，只展示用户名即可
+     *    2）申请类型，需要自己选申请的是‘试用用户’还是‘签约用户’
+     *    3）应用从所有的应用列表中自己选择
+     */
     renderApplyUserForm: function () {
         const formData = this.state.formData;
         const formItemLayout = {
@@ -415,58 +480,58 @@ const ApplyUserForm = React.createClass({
             labelCol: {span: 4},
             wrapperCol: {span: 20},
         };
+        let selectAppIds = _.pluck(this.state.apps, 'client_id');
         return (
             <Form horizontal className="apply-user-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
-                    <div className="user-name-textfield-block" ref="username_block">
+                    {this.state.applyFrom === "order" || this.isApplyNewUsers() ?
+                        this.renderUserNamesInputs(formData, formItemLayout) : (
+                            <FormItem
+                                {...formItemLayout}
+                                label={Intl.get("user.selected.user", "已选用户")}
+                            >
+                                {_.map(formData.user_names, name => {
+                                    return (<p className="user-name-item">{name}</p>);
+                                })}
+                            </FormItem>
+                        )}
+                    {this.state.applyFrom !== "order" ? (
                         <FormItem
                             {...formItemLayout}
-                            label={Intl.get("common.username", "用户名")}
-                            validateStatus={this.getValidateStatus("user_name")}
-                            help={this.getHelpMessage("user_name")}
-                            required
+                            label={Intl.get("user.apply.type", "申请类型")}
                         >
-                            <Validator rules={[{validator: this.checkUserExist}]}>
-                                {this.renderUserNameInput(formData.user_name)}
-                            </Validator>
-                        </FormItem>
-                    </div>
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get("common.nickname", "昵称")}
-                        validateStatus={this.getValidateStatus("nick_name")}
-                        help={this.getHelpMessage("nick_name")}
-                        required
-                    >
-                        <Validator rules={[{
-                            required: true,
-                            message: Intl.get("user.nickname.write.tip", "请填写昵称")
-                        }]}>
-                            <Input
-                                name="nick_name"
-                                placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
-                                value={formData.nick_name}
-                                onChange={this.onNickNameChange}/>
-                        </Validator>
-                    </FormItem>
+                            <RadioGroup onChange={this.onUserTypeChange}
+                                        value={formData.tag}>
+                                <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
+                                    {Intl.get("common.trial.user", "试用用户")}
+                                </Radio>
+                                <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}>
+                                    {Intl.get("user.signed.user", "签约用户")}
+                                </Radio>
+                            </RadioGroup>
+                        </FormItem>) : null}
                     <FormItem
                         {...formItemLayout}
                         label={Intl.get("common.app", "应用")}
                         required
                     >
-                        { _.map(this.state.apps, app => {
-                            return (
-                                <SquareLogoTag name={app ? app.client_name : ""}
-                                               logo={app ? app.client_logo : ""}
-                                />);
-                        })}
+                        {this.state.applyFrom === "order" ? _.map(this.state.apps, app => {
+                            return (<SquareLogoTag name={app ? app.client_name : ""}
+                                                   logo={app ? app.client_logo : ""}/>);
+                        }) : (
+                            <Select mode="tags" value={selectAppIds}
+                                    placeholder={Intl.get("user.app.select.please", "请选择应用")}
+                                    onChange={this.handleChangeApps.bind(this)}>
+                                {this.getAppOptions(selectAppIds)}
+                            </Select>)}
                     </FormItem>
-                    <ApplyUserAppConfig apps={this.state.apps}
-                                        appsFormData={formData.products}
-                                        configType={this.state.configType}
-                                        changeConfigType={this.changeConfigType}
-                                        renderAppConfigForm={this.renderAppConfigForm.bind(this)}
-                    />
+                    {_.isArray(selectAppIds) && selectAppIds.length ? (
+                        <ApplyUserAppConfig apps={this.state.apps}
+                                            appsFormData={formData.products}
+                                            configType={this.state.configType}
+                                            changeConfigType={this.changeConfigType}
+                                            renderAppConfigForm={this.renderAppConfigForm.bind(this)}
+                        />) : null}
                     <FormItem
                         {...formItemLayout}
                         label={Intl.get("common.remark", "备注")}
@@ -508,83 +573,83 @@ const ApplyUserForm = React.createClass({
         }
         return [];
     },
-    renderSelectAppApplyUserForm: function () {
-        const formData = this.state.formData;
-        const formItemLayout = {
-            colon: false,
-            labelCol: {span: 4},
-            wrapperCol: {span: 20},
-        };
-        let selectAppIds = _.pluck(this.state.apps, 'client_id');
-        return (
-            <Form horizontal className="apply-user-form">
-                <Validation ref="validation" onValidate={this.handleValidate}>
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get("user.selected.user", "已选用户")}
-                    >
-                        {_.map(formData.user_names, name => {
-                            return (
-                                <p className="user-name-item">{name}</p>
-                            );
-                        })}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get("user.apply.type", "申请类型")}
-                    >
-                        <RadioGroup onChange={this.onUserTypeChange}
-                                    value={formData.tag}>
-                            <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
-                                {Intl.get("common.trial.user", "试用用户")}
-                            </Radio>
-                            <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}>
-                                {Intl.get("user.signed.user", "签约用户")}
-                            </Radio>
-                        </RadioGroup>
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get("common.app", "应用")}
-                        required
-                    >
-                        <Select
-                            mode="tags"
-                            placeholder={Intl.get("user.app.select.please", "请选择应用")}
-                            value={selectAppIds}
-                            onChange={this.handleChangeApps.bind(this)}
-                        >
-                            {this.getAppOptions(selectAppIds)}
-                        </Select>
-                    </FormItem>
-                    {_.isArray(selectAppIds) && selectAppIds.length ? (
-                        <ApplyUserAppConfig apps={this.state.apps}
-                                            appsFormData={formData.products}
-                                            configType={this.state.configType}
-                                            changeConfigType={this.changeConfigType}
-                                            renderAppConfigForm={this.renderAppConfigForm.bind(this)}
-                        />) : null}
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get("common.remark", "备注")}
-                    >
-                        <Input
-                            type="textarea"
-                            placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
-                            value={formData.remark}
-                            onChange={this.onRemarkChange}/>
-                    </FormItem>
-                </Validation>
-            </Form >
-        );
-    },
+    // renderSelectAppApplyUserForm: function () {
+    //     const formData = this.state.formData;
+    //     const formItemLayout = {
+    //         colon: false,
+    //         labelCol: {span: 4},
+    //         wrapperCol: {span: 20},
+    //     };
+    //     let selectAppIds = _.pluck(this.state.apps, 'client_id');
+    //     return (
+    //         <Form horizontal className="apply-user-form">
+    //             <Validation ref="validation" onValidate={this.handleValidate}>
+    //                 <FormItem
+    //                     {...formItemLayout}
+    //                     label={Intl.get("user.selected.user", "已选用户")}
+    //                 >
+    //                     {_.map(formData.user_names, name => {
+    //                         return (
+    //                             <p className="user-name-item">{name}</p>
+    //                         );
+    //                     })}
+    //                 </FormItem>
+    //                 <FormItem
+    //                     {...formItemLayout}
+    //                     label={Intl.get("user.apply.type", "申请类型")}
+    //                 >
+    //                     <RadioGroup onChange={this.onUserTypeChange}
+    //                                 value={formData.tag}>
+    //                         <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
+    //                             {Intl.get("common.trial.user", "试用用户")}
+    //                         </Radio>
+    //                         <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}>
+    //                             {Intl.get("user.signed.user", "签约用户")}
+    //                         </Radio>
+    //                     </RadioGroup>
+    //                 </FormItem>
+    //                 <FormItem
+    //                     {...formItemLayout}
+    //                     label={Intl.get("common.app", "应用")}
+    //                     required
+    //                 >
+    //                     <Select
+    //                         mode="tags"
+    //                         placeholder={Intl.get("user.app.select.please", "请选择应用")}
+    //                         value={selectAppIds}
+    //                         onChange={this.handleChangeApps.bind(this)}
+    //                     >
+    //                         {this.getAppOptions(selectAppIds)}
+    //                     </Select>
+    //                 </FormItem>
+    //                 {_.isArray(selectAppIds) && selectAppIds.length ? (
+    //                     <ApplyUserAppConfig apps={this.state.apps}
+    //                                         appsFormData={formData.products}
+    //                                         configType={this.state.configType}
+    //                                         changeConfigType={this.changeConfigType}
+    //                                         renderAppConfigForm={this.renderAppConfigForm.bind(this)}
+    //                     />) : null}
+    //                 <FormItem
+    //                     {...formItemLayout}
+    //                     label={Intl.get("common.remark", "备注")}
+    //                 >
+    //                     <Input
+    //                         type="textarea"
+    //                         placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
+    //                         value={formData.remark}
+    //                         onChange={this.onRemarkChange}/>
+    //                 </FormItem>
+    //             </Validation>
+    //         </Form >
+    //     );
+    // },
     render: function () {
         let title = this.props.userType === Intl.get("common.trial.official", "正式用户") ?
             Intl.get("user.apply.user.official", "申请签约用户") : Intl.get("common.apply.user.trial", "申请试用用户");
         return (
             <DetailCard titl e={title}
                         className="apply-user-form-container"
-                        content={this.state.applyFrom === "order" ? this.renderApplyUserForm() : this.renderSelectAppApplyUserForm()}
+                        content={this.renderApplyUserForm()}
                         isEdit={true}
                         loading={this.state.loading}
                         saveErrorMsg={this.state.submitErrorMsg}

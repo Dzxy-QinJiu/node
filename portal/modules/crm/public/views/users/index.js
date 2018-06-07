@@ -27,7 +27,8 @@ const APPLY_TYPES = {
     DELAY: "Delay",//延期
     EDIT_PASSWORD: "editPassword",//修改密码
     OTHER: "other",//其他类型
-    OPEN_APP: "openAPP"//开通应用
+    OPEN_APP: "openAPP",//开通应用
+    NEW_USERS: "newUsers"//开通新用户
 };
 
 const LAYOUT = {
@@ -145,7 +146,7 @@ class CustomerUsers extends React.Component {
         }
     }
 
-    getApplyFlag() {
+    getBatchApplyFlag() {
         let crmUserList = this.state.crmUserList;
         let flag = false;//申请按钮是否可用
         if (_.isArray(crmUserList) && crmUserList.length) {
@@ -300,37 +301,49 @@ class CustomerUsers extends React.Component {
     }
 
     renderApplyBtns() {
-        let applyFlag = this.getApplyFlag();
+        //是否可以批量申请（停用、延期、修改密码、其他）的操作，只要有选择的用户或应用就可以
+        let batchApplyFlag = this.getBatchApplyFlag();
         //开通应用，只有选择用户后才可用
         let openAppFlag = false;
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
             openAppFlag = _.some(crmUserList, userObj => userObj && userObj.user && userObj.user.checked);
         }
-        return (
-            <div className="crm-user-apply-btns">
-                <Button type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
-                        disabled={!applyFlag}>
-                    {Intl.get("common.stop", "停用")}
-                </Button>
-                <Button type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!applyFlag}>
-                    {Intl.get("crm.user.delay", "延期")}
-                </Button>
-                <Button type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)} disabled={!applyFlag}>
-                    {Intl.get("common.edit.password", "修改密码")}
-                </Button>
-                <Button type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!applyFlag}>
-                    {Intl.get("crm.186", "其他")}
-                </Button>
-                <Button type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
-                    {Intl.get("user.app.open", "开通应用")}
+        if (!batchApplyFlag && !openAppFlag) {
+            //申请新用户
+            return (<div className="crm-user-apply-btns">
+                <Button type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS)}>
+                    {Intl.get("crm.apply.user.new", "申请新用户")}
                 </Button>
             </div>);
+        } else {//其他申请
+            return (
+                <div className="crm-user-apply-btns">
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
+                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
+                            disabled={!batchApplyFlag}>
+                        {Intl.get("common.stop", "停用")}
+                    </Button>
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
+                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!batchApplyFlag}>
+                        {Intl.get("crm.user.delay", "延期")}
+                    </Button>
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
+                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)}
+                            disabled={!batchApplyFlag}>
+                        {Intl.get("common.edit.password", "修改密码")}
+                    </Button>
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
+                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!batchApplyFlag}>
+                        {Intl.get("crm.186", "其他")}
+                    </Button>
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
+                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
+                        {Intl.get("user.app.open", "开通应用")}
+                    </Button>
+                </div>);
+        }
     }
 
     renderRightPanel() {
@@ -355,23 +368,22 @@ class CustomerUsers extends React.Component {
     }
 
     renderUserApplyForm() {
+        //有选择用户时，是已有用户开通新用户；无选择的应用时，是开通新用户
         let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
-        if (_.isArray(checkedUsers) && checkedUsers.length) {
-            //发邮件使用的数据
-            let emailData = this.getEmailData(checkedUsers);
-            return (
-                <ApplyUserForm
-                    applyFrom="crmUserList"
-                    apps={[]}
-                    appList={this.state.appList}
-                    users={checkedUsers}
-                    customerId={this.props.curCustomer.id}
-                    cancelApply={this.closeRightPanel.bind(this)}
-                    emailData={emailData}
-                />
-            );
-        }
-        return null;
+        //发邮件使用的数据
+        let emailData = this.getEmailData(checkedUsers);
+        return (
+            <ApplyUserForm
+                applyFrom="crmUserList"
+                apps={[]}
+                appList={this.state.appList}
+                users={checkedUsers}
+                customerName={this.props.curCustomer.name}
+                customerId={this.props.curCustomer.id}
+                cancelApply={this.closeRightPanel.bind(this)}
+                emailData={emailData}
+            />
+        );
     }
 
     renderOverDraft(app) {
@@ -513,7 +525,7 @@ class CustomerUsers extends React.Component {
             <div className="crm-user-scroll-wrap" style={{height: divHeight}}>
                 <GeminiScrollbar listenScrollBottom={this.state.listenScrollBottom}
                                  handleScrollBottom={this.handleScrollBottom.bind(this)}>
-                    {this.state.applyType === APPLY_TYPES.OPEN_APP ? this.renderUserApplyForm() : this.state.applyType ? (
+                    {this.state.applyType === APPLY_TYPES.OPEN_APP || this.state.applyType === APPLY_TYPES.NEW_USERS ? this.renderUserApplyForm() : this.state.applyType ? (
                         <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
                                           closeApplyPanel={this.closeRightPanel.bind(this)}
                                           crmUserList={this.state.crmUserList}/>) : null}
