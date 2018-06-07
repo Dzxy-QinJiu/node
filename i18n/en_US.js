@@ -59,7 +59,7 @@ var en_US = {
     'common.correct.qq': 'Please enter the correct QQ account',//请输入正确的QQ号
     'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
-    'common.password.validate.rule': 'Please enter the password with 6-18 digits、letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
+    'common.password.validate.rule': 'Please enter the password with 6-18 digits, letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
     'common.confirm.password': 'Please confirm the password',//确认密码
     'common.phone': 'Phone',//电话
     'common.email': 'Email',//邮箱
@@ -125,7 +125,7 @@ var en_US = {
     'common.phone.email.tip': 'Phone or email is required',//电话、邮箱必填其中一项
     'common.write.template': 'Select and import the file after filling in the template',//填写模板文件后，选择文件并导入 After filling in the template, select  the file and import it
     'common.import': 'Import',//导入
-    'common.upload.type.tip': 'Only json type file are allowed',//只能上传 json 文件哦
+    'common.upload.type.tip': 'Only json type files are allowed',//只能上传 json 文件哦
     'common.upload.success': 'Upload successfully',//上传成功！
     'common.upload.syntax.error': 'The file format is incorrect, please upload again.',//上传文件格式错误，请修改后重试！
     'common.upload.error': 'Upload failed, please try again!',//上传失败，请重试!
@@ -135,10 +135,10 @@ var en_US = {
     'common.app': 'Application',//应用
     'common.sure': 'Confirm',//确定
     'common.is.existed': 'The username is already exists!',//用户名已存在！
-    'common.username.is.unique': 'The username is already exists',//用户名唯一性校验出错！
-    'common.phone.is.existed': 'The phone is already exists',//电话已存在！
-    'common.phone.is.unique': 'The phone is already exists',//电话唯一性校验出错！
-    'common.email.is.existed': 'The email is already exists',//邮箱已存在！
+    'common.username.is.unique': 'The username already exists',//用户名唯一性校验出错！
+    'common.phone.is.existed': 'The phone number already exists',//电话已存在！
+    'common.phone.is.unique': 'The phone number already exists',//电话唯一性校验出错！
+    'common.email.is.existed': 'The email already exists',//邮箱已存在！
     'common.name': 'Name',//姓名
     'common.get.again': 'Retry',//重新获取
     'common.refresh': 'Refresh',//刷新
@@ -230,7 +230,7 @@ var en_US = {
     'login.message_sent_failure': 'Fail to sent message',//信息发送失败
     'login.message_has_been_send': 'Message has been send',//信息已发送
     'login.authentication_failure': 'Authentication failure',//身份验证失败
-    'login.reset_password_success': 'Reset password success, please back to login page and login with new password',//重置密码成功，请返回登录页用新密码登录
+    'login.reset_password_success': 'Reset password successfully, please back to login page and login with new password',//重置密码成功，请返回登录页用新密码登录
     'login.reset_password_failure': 'Fail reset password',//重置密码失败
     'login.fill_in_contact_info': 'Fill in contact info.',//填写联系信息
     'login.verify_identity': 'Verify identity',//验证身份
@@ -285,8 +285,8 @@ var en_US = {
     'user.email.validate.tip': 'Please enter the email correctly',//请输入正确格式的邮箱
     //xxx已存在
     'user.exist.tip': '{name} already exists',//{name}已存在
-    'user.user.exist.tip': 'The username is already exists',//用户已存在The username already exists
-    'user.user.exist.check.tip': 'The username is already exists, whether to {check}',//'用户已存在，是否{check}',
+    'user.user.exist.tip': 'The username already exists',//用户已存在The username already exists
+    'user.user.exist.check.tip': 'The username already exists, whether to {check}',//'用户已存在，是否{check}',
     'user.user.check': 'check this user',//查看该用户
     'user.username.write.tip': 'Please enter the username',//请填写用户名
     'user.username.write.email.tip': 'Please enter the email as username',//请填写正确的邮箱作为用户名
@@ -508,9 +508,9 @@ var en_US = {
     'user.third.thirdapp.name.reuqired': 'Please enter the application name',//请填写应用名称',
     'user.third.thirdapp.key.required': 'Please enter the key of the application ',//请填写App Key',
     'user.third.thirdapp.secret.required': 'Please enter the secret of the application',//请填写APP Secret',
-    'user.third.thirdapp.success.enable': 'active succeed',//'启用成功',
-    'user.third.thirdapp.success.disable': 'disable succeed',//'禁用成功',
-    'user.third.thirdapp.success.edit': 'modify succeed',//'修改成功',
+    'user.third.thirdapp.success.enable': 'active successfully',//'启用成功',
+    'user.third.thirdapp.success.disable': 'disable successfully',//'禁用成功',
+    'user.third.thirdapp.success.edit': 'modify successfully',//'修改成功',
     'user.add.position': 'Add Phone Order', // 添加座席号
     'user.position.input.tips': 'please enter number', // 请输入数字
     'user.position.unbind.user': 'No unbind User', // 暂无未绑定的用户
@@ -608,7 +608,7 @@ var en_US = {
     'member.input.qq': 'Please enter QQ',//请输入QQ号
     'member.input.wechat': 'Please input wechat',//请输入微信号
     'member.check.member.name': 'Please enter a number, letter or underline, the first letter can not be a underline',//请输入数字、字母或下划线，首字母不能是下划线
-    'member.email.is.unique': 'The email is already exists',//邮箱唯一性校验出错！
+    'member.email.is.unique': 'The email already exists',//邮箱唯一性校验出错！
     'member.no.role': 'No role',//暂无角色
     'member.no.groups': 'No team',//暂无团队
     'member.head.logo': ' Avatar',//头像
@@ -787,7 +787,7 @@ var en_US = {
     'user.info.get.log.list.failed': 'Failed to get personal operation record',//获取个人操作记录失败
     'user.info.active.user.email.failed': 'Failed to active',//激活失败
     'user.info.edit.password.failed': 'Failed to change password',//密码修改失败
-    'user.info.user.info': 'Personal Info',//个人资料
+    'user.info.user.info': 'Personal Info.',//个人资料
     'user.info.manage.password': 'Password',//密码管理
     'user.info.reject.email': 'If you do not want to receive the approval notification email, you can {cancel}',//如果您不想接受审批通知邮件提醒，可以{cancel}
     'user.info.receive.email': 'If you\'d like to receive the approval email notification, you can {receive}',//如果您想接受审批通知邮件提醒，可以{receive}
@@ -920,7 +920,7 @@ var en_US = {
     'call.record.customer.title': 'Click to show the detail of customer', // 点击可查看客户详情
     'call.record.get.failed': 'Failed to get the call record.', // 获取通话记录失败
     'call.record.follow.content': 'Follow up the content', // 跟进内容
-    'call.record.filter.tip': 'Filter the phone number that less than.eg: 114,12580...', // 过滤小于7位的号码，如114、12580...
+    'call.record.filter.tip': 'Filter the phone number that less than 7.eg: 114,12580...', // 过滤小于7位的号码，如114、12580...
     'call.record.filter.tip.service': 'Filter customer service\'s phone', // 过滤客服电话
     'call.record.call.center': 'Call Center', // 呼叫中心
     'call.record.save.content.success': 'Save follow-up content successfully.', // 保存跟进内容成功！
@@ -932,7 +932,7 @@ var en_US = {
     'call.record.servicecall': 'statistic about customer services phones',//客服电话统计
     'call.record.count.failed': 'Failed to get call quantity',//获取通话数量失败
     'call.record.time.failed': 'Failed to get the call duration',//获取通话时长失败
-    'call.record.count': 'Call number statistics',//通话数量统计
+    'call.record.count': 'Call quantity statistics',//通话数量统计
     'call.record.time': 'Call duration statistics',//通话时长统计
     'call.record.interval': 'Call interval statistics',//通话时段统计
     'call.time.export.statistic': 'Click export time statistics',//点击导出通话时长统计
@@ -941,7 +941,7 @@ var en_US = {
     //通话分析-start
     'call.analysis.total.count': 'Total number of calls ',//通话总次数
     'call.analysis.total.time': 'Duration of call ',//通话总时长
-    'call.analysis.total.count.failed': 'Failed to get the total call number TOP10 failed',//获取通话总次数TOP10失败
+    'call.analysis.total.count.failed': 'Failed to get the total call number TOP10',//获取通话总次数TOP10失败
     'call.analysis.total.time.failed': 'Get the total long TOP10 failure of the call',//获取通话总时长TOP10失败
     'call.record.service.phone.rate': 'Statistics of the ratio of 114',//114占比统计
     'call.analysis.zone.distrute': 'Zone distribution of customers', // 客户的地域分布
@@ -1234,7 +1234,7 @@ var en_US = {
     'crm.call.no.remark.over30': 'No follow-up records over 30 days',//超30天未写跟进记录
     'crm.last.contact': 'Final contact',//最后联系
     'crm.qualified.roll.out': 'Transfer out',//转出
-    'crm.contact.name.department': 'Contact name or department are required',//联系人姓名和部门必填一项
+    'crm.contact.name.department': 'Contact name or department is required',//联系人姓名和部门必填一项
     'crm.delete.duplicate.customer.failed': 'Delete',//删除重复客户失败
     'crm.detail.sales.role': 'Sales role',//销售角色
     'crm.sales.change': 'Change sales',//变更销售
