@@ -214,12 +214,18 @@ class AssignClueAndSelectCustomer extends React.Component {
         if (this.state.submitType === 'loading') {
             return;
         }
+        var customerId = this.state.customer_id;
+        var customerName = this.state.customer_name;
+        if (this.state.recommendCustomerLists.length === 1){
+            customerId = this.state.recommendCustomerLists[0].id;
+            customerName = this.state.recommendCustomerLists[0].name;
+        }
         //要提交的数据
         var submitObj = {
             //线索的id
             customer_clue_id: this.state.curClueDetail.id,
             //将要关联的客户id
-            id: this.state.customer_id,
+            id: customerId,
             //线索的创建时间
             customer_clue_start_time: this.state.curClueDetail.start_time
         };
@@ -240,8 +246,8 @@ class AssignClueAndSelectCustomer extends React.Component {
                 this.setState({
                     error_message: '',
                     submitType: 'success',
-                    relatedCustomerName: this.state.customer_name,
-                    relatedCustomerId: this.state.customer_id
+                    relatedCustomerName: customerName,
+                    relatedCustomerId: customerId
                 });
             },
             error: (xhr) => {
@@ -380,6 +386,8 @@ class AssignClueAndSelectCustomer extends React.Component {
         });
     };
     renderRecommendCustomer(){
+        //只有一个推荐客户
+        var hasOnlyOneRecommendCustomer = this.state.recommendCustomerLists.length === 1;
         return (
             <div className="recommend-customer-container">
                 <p>{Intl.get('clue.customer.may.associate.customer', '该线索可能关联的客户')}（
@@ -388,20 +396,25 @@ class AssignClueAndSelectCustomer extends React.Component {
                     ）</p>
                 {
                     _.map(this.state.recommendCustomerLists, (recommendItem,index) => {
-                        var checked = recommendItem.id == this.state.checkedCustomerItem ? true : false;
+                        var checked = recommendItem.id === this.state.checkedCustomerItem ? true : false;
                         return (
                             <p className="recommend-customer-item">
-                                <Checkbox
-                                    checked={checked}
-                                    onChange={this.onCheckedItemChange.bind(this, recommendItem)}
-                                >
-                                    <span onClick={this.clickShowCustomerDetail.bind(this, recommendItem.id)} > {recommendItem.name}</span>
-                                    <input type="hidden" className="recommend_customer_hidden" value={recommendItem.id}/>
-                                </Checkbox>
-                                {this.state.checkedCustomerItem && index === (this.state.recommendCustomerLists.length - 1) ? <span> <i className="iconfont icon-choose" onClick={this.submit.bind(this)}
+                                {/*如果只有一个推荐客户，就不需要加checkbox了*/}
+                                {hasOnlyOneRecommendCustomer ? <span><span onClick={this.clickShowCustomerDetail.bind(this, recommendItem.id)} > {recommendItem.name}</span>
+                                    <input type="hidden" className="recommend_customer_hidden" value={recommendItem.id}/></span> :
+                                    <Checkbox
+                                        checked={checked}
+                                        onChange={this.onCheckedItemChange.bind(this, recommendItem)}
+                                    >
+                                        <span onClick={this.clickShowCustomerDetail.bind(this, recommendItem.id)} > {recommendItem.name}</span>
+                                        <input type="hidden" className="recommend_customer_hidden" value={recommendItem.id}/>
+                                    </Checkbox>
+                                }
+                                {(this.state.checkedCustomerItem || hasOnlyOneRecommendCustomer) && index === (this.state.recommendCustomerLists.length - 1) ? <span> <i className="iconfont icon-choose" onClick={this.submit.bind(this)}
                                     data-tracename="保存关联客户"></i>
-                                <i className="iconfont icon-close"
-                                    onClick={this.changeDisplayCustomerType.bind(this, 'text')} data-tracename="取消保存关联客户"></i></span> : null}
+                                {hasOnlyOneRecommendCustomer ? null : <i className="iconfont icon-close"
+                                    onClick={this.changeDisplayCustomerType.bind(this, 'text')} data-tracename="取消保存关联客户"></i>}
+                                </span> : null}
                             </p>
                         );
                     })

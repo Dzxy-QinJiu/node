@@ -40,7 +40,17 @@ exports.getAppUserList = function(obj) {
     if(!pageSize || !_.isNumber(pageSize) || isNaN(pageSize)) {
         pageSize = 20;
     }
-
+    //团队id
+    if (obj.team_ids){
+        //从销售首页点击即将过期用户的数字跳转过来时，传的team_ids是字符串
+        obj.team_ids = obj.team_ids;
+        if (_.isArray(obj.team_ids)){
+            //在已有用户页面，点击筛选团队时，team_ids是数组
+            obj.team_ids = obj.team_ids.join(',');
+        }
+    }else{
+        obj.team_ids = '';
+    }
     //当前页
     obj.page_num = obj.page || 1,
     //一页多少条
@@ -70,10 +80,7 @@ exports.getAppUserList = function(obj) {
     //异常登录
     obj.user_exception = obj.user_exception || '',
     //销售id
-    obj.sales_id = obj.sales_id || '',
-    //团队id
-    obj.team_ids = obj.team_ids ? (_.isArray(obj.team_ids) ? obj.team_ids.join(',') : obj.team_ids) : '';
-
+    obj.sales_id = obj.sales_id || '';
     let queryObj = obj;
 
     //针对过期时间进行处理
