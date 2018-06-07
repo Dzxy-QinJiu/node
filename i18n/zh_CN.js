@@ -723,6 +723,7 @@ var zh_CN = {
     'realm.name': '域名',
     'realm.industry': '行业',
     'realm.address': '地址',
+    'realm.full.address': '详细地址',
     'realm.change.owner': '更换所有者',
     'realm.change.owner.title': '为安全域{realname}添加新所有者',
     'realm.change.owner.name': '姓名',
