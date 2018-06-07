@@ -717,14 +717,15 @@ var en_US = {
     'realm.add.realm': 'add security field', // 添加安全域
     'realm.name': 'domain', // 域名
     'realm.industry': 'Industry', // 行业
-    'realm.address': 'address', // 地址
+    'realm.address': 'Address', // 地址
+    'realm.full.address': 'Full address', // 详细地址
     'realm.change.owner': 'change owner', // 更换所有者
     'realm.change.owner.title': 'add owner {realname}for security field', // 为安全域{realname}添加新所有者
     'realm.change.owner.name': 'Name', // 姓名
     'realm.change.owner.password.placeholder': '6 ~ 18 characters (numbers, letters or symbols)', // 6-18位字符(由数字，字母，符号组成)
     'realm.change.owner.phone.tip': 'call required or email required', // 电话、邮箱必填一项！
     'realm.edit.address.placeholder': 'please select address', // 请选择地址
-    'realm.edit.address.detail.placeholder': 'Detailed address, such as street name, house number and other information', // 详细地址，例如街道名称，门牌号码等信息
+    'realm.edit.address.detail.placeholder': 'Full address, such as street name, house number and other information', // 详细地址，例如街道名称，门牌号码等信息
     'realm.select.address.province': 'province', // 省份
     'realm.select.address.city': 'city', // 城市
     'realm.select.address.country': 'country', // 县区
@@ -1203,7 +1204,7 @@ var en_US = {
     'crm.administrative.level': 'Administrative level',//行政级别
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
     'crm.address.placeholder': 'Please select the region',//请选择地域
-    'crm.detail.address.placeholder': 'Please enter a detailed address',//请输入详细地址
+    'crm.detail.address.placeholder': 'Please enter a full address',//请输入详细地址
     'crm.sales.clue.add': 'Add sales leads',//添加销售线索
     'crm.sales.clue.source': 'Clue source',//线索来源
     'crm.sales.clue.access.channel': 'Access channel',//接入渠道
