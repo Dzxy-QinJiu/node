@@ -18,32 +18,32 @@ var en_US = {
     'menu.appuser.org': 'Organizations',//组织管理
     'menu.appuser.auditlog': 'Auditting Logs',//用户审计日志
     'menu.appuser.position': 'Position Order', // 座席号管理
-    'menu.backend': 'Back-stage',//后台管理 background
+    'menu.backend': 'Background',//后台管理
     'menu.user': 'Members',//成员管理
     'menu.role': 'Roles',//角色管理
-    'menu.auth': 'Privilege',//权限管理Authorities
+    'menu.auth': 'Authority',//权限管理
     'menu.salesstage': 'Sales Stages',//销售阶段管理
     'menu.salesteam': 'Teams',//团队管理
     'menu.config': 'Configurations',//配置
-    'menu.realm.analysis': 'Operations Analysis',//运营分析
-    'menu.realm.analysis.zone': 'Regions Analysis',//地域分析
-    'menu.realm.analysis.industry': 'Industry Analysis',//行业分析
+    'menu.realm.analysis': 'Operational Analysis',//运营分析
+    'menu.realm.analysis.zone': 'Regional Analysis',//地域分析
+    'menu.realm.analysis.industry': 'Industrial Analysis',//行业分析
     'menu.realm.analysis.establish': 'Start-time Statistics',//开启时间统计
-    'menu.user.analysis': 'Operations Analysis',//运营分析
-    'menu.customer.analysis': 'Operations Analysis',//运营分析
+    'menu.user.analysis': 'Operational Analysis',//运营分析
+    'menu.customer.analysis': 'Operational Analysis',//运营分析
     'menu.sales.homepage': 'Sales Homepage',//销售主页
     'menu.online.user': 'Online Users',//在线用户
-    'menu.online.user.list': 'Online Users Lists',//在线用户列表
+    'menu.online.user.list': 'Online Users List',//在线用户列表
     'menu.contract': 'Contracts',//合同管理
-    'menu.contract.list': 'Contracts Lists',//合同列表
+    'menu.contract.list': 'Contracts List',//合同列表
     'menu.report': 'Analysis Reports',//分析报告
-    'menu.operation.report': 'Operation Reports',//运营报告
-    'menu.app.operation.report': 'Applications Operation Reports',//应用运营报告
-    'menu.userinfo.manage': 'Basic Info',//个人信息管理Personal Information
-    'menu.userinfo': 'Basic Info',//个人资料Personal Information
+    'menu.operation.report': 'Operational Reports',//运营报告
+    'menu.app.operation.report': 'Application Operational Reports',//应用运营报告
+    'menu.userinfo.manage': 'Personal Info.',//个人信息管理
+    'menu.userinfo': 'Personal Info.',//个人资料
     'menu.user.password': 'Password',//密码管理
     'menu.notification': 'Notification',//通知
-    'menu.customer.notification': 'Customer Messages',//客户提醒Customer Reminders
+    'menu.customer.notification': 'Customer Reminders',//客户提醒
     'menu.apply.notification': 'Application Messages',//申请消息
     'menu.system.notification': 'System Messages',//系统消息
     'menu.appuser.apply': 'User Approvals',//用户审批
@@ -55,22 +55,22 @@ var en_US = {
     'common.role': 'Roles',//角色
     'common.password': 'password',//密码
     'common.password.unequal': 'Passwords do not match',//两次输入密码不一致！
-    'common.correct.email': 'Please input the email',//请输入正确的邮箱Please input the correct email
-    'common.correct.qq': 'Please input the QQ',//请输入正确的QQ号
-    'common.password.length': 'The password must be at least 6 characters and less than 18 characters.',//密码长度应大于6位小于18位
+    'common.correct.email': 'Please enter the correct email account',//请输入正确的邮箱Please input the correct email
+    'common.correct.qq': 'Please enter the correct QQ account',//请输入正确的QQ号
+    'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
-    'common.password.validate.rule': 'Please input the password with 6-18 digits, letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
-    'common.confirm.password': 'Re-type new',//确认密码
+    'common.password.validate.rule': 'Please enter the password with 6-18 digits、letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
+    'common.confirm.password': 'Please confirm the password',//确认密码
     'common.phone': 'Phone',//电话
     'common.email': 'Email',//邮箱
     'common.no.match': 'No match',//暂无匹配项
-    'common.get.team.list.failed': 'Failed to get team lists',//获取团队列表失败
+    'common.get.team.list.failed': 'Failed to get team list',//获取团队列表失败
     'common.username': 'Username',//用户名
     'common.my.app': 'My Applications',//我的应用
     'common.filter': 'Filter',//筛选
     'common.add': 'Add ',//添加
     'common.image.type.tip': 'The type of image must be one of gif, jpeg, jpg, png, bmp!',//图片类型必须是gif,jpeg,jpg,png,bmp中的一种！
-    'common.image.upload': 'Add',//上传
+    'common.image.upload': 'upload',//上传
     'common.image.upload.size': 'The size of image must be less than 300 kb!',//请上传小于300kb的图片
     'common.edit': 'Edit',//编辑
     //密码安全等级
@@ -90,21 +90,22 @@ var en_US = {
     'common.stop': 'Stop',//停用
     'common.nickname': 'Nickname',//昵称
     'common.remark': 'Remarks',//备注
-
-    'common.disabled': 'Disabled',//禁用
-    'common.enabled': 'Enabled',//启用
+    'common.disable': 'Disable',//禁用 ————动词，去禁用。 新加的。
+    'common.disabled': 'Disabled',//禁用过的  ———— 已经被禁用的，过去式。
+    'common.enable': 'enable',//启用  ———— 动词，去启用。  新加的
+    'common.enabled': 'Enabled',//启用过的 ———— 已经被启用，过去式。
     'common.edit.password': 'Change Password',//修改密码
     'common.login.time': 'Time',//时间
     'common.login.equipment': 'Equipment',//设备
     'common.operate': 'Operation',//操作
-    'common.input.correct.phone': 'Please input the phone number',//请输入正确的电话号码Please input the correct phone number
+    'common.input.correct.phone': 'Please enter the correct phone number',//请输入正确的电话号码
     'common.edit.failed': 'Failed to modify',//修改失败
-    'common.input.password': 'Please input the password',//请输入密码
-    'common.input.confirm.password': 'Please input the password again',//请输入确认密码
-    'common.password.verify': '{errpassword}[{number}]{captcha}', // "密码有错[{number}]次，出现验证码"
-    'common.session.verify': '{session}[{number}]{captcha}', // "session超频[{number}]次，出现验证码"
-    'common.ip.verify': '{ip}[{number}]{captcha}', // "IP超频[{number}]次，出现验证码"
-    'secret.error': 'password error', // 密码输错
+    'common.input.password': 'Please enter the password',//请输入密码
+    'common.input.confirm.password': 'Please confirm the password',//请输入确认密码
+    'common.password.verify': '{errpassword}[{number}]{captcha}', // '密码有错[{number}]次，出现验证码'
+    'common.session.verify': '{session}[{number}]{captcha}', // 'session超频[{number}]次，出现验证码'
+    'common.ip.verify': '{ip}[{number}]{captcha}', // 'IP超频[{number}]次，出现验证码'
+    'secret.error': 'The password you entered was incorrect', // 密码输错.
     'show.captcha': 'show captcha', // 次，出现验证码
     'session.overclock': 'session overlock', // session超频
     'ip.overclock': 'IP overclock', //  IP超频
@@ -112,11 +113,11 @@ var en_US = {
     'common.status': 'status',//状态
     'common.owner': 'Owner',//所有者：
     'common.managers': 'Administrator',//管理员：
-    'common.secret.app': 'APP for secret order',//密令APP：
+    'common.secret.app': 'Secret order APP',//密令APP：
     'common.realm.id': 'Security Domain ID',//安全域id：
     'common.captcha': 'Captcha',//验证码：
     'common.describe': 'DESCR',//描述：
-    'common.time.connector': ' to ',// // " 至 -"至
+    'common.time.connector': ' to ',// // ' 至 -'至
     'common.image.default': 'Images',//图像
     'common.image.tip.size': 'The size of image must be less than {size} kb!',//图片大小必须小于{size}kb!
     'common.input.character.prompt': '1 ~ 20 characters',//最少1个字符,最多20个字符
@@ -124,38 +125,38 @@ var en_US = {
     'common.phone.email.tip': 'Phone or email is required',//电话、邮箱必填其中一项
     'common.write.template': 'Select and import the file after filling in the template',//填写模板文件后，选择文件并导入 After filling in the template, select  the file and import it
     'common.import': 'Import',//导入
-    'common.upload.type.tip': 'Only files of json type are allowed',//只能上传 json 文件哦
+    'common.upload.type.tip': 'Only json type file are allowed',//只能上传 json 文件哦
     'common.upload.success': 'Upload successfully',//上传成功！
-    'common.upload.syntax.error': 'The file format is error, please retry after modification.',//上传文件格式错误，请修改后重试！
+    'common.upload.syntax.error': 'The file format is incorrect, please upload again.',//上传文件格式错误，请修改后重试！
     'common.upload.error': 'Upload failed, please try again!',//上传失败，请重试!
     'common.client': 'Client',//客户端
-    'common.operate.record': 'Operation Records',//操作记录
+    'common.operate.record': 'Operational Records',//操作记录
     'common.add.app': 'Add Applications',//添加应用
     'common.app': 'Application',//应用
     'common.sure': 'Confirm',//确定
-    'common.is.existed': 'The username is already taken!',//用户名已存在！The username already exists
-    'common.username.is.unique': 'The username is already taken',//用户名唯一性校验出错！
-    'common.phone.is.existed': 'The phone is already taken',//电话已存在！
-    'common.phone.is.unique': 'The phone is already taken',//电话唯一性校验出错！
-    'common.email.is.existed': 'The email is already taken',//邮箱已存在！
+    'common.is.existed': 'The username is already exists!',//用户名已存在！
+    'common.username.is.unique': 'The username is already exists',//用户名唯一性校验出错！
+    'common.phone.is.existed': 'The phone is already exists',//电话已存在！
+    'common.phone.is.unique': 'The phone is already exists',//电话唯一性校验出错！
+    'common.email.is.existed': 'The email is already exists',//邮箱已存在！
     'common.name': 'Name',//姓名
-    'common.get.again': 'retry',//重新获取
+    'common.get.again': 'Retry',//重新获取
     'common.refresh': 'Refresh',//刷新
     'common.no.more.data': 'There is no more data',//没有更多数据了
     'common.yesno': 'whether',//是否
     'common.add.member': 'Add members',//添加成员
-    'common.input.keyword': 'Please input keywords',//输入关键词
+    'common.input.keyword': 'Please enter keywords',//输入关键词
     'common.delete': 'Delete',//删除
     'common.sales.team.list': 'Sales team list',//销售团队列表
-    'common.get.sale.lists.failed': 'Failed to get sales team lists',//获取销售团队列表失败
-    'common.get.member.lists.failed': 'Failed to get additive members lists',//获取可添加成员列表失败
-    'common.no.add.member': 'There is no additive member',//暂无可添加成员
+    'common.get.sale.lists.failed': 'Failed to get sales team list',//获取销售团队列表失败
+    'common.get.member.lists.failed': 'Failed to get additive members list',//获取可添加成员列表失败
+    'common.no.add.member': 'There is no member can be added',//暂无可添加成员
     'common.no.member': 'No Member',//暂无成员
     'common.total.data': '{num} datas ',//共{num}条数据
     'common.apply.user.trial': 'Apply for trial users',//申请试用用户
-    'common.apply.app.trial': 'Existing users apply for try users',//已有用户申请试用用户
+    'common.apply.app.trial': 'Existing users apply for trial',//已有用户申请试用用户
     'common.apply.grant.delay': 'Users apply for extensions',//用户申请延期
-    'common.apply.reject': 'rejected',//驳回
+    'common.apply.reject': 'reject',//驳回  去驳回的话用reject，已经被驳回用rejected。
     'common.belong.customer': 'Customers',//所属客户
     'common.belong.sales': 'Sales',//所属销售
     'common.belong.team': 'Team',//所属团队
@@ -167,9 +168,9 @@ var en_US = {
     'common.unqualified': 'Unqualified',//不合格
     'common.official.qualified': 'Signed and qualified ',//签约合格
     'common.trial.qualified': 'Trial and qualified',//试用合格
-    'common.trial.unqualified': 'Trial and unqualified',// "试用不合格",
+    'common.trial.unqualified': 'Trial and unqualified',// '试用不合格',
     'common.history.qualified': 'Once qualified',//曾经合格
-    'common.delay.time': 'Delay range',//延期时间
+    'common.delay.time': 'Delay-time',//延期时间
     'common.time.unit.day': 'Day',//天
     'common.time.unit.week': 'Week',//周
     'common.time.unit.month': 'Month',//月
@@ -180,7 +181,7 @@ var en_US = {
     'common.app.auth': 'Privilege',//权限
     'common.trial.user': 'Trial users',//试用用户
     'common.trial.official': 'Formal users',//正式用户
-    'common.get.user.apply.failed': 'Failed to get user approval lists',//获取用户审批列表失败
+    'common.get.user.apply.failed': 'Failed to get user approval list',//获取用户审批列表失败
     'common.apply.failed': 'Apply failed',//申请失败
     'common.unknown': 'Unknown',//未知
     'common.time.forever': 'Forever',//永久
@@ -194,61 +195,61 @@ var en_US = {
     'common.email.is.used': 'The email has been used!',//邮箱已被使用！
     'common.email.validate.error': 'Failed to verify the email',//邮箱校验失败！
     'common.all.read': 'Mark all as read',//全部标为已读
-    'common.get.data.error': 'Failed to get data',//"请求数据错误",
+    'common.get.data.error': 'Failed to get data',//'请求数据错误',
     'common.user.lang': 'Language',//语言
     'common.filter.by.key': 'Filter by {key}',//根据{key}过滤
     'common.upload.img.change': 'Change',//更改
-    'common.table.customize': 'Customize Table\'s Columns',//"自定义表格列",    
-    'common.label.times': 'times',//"次",
-    'common.label.days': 'days',//"天",
-    'common.label.hours': 'hours',//"小时",
-    'common.app.minute': 'minutes',//"分钟",
-    'common.load.more': 'load more',//"加载更多",
-    'common.request.timeout': 'Error. Request timeout',//"请求超时",
-    'common.callback': 'Callback', //"回访",
-    'common.callback.time': 'Callback time', // "回访时间"
-    'common.callback.person': 'Callback person', // "回访人",
-    'common.has.callback': 'Has callback', // "已回访",
-    'common.callback.customer': 'Callback customer', // "回访客户",
+    'common.table.customize': 'Customize Table\'s Columns',//'自定义表格列',    
+    'common.label.times': 'times',//'次',
+    'common.label.days': 'days',//'天',
+    'common.label.hours': 'hours',//'小时',
+    'common.app.minute': 'minutes',//'分钟',
+    'common.load.more': 'load more',//'加载更多',
+    'common.request.timeout': 'Error. Request timeout',//'请求超时',
+    'common.callback': 'Callback', //'回访',
+    'common.callback.time': 'Callback time', // '回访时间'
+    'common.callback.person': 'Callback person', // '回访人',
+    'common.has.callback': 'Has callbacked', // '已回访',
+    'common.callback.customer': 'Callback customer', // '回访客户',
     //公共部分--end
     'login.login': 'Login',//登录
     'login.service.error': 'Sorry for the abnormal condition of the server',//很抱歉,服务器出现了异常状况
     'login.error.retry': 'The login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
-    'login.username.password.error': 'The username or password is error',//用户名或密码错误
-    'login.password.error': 'Error Password',//密码错误
-    'login.write.username': 'Please input the username',//请输入用户名
-    'login.write.code': 'Please input the verification code',//请输入验证码
+    'login.username.password.error': 'The username or password is incorrect',//用户名或密码错误
+    'login.password.error': 'Password incorrect',//密码错误
+    'login.write.username': 'Please enter the username',//请输入用户名
+    'login.write.code': 'Please enter the verification code',//请输入验证码
     'login.dim.exchange': 'Unclear? Change another one',//看不清？点击换一张
     'login.username.phone.email': 'username/phone/email',//用户名/手机/邮箱
     'login.logout': 'Logout',//退出
-    'login.forgot_password': 'Forgot password',//忘记密码
-    'login.please_input_phone_or_email': 'Please input your phone or email',//请输入手机号或邮箱
-    'login.incorrect_phone_or_email': 'Incorrect phone or email',//手机号或邮箱格式不正确
-    'login.no_account_of_phone_or_email': 'There are no account of {contactTypeName}',//系统中没有该{contactTypeName}相关的帐号
-    'login.check_contact_info_failure': 'Contact info check failure',//联系方式检查失败
-    'login.message_sent_failure': 'Message sent failure',//信息发送失败
+    'login.forgot_password': 'Forgot your password?',//忘记密码
+    'login.please_input_phone_or_email': 'Please enter your phone number or email',//请输入手机号或邮箱
+    'login.incorrect_phone_or_email': 'Incorrect phone number or email',//手机号或邮箱格式不正确
+    'login.no_account_of_phone_or_email': 'There is no account of {contactTypeName}',//系统中没有该{contactTypeName}相关的帐号
+    'login.check_contact_info_failure': 'Fail to check contact info.',//联系方式检查失败
+    'login.message_sent_failure': 'Fail to sent message',//信息发送失败
     'login.message_has_been_send': 'Message has been send',//信息已发送
     'login.authentication_failure': 'Authentication failure',//身份验证失败
-    'login.reset_password_success': 'Reset password success, please redirect to login page and login with new password',//重置密码成功，请返回登录页用新密码登录
-    'login.reset_password_failure': 'Reset password failure',//重置密码失败
-    'login.fill_in_contact_info': 'Fill in contact info',//填写联系信息
+    'login.reset_password_success': 'Reset password success, please back to login page and login with new password',//重置密码成功，请返回登录页用新密码登录
+    'login.reset_password_failure': 'Fail reset password',//重置密码失败
+    'login.fill_in_contact_info': 'Fill in contact info.',//填写联系信息
     'login.verify_identity': 'Verify identity',//验证身份
     'login.set_new_password': 'Set new password',//设置新密码
-    'login.please_enter_contact_type_verification_code': 'Please enter {contactTypeName} verification code', //请输入{contactTypeName}验证码"
+    'login.please_enter_contact_type_verification_code': 'Please enter {contactTypeName} verification code', //请输入{contactTypeName}验证码'
     'login.please_enter_new_password': 'Please enter new password',//请输入新密码
-    'login.send_phone_or_email_verification_code': 'Send phone or email verification code',//发送手机/邮箱验证码
+    'login.send_phone_or_email_verification_code': 'Send verification code to phone or email',//发送手机/邮箱验证码
     'login.verify_phone_or_email_verification_code': 'Verify {contactTypeName} verification code',//验证{contactTypeName}验证码
     'login.return_to_login_page': 'Return to login page',//返回登录页
     'login.scan.qrcode.login': 'Scan login',//扫码登录
     'login.account.login': 'Account login',//普通登录
-    'login.qrcode.scan.tip': 'Please use {appName} to scan QR code security login',//请使用{appName}扫描二维码安全登录
+    'login.qrcode.scan.tip': 'Please use {appName} to scan QR code to security login',//请使用{appName}扫描二维码安全登录
     'login.ketao.app.name': 'Ketao App',//客套APP
     'login.load.ketao.tip': 'Download ketao APP Android',//下载客套APP安卓端
     'login.scan.ketao.qrcode.tip': 'Scan QR code to download ketao APP Android',//扫码下载客套APP安卓端
-    'login.qrcode.loading': 'Getting a qr code...',//正在获取二维码...
+    'login.qrcode.loading': 'loading QR code...',//正在获取二维码...
 
 
-    //"superHello": "{appName}有{number}名{user_type}过期！",//
+    //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
     'user.title': 'Users',//用户管理
     'user.exist.user': 'Existing Users',//已有用户
@@ -262,35 +263,35 @@ var en_US = {
     'user.app.all': 'All Applications',//全部应用
     'user.search.placeholder': 'Search by keywords',//请输入关键词搜索Please input keywords for searching
     'user.time.start': 'Open time',//开通时间
-    'user.time.end': 'Expiration time',//到期时间
+    'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
     'user.login.days': 'Login Days', // 登录天数
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
-    'user.user.list.click': 'Please click at user lists',//请在用户列表中点击
+    'user.user.list.click': 'Please click at user list',//请在用户列表中点击
     'user.user.list.select': 'Select users',//选择用户
-    'user.app.open': 'Open one application',//开通应用
+    'user.app.open': 'Open application',//开通应用
     'user.no.app': 'No application',//暂无应用
     'user.no.related.app': 'No related application',////暂无符合条件的应用  无相关应用
     'user.app.select.tip': 'Please select at least one application',//至少选择一个应用
     'user.app.add.success': 'Add the application successfully',//添加应用成功
     'user.app.edit.success': 'Edit the application successfully',//修改应用成功
     'user.phone': 'Phone',//手机号
-    'user.phone.write.tip': 'Please input the phone number',//请填写手机号
-    'user.email.write.tip': 'Please input the email',//请填写邮箱
+    'user.phone.write.tip': 'Please enter the phone number',//请填写手机号
+    'user.email.write.tip': 'Please enter the email',//请填写邮箱
     'user.email.set.tip': 'Please edit the email',//修改邮箱
     'user.phone.set.tip': 'Please edit the phone number',//修改手机号
-    'user.phone.validate.tip': 'Please input the phone number correctly',//请输入正确格式的手机号
-    'user.email.validate.tip': 'Please input the email correctly',//请输入正确格式的邮箱
+    'user.phone.validate.tip': 'Please enter the phone number correctly',//请输入正确格式的手机号
+    'user.email.validate.tip': 'Please enter the email correctly',//请输入正确格式的邮箱
     //xxx已存在
     'user.exist.tip': '{name} already exists',//{name}已存在
-    'user.user.exist.tip': 'The username is already taken',//用户已存在The username already exists
-    'user.user.exist.check.tip': 'The username is already taken, whether to {check}',//"用户已存在，是否{check}",
+    'user.user.exist.tip': 'The username is already exists',//用户已存在The username already exists
+    'user.user.exist.check.tip': 'The username is already exists, whether to {check}',//'用户已存在，是否{check}',
     'user.user.check': 'check this user',//查看该用户
-    'user.username.write.tip': 'Please input the username',//请填写用户名
-    'user.username.write.email.tip': 'Please input the email as username',//请填写正确的邮箱作为用户名
-    'user.nickname.write.tip': 'Please input the nickname',//请填写昵称
-    'user.nickname.set.tip': 'Configure nickname',//设置昵称
+    'user.username.write.tip': 'Please enter the username',//请填写用户名
+    'user.username.write.email.tip': 'Please enter the email as username',//请填写正确的邮箱作为用户名
+    'user.nickname.write.tip': 'Please enter the nickname',//请填写昵称
+    'user.nickname.set.tip': 'Set up nickname',//设置昵称
     'user.username.email.only.tip': 'When the format of username is email , only one user can be added',//用户名是邮箱格式时，只能添加1个用户
     'user.sales.team': 'sales teams',//销售团队
     'user.salesman': 'sales staff',//销售人员
@@ -310,10 +311,11 @@ var en_US = {
     'user.time.custom': 'Customize',//自定义
     'user.time.all': 'All',//全部时间
     'user.time.today': 'Today',//今天
-    'user.time.today1': 'Will be expired try users today',//今日即将到期的试用用户
+    'user.time.today1': 'Will be expired trial users today',//今日即将到期的试用用户
     'user.time.yesterday': 'Yesterday',//昨天
-    'user.time.this.week': 'Will be expired try users this week',//本周即将到期的试用用户
+    'user.time.this.week': 'Will be expired trial users this week',//本周即将到期的试用用户
     'user.time.prev.week': 'Last week',//上周
+    'user.time.this.month': 'This month',//本月
     'user.time.prev.month': 'Last month',//上月
     'user.time.half.year': 'Will be expired formal users in half year',//半年内即将到期的签约用户
     'user.time.half.year1': 'Half year',//半年
@@ -364,14 +366,14 @@ var en_US = {
     'user.duration': 'Duration',//时长
     'user.login.time': 'Times',//次数
     'user.average.login.duration': 'Average time of online',//平均每次登录时长
-    'user.first.login': 'Login for the first time',//首次登录
+    'user.first.login': 'First time login',//首次登录
     'user.last.login': 'Login recently',//最近登录
     'user.no.login': 'User has not logined',//用户暂无登录
     'user.basic.info': 'Basic Information',//基本资料
     'user.detail.analysis': 'Analysis',//分析
     'user.password.tip': 'In secrecy',//保密中
     'user.failed': 'Failure',//失败
-    'user.select.user.tip': 'Please select users in lists',//请在用户列表中选择用户
+    'user.select.user.tip': 'Please select users in list',//请在用户列表中选择用户
     'user.app.select.please': 'Please select applications',//请选择应用
     'user.operate.success': 'Operate successfully',//操作成功
     'user.batch.app.open': 'Applications',//开通产品
@@ -401,7 +403,7 @@ var en_US = {
     'user.start.time': 'Starting time',//启用时间
     'user.user.type': 'User type',//用户类型
     'user.app.change': 'Change Application',//变更应用
-    'user.account.disable.sure': 'Are you sure to disabled this account',//确定禁用账号吗
+    'user.account.disable.sure': 'Are you sure to disable this account',//确定禁用账号吗
     'user.app.info.edit': 'Edit production details',//产品信息修改
     'user.open.type.select': 'Please select owning type',//请选择开通类型
     'user.role.select.tip': 'Select at least one role',//至少选择一个角色
@@ -483,13 +485,13 @@ var en_US = {
     'user.status.stop': 'Stop', // 停用
     'user.status.degrade': 'Degrade', // 降级
     'user.status.immutability': 'Immutability', // 不变
-    'user.status.stopped': 'Deactivated',//"已停用",
+    'user.status.stopped': 'Deactivated',//'已停用',
     'user.status.expired': 'Expired',//已到期
-    'user.no.login.system': 'This user has not logged in to the system', // 该用户还没有登录过系统
+    'user.no.login.system': 'This user has never log in to the system', // 该用户还没有登录过系统
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
     //第三方应用
-    'third.party.app': 'Open Application Platform',//开放应用平台",
+    'third.party.app': 'Open Application Platform',//开放应用平台',
     'third.party.app.add': 'Add application of the open plateform',//添加应用
     'third.party.app.edit': 'Modify application of the open plateform',//修改应用
     'third.party.app.create.time': 'Create Time', // 创建时间
@@ -501,32 +503,32 @@ var en_US = {
     'user.third.thirdapp.cb': 'Callback Location',//回调地址
     'user.third.thirdapp.des': 'Application Description',//应用简介
     'user.third.thirdapp.icon': 'Application Icon',//应用图标
-    'user.third.thirdapp.type.reuqired': 'Please input the type of the application',//请选择应用类型",
-    'user.third.thirdapp.platform.required': 'Please choose or input the application platform',//请选择应用平台",
-    'user.third.thirdapp.name.reuqired': 'Please input the application name',//请填写应用名称",
-    'user.third.thirdapp.key.required': 'Please input the key of the application ',//请填写App Key",
-    'user.third.thirdapp.secret.required': 'Please input the secret of the application',//请填写APP Secret",
-    'user.third.thirdapp.success.enable': 'active succeed',//"启用成功",
-    'user.third.thirdapp.success.disable': 'disable succeed',//"禁用成功",
-    'user.third.thirdapp.success.edit': 'modify succeed',//"修改成功",
+    'user.third.thirdapp.type.reuqired': 'Please select the type of the application',//请选择应用类型',
+    'user.third.thirdapp.platform.required': 'Please select or enter the application platform',//请选择应用平台',
+    'user.third.thirdapp.name.reuqired': 'Please enter the application name',//请填写应用名称',
+    'user.third.thirdapp.key.required': 'Please enter the key of the application ',//请填写App Key',
+    'user.third.thirdapp.secret.required': 'Please enter the secret of the application',//请填写APP Secret',
+    'user.third.thirdapp.success.enable': 'active succeed',//'启用成功',
+    'user.third.thirdapp.success.disable': 'disable succeed',//'禁用成功',
+    'user.third.thirdapp.success.edit': 'modify succeed',//'修改成功',
     'user.add.position': 'Add Phone Order', // 添加座席号
-    'user.position.input.tips': 'please input number', // 请输入数字
+    'user.position.input.tips': 'please enter number', // 请输入数字
     'user.position.unbind.user': 'No unbind User', // 暂无未绑定的用户
     'user.position.bind.user': 'Bind user', // 绑定用户
     'user.position.tips.no.user': 'The user is not exist.', // 暂无此用户
     'user.position.user.placeholder': 'Search for user', // 输入用户名称搜索
     'user.position.bind.user.tips': 'Please bind user', // 请绑定用户
-    'user.position.area.changsha': 'ChangSha', // 长沙
-    'user.position.area.jinan': 'JiNan', // 济南
-    'user.position.area.beijing': 'BeiJing', // 北京
+    'user.position.area.changsha': 'Changsha', // 长沙
+    'user.position.area.jinan': 'Jinan', // 济南
+    'user.position.area.beijing': 'Beijing', // 北京
     'user.position.select.organization': 'Select Organization', // 选择组织
     'user.position.select.organization.first': 'Select Organization First', // 请先选择组织
     'user.position.tips.no.organization': 'This organization is not exist.', // 暂无此组织
     'user.position.input.name.search': 'Search for organization', // 输入组织名称搜索
-    'user.position.number.tips': 'Plese input phone order', // 请输入座席号
+    'user.position.number.tips': 'Plese enter phone order', // 请输入座席号
     'user.position.select.user': 'Please select user', // 请选择用户
-    'user.third.thirdapp.consts.sina': 'Sina Weibo',//新浪微博",
-    'user.third.thirdapp.consts.tencent': 'Tencent Weibo',//腾讯微博",
+    'user.third.thirdapp.consts.sina': 'Sina Weibo',//新浪微博',
+    'user.third.thirdapp.consts.tencent': 'Tencent Weibo',//腾讯微博',
     /*用户管理模块-end*/
 
     /*角色管理模块-start*/
@@ -536,14 +538,14 @@ var en_US = {
     'role.set.auth': 'setting privilege', // 设置权限
     'role.no.auth.add': 'no privilege, please {add}',//未设置权限，请先添加权限
     'role.del.role.tip': 'Are you sure to delete this role?',//确定要删除这个角色吗
-    'role.all.hide': 'All folded',//全部收起
-    'role.all.show': 'All unfolded',//全部展开
-    'role.no.role.list': 'There is no roles lists',//暂无角色列表
-    'role.get.role.list.failed': 'Failed to get role lists',//获取角色列表失败
+    'role.all.hide': 'All fold',//全部收起
+    'role.all.show': 'All unfold',//全部展开
+    'role.no.role.list': 'There is no roles list',//暂无角色列表
+    'role.get.role.list.failed': 'Failed to get role list',//获取角色列表失败
     'role.del.role.failed': 'Failed to delete roles',//删除角色失败
     'role.add.role.failed': 'Failed to add roles',//添加角色失败
     'role.edit.role.failed': 'Failed to modify roles',//修改角色失败
-    'role.role.list': 'Roles Lists',//角色列表
+    'role.role.list': 'Roles List',//角色列表
     'role.import.role': 'Import roles',//导入角色
     'role.export.role': 'Export roles',//导出角色
     'role.template': 'Roles Template', // 《角色模板》
@@ -596,24 +598,24 @@ var en_US = {
     'member.stop.this': 'disable this ',//禁用此
     'member.change.group.failed': 'Failed to change affiliated team',//修改所属团队失败
     'member.setting.belong.group': 'configure affiliated team',//设置所属团队
-    'member.no.group': 'No this team',//暂无此团队
+    'member.no.group': 'Team non-exists',//暂无此团队
     'member.select.group': 'Please select team',//请选择团队
-    'member.search.group.by.name': 'Input team name for searching',//输入团队名称搜索
+    'member.search.group.by.name': 'Enter team name for searching',//输入团队名称搜索
     'member.not.actived': 'inactivated',//未激活
     'member.is.or.not': 'whether {modalStr} {modalType} or not',//是否{modalStr}{modalType}
     'member.operation.log': 'Operation log',//操作日志
-    'member.input.email': 'Please input email',//请输入邮箱
-    'member.input.qq': 'Please input QQ',//请输入QQ号
+    'member.input.email': 'Please enter email',//请输入邮箱
+    'member.input.qq': 'Please enter QQ',//请输入QQ号
     'member.input.wechat': 'Please input wechat',//请输入微信号
     'member.check.member.name': 'Please enter a number, letter or underline, the first letter can not be a underline',//请输入数字、字母或下划线，首字母不能是下划线
-    'member.email.is.unique': 'The email is already taken',//邮箱唯一性校验出错！
+    'member.email.is.unique': 'The email is already exists',//邮箱唯一性校验出错！
     'member.no.role': 'No role',//暂无角色
     'member.no.groups': 'No team',//暂无团队
     'member.head.logo': ' Avatar',//头像
-    'member.type.password.again': 'Please input the password again',//请再次输入密码
+    'member.type.password.again': 'Please enter the password again',//请再次输入密码
     'member.two.password.same': 'Passwords do not match',//两次输入密码保持一致
     'member.select.role': 'Please select roles',//请选择角色
-    'member.is.get.group.lists': 'Getting team lists',//正在获取团队列表
+    'member.is.get.group.lists': 'Getting team list',//正在获取团队列表
     'member.get.log.failed': 'Failed to get member log',//获取成员日志失败!
     'member.get.detail.failed': 'Failed to get member details',//获取成员的详情失败!
     'member.add.member.email': 'email for new member',//新增成员的邮箱
@@ -622,8 +624,8 @@ var en_US = {
     'member.no.suitable.member': 'No qualified members!',//没有符合条件的成员!
     'member.get.role.lists': 'Getting role lists',//正在获取角色列表
     'member.is.building': 'Setting up',//创建中
-    'member.create.time': 'Create Time',//创建时间
-    'member.forbidden.self': 'Don\'t disable yourself', // 禁止禁用自己
+    'member.create.time': 'Creating Time',//创建时间
+    'member.forbidden.self': 'Can\'t disable yourself', // 禁止禁用自己
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
@@ -731,7 +733,7 @@ var en_US = {
     'realm.select.industry2': 'Trade/consumption/manufacture/operation', // 贸易/消费/制造/营运
     'realm.select.industry3': 'Pharmaceutical/Medical', // 制药/医疗
     'realm.select.industry4': 'Advertising/Media', // 广告/媒体
-    'realm.select.industry5': 'Real Estate/Buildings', // 房地产/建筑
+    'realm.select.industry5': 'Real Estate/Construct', // 房地产/建筑
     'realm.select.industry6': 'Professional services/Education/Training', // 专业服务/教育/培训
     'realm.select.industry7': 'Service industry', // 服务业
     'realm.select.industry8': 'Logistics/Transportation', // 物流/运输
@@ -752,21 +754,21 @@ var en_US = {
     'realm.email.title': 'Mailbox server configuration information', // 邮箱服务器配置信息
     'realm.email.edit.title': 'Modify the configuration information for the Mailbox server', // 修改邮箱服务器的配置信息
     'realm.email.set.title': 'Set the email of server', // 设置邮箱服务器
-    'realm.email.set.error': 'The mailbox server was configured to fail', // 配置邮箱服务器失败
-    'realm.sms.username': 'Please input the username of sms', // 请输入短信网关用户名
-    'realm.sms.password.message': 'Please input the password of sms', // 请输入短信网关密码
+    'realm.email.set.error': 'Failed to configure the mailbox server', // 配置邮箱服务器失败
+    'realm.sms.username': 'Please enter the username of sms', // 请输入短信网关用户名
+    'realm.sms.password.message': 'Please enter the password of sms', // 请输入短信网关密码
     'realm.sms.title': 'SMS server configuration information', // 短信服务器配置信息
     'realm.sms.edit.title': 'Edit the SMS server configuration information', // 修改短信服务器的配置信息
-    'realm.sms.set.title': 'Config the SMS Server', // 设置短信服务器
-    'realm.sms.set.error': 'The SMS server was configured to fail', // 配置短信服务器失败
+    'realm.sms.set.title': 'Set the SMS Server', // 设置短信服务器
+    'realm.sms.set.error': 'Failed to configure the SMS server', // 配置短信服务器失败
     'realm.wechat.id.label': 'ID',
     'realm.wechat.id.placeholder': 'Please enter the WeChat public ID', // 请输入微信公众号ID
     'realm.wechat.secret.label': 'Key', // 密钥
-    'realm.wechat.secret.placeholder': 'Please enter the WeChat public number key', // 请输入微信公众号密钥
-    'realm.wechat.title': 'WeChat public number configuration information', // 微信公众号配置信息
-    'realm.wechat.edit.title': 'Modify the configuration information of the WeChat public number', // 修改微信公众号的配置信息
-    'realm.wechat.set.title': 'Configure the WeChat public number', // 配置微信公众号
-    'realm.wechat.set.error': 'Failed to configure the WeChat public number', // 配置微信公众号失败
+    'realm.wechat.secret.placeholder': 'Please enter the WeChat public account key', // 请输入微信公众号密钥
+    'realm.wechat.title': 'WeChat public account configuration information', // 微信公众号配置信息
+    'realm.wechat.edit.title': 'Modify the configuration information of the WeChat public account', // 修改微信公众号的配置信息
+    'realm.wechat.set.title': 'Configure the WeChat public account', // 配置微信公众号
+    'realm.wechat.set.error': 'Failed to configure the WeChat public account', // 配置微信公众号失败
     // 安全域end
     //基本资料start
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
@@ -777,7 +779,7 @@ var en_US = {
     'user.info.no.active': 'Please {active}',//未激活，请{active}
     'user.info.active': 'active',//激活
     'user.info.realm': 'Security Domain',//安全域
-    'user.info.input.phone': 'Please input the phone number',//请输入电话
+    'user.info.input.phone': 'Please enter the phone number',//请输入电话
     'user.info.nickname.required': 'Nickname is required',//昵称不能为空
     'user.info.consult.phone': 'Service Hotline',//客服咨询电话
     'user.info.get.user.info.failed': 'Failed to get user information',//获取用户信息失败
@@ -785,20 +787,20 @@ var en_US = {
     'user.info.get.log.list.failed': 'Failed to get personal operation record',//获取个人操作记录失败
     'user.info.active.user.email.failed': 'Failed to active',//激活失败
     'user.info.edit.password.failed': 'Failed to change password',//密码修改失败
-    'user.info.user.info': 'Basic Info',//个人资料
+    'user.info.user.info': 'Personal Info',//个人资料
     'user.info.manage.password': 'Password',//密码管理
     'user.info.reject.email': 'If you do not want to receive the approval notification email, you can {cancel}',//如果您不想接受审批通知邮件提醒，可以{cancel}
     'user.info.receive.email': 'If you\'d like to receive the approval email notification, you can {receive}',//如果您想接受审批通知邮件提醒，可以{receive}
     'user.info.cancel.subscribe': 'unsubscribe',//取消订阅
     'user.info.receive.subscribe': 're-subscribe',//重新订阅
-    'user.info.setting.failed': 'Failed to set, please reset!',//设置失败，请重新设置！
+    'user.info.setting.failed': 'Failed to set, please try again!',//设置失败，请重新设置！
     'user.info.setting.succeess': 'Set successfully!',//设置成功！
     //基本资料end
     //密码管理start
     'user.password.input.again': 'The original password was incorrect',//原密码不正确，请重新输入。
     'user.password.change.password.succ': 'Your password has been revised successfully',//密码修改成功
     'user.password.initial.password': 'Current',//原始密码
-    'user.password.input.initial.password': 'Please input original password',//请输入原密码
+    'user.password.input.initial.password': 'Please enter original password',//请输入原密码
     'user.password.new.password': 'New',//新密码
     'user.password.save.password': 'Save Changes',//保存密码
     //密码管理end
@@ -841,11 +843,11 @@ var en_US = {
     'sales.stage.signed': 'signed',//签约
     'sales.stage.intention': 'intention',//意向
     'sales.stage.message': 'message',//信息
-    'sales.stage.lost': 'lost',//"流失"
+    'sales.stage.lost': 'lost',//'流失'
     //销售阶段end
     //销售团队start
     'sales.team.no.sales.team.tip': 'There is no team, please add!',//暂无团队，请先添加：
-    'sales.team.search.placeholder': 'Please input team name',//请输入团队名称
+    'sales.team.search.placeholder': 'Please enter team name',//请输入团队名称
     'sales.team.add.sales.team': 'add',//添加
     'sales.team.add.owner': 'Principal',//设为负责人
     'sales.team.add.manager': 'Secretary',//设为秘书
@@ -870,14 +872,14 @@ var en_US = {
     'sales.team.no.selected.member': 'There is no member selected',//暂无选择成员
     'sales.team.sales.goal': 'Sales goals',//销售目标
     'sales.team.personal': 'Personal',//个人
-    'sales.team.save.team.sales.goal': 'Whether to save the team sales goals?',//"是否保存团队销售目标？",
-    'sales.team.save.member.sales.goal': 'Whether to save the personal sales target',//"是否保存个人销售目标？",
+    'sales.team.save.team.sales.goal': 'Whether to save the team sales goals?',//'是否保存团队销售目标？',
+    'sales.team.save.member.sales.goal': 'Whether to save the personal sales target',//'是否保存个人销售目标？',
     //销售团队end
     //配置start
     'config.manage.industry.manage': 'Industry',//行业管理
     'config.manage.reload.industry': 'Retry',//重新获取行业
     'config.manage.no.industry': 'There is no industry, please add!',//暂无行业配置，请添加！
-    'config.manage.input.ip': 'Please input correct IP(eg:192.168.1.9)',//请输入有效的IP（eg:192.168.1.9）
+    'config.manage.input.ip': 'Please enter correct IP(eg:192.168.1.9)',//请输入有效的IP（eg:192.168.1.9）
     'config.manage.no.ip': 'There is no IP, please add!',//暂无IP配置，请添加！
     'config.manage.reload.ip': 'Reacquire IP',//重新获取IP
     'config.manage.ip.config': 'IP configuration',//IP配置
@@ -890,7 +892,7 @@ var en_US = {
     'config.filter.inner.ip.failed': 'Failed to filter by ip of LAN',//过滤内网ip失败
     'config.manage.realm.config': 'Realm\'s password strategy',//安全域密码策略
     'config.manage.realm.modifiedMD5': 'MD5 without the first 4 charactors',//去掉前4位的MD5
-    'config.manage.realm.update.failed': 'Failed modified password strategy',//修改密码策略失败
+    'config.manage.realm.update.failed': 'Failed to modify password strategy',//修改密码策略失败
     'config.manage.realm.confirm': 'Are you sure to modify the realm\'s password strategy?',//您确定要修改安全域密码策略吗？
     'config.manage.realm.get.failed': 'Failed to get the password strategy',//获取密码策略失败
     'config.manage.realm.oktext': 'ok',//确定
@@ -916,9 +918,9 @@ var en_US = {
     'call.record.cancel.search': 'Cancel Search', // 取消搜索
     'call.record.search.placeholder': 'Filter by {search}', // 根据{search}过滤
     'call.record.customer.title': 'Click to show the detail of customer', // 点击可查看客户详情
-    'call.record.get.failed': 'Getting the call record was failed.', // 获取通话记录失败
+    'call.record.get.failed': 'Failed to get the call record.', // 获取通话记录失败
     'call.record.follow.content': 'Follow up the content', // 跟进内容
-    'call.record.filter.tip': 'Filter less than 7 phone number.eg: 114,12580...', // 过滤小于7位的号码，如114、12580...
+    'call.record.filter.tip': 'Filter the phone number that less than.eg: 114,12580...', // 过滤小于7位的号码，如114、12580...
     'call.record.filter.tip.service': 'Filter customer service\'s phone', // 过滤客服电话
     'call.record.call.center': 'Call Center', // 呼叫中心
     'call.record.save.content.success': 'Save follow-up content successfully.', // 保存跟进内容成功！
@@ -930,7 +932,7 @@ var en_US = {
     'call.record.servicecall': 'statistic about customer services phones',//客服电话统计
     'call.record.count.failed': 'Failed to get call quantity',//获取通话数量失败
     'call.record.time.failed': 'Failed to get the call duration',//获取通话时长失败
-    'call.record.count': 'Call statistics',//通话数量统计
+    'call.record.count': 'Call number statistics',//通话数量统计
     'call.record.time': 'Call duration statistics',//通话时长统计
     'call.record.interval': 'Call interval statistics',//通话时段统计
     'call.time.export.statistic': 'Click export time statistics',//点击导出通话时长统计
@@ -939,7 +941,7 @@ var en_US = {
     //通话分析-start
     'call.analysis.total.count': 'Total number of calls ',//通话总次数
     'call.analysis.total.time': 'Duration of call ',//通话总时长
-    'call.analysis.total.count.failed': 'Getting the total call number TOP10 failed',//获取通话总次数TOP10失败
+    'call.analysis.total.count.failed': 'Failed to get the total call number TOP10 failed',//获取通话总次数TOP10失败
     'call.analysis.total.time.failed': 'Get the total long TOP10 failure of the call',//获取通话总时长TOP10失败
     'call.record.service.phone.rate': 'Statistics of the ratio of 114',//114占比统计
     'call.analysis.zone.distrute': 'Zone distribution of customers', // 客户的地域分布
@@ -1028,7 +1030,7 @@ var en_US = {
     'user.online.all.status': 'all status', // 全部状态
     'user.online.expired': 'expired', // 已过期
     'user.online.kick.success': 'kicked success', // 踢出成功
-    'user.online.kick.error': 'kicked error', // 踢出失败
+    'user.online.kick.error': 'failed to kick', // 踢出失败
     'user.online.login.time': 'login time', // 登录时间
     'user.online.kick': 'kicked out', // 踢出
     'user.online.modal.tip': 'whether to kick ?', // 是否踢此用户下线
@@ -1084,7 +1086,7 @@ var en_US = {
     'crm.57': 'Consolidated contacts', // 合并后的联系人
     'crm.58': 'WeChat', // 微信
     'crm.59': 'Save after merged.', // 合并后要保存的客户
-    'crm.60': 'Customer list have to merge', // 需要合并的客户列表
+    'crm.60': 'Customer lists that have to merge', // 需要合并的客户列表
     'crm.61': 'show all repeat customer list', // 所有展示的重复客户列表数据
     'crm.62': 'whole', // 完整
     'crm.63': 'Save after merged', // 合并后保存的客户
@@ -1232,17 +1234,17 @@ var en_US = {
     'crm.call.no.remark.over30': 'No follow-up records over 30 days',//超30天未写跟进记录
     'crm.last.contact': 'Final contact',//最后联系
     'crm.qualified.roll.out': 'Transfer out',//转出
-    'crm.contact.name.department': 'The contact name and department required one',//联系人姓名和部门必填一项
+    'crm.contact.name.department': 'Contact name or department are required',//联系人姓名和部门必填一项
     'crm.delete.duplicate.customer.failed': 'Delete',//删除重复客户失败
     'crm.detail.sales.role': 'Sales role',//销售角色
     'crm.sales.change': 'Change sales',//变更销售
     'crm.customer.transfer': 'Transfer customer',//转出客户
     'crm.customer.transfer.failed': 'Transfer customer failure',//转出客户失败
     'crm.right.schedule': 'Contact schedule',//联系计划
-    'crm.customer.transfer.sales': 'Sales',//"销售代表",
-    'crm.customer.transfer.manager': 'Manager',//"客户经理",
-    'crm.sales.customerStage': 'customer stage statistic',//"客户阶段变更统计",
-    'crm.sales.newTrailCustomer': 'new customer statistic',//"新开试用、签约客户数统计",
+    'crm.customer.transfer.sales': 'Sales',//'销售代表',
+    'crm.customer.transfer.manager': 'Manager',//'客户经理',
+    'crm.sales.customerStage': 'customer stage statistic',//'客户阶段变更统计',
+    'crm.sales.newTrailCustomer': 'new customer statistic',//'新开试用、签约客户数统计',
     'crm.repeat.phone': 'Phone repeating',//电话重复
     'crm.repeat.phone.unhandle': 'You have an unprocessed repeat phone: ',//您还有未处理的重复电话：
     'crm.order.stage': 'Order stage',//订单阶段
@@ -1271,10 +1273,10 @@ var en_US = {
     'crm.sales.redistribution': 'Redistribution',//重新分配
     'crm.sales.transfer.confirm': 'Transfer confirm',//确认转出
     'crm.detail.no.data': 'The customer has been deleted or turned away',//该客户已被删除或转走
-    'crm.detail.get.error': 'Failure to get customer details',//获取客户详情失败
+    'crm.detail.get.error': 'Failed to get customer details',//获取客户详情失败
     'crm.schedule.set.compelete': 'Set to complete',//标为已完成
     'crm.schedule.set.unfinished': 'Set to unfinished',//标为未完成
-    'crm.trace.delivery.report': 'Report delivery',//舆情报送
+    'crm.trace.delivery.report': 'Public sentiment delivery',//舆情报送
     'crm.trace.report.source': 'Original text',//原文
     // 客户管理end
 
@@ -1304,16 +1306,16 @@ var en_US = {
     'active.customer.number': 'active customer number',//活跃客户数
     'effective.customer.number': 'efficient customer number',//有效客户数
     'effective.customer.statistics': 'efficient customer statistics',//有效客户统计
-    'oplate_customer_analysis.industryCustomerOverlay': 'Trial customer coverage rate of all industries', //"各行业试用客户覆盖率",
+    'oplate_customer_analysis.industryCustomerOverlay': 'Trial customer coverage rate of all industries', //'各行业试用客户覆盖率',
     'oplate_customer_analysis.overlay': 'Coverage rate',//覆盖率
-    'oplate_customer_analysis.countryCount': 'country count', //"区县总数",
-    'oplate_customer_analysis.cityCount': 'city count', //"地市总数",
-    'oplate_customer_analysis.allLabel': 'all label',//"全部标签",
-    'oplate_customer_analysis.allIndustries': 'all industries',//"全部行业",
-    'oplate_customer_analysis.salesNewCustomerCount': 'Statistic of new customers created by sales', //"销售新开客户数统计",
-    'oplate_customer_analysis.newCustomerCount': 'Count of new customers created by sales', //"新开客户数",
-    'oplate_customer_analysis.tatolNewCustomerCount': 'Total count of new customer', //"新开账号数总数",
-    'oplate_customer_analysis.customerLoginCount': 'New login customer count', //"新开客户登录数",
+    'oplate_customer_analysis.countryCount': 'country count', //'区县总数',
+    'oplate_customer_analysis.cityCount': 'city count', //'地市总数',
+    'oplate_customer_analysis.allLabel': 'all label',//'全部标签',
+    'oplate_customer_analysis.allIndustries': 'all industries',//'全部行业',
+    'oplate_customer_analysis.salesNewCustomerCount': 'Statistic of new customers created by sales', //'销售新开客户数统计',
+    'oplate_customer_analysis.newCustomerCount': 'Count of new customers created by sales', //'新开客户数',
+    'oplate_customer_analysis.tatolNewCustomerCount': 'Total count of new customer', //'新开账号数总数',
+    'oplate_customer_analysis.customerLoginCount': 'New login customer count', //'新开客户登录数',
     //客户分析 end
     //合同管理 start
     'contract.4': 'Party A',//甲方@
@@ -1393,7 +1395,7 @@ var en_US = {
     'contract.79': 'day',//日@
     'contract.80': 'within',//内
     'contract.81': 'Payables',//应付款
-    'contract.82': 'ten thousand',//万元@
+    'contract.82': 'ten thousands',//万元@
     'contract.83': 'to',//至@
     'contract.84': 'Amounts payable {num} yuan',//应付金额{num}元 @
     'contract.85': 'Import contract succeessfully',//导入合同成功@
@@ -1542,7 +1544,7 @@ var en_US = {
     'user.analysis.team.add': 'Team-Newly added',//各团队新增用户、客户数  团队-新增@
     'user.analysis.industry.add': 'Industry-Newly added',//各行业新增用户、客户数  行业-新增@
     'user.analysis.active.customer': 'Active customer',//活跃客户
-    'user.analysis.moveoutCustomer': 'Move-out customer ',// "转出客户统计",
+    'user.analysis.moveoutCustomer': 'Move-out customer ',// '转出客户统计',
     'user.analysis.sales.users': 'Sales and opening of user statistics',//销售开通用户统计
     'user.analysis.active.user.area.statistics': 'Active user area statistics',//活跃用户地域统计
 
@@ -1594,11 +1596,11 @@ var en_US = {
     'operation.report.delay.user.app.distribute': '1. This week, there are {num} (last week\'s {lastWeekNum}) delayed users, the application distribution as shown below:',//1、本周新增了{num}个(上周{lastWeekNum}个)延期用户，应用分布情况如下图所示：
     'operation.report.delay.user.statistic': 'New delayed user statistics',//新增延期用户情况统计
     'operation.report.app.delay.user': 'Delayed user',//延期用户
-    'operation.report.delay.user.comparison.chart': '2. For nearly four weeks, new deferred users are shown in the following diagram:',//2、近四周新增延期用户情况对比图如下所示:",
+    'operation.report.delay.user.comparison.chart': '2. For nearly four weeks, new deferred users are shown in the following diagram:',//2、近四周新增延期用户情况对比图如下所示:',
     'operation.report.delay.user.comparison': 'New delayed user contrast in recent four weeks',
-    'operation.report.delay.user.team.tip': '3. The distribution of new delayed users is shown in the following table:',//3、新增延期用户部门分布情况如下表所示:",
-    'operation.report.delay.user.login.tip': '4. New delayed user login {count} (last week {lastWeekCount}), accounting for {percent} ({count}/{allCount}), last week, accounting for {lastWeekPercent} ({lastWeekCount}/{lastWeekAllCount}), the Distribution Department is shown in the table:',//4、新增延期用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:",
-    'operation.report.delay.user.week.login.tip': '5. A total of {count} delayed users, the total online total length of more than 1 hours, the distribution of departments as shown in the table below:',//5、共有{count}个延期用户周在线总时长超过1小时，部门分布情况如下表所示:",
+    'operation.report.delay.user.team.tip': '3. The distribution of new delayed users is shown in the following table:',//3、新增延期用户部门分布情况如下表所示:',
+    'operation.report.delay.user.login.tip': '4. New delayed user login {count} (last week {lastWeekCount}), accounting for {percent} ({count}/{allCount}), last week, accounting for {lastWeekPercent} ({lastWeekCount}/{lastWeekAllCount}), the Distribution Department is shown in the table:',//4、新增延期用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:',
+    'operation.report.delay.user.week.login.tip': '5. A total of {count} delayed users, the total online total length of more than 1 hours, the distribution of departments as shown in the table below:',//5、共有{count}个延期用户周在线总时长超过1小时，部门分布情况如下表所示:',
     'operation.report.activity': 'Activity',//活跃度@
     'operation.report.activity.percent': 'Activity(%)',//活跃度(%)@
     'operation.report.active.num': 'Active number',//活跃数@
@@ -1612,7 +1614,7 @@ var en_US = {
     'operation.report.month.active': 'Active monthly',//月活@
     'operation.report.app.login.statistic': 'Login statistics of every application ',//各应用登录统计@
     'operation.report.time.duration': 'Until {time}',//至{time}为止@
-    'operation.report.activity.unit': 'Activity(%)',//""活跃度(%)",
+    'operation.report.activity.unit': 'Activity(%)',//''活跃度(%)',
     //用户分析
     'oplate.user.analysis.4': 'Membership statistics',//成员统计@
     'oplate.user.analysis.5': 'Active period statistics',//活跃时间段统计@
@@ -1650,12 +1652,12 @@ var en_US = {
     'oplate.user.app.download': 'Download version of the statistics', // 各版本下载统计
     'oplate.user.register.self': 'Self registration',//自注册
     //活跃用户分析
-    'oplate.user.analysis.device': 'device statistics',//"设备统计",
-    'oplate.user.analysis.browser': 'browser statistics',//"浏览器统计",
-    'oplate.user.analysis.loginCounts': 'login counts',//"用户访问次数",
-    'oplate.user.analysis.loginDays': 'login days',//"用户访问天数",
-    'oplate.user.analysis.loginTimes': 'login times',//"用户在线时间",
-    'oplate.user.analysis.averageLoginTimes': 'average login times',//"平均在线时长",
+    'oplate.user.analysis.device': 'device statistics',//'设备统计',
+    'oplate.user.analysis.browser': 'browser statistics',//'浏览器统计',
+    'oplate.user.analysis.loginCounts': 'login counts',//'用户访问次数',
+    'oplate.user.analysis.loginDays': 'login days',//'用户访问天数',
+    'oplate.user.analysis.loginTimes': 'login times',//'用户在线时间',
+    'oplate.user.analysis.averageLoginTimes': 'average login times',//'平均在线时长',
     //安全域分析-开启时间统计
     'oplate_bd_analysis_realm_establish.5': 'Total number of this security domain',//当前安全域开通总数@
     'oplate_bd_analysis_realm_establish.6': 'Total number of security domains',//安全域开通总数@
@@ -1693,14 +1695,14 @@ var en_US = {
     'errorcode.13': 'Failed to warrant the user',//成员授权失败
     'errorcode.14': 'Failed to verify password',//密码验证错误
     'errorcode.15': 'Failed to add user',//添加用户失败
-    'errorcode.16': 'Failed to get user lists',//获取用户失败
+    'errorcode.16': 'Failed to get user list',//获取用户失败
     'errorcode.17': 'Failed to edit user',//修改用户失败
     'errorcode.18': 'Failed to disabled application',//禁用应用失败
     'errorcode.19': 'Failed to apply for approval',//审批申请失败
     'errorcode.20': 'Failed to operate in batch ',//批量操作失败
     'errorcode.21': 'Failed to apply to open user',//申请开通用户失败
     'errorcode.22': 'Not your customers, can not apply for a user',//不是您的客户，不能申请用户
-    'errorcode.25': 'The phone has been used, please use other phone',//该手机号已被使用，请用其他手机号
+    'errorcode.25': 'The phone number has been used, please use other phone number',//该手机号已被使用，请用其他手机号
     'errorcode.28': 'Failed to edit phone',//修改手机号失败
     'errorcode.29': 'Failed to edit mailbox',//修改邮箱失败
     'errorcode.30': 'The username has been taken',//用户名已被使用
@@ -1816,10 +1818,10 @@ var en_US = {
     'errorcode.147': 'The qr code has expired',//二维码已失效
     'errorcode.148': 'The call duration statistics view fails to be obtained',//电话时长统计视图获取失败
     'errorcode.149': 'The role has been allocated to sales',//该角色已经分配给销售
-    'user.input.phone': 'Please input your phone',//请输入手机号
+    'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息
-    'user.input.remark': 'Please input your remark',//请输入备注
+    'user.input.remark': 'Please enter your remark',//请输入备注
     'user.complete.ratio': 'Complete schedule',//完成进度
     'user.fail.create.realms': 'Failed to create this realm',//安全域创建失败
     'user.change.grant.time': 'Change grant timerange from {begin} to {end}',//授权时间改为从{begin}到{end}
@@ -1857,9 +1859,9 @@ var en_US = {
     'customer.contact.phone': 'contact number',//联系电话
     'user.setting.roles': 'Set the role',//设置角色
     //补充
-    'fail.get.customer.trace': 'Failed to get customer trace lists',//获取客户跟踪记录列表失败
+    'fail.get.customer.trace': 'Failed to get customer trace list',//获取客户跟踪记录列表失败
     'fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
-    'contact.phone': 'Contact phone',//联系电话
+    'contact.phone': 'Contact number',//联系电话
     'customer.visit': 'visit',//拜访
     'customer.phone.system': 'phone system',//电话系统
     'customer.ketao.app': 'ketao app',//客套app
@@ -1894,7 +1896,7 @@ var en_US = {
     'kicked.by.admin': 'Your account has been kicked by admin,please log in again',//被管理员踢出，请重新登录
     'retry.token.expired': 'Token expired',//Token过期
     'retry.token.status': 'status:403, token expired',//status:403,Token过期
-    'retry.input.captcha': 'Input the captcha',//请输入验证码
+    'retry.input.captcha': 'Enter the captcha',//请输入验证码
     'seconds.after.tip': 'after {logoutTime} seconds',//{logoutTime}秒后
     'customer.confirm.trace': 'Are you sure to add these trace content?',//是否添加此跟进内容？
     'authority.permission.exist': 'This permission name already exists',//该权限名已存在
@@ -1954,7 +1956,7 @@ var en_US = {
     'sales.homepage.hide.teamlist': 'Hide team lists',//隐藏团队列表
     'sales.homepage.show.teamlist': 'Show team lists',//展开团队列表
     'crm.save.customertrace.first': 'Please save or cancel the edited customer trace record first',//请先保存或取消保存已编辑的跟进记录内容
-    'sales.add.email.info': 'Please add the mailbox on the {userinfo} page, otherwise you will be unable to receive the application email from users',//请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。
+    'sales.add.email.info': 'Please add the E-mail address on the {userinfo} page, otherwise you will be unable to receive the application email from users',//请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。
     'crm.sales.add.clue': 'Add clue',//添加线索
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
@@ -1998,7 +2000,7 @@ var en_US = {
     'schedule.create.person': 'founder',//创建人
     'schedule.get.schedule.list.failed': 'Failed to get schedule management list',//获取日程管理列表失败
     'schedule.management.schedule.content': 'Schedule content',//日程内容
-    'schedule.todo.list': 'Todo lists',//待办
+    'schedule.todo.list': 'Todo list',//待办
     'schedule.has.finished': 'Has Finished',//已完成
     'schedule.tip.intro.message': 'Schedule management is on-line, quickly try it!',//日程功能上线了，赶快点开看看吧！
     'schedule.back.to.today': 'Today',//今
@@ -2064,7 +2066,7 @@ var en_US = {
     'sales.frontpage.will.contact.today': 'Contact plan today',//今日计划联系
     'sales.frontpage.expired.not.contact': 'Expired without contact',//超期未联系
     'sales.frontpage.will.expired.try.user': 'Trial customers will expire in {X} days',//近{X}天将到期的试用客户
-    'sales.frontpage.has.expired.try.user': 'Trial customers has expired in past {X} days',//近{X}天已过期的试用客户
+    'sales.frontpage.has.expired.try.user': 'Trial customers have expired in past {X} days',//近{X}天已过期的试用客户
     'sales.frontpage.will.expired.assgined.user': 'Contracted customers will expire in {X} days',//近{X}将到期的签约客户
     'sales.frontpage.login.after.stop': 'Login after deactivation',//停用后登录
     'sales.frontpage.login.recently': 'Customers logged in {X} days',//近{X}日登录的客户
@@ -2100,7 +2102,7 @@ var en_US = {
     'config.manage.no.tele': 'No customer service phone, please add',//暂无客服电话，请添加
     'config.manage.reload.tele': 'Retry to get customer service phone',//重新获取客服电话
     'config.manage.tele.config': 'Customer service phone',//客服电话
-    'config.manage.input.tele': 'Please input the correct phone number',//'请输入有效的客服电话 ( eg:0531-88887755 , +8613688887755)',
+    'config.manage.input.tele': 'Please enter the correct phone number',//'请输入有效的客服电话 ( eg:0531-88887755 , +8613688887755)',
     'contract.22': 'Unit',//个
     'sale.home.no.team': 'No sales team',//暂无销售团队
     'coontract.114': 'Import contract',//导入合同
@@ -2122,7 +2124,7 @@ var en_US = {
     'common.ketao.app': 'Ketao APP',//客套APP
     'contract.130': 'Social expenses',//交际费
     'contract.131': 'Local Transportation',//市内交通费
-    'contract.132': 'Pre sales technical support expenses',//售前技术支持费
+    'contract.132': 'Pre-sales technical support expenses',//售前技术支持费
     'contract.133': 'Cost',//费用
     'contract.135': 'Cost type',//费用类型
     'contract.134': 'Please fill in cost',//请填写费用
@@ -2146,8 +2148,8 @@ var en_US = {
     'sales.team.del.team': 'Delete team',//删除团队
     'role.no.set.auth.add': 'No authority, please {add} first',//暂无权限,请先{add}
     'customer.total.record': 'A total of {num} track record',//共{num}条跟进记录
-    'call.record.average.call.duration': 'Call length of person average',//人均时长
-    'call.record.average.connected': 'Connetion number of person average',//人均接通数
+    'call.record.average.call.duration': 'Average personal call length',//人均时长
+    'call.record.average.connected': 'Average personal connection number',//人均接通数
     'call.record.all.teams.trend': 'show call trend of each team',//查看各团队通话趋势图
     'crm.import.over.limit': 'After importing customers, you will exceed the limit of your own customers. Please reduce importing {num} customers',//导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入
     'crm.transfer.over.limit': 'Transferring to customers will exceed the limit of the sales-owning customer, please reduce the transfer to {num} customers',//转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出
@@ -2184,7 +2186,7 @@ var en_US = {
     'clue.customer.import.clue.suceess': 'Import clues successfully',//导入线索成功
     'clue.customer.import.clue.failed': 'Failed to import clues',//导入线索失败
     'clue.delete.duplicate.failed': 'Failed to delete clue',//删除重复线索失败
-    'clue.repeat.delete': 'Some repeated clues already in the system,  have been marked in red color, please delete these record fist, then import',//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
+    'clue.repeat.delete': 'Some repeated clues already in the system, which have been marked in red color, please delete these record fist, then import',//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
     'clue.analysis.consult.time': 'Consult time:',//咨询时间：
