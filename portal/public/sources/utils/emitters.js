@@ -15,6 +15,14 @@ exports.phoneMsgEmitter.OPEN_PHONE_PANEL = 'openPhonePanel';
 exports.phoneMsgEmitter.SEND_PHONE_NUMBER = 'sendPhoneNumber';
 //关闭拨打电话模态框emitter
 exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = 'closePhoneModal';
+//拨打电话emitter
+exports.audioMsgEmitter = new EventEmitter();
+//打开播放录音的面板emitter
+exports.audioMsgEmitter.OPEN_AUDIO_PANEL = 'openAudioPanel';
+//关闭播放录音的面板emitter
+exports.audioMsgEmitter.CLOSE_AUDIO_PANEL = 'closeAudioPanel';
+//隐藏上报客服电话按钮
+exports.audioMsgEmitter.HIDE_REPORT_BTN = 'hideReportBtn';
 //日程管理界面emitter
 exports.scheduleManagementEmitter = new EventEmitter();
 exports.scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE = 'setUpdateScrollBarTrue';
@@ -144,4 +152,4 @@ export {crmEmitter};
 const clueEmitter = new EventEmitter();
 clueEmitter.IMPORT_CLUE = 'import_clue';
 export {clueEmitter};
-
+
