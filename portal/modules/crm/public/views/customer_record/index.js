@@ -504,7 +504,7 @@ const CustomerRecord = React.createClass({
                 invalidPhoneLists: this.state.invalidPhoneLists,
                 addingInvalidPhoneErrMsg: ""
             });
-            //是否隐藏上报按钮
+            //上报成功后，不展示上报按钮
             audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
                 isShowReportButton: false
             });
