@@ -1747,6 +1747,7 @@ var zh_CN = {
     'errorcode.39': '用户名或密码错误',
     'errorcode.40': '用户授权已过期',
     'errorcode.41': '用户被禁用，请联系管理员',
+    'errorcode.42': '你的账号已被停用，请联系管理员',
     'errorcode.43': '验证码错误',
     'errorcode.44': '获取安全域列表失败',
     'errorcode.45': '添加安全域失败',

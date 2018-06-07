@@ -1717,6 +1717,7 @@ var en_US = {
     'errorcode.39': 'Wrong user name or password',//用户名或密码错误
     'errorcode.40': 'User authorization has expired',//用户授权已过期
     'errorcode.41': 'The user is disabled, please contact the administrator',//用户被禁用，请联系管理员
+    'errorcode.42': 'Your account has been disabled, please contact the administrator',//你的用户已被停用，请联系管理员
     'errorcode.43': 'Verification code error',//验证码错误
     'errorcode.44': 'Failed to get security domain list',//获取安全域列表失败
     'errorcode.45': 'Failed to add security domain',//添加安全域失败
