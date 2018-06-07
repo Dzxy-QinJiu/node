@@ -9,10 +9,9 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('../../css/customer-trace-zh_CN.less');
 }
-import {Icon, Select, Alert, Button, message, Radio, Input, Menu, Dropdown} from 'antd';
+import {Icon, message, Radio, Input, Menu, Dropdown} from 'antd';
 const RadioGroup = Radio.Group;
 const {TextArea} = Input;
-var AlertTimer = require('../../../../../components/alert-timer');
 import CustomerRecordActions from '../../action/customer-record-action';
 import CustomerRecordStore from '../../store/customer-record-store';
 var crmUtil = require('./../../utils/crm-util');
@@ -24,7 +23,6 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import ajax from '../../ajax/contact-ajax';
 //获取无效电话的列表  设置某个电话为无效电话
 import {getInvalidPhone, addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
-import AudioPlayer from 'CMP_DIR/audioPlayer';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import TimeLine from 'CMP_DIR/time-line-new';
@@ -61,7 +59,7 @@ const CALL_TYPE_MAP = {
 };
 
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
-var audioMsgEmitter = require("PUB_DIR/sources/utils/emitters").audioMsgEmitter;
+var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 const CustomerRecord = React.createClass({
     getInitialState: function() {
         return {
@@ -396,7 +394,7 @@ const CustomerRecord = React.createClass({
         //给本条记录加上标识
         item.playSelected = true;
         var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
-        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, item.dst) == -1;
+        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, item.dst) === -1;
         audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
             playingItemAddr: playItemAddr,
             getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
@@ -709,7 +707,6 @@ const CustomerRecord = React.createClass({
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get('customer.confirm.trace', '是否添加此跟进内容？');
-        var detail = $.trim(this.state.detailContent);
         var closedModalTip = $.trim(this.state.detailContent) ? '取消补充跟进内容' : '取消添加跟进内容';
 
         return (
