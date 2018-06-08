@@ -87,7 +87,7 @@ var BasicData = React.createClass({
         return options;
     },
     getAdministrativeLevel: function(levelId) {
-        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
+        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     },
     //是否有转出客户的权限
@@ -146,7 +146,7 @@ var BasicData = React.createClass({
             id: basicData.id,
             type: 'customer_interest',
         };
-        if (basicData.interest == 'true') {
+        if (basicData.interest === 'true') {
             interestObj.interest = 'false';
         } else {
             interestObj.interest = 'true';
@@ -156,7 +156,7 @@ var BasicData = React.createClass({
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
             if (errorMsg) {
                 //将星星的颜色修改回原来的状态
-                basicData.interest = interestObj.interest == 'true' ? 'false' : 'true';
+                basicData.interest = interestObj.interest === 'true' ? 'false' : 'true';
                 this.setState({basicData: basicData});
             } else {
                 delete interestObj.type;
@@ -174,7 +174,7 @@ var BasicData = React.createClass({
             <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
                     <div className="basic-info-administrative basic-info-item">
-                        <span className="iconfont icon-administrative basic-info-icon"/>
+                        <span title={Intl.get('crm.administrative.level', '行政级别')} className="iconfont icon-administrative basic-info-icon"/>
                         <BasicEditSelectField
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
@@ -188,7 +188,7 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-indestry basic-info-item">
-                        <span className="iconfont icon-industry basic-info-icon"/>
+                        <span title={Intl.get('realm.industry', '行业')} className="iconfont icon-industry basic-info-icon"/>
                         <BasicEditSelectField
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
@@ -203,7 +203,7 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-address basic-info-item">
-                        <span className="iconfont icon-address basic-info-icon"/>
+                        <span title={Intl.get('realm.address', '地址')} className="iconfont icon-address basic-info-icon"/>
                         <LocationSelectField
                             id={basicData.id}
                             province={basicData.province}
@@ -214,7 +214,7 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-detail-address basic-info-item">
-                        <span className="iconfont icon-detail-address basic-info-icon"/>
+                        <span title={Intl.get('realm.full.address', '详细地址')} className="iconfont icon-detail-address basic-info-icon"/>
                         <BasicEditInputField
                             id={basicData.id}
                             value={basicData.address}
@@ -226,7 +226,7 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-remark basic-info-item">
-                        <span className="iconfont icon-remark basic-info-icon"/>
+                        <span title={Intl.get('common.remark', '备注')} className="iconfont icon-remark basic-info-icon"/>
                         <BasicEditInputField
                             id={basicData.id}
                             type="textarea"
@@ -275,8 +275,8 @@ var BasicData = React.createClass({
                             }
                             {basicData.qualify_label ? (
                                 <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
-                                    {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
+                                    {basicData.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                        basicData.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                             }
                             <span className="basic-name-text">{basicData.name}</span>
                             {hasPrivilege('CUSTOMER_UPDATE_NAME') ? (
