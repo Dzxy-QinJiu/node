@@ -619,24 +619,22 @@ var CustomerAnalysis = React.createClass({
             <div
                 className="chart-holder stage-change-customer-container scrollbar-container"
                 data-tracename="客户阶段变更统计"
-                style={{ maxHeight: (this.state.customerStage.data.length === 0) ? 'initial' : '540px' }}
             >
-                <GeminiScrollbar>
-                    <div className="title">
-                        {Intl.get('crm.sales.customerStage', '客户阶段变更统计')}
-                    </div>
-                    {renderErr()}
-                    {renderSpiner()}
-                    <div className={hideTable ? 'hide' : ''}>
-                        <AntcTable
-                            util={{ zoomInSortArea: true }}
-                            dataSource={this.state.customerStage.data}
-                            pagination={false}
-                            columns={columns}
-                            onChange={this.onStageSortChange.bind(this)}
-                        />
-                    </div>
-                </GeminiScrollbar>
+                <div className="title">
+                    {Intl.get('crm.sales.customerStage', '客户阶段变更统计')}
+                </div>
+                {renderErr()}
+                {renderSpiner()}
+                <div className={hideTable ? 'hide' : ''}>
+                    <AntcTable
+                        util={{ zoomInSortArea: true }}
+                        dataSource={this.state.customerStage.data}
+                        pagination={false}
+                        columns={columns}
+                        onChange={this.onStageSortChange.bind(this)}
+                        scroll={{y: 175}}
+                    />
+                </div>
                 <RightPanel
                     className="customer-stage-table-wrapper"
                     showFlag={this.state.isShowCustomerStageTable}
@@ -713,13 +711,15 @@ var CustomerAnalysis = React.createClass({
                 title: Intl.get('common.login.time', '时间'),
                 dataIndex: 'time',
                 key: 'time',
-                sorter: true
+                sorter: true,
+                width: 100,
             }, {
                 title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
                 key: 'customer_name',
                 className: 'customer-name',
                 sorter: true,
+                width: 300,
                 render: function(text, item, index) {
                     return (
                         <span className="transfer-customer-cell"
@@ -730,16 +730,19 @@ var CustomerAnalysis = React.createClass({
                 title: Intl.get('crm.customer.transfer.sales', '销售代表'),
                 dataIndex: 'old_member_nick_name',
                 key: 'old_member_nick_name',
-                sorter: true
+                sorter: true,
+                width: 100,
             }, {
                 title: Intl.get('crm.customer.transfer.manager', '客户经理'),
                 dataIndex: 'new_member_nick_name',
                 key: 'new_member_nick_name',
-                sorter: true
+                sorter: true,
+                width: 100,
             }, {
                 title: Intl.get('user.sales.team', '销售团队'),
                 dataIndex: 'sales_team',
                 key: 'sales_team',
+                width: 100,
             }
 
         ];
@@ -792,34 +795,32 @@ var CustomerAnalysis = React.createClass({
             <div
                 className="chart-holder transfer-customer-container scrollbar-container"
                 data-tracename="转出客户统计"
-                style={{ maxHeight: (loadingFirst || this.state.transferCustomers.data.length === 0) ? 'initial' : '540px' }}
             >
-                <GeminiScrollbar>
-                    <div className="title">
-                        {Intl.get('user.analysis.moveoutCustomer', '转出客户统计')}
+                <div className="title">
+                    {Intl.get('user.analysis.moveoutCustomer', '转出客户统计')}
+                </div>
+                {renderErr()}
+                {renderSpiner()}
+                <div className={hideTable ? 'hide' : ''}>
+                    <AntcTable
+                        rowKey={getRowKey}
+                        rowClassName={handleRowClassName}
+                        util={{ zoomInSortArea: true }}
+                        columns={columns}
+                        pagination={false}
+                        onChange={this.onTransferSortChange.bind(this)}
+                        dataSource={this.state.transferCustomers.data}
+                        loading={loadingFirst}
+                        scroll={{y: 175}}
+                    />
+                    <div className="load-more-container">
+                        {showLoadingMore ? renderLoadMore() : null}
+                        {<NoMoreDataTip
+                            fontSize="12"
+                            show={() => showNoMoreDataTip}
+                        />}
                     </div>
-                    {renderErr()}
-                    {renderSpiner()}
-                    <div className={hideTable ? 'hide' : ''}>
-                        <AntcTable
-                            rowKey={getRowKey}
-                            rowClassName={handleRowClassName}
-                            util={{ zoomInSortArea: true }}
-                            columns={columns}
-                            pagination={false}
-                            onChange={this.onTransferSortChange.bind(this)}
-                            dataSource={this.state.transferCustomers.data}
-                            loading={loadingFirst}
-                        />
-                        <div className="load-more-container">
-                            {showLoadingMore ? renderLoadMore() : null}
-                            {<NoMoreDataTip
-                                fontSize="12"
-                                show={() => showNoMoreDataTip}
-                            />}
-                        </div>
-                    </div>
-                </GeminiScrollbar>
+                </div>
             </div>
 
 
