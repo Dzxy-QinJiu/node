@@ -476,6 +476,13 @@ var Crm = React.createClass({
     //reset参数若为true，则重新从第一页获取
     , search: function(reset) {
         const filterStoreCondition = JSON.parse(JSON.stringify(FilterStore.getState().condition));
+        //如果所选团队有下级团队时，也要把下级团队的id传过去
+        if (filterStoreCondition.sales_team_id && filterStoreCondition.sub_sales_team_id){
+            filterStoreCondition.sales_team_id = filterStoreCondition.sales_team_id + ',' + filterStoreCondition.sub_sales_team_id;
+            filterStoreCondition.sales_team_id = _.uniq(filterStoreCondition.sales_team_id.split(',')).join(',');
+        }
+        delete filterStoreCondition.sub_sales_team_id;
+        console.log(filterStoreCondition.sales_team_id.split(','));
         const condition = _.extend({}, filterStoreCondition, FilterStore.getState().inputCondition);
         //去除查询条件中值为空的项
         commonMethodUtil.removeEmptyItem(condition);

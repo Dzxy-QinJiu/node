@@ -13,6 +13,7 @@ function FilterStore() {
     this.inputCondition = {};
     this.condition = {
         sales_team_id: '',
+        sub_sales_team_id: '',
         industry: '',
         province: '',
         app_ids: [''],
@@ -46,8 +47,9 @@ FilterStore.prototype.getAppList = function(list) {
     this.appList = list;
 };
 
-FilterStore.prototype.getTeamList = function(list) {
-    this.teamList = list;
+FilterStore.prototype.getTeamList = function(result) {
+    this.teamTreeList = result.teamTreeList;
+    this.teamList = result.list;
 };
 
 FilterStore.prototype.getStageList = function(list) {
@@ -104,6 +106,10 @@ FilterStore.prototype.setApp = function(value) {
 
 FilterStore.prototype.setTeam = function(value) {
     this.condition.sales_team_id = value;
+};
+
+FilterStore.prototype.setSubTeam = function(value) {
+    this.condition.sub_sales_team_id = value;
 };
 
 FilterStore.prototype.setStage = function(value) {

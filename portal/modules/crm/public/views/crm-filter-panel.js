@@ -87,7 +87,7 @@ const CrmFilterPanel = React.createClass({
         const curSelectedStages = this.state.condition.sales_opportunities[0].sale_stages;
         let newSelectedStages = getSelected(curSelectedStages, stage);
         //未知的处理
-        if (stage == UNKNOWN || curSelectedStages == UNKNOWN) {
+        if (stage === UNKNOWN || curSelectedStages === UNKNOWN) {
             newSelectedStages = stage;
         } else {
             newSelectedStages = getSelected(curSelectedStages, stage);
@@ -100,14 +100,40 @@ const CrmFilterPanel = React.createClass({
         stage = stage ? stage : '全部';
         Trace.traceEvent($(this.getDOMNode()).find('li'), '按销售阶段筛选');
     },
-    teamSelected: function(team) {
+    traversingTeamTree: function(treeList, teamIdArr, totalArr, flag) {
+        if (_.isArray(treeList) && treeList.length) {
+            _.each(teamIdArr,(teamId) => {
+                _.each(treeList, (team, index) => {
+                    if ((team.group_id === teamId || flag) && _.isArray(team.child_groups) && team.child_groups.length) {
+                        _.each(team.child_groups, (childTeam) => {
+                            if (_.indexOf(totalArr,childTeam.group_id) === -1){
+                                totalArr.push(childTeam.group_id);
+                            }
+                        });
+                        this.traversingTeamTree(team.child_groups, teamIdArr, totalArr,true);
+                    }
+                });
+            });
+        }
+    },
+    teamSelected: function(teamId) {
         const curSelectedTeams = this.state.condition.sales_team_id;
 
-        const newSelectedTeams = getSelected(curSelectedTeams, team);
+        const newSelectedTeams = getSelected(curSelectedTeams, teamId);
 
         if (newSelectedTeams === curSelectedTeams) return;
 
+        //如果选择的团队有下级团队时，要把下级子团队的id也传到后端
+        var teamTreeList = this.state.teamTreeList;
+        var totalSubArr = [];//选中团队的下属团队
+        var selectedTeamArr = [];//选中的团队
+        if (newSelectedTeams){
+            selectedTeamArr = newSelectedTeams.split(',');
+        }
+        this.traversingTeamTree(teamTreeList, selectedTeamArr, totalSubArr);
         FilterAction.setTeam(newSelectedTeams);
+
+        FilterAction.setSubTeam(totalSubArr.join(','));
 
         setTimeout(() => this.props.search());
         Trace.traceEvent($(this.getDOMNode()).find('li'), '按团队筛选客户');
@@ -133,7 +159,7 @@ const CrmFilterPanel = React.createClass({
         if (tag && labels) {
             //如果之前处于选中状态则取消选择
             if (labels.indexOf(tag) > -1) {
-                selectedTags = _.filter(labels, label => label != tag);
+                selectedTags = _.filter(labels, label => label !== tag);
                 if (selectedTags.length === 0) {//都取消选择后，选中全部
                     selectedTags = [''];
                 }
@@ -147,7 +173,7 @@ const CrmFilterPanel = React.createClass({
                     //过滤掉”未打标签的客户“
                     labels = _.filter(labels, label => label !== Intl.get('crm.tag.unknown', '未打标签的客户'));
                     selectedTags = [].concat(labels);
-                    selectedTags = _.filter(selectedTags, item => item != '');
+                    selectedTags = _.filter(selectedTags, item => item !== '');
                     selectedTags.push(tag);
                 }
             }
@@ -209,7 +235,7 @@ const CrmFilterPanel = React.createClass({
         const curSelectedIndustrys = this.state.condition.industry;
         let newSelectedIndustrys = '';
         //未知的处理
-        if (industry == UNKNOWN || curSelectedIndustrys == UNKNOWN) {
+        if (industry === UNKNOWN || curSelectedIndustrys === UNKNOWN) {
             newSelectedIndustrys = industry;
         } else {
             newSelectedIndustrys = getSelected(curSelectedIndustrys, industry);
@@ -226,7 +252,7 @@ const CrmFilterPanel = React.createClass({
         const curSelectedProvince = this.state.condition.province;
         let newSelectedProvince = '';
         //未知的处理
-        if (province == UNKNOWN || curSelectedProvince == UNKNOWN) {
+        if (province === UNKNOWN || curSelectedProvince === UNKNOWN) {
             newSelectedProvince = province;
         } else {
             newSelectedProvince = getSelected(curSelectedProvince, province);
@@ -280,7 +306,7 @@ const CrmFilterPanel = React.createClass({
     },
     render: function() {
         const appListJsx = this.state.appList.map((app, idx) => {
-            let className = app.client_id == this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
+            let className = app.client_id === this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
             return <li key={idx} onClick={this.appSelected.bind(this, app.client_id)}
                 className={className}>{app.client_name}</li>;
         });
@@ -352,7 +378,7 @@ const CrmFilterPanel = React.createClass({
                             </dd>
                         </dl>
                     )}
-                    {teamListJsx.length == 1 ? null : (
+                    {teamListJsx.length === 1 ? null : (
                         <dl>
                             <dt><ReactIntl.FormattedMessage id="user.sales.team" defaultMessage="销售团队"/> :</dt>
                             <dd>
