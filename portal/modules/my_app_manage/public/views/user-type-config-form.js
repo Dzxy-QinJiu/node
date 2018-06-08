@@ -4,14 +4,18 @@
  * Created by zhangshujuan on 2017/2/15.
  */
 // 添加用户类型配置
-import {Form, Input, Button, Icon, Select} from 'antd';
+const language = require('PUB_DIR/language/getLanguage');
+require('../css/user-type-config.less');
+require('../../../../components/user_manage_components/css/form-basic-zh_CN.less');
+if (language.lan() === 'es' || language.lan() === 'en') {
+    require('../../../../components/user_manage_components/css/form-basic-es_VE.less');
+}
+import {Button, Icon, Select} from 'antd';
 import UserOverDraftField from '../../../../components/user_manage_components/user-over-draftfield';
 import UserMultiLoginField from '../../../../components/user_manage_components/user-multilogin-radiofield';
 import AppRolePermission from '../../../../components/user_manage_components/app-role-permission';
 import FieldMixin from '../../../../components/antd-form-fieldmixin';
 var AlertTimer = require('../../../../components/alert-timer');
-require('../css/user-type-config.less');
-require('../../../../components/user_manage_components/css/form-basic-es_VE.less');
 var timer = null;
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 import Trace from 'LIB_DIR/trace';
@@ -66,7 +70,7 @@ var UserTypeConfigForm = React.createClass({
 
     componentWillReceiveProps: function(nextProps) {
         var appId = nextProps.appId;
-        if (appId != this.state.appId) {
+        if (appId !== this.state.appId) {
             //切换到上一个界面
             this.props.togglePageChange(false);
         }
@@ -92,7 +96,7 @@ var UserTypeConfigForm = React.createClass({
         e.preventDefault();
         Trace.traceEvent(e, '保存配置用户类型');
         //修改类型
-        if (this.state.formData.id != '') {
+        if (this.state.formData.id !== '') {
             data.id = this.state.formData.id;
             $.ajax({
                 url: '/rest/update_usertypeconfig',
@@ -226,7 +230,7 @@ var UserTypeConfigForm = React.createClass({
             });
             this.props.handleSaveAppConfig(this.props.appId);
         };
-        if (this.state.errorMessage != '') {
+        if (this.state.errorMessage !== '') {
             return (
                 <div>
                     <AlertTimer
@@ -269,11 +273,11 @@ var UserTypeConfigForm = React.createClass({
                                     <div className="form-item-label">用户类型</div>
                                     <div className="form-item-content">
                                         <div className="custom_radio_active">
-                                            {item.user_type == '试用用户' && '试用'}
-                                            {item.user_type == '正式用户' && '签约'}
-                                            {item.user_type == 'special' && '赠送'}
-                                            {item.user_type == 'training' && '培训'}
-                                            {item.user_type == 'internal' && '员工'}
+                                            {item.user_type === '试用用户' && '试用'}
+                                            {item.user_type === '正式用户' && '签约'}
+                                            {item.user_type === 'special' && '赠送'}
+                                            {item.user_type === 'training' && '培训'}
+                                            {item.user_type === 'internal' && '员工'}
                                         </div>
                                     </div>
                                 </div>
@@ -320,7 +324,7 @@ var UserTypeConfigForm = React.createClass({
                                 >
                                     取消
                                 </Button>
-                                {this.state.errorMessage != '' || this.state.successMessage != '' ? this.handleSubmitResult() : null}
+                                {this.state.errorMessage !== '' || this.state.successMessage !== '' ? this.handleSubmitResult() : null}
                             </div>
                         </div>
                     </GeminiScrollbar>

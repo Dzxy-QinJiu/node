@@ -1,6 +1,14 @@
 @import "../../../../public/css/common-variables";
 
 .app_user_manage_apply_wrap{
+  .app_user_manage_apply_detail_wrap {
+    min-width: 600px;
+    .app-property-setting {
+      .app-property-container-content {
+        margin-right: 12px;
+      }
+    }
+  }
   .app_user_manage_apply_update{
     font-size:@form_font_size14;
     color:#aaa;
@@ -265,6 +273,31 @@
   .backout-apply {
     .modal-content {
       background-color: #fff ;
+    }
+  }
+  @media  (min-width:992px) and  (max-width: 1040px){
+    .basic-data-form {
+      .form-item-label {
+        width: 70px;
+        padding: 14px 0 0 14px;
+      }
+      .form-item-content {
+        padding: 9px 0;
+      }
+    }
+  }
+  @media  (max-width:760px) {
+    .basic-data-form {
+      .form-item-label {
+        width: 70px;
+        padding: 14px 0 0 14px;
+      }
+      .form-item-content {
+        padding: 9px 0;
+      }
+    }
+    .apply_detail_margin{
+      margin-left: 20px;
     }
   }
 }
