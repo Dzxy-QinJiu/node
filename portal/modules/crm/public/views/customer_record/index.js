@@ -29,6 +29,7 @@ import TimeLine from 'CMP_DIR/time-line-new';
 import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
+import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 var classNames = require('classnames');
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -475,7 +476,7 @@ const CustomerRecord = React.createClass({
                     <div className="report-content-descr">
                         {platformName ? `[${platformName}] ` : ''}
                         <a href={reportUrl}>{reportUrl}</a>
-                        {reportContent}
+                        {decodeHTML(reportContent)}
                     </div>
                     <div>
                         <a href={reportDoc.url || ''}>{Intl.get('crm.trace.report.source', '原文')}</a>
