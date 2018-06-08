@@ -8,7 +8,7 @@ const language = require('PUB_DIR/language/getLanguage');
 require('../css/user-type-config.less');
 require('../../../../components/user_manage_components/css/form-basic-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
-    require('../../../../components/user_manage_components/form-basic-es_VE.less');
+    require('../../../../components/user_manage_components/css/form-basic-es_VE.less');
 }
 import {Button, Icon, Select} from 'antd';
 import UserOverDraftField from '../../../../components/user_manage_components/user-over-draftfield';
