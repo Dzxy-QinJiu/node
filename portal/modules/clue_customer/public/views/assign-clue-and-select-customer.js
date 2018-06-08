@@ -449,14 +449,13 @@ class AssignClueAndSelectCustomer extends React.Component {
                         return (
                             <p className="recommend-customer-item">
                                 {/*如果只有一个推荐客户，就不需要加checkbox了*/}
-                                {hasOnlyOneRecommendCustomer ? <span><span onClick={this.clickShowCustomerDetail.bind(this, recommendItem.id)} > {recommendItem.name}</span>
-                                    <input type="hidden" className="recommend_customer_hidden" value={recommendItem.id}/></span> :
+                                {hasOnlyOneRecommendCustomer ? <span onClick={this.clickShowCustomerDetail.bind(this, recommendItem.id)}> {recommendItem.name}
+                                </span> :
                                     <Checkbox
                                         checked={checked}
                                         onChange={this.onCheckedItemChange.bind(this, recommendItem)}
                                     >
                                         <span onClick={this.clickShowCustomerDetail.bind(this, recommendItem.id)} > {recommendItem.name}</span>
-                                        <input type="hidden" className="recommend_customer_hidden" value={recommendItem.id}/>
                                     </Checkbox>
                                 }
                                 {(this.state.checkedCustomerItem || hasOnlyOneRecommendCustomer) && index === (this.state.recommendCustomerLists.length - 1) ? <span> <i className="iconfont icon-choose" onClick={this.submit.bind(this)}
