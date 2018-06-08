@@ -1,5 +1,7 @@
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
+import { regex } from 'ant-utils';
+const nameRegex = regex.customerNameRegex;
 import {Icon, Form, Input, Select, message}from 'antd';
 import { AntcAreaSelection } from 'antc';
 var rightPanelUtil = require('../../../../components/rightPanel');
@@ -11,7 +13,6 @@ var FormItem = Form.Item;
 var Option = Select.Option;
 var CrmAction = require('../action/crm-actions');
 var ContactUtil = require('../utils/contact-util');
-import {nameRegex} from 'PUB_DIR/sources/utils/consts';
 var Spinner = require('../../../../components/spinner');
 const GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var crmUtil = require('../utils/crm-util');
@@ -72,6 +73,10 @@ var CRMAddForm = React.createClass({
     },
     componentDidMount: function() {
         //获取后台管理中设置的行业列表
+        this.getIndustry();
+    },
+    getIndustry: function() {
+        //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
@@ -124,7 +129,7 @@ var CRMAddForm = React.createClass({
                     let member_id = userData.getUserData().user_id;
                     CrmAction.getCustomerLimit({member_id: member_id,num: 1}, (result) => {
                         if (_.isNumber(result)){
-                            if (result == 0){
+                            if (result === 0){
                                 //可以添加
                                 this.addCustomer();
                             }else if(result > 0){
@@ -149,7 +154,7 @@ var CRMAddForm = React.createClass({
         commonMethodUtil.removeEmptyItem(formData);
         CrmAction.addCustomer(formData, result => {
             this.state.isLoading = false;
-            if (result.code == 0) {
+            if (result.code === 0) {
                 message.success(Intl.get('user.user.add.success', '添加成功'));
                 if (_.isFunction(this.props.addOne)) {
                     this.props.addOne();
@@ -212,7 +217,7 @@ var CRMAddForm = React.createClass({
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == 'true') {
+                    if (data.result === 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
