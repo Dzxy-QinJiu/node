@@ -289,7 +289,7 @@ const ApplyUserForm = React.createClass({
                     submitData.email_app_names = client_names.join("、");
                 }
 
-                if (this.state.applyFrom === "order") {
+                if (this.state.applyFrom === "order" || this.isApplyNewUsers()) {
                     this.applyUserFromOder(submitData);
                 } else {
                     this.applyUserFromUserList(submitData);
@@ -302,7 +302,7 @@ const ApplyUserForm = React.createClass({
         //添加申请邮件中用的客户名
         submitData.email_customer_names = this.props.customerName;
         //添加申请邮件中用的用户名
-        submitData.email_user_names = submitData.user_name.trim();
+        submitData.email_user_names = submitData.user_name;
         OrderAction.applyUser(submitData, {}, result => {
             this.setState({isLoading: false});
             if (result === true) {
