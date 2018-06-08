@@ -29,6 +29,7 @@ import TimeLine from 'CMP_DIR/time-line-new';
 import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
+import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 var classNames = require('classnames');
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -171,6 +172,12 @@ const CustomerRecord = React.createClass({
         //概览页只获取最近五条的跟进记录
         if (this.props.isOverViewPanel) {
             queryObj.page_size = OVERVIEW_SHOW_COUNT;
+            let types = _.keys(CALL_TYPE_MAP);
+            // 过滤掉舆情上报的跟进记录
+            let typeArray = _.filter(types, type => type !== 'all' && type !== 'data_report');
+            if (_.isArray(typeArray) && typeArray.length) {
+                queryObj.type = typeArray.join(',');
+            }
         }
         CustomerRecordActions.getCustomerTraceList(queryObj, () => {
             if (_.isFunction(this.props.refreshSrollbar)) {
@@ -448,7 +455,7 @@ const CustomerRecord = React.createClass({
         return '';
     },
     renderReportContent: function(item) {
-        let reportObj = item.remark || {};
+        let reportObj = item.remark ? JSON.parse(item.remark) : {};
         if (!_.isObject(reportObj)) return null;
         //应用名称的获取
         let appName = this.getAppNameById(reportObj.app_id || '');
@@ -469,10 +476,10 @@ const CustomerRecord = React.createClass({
                     <div className="report-content-descr">
                         {platformName ? `[${platformName}] ` : ''}
                         <a href={reportUrl}>{reportUrl}</a>
-                        {reportContent}
+                        {decodeHTML(reportContent)}
                     </div>
                     <div>
-                        <a href={reportDoc.url || ''}>{Intl.get('crm.trace.report.source','原文')}</a>
+                        <a href={reportDoc.url || ''}>{Intl.get('crm.trace.report.source', '原文')}</a>
                         {reportDoc.dataTime ? <span className="trace-record-time">
                             {moment(reportDoc.dataTime).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}
                         </span> : null}

@@ -47,40 +47,25 @@ CustomerRecordStore.prototype.dismiss = function() {
 CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
     this.addCustomerErrMsg = '';
     this.addCustomerSuccMsg = '';
-    if (!result.loading) {
+    if (!result.loading){
         this.customerRecordLoading = false;
-        if (result.error) {
+        if (result.error){
             this.customerRecordErrMsg = result.errorMsg;
             this.customerRecord = [];
         } else {
             this.customerRecordErrMsg = '';
             this.curPage++;
             var customerRecord = _.isArray(result.data.result) ? result.data.result : [];
-            _.each(customerRecord, item => {
+            customerRecord.forEach(function(item){
                 item.showAdd = false;
-                //舆情报告内容的处理
-                if (item.type === 'data_report') {
-                    item.remark = item.remark ? JSON.parse(item.remark) : {};
-                    let curDocId = item.remark ? item.remark.doc_id : '';
-                    if (curDocId) {
-                        // 根据舆情报送内容中的doc_id，对报送的记录进行去重（存在一条报送记录同时报送给多人时，会产生多条报送相同的报送记录）
-                        let hasReport = _.some(this.customerRecord, record => record.remark && record.remark.doc_id === curDocId);
-                        if (!hasReport) {
-                            this.customerRecord.push(item);
-                        }
-                    } else {//没有doc_id,目前不知道会不会有此种情况，为了以防出现此种情况，先直接加入到列表中
-                        this.customerRecord.push(item);
-                    }
-                } else {
-                    this.customerRecord.push(item);
-                }
             });
+            this.customerRecord = this.customerRecord.concat(customerRecord);
             //过滤出所有电话类型的通话记录
-            var phoneTypeRecords = _.filter(this.customerRecord, (item) => {
+            var phoneTypeRecords = _.filter(this.customerRecord,(item) => {
                 return item.type === 'phone';
             });
             //找出最后一条电话跟进记录的id
-            if (phoneTypeRecords.length) {
+            if (phoneTypeRecords.length){
                 this.lastPhoneTraceItemId = _.first(phoneTypeRecords).id;
             }
             this.total = result.data.total;

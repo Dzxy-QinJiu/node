@@ -12,7 +12,7 @@
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
-    let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id == curTeamId);
+    let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
     //该团队启用状态下的人数
     let availableObj = teamMemberCountObj && teamMemberCountObj.available ? teamMemberCountObj.available : {};
     if (availableObj.owner) {
@@ -48,9 +48,9 @@ exports.checkWav = function(str) {
 exports.getAudioRecordUrl = function(itemLocal, itemRecord, phoneType) {
     //播放长沙，济南和北京的录音
     var local = 'changsha', audioType = '';
-    if (itemLocal == 'jinan') {
+    if (itemLocal === 'jinan') {
         local = 'jinan';
-    } else if (itemLocal == 'beijing') {
+    } else if (itemLocal === 'beijing') {
         local = 'beijing';
     }
     //是否是wav格式的文件
@@ -154,4 +154,21 @@ exports.isDiffOfTwoArray = function(array1, array2) {
     let diff2 = _.difference(array2, array1);
     //俩数组任何一个有不同，都说明俩数组中有不同的值存在
     return diff1.length || diff2.length;
+};
+
+//转译html标签
+exports.encodeHTML = function(html) {
+    var temp = document.createElement('div');
+    (temp.textContent != null) ? (temp.textContent = html) : (temp.innerText = html);
+    var output = temp.innerHTML;
+    temp = null;
+    return output;
+};
+//反译html标签
+exports.decodeHTML = function(text) {
+    var temp = document.createElement('div');
+    temp.innerHTML = text;
+    var output = temp.innerText || temp.textContent;
+    temp = null;
+    return output;
 };
