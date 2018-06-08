@@ -37,8 +37,10 @@ function cx(classNames) {
 var CRMAddForm = React.createClass({
     mixins: [Validation.FieldMixin],
     getInitialState: function() {
+        //在线索关联客户，新添加客户时，新添加客户的名字是线索名称，客户联系人是线索联系人
+        var propsFormData = this.props.formData;
         var formData = {
-            name: '',//客户名称
+            name: (propsFormData && propsFormData.name) ? propsFormData.name : '',//客户名称
             industry: [],//行业
             province: '',
             city: '',
@@ -46,7 +48,7 @@ var CRMAddForm = React.createClass({
             address: '',//详细地址
             administrative_level: '',//行政区划
             remarks: '',//备注
-            contacts0_name: '',//联系人名称
+            contacts0_name: (propsFormData && propsFormData.contactName) ? propsFormData.contactName : '',//联系人名称
             contacts0_position: '',//联系人职位
             contacts0_role: Intl.get('crm.115', '经办人'),//联系人角色
             contacts0_phone: ''//联系人电话
@@ -71,6 +73,9 @@ var CRMAddForm = React.createClass({
         };
     },
     componentDidMount: function() {
+        this.getIndustry();
+    },
+    getIndustry: function(){
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
         CrmAction.getIndustries(result => {
@@ -80,6 +85,7 @@ var CRMAddForm = React.createClass({
             }
             this.setState({isLoadingIndustry: false, industryList: list});
         });
+
     },
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
@@ -124,7 +130,7 @@ var CRMAddForm = React.createClass({
                     let member_id = userData.getUserData().user_id;
                     CrmAction.getCustomerLimit({member_id: member_id,num: 1}, (result) => {
                         if (_.isNumber(result)){
-                            if (result == 0){
+                            if (result === 0){
                                 //可以添加
                                 this.addCustomer();
                             }else if(result > 0){
@@ -149,10 +155,10 @@ var CRMAddForm = React.createClass({
         commonMethodUtil.removeEmptyItem(formData);
         CrmAction.addCustomer(formData, result => {
             this.state.isLoading = false;
-            if (result.code == 0) {
+            if (result.code === 0) {
                 message.success(Intl.get('user.user.add.success', '添加成功'));
                 if (_.isFunction(this.props.addOne)) {
-                    this.props.addOne();
+                    this.props.addOne(result.result);
                 }
                 this.setState(this.getInitialState());
                 //拨打电话时，若客户列表中没有此号码，需添加客户
@@ -212,7 +218,7 @@ var CRMAddForm = React.createClass({
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == 'true') {
+                    if (data.result === 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {

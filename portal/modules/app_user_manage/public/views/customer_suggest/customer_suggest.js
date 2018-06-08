@@ -1,8 +1,8 @@
 
 var language = require('../../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./customer_suggest-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('./customer_suggest-zh_CN.less');
 }
 var Select = require('antd').Select;
@@ -32,7 +32,7 @@ var CustomerSuggest = React.createClass({
         };
     },
     componentWillReceiveProps: function(nextProps) {
-        if(this.props.customer_id != nextProps.customer_id || this.props.customer_name != nextProps.customer_name) {
+        if(this.props.customer_id !== nextProps.customer_id || this.props.customer_name !== nextProps.customer_name) {
             this.setState({
                 customer: {
                     id: nextProps.customer_id,
@@ -54,6 +54,11 @@ var CustomerSuggest = React.createClass({
                     }
                 });
             }
+        }
+        if (this.props.keyword !== nextProps.keyword){
+            this.setState({
+                keyword: nextProps.keyword
+            });
         }
     },
     getInitialState: function() {
@@ -251,9 +256,13 @@ var CustomerSuggest = React.createClass({
                 );
             } else {
                 var canCreateCustomer = userData.getUserData().privileges.indexOf('CRM_CUSTOMER_INFO_EDIT') >= 0;
+                //是否跳转到crm页面添加客户
+                var noJumpToAddCrmPanel = this.props.noJumpToCrm;
                 return (
                     <div className="customer_suggest_tip">
-                        {canCreateCustomer ? <span>{Intl.get('user.customer.suggest.not.found','未找到该客户')}，{Intl.get('common.yesno','是否')}<Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer','创建客户')}？</Link></span> : <span>{Intl.get('user.customer.suggest.not.found','未找到该客户')}</span>}
+                        {canCreateCustomer ? <span>{Intl.get('user.customer.suggest.not.found','未找到该客户')}，{Intl.get('common.yesno','是否')}
+                            {noJumpToAddCrmPanel ? <a onClick={this.props.addAssignedCustomer}>{Intl.get('user.customer.suggest.create.customer','创建客户')}？</a> : <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer','创建客户')}？</Link>}
+                        </span> : <span>{Intl.get('user.customer.suggest.not.found','未找到该客户')}</span>}
                     </div>
                 );
             }

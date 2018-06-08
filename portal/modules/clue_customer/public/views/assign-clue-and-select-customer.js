@@ -18,6 +18,7 @@ var crmAjax = require('MOD_DIR/crm/public/ajax');
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
+var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 class AssignClueAndSelectCustomer extends React.Component {
     constructor(props) {
         super(props);
@@ -42,7 +43,9 @@ class AssignClueAndSelectCustomer extends React.Component {
             recommendByPhone: false,//通过电话查询的客户
             recommendByName: false,//通过名称查询的客户
             checked: false,//是否选中某个客户
-            checkedCustomerItem: ''//选中客户的id
+            checkedCustomerItem: '',//选中客户的id
+            isShowAddCustomer: false,//是否展示添加客户内容
+            selectShowAddCustomer: false,
         };
     }
     //是否是销售领导
@@ -191,24 +194,32 @@ class AssignClueAndSelectCustomer extends React.Component {
     };
     //搜索客户的下拉框
     renderCustomerBlock() {
+        //添加客户后，下拉框默认展示刚添加的客户名
+        var keyword = this.state.selectShowAddCustomer ? this.state.customer_name : this.state.relatedCustomerName;
         return (
             <div className="select_text_wrap">
                 <div className="pull-left form-item-content">
                     <CustomerSuggest
                         customer_id={this.state.relatedCustomerId}
                         customer_name={this.state.relatedCustomerName}
-                        keyword={this.state.relatedCustomerName}
+                        keyword={keyword}
                         required={false}
                         show_error={this.state.isShowCustomerError}
                         onCustomerChoosen={this.onCustomerChoosen}
                         hideCustomerError={this.hideCustomerError}
                         isShowUpdateOrClose={this.isShowUpdateOrClose}
+                        noJumpToCrm={true}
+                        addAssignedCustomer={this.addAssignedCustomer}
                     />
                 </div>
             </div>
         );
     }
-
+    addAssignedCustomer = () => {
+        this.setState({
+            isShowAddCustomer: true
+        });
+    };
     //提交关联数据
     submit = () => {
         if (this.state.submitType === 'loading') {
@@ -216,7 +227,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         }
         var customerId = this.state.customer_id;
         var customerName = this.state.customer_name;
-        if (this.state.recommendCustomerLists.length === 1){
+        if (this.state.recommendCustomerLists.length === 1 && this.state.displayType === 'text'){
             customerId = this.state.recommendCustomerLists[0].id;
             customerName = this.state.recommendCustomerLists[0].name;
         }
@@ -229,6 +240,10 @@ class AssignClueAndSelectCustomer extends React.Component {
             //线索的创建时间
             customer_clue_start_time: this.state.curClueDetail.start_time
         };
+        //销售线索关联客户时，将注册用户的id传过去
+        if (this.state.curClueDetail.app_user_id){
+            submitObj.app_user_ids = [this.state.curClueDetail.app_user_id];
+        }
         this.setState({
             submitType: 'loading'
         });
@@ -244,6 +259,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             data: JSON.stringify(submitObj),
             success: () => {
                 this.setState({
+                    selectShowAddCustomer: false,
                     error_message: '',
                     submitType: 'success',
                     relatedCustomerName: customerName,
@@ -297,7 +313,8 @@ class AssignClueAndSelectCustomer extends React.Component {
             });
         }
         this.setState({
-            displayType: type
+            displayType: type,
+            selectShowAddCustomer: false
         });
         if (type === 'text') {
             this.setState({
@@ -385,6 +402,38 @@ class AssignClueAndSelectCustomer extends React.Component {
             customer_name: checkedItem.name
         });
     };
+    //关闭添加面板
+    hideAddForm = () => {
+        this.setState({
+            isShowAddCustomer: false
+        });
+    };
+    //添加完客户后
+    addOneCustomer = (newCustomerArr) => {
+        this.setState({
+            isShowAddCustomer: false
+        });
+        if (_.isArray(newCustomerArr) && newCustomerArr.length){
+            var newCustomer = newCustomerArr[0];
+            this.setState({
+                selectShowAddCustomer: true,
+                customer_id: newCustomer.id,
+                customer_name: newCustomer.name,
+            });
+        }
+    };
+    //渲染添加客户内容
+    renderAddCustomer(){
+        var phoneNum = this.state.curClueDetail ? this.state.curClueDetail.contact_way : '';
+        return (
+            <CRMAddForm
+                hideAddForm={this.hideAddForm}
+                formData ={this.state.curClueDetail}
+                phoneNum= {phoneNum}
+                addOne={this.addOneCustomer}
+            />
+        );
+    }
     renderRecommendCustomer(){
         //只有一个推荐客户
         var hasOnlyOneRecommendCustomer = this.state.recommendCustomerLists.length === 1;
@@ -446,12 +495,15 @@ class AssignClueAndSelectCustomer extends React.Component {
                 </div>
                 <div className="associate-customer-wrap">
                     <h5>{Intl.get('clue.customer.associate.customer', '关联客户')}</h5>
-                    <div className="customer-text-and-edit">
-                        {this.state.recommendCustomerLists.length && !this.state.relatedCustomerId ? <div>
-                            {this.renderRecommendCustomer()}
-                        </div> : null}
-                        {this.state.displayType === 'text' ? this.renderTextCustomer() : this.renderEditCustomer()}
-                    </div>
+                    {
+                        this.state.isShowAddCustomer ? this.renderAddCustomer() : <div className="customer-text-and-edit">
+                            {this.state.recommendCustomerLists.length && !this.state.relatedCustomerId ? <div>
+                                {this.renderRecommendCustomer()}
+                            </div> : null}
+                            {this.state.displayType === 'text' ? this.renderTextCustomer() : this.renderEditCustomer()}
+                        </div>
+                    }
+
                 </div>
                 {/*该客户下的用户列表*/}
                 <RightPanel
