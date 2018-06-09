@@ -1279,6 +1279,9 @@ var en_US = {
     'crm.schedule.set.unfinished': 'Set to unfinished',//标为未完成
     'crm.trace.delivery.report': 'Public sentiment delivery',//舆情报送
     'crm.trace.report.source': 'Original text',//原文
+    'crm.apply.user.unified.config': 'Unified configuration',//统一配置
+    'crm.apply.user.separate.config': 'Separate configuration',//分别配置
+    'crm.apply.user.new': 'Apply for new users',//申请新用户
     // 客户管理end
 
     //客户分析 start

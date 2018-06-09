@@ -2,104 +2,114 @@ const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 require('../css/apply-user-form.less');
 require('../../../../public/css/antd-vertical-tabs.css');
-import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Select, message, Checkbox} from 'antd';
+import {Tooltip, Form, Input, Radio, Select, message} from 'antd';
 const Option = Select.Option;
-const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const RightPanelSubmit = require('../../../../components/rightPanel').RightPanelSubmit;
-const RightPanelCancel = require('../../../../components/rightPanel').RightPanelCancel;
 import UserTimeRangeField from '../../../../components/user_manage_components/user-time-rangefield';
 import ValidateMixin from '../../../../mixins/ValidateMixin';
-const Spinner = require('../../../../components/spinner');
 const history = require('../../../../public/sources/history');
 const OrderAction = require('../action/order-actions');
-const DatePickerUtils = require('../../../../components/date-selector/utils');
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
 import contactAjax from '../ajax/contact-ajax';
-var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 
-const applyTitles = [Intl.get('crm.100', '老用户申请试用用户'), Intl.get('crm.101', '老用户转签约用户'), Intl.get('common.apply.user.trial', '申请试用用户'), Intl.get('user.apply.user.official', '申请签约用户')];
-const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
+import DetailCard from 'CMP_DIR/detail-card';
+import DateSelectorPicker from 'CMP_DIR/date-selector/utils';
+import SquareLogoTag from './components/square-logo-tag';
+import ApplyUserAppConfig from './components/apply-user-app-config';
+import AppConfigForm from './components/apply-user-app-config/app-config-form';
+const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-apply-actions');
+
 //顶部tab标题的高度
 const LAY_CONSTS = {
     TAB_TITLE_HEIGHT: 80
+};
+const CONFIG_TYPE = {
+    UNIFIED_CONFIG: 'unified_config',//统一配置
+    SEPARATE_CONFIG: 'separate_config'//分别配置
 };
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
     getInitialState: function() {
-        const formData = this.buildFormData(this.props);
+        const formData = this.buildFormData(this.props, this.props.apps);
 
         return {
+            apps: $.extend(true, [], this.props.apps),
             formData: formData,
-            appFormData: formData.products[0],
             appDefaultConfigList: [],//应用默认配置列表
             isLoading: false,
-            onlyOneUser: false,//是否只能开通一个用户（用户名是邮箱格式时）
-            setAllChecked: false,//是否设置到所有应用上
-            customerContacts: []//客户的联系人列表
+            configType: CONFIG_TYPE.UNIFIED_CONFIG,//配置类型：统一配置、分别配置
+            customerContacts: [],//客户的联系人列表(在订单中，申请用户时，联系人中的邮箱作为用户名的选项)
+            applyFrom: this.props.applyFrom || 'order'//从哪里打开的申请面板,客户订单、客户的用户列表中
         };
     },
 
     componentWillReceiveProps: function(nextProps) {
-        this.buildFormData(nextProps);
-        let oldAppIds = _.pluck(this.props.apps, 'client_id');
+        this.buildFormData(nextProps, nextProps.apps);
+        let oldAppIds = _.pluck(this.state.apps, 'client_id');
         let newAppIds = _.pluck(nextProps.apps, 'client_id');
         //获取newAppIds中，不存在于oldAppIds中的应用id
         let diffAppIds = _.difference(newAppIds, oldAppIds);
         //获取新增的应用的默认配置
         this.getAppsDefaultConfig(diffAppIds);
+        this.setState({apps: $.extend(true, [], nextProps.apps)});
     },
-
-    buildFormData: function(props) {
-        const timeObj = DatePickerUtils.getHalfAMonthTime();
-        const begin_date = DatePickerUtils.getMilliseconds(timeObj.start_time);
-        let end_date = DatePickerUtils.getMilliseconds(timeObj.end_time);
-        const order = props.order;
-        const isTrailUserType = TRIAL_USER_TYPES.indexOf(props.applyType) !== -1;
-        let formData = {
-            customer_id: order.customer_id,
-            order_id: order.id,
-            sales_opportunity: order.sale_stages,
-            remark: '',
-            tag: isTrailUserType ? Intl.get('common.trial.user', '试用用户') : Intl.get('common.trial.official', '正式用户'),
-            user_name: '',
-            nick_name: props.customerName
-        };
+    buildFormData: function(props, apps) {
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state ? this.state.appDefaultConfigList : [];
+        let num = 1;//申请用户的个数
+        let formData = {};
+        //从订单中申请的
+        if (props.applyFrom === 'order') {
+            const order = props.order;
+            formData = {
+                customer_id: order.customer_id,
+                order_id: order.id,
+                sales_opportunity: order.sale_stages,
+                user_name: '',
+                nick_name: props.customerName,
+                tag: props.userType,
+                remark: ''
+            };
+        } else {//从客户详情的用户列表中申请的
+            const users = _.pluck(props.users, 'user');
+            formData = {
+                customer_id: props.customerId,
+                tag: Intl.get('common.trial.official', '正式用户'),
+                remark: '',
+            };
+            if (_.isArray(users) && users.length) {//已有用户开通应用
+                num = users.length;
+                formData.user_ids = _.pluck(users, 'user_id');
+                formData.user_names = _.pluck(users, 'user_name');
+            } else {//开通新用户
+                formData.user_name = '';
+                formData.nick_name = props.customerName;
+            }
+        }
         //构造应用数据
-        formData.products = props.apps.map(app => {
+        formData.products = apps.map(app => {
             //没有取到应用默认配置时的默认值
             let appData = {
                 client_id: app.client_id,
-                number: 1,
-                begin_date: begin_date,
-                end_date: end_date,
-                range: '0.5m',
-                over_draft: isTrailUserType ? OVER_DRAFT_TYPES.UN_CHANGED : OVER_DRAFT_TYPES.STOP_USE, //0：到期不变，1：到期停用
+                number: num,
             };
-            if (_.isArray(appDefaultConfigList) && appDefaultConfigList.length) {
-                let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && formData.tag === data.user_type);
-                //找到该应用对应用户类型的默认配置信息
-                if (defaultConfig) {
-                    appData.end_date = begin_date + defaultConfig.valid_period;
-                    appData.range = DatePickerUtils.getDateRange(defaultConfig.valid_period);
-                    appData.over_draft = defaultConfig.over_draft;
-                }
-            }
-            return appData;
+            return this.getAppConfig(appData, appDefaultConfigList, formData.tag, true);
         });
 
         if (this.state) {
             this.state.formData = formData;
-            this.state.appFormData = formData.products[0];
         } else {
             return formData;
         }
+    },
+    isApplyNewUsers: function() {
+        let selectUsers = this.props.users;
+        //从用户列表中过来的，没有选择的用户时，说明是申请新用户
+        return this.state.applyFrom === 'crmUserList' && !(_.isArray(selectUsers) && selectUsers.length);
     },
     componentDidMount: function() {
         let appList = this.props.apps;
@@ -107,7 +117,10 @@ const ApplyUserForm = React.createClass({
             //获取各应用的默认设置
             this.getAppsDefaultConfig(_.pluck(appList, 'client_id'));
         }
-        this.getCustomerContacts();
+        //从订单中过来，或者是申请新用户时，需要获取联系人中的邮箱作为用户名的推荐选项
+        if (this.props.applyFrom === 'order' || this.isApplyNewUsers()) {
+            this.getCustomerContacts();
+        }
     },
     //获取客户联系人列表
     getCustomerContacts: function() {
@@ -137,20 +150,11 @@ const ApplyUserForm = React.createClass({
                     let appDefaultConfigList = _.union(this.state.appDefaultConfigList, dataList);
                     let formData = this.state.formData;
                     formData.products = formData.products.map(app => {
-                        //找到该应用对应用户类型的配置信息
-                        let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && formData.tag === data.user_type);
-                        if (defaultConfig) {
-                            //应用默认设置中的开通周期、到期可选项
-                            app.begin_date = DatePickerUtils.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
-                            app.end_date = app.begin_date + defaultConfig.valid_period;
-                            app.range = DatePickerUtils.getDateRange(defaultConfig.valid_period);
-                            app.over_draft = defaultConfig.over_draft;
-                        }
-                        return app;
+                        return this.getAppConfig(app, appDefaultConfigList, formData.tag);
                     });
+
                     this.setState({
                         formData: formData,
-                        appFormData: formData.products[0],
                         appDefaultConfigList: appDefaultConfigList
                     });
                 }
@@ -158,14 +162,35 @@ const ApplyUserForm = React.createClass({
         }
     },
 
-    onAppChange: function(id) {
-        //如果用户名是邮箱格式，并且应用对应用户开通数量超过1时，不能切换应用
-        if (id === this.state.appFormData.client_id || this.state.onlyOneUser) {
-            return;
-        } else {
-            const appFormData = _.find(this.state.formData.products, app => app.client_id === id);
-            this.setState({appFormData: appFormData});
+    /* 获取应用的配置, app：应用，appDefaultConfigList：各应用的默认配置列表，
+     * userType:申请的用户类型（正式用户/试用用户）,resetDefault:是否需要重设默认值
+     */
+    getAppConfig: function(app, appDefaultConfigList, userType, needSetDefault) {
+        //找到该应用对应用户类型的配置信息
+        let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && userType === data.user_type);
+        app.begin_date = DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
+        if (defaultConfig) {
+            //应用默认设置中的开通周期、到期可选项
+            app.end_date = app.begin_date + defaultConfig.valid_period;
+            app.range = DateSelectorPicker.getDateRange(defaultConfig.valid_period);
+            app.over_draft = defaultConfig.over_draft;
+        } else if (needSetDefault) {
+            // 切换试用用户和正式用户的单选按钮时，如果各应用默认配置中没有该应用该类型的默认配置时，
+            // 需要默认设置，试用->到期不变，正式：到期停用, 开通周期：半个月
+            app.end_date = app.begin_date + 15 * oplateConsts.ONE_DAY_TIME_RANGE;
+            app.range = '0.5m';
+            app.over_draft = userType === Intl.get('common.trial.official', '正式用户') ? OVER_DRAFT_TYPES.STOP_USE : OVER_DRAFT_TYPES.UN_CHANGED;
         }
+        return app;
+    },
+
+    onUserTypeChange: function(e) {
+        let formData = this.state.formData;
+        formData.tag = e.target.value;
+        formData.products = formData.products.map(app => {
+            return this.getAppConfig(app, this.state.appDefaultConfigList, formData.tag, true);
+        });
+        this.setState({formData: formData});
     },
     onNickNameChange: function(e) {
         this.state.formData.nick_name = e.target.value.trim();
@@ -180,36 +205,48 @@ const ApplyUserForm = React.createClass({
     onUserNameChange: function(e) {
         let userName = e.target.value.trim();
         this.state.formData.user_name = userName;
-        if (userName && userName.indexOf('@') != -1 && this.state.appFormData.number > 1) {
+        let isEmail = userName && userName.indexOf('@') !== -1;
+        _.each(this.state.formData.products, appFormData => {
             //用户名是邮箱格式时，只能申请1个用户
-            this.state.onlyOneUser = true;
-        } else {
-            this.state.onlyOneUser = false;
+            if (isEmail && appFormData.number > 1) {
+                appFormData.onlyOneUserTip = true;
+            } else {
+                appFormData.onlyOneUserTip = false;
+            }
+        });
+        this.setState(this.state);
+    },
+
+    onCountChange: function(app, v) {
+        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        if (appFormData) {
+            appFormData.number = v;
+            let userName = this.state.formData.user_name;
+            if (userName && userName.indexOf('@') !== -1 && v > 1) {
+                //用户名是邮箱格式时，只能申请1个用户
+                appFormData.onlyOneUserTip = true;
+            } else {
+                appFormData.onlyOneUserTip = false;
+            }
         }
         this.setState(this.state);
     },
 
-    onCountChange: function(v) {
-        let userName = this.state.formData.user_name;
-        if (userName && userName.indexOf('@') != -1 && v > 1) {
-            //用户名是邮箱格式时，只能申请1个用户
-            this.state.onlyOneUser = true;
-        } else {
-            this.state.onlyOneUser = false;
+    onTimeChange: function(begin_date, end_date, range, app) {
+        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        if (appFormData) {
+            appFormData.begin_date = parseInt(begin_date);
+            appFormData.end_date = parseInt(end_date);
+            appFormData.range = range;
+            this.setState(this.state);
         }
-        this.state.appFormData.number = v;
-        this.setState(this.state);
     },
 
-    onTimeChange: function(begin_date, end_date, range) {
-        this.state.appFormData.begin_date = parseInt(begin_date);
-        this.state.appFormData.end_date = parseInt(end_date);
-        this.state.appFormData.range = range;
-        this.setState(this.state);
-    },
-
-    onOverDraftChange: function(e) {
-        this.state.appFormData.over_draft = parseInt(e.target.value);
+    onOverDraftChange: function(app, e) {
+        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        if (appFormData) {
+            appFormData.over_draft = parseInt(e.target.value);
+        }
         this.setState(this.state);
     },
 
@@ -221,46 +258,83 @@ const ApplyUserForm = React.createClass({
         }
         const validation = this.refs.validation;
         validation.validate(valid => {
-            if (!valid || this.state.onlyOneUser) {
+            if (!valid) {
                 return;
             } else {
-                this.setState({isLoading: true});
-                this.state.formData.user_name = this.state.formData.user_name.trim();
                 let submitData = JSON.parse(JSON.stringify(this.state.formData));
-                //是否将当前设置，应用到所有应用上
-                if (this.state.setAllChecked) {
-                    let appFormData = this.state.appFormData;
-                    submitData.products = submitData.products.map(app => {
+                let hasOnlyOneUserTip = _.find(submitData.products, item => item.onlyOneUserTip);
+                //有只能申请一个的验证提示时，没有通过验证，不能提交（用户名是邮箱格式时，只能开通一个用户）
+                if (hasOnlyOneUserTip) return;
+                this.setState({isLoading: true});
+                //统一配置
+                if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
+                    let appFormData = _.isArray(submitData.products) && submitData.products[0] ? submitData.products[0] : {};
+                    submitData.products = _.map(submitData.products, app => {
                         return {
                             client_id: app.client_id,
-                            number: appFormData.number,
+                            number: this.state.applyFrom === 'order' || this.isApplyNewUsers() ? appFormData.number : app.num,
                             begin_date: appFormData.begin_date,
                             end_date: appFormData.end_date,
                             over_draft: appFormData.over_draft
                         };
                     });
-                } else {
-                    submitData.products.forEach(app => delete app.range);
+                } else {//分别配置
+                    submitData.products.forEach(app => {
+                        delete app.range;
+                        delete app.onlyOneUserTip;
+                    });
                 }
                 submitData.products = JSON.stringify(submitData.products);
                 //添加申请邮件中用的应用名
-                if (_.isArray(this.props.apps)) {
-                    var client_names = _.map(this.props.apps, (obj) => obj.client_name);
+                if (_.isArray(this.state.apps)) {
+                    var client_names = _.map(this.state.apps, (obj) => obj.client_name);
                     submitData.email_app_names = client_names.join('、');
                 }
-                //添加申请邮件中用的客户名
-                submitData.email_customer_names = this.props.customerName;
-                //添加申请邮件中用的用户名
-                submitData.email_user_names = submitData.user_name.trim();
-                OrderAction.applyUser(submitData, {}, result => {
-                    this.setState({isLoading: false});
-                    if (result === true) {
-                        message.success(Intl.get('user.apply.success', '申请成功'));
-                        this.handleCancel();
-                    } else {
-                        message.error(result || Intl.get('common.apply.failed', '申请失败'));
-                    }
-                });
+
+                if (this.state.applyFrom === 'order') {//订单中申请试用、签约用户
+                    this.applyUserFromOder(submitData);
+                } else if (this.isApplyNewUsers()) {//申请新用户时，没有订单和销售阶段，先随便乱传个字符串（不传接口会报错）
+                    submitData.order_id = 'apply_new_users';
+                    submitData.sales_opportunity = 'apply_new_users';
+                    this.applyUserFromOder(submitData);
+                } else {
+                    this.applyUserFromUserList(submitData);
+                }
+            }
+        });
+    },
+    applyUserFromOder: function(submitData) {
+        submitData.user_name = $.trim(submitData.user_name);
+        //添加申请邮件中用的客户名
+        submitData.email_customer_names = this.props.customerName;
+        //添加申请邮件中用的用户名
+        submitData.email_user_names = submitData.user_name;
+        OrderAction.applyUser(submitData, {}, result => {
+            this.setState({isLoading: false});
+            if (result === true) {
+                message.success(Intl.get('user.apply.success', '申请成功'));
+                this.handleCancel();
+            } else {
+                message.error(result || Intl.get('common.apply.failed', '申请失败'));
+            }
+        });
+    },
+
+    applyUserFromUserList: function(submitData) {
+        submitData.user_ids = JSON.stringify(submitData.user_ids);
+        submitData.user_names = JSON.stringify(submitData.user_names);
+        //看从emailData中传过来的有数据，就放到submitData中 email_customer_names email_user_names
+        if (_.isObject(this.props.emailData)) {
+            _.extend(submitData, this.props.emailData);
+        }
+        UserApplyAction.applyUser(submitData, result => {
+            this.setState({isLoading: false});
+            if (result === true) {
+                message.success(Intl.get('user.apply.success', '申请成功'));
+                this.handleCancel();
+            }
+            else {
+                message.error(Intl.get('common.apply.failed', '申请失败'));
             }
         });
     },
@@ -268,24 +342,20 @@ const ApplyUserForm = React.createClass({
     handleCancel: function() {
         this.props.cancelApply();
     },
-    //是否应用到所有应用上的设置
-    toggleCheckbox: function() {
-        this.setState({setAllChecked: !this.state.setAllChecked});
-    },
-    renderTabToolTip(app_name) {
-        return (
-            <Tooltip title={app_name} placement="right">
-                {<div className="app_name_tooltip">{app_name}</div>}
-            </Tooltip>
-        );
-    },
 
+    //获取申请用户的个数
+    getApplyUserCount(){
+        let appFormData = _.isArray(this.state.formData.products) ? this.state.formData.products[0] : {};
+        //TODO 获取验证时所需的开通个数
+        return appFormData ? appFormData.number : 1;
+    },
     checkUserExist(rule, value, callback) {
         let customer_id = this.state.formData.customer_id;
-        let number = this.state.appFormData.number;
+        let number = this.getApplyUserCount();
         let trimValue = $.trim(value);
         // 校验的信息提示
         UserNameTextfieldUtil.validatorMessageTips(trimValue, callback);
+        if (!trimValue) return;
         let obj = {
             customer_id: customer_id,
             user_name: trimValue
@@ -314,7 +384,7 @@ const ApplyUserForm = React.createClass({
             _.each(customerContacts, contact => {
                 if (_.isArray(contact.email) && contact.email.length) {
                     _.each(contact.email, email => {
-                        if (email.indexOf(userName) != -1) {
+                        if (email.indexOf(userName) !== -1) {
                             emailList.push(email);
                         }
                     });
@@ -340,166 +410,237 @@ const ApplyUserForm = React.createClass({
             return input;
         }
     },
+    changeConfigType: function(configType) {
+        //获取的应用默认配置列表
+        let appDefaultConfigList = this.state.appDefaultConfigList || [];
+        let num = 1;//申请用户的个数
+        let formData = this.state.formData;
+        const users = _.pluck(this.props.users, 'user');
+        if (_.isArray(users) && users.length) {//已有用户开通应用
+            num = users.length;
+        }
+        //构造应用数据
+        formData.products = _.map(this.state.apps, app => {
+            //没有取到应用默认配置时的默认值
+            let appData = {
+                client_id: app.client_id,
+                number: num,
+            };
+            return this.getAppConfig(appData, appDefaultConfigList, formData.tag, true);
+        });
+        this.setState({configType, formData});
+    },
 
-    render: function() {
-        const appFormData = this.state.appFormData;
-        const fixedHeight = $(window).height() - LAY_CONSTS.TAB_TITLE_HEIGHT;
-        const formData = this.state.formData;
-        //用于布局的常量 左侧app名称的margin-left和margin-top
-        const appMarginLeft = 18, appMarginTop = 15;
-        //左侧展示app的个数
-        const length = this.props.apps.length > 4 ? this.props.apps.length : 4;
-        //appHeight为左侧每个app名称的高度 appWidth为左侧每个app名称的宽度
-        const appHeight = $('.antd-vertical-tabs-tab').height(),
-            appWidth = $('.antd-vertical-tabs-tab').width();
-        //appContentHeight为左侧所有app所在容器的高度
-        const appContentHeight = $('.antd-vertical-tabs-content').height();
-        const shadowTop = appMarginTop + length * appHeight;
-        //父元素的高度-<b>相对定位的top值=<b>元素的高度 <b>为遮盖元素
-        const shadowHeight = (appContentHeight - shadowTop < 0) ? 0 : (appContentHeight - shadowTop);
-        const shadowLeft = appMarginLeft + appWidth;
+    renderAppConfigForm: function(appFormData) {
         const timePickerConfig = {
             isCustomSetting: true,
             appId: 'applyUser'
         };
-
+        return (<AppConfigForm appFormData={appFormData}
+            needApplyNum={this.state.applyFrom === 'order' || this.isApplyNewUsers()}
+            timePickerConfig={timePickerConfig}
+            renderUserTimeRangeBlock={this.renderUserTimeRangeBlock}
+            onCountChange={this.onCountChange}
+            onOverDraftChange={this.onOverDraftChange}/>);
+    },
+    //从订单中申请用户或申请新用户时，用户名和昵称输入框的渲染
+    renderUserNamesInputs: function(formData, formItemLayout) {
         return (
-            <div className="full_size wrap_padding crm_apply_user_form_wrap">
-                <Tabs defaultActiveKey="form">
-                    <TabPane tab={applyTitles[this.props.applyType]} key="form">
-                        <div className="crm_apply_user_form" style={{height: fixedHeight}} ref="scrollWrap">
-                            <GeminiScrollbar>
-                                <Form horizontal>
-                                    <Validation ref="validation" onValidate={this.handleValidate}>
-                                        <div className="user-name-textfield-block" ref="username_block">
-                                            <FormItem
-                                                label={Intl.get('common.username', '用户名')}
-                                                labelCol={{span: 4}}
-                                                wrapperCol={{span: 14}}
-                                                validateStatus={this.getValidateStatus('user_name')}
-                                                help={this.getHelpMessage('user_name')}
-                                            >
-                                                <Validator rules={[{validator: this.checkUserExist}]}>
-                                                    {this.renderUserNameInput(formData.user_name)}
-                                                </Validator>
-                                            </FormItem>
-                                        </div>
-                                        <FormItem
-                                            label={Intl.get('common.nickname', '昵称')}
-                                            labelCol={{span: 4}}
-                                            wrapperCol={{span: 14}}
-                                            validateStatus={this.getValidateStatus('nick_name')}
-                                            help={this.getHelpMessage('nick_name')}
-                                        >
-                                            <Validator rules={[{
-                                                required: true,
-                                                message: Intl.get('user.nickname.write.tip', '请填写昵称')
-                                            }]}>
-                                                <Input
-                                                    name="nick_name"
-                                                    placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
-                                                    value={formData.nick_name}
-                                                    onChange={this.onNickNameChange}/>
-                                            </Validator>
-                                        </FormItem>
-                                        <FormItem
-                                            label={Intl.get('common.remark', '备注')}
-                                            labelCol={{span: 4}}
-                                            wrapperCol={{span: 14}}
-                                        >
-                                            <Input
-                                                type="textarea"
-                                                placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
-                                                value={formData.remark}
-                                                onChange={this.onRemarkChange}/>
-                                        </FormItem>
-                                    </Validation>
-                                    <div className="app-user-info ant-form-item" style={{maxHeight: fixedHeight}}>
-                                        <Tabs tabPosition="left" onChange={this.onAppChange}
-                                            prefixCls="antd-vertical-tabs">
-                                            {this.props.apps.map(app => {
-                                                //应用到所有应用或只能申请一个应用的验证未通过，并且不是当前展示应用时，不可切换到其他应用
-                                                let disabled = (this.state.setAllChecked || this.state.onlyOneUser) && app.client_id != appFormData.client_id;
-                                                return (<TabPane key={app.client_id}
-                                                    tab={this.renderTabToolTip(app.client_name)}
-                                                    disabled={disabled}>
-                                                    <div className="set-all-check-box col-22">
-                                                        <Checkbox checked={this.state.setAllChecked}
-                                                            onChange={this.toggleCheckbox}/>
-                                                        <span className="checkbox-title" onClick={this.toggleCheckbox}>
-                                                            {Intl.get('user.all.app.set', '设置到所有应用上')}
-                                                        </span>
-                                                        {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
-                                                    </div>
-                                                    <div className="app-tab-pane col-22">
-                                                        <FormItem
-                                                            label={Intl.get('user.batch.open.count', '开通个数')}
-                                                            labelCol={{span: 5}}
-                                                            wrapperCol={{span: 19}}
-                                                        >
-                                                            <InputNumber
-                                                                prefixCls={this.state.onlyOneUser ? 'number-error-border ant-input-number' : 'ant-input-number'}
-                                                                value={appFormData.number}
-                                                                min={1}
-                                                                max={999}
-                                                                onChange={this.onCountChange}/>
-                                                        </FormItem>
-                                                        {this.state.onlyOneUser ?
-                                                            <div className="only-one-user-tip">
-                                                                {Intl.get('crm.201', '用户名是邮箱格式时，只能申请1个用户')}</div> : null}
-                                                        <FormItem
-                                                            label={Intl.get('user.open.cycle', '开通周期')}
-                                                            labelCol={{span: 5}}
-                                                            wrapperCol={{span: 19}}
-                                                        >
-                                                            {this.renderUserTimeRangeBlock(timePickerConfig)}
-                                                        </FormItem>
-                                                        <FormItem
-                                                            label={Intl.get('user.expire.select', '到期可选')}
-                                                            labelCol={{span: 5}}
-                                                            wrapperCol={{span: 19}}
-                                                        >
-                                                            <RadioGroup onChange={this.onOverDraftChange}
-                                                                value={appFormData.over_draft.toString()}>
-                                                                <Radio key="1" value="1"><ReactIntl.FormattedMessage
-                                                                    id="user.status.stop" defaultMessage="停用"/></Radio>
-                                                                <Radio key="2" value="2"><ReactIntl.FormattedMessage
-                                                                    id="user.status.degrade" defaultMessage="降级"/></Radio>
-                                                                <Radio key="0" value="0"><ReactIntl.FormattedMessage
-                                                                    id="user.status.immutability"
-                                                                    defaultMessage="不变"/></Radio>
-                                                            </RadioGroup>
-                                                        </FormItem>
-                                                    </div>
-                                                </TabPane>);
-                                            })}
-                                        </Tabs>
-                                        {
-                                            this.state.isLoading ?
-                                                (<Spinner className="isloading"/>) :
-                                                (null)
-                                        }
-                                        {/*<b style={{height: shadowHeight, top: shadowTop, left: shadowLeft,}}></b>*/}
-                                    </div>
-                                    <FormItem
-                                        wrapperCol={{span: 23}}
-                                    >
-                                        <RightPanelCancel onClick={this.handleCancel}
-                                            style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}>
-                                            <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                                        </RightPanelCancel>
-                                        <RightPanelSubmit onClick={this.handleSubmit}
-                                            style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}
-                                            disabled={this.state.isLoading}>
-                                            <ReactIntl.FormattedMessage id="crm.109" defaultMessage="申请"/>
-                                        </RightPanelSubmit>
-                                    </FormItem>
-                                </Form>
-                            </GeminiScrollbar>
-                        </div>
-                    </TabPane>
-                </Tabs>
+            <div>
+                <div className="user-name-textfield-block" ref="username_block">
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get('common.username', '用户名')}
+                        validateStatus={this.getValidateStatus('user_name')}
+                        help={this.getHelpMessage('user_name')}
+                        required
+                    >
+                        <Validator rules={[{validator: this.checkUserExist}]}>
+                            {this.renderUserNameInput(formData.user_name)}
+                        </Validator>
+                    </FormItem>
+                </div>
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get('common.nickname', '昵称')}
+                    validateStatus={this.getValidateStatus('nick_name')}
+                    help={this.getHelpMessage('nick_name')}
+                    required
+                >
+                    <Validator rules={[{
+                        required: true,
+                        message: Intl.get('user.nickname.write.tip', '请填写昵称')
+                    }]}>
+                        <Input
+                            name="nick_name"
+                            placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
+                            value={formData.nick_name}
+                            onChange={this.onNickNameChange}/>
+                    </Validator>
+                </FormItem>
             </div>);
+    },
+    /**
+     * 申请表单的渲染
+     * 1、从订单中申请试用、签约用户时，
+     *    1）用户名、昵称需要自己输入（用户名推荐用联系人中的邮箱）
+     *    2）申请类型，已根据订单的阶段确定，成交之前的阶段申请的是‘试用用户’，成交及以后的阶段申请的是‘签约用户’
+     *    3）应用只展示不可选，用订单中的应用
+     *
+     * 2、从用户列表中，申请新用户时，
+     *    1）用户名、昵称需要自己输入（用户名推荐用联系人中的邮箱）
+     *    2）申请类型，需要自己选申请的是‘试用用户’还是‘签约用户’
+     *    3）应用从所有的应用列表中自己选择
+     *
+     * 3、从用户列表中，选择已有用户开通新应用时，
+     *    1）用户名、昵称，用选择的已有用户的，只展示用户名即可
+     *    2）申请类型，需要自己选申请的是‘试用用户’还是‘签约用户’
+     *    3）应用从所有的应用列表中自己选择
+     */
+    renderApplyUserForm: function() {
+        const formData = this.state.formData;
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 4},
+            wrapperCol: {span: 20},
+        };
+        let selectAppIds = _.pluck(this.state.apps, 'client_id');
+        return (
+            <Form horizontal className="apply-user-form">
+                <Validation ref="validation" onValidate={this.handleValidate}>
+                    {this.state.applyFrom === 'order' || this.isApplyNewUsers() ?
+                        this.renderUserNamesInputs(formData, formItemLayout) : (
+                            <FormItem
+                                {...formItemLayout}
+                                label={Intl.get('user.selected.user', '已选用户')}
+                            >
+                                {_.map(formData.user_names, name => {
+                                    return (<p className="user-name-item">{name}</p>);
+                                })}
+                            </FormItem>
+                        )}
+                    {this.state.applyFrom !== 'order' ? (
+                        <FormItem
+                            {...formItemLayout}
+                            label={Intl.get('user.apply.type', '申请类型')}
+                        >
+                            <RadioGroup onChange={this.onUserTypeChange}
+                                value={formData.tag}>
+                                <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
+                                    {Intl.get('common.trial.user', '试用用户')}
+                                </Radio>
+                                <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
+                                    {Intl.get('user.signed.user', '签约用户')}
+                                </Radio>
+                            </RadioGroup>
+                        </FormItem>) : null}
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get('common.app', '应用')}
+                        required
+                    >
+                        {this.state.applyFrom === 'order' ? _.map(this.state.apps, app => {
+                            return (<SquareLogoTag name={app ? app.client_name : ''}
+                                logo={app ? app.client_logo : ''}/>);
+                        }) : (
+                            <Select mode="tags" value={selectAppIds}
+                                dropdownClassName="apply-user-apps-dropdown"
+                                placeholder={Intl.get('user.app.select.please', '请选择应用')}
+                                onChange={this.handleChangeApps.bind(this)}>
+                                {this.getAppOptions(selectAppIds)}
+                            </Select>)}
+                    </FormItem>
+                    {_.isArray(selectAppIds) && selectAppIds.length ? (
+                        <ApplyUserAppConfig apps={this.state.apps}
+                            appsFormData={formData.products}
+                            configType={this.state.configType}
+                            changeConfigType={this.changeConfigType}
+                            renderAppConfigForm={this.renderAppConfigForm.bind(this)}
+                        />) : null}
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get('common.remark', '备注')}
+                    >
+                        <Input
+                            type="textarea"
+                            placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
+                            value={formData.remark}
+                            onChange={this.onRemarkChange}/>
+                    </FormItem>
+                </Validation>
+            </Form>
+        );
+    },
+    handleChangeApps: function(appIds) {
+        this.state.apps = _.map(appIds, appId => {
+            return _.find(this.props.appList, app => app.client_id === appId);
+        });
+        //获取的应用默认配置列表
+        let appDefaultConfigList = this.state.appDefaultConfigList || [];
+        let num = 1;//申请用户的个数
+        let formData = this.state.formData || {};
+        const users = _.pluck(this.props.users, 'user');
+        if (_.isArray(users) && users.length) {//已有用户开通应用
+            num = users.length;
+        }
+        //过滤掉删除的应用
+        formData.products = _.filter(formData.products, app => _.indexOf(appIds, app.client_id) !== -1);
+        //新增应用的id列表
+        let newAddAppIds = [];
+        _.each(appIds, id => {
+            let appData = _.find(formData.products, item => item.client_id === id);
+            if (!appData) {
+                newAddAppIds.push(id);
+            }
+        });
+        //添加新增的应用
+        if (_.isArray(newAddAppIds) && newAddAppIds.length) {
+            //构造新增应用数据
+            _.each(newAddAppIds, appId => {
+                //没有取到应用默认配置时的默认值
+                let appData = {
+                    client_id: appId,
+                    number: num,
+                };
+                formData.products.push(this.getAppConfig(appData, appDefaultConfigList, formData.tag, true));
+            });
+            this.getAppsDefaultConfig(newAddAppIds);
+        }
+        this.setState({apps: this.state.apps, formData: formData});
+    },
+    getAppOptions: function(selectAppIds) {
+        let appList = this.props.appList;
+        if (_.isArray(appList) && appList.length) {
+            return _.map(appList, app => {
+                let appId = app ? app.client_id : '';
+                var className = '';
+                //下拉选项中，过滤掉已选的应用
+                if (_.isArray(selectAppIds) && selectAppIds.length && selectAppIds.indexOf(appId) !== -1) {
+                    className = 'app-options-selected';
+                }
+                return (<Option className={className} key={appId} value={appId}>
+                    <SquareLogoTag
+                        name={app ? app.client_name : ''}
+                        logo={app ? app.client_logo : ''}
+                    />
+                </Option>);
+            });
+        }
+        return [];
+    },
+    render: function() {
+        let title = this.props.userType === Intl.get('common.trial.official', '正式用户') ?
+            Intl.get('user.apply.user.official', '申请签约用户') : Intl.get('common.apply.user.trial', '申请试用用户');
+        return (
+            <DetailCard titl e={title}
+                className="apply-user-form-container"
+                content={this.renderApplyUserForm()}
+                isEdit={true}
+                loading={this.state.loading}
+                saveErrorMsg={this.state.submitErrorMsg}
+                handleSubmit={this.handleSubmit.bind(this)}
+                handleCancel={this.handleCancel.bind(this)}
+            />);
     }
 });
 

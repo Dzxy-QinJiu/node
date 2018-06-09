@@ -13,23 +13,26 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import userData from 'PUB_DIR/sources/user-data';
 import ApplyOpenAppPanel from 'MOD_DIR/app_user_manage/public/views/v2/apply-user';
+import ApplyUserForm from '../apply-user-form';
 import CrmUserApplyForm from './crm-user-apply-form';
 import crmAjax from '../../ajax';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import classNames from 'classnames';
 import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
+import RightPanelScrollBar from '../components/rightPanelScrollBar';
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
     STOP_USE: 'stopUse',//停用
     DELAY: 'Delay',//延期
     EDIT_PASSWORD: 'editPassword',//修改密码
     OTHER: 'other',//其他类型
-    OPEN_APP: 'openAPP'//开通应用
+    OPEN_APP: 'openAPP',//开通应用
+    NEW_USERS: 'newUsers'//开通新用户
 };
 
 const LAYOUT = {
-    TOP_NAV_HEIGHT: 52 + 8,//52：头部导航的高度，8：导航的下边距
+    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
     TOTAL_HEIGHT: 24 + 8,// 24:共xxx个的高度,8:共xxx个的下边距
     APPLY_FORM_HEIGHT: 198 + 10//198:申请表单的高度,10:表单的上边距
 };
@@ -143,7 +146,7 @@ class CustomerUsers extends React.Component {
         }
     }
 
-    getApplyFlag() {
+    getBatchApplyFlag() {
         let crmUserList = this.state.crmUserList;
         let flag = false;//申请按钮是否可用
         if (_.isArray(crmUserList) && crmUserList.length) {
@@ -271,9 +274,9 @@ class CustomerUsers extends React.Component {
             traceDescr = '打开申请其他类型面板';
         } else if (applyType === APPLY_TYPES.OPEN_APP) {
             traceDescr = '打开申请开通应用面板';
-            if (_.isFunction(this.props.showOpenAppForm)) {
-                this.props.showOpenAppForm(applyType);
-            }
+            // if (_.isFunction(this.props.showOpenAppForm)) {
+            //     this.props.showOpenAppForm(applyType);
+            // }
         }
         Trace.traceEvent('客户详情', traceDescr);
         this.setState({applyType: applyType});
@@ -298,37 +301,49 @@ class CustomerUsers extends React.Component {
     }
 
     renderApplyBtns() {
-        let applyFlag = this.getApplyFlag();
+        //是否可以批量申请（停用、延期、修改密码、其他）的操作，只要有选择的用户或应用就可以
+        let batchApplyFlag = this.getBatchApplyFlag();
         //开通应用，只有选择用户后才可用
         let openAppFlag = false;
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
             openAppFlag = _.some(crmUserList, userObj => userObj && userObj.user && userObj.user.checked);
         }
-        return (
-            <div className="crm-user-apply-btns">
-                <Button type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
-                    disabled={!applyFlag}>
-                    {Intl.get('common.stop', '停用')}
-                </Button>
-                <Button type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!applyFlag}>
-                    {Intl.get('crm.user.delay', '延期')}
-                </Button>
-                <Button type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)} disabled={!applyFlag}>
-                    {Intl.get('common.edit.password', '修改密码')}
-                </Button>
-                <Button type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!applyFlag}>
-                    {Intl.get('crm.186', '其他')}
-                </Button>
-                <Button type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
-                    {Intl.get('user.app.open', '开通应用')}
+        if (!batchApplyFlag && !openAppFlag) {
+            //申请新用户
+            return (<div className="crm-user-apply-btns">
+                <Button type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
+                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS)}>
+                    {Intl.get('crm.apply.user.new', '申请新用户')}
                 </Button>
             </div>);
+        } else {//其他申请
+            return (
+                <div className="crm-user-apply-btns">
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
+                        disabled={!batchApplyFlag}>
+                        {Intl.get('common.stop', '停用')}
+                    </Button>
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!batchApplyFlag}>
+                        {Intl.get('crm.user.delay', '延期')}
+                    </Button>
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)}
+                        disabled={!batchApplyFlag}>
+                        {Intl.get('common.edit.password', '修改密码')}
+                    </Button>
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!batchApplyFlag}>
+                        {Intl.get('crm.186', '其他')}
+                    </Button>
+                    <Button type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
+                        {Intl.get('user.app.open', '开通应用')}
+                    </Button>
+                </div>);
+        }
     }
 
     renderRightPanel() {
@@ -352,12 +367,31 @@ class CustomerUsers extends React.Component {
         return rightPanelView;
     }
 
+    renderUserApplyForm() {
+        //有选择用户时，是已有用户开通新用户；无选择的应用时，是开通新用户
+        let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
+        //发邮件使用的数据
+        let emailData = this.getEmailData(checkedUsers);
+        return (
+            <ApplyUserForm
+                applyFrom="crmUserList"
+                apps={[]}
+                appList={this.state.appList}
+                users={checkedUsers}
+                customerName={this.props.curCustomer.name}
+                customerId={this.props.curCustomer.id}
+                cancelApply={this.closeRightPanel.bind(this)}
+                emailData={emailData}
+            />
+        );
+    }
+
     renderOverDraft(app) {
         if (app.is_disabled === 'true') {
             return Intl.get('user.status.stopped', '已停用');
         } else {
             let end_time = app.end_time;
-            if (end_time == 0) {
+            if (end_time === 0) {
                 return Intl.get('user.overdue.not.forever', '永不过期');
             } else if (end_time) {
                 const over_draft_status = this.getOverDraftStatus(app.over_draft);
@@ -475,10 +509,6 @@ class CustomerUsers extends React.Component {
         if ($('.phone-alert-modal-title').size()) {
             divHeight -= $('.phone-alert-modal-title').outerHeight(true);
         }
-        //减去申请延期\停用等表单的高度
-        if (this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP) {
-            divHeight -= LAYOUT.APPLY_FORM_HEIGHT;
-        }
         let userNumClass = classNames('user-total-tip', {'user-total-active': !this.props.isMerge && userNum});
         return (<div className="crm-user-list-container" data-tracename="通用户页面">
             <div className="user-number">
@@ -492,20 +522,22 @@ class CustomerUsers extends React.Component {
                 {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
                     : null}
             </div>
-            {this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP ? (
-                <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
-                    closeApplyPanel={this.closeRightPanel.bind(this)}
-                    crmUserList={this.state.crmUserList}/>) : null}
-            <ul className="crm-user-list" style={{height: divHeight}}>
+            <div className="crm-user-scroll-wrap" style={{height: divHeight}}>
                 <GeminiScrollbar listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom.bind(this)}>
-                    {this.renderCrmUserList(isApplyButtonShow)}
+                    {this.state.applyType === APPLY_TYPES.OPEN_APP || this.state.applyType === APPLY_TYPES.NEW_USERS ? this.renderUserApplyForm() : this.state.applyType ? (
+                        <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
+                            closeApplyPanel={this.closeRightPanel.bind(this)}
+                            crmUserList={this.state.crmUserList}/>) : null}
+                    <ul className="crm-user-list">
+                        {this.renderCrmUserList(isApplyButtonShow)}
+                    </ul>
                 </GeminiScrollbar>
-            </ul>
-            <RightPanel className="crm_user_apply_panel white-space-nowrap"
-                showFlag={this.state.applyType && this.state.applyType === APPLY_TYPES.OPEN_APP}>
-                {this.renderRightPanel()}
-            </RightPanel>
+            </div>
+            {/*<RightPanel className="crm_user_apply_panel white-space-nowrap"*/}
+            {/*showFlag={this.state.applyType && this.state.applyType === APPLY_TYPES.OPEN_APP}>*/}
+            {/*{this.renderRightPanel()}*/}
+            {/*</RightPanel>*/}
         </div>);
     }
 

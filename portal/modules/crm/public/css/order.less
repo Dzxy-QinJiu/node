@@ -119,16 +119,14 @@
           line-height: 23px;
           padding: 0px;
           width: 80px;
-          margin-left: 10px;
-          margin-bottom: 5px;
         }
         //请先选择应用的提示
         .ant-alert.ant-alert-error.add-app-tip {
           position: relative;
           top: auto;
           left: auto;
-          width: 130px;
-          padding: 4px 8px;
+          width: 120px;
+          padding: 4px 8px 2px 30px;
           float: right;
           right: 120px;
           .ant-alert-icon {
@@ -165,6 +163,24 @@
       }
     }
 
+  }
+  //申请表单
+  .apply-user-form-container{
+    margin-top: 0;
+    padding: 8px;
+    border-top: 1px solid #f5f5f5;
+    .detail-card-title{
+      color: #2297f6;
+    }
+    .detail-card-content{
+      float: left;
+      form{
+        float: left;
+        .ant-form-item {
+          float: left;
+        }
+      }
+    }
   }
 
   //应用列表编辑面板

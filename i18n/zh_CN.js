@@ -1295,6 +1295,9 @@ var zh_CN = {
     'crm.schedule.set.unfinished': '标为未完成',
     'crm.trace.delivery.report': '舆情报送',
     'crm.trace.report.source': '原文',
+    'crm.apply.user.unified.config': '统一配置',
+    'crm.apply.user.separate.config': '分别配置',
+    'crm.apply.user.new': '申请新用户',
     // 客户管理end
 
     // 客户分析start

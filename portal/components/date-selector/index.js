@@ -238,13 +238,13 @@ class DateSelector extends React.Component{
     }
     componentWillReceiveProps(nextProps){
         const newState = {};
-        if(this.props.range != nextProps.range) {
+        if(this.props.range !== nextProps.range) {
             newState.range = nextProps.range;
         }
-        if(this.props.start_time != nextProps.start_time) {
+        if(this.props.start_time !== nextProps.start_time) {
             newState.start_time = Utils.getDateStr(nextProps.start_time);
         }
-        if(this.props.end_time != nextProps.end_time) {
+        if(this.props.end_time !== nextProps.end_time) {
             newState.end_time = Utils.getDateStr(nextProps.end_time);
         }
         if(!_.isEmpty(newState)) {
@@ -260,7 +260,7 @@ class DateSelector extends React.Component{
     transportOuter(start_time,end_time,range) {
         var label;
         var target = _.find(this.state.menu_lists , function(obj) {
-            return obj.value == range;
+            return obj.value === range;
         });
         if(target) {
             label = target.name;
@@ -409,7 +409,7 @@ class DateSelector extends React.Component{
     renderMenus() {
         const menuLists = this.state.menu_lists.map((item) => {
             const cls = classNames({
-                active: item.value == this.state.range
+                active: item.value === this.state.range
             });
             return (
                 <MenuItem
@@ -433,7 +433,7 @@ class DateSelector extends React.Component{
     getRangeDisplayText(){
         const range = this.state.range;
         const target = _.find(this.state.menu_lists , (obj) => {
-            return obj.value == range;
+            return obj.value === range;
         });
         if(target) {
             return target.name;
@@ -809,7 +809,7 @@ class DateSelector extends React.Component{
             {
                 this.state.displayQuarterList.map((text,num) => {
                     var cls = classNames({
-                        active: (num + 1) == this.state.quarter
+                        active: (num + 1) === this.state.quarter
                     });
                     return (
                         <MenuItem
@@ -857,6 +857,7 @@ class DateSelector extends React.Component{
             <div className={cls} {...restProps}>
                 <div className="border_wrap">
                     <Dropdown
+                        trigger={['click']}
                         getPopupContainer={() => {return document.getElementById(this.componentId + '_range');}}
                         overlay={menu}
                         prefixCls="ant-dropdown">
