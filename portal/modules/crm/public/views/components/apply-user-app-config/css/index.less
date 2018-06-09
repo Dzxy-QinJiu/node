@@ -9,7 +9,7 @@
     border-radius: 3px;
     padding: 0 8px 8px 8px;
     //邮箱格式的用户名，只能申请一个用户的提示样式
-    .only-one-user-tip{
+    .only-one-user-tip {
       float: left;
       width: 100%;
       padding-left: 67px;
@@ -44,6 +44,10 @@
           display: none;
         }
       }
+      .bootstrap-datepicker-wrap {
+        left: -26px;
+        top: 28px;
+      }
     }
     .ant-form-item {
       .ant-radio-group {
@@ -57,6 +61,9 @@
 
     //多个应用配置面板的样式
     .app-config-tab-container {
+      .ant-tabs {
+        overflow: visible;
+      }
       > .ant-tabs-card {
         > .ant-tabs-bar {
           margin-bottom: 4px;
@@ -76,10 +83,10 @@
             border: 1px solid #d9d9d9;
             border-radius: 3px;
             background-color: #ffffff;
-            .square-logo-tag{
+            .square-logo-tag {
               margin-right: 0;
               border: none;
-              .square-logo-tag-text{
+              .square-logo-tag-text {
                 max-width: 260px;
               }
             }
@@ -90,6 +97,7 @@
           }
         }
       }
-    }//end of .app-config-tab-container {
+    }
+    //end of .app-config-tab-container {
   }
 }
