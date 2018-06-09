@@ -373,24 +373,6 @@ const OrderItem = React.createClass({
                         </div>
                     )}
                 </div>
-                {applyBtnText && this.props.isApplyButtonShow ? (
-                    <div className="order-item-content">
-                        <span className="order-key">{Intl.get("crm.150", "用户申请")}:</span>
-                        <Button type="ghost" className="order-introduce-btn"
-                                onClick={this.showApplyForm.bind(this, applyType, order, apps)}
-                        >
-                            {applyBtnText}
-                        </Button>
-                        {this.state.isAlertShow ? (
-                            <Alert
-                                className="add-app-tip"
-                                message={Intl.get("crm.153", "请先添加应用")}
-                                type="error"
-                                showIcon
-                            />
-                        ) : null}
-                    </div>
-                ) : null}
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get("crm.148", "预算金额")}:</span>
                     <BasicEditInputField
@@ -417,6 +399,23 @@ const OrderItem = React.createClass({
                         saveEditInput={this.saveOrderBasicInfo}
                     />
                 </div>
+                {applyBtnText && this.props.isApplyButtonShow ? (
+                    <div className="order-item-content">
+                        <Button type="ghost" className="order-introduce-btn"
+                                onClick={this.showApplyForm.bind(this, applyType, order, apps)}
+                        >
+                            {applyBtnText}
+                        </Button>
+                        {this.state.isAlertShow ? (
+                            <Alert
+                                className="add-app-tip"
+                                message={Intl.get("crm.153", "请先添加应用")}
+                                type="error"
+                                showIcon
+                            />
+                        ) : null}
+                    </div>
+                ) : null}
                 {/*<div className="order-introduce">*/}
                 {/*{this.props.order.contract_id ? (*/}
                 {/*<Button type="ghost" className="order-introduce-btn pull-right"*/}
