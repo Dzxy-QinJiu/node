@@ -241,7 +241,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             customer_clue_start_time: this.state.curClueDetail.start_time
         };
         //销售线索关联客户时，将注册用户的id传过去
-        if (this.state.curClueDetail.app_user_id){
+        if (this.state.curClueDetail && this.state.curClueDetail.app_user_id){
             submitObj.app_user_ids = [this.state.curClueDetail.app_user_id];
         }
         this.setState({
@@ -413,7 +413,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         this.setState({
             isShowAddCustomer: false
         });
-        if (_.isArray(newCustomerArr) && newCustomerArr.length){
+        if (_.isArray(newCustomerArr) && newCustomerArr[0]){
             var newCustomer = newCustomerArr[0];
             this.setState({
                 selectShowAddCustomer: true,
