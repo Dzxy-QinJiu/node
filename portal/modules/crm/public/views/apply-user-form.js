@@ -19,7 +19,6 @@ import DetailCard from "CMP_DIR/detail-card";
 import DateSelectorPicker from 'CMP_DIR/date-selector/utils';
 import SquareLogoTag from "./components/square-logo-tag";
 import ApplyUserAppConfig from "./components/apply-user-app-config";
-import LogoTagListSelect from "./components/logo-tag-list-select";
 import AppConfigForm from "./components/apply-user-app-config/app-config-form";
 const UserApplyAction = require("MOD_DIR/app_user_manage/public/action/user-apply-actions");
 
@@ -545,6 +544,7 @@ const ApplyUserForm = React.createClass({
                                                    logo={app ? app.client_logo : ""}/>);
                         }) : (
                             <Select mode="tags" value={selectAppIds}
+                                    dropdownClassName="apply-user-apps-dropdown"
                                     placeholder={Intl.get("user.app.select.please", "请选择应用")}
                                     onChange={this.handleChangeApps.bind(this)}>
                                 {this.getAppOptions(selectAppIds)}
