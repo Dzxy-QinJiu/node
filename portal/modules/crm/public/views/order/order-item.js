@@ -478,6 +478,7 @@ const OrderItem = React.createClass({
                         order={this.state.formData}
                         customerName={this.state.customerName}
                         cancelApply={this.cancelApply}
+                        applyFrom="order"
                     />
                 ) : null}
             </div>);
