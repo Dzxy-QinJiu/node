@@ -78,7 +78,7 @@ const ApplyUserForm = React.createClass({
             const users = _.pluck(props.users, 'user');
             formData = {
                 customer_id: props.customerId,
-                tag: Intl.get('common.trial.official', '正式用户'),
+                tag: Intl.get('common.trial.user', '试用用户'),
                 remark: '',
             };
             if (_.isArray(users) && users.length) {//已有用户开通应用
@@ -640,6 +640,7 @@ const ApplyUserForm = React.createClass({
                 saveErrorMsg={this.state.submitErrorMsg}
                 handleSubmit={this.handleSubmit.bind(this)}
                 handleCancel={this.handleCancel.bind(this)}
+                okBtnText={Intl.get('common.sure', '确定')}
             />);
     }
 });

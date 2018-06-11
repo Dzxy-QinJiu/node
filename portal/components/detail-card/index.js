@@ -45,6 +45,8 @@ DetailCard.defaultProps = {
     className: '',//自定义类
     isEdit: false,//是否是编辑状态,编辑状态会展示阴影
     loading: false,//是否正在保存
+    okBtnText: '',//保存按钮上的描述
+    cancelBtnText: '',//取消按钮上的描述
     handleSubmit: function() {
     },//保存的处理
     handleCancel: function() {
