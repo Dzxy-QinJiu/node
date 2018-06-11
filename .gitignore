@@ -12,3 +12,4 @@ upload
 dll
 *.gzip
 cache
+*.log
