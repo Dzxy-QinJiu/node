@@ -31,11 +31,13 @@
       .range_wrap {
         min-width: 70px;
         padding: 4px;
+        z-index: auto;
         .range_text {
           margin: 0 4px;
         }
       }
       .date_text_wrap {
+        z-index: auto;
         .line {
           width: 8px;
           margin: 0 6px;
@@ -47,6 +49,9 @@
       .bootstrap-datepicker-wrap {
         left: -26px;
         top: 28px;
+        .datepicker-inline {
+          z-index: 1;
+        }
       }
     }
     .ant-form-item {
