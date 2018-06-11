@@ -495,7 +495,6 @@ var Crm = React.createClass({
                     }
                 } else {
                     if (_.isArray(team.child_groups) && team.child_groups.length) {
-                        // this.traversingTeamTree(team.child_groups, totalRequestTeams);
                         _.each(team.child_groups, (childTeam) => {
                             if ((_.indexOf(totalRequestTeams, childTeam.group_id) > -1)) {
                                 //下属团队的id也要传到后端，不需要再进行判断了
