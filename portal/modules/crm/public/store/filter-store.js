@@ -13,7 +13,6 @@ function FilterStore() {
     this.inputCondition = {};
     this.condition = {
         sales_team_id: '',
-        team_ids: '',
         industry: '',
         province: '',
         app_ids: [''],

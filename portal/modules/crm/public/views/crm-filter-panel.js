@@ -100,14 +100,15 @@ const CrmFilterPanel = React.createClass({
         stage = stage ? stage : '全部';
         Trace.traceEvent($(this.getDOMNode()).find('li'), '按销售阶段筛选');
     },
-    teamSelected: function(teamId) {
+    teamSelected: function(team) {
         const curSelectedTeams = this.state.condition.sales_team_id;
 
-        const newSelectedTeams = getSelected(curSelectedTeams, teamId);
+        const newSelectedTeams = getSelected(curSelectedTeams, team);
 
         if (newSelectedTeams === curSelectedTeams) return;
 
         FilterAction.setTeam(newSelectedTeams);
+
         setTimeout(() => this.props.search());
         Trace.traceEvent($(this.getDOMNode()).find('li'), '按团队筛选客户');
     },
