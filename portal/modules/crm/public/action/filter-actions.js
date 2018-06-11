@@ -29,8 +29,7 @@ function FilterAction() {
         'showPanel',
         'hidePanel',
         'setOtherSelectedItem',
-        'setSalesRole',
-        'setSubTeam'
+        'setSalesRole'
     );
 
     this.getAppList = function() {

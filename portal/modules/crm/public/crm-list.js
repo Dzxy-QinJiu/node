@@ -471,18 +471,59 @@ var Crm = React.createClass({
     , hideAddForm: function() {
         this.state.isAddFlag = false;
         this.setState(this.state);
+    },
+    traversingTeamTree: function(teamTreeList, selectedTeams, totalRequestTeams, flag) {
+        //teamTreeList 所有团队的团队树
+        //selectedTeams 页面上实际选中的团队
+        //totalRequestTeams 实际向后端传的团队列表
+        if (_.isArray(teamTreeList) && teamTreeList.length) {
+            //遍历选中的团队
+            _.each(selectedTeams, (teamId) => {
+                //遍历团队树
+                _.each(teamTreeList, (team) => {
+                    if (team.group_id === teamId || flag){
+                        //如果上级团队的id和列表选中的id一致，把下属团队的id都传到后端
+                        if (_.isArray(team.child_groups) && team.child_groups.length) {
+                            _.each(team.child_groups, (childTeam) => {
+                                if (_.indexOf(totalRequestTeams, childTeam.group_id) === -1) {
+                                    totalRequestTeams.push(childTeam.group_id);
+                                }
+                            });
+                            //下属团队的id也要传到后端，不需要再进行判断了
+                            this.traversingTeamTree(team.child_groups, selectedTeams, totalRequestTeams, true);
+                        }
+                    }else{
+                        if (_.isArray(team.child_groups) && team.child_groups.length) {
+                            _.each(team.child_groups, (childTeam) => {
+                                if (_.indexOf(totalRequestTeams, childTeam.group_id) === -1 && childTeam.group_id === teamId) {
+                                    totalRequestTeams.push(childTeam.group_id);
+                                    //下属团队的id也要传到后端，不需要再进行判断了
+                                    this.traversingTeamTree(team.child_groups, selectedTeams, totalRequestTeams, true);
+                                }
+                            });
+                            //对下属团队是否符合传到后端的条件再进行判断
+                            this.traversingTeamTree(team.child_groups, selectedTeams, totalRequestTeams);
+                        }
+                    }
+                });
+            });
+        }
     }
     //查询客户
     //reset参数若为true，则重新从第一页获取
     , search: function(reset) {
         const filterStoreCondition = JSON.parse(JSON.stringify(FilterStore.getState().condition));
-        //如果所选团队有下级团队时，也要把下级团队的id传过去
-        if (filterStoreCondition.sales_team_id && filterStoreCondition.sub_sales_team_id){
-            filterStoreCondition.sales_team_id = filterStoreCondition.sales_team_id + ',' + filterStoreCondition.sub_sales_team_id;
-            filterStoreCondition.sales_team_id = _.uniq(filterStoreCondition.sales_team_id.split(',')).join(',');
+        // 所有团队的团队树
+        var teamTreeList = FilterStore.getState().teamTreeList;
+        //实际选中的团队列表
+        var selectedTeams = [];
+        if (FilterStore.getState().condition && FilterStore.getState().condition.sales_team_id){
+            selectedTeams = FilterStore.getState().condition.sales_team_id.split(',');
         }
-        delete filterStoreCondition.sub_sales_team_id;
-        console.log(filterStoreCondition.sales_team_id.split(','));
+        //实际要传到后端的团队,默认是选中的团队
+        var totalRequestTeams = JSON.parse(JSON.stringify(selectedTeams));
+        this.traversingTeamTree(teamTreeList, selectedTeams, totalRequestTeams);
+        filterStoreCondition.sales_team_id = totalRequestTeams.length ? totalRequestTeams.join(',') : '';
         const condition = _.extend({}, filterStoreCondition, FilterStore.getState().inputCondition);
         //去除查询条件中值为空的项
         commonMethodUtil.removeEmptyItem(condition);

@@ -100,22 +100,6 @@ const CrmFilterPanel = React.createClass({
         stage = stage ? stage : '全部';
         Trace.traceEvent($(this.getDOMNode()).find('li'), '按销售阶段筛选');
     },
-    traversingTeamTree: function(treeList, teamIdArr, totalArr, flag) {
-        if (_.isArray(treeList) && treeList.length) {
-            _.each(teamIdArr,(teamId) => {
-                _.each(treeList, (team, index) => {
-                    if ((team.group_id === teamId || flag) && _.isArray(team.child_groups) && team.child_groups.length) {
-                        _.each(team.child_groups, (childTeam) => {
-                            if (_.indexOf(totalArr,childTeam.group_id) === -1){
-                                totalArr.push(childTeam.group_id);
-                            }
-                        });
-                        this.traversingTeamTree(team.child_groups, teamIdArr, totalArr,true);
-                    }
-                });
-            });
-        }
-    },
     teamSelected: function(teamId) {
         const curSelectedTeams = this.state.condition.sales_team_id;
 
@@ -123,18 +107,7 @@ const CrmFilterPanel = React.createClass({
 
         if (newSelectedTeams === curSelectedTeams) return;
 
-        //如果选择的团队有下级团队时，要把下级子团队的id也传到后端
-        var teamTreeList = this.state.teamTreeList;
-        var totalSubArr = [];//选中团队的下属团队
-        var selectedTeamArr = [];//选中的团队
-        if (newSelectedTeams){
-            selectedTeamArr = newSelectedTeams.split(',');
-        }
-        this.traversingTeamTree(teamTreeList, selectedTeamArr, totalSubArr);
         FilterAction.setTeam(newSelectedTeams);
-
-        FilterAction.setSubTeam(totalSubArr.join(','));
-
         setTimeout(() => this.props.search());
         Trace.traceEvent($(this.getDOMNode()).find('li'), '按团队筛选客户');
     },

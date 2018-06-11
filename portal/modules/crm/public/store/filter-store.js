@@ -13,7 +13,7 @@ function FilterStore() {
     this.inputCondition = {};
     this.condition = {
         sales_team_id: '',
-        sub_sales_team_id: '',
+        team_ids: '',
         industry: '',
         province: '',
         app_ids: [''],
@@ -106,10 +106,6 @@ FilterStore.prototype.setApp = function(value) {
 
 FilterStore.prototype.setTeam = function(value) {
     this.condition.sales_team_id = value;
-};
-
-FilterStore.prototype.setSubTeam = function(value) {
-    this.condition.sub_sales_team_id = value;
 };
 
 FilterStore.prototype.setStage = function(value) {

@@ -17,7 +17,6 @@ var Spinner = require('../../../../components/spinner');
 const GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var crmUtil = require('../utils/crm-util');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import FilterStore from '../store/filter-store';
 import routeList from '../../../common/route';
 import ajax from '../../../common/ajax';
 import crmAjax from '../ajax/index';
