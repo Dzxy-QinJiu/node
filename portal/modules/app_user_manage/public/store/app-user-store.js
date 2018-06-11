@@ -343,7 +343,7 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
         }
     } else {
         //如果是按团队搜索，按团队搜索支持多选
-        if (field == 'team_ids'){
+        if (field === 'team_ids'){
             !filterFieldMap[field] && (filterFieldMap.team_ids = []);
             //在已有团队列表中搜索当前选中的团队
             var index = filterFieldMap[field].indexOf(value);
@@ -351,7 +351,7 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
             if (index >= 0 ){
                 filterFieldMap[field].splice(index,1);
                 //如果选中的团队为空，将该字段删掉
-                filterFieldMap[field].length == 0 && (delete filterFieldMap[field]);
+                filterFieldMap[field].length === 0 && (delete filterFieldMap[field]);
             }else{
                 //如果原列表中没有该团队，将其加上
                 filterFieldMap[field].push(value);
@@ -450,7 +450,7 @@ AppUserStore.prototype.updateAppField = function(result) {
                     if(key in result) {
                         //开通状态字段特殊处理
                         if(key === 'status') {
-                            target_app.is_disabled = result[key] == '1' ? 'false' : 'true';
+                            target_app.is_disabled = result[key] === '1' ? 'false' : 'true';
                         } else {
                             //其他字段直接赋值
                             target_app[key] = result[key];
@@ -493,7 +493,7 @@ AppUserStore.prototype.batchPushChangeCustomer = function(result) {
         return;
     }
     //获取要修改的userid数组
-    var targetUserIds = _.pluck(tasks , 'taskDefine');
+    var targetUserIds = _.map(tasks , 'taskDefine');
     //过滤掉userId非法数据(userId必须是一个字符串)
     targetUserIds = _.filter(targetUserIds , (userId) => typeof userId === 'string');
     //如果没有userIds，则不进行更新
@@ -553,7 +553,7 @@ AppUserStore.prototype.batchPushChangeGrantType = function(result) {
         return;
     }
     //获取要修改的userid数组
-    var targetUserIds = _.pluck(tasks , 'taskDefine');
+    var targetUserIds = _.map(tasks , 'taskDefine');
     //过滤掉userId非法数据(userId必须是一个字符串)
     targetUserIds = _.filter(targetUserIds , (userId) => typeof userId === 'string');
     //如果没有userIds，则不进行更新
@@ -614,7 +614,7 @@ AppUserStore.prototype.batchPushChangeGrantStatus = function(result) {
         return;
     }
     //获取要修改的userid数组
-    var targetUserIds = _.pluck(tasks , 'taskDefine');
+    var targetUserIds = _.map(tasks , 'taskDefine');
     //过滤掉userId非法数据(userId必须是一个字符串)
     targetUserIds = _.filter(targetUserIds , (userId) => typeof userId === 'string');
     //如果没有userIds，则不进行更新
@@ -687,7 +687,7 @@ AppUserStore.prototype.batchPushChangeGrantPeriod = function(result) {
         return;
     }
     //获取要修改的userid数组
-    var targetUserIds = _.pluck(tasks , 'taskDefine');
+    var targetUserIds = _.map(tasks , 'taskDefine');
     //过滤掉userId非法数据(userId必须是一个字符串)
     targetUserIds = _.filter(targetUserIds , (userId) => typeof userId === 'string');
     //如果没有userIds，则不进行更新
@@ -761,7 +761,7 @@ AppUserStore.prototype.batchPushChangeGrantDelay = function(result) {
         return;
     }
     //获取要修改的userid数组
-    var targetUserIds = _.pluck(tasks , 'taskDefine');
+    var targetUserIds = _.map(tasks , 'taskDefine');
     //过滤掉userId非法数据(userId必须是一个字符串)
     targetUserIds = _.filter(targetUserIds , (userId) => typeof userId === 'string');
     //如果没有userIds，则不进行更新
@@ -836,7 +836,7 @@ AppUserStore.prototype.batchPushChangeGrantUpdate = function(result) {
         return;
     }
     //获取要修改的userid数组
-    var targetUserIds = _.pluck(tasks , 'taskDefine');
+    var targetUserIds = _.map(tasks , 'taskDefine');
     //过滤掉userId非法数据(userId必须是一个字符串)
     targetUserIds = _.filter(targetUserIds , (userId) => typeof userId === 'string');
     //如果没有userIds，则不进行更新
@@ -1075,7 +1075,7 @@ AppUserStore.prototype.batchPushChangeUserCreate = function(result) {
             //是否禁用
             var is_disabled = '';
             if(/^\d+$/.test(app.status)) {
-                is_disabled = app.status == '1' ? 'false' : 'true';
+                is_disabled = app.status === '1' ? 'false' : 'true';
             }
             //生成应用对象
             var newApp = {

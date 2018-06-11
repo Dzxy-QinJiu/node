@@ -41,11 +41,11 @@ var BarChart = React.createClass({
         return {
             show: true,
             right: this.props.legendRight,
-            data: _.pluck(this.props.legend , 'name')
+            data: _.map(this.props.legend , 'name')
         };
     },
     getCategorys: function() {
-        return _.pluck(this.props.list , 'name');
+        return _.map(this.props.list , 'name');
     },
     getSeries: function() {
         var _this = this;
@@ -57,7 +57,7 @@ var BarChart = React.createClass({
                 stack: 'stack',
                 barMaxWidth: 40,
                 barMinWidth: 4,
-                data: _.pluck(_this.props.list , legendInfo.key)
+                data: _.map(_this.props.list , legendInfo.key)
             };
             series.push(line);
         });
@@ -155,7 +155,7 @@ var BarChart = React.createClass({
                 var seriesName = obj.seriesName;
                 let timeDesc = Intl.get('operation.report.time.duration','至{time}为止',{time: _this.props.endDate});
                 if(_this.props.startDate){
-                    if(_this.props.startDate == _this.props.endDate) {
+                    if(_this.props.startDate === _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     }else{
                         timeDesc = _this.props.startDate + Intl.get('common.time.connector','至') + _this.props.endDate;
@@ -197,7 +197,7 @@ var BarChart = React.createClass({
                 this.echartInstance.on('click', params => {
                     const jumpProps = _this.props.getJumpProps();
                     let filterVal = params.name;
-                    if(jumpProps && jumpProps.query && jumpProps.query.analysis_filter_field == 'sales_id'){
+                    if(jumpProps && jumpProps.query && jumpProps.query.analysis_filter_field === 'sales_id'){
                         filterVal = _this.props.getSaleIdByName(params.name);
                     }
                     let query = {

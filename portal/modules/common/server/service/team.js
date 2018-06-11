@@ -3,7 +3,7 @@
  */
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-let _ = require('underscore');
+let _ = require('lodash');
 
 /**
  * 根据团队id获取团队下的成员列表

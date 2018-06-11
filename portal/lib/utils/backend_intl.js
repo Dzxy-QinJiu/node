@@ -6,7 +6,7 @@
 import IntlMessageFormatWrap from './intlMessageFormatWrap';
 import osLocale from 'os-locale';
 import Local from './local';
-import _ from 'underscore';
+import _ from 'lodash';
 
 class BackendIntl {
     //langReq：传入的req或lang,默认为系统的语言环境

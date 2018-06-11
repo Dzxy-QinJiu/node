@@ -1,5 +1,5 @@
 const restHandler = require('../common/rest');
-const _ = require('underscore');
+const _ = require('lodash');
 const moment = require('moment');
 import Intl from '../../../public/intl/intl';
 import { DATE_FORMAT, CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS } from '../consts';
@@ -208,7 +208,7 @@ exports.exportData = function(req, res, next) {
 
     //执行导出
     function doExport(type, columns, result) {
-        const columnTitles = _.pluck(columns, 'title');
+        const columnTitles = _.map(columns, 'title');
         let fileName = 'repayment';
         const isContract = ['sell', 'buy'].indexOf(type) > -1;
 

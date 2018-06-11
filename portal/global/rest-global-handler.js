@@ -4,7 +4,7 @@
  */
 var userAuthRestEmitter = require('ant-auth-request').userAuthRestEmitter;
 var auth = require('../lib/utils/auth');
-var _ = require('underscore');
+var _ = require('lodash');
 var errors = require('ant-auth-request').constUtilErrors;
 //发送到界面的错误信息
 var UI_CONST = require('../lib/utils/request-error-util');
@@ -35,9 +35,9 @@ userAuthRestEmitter.on('timeout', function(req, res, data) {//rest请求超时
     user.auth.refresh_token = newToken.refresh_token;
     auth.saveUserInfo(req, user);
 }).on(errors.GLOBAL_ERROR, function(req, res, error) {//error 标示不同的错误类型
-    if (error == errors.LOGIN_ONLY_ONE) {
+    if (error === errors.LOGIN_ONLY_ONE) {
         cleanAuthAndSendData(req, res, UI_CONST.LOGIN_ONLY_ONE);//被他人踢出，只允许1人登录时
-    } else if (error == errors.KICKED_BY_ADMIN) {
+    } else if (error === errors.KICKED_BY_ADMIN) {
         cleanAuthAndSendData(req, res, UI_CONST.KICKED_BY_ADMIN);//被管理员踢出
     } else {
         cleanAuthAndSendData(req, res, UI_CONST.TOKEN_EXPIRED);//刷新token失败,token过期，token不存在，或已退出

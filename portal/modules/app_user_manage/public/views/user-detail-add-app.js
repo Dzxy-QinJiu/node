@@ -105,7 +105,7 @@ var UserDetailAddApp = React.createClass({
             //添加申请延期块
             if(_this.state.multipleSubType === 'grant_delay') {
                 //向data中添加delay字段
-                if (formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE) {
+                if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
                     result.end_date = formData.delayDeadlineTime;
                 } else {
                     let delayMillis = _this.getDelayTimeMillis();
@@ -322,7 +322,7 @@ var UserDetailAddApp = React.createClass({
             UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.select.user.tip', '请在用户列表中选择用户'));
         }
         //当前能够选中的应用列表
-        var currentAppIdList = _.pluck(this.getBatchAppJsonList() , 'app_id');
+        var currentAppIdList = _.map(this.getBatchAppJsonList() , 'app_id');
         //已经选中的应用列表
         var selectedAppIdList = this.state.formData.batchSelectedApps;
         //查看是否需要移除一部分不能选择的数据
@@ -330,7 +330,7 @@ var UserDetailAddApp = React.createClass({
             return currentAppIdList.indexOf(appId) >= 0;
         });
         //如果过滤完了之后，发现应用变了，则使用新的数据
-        if(newSelectedAppIdList.join(',') != selectedAppIdList.join(',')) {
+        if(newSelectedAppIdList.join(',') !== selectedAppIdList.join(',')) {
             UserDetailAddAppAction.batchAppChange(newSelectedAppIdList);
         }
     },
@@ -703,7 +703,7 @@ var UserDetailAddApp = React.createClass({
                 <FormItem
                     label={Intl.get('user.batch.open.type', '开通类型')}
                     labelCol={labelCol}
-                    wrapperCol={{span: ((language.lan() == 'es' || language.lan() == 'en') ? 18 : 16)}}
+                    wrapperCol={{span: ((language.lan() === 'es' || language.lan() === 'en') ? 18 : 16)}}
                 >
                     <CustomRadioGroup
                         options={options}
@@ -960,9 +960,9 @@ var UserDetailAddApp = React.createClass({
             return null;
         }
         var isSales = privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
-        var divWidth = (language.lan() == 'zh') ? '80px' : '74px';
+        var divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
-        if (this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE) {
+        if (this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
             label = Intl.get(' user.time.end', '到期时间');
         } else {
             label = Intl.get('common.delay.time', '延期时间');
@@ -976,7 +976,7 @@ var UserDetailAddApp = React.createClass({
                         labelCol={labelCol}
                         wrapperCol={{span: 20}}
                     >
-                        {this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE ? (
+                        {this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE ? (
                             <DatePicker placeholder={Intl.get('my.app.change.expire.time.placeholder', '请选择到期时间')}
                                 onChange={this.setDelayDeadlineTime}
                                 disabledDate={this.disabledDate}

@@ -7,7 +7,7 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var salesObj = require('../dto/salesObj');
 var EventEmitter = require('events').EventEmitter;
 var Promise = require('bluebird');
-var _ = require('underscore');
+var _ = require('lodash');
 import querystring from 'querystring';
 var restApis = {
     //获取销售团队

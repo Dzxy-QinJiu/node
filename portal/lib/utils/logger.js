@@ -1,6 +1,6 @@
 var log4js = require('log4js')
     , loggerConfig = require('../../../conf/logger')
-    , _ = require('underscore')
+    , _ = require('lodash')
     , fs = require('fs');
 
 log4js.configure(loggerConfig.log4js);
@@ -16,11 +16,11 @@ function getLogger(logId) {
     }
     var logger = log4js.getLogger(logId);
     //如果没有对应的logger，使用oplateWeb的logger
-    if (logger != null) {
+    if (logger !== null) {
         var logConfig = _.find(loggerConfig.log4js.appenders, function(item) {
             return item.category === logId;
         });
-        if (logConfig != null) {
+        if (logConfig !== null) {
             logger.setLevel(logConfig.logLevel);
         } else {
             throw 'no logger with logId : ' + logId + ' found';

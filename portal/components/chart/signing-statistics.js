@@ -138,7 +138,7 @@ class SigningStatistics extends React.Component {
                 row1 = row1.concat(['', column.title, '']);
             }
 
-            row2 = row2.concat( _.pluck(column.children, 'title') );
+            row2 = row2.concat( _.map(column.children, 'title') );
         });
 
         rows.push(row1, row2);

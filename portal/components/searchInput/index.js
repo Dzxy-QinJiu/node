@@ -80,8 +80,8 @@ const SearchInput = React.createClass({
 
         if (this.props.type === 'select') {
             const searchFields = this.props.searchFields;
-            const names = _.pluck(searchFields, 'name');
-            const fields = _.pluck(searchFields, 'field');
+            const names = _.map(searchFields, 'name');
+            const fields = _.map(searchFields, 'field');
             let placeholder = this.props.searchPlaceholder;
             if (!placeholder && names.length) {
                 placeholder = names.length === 1 ? names[0] : names.join(' / ');

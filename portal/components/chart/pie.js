@@ -45,7 +45,7 @@ var PieChart = React.createClass({
         if (!legend) {
             const data = this.props.dataField ? this.props.chartData[this.props.dataField] : this.props.chartData;
     
-            legend = _.pluck(data, 'name');
+            legend = _.map(data, 'name');
             const subField = this.props.subField;
             if (subField) {
                 const subLegend = _.chain(data).pluck(subField).flatten().pluck('name').value();

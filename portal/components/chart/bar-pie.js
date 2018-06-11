@@ -110,7 +110,7 @@ class AntcBarPieChart extends React.Component {
         if (!legend) {
             const chartData = this.getChartData();
     
-            legend = _.pluck(chartData, 'name');
+            legend = _.map(chartData, 'name');
         }
         return legend;
     }

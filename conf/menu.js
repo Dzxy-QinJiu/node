@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 //后端国际化
 var BackendIntl = require('../portal/lib/utils/backend_intl');
 class LeftMenuClass {

@@ -1,6 +1,6 @@
 var Q = require('q');
 var UserDto = require('./user-dto');
-var _ = require('underscore');
+var _ = require('lodash');
 /*
  *
  * user

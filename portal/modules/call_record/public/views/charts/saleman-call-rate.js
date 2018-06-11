@@ -50,7 +50,7 @@ var PieChart = React.createClass({
     },
     getSeries: function() {
         var list = this.props.dataList || [];
-        var legend = _.pluck(this.props.dataList, 'name') || [];
+        var legend = _.map(this.props.dataList, 'name') || [];
         return legend.map((legendName,idx) => {
             return {
                 name: legendName,
@@ -68,7 +68,7 @@ var PieChart = React.createClass({
                 orient: 'vertical',
                 right: '2%',
                 top: '2%',
-                data: _.pluck(this.props.dataList, 'name')
+                data: _.map(this.props.dataList, 'name')
             },
 
             series: [

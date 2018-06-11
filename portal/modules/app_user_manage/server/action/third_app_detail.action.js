@@ -1,6 +1,6 @@
 var ThirdAppService = require('../service/third_app_detail.service');
 var extend = require('extend');
-var _ = require('underscore');
+var _ = require('lodash');
 const serviceHandler = function(service) {
     return function(req, res) {
         service(req, res).on('success', function(data) {
@@ -12,7 +12,7 @@ const serviceHandler = function(service) {
 };
 
 _.each(ThirdAppService, function(value, key) {
-    if (key != 'getAppConfigList') {
+    if (key !== 'getAppConfigList') {
         exports[key] = serviceHandler(value);
     }
 });

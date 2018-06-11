@@ -293,12 +293,12 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     let subData = data[0] && data[0].data;
                     if (!subData) return [];
 
-                    thead = thead.concat(_.pluck(subData, 'name'));
+                    thead = thead.concat(_.map(subData, 'name'));
                     csvData.push(thead);
                     _.each(data, dataItem => {
                         const appName = dataItem.app_name || Intl.get('oplate.user.analysis.22', '综合');
                         let tr = [appName];
-                        tr = tr.concat(_.pluck(dataItem.data, 'value'));
+                        tr = tr.concat(_.map(dataItem.data, 'value'));
                         csvData.push(tr);
                     });
                     return csvData;
@@ -540,7 +540,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
 
                 const weekData = _.groupBy(data, dataItem => dataItem.week);
                 _.each(weekData, (weekDataItem, index) => {
-                    let tr = _.pluck(weekDataItem, 'count');
+                    let tr = _.map(weekDataItem, 'count');
                     tr.unshift(WEEKDAY[index]);
                     csvData.push(tr);
                 });

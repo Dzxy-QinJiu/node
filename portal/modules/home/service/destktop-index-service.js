@@ -2,7 +2,7 @@ var path = require('path');
 var LeftMenus = require(path.join(config_root_path, 'menu.js'));
 var auth = require(path.join(portal_root_path, './lib/utils/auth'));
 var treeWalk = require('tree-walk');
-var _ = require('underscore');
+var _ = require('lodash');
 var mapToObj = require(path.join(portal_root_path, './lib/utils/mapToObj'));
 var fs = require('fs');
 var request = require('request');
@@ -302,9 +302,9 @@ function getIsCommonSalesByTeams(userId, teamTreeList) {
         //没有下级团队时
         if (!hasChildGroups) {
             //是否是销售主管的判断
-            let isOwner = myTeam.owner_id && myTeam.owner_id == userId ? true : false;
+            let isOwner = myTeam.owner_id && myTeam.owner_id === userId ? true : false;
             //当前销售是团队的舆情秘书
-            let isManager = _.isArray(myTeam.manager_ids) && myTeam.manager_ids.indexOf(userId) != -1;
+            let isManager = _.isArray(myTeam.manager_ids) && myTeam.manager_ids.indexOf(userId) !== -1;
             //不是销售主管也不是舆情秘书的即为普通销售
             if (!isOwner && !isManager) {
                 isCommonSales = true;
