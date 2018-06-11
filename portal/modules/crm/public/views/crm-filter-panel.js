@@ -87,7 +87,7 @@ const CrmFilterPanel = React.createClass({
         const curSelectedStages = this.state.condition.sales_opportunities[0].sale_stages;
         let newSelectedStages = getSelected(curSelectedStages, stage);
         //未知的处理
-        if (stage == UNKNOWN || curSelectedStages == UNKNOWN) {
+        if (stage === UNKNOWN || curSelectedStages === UNKNOWN) {
             newSelectedStages = stage;
         } else {
             newSelectedStages = getSelected(curSelectedStages, stage);
@@ -133,7 +133,7 @@ const CrmFilterPanel = React.createClass({
         if (tag && labels) {
             //如果之前处于选中状态则取消选择
             if (labels.indexOf(tag) > -1) {
-                selectedTags = _.filter(labels, label => label != tag);
+                selectedTags = _.filter(labels, label => label !== tag);
                 if (selectedTags.length === 0) {//都取消选择后，选中全部
                     selectedTags = [''];
                 }
@@ -147,7 +147,7 @@ const CrmFilterPanel = React.createClass({
                     //过滤掉”未打标签的客户“
                     labels = _.filter(labels, label => label !== Intl.get('crm.tag.unknown', '未打标签的客户'));
                     selectedTags = [].concat(labels);
-                    selectedTags = _.filter(selectedTags, item => item != '');
+                    selectedTags = _.filter(selectedTags, item => item !== '');
                     selectedTags.push(tag);
                 }
             }
@@ -209,7 +209,7 @@ const CrmFilterPanel = React.createClass({
         const curSelectedIndustrys = this.state.condition.industry;
         let newSelectedIndustrys = '';
         //未知的处理
-        if (industry == UNKNOWN || curSelectedIndustrys == UNKNOWN) {
+        if (industry === UNKNOWN || curSelectedIndustrys === UNKNOWN) {
             newSelectedIndustrys = industry;
         } else {
             newSelectedIndustrys = getSelected(curSelectedIndustrys, industry);
@@ -226,7 +226,7 @@ const CrmFilterPanel = React.createClass({
         const curSelectedProvince = this.state.condition.province;
         let newSelectedProvince = '';
         //未知的处理
-        if (province == UNKNOWN || curSelectedProvince == UNKNOWN) {
+        if (province === UNKNOWN || curSelectedProvince === UNKNOWN) {
             newSelectedProvince = province;
         } else {
             newSelectedProvince = getSelected(curSelectedProvince, province);
@@ -280,7 +280,7 @@ const CrmFilterPanel = React.createClass({
     },
     render: function() {
         const appListJsx = this.state.appList.map((app, idx) => {
-            let className = app.client_id == this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
+            let className = app.client_id === this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
             return <li key={idx} onClick={this.appSelected.bind(this, app.client_id)}
                 className={className}>{app.client_name}</li>;
         });
@@ -352,7 +352,7 @@ const CrmFilterPanel = React.createClass({
                             </dd>
                         </dl>
                     )}
-                    {teamListJsx.length == 1 ? null : (
+                    {teamListJsx.length === 1 ? null : (
                         <dl>
                             <dt><ReactIntl.FormattedMessage id="user.sales.team" defaultMessage="销售团队"/> :</dt>
                             <dd>

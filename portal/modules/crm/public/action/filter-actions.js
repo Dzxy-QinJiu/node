@@ -1,4 +1,15 @@
 var FilterAjax = require('../ajax/filter-ajax');
+//遍历团队树
+function traversingTeamTree(treeList,list) {
+    if(_.isArray(treeList) && treeList.length){
+        _.each(treeList, team => {
+            list.push({group_id: team.group_id,group_name: team.group_name});
+            if(team.child_groups){
+                traversingTeamTree(team.child_groups,list);
+            }
+        });
+    }
+}
 
 function FilterAction() {
     this.generateActions(
@@ -35,10 +46,14 @@ function FilterAction() {
 
     this.getTeamList = function(cb) {
         var _this = this;
-        FilterAjax.getTeamList().then(function(list) {
-            list = _.isArray(list) ? list : [];
+        FilterAjax.getTeamList().then(function(treeList) {
+            let list = [];
+            if(_.isArray(treeList) && treeList.length >= 1){
+                //遍历团队树
+                traversingTeamTree(treeList,list);
+            }
             list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
-            _this.dispatch(list);
+            _this.dispatch({list: list, teamTreeList: treeList});
             if (_.isFunction(cb)) cb(list);
         }, function(errorMsg) {
             // eslint-disable-next-line no-console
