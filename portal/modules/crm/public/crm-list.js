@@ -473,43 +473,39 @@ var Crm = React.createClass({
         this.setState(this.state);
     },
     /**
-     * @param teamTreeList 所有团队的团队树
-     * @param totalRequestTeams 实际向后端传的团队列表
+     * @param totalRequestTeams 向后端发请求的所有团队id的数组
+     * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
      * */
-    traversingTeamTree: function(teamTreeList, totalRequestTeams, isSelectedTeamChild) {
-        if (_.isArray(teamTreeList) && teamTreeList.length) {
-            //遍历团队树
-            _.each(teamTreeList, (team) => {
-                if (_.indexOf(totalRequestTeams, team.group_id) > -1 || isSelectedTeamChild) {
-                    //如果上级团队的id和列表选中的id一致，把下属团队的id都传到后端
-                    if (_.isArray(team.child_groups) && team.child_groups.length) {
-                        _.each(team.child_groups, (childTeam) => {
-                            if (_.indexOf(totalRequestTeams, childTeam.group_id) === -1) {
-                                totalRequestTeams.push(childTeam.group_id);
-                            }
-                        });
-                        //下属团队的id也要传到后端，不需要再进行判断了
-                        this.traversingTeamTree(team.child_groups, totalRequestTeams, true);
-                    }else if (_.indexOf(totalRequestTeams, team.group_id) === -1){
-                        totalRequestTeams.push(team.group_id);
-                    }
-                } else {
-                    if (_.isArray(team.child_groups) && team.child_groups.length) {
-                        _.each(team.child_groups, (childTeam) => {
-                            if ((_.indexOf(totalRequestTeams, childTeam.group_id) > -1)) {
-                                //下属团队的id也要传到后端，不需要再进行判断了
-                                this.traversingTeamTree(childTeam.child_groups, totalRequestTeams, true);
-                            } else {
-                                //对下属团队是否符合传到后端的条件再进行判断
-                                this.traversingTeamTree(childTeam.child_groups, totalRequestTeams);
-                            }
-                        });
+    //获取要传到后端的所有团队id的数组
+    getRequestTeamIds: function(totalRequestTeams, teamTotalArr){
+        _.each(teamTotalArr,(team) => {
+            if (_.indexOf(totalRequestTeams, team.group_id) === -1){
+                totalRequestTeams.push(team.group_id);
+            }
+            if(team.child_groups){
+                this.getRequestTeamIds(totalRequestTeams,team.child_groups);
+            }
+        });
 
-                    }
+    },
+    /**
+     * @param teamTreeList 所有团队的团队树
+     * @param selectedTeams 实际选中的团队的id列表
+     * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
+     * */
+    traversingTeamTree: function(teamTreeList,selectedTeams,teamTotalArr) {
+        if(_.isArray(teamTreeList) && teamTreeList.length){
+            _.each(teamTreeList, team => {
+                if (selectedTeams === team.group_id){
+                    teamTotalArr.push(team);
+                }
+                if(team.child_groups){
+                    this.traversingTeamTree(team.child_groups,selectedTeams,teamTotalArr);
                 }
             });
         }
     }
+
     //查询客户
     //reset参数若为true，则重新从第一页获取
     , search: function(reset) {
@@ -650,7 +646,13 @@ var Crm = React.createClass({
         }
         //实际要传到后端的团队,默认是选中的团队
         var totalRequestTeams = JSON.parse(JSON.stringify(selectedTeams));
-        this.traversingTeamTree(teamTreeList,totalRequestTeams);
+        var teamTotalArr = [];
+        //跟据实际选中的id，获取包含下级团队的所有团队详情的列表teamTotalArr
+        _.each(selectedTeams,(teamId) => {
+            this.traversingTeamTree(teamTreeList,teamId,teamTotalArr);
+        });
+        //跟据包含下级团队的所有团队详情的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+        this.getRequestTeamIds(totalRequestTeams, teamTotalArr);
         if (totalRequestTeams.length){
             condition.sales_team_id = totalRequestTeams.join(',');
         }else{
