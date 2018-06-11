@@ -472,13 +472,15 @@ var Crm = React.createClass({
         this.state.isAddFlag = false;
         this.setState(this.state);
     },
-    traversingTeamTree: function(teamTreeList, totalRequestTeams, isAddChildTeam) {
-        //teamTreeList 所有团队的团队树
-        //totalRequestTeams 实际向后端传的团队列表
+    /**
+     * @param teamTreeList 所有团队的团队树
+     * @param totalRequestTeams 实际向后端传的团队列表
+     * */
+    traversingTeamTree: function(teamTreeList, totalRequestTeams, isSelectedTeamChild) {
         if (_.isArray(teamTreeList) && teamTreeList.length) {
             //遍历团队树
             _.each(teamTreeList, (team) => {
-                if (_.indexOf(totalRequestTeams, team.group_id) > -1 || isAddChildTeam) {
+                if (_.indexOf(totalRequestTeams, team.group_id) > -1 || isSelectedTeamChild) {
                     //如果上级团队的id和列表选中的id一致，把下属团队的id都传到后端
                     if (_.isArray(team.child_groups) && team.child_groups.length) {
                         _.each(team.child_groups, (childTeam) => {
