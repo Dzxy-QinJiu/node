@@ -640,6 +640,7 @@ const ApplyUserForm = React.createClass({
                 saveErrorMsg={this.state.submitErrorMsg}
                 handleSubmit={this.handleSubmit.bind(this)}
                 handleCancel={this.handleCancel.bind(this)}
+                okBtnText={Intl.get('common.sure', '确定')}
             />);
     }
 });

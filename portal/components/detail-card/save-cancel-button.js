@@ -14,10 +14,10 @@ class SaveCancelButton extends React.Component {
             <div className="button-container">
                 <Button className="button-save" type="primary"
                     onClick={this.props.handleSubmit.bind(this)}>
-                    {Intl.get('common.save', '保存')}
+                    {this.props.okBtnText ? this.props.okBtnText : Intl.get('common.save', '保存')}
                 </Button>
                 <Button className="button-cancel" onClick={this.props.handleCancel.bind(this)}>
-                    {Intl.get('common.cancel', '取消')}
+                    {this.props.cancelBtnText ? this.props.cancelBtnText : Intl.get('common.cancel', '取消')}
                 </Button>
                 {this.props.loading ? (
                     <Icon type="loading" className="save-loading"/>) : this.props.saveErrorMsg ? (
@@ -30,6 +30,8 @@ class SaveCancelButton extends React.Component {
 SaveCancelButton.defaultProps = {
     loading: false,//是否正在保存
     saveErrorMsg: '',//保存的错误提示
+    okBtnText: '',//保存按钮上的描述
+    cancelBtnText: '',//取消按钮上的描述
     handleSubmit: function() {
     },//保存的处理
     handleCancel: function() {
