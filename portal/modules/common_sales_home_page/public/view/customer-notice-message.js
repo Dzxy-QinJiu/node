@@ -11,6 +11,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import notificationAjax from 'MOD_DIR/notification/public/ajax/notification-ajax';
 import Trace from 'LIB_DIR/trace';
 import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
+import {ALL_LISTS_TYPE} from 'PUB_DIR/sources/utils/consts';
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {
         super(props);
@@ -45,8 +46,8 @@ class CustomerNoticeMessage extends React.Component {
                 }
                 {customerMessage.qualify_label ? (
                     <Tag className={crmUtil.getCrmLabelCls(customerMessage.qualify_label)}>
-                        {customerMessage.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                            customerMessage.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null}
+                        {customerMessage.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                            customerMessage.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null}
             </span>
         );
     }
@@ -59,6 +60,7 @@ class CustomerNoticeMessage extends React.Component {
             showList = customerMessage.detail;
         }
         return showList.map((item) => {
+            let isLoginFailed = item.type === ALL_LISTS_TYPE.LOGIN_FAILED;
             return <div className="system-notice-item">
                 <span className="system-notice-time">
                     {getRelativeTime(item.create_time)}
@@ -67,7 +69,8 @@ class CustomerNoticeMessage extends React.Component {
                 <span className="user-name"
                     onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</span>
                 {item.app_name ?
-                    <span>{Intl.get('notification.system.login', '登录了') + item.app_name}</span> : ''}
+                    <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
+                {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
             </div>;
         });
     }
@@ -103,6 +106,7 @@ class CustomerNoticeMessage extends React.Component {
         notice.showMore = !notice.showMore;
         this.setState({customerNoticeMessage: this.state.customerNoticeMessage});
     }
+
     render() {
         var customerMessage = this.state.customerNoticeMessage;
         var customer_name = customerMessage.customer_name ? customerMessage.customer_name : customerMessage.name;
@@ -113,7 +117,8 @@ class CustomerNoticeMessage extends React.Component {
             <div className="customer-notice-message-container customer-detail-item">
                 <div className="customer-notice-content">
                     <div className="customer-title">
-                        <span className="sale-home-customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}
+                        <span className="sale-home-customer-name"
+                            onClick={this.openCustomerDetail.bind(this, customer_id)}
                             data-tracename="打开客户详情">
                             {this.props.isRecentLoginCustomer ? this.renderTagsContent(customerMessage) : null}
                             {customer_name}
