@@ -111,6 +111,8 @@ function listenSystemNotice(notice) {
         let tipContent = notice.customer_name;//xxx（客户）
         //是否是异地登录的类型
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
+        //登录失败
+        let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
         //异地登录
         if (isOffsetLogin) {
             //在 xxx (地名)
@@ -122,7 +124,11 @@ function listenSystemNotice(notice) {
         }
         if (notice.app_name) {
             //登录了 xxx (应用)
-            tipContent += Intl.get('notification.system.login', '登录了') + notice.app_name;
+            tipContent += (isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name;
+        }
+        if (isLoginFailed) {
+            //密码或验证码错误
+            tipContent += ' , ' + Intl.get('notification.login.password.error', '报密码或验证码错误');
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {
