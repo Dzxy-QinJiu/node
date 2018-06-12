@@ -629,10 +629,16 @@ const ApplyUserForm = React.createClass({
         return [];
     },
     render: function() {
-        let title = this.props.userType === Intl.get('common.trial.official', '正式用户') ?
-            Intl.get('user.apply.user.official', '申请签约用户') : Intl.get('common.apply.user.trial', '申请试用用户');
+        let title = '';
+        if(this.props.userType){
+            if(this.props.userType === Intl.get('common.trial.official', '正式用户')){
+                title = Intl.get('user.apply.user.official', '申请签约用户');
+            }else{
+                title = Intl.get('common.apply.user.trial', '申请试用用户');
+            }
+        }
         return (
-            <DetailCard titl e={title}
+            <DetailCard title={title}
                 className="apply-user-form-container"
                 content={this.renderApplyUserForm()}
                 isEdit={true}
