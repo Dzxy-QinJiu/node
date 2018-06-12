@@ -111,29 +111,29 @@ class WillExpireUserList extends React.Component {
                 //有到期用户提醒
                 return (
                     <div>
-                        {!expireUserLists['day'] ? null :
+                        {_.isArray(expireUserLists['day']) && expireUserLists['day'].length ?
                             <div className="tipitem">
                                 <div className="tiptitle">{Intl.get('user.time.today1', '今日即将到期的试用用户')}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['day'])}
                                 </div>
-                            </div>
+                            </div> : null
                         }
-                        {!expireUserLists['week'] ? null :
+                        {_.isArray(expireUserLists['week']) && expireUserLists['week'].length ?
                             <div className="tipitem">
                                 <div className="tiptitle">{Intl.get('user.time.this.week', '本周即将到期的试用用户')}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['week'])}
                                 </div>
-                            </div>
+                            </div> : null
                         }
-                        {!expireUserLists['half_year'] ? null :
+                        {_.isArray(expireUserLists['half_year']) && expireUserLists['half_year'].length ?
                             <div className="tipitem">
                                 <div className="tiptitle">{Intl.get('user.time.half.year', '半年内即将到期的签约用户')}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['half_year'])}
                                 </div>
-                            </div>
+                            </div> : null
                         }
                     </div>
                 );
