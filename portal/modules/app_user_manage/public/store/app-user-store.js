@@ -501,7 +501,7 @@ AppUserStore.prototype.batchPushChangeCustomer = function(result) {
         return;
     }
     //对数组做哈希，加快遍历速度
-    var targetUserIdsMap = _.indexBy(targetUserIds);
+    var targetUserIdsMap = _.keyBy(targetUserIds);
     //如果没有customer_id，则不进行更新
     if(!taskParams.data || !taskParams.data.customer_id) {
         return;
@@ -561,7 +561,7 @@ AppUserStore.prototype.batchPushChangeGrantType = function(result) {
         return;
     }
     //对数组做哈希，加快遍历速度
-    var targetUserIdsMap = _.indexBy(targetUserIds);
+    var targetUserIdsMap = _.keyBy(targetUserIds);
     //获取要修改的应用
     var targetAppIds = taskParams.app_ids;
     //保证应用id是字符串
@@ -622,7 +622,7 @@ AppUserStore.prototype.batchPushChangeGrantStatus = function(result) {
         return;
     }
     //对数组做哈希，加快遍历速度
-    var targetUserIdsMap = _.indexBy(targetUserIds);
+    var targetUserIdsMap = _.keyBy(targetUserIds);
     //获取要修改的应用
     var targetAppIds = taskParams.app_ids;
     //保证应用id是字符串
@@ -695,7 +695,7 @@ AppUserStore.prototype.batchPushChangeGrantPeriod = function(result) {
         return;
     }
     //对数组做哈希，加快遍历速度
-    var targetUserIdsMap = _.indexBy(targetUserIds);
+    var targetUserIdsMap = _.keyBy(targetUserIds);
     //获取要修改的应用
     var targetAppIds = taskParams.app_ids;
     //保证应用id是字符串
@@ -769,7 +769,7 @@ AppUserStore.prototype.batchPushChangeGrantDelay = function(result) {
         return;
     }
     //对数组做哈希，加快遍历速度
-    var targetUserIdsMap = _.indexBy(targetUserIds);
+    var targetUserIdsMap = _.keyBy(targetUserIds);
     //获取要修改的应用
     var targetAppIds = taskParams.app_ids;
     //保证应用id是字符串
@@ -844,7 +844,7 @@ AppUserStore.prototype.batchPushChangeGrantUpdate = function(result) {
         return;
     }
     //对数组做哈希，加快遍历速度
-    var targetUserIdsMap = _.indexBy(targetUserIds);
+    var targetUserIdsMap = _.keyBy(targetUserIds);
     if(!_.isObject(taskParams.data)) {
         return;
     }

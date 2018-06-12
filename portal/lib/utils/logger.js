@@ -1,7 +1,6 @@
 var log4js = require('log4js')
     , loggerConfig = require('../../../conf/logger')
-    , _ = require('lodash')
-    , fs = require('fs');
+    , _ = require('lodash');
 
 log4js.configure(loggerConfig.log4js);
 //获取logger的方法

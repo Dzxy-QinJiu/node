@@ -107,7 +107,7 @@ function getSidebarMenus(req) {
     values = _.map(values, function(item) {
         return item[0];
     });
-    var groups = _.indexBy(values, 'routePath');
+    var groups = _.keyBy(values, 'routePath');
     values = _.values(groups);
 
     var filteredGroupMap = {};

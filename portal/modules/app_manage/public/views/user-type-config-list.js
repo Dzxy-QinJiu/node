@@ -79,7 +79,7 @@ var UserTypeConfigList = React.createClass({
         var appId = this.props.appId;
         getRoleLists.getRoleList(appId).then(function(roleList) {
             //角色的map数据类型，为获取角色的名字做准备
-            roleMap = _.indexBy(roleList, 'role_id');
+            roleMap = _.keyBy(roleList, 'role_id');
             getRoleLists.getPermissionMap(appId).then(function(permissionList) {
                 //权限的map数据类型，为获取权限的名字做准备
                 permissionMap = _.chain(permissionList).pluck('permission_list').flatten().indexBy('permission_id').value();
@@ -115,7 +115,7 @@ var UserTypeConfigList = React.createClass({
     handlegetData: function(Msg, roleMap, permissionMap) {
         var _this = this;
         //页面展示数据map类型
-        var showDataByUserType = _.indexBy(_this.state.showData, 'user_type');
+        var showDataByUserType = _.keyBy(_this.state.showData, 'user_type');
         //真实数据
         var dataLists = [];
         //对后端返回的数据进行初步处理;去除上一个版本测试时创建的一些没用数据，加上角色权限的名称和开通周期属性

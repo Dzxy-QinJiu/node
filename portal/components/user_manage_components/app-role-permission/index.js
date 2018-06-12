@@ -61,7 +61,7 @@ var AppRolePermission = React.createClass({
         this.getPermissionsByAjax(app_id);
     },
     isMyApp: function() {
-        return _.any(this.state.myApps , (app) => app.app_id === this.props.app_id);
+        return _.some(this.state.myApps , (app) => app.app_id === this.props.app_id);
     },
     getMyApps: function() {
         //获取我的应用列表
@@ -275,7 +275,7 @@ var AppRolePermission = React.createClass({
         var selectedRolesList = state.selectedRolesList;
         if(selectedRolesList.indexOf(roleId) >= 0) {
             state.selectedRolesList = _.filter(selectedRolesList, (id) => {
-                return id != roleId;
+                return id !== roleId;
             });
         } else {
             selectedRolesList.push(roleId);
@@ -348,7 +348,7 @@ var AppRolePermission = React.createClass({
         }
         var selectedPermissionList = state.selectedPermissionList;
         if(selectedPermissionList.indexOf(permissionId) >= 0) {
-            state.selectedPermissionList = _.filter(selectedPermissionList , (id) => id != permissionId);
+            state.selectedPermissionList = _.filter(selectedPermissionList , (id) => id !== permissionId);
         } else {
             selectedPermissionList.push(permissionId);
         }

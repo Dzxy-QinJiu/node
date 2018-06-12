@@ -362,9 +362,9 @@ module.exports.startSocketio = function(nodeServer) {
             var sessionId = socket.request.sessionId;
             pushLogger.info('sessionID: ' + sessionId + ' 与浏览器断开连接');
             //遍历socketStore
-            _.any(socketStore, function(userArray, userId) {
+            _.some(socketStore, function(userArray, userId) {
                 //遍历userArray
-                return _.any(userArray, function(obj, idx) {
+                return _.some(userArray, function(obj, idx) {
                     //如果userArray中存在当前socket，删除
                     if (obj.sessionId === sessionId) {
                         userArray.splice(idx, 1);
