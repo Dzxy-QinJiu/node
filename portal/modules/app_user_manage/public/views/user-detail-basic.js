@@ -295,7 +295,7 @@ var UserDetailBasic = React.createClass({
     //获取应用列表段
     getAppsBlock: function() {
         var _this = this;
-        var maxWidthApp = _.max(this.state.initialUser.apps, function(app) {
+        var maxWidthApp = _.maxBy(this.state.initialUser.apps, function(app) {
             return measureText.measureTextWidth(app.app_name, 12);
         });
         var maxWidth = 0;

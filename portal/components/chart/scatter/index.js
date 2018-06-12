@@ -28,12 +28,8 @@ var ScatterChart = React.createClass({
         var hours = _.range(24);
         var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
         var data = this.props.list;
-        var dataMax = _.max(data, (item) => this.props.dataType === 'time' ? item.time : item.count);
-        //默认为0
-        var countMax = 0;
-        if (_.has(dataMax, 'time') || _.has(dataMax, 'count')) {
-            countMax = this.props.dataType === 'time' ? dataMax.time : dataMax.count;
-        }
+        var dataMax = _.maxBy(data, (item) => this.props.dataType === 'time' ? item.time : item.count);
+        var countMax = this.props.dataType === 'time' ? dataMax.time : dataMax.count;
         var _this = this;
         if (this.echartInstance) {
             packageTry(() => {
