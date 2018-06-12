@@ -64,7 +64,7 @@ import {Modal} from 'antd';
             $(this).val('');
         }).keydown(function(e) {
             //点击enter时的处理
-            if (e.keyCode == 13 && $captchaWrap.is(':hidden')) {
+            if (e.keyCode === 13 && $captchaWrap.is(':hidden')) {
                 $('#session-invalid-modal .modal-submit-btn').trigger('click');
             }
         });
@@ -73,7 +73,7 @@ import {Modal} from 'antd';
             $errorDiv.html('');
         }).keydown(function(e) {
             //点击enter时的处理
-            if (e.keyCode == 13) {
+            if (e.keyCode === 13) {
                 $('#session-invalid-modal .modal-submit-btn').trigger('click');
             }
         });
@@ -128,7 +128,7 @@ import {Modal} from 'antd';
                         url: callBackUrl + '?t=' + ticket + '&lang=' + window.Oplate.lang,
                         type: 'get',
                         success: loginSuccess,
-                        error: loginError
+                        error: loginError.bind(this, submitObj.username)
                     });
                 }).catch((data) => {
                 //渲染验证码
@@ -149,7 +149,7 @@ import {Modal} from 'antd';
                 type: 'post',
                 data: submitObj,
                 success: loginSuccess,
-                error: loginError
+                error: loginError.bind(this, submitObj.username)
             });
         }
     }
@@ -169,9 +169,9 @@ import {Modal} from 'antd';
     }
 
     //登录失败处理
-    function loginError(error) {
+    function loginError(username, error) {
         let errorMsg = error && error.responseJSON;
-        if (errorMsg == Intl.get('errorcode.39', '用户名或密码错误') || !errorMsg) {
+        if (errorMsg === Intl.get('errorcode.39', '用户名或密码错误') || !errorMsg) {
             errorMsg = Intl.get('login.password.error', '密码错误');
         }
         if (window.Oplate && window.Oplate.useSso) {
@@ -179,7 +179,7 @@ import {Modal} from 'antd';
             $('#session-invalid-modal .modal-submit-btn').html(Intl.get('retry.submit.again', '提交'));
         } else {
             //获取验证码
-            getLoginCaptcha(submitObj.username, errorMsg);
+            getLoginCaptcha(username, errorMsg);
         }
     }
 
@@ -245,7 +245,7 @@ import {Modal} from 'antd';
 
     //处理403错误请求（token过期）
     function handel403Ajax(xhr) {
-        if (xhr.responseJSON == UI_ERROR.TOKEN_EXPIRED) {
+        if (xhr.responseJSON === UI_ERROR.TOKEN_EXPIRED) {
             sendMessage && sendMessage(Intl.get('retry.token.status', 'status:403,Token过期'));
             window.location.href = '/login';
         }
@@ -299,10 +299,10 @@ import {Modal} from 'antd';
             break;
         case 403:
             //不允许多人登录被踢出的统一处理
-            if (xhr.responseJSON == UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON == UI_ERROR.KICKED_BY_ADMIN) {
+            if (xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON === UI_ERROR.KICKED_BY_ADMIN) {
                 let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
                 let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
-                handleReloginError((xhr.responseJSON == UI_ERROR.LOGIN_ONLY_ONE ) ? reloginError : kickedByAmdin);
+                handleReloginError((xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE ) ? reloginError : kickedByAmdin);
             } else {
                 handel403Ajax(xhr);
             }
@@ -313,7 +313,7 @@ import {Modal} from 'antd';
         }
     }
 
-    $(document).ajaxError(function(event, xhr, options, thrownError) {
+    $(document).ajaxError(function(event, xhr, options) {
         globalErrorHandler(xhr, options);
     });
 })();
