@@ -218,11 +218,13 @@ let SystemNotification = React.createClass({
         return showList.map((item) => {
             //是否是异地登录的类型
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
+            let isLoginFailed = item.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
             return <div className="system-notice-item">
                 <a onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</a>
                 {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
                 {item.app_name ?
-                    <span>{Intl.get('notification.system.login', '登录了') + item.app_name}</span> : ''}
+                    <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
+                {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
                 <span
                     className="system-notice-time">{moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
             </div>;

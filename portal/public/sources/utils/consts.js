@@ -47,14 +47,16 @@ export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
 export const SYSTEM_NOTICE_TYPES = {
     OFFSITE_LOGIN: 'illegalLocation',//异地登录
     DISABLE_CUSTOMER_LOGIN: 'appIllegal',//停用客户登录
-    FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin'//关注客户登录
+    FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin',//关注客户登录
+    LOGIN_FAILED: 'loginFailed',//登录失败
 };
 
 //系统消息对应的几种类型
 export const SYSTEM_NOTICE_TYPE_MAP = {
     'appIllegal': Intl.get('ketao.frontpage.illeagl.login', '停用客户登录'),
     'concerCustomerLogin': Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录'),
-    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录')
+    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录'),
+    'loginFailed': '登录失败'
 };
 
 export const NO_SELECT_FULL_OPTIONS = [

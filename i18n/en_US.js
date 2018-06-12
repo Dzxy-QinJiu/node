@@ -835,6 +835,7 @@ var en_US = {
     'notification.system.handled.set': 'Handle',//处理
     'notification.system.handled': 'Handled',//已处理
     'notification.system.untreated': 'Untreated',//未处理
+    'notification.login.password.error': 'Password or verification code error',//报密码或验证码错误
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
