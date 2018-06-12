@@ -84,7 +84,7 @@ function getRangeReqData(rangeParams, multiple) {
         }
         else {
             if (multiple) {
-                rangeParam = _.mapObject(rangeParam, value => value * multiple);
+                rangeParam = _.mapValues(rangeParam, value => value * multiple);
             }
             reqData.push(rangeParam);
         }
