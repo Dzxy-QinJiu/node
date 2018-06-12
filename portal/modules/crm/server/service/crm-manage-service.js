@@ -54,7 +54,7 @@ var crmRestApis = {
         //修改客户的详细地址
         updateDetailAddress: '/rest/customer/v2/customer/:url_type/detail_address',
         //关注或者取消关注某客户
-        updateInterest: '/rest/customer/v2/customer/:url_type/interest_member_ids ',
+        updateInterest: '/rest/customer/v2/customer/:url_type/interest_member_ids',
         //转出客户
         transferCustomer: '/rest/customer/v2/customer/:url_type/transfer'
     },

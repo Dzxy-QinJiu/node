@@ -1056,7 +1056,8 @@ var Crm = React.createClass({
     handleFocusCustomer: function(record) {
         //请求数据
         let interestObj = {
-            id: record.id
+            id: record.id,
+            type: 'customer_interest'
         };
         if (_.isArray(record.interest_member_ids) && record.interest_member_ids.length) {
             interestObj.user_id = '';
@@ -1070,21 +1071,21 @@ var Crm = React.createClass({
         if (customerArr) {
             customerArr.interest_member_ids = [interestObj.user_id];
         }
+        //如果当前筛选的是我关注的客户，在列表中取消关注后要在列表中删除该条客户
+        var condition = this.state.condition;
+        var curPageCustomers = this.state.curPageCustomers;
+        var initalCurPageCustomers = JSON.parse(JSON.stringify(curPageCustomers));
+        if (condition && _.isArray(condition.interest_member_ids) && condition.interest_member_ids.length && !interestObj.user_id){
+            curPageCustomers = _.filter(curPageCustomers,(item) => {return item.id !== interestObj.id;});
+        }
         this.setState(
-            {curPageCustomers: this.state.curPageCustomers}
+            {curPageCustomers: curPageCustomers}
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
             if (errorMsg) {
-                //将星星的颜色修改回原来的状态
-                if (customerArr) {
-                    if (interestObj.user_id){
-                        customerArr.interest_member_ids = [];
-                    }else{
-                        customerArr.interest_member_ids = record.interest_member_ids;
-                    }
-                }
+                //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
                 this.setState(
-                    {curPageCustomers: this.state.curPageCustomers}
+                    {curPageCustomers: initalCurPageCustomers}
                 );
             }
         });
