@@ -65,7 +65,8 @@ const OTHER_FILTER_ITEMS = {
     NO_CONTACT_WAY: 'no_contact_way',//无联系方式的客户
     LAST_CALL_NO_RECORD: 'last_call_no_record',//最后联系但未写跟进记录的客户
     NO_RECORD_OVER_30DAYS: 'last_trace',//超30天未写跟进记录的客户
-    INTEREST: 'interest',//关注的客户
+    INTEREST_MEMBER_IDS: 'interest_member_ids',//被关注的客户
+    MY_INTERST: 'my_interest',//我关注的客户
     MULTI_ORDER: 'multi_order'//多个订单的客户
 };
 //标签选项下的特殊标签
@@ -539,6 +540,7 @@ var Crm = React.createClass({
         let term_fields = [];//需精确匹配的字段
         //未知行业,未知地域,未知销售阶段（未展示），未知联系方式(未展示)等处理
         let unexist = [];//存放未知行业、未知地域的数组
+        let exist = [];
         if (condition.industry && condition.industry.length) {
             //未知行业的处理
             if (condition.industry.indexOf(UNKNOWN) !== -1) {
@@ -689,8 +691,11 @@ var Crm = React.createClass({
         case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
             unexist.push('member_id');
             break;
-        case OTHER_FILTER_ITEMS.INTEREST://关注的客户
-            condition.interest = 'true';
+        case OTHER_FILTER_ITEMS.INTEREST_MEMBER_IDS://被关注的客户
+            exist.push('interest_member_ids');
+            break;
+        case OTHER_FILTER_ITEMS.MY_INTERST://我关注的客户
+            condition.interest_member_ids = [userData.getUserData().user_id];
             break;
         case OTHER_FILTER_ITEMS.MULTI_ORDER://多个订单的客户
             this.state.rangParams[0] = {
@@ -713,6 +718,9 @@ var Crm = React.createClass({
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;
+        }
+        if (exist.length > 0) {
+            condition.exist_fields = exist;
         }
         if (term_fields.length > 0) {//需精确匹配的字段
             condition.term_fields = term_fields;
@@ -1048,20 +1056,19 @@ var Crm = React.createClass({
     handleFocusCustomer: function(record) {
         //请求数据
         let interestObj = {
-            id: record.id,
-            type: 'customer_interest',
+            id: record.id
         };
-        if (record.interest === 'true') {
-            interestObj.interest = 'false';
+        if (_.isArray(record.interest_member_ids) && record.interest_member_ids.length) {
+            interestObj.user_id = '';
         } else {
-            interestObj.interest = 'true';
+            interestObj.user_id = userData.getUserData().user_id;
         }
         //先更改星星的颜色,再发请求，这样页面不会显的比较卡
         var customerArr = _.find(this.state.curPageCustomers, (customer) => {
             return record.id === customer.id;
         });
         if (customerArr) {
-            customerArr.interest = interestObj.interest;
+            customerArr.interest_member_ids = [interestObj.user_id];
         }
         this.setState(
             {curPageCustomers: this.state.curPageCustomers}
@@ -1070,7 +1077,11 @@ var Crm = React.createClass({
             if (errorMsg) {
                 //将星星的颜色修改回原来的状态
                 if (customerArr) {
-                    customerArr.interest = interestObj.interest === 'true' ? 'false' : 'true';
+                    if (interestObj.user_id){
+                        customerArr.interest_member_ids = [];
+                    }else{
+                        customerArr.interest_member_ids = record.interest_member_ids;
+                    }
                 }
                 this.setState(
                     {curPageCustomers: this.state.curPageCustomers}
@@ -1177,9 +1188,10 @@ var Crm = React.createClass({
                     });
 
                     const className = record.name_repeat ? 'customer-repeat customer_name' : 'customer_name';
+                    var isInterested = _.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, userData.getUserData().user_id) > -1 ? true : false;
                     var interestClassName = 'iconfont focus-customer';
-                    interestClassName += (record.interest === 'true' ? ' icon-interested' : ' icon-uninterested');
-                    var title = (record.interest === 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));
+                    interestClassName += (isInterested ? ' icon-interested' : ' icon-uninterested');
+                    var title = (isInterested === 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));
                     return (
                         <span>
                             <div className={className}>
