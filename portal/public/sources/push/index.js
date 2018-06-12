@@ -14,7 +14,6 @@ var socketEmitter = require('../../../public/sources/utils/emitters').socketEmit
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import Translate from '../../intl/i18nTemplate';
 import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
@@ -22,7 +21,6 @@ import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {message} from 'antd';
-const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 var NotificationType = {};
 var approveTipCount = 0;
 const TIMEOUTDELAY = {
@@ -176,12 +174,12 @@ function documentIsHidden() {
 }
 
 //获取申请用户的名称
-function getUserNames(message) {
+function getUserNames(replyMessage) {
     let userNames = '';
-    if (message.user_name) {
-        userNames = message.user_name;
-    } else if (message.user_names) {
-        userNames = JSON.parse(message.user_names);
+    if (replyMessage.user_name) {
+        userNames = replyMessage.user_name;
+    } else if (replyMessage.user_names) {
+        userNames = JSON.parse(replyMessage.user_names);
         if (_.isArray(userNames)) {
             userNames = userNames.join(',');
         }
@@ -250,7 +248,7 @@ function phoneEventListener(phonemsgObj) {
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
     const PHONE_STATUS = ['ALERT', 'ANSWERED', 'phone', 'call_back'];
     //过滤掉其他状态 只展示alert answered  phone状态的数据
-    if (hasPrivilege('CRM_LIST_CUSTOMERS') && PHONE_STATUS.indexOf(phonemsgObj.type) != -1) {
+    if (hasPrivilege('CRM_LIST_CUSTOMERS') && PHONE_STATUS.indexOf(phonemsgObj.type) !== -1) {
         if (!phonemsgObj.customers) {
             phonemsgObj.customers = [];
         }
@@ -290,7 +288,7 @@ window.handleClickPhone = function(phoneObj) {
                 to: phoneNumber.replace('-', '')
             };
             crmAjax.callOut(reqData).then((result) => {
-                if (result.code == 0) {
+                if (result.code === 0) {
                     message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                 }
             }, (errMsg) => {
@@ -450,10 +448,10 @@ function listenOnOffline(userObj) {
  */
 function getReloginTooltip(userObj) {
     var tipMsg = '';
-    if (userObj.country == '局域网') {
+    if (userObj.country === '局域网') {
         //局域网内登录时，提示ip
         tipMsg = `您的账号在局域网内IP为${userObj.ip}的机器上登录，如非本人操作，建议您尽快修改密码！`;
-    } else if (userObj.country == 'IANA' || !(userObj.country || userObj.province || userObj.city)) {
+    } else if (userObj.country === 'IANA' || !(userObj.country || userObj.province || userObj.city)) {
         tipMsg = '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！';
     } else {
         tipMsg = `您的账号在${userObj.country || ''} ${userObj.province || ''}${userObj.city || ''}登录，如非本人操作，建议您尽快修改密码！`;
@@ -574,7 +572,7 @@ function applyUnreadReplyListener(applyUnreadReplyList) {
         if (_.isArray(oldUnreadList) && oldUnreadList.length) {
             //遍历新推过来的未读回复列表，将新增的加入已存的未读回复列表中
             _.each(applyUnreadReplyList, unreadReply => {
-                let hasExist = _.some(oldUnreadList, item => item.apply_id == unreadReply.apply_id);
+                let hasExist = _.some(oldUnreadList, item => item.apply_id === unreadReply.apply_id);
                 //已存的未读回复列表中不存在时，即为新增的未读回复，加入已存列表
                 if (!hasExist) {
                     oldUnreadList.push(unreadReply);
@@ -640,10 +638,10 @@ function getNotificationUnread(queryObj, callback) {
     });
 }
 //更新全局变量里存储的未读数，以便在业务逻辑里使用
-function updateGlobalUnreadStorage(message) {
-    if (Oplate && Oplate.unread && message) {
+function updateGlobalUnreadStorage(unreadObj) {
+    if (Oplate && Oplate.unread && unreadObj) {
         for (var key in Oplate.unread) {
-            Oplate.unread[key] = message[key] || 0;
+            Oplate.unread[key] = unreadObj[key] || 0;
         }
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
