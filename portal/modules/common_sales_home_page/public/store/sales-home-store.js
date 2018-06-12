@@ -452,6 +452,10 @@ SalesHomeStore.prototype.afterHandleMessage = function(messageObj) {
         data = this.appIllegalObj.data.list;
         this.appIllegalObj.data.list = _.filter(data, item => item.id !== messageObj.noticeId);
         this.appIllegalObj.data.total = this.appIllegalObj.data.total - 1;
+    } else if (messageObj.noticeType === ALL_LISTS_TYPE.LOGIN_FAILED) {
+        data = this.loginFailedObj.data.list;
+        this.loginFailedObj.data.list = _.filter(data, item => item.id !== messageObj.noticeId);
+        this.loginFailedObj.data.total = this.appIllegalObj.data.total - 1;
     }
 
 };
