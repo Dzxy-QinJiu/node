@@ -14,33 +14,43 @@ const SELECT_CUSTOM_TIME_TYPE = 'custom';
 class CrmUserApplyForm extends React.Component {
     constructor(props) {
         super(props);
+        this.state = this.getInitStateData();
     }
 
-    state = {
-        formData: {
-            //延迟时间输入框，默认是1
-            delayTimeNumber: 1,
-            //延期时间范围，默认是天
-            delayTimeRange: 'days',
-            // 到期时间(选择到期时间)
-            delayDeadlineTime: moment().add('days', 1).valueOf(),
-            //到期不变
-            over_draft: '0',
-            //销售申请的备注
-            remark: {
-                //延期备注
-                delayRemark: '',
-                //启用、停用备注
-                statusRemark: '',
-                //修改密码备注
-                passwordRemark: '',
-                //修改其他类型的备注
-                otherRemark: ''
-            }
-        },
-        isApplying: false,//正在申请中
-        applyErrorMsg: ''//申请报错的提示
-    };
+    getInitStateData() {
+        return {
+            formData: {
+                //延迟时间输入框，默认是1
+                delayTimeNumber: 1,
+                //延期时间范围，默认是天
+                delayTimeRange: 'days',
+                // 到期时间(选择到期时间)
+                delayDeadlineTime: moment().add('days', 1).valueOf(),
+                //到期不变
+                over_draft: '0',
+                //销售申请的备注
+                remark: {
+                    //延期备注
+                    delayRemark: '',
+                    //启用、停用备注
+                    statusRemark: '',
+                    //修改密码备注
+                    passwordRemark: '',
+                    //修改其他类型的备注
+                    otherRemark: ''
+                }
+            },
+            isApplying: false,//正在申请中
+            applyErrorMsg: ''//申请报错的提示
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.applyType !== nextProps.applyType) {
+            this.setState(this.getInitStateData());
+        }
+    }
+
     //延期时间数字改变
     delayTimeNumberChange(value) {
         this.state.formData.delayTimeNumber = value;
