@@ -53,7 +53,7 @@ CRMStore.prototype.getNotCompletedScheduleList = function(result) {
     }
 };
 CRMStore.prototype.afterHandleStatus = function(newStatusObj) {
-    var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id == newStatusObj.id;});
+    var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id === newStatusObj.id;});
     curSchedule[0].status = newStatusObj.status;
 };
 
@@ -67,6 +67,13 @@ CRMStore.prototype.getBasicData = function(basicData) {
     this.userTotal = basicData && _.isArray(basicData.app_user_ids) ? basicData.app_user_ids.length : 0;
     this.basicIsLoading = false;
 };
+//更新当前展示客户的
+CRMStore.prototype.updateBasicData = function(updateObj) {
+    var basicData = this.basicData;
+    for (var key in updateObj){
+        basicData[key] = updateObj[key];
+    }
+};
 
 CRMStore.prototype.setBasicState = function(state) {
     this.basicIsLoading = state;
@@ -74,7 +81,7 @@ CRMStore.prototype.setBasicState = function(state) {
 
 CRMStore.prototype.submitBaiscForm = function(newBasicData) {
     //如果当前展示的是要修改的客户资料，则更新，否则，不更新
-    if (newBasicData.id == this.basicData.id) {
+    if (newBasicData.id === this.basicData.id) {
         this.basicData = newBasicData;
     }
     this.editShowFlag = false;

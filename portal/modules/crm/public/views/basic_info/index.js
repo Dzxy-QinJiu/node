@@ -90,6 +90,13 @@ var BasicData = React.createClass({
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     },
+    getMyUserId: function() {
+        var userId = '';
+        if (userData.getUserData() && userData.getUserData().user_id){
+            userId = userData.getUserData().user_id;
+        }
+        return userId;
+    },
     //是否有转出客户的权限
     enableTransferCustomer: function() {
         let isCommonSales = userData.getUserData().isCommonSales;
@@ -140,26 +147,33 @@ var BasicData = React.createClass({
     },
     //关注客户的处理
     handleFocusCustomer: function(basicData) {
-        Trace.traceEvent(this.getDOMNode(), basicData.interest === 'true' ? '取消关注客户' : '关注客户');
+        var initialBasicData = JSON.parse(JSON.stringify(basicData));
+        var myUserId = this.getMyUserId();
+        var unFocusCustomer = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids,myUserId) > -1;
+        Trace.traceEvent(this.getDOMNode(), unFocusCustomer ? '取消关注客户' : '关注客户');
         //请求数据
         let interestObj = {
             id: basicData.id,
             type: 'customer_interest',
         };
-        if (basicData.interest === 'true') {
-            interestObj.interest = 'false';
+        if (unFocusCustomer) {
+            interestObj.user_id = '';
         } else {
-            interestObj.interest = 'true';
+            interestObj.user_id = myUserId;
         }
-        basicData.interest = interestObj.interest;
+        basicData.interest_member_ids = [interestObj.user_id];
         this.setState({basicData: basicData});
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
             if (errorMsg) {
                 //将星星的颜色修改回原来的状态
-                basicData.interest = interestObj.interest === 'true' ? 'false' : 'true';
-                this.setState({basicData: basicData});
+                this.setState({
+                    basicData: initialBasicData
+                });
             } else {
+                interestObj.interest_member_ids = [interestObj.user_id];
                 delete interestObj.type;
+                delete interestObj.user_id;
+
                 CrmAction.editBasicSuccess(interestObj);
             }
         });
@@ -244,7 +258,7 @@ var BasicData = React.createClass({
     render: function() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
-        let interestFlag = basicData.interest === 'true';
+        let interestFlag = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids, this.getMyUserId()) > -1;
         const interestClass = classNames('iconfont', {
             'icon-interested': interestFlag,
             'icon-uninterested': !interestFlag

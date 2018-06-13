@@ -280,7 +280,7 @@ const CrmFilterPanel = React.createClass({
             Trace.traceEvent($(this.getDOMNode()).find('li'), '多个订单客户的筛选');
             break;
         }
-        if (otherFilterArray[10] && item === otherFilterArray[9].value) {
+        if (otherFilterArray[10] && item === otherFilterArray[10].value) {
             Trace.traceEvent($(this.getDOMNode()).find('li'), '未分配客户的筛选');
         }
     },
