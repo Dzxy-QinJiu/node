@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+var userData = require('../../../../public/sources/user-data');
 //将后端传来的字段拼接成句子
 const processForTrace = function(item) {
     var traceObj = {
@@ -118,4 +119,11 @@ var tabNameList = {
     '6': '跟进记录' ,
 };
 exports.tabNameList = tabNameList;
+exports.getMyUserId = function() {
+    var userId = '';
+    if (userData.getUserData() && userData.getUserData().user_id){
+        userId = userData.getUserData().user_id;
+    }
+    return userId;
+};
 
