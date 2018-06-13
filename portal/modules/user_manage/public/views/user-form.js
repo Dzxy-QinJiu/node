@@ -1,9 +1,9 @@
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/index-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('../css/index-zh_CN.less');
 }
 var Form = require('antd').Form;
@@ -26,6 +26,8 @@ var UserFormAction = require('../action/user-form-actions');
 var AlertTimer = require('../../../../components/alert-timer');
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
+import PhoneInput from 'CMP_DIR/phone-input';
+const PHONE_INPUT_ID = 'phoneInput';
 function noop() {
 }
 const FORM_CONST = {
@@ -155,27 +157,35 @@ var UserForm = React.createClass({
                 user.role = JSON.stringify(user.role);
                 //设置正在保存中
                 UserFormAction.setSaveFlag(true);
-                if (_this.props.formType == 'add') {
+                if (_this.props.formType === 'add') {
                     user.userName = user.email;
                     UserFormAction.addUser(user);
                 }
             }
         });
     },
-
-    checkPhone: function(rule, value, callback) {
-        value = $.trim(value);
-        if (value) {
-            if ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) ||
-                    (/^\d{3,4}\-\d{7,8}$/.test(value)) ||
-                    (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
-                callback();
-            } else {
-                callback(new Error(Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
+    //电话必填一项及唯一性的验证
+    getPhoneInputValidateRules: function() {
+        return [{
+            validator: (rule, value, callback) => {
+                value = $.trim(value);
+                if (value) {
+                    UserFormAction.checkOnlyPhone(value, data => {
+                        if (_.isString(data)) {
+                            //唯一性验证出错了
+                            callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                        } else {
+                            if (data === false) {
+                                callback();
+                            } else {
+                                //已存在
+                                callback(Intl.get('crm.83', '该电话已存在'));
+                            }
+                        }
+                    });
+                }
             }
-        } else {
-            callback();
-        }
+        }];
     },
     checkEmail: function(rule, value, callback) {
         value = $.trim(value);
@@ -210,7 +220,7 @@ var UserForm = React.createClass({
 
     //去掉保存后提示信息
     hideSaveTooltip: function() {
-        if (this.props.formType == 'add' && (this.state.saveResult == 'success' || this.state.saveResult == 'warn')) {
+        if (this.props.formType === 'add' && (this.state.saveResult === 'success' || this.state.saveResult === 'warn')) {
             //返回详情页继续添加
             this.returnInfoPanel(this.state.savedUser);
             this.props.showContinueAddButton();
@@ -236,18 +246,7 @@ var UserForm = React.createClass({
         }
     },
 
-    //电话唯一性验证
-    checkOnlyPhone: function(e) {
-        var phone = $.trim(this.state.formData.phone);
-        if (phone && phone != this.props.user.phone.value && ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(phone)) ||
-                (/^\d{3,4}\-\d{7,8}$/.test(phone)) || (/^400\-?\d{3}\-?\d{4}$/.test(phone)))) {
-            Trace.traceEvent(e,'填写电话');
-            //电话唯一性验证
-            UserFormAction.checkOnlyPhone(phone);
-        } else {
-            UserFormAction.resetPhoneFlags();
-        }
-    },
+
     traceNickName: function(e) {
         var nickname = this.state.formData.name;
         Trace.traceEvent(e,'填写姓名');
@@ -256,7 +255,7 @@ var UserForm = React.createClass({
     //邮箱唯一性验证
     checkOnlyEmail: function(e) {
         var email = $.trim(this.state.formData.email);
-        if (email && email != this.props.user.email.value && /^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
+        if (email && email !== this.props.user.email.value && /^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
             .test(email)) {
             Trace.traceEvent(e,'增加邮箱');
             //所有者的邮箱唯一性验证
@@ -300,19 +299,6 @@ var UserForm = React.createClass({
             return '';
         }
     },
-
-    //电话唯一性验证的展示
-    renderPhoneMsg: function() {
-        if (this.state.phoneExist) {
-            return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.phone.is.existed"
-                defaultMessage="电话已存在！"/></div>);
-        } else if (this.state.phoneError) {
-            return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.phone.is.unique"
-                defaultMessage="电话唯一性校验出错！"/></div>);
-        } else {
-            return '';
-        }
-    },
     
     //邮箱唯一性验证的展示
     renderEmailMsg: function() {
@@ -338,7 +324,7 @@ var UserForm = React.createClass({
                 var className = '';
                 if (_.isArray(formData.role) && formData.role.length > 0) {
                     formData.role.forEach(function(roleId) {
-                        if (role.roleId == roleId) {
+                        if (role.roleId === roleId) {
                             className = 'role-options-selected';
                         }
                     });
@@ -364,7 +350,7 @@ var UserForm = React.createClass({
         if (_.isArray(teamList) && teamList.length > 0) {
             teamOptions = teamList.map(function(team) {
                 var className = '';
-                if (team.group_id == formData.team) {
+                if (team.group_id === formData.team) {
                     className = 'role-options-selected';
                 }
                 return (<Option className={className} key={team.group_id} value={team.group_id}>
@@ -389,7 +375,7 @@ var UserForm = React.createClass({
         var status = this.state.status;
         var className = 'right-panel-content';
         if (this.props.userFormShow) {
-            if (this.props.formType == 'add') {
+            if (this.props.formType === 'add') {
                 className += ' right-form-add';
             } else {
                 className += ' right-panel-content-slide';
@@ -401,7 +387,7 @@ var UserForm = React.createClass({
         return (
             <div className={className} data-tracename="添加/编辑面板">
                 <RightPanelClose onClick={this.closePanel} data-tracename="关闭添加/编辑面板"/>
-                {(this.props.formType == 'add' || !this.props.userFormShow) ? null : (
+                {(this.props.formType === 'add' || !this.props.userFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel} data-tracename="返回详细信息展示页"/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon
@@ -434,24 +420,16 @@ var UserForm = React.createClass({
                                         />
                                     </Validator>
                                 </FormItem>
-                                <FormItem
-                                    label={Intl.get('common.phone', '电话')}
-                                    id="phone"
+                                <PhoneInput
+                                    wrappedComponentRef={(inst) => this.phoneInputRef = inst}
+                                    placeholder={Intl.get('crm.95', '请输入联系人电话')}
+                                    validateRules={this.getPhoneInputValidateRules()}
+                                    onChange={this.setField.bind(this, 'phone')}
+                                    initialValue={formData.phone}
+                                    id={PHONE_INPUT_ID}
                                     labelCol={{span: FORM_CONST.LABEL_COL}}
                                     wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                    validateStatus={this.renderValidateStyle('phone')}
-                                    help={status.phone.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.phone.errors && status.phone.errors.join(','))}
-                                >
-                                    <Validator rules={[{validator: this.checkPhone}]}>
-                                        <Input name="phone" id="phone" value={formData.phone}
-                                            className={this.state.phoneExist || this.state.phoneError ? 'input-red-border' : ''}
-                                            onChange={this.setField.bind(this, 'phone')}
-                                            onBlur={(e) => {this.checkOnlyPhone(e);}}
-
-                                        />
-                                    </Validator>
-                                </FormItem>
-                                {this.renderPhoneMsg()}
+                                />
                                 <FormItem
                                     label={Intl.get('common.email', '邮箱')}
                                     id="email"
@@ -500,7 +478,7 @@ var UserForm = React.createClass({
                                     )}
                                 </FormItem>
                                 {/** v8环境下，不显示所属团队 */}
-                                {this.props.formType == 'add' ? ( !Oplate.hideSomeItem && <FormItem
+                                {this.props.formType === 'add' ? ( !Oplate.hideSomeItem && <FormItem
                                     label={Intl.get('common.belong.team', '所属团队')}
                                     id="team"
                                     labelCol={{span: FORM_CONST.LABEL_COL}}

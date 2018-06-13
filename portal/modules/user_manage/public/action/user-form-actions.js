@@ -91,12 +91,12 @@ function UserFormActions() {
 
     //清空提示
     this.resetSaveResult = function(formType, saveResult) {
-        if (saveResult == 'success') {
-            if (formType == 'add') {
+        if (saveResult === 'success') {
+            if (formType === 'add') {
                 cardEmitter.emit(cardEmitter.ADD_CARD);
                 //清空搜索内容
                 UserActions.updateSearchContent('');
-            } else if (formType == 'edit') {
+            } else if (formType === 'edit') {
                 //修改成功后返回详情
                 UserActions.returnInfoPanel();
             }
@@ -115,11 +115,13 @@ function UserFormActions() {
     };
 
     //电话唯一性的验证
-    this.checkOnlyPhone = function(phone) {
+    this.checkOnlyPhone = function(phone, callback) {
         var _this = this;
         userAjax.checkOnlyPhone(phone).then(function(result) {
             _this.dispatch(result);
+            _.isFunction(callback) && callback(result);
         }, function(errorMsg) {
+            _.isFunction(callback) && callback(errorMsg);
             _this.dispatch(errorMsg);
         });
     };
