@@ -226,18 +226,18 @@ class LoginMain extends React.Component {
             return (
                 <div className="login-wrap">
                     <Logo />
-                    { hasWindow ? (Oplate.hideLangQRcode ? null :
-                        (<div>
-                            <div className="lang-wrap">
-                                <span>{Intl.get('common.user.lang', '语言')}：</span>
-                                {LANGUAGES.map(lang => {
-                                    return <span><a href={`/login?lang=${lang.code}`}
-                                        onClick={this.changeLang.bind(this, lang.code)}
-                                        className={this.getLangClassName(lang.code, hasWindow)}>{lang.name}</a></span>;
-                                })}
-                            </div>
-                        </div>)) : null
-                    }
+                    {/*{ hasWindow ? (Oplate.hideLangQRcode ? null :*/}
+                    {/*(<div>*/}
+                    {/*<div className="lang-wrap">*/}
+                    {/*<span>{Intl.get('common.user.lang', '语言')}：</span>*/}
+                    {/*{LANGUAGES.map(lang => {*/}
+                    {/*return <span><a href={`/login?lang=${lang.code}`}*/}
+                    {/*onClick={this.changeLang.bind(this, lang.code)}*/}
+                    {/*className={this.getLangClassName(lang.code, hasWindow)}>{lang.name}</a></span>;*/}
+                    {/*})}*/}
+                    {/*</div>*/}
+                    {/*</div>)) : null*/}
+                    {/*}*/}
                     {this.state.ketaoQRCodeShow ? (
                         <div className="ketao-download-qrcode-container">
                             <Icon type="cross" onClick={this.closeDownLoadKetaoQRCode.bind(this)}/>
