@@ -173,7 +173,7 @@ var Crm = React.createClass({
     },
     // 获取拨打电话的座机号
     getUserPhoneNumber() {
-        let member_id = this.getMyUserId();
+        let member_id = crmUtil.getMyUserId();
         crmAjax.getUserPhoneNumber(member_id).then((result) => {
             if (result.phone_order) {
                 this.setState({
@@ -696,7 +696,7 @@ var Crm = React.createClass({
             exist.push('interest_member_ids');
             break;
         case OTHER_FILTER_ITEMS.MY_INTERST://我关注的客户
-            condition.interest_member_ids = [this.getMyUserId()];
+            condition.interest_member_ids = [crmUtil.getMyUserId()];
             break;
         case OTHER_FILTER_ITEMS.MULTI_ORDER://多个订单的客户
             this.state.rangParams[0] = {
@@ -871,7 +871,7 @@ var Crm = React.createClass({
         }
     },
     onCustomerImport(list) {
-        let member_id = this.getMyUserId();
+        let member_id = crmUtil.getMyUserId();
         //导入客户前先校验，是不是超过了本人的客户上限
         CrmAction.getCustomerLimit({member_id: member_id, num: list.length}, (result) => {
             if (_.isNumber(result)) {
@@ -1060,7 +1060,7 @@ var Crm = React.createClass({
             id: record.id,
             type: 'customer_interest'
         };
-        var myUserId = this.getMyUserId();
+        var myUserId = crmUtil.getMyUserId();
         if (_.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, myUserId) > -1) {
             interestObj.user_id = '';
         } else {
@@ -1089,12 +1089,6 @@ var Crm = React.createClass({
                 this.setState(
                     {curPageCustomers: initalCurPageCustomers}
                 );
-            }else{
-                //在客户详情中星星的颜色也要改变
-                if (customerArr && customerArr.id === this.state.curCustomer.id){
-                    CRMAction.updateBasicData({'interest_member_ids': customerArr.interest_member_ids});
-                }
-
             }
         });
     },
@@ -1120,13 +1114,6 @@ var Crm = React.createClass({
                     }
                 </span>);
         }
-    },
-    getMyUserId: function() {
-        var userId = '';
-        if (userData.getUserData() && userData.getUserData().user_id){
-            userId = userData.getUserData().user_id;
-        }
-        return userId;
     },
 
     //删除导入预览中的重复客户
@@ -1204,7 +1191,7 @@ var Crm = React.createClass({
                     });
 
                     const className = record.name_repeat ? 'customer-repeat customer_name' : 'customer_name';
-                    var isInterested = _.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, _this.getMyUserId()) > -1;
+                    var isInterested = _.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, crmUtil.getMyUserId()) > -1;
                     var interestClassName = 'iconfont focus-customer';
                     interestClassName += (isInterested ? ' icon-interested' : ' icon-uninterested');
                     var title = (isInterested === 'true' ? Intl.get('crm.customer.uninterested', '取消关注') : Intl.get('crm.customer.interested', '添加关注'));

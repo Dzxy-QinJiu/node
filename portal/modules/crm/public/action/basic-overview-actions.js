@@ -5,8 +5,7 @@ function CRMActions() {
     this.generateActions(
         'setBasicState',
         'afterHandleStatus',
-        'setCrmUserList',
-        'updateBasicData'
+        'setCrmUserList'
     );
 
     this.getBasicData = function(curCustomer) {

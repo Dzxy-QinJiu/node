@@ -18,6 +18,7 @@ import {tabNameList} from '../utils/crm-util';
 import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
+import {isEqualArray} from 'LIB_DIR/func';
 const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
     CONTACT_TAB: '2',//联系人
@@ -65,8 +66,9 @@ var CrmRightPanel = React.createClass({
         }
         //是否关注客户的属性修改
         if (nextProps.curCustomer && nextProps.curCustomer.id === this.state.curCustomer.id &&
-            nextProps.curCustomer.interest !== this.state.curCustomer.interest) {
-            this.state.curCustomer.interest = nextProps.curCustomer.interest;
+                !isEqualArray(nextProps.curCustomer.interest_member_ids, this.state.curCustomer.interest_member_ids)
+        ) {
+            this.state.curCustomer.interest_member_ids = nextProps.curCustomer.interest_member_ids;
         }
         this.setTabsContainerHeight();
     },
@@ -193,7 +195,7 @@ var CrmRightPanel = React.createClass({
                                 tab={Intl.get('user.apply.detail.order', '订单')}
                                 key={TAB_KEYS.ORDER_TAB}
                             >
-                                {this.state.activeKey == TAB_KEYS.ORDER_TAB ? (
+                                {this.state.activeKey === TAB_KEYS.ORDER_TAB ? (
                                     <Order
                                         closeRightPanel={this.props.hideRightPanel}
                                         curCustomer={this.state.curCustomer}
@@ -207,7 +209,7 @@ var CrmRightPanel = React.createClass({
                                 key={TAB_KEYS.DYNAMIC_TAB}
 
                             >
-                                {this.state.activeKey == TAB_KEYS.DYNAMIC_TAB ? (
+                                {this.state.activeKey === TAB_KEYS.DYNAMIC_TAB ? (
                                     <Dynamic
                                         currentId={this.state.curCustomer.id}
                                     />
@@ -217,7 +219,7 @@ var CrmRightPanel = React.createClass({
                                 tab={Intl.get('crm.right.schedule', '联系计划')}
                                 key={TAB_KEYS.SCHEDULE_TAB}
                             >
-                                {this.state.activeKey == TAB_KEYS.SCHEDULE_TAB ? (
+                                {this.state.activeKey === TAB_KEYS.SCHEDULE_TAB ? (
                                     <CrmSchedule
                                         curCustomer={this.state.curCustomer}
                                     />

@@ -67,13 +67,6 @@ CRMStore.prototype.getBasicData = function(basicData) {
     this.userTotal = basicData && _.isArray(basicData.app_user_ids) ? basicData.app_user_ids.length : 0;
     this.basicIsLoading = false;
 };
-//更新当前展示客户的
-CRMStore.prototype.updateBasicData = function(updateObj) {
-    var basicData = this.basicData;
-    for (var key in updateObj){
-        basicData[key] = updateObj[key];
-    }
-};
 
 CRMStore.prototype.setBasicState = function(state) {
     this.basicIsLoading = state;
