@@ -97,7 +97,7 @@ class AntcBarPieChart extends React.Component {
         const subField = this.props.subField;
 
         if (subField) {
-            let subData = _.chain(chartData).pluck(subField).flatten().sortBy('count').value();
+            let subData = _.chain(chartData).map(subField).flatten().sortBy('count').value();
 
             data = subData.slice(-this.props.maxSeries);
         }

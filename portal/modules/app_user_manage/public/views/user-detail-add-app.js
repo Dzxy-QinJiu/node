@@ -898,7 +898,7 @@ var UserDetailAddApp = React.createClass({
 
     getBatchAppJsonList: function() {
         var userRowList = AppUserStore.getState().selectedUserRows;
-        var userApps = _.chain(userRowList).pluck('apps').union().flatten().uniq((app) => app.app_id).map((app) => {
+        var userApps = _.chain(userRowList).map('apps').union().flatten().uniqBy((app) => app.app_id).map((app) => {
             return {app_id: app.app_id , app_name: app.app_name};
         }).value();
         return userApps;

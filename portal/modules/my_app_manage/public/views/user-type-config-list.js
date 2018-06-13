@@ -82,7 +82,7 @@ var UserTypeConfigList = React.createClass({
             roleMap = _.keyBy(roleList, 'role_id');
             getRoleLists.getPermissionMap(appId).then(function(permissionList) {
                 //权限的map数据类型，为获取权限的名字做准备
-                permissionMap = _.chain(permissionList).pluck('permission_list').flatten().indexBy('permission_id').value();
+                permissionMap = _.chain(permissionList).map('permission_list').flatten().keyBy('permission_id').value();
                 _this.getInitialData(roleMap, permissionMap);
             });
         });

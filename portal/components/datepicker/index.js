@@ -123,7 +123,7 @@ class DatePicker extends React.Component {
         if (allMenu) {
             menu_lists.push(allMenu);
         }
-        menu_lists = _.uniq(menu_lists, (menu) => menu.value);
+        menu_lists = _.uniqBy(menu_lists, (menu) => menu.value);
         this.componentId = _.uniqueId('DatePicker');
         //验证时间范围
         let timeRange = props.range || 'day';
@@ -186,8 +186,8 @@ class DatePicker extends React.Component {
             showYear: showYear,
             showYearRecord: showYear,
             //两个日历
-            showTwoCalendar: timeRange == 'custom' ? true : false,
-            showTwoCalendarRecord: timeRange == 'custom' ? true : false,
+            showTwoCalendar: timeRange === 'custom' ? true : false,
+            showTwoCalendarRecord: timeRange === 'custom' ? true : false,
             //显示天日历
             showDate: !showYear,
             showDateRecord: !showYear,
@@ -209,13 +209,13 @@ class DatePicker extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const newState = {};
-        if (this.props.range != nextProps.range) {
+        if (this.props.range !== nextProps.range) {
             newState.timeRange = newState.timeRangeRecord = nextProps.range;
         }
-        if (this.props.start_time != nextProps.start_time) {
+        if (this.props.start_time !== nextProps.start_time) {
             newState.start_time = newState.start_time_record = Utils.getDateStr(nextProps.start_time);
         }
-        if (this.props.end_time != nextProps.end_time) {
+        if (this.props.end_time !== nextProps.end_time) {
             newState.end_time = newState.end_time_record = Utils.getDateStr(nextProps.end_time);
         }
         if (!_.isEmpty(newState)) {
@@ -233,7 +233,7 @@ class DatePicker extends React.Component {
     transportOuter(start_time, end_time, timeRange) {
         var label;
         var target = _.find(this.state.menu_lists, function(obj) {
-            return obj.value == timeRange;
+            return obj.value === timeRange;
         });
         if (target) {
             label = target.name;
@@ -498,7 +498,7 @@ class DatePicker extends React.Component {
         let showYear = this.state.showYear;
         let timeRange = this.state.timeRange;
         //改变类型，点击时间范围radio
-        if (where == 'click_radio' && options) {
+        if (where === 'click_radio' && options) {
             start_time = options.start_time ? options.start_time : start_time;
             end_time = options.end_time ? options.end_time : end_time;
             showTwoCalendar = options.showTwoCalendar;
@@ -777,7 +777,7 @@ class DatePicker extends React.Component {
             {
                 this.state.displayQuarterList.map((text, num) => {
                     var cls = classNames({
-                        active: (num + 1) == this.state.quarter
+                        active: (num + 1) === this.state.quarter
                     });
                     return (
                         <MenuItem

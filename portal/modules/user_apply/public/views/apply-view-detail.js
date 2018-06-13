@@ -1841,7 +1841,7 @@ const ApplyViewDetail = React.createClass({
                 //遍历每个应用，找到没有设置角色的应用
                 var rolesNotSetAppNames = _.chain(products).filter((obj) => {
                     return obj.roles.length === 0;
-                }).pluck('client_id').map((app_id) => {
+                }).map('client_id').map((app_id) => {
                     var appInfo = _.find(appList, (appObj) => appObj.app_id === app_id);
                     return appInfo && appInfo.app_name || '';
                 }).filter((appName) => appName !== '').value();

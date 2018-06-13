@@ -133,7 +133,7 @@ var CallRecordAnalyis = React.createClass({
 
     // 获取团队或是成员的id
     getTeamOrMemberId(list, selectValue) {
-        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).pluck('id').value();
+        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
     },
 
     // 获取团队或成员的参数

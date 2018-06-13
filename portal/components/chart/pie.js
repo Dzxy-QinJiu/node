@@ -48,7 +48,7 @@ var PieChart = React.createClass({
             legend = _.map(data, 'name');
             const subField = this.props.subField;
             if (subField) {
-                const subLegend = _.chain(data).pluck(subField).flatten().pluck('name').value();
+                const subLegend = _.chain(data).map(subField).flatten().map('name').value();
                 legend = legend.concat(subLegend);
             }
         }
@@ -115,7 +115,7 @@ var PieChart = React.createClass({
 
             const outerSerie = JSON.parse(JSON.stringify(serieObj));
             outerSerie.radius = ['50%', '70%'];
-            const subData = _.chain(chartData).pluck(subField).flatten().value();
+            const subData = _.chain(chartData).map(subField).flatten().value();
             outerSerie.data = this.getSerieData(subData);
             series.push(outerSerie);
 
