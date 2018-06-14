@@ -132,36 +132,38 @@ var UserForm = React.createClass({
     handleSubmit: function(e) {
         e.preventDefault();
         var validation = this.refs.validation;
-        var _this = this;
         //必填一项的验证
         this.checkPhoneEmail();
-        validation.validate(function(valid) {
-            if (_this.state.userNameExist || _this.state.phoneExist || _this.state.emailExist || _this.state.userNameError || _this.state.phoneError || _this.state.emailError) {
-                valid = false;
-            }
-            if (!valid) {
-                return;
-            } else {
-                //所有者各项唯一性验证均不存在且没有出错再添加
-                var user = _.extend({}, _this.state.formData);
-                if (user.phone) {
-                    user.phone = $.trim(user.phone);
+        validation.validate((valid) => {
+            //验证电话是否通过验证
+            this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {},(errors, values) => {
+                if (this.state.userNameExist || this.state.phoneExist || this.state.emailExist || this.state.userNameError || this.state.phoneError || this.state.emailError) {
+                    valid = false;
                 }
-                if (user.email) {
-                    user.email = $.trim(user.email);
+                if (!valid || errors) {
+                    return;
+                } else {
+                    //所有者各项唯一性验证均不存在且没有出错再添加
+                    var user = _.extend({}, this.state.formData);
+                    if (user.phone) {
+                        user.phone = $.trim(user.phone);
+                    }
+                    if (user.email) {
+                        user.email = $.trim(user.email);
+                    }
+                    if (user.email !== this.props.user.email) {
+                        //修改邮箱后，邮箱的激活状态改为未激活
+                        user.emailEnable = false;
+                    }
+                    user.role = JSON.stringify(user.role);
+                    //设置正在保存中
+                    UserFormAction.setSaveFlag(true);
+                    if (this.props.formType === 'add') {
+                        user.userName = user.email;
+                        UserFormAction.addUser(user);
+                    }
                 }
-                if (user.email !== _this.props.user.email) {
-                    //修改邮箱后，邮箱的激活状态改为未激活
-                    user.emailEnable = false;
-                }
-                user.role = JSON.stringify(user.role);
-                //设置正在保存中
-                UserFormAction.setSaveFlag(true);
-                if (_this.props.formType === 'add') {
-                    user.userName = user.email;
-                    UserFormAction.addUser(user);
-                }
-            }
+            });
         });
     },
     //电话必填一项及唯一性的验证
@@ -183,22 +185,11 @@ var UserForm = React.createClass({
                             }
                         }
                     });
+                }else{
+                    callback();
                 }
             }
         }];
-    },
-    checkEmail: function(rule, value, callback) {
-        value = $.trim(value);
-        if (value) {
-            if (!/^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
-                .test(value)) {
-                callback(new Error(Intl.get('common.correct.email', '请输入正确的邮箱')));
-            } else {
-                callback();
-            }
-        } else {
-            callback(new Error(Intl.get('member.input.email', '请输入邮箱')));
-        }
     },
     uploadImg: function(src) {
         Trace.traceEvent($(this.getDOMNode()).find('.head-image-container .update-logo-desr'),'上传头像');
@@ -438,7 +429,11 @@ var UserForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('email')}
                                     help={status.email.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.email.errors && status.email.errors.join(','))}
                                 >
-                                    <Validator rules={[{validator: this.checkEmail}]}>
+                                    <Validator rules={[{
+                                        required: true,
+                                        type: 'email',
+                                        message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                    }]}>
                                         <Input name="email" id="email" type="text" value={formData.email}
                                             placeholder={Intl.get('common.required.tip','必填项*')}
                                             className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
