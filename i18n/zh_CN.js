@@ -840,6 +840,8 @@ var zh_CN = {
     'notification.system.handled.set': '处理',
     'notification.system.handled': '已处理',
     'notification.system.untreated': '未处理',
+    'notification.login.password.error': '报密码或验证码错误',
+    'notification.login.failed': '登录失败',
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',
@@ -959,6 +961,7 @@ var zh_CN = {
     'call.record.service.phone.rate': '114占比统计',
     'call.analysis.zone.distrute': '客户的地域分布',
     'call.analysis.map.return': '返回上一级',
+    'call.analysis.call.title': '通话信息',
     //通话分析-end
 
     // 用户审批start
@@ -1028,6 +1031,7 @@ var zh_CN = {
     'user.apply.unread.reply.null': '已无未读回复的申请，{return}',
     'user.apply.check': '查看',
     'user.apply.cancel.check': '取消查看',
+    'user.apply.show.all.check': '查看全部申请',
     'user.apply.unread.apply.list.failed': '获取有未读回复的申请列表失败',
     'reply.pass.tip.content': '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.reject.tip.content': '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
@@ -1241,7 +1245,8 @@ var zh_CN = {
     'crm.last.trace.content': '最后跟进内容',
     'crm.competing.products': '竞品',
     'crm.no.contact.way': '无联系方式客户',
-    'crm.concerned.customer': '关注的客户',
+    'crm.concerned.customer': '被关注的客户',
+    'crm.my.concerned.customer': '我关注的客户',
     'crm.administrative.level.change': '变更行政级别',
     'crm.select.level': '请选择行政级别',
     'crm.no.level': '无相关行政级别',

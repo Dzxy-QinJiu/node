@@ -150,6 +150,7 @@ let SystemNotification = React.createClass({
     renderHandledNotice: function(notice, idx) {
         //是否是异地登录的类型
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
+        let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
         return (
             <li key={idx} className="system-notice-handled-item">
                 <h5 className="system-notice-type">{SYSTEM_NOTICE_TYPE_MAP[notice.type]}</h5>
@@ -160,7 +161,8 @@ let SystemNotification = React.createClass({
                     {notice.user_name ? (
                         <a onClick={this.openUserDetail.bind(this, notice.user_id)}>{notice.user_name}</a>) : null}
                     {notice.app_name ?
-                        <span>{Intl.get('notification.system.login', '登录了') + notice.app_name}</span> : ''}
+                        <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}</span> : ''}
+                    {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
                 </div>
                 <div
                     className="system-notice-time">{moment(notice.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</div>
@@ -218,11 +220,13 @@ let SystemNotification = React.createClass({
         return showList.map((item) => {
             //是否是异地登录的类型
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
+            let isLoginFailed = item.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
             return <div className="system-notice-item">
                 <a onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</a>
                 {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
                 {item.app_name ?
-                    <span>{Intl.get('notification.system.login', '登录了') + item.app_name}</span> : ''}
+                    <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
+                {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
                 <span
                     className="system-notice-time">{moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
             </div>;

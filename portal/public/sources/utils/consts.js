@@ -47,14 +47,16 @@ export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
 export const SYSTEM_NOTICE_TYPES = {
     OFFSITE_LOGIN: 'illegalLocation',//异地登录
     DISABLE_CUSTOMER_LOGIN: 'appIllegal',//停用客户登录
-    FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin'//关注客户登录
+    FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin',//关注客户登录
+    LOGIN_FAILED: 'loginFailed',//登录失败
 };
 
 //系统消息对应的几种类型
 export const SYSTEM_NOTICE_TYPE_MAP = {
     'appIllegal': Intl.get('ketao.frontpage.illeagl.login', '停用客户登录'),
     'concerCustomerLogin': Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录'),
-    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录')
+    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录'),
+    'loginFailed': Intl.get('notification.login.failed', '登录失败')
 };
 
 export const NO_SELECT_FULL_OPTIONS = [
@@ -120,6 +122,7 @@ export const ALL_LISTS_TYPE = {
     REPEAT_CUSTOMER: 'repeat_customer',//重复客户
     NEW_DISTRIBUTE_CUSTOMER: 'new_distribute_customer',//新分配的客户
     HAS_NO_CONNECTED_PHONE: 'has_no_connected_phone',//你有未接听的来电
+    LOGIN_FAILED: 'loginFailed',//登录失败
 };
 export const ALL_CUSTOMER_LISTS_TYPE = [
     {value: ALL_LISTS_TYPE.SCHEDULE_TODAY, name: Intl.get('sales.frontpage.will.contact.today', '今日待联系')},//今日计划联系日程列表
@@ -138,6 +141,7 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
     },//即将到期的签约用户
     {value: ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, name: Intl.get('sales.frontpage.login.after.stop', '停用后登录')},// 停用后登录
     {value: ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, name: Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录')},//关注客户登录
+    {value: ALL_LISTS_TYPE.LOGIN_FAILED, name: Intl.get('notification.login.failed', '登录失败')},//登录失败
     {
         value: ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER,
         name: Intl.get('sales.frontpage.login.recently', '近{X}日登录的客户', {X: Intl.get('user.num.seven', '七')})

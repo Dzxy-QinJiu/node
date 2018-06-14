@@ -1,9 +1,7 @@
-import {Button, Radio, message, Alert, Icon, Select} from 'antd';
+import {Button, Radio, message, Alert, Select} from 'antd';
 const Option = Select.Option;
-const RadioGroup = Radio.Group;
 const ModalDialog = require('../../../../../components/ModalDialog');
 const Spinner = require('../../../../../components/spinner');
-const CrmAction = require('../../action/crm-actions');
 const OrderAction = require('../../action/order-actions');
 const history = require('../../../../../public/sources/history');
 import SearchIconList from '../../../../../components/search-icon-list';
@@ -85,7 +83,7 @@ const OrderItem = React.createClass({
                         //稍后后再去重新获取数据，以防止后端更新未完成从而取到的还是旧数据
                         setTimeout(() => {
                             //删除订单后，更新客户列表中的客户信息
-                            this.props.refreshCustomerList(order.customer_id);
+                            _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(order.customer_id);
                         }, 1000);
                     }
                     else {
@@ -160,7 +158,7 @@ const OrderItem = React.createClass({
                     OrderAction.afterEditOrder(saveObj);
                     //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                     setTimeout(() => {
-                        this.props.refreshCustomerList(saveObj.customer_id);
+                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(saveObj.customer_id);
                     }, 200);
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(result || Intl.get('common.save.failed', '保存失败'));
@@ -189,7 +187,7 @@ const OrderItem = React.createClass({
                     this.setState(this.state);
                     //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                     setTimeout(() => {
-                        this.props.refreshCustomerList(reqData.customer_id);
+                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
                     }, 1000);
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(result || Intl.get('common.save.failed', '保存失败'));
@@ -218,7 +216,7 @@ const OrderItem = React.createClass({
                     this.state.submitErrorMsg = '';
                     //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                     setTimeout(() => {
-                        this.props.refreshCustomerList(reqData.customer_id);
+                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
                     }, 1000);
                 } else {
                     this.state.submitErrorMsg = result || Intl.get('common.save.failed', '保存失败');
@@ -251,7 +249,7 @@ const OrderItem = React.createClass({
             //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
 
             setTimeout(() => {
-                this.props.refreshCustomerList(this.props.order.customer_id);
+                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(this.props.order.customer_id);
             }, 1000);
         },
         errorMsg => {
@@ -269,7 +267,6 @@ const OrderItem = React.createClass({
     },
 
     renderOrderContent() {
-        const _this = this;
         const order = this.state.formData;
         let selectedAppList = [];
         let selectedAppListId = [];

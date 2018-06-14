@@ -49,7 +49,7 @@ const OrderForm = React.createClass({
                         OrderAction.afterAddOrder(data.result);
                         //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                         setTimeout(() => {
-                            this.props.refreshCustomerList(reqData.customer_id);
+                            _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
                         }, 200);
                     }
                     else {

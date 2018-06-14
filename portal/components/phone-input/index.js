@@ -40,7 +40,10 @@ class PhoneInput extends React.Component {
             ) {
                 callback();
             } else {
-                callback(Intl.get('crm.196', '请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555'));
+                //延迟1秒钟后再显示错误信息，以防止一输入就报错
+                setTimeout(() => {
+                    callback(Intl.get('crm.196', '请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555'));
+                }, 1000);
             }
         };
     }
@@ -67,7 +70,7 @@ class PhoneInput extends React.Component {
                 {getFieldDecorator(this.props.id, {
                     initialValue: addHyphenToPhoneNumber(this.props.initialValue),
                     rules: this.getRules(),
-                    validateTrigger: 'onBlur',
+                    validateTrigger: 'onChange',
                     validateFirst: true,
                 })(
                     <Input

@@ -176,7 +176,7 @@ var SalesHomePage = React.createClass({
         return queryParams;
     },
     //刷新数据
-    refreshSalesListData: function() {
+    refreshSalesListData: function(isSwitchTeam) {
         let queryParams = this.getQueryParams();
         let dataType = this.getDataType();
         queryParams.dataType = dataType;
@@ -188,7 +188,10 @@ var SalesHomePage = React.createClass({
         let phoneParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(phoneParams);
         SalesHomeAction.setListIsLoading(viewConstant.CALL_BACK);
-        this.getCallBackList();
+        //切换团队数据的时候，不用发获取回访的请求
+        if (!isSwitchTeam){
+            this.getCallBackList();
+        }
         let callTotalAuth = this.getCallTotalAuth();
         let top10Params = this.getPhoneTop10Params();
         //通话总次数、总时长TOP10
@@ -692,7 +695,7 @@ var SalesHomePage = React.createClass({
     },
     //切换销售团队、销售时，刷新数据
     refreshDataByChangeSales: function() {
-        this.refreshSalesListData();
+        this.refreshSalesListData(true);
         //刷新统计数据
         if (this.state.activeView === viewConstant.CUSTOMER) {
             //刷新客户分析数据
@@ -802,7 +805,7 @@ var SalesHomePage = React.createClass({
                     <div className="date-range-wrap">
                         <DatePicker
                             disableDateAfterToday={true}
-                            range="week"
+                            range={this.state.timeType}
                             onSelect={this.onSelectDate}>
                             <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
                             <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>

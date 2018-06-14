@@ -24,8 +24,6 @@ function UserFormActions() {
         'checkOnlyPhone',
         //重置用户验证的标志
         'resetUserNameFlags',
-        //重置电话验证的标志
-        'resetPhoneFlags',
         //重置邮箱验证的标志
         'resetEmailFlags',
         //正在获取角色列表
@@ -91,12 +89,12 @@ function UserFormActions() {
 
     //清空提示
     this.resetSaveResult = function(formType, saveResult) {
-        if (saveResult == 'success') {
-            if (formType == 'add') {
+        if (saveResult === 'success') {
+            if (formType === 'add') {
                 cardEmitter.emit(cardEmitter.ADD_CARD);
                 //清空搜索内容
                 UserActions.updateSearchContent('');
-            } else if (formType == 'edit') {
+            } else if (formType === 'edit') {
                 //修改成功后返回详情
                 UserActions.returnInfoPanel();
             }
@@ -115,12 +113,11 @@ function UserFormActions() {
     };
 
     //电话唯一性的验证
-    this.checkOnlyPhone = function(phone) {
-        var _this = this;
+    this.checkOnlyPhone = function(phone, callback) {
         userAjax.checkOnlyPhone(phone).then(function(result) {
-            _this.dispatch(result);
+            _.isFunction(callback) && callback(result);
         }, function(errorMsg) {
-            _this.dispatch(errorMsg);
+            _.isFunction(callback) && callback(errorMsg || Intl.get('common.phone.is.unique', '电话唯一性校验出错！'));
         });
     };
 

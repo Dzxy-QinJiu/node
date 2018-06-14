@@ -30,8 +30,11 @@ const otherFilterArray = [{
     name: Intl.get('crm.call.no.remark.over30', '超30天未写跟进记录'),
     value: 'last_trace'
 }, {
-    name: Intl.get('crm.concerned.customer', '关注的客户'),
-    value: 'interest'
+    name: Intl.get('crm.concerned.customer', '被关注的客户'),
+    value: 'interest_member_ids'
+}, {
+    name: Intl.get('crm.my.concerned.customer', '我关注的客户'),
+    value: 'my_interest'
 }, {
     name: Intl.get('crm.order.more.customer', '多个订单的客户'),
     value: 'multi_order'
@@ -268,13 +271,16 @@ const CrmFilterPanel = React.createClass({
             Trace.traceEvent($(this.getDOMNode()).find('li'), '超30天未写跟进记录客户的筛选');
             break;
         case otherFilterArray[7].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '关注客户的筛选');
+            Trace.traceEvent($(this.getDOMNode()).find('li'), '被关注客户的筛选');
             break;
         case otherFilterArray[8].value:
+            Trace.traceEvent($(this.getDOMNode()).find('li'), '我关注客户的筛选');
+            break;
+        case otherFilterArray[9].value:
             Trace.traceEvent($(this.getDOMNode()).find('li'), '多个订单客户的筛选');
             break;
         }
-        if (otherFilterArray[9] && item === otherFilterArray[8].value) {
+        if (otherFilterArray[10] && item === otherFilterArray[10].value) {
             Trace.traceEvent($(this.getDOMNode()).find('li'), '未分配客户的筛选');
         }
     },

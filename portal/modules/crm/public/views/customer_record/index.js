@@ -234,7 +234,7 @@ const CustomerRecord = React.createClass({
                 remark: addcontent,
             };
             CustomerRecordActions.addCustomerTrace(queryObj, () => {
-                this.props.refreshCustomerList(customerId);
+                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(customerId);
                 this.toggleAddRecordPanel();
             });
             // $('.add-content-input').focus();
@@ -255,7 +255,7 @@ const CustomerRecord = React.createClass({
             }
             CustomerRecordActions.setUpdateId(item.id);
             CustomerRecordActions.updateCustomerTrace(queryObj, () => {
-                this.props.refreshCustomerList(customerId);
+                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(customerId);
             });
         }
     },

@@ -128,6 +128,8 @@ var SalesHomePage = React.createClass({
         this.getConcernedLogin();
         //停用客户登录
         this.getAppIlleageLogin();
+        //登录失败
+        this.getLoginFailedNotices();
         //获取重复客户列表
         this.getRepeatCustomerList();
         //获取呼入未接的电话
@@ -232,6 +234,18 @@ var SalesHomePage = React.createClass({
         //停用客户登录等消息列表
         SalesHomeAction.getSystemNotices(noticeQueryObj, this.state.status, noticeQueryObj.notice_type);
     },
+    //获取登录失败的通知
+    getLoginFailedNotices: function(lastId) {
+        let noticeQueryObj = {
+            notice_type: ALL_LISTS_TYPE.LOGIN_FAILED,
+            page_size: this.state.page_size,//默认不传是5
+        };
+        if (lastId) {
+            noticeQueryObj.id = lastId;
+        }
+        //获取登录失败的通知
+        SalesHomeAction.getSystemNotices(noticeQueryObj, this.state.status, noticeQueryObj.notice_type);
+    },
     //关注客户登录
     getConcernedLogin: function(lastId) {
         let noticeQueryObj = {
@@ -294,6 +308,9 @@ var SalesHomePage = React.createClass({
         case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN://停用客户登录
             this.getScrollData(this.state.appIllegalObj, this.getAppIlleageLogin);
             break;
+        case ALL_LISTS_TYPE.LOGIN_FAILED://登录失败的客户
+            this.getScrollData(this.state.loginFailedObj, this.getLoginFailedNotices);
+            break;
         case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN://关注客户登录
             this.getScrollData(this.state.concernCustomerObj, this.getConcernedLogin);
             break;
@@ -313,7 +330,7 @@ var SalesHomePage = React.createClass({
         if (length < curDataObj.data.total) {
             var lastId = curDataObj.data.list[length - 1].id;
             getDataFunction(lastId);
-        } else if (length == curDataObj.data.total) {
+        } else if (length === curDataObj.data.total) {
             this.setState({
                 listenScrollBottom: false
             });
@@ -373,6 +390,10 @@ var SalesHomePage = React.createClass({
             //停用客户登录
         case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
             rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN);
+            break;
+            //登录失败的客户
+        case ALL_LISTS_TYPE.LOGIN_FAILED:
+            rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.LOGIN_FAILED);
             break;
             //关注客户登录
         case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
@@ -691,6 +712,15 @@ var SalesHomePage = React.createClass({
                     {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, data, false)}
                 </div>
             );
+        }else if (type === ALL_LISTS_TYPE.LOGIN_FAILED) {
+            //登录失败
+            data = this.state.loginFailedObj.data.list;
+            return (
+                <div className="app-illeage-container" ref="tableWrap">
+                    {this.renderLoadingAndErrAndNodataContent(this.state.loginFailedObj)}
+                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.LOGIN_FAILED, data, false)}
+                </div>
+            );
         } else if (type === ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER) {
             //最近X日登录的客户
             data = this.state.recentLoginCustomerObj.data.list;
@@ -723,6 +753,9 @@ var SalesHomePage = React.createClass({
             break;
         case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
             total = this.state.appIllegalObj.data.total;
+            break;
+        case ALL_LISTS_TYPE.LOGIN_FAILED:
+            total = this.state.loginFailedObj.data.total;
             break;
         case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
             total = this.state.concernCustomerObj.data.total;

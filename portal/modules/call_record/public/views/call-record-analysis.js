@@ -27,11 +27,10 @@ import Spinner from 'CMP_DIR/spinner';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Trace from 'LIB_DIR/trace';
 import ScatterChart from 'CMP_DIR/chart/scatter';
-import {AntcTable} from 'antc';
+import { AntcTable, AntcCardContainer } from 'antc';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {handleTableData} from 'CMP_DIR/analysis/export-data-util';
-import {exportToCsv} from 'LIB_DIR/func';
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import { MAP_PROVINCE } from 'LIB_DIR/consts';
 //地图的formatter
@@ -811,11 +810,17 @@ var CallRecordAnalyis = React.createClass({
             );
         }
         return (
-            <AntcTable dataSource={this.state.salesPhoneList}
-                columns={this.getPhoneListColumn()}
-                pagination={false}
-                bordered
-            />
+            <AntcCardContainer
+                title={Intl.get('call.analysis.call.title', '通话信息')}
+                exportData={handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true))}
+                csvFileName="sales_phone_table.csv"
+            >
+                <AntcTable dataSource={this.state.salesPhoneList}
+                    columns={this.getPhoneListColumn()}
+                    pagination={false}
+                    bordered
+                />
+            </AntcCardContainer>
         );
     },
 
@@ -903,10 +908,6 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
         }
-    },
-    exportPhoneTable: function() {
-        let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true));
-        exportToCsv('sales_phone_table.csv',exportData);
     },
     getClickMap(zone) {
         CallAnalysisAction.showZoneDistribute(zone);
@@ -1029,13 +1030,6 @@ var CallRecordAnalyis = React.createClass({
                 {this.renderCallTrendChart()}
             </div>
             <div style={{height: tableHeight}}>
-                {this.state.salesPhoneList.length ? (
-                    <div className="export-file" style={{top: this.state.trendHeight + 60}} onClick={this.exportPhoneTable.bind(this)}>
-                        <i className="iconfont icon-export"
-                            title={Intl.get('call.time.export.statistic', '点击导出通话时长统计')}>
-                            {Intl.get('common.export', '导出')}
-                        </i>
-                    </div>) : null}
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
                         <div className="call-info col-xs-12">

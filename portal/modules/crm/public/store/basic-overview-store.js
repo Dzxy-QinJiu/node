@@ -53,7 +53,7 @@ CRMStore.prototype.getNotCompletedScheduleList = function(result) {
     }
 };
 CRMStore.prototype.afterHandleStatus = function(newStatusObj) {
-    var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id == newStatusObj.id;});
+    var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id === newStatusObj.id;});
     curSchedule[0].status = newStatusObj.status;
 };
 
@@ -74,7 +74,7 @@ CRMStore.prototype.setBasicState = function(state) {
 
 CRMStore.prototype.submitBaiscForm = function(newBasicData) {
     //如果当前展示的是要修改的客户资料，则更新，否则，不更新
-    if (newBasicData.id == this.basicData.id) {
+    if (newBasicData.id === this.basicData.id) {
         this.basicData = newBasicData;
     }
     this.editShowFlag = false;

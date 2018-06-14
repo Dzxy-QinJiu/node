@@ -835,6 +835,8 @@ var en_US = {
     'notification.system.handled.set': 'Handle',//处理
     'notification.system.handled': 'Handled',//已处理
     'notification.system.untreated': 'Untreated',//未处理
+    'notification.login.password.error': 'Password or verification code error',//报密码或验证码错误
+    'notification.login.failed': 'Login failed', //登录失败
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
@@ -947,6 +949,7 @@ var en_US = {
     'call.record.service.phone.rate': 'Statistics of the ratio of 114',//114占比统计
     'call.analysis.zone.distrute': 'Zone distribution of customers', // 客户的地域分布
     'call.analysis.map.return': 'Back to previous', // 返回上一级
+    'call.analysis.call.title': 'Call information', // 通话信息
     //通话分析-end
 
 
@@ -1017,6 +1020,7 @@ var en_US = {
     'user.apply.unread.reply.null': 'No unread reply，{return}',//已无未读回复的申请，{return}
     'user.apply.check': 'Check',//查看
     'user.apply.cancel.check': 'Cancel check',//取消查看
+    'user.apply.show.all.check': 'show all the applications',//查看全部申请
     'user.apply.unread.apply.list.failed': 'Failure to obtain an application list with unread reply',//获取有未读回复的申请列表失败
     'reply.pass.tip.content': '{approvalPerson} has passed the {userType} user {userNames}, that {salesName} has applied to the customer {customerName}',//{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'reply.reject.tip.content': '{approvalPerson} rejected the {userType} user {userNames}, that {salesName} applied to the customer {customerName}',//{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
@@ -1225,7 +1229,8 @@ var en_US = {
     'crm.last.trace.content': 'Last Trace content',//最后跟进内容
     'crm.competing.products': 'Competing products',//竞品
     'crm.no.contact.way': 'No contact customers',//无联系方式客户
-    'crm.concerned.customer': 'Concerned customers',//关注的客户
+    'crm.concerned.customer': 'Concerned customers',//被关注的客户
+    'crm.my.concerned.customer': 'My concerned customers',//我关注的客户
     'crm.administrative.level.change': 'Change administrative level',//变更行政级别
     'crm.select.level': 'Please select administrative level',//请选择行政级别
     'crm.no.level': 'No match administrative level',//无相关行政级别
