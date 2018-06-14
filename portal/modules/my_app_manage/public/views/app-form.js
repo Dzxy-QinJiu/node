@@ -1,9 +1,9 @@
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/index-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('../css/index-zh_CN.less');
 }
 import {Icon,Form,Input,Select,InputNumber,Radio} from 'antd';
@@ -47,7 +47,7 @@ var AppForm = React.createClass({
     formatAppInfo: function(app) {
         let managers = [];
         if (_.isArray(app.managers) && app.managers.length) {
-            managers = _.pluck(app.managers, 'managerId');
+            managers = _.map(app.managers, 'managerId');
         }
         return {
             id: app.id,
@@ -131,7 +131,7 @@ var AppForm = React.createClass({
     handleCancel: function(e) {
         e.preventDefault();
         Trace.traceEvent(e,'点击取消编辑按钮');
-        if (this.props.formType == 'edit') {
+        if (this.props.formType === 'edit') {
             this.props.returnInfoPanel(e);
         } else {
             this.props.closeRightPanel(e);
@@ -191,7 +191,7 @@ var AppForm = React.createClass({
                 //管理员（多选）选择后，从下拉列表中去掉已选的选项
                 if (_.isArray(managers) && managers.length > 0) {
                     managers.forEach(function(manager) {
-                        if (manager == user.userId) {
+                        if (manager === user.userId) {
                             className = 'manager-options-selected';
                         }
                     });
@@ -238,12 +238,12 @@ var AppForm = React.createClass({
         var logoDescr = 'Logo';
         //是否是应用所有者，应用所有者才可以修改管理员、LOGO、启停应用
         var isAppOwner = userData.hasRole(userData.ROLE_CONSTANS.APP_OWNER);
-        let labelCol = (language.lan() == 'zh' ? 4 : 6);
-        let wrapperCol = (language.lan() == 'zh' ? 12 : 24);
+        let labelCol = (language.lan() === 'zh' ? 4 : 6);
+        let wrapperCol = (language.lan() === 'zh' ? 12 : 24);
         return (
             <div data-tracename="编辑应用界面">
                 <RightPanelClose onClick={this.closePanel}/>
-                {(this.props.formType == 'add' || !this.props.appFormShow) ? null : (
+                {(this.props.formType === 'add' || !this.props.appFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon headIcon={formData.image}
@@ -299,7 +299,7 @@ var AppForm = React.createClass({
                                             wrapperCol={{span: 12}}
                                         >
                                             <RadioGroup onChange={this.onStatusChange}
-                                                value={formData.status || formData.status == 0 ? formData.status.toString() : ''}>
+                                                value={formData.status || formData.status === 0 ? formData.status.toString() : ''}>
                                                 <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.enabled"
                                                     defaultMessage="启用"/></Radio>
                                                 <Radio key="0" value="0"><ReactIntl.FormattedMessage
@@ -428,7 +428,7 @@ var AppForm = React.createClass({
                                     <div className="indicator">
                                         {saveResult ?
                                             (
-                                                <AlertTimer time={saveResult == 'error' ? 3000 : 600}
+                                                <AlertTimer time={saveResult === 'error' ? 3000 : 600}
                                                     message={this.state.saveMsg}
                                                     type={this.state.saveResult} showIcon
                                                     onHide={this.hideSaveTooltip}/>

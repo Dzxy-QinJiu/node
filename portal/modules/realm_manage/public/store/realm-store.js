@@ -1,5 +1,5 @@
 var RealmActions = require('../action/realm-actions');
-var _ = require('underscore');
+var _ = require('lodash');
 var emptyRealm = {
     id: '',
     realmName: '',
@@ -57,8 +57,8 @@ function RealmStore() {
 RealmStore.prototype.createRealms = function(result) {
     var detail = result[0];
     // 找到当前正在创建的安全域
-    var realm = _.find(this.curRealmList, realm => realm.taskId && realm.taskId == detail.taskId);
-    if (detail.failed == 0) {
+    var realm = _.find(this.curRealmList, realm => realm.taskId && realm.taskId === detail.taskId);
+    if (detail.failed === 0) {
         //创建成功后，把推送过来的id加到有对应taskId的安全域中，并修改该安全域的status，createMsg属性
         if (detail.tasks.length > 0){
             realm.id = detail.tasks[0].taskDetail.realmId;
@@ -80,7 +80,7 @@ RealmStore.prototype.removeFailRealm = function(realmtaskId) {
 //点击安全域查看详情时，先设置已有的详情信息
 RealmStore.prototype.setCurRealm = function(realmId) {
     var curRealm = _.find(this.curRealmList, function(realm) {
-        if (realm.id == realmId) {
+        if (realm.id === realmId) {
             return true;
         }
     });
@@ -91,7 +91,7 @@ RealmStore.prototype.getCurRealmById = function(realm) {
     this.currentRealm = realm;
     var curRealmList = this.curRealmList;
     for (var i = 0, len = curRealmList.length; i < len; i++) {
-        if (curRealmList[i].id == realm.id) {
+        if (curRealmList[i].id === realm.id) {
             this.curRealmList[i] = this.currentRealm;
         }
     }
@@ -124,7 +124,7 @@ RealmStore.prototype.getCurRealmList = function(realmListObj) {
             }
         }
 
-        if (this.curPage == 1) {
+        if (this.curPage === 1) {
             this.curRealmList = [];
         }
         // 每次加载数据的长度
@@ -136,7 +136,7 @@ RealmStore.prototype.getCurRealmList = function(realmListObj) {
             this.curRealmList = curRealmList;
         } else {
             var rest = getTotalRealmListLength % (this.pageSize);
-            if (rest == 0) {
+            if (rest === 0) {
                 this.curRealmList = this.curRealmList.concat(curRealmList);
             } else {
                 for (var j = rest; j < getCurRealmListLength; j++) {
@@ -169,7 +169,7 @@ RealmStore.prototype.updateRealmStatus = function(modifiedRealm) {
     if (_.isObject(modifiedRealm)) {
         var curRealmList = this.curRealmList;
         for (var j = 0, rLen = curRealmList.length; j < rLen; j++) {
-            if (curRealmList[j].id == modifiedRealm.id) {
+            if (curRealmList[j].id === modifiedRealm.id) {
                 this.curRealmList[j].status = modifiedRealm.status;
                 break;
             }
@@ -181,7 +181,7 @@ RealmStore.prototype.afterEditRealm = function(modifiedRealm) {
     if (_.isObject(modifiedRealm)) {
         var curRealmList = this.curRealmList;
         for (var j = 0, rLen = curRealmList.length; j < rLen; j++) {
-            if (curRealmList[j].id == modifiedRealm.id) {
+            if (curRealmList[j].id === modifiedRealm.id) {
                 if (modifiedRealm.status) {
                     this.curRealmList[j].status = modifiedRealm.status;
                 } else {
@@ -225,7 +225,7 @@ RealmStore.prototype.hideModalDialog = function() {
 RealmStore.prototype.handleUser = function(realmId, flag) {
     var curRealmList = this.curRealmList;
     for (var j = 0, rLen = curRealmList.length; j < rLen; j++) {
-        if (curRealmList[j].id == realmId) {
+        if (curRealmList[j].id === realmId) {
             this.curRealmList[j].isStop = flag;
             break;
         }

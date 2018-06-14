@@ -132,7 +132,7 @@ var CallRecordAnalyis = React.createClass({
 
     // 获取团队或是成员的id
     getTeamOrMemberId(list, selectValue) {
-        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).pluck('id').value();
+        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
     },
 
     // 获取团队或成员的参数
@@ -148,7 +148,7 @@ var CallRecordAnalyis = React.createClass({
             }
         } else { // 成员时
             if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) { // 全部时
-                let userIdArray = _.pluck(this.state.memberList.list, 'id');
+                let userIdArray = _.map(this.state.memberList.list, 'id');
                 params.user_id = userIdArray.join(',');
             } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
                 let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
@@ -225,7 +225,7 @@ var CallRecordAnalyis = React.createClass({
                 let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
                 params.sales_team_id = secondSelectTeamId.join(',');
             }else{
-                params.sales_team_id = _.pluck(teamList,'id').join(',');
+                params.sales_team_id = _.map(teamList,'id').join(',');
             }
         }
         return params;
@@ -864,10 +864,10 @@ var CallRecordAnalyis = React.createClass({
         else {
             let rateArray = [];
             if (this.state.teamList.list.length) {
-                rateArray = _.pluck(this.state.callRateList[type].list, 'rate');
+                rateArray = _.map(this.state.callRateList[type].list, 'rate');
             }
             else { // 普通销售
-                rateArray = _.pluck(this.state.callRateList[type].list, 'count');
+                rateArray = _.map(this.state.callRateList[type].list, 'count');
             }
             // 没有数据的提示
             if (!rateArray.length || _.max(rateArray) === 0) {
@@ -1210,7 +1210,7 @@ var CallRecordAnalyis = React.createClass({
             secondSelectValue: LITERAL_CONSTANT.ALL
         }, () => {
             if (value === LITERAL_CONSTANT.MEMBER) {
-                let userIdArray = _.pluck(this.state.memberList.list, 'id');
+                let userIdArray = _.map(this.state.memberList.list, 'id');
                 this.refreshCallAnalysisData({user_id: userIdArray.join(',')});
             } else {
                 this.refreshCallAnalysisData();

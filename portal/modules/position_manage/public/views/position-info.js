@@ -15,7 +15,7 @@ const PositionInfo = React.createClass({
     mixins: [Validation.FieldMixin],
     getInitialState() {
         let selectRowObj = _.find( this.props.positionList, (item) => {
-            return item.phone_order == this.props.clickRowPhoneOrder;
+            return item.phone_order === this.props.clickRowPhoneOrder;
         });
         return {
             positionInfo: $.extend(true, {}, selectRowObj),
@@ -28,7 +28,7 @@ const PositionInfo = React.createClass({
     },
     componentWillReceiveProps(nextProps) {
         let selectRowObj = _.find( this.props.positionList, (item) => {
-            return item.phone_order == nextProps.clickRowPhoneOrder;
+            return item.phone_order === nextProps.clickRowPhoneOrder;
         });
         if (selectRowObj) {
             this.setState({
@@ -39,11 +39,11 @@ const PositionInfo = React.createClass({
     // 获取组织id
     getOrganizationId(selectValue) {
         let organizationList = PositionStore.getState().realmList;
-        return _.chain(organizationList).filter(item => selectValue.indexOf(item.realm_name) > -1).pluck('realm_id').value();
+        return _.chain(organizationList).filter(item => selectValue.indexOf(item.realm_name) > -1).map('realm_id').value();
     },
     componentWillUpdate(nextProps, nextState) {
         let formData = this.state.formData;
-        if (formData.realm_id != nextState.formData.realm_id && nextState.formData.realm_id) {
+        if (formData.realm_id !== nextState.formData.realm_id && nextState.formData.realm_id) {
             let SelectId = this.getOrganizationId(nextState.formData.realm_id)[0];
             PositionAction.getUnbindMemberList({realm: SelectId});
         }
@@ -112,7 +112,7 @@ const PositionInfo = React.createClass({
         let selectId = this.getUnbindMemberId(userId)[0];
         var memberList = PositionStore.getState().unbindMember.data;
         let selectObj = _.find(memberList, (item) => {
-            return item.user_id == selectId;
+            return item.user_id === selectId;
         });
         this.state.positionInfo.user_id = selectId;
         this.state.positionInfo.nick_name = selectObj.nick_name;
@@ -139,7 +139,7 @@ const PositionInfo = React.createClass({
     // 获取用户id
     getUnbindMemberId(selectValue) {
         var unbindMemberList = PositionStore.getState().unbindMember.data;
-        return _.chain(unbindMemberList).filter(item => selectValue.indexOf(item.nick_name) > -1).pluck('user_id').value();
+        return _.chain(unbindMemberList).filter(item => selectValue.indexOf(item.nick_name) > -1).map('user_id').value();
     },
     // 提交保存
     handleSubmit() {

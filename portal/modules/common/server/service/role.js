@@ -1,7 +1,7 @@
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var roleDto = require('../dto/role');
-var _ = require('underscore');
+var _ = require('lodash');
 //获取java端rest的地址
 var urls = {
     //根据应用获取角色列表

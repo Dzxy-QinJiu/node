@@ -6,7 +6,7 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var Promise = require('bluebird');
 var auth = require('../../../../lib/utils/auth');
-var _ = require('underscore');
+var _ = require('lodash');
 var EventEmitter = require('events').EventEmitter;
 //统一的路径前缀
 let URL_PREFIX = '/rest/analysis/user/v1/operation_report';

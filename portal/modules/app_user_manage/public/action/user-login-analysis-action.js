@@ -21,7 +21,7 @@ function UserLoginAnalysisAction() {
             // 存储应用id的变量
             let userOwnAppArrayAppIdList = [];
             if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1) {
-                userOwnAppArrayAppIdList = _.pluck(userOwnAppArray, 'app_id');
+                userOwnAppArrayAppIdList = _.map(userOwnAppArray, 'app_id');
             }
             // 上一个用户选择应用id
             let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
@@ -30,9 +30,9 @@ function UserLoginAnalysisAction() {
             let selectApp = selectedAppId || AppUserStore.getState().selectedAppId || ShareObj.share_online_app_id ||
                 UserAuditLogStore.getState().selectAppId;
             let selectedLogAppId = '';
-            // selectAPP == ''是针对全部应用
-            if (selectApp == '') {
-                if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1 && index == -1) {
+            // selectAPP === ''是针对全部应用
+            if (selectApp === '') {
+                if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1 && index === -1) {
                     selectedLogAppId = userOwnAppArray[0].app_id;
                 }else {
                     selectedLogAppId = lastSelectAppId;
@@ -40,7 +40,7 @@ function UserLoginAnalysisAction() {
             } else {
                 selectedLogAppId = selectApp;
             }
-            const matchAppInfo = _.find(userOwnAppArray, appItem => appItem.app_id == selectedLogAppId );
+            const matchAppInfo = _.find(userOwnAppArray, appItem => appItem.app_id === selectedLogAppId );
             let create_time = matchAppInfo && matchAppInfo.create_time || '';
             let loginParam = {
                 appid: selectedLogAppId,

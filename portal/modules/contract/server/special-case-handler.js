@@ -1,5 +1,5 @@
 const restHandler = require('../common/rest');
-const _ = require('underscore');
+const _ = require('lodash');
 const moment = require('moment');
 import Intl from '../../../public/intl/intl';
 import { DATE_FORMAT, CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS } from '../consts';
@@ -126,7 +126,7 @@ const getRepaymentList = function(req, res, cb) {
             //如果回款列表有值，进行查询合同和组合数据的操作
             if (_.isArray(repayList) && repayList.length) {
                 //获取用于查询的合同ids
-                const contractIds = _.chain(repayList).pluck('contract_id').uniq().join(',');
+                const contractIds = _.chain(repayList).map('contract_id').uniq().join(',').value();
                 req.body.reqData = JSON.stringify({query: {id: contractIds}});
                 //将url query参数置空
                 req.query = {};
@@ -208,7 +208,7 @@ exports.exportData = function(req, res, next) {
 
     //执行导出
     function doExport(type, columns, result) {
-        const columnTitles = _.pluck(columns, 'title');
+        const columnTitles = _.map(columns, 'title');
         let fileName = 'repayment';
         const isContract = ['sell', 'buy'].indexOf(type) > -1;
 

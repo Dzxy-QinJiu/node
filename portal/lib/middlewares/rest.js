@@ -1,7 +1,7 @@
 const querystring = require('querystring');
 const restLogger = require('../utils/logger').getLogger('rest');
 const restUtil = require('ant-auth-request').restUtil(restLogger);
-const _ = require('underscore');
+const _ = require('lodash');
 
 module.exports = function(req, res) {
     const queryStr = querystring.stringify(req.query);

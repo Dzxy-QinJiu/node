@@ -67,6 +67,7 @@
     "intl-messageformat": "^1.3.0",
     "jquery": "2.1.4",
     "jspdf": "^1.3.3",
+    "lodash": "^4.17.10",
     "log4js": "0.6.29",
     "log4js-config": "^0.1.1",
     "log4js-elasticsearch": "0.0.8",

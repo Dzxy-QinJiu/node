@@ -44,11 +44,11 @@ var BarChart = React.createClass({
         }
         return {
             show: false,
-            data: _.pluck(this.props.legend, 'name')
+            data: _.map(this.props.legend, 'name')
         };
     },
     getCategorys: function() {
-        return _.pluck(this.props.list, 'name');
+        return _.map(this.props.list, 'name');
     },
     getSeries: function() {
         var _this = this;
@@ -61,7 +61,7 @@ var BarChart = React.createClass({
                 barMaxWidth: 40,
                 barMinWidth: 4,
                 stack: 'stack',
-                data: _.pluck(_this.props.list, legendInfo.key),
+                data: _.map(_this.props.list, legendInfo.key),
                 itemStyle: {
                     normal: {
                         color: currentColor,
@@ -114,7 +114,7 @@ var BarChart = React.createClass({
                 }
                 let timeDesc = Intl.get('oplate_customer_analysis.12', '至{time}为止', {time: _this.props.endDate});
                 if (_this.props.startDate) {
-                    if (_this.props.startDate == _this.props.endDate) {
+                    if (_this.props.startDate === _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     } else {
                         timeDesc = _this.props.startDate + Intl.get('common.time.connector', '至') + _this.props.endDate;
@@ -226,9 +226,9 @@ var BarChart = React.createClass({
                     const jumpProps = _this.props.getJumpProps();
                     let filterVal = params.name;
                     if(jumpProps && jumpProps.query){
-                        if(jumpProps.query.analysis_filter_field == 'user_id'){
+                        if(jumpProps.query.analysis_filter_field === 'user_id'){
                             filterVal = _this.props.getSaleIdByName(params.name);
-                        } else if(jumpProps.query.analysis_filter_field == 'sales_team_id'){
+                        } else if(jumpProps.query.analysis_filter_field === 'sales_team_id'){
                             filterVal = _this.props.getTeamIdByName(params.name);
                         }
                     }
