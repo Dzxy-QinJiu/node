@@ -482,7 +482,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             noShowCondition: {
                 app_id: 'all',
-                tab: ['delayed', 'added_expired'],
+                tab: ['!', 'total'],
             },
             csvOption: {
                 rowNames: [
@@ -527,7 +527,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             yAxisLabels: WEEKDAY,
             noShowCondition: {
                 app_id: 'all',
-                tab: ['delayed', 'added', 'expired', 'added_expired'],
+                tab: ['!', 'total'],
                 callback: () => isSales,
             },
             generateCsvData: function(data) {
@@ -552,7 +552,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: 'table',
             noShowCondition: {
                 app_id: 'all',
-                tab: ['delayed', 'total', 'expired', 'added_expired'],
+                tab: ['!', 'total'],
                 callback: (conditions) => {
                     if (isSales) return true;
 
@@ -656,7 +656,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: 'bar',
             noShowCondition: {
                 app_id: 'all',
-                tab: ['added_expired'],
+                tab: ['!', 'total'],
             },
         }, {
             title: Intl.get('oplate.user.analysis.browser', '浏览器统计'),
@@ -664,7 +664,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: 'bar',
             noShowCondition: {
                 app_id: 'all',
-                tab: ['added_expired'],
+                tab: ['!', 'total'],
             },
         }, {
             title: Intl.get('oplate.user.analysis.loginCounts', '用户访问次数'),
@@ -678,7 +678,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             unit: Intl.get('common.label.times', '次'),
             noShowCondition: {
                 app_id: 'all',
-                tab: ['added_expired'],
+                tab: ['!', 'total'],
             },
             csvOption: {
                 thead: [Intl.get('user.login.time', '次数'), Intl.get('common.app.count', '数量')],
@@ -690,7 +690,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             height: 546,
             noShowCondition: {
                 app_id: 'all',
-                tab: ['added_expired'],
+                tab: ['!', 'total'],
             },
             subChart: {
                 chartType: 'table',
@@ -716,7 +716,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             unit: Intl.get('common.time.unit.day', '天'),
             noShowCondition: {
                 app_id: 'all',
-                tab: ['added_expired'],
+                tab: ['!', 'total'],
             },
             csvOption: {
                 thead: [Intl.get('oplate.user.analysis.loginDays', '用户访问天数'), Intl.get('common.app.count', '数量')],
@@ -734,7 +734,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             multiple: 60,
             noShowCondition: {
                 app_id: 'all',
-                tab: ['added_expired'],
+                tab: ['!', 'total'],
             },
             csvOption: {
                 thead: [Intl.get('oplate.user.analysis.loginTimes', '用户在线时间'), Intl.get('common.app.count', '数量')],
@@ -789,7 +789,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             }],
             noShowCondition: {
                 app_id: 'all',
-                tab: ['added_expired'],
+                tab: ['!', 'total'],
             },
         }];
     },
