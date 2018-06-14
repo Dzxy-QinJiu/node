@@ -1019,6 +1019,7 @@ var en_US = {
     'user.apply.unread.reply.null': 'No unread reply，{return}',//已无未读回复的申请，{return}
     'user.apply.check': 'Check',//查看
     'user.apply.cancel.check': 'Cancel check',//取消查看
+    'user.apply.show.all.check': 'show all the applications',//查看全部申请
     'user.apply.unread.apply.list.failed': 'Failure to obtain an application list with unread reply',//获取有未读回复的申请列表失败
     'reply.pass.tip.content': '{approvalPerson} has passed the {userType} user {userNames}, that {salesName} has applied to the customer {customerName}',//{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'reply.reject.tip.content': '{approvalPerson} rejected the {userType} user {userNames}, that {salesName} applied to the customer {customerName}',//{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
