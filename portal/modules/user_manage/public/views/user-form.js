@@ -121,7 +121,6 @@ var UserForm = React.createClass({
     //关闭面板前清空验证的处理
     resetValidatFlags: function() {
         UserFormAction.resetUserNameFlags();
-        UserFormAction.resetPhoneFlags();
         UserFormAction.resetEmailFlags();
     },
     handleCancel: function(e) {
@@ -137,7 +136,7 @@ var UserForm = React.createClass({
         validation.validate((valid) => {
             //验证电话是否通过验证
             this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {},(errors, values) => {
-                if (this.state.userNameExist || this.state.phoneExist || this.state.emailExist || this.state.userNameError || this.state.phoneError || this.state.emailError) {
+                if (this.state.userNameExist || this.state.emailExist || this.state.userNameError || this.state.emailError) {
                     valid = false;
                 }
                 if (!valid || errors) {
