@@ -15,9 +15,9 @@ SalesHomeStore.prototype.setInitState = function() {
     //设置客户、用户、电话、合同总数的初始化数据
     this.setInitTotalData('loading');
     this.activeView = viewConstant.CUSTOMER;//默认展示客户分析视图
-    //默认展示今天的时间
-    this.timeType = 'day';
-    var timeRange = DateSelectorUtils.getTodayTime();
+    //默认展示本周的时间 true:本周截止到今天为止
+    this.timeType = 'week';
+    var timeRange = DateSelectorUtils.getThisWeekTime(true);
     //开始时间
     this.start_time = DateSelectorUtils.getMilliseconds(timeRange.start_time);
     //结束时间
@@ -171,7 +171,7 @@ function delTeamFlag(teamList) {
 SalesHomeStore.prototype.setReturnTeamChilds = function(teamId, teamList) {
     if (_.isArray(teamList) && teamList.length > 0) {
         _.some(teamList, team => {
-            if (team.group_id == teamId) {
+            if (team.group_id === teamId) {
                 //设置当前展示的销售团队
                 this.currShowSalesTeam = team;
                 //去掉原团队是正在展示列表的父团队的标识
@@ -186,7 +186,7 @@ SalesHomeStore.prototype.setReturnTeamChilds = function(teamId, teamList) {
 };
 //返回销售团队列表展示页
 SalesHomeStore.prototype.returnSalesTeamList = function(teamId) {
-    if (this.originSalesTeamTree.group_id == teamId) {
+    if (this.originSalesTeamTree.group_id === teamId) {
         //去掉原团队是正在展示列表的父团队的标识
         delTeamFlag(this.originSalesTeamTree.child_groups);
         //返回到第一层团队
@@ -260,7 +260,7 @@ SalesHomeStore.prototype.getSalesTeamList = function(result) {
         salesTeamListObj.resultType = '';
         salesTeamListObj.errorMsg = '';
         //管理员、运营人员展示所有的团队时的处理
-        if (result.type == 'all') {
+        if (result.type === 'all') {
             if (_.isArray(result.resData) && result.resData.length) {
                 this.originSalesTeamTree = {
                     group_id: 'sales-team-list-parent-group-id',
@@ -271,7 +271,7 @@ SalesHomeStore.prototype.getSalesTeamList = function(result) {
                 salesTeamListObj.data = result.resData;
                 this.currShowType = showTypeConstant.SALES_TEAM_LIST;
             }
-        } else if (result.type == 'self') {
+        } else if (result.type === 'self') {
             //展示销售所在团队及其子团队时的处理
             if (_.isArray(result.resData) && result.resData[0]) {
                 let teamObj = result.resData[0];//销售所在团队
@@ -285,10 +285,10 @@ SalesHomeStore.prototype.getSalesTeamList = function(result) {
                     //没有下级团队,0、manager还是user
                     let currSalesId = userData.getUserData().user_id;
                     let isOwner = false, isManager = false;
-                    if (teamObj.owner_id && teamObj.owner_id == currSalesId) {
+                    if (teamObj.owner_id && teamObj.owner_id === currSalesId) {
                         //当前销售是团队主管
                         isOwner = true;
-                    } else if (_.isArray(teamObj.manager_ids) && teamObj.manager_ids.indexOf(currSalesId) != -1) {
+                    } else if (_.isArray(teamObj.manager_ids) && teamObj.manager_ids.indexOf(currSalesId) !== -1) {
                         //当前销售是团队的舆情秘书
                         isManager = true;
                     }
@@ -305,7 +305,7 @@ SalesHomeStore.prototype.getSalesTeamList = function(result) {
                     }//end of  if (isOwner) else
                 }// end of if (_.isArray(teamObj.child_groups) && teamObj.child_groups.length > 0) else
             }// end of if (_.isArray(result.resData) && result.resData[0])
-        } // end of else if (result.type == "all")
+        } // end of else if (result.type === "all")
     }// end of  if (result.loading) else if(result.error)  else
 };
 //获取销售团队成员列表
@@ -486,7 +486,7 @@ SalesHomeStore.prototype.getSalesCustomerList = function(data) {
                 _this.saleStageList.forEach(function(saleStage) {
                     data[saleStage] = 0;
                     _.find(salesCustomer.saleStages, function(stageObj) {
-                        if (stageObj && stageObj.stage == saleStage) {
+                        if (stageObj && stageObj.stage === saleStage) {
                             data[saleStage] = stageObj.customerCount;
                             total += parseInt(stageObj.customerCount);
                             return true;
@@ -623,7 +623,7 @@ SalesHomeStore.prototype.getExpireUser = function(data) {
     this.isLoadingExpireUserList = data.loading;
     if (!data.error) {
         _.each(data.resData, function(val, key) {
-            if (val.length != 0) {
+            if (val.length !== 0) {
                 //给node端传来的数据加上开始和结束时间属性
                 for (var i = 0; i < val.length; i++) {
                     val[i].start_date = TimeUtil.getStartTime(key);
