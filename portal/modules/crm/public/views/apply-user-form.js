@@ -88,6 +88,7 @@ const ApplyUserForm = React.createClass({
             } else {//开通新用户
                 formData.user_name = '';
                 formData.nick_name = props.customerName;
+                formData.selectAppIds = [];//用来验证是否选择应用的属性
             }
         }
         //构造应用数据
@@ -294,6 +295,7 @@ const ApplyUserForm = React.createClass({
                 if (this.state.applyFrom === 'order') {//订单中申请试用、签约用户
                     this.applyUserFromOder(submitData);
                 } else if (this.isApplyNewUsers()) {//申请新用户时，没有订单和销售阶段，先随便乱传个字符串（不传接口会报错）
+                    delete submitData.selectAppIds;//去掉用于验证的数据
                     submitData.order_id = 'apply_new_users';
                     submitData.sales_opportunity = 'apply_new_users';
                     this.applyUserFromOder(submitData);
@@ -537,18 +539,26 @@ const ApplyUserForm = React.createClass({
                     <FormItem
                         {...formItemLayout}
                         label={Intl.get('common.app', '应用')}
+                        validateStatus={this.getValidateStatus('selectAppIds')}
+                        help={this.getHelpMessage('selectAppIds')}
                         required
                     >
                         {this.state.applyFrom === 'order' ? _.map(this.state.apps, app => {
                             return (<SquareLogoTag name={app ? app.client_name : ''}
                                 logo={app ? app.client_logo : ''}/>);
                         }) : (
-                            <Select mode="tags" value={selectAppIds}
-                                dropdownClassName="apply-user-apps-dropdown"
-                                placeholder={Intl.get('user.app.select.please', '请选择应用')}
-                                onChange={this.handleChangeApps.bind(this)}>
-                                {this.getAppOptions(selectAppIds)}
-                            </Select>)}
+                            <Validator rules={[{
+                                required: true,
+                                message: Intl.get('user.app.select.please', '请选择应用'),
+                                type: 'array'
+                            }]}>
+                                <Select mode="tags" value={selectAppIds} name='selectAppIds'
+                                    dropdownClassName="apply-user-apps-dropdown"
+                                    placeholder={Intl.get('user.app.select.please', '请选择应用')}
+                                    onChange={this.handleChangeApps.bind(this)}>
+                                    {this.getAppOptions(selectAppIds)}
+                                </Select>
+                            </Validator>)}
                     </FormItem>
                     {_.isArray(selectAppIds) && selectAppIds.length ? (
                         <ApplyUserAppConfig apps={this.state.apps}
@@ -606,6 +616,7 @@ const ApplyUserForm = React.createClass({
             });
             this.getAppsDefaultConfig(newAddAppIds);
         }
+        formData.selectAppIds = appIds;
         this.setState({apps: this.state.apps, formData: formData});
     },
     getAppOptions: function(selectAppIds) {
@@ -630,10 +641,10 @@ const ApplyUserForm = React.createClass({
     },
     render: function() {
         let title = '';
-        if(this.props.userType){
-            if(this.props.userType === Intl.get('common.trial.official', '正式用户')){
+        if (this.props.userType) {
+            if (this.props.userType === Intl.get('common.trial.official', '正式用户')) {
                 title = Intl.get('user.apply.user.official', '申请签约用户');
-            }else{
+            } else {
                 title = Intl.get('common.apply.user.trial', '申请试用用户');
             }
         }
