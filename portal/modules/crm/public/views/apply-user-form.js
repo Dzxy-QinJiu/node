@@ -80,6 +80,7 @@ const ApplyUserForm = React.createClass({
                 customer_id: props.customerId,
                 tag: Intl.get('common.trial.user', '试用用户'),
                 remark: '',
+                selectAppIds: []//用来验证是否选择应用的属性
             };
             if (_.isArray(users) && users.length) {//已有用户开通应用
                 num = users.length;
@@ -88,7 +89,6 @@ const ApplyUserForm = React.createClass({
             } else {//开通新用户
                 formData.user_name = '';
                 formData.nick_name = props.customerName;
-                formData.selectAppIds = [];//用来验证是否选择应用的属性
             }
         }
         //构造应用数据
@@ -300,6 +300,7 @@ const ApplyUserForm = React.createClass({
                     submitData.sales_opportunity = 'apply_new_users';
                     this.applyUserFromOder(submitData);
                 } else {
+                    delete submitData.selectAppIds;//去掉用于验证的数据
                     this.applyUserFromUserList(submitData);
                 }
             }
