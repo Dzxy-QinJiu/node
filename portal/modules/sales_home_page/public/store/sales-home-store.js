@@ -16,8 +16,9 @@ SalesHomeStore.prototype.setInitState = function() {
     //设置客户、用户、电话、合同总数的初始化数据
     this.setInitTotalData('loading');
     this.activeView = viewConstant.CUSTOMER;//默认展示客户分析视图
-    //默认展示本周的时间 true:本周截止到今天为止
-    this.timeType = 'day';
+    //默认展示本周的时间
+    this.timeType = 'week';
+    // true:本周截止到今天为止
     var timeRange = getStartEndTimeOfDiffRange(this.timeType, true);
     //开始时间
     this.start_time = DateSelectorUtils.getMilliseconds(timeRange.start_time);
