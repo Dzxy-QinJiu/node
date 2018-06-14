@@ -5,6 +5,7 @@ var DateSelectorUtils = require('../../../../components/datepicker/utils');
 var TimeUtil = require('../../../../public/sources/utils/time-format-util');
 let userData = require('../../../../public/sources/user-data');
 import {formatRoundingPercentData} from 'PUB_DIR/sources/utils/common-method-util';
+import {getStartEndTimeOfDiffRange} from '../util/constant';
 function SalesHomeStore() {
     this.setInitState();
     this.bindActions(SalesHomeActions);
@@ -16,8 +17,8 @@ SalesHomeStore.prototype.setInitState = function() {
     this.setInitTotalData('loading');
     this.activeView = viewConstant.CUSTOMER;//默认展示客户分析视图
     //默认展示本周的时间 true:本周截止到今天为止
-    this.timeType = 'week';
-    var timeRange = DateSelectorUtils.getThisWeekTime(true);
+    this.timeType = 'day';
+    var timeRange = getStartEndTimeOfDiffRange(this.timeType, true);
     //开始时间
     this.start_time = DateSelectorUtils.getMilliseconds(timeRange.start_time);
     //结束时间

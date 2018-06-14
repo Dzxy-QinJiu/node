@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2016/11/20.
  */
+var DateSelectorUtils = require('../../../../components/datepicker/utils');
 //视图常量
 exports.VIEW_CONSTANT = {
     CUSTOMER: 'customer',
@@ -32,4 +33,29 @@ exports.LAYOUTS = {
 //更新页面的延迟时间
 exports.DELAY = {
     TIMERANG: 800
+};
+//获取不同时间范围的开始和结束时间
+exports.getStartEndTimeOfDiffRange = function(timeRange,disableDateAfterToday) {
+    var timeObj = {};
+    switch (timeRange) {
+    case 'day':
+        timeObj = DateSelectorUtils.getTodayTime();
+        break;
+    case 'week':
+        timeObj = DateSelectorUtils.getThisWeekTime(disableDateAfterToday);
+        break;
+    case 'month':
+        timeObj = DateSelectorUtils.getThisMonthTime(disableDateAfterToday);
+        break;
+    case 'quarter':
+        timeObj = DateSelectorUtils.getThisQuarterTime(disableDateAfterToday);
+        break;
+    case 'year':
+        timeObj = DateSelectorUtils.getThisYearTime(disableDateAfterToday);
+        break;
+    default:
+        timeObj = DateSelectorUtils.getTodayTime();
+        break;
+    }
+    return timeObj;
 };

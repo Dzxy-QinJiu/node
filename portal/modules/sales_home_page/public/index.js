@@ -805,7 +805,7 @@ var SalesHomePage = React.createClass({
                     <div className="date-range-wrap">
                         <DatePicker
                             disableDateAfterToday={true}
-                            range="week"
+                            range={this.state.timeType}
                             onSelect={this.onSelectDate}>
                             <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
                             <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
