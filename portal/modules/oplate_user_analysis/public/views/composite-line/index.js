@@ -47,7 +47,7 @@ var LineChart = React.createClass({
         };
     },
     getLegend: function() {
-        var list = _.pluck(this.props.list , 'app_name');
+        var list = _.map(this.props.list , 'app_name');
         return list;
     },
     getCategorys: function() {

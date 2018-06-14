@@ -3,7 +3,7 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
-var _ = require('underscore');
+var _ = require('lodash');
 var auth = require('../../../../lib/utils/auth');
 
 var AppUserRestApis = {
@@ -55,7 +55,7 @@ exports.getUserLoginInfo = function(req, res, obj){
         {'last': AppUserRestApis.getLastLoginTime } // 最后一次登录
     ];
     // 西语环境下，没有登录时长的统计
-    if ( auth.getLang() == 'es_VE') {
+    if ( auth.getLang() === 'es_VE') {
         urlList = [{'count': AppUserRestApis.getLoginCount }, // 登录次数
             {'first': AppUserRestApis.getFirstLoginTime }, // 首次登录
             {'last': AppUserRestApis.getLastLoginTime } // 最后一次登录
@@ -76,7 +76,7 @@ exports.getUserLoginChartInfo = function(req, res, obj){
         {'loginCount': AppUserRestApis.getLoginFrequency } // 登录频次统计
     ];
     // 西语环境下，没有登录时长的统计
-    if ( auth.getLang() == 'es_VE') {
+    if ( auth.getLang() === 'es_VE') {
         urlList = [
             {'loginCount': AppUserRestApis.getLoginFrequency } // 登录频次统计
         ];

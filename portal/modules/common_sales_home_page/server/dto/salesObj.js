@@ -2,7 +2,7 @@
  * Created by wangliping on 2016/2/22.
  * 应用实体
  */
-var _ = require('underscore');
+var _ = require('lodash');
 exports.toFrontSalesPhone = function(data) {
     var salesPhone = {};
     if (data && _.isObject(data)) {

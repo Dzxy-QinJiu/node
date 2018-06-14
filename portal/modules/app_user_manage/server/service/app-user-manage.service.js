@@ -9,7 +9,7 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var customersDto = require('../dto/customers');
 var applyDto = require('../dto/apply');
 var replyDto = require('../dto/reply');
-var _ = require('underscore');
+var _ = require('lodash');
 var auth = require('../../../../lib/utils/auth');
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
@@ -377,7 +377,7 @@ exports.getApplyDetail = function(req, res, apply_id) {
                     let user_type = (applyBasicDetail.type === CONSTANTS.APPLY_USER_TRIAL || applyBasicDetail.type === CONSTANTS.EXIST_APPLY_TRIAL ?
                         CONSTANTS.USER_TRIAL : CONSTANTS.USER_OFFICIAL
                     );
-                    let appIdList = _.pluck(applyBasicDetail.apps, 'client_id');
+                    let appIdList = _.map(applyBasicDetail.apps, 'client_id');
                     let obj = {
                         client_id: appIdList.join(','),
                         user_type: user_type,
@@ -393,9 +393,9 @@ exports.getApplyDetail = function(req, res, apply_id) {
                     emitter.emit('success', applyBasicDetail);
                 }
             } else if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_PASS) { // 已通过
-                let roleIdsList = _.pluck(applyBasicDetail.apps, 'roles');
+                let roleIdsList = _.map(applyBasicDetail.apps, 'roles');
                 let roleIdsArray = _.flatten(roleIdsList);
-                let permissionIdsList = _.pluck(applyBasicDetail.apps, 'permissions');
+                let permissionIdsList = _.map(applyBasicDetail.apps, 'permissions');
                 let permissionIdsArray = _.flatten(permissionIdsList);
                 let roleObj = {
                     ids: roleIdsArray
@@ -436,7 +436,7 @@ exports.getApplyDetail = function(req, res, apply_id) {
 
 // 根据应用的默认配置信息，封装审批详情的角色和权限名称
 function getExtraAppInfo(applyBasicDetail, appConfigInfo) {
-    let appIdList = _.pluck(applyBasicDetail.apps, 'client_id');
+    let appIdList = _.map(applyBasicDetail.apps, 'client_id');
     let length = appConfigInfo.length;
     for (let i = 0; i < length; i++) {
         let index = _.indexOf(appIdList, appConfigInfo[i].client_id);
@@ -452,7 +452,7 @@ function getExtraAppInfo(applyBasicDetail, appConfigInfo) {
 function getAppExtraRoleNames(applyBasicDetail, appRoleNames) {
     applyBasicDetail.apps.forEach((item) => {
         let appRolesNamesList = _.filter(appRoleNames, (roleItem) => roleItem.client_id === item.client_id);
-        item.rolesNames = _.pluck(appRolesNamesList, 'role_name');
+        item.rolesNames = _.map(appRolesNamesList, 'role_name');
     });
     return applyBasicDetail;
 }
@@ -461,7 +461,7 @@ function getAppExtraRoleNames(applyBasicDetail, appRoleNames) {
 function getAppExtraPermissionNames(applyBasicDetail, appPermissionNames) {
     applyBasicDetail.apps.forEach((item) => {
         let appPermissionsNamesList = _.filter(appPermissionNames, (permissionItem) => permissionItem.client_id === item.client_id);
-        item.permissionsNames = _.pluck(appPermissionsNamesList, 'permission_name');
+        item.permissionsNames = _.map(appPermissionsNamesList, 'permission_name');
     });
     return applyBasicDetail;
 }

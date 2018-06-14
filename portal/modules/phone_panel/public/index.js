@@ -77,7 +77,7 @@ class PhonePanel extends React.Component {
 
     getPhoneStatusCustomerIds(phonemsgObj) {
         if (phonemsgObj && _.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
-            return _.pluck(phonemsgObj.customers, 'id');
+            return _.map(phonemsgObj.customers, 'id');
         }
         return [];
     }
@@ -94,7 +94,7 @@ class PhonePanel extends React.Component {
             }
             //如果是打入的电话，要查来电的号码，如果是拨出的电话，要查所拨打的电话
             var phoneNum = '';
-            if (phonemsgObj.call_type == 'IN') {
+            if (phonemsgObj.call_type === 'IN') {
                 phoneNum = phonemsgObj.extId;
             } else {
                 phoneNum = phonemsgObj.to || phonemsgObj.dst;
@@ -133,7 +133,7 @@ class PhonePanel extends React.Component {
                 var $modal = $('#phone-status-content');
                 // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
                 // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
-                if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT) {
+                if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
                     this.setInitialData(phonemsgObj);
                 }
             }
@@ -142,7 +142,7 @@ class PhonePanel extends React.Component {
 
     setInitialData(phonemsgObj) {
         var phoneNum = '';
-        if (phonemsgObj.call_type == 'IN') {
+        if (phonemsgObj.call_type === 'IN') {
             phoneNum = phonemsgObj.extId;
         } else {
             phoneNum = phonemsgObj.to || phonemsgObj.dst;
@@ -169,7 +169,7 @@ class PhonePanel extends React.Component {
                 isAddFlag: false,
             });
             //在最后阶段，将数据清除掉
-            if (this.state.phonemsgObj && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone || this.state.phonemsgObj.type == PHONERINGSTATUS.call_back)) {
+            if (this.state.phonemsgObj && (this.state.phonemsgObj.type === PHONERINGSTATUS.phone || this.state.phonemsgObj.type === PHONERINGSTATUS.call_back)) {
                 //恢复初始数据
                 this.props.setInitialPhoneObj();
                 phoneAlertAction.setInitialState();
@@ -308,7 +308,7 @@ class PhonePanel extends React.Component {
                 } else {
                     let height = $('body').height() - DIVLAYOUT.CUSTOMER_COUNT_TIP_H;//去掉有几个客户的提示的高度
                     //通话结束后，需要减去带跟进记录输入框的通话状态高度
-                    if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) {
+                    if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
                         height -= DIVLAYOUT.PHONE_STATUS_INPUT_H;
                     } else {
                         height -= DIVLAYOUT.PHONE_STATUS_TIP_H;
@@ -354,9 +354,9 @@ class PhonePanel extends React.Component {
     //修改客户的基本信息
     editCustomerBasic = (newBasic) => {
         if (newBasic && newBasic.id) {
-            let updateCustomer = _.find(this.state.customerInfoArr, customer => customer.id == newBasic.id);
+            let updateCustomer = _.find(this.state.customerInfoArr, customer => customer.id === newBasic.id);
             for (var key in newBasic) {
-                if (newBasic[key] || newBasic[key] == '') {
+                if (newBasic[key] || newBasic[key] === '') {
                     updateCustomer[key] = newBasic[key];
                 }
             }
@@ -524,7 +524,7 @@ class PhonePanel extends React.Component {
             let phonemsgObj = this.getPhonemsgObj(paramObj);
             let phoneStatusCustomerIds = phonemsgObj ? this.getPhoneStatusCustomerIds(phonemsgObj) : [];
             //当前展示的客户详情中的客户id是通话中传过来的客户ids之一(说明是从当前打开的客户详情中打的电话)
-            if (_.isArray(phoneStatusCustomerIds) && phoneStatusCustomerIds.indexOf(paramObj.customer_params.currentId) != -1) {
+            if (_.isArray(phoneStatusCustomerIds) && phoneStatusCustomerIds.indexOf(paramObj.customer_params.currentId) !== -1) {
                 customerId = paramObj.customer_params.currentId;
             }
         }
@@ -587,7 +587,7 @@ class PhonePanel extends React.Component {
             let phonemsgObj = this.getPhonemsgObj(paramObj);
             let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
             //当前展示的客户详情中的客户id是通话中传过来的客户ids之一(说明是从当前打开的客户详情中打的电话)
-            if (_.isArray(phoneStatusCustomerIds) && phoneStatusCustomerIds.indexOf(paramObj.customer_params.currentId) != -1) {
+            if (_.isArray(phoneStatusCustomerIds) && phoneStatusCustomerIds.indexOf(paramObj.customer_params.currentId) !== -1) {
                 flag = true;
             }
         }

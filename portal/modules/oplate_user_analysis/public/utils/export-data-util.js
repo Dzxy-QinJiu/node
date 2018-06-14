@@ -5,37 +5,37 @@
 // 处理用户类型中，签约、试用、赠送、培训、未知的类型
 function handleUserType(userTypeData) {
     let userTypeArrayData = [];
-    let formalArray = _.pluck(userTypeData, 'formal');
+    let formalArray = _.map(userTypeData, 'formal');
     if (formalArray.length) {
         formalArray.unshift(Intl.get('common.official', '签约'));
         userTypeArrayData.push(formalArray);
     }
-    let trialArray = _.pluck(userTypeData, 'trial');
+    let trialArray = _.map(userTypeData, 'trial');
     if (trialArray.length) {
         trialArray.unshift(Intl.get('common.trial', '试用'));
         userTypeArrayData.push(trialArray);
     }
-    let specialArray = _.pluck(userTypeData, 'special');
+    let specialArray = _.map(userTypeData, 'special');
     if (specialArray.length) {
         specialArray.unshift(Intl.get('user.type.presented', '赠送'));
         userTypeArrayData.push(specialArray);
     }
-    let trainingArray = _.pluck(userTypeData, 'training');
+    let trainingArray = _.map(userTypeData, 'training');
     if (trainingArray.length) {
         trainingArray.unshift(Intl.get('user.type.train', '培训'));
         userTypeArrayData.push(trainingArray);
     }
-    let internalArray = _.pluck(userTypeData, 'internal');
+    let internalArray = _.map(userTypeData, 'internal');
     if (internalArray.length) {
         internalArray.unshift(Intl.get('user.type.employee', '员工'));
         userTypeArrayData.push(internalArray);
     }
-    let unknownArray = _.pluck(userTypeData, 'unknown');
+    let unknownArray = _.map(userTypeData, 'unknown');
     if (unknownArray.length) {
         unknownArray.unshift(Intl.get('common.unknown', '未知'));
         userTypeArrayData.push(unknownArray);
     }
-    let totalArray = _.pluck(userTypeData, 'total');
+    let totalArray = _.map(userTypeData, 'total');
     if (totalArray.length) {
         totalArray.unshift(Intl.get('operation.report.total.num', '总数'));
         userTypeArrayData.push(totalArray);
@@ -47,7 +47,7 @@ export function handleUserStatis(userAnalysisData) {
     let exportData = [];
     if (_.isArray(userAnalysisData) && userAnalysisData.length) {
         if (userAnalysisData[0].app_name) { // 综合条件下
-            let titleArray = _.pluck(userAnalysisData[0].data, 'timestamp');
+            let titleArray = _.map(userAnalysisData[0].data, 'timestamp');
             let titleNameArray = titleArray.map( (time) => {
                 return moment(+time).format(oplateConsts.DATE_FORMAT);
             });
@@ -55,12 +55,12 @@ export function handleUserStatis(userAnalysisData) {
             exportData.push(titleNameArray);
             let countArray = [];
             _.each( userAnalysisData, (userData) => {
-                countArray = _.pluck(userData.data, 'count');
+                countArray = _.map(userData.data, 'count');
                 countArray.unshift(userData.app_name);
                 exportData.push(countArray);
             } );
         } else { // 单个应用
-            let titleArray = _.pluck(userAnalysisData, 'timestamp');
+            let titleArray = _.map(userAnalysisData, 'timestamp');
             let titleNameArray = titleArray.map( (time) => {
                 return moment(+time).format(oplateConsts.DATE_FORMAT);
             });
@@ -77,7 +77,7 @@ export function handleUserStatis(userAnalysisData) {
 export function handleExportData(processData) {
     let exportData = [];
     if (_.isArray(processData) && processData.length) {
-        let titleArray = _.pluck(processData, 'name');
+        let titleArray = _.map(processData, 'name');
         let titleArrayName = titleArray.map((item) => {
             let title = item;
             if(item === 'unknown') {
@@ -92,7 +92,7 @@ export function handleExportData(processData) {
             exportData = userData;
         } else if(processData[0].count) {
             exportData.push(titleArrayName);
-            let countArray = _.pluck(processData, 'count');
+            let countArray = _.map(processData, 'count');
             exportData.push(countArray);
         }
     }
@@ -107,9 +107,9 @@ export function handlePieChartData(processData) {
         if (itemData.name) { // 用户类型、应用启停用状态
             userTypeArray.push(itemData.name);
         }
-        if (itemData.key == 0) { // 在线时长统计
+        if (itemData.key === 0) { // 在线时长统计
             userTypeArray.push(Intl.get('oplate.user.analysis.7', '时长小于1小时'));
-        } else if (itemData.key == 1) {
+        } else if (itemData.key === 1) {
             userTypeArray.push(Intl.get('oplate.user.analysis.8', '时长大于等于1小时'));
         }
         if(itemData.count){
@@ -125,14 +125,14 @@ export function handleActivelyData(processData) {
     let exportData = [];
     if (_.isArray(processData) && processData.length) {
         let datas = processData[0].datas;
-        let titleArray = _.pluck(datas, 'timestamp');
+        let titleArray = _.map(datas, 'timestamp');
         let titleNameArray = titleArray.map( (time) => {
             return moment(+time).format(oplateConsts.DATE_FORMAT);
         });
         titleNameArray.unshift(Intl.get('common.type', '类型'));
         exportData.push(titleNameArray);
 
-        let activeArray = _.pluck(datas, 'active'); // 活跃数
+        let activeArray = _.map(datas, 'active'); // 活跃数
         activeArray.unshift(Intl.get('operation.report.active.num', '活跃数'));
         exportData.push(activeArray);
 
@@ -168,26 +168,26 @@ export function handleActiveTimesData(processData) {
     let groupBy = _.groupBy(processData, (active) => {return active.week;} );
     _.each(groupBy, (group) => {
         let week = group[0].week;
-        let countArray = _.pluck(group, 'count');
-        if (week == '0') {
+        let countArray = _.map(group, 'count');
+        if (week === '0') {
             countArray.unshift(Intl.get('user.time.sunday', '周日'));
             exportData.push(countArray);
-        } else if (week == '1') {
+        } else if (week === '1') {
             countArray.unshift(Intl.get('user.time.monday', '周一'));
             exportData.push(countArray);
-        } else if (week == '2') {
+        } else if (week === '2') {
             countArray.unshift(Intl.get('user.time.tuesday', '周二'));
             exportData.push(countArray);
-        } else if (week == '3') {
+        } else if (week === '3') {
             countArray.unshift(Intl.get('user.time.wednesday', '周三'));
             exportData.push(countArray);
-        } else if (week == '4') {
+        } else if (week === '4') {
             countArray.unshift(Intl.get('user.time.thursday', '周四'));
             exportData.push(countArray);
-        } else if (week == '5') {
+        } else if (week === '5') {
             countArray.unshift(Intl.get('user.time.friday', '周五'));
             exportData.push(countArray);
-        } else if (week == '6') {
+        } else if (week === '6') {
             countArray.unshift(Intl.get('user.time.saturday', '周六'));
             exportData.push(countArray);
         }

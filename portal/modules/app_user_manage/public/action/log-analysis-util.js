@@ -6,7 +6,7 @@ exports.handleSelectAppId = (userOwnAppList) => {
     let selectAppId = '';
     if (_.isArray(userOwnAppList) && userOwnAppList.length) {
         if (lastSelectAppId) {
-            let index = _.indexOf(_.pluck(userOwnAppList, 'app_id'),lastSelectAppId);
+            let index = _.indexOf(_.map(userOwnAppList, 'app_id'),lastSelectAppId);
             if (index > -1) {
                 selectAppId = lastSelectAppId;
             } else {

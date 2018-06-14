@@ -75,17 +75,13 @@ var CRMAddForm = React.createClass({
     componentDidMount: function() {
         this.getIndustry();
     },
-    getIndustry: function(){
-        //获取后台管理中设置的行业列表
-        this.getIndustry();
-    },
     getIndustry: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
-                list = _.pluck(list, 'industry');
+                list = _.map(list, 'industry');
             }
             this.setState({isLoadingIndustry: false, industryList: list});
         });
@@ -150,6 +146,9 @@ var CRMAddForm = React.createClass({
 
     //添加客户
     addCustomer: function() {
+        if (this.state.isLoading){
+            return;
+        }
         this.state.isLoading = true;
         this.setState(this.state);
         var formData = JSON.parse(JSON.stringify(this.state.formData));

@@ -600,27 +600,27 @@ var Crm = React.createClass({
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
             //未打标签的客户筛选处理
-            if (_.contains(condition.labels, SPECIAL_LABEL.NON_TAGGED_CUSTOMER)) {
+            if (_.includes(condition.labels, SPECIAL_LABEL.NON_TAGGED_CUSTOMER)) {
                 unexist.push('labels');
                 delete condition.labels;
             } else {
                 //线索、转出不可操作标签的筛选处理
-                if (_.contains(condition.labels, SPECIAL_LABEL.CLUE) || _.contains(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.contains(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
+                if (_.includes(condition.labels, SPECIAL_LABEL.CLUE) || _.includes(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.includes(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
                     condition.immutable_labels = [];
                     //线索标签
-                    if (_.contains(condition.labels, SPECIAL_LABEL.CLUE)) {
+                    if (_.includes(condition.labels, SPECIAL_LABEL.CLUE)) {
                         condition.immutable_labels.push(SPECIAL_LABEL.CLUE);
                         //过滤掉线索标签
                         condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.CLUE);
                     }
                     //转出标签
-                    if (_.contains(condition.labels, SPECIAL_LABEL.TURN_OUT)) {
+                    if (_.includes(condition.labels, SPECIAL_LABEL.TURN_OUT)) {
                         condition.immutable_labels.push(SPECIAL_LABEL.TURN_OUT);
                         //过滤掉转出标签
                         condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.TURN_OUT);
                     }
                     // 已回访
-                    if (_.contains(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
+                    if (_.includes(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
                         condition.immutable_labels.push(SPECIAL_LABEL.HAS_CALL_BACK);
                         // 过滤掉已回访标签
                         condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.HAS_CALL_BACK);
@@ -1148,7 +1148,7 @@ var Crm = React.createClass({
         let showSelectionFlag = hasPrivilege('CUSTOMER_MERGE_CUSTOMER') || hasPrivilege('CUSTOMER_BATCH_OPERATE');
         let rowSelection = showSelectionFlag ? {
             type: 'checkbox',
-            selectedRowKeys: _.pluck(this.state.selectedCustomer, 'id'),
+            selectedRowKeys: _.map(this.state.selectedCustomer, 'id'),
             onSelect: function(record, selected, selectedRows) {
                 //如果一开始批量选择了全部，后来又取消了，则去掉选择全部
                 if (selectedRows.length !== _this.state.curPageCustomers.length) {

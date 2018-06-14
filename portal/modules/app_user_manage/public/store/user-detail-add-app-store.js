@@ -306,7 +306,7 @@ UserDetailAddAppStore.prototype.setRolePermissionSelectedAppError = function(err
 //设置批量操作默认选中的应用
 UserDetailAddAppStore.prototype.setDefaultBatchSelectedApps = function(apps) {
     var app_list = _.isArray(apps) ? apps : [];
-    this.formData.batchSelectedApps = _.pluck(app_list , 'app_id');
+    this.formData.batchSelectedApps = _.map(app_list , 'app_id');
     this.formData.rolePermissionApp = this.formData.batchSelectedApps[0] || '';
 };
 

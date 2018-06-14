@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 //对提供的数据，根据字段列表，进行转换
 /**
  *

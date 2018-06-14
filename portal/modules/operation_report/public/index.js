@@ -59,10 +59,10 @@ let OperationReport = React.createClass({
             // 缓存中有保存的上次所选的应用列表
             if (_.isArray(selectAppList) && selectAppList.length > 0) {
                 if (data && data.length) {
-                    let appList = _.pluck(data, 'id');
+                    let appList = _.map(data, 'id');
                     //取应用下拉列表中存在的应用（俩数组的交集）
                     selectAppList = _.intersection(selectAppList, appList);
-                    if (selectAppList.length == 0) {
+                    if (selectAppList.length === 0) {
                         //应用下拉列表中不存在上次选择的应用，则默认展示第一个应用的分析数据
                         selectAppList = [data[0].id];
                     }
@@ -191,7 +191,7 @@ let OperationReport = React.createClass({
     onChangeYear(index, year, e) {
         //year=[2017,"年"]
         let yearTime = year[0] + year[1];
-        if (this.state.yearTime == yearTime) {
+        if (this.state.yearTime === yearTime) {
             return;
         }
         this.state.yearTime = yearTime;
@@ -204,7 +204,7 @@ let OperationReport = React.createClass({
     },
     //周的选择
     onChangeWeek(week) {
-        if (this.state.weekTime == week) {
+        if (this.state.weekTime === week) {
             return;
         }
         this.state.weekTime = week;
@@ -243,7 +243,7 @@ let OperationReport = React.createClass({
                 //应用（多选）选择后，从下拉列表中去掉已选的选项
                 if (_.isArray(selectAppList) && selectAppList.length > 0) {
                     selectAppList.forEach(function(appId) {
-                        if (appId == app.id) {
+                        if (appId === app.id) {
                             className = 'app-options-selected';
                         }
                     });
@@ -425,7 +425,7 @@ let OperationReport = React.createClass({
             let width = 100 / (selectAppList.length + 2);//宽度用剩下的60%平分，2：总计+部门
             columns[0].width = width + '%';
             selectAppList.forEach((appId, i) => {
-                let app = _.find(appList, app => app.id == appId);
+                let app = _.find(appList, app => app.id === appId);
                 if (app && app.name) {
                     columns.push({
                         title: app.name,
@@ -466,7 +466,7 @@ let OperationReport = React.createClass({
                     dataSource={data}
                     columns={columns}
                     pagination={false}
-                    loading={resultType == 'loading' ? true : false}
+                    loading={resultType === 'loading' ? true : false}
                     bordered
                 />
             </div>
@@ -618,7 +618,7 @@ let OperationReport = React.createClass({
         if (_.isArray(dataList) && dataList.length) {
             appSignedUserTips = _.map(dataList, appObj => {
                 let total = 0, count = 0, lastWeekCount = 0;
-                let totalData = _.find(totalDataList, data => data.app_id == appObj.app_id);
+                let totalData = _.find(totalDataList, data => data.app_id === appObj.app_id);
                 total = totalData ? totalData.count : 0;
                 if (_.isArray(appObj.data)) {
                     count = appObj.data[3] ? appObj.data[3].count : 0;

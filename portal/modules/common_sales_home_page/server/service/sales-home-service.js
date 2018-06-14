@@ -4,7 +4,7 @@
 'use strict';
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-var _ = require('underscore');
+var _ = require('lodash');
 var salesObj = require('../dto/salesObj');
 var restApis = {
     //获取销售-电话列表

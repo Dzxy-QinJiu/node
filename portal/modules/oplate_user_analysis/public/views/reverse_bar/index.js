@@ -37,11 +37,11 @@ var BarChart = React.createClass({
         return {
             show: true,
             right: this.props.legendRight,
-            data: _.pluck(this.props.legend , 'name')
+            data: _.map(this.props.legend , 'name')
         };
     },
     getMargin: function() {
-        var industry = _.pluck(this.props.list.slice().reverse() , 'name');
+        var industry = _.map(this.props.list.slice().reverse() , 'name');
         if(!industry.length) {
             return 80;
         }
@@ -53,7 +53,7 @@ var BarChart = React.createClass({
         return maxMargin;
     },
     getCategorys: function() {
-        return _.pluck(this.props.list.slice().reverse() , 'name');
+        return _.map(this.props.list.slice().reverse() , 'name');
     },
     getSeries: function() {
         var _this = this;
@@ -65,7 +65,7 @@ var BarChart = React.createClass({
                 stack: 'stack',
                 barMaxWidth: 40,
                 barMinWidth: 4,
-                data: _.pluck(_this.props.list.slice().reverse() , legendInfo.key),
+                data: _.map(_this.props.list.slice().reverse() , legendInfo.key),
             };
             series.push(line);
         });
@@ -85,7 +85,7 @@ var BarChart = React.createClass({
                 }
                 let timeDesc = Intl.get('operation.report.time.duration','至{time}为止',{time: _this.props.endDate});
                 if(_this.props.startDate){
-                    if(_this.props.startDate == _this.props.endDate) {
+                    if(_this.props.startDate === _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     }else{
                         timeDesc = _this.props.startDate + Intl.get('common.time.connector','至') + _this.props.endDate;

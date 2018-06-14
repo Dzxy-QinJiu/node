@@ -110,7 +110,7 @@ class ApplyViewDetailActions {
             //清除未读回复列表中已读的回复
             UserApplyAction.clearUnreadReply(id);
             //针对reply中的user_id，排重
-            var user_ids = _.chain(list).pluck('user_id').uniq().value();
+            var user_ids = _.chain(list).map('user_id').uniq().value();
             //针对每一个user_id，获取用户信息
             _.each(user_ids, (user_id) => {
                 this.actions.getUserLogo(user_id);

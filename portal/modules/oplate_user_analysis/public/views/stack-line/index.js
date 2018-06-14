@@ -28,19 +28,19 @@ var StackLineChart = React.createClass({
             };
         } else {
             return {
-                data: _.pluck(this.props.legend , 'version')
+                data: _.map(this.props.legend , 'version')
             };
         }
     },
     getCategorys: function() {
-        let timeArray = _.uniq(_.pluck(this.props.legend, 'time')); // 时间点
+        let timeArray = _.uniq(_.map(this.props.legend, 'time')); // 时间点
         return _.map(timeArray , (time) => {
             return moment(time).format(oplateConsts.DATE_FORMAT);
         });
     },
     getEchartOptions: function() {
         var _this = this;
-        let countArray = _.pluck(this.props.legend, 'count');
+        let countArray = _.map(this.props.legend, 'count');
         let yMax = 0, max = null;
         let yInterval = null;
         if (countArray.length) {

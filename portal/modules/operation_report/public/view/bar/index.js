@@ -42,11 +42,11 @@ var BarChart = React.createClass({
         }
         return {
             show: false,
-            data: _.pluck(this.props.legend, 'name')
+            data: _.map(this.props.legend, 'name')
         };
     },
     getCategorys: function() {
-        return _.pluck(this.props.list, 'appName');
+        return _.map(this.props.list, 'appName');
     },
     getSeries: function() {
         var _this = this;
@@ -59,7 +59,7 @@ var BarChart = React.createClass({
                 barMaxWidth: 40,
                 barMinWidth: 4,
                 stack: 'stack',
-                data: _.pluck(_this.props.list, legendInfo.key),
+                data: _.map(_this.props.list, legendInfo.key),
                 itemStyle: {
                     normal: {
                         color: currentColor,
@@ -108,7 +108,7 @@ var BarChart = React.createClass({
 
                 let timeDesc = Intl.get('operation.report.time.duration', '至{time}为止', {time: _this.props.endDate});
                 if (_this.props.startDate) {
-                    if (_this.props.startDate == _this.props.endDate) {
+                    if (_this.props.startDate === _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     } else {
                         timeDesc = _this.props.startDate + Intl.get('common.time.connector', '至') + _this.props.endDate;

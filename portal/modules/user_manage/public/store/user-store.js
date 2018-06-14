@@ -138,7 +138,7 @@ UserStore.prototype.getCurUserList = function(userListObj) {
             }
         }
         // this.curUserList = curUserList;
-        if (this.curPage == 1) {
+        if (this.curPage === 1) {
             this.curUserList = [];
         }
         // 每次加载数据的长度
@@ -150,7 +150,7 @@ UserStore.prototype.getCurUserList = function(userListObj) {
             this.curUserList = curUserList;
         } else {
             var rest = getTotalUserListLength % (this.pageSize);
-            if (rest == 0) {
+            if (rest === 0) {
                 this.curUserList = this.curUserList.concat(curUserList);
             } else {
                 for (var j = rest; j < getCurUserListLength; j++) {
@@ -164,7 +164,7 @@ UserStore.prototype.getCurUserList = function(userListObj) {
 //点击成员查看详情时，先设置已有的详情信息
 UserStore.prototype.setCurUser = function(userId) {
     var curUser = _.find(this.curUserList, function(user) {
-        if (user.id == userId) {
+        if (user.id === userId) {
             return true;
         }
     });
@@ -178,7 +178,7 @@ UserStore.prototype.getCurUserById = function(user) {
     } else {
         this.getUserDetailError = '';
         this.currentUser = user;
-        let curUser = _.find(this.curUserList, curUser => curUser.id == user.id);
+        let curUser = _.find(this.curUserList, curUser => curUser.id === user.id);
         if (curUser){
             curUser.roleIds = user.roleIds;
             curUser.roleNames = user.roleNames;
@@ -201,7 +201,7 @@ UserStore.prototype.updateUserStatus = function(modifiedUser) {
     if (_.isObject(modifiedUser)) {
         var curUserList = this.curUserList;
         for (var j = 0, rLen = curUserList.length; j < rLen; j++) {
-            if (curUserList[j].id == modifiedUser.id) {
+            if (curUserList[j].id === modifiedUser.id) {
                 this.curUserList[j].status = modifiedUser.status;
                 break;
             }
@@ -214,7 +214,7 @@ function updateRoleCount(oldRoles, newRoles, userRoleList) {
     //将原角色对应的数量减一
     oldRoles.forEach(function(roleName) {
         _.some(userRoleList, function(role) {
-            if (roleName == role.role_name) {
+            if (roleName === role.role_name) {
                 role.num--;
             }
         });
@@ -222,7 +222,7 @@ function updateRoleCount(oldRoles, newRoles, userRoleList) {
     //将新角色对应的数量加一
     newRoles.forEach(function(roleName) {
         _.some(userRoleList, function(role) {
-            if (roleName == role.role_name) {
+            if (roleName === role.role_name) {
                 role.num++;
             }
         });
@@ -232,7 +232,7 @@ UserStore.prototype.afterEditUser = function(modifiedUser) {
     if (_.isObject(modifiedUser)) {
         var curUserList = this.curUserList;
         for (var j = 0, rLen = curUserList.length; j < rLen; j++) {
-            if (curUserList[j].id == modifiedUser.user_id) {
+            if (curUserList[j].id === modifiedUser.user_id) {
                 if (modifiedUser.status) {
                     this.curUserList[j].status = modifiedUser.status;
                 } else {
@@ -258,7 +258,7 @@ UserStore.prototype.afterEditUser = function(modifiedUser) {
                         this.curUserList[j].phone = modifiedUser.phone;
                     }
                     if (modifiedUser.email) {
-                        if (modifiedUser.email != this.curUserList[j].email) {
+                        if (modifiedUser.email !== this.curUserList[j].email) {
                             //修改邮箱后，邮箱的激活状态改为未激活
                             this.curUserList[j].emailEnable = false;
                         }
@@ -330,9 +330,9 @@ UserStore.prototype.returnInfoPanel = function(newAddUser) {
             //角色的处理
             let roleList = UserFormStore.getState().roleList;
             if (_.isArray(roleList) && roleList.length) {
-                let role = _.filter(roleList, role => newAddUser.roleIds.indexOf(role.roleId) != -1);
+                let role = _.filter(roleList, role => newAddUser.roleIds.indexOf(role.roleId) !== -1);
                 if (_.isArray(role) && role.length) {
-                    newAddUser.roleNames = _.pluck(role, 'roleName');
+                    newAddUser.roleNames = _.map(role, 'roleName');
                 }
             }
         }
@@ -340,11 +340,11 @@ UserStore.prototype.returnInfoPanel = function(newAddUser) {
         if (newAddUser.teamId) {
             let userTeamList = UserFormStore.getState().userTeamList, userTeam;
             if (_.isArray(userTeamList) && userTeamList.length) {
-                userTeam = _.find(userTeamList, team => team.group_id == newAddUser.teamId);
+                userTeam = _.find(userTeamList, team => team.group_id === newAddUser.teamId);
             }
             newAddUser.teamName = userTeam ? userTeam.group_name : '';
         }
-        if (newAddUser.emailEnable == 'false') {
+        if (newAddUser.emailEnable === 'false') {
             newAddUser.emailEnable = false;
         }
         this.currentUser = newAddUser;

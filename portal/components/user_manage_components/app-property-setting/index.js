@@ -3,9 +3,9 @@
  * */
 require('./index.less');
 var language = require('../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/form-basic-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../css/form-basic-zh_CN.less');
 }
 
@@ -269,7 +269,7 @@ const AppPropertySetting = React.createClass({
             const newState = {};
             let currentApp = _.isArray(nextProps.selectedApps) && nextProps.selectedApps[0] ? nextProps.selectedApps[0] : {};
             //新的当前应用的id数组
-            const currentAppIds = _.pluck(nextProps.selectedApps , 'app_id');
+            const currentAppIds = _.map(nextProps.selectedApps , 'app_id');
             newState.currentApp = currentApp;
             this.setState(newState);
         }
@@ -285,7 +285,7 @@ const AppPropertySetting = React.createClass({
         if (!this.compareEquals(this.state.appPropSettingsMap, prevState.appPropSettingsMap)) {
             this.props.onAppPropertyChange(this.state.appPropSettingsMap);
         }
-        if(this.state.currentApp.app_id != prevState.currentApp.app_id) {
+        if(this.state.currentApp.app_id !== prevState.currentApp.app_id) {
             clearTimeout(this.changeCurrentAppLoadingTimeout);
             this.setState({
                 changeCurrentAppLoading: true
