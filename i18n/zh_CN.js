@@ -1030,6 +1030,7 @@ var zh_CN = {
     'user.apply.unread.reply.null': '已无未读回复的申请，{return}',
     'user.apply.check': '查看',
     'user.apply.cancel.check': '取消查看',
+    'user.apply.show.all.check': '查看全部申请',
     'user.apply.unread.apply.list.failed': '获取有未读回复的申请列表失败',
     'reply.pass.tip.content': '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.reject.tip.content': '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
