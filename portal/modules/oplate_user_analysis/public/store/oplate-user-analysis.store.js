@@ -382,7 +382,7 @@ OplateUserAnalysisStore.prototype.getSalesOpenUserAnalysis = function(result) {
         let appTotalRowData = {member_name: Intl.get('sales.home.total.compute', '总计'), sales_team_name: '', total: 0};//最有一行的各应用用户数的总计
         if (_.isArray(salesOpenUserNumList) && salesOpenUserNumList.length) {
             //取出所有销售下的appMap;
-            let appMapList = _.pluck(salesOpenUserNumList, 'app_map');
+            let appMapList = _.map(salesOpenUserNumList, 'app_map');
             //取出所有appMap中的应用名
             _.each(appMapList, app_map => {
                 //应用名合并去重
@@ -630,17 +630,17 @@ OplateUserAnalysisStore.prototype.getUserTypeStatistics = function(result) {
             return userType.data = [];
         }
         _.each(result.data, (item) => {
-            if (item.name == Intl.get('common.trial.official', '正式用户')) {
+            if (item.name === Intl.get('common.trial.official', '正式用户')) {
                 item.name = Intl.get('common.official', '签约');
-            } else if (item.name == Intl.get('common.trial.user', '试用用户')) {
+            } else if (item.name === Intl.get('common.trial.user', '试用用户')) {
                 item.name = Intl.get('common.trial', '试用');
-            } else if (item.name == 'special') {
+            } else if (item.name === 'special') {
                 item.name = Intl.get('user.type.presented', '赠送');
-            } else if (item.name == 'training') {
+            } else if (item.name === 'training') {
                 item.name = Intl.get('user.type.presented', '培训');
-            } else if (item.name == 'internal') {
+            } else if (item.name === 'internal') {
                 item.name = Intl.get('user.type.employee', '员工');
-            } else if (item.name == 'unknown') {
+            } else if (item.name === 'unknown') {
                 item.name = Intl.get('common.unknown', '未知');
             }
         });
@@ -669,12 +669,12 @@ OplateUserAnalysisStore.prototype.getAppStatus = function(result) {
             return appStatus.data = [];
         }
         let data = _.filter(result.data, (item) => {
-            return item.name == '0' || item.name == '1';
+            return item.name === '0' || item.name === '1';
         });
         _.each(data, (item) => {
-            if (item.name == '0') {
+            if (item.name === '0') {
                 item.name = Intl.get('common.stop', '停用');
-            } else if (item.name == '1') {
+            } else if (item.name === '1') {
                 item.name = Intl.get('common.enabled', '启用');
             }
         });

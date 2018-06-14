@@ -1,7 +1,7 @@
 /**
  * 转换成前端使用的对象
  */
-var _ = require('underscore');
+var _ = require('lodash');
 var moment = require('moment');
 exports.toRestObject = function(list) {
     var result = [];

@@ -29,7 +29,7 @@ LineChart.prototype.judgeCreateData = function() {
 
 //获取横轴坐标
 LineChart.prototype.getCategorys = function() {
-    var timeRanges = _.pluck(this.dataList , 'timerange');
+    var timeRanges = _.map(this.dataList , 'timerange');
     var categorys = DateSelectorUtils.getNaturalDate(timeRanges , this.unit);
     return categorys;
 };

@@ -23,7 +23,7 @@ var PieChart = React.createClass({
         };
     },
     getCategorys: function() {
-        return _.pluck(this.props.list , 'name');
+        return _.map(this.props.list , 'name');
     },
     getEchartOptions: function() {
         var option = {

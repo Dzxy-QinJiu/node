@@ -32,7 +32,7 @@ var SingleAppBarChart = React.createClass({
     },
     // 横坐标的值
     getCategorys: function() {
-        return _.pluck(this.props.list , 'name');
+        return _.map(this.props.list , 'name');
     },
 
     getTooltip: function() {
@@ -54,7 +54,7 @@ var SingleAppBarChart = React.createClass({
     },
 
     getEchartOptions: function() {
-        let yValue = _.pluck(this.props.list , 'count');
+        let yValue = _.map(this.props.list , 'count');
         // 获取最大的y轴刻度值
         let yValueMax = _.max(yValue);
         // y轴的最大值
@@ -140,7 +140,7 @@ var SingleAppBarChart = React.createClass({
                 type: 'bar',
                 barMaxWidth: 40,
                 barMinWidth: 4,
-                data: _.pluck(this.props.list , 'count')
+                data: _.map(this.props.list , 'count')
             }]
         };
         return option;

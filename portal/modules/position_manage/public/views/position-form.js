@@ -34,11 +34,11 @@ const BatchPositionForm = React.createClass({
     // 获取组织id
     getOrganizationId(selectValue) {
         let organizationList = PositionStore.getState().realmList;
-        return _.chain(organizationList).filter(item => selectValue.indexOf(item.realm_name) > -1).pluck('realm_id').value();
+        return _.chain(organizationList).filter(item => selectValue.indexOf(item.realm_name) > -1).map('realm_id').value();
     },
     componentWillUpdate(nextProps, nextState) {
         let formData = this.state.formData;
-        if (formData.realm_id != nextState.formData.realm_id && nextState.formData.realm_id) {
+        if (formData.realm_id !== nextState.formData.realm_id && nextState.formData.realm_id) {
             let SelectId = this.getOrganizationId(nextState.formData.realm_id)[0];
             PositionAction.getUnbindMemberList({realm: SelectId});
         }
@@ -46,9 +46,9 @@ const BatchPositionForm = React.createClass({
     // 地域的选择
     selectAreaValue(value) {
         let selectOptions = 'changsha';
-        if (value == POSITION_AREA_OPTIONS.JN) {
+        if (value === POSITION_AREA_OPTIONS.JN) {
             selectOptions = POSITION_AREA_OPTIONS.JN;
-        } else if (value == POSITION_AREA_OPTIONS.BJ) {
+        } else if (value === POSITION_AREA_OPTIONS.BJ) {
             selectOptions = POSITION_AREA_OPTIONS.BJ;
         }
         this.setState({
@@ -92,7 +92,7 @@ const BatchPositionForm = React.createClass({
     // 获取用户id
     getUnbindMemberId(selectValue) {
         var unbindMemberList = PositionStore.getState().unbindMember.data;
-        return _.chain(unbindMemberList).filter(item => selectValue.indexOf(item.nick_name) > -1).pluck('user_id').value();
+        return _.chain(unbindMemberList).filter(item => selectValue.indexOf(item.nick_name) > -1).map('user_id').value();
     },
     // 提交保存
     handleSubmit() {

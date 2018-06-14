@@ -13,7 +13,7 @@ require('react-router');
 require('react-bootstrap');
 require('jquery');
 require('bootstrap');
-require('underscore');
+require('lodash');
 require('history');
 require('echarts-eefung');
 require('immutable');

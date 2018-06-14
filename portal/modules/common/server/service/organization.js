@@ -8,7 +8,7 @@ var urls = {
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var organizationDto = require('../dto/organization');
-var _ = require('underscore');
+var _ = require('lodash');
 //根据当前用户数据权限，获取应用列表
 exports.getOrganizationList = function(req,res,status) {
     return restUtil.authRest.get({

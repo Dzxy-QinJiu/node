@@ -247,7 +247,7 @@ OperationReportStore.prototype.getExpiredUserExceedLoginTime = function(result) 
         if (_.isArray(result.data) && result.data.length) {
             let total = 0;
             this.expiredUserExceedLoginTime.data = _.map(result.data, appData => {
-                let app = _.find(this.appList, app => app.id == appData.app_id);
+                let app = _.find(this.appList, app => app.id === appData.app_id);
                 total += appData.count;
                 return {
                     appId: appData.app_id,
@@ -460,14 +460,14 @@ OperationReportStore.prototype.getTeamTableData = function(resultData) {
                 //通过后台返回的数据[{appId:"",teamList:[{name:teamId,count:123}]},...]
                 //找到应用对应的团队登录统计列表
                 if (_.isArray(resultData) && resultData.length) {
-                    let appTeamObj = _.find(resultData, appTeam => appTeam.app_id == appId);
+                    let appTeamObj = _.find(resultData, appTeam => appTeam.app_id === appId);
                     if (appTeamObj && _.isArray(appTeamObj.data)) {
                         teamLoginList = appTeamObj.data;
                     }
                 }
                 //遍历该应用所有团队的登录次数列表，通过teamId找该应用对应该团队的登录数据
                 if (_.isArray(teamLoginList) && teamLoginList.length) {
-                    let teamData = _.find(teamLoginList, teamObj => teamObj.name == team.teamId);
+                    let teamData = _.find(teamLoginList, teamObj => teamObj.name === team.teamId);
                     if (teamData && teamData.count) {
                         rowData[appId] = teamData.count;
                         total += teamData.count;//团队的总计
@@ -491,7 +491,7 @@ OperationReportStore.prototype.getTeamTableData = function(resultData) {
         });
         if (_.isArray(teamTableData) && teamTableData.length) {
             //过滤掉都是团队内各应用都是0的数据
-            teamTableData = _.filter(teamTableData, (rowData) => rowData.total != 0);
+            teamTableData = _.filter(teamTableData, (rowData) => rowData.total !== 0);
         }
         //最后一条总计数据
         teamTableData.push(totalRowData);
@@ -524,13 +524,13 @@ OperationReportStore.prototype.getAppLoginUser = function(result) {
                 //遍历已选择的应用列表，如果返回的数据里，有该应用的登录数据，设置为返回的登录数据，没有则补全为0
                 let appLoginCount = 0;//应用对应的登录次数
                 if (_.isArray(thisWeekData) && thisWeekData.length) {
-                    let findItem = _.find(thisWeekData, item => item.app_id == appId);
+                    let findItem = _.find(thisWeekData, item => item.app_id === appId);
                     if (findItem) {
                         appLoginCount = findItem.count;
                     }
                 }
                 //从应用列表中获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == appId);
+                let app = _.find(this.appList, app => app.id === appId);
                 total += appLoginCount;
                 return {
                     appName: app ? app.name : '',
@@ -544,7 +544,7 @@ OperationReportStore.prototype.getAppLoginUser = function(result) {
         }
         //上周数据的处理
         if (_.isArray(lastWeekData) && lastWeekData.length) {
-            let countList = _.pluck(lastWeekData, 'count');
+            let countList = _.map(lastWeekData, 'count');
             this.appLoginUserObj.lastWeekTotal = _.reduce(countList, (memo, count) => {
                 return memo + count;
             }, 0);
@@ -579,14 +579,14 @@ OperationReportStore.prototype.getAppNewTrialUser = function(result) {
                 //遍历已选择的应用列表，如果返回的数据里，有该应用的新开账号数据，设置为返回的登录数据，没有则补全为0
                 let appNewTrialUserCount = 0;//应用对应的新开账号数
                 if (_.isArray(thisWeekData) && thisWeekData.length) {
-                    let findItem = _.find(thisWeekData, item => item.app_id == appId);
+                    let findItem = _.find(thisWeekData, item => item.app_id === appId);
                     if (findItem) {
                         appNewTrialUserCount = findItem.count;
                         total += findItem.count;
                     }
                 }
                 //从应用列表中获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == appId);
+                let app = _.find(this.appList, app => app.id === appId);
                 return {
                     appName: app ? app.name : '',
                     count: appNewTrialUserCount
@@ -599,7 +599,7 @@ OperationReportStore.prototype.getAppNewTrialUser = function(result) {
         }
         //上周数据的处理
         if (_.isArray(lastWeekData) && lastWeekData.length) {
-            let countList = _.pluck(lastWeekData, 'count');
+            let countList = _.map(lastWeekData, 'count');
             this.appNewTrialUser.lastWeekTotal = _.reduce(countList, (memo, count) => {
                 return memo + count;
             }, 0);
@@ -634,14 +634,14 @@ OperationReportStore.prototype.getAppNewDelayUser = function(result) {
                 //遍历已选择的应用列表，如果返回的数据里，有该应用的新开账号数据，设置为返回的登录数据，没有则补全为0
                 let appNewDelayUserCount = 0;//应用对应的延期用户数
                 if (_.isArray(thisWeekData) && thisWeekData.length) {
-                    let findItem = _.find(thisWeekData, item => item.app_id == appId);
+                    let findItem = _.find(thisWeekData, item => item.app_id === appId);
                     if (findItem) {
                         appNewDelayUserCount = findItem.count;
                         total += findItem.count;
                     }
                 }
                 //从应用列表中获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == appId);
+                let app = _.find(this.appList, app => app.id === appId);
                 return {
                     appName: app ? app.name : '',
                     count: appNewDelayUserCount
@@ -654,7 +654,7 @@ OperationReportStore.prototype.getAppNewDelayUser = function(result) {
         }
         //上周数据的处理
         if (_.isArray(lastWeekData) && lastWeekData.length) {
-            let countList = _.pluck(lastWeekData, 'count');
+            let countList = _.map(lastWeekData, 'count');
             this.appNewDelayUser.lastWeekTotal = _.reduce(countList, (memo, count) => {
                 return memo + count;
             }, 0);
@@ -697,7 +697,7 @@ OperationReportStore.prototype.getAppLoginComparison = function(result) {
         if (_.isArray(result.data) && result.data.length) {
             this.appLoginComparison.data = result.data.map((activeObj) => {
                 //通过id获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == activeObj.appId);
+                let app = _.find(this.appList, app => app.id === activeObj.appId);
                 let data = [];
                 //格式化数据，以适应chart的渲染
                 if (_.isArray(activeObj.actives) && activeObj.actives.length) {
@@ -739,7 +739,7 @@ OperationReportStore.prototype.getAppWeeklyLoginTotalTime = function(result) {
         if (_.isArray(result.data) && result.data.length) {
             this.appWeeklyLoginTotalTime.data = result.data.map((LoginObj) => {
                 //通过id获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == LoginObj.app_id);
+                let app = _.find(this.appList, app => app.id === LoginObj.app_id);
                 return {
                     app_name: app ? app.name : '',
                     data: LoginObj.data//[{count: 936, timestamp: 1496592000000},{},{},{}]该应用近四周的数据
@@ -784,7 +784,7 @@ OperationReportStore.prototype.getAppExpiredLoginComparison = function(result) {
         if (_.isArray(result.data) && result.data.length) {
             this.appExpiredLoginComparison.data = result.data.map((activeObj) => {
                 //通过id获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == activeObj.appId);
+                let app = _.find(this.appList, app => app.id === activeObj.appId);
                 let data = [];
                 //格式化数据，以适应chart的渲染
                 if (_.isArray(activeObj.actives) && activeObj.actives.length) {
@@ -819,14 +819,14 @@ OperationReportStore.prototype.getAppFormalUserLoginComparison = function(result
         if (_.isArray(result.data) && result.data.length) {
             this.appFormalLoginComparison.data = result.data.map((activeObj) => {
                 //通过id获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == activeObj.appId);
+                let app = _.find(this.appList, app => app.id === activeObj.appId);
                 let data = [];
                 //格式化数据，以适应chart的渲染
                 if (_.isArray(activeObj.actives) && activeObj.actives.length) {
                     data = activeObj.actives.map((active, index) => {
-                        if (index == activeObj.actives.length - 1) {
+                        if (index === activeObj.actives.length - 1) {
                             total += active.active;//最后一个点的数据为本周的登录数据
-                        } else if (index == activeObj.actives.length - 2) {
+                        } else if (index === activeObj.actives.length - 2) {
                             lastWeekTotal += active.active;//倒数第二个点的数据为上周周的登录数据
                         }
                         return {count: active.active, timestamp: active.timestamp};
@@ -861,7 +861,7 @@ OperationReportStore.prototype.getAppNewUserComparison = function(result) {
         if (_.isArray(result.data) && result.data.length) {
             this.appNewUserComparison.data = result.data.map((userObj) => {
                 //通过id获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == userObj.app_id);
+                let app = _.find(this.appList, app => app.id === userObj.app_id);
                 return {
                     app_name: app ? app.name : '',
                     data: userObj.data
@@ -888,7 +888,7 @@ OperationReportStore.prototype.getAppNewDelayUserComparison = function(result) {
         if (_.isArray(result.data) && result.data.length) {
             this.appNewDelayUserComparison.data = result.data.map((userObj) => {
                 //通过id获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == userObj.app_id);
+                let app = _.find(this.appList, app => app.id === userObj.app_id);
                 return {
                     app_name: app ? app.name : '',
                     data: userObj.data
@@ -915,7 +915,7 @@ OperationReportStore.prototype.getUserActive = function(result) {
         if (_.isArray(result.data) && result.data.length) {
             this.userActive.data = result.data.map((activeObj) => {
                 //通过id获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == activeObj.appId);
+                let app = _.find(this.appList, app => app.id === activeObj.appId);
                 return {
                     datas: activeObj.actives,
                     appName: app ? app.name : ''
@@ -943,7 +943,7 @@ OperationReportStore.prototype.getUserDailyActive = function(result) {
         if (_.isArray(result.data) && result.data.length) {
             this.userDailyActive.data = result.data.map((activeObj) => {
                 //通过id获取应用对应的名称
-                let app = _.find(this.appList, app => app.id == activeObj.appId);
+                let app = _.find(this.appList, app => app.id === activeObj.appId);
                 return {
                     datas: activeObj.actives,
                     appName: app ? app.name : ''

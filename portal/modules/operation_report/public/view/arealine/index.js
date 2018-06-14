@@ -75,7 +75,7 @@ var AreaLineChart = React.createClass({
         items = items.datas;
         var startMoment = moment(new Date(+items[0].timestamp));
         var endMoment = moment(new Date(+items[items.length - 1].timestamp));
-        var biggerThanYear = startMoment.format('YYYY') != endMoment.format('YYYY');
+        var biggerThanYear = startMoment.format('YYYY') !== endMoment.format('YYYY');
         if (biggerThanYear) {
             this.isBiggerThanYear = true;
         }
@@ -115,7 +115,7 @@ var AreaLineChart = React.createClass({
                         color: color
                     }
                 },
-                data: _.pluck(list, 'active')
+                data: _.map(list, 'active')
             };
         }
 

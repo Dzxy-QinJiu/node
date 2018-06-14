@@ -7,7 +7,7 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var EventEmitter = require('events').EventEmitter;
 var Promise = require('bluebird');
-var _ = require('underscore');
+var _ = require('lodash');
 var urls = {
     getAppLists: '/rest/base/v1/application/grant_applications',
     addAppFeedback: '/rest/base/v1/notice/customer/application/feedback',

@@ -2,7 +2,7 @@ const querystring = require('querystring');
 const restLogger = require('../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 const routes = require('./route');
-const _ = require('underscore');
+const _ = require('lodash');
 
 routes.forEach(route => {
     exports[route.handler] = function(req, res) {

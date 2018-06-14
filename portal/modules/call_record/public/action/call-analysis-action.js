@@ -1,7 +1,5 @@
 var callAnalysisAjax = require('../ajax/call-analysis-ajax');
 
-var _ = require('underscore');
-
 function CallAnalysisActions() {
     this.generateActions(
         'resetState',//初始化数据的设置
