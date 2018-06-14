@@ -394,6 +394,23 @@
           padding-left: 20px;
           .analysis-wrapper {
             min-width: 1300px;
+            .call-info {
+              .card-container {
+                .card-title {
+                  border-bottom: none;
+                  padding: 0 0 10px;
+                  .title-name {
+                    font-size: 14px;
+                    padding: 0;
+                  }
+                  .additional-content{
+                    .icon-export {
+                      padding-right: 15px;
+                    }
+                  }
+                }
+              }
+            }
           }
           .ant-table {
             table {
@@ -449,19 +466,6 @@
           .call-info, .call-top, .call-service-rate, .call-stage-distribute{
             min-height: 100px;
           }
-
-          .export-file {
-            position: relative;
-            right: 20px;
-            a {
-              color: @blue;
-            }
-            .icon-export {
-              color: @blue;
-              margin-right: 5px;
-            }
-          }
-
           .alert-wrap {
             text-align: center;
             line-height: 90px;

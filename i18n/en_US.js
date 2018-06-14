@@ -949,6 +949,7 @@ var en_US = {
     'call.record.service.phone.rate': 'Statistics of the ratio of 114',//114占比统计
     'call.analysis.zone.distrute': 'Zone distribution of customers', // 客户的地域分布
     'call.analysis.map.return': 'Back to previous', // 返回上一级
+    'call.analysis.call.title': 'Call information', // 通话信息
     //通话分析-end
 
 

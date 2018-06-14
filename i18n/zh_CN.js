@@ -961,6 +961,7 @@ var zh_CN = {
     'call.record.service.phone.rate': '114占比统计',
     'call.analysis.zone.distrute': '客户的地域分布',
     'call.analysis.map.return': '返回上一级',
+    'call.analysis.call.title': '通话信息',
     //通话分析-end
 
     // 用户审批start
