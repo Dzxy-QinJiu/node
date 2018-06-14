@@ -91,6 +91,20 @@ var en_VE = {
 
     'common.no.data': 'No hay datos por el momento',//暂无数据
 
+    'common.no.more.user': 'There is no more user',//沒有更多用戶了
+
+    'common.no.more.crm': '没有更多客户了',
+
+    'common.no.more.schedule': '暂无计划',
+
+    'common.no.more.order': 'There is no order',//暂无订单
+
+    'common.no.more.trace.record': '暂无跟进记录',
+
+    'common.no.more.clue': '暂无线索',
+
+    'common.no.audit': 'There is no audit',//暂无审计日志
+
     'common.all': 'Total',//全部
 
     'common.role': 'Papel',//角色

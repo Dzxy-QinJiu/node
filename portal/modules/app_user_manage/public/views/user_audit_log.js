@@ -230,7 +230,7 @@ var LogView = React.createClass({
                 key: 'operation_name',
                 render: function(operate, rowData, idx) {
                     return (<span title={operate}>
-                        {operate == 'null' ? '' : operate}
+                        {operate === 'null' ? '' : operate}
                     </span>);
                 }
             },
@@ -352,7 +352,7 @@ var LogView = React.createClass({
     // 委内维拉项目，显示的列表项（不包括类型、IP归属地、运营商）
     getTableColumnsVe: function() {
         return _.filter(this.getTableColumns(), (item) => {
-            return item.dataIndex != 'location' && item.dataIndex != 'area' && item.dataIndex != 'tags';
+            return item.dataIndex !== 'location' && item.dataIndex !== 'area' && item.dataIndex !== 'tags';
         });
     },
 
@@ -376,7 +376,7 @@ var LogView = React.createClass({
     renderLoadingBlock: function() {
         if (this.state.appUserListResult !== 'loading') {
             return null;
-        } else if (this.state.getUserLogErrorMsg != '') {
+        } else if (this.state.getUserLogErrorMsg !== '') {
             return null;
         } else if (this.state.sortId !== '') {
             return null;
@@ -501,7 +501,7 @@ var LogView = React.createClass({
             this.getAuditLog({
                 sort_id: this.state.sortId
             });
-        } else if (length == this.state.total) {
+        } else if (length === this.state.total) {
             this.setState({
                 listenScrollBottom: false
             });
@@ -516,7 +516,7 @@ var LogView = React.createClass({
 
     //处理选中行的样式
     handleRowClassName: function(record, index) {
-        if ((index == this.state.selectedRowIndex) && this.state.isShowRightPanel) {
+        if ((index === this.state.selectedRowIndex) && this.state.isShowRightPanel) {
             return 'current_row';
         }
         else {
@@ -565,7 +565,7 @@ var LogView = React.createClass({
                         columns={columns}
                         pagination={false}
                         rowClassName={this.handleRowClassName}
-                        locale={{ emptyText: Intl.get('common.no.data', '暂无数据') }}
+                        locale={{ emptyText: Intl.get('common.no.audit', '暂无审计') }}
                         scroll={{ y: tableHeight }}
                     />
                 </div>
@@ -599,7 +599,7 @@ var LogView = React.createClass({
             <div ref="userListTable" className="user_audit_log_style">
                 {this.renderLogHeader()}
                 {this.renderLoadingBlock()}
-                {this.state.getUserLogErrorMsg != '' ? this.renderDataErrorHandle() : this.renderTableContent()}
+                {this.state.getUserLogErrorMsg !== '' ? this.renderDataErrorHandle() : this.renderTableContent()}
             </div>
         );
     }

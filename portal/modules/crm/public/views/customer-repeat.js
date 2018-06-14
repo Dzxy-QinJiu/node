@@ -63,7 +63,7 @@ let CustomerRepeat = React.createClass({
         let curCustomerId = _.isObject(this.state.curCustomer) ? this.state.curCustomer.id : '';
         if (curCustomerId && this.state.rightPanelIsShow) {
             $('.customer-repeat-container .record-id').each(function() {
-                if ($(this).text() == curCustomerId) {
+                if ($(this).text() === curCustomerId) {
                     $(this).closest('tr').addClass('current-row').siblings().removeClass('current-row');
                     return false;
                 }
@@ -159,11 +159,11 @@ let CustomerRepeat = React.createClass({
 
     showSearchInput: function(key) {
         CustomerRepeatAction.toggleSearchInput({key: key, isShow: true});
-        if (key == 'name') {
+        if (key === 'name') {
             Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按客户名称搜索按钮');
-        } else if (key == 'user_name') {
+        } else if (key === 'user_name') {
             Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按负责人搜索按钮');
-        } else if (key == 'remarks') {
+        } else if (key === 'remarks') {
             Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按备注搜索按钮');
         }
         //之前有搜索的内容时，先还原
@@ -188,7 +188,7 @@ let CustomerRepeat = React.createClass({
     },
     //获取过滤后的重复客户
     filterRepeatCustomer: function(filterKey) {
-        if (this.state.filterObj[filterKey] == undefined) {
+        if (this.state.filterObj[filterKey] === undefined) {
             return;
         }
         CustomerRepeatAction.resetPage();
@@ -206,9 +206,9 @@ let CustomerRepeat = React.createClass({
         delete this.state.filterObj[filterKey];
         CustomerRepeatAction.setFilterObj(this.state.filterObj);
         CustomerRepeatAction.toggleSearchInput({key: filterKey, isShow: false});
-        if (filterKey == 'name') {
+        if (filterKey === 'name') {
             Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭客户名称后的搜索框');
-        } else if (filterKey == 'user_name') {
+        } else if (filterKey === 'user_name') {
             Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭负责人后的搜索框');
         } else {
             Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭备注后的搜索框');
@@ -220,11 +220,11 @@ let CustomerRepeat = React.createClass({
         }
         searchInputTimeOut = setTimeout(() => {
             this.filterRepeatCustomer(filterKey);
-            if (filterKey == 'name') {
+            if (filterKey === 'name') {
                 Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据客户名称过滤');
-            } else if (filterKey == 'user_name') {
+            } else if (filterKey === 'user_name') {
                 Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据负责人过滤');
-            } else if (filterKey == 'remarks') {
+            } else if (filterKey === 'remarks') {
                 Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据备注过滤');
             }
         }, delayTime);
@@ -349,7 +349,7 @@ let CustomerRepeat = React.createClass({
             });
         } else {
             return (
-                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.data', '暂无数据')}/>
+                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.more.crm', '没有更多客户了')}/>
                 </div>);
         }
     },

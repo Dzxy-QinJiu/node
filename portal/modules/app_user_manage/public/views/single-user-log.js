@@ -59,7 +59,7 @@ var SingleUserLog = React.createClass({
     },
     componentWillReceiveProps: function(nextProps) {
         var newUserId = nextProps.userId;
-        if (this.props.userId != newUserId) {
+        if (this.props.userId !== newUserId) {
             setTimeout(() => {
                 SingleUserLogAction.changUserIdKeepSearch();
                 this.getSingleUserLogInfoByApp(newUserId,nextProps.selectedAppId, nextProps.appLists);
@@ -205,7 +205,7 @@ var SingleUserLog = React.createClass({
 
     // 日志列表信息
     userLogInformationBlock: function() {
-        if (this.state.logListLoading == 'loading' && this.state.curPage == 1) {
+        if (this.state.logListLoading === 'loading' && this.state.curPage === 1) {
             return <Spinner />;
         }
         if (this.state.getUserLogErrorMsg) {
@@ -220,7 +220,7 @@ var SingleUserLog = React.createClass({
             );
         }
         var auditLogListLength = this.state.auditLogList.length;
-        if (auditLogListLength != 0) {
+        if (auditLogListLength !== 0) {
             return (
                 <div>
                     <div className="time-over-range-tips">
@@ -264,7 +264,7 @@ var SingleUserLog = React.createClass({
         } else {
             return <div className="alert-wrap">
                 <Alert
-                    message={Intl.get('common.no.data', '暂无数据')}
+                    message={Intl.get('common.no.audit', '暂无审计日志')}
                     type="info"
                     showIcon={true}
                 />

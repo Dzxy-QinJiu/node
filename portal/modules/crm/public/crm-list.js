@@ -1401,7 +1401,7 @@ var Crm = React.createClass({
                             onChange={this.onTableChange}
                             scroll={{x: tableScrollX, y: this.state.tableHeight}}
                             locale={{
-                                emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.data', '暂无数据')) : ''
+                                emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.crm', '没有更多客户了')) : ''
                             }}
                         />
                     </div>
