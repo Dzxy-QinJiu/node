@@ -117,7 +117,7 @@ var ContactForm = React.createClass({
             }
 
             Trace.traceEvent(_this.getDOMNode(), '删除新建联系人的联系方式' + type);
-            _this.state.contact.contactWayAddObj[type] = _this.state.contact.contactWayAddObj[type].filter((x, idx) => idx != index);
+            _this.state.contact.contactWayAddObj[type] = _this.state.contact.contactWayAddObj[type].filter((x, idx) => idx !== index);
             //删除的变量名
             const delKey = type + index;
             _this.state.formData[delKey] = _this.state.formData[delKey] || '';
@@ -137,7 +137,7 @@ var ContactForm = React.createClass({
                 let innerNum = idx;
                 const propName = type + idx;
                 //当前索引的下一个变量
-                let nextItem = sortedFormData.find(x => x.key == type + (innerNum + 1));
+                let nextItem = sortedFormData.find(x => x.key === type + (innerNum + 1));
                 //当前变量在要删除的变量索引之后或相等的，将变量的值改为索引加1的变量的值                    
                 if ((innerNum >= index) && nextItem) {
                     _this.state.formData[propName] = nextItem.value;
@@ -199,16 +199,16 @@ var ContactForm = React.createClass({
         for (var key in formData) {
             let contactVal = $.trim(formData[key]);
             if(contactVal){
-                if (key.indexOf('phone') != -1) {
+                if (key.indexOf('phone') !== -1) {
                     phoneArray.push(contactVal);
                     delete formData[key];
-                } else if (key.indexOf('qq') != -1) {
+                } else if (key.indexOf('qq') !== -1) {
                     qqArray.push(contactVal);
                     delete formData[key];
-                } else if (key.indexOf('weChat') != -1) {
+                } else if (key.indexOf('weChat') !== -1) {
                     weChatArray.push(contactVal);
                     delete formData[key];
-                } else if (key.indexOf('email') != -1) {
+                } else if (key.indexOf('email') !== -1) {
                     emailArray.push(contactVal);
                     delete formData[key];
                 }
@@ -224,7 +224,7 @@ var ContactForm = React.createClass({
         let contactArray = phoneArray.concat(qqArray, weChatArray, emailArray);
         //过滤出不为空的联系方式
         contactArray = contactArray.filter(item => item ? true : false);
-        if (contactArray.length == 0) {
+        if (contactArray.length === 0) {
             this.setState({showNeedContact: true});
             return;
         }
@@ -392,7 +392,7 @@ var ContactForm = React.createClass({
     //添加、删除联系方式的按钮
     renderContactWayBtns(index, size, type){
         return (<div className="contact-way-buttons">
-            {index == 0 && index === size - 1 ? null : <div className="circle-empty-button crm-contact-contactway-minus"
+            {index === 0 && index === size - 1 ? null : <div className="circle-empty-button crm-contact-contactway-minus"
                 onClick={this.removeContactWay(type, index)}>
                 <Icon type="minus"/>
             </div>}
@@ -555,7 +555,7 @@ var ContactForm = React.createClass({
         return (<DetailCard content={this.renderContactForm()}
             isEdit={true}
             className="contact-form-container"
-            loading={this.state.loading}
+            loading={this.state.isLoading}
             saveErrorMsg={this.state.errorMsg}
             handleSubmit={this.handleSubmit}
             handleCancel={this.cancel}
