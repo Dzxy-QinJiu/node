@@ -104,7 +104,6 @@ CustomerRepeatStore.prototype.setRepeatCustomerLoading = function(flag) {
     this.isLoadingRepeatCustomer = flag;
 };
 CustomerRepeatStore.prototype.setInitialRepeatCustomerList = function(data) {
-    data.code = 0;
     data.result = data.list;
     this.getRepeatCustomerList(data);
 };
@@ -113,25 +112,21 @@ CustomerRepeatStore.prototype.getRepeatCustomerList = function(data) {
     this.isLoadingRepeatCustomer = false;
     if (_.isString(data)) {
         this.errorMsg = data;
-    } else if (_.isObject(data) && data.result) {
+    } else if (_.isObject(data) && _.isArray(data.result)) {
         this.errorMsg = '';
         this.repeatCustomersSize = data.total || 0;
-        if (data.code === 0) {
-            var data_list = data && data.result;
-            if (!_.isArray(data_list)) {
-                data_list = [];
-            }
-            if (this.page === 1) {
-                //加载首页
-                this.originCustomerList = data_list;
-                this.repeatCustomerList = this.processForList(data_list);
-            } else {
-                //累加
-                this.originCustomerList = this.originCustomerList.concat(data_list);
-                this.repeatCustomerList = this.repeatCustomerList.concat(this.processForList(data_list));
-            }
-            this.page++;
+        var data_list = data.result;
+        if (this.page === 1) {
+            //加载首页
+            this.originCustomerList = data_list;
+            this.repeatCustomerList = this.processForList(data_list);
+        } else {
+            //累加
+            this.originCustomerList = this.originCustomerList.concat(data_list);
+            this.repeatCustomerList = this.repeatCustomerList.concat(this.processForList(data_list));
         }
+        this.page++;
+
         //是否监听下拉加载的处理
         if (_.isArray(this.originCustomerList) && this.originCustomerList.length < this.repeatCustomersSize) {
             this.listenScrollBottom = true;
