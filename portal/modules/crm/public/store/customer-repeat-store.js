@@ -103,6 +103,11 @@ CustomerRepeatStore.prototype.setMergePanelShow = function(flag) {
 CustomerRepeatStore.prototype.setRepeatCustomerLoading = function(flag) {
     this.isLoadingRepeatCustomer = flag;
 };
+CustomerRepeatStore.prototype.setInitialRepeatCustomerList = function(data) {
+    data.code = 0;
+    data.result = data.list;
+    this.getRepeatCustomerList(data);
+};
 //获取重复的客户列表
 CustomerRepeatStore.prototype.getRepeatCustomerList = function(data) {
     this.isLoadingRepeatCustomer = false;
@@ -209,25 +214,5 @@ CustomerRepeatStore.prototype.setCurCustomer = function(id) {
     let curCustomer = _.find(this.originCustomerList, customer => customer.id === id);
     this.curCustomer = curCustomer ? curCustomer : {};
 };
-CustomerRepeatStore.prototype.setInitialRepeatCustomerList = function(data) {
-    if (_.isString(data)) {
-        this.errorMsg = data;
-    } else if (_.isObject(data) && data.list) {
-        this.errorMsg = '';
-        this.repeatCustomersSize = data.total || 0;
-        var dataList = data && _.isArray(data.list) ? data.list : [];
-        if (_.isArray(dataList)) {
-            //加载首页
-            this.originCustomerList = dataList;
-            this.repeatCustomerList = this.processForList(dataList);
-            this.page++;
-        }
-        //是否监听下拉加载的处理
-        if (_.isArray(this.repeatCustomerList) && this.repeatCustomerList.length < this.repeatCustomersSize) {
-            this.listenScrollBottom = true;
-        } else {
-            this.listenScrollBottom = false;
-        }
-    }
-};
+
 module.exports = alt.createStore(CustomerRepeatStore, 'CustomerRepeatStore');
