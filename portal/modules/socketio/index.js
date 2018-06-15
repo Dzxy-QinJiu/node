@@ -28,7 +28,7 @@ const scheduleNoticeChannel = 'com.antfact.ketao.schedule';
 const applyUnreadReplyChannel = 'com.antfact.ketao.apply.comment';
 //批量操作处理文件
 var userBatch = require('./batch');
-var _ = require('underscore');
+var _ = require('lodash');
 var auth = require('../../lib/utils/auth');
 var sessionExpireEmitter = require('../../public/sources/utils/emitters').sessionExpireEmitter;
 
@@ -165,7 +165,7 @@ function offlineChannelListener(data) {
         if (socketArray.length > 0) {
             //找到最后一个登录用户的socketId和token
             var lastLoginSocketObj = _.find(socketArray, function(socketObj) {
-                return socketObj.token == userObj.token;
+                return socketObj.token === userObj.token;
             });
             //找到存储中最后一个登录的socket
             var lastLoginSocket = lastLoginSocketObj ? ioServer && ioServer.sockets.sockets[lastLoginSocketObj.socketId] : null;
@@ -177,13 +177,13 @@ function offlineChannelListener(data) {
             var newSocketArray = lastLoginSocketObj ? [lastLoginSocketObj] : [];
             //找到除最后一个登录的外的其他sesssion下的socket推送踢出消息后清除存储中对应的socket
             socketArray.forEach(function(socketObj) {
-                if (socketObj.token != userObj.token) {
+                if (socketObj.token !== userObj.token) {
                     //找到不是最后一个登录的socket
                     var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                     if (socket) {
                         //不是最后一个登录的socket对应的sessionId
                         var sessionId = socket.request && socket.request.sessionId;
-                        if (sessionId == lastLoginSessionId) {
+                        if (sessionId === lastLoginSessionId) {
                             //如果是最后一个登录用户所在session下不同tab页的该用户可不被踢出(因为该tab页上的token已在session中刷新)
                             socketObj.token = userObj.token;
                             //刷新token后存入newSocketArray
@@ -362,9 +362,9 @@ module.exports.startSocketio = function(nodeServer) {
             var sessionId = socket.request.sessionId;
             pushLogger.info('sessionID: ' + sessionId + ' 与浏览器断开连接');
             //遍历socketStore
-            _.any(socketStore, function(userArray, userId) {
+            _.some(socketStore, function(userArray, userId) {
                 //遍历userArray
-                return _.any(userArray, function(obj, idx) {
+                return _.some(userArray, function(obj, idx) {
                     //如果userArray中存在当前socket，删除
                     if (obj.sessionId === sessionId) {
                         userArray.splice(idx, 1);
@@ -399,7 +399,7 @@ function sessionExpired(expiredObj) {
             var socketArray = socketStore[userId] || [];
             if (socketArray.length > 0) {
                 socketArray.forEach(function(socketObj) {
-                    if (socketObj.sessionId == expiredSessionId) {
+                    if (socketObj.sessionId === expiredSessionId) {
                         //找到相同sessionId的socket
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {

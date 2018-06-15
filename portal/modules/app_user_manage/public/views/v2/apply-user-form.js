@@ -35,8 +35,8 @@ const ApplyUserForm = React.createClass({
 
     componentWillReceiveProps: function(nextProps) {
         this.buildFormData(nextProps);
-        let oldAppIds = _.pluck(this.props.apps, 'client_id');
-        let newAppIds = _.pluck(nextProps.apps, 'client_id');
+        let oldAppIds = _.map(this.props.apps, 'client_id');
+        let newAppIds = _.map(nextProps.apps, 'client_id');
         //获取newAppIds中，不存在于oldAppIds中的应用id
         let diffAppIds = _.difference(newAppIds, oldAppIds);
         //获取新增的应用的默认配置
@@ -44,10 +44,10 @@ const ApplyUserForm = React.createClass({
     },
 
     buildFormData: function(props) {
-        const users = _.pluck(props.users, 'user');
+        const users = _.map(props.users, 'user');
         let formData = {
-            user_ids: _.pluck(users, 'user_id'),
-            user_names: _.pluck(users, 'user_name'),
+            user_ids: _.map(users, 'user_id'),
+            user_names: _.map(users, 'user_name'),
             customer_id: props.customerId,
             remark: '',
             tag: Intl.get('common.trial.official', '正式用户'),
@@ -75,7 +75,7 @@ const ApplyUserForm = React.createClass({
 
     componentDidMount: function() {
         //获取各应用的默认设置
-        this.getAppsDefaultConfig(_.pluck(this.props.apps, 'client_id'));
+        this.getAppsDefaultConfig(_.map(this.props.apps, 'client_id'));
     },
 
     //获取各应用的默认设置
@@ -280,7 +280,7 @@ const ApplyUserForm = React.createClass({
                             <Tabs tabPosition="left" onChange={this.onAppChange}
                                 prefixCls="antd-vertical-tabs">
                                 {this.props.apps.map(app => {
-                                    let disabled = this.state.setAllChecked && app.client_id != appFormData.client_id;
+                                    let disabled = this.state.setAllChecked && app.client_id !== appFormData.client_id;
                                     return (<TabPane key={app.client_id}
                                         tab={this.renderTabToolTip(app.client_name)}
                                         disabled={disabled}>

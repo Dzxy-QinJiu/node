@@ -7,7 +7,7 @@
 'use strict';
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-var _ = require('underscore');
+var _ = require('lodash');
 var auth = require('../../../../lib/utils/auth');
 
 var userInfoRestApis = {
@@ -38,7 +38,7 @@ exports.getUserInfo = function(req, res, userId) {
                     var roles = data.roles;
                     var rolesName = '';
                     if (roles) {
-                        rolesName = _.pluck(roles, 'role_name').join(',');
+                        rolesName = _.map(roles, 'role_name').join(',');
                     }
                     data = {
                         id: data.user_id,

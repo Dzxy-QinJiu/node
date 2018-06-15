@@ -3,7 +3,7 @@
  */
 var language = require('../../../../public/language/getLanguage');
 require('PUB_DIR/css/card-info-common.less');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('PUB_DIR/css/card-info-es.less');
 }
 import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message} from 'antd';
@@ -109,7 +109,7 @@ var UserInfo = React.createClass({
     //展示是否禁用、启用的模态框
     showForbidModalDialog: function(e) {
         var modalStr = Intl.get('member.start.this', '启用此');
-        if (this.state.userInfo.status == 1) {
+        if (this.state.userInfo.status === 1) {
             modalStr = Intl.get('member.stop.this', '禁用此');
         }
         Trace.traceEvent(e, '点击' + modalStr + '成员');
@@ -118,7 +118,7 @@ var UserInfo = React.createClass({
     },
     forbidCard: function(e) {
         var modalStr = Intl.get('member.start.this', '启用此');
-        if (this.state.userInfo.status == 1) {
+        if (this.state.userInfo.status === 1) {
             modalStr = Intl.get('member.stop.this', '禁用此');
         }
         Trace.traceEvent(e, '点击确认' + modalStr + '成员');
@@ -126,7 +126,7 @@ var UserInfo = React.createClass({
             this.props.deleteCard(this.props.userInfo.id);
         } else {
             var status = 1;
-            if (this.props.userInfo.status == 1) {
+            if (this.props.userInfo.status === 1) {
                 status = 0;
             }
             this.updateUserStatus(this.props.userInfo.id, status);
@@ -159,7 +159,7 @@ var UserInfo = React.createClass({
     //修改的所属团队成功后的处理
     afterEditTeamSuccess: function(user) {
         //更新详情中的所属团队
-        let updateTeam = _.find(this.state.userTeamList, team => team.group_id == user.team);
+        let updateTeam = _.find(this.state.userTeamList, team => team.group_id === user.team);
         UserAction.updateUserTeam(updateTeam);
         if (_.isFunction(this.props.afterEditTeamSuccess)){
             this.props.afterEditTeamSuccess(user);
@@ -171,7 +171,7 @@ var UserInfo = React.createClass({
         let roleObj = {roleIds: [], roleNames: []}, roleList = this.state.roleList;
         if (_.isArray(user.role) && user.role.length) {
             user.role.forEach(roleId => {
-                let curRole = _.find(roleList, role => role.roleId == roleId);
+                let curRole = _.find(roleList, role => role.roleId === roleId);
                 roleObj.roleIds.push(curRole.roleId);
                 roleObj.roleNames.push(curRole.roleName);
             });
@@ -194,7 +194,7 @@ var UserInfo = React.createClass({
                 var className = '';
                 if (_.isArray(userInfo.roleIds) && userInfo.roleIds.length > 0) {
                     userInfo.roleIds.forEach(function(roleId) {
-                        if (role.roleId == roleId) {
+                        if (role.roleId === roleId) {
                             className = 'role-options-selected';
                         }
                     });
@@ -255,7 +255,7 @@ var UserInfo = React.createClass({
     },
     //对确认密码 进行校验
     checkRePass(rule, value, callback) {
-        if (value && value == this.refs.password.state.formData.input) {
+        if (value && value === this.refs.password.state.formData.input) {
             callback();
         } else {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
@@ -265,9 +265,14 @@ var UserInfo = React.createClass({
     checkPhone: function(rule, value, callback) {
         value = $.trim(value);
         if (value) {
-            if ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) ||
-                    (/^\d{3,4}\-\d{7,8}$/.test(value)) ||
-                    (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
+            if (
+                /^1[3456789]\d{9}$/.test(value)
+                ||
+                /^(0\d{2,3}-?)?[02-9]\d{6,7}$/.test(value)
+                ||
+                /^400-?\d{3}-?\d{4}$/.test(value)
+                ||
+                /^1010\d+$/.test(value)) {
                 callback();
             } else {
                 callback(new Error(Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
@@ -524,7 +529,7 @@ var UserInfo = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find('.upload-img-select'), '保存上传头像');
         this.setState({showSaveIconTip: false});
         let userInfo = this.state.userInfo;
-        if (userInfo.image && userInfo.image != this.props.userInfo.image) {
+        if (userInfo.image && userInfo.image !== this.props.userInfo.image) {
             let editObj = {user_id: userInfo.id, user_logo: userInfo.image};
             UserInfoAjax.editUser(editObj).then(function(result) {
                 //上传成功
@@ -603,7 +608,7 @@ var UserInfo = React.createClass({
                 isSales = true;
             }
         }
-        var commissionRadio = '', goal = '', recordId = '',
+        var commissionRadio = '', recordId = '',
             saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = '', renewalCommissionRatio = '';
         if ((saleGoalsAndCommissionRadio.commission_ratio && saleGoalsAndCommissionRadio.commission_ratio > -1) || saleGoalsAndCommissionRadio.commission_ratio === 0) {
             //提成比例
@@ -630,7 +635,7 @@ var UserInfo = React.createClass({
                             <RightPanelForbid onClick={(e) => {
                                 this.showForbidModalDialog(e);
                             }}
-                            isActive={this.state.userInfo.status == 0}
+                            isActive={this.state.userInfo.status === 0}
                             />
                         </PrivilegeChecker>
                     ) : null}

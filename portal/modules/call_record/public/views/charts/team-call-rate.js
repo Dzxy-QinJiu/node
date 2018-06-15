@@ -91,7 +91,7 @@ var RateBarChart = React.createClass({
             xAxis: [
                 {
                     type: 'category',
-                    data: _.pluck(this.props.dataList, 'name'),
+                    data: _.map(this.props.dataList, 'name'),
                     splitLine: false,
                     axisLine: {
                         lineStyle: {

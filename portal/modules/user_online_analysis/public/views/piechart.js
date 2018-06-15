@@ -72,7 +72,7 @@ var PieChart = React.createClass({
         };
     },
     getLegend: function() {
-        return _.pluck(this.props.list , 'name');
+        return _.map(this.props.list , 'name');
     },
     getTitleOptions: function() {
         var total = numberFormatter.numberAddComma(this.props.total);

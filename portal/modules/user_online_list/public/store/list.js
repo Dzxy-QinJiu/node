@@ -1,5 +1,5 @@
 import OnlineUserListAction from '../action/list';
-var _ = require('underscore');
+var _ = require('lodash');
 
 //存储在线用户列表
 function OnlineUserListStore() {
@@ -62,7 +62,7 @@ OnlineUserListStore.prototype.setPageNum = function(pageNum) {
 OnlineUserListStore.prototype.kickUser = function(ids) {
     let user_id = ids.user_ids[0];
     this.onlineUserList = _.filter(this.onlineUserList, (item) => {
-        return item.user_id != user_id;
+        return item.user_id !== user_id;
     } );
     this.total -= 1;
 };

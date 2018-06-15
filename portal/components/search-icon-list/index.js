@@ -10,7 +10,7 @@ const PropTypes = React.PropTypes;
 class SearchIconList extends React.Component {
     constructor(props) {
         super(props);
-        const selectedIds = _.pluck(props.selectedList, props.id_field);
+        const selectedIds = _.map(props.selectedList, props.id_field);
 
         const totalList = this.expandListProp(props.totalList, selectedIds);
         this.searchCount = totalList.length;
@@ -83,7 +83,7 @@ class SearchIconList extends React.Component {
         if(!immutable.is(nextProps.totalList , this.props.totalList)) {
             const id_field = this.props.id_field;
             const selectedList = nextProps.selectedList || this.state.selectedList;
-            const selectedIds = _.pluck(selectedList, id_field);
+            const selectedIds = _.map(selectedList, id_field);
             let totalList = this.expandListProp(nextProps.totalList , selectedIds);
             totalList = this.getSearchResult({
                 totalList: totalList

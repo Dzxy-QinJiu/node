@@ -2,7 +2,7 @@
  * Created by wangliping on 2016/2/22.
  * 应用实体
  */
-var _ = require('underscore');
+var _ = require('lodash');
 
 exports.toFrontSalesCustomer = function(data) {
     var salesCustomer = {};
@@ -101,7 +101,7 @@ exports.toFrontExpireUser = function(data) {
                         userItem.user_type = '试用用户';
                         userItem.trialNum = userItem.users.trial;
                         expireUser[timeRange].push(userItem);
-                    } else if (timeRange == 'half_year' && userItem.users.formal) {
+                    } else if (timeRange === 'half_year' && userItem.users.formal) {
                         //半年的时间类型只展示正式用户的数量
                         userItem.user_type = '正式用户';
                         userItem.formalNum = userItem.users.formal;

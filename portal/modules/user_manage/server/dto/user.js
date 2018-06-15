@@ -1,4 +1,4 @@
-let _ = require('underscore');
+let _ = require('lodash');
 exports.User = function(opts) {
     this.userId = opts.user_id;
     //用户账号
@@ -33,8 +33,8 @@ exports.toFrontObject = function(restObject) {
     //邮箱是否激活的状态
     frontObj.emailEnable = restObject.email_enable;
     let roles = restObject.roles || [];
-    frontObj.roleIds = _.pluck(roles, 'role_id');
-    frontObj.roleNames = _.pluck(roles, 'role_name');
+    frontObj.roleIds = _.map(roles, 'role_id');
+    frontObj.roleNames = _.map(roles, 'role_name');
     if (restObject.team_name) {
         frontObj.teamName = restObject.team_name;
     }
@@ -54,7 +54,7 @@ exports.toRestObject = function(frontObj) {
     if (frontObj.userName) {
         restObject.user_name = frontObj.userName;
     }
-    if (frontObj.password && frontObj.password.indexOf('密码') == -1) {
+    if (frontObj.password && frontObj.password.indexOf('密码') === -1) {
         restObject.password = frontObj.password;
     }
     if (frontObj.image) {

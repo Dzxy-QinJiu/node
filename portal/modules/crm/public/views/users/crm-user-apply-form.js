@@ -1,59 +1,69 @@
 /**
  * Created by wangliping on 2017/9/20.
  */
-import {Form, Icon, DatePicker, InputNumber, Select, Radio} from 'antd';
-import {RightPanelCancel, RightPanelSubmit} from 'CMP_DIR/rightPanel';
+import {Form, DatePicker, InputNumber, Select, Radio, Input} from 'antd';
 import language from 'PUB_DIR/language/getLanguage';
-import AutosizeTextarea from 'CMP_DIR/autosize-textarea';
-import AlertTimer from 'CMP_DIR/alert-timer';
+const {TextArea} = Input;
+const Option = Select.Option;
 import AppUserAjax from 'MOD_DIR/app_user_manage/public/ajax/app-user-ajax';
 import Trace from 'LIB_DIR/trace';
+import DetailCard from 'CMP_DIR/detail-card';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const labelCol = {span: 4};
-const wrapperCol = {span: 11};
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
 class CrmUserApplyForm extends React.Component {
     constructor(props) {
         super(props);
+        this.state = this.getInitStateData();
     }
 
-    state = {
-        formData: {
-            //延迟时间输入框，默认是1
-            delayTimeNumber: 1,
-            //延期时间范围，默认是天
-            delayTimeRange: 'days',
-            // 到期时间(选择到期时间)
-            delayDeadlineTime: moment().add('days', 1).valueOf(),
-            //到期不变
-            over_draft: '0',
-            //销售申请的备注
-            remark: {
-                //延期备注
-                delayRemark: '',
-                //启用、停用备注
-                statusRemark: '',
-                //修改密码备注
-                passwordRemark: '',
-                //修改其他类型的备注
-                otherRemark: ''
-            }
-        },
-        isApplying: false,//正在申请中
-        applyErrorMsg: ''//申请报错的提示
-    };
+    getInitStateData() {
+        return {
+            formData: {
+                //延迟时间输入框，默认是1
+                delayTimeNumber: 1,
+                //延期时间范围，默认是天
+                delayTimeRange: 'days',
+                // 到期时间(选择到期时间)
+                delayDeadlineTime: moment().add('days', 1).valueOf(),
+                //到期不变
+                over_draft: '0',
+                //销售申请的备注
+                remark: {
+                    //延期备注
+                    delayRemark: '',
+                    //启用、停用备注
+                    statusRemark: '',
+                    //修改密码备注
+                    passwordRemark: '',
+                    //修改其他类型的备注
+                    otherRemark: ''
+                }
+            },
+            isApplying: false,//正在申请中
+            applyErrorMsg: ''//申请报错的提示
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.applyType !== nextProps.applyType) {
+            this.setState(this.getInitStateData());
+        }
+    }
+
     //延期时间数字改变
     delayTimeNumberChange(value) {
-        this.state.formData.delayTimeNumber = value;
-        this.setState({formData: this.state.formData});
+        let formData = this.state.formData;
+        formData.delayTimeNumber = value;
+        this.setState({formData: formData});
     }
 
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
     setDelayDeadlineTime(value) {
         let timestamp = value && value.valueOf() || '';
-        this.state.formData.delayDeadlineTime = timestamp;
-        this.setState({formData: this.state.formData});
+        let formData = this.state.formData;
+        formData.delayDeadlineTime = timestamp;
+        this.setState({formData: formData});
     }
 
     // 设置不可选时间的范围
@@ -63,20 +73,23 @@ class CrmUserApplyForm extends React.Component {
 
     //备注信息修改
     remarkChange(field, event) {
-        this.state.formData.remark[field] = event.target.value;
-        this.setState({formData: this.state.formData});
+        let formData = this.state.formData;
+        formData.remark[field] = event.target.value;
+        this.setState({formData: formData});
     }
 
     //延期时间范围改变
     delayTimeRangeChange(value, text) {
-        this.state.formData.delayTimeRange = value;
-        this.setState({formData: this.state.formData});
+        let formData = this.state.formData;
+        formData.delayTimeRange = value;
+        this.setState({formData: formData});
     }
 
     radioValueChange(field, event) {
         let value = event.target.value;
-        this.state.formData[field] = value;
-        this.setState({formData: this.state.formData});
+        let formData = this.state.formData;
+        formData[field] = value;
+        this.setState({formData: formData});
     }
 
     getDelayTimeMillis() {
@@ -92,7 +105,7 @@ class CrmUserApplyForm extends React.Component {
         let formData = this.state.formData;
         let submitObj = {};
         //向data中添加delay字段
-        if (formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE) {
+        if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
             submitObj.end_date = formData.delayDeadlineTime;
         } else {
             let delayMillis = this.getDelayTimeMillis();
@@ -278,13 +291,17 @@ class CrmUserApplyForm extends React.Component {
         } else {
             label = Intl.get('common.delay.time', '延期时间');
         }
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 4},
+            wrapperCol: {span: 20}
+        };
         return (
             <Form>
                 <div className="delay_time_form">
                     <FormItem
                         label={label}
-                        labelCol={labelCol}
-                        wrapperCol={{span: 20}}
+                        {...formItemLayout}
                     >
                         {this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE ? (
                             <DatePicker placeholder={Intl.get('my.app.change.expire.time.placeholder', '请选择到期时间')}
@@ -309,41 +326,33 @@ class CrmUserApplyForm extends React.Component {
                             style={{width: divWidth}}
                             onChange={this.delayTimeRangeChange.bind(this)}
                         >
-                            <Option value="days"><ReactIntl.FormattedMessage id="common.time.unit.day"
-                                defaultMessage="天"/></Option>
-                            <Option value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week"
-                                defaultMessage="周"/></Option>
-                            <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month"
-                                defaultMessage="月"/></Option>
-                            <Option value="years"><ReactIntl.FormattedMessage id="common.time.unit.year"
-                                defaultMessage="年"/></Option>
-                            <Option value="custom"><ReactIntl.FormattedMessage id="user.time.custom"
-                                defaultMessage="自定义"/></Option>
+                            <Option value="days">{Intl.get('common.time.unit.day','天')}</Option>
+                            <Option value="weeks">{Intl.get('common.time.unit.week','周')}</Option>
+                            <Option value="months">{Intl.get('common.time.unit.month','月')}</Option>
+                            <Option value="years">{Intl.get('common.time.unit.year','年')}</Option>
+                            <Option value="custom">{Intl.get('user.time.custom','自定义')}</Option>
                         </Select>
                     </FormItem>
                 </div>
                 <FormItem
                     label={Intl.get('user.expire.select', '到期可选')}
-                    labelCol={labelCol}
-                    wrapperCol={wrapperCol}
+                    {...formItemLayout}
                 >
                     <RadioGroup onChange={this.radioValueChange.bind(this, 'over_draft')}
                         value={this.state.formData.over_draft}>
-                        <Radio key="1" value="1"><ReactIntl.FormattedMessage id="user.status.stop" defaultMessage="停用"/></Radio>
-                        <Radio key="2" value="2"><ReactIntl.FormattedMessage id="user.status.degrade"
-                            defaultMessage="降级"/></Radio>
-                        <Radio key="0" value="0"><ReactIntl.FormattedMessage id="user.status.immutability"
-                            defaultMessage="不变"/></Radio>
+                        <Radio key="1" value="1">{Intl.get('user.status.stop','停用')}</Radio>
+                        <Radio key="2" value="2">{Intl.get('user.status.degrade','降级')}</Radio>
+                        <Radio key="0" value="0">{Intl.get('user.status.immutability','不变')}</Radio>
                     </RadioGroup>
                 </FormItem>
                 {/*申请延期要填备注，批量延期不需要填备注*/}
                 <FormItem
                     label={Intl.get('common.remark', '备注')}
-                    labelCol={labelCol}
-                    wrapperCol={{span: 13}}
+                    {...formItemLayout}
                 >
-                    <AutosizeTextarea
-                        rows="5"
+                    <TextArea
+                        placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
+                        autosize={{minRows: 2, maxRows: 6}}
                         onChange={this.remarkChange.bind(this, 'delayRemark')}
                         value={this.state.formData.remark.delayRemark}
                     />
@@ -352,37 +361,18 @@ class CrmUserApplyForm extends React.Component {
         );
     }
 
-    renderIndicator() {
-        if (this.state.isApplying) {
-            return (
-                <Icon type="loading"/>
-            );
-        }
-        const hide = function() {
-            this.setState({applyErrorMsg: ''});
-        };
-        if (this.state.applyErrorMsg) {
-            return (
-                <AlertTimer time={3000} message={this.state.applyErrorMsg} type="error" showIcon
-                    onHide={hide.bind(this)}/>
-            );
-        }
-        return null;
-    }
-
     //停用及修改密码的备注表单
-    renderRemarkForm(key) {
+    renderRemarkForm(key, placeholder) {
         return (
             <form>
                 <FormItem
-                    label={Intl.get('common.remark', '备注')}
-                    labelCol={labelCol}
-                    wrapperCol={{span: 13}}
+                    wrapperCol={{span: 24}}
                 >
-                    <AutosizeTextarea
-                        rows="5"
-                        onChange={this.remarkChange.bind(this, key)}
+                    <TextArea
+                        placeholder={placeholder}
                         value={this.state.formData.remark[key]}
+                        autosize={{minRows: 2, maxRows: 6}}
+                        onChange={this.remarkChange.bind(this, key)}
                     />
                 </FormItem>
             </form>
@@ -394,28 +384,51 @@ class CrmUserApplyForm extends React.Component {
         this.props.closeApplyPanel();
     }
 
-    render() {
+    renderApplyForm() {
         const APPLY_TYPES = this.props.APPLY_TYPES;
         const applyType = this.props.applyType;
+        let applyForm = null;
+        switch (applyType) {
+            case APPLY_TYPES.DELAY:
+                applyForm = this.renderDelayForm();
+                break;
+            case APPLY_TYPES.STOP_USE:
+                applyForm = this.renderRemarkForm('statusRemark', Intl.get('crm.apply.stop.placeholder', '请输入停用的原因'));
+                break;
+            case APPLY_TYPES.EDIT_PASSWORD:
+                applyForm = this.renderRemarkForm('passwordRemark', Intl.get('crm.apply.update.password.placeholder', '请输入修改密码的要求'));
+                break;
+            case APPLY_TYPES.OTHER:
+                applyForm = this.renderRemarkForm('otherRemark', Intl.get('crm.apply.other.placeholder', '请输入申请内容'));
+                break;
+        }
+        return applyForm;
+    }
+
+    render() {
         return (
-            <div className="crm-user-apply-form-container">
-                {applyType === APPLY_TYPES.DELAY ? this.renderDelayForm() :
-                    applyType === APPLY_TYPES.STOP_USE ? this.renderRemarkForm('statusRemark') :
-                        applyType === APPLY_TYPES.EDIT_PASSWORD ? this.renderRemarkForm('passwordRemark') :
-                            applyType === APPLY_TYPES.OTHER ? this.renderRemarkForm('otherRemark') : null}
-                <div className="pull-right">
-                    <RightPanelCancel onClick={this.closeApplyPanel.bind(this)}>
-                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                    </RightPanelCancel>
-                    <RightPanelSubmit onClick={this.handleSubmit.bind(this)}>
-                        <ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定"/>
-                    </RightPanelSubmit>
-                    <div className="indicator">
-                        {this.renderIndicator()}
-                    </div>
-                </div>
-            </div>);
+            <DetailCard className="crm-user-apply-form-container"
+                content={this.renderApplyForm()}
+                isEdit={true}
+                loading={this.state.isApplying}
+                saveErrorMsg={this.state.applyErrorMsg}
+                handleSubmit={this.handleSubmit.bind(this)}
+                handleCancel={this.closeApplyPanel.bind(this)}
+                okBtnText={Intl.get('common.sure', '确定')}
+            />);
     }
 }
-
+CrmUserApplyForm.defaultProps = {
+    APPLY_TYPES: {},
+    applyType: '',
+    crmUserList: [],
+    closeApplyPanel: function() {
+    },
+};
+CrmUserApplyForm.propTypes = {
+    APPLY_TYPES: React.PropTypes.object,
+    applyType: React.PropTypes.string,
+    crmUserList: React.PropTypes.array,
+    closeApplyPanel: React.PropTypes.func
+};
 export default CrmUserApplyForm;

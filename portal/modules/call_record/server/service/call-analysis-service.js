@@ -2,7 +2,7 @@
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var CallObj = require('../dto/call-analysis');
-var _ = require('underscore');
+var _ = require('lodash');
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
 const restApis = {
@@ -162,7 +162,7 @@ exports.getCallInfo = function(req, res, params, reqData) {
             //所有团队列表
             var teamList = dataList[1];
             _.each(result.salesPhoneList, (data) => {
-                var team = _.find(teamList,teamItem => teamItem.team_name == data.name);
+                var team = _.find(teamList,teamItem => teamItem.team_name === data.name);
                 if (team && team.available){
                     //某个团队中在职人员的个数
                     data.memberTotal = team.available.user;

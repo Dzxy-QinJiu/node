@@ -86,21 +86,21 @@ class AppOverViewStore {
                 return userType.data = [{count: 0, name: '试用'},{count: 0, name: '签约'}];
             }
             userType.data = _.filter( result.data, (item) => {
-                if (item.name == Intl.get('common.trial.user', '试用用户')) {
+                if (item.name === Intl.get('common.trial.user', '试用用户')) {
                     return item.name = Intl.get('common.trial', '试用');
-                } else if (item.name == Intl.get('common.trial.official', '正式用户')) {
+                } else if (item.name === Intl.get('common.trial.official', '正式用户')) {
                     return item.name = Intl.get('common.official', '签约');
                 }
             } );
         }
-        let nameArray = _.pluck(userType.data, 'name');
-        if (nameArray.length == 1) {
-            if (_.indexOf(nameArray, '签约') == -1) {
+        let nameArray = _.map(userType.data, 'name');
+        if (nameArray.length === 1) {
+            if (_.indexOf(nameArray, '签约') === -1) {
                 userType.data.push({count: 0, name: '签约'});
-            } else if (_.indexOf(nameArray, '试用') == -1) {
+            } else if (_.indexOf(nameArray, '试用') === -1) {
                 userType.data.push({count: 0, name: '试用'});
             }
-        } else if (nameArray.length == 0) {
+        } else if (nameArray.length === 0) {
             userType.data = [{count: 0, name: '试用'},{count: 0, name: '签约'}];
         }
     }
@@ -145,7 +145,7 @@ class AppOverViewStore {
             });
             activeNess.data = dataLines;
         }
-        if (activeNess.dateRange == 'daily' && activeNess.data.length) {
+        if (activeNess.dateRange === 'daily' && activeNess.data.length) {
             let dataArray = activeNess.data[activeNess.data.length - 1].datas;
             if (dataArray.length) {
                 this.todayActiveRate = dataArray[dataArray.length - 1];
@@ -190,7 +190,7 @@ class AppOverViewStore {
             let zoneArray = [];
             if (_.isArray( zoneAnalysis.data) && zoneAnalysis.data.length > 0) {
                 _.each(zoneAnalysis.data, (item) => {
-                    if (item.name == 'unknown' || item.name == '') {
+                    if (item.name === 'unknown' || item.name === '') {
                         item.name = '未知';
                     }
                     zoneArray.push({name: item.name, value: item.count});

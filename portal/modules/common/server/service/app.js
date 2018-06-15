@@ -13,7 +13,7 @@ var urls = {
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var appDto = require('../dto/app');
-var _ = require('underscore');
+var _ = require('lodash');
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
 
@@ -100,9 +100,9 @@ function handleTeamData(teamTrail, teamOfficial) {
     let length1 = teamTrail.length;
     let length2 = teamOfficial.length;
 
-    if (length1 == 0 && length2 == 0) {
+    if (length1 === 0 && length2 === 0) {
         return [];
-    } else if (length2 == 0) {
+    } else if (length2 === 0) {
         return _.map( teamTrail, (trailItem) => {
             trailItem.official = 0;
             return trailItem;
@@ -110,7 +110,7 @@ function handleTeamData(teamTrail, teamOfficial) {
     } else {
         return _.map( teamTrail, (trailItem) => {
             let findData = _.find(teamOfficial, (officalItem) => {
-                return officalItem.name == trailItem.name;
+                return officalItem.name === trailItem.name;
             });
             if (findData) {
                 trailItem.official = findData.count;

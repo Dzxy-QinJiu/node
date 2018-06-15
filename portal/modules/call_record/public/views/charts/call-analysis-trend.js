@@ -71,7 +71,7 @@ var TimeSeriesLinechart = React.createClass({
         var data = [];
         if (this.props.isMutileLine) {
             var dataList = this.props.dataList;
-            data = _.pluck(dataList,'teamName');
+            data = _.map(dataList,'teamName');
         }
         return data;
     },
@@ -118,7 +118,7 @@ var TimeSeriesLinechart = React.createClass({
                 formatter: (params) => {
                     var timeText, count, teamArr;
                     if(_.isArray(params)){
-                        if (params.length == 1) {
+                        if (params.length === 1) {
                             var params = params[0];
                             timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
                             count = params.data;

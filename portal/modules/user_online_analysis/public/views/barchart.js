@@ -28,14 +28,14 @@ var BarChart = React.createClass({
         };
     },
     getCategorys: function() {
-        return _.pluck(this.props.list , 'province');
+        return _.map(this.props.list , 'province');
     },
     getSeries: function() {
         return [{
             name: '',
             type: 'bar',
             barWidth: 4,
-            data: _.pluck(this.props.list , 'count'),
+            data: _.map(this.props.list , 'count'),
             itemStyle: {
                 normal: {
                     color: colors.barChartColor

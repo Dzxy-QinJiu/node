@@ -43,11 +43,11 @@ var BarChart = React.createClass({
         }
         return {
             show: false,
-            data: _.pluck(this.props.legend , 'name')
+            data: _.map(this.props.legend , 'name')
         };
     },
     getMargin: function() {
-        var industry = _.pluck(this.props.list.slice().reverse() , 'name');
+        var industry = _.map(this.props.list.slice().reverse() , 'name');
         if(!industry.length) {
             return 80;
         }
@@ -59,7 +59,7 @@ var BarChart = React.createClass({
         return maxMargin;
     },
     getCategorys: function() {
-        return _.pluck(this.props.list.slice().reverse() , 'name');
+        return _.map(this.props.list.slice().reverse() , 'name');
     },
     getSeries: function() {
         var _this = this;
@@ -72,7 +72,7 @@ var BarChart = React.createClass({
                 barMaxWidth: 40,
                 barMinWidth: 4,
                 stack: 'stack',
-                data: _.pluck(_this.props.list.slice().reverse() , legendInfo.key),
+                data: _.map(_this.props.list.slice().reverse() , legendInfo.key),
                 itemStyle: {
                     normal: {
                         color: currentColor,
@@ -125,7 +125,7 @@ var BarChart = React.createClass({
                 }
                 let timeDesc = Intl.get('oplate_customer_analysis.12', '至{time}为止', {time: _this.props.endDate});
                 if(_this.props.startDate){
-                    if(_this.props.startDate == _this.props.endDate) {
+                    if(_this.props.startDate === _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     }else{
                         timeDesc = _this.props.startDate + ' 至 ' + _this.props.endDate;

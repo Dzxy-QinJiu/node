@@ -17,10 +17,10 @@ module.exports = {
         library: "[name]"
     },
     module: {
-        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /underscore-min.js/, /History.min.js/]
+        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /History.min.js/]
     },
     resolve: {
-         modules: [
+        modules: [
             path.resolve(__dirname, "portal"),
             "node_modules"
         ],
@@ -29,17 +29,16 @@ module.exports = {
             moment$: 'moment/min/moment-with-locales.min.js',
             alt: 'alt/dist/alt.min.js',
             jquery: 'jquery/dist/jquery.min.js',
-            underscore: 'underscore/underscore-min.js',
             history$: 'history/umd/History.min.js'
         }
     },
     plugins: [
         new webpack.DefinePlugin({
-            'process.env' : {
-                'NODE_ENV' : JSON.stringify("production")
+            'process.env': {
+                'NODE_ENV': JSON.stringify("production")
             }
         }),
-        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/ , /zh\-cn/),
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
         new webpack.DllPlugin({
             path: path.join(__dirname, "dll", "[name]-manifest.json"),
             name: "[name]"

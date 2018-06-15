@@ -45,7 +45,7 @@ var LineChart = React.createClass({
         };
     },
     getLegend: function() {
-        var list = _.pluck(this.props.list , 'app_name');
+        var list = _.map(this.props.list , 'app_name');
         return list;
     },
     getCategorys: function() {
@@ -55,7 +55,7 @@ var LineChart = React.createClass({
         }
         var startMoment = moment(new Date(+items[0].timestamp));
         var endMoment = moment(new Date(+items[items.length - 1].timestamp));
-        var biggerThanYear = startMoment.format('YYYY') != endMoment.format('YYYY');
+        var biggerThanYear = startMoment.format('YYYY') !== endMoment.format('YYYY');
         if(biggerThanYear) {
             this.isBiggerThanYear = true;
         }
