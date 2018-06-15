@@ -112,7 +112,7 @@ var CallAddCustomerForm = React.createClass({
                 //去除表单数据中值为空的项
                 commonMethodUtil.removeEmptyItem(formData);
                 CrmAction.addCustomer(formData, function(result) {
-                    _this.state.isLoading = false; s;
+                    _this.state.isLoading = false;
                     if (result.code === 0) {
                         formData.contacts0_phone = _this.props.phoneNumber;
                         CallRecordAction.updateCallRecord(formData);
