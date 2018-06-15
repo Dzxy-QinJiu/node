@@ -14,7 +14,8 @@ function CustomerRepeatAction() {
         'resetPage',//重置获取数据的页数
         'afterMergeRepeatCustomer',//合并完重复客户后的处理
         'editBasicSuccess',//修改基本资料后，更新重复客户列表
-        'updateCustomerDefContact'//修改默认联系人后，更新重复客户列表
+        'updateCustomerDefContact',//修改默认联系人后，更新重复客户列表
+        'setInitialRepeatCustomerList',//从父组件把重复客户传到子组件中
     );
     //获取重复客户列表
     this.getRepeatCustomerList = function(queryParams) {
@@ -53,7 +54,7 @@ function CustomerRepeatAction() {
     this.mergeRepeatCustomer = function(mergeObj, callback) {
         customerAjax.mergeRepeatCustomer(mergeObj).then(function(data) {
             let resultObj = {};
-            if (data && data.result == 'success') {
+            if (data && data.result === 'success') {
                 //合并成功
                 resultObj = {error: false};
             } else {
