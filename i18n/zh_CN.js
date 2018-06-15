@@ -149,6 +149,7 @@ var zh_CN = {
     'common.no.more.clue': '暂无线索',
     'common.no.audit': '暂无审计日志',
     'common.no.more.trace.record': '暂无跟进记录',
+    'common.no.call.record': '暂无通话记录',
 
 
 

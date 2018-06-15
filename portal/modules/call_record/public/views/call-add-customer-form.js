@@ -55,6 +55,12 @@ var CallAddCustomerForm = React.createClass({
     },
     componentDidMount: function() {
         //获取后台管理中设置的行业列表
+        this.gr();
+    },
+
+    gr: function() {
+        //获取后台管理中设置的行业列表
+
         this.setState({isLoadingIndustry: true});
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
@@ -64,6 +70,7 @@ var CallAddCustomerForm = React.createClass({
             this.setState({isLoadingIndustry: false, industryList: list});
         });
     },
+
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -105,8 +112,8 @@ var CallAddCustomerForm = React.createClass({
                 //去除表单数据中值为空的项
                 commonMethodUtil.removeEmptyItem(formData);
                 CrmAction.addCustomer(formData, function(result) {
-                    _this.state.isLoading = false;
-                    if (result.code == 0) {
+                    _this.state.isLoading = false; s;
+                    if (result.code === 0) {
                         formData.contacts0_phone = _this.props.phoneNumber;
                         CallRecordAction.updateCallRecord(formData);
                         message.success( Intl.get('user.user.add.success', '添加成功'));
@@ -158,7 +165,7 @@ var CallAddCustomerForm = React.createClass({
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == 'true') {
+                    if (data.result === 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
@@ -241,12 +248,12 @@ var CallAddCustomerForm = React.createClass({
         let transNumber = '';
         let phoneRegex = /^1[3|4|5|7|8][0-9]\d{8}$/;
         // 电话号码转换
-        if (phoneNumber.length == 12 && phoneNumber[1] == 1) {
+        if (phoneNumber.length === 12 && phoneNumber[1] === 1) {
             transNumber = phoneNumber.slice(1);
             if (phoneRegex.test(transNumber)) {
                 return transNumber;
             }
-        } else if (phoneNumber.length == 11 && phoneRegex.test(transNumber)) { // 11位的电话号码
+        } else if (phoneNumber.length === 11 && phoneRegex.test(transNumber)) { // 11位的电话号码
             return transNumber;
         }
 
@@ -265,9 +272,9 @@ var CallAddCustomerForm = React.createClass({
     },
 
     handleSelect(value){
-        if (value == 'industry') {
+        if (value === 'industry') {
             Trace.traceEvent(this.getDOMNode(), '选择行业');
-        } else if(value == 'contacts0_role') {
+        } else if(value === 'contacts0_role') {
             Trace.traceEvent(this.getDOMNode(), '选择角色');
         }
     },
