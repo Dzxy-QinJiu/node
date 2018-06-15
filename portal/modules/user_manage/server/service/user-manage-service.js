@@ -146,7 +146,7 @@ exports.updateUserRoles = function(req, res, user) {
 };
 //启停用户
 exports.updateUserStatus = function(req, res, frontUser) {
-    var flag = frontUser.status === 0 ? 'disable' : 'enable';//成员的启停
+    var flag = +frontUser.status === 0 ? 'disable' : 'enable';//成员的启停
     return restUtil.authRest.put(
         {
             url: userRestApis.updateUserStatus + '/' + frontUser.id + '/status/' + flag,

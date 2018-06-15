@@ -41,7 +41,8 @@ exports.toFrontObject = function(restObject) {
     if (restObject.team_id) {
         frontObj.teamId = restObject.team_id;
     }
-    frontObj.status = restObject.status;
+    let user_client = restObject.user_client;
+    frontObj.status = user_client && Array.isArray(user_client) && user_client.length && user_client[0].status;
     if (restObject.create_date) {
         frontObj.createDate = restObject.create_date;
     }
