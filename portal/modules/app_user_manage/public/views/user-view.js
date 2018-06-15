@@ -385,7 +385,7 @@ var UserTabContent = React.createClass({
                                 {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
                                     <i className="iconfont icon-warn-icon unnormal-login"
                                         title={Intl.get('user.login.abnormal', '异常登录')}></i> : null}
-                                {rowData.apps[0].qualify_label == 1 ? (
+                                {rowData.apps[0].qualify_label === 1 ? (
                                     <Tag className="qualified-tag-style">
                                         {Intl.get('common.qualified', '合格')}</Tag>) : null
                                 }
@@ -585,7 +585,7 @@ var UserTabContent = React.createClass({
     // 委内维拉项目，显示的列表项（不包括类型、所属客户、所属销售）
     getTableColumnsVe: function() {
         return _.filter(this.getTableColumns(), (item) => {
-            return item.key != 'accountType' && item.key != 'customer_name' && item.key != 'member_name';
+            return item.key !== 'accountType' && item.key !== 'customer_name' && item.key !== 'member_name';
         });
     },
     getRowSelection: function() {
@@ -636,7 +636,7 @@ var UserTabContent = React.createClass({
             <div className="global_filter_adv" ref="filter_adv"
                 style={{display: this.state.filterAreaExpanded ? 'block' : 'none'}}>
                 {this.renderFilterFields()}
-                {!this.props.customer_id && (language.lan() == 'zh' || language.lan() == 'en') ? this.renderFilterRoles() : null}
+                {!this.props.customer_id && (language.lan() === 'zh' || language.lan() === 'en') ? this.renderFilterRoles() : null}
             </div>
         );
     },
@@ -766,7 +766,7 @@ var UserTabContent = React.createClass({
                         </dd>
                     </dl>
                     {Oplate.hideSomeItem ? null : this.renderFilterTeamName()}
-                    {((language.lan() == 'zh' || language.lan() == 'en') && hasPrivilege('GET_LOGIN_EXCEPTION_USERS')) ?
+                    {((language.lan() === 'zh' || language.lan() === 'en') && hasPrivilege('GET_LOGIN_EXCEPTION_USERS')) ?
                         (<dl>
                             <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录"/>：</dt>
                             <dd>
@@ -974,7 +974,7 @@ var UserTabContent = React.createClass({
     },
     //处理选中行的样式
     handleRowClassName: function(record, index) {
-        if ((record.key == this.state.detailUser.key) && this.state.isShowRightPanel) {
+        if ((record.key === this.state.detailUser.key) && this.state.isShowRightPanel) {
             return 'current_row';
         }
         else {
@@ -990,9 +990,9 @@ var UserTabContent = React.createClass({
             doNotShow = true;
         }
         var columns = Oplate.hideSomeItem ? this.getTableColumnsVe() : this.getTableColumns();
-        if (this.state.selectedAppId == '') {
+        if (this.state.selectedAppId === '') {
             columns = _.filter(columns, item => {
-                return item.key != 'logins' && item.key != 'login_day_count';
+                return item.key !== 'logins' && item.key !== 'login_day_count';
             });
         }
         //管理员可以批量操作
@@ -1007,7 +1007,7 @@ var UserTabContent = React.createClass({
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,
             handleScrollBottom: this.handleScrollBottom,
-            loading: this.state.appUserListResult == 'loading',
+            loading: this.state.appUserListResult === 'loading',
             showNoMoreDataTip: this.showNoMoreDataTip(),
         };
         return (
@@ -1027,7 +1027,7 @@ var UserTabContent = React.createClass({
                             filterTitle: Intl.get('common.filter', '筛选'),
                             filterConfirm: Intl.get('common.sure', '确定'),
                             filterReset: Intl.get('user.reset', '重置'),
-                            emptyText: this.state.appUserListResult === 'error' ? this.state.getAppUserListErrorMsg || Intl.get('user.list.get.failed', '获取用户列表失败') : Intl.get('common.no.data', '暂无数据')
+                            emptyText: this.state.appUserListResult === 'error' ? this.state.getAppUserListErrorMsg || Intl.get('user.list.get.failed', '获取用户列表失败') : Intl.get('common.no.more.user', '没有更多用户了')
                         }}
                         scroll={{x: Oplate.hideSomeItem ? 1130 : (hasSelectAuth ? 1460 : 1440), y: divHeight}}
                         util={{

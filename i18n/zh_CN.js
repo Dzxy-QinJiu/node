@@ -142,6 +142,18 @@ var zh_CN = {
     'common.get.again': '重新获取',
     'common.refresh': '刷新',
     'common.no.more.data': '没有更多数据了',
+    'common.no.more.user': '没有更多用户了',
+    'common.no.more.crm': '没有更多客户了',
+    'common.no.more.schedule': '暂无计划',
+    'common.no.more.order': '暂无订单',
+    'common.no.more.clue': '暂无线索',
+    'common.no.audit': '暂无审计日志',
+    'common.no.more.trace.record': '暂无跟进记录',
+    'common.no.call.record': '暂无通话记录',
+
+
+
+
     'common.yesno': '是否',
     'common.add.member': '添加成员',
     'common.input.keyword': '输入关键词',

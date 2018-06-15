@@ -288,7 +288,7 @@ const ClueCustomer = React.createClass({
                     to: phoneNumber.replace('-', '')
                 };
                 crmAjax.callOut(reqData).then((result) => {
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                     }
                 }, (errMsg) => {
@@ -481,7 +481,7 @@ const ClueCustomer = React.createClass({
     },
     handleClickRemarkBtn: function(item){
         var updateValue = '1';
-        if (item.availability == '1'){
+        if (item.availability === '1'){
             updateValue = '0';
         }
         var submitObj = {
@@ -499,7 +499,7 @@ const ClueCustomer = React.createClass({
                 message.error(Intl.get('failed.sales.remark.clue.valid','标记该线索有效性失败'));
             }else{
                 //如果线索标记为有效后，将状态改为已跟进状态
-                if (updateValue == '1'){
+                if (updateValue === '1'){
                     clueCustomerAction.removeClueItem({id: item.id});
                 }
                 clueCustomerAction.updateClueProperty({id: item.id,availability: updateValue});
@@ -545,9 +545,9 @@ const ClueCustomer = React.createClass({
         return (
             _.map(customerList, (item, index) => {
                 var itemCls = classNames('list-item-content', {
-                    'will-distribute': item.status == SELECT_TYPE.WILL_DISTRIBUTE,
-                    'has-distribute': item.status == SELECT_TYPE.HAS_DISTRIBUTE,
-                    'has-trace': item.status == SELECT_TYPE.HAS_TRACE,
+                    'will-distribute': item.status === SELECT_TYPE.WILL_DISTRIBUTE,
+                    'has-distribute': item.status === SELECT_TYPE.HAS_DISTRIBUTE,
+                    'has-trace': item.status === SELECT_TYPE.HAS_TRACE,
                 });
                 var listCls = classNames('list-item', {
                     //当添加完一个线索后,新加线索就是当前展示的线索
@@ -568,7 +568,7 @@ const ClueCustomer = React.createClass({
                                 <Col sm={12} lg={4}>
                                     <div className="customer-info-wrap">
                                         <h4>{item.name}
-                                            {item.availability == 1 ? <Tag className="inavailable-tag">{Intl.get('sales.clue.is.enable','无效')}</Tag> : null}
+                                            {item.availability === 1 ? <Tag className="inavailable-tag">{Intl.get('sales.clue.is.enable','无效')}</Tag> : null}
                                         </h4>
                                         <p>{item.source}</p>
                                         <span className="hidden record-id">{item.id}</span>
@@ -654,10 +654,10 @@ const ClueCustomer = React.createClass({
                                 }
                                 <Col sm={3} lg={3}>
                                     <div className="remark-clue-container">
-                                        <Button disabled={this.state.isRemarkingItem == item.id ? true : false} type="primary" onClick={this.handleClickRemarkBtn.bind(this, item)} data-tracename="点击标记线索是否有效">
+                                        <Button disabled={this.state.isRemarkingItem === item.id ? true : false} type="primary" onClick={this.handleClickRemarkBtn.bind(this, item)} data-tracename="点击标记线索是否有效">
                                             {/*没有该字段，或该字段为0，表示该线索有效，为1表示无效*/}
-                                            {!item.availability || item.availability == '0' ? Intl.get('sales.remark.clue.able','线索无效') : Intl.get('sales.remark.clue.enable', '线索有效')}
-                                            {this.state.isRemarkingItem == item.id ? <Icon type="loading"/> : null}
+                                            {!item.availability || item.availability === '0' ? Intl.get('sales.remark.clue.able','线索无效') : Intl.get('sales.remark.clue.enable', '线索有效')}
+                                            {this.state.isRemarkingItem === item.id ? <Icon type="loading"/> : null}
                                         </Button>
                                     </div>
                                 </Col>
@@ -717,7 +717,7 @@ const ClueCustomer = React.createClass({
             return (
                 <div className="show-customer-trace">
                     <Alert
-                        message={Intl.get('common.no.data', '暂无数据')}
+                        message={Intl.get('common.no.more.clue', '暂无线索')}
                         type="info"
                         showIcon={true}
                     />

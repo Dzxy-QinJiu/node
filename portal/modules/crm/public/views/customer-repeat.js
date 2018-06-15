@@ -353,7 +353,7 @@ let CustomerRepeat = React.createClass({
             });
         } else {
             return (
-                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.data', '暂无数据')}/>
+                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.more.crm', '没有更多客户了')}/>
                 </div>);
         }
     },

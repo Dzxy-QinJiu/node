@@ -3,19 +3,19 @@ var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
 import UserApplyActions from '../action/user-apply-actions';
 import UserApplyStore from '../store/user-apply-store';
+import ApplyViewDetail from './apply-view-detail';
+import Trace from 'LIB_DIR/trace';
+import {storageUtil} from 'ant-utils';
 var Alert = require('antd').Alert;
 var classNames = require('classnames');
 var Dropdown = require('antd').Dropdown;
 var Menu = require('antd').Menu;
 var NoData = require('../../../../components/analysis-nodata');
-import ApplyViewDetail from './apply-view-detail';
 var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
 var UserData = require('../../../../public/sources/user-data');
 var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 var SearchInput = require('../../../../components/searchInput');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
-import Trace from 'LIB_DIR/trace';
-import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 
 var timeoutFunc;//定时方法

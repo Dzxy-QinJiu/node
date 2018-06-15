@@ -143,6 +143,18 @@ var en_US = {
     'common.get.again': 'Retry',//重新获取
     'common.refresh': 'Refresh',//刷新
     'common.no.more.data': 'There is no more data',//没有更多数据了
+    'common.no.more.user': 'There is no more user',//沒有更多用戶了
+    'common.no.more.crm': 'There is no more customer',//没有更多客户了
+    'common.no.more.schedule': 'There is no schedule',//暂无计划
+    'common.no.more.order': 'There is no order',//没有更多订单
+    'common.no.more.trace.record': 'There is no trace record',//暂无跟进记录
+    'common.no.more.clue': 'There is no clue',//暂无线索
+    'common.no.audit': 'There is no audit',//暂无审计日志
+    'common.no.call.record': 'There is no call record',//暂无通话记录
+
+
+
+
     'common.yesno': 'whether',//是否
     'common.add.member': 'Add members',//添加成员
     'common.input.keyword': 'Please enter keywords',//输入关键词
