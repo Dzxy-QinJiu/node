@@ -116,12 +116,19 @@ var CRMAddForm = React.createClass({
 
     //提交修改
     handleSubmit: function(e) {
+        if (this.state.isLoading){
+            return;
+        }
+        this.state.isLoading = true;
+        this.setState(this.state);
         e.preventDefault();
         var validation = this.refs.validation;
         validation.validate(valid => {
             //验证电话是否通过验证
             this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {}, (errors, values) => {
                 if (!valid || errors) {
+                    this.state.isLoading = false;
+                    this.setState(this.state);
                     return;
                 } else {
                     //先填写电话后编辑客户名或行业等带验证的字段时，电话内容会丢失，这里再加一下
@@ -134,9 +141,14 @@ var CRMAddForm = React.createClass({
                                 //可以添加
                                 this.addCustomer();
                             }else if(result > 0){
+                                this.state.isLoading = false;
+                                this.setState(this.state);
                                 //不可以添加
                                 message.warn(Intl.get('crm.should.add.customer', '您拥有的客户已达到上限，请不要再添加客户了'));
                             }
+                        }else{
+                            this.state.isLoading = false;
+                            this.setState(this.state);
                         }
                     });
                 }
@@ -146,11 +158,6 @@ var CRMAddForm = React.createClass({
 
     //添加客户
     addCustomer: function() {
-        if (this.state.isLoading){
-            return;
-        }
-        this.state.isLoading = true;
-        this.setState(this.state);
         var formData = JSON.parse(JSON.stringify(this.state.formData));
         formData.name = $.trim(formData.name);
         formData.contacts0_phone = $.trim(formData.contacts0_phone);
