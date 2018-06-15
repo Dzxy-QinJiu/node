@@ -1,8 +1,4 @@
 let CustomerRepeatAction = require('../action/customer-repeat-action');
-let CrmStore = require('./crm-store');
-
-let PAGE_SIZE = 20;//一页展示的客户个数
-
 function CustomerRepeatStore() {
     this.originCustomerList = [];//后台返回的重复客户列表
     this.repeatCustomerList = [];//转换为界面使用的重复客户列表
@@ -37,9 +33,9 @@ CustomerRepeatStore.prototype.updateCustomerDefContact = function(contact) {
 
 CustomerRepeatStore.prototype.editBasicSuccess = function(newBasic) {
     if (newBasic && newBasic.id) {
-        let updateCustomer = _.find(this.originCustomerList, customer => customer.id == newBasic.id);
+        let updateCustomer = _.find(this.originCustomerList, customer => customer.id === newBasic.id);
         for (var key in newBasic) {
-            if (newBasic[key] || newBasic[key] == '') {
+            if (newBasic[key] || newBasic[key] === '') {
                 updateCustomer[key] = newBasic[key];
             }
         }
@@ -107,32 +103,32 @@ CustomerRepeatStore.prototype.setMergePanelShow = function(flag) {
 CustomerRepeatStore.prototype.setRepeatCustomerLoading = function(flag) {
     this.isLoadingRepeatCustomer = flag;
 };
+CustomerRepeatStore.prototype.setInitialRepeatCustomerList = function(data) {
+    data.result = data.list;
+    this.getRepeatCustomerList(data);
+};
 //获取重复的客户列表
 CustomerRepeatStore.prototype.getRepeatCustomerList = function(data) {
     this.isLoadingRepeatCustomer = false;
     if (_.isString(data)) {
         this.errorMsg = data;
-    } else if (_.isObject(data) && data.result) {
+    } else if (_.isObject(data) && _.isArray(data.result)) {
         this.errorMsg = '';
         this.repeatCustomersSize = data.total || 0;
-        if (data.code === 0) {
-            var data_list = data && data.result;
-            if (!_.isArray(data_list)) {
-                data_list = [];
-            }
-            if (this.page === 1) {
-                //加载首页
-                this.originCustomerList = data_list;
-                this.repeatCustomerList = this.processForList(data_list);
-            } else {
-                //累加
-                this.originCustomerList = this.originCustomerList.concat(data_list);
-                this.repeatCustomerList = this.repeatCustomerList.concat(this.processForList(data_list));
-            }
-            this.page++;
+        var data_list = data.result;
+        if (this.page === 1) {
+            //加载首页
+            this.originCustomerList = data_list;
+            this.repeatCustomerList = this.processForList(data_list);
+        } else {
+            //累加
+            this.originCustomerList = this.originCustomerList.concat(data_list);
+            this.repeatCustomerList = this.repeatCustomerList.concat(this.processForList(data_list));
         }
+        this.page++;
+
         //是否监听下拉加载的处理
-        if (_.isArray(this.repeatCustomerList) && this.repeatCustomerList.length < this.repeatCustomersSize) {
+        if (_.isArray(this.originCustomerList) && this.originCustomerList.length < this.repeatCustomersSize) {
             this.listenScrollBottom = true;
         } else {
             this.listenScrollBottom = false;
@@ -164,13 +160,13 @@ CustomerRepeatStore.prototype.processForList = function(curCustomers) {
 CustomerRepeatStore.prototype.refreshRepeatCustomer = function(data) {
     if (data) {
         _.some(this.originCustomerList, (customer, index) => {
-            if (customer.id == data.id) {
+            if (customer.id === data.id) {
                 this.originCustomerList[index] = data;
                 return true;
             }
         });
         this.repeatCustomerList = this.processForList(this.originCustomerList);
-        if (data.id == this.curCustomer.id) {
+        if (data.id === this.curCustomer.id) {
             this.setCurCustomer(data.id);
         }
     }
@@ -213,4 +209,5 @@ CustomerRepeatStore.prototype.setCurCustomer = function(id) {
     let curCustomer = _.find(this.originCustomerList, customer => customer.id === id);
     this.curCustomer = curCustomer ? curCustomer : {};
 };
+
 module.exports = alt.createStore(CustomerRepeatStore, 'CustomerRepeatStore');

@@ -3,7 +3,7 @@
  * Created by wangliping on 2016/12/29.
  */
 import '../css/customer-repeat.less';
-import {Button, message, Tag, Icon, Input, Row, Col, Popconfirm, Alert} from 'antd';
+import {Button, message, Icon, Input, Row, Col, Popconfirm, Alert} from 'antd';
 import TopNav from'../../../../components/top-nav';
 import Spinner from '../../../../components/spinner';
 import GeminiScrollBar from '../../../../components/react-gemini-scrollbar';
@@ -14,7 +14,6 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import CrmRightMergePanel from './crm-right-merge-panel';
 import Privilege from '../../../../components/privilege/checker';
 import classNames from 'classnames';
-import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from 'LIB_DIR/trace';
@@ -41,11 +40,16 @@ let CustomerRepeat = React.createClass({
     },
     componentDidMount: function() {
         CustomerRepeatStore.listen(this.onStoreChange);
-        CustomerRepeatAction.setRepeatCustomerLoading(true);
-        CustomerRepeatAction.getRepeatCustomerList({
-            page_size: CONSTANTS.PAGE_SIZE,
-            filterObj: JSON.stringify(this.state.filterObj)
-        });
+        //第一次的数据从父组件中传进来时，第一次不用发请求获取数据了
+        if (this.props.setInitialRepeatList && this.props.initialRepeatObj){
+            CustomerRepeatAction.setInitialRepeatCustomerList(this.props.initialRepeatObj);
+        }else{
+            CustomerRepeatAction.setRepeatCustomerLoading(true);
+            CustomerRepeatAction.getRepeatCustomerList({
+                page_size: CONSTANTS.PAGE_SIZE,
+                filterObj: JSON.stringify(this.state.filterObj)
+            });
+        }
         $(window).resize(() => {
             this.setState({crmListHeight: this.getCrmListHeight()});
         });
@@ -63,7 +67,7 @@ let CustomerRepeat = React.createClass({
         let curCustomerId = _.isObject(this.state.curCustomer) ? this.state.curCustomer.id : '';
         if (curCustomerId && this.state.rightPanelIsShow) {
             $('.customer-repeat-container .record-id').each(function() {
-                if ($(this).text() == curCustomerId) {
+                if ($(this).text() === curCustomerId) {
                     $(this).closest('tr').addClass('current-row').siblings().removeClass('current-row');
                     return false;
                 }
@@ -159,11 +163,11 @@ let CustomerRepeat = React.createClass({
 
     showSearchInput: function(key) {
         CustomerRepeatAction.toggleSearchInput({key: key, isShow: true});
-        if (key == 'name') {
+        if (key === 'name') {
             Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按客户名称搜索按钮');
-        } else if (key == 'user_name') {
+        } else if (key === 'user_name') {
             Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按负责人搜索按钮');
-        } else if (key == 'remarks') {
+        } else if (key === 'remarks') {
             Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按备注搜索按钮');
         }
         //之前有搜索的内容时，先还原
@@ -188,7 +192,7 @@ let CustomerRepeat = React.createClass({
     },
     //获取过滤后的重复客户
     filterRepeatCustomer: function(filterKey) {
-        if (this.state.filterObj[filterKey] == undefined) {
+        if (this.state.filterObj[filterKey] === undefined) {
             return;
         }
         CustomerRepeatAction.resetPage();
@@ -206,9 +210,9 @@ let CustomerRepeat = React.createClass({
         delete this.state.filterObj[filterKey];
         CustomerRepeatAction.setFilterObj(this.state.filterObj);
         CustomerRepeatAction.toggleSearchInput({key: filterKey, isShow: false});
-        if (filterKey == 'name') {
+        if (filterKey === 'name') {
             Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭客户名称后的搜索框');
-        } else if (filterKey == 'user_name') {
+        } else if (filterKey === 'user_name') {
             Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭负责人后的搜索框');
         } else {
             Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭备注后的搜索框');
@@ -220,11 +224,11 @@ let CustomerRepeat = React.createClass({
         }
         searchInputTimeOut = setTimeout(() => {
             this.filterRepeatCustomer(filterKey);
-            if (filterKey == 'name') {
+            if (filterKey === 'name') {
                 Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据客户名称过滤');
-            } else if (filterKey == 'user_name') {
+            } else if (filterKey === 'user_name') {
                 Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据负责人过滤');
-            } else if (filterKey == 'remarks') {
+            } else if (filterKey === 'remarks') {
                 Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据备注过滤');
             }
         }, delayTime);
