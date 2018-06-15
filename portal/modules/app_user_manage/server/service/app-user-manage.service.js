@@ -373,7 +373,7 @@ exports.getApplyDetail = function(req, res, apply_id) {
                 let privilegesArray = req.session.user && req.session.user.privileges ? req.session.user.privileges : [];
                 // GET_APP_EXTRA_GRANTS获取应用的默认配置信息
                 let index = _.indexOf(privilegesArray, 'GET_APP_EXTRA_GRANTS');
-                if (index !== -1) {
+                if (index !== -1 && _.isArray(applyBasicDetail.apps) && applyBasicDetail.apps.length) {
                     let user_type = (applyBasicDetail.type === CONSTANTS.APPLY_USER_TRIAL || applyBasicDetail.type === CONSTANTS.EXIST_APPLY_TRIAL ?
                         CONSTANTS.USER_TRIAL : CONSTANTS.USER_OFFICIAL
                     );
