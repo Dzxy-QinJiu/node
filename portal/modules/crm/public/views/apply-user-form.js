@@ -3,6 +3,7 @@ const Validator = Validation.Validator;
 require('../css/apply-user-form.less');
 require('../../../../public/css/antd-vertical-tabs.css');
 import {Tooltip, Form, Input, Radio, Select, message} from 'antd';
+const {TextArea} = Input;
 const Option = Select.Option;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -572,10 +573,10 @@ const ApplyUserForm = React.createClass({
                         {...formItemLayout}
                         label={Intl.get('common.remark', '备注')}
                     >
-                        <Input
-                            type="textarea"
+                        <TextArea
                             placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
                             value={formData.remark}
+                            autosize={{minRows: 2, maxRows: 6}}
                             onChange={this.onRemarkChange}/>
                     </FormItem>
                 </Validation>
