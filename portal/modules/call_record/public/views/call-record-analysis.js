@@ -1,8 +1,8 @@
 /**
  *  显示团队、成员筛选框的判断条件， 114占比显示饼图还是柱状图
  *
- *  this.state.teamList.length == 0 时，是普通销售，不显示筛选框，114展示为饼图
- *  this.state.teamList.length == 1 时，是销售基层领导，只有一个团队，显示成员，114柱状图
+ *  this.state.teamList.length === 0 时，是普通销售，不显示筛选框，114展示为饼图
+ *  this.state.teamList.length === 1 时，是销售基层领导，只有一个团队，显示成员，114柱状图
  *  this.state.teamList.length > 1 时， 有两个以上的团队，显示团队和成员的筛选框，114柱状图
  * */
 
@@ -27,11 +27,10 @@ import Spinner from 'CMP_DIR/spinner';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Trace from 'LIB_DIR/trace';
 import ScatterChart from 'CMP_DIR/chart/scatter';
-import {AntcTable} from 'antc';
+import { AntcTable, AntcCardContainer } from 'antc';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {handleTableData} from 'CMP_DIR/analysis/export-data-util';
-import {exportToCsv} from 'LIB_DIR/func';
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import { MAP_PROVINCE } from 'LIB_DIR/consts';
 //地图的formatter
@@ -133,7 +132,7 @@ var CallRecordAnalyis = React.createClass({
 
     // 获取团队或是成员的id
     getTeamOrMemberId(list, selectValue) {
-        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).pluck('id').value();
+        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
     },
 
     // 获取团队或成员的参数
@@ -149,7 +148,7 @@ var CallRecordAnalyis = React.createClass({
             }
         } else { // 成员时
             if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) { // 全部时
-                let userIdArray = _.pluck(this.state.memberList.list, 'id');
+                let userIdArray = _.map(this.state.memberList.list, 'id');
                 params.user_id = userIdArray.join(',');
             } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
                 let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
@@ -226,7 +225,7 @@ var CallRecordAnalyis = React.createClass({
                 let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
                 params.sales_team_id = secondSelectTeamId.join(',');
             }else{
-                params.sales_team_id = _.pluck(teamList,'id').join(',');
+                params.sales_team_id = _.map(teamList,'id').join(',');
             }
         }
         return params;
@@ -811,11 +810,17 @@ var CallRecordAnalyis = React.createClass({
             );
         }
         return (
-            <AntcTable dataSource={this.state.salesPhoneList}
-                columns={this.getPhoneListColumn()}
-                pagination={false}
-                bordered
-            />
+            <AntcCardContainer
+                title={Intl.get('call.analysis.call.title', '通话信息')}
+                exportData={handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true))}
+                csvFileName="sales_phone_table.csv"
+            >
+                <AntcTable dataSource={this.state.salesPhoneList}
+                    columns={this.getPhoneListColumn()}
+                    pagination={false}
+                    bordered
+                />
+            </AntcCardContainer>
         );
     },
 
@@ -859,10 +864,10 @@ var CallRecordAnalyis = React.createClass({
         else {
             let rateArray = [];
             if (this.state.teamList.list.length) {
-                rateArray = _.pluck(this.state.callRateList[type].list, 'rate');
+                rateArray = _.map(this.state.callRateList[type].list, 'rate');
             }
             else { // 普通销售
-                rateArray = _.pluck(this.state.callRateList[type].list, 'count');
+                rateArray = _.map(this.state.callRateList[type].list, 'count');
             }
             // 没有数据的提示
             if (!rateArray.length || _.max(rateArray) === 0) {
@@ -903,10 +908,6 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
         }
-    },
-    exportPhoneTable: function() {
-        let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true));
-        exportToCsv('sales_phone_table.csv',exportData);
     },
     getClickMap(zone) {
         CallAnalysisAction.showZoneDistribute(zone);
@@ -1029,13 +1030,6 @@ var CallRecordAnalyis = React.createClass({
                 {this.renderCallTrendChart()}
             </div>
             <div style={{height: tableHeight}}>
-                {this.state.salesPhoneList.length ? (
-                    <div className="export-file" style={{top: this.state.trendHeight + 60}} onClick={this.exportPhoneTable.bind(this)}>
-                        <i className="iconfont icon-export"
-                            title={Intl.get('call.time.export.statistic', '点击导出通话时长统计')}>
-                            {Intl.get('common.export', '导出')}
-                        </i>
-                    </div>) : null}
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
                         <div className="call-info col-xs-12">
@@ -1216,7 +1210,7 @@ var CallRecordAnalyis = React.createClass({
             secondSelectValue: LITERAL_CONSTANT.ALL
         }, () => {
             if (value === LITERAL_CONSTANT.MEMBER) {
-                let userIdArray = _.pluck(this.state.memberList.list, 'id');
+                let userIdArray = _.map(this.state.memberList.list, 'id');
                 this.refreshCallAnalysisData({user_id: userIdArray.join(',')});
             } else {
                 this.refreshCallAnalysisData();

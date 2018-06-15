@@ -5,7 +5,7 @@
 let restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 let userDto = require('../dto/user');
-var _ = require('underscore');
+var _ = require('lodash');
 let getUserListByRoleUrl = '/rest/base/v1/user/byrole';
 let getUserInfoById = '/rest/base/v1/user/id/:user_id';
 //根据角色，获取成员列表

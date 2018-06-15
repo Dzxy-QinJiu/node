@@ -5,7 +5,7 @@ var restApis = {
     scheduleApis: '/rest/base/v1/schedule/',
 };
 exports.restUrls = restApis;
-var _ = require('underscore');
+var _ = require('lodash');
 //获取日程管理列表
 exports.getScheduleList = function(req, res) {
     var url = restApis.scheduleApis;

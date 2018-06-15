@@ -140,7 +140,7 @@ const OrderItem = React.createClass({
         } else {
             Trace.traceEvent($(this.getDOMNode()).find('.search-icon-list-content'), '取消选中某个应用');
         }
-        this.state.apps = _.pluck(selectedApps, 'client_id');
+        this.state.apps = _.map(selectedApps, 'client_id');
 
         this.setState(this.state);
     },
@@ -276,7 +276,7 @@ const OrderItem = React.createClass({
                     return true;
                 }
             });
-            selectedAppListId = _.pluck(selectedAppList, 'client_id');
+            selectedAppListId = _.map(selectedAppList, 'client_id');
         }
         const appList = this.props.appList;
         let apps = [];

@@ -1,6 +1,6 @@
 var language = require('../../../../public/language/getLanguage');
 require('PUB_DIR/css/card-info-common.less');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('PUB_DIR/css/card-info-es.less');
 }
 import {Spin,Icon,Pagination,Form,Input,Tag,Alert} from 'antd';
@@ -78,7 +78,7 @@ var AppInfo = React.createClass({
     showForbidModalDialog: function() {
         Trace.traceEvent($(this.getDOMNode()).find('.edit-buttons'),'点击启用/禁用应用按钮');
         var modalStr = Intl.get('member.start.this', '启用此');
-        if (this.state.appInfo.status == 1) {
+        if (this.state.appInfo.status === 1) {
             modalStr = Intl.get('member.stop.this', '禁用此');
         }
         this.setState({modalStr: modalStr, isDel: false});
@@ -89,7 +89,7 @@ var AppInfo = React.createClass({
             this.props.deleteCard(this.props.appInfo.id);
         } else {
             var status = 1;
-            if (this.props.appInfo.status == 1) {
+            if (this.props.appInfo.status === 1) {
                 status = 0;
             }
             this.props.updateStatus(this.props.appInfo.id, status);
@@ -114,7 +114,7 @@ var AppInfo = React.createClass({
         if (tags.indexOf(tag) > -1) {
             if (isAdd) return;
             Trace.traceEvent($(this.getDOMNode()).find('.block-tag-edit'),'点击取消标签');
-            tags = tags.filter(theTag => theTag != tag);
+            tags = tags.filter(theTag => theTag !== tag);
         } else {
             if(!isAdd) {
                 Trace.traceEvent($(this.getDOMNode()).find('.block-tag-edit'),'点击选中标签');
@@ -139,7 +139,7 @@ var AppInfo = React.createClass({
                 saveMsg: result.saveMsg
             });
             //保存成功后再修改
-            if (result.saveResult == 'success') {
+            if (result.saveResult === 'success') {
                 _this.setState({appInfo: _this.state.appInfo});
             }
             //3s后清空提示信息
@@ -201,7 +201,7 @@ var AppInfo = React.createClass({
         var managers = Intl.get('app.app.no.managers', '暂无管理员');
         if (_.isArray(appInfo.managers)) {
             //应用详情中展示管理员姓名
-            managers = _.pluck(appInfo.managers, 'managerName');
+            managers = _.map(appInfo.managers, 'managerName');
             managers = managers.join(',') || Intl.get('app.app.no.managers', '暂无管理员');
         }
         let realmId = userData.getUserData().auth.realm_id || '';
@@ -248,7 +248,7 @@ var AppInfo = React.createClass({
                 </span>
             </div>
             <div className="card-item">
-                {language.lan() == 'zh' || language.lan() == 'en' ? (
+                {language.lan() === 'zh' || language.lan() === 'en' ? (
                     <span>
                         <span className="card-item-left"><ReactIntl.FormattedMessage id="common.captcha"
                             defaultMessage="验证码"/>:</span>
@@ -262,7 +262,7 @@ var AppInfo = React.createClass({
                         defaultMessage="验证码"/>:</div>
                 )}
             </div>
-            {language.lan() == 'es' ? (
+            {language.lan() === 'es' ? (
                 <div className="card-item left-label-null-style">
                     <span className="card-item-right">
                         {Intl.get('secret.error', '密码输错') + '[' + (appInfo.captchaTime || ' ') + ']' + Intl.get('show.captcha', '次，出现验证码')}
@@ -321,7 +321,7 @@ var AppInfo = React.createClass({
         }
 
         var userName = this.state.appInfo.userName ? this.state.appInfo.userName.value : '';
-        let labelCol = (language.lan() == 'zh' ? 3 : 4);
+        let labelCol = (language.lan() === 'zh' ? 3 : 4);
         return (
             <div className={className} data-tracename="查看应用详情">
                 <RightPanelClose onClick={this.closeRightPanel}/>
@@ -329,7 +329,7 @@ var AppInfo = React.createClass({
                     <PrivilegeChecker check={'APP_MANAGE_EDIT_APP'}>
                         <RightPanelEdit onClick={this.showEditForm}/>
                         <RightPanelForbid onClick={this.showForbidModalDialog}
-                            isActive={this.state.appInfo.status == 0}/>
+                            isActive={this.state.appInfo.status === 0}/>
                     </PrivilegeChecker>
                     {/**v8环境，不显示系统公告、版本升级记录、用户类型设置*/}
                     { !Oplate.hideSomeItem &&

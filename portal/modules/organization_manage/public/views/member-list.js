@@ -33,7 +33,7 @@ const messages = defineMessages({
 //分页器
 var paginationintl = '';
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es') {
+if (language.lan() === 'es') {
     paginationintl = {
         // Options.jsx
         items_per_page: '/página',//条/页
@@ -50,7 +50,7 @@ if (language.lan() == 'es') {
         prev_5: '5 Páginas adelante',//向前 5 页
         next_5: '5 Páginas atrás'//向后 5 页
     };
-} else if (language.lan() == 'en') {
+} else if (language.lan() === 'en') {
     paginationintl = {
         // Options.jsx
         items_per_page: '/page',
@@ -67,7 +67,7 @@ if (language.lan() == 'es') {
         prev_5: 'Previsous 5 Pages',
         next_5: 'Next 5 Pages'
     };
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     paginationintl = {
         // Options.jsx
         items_per_page: '条/页',
@@ -170,7 +170,7 @@ var MemberList = React.createClass({
         //删除、编辑
         var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
         //负责人存在
-        //if (curShowTeamMemberObj.owner && curShowTeamMemberObj.owner.userId == organizationMember.userId) {
+        //if (curShowTeamMemberObj.owner && curShowTeamMemberObj.owner.userId === organizationMember.userId) {
         //    curShowTeamMemberObj.owner.selected = !curShowTeamMemberObj.owner.selected;
         //    this.setState({curShowTeamMemberObj: curShowTeamMemberObj});
         //    return;
@@ -179,7 +179,7 @@ var MemberList = React.createClass({
         if (_.isArray(curShowTeamMemberObj.managers) && curShowTeamMemberObj.managers.length > 0) {
             var findManager = false;
             _.some(curShowTeamMemberObj.managers, function(member) {
-                if (member && (member.userId == organizationMember.userId)) {
+                if (member && (member.userId === organizationMember.userId)) {
                     member.selected = !member.selected;
                     findManager = true;
                     return findManager;
@@ -194,7 +194,7 @@ var MemberList = React.createClass({
         if (_.isArray(curShowTeamMemberObj.users) && curShowTeamMemberObj.users.length > 0) {
             let curMemberId = organizationMember.userId;
             _.some(curShowTeamMemberObj.users, function(member) {
-                if (member && (member.userId == curMemberId)) {
+                if (member && (member.userId === curMemberId)) {
                     member.selected = !member.selected;
                     return true;
                 }
@@ -285,17 +285,17 @@ var MemberList = React.createClass({
     saveAddMember: function() {
         var userIds = [], selectedMemberRows = this.state.selectedMemberRows;
         if (selectedMemberRows && selectedMemberRows.length > 0) {
-            userIds = _.pluck(selectedMemberRows, 'key');
+            userIds = _.map(selectedMemberRows, 'key');
             //从新增成员中，过滤掉该组织中已存在的负责人或成员
             let curShowTeamMemberObj = this.state.curShowTeamMemberObj || {};
             //负责人的过滤
             if (curShowTeamMemberObj.owner) {
-                userIds = _.filter(userIds, userId => userId != curShowTeamMemberObj.owner.userId);
+                userIds = _.filter(userIds, userId => userId !== curShowTeamMemberObj.owner.userId);
             }
             //成员的过滤
             if (_.isArray(curShowTeamMemberObj.users) && curShowTeamMemberObj.users.length) {
                 //取出该组织中的成员id
-                let curTeamUserIds = _.pluck(curShowTeamMemberObj.users, 'userId');
+                let curTeamUserIds = _.map(curShowTeamMemberObj.users, 'userId');
                 //过滤掉该组织中已有的成员id
                 userIds = _.filter(userIds, userId => curTeamUserIds.indexOf(userId) < 0);
             }
@@ -371,11 +371,11 @@ var MemberList = React.createClass({
                     userLogo={organizationMember.userLogo}
                 >
                 </DefaultUserLogoTitle>
-                {organizationMember.status == 0 ? (
+                {organizationMember.status === 0 ? (
                     <div className="organization-member-stop"><ReactIntl.FormattedMessage id="common.stop"
                         defaultMessage="停用"/>
                     </div>) : null}
-                {type != MEMBER_TYPE.USER ?
+                {type !== MEMBER_TYPE.USER ?
                     (<span className={'iconfont icon-sale-team-' + type}/> ) : null}
                 <div className="organization-member-info-name-div">
                     {hasSelectBtn ? (<div className={selectBtnClass}></div>) : null}
@@ -599,7 +599,7 @@ var MemberList = React.createClass({
         var selectSizeObj = this.getSelectSize();
         //负责人按钮样式设置
         //var addOwnerBtnCls = "add-member-btn";
-        //if (selectSizeObj.selectedSize == 1) {
+        //if (selectSizeObj.selectedSize === 1) {
         //    //只选一个成员时，加为负责任按钮点击事件可用
         //    addOwnerBtnCls += " member-btn-enable";
         //} else if (selectSizeObj.selectedSize > 1) {

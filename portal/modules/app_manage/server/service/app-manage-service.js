@@ -7,7 +7,7 @@
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var App = require('../dto/appObj');
-var _ = require('underscore');
+var _ = require('lodash');
 var appRestApis = {
     //添加应用地址
     addApp: '/rest/base/v1/application',
@@ -93,7 +93,7 @@ exports.addApp = function(req, res, frontApp) {
 //修改应用
 exports.editApp = function(req, res, frontApp) {
     var editApp = {};
-    if (frontApp.status || frontApp.status == 0) {
+    if (frontApp.status || frontApp.status === 0) {
         //启用、停用的修改
         editApp = App.toRestStatusObject(frontApp);
     } else {

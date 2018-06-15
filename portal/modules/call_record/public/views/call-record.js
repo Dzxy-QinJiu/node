@@ -938,14 +938,16 @@ const CallRecord = React.createClass({
                         phoneNumber={this.state.phoneNumber}
                     />
                 </div>
-                <RightPanel
-                    className="call-analysis-panel"
-                    showFlag={this.state.isShowCallAnalysisPanel}
-                >
-                    <CallRecordAnalyis
-                        closeCallAnalysisPanel={this.closeCallAnalysisPanel}
-                    />
-                </RightPanel>
+                {this.state.isShowCallAnalysisPanel ? (
+                    <RightPanel
+                        className="call-analysis-panel"
+                        showFlag={this.state.isShowCallAnalysisPanel}
+                    >
+                        <CallRecordAnalyis
+                            closeCallAnalysisPanel={this.closeCallAnalysisPanel}
+                        />
+                    </RightPanel>
+                ) : null}
             </div>
         </RightContent >
         );

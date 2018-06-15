@@ -95,9 +95,9 @@ var CardList = React.createClass({
         //右侧卡片区域的高度设置
         var cardListHeight = $('body').height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
         if (this.props.isPanelShow) {
-            if (this.props.type == TYPES.APP_MANAGE) {
+            if (this.props.type === TYPES.APP_MANAGE) {
                 cardListHeight = cardListHeight - $('.app_content .app-filter-adv').outerHeight(true);
-            } else if (this.props.type == TYPES.USER_MANAGE) {
+            } else if (this.props.type === TYPES.USER_MANAGE) {
                 cardListHeight = cardListHeight - $('.backgroundManagement_user_content .user-filter-adv').outerHeight(true);
             }
         }
@@ -140,7 +140,7 @@ var CardList = React.createClass({
             if (changeCardWidth >= MINCARDWIDTH) {
                 cardWidth = changeCardWidth;
             } else {
-                if(everyRowCardCounts == 0){
+                if(everyRowCardCounts === 0){
                     cardWidth = MINCARDWIDTH;
                 }else {
                     cardWidth = Math.floor(cardListWidth / everyRowCardCounts);
@@ -200,7 +200,7 @@ var CardList = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.curPage == 1) {
+        if (nextProps.curPage === 1) {
             this.setState({
                 listenScrollBottom: true
             });
@@ -208,7 +208,7 @@ var CardList = React.createClass({
     },
 
     stopScrollLoadedData: function() {
-        if (this.props.cardListSize == this.state.loadedCardCount) {
+        if (this.props.cardListSize === this.state.loadedCardCount) {
             this.setState({
                 listenScrollBottom: false
             });
@@ -240,7 +240,7 @@ var CardList = React.createClass({
         }
         this.props.changePageEvent(everyLoadedPageSize, everyLoadedNewPage);
         // 数据加载完时，触发停止加载数据事件
-        if (this.state.loadedCardCount == this.props.cardListSize) {
+        if (this.state.loadedCardCount === this.props.cardListSize) {
             scrollBarEmitter.on(scrollBarEmitter.STOP_LOADED_DATA, this.stopScrollLoadedData);
         }
     },
@@ -254,7 +254,7 @@ var CardList = React.createClass({
         if (_this.props.curCardList && curCardListLen > 0) {
             cards = _this.props.curCardList.map(function(card, index) {
                 var selectCards = _this.props.selectCards;
-                var isSelect = _.contains(selectCards, card.id);
+                var isSelect = _.includes(selectCards, card.id);
                 return <Card key={index}
                     curCard={card}
                     imgUrl={card.image}
@@ -275,9 +275,9 @@ var CardList = React.createClass({
         var cardListHeight = this.getCardListHeight();
         var paddingTop = CONSTANTS.TOP_NAV_HEIGHT;
         if (this.props.isPanelShow) {
-            if (this.props.type == TYPES.APP_MANAGE) {
+            if (this.props.type === TYPES.APP_MANAGE) {
                 paddingTop = paddingTop + $('.app_content .app-filter-adv').outerHeight(true);
-            } else if (this.props.type == TYPES.USER_MANAGE) {
+            } else if (this.props.type === TYPES.USER_MANAGE) {
                 paddingTop = paddingTop + $('.backgroundManagement_user_content .user-filter-adv').outerHeight(true);
             }
         }

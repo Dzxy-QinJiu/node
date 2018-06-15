@@ -45,7 +45,7 @@ class ClueRightPanel extends React.Component {
                         //唯一性验证出错了
                         callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                     } else {
-                        if (_.isObject(data) && data.result == 'true') {
+                        if (_.isObject(data) && data.result === 'true') {
                             callback();
                         } else {
                             //已存在
@@ -129,13 +129,13 @@ class ClueRightPanel extends React.Component {
     changeUserFieldSuccess = (newCustomerDetail) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的
         for (var key in newCustomerDetail) {
-            if (key == 'clue_source' && !_.contains(this.props.clueSourceArray, newCustomerDetail[key])) {
+            if (key === 'clue_source' && !_.includes(this.props.clueSourceArray, newCustomerDetail[key])) {
                 this.props.updateClueSource(newCustomerDetail[key]);
             }
-            if (key == 'access_channel' && !_.contains(this.props.accessChannelArray, newCustomerDetail[key])) {
+            if (key === 'access_channel' && !_.includes(this.props.accessChannelArray, newCustomerDetail[key])) {
                 this.props.updateClueChannel(newCustomerDetail[key]);
             }
-            if (key == 'clue_classify' && !_.contains(this.props.clueClassifyArray, newCustomerDetail[key])) {
+            if (key === 'clue_classify' && !_.includes(this.props.clueClassifyArray, newCustomerDetail[key])) {
                 this.props.updateClueClassify(newCustomerDetail[key]);
             }
         }
@@ -155,7 +155,7 @@ class ClueRightPanel extends React.Component {
                     //唯一性验证出错了
                     callback(Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
                 } else {
-                    if (_.isObject(data) && data.result == 'true') {
+                    if (_.isObject(data) && data.result === 'true') {
                         callback();
                     } else {
                         callback(Intl.get('clue.customer.check.repeat', '该线索名称已存在'));

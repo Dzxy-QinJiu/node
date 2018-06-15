@@ -3,6 +3,7 @@ const Validator = Validation.Validator;
 require('../css/apply-user-form.less');
 require('../../../../public/css/antd-vertical-tabs.css');
 import {Tooltip, Form, Input, Radio, Select, message} from 'antd';
+const {TextArea} = Input;
 const Option = Select.Option;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -49,8 +50,8 @@ const ApplyUserForm = React.createClass({
 
     componentWillReceiveProps: function(nextProps) {
         this.buildFormData(nextProps, nextProps.apps);
-        let oldAppIds = _.pluck(this.state.apps, 'client_id');
-        let newAppIds = _.pluck(nextProps.apps, 'client_id');
+        let oldAppIds = _.map(this.state.apps, 'client_id');
+        let newAppIds = _.map(nextProps.apps, 'client_id');
         //获取newAppIds中，不存在于oldAppIds中的应用id
         let diffAppIds = _.difference(newAppIds, oldAppIds);
         //获取新增的应用的默认配置
@@ -75,16 +76,17 @@ const ApplyUserForm = React.createClass({
                 remark: ''
             };
         } else {//从客户详情的用户列表中申请的
-            const users = _.pluck(props.users, 'user');
+            const users = _.map(props.users, 'user');
             formData = {
                 customer_id: props.customerId,
                 tag: Intl.get('common.trial.user', '试用用户'),
                 remark: '',
+                selectAppIds: []//用来验证是否选择应用的属性
             };
             if (_.isArray(users) && users.length) {//已有用户开通应用
                 num = users.length;
-                formData.user_ids = _.pluck(users, 'user_id');
-                formData.user_names = _.pluck(users, 'user_name');
+                formData.user_ids = _.map(users, 'user_id');
+                formData.user_names = _.map(users, 'user_name');
             } else {//开通新用户
                 formData.user_name = '';
                 formData.nick_name = props.customerName;
@@ -115,7 +117,7 @@ const ApplyUserForm = React.createClass({
         let appList = this.props.apps;
         if (_.isArray(appList) && appList.length) {
             //获取各应用的默认设置
-            this.getAppsDefaultConfig(_.pluck(appList, 'client_id'));
+            this.getAppsDefaultConfig(_.map(appList, 'client_id'));
         }
         //从订单中过来，或者是申请新用户时，需要获取联系人中的邮箱作为用户名的推荐选项
         if (this.props.applyFrom === 'order' || this.isApplyNewUsers()) {
@@ -294,10 +296,12 @@ const ApplyUserForm = React.createClass({
                 if (this.state.applyFrom === 'order') {//订单中申请试用、签约用户
                     this.applyUserFromOder(submitData);
                 } else if (this.isApplyNewUsers()) {//申请新用户时，没有订单和销售阶段，先随便乱传个字符串（不传接口会报错）
+                    delete submitData.selectAppIds;//去掉用于验证的数据
                     submitData.order_id = 'apply_new_users';
                     submitData.sales_opportunity = 'apply_new_users';
                     this.applyUserFromOder(submitData);
                 } else {
+                    delete submitData.selectAppIds;//去掉用于验证的数据
                     this.applyUserFromUserList(submitData);
                 }
             }
@@ -415,7 +419,7 @@ const ApplyUserForm = React.createClass({
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
         let num = 1;//申请用户的个数
         let formData = this.state.formData;
-        const users = _.pluck(this.props.users, 'user');
+        const users = _.map(this.props.users, 'user');
         if (_.isArray(users) && users.length) {//已有用户开通应用
             num = users.length;
         }
@@ -504,7 +508,7 @@ const ApplyUserForm = React.createClass({
             labelCol: {span: 4},
             wrapperCol: {span: 20},
         };
-        let selectAppIds = _.pluck(this.state.apps, 'client_id');
+        let selectAppIds = _.map(this.state.apps, 'client_id');
         return (
             <Form horizontal className="apply-user-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
@@ -537,18 +541,26 @@ const ApplyUserForm = React.createClass({
                     <FormItem
                         {...formItemLayout}
                         label={Intl.get('common.app', '应用')}
+                        validateStatus={this.getValidateStatus('selectAppIds')}
+                        help={this.getHelpMessage('selectAppIds')}
                         required
                     >
                         {this.state.applyFrom === 'order' ? _.map(this.state.apps, app => {
                             return (<SquareLogoTag name={app ? app.client_name : ''}
                                 logo={app ? app.client_logo : ''}/>);
                         }) : (
-                            <Select mode="tags" value={selectAppIds}
-                                dropdownClassName="apply-user-apps-dropdown"
-                                placeholder={Intl.get('user.app.select.please', '请选择应用')}
-                                onChange={this.handleChangeApps.bind(this)}>
-                                {this.getAppOptions(selectAppIds)}
-                            </Select>)}
+                            <Validator rules={[{
+                                required: true,
+                                message: Intl.get('user.app.select.please', '请选择应用'),
+                                type: 'array'
+                            }]}>
+                                <Select mode="tags" value={selectAppIds} name='selectAppIds'
+                                    dropdownClassName="apply-user-apps-dropdown"
+                                    placeholder={Intl.get('user.app.select.please', '请选择应用')}
+                                    onChange={this.handleChangeApps.bind(this)}>
+                                    {this.getAppOptions(selectAppIds)}
+                                </Select>
+                            </Validator>)}
                     </FormItem>
                     {_.isArray(selectAppIds) && selectAppIds.length ? (
                         <ApplyUserAppConfig apps={this.state.apps}
@@ -561,10 +573,10 @@ const ApplyUserForm = React.createClass({
                         {...formItemLayout}
                         label={Intl.get('common.remark', '备注')}
                     >
-                        <Input
-                            type="textarea"
+                        <TextArea
                             placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
                             value={formData.remark}
+                            autosize={{minRows: 2, maxRows: 6}}
                             onChange={this.onRemarkChange}/>
                     </FormItem>
                 </Validation>
@@ -579,7 +591,7 @@ const ApplyUserForm = React.createClass({
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
         let num = 1;//申请用户的个数
         let formData = this.state.formData || {};
-        const users = _.pluck(this.props.users, 'user');
+        const users = _.map(this.props.users, 'user');
         if (_.isArray(users) && users.length) {//已有用户开通应用
             num = users.length;
         }
@@ -606,6 +618,7 @@ const ApplyUserForm = React.createClass({
             });
             this.getAppsDefaultConfig(newAddAppIds);
         }
+        formData.selectAppIds = appIds;
         this.setState({apps: this.state.apps, formData: formData});
     },
     getAppOptions: function(selectAppIds) {
@@ -630,10 +643,10 @@ const ApplyUserForm = React.createClass({
     },
     render: function() {
         let title = '';
-        if(this.props.userType){
-            if(this.props.userType === Intl.get('common.trial.official', '正式用户')){
+        if (this.props.userType) {
+            if (this.props.userType === Intl.get('common.trial.official', '正式用户')) {
                 title = Intl.get('user.apply.user.official', '申请签约用户');
-            }else{
+            } else {
                 title = Intl.get('common.apply.user.trial', '申请试用用户');
             }
         }

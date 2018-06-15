@@ -77,7 +77,7 @@ const SalesClueAddForm = React.createClass({
                         clueCustomerCheckErrMsg: data
                     });
                 } else {
-                    if (_.isObject(data) && data.result == 'true') {
+                    if (_.isObject(data) && data.result === 'true') {
                         this.setState({
                             clueNameExist: false,
                             clueCustomerCheckErrMsg: ''
@@ -157,14 +157,14 @@ const SalesClueAddForm = React.createClass({
                     return;
                 } else {
                     let submitObj = this.getSubmitObj();
-                    let addRoute = _.find(routes, (route) => route.handler == 'addSalesClue');
+                    let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
                     this.setState({isSaving: true, saveMsg: '', saveResult: ''});
                     ajax({
                         url: addRoute.path,
                         type: addRoute.method,
                         data: submitObj
                     }).then(data => {
-                        if (_.isObject(data) && data.code == 0) {
+                        if (_.isObject(data) && data.code === 0) {
                             //添加成功
                             this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                             this.setState({
@@ -172,13 +172,13 @@ const SalesClueAddForm = React.createClass({
                             });
                             clueCustomerAction.afterAddSalesClue(data.result);
                             //如果线索来源或者接入渠道,线索类型加入新的类型
-                            if (submitObj.clue_source && !_.contains(this.props.clueSourceArray,submitObj.clue_source)){
+                            if (submitObj.clue_source && !_.includes(this.props.clueSourceArray,submitObj.clue_source)){
                                 _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
                             }
-                            if (submitObj.access_channel && !_.contains(this.props.accessChannelArray,submitObj.access_channel)){
+                            if (submitObj.access_channel && !_.includes(this.props.accessChannelArray,submitObj.access_channel)){
                                 _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
                             }
-                            if (submitObj.clue_classify && !_.contains(this.props.clueClassifyArray,submitObj.clue_classify)){
+                            if (submitObj.clue_classify && !_.includes(this.props.clueClassifyArray,submitObj.clue_classify)){
                                 _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
                             }
                             //线索客户添加成功后的回调
@@ -204,7 +204,7 @@ const SalesClueAddForm = React.createClass({
     },
     //去掉保存后提示信息
     hideSaveTooltip: function() {
-        if (this.state.saveResult == 'success') {
+        if (this.state.saveResult === 'success') {
             this.setState({
                 isShowAssignAndRelate: true
             });
@@ -231,7 +231,7 @@ const SalesClueAddForm = React.createClass({
                             //唯一性验证出错了
                             callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                         } else {
-                            if (_.isObject(data) && data.result == 'true') {
+                            if (_.isObject(data) && data.result === 'true') {
                                 callback();
                             } else {
                                 //已存在
@@ -440,7 +440,7 @@ const SalesClueAddForm = React.createClass({
                                 <div className="indicator">
                                     {saveResult ?
                                         (
-                                            <AlertTimer time={saveResult == 'error' ? 3000 : 600}
+                                            <AlertTimer time={saveResult === 'error' ? 3000 : 600}
                                                 message={this.state.saveMsg}
                                                 type={saveResult} showIcon
                                                 onHide={this.hideSaveTooltip}/>

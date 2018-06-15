@@ -15,7 +15,7 @@ var approot = require('app-root-path');
 var mkdirp = require('mkdirp');
 var fileExistsSync = require('../../../lib/utils/existsSync');
 var auth = require('../../../lib/utils/auth');
-let _ = require('underscore');
+let _ = require('lodash');
 let moment = require('moment');
 
 /*
@@ -25,7 +25,7 @@ exports.home = function(req, res) {
     var user = auth.getUser(req);
     // 委内维拉项目隐藏一些项的属性
     let hideSomeItem = '';
-    if (global.config.lang && global.config.lang == 'es_VE') {
+    if (global.config.lang && global.config.lang === 'es_VE') {
         hideSomeItem = 'true';
     }
     res.render('home/tpl/desktop-index', {

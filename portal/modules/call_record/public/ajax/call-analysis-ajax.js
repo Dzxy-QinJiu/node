@@ -65,9 +65,11 @@ exports.getCallCountAndDurSeparately = function(reqData, reqBody) {
 
 
 // 获取电话的接通情况
+let getCallInfoAjax = null;
 exports.getCallInfo = function(pathParam, reqData, type) {
+    getCallInfoAjax && getCallInfoAjax.abort();
     var Deferred = $.Deferred();
-    $.ajax({
+    getCallInfoAjax = $.ajax({
         url: '/rest/call/info/' + type,
         dataType: 'json',
         type: 'post',

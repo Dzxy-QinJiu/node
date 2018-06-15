@@ -161,7 +161,7 @@ var pluginLists = [
         $: 'jquery',
         jQuery: 'jquery',
         'window.jQuery': 'jquery',
-        '_': 'underscore',
+        '_': 'lodash',
         moment: 'moment',
         ReactIntl: 'react-intl',
         Intl: [path.resolve(__dirname, "portal/public/intl/intl.js"), "default"],
@@ -218,7 +218,7 @@ var webpackConfig = {
     plugins: pluginLists,
     module: {
         rules: loadersLists,
-        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /underscore-min.js/, /History.min.js/]
+        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /History.min.js/]
     },
     resolveLoader: {
         moduleExtensions: ["-loader"]
@@ -238,7 +238,6 @@ var webpackConfig = {
             moment$: 'moment/min/moment-with-locales.min.js',
             alt: 'alt/dist/alt.min.js',
             jquery: 'jquery/dist/jquery.min.js',
-            underscore: 'underscore/underscore-min.js',
             history$: 'history/umd/History.min.js',
             OPLATE_EMITTER: path.resolve(__dirname, "portal/public/sources/utils/emitters"),
             PUB_DIR: path.resolve(__dirname, "portal/public"),

@@ -5,9 +5,11 @@ const AUTHS = {
     'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
 };
 //添加客户
+let addCustomerAjax = null;
 exports.addCustomer = function(newCus) {
     var Deferred = $.Deferred();
-    $.ajax({
+    addCustomerAjax && addCustomerAjax.abort();
+    addCustomerAjax = $.ajax({
         url: '/rest/crm/add_customer',
         dataType: 'json',
         type: 'post',

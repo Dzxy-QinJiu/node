@@ -961,6 +961,7 @@ var en_US = {
     'call.record.service.phone.rate': 'Statistics of the ratio of 114',//114占比统计
     'call.analysis.zone.distrute': 'Zone distribution of customers', // 客户的地域分布
     'call.analysis.map.return': 'Back to previous', // 返回上一级
+    'call.analysis.call.title': 'Call information', // 通话信息
     //通话分析-end
 
 
@@ -1298,6 +1299,9 @@ var en_US = {
     'crm.apply.user.unified.config': 'Unified configuration',//统一配置
     'crm.apply.user.separate.config': 'Separate configuration',//分别配置
     'crm.apply.user.new': 'Apply for new users',//申请新用户
+    'crm.apply.stop.placeholder': 'Please enter the reason for discontinuation',//请输入停用的原因
+    'crm.apply.update.password.placeholder': 'Please enter a request for a modified password',//请输入修改密码的要求
+    'crm.apply.other.placeholder': 'Please enter the application content',//请输入申请内容
     // 客户管理end
 
     //客户分析 start

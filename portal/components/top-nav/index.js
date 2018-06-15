@@ -35,7 +35,7 @@ var TopNav = React.createClass({
         var topLinksPosStart = $topLinks.offset().left;
         var topLinksPosEnd = topLinksPosStart + $topLinks.outerWidth();
         //计算子节点是否存在覆盖情况
-        var intersect = _.any(extraNodes , (dom) => {
+        var intersect = _.some(extraNodes , (dom) => {
             var $dom = $(dom);
             var domPosStart = $dom.offset().left;
             var domPosEnd = domPosStart + $dom.outerWidth();
@@ -148,7 +148,7 @@ TopNav.MenuList = React.createClass({
 
                             var liContent = (<Link to={`/${menu.routePath}`}
                                 activeClassName="active" ref="navLinks">{menu.name}</Link>);
-                            if (menuName == 'myAppMenu' && menu.name == '我的应用') {
+                            if (menuName === 'myAppMenu' && menu.name === '我的应用') {
                                 liContent = (<Dropdown overlay={subMenu}>
                                     {liContent}
                                 </Dropdown>);

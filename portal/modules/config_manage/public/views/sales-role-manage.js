@@ -125,7 +125,7 @@ const SalesRoleManage = React.createClass({
         let role = $.trim(this.refs.addSalesRole.value);
         if (role) {
             //看列表中是否有和输入的名称一样的名字
-            var targetItem = _.find(this.state.salesRoleList, item => item.name == role);
+            var targetItem = _.find(this.state.salesRoleList, item => item.name === role);
             if (targetItem){
                 this.setState({
                     addErrMsg: Intl.get('config.sales.role.has.repeat', '该销售角色名称已存在')
@@ -209,7 +209,7 @@ const SalesRoleManage = React.createClass({
     },
     getRoleColor: function() {
         //角色列表中已存在的颜色列表
-        let existColors = _.pluck(this.state.salesRoleList, 'color');
+        let existColors = _.map(this.state.salesRoleList, 'color');
         //第一个不在已有角色的颜色列表中的颜色，作为当前添加角色的颜色
         let roleColor = _.find(COLOR_LIST, color => existColors.indexOf(color) === -1);
         return roleColor;
@@ -228,7 +228,7 @@ const SalesRoleManage = React.createClass({
         });
     },
     submitUpdateCustomerNum: function(item) {
-        if (this.state.updateRoleCustomerNum == 0){
+        if (this.state.updateRoleCustomerNum === 0){
             this.setState({
                 isEdittingItem: ''
             });
@@ -307,7 +307,7 @@ const SalesRoleManage = React.createClass({
                                         </span>}
                                     </span> : <span>{item.customer_num}<i className="iconfont icon-update" onClick={this.handleEditItem.bind(this, item)}></i></span>}
                                 </div>
-                                {item.is_default || this.state.settingDefaultRole == item.id ? null :
+                                {item.is_default || this.state.settingDefaultRole === item.id ? null :
                                     <span className="anticon anticon-delete"
                                         onClick={this.handleDeleteItem.bind(this, item.id)}
                                         data-tracename="点击删除某个销售角色按钮"

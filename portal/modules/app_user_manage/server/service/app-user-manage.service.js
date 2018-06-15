@@ -9,7 +9,7 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var customersDto = require('../dto/customers');
 var applyDto = require('../dto/apply');
 var replyDto = require('../dto/reply');
-var _ = require('underscore');
+var _ = require('lodash');
 var auth = require('../../../../lib/utils/auth');
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
@@ -297,7 +297,7 @@ exports.batchUpdate = function(req, res, field, data, application_ids) {
 exports.getApplyList = function(req, res, obj) {
     let url = AppUserRestApis.getApplyList;
     //获取有未读回复的申请列表
-    if (obj.isUnreadApply == 'true') {
+    if (obj.isUnreadApply === 'true') {
         obj = {id: obj.id, page_size: obj.page_size};
         url = AppUserRestApis.getUnreadApplyList;
     } else {
@@ -364,20 +364,20 @@ exports.getApplyDetail = function(req, res, apply_id) {
     var emitter = new EventEmitter();
     getApplyBasicDetail(req, res, apply_id).then((applyBasicDetail) => {
         // 申请正式、试用，已用用户申请正式、试用的情况
-        if (applyBasicDetail.type == CONSTANTS.APPLY_USER_OFFICIAL ||
-            applyBasicDetail.type == CONSTANTS.APPLY_USER_TRIAL ||
-            applyBasicDetail.type == CONSTANTS.EXIST_APPLY_TRIAL ||
-            applyBasicDetail.type == CONSTANTS.EXIST_APPLY_FORMAL) {
-            if (applyBasicDetail.approval_state == CONSTANTS.APPROVAL_STATE_FALSE) { // 待审批
+        if (applyBasicDetail.type === CONSTANTS.APPLY_USER_OFFICIAL ||
+            applyBasicDetail.type === CONSTANTS.APPLY_USER_TRIAL ||
+            applyBasicDetail.type === CONSTANTS.EXIST_APPLY_TRIAL ||
+            applyBasicDetail.type === CONSTANTS.EXIST_APPLY_FORMAL) {
+            if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE) { // 待审批
                 // 获取登陆用户的权限
                 let privilegesArray = req.session.user && req.session.user.privileges ? req.session.user.privileges : [];
                 // GET_APP_EXTRA_GRANTS获取应用的默认配置信息
                 let index = _.indexOf(privilegesArray, 'GET_APP_EXTRA_GRANTS');
-                if (index != -1) {
-                    let user_type = (applyBasicDetail.type == CONSTANTS.APPLY_USER_TRIAL || applyBasicDetail.type == CONSTANTS.EXIST_APPLY_TRIAL ?
+                if (index !== -1 && _.isArray(applyBasicDetail.apps) && applyBasicDetail.apps.length) {
+                    let user_type = (applyBasicDetail.type === CONSTANTS.APPLY_USER_TRIAL || applyBasicDetail.type === CONSTANTS.EXIST_APPLY_TRIAL ?
                         CONSTANTS.USER_TRIAL : CONSTANTS.USER_OFFICIAL
                     );
-                    let appIdList = _.pluck(applyBasicDetail.apps, 'client_id');
+                    let appIdList = _.map(applyBasicDetail.apps, 'client_id');
                     let obj = {
                         client_id: appIdList.join(','),
                         user_type: user_type,
@@ -392,17 +392,17 @@ exports.getApplyDetail = function(req, res, apply_id) {
                 } else {
                     emitter.emit('success', applyBasicDetail);
                 }
-            } else if (applyBasicDetail.approval_state == CONSTANTS.APPROVAL_STATE_PASS) { // 已通过
-                let roleIdsList = _.pluck(applyBasicDetail.apps, 'roles');
+            } else if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_PASS) { // 已通过
+                let roleIdsList = _.map(applyBasicDetail.apps, 'roles');
                 let roleIdsArray = _.flatten(roleIdsList);
-                let permissionIdsList = _.pluck(applyBasicDetail.apps, 'permissions');
+                let permissionIdsList = _.map(applyBasicDetail.apps, 'permissions');
                 let permissionIdsArray = _.flatten(permissionIdsList);
                 let roleObj = {
                     ids: roleIdsArray
                 };
                 if (roleIdsArray.length > 0) {
                     getAppRoleNames(req, res, roleObj).then((list) => {
-                        if (permissionIdsArray.length == 0) { // 没有分配权限
+                        if (permissionIdsArray.length === 0) { // 没有分配权限
                             let applyDetailInfo = getAppExtraRoleNames(applyBasicDetail, list);
                             emitter.emit('success', applyDetailInfo);
                         } else {
@@ -436,7 +436,7 @@ exports.getApplyDetail = function(req, res, apply_id) {
 
 // 根据应用的默认配置信息，封装审批详情的角色和权限名称
 function getExtraAppInfo(applyBasicDetail, appConfigInfo) {
-    let appIdList = _.pluck(applyBasicDetail.apps, 'client_id');
+    let appIdList = _.map(applyBasicDetail.apps, 'client_id');
     let length = appConfigInfo.length;
     for (let i = 0; i < length; i++) {
         let index = _.indexOf(appIdList, appConfigInfo[i].client_id);
@@ -451,8 +451,8 @@ function getExtraAppInfo(applyBasicDetail, appConfigInfo) {
 // 角色ids获取对应的角色名称
 function getAppExtraRoleNames(applyBasicDetail, appRoleNames) {
     applyBasicDetail.apps.forEach((item) => {
-        let appRolesNamesList = _.filter(appRoleNames, (roleItem) => roleItem.client_id == item.client_id);
-        item.rolesNames = _.pluck(appRolesNamesList, 'role_name');
+        let appRolesNamesList = _.filter(appRoleNames, (roleItem) => roleItem.client_id === item.client_id);
+        item.rolesNames = _.map(appRolesNamesList, 'role_name');
     });
     return applyBasicDetail;
 }
@@ -460,8 +460,8 @@ function getAppExtraRoleNames(applyBasicDetail, appRoleNames) {
 // 角色ids获取对应的权限名称
 function getAppExtraPermissionNames(applyBasicDetail, appPermissionNames) {
     applyBasicDetail.apps.forEach((item) => {
-        let appPermissionsNamesList = _.filter(appPermissionNames, (permissionItem) => permissionItem.client_id == item.client_id);
-        item.permissionsNames = _.pluck(appPermissionsNamesList, 'permission_name');
+        let appPermissionsNamesList = _.filter(appPermissionNames, (permissionItem) => permissionItem.client_id === item.client_id);
+        item.permissionsNames = _.map(appPermissionsNamesList, 'permission_name');
     });
     return applyBasicDetail;
 }

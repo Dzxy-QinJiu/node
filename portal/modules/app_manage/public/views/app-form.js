@@ -21,9 +21,9 @@ var classNames = require('classnames');
 var language = require('../../../../public/language/getLanguage');
 import Trace from 'LIB_DIR/trace';
 
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/index-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../css/index-zh_CN.less');
 }
 function noop() {
@@ -47,7 +47,7 @@ var AppForm = React.createClass({
     formatAppInfo: function(app) {
         let managers = [];
         if (_.isArray(app.managers) && app.managers.length) {
-            managers = _.pluck(app.managers, 'managerId');
+            managers = _.map(app.managers, 'managerId');
         }
         return {
             id: app.id,
@@ -130,7 +130,7 @@ var AppForm = React.createClass({
 
     handleCancel: function(e) {
         e.preventDefault();
-        if (this.props.formType == 'edit') {
+        if (this.props.formType === 'edit') {
             Trace.traceEvent(e, '返回应用详情界面');
             this.props.returnInfoPanel();
         } else {
@@ -157,7 +157,7 @@ var AppForm = React.createClass({
                 app.tags = JSON.stringify(app.tags);
                 //设置正在保存中
                 AppFormAction.setSaveFlag(true);
-                if (_this.props.formType == 'add') {
+                if (_this.props.formType === 'add') {
                     Trace.traceEvent(e, '关闭添加应用界面');
                     AppFormAction.addApp(app);
                 } else {
@@ -207,7 +207,7 @@ var AppForm = React.createClass({
                     //管理员（多选）选择后，从下拉列表中去掉已选的选项
                     if (_.isArray(managers) && managers.length > 0) {
                         managers.forEach(function(manager) {
-                            if (manager == user.userId) {
+                            if (manager === user.userId) {
                                 className = 'manager-options-selected';
                             }
                         });
@@ -255,7 +255,7 @@ var AppForm = React.createClass({
         if (tags.indexOf(tag) > -1) {
             if (isAdd) return;
             Trace.traceEvent($(this.getDOMNode()).find('.block-tag-edit'),'点击取消标签');
-            tags = tags.filter(theTag => theTag != tag);
+            tags = tags.filter(theTag => theTag !== tag);
             this.state.formData.tags = tags;
         } else {
             if(!isAdd) {
@@ -290,11 +290,11 @@ var AppForm = React.createClass({
 
     // 选择所有者、管理员、密令APP
     handleSelect(type) {
-        if (type == 'owner') {
+        if (type === 'owner') {
             Trace.traceEvent($(this.getDOMNode()).find('.app-form-scroll'),'选择所有者');
-        } else if(type == 'managers') {
+        } else if(type === 'managers') {
             Trace.traceEvent($(this.getDOMNode()).find('.app-form-scroll'),'选择管理员');
-        } else if (type == 'secretApp') {
+        } else if (type === 'secretApp') {
             Trace.traceEvent($(this.getDOMNode()).find('.app-form-scroll'),'选择密令APP');
         }
     },
@@ -305,7 +305,7 @@ var AppForm = React.createClass({
         var className = 'right-panel-content';
         let traceName = '';
         if (this.props.appFormShow) {
-            if (this.props.formType == 'add') {
+            if (this.props.formType === 'add') {
                 className += ' right-form-add';
                 traceName = '添加应用界面';
             } else {
@@ -313,14 +313,14 @@ var AppForm = React.createClass({
                 traceName = '编辑应用界面';
             }
         }
-        let labelCol = (language.lan() == 'zh' ? 4 : 6);
+        let labelCol = (language.lan() === 'zh' ? 4 : 6);
         //保存成功失败的结果
         var saveResult = this.state.saveResult;
         var logoDescr = 'Logo';
         return (
             <div className={className} data-tracename={traceName}>
                 <RightPanelClose onClick={this.closePanel}/>
-                {(this.props.formType == 'add' || !this.props.appFormShow) ? null : (
+                {(this.props.formType === 'add' || !this.props.appFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon headIcon={formData.image}
@@ -453,7 +453,7 @@ var AppForm = React.createClass({
                                     <div className="indicator">
                                         {saveResult ?
                                             (
-                                                <AlertTimer time={saveResult == 'error' ? 3000 : 600}
+                                                <AlertTimer time={saveResult === 'error' ? 3000 : 600}
                                                     message={this.state.saveMsg}
                                                     type={this.state.saveResult} showIcon
                                                     onHide={this.hideSaveTooltip}/>

@@ -30,7 +30,7 @@ var LineChart = React.createClass({
                 data: []
             };
         }
-        var legend = _.pluck(this.props.legend , 'name');
+        var legend = _.map(this.props.legend , 'name');
         return {
             show: true,
             data: legend
@@ -78,7 +78,7 @@ var LineChart = React.createClass({
                 name: this.props.name,
                 type: 'line',
                 label: this.getLabel(),
-                data: _.pluck(list , this.props.valueField),
+                data: _.map(list , this.props.valueField),
                 itemStyle: {
                     normal: {
                         color: COLORSINGLE
@@ -93,7 +93,7 @@ var LineChart = React.createClass({
                     stack: 'stack',
                     barMinWidth: 4,
                     barMaxWidth: 40,
-                    data: _.pluck(_this.props.chartData , legendInfo.key),
+                    data: _.map(_this.props.chartData , legendInfo.key),
                     itemStyle: {
                         normal: {
                             color: COLORSINGLE
@@ -109,7 +109,7 @@ var LineChart = React.createClass({
                 symbol: 'none',
                 smooth: true,
                 label: this.getLabel(),
-                data: _.pluck(_this.props.chartData , 'total')
+                data: _.map(_this.props.chartData , 'total')
             };
             series.push(line);
         }
