@@ -37,6 +37,10 @@ class ExpireScheduleLists extends React.Component {
     }
 
     componentDidMount() {
+        this.gr();
+    }
+
+    gr(){
         scheduleManagementStore.listen(this.onStoreChange);
         //获取超时未完成的日程
         this.setState({
@@ -129,9 +133,9 @@ class ExpireScheduleLists extends React.Component {
             <div>
                 {_.map(this.state.scheduleExpiredList, (item) => {
                     var cls = classNames('iconfont', {
-                        'icon-schedule-visit': item.type == 'visit',
-                        'icon-phone-busy': item.type == 'calls',
-                        'icon-schedule-other': item.type == 'other'
+                        'icon-schedule-visit': item.type === 'visit',
+                        'icon-phone-busy': item.type === 'calls',
+                        'icon-schedule-other': item.type === 'other'
                     });
                     return (
                         <div className="list-item" data-tracename="超期日程列表">
@@ -166,7 +170,7 @@ class ExpireScheduleLists extends React.Component {
 
                             </p>
                             <p className="item-handle-content">
-                                {user_id == item.member_id ?
+                                {user_id === item.member_id ?
                                     <Button type="primary"
                                         onClick={this.handleMarkFinishStatus.bind(this, item)}
                                         data-tracename="点击标记日程状态为完成"
@@ -182,6 +186,8 @@ class ExpireScheduleLists extends React.Component {
                 }
                 <NoMoreDataTip
                     show={this.showNoMoreDataTip}
+                    message={Intl.get('common.no.more.expired','没有更多超时未完成了')}
+
                 />
             </div>
         );
@@ -319,4 +325,11 @@ ExpireScheduleLists.defaultProps = {
 
     }
 };
+
+ExpireScheduleLists.propTypes = {
+    isShowExpiredPanel: React.PropTypes.func,
+    showCustomerDetail: React.PropTypes.func,
+    updateExpiredPanelState: React.PropTypes.func,
+};
+
 export default ExpireScheduleLists;
