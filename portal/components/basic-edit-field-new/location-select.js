@@ -1,5 +1,5 @@
 import Trace from 'LIB_DIR/trace';
-import AntcAreaSelection from '../area-selection';
+import { AntcAreaSelection } from 'antc';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
 const LocationSelectField = React.createClass({

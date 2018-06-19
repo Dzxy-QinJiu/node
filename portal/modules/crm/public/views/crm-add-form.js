@@ -3,7 +3,7 @@ const Validator = Validation.Validator;
 import {regex} from 'ant-utils';
 const nameRegex = regex.customerNameRegex;
 import {Icon, Form, Input, Select, message}from 'antd';
-import AntcAreaSelection from 'CMP_DIR/area-selection';
+import { AntcAreaSelection } from 'antc';
 var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
@@ -199,6 +199,9 @@ var CRMAddForm = React.createClass({
             this.state.formData.province = result.pname;
             this.state.formData.city = result.cityname;
             this.state.formData.county = result.adname;
+            this.state.formData.province_code = result.pcode;
+            this.state.formData.city_code = result.citycode;
+            this.state.formData.county_code = result.adcode;
             this.state.formData.contacts0_phone = result.tel;
 
             this.setState(this.state);

@@ -34,6 +34,9 @@ class AddCustomerForm extends React.Component {
             province: '',
             city: '',
             county: '',
+            province_code: '',
+            city_code: '',
+            county_code: '',
             address: '',//详细地址
             location: '',//经纬度
             administrative_level: '',//行政区划 默认是企业，是4
@@ -92,7 +95,7 @@ class AddCustomerForm extends React.Component {
         batchChangeAction.getRecommendTags(result => {
             let list = _.isArray(result) ? result : [];
             list = _.filter(list, (item) => {
-                return item !== Intl.get('crm.sales.clue', '线索') && item != Intl.get('crm.qualified.roll.out', '转出');
+                return item !== Intl.get('crm.sales.clue', '线索') && item !== Intl.get('crm.qualified.roll.out', '转出');
             });
             this.setState({isLoadingTagLists: false, tagList: list});
         });
@@ -131,7 +134,7 @@ class AddCustomerForm extends React.Component {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == 'true') {
+                    if (data.result === 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
@@ -162,6 +165,9 @@ class AddCustomerForm extends React.Component {
             this.state.formData.province = result.pname;
             this.state.formData.city = result.cityname;
             this.state.formData.county = result.adname;
+            this.state.formData.province_code = result.pcode;
+            this.state.formData.city_code = result.citycode;
+            this.state.formData.county_code = result.adcode;
             this.state.formData.contacts0_phone = result.tel;
             this.setState({formData: this.state.formData});
         });
@@ -208,7 +214,7 @@ class AddCustomerForm extends React.Component {
             this.setState({
                 isLoading: false
             });
-            if (data.code == 0) {
+            if (data.code === 0) {
                 message.success(Intl.get('user.user.add.success', '添加成功'));
                 if (_.isFunction(this.props.addOne)) {
                     this.props.addOne();
@@ -285,7 +291,7 @@ class AddCustomerForm extends React.Component {
                 //唯一性验证出错了
                 callback(Intl.get('crm.82', '电话唯一性验证出错了'));
             } else {
-                if (_.isObject(data) && data.result == 'true') {
+                if (_.isObject(data) && data.result === 'true') {
                     callback();
                 } else {
                     //已存在
@@ -302,16 +308,19 @@ class AddCustomerForm extends React.Component {
         }];
     };
     //更新地址
-    updateLocation = (address) => {
-        var location = address.split('/');
-        this.state.formData.province = location[0] || '';
-        this.state.formData.city = location[1] || '';
-        this.state.formData.county = location[2] || '';
+    updateLocation = (addressObj) => {
+        this.state.formData.province = addressObj.provName || '';
+        this.state.formData.city = addressObj.cityName || '';
+        this.state.formData.county = addressObj.countyName || '';
+        this.state.formData.province_code = addressObj.provCode || '';
+        this.state.formData.city_code = addressObj.cityCode || '';
+        this.state.formData.county_code = addressObj.countyCode || '';
+        Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item'), '选择地址');
     };
     //选择不同的级别
     handleChangeAdminLevel = (index) => {
         //如果点击原来选中的级别，会取消选中
-        if (index == this.state.formData.administrative_level) {
+        if (index === this.state.formData.administrative_level) {
             this.state.formData.administrative_level = '';
         } else {
             this.state.formData.administrative_level = index;
@@ -364,7 +373,7 @@ class AddCustomerForm extends React.Component {
             <div>
                 {
                     crmUtil.administrativeLevels.map((obj) => {
-                        if (obj.id == this.state.formData.administrative_level) {
+                        if (obj.id === this.state.formData.administrative_level) {
                             return (
                                 <button className="selected-adm" key={obj.id} value={obj.id}
                                     onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>);
@@ -478,9 +487,9 @@ class AddCustomerForm extends React.Component {
                                             wrapperCol="17"
                                             label={Intl.get('realm.address', '地址')}
                                             placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                            prov={formData.province}
-                                            city={formData.city}
-                                            county={formData.county}
+                                            provName={formData.province}
+                                            cityName={formData.city}
+                                            countyName={formData.county}
                                             updateLocation={this.updateLocation}
                                         />
                                     </div>

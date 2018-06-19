@@ -30,6 +30,9 @@ var CallAddCustomerForm = React.createClass({
             province: '',
             city: '',
             county: '',
+            province_code: '',
+            city_code: '',
+            county_code: '',
             remarks: '',//备注
             contacts0_name: '',//联系人名称
             contacts0_position: '',//联系人职位
@@ -54,6 +57,9 @@ var CallAddCustomerForm = React.createClass({
         };
     },
     componentDidMount: function() {
+        this.getIndustryList();
+    },
+    getIndustryList: function(){
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
         CrmAction.getIndustries(result => {
@@ -83,11 +89,13 @@ var CallAddCustomerForm = React.createClass({
     },
 
     //更新地址
-    updateLocation: function(address) {
-        var location = address.split('/');
-        this.state.formData.province = location[0] || '';
-        this.state.formData.city = location[1] || '';
-        this.state.formData.county = location[2] || '';
+    updateLocation: function(addressObj) {
+        this.state.formData.province = addressObj.provName || '';
+        this.state.formData.city = addressObj.cityName || '';
+        this.state.formData.county = addressObj.countyName || '';
+        this.state.formData.province_code = addressObj.provCode || '';
+        this.state.formData.city_code = addressObj.cityCode || '';
+        this.state.formData.county_code = addressObj.countyCode || '';
     },
 
     //提交修改
@@ -106,7 +114,7 @@ var CallAddCustomerForm = React.createClass({
                 commonMethodUtil.removeEmptyItem(formData);
                 CrmAction.addCustomer(formData, function(result) {
                     _this.state.isLoading = false;
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         formData.contacts0_phone = _this.props.phoneNumber;
                         CallRecordAction.updateCallRecord(formData);
                         message.success( Intl.get('user.user.add.success', '添加成功'));
@@ -143,6 +151,9 @@ var CallAddCustomerForm = React.createClass({
             this.state.formData.province = result.pname;
             this.state.formData.city = result.cityname;
             this.state.formData.county = result.adname;
+            this.state.formData.province_code = result.pcode;
+            this.state.formData.city_code = result.citycode;
+            this.state.formData.county_code = result.adcode;
             this.state.formData.contacts0_phone = this.transPhoneNumber(this.props.phoneNumber);
             this.setState(this.state);
         });
@@ -158,7 +169,7 @@ var CallAddCustomerForm = React.createClass({
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == 'true') {
+                    if (data.result === 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
@@ -241,12 +252,12 @@ var CallAddCustomerForm = React.createClass({
         let transNumber = '';
         let phoneRegex = /^1[3|4|5|7|8][0-9]\d{8}$/;
         // 电话号码转换
-        if (phoneNumber.length == 12 && phoneNumber[1] == 1) {
+        if (phoneNumber.length === 12 && phoneNumber[1] === 1) {
             transNumber = phoneNumber.slice(1);
             if (phoneRegex.test(transNumber)) {
                 return transNumber;
             }
-        } else if (phoneNumber.length == 11 && phoneRegex.test(transNumber)) { // 11位的电话号码
+        } else if (phoneNumber.length === 11 && phoneRegex.test(transNumber)) { // 11位的电话号码
             return transNumber;
         }
 
@@ -265,9 +276,9 @@ var CallAddCustomerForm = React.createClass({
     },
 
     handleSelect(value){
-        if (value == 'industry') {
+        if (value === 'industry') {
             Trace.traceEvent(this.getDOMNode(), '选择行业');
-        } else if(value == 'contacts0_role') {
+        } else if(value === 'contacts0_role') {
             Trace.traceEvent(this.getDOMNode(), '选择角色');
         }
     },
@@ -331,9 +342,10 @@ var CallAddCustomerForm = React.createClass({
                                     </Select>
                                 </Validator>)}
                         </FormItem >
-                        <AntcAreaSelection labelCol="6" wrapperCol="18" width="420" prov={formData.province}
-                            city={formData.city}
-                            county={formData.county} updateLocation={this.updateLocation}/>
+                        <AntcAreaSelection labelCol="6" wrapperCol="18" width="420"
+                            provName={formData.province} cityName={formData.city}
+                            countyName={formData.county}
+                            updateLocation={this.updateLocation}/>
                         < FormItem
                             label={Intl.get('common.remark', '备注')}
                             id="remarks"
@@ -392,7 +404,7 @@ var CallAddCustomerForm = React.createClass({
                             </Validator>
                         </FormItem>
                         <div className="show-call-phone">
-                                电话 <span className="call-phone">{this.transPhoneNumber(this.props.phoneNumber)}</span>
+                            {Intl.get('common.phone', '电话')} <span className="call-phone">{this.transPhoneNumber(this.props.phoneNumber)}</span>
                         </div>
                         <FormItem
                             wrapperCol={{span: 24}}>
