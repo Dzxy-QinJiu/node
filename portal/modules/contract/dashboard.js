@@ -4,12 +4,18 @@
 
 import './public/style.less';
 import Analysis from '../../components/analysis';
-import TopNav from '../../components/top-nav';
 import { CHART_HEIGHT } from './consts';
 import AnalysisFilter from '../../components/analysis/filter';
 import TeamTree from '../../components/team-tree';
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
+
 import { formatAmount } from 'LIB_DIR/func';
-import CardContainer from 'CMP_DIR/card-container'; // 容器
+import { AntcCardContainer } from 'antc'; // 容器
+import { CONTRACT_STATIC_COLUMNS } from './consts';
+import { Row, Col } from 'antd';
+
+//窗口改变的事件emitter
+const resizeEmitter = require('PUB_DIR/sources/utils/emitters').resizeEmitter;
 
 const threeMonthAgo = moment().subtract(3, 'month').valueOf();
 const now = moment().valueOf();
@@ -22,13 +28,34 @@ const ContractDashboard = React.createClass({
             amount: '',
             grossProfit: '',
             repayGrossProfit: '',
+            contentHeight: 0,
         };
     },
-    getComponent(component, props) {
-        if (!props) props = {};
-        props.height = CHART_HEIGHT;
+    componentDidMount() {
+        //窗口大小改变事件
+        resizeEmitter.on(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
+    },
 
-        return React.createElement(component, props, null);
+    componentWillUnmount() {
+        //卸载窗口大小改变事件
+        resizeEmitter.removeListener(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
+    },
+
+    //窗口缩放时候的处理函数
+    resizeHandler(data){
+        this.setState({
+            contentHeight: data.height
+        });
+    },
+
+    getComponent(component, componentProps) {
+        if (!componentProps) componentProps = {};
+
+        componentProps.height = CHART_HEIGHT;
+
+        componentProps.ref = (ref) => {this.refs[componentProps.refName] = ref;};
+
+        return React.createElement(component, componentProps, null);
     },
     renderCountBoxContent(args, value) {
         return (
@@ -76,9 +103,6 @@ const ContractDashboard = React.createClass({
     },
     render: function() {
         const countBoxStyle = {
-            width: '33.33%',
-            marginRight: 0,
-            padding: '0 0 0 10px',
             border: 'none',
         };
 
@@ -96,10 +120,8 @@ const ContractDashboard = React.createClass({
                         type: 'contract',
                     }),
                 }),
-                style: _.extend({}, countBoxStyle, {
-                    marginLeft: -10,
-                    marginRight: 5,
-                }),
+                style: countBoxStyle,
+                lg: 8,
             },
             {
                 title: Intl.get('contract.156', '新增合同额'),
@@ -141,9 +163,8 @@ const ContractDashboard = React.createClass({
                         type: 'repay',
                     }),
                 }),
-                style: _.extend({}, countBoxStyle, {
-                    marginRight: 5,
-                }),
+                style: countBoxStyle,
+                lg: 8,
             },
             {
                 title: Intl.get('contract.158', '新增回款毛利'),
@@ -173,6 +194,7 @@ const ContractDashboard = React.createClass({
                     }),
                 }),
                 style: countBoxStyle,
+                lg: 8,
             },
             {
                 title: Intl.get('contract.144', '新增合同毛利团队分布') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.139', '万') + ')',
@@ -185,6 +207,7 @@ const ContractDashboard = React.createClass({
                     autoAdjustXaxisLabel: true,
                     gridY2: 70,
                     processData: this.processAmountData,
+                    refName: 'xin_zeng_he_tong_mao_li_tuan_dui_fen_bu',
                 })
             },
             {
@@ -198,6 +221,7 @@ const ContractDashboard = React.createClass({
                     autoAdjustXaxisLabel: true,
                     gridY2: 70,
                     processData: this.processAmountData,
+                    refName: 'xin_zeng_hui_kuan_tuan_dui_fen_bu',
                 })
             },
             {
@@ -211,6 +235,7 @@ const ContractDashboard = React.createClass({
                     autoAdjustXaxisLabel: true,
                     xAxisRotateLength: 8,
                     gridY2: 70,
+                    refName: 'xin_zeng_fei_yong_tuan_dui_fen_bu',
                 })
             },
             {
@@ -223,6 +248,7 @@ const ContractDashboard = React.createClass({
                     startTime: threeMonthAgo,
                     endTime: now,
                     processData: this.processAmountData,
+                    refName: 'jin_san_ge_yue_hui_kuan_zhou_qu_shi',
                 })
             },
             {
@@ -234,6 +260,7 @@ const ContractDashboard = React.createClass({
                     property: 'trend',
                     startTime: threeMonthAgo,
                     endTime: now,
+                    refName: 'jin_san_ge_yue_xin_zeng_he_tong_zhou_qu_shi',
                 })
             },
             {
@@ -245,6 +272,7 @@ const ContractDashboard = React.createClass({
                     property: 'trend',
                     startTime: threeMonthAgo,
                     endTime: now,
+                    refName: 'jin_san_ge_yue_fei_yong_zhou_qu_shi',
                 })
             },
             {
@@ -258,36 +286,81 @@ const ContractDashboard = React.createClass({
                     target: 'Contract',
                     type: 'team',
                     property: 'amount',
+                    refName: 'qian_dan_qing_kuang_tong_ji',
+                })
+            },
+            {
+                title: Intl.get('contract.168', '合同分析统计表') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.155', '元') + ')',
+                style: {
+                    width: '100%',
+                    marginRight: 0
+                },
+                content: this.getComponent(Analysis, {
+                    chartType: 'contractStatistics',
+                    target: 'ContractStatic',
+                    column: CONTRACT_STATIC_COLUMNS,
+                    refName: 'he_tong_fen_xi_tong_ji',
                 })
             },
         ];
 
         return (
-            <div className="contract-dashboard">
-                <TopNav>
-                    <AnalysisFilter isAppSelectorShow={false} isAutoSelectDate={true} />
-                </TopNav>
-                <div className="main-content">
-                    <div className="main-left">
-                        {charts.map(chart => {
-                            return chart.hide ? null : (
-                                <div className="chart-wrap" style={chart.style || {}}>
-                                    {chart.title && !chart.isTitleHide ? (
-                                        <CardContainer title={chart.title}>
-                                            {this.renderChartContent(chart.content)}
-                                        </CardContainer>
-                                    ) : this.renderChartContent(chart.content) }
+            <div className="contract-dashboard" style={{height: this.state.contentHeight}}>
+                <GeminiScrollBar>
+                    <div className="dashboard-content">
+                        <Row>
+                            <AnalysisFilter isAppSelectorShow={false} isAutoSelectDate={true} />
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={18}>
+                                <Row gutter={16}>
+                                    {charts.map(chart => {
+                                        const xs = chart.xs || 24;
+                                        const sm = chart.sm || 24;
+                                        const md = chart.md || 24;
+                                        const lg = chart.lg || 12;
+
+                                        const contentProps = chart.content.props;
+                                        const refName = contentProps.refName;
+                                        const ref = this.refs[refName];
+                                        const exportData = () => {
+                                            if (refName === 'qian_dan_qing_kuang_tong_ji') {
+                                                $('.signing-statistics-export-btn').click();
+                                                return;
+                                            }
+
+                                            if (!ref) return;
+
+                                            return ref.getProcessedData();
+                                        };
+                                        return chart.hide ? null : (
+                                            <Col xs={xs} sm={sm} md={md} lg={lg} style={chart.style || {}}>
+                                                <div className="chart-wrap">
+                                                    {chart.title && !chart.isTitleHide ? (
+                                                        <AntcCardContainer title={chart.title}
+                                                            csvFileName={refName + '.csv'}
+                                                            exportData={exportData.bind(this)}
+                                                        >
+                                                            {this.renderChartContent(chart.content)}
+                                                        </AntcCardContainer>
+                                                    ) : this.renderChartContent(chart.content) }
+                                                </div>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
+                            </Col>
+                            <Col span={6}>
+                                <div className="main-right">
+                                    <TeamTree
+                                        onTeamSelect={this.showTeamDisChart}
+                                        onMemberSelect={this.hideTeamDisChart}
+                                    />
                                 </div>
-                            );
-                        })}
+                            </Col>
+                        </Row>
                     </div>
-                    <div className="main-right">
-                        <TeamTree
-                            onTeamSelect={this.showTeamDisChart}
-                            onMemberSelect={this.hideTeamDisChart}
-                        />
-                    </div>
-                </div>
+                </GeminiScrollBar>
             </div>
         );
     }

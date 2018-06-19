@@ -4,15 +4,21 @@ const Validator = Validation.Validator;
  * 销售合同基本信息添加表单
  */
 
-import { Form, Input, Select, DatePicker, Radio } from 'antd';
+import { Form, Input, Select, DatePicker, Radio, Checkbox } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const CheckboxGroup = Checkbox.Group;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import BasicMixin from './mixin-basic';
+import { COST_STRUCTURE } from '../consts';
 
 const AddBasic = React.createClass({
     mixins: [ValidateMixin, BasicMixin],
+    handleCostStructureChange: function(value) {
+        this.state.formData.cost_structure = value.join();
+        this.setState(this.state);
+    },
     render: function() {
         const formData = this.state.formData;
 
@@ -28,7 +34,7 @@ const AddBasic = React.createClass({
 
         const formItemLayout2 = {
             labelCol: { span: 4 },
-            wrapperCol: { span: 6 },
+            wrapperCol: { span: 10 },
         };
 
         //成本额默认为0
@@ -49,6 +55,8 @@ const AddBasic = React.createClass({
                     {this.renderBuyerField()}
                     {this.renderUserField()}
                     {this.renderTeamField()}
+                    {this.renderSalesRepField()}
+                    {this.renderSalesRepTeamField()}
                     {this.renderAmountField()}
                     <FormItem 
                         {...formItemLayout2}
@@ -63,15 +71,17 @@ const AddBasic = React.createClass({
                                 onChange={this.setField.bind(this, 'cost_price')}
                             />
                         </Validator>
+                        <span className="ant-form-text">{Intl.get('contract.155', '元')}</span>
                     </FormItem>
                     <FormItem 
                         {...formItemLayout2}
                         label={Intl.get('contract.165', '成本构成')}
                     >
-                        <Input
+                        <CheckboxGroup
                             name="cost_structure"
-                            value={this.parseAmount(formData.cost_structure)}
-                            onChange={this.setField.bind(this, 'cost_structure')}
+                            options={COST_STRUCTURE}
+                            value={formData.cost_structure ? formData.cost_structure.split(',') : []}
+                            onChange={this.handleCostStructureChange}
                         />
                     </FormItem>
                     <FormItem 
@@ -87,25 +97,36 @@ const AddBasic = React.createClass({
                                 value={formData.gross_profit}
                             />
                         </Validator>
+                        <span className="ant-form-text">{Intl.get('contract.155', '元')}</span>
                     </FormItem>
                     {this.renderDateField()}
                     <FormItem 
                         {...formItemLayout}
                         label={Intl.get('contract.35', '起始时间')}
+                        validateStatus={this.getValidateStatus('start_time')}
+                        help={this.getHelpMessage('start_time')}
                     >
-                        <DatePicker
-                            value={formData.start_time ? moment(formData.start_time) : ''}
-                            onChange={this.setField.bind(this, 'start_time')}
-                        />
+                        <Validator rules={[this.validateStartAndEndTime('start_time')]}>
+                            <DatePicker
+                                name='start_time'
+                                value={formData.start_time ? moment(formData.start_time) : ''}
+                                onChange={this.setField.bind(this, 'start_time')}
+                            />
+                        </Validator>
                     </FormItem>
                     <FormItem 
                         {...formItemLayout}
                         label={Intl.get('contract.105', '结束时间')}
+                        validateStatus={this.getValidateStatus('end_time')}
+                        help={this.getHelpMessage('end_time')}
                     >
-                        <DatePicker
-                            value={formData.end_time ? moment(formData.end_time) : ''}
-                            onChange={this.setField.bind(this, 'end_time')}
-                        />
+                        <Validator rules={[this.validateStartAndEndTime('end_time')]}>
+                            <DatePicker
+                                name='end_time'
+                                value={formData.end_time ? moment(formData.end_time) : ''}
+                                onChange={this.setField.bind(this, 'end_time')}
+                            />
+                        </Validator>
                     </FormItem>
                     <FormItem 
                         {...formItemLayout2}
@@ -137,7 +158,12 @@ const AddBasic = React.createClass({
                     {this.renderLabelField()}
                     {formData.category ? this.renderCategoryField() : null}
                     {this.renderRemarksField()}
-                    {this.renderBelongCustomerField()}
+                    <FormItem 
+                        {...formItemLayout2}
+                        label={Intl.get('common.belong.customer', '所属客户')}
+                    >
+                        {this.renderBelongCustomerField()}
+                    </FormItem>
                 </Validation>
             </Form>
         );

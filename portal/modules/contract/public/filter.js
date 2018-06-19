@@ -4,12 +4,18 @@ import SearchInput from '../../../components/searchInput';
 const Filter = React.createClass({
     getInitialState: function() {
         return {
-            formData: {},
             condition: {},
         };
     },
+    componentWillReceiveProps: function(nextProps) {
+        //切换视图时清空表头搜索筛选条件
+        if (nextProps.type !== this.props.type) {
+            this.setState({condition: {}});
+            this.refs.searchInput.closeSearchInput();
+        }
+    },
     search: function() {
-        this.state.condition = _.extend({}, this.state.formData, this.refs.searchInput.state.formData);
+        this.state.condition = this.refs.searchInput.state.formData;
         this.props.getContractList();
     },
     render: function() {

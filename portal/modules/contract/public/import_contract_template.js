@@ -22,19 +22,31 @@ var ImportContractTemplate = React.createClass({
                     <div>
                         <div className="import-tips">
                             <p>
-                                    1、点击下载
-                                <a data-tracename="点击下载导入销售合同模板" href="/rest/sale_contract/download_template">
-                                        《导入销售合同模板》
-                                </a>
+                                    1.<ReactIntl.FormattedMessage
+                                    id="common.download.template"
+                                    defaultMessage={'点击下载{template}'}
+                                    values={{
+                                        'template': <a href="/rest/sale_contract/download_template"
+                                            data-tracename="点击下载导入销售合同模板"
+                                        >{Intl.get('contract.190', '《销售合同模板》')}</a>
+                                    }}
+                                />
                             </p>
+
                             <p>
-                                    2、点击下载
-                                <a data-tracename="点击下载导入采购合同模板" href="/rest/purchase_contract/download_template">
-                                        《导入采购合同模板》
-                                </a>
+                                    2.<ReactIntl.FormattedMessage
+                                    id="common.download.template"
+                                    defaultMessage={'点击下载{template}'}
+                                    values={{
+                                        'template': <a href="/rest/purchase_contract/download_template"
+                                            data-tracename="点击下载导入采购合同模板"
+                                        >{Intl.get('contract.191', '《采购合同模板》')}</a>
+                                    }}
+                                />
                             </p>
+
                             <p>
-                                    3、填写模板文件选择文件，并开始导入
+                                    3.{Intl.get('common.write.template', '填写模板文件后，选择文件并导入')}
                             </p>
                         </div>
 

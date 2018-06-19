@@ -6,7 +6,7 @@ const Validator = Validation.Validator;
 
 import routeList from '../common/route';
 import ajax from '../common/ajax';
-import { Form, Input, Icon, DatePicker, Button, message } from 'antd';
+import {Form, Input, Icon, DatePicker, Button, message} from 'antd';
 const FormItem = Form.Item;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import rightPanelUtil from '../../../components/rightPanel';
@@ -15,7 +15,7 @@ const RightPanelDelete = rightPanelUtil.RightPanelDelete;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import { DATE_FORMAT, OPERATE } from '../consts';
+import {DATE_FORMAT, OPERATE} from '../consts';
 
 const DetailInvoice = React.createClass({
     mixins: [ValidateMixin],
@@ -58,7 +58,7 @@ const DetailInvoice = React.createClass({
 
         if (type === 'delete') {
             params = {id: id};
-            this.editInvoice(type, data, params, cb, target);
+            this.editInvoice(type, data, params, cb, target, id);
         } else if (type === 'add' || type === 'update') {
             if (isNaN(index)) index = '';
             data = this.state['formData' + index];
@@ -73,12 +73,12 @@ const DetailInvoice = React.createClass({
                 if (!valid) {
                     return;
                 } else {
-                    this.editInvoice(type, data, params, cb, target);
+                    this.editInvoice(type, data, params, cb, target, id);
                 }
             });
         }
     },
-    editInvoice: function(type, data, params, cb, target) {
+    editInvoice: function(type, data, params, cb, target, id) {
         this.props.showLoading();
 
         if (!target || _.isObject(target)) target = '';
@@ -91,15 +91,22 @@ const DetailInvoice = React.createClass({
             data: data || {},
         };
         if (params) arg.params = params;
-        
+
         ajax(arg).then(result => {
             this.props.hideLoading();
 
             if (result.code === 0) {
-                const targetName = target ? Intl.get('contract.39', '发票额记录') : Intl.get('contract.40', '发票基本信息');
-
+                let targetName, changePropName, isInvoiceBasicInforOrInvoices = type;
+                if (target) {
+                    targetName = Intl.get('contract.39', '发票额记录');
+                    changePropName = 'invoices';
+                } else {
+                    targetName = Intl.get('contract.40', '发票基本信息');
+                    changePropName = 'invoice_detail';
+                    isInvoiceBasicInforOrInvoices = 'addOrUpdateInvoiceBasic';
+                }
                 message.success(OPERATE[type] + targetName + '成功');
-                this.props.refreshCurrentContract(this.props.contract.id);
+                this.props.refreshCurrentContractNoAjax(changePropName, isInvoiceBasicInforOrInvoices, result.result, id);
                 if (_.isFunction(cb)) cb();
             } else {
                 message.error(result.msg || OPERATE[type] + targetName + '失败');
@@ -113,8 +120,10 @@ const DetailInvoice = React.createClass({
         let formData = this.state[key];
 
         if (_.isEmpty(formData) && !invoice) {
-            formData = this.state[key] = {contract_id: this.props.contract.id};
+            let state = this.state;
+            formData = state[key] = {contract_id: this.props.contract.id};
             formData.date = moment().valueOf();
+            this.setState(state);
         }
 
         const disabledDate = function(current) {
@@ -125,7 +134,7 @@ const DetailInvoice = React.createClass({
         return (
             <div className="render-form">
                 <Validation ref={ref} onValidate={this.handleValidate}>
-                    <FormItem 
+                    <FormItem
                         validateStatus={this.getValidateStatus('date' + index)}
                         help={this.getHelpMessage('date' + index)}
                     >
@@ -136,14 +145,17 @@ const DetailInvoice = React.createClass({
                             disabledDate={disabledDate}
                         />
                     </FormItem>
-                &nbsp;
-                    <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
-                &nbsp;
-                    <FormItem 
+                    &nbsp;
+                    <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出"/>
+                    &nbsp;
+                    <FormItem
                         validateStatus={this.getValidateStatus('amount' + index)}
                         help={this.getHelpMessage('amount' + index)}
                     >
-                        <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule()]}>
+                        <Validator rules={[{
+                            required: true,
+                            message: Intl.get('contract.44', '不能为空')
+                        }, this.getNumberValidateRule()]}>
                             <Input
                                 name={'amount' + index}
                                 value={this.parseAmount(formData.amount)}
@@ -151,9 +163,9 @@ const DetailInvoice = React.createClass({
                             />
                         </Validator>
                     </FormItem>
-                &nbsp;
-                    <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                    <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票" />
+                    &nbsp;
+                    <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元"/>
+                    <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票"/>
                 </Validation>
             </div>
         );
@@ -164,8 +176,8 @@ const DetailInvoice = React.createClass({
         invoices = _.sortBy(invoices, item => item.date).reverse();
 
         const formItemLayout = {
-            labelCol: { span: 4 },
-            wrapperCol: { span: 10 },
+            labelCol: {span: 4},
+            wrapperCol: {span: 10},
         };
 
         //编辑按钮是否显示
@@ -176,7 +188,7 @@ const DetailInvoice = React.createClass({
         return (
             <div className="detail-invoice">
                 {isEditBtnShow ? (
-                    <RightPanelEdit 
+                    <RightPanelEdit
                         onClick={this.showForm}
                     />
                 ) : null}
@@ -184,7 +196,7 @@ const DetailInvoice = React.createClass({
                 {this.state.isFormShow ? (
                     <Form horizontal>
                         <Validation ref="validation" onValidate={this.handleValidate}>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('contract.47', '公司全称')}
                                 validateStatus={this.getValidateStatus('payer_name')}
@@ -198,7 +210,7 @@ const DetailInvoice = React.createClass({
                                     />
                                 </Validator>
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('contract.49', '银行帐号')}
                             >
@@ -207,7 +219,7 @@ const DetailInvoice = React.createClass({
                                     onChange={this.setField.bind(this, 'account_number')}
                                 />
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('contract.50', '开户行')}
                             >
@@ -216,7 +228,7 @@ const DetailInvoice = React.createClass({
                                     onChange={this.setField.bind(this, 'opening_bank')}
                                 />
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('realm.address', '地址')}
                             >
@@ -225,7 +237,7 @@ const DetailInvoice = React.createClass({
                                     onChange={this.setField.bind(this, 'address')}
                                 />
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('common.phone', '电话')}
                             >
@@ -234,7 +246,7 @@ const DetailInvoice = React.createClass({
                                     onChange={this.setField.bind(this, 'phone')}
                                 />
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('contract.51', '邮寄地址')}
                             >
@@ -243,7 +255,7 @@ const DetailInvoice = React.createClass({
                                     onChange={this.setField.bind(this, 'email_address')}
                                 />
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('contract.52', '营业执照号码')}
                             >
@@ -252,7 +264,7 @@ const DetailInvoice = React.createClass({
                                     onChange={this.setField.bind(this, 'business_license_id')}
                                 />
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('contract.53', '组织机构代码')}
                             >
@@ -261,7 +273,7 @@ const DetailInvoice = React.createClass({
                                     onChange={this.setField.bind(this, 'organization_id')}
                                 />
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('contract.54', '纳税人识别号')}
                             >
@@ -271,8 +283,11 @@ const DetailInvoice = React.createClass({
                                 />
                             </FormItem>
                             <div className="op-buttons">
-                                <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
-                                <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp, '', '')}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                                <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel"
+                                    defaultMessage="取消"/></RightPanelCancel>
+                                <RightPanelSubmit
+                                    onClick={this.handleSubmit.bind(this, detailOp, '', '')}><ReactIntl.FormattedMessage
+                                        id="common.sure" defaultMessage="确定"/></RightPanelSubmit>
                             </div>
                         </Validation>
                     </Form>
@@ -280,20 +295,39 @@ const DetailInvoice = React.createClass({
                     <div className="invoice-info">
                         {invoiceDetail.payer_name ? (
                             <div className="info">
-                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.47" defaultMessage="公司全称" /></span>：<span className="filed-value">{invoiceDetail.payer_name}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.49" defaultMessage="银行帐号" /></span>：<span className="filed-value">{invoiceDetail.account_number}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.50" defaultMessage="开户行" /></span>：<span className="filed-value">{invoiceDetail.opening_bank}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="realm.address" defaultMessage="地址" /></span>：<span className="filed-value">{invoiceDetail.address}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="common.phone" defaultMessage="电话" /></span>：<span className="filed-value">{invoiceDetail.phone}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.51" defaultMessage="邮寄地址" /></span>：<span className="filed-value">{invoiceDetail.email_address}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.52" defaultMessage="营业执照号码" /></span>：<span className="filed-value">{invoiceDetail.business_license_id}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.53" defaultMessage="组织机构代码" /></span>：<span className="filed-value">{invoiceDetail.organization_id}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.54" defaultMessage="纳税人识别号" /></span>：<span className="filed-value">{invoiceDetail.taxpayer_id}</span>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.47"
+                                    defaultMessage="公司全称"/></span>：<span
+                                    className="filed-value">{invoiceDetail.payer_name}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.49"
+                                    defaultMessage="银行帐号"/></span>：<span
+                                    className="filed-value">{invoiceDetail.account_number}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.50"
+                                    defaultMessage="开户行"/></span>：<span
+                                    className="filed-value">{invoiceDetail.opening_bank}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="realm.address"
+                                    defaultMessage="地址"/></span>：<span
+                                    className="filed-value">{invoiceDetail.address}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="common.phone"
+                                    defaultMessage="电话"/></span>：<span
+                                    className="filed-value">{invoiceDetail.phone}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.51"
+                                    defaultMessage="邮寄地址"/></span>：<span
+                                    className="filed-value">{invoiceDetail.email_address}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.52"
+                                    defaultMessage="营业执照号码"/></span>：<span
+                                    className="filed-value">{invoiceDetail.business_license_id}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.53"
+                                    defaultMessage="组织机构代码"/></span>：<span
+                                    className="filed-value">{invoiceDetail.organization_id}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.54"
+                                    defaultMessage="纳税人识别号"/></span>：<span
+                                    className="filed-value">{invoiceDetail.taxpayer_id}</span>
                             </div>
                         ) : (
                             <div className="info info-blank">
-                                <ReactIntl.FormattedMessage id="contract.add.invoice.info" defaultMessage="发票基本信息尚未添加，可点击后面的编辑按钮进行添加" />    
-                    
+                                <ReactIntl.FormattedMessage id="contract.add.invoice.info"
+                                    defaultMessage="发票基本信息尚未添加，可点击后面的编辑按钮进行添加"/>
+
                             </div>
                         )}
                         <div className="extra">
@@ -304,7 +338,7 @@ const DetailInvoice = React.createClass({
                                         className="btn-primary-sure btn-add-invoice"
                                         onClick={this.handleSubmit.bind(this, 'add', 0, 'Amount')}
                                     >
-                                        <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
+                                        <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>
                                     </Button>
                                 </div>
                             ) : null}
@@ -312,7 +346,7 @@ const DetailInvoice = React.createClass({
                                 {invoices.map((invoice, index) => {
                                     index = index + 1;
                                     const isFormShow = this.state['isFormShow' + index];
-    
+
                                     return (
                                         <li key={index}>
                                             {isFormShow ? (
@@ -322,16 +356,16 @@ const DetailInvoice = React.createClass({
                                             ) : (
                                                 <span>
                                                     {invoice.date ? moment(invoice.date).format(DATE_FORMAT) : ''}
-                                            &nbsp;
-                                                    <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
-                                            &nbsp;
+                                                    &nbsp;
+                                                    <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出"/>
+                                                    &nbsp;
                                                     {invoice.amount}
-                                            &nbsp;
-                                                    <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                                                    <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票" />
+                                                    &nbsp;
+                                                    <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元"/>
+                                                    <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票"/>
                                                 </span>
                                             )}
-            
+
                                             {hasPrivilege('CONTRACT_ADD_INVOICE_AMOUNT') ? (
                                                 <span>
                                                     {isFormShow ? (
@@ -340,7 +374,7 @@ const DetailInvoice = React.createClass({
                                                                 shape="circle"
                                                                 title={Intl.get('common.save', '保存')}
                                                                 className="btn-save"
-                                                                onClick={this.handleSubmit.bind(this, 'update', index, 'Amount')}
+                                                                onClick={this.handleSubmit.bind(this, 'update', index, 'Amount', invoice.id)}
                                                             >
                                                                 <Icon type="save"/>
                                                             </Button>
@@ -355,10 +389,10 @@ const DetailInvoice = React.createClass({
                                                         </span>
                                                     ) : (
                                                         <span>
-                                                            <RightPanelEdit 
+                                                            <RightPanelEdit
                                                                 onClick={this.showForm.bind(this, index, invoice)}
                                                             />
-                                                            <RightPanelDelete 
+                                                            <RightPanelDelete
                                                                 title={Intl.get('common.delete', '删除')}
                                                                 onClick={this.handleSubmit.bind(this, 'delete', index, 'Amount', invoice.id)}
                                                             />
