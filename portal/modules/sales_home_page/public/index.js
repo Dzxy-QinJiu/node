@@ -586,6 +586,7 @@ var SalesHomePage = React.createClass({
                 listenScrollBottom: this.state.callBackRecord.listenScrollBottom,
                 handleScrollBottom,
                 showNoMoreDataTip: showNoMoreDataTip(),
+                noMoreDataText: Intl.get('noMoreTip.visitBack', '没有更多回访记录了')
             };
             return (
                 <div>

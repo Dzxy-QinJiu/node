@@ -2223,5 +2223,10 @@ var en_US = {
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
     'clue.analysis.consult.time': 'Consult time:',//咨询时间：
+    'noMoreTip.user': 'no more users',
+    'noMoreTip.log': 'no more logs',
+    'noMoreTip.callRecord': 'no more call records',
+    'noMoreTip.visitBack': 'no more visit record',
+    'noMoreTip.customer': 'no more customers',
 };
 export default en_US;

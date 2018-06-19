@@ -768,12 +768,10 @@ var UserTabContent = React.createClass({
                             <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录"/>：</dt>
                             <dd>
                                 <ul>
-                                    {EXCEPTION_TYPES.map(exceptionObj => {
+                                    {EXCEPTION_TYPES.map((exceptionObj, index) => {
                                         return (
-                                            <li onClick={this.toggleSearchField.bind(this, 'exception_type', exceptionObj.value)}
-                                                className={this.getFilterFieldClass('exception_type', exceptionObj.value)}
-                                                key={exceptionObj.value}
-                                            >
+                                            <li key={index} onClick={this.toggleSearchField.bind(this, 'exception_type', exceptionObj.value)}
+                                                className={this.getFilterFieldClass('exception_type', exceptionObj.value)}>
                                                 {exceptionObj.name}
                                             </li>);
                                     })}
@@ -853,7 +851,7 @@ var UserTabContent = React.createClass({
                     <li className={totolClass} onClick={this.filterUserByRole.bind(this, '')}>
                         <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/></li>
                     {
-                        filterRoles.roles.map((role) => {
+                        filterRoles.roles.map((role, index) => {
                             var cls = classNames({
                                 selected: role.role_id === selectedRole
                             });
@@ -923,7 +921,7 @@ var UserTabContent = React.createClass({
                     <li className={totolClass} onClick={this.toggleSearchField.bind(this, 'team_ids', '')}>
                         <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/></li>
                     {
-                        filterTeams.teamlists.map((team) => {
+                        filterTeams.teamlists.map((team, index) => {
                             var cls = classNames({
                                 selected: team_ids.indexOf(team.group_id) >= 0
                             });
@@ -1008,6 +1006,7 @@ var UserTabContent = React.createClass({
             handleScrollBottom: this.handleScrollBottom,
             loading: this.state.appUserListResult === 'loading',
             showNoMoreDataTip: this.showNoMoreDataTip(),
+            noMoreDataText: Intl.get('noMoreTip.user', '没有更多用户了')
         };
         return (
             <div className="user-list-table-wrap scroll-load userlist-fix" id="new-table"
