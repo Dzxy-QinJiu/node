@@ -1,7 +1,7 @@
 require('./css/index.less');
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
-import {Table, Icon, Select, message} from 'antd';
+import {Table, Icon, Select, message, Alert} from 'antd';
 import {AntcTable} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
@@ -586,6 +586,7 @@ var SalesHomePage = React.createClass({
                 listenScrollBottom: this.state.callBackRecord.listenScrollBottom,
                 handleScrollBottom,
                 showNoMoreDataTip: showNoMoreDataTip(),
+                noMoreDataText: Intl.get('noMoreTip.visitBack', '没有更多回访记录了')
             };
             return (
                 <div>

@@ -2223,7 +2223,10 @@ var zh_CN = {
     'clue.customer.belong.to.other.sales': '该电话属于客户{customer}，所属销售{sales}',
     'phone.alert.select.customer': '请选择要跟进的客户',
     'clue.analysis.consult.time': '咨询时间：',
-
-
+    'noMoreTip.user': '没有更多用户了',
+    'noMoreTip.log': '没有更多日志了',
+    'noMoreTip.callRecord': '没有更多通话记录了',
+    'noMoreTip.visitBack': '没有更多回访记录了',
+    'noMoreTip.customer': '没有更多客户了',
 };
 export default zh_CN;

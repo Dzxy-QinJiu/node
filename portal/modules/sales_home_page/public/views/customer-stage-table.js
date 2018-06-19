@@ -1,8 +1,8 @@
-import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
-import {AntcTable} from 'antc';
-import {Alert} from 'antd';
+import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
+import { AntcTable } from 'antc';
+import { Alert } from 'antd';
 import Spinner from 'CMP_DIR/spinner';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 const RightPanel = rightPanelUtil.RightPanel;
@@ -33,7 +33,7 @@ class CustomerStageTable extends React.Component {
     //计算表格高度
     changeTableHeight = () => {
         var tableHeight = $(window).height() - LAYOUT.TOP;
-        this.setState({tableHeight});
+        this.setState({ tableHeight });
     }
 
     componentWillUnmount() {
@@ -90,14 +90,14 @@ class CustomerStageTable extends React.Component {
         };
         //处理选中行的样式
         const handleRowClassName = (record, index) => {
-            if ((index == this.state.selectedCustomerIndex) && this.state.showRightPanel) {
+            if ((index === this.state.selectedCustomerIndex) && this.state.showRightPanel) {
                 return 'current_row';
             }
             else {
                 return '';
             }
         };
-        const {data, loading, errorMsg, lastId, listenScrollBottom} = this.props.result;
+        const { data, loading, errorMsg, lastId, listenScrollBottom } = this.props.result;
         const loadingFirst = loading && !lastId;
         const loadingNotFirst = loading && lastId;
         const renderErr = () => {
@@ -150,14 +150,15 @@ class CustomerStageTable extends React.Component {
                                 loading: loadingNotFirst,
                                 handleScrollBottom: this.handleScrollBottom.bind(this),
                                 listenScrollBottom: listenScrollBottom && !loading,
-                                showNoMoreDataTip: this.props.showNoMoreData
+                                showNoMoreDataTip: this.props.showNoMoreData,
+                                noMoreDataText: Intl.get('noMoreTip.customer', '没有更多客户了')
                             }}
                             rowKey={getRowKey}
                             rowClassName={handleRowClassName}
                             columns={columns}
                             dataSource={data}
                             pagination={false}
-                            scroll={{y: this.state.tableHeight}}
+                            scroll={{ y: this.state.tableHeight }}
                         />
                     </div>
                     <RightPanel
@@ -187,4 +188,13 @@ class CustomerStageTable extends React.Component {
         );
     }
 }
+
+CustomerStageTable.propTypes = {
+    handleScrollBottom: React.PropTypes.func,
+    params: React.PropTypes.object,
+    result: React.PropTypes.object,
+    showNoMoreData: React.PropTypes.boolean,
+    onClose: React.PropTypes.func
+};
+
 export default CustomerStageTable;
