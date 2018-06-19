@@ -215,6 +215,7 @@ exports.getShowActiveEmailObj = function(req, res) {
     getUserInfoEmail(req, res).then((data) => {
         var responseObj = {
             isShowActiveEmail: false,//是否展示激活邮箱的提示
+            isShowAddEmail: false//是否展示添加邮箱的提示
         };
         //有邮箱
         if (data.email) {
@@ -233,6 +234,7 @@ exports.getShowActiveEmailObj = function(req, res) {
             }
         } else {
             //用户没有邮箱，提示添加邮箱
+            responseObj.isShowAddEmail = true;
             emitter.emit('success', responseObj);
         }
     }).catch(function(errorMsg) {

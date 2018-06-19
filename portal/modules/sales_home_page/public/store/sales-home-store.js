@@ -78,6 +78,7 @@ SalesHomeStore.prototype.setInitState = function() {
     this.teamMemberCountList = [];
     this.emailShowObj = {
         isShowActiveEmail: false, //是否展示邮箱激活提示
+        isShowAddEmail: false//是否展示添加邮箱的提示
     };
 };
 // 重置回访记录列表状态
@@ -462,15 +463,15 @@ SalesHomeStore.prototype.getUserTotal = function(result) {
 //设置正在获取数据的标识
 SalesHomeStore.prototype.setListIsLoading = function(type) {
     switch (type) {
-    case 'customer':
-        this.isLoadingCustomerList = true;
-        break;
-    case 'user':
-        this.isLoadingUserList = true;
-        break;
-    case 'phone':
-        this.isLoadingPhoneList = true;
-        break;
+        case 'customer':
+            this.isLoadingCustomerList = true;
+            break;
+        case 'user':
+            this.isLoadingUserList = true;
+            break;
+        case 'phone':
+            this.isLoadingPhoneList = true;
+            break;
     }
 
 };
