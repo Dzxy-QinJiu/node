@@ -52,6 +52,13 @@ var zh_CN = {
     //公共部分提取start
     'common.actived': '已激活',
     'common.no.data': '暂无数据',
+    'common.no.more.clue': '没有更多线索了',
+    'common.no.more.user.log': '没有更多日志了',
+    'common.no.more.abnormal.login': '没有更多异常登录了',
+    'common.no.more.system.message': '没有更多系统消息了',
+    'common.no.more.expired': '没有更多超时未完成了',
+    'common.no.more.customer': '没有更多客户了',
+
     'common.all': '全部',
     'common.role': '角色',
     'common.password': '密码',
@@ -142,6 +149,18 @@ var zh_CN = {
     'common.get.again': '重新获取',
     'common.refresh': '刷新',
     'common.no.more.data': '没有更多数据了',
+    'common.no.more.user': '没有更多用户了',
+    'common.no.more.crm': '没有更多客户了',
+    'common.no.more.schedule': '暂无计划',
+    'common.no.more.order': '暂无订单',
+    'common.no.clue': '暂无线索',
+    'common.no.audit': '暂无审计日志',
+    'common.no.more.trace.record': '暂无跟进记录',
+    'common.no.call.record': '暂无通话记录',
+
+
+
+
     'common.yesno': '是否',
     'common.add.member': '添加成员',
     'common.input.keyword': '输入关键词',
@@ -1215,6 +1234,8 @@ var zh_CN = {
     'crm.212': '请选择标签',
     'crm.213': '未分配客户',
     'crm.214': '添加联系计划',
+    'crm.215': '共{count}个线索',
+
     'crm.over.day.without.contact': '超{day}天未联系',
     'crm.customer.interested': '添加关注',
     'crm.customer.uninterested': '取消关注',
@@ -1303,6 +1324,9 @@ var zh_CN = {
     'crm.apply.user.unified.config': '统一配置',
     'crm.apply.user.separate.config': '分别配置',
     'crm.apply.user.new': '申请新用户',
+    'crm.apply.stop.placeholder': '请输入停用的原因',
+    'crm.apply.update.password.placeholder': '请输入修改密码的要求',
+    'crm.apply.other.placeholder': '请输入申请内容',
     // 客户管理end
 
     // 客户分析start

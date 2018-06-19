@@ -4,6 +4,7 @@
  */
 require('./index.less');
 import {Button, Icon} from 'antd';
+const PropTypes = React.PropTypes;
 class SaveCancelButton extends React.Component {
     constructor(props) {
         super(props);
@@ -13,7 +14,9 @@ class SaveCancelButton extends React.Component {
         return (
             <div className="button-container">
                 <Button className="button-save" type="primary"
-                    onClick={this.props.handleSubmit.bind(this)}>
+                    onClick={this.props.handleSubmit.bind(this)}
+                    disabled={this.props.loading}
+                >
                     {this.props.okBtnText || Intl.get('common.save', '保存')}
                 </Button>
                 <Button className="button-cancel" onClick={this.props.handleCancel.bind(this)}>
@@ -36,5 +39,13 @@ SaveCancelButton.defaultProps = {
     },//保存的处理
     handleCancel: function() {
     }//取消的处理
+};
+SaveCancelButton.propTypes = {
+    handleSubmit: PropTypes.func,
+    loading: PropTypes.bool,
+    okBtnText: PropTypes.string,
+    handleCancel: PropTypes.func,
+    cancelBtnText: PropTypes.string,
+    saveErrorMsg: PropTypes.string,
 };
 export default SaveCancelButton;

@@ -1,7 +1,7 @@
 require('./css/index.less');
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
-import {Table, Icon, Select, message, Alert} from 'antd';
+import {Select, message, Alert} from 'antd';
 import {AntcTable} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
@@ -837,7 +837,7 @@ var SalesHomePage = React.createClass({
                     : <div className="crm-home-container">
                         <div className={crmDataZone}>
                             {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
-                            {this.state.emailShowObj.isShowActiveEmail || !this.state.emailShowObj.email ?
+                            {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
                                 <ActiveEmailTip
                                     isAnimateShow={this.state.isAnimateShow}
                                     isAnimateHide={this.state.isAnimateHide}
@@ -845,7 +845,7 @@ var SalesHomePage = React.createClass({
                                     activeUserEmail={this.activeUserEmail}
                                     setWebConfigStatus={this.state.setWebConfigStatus}
                                     jumpToUserInfo={this.jumpToUserInfo}
-                                    addEmail={!this.state.emailShowObj.email}
+                                    addEmail={this.state.emailShowObj.isShowAddEmail}
                                 /> : null}
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}

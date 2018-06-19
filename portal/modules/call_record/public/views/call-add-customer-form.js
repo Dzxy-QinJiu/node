@@ -55,6 +55,12 @@ var CallAddCustomerForm = React.createClass({
     },
     componentDidMount: function() {
         //获取后台管理中设置的行业列表
+        this.gr();
+    },
+
+    gr: function() {
+        //获取后台管理中设置的行业列表
+
         this.setState({isLoadingIndustry: true});
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
@@ -64,6 +70,7 @@ var CallAddCustomerForm = React.createClass({
             this.setState({isLoadingIndustry: false, industryList: list});
         });
     },
+
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;

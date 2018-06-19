@@ -4,9 +4,9 @@
  * Created by zhangshujuan on 2017/8/8.
  */
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-abnornal-login-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../css/user-abnornal-login-zh_CN.less');
 }
 var UserAbnormalLoginStore = require('../store/user-abnormal-login-store');
@@ -157,7 +157,7 @@ var UserAbnormalLogin = React.createClass({
     handleIgnoreAbnormal(item) {
         if (item.id) {
             UserAbnormalLoginAjax.ignoreAbnormalLogin(item.id).then( (result) => {
-                if (result == true) {
+                if (result === true) {
                     this.setState({
                         ignoreAbnormalErrorMsg: '',
                         ignoreId: item.id
@@ -203,28 +203,28 @@ var UserAbnormalLogin = React.createClass({
     },
     renderTimeLineItem: function(item) {
         var des = '';
-        var appObj = _.find(this.state.appLists,(app) => {return app.app_id == item.client_id;});
+        var appObj = _.find(this.state.appLists,(app) => {return app.app_id === item.client_id;});
         var appName = appObj ? appObj.app_name : '';
         if (item.type){
             switch (item.type){
-            case 'appIllegal':
-                des = Intl.get('user.retry.login','停用后登录。该用户的{appName}账号已经停用，仍尝试登录。',{'appName': appName});
-                break;
-            case 'illegalLocation':
-                des = Intl.get('user.exception.login','登录地异常。该用户的{client_name}账号，不在常用登录地登录。',{'client_name': item.client_name});
-                //有常用登录地字段时
-                des += (item.usual_location ? Intl.get('user.usual.location','常用登录地为{usuallocation}。',{'usuallocation': item.usual_location}) : '');
-                //有该次登录地字段时
-                des += (item.current_location ? Intl.get('user.current.location','该次登录地为{currentlocation},',{'currentlocation': item.current_location}) : '');
-                // 有该次登录的IP字段
-                des += (item.user_ip ? Intl.get('user.current.ip','IP为{currentip}。',{'currentip': item.user_ip}) : '');
-                break;
-            case 'loginFailedFrequencyException':
-                des = Intl.get('user.failed.frequent.login','登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。',{'appName': appName});
-                break;
-            case 'loginSuccessFrequencyException':
-                des = Intl.get('user.success.frequent.login','登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。',{'appName': appName});
-                break;
+                case 'appIllegal':
+                    des = Intl.get('user.retry.login','停用后登录。该用户的{appName}账号已经停用，仍尝试登录。',{'appName': appName});
+                    break;
+                case 'illegalLocation':
+                    des = Intl.get('user.exception.login','登录地异常。该用户的{client_name}账号，不在常用登录地登录。',{'client_name': item.client_name});
+                    //有常用登录地字段时
+                    des += (item.usual_location ? Intl.get('user.usual.location','常用登录地为{usuallocation}。',{'usuallocation': item.usual_location}) : '');
+                    //有该次登录地字段时
+                    des += (item.current_location ? Intl.get('user.current.location','该次登录地为{currentlocation},',{'currentlocation': item.current_location}) : '');
+                    // 有该次登录的IP字段
+                    des += (item.user_ip ? Intl.get('user.current.ip','IP为{currentip}。',{'currentip': item.user_ip}) : '');
+                    break;
+                case 'loginFailedFrequencyException':
+                    des = Intl.get('user.failed.frequent.login','登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。',{'appName': appName});
+                    break;
+                case 'loginSuccessFrequencyException':
+                    des = Intl.get('user.success.frequent.login','登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。',{'appName': appName});
+                    break;
             }
         }
         return (
@@ -233,14 +233,14 @@ var UserAbnormalLogin = React.createClass({
                     <p>
                         {des}
                         {
-                            hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && item.type == 'illegalLocation' ?
+                            hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && item.type === 'illegalLocation' ?
                                 <Button type="primary" onClick={this.handleIgnoreAbnormal.bind(this, item)}>
                                     {Intl.get('user.login.abnormal.ignore', '忽略')}
                                 </Button> : null
                         }
                     </p>
                     {
-                        item.id == this.state.ignoreId ? this.showIgnoreAbnormalTips(this.state.ignoreAbnormalErrorMsg) : null
+                        item.id === this.state.ignoreId ? this.showIgnoreAbnormalTips(this.state.ignoreAbnormalErrorMsg) : null
                     }
                 </dd>
                 <dt>{moment(item.timeStamp).format(oplateConsts.TIME_FORMAT)}</dt>
@@ -311,6 +311,7 @@ var UserAbnormalLogin = React.createClass({
                             <NoMoreDataTip
                                 fontSize="12"
                                 show={this.showNoMoreDataTip}
+                                message={Intl.get('common.no.more.abnormal.login','没有更多异常登录了')}
                             />
                         </GeminiScrollbar>
                     </div>

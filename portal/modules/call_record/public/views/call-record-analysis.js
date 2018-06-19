@@ -874,7 +874,7 @@ var CallRecordAnalyis = React.createClass({
                 return (
                     <div className="alert-wrap">
                         <Alert
-                            message={Intl.get('common.no.data', '暂无数据')}
+                            message={Intl.get('common.no.call.record', '暂无通话记录')}
                             type="info"
                             showIcon={true}
                         />

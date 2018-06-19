@@ -344,14 +344,16 @@ var SalesHomePage = React.createClass({
                     var cls = classNames('customer-item', {
                         'selected-customer-item': item.value === this.state.showCustomerPanel
                     });
-                    //新分配客户和重复客户数量为0 时，不展示左侧标题
+                    //新分配客户，重复客户，您有电话未接听 数量为0 时，不展示左侧标题
                     if (item.value === ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER && this.state.newDistributeCustomer.data.list.length === 0) {
                         return;
                     }
                     if (item.value === ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER && this.state.repeatCustomerObj.data.list.length === 0) {
                         return;
                     }
-
+                    if (item.value === ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE && this.state.missCallObj.data.list.length === 0) {
+                        return;
+                    }
                     return (
                         <li className={cls} onClick={this.handleClickDiffCustomerType.bind(this, item.value)}>
                             <div>
@@ -405,7 +407,11 @@ var SalesHomePage = React.createClass({
             break;
             //重复客户
         case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
-            rightPanel = <CustomerRepeat noNeedClose={true}/>;
+            rightPanel = <CustomerRepeat
+                noNeedClose={true}
+                setInitialRepeatList ={true}
+                initialRepeatObj={this.state.repeatCustomerObj.errMsg || this.state.repeatCustomerObj.data}
+            />;
             break;
             //新分配的客户
         case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:

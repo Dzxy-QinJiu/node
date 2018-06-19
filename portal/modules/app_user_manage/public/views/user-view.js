@@ -10,13 +10,10 @@ var UserDetailAddAppAction = require('../action/v2/user-detail-add-app-actions')
 var UserDetailEditAppAction = require('../action/v2/user-detail-edit-app-actions');
 
 var AppUserAction = require('../action/app-user-actions');
-var AppUserFormAction = require('../action/v2/app-user-form-actions');
 var AppUserUtil = require('../util/app-user-util');
 var classNames = require('classnames');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var GeminiScrollBar = require('../../../../components/react-gemini-scrollbar');
-var NoMoreDataTip = require('../../../../components/no_more_data_tip');
-var history = require('../../../../public/sources/history');
 var batchPushEmitter = require('../../../../public/sources/utils/emitters').batchPushEmitter;
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -539,7 +536,7 @@ var UserTabContent = React.createClass({
                     //是否展示 生成线索的 按钮，必须要选中某个应用，
                     // create_tag === "register" 表示是自注册的用户
                     // clue_created属性存在，并且为true 表示已经生成过线索客户
-                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CLUECUSTOMER_ADD') ? true : false;
+                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CUSTOMER_ADD_CLUE') ? true : false;
                     return user ? (
                         <div title={user.description}>
                             {user.description}
@@ -858,7 +855,7 @@ var UserTabContent = React.createClass({
                             var cls = classNames({
                                 selected: role.role_id === selectedRole
                             });
-                            return <li key={index} className={cls}
+                            return <li className={cls} key={role.role_id}
                                 onClick={this.filterUserByRole.bind(this, role.role_id)}>{role.role_name}</li>;
                         })
                     }
@@ -928,7 +925,7 @@ var UserTabContent = React.createClass({
                             var cls = classNames({
                                 selected: team_ids.indexOf(team.group_id) >= 0
                             });
-                            return <li key={index} className={cls}
+                            return <li className={cls} key={team.group_id}
                                 onClick={this.toggleSearchField.bind(this, 'team_ids', team.group_id)}>{team.group_name}</li>;
                         })
                     }
@@ -1028,7 +1025,7 @@ var UserTabContent = React.createClass({
                             filterTitle: Intl.get('common.filter', '筛选'),
                             filterConfirm: Intl.get('common.sure', '确定'),
                             filterReset: Intl.get('user.reset', '重置'),
-                            emptyText: this.state.appUserListResult === 'error' ? this.state.getAppUserListErrorMsg || Intl.get('user.list.get.failed', '获取用户列表失败') : Intl.get('common.no.data', '暂无数据')
+                            emptyText: this.state.appUserListResult === 'error' ? this.state.getAppUserListErrorMsg || Intl.get('user.list.get.failed', '获取用户列表失败') : Intl.get('common.no.more.user', '没有更多用户了')
                         }}
                         scroll={{x: Oplate.hideSomeItem ? 1130 : (hasSelectAuth ? 1460 : 1440), y: divHeight}}
                         util={{

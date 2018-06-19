@@ -83,7 +83,12 @@
     //防止使用未包装的JSX字符串
     "react/jsx-no-literals": 0,
     //在JSX中禁止未声明的变量
-    "react/jsx-no-undef": 2,
+    "react/jsx-no-undef": [
+      2,
+      {
+        "allowGlobals": true
+      }
+    ],
     //为用户定义的JSX组件强制使用PascalCase
     "react/jsx-pascal-case": 2,
     //强化props按字母排序

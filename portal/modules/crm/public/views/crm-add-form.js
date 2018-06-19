@@ -116,12 +116,19 @@ var CRMAddForm = React.createClass({
 
     //提交修改
     handleSubmit: function(e) {
+        if (this.state.isLoading){
+            return;
+        }
+        this.state.isLoading = true;
+        this.setState(this.state);
         e.preventDefault();
         var validation = this.refs.validation;
         validation.validate(valid => {
             //验证电话是否通过验证
             this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {}, (errors, values) => {
                 if (!valid || errors) {
+                    this.state.isLoading = false;
+                    this.setState(this.state);
                     return;
                 } else {
                     //先填写电话后编辑客户名或行业等带验证的字段时，电话内容会丢失，这里再加一下
@@ -134,9 +141,14 @@ var CRMAddForm = React.createClass({
                                 //可以添加
                                 this.addCustomer();
                             }else if(result > 0){
+                                this.state.isLoading = false;
+                                this.setState(this.state);
                                 //不可以添加
                                 message.warn(Intl.get('crm.should.add.customer', '您拥有的客户已达到上限，请不要再添加客户了'));
                             }
+                        }else{
+                            this.state.isLoading = false;
+                            this.setState(this.state);
                         }
                     });
                 }
@@ -146,29 +158,24 @@ var CRMAddForm = React.createClass({
 
     //添加客户
     addCustomer: function() {
-        if (this.state.isLoading){
-            return;
-        }
-        this.state.isLoading = true;
-        this.setState(this.state);
         var formData = JSON.parse(JSON.stringify(this.state.formData));
         formData.name = $.trim(formData.name);
         formData.contacts0_phone = $.trim(formData.contacts0_phone);
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData);
         CrmAction.addCustomer(formData, result => {
-            this.state.isLoading = false;
             if (result.code === 0) {
                 message.success(Intl.get('user.user.add.success', '添加成功'));
                 if (_.isFunction(this.props.addOne)) {
                     this.props.addOne(result.result);
                 }
-                this.setState(this.getInitialState());
                 //拨打电话时，若客户列表中没有此号码，需添加客户
                 if (_.isFunction(this.props.updateCustomer)) {
                     this.props.updateCustomer(result.result);
                 }
+                this.setState(this.getInitialState());
             } else {
+                this.state.isLoading = false;
                 message.error(result);
                 this.setState(this.state);
             }
@@ -176,8 +183,8 @@ var CRMAddForm = React.createClass({
     },
 
     closeAddPanel: function() {
-        this.setState(this.getInitialState());
         this.props.hideAddForm();
+        this.setState(this.getInitialState());
     },
 
     //根据客户名在地理信息接口获取该客户的信息并填充到对应字段

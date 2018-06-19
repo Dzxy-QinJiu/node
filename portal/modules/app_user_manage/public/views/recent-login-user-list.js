@@ -121,7 +121,7 @@ class RecentLoginUsers extends React.Component {
     componentWillReceiveProps(nextProps) {
         let oldAppId = this.state.selectedAppId;
         let newAppId = this.getSelectedAppId(nextProps);
-        if (oldAppId != newAppId) {
+        if (oldAppId !== newAppId) {
             this.setState({selectedAppId: newAppId}, this.getRecentLoginUsers());
         }
     }
@@ -163,7 +163,7 @@ class RecentLoginUsers extends React.Component {
 
     getRecentLoginUsers() {
         let params = this.getParamsObj();
-        if (this.state.pageNum == 1) {
+        if (this.state.pageNum === 1) {
             // 获取第一页数据时，展示等待效果，下拉加载时，不展示
             this.setState({isLoadingUserList: true});
         }
@@ -184,7 +184,7 @@ class RecentLoginUsers extends React.Component {
         let userList = this.state.recentLoginUsers;
         let total = this.state.totalUserSize;
         if (result && _.isArray(result.data)) {
-            if (this.state.pageNum == 1) {
+            if (this.state.pageNum === 1) {
                 userList = result.data;
             } else {
                 userList = userList.concat(result.data);
@@ -528,7 +528,7 @@ class RecentLoginUsers extends React.Component {
                                 columns={columns}
                                 loading={this.state.isLoadingUserList}
                                 pagination={false}
-                                locale={{emptyText: this.state.getUserListErrorMsg || Intl.get('common.no.data', '暂无数据')}}
+                                locale={{emptyText: this.state.getUserListErrorMsg || Intl.get('common.no.more.user', '没有更多用户了')}}
                             />
                         </GeminiScrollBar>
                     </div>

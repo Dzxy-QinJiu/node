@@ -566,7 +566,7 @@ var LogView = React.createClass({
                         columns={columns}
                         pagination={false}
                         rowClassName={this.handleRowClassName}
-                        locale={{ emptyText: Intl.get('common.no.data', '暂无数据') }}
+                        locale={{ emptyText: Intl.get('common.no.audit', '暂无审计') }}
                         scroll={{ y: tableHeight }}
                     />
                 </div>
