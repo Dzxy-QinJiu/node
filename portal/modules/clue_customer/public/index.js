@@ -648,6 +648,7 @@ const ClueCustomer = React.createClass({
                                                 handleSubmit={this.handleSubmitAssignSales.bind(this, item)}
                                                 unSelectDataTip={this.state.unSelectDataTip}
                                                 clearSelectData={this.clearSelectSales}
+                                                getPopupContainer={() => document.getElementById('area')}
                                             />
                                         </div>
                                     </Col> : null
@@ -728,6 +729,7 @@ const ClueCustomer = React.createClass({
                 <div id="content-block" className="content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
                         style={{height: divHeight}}
+                        id="area"
                     >
                         <GeminiScrollbar
                             handleScrollBottom={this.handleScrollBarBottom}

@@ -379,7 +379,7 @@ var UserForm = React.createClass({
                 <RightPanelClose onClick={this.closePanel} data-tracename="关闭添加/编辑面板"/>
                 {(this.props.formType === 'add' || !this.props.userFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel} data-tracename="返回详细信息展示页"/>)}
-                <Form horizontal className="form" autoComplete="off">
+                <Form horizontal className="form" autoComplete="off" >
                     <HeadIcon
                         headIcon={formData.image }
                         iconDescr={formData.name || headDescr}
@@ -393,128 +393,133 @@ var UserForm = React.createClass({
                     <div className="user-form-scroll" style={{width: '420px'}}>
                         <GeminiScrollbar className="geminiScrollbar-vertical">
                             <Validation ref="validation" onValidate={this.handleValidate}>
-                                <FormItem
-                                    label={Intl.get('realm.change.owner.name', '姓名')}
-                                    id="name"
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                    validateStatus={this.renderValidateStyle('name')}
-                                    help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}
-                                >
-                                    <Validator
-                                        rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符') }]}>
-                                        <Input name="name" id="nickName" value={formData.name}
-                                            placeholder={Intl.get('common.required.tip','必填项*')}
-                                            onChange={this.setField.bind(this, 'name')}
-                                            onBlur={(e) => {this.traceNickName(e);}}
-                                        />
-                                    </Validator>
-                                </FormItem>
-                                <PhoneInput
-                                    wrappedComponentRef={(inst) => this.phoneInputRef = inst}
-                                    placeholder={Intl.get('crm.95', '请输入联系人电话')}
-                                    validateRules={this.getPhoneInputValidateRules()}
-                                    onChange={this.setField.bind(this, 'phone')}
-                                    initialValue={formData.phone}
-                                    id={PHONE_INPUT_ID}
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                />
-                                <FormItem
-                                    label={Intl.get('common.email', '邮箱')}
-                                    id="email"
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                    validateStatus={this.renderValidateStyle('email')}
-                                    help={status.email.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.email.errors && status.email.errors.join(','))}
-                                >
-                                    <Validator rules={[{
-                                        required: true,
-                                        type: 'email',
-                                        message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                    }]}>
-                                        <Input name="email" id="email" type="text" value={formData.email}
-                                            placeholder={Intl.get('common.required.tip','必填项*')}
-                                            className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
-                                            onBlur={(e) => {this.checkOnlyEmail(e);}}
-                                            onChange={this.setField.bind(this, 'email')}
-                                        />
-                                    </Validator>
-                                </FormItem>
-                                {this.renderEmailMsg()}
-                                <FormItem
-                                    label={Intl.get('common.role', '角色')}
-                                    id="role"
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                    validateStatus={this.renderValidateStyle('role')}
-                                    help={status.role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.role.errors && status.role.errors.join(','))}
-                                >
-                                    {this.state.isLoadingRoleList ? (
-                                        <div className="role-list-loading">
-                                            <ReactIntl.FormattedMessage id="member.get.role.lists"
-                                                defaultMessage="正在获取角色列表"/>
-
-                                            <Icon type="loading"/></div>) : (
+                                <div id="user-add-form">
+                                    <FormItem
+                                        label={Intl.get('realm.change.owner.name', '姓名')}
+                                        id="name"
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                        validateStatus={this.renderValidateStyle('name')}
+                                        help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}
+                                    >
                                         <Validator
-                                            rules={[{required: true, message: Intl.get('member.select.role', '请选择角色') , type: 'array'}]}>
-                                            <Select className="" multiple name="role" id="role"
-                                                optionFilterProp="children"
-                                                searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
-                                                notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
-                                                value={formData.role}
-                                                onChange={this.setField.bind(this, 'role')}
-                                                onSelect={this.handleSelect}
-                                            >
-                                                {this.renderRoleOptions()}
-                                            </Select>
+                                            rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符') }]}>
+                                            <Input name="name" id="nickName" value={formData.name}
+                                                placeholder={Intl.get('common.required.tip','必填项*')}
+                                                onChange={this.setField.bind(this, 'name')}
+                                                onBlur={(e) => {this.traceNickName(e);}}
+                                            />
                                         </Validator>
-                                    )}
-                                </FormItem>
-                                {/** v8环境下，不显示所属团队 */}
-                                {this.props.formType === 'add' ? ( !Oplate.hideSomeItem && <FormItem
-                                    label={Intl.get('common.belong.team', '所属团队')}
-                                    id="team"
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                >
-                                    {this.state.isLoadingTeamList ? (
-                                        <div className="role-list-loading"><ReactIntl.FormattedMessage
-                                            id="member.is.get.group.lists" defaultMessage="正在获取团队列表"/><Icon
-                                            type="loading"/></div>) : (
-                                        <Select name="team" id="team"
-                                            placeholder={Intl.get('member.select.group', '请选择团队')}
-                                            notFoundContent={Intl.get('member.no.group', '暂无此团队')}
-                                            showSearch
-                                            searchPlaceholder={Intl.get('member.search.group.by.name', '输入团队名称搜索')}
-                                            optionFilterProp="children"
-                                            value={formData.team}
-                                            onChange={this.setField.bind(this, 'team')}
-                                            onSelect={this.handleTeamSelect}
-                                        >
-                                            {this.renderTeamOptions()}
-                                        </Select>
-                                    )}
-                                </FormItem>) : null}
-                                <FormItem
-                                    wrapperCol={{span: 23}}>
-                                    <div className="indicator">
-                                        {saveResult ?
-                                            (
-                                                <AlertTimer time={3000}
-                                                    message={this.state.saveMsg}
-                                                    type={this.state.saveResult} showIcon
-                                                    onHide={this.hideSaveTooltip}/>
-                                            ) : ''
-                                        }
-                                    </div>
-                                    <RightPanelCancel onClick={this.handleCancel} data-tracename="取消新添加成员的基本信息">
-                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
-                                    </RightPanelCancel>
-                                    <RightPanelSubmit onClick={this.handleSubmit} data-tracename="保存新添加成员的基本信息">
-                                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                                    </RightPanelSubmit>
-                                </FormItem>
+                                    </FormItem>
+                                    <PhoneInput
+                                        wrappedComponentRef={(inst) => this.phoneInputRef = inst}
+                                        placeholder={Intl.get('crm.95', '请输入联系人电话')}
+                                        validateRules={this.getPhoneInputValidateRules()}
+                                        onChange={this.setField.bind(this, 'phone')}
+                                        initialValue={formData.phone}
+                                        id={PHONE_INPUT_ID}
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                    />
+                                    <FormItem
+                                        label={Intl.get('common.email', '邮箱')}
+                                        id="email"
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                        validateStatus={this.renderValidateStyle('email')}
+                                        help={status.email.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.email.errors && status.email.errors.join(','))}
+                                    >
+                                        <Validator rules={[{
+                                            required: true,
+                                            type: 'email',
+                                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                        }]}>
+                                            <Input name="email" id="email" type="text" value={formData.email}
+                                                placeholder={Intl.get('common.required.tip','必填项*')}
+                                                className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
+                                                onBlur={(e) => {this.checkOnlyEmail(e);}}
+                                                onChange={this.setField.bind(this, 'email')}
+                                            />
+                                        </Validator>
+                                    </FormItem>
+                                    {this.renderEmailMsg()}
+                                    <FormItem
+                                        label={Intl.get('common.role', '角色')}
+                                        id="role"
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                        validateStatus={this.renderValidateStyle('role')}
+                                        help={status.role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.role.errors && status.role.errors.join(','))}
+                                    >
+                                        {this.state.isLoadingRoleList ? (
+                                            <div className="role-list-loading">
+                                                <ReactIntl.FormattedMessage id="member.get.role.lists"
+                                                    defaultMessage="正在获取角色列表"/>
+
+                                                <Icon type="loading"/></div>) : (
+                                            <Validator
+                                                rules={[{required: true, message: Intl.get('member.select.role', '请选择角色') , type: 'array'}]}>
+                                                <Select className="" multiple name="role" id="role"
+                                                    optionFilterProp="children"
+                                                    searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
+                                                    notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                                    value={formData.role}
+                                                    onChange={this.setField.bind(this, 'role')}
+                                                    onSelect={this.handleSelect}
+                                                    getPopupContainer={() => document.getElementById('user-add-form')}
+
+                                                >
+                                                    {this.renderRoleOptions()}
+                                                </Select>
+                                            </Validator>
+                                        )}
+                                    </FormItem>
+                                    {/** v8环境下，不显示所属团队 */}
+                                    {this.props.formType === 'add' ? ( !Oplate.hideSomeItem && <FormItem
+                                        label={Intl.get('common.belong.team', '所属团队')}
+                                        id="team"
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                    >
+                                        {this.state.isLoadingTeamList ? (
+                                            <div className="role-list-loading"><ReactIntl.FormattedMessage
+                                                id="member.is.get.group.lists" defaultMessage="正在获取团队列表"/><Icon
+                                                type="loading"/></div>) : (
+                                            <Select name="team" id="team"
+                                                placeholder={Intl.get('member.select.group', '请选择团队')}
+                                                notFoundContent={Intl.get('member.no.group', '暂无此团队')}
+                                                showSearch
+                                                searchPlaceholder={Intl.get('member.search.group.by.name', '输入团队名称搜索')}
+                                                optionFilterProp="children"
+                                                value={formData.team}
+                                                onChange={this.setField.bind(this, 'team')}
+                                                onSelect={this.handleTeamSelect}
+                                                getPopupContainer={() => document.getElementById('user-add-form')}
+                                            >
+                                                {this.renderTeamOptions()}
+                                            </Select>
+                                        )}
+                                    </FormItem>) : null}
+                                    <FormItem
+                                        wrapperCol={{span: 23}}>
+                                        <div className="indicator">
+                                            {saveResult ?
+                                                (
+                                                    <AlertTimer time={3000}
+                                                        message={this.state.saveMsg}
+                                                        type={this.state.saveResult} showIcon
+                                                        onHide={this.hideSaveTooltip}/>
+                                                ) : ''
+                                            }
+                                        </div>
+                                        <RightPanelCancel onClick={this.handleCancel} data-tracename="取消新添加成员的基本信息">
+                                            <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
+                                        </RightPanelCancel>
+                                        <RightPanelSubmit onClick={this.handleSubmit} data-tracename="保存新添加成员的基本信息">
+                                            <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
+                                        </RightPanelSubmit>
+                                    </FormItem>
+                                </div>
                             </Validation>
                         </GeminiScrollbar>
                     </div>

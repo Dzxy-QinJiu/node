@@ -275,7 +275,7 @@ const SalesClueAddForm = React.createClass({
         return (
             <div className="add-form-wrap">
                 <GeminiScrollbar>
-                    <Form horizontal className="crm-add-form sales-clue-form">
+                    <Form horizontal className="crm-add-form sales-clue-form" id="sales-clue-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
                                 label={Intl.get('clue.customer.clue.name', '线索名称')}
@@ -365,6 +365,7 @@ const SalesClueAddForm = React.createClass({
                                     name="clue_source"
                                     onChange={this.setField.bind(this, 'clue_source')}
                                     value={formData.clue_source}
+                                    getPopupContainer={() => document.getElementById('sales-clue-form')}
                                 >
                                     {
                                         _.isArray(this.props.clueSourceArray) ?
@@ -387,6 +388,7 @@ const SalesClueAddForm = React.createClass({
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'access_channel')}
                                     value={formData.access_channel}
+                                    getPopupContainer={() => document.getElementById('sales-clue-form')}
                                 >
                                     {_.isArray(this.props.accessChannelArray) ?
                                         this.props.accessChannelArray.map((source, idx) => {
@@ -407,6 +409,7 @@ const SalesClueAddForm = React.createClass({
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'clue_classify')}
                                     value={formData.clue_classify}
+                                    getPopupContainer={() => document.getElementById('sales-clue-form')}
                                 >
                                     {_.isArray(this.props.clueClassifyArray) ?
                                         this.props.clueClassifyArray.map((source, idx) => {
