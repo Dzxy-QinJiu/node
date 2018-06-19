@@ -274,7 +274,7 @@ var CRMAddForm = React.createClass({
                             {Intl.get('crm.68', '相似的客户还有')}:
                             {list.map(customer => {
                                 return (
-                                    <div>
+                                    <div key={customer.user_id}>
                                         {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)"
                                                 onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
@@ -373,7 +373,7 @@ var CRMAddForm = React.createClass({
                 <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加客户面板"/>
                 <div className="add-form-wrap">
                     <GeminiScrollbar>
-                        <Form horizontal className="crm-add-form">
+                        <Form horizontal className="crm-add-form" id="crm-add-form">
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 <FormItem
                                     label={Intl.get('crm.4', '客户名称')}
@@ -418,6 +418,8 @@ var CRMAddForm = React.createClass({
                                                 onSelect={(e) => {
                                                     this.handleSelect(e);
                                                 }}
+                                                getPopupContainer={() => document.getElementById('crm-add-form')}
+
                                             >
                                                 {industryOptions}
                                             </Select>
@@ -432,6 +434,7 @@ var CRMAddForm = React.createClass({
                                         name="administrative_level"
                                         onChange={this.setField.bind(this, 'administrative_level')}
                                         value={formData.administrative_level}
+                                        getPopupContainer={() => document.getElementById('crm-add-form')}
                                     >
                                         {this.getAdministrativeLevelOptions()}
                                     </Select>
@@ -521,6 +524,7 @@ var CRMAddForm = React.createClass({
                                             value={this.state.formData.contacts0_role}
                                             onChange={this.setField.bind(this, 'contacts0_role')}
                                             onSelect={this.handleRoleSelect}
+                                            getPopupContainer={() => document.getElementById('crm-add-form')}
                                         >
                                             {roleOptions}
                                         </Select>

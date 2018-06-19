@@ -4,9 +4,9 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-detail-change-record-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../css/user-detail-change-record-zh_CN.less');
 }
 var UserDetailChangeRecordStore = require('../store/user-detail-change-record-store');
@@ -53,7 +53,7 @@ var UserDetailChangeRecord = React.createClass({
         //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
         if (appId){
             var selectedApp = _.find(this.state.appLists,(item) => {
-                return item.app_id == appId;
+                return item.app_id === appId;
             });
             var appName = selectedApp && selectedApp.app_name ? selectedApp.app_name : '';
             if (appName){
@@ -93,27 +93,27 @@ var UserDetailChangeRecord = React.createClass({
         var role = '',tags = '', tagName = '',status = '',nickname = '',password = '',email = '',phone = '',description = '',timerange = '',begin = ' ',end = ' ',overdraft = '',istwofactor = '',mutilogin = '';
         if (item.detail.tags) {
             switch (item.detail.tags) {
-            case 'internal':
-                tagName = '员工';
-                break;
-            case 'special':
-                tagName = '赠送';
-                break;
-            case 'training':
-                tagName = '培训';
-                break;
-            case '正式用户':
-                tagName = '签约';
-                break;
-            case '试用用户':
-                tagName = '试用';
-                break;
-            default:
-                tagName = '';
-                break;
+                case 'internal':
+                    tagName = '员工';
+                    break;
+                case 'special':
+                    tagName = '赠送';
+                    break;
+                case 'training':
+                    tagName = '培训';
+                    break;
+                case '正式用户':
+                    tagName = '签约';
+                    break;
+                case '试用用户':
+                    tagName = '试用';
+                    break;
+                default:
+                    tagName = '';
+                    break;
             }
         }
-        if (item.operate == 'GrantCreate' && item.detail){
+        if (item.operate === 'GrantCreate' && item.detail){
             //授权的创建
             desc += Intl.get('user.create.this.user', '创建了该用户');
             //角色描述
@@ -121,10 +121,10 @@ var UserDetailChangeRecord = React.createClass({
             //类型描述
             item.detail.tags && (tags += Intl.get('user.tag.is', '类型为{tag}。',{'tag': tagName}));
             desc = desc + role + tags;
-        }else if (item.operate == 'GrantUpdate' && item.detail){
+        }else if (item.operate === 'GrantUpdate' && item.detail){
             //授权的更新
             //修改了用户的状态
-            item.detail.status && (item.detail.status == 0 ? (status += Intl.get('user.disabled.this.user.on.app','停用了该用户在此应用的授权')) : (status += Intl.get('user.enabled.this.user.on.app','启用了该用户在此应用的授权')));
+            item.detail.status && (item.detail.status === 0 ? (status += Intl.get('user.disabled.this.user.on.app','停用了该用户在此应用的授权')) : (status += Intl.get('user.enabled.this.user.on.app','启用了该用户在此应用的授权')));
             //修改了用户的角色
             item.detail.roles && (role += Intl.get('user.change.role.to', '修改了该用户的角色，改为{role}。',{'role': item.detail.roles}));
             //修改了用户的类型
@@ -138,17 +138,17 @@ var UserDetailChangeRecord = React.createClass({
             }
             (item.detail.begin || item.detail.end) && (timerange += Intl.get('user.change.grant.time','将该用户的授权时间改为从{begin}到{end}。',{'begin': begin,'end': end}));
             //是否过期停用
-            item.detail.overDraft && (item.detail.overDraft == 0 ? (overdraft += Intl.get('user.cancel.overdraft','取消了到期停用。')) : (overdraft += Intl.get('user.setting.overdraft','设置了到期停用。')));
+            item.detail.overDraft && (item.detail.overDraft === 0 ? (overdraft += Intl.get('user.cancel.overdraft','取消了到期停用。')) : (overdraft += Intl.get('user.setting.overdraft','设置了到期停用。')));
             //是否二步认证
-            item.detail.isTwoFactor && (item.detail.isTwoFactor == 0 ? (istwofactor += Intl.get('user.close.twofactor','关闭了二步认证。')) : (istwofactor += Intl.get('user.open.twofactor','开启了二步认证。')));
+            item.detail.isTwoFactor && (item.detail.isTwoFactor === 0 ? (istwofactor += Intl.get('user.close.twofactor','关闭了二步认证。')) : (istwofactor += Intl.get('user.open.twofactor','开启了二步认证。')));
             //是否多人登录
-            item.detail.mutilogin && (item.detail.mutilogin == 0 ? (mutilogin += Intl.get('user.close.multilogin','关闭了多人登录。')) : (mutilogin += Intl.get('user.open.multilogin','开启了多人登录。')));
+            item.detail.mutilogin && (item.detail.mutilogin === 0 ? (mutilogin += Intl.get('user.close.multilogin','关闭了多人登录。')) : (mutilogin += Intl.get('user.open.multilogin','开启了多人登录。')));
                 
             desc = desc + status + role + tags + timerange + overdraft + istwofactor + mutilogin;
-        }else if (item.operate == 'UserInfoUpdate' && item.detail){
+        }else if (item.operate === 'UserInfoUpdate' && item.detail){
             //基本信息的修改
             //修改了用户的状态
-            item.detail.status && (item.detail.status == 0 ? (status += Intl.get('user.disabled.this.user', '停用了该用户。')) : (status += Intl.get('user.enabled.this.user', '启用了该用户。')));
+            item.detail.status && (item.detail.status === 0 ? (status += Intl.get('user.disabled.this.user', '停用了该用户。')) : (status += Intl.get('user.enabled.this.user', '启用了该用户。')));
             //修改了昵称
             item.detail.nick_name && (nickname += Intl.get('user.change.nick_name.to', '修改了该用户的昵称，改为{nick_name}。',{'nick_name': item.detail.nick_name}));
             // 修改了密码
@@ -192,7 +192,7 @@ var UserDetailChangeRecord = React.createClass({
     getSelectOptions: function() {
         var appLists = this.state.appLists;
         var list = appLists.map((item) => {
-            return (<Option value={item['app_id']} >{item['app_name']}</Option>);
+            return (<Option value={item['app_id']} key={item['app_id']}>{item['app_name']}</Option>);
         });
         return list;
     },
@@ -245,7 +245,7 @@ var UserDetailChangeRecord = React.createClass({
                     <Spinner />
                 </div>
             );
-        }else if(recordLength == 0 && !this.state.changeRecordLoading){
+        }else if(recordLength === 0 && !this.state.changeRecordLoading){
             //加载完成，没有数据的情况
             return (
                 <div>
@@ -260,13 +260,13 @@ var UserDetailChangeRecord = React.createClass({
                     />
                 </div>
             );
-        }else if(recordLength != 0 && !this.state.changeRecordLoading){
+        }else if(recordLength !== 0 && !this.state.changeRecordLoading){
             //加载完成，有数据的情况
             return (
                 <GeminiScrollbar>
-                    <div>
+                    <div id="change-record-area">
                         <Select showSearch value={this.state.app} style={{width: width}}
-                            onChange={this.handleChange}>
+                            onChange={this.handleChange} getPopupContainer={() => document.getElementById('change-record-area')}>
                             {this.getSelectOptions()}
                         </Select>
                         <TimeLine
