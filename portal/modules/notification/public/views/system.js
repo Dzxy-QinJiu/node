@@ -185,6 +185,7 @@ let SystemNotification = React.createClass({
                 <NoMoreDataTip
                     fontSize="12"
                     show={this.showNoMoreDataTip}
+                    message={Intl.get('common.no.more.system.message','没有更多系统消息了')}
                 />
             </div>);
         } else if (this.state.loadSystemNoticesErrorMsg) {//错误提示
@@ -221,7 +222,7 @@ let SystemNotification = React.createClass({
             //是否是异地登录的类型
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
             let isLoginFailed = item.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
-            return <div className="system-notice-item">
+            return <div className="system-notice-item" key={item.user_id}>
                 <a onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</a>
                 {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
                 {item.app_name ?
@@ -356,7 +357,7 @@ let SystemNotification = React.createClass({
                     <div className="notification-status-select">
                         <Select size="large" value={this.state.status} onChange={this.handleStatusChange}>
                             {STATUS_ARRAY.map((status) => {
-                                return (<Option value={status.value}>{status.name}</Option>);
+                                return (<Option value={status.value} key={status.value}>{status.name}</Option>);
                             })}
                         </Select>
                     </div>

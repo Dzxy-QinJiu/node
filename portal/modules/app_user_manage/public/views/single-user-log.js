@@ -299,6 +299,7 @@ var SingleUserLog = React.createClass({
                     <NoMoreDataTip
                         fontSize="12"
                         show={this.showNoMoreDataTip}
+                        message={Intl.get('common.no.more.user.log','没有更多日志了')}
                     />
                 </GeminiScrollbar>
             </div>

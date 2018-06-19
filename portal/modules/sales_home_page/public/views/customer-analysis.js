@@ -818,6 +818,8 @@ var CustomerAnalysis = React.createClass({
                         {<NoMoreDataTip
                             fontSize="12"
                             show={() => showNoMoreDataTip}
+                            message={Intl.get('common.no.more.system.message','没有更多客户了')}
+
                         />}
                     </div>
                 </div>
@@ -1166,4 +1168,4 @@ var CustomerAnalysis = React.createClass({
     }
 });
 //返回react对象
-module.exports = CustomerAnalysis;
+module.exports = CustomerAnalysis;

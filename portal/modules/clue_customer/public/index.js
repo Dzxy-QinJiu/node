@@ -717,7 +717,7 @@ const ClueCustomer = React.createClass({
             return (
                 <div className="show-customer-trace">
                     <Alert
-                        message={Intl.get('common.no.more.clue', '暂无线索')}
+                        message={Intl.get('common.no.clue', '暂无线索')}
                         type="info"
                         showIcon={true}
                     />
@@ -736,12 +736,13 @@ const ClueCustomer = React.createClass({
                             {this.renderClueCustomerList()}
                             <NoMoreDataTip
                                 show={this.showNoMoreDataTip}
+                                message={Intl.get('common.no.more.clue','没有更多线索了')}
                             />
                         </GeminiScrollbar>
                     </div>
                     {this.state.customersSize ?
                         <div className="clue-customer-total-tip">
-                            {Intl.get('crm.207', '共{count}个客户', {'count': this.state.customersSize})}
+                            {Intl.get('crm.215', '共{count}个线索', {'count': this.state.customersSize})}
                         </div> : null}
                 </div>
             );
