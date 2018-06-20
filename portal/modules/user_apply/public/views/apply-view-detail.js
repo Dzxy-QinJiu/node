@@ -308,7 +308,7 @@ const ApplyViewDetail = React.createClass({
                 <ul>
                     {replyList.map(replyItem => {
                         return (
-                            <li>
+                            <li key={index}>
                                 <dl>
                                     <dt>
                                         <img width="44" height="44"
@@ -482,28 +482,31 @@ const ApplyViewDetail = React.createClass({
             return <span>{info.user_names[0]}</span>;
         }
         let maxUserNumber = this.getChangeMaxUserNumber();
-        return this.state.isUserEdit ? (
-            <div className="user-name-wrap">
-                <Form horizontal>
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        {this.renderUserNameTextField({existCheck: true, number: maxUserNumber})}
-                    </Validation>
-                </Form>
-                <div className="distance">
-                    <span className="iconfont icon-choose" onClick={this.userNameSure}></span>
-                </div>
-                <div className="distance">
-                    <span className="iconfont icon-close" onClick={this.userNameCancel}></span>
-                </div>
-            </div>
-        ) : (
-            <div>
-                <span>{info.user_names[0]}</span>
-                <Tooltip title={Intl.get('user.apply.detail.change.username.title', '修改用户名')}>
-                    <span className="iconfont icon-update" onClick={this.editUserName.bind(this)}></span>
-                </Tooltip>
-            </div>
-        );
+        return(<div>
+            {!hasPrivilege('USER_PWD_CHANGE_APPROVAL') ? <span>{info.user_names[0]}</span>
+                : (this.state.isUserEdit ? (
+                    <div className="user-name-wrap">
+                        <Form horizontal>
+                            <Validation ref="validation" onValidate={this.handleValidate}>
+                                {this.renderUserNameTextField({existCheck: true, number: maxUserNumber})}
+                            </Validation>
+                        </Form>
+                        <div className="distance">
+                            <span className="iconfont icon-choose" onClick={this.userNameSure}></span>
+                        </div>
+                        <div className="distance">
+                            <span className="iconfont icon-close" onClick={this.userNameCancel}></span>
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <span>{info.user_names[0]}</span>
+                        <Tooltip title={Intl.get('user.apply.detail.change.username.title', '修改用户名')}>
+                            <span className="iconfont icon-update" onClick={this.editUserName.bind(this)}></span>
+                        </Tooltip>
+                    </div>)
+                )}
+        </div>);
     },
     //渲染用户名
     renderApplyDetailUsernames() {
@@ -590,28 +593,32 @@ const ApplyViewDetail = React.createClass({
         if (this.state.selectedDetailItem.isConsumed === 'true') {
             return <span>{info.nick_names[0]}</span>;
         }
-        return this.state.isNickNameEdit ? (
-            <div className="user-name-wrap">
-                <Form horizontal>
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        {this.renderNickNameTextField({existCheck: true})}
-                    </Validation>
-                </Form>
-                <div className="distance">
-                    <span className="iconfont icon-choose" onClick={this.nickNameSure}></span>
-                </div>
-                <div className="distance">
-                    <span className="iconfont icon-close" onClick={this.nickNameCancel}></span>
-                </div>
-            </div>
-        ) : (
-            <div>
-                <span>{info.nick_names[0]}</span>
-                <Tooltip title={Intl.get('user.apply.detail.change.nickname.title', '修改昵称')}>
-                    <span className="iconfont icon-update" onClick={this.editNickName}></span>
-                </Tooltip>
-            </div>
-        );
+        return <div>
+            {!hasPrivilege('USER_PWD_CHANGE_APPROVAL') ? <span>{info.nick_names[0]}</span>
+                : (this.state.isNickNameEdit ?
+                    ( <div className="user-name-wrap">
+                        <Form horizontal>
+                            <Validation ref="validation" onValidate={this.handleValidate}>
+                                {this.renderNickNameTextField({existCheck: true})}
+                            </Validation>
+                        </Form>
+                        <div className="distance">
+                            <span className="iconfont icon-choose" onClick={this.nickNameSure}></span>
+                        </div>
+                        <div className="distance">
+                            <span className="iconfont icon-close" onClick={this.nickNameCancel}></span>
+                        </div>
+                    </div>
+                    ) : (
+                        <div>
+                            <span>{info.nick_names[0]}</span>
+                            <Tooltip title={Intl.get('user.apply.detail.change.nickname.title', '修改昵称')}>
+                                <span className="iconfont icon-update" onClick={this.editNickName}></span>
+                            </Tooltip>
+                        </div>
+                    )
+                )}
+        </div>;
     },
     //渲染昵称
     renderApplyDetailNicknames() {
@@ -841,7 +848,7 @@ const ApplyViewDetail = React.createClass({
                                         {this.renderApplyTime(app, custom_setting)}
                                     </td>
                                     <td>
-                                        {detailInfo.approval_state === '0' && rolesNames.length === 0 ? <a
+                                        {detailInfo.approval_state === '0' && rolesNames.length === 0 && hasPrivilege('UPDATE_APP_EXTRA_GRANT') ? <a
                                             href="javascript:void(0)"
                                             title={Intl.get('user.apply.detail.table.no.role.title', '配置应用')}
                                             onClick={this.showAppConfigPanel.bind(this, app, detailInfo.account_type)}
@@ -852,7 +859,7 @@ const ApplyViewDetail = React.createClass({
                                         </a> : (
                                             rolesNames.map((item) => {
                                                 return (
-                                                    <div>{item}</div>
+                                                    <div key={item}>{item}</div>
                                                 );
                                             })
                                         )}
@@ -862,7 +869,7 @@ const ApplyViewDetail = React.createClass({
                                             {
                                                 permissionsNames.map((item) => {
                                                     return (
-                                                        <div>{item}</div>
+                                                        <div key={item}>{item}</div>
                                                     );
                                                 })
                                             }
@@ -1043,7 +1050,7 @@ const ApplyViewDetail = React.createClass({
                             <ul className="list-unstyled">
                                 {
                                     detailInfo.user_names.map((item, idx) => {
-                                        return <li><a href="javascript:void(0)"
+                                        return <li key={idx}><a href="javascript:void(0)"
                                             onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                             data-tracename="查看用户详情">{item}</a>
                                         </li>;
@@ -1291,7 +1298,7 @@ const ApplyViewDetail = React.createClass({
                     <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称"/></dt>
                         <dd>{(detailInfo.app_name || '').split('、').map((app_name) => {
-                            return <p>{app_name}</p>;
+                            return <p key={app_name}>{app_name}</p>;
                         })}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
@@ -1300,7 +1307,7 @@ const ApplyViewDetail = React.createClass({
                             <ul className="list-unstyled">
                                 {
                                     detailInfo.user_names.map((item, idx) => {
-                                        return <li><a href="javascript:void(0)"
+                                        return <li key={idx}><a href="javascript:void(0)"
                                             onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                             data-tracename="查看用户详情">{item}</a>
                                         </li>;
@@ -1340,7 +1347,7 @@ const ApplyViewDetail = React.createClass({
                             <ul className="list-unstyled">
                                 {
                                     detailInfo.user_names.map((item, idx) => {
-                                        return <li><a href="javascript:void(0)"
+                                        return <li key={idx}><a href="javascript:void(0)"
                                             onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                             data-tracename="查看用户详情">{item}</a>
                                         </li>;
@@ -1351,7 +1358,7 @@ const ApplyViewDetail = React.createClass({
                     </dl>
                     {this.renderComment()}
                     {
-                        selectedDetailItem.isConsumed === 'true' ? null : (
+                        selectedDetailItem.isConsumed === 'true' || !hasPrivilege('USER_PWD_CHANGE_APPROVAL') ? null : (
                             <Form horizontal>
                                 <Validation ref="validation" onValidate={this.handleValidate}>
                                     <dl className="dl-horizontal detail_item">
@@ -1440,7 +1447,7 @@ const ApplyViewDetail = React.createClass({
                     <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称"/></dt>
                         <dd>{(detailInfo.app_name || '').split('、').map((app_name) => {
-                            return <p>{app_name}</p>;
+                            return <p key={app_name}>{app_name}</p>;
                         })}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
@@ -1449,7 +1456,7 @@ const ApplyViewDetail = React.createClass({
                             <ul className="list-unstyled">
                                 {
                                     detailInfo.user_names.map((item, idx) => {
-                                        return <li><a href="javascript:void(0)"
+                                        return <li key={idx}><a href="javascript:void(0)"
                                             onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                             data-tracename="查看用户详情">{item}</a>
                                         </li>;
