@@ -152,4 +152,9 @@ export {crmEmitter};
 const clueEmitter = new EventEmitter();
 clueEmitter.IMPORT_CLUE = 'import_clue';
 export {clueEmitter};
-
+
+// 窗口缩放相关事件
+const resizeEmitter = new EventEmitter();
+resizeEmitter.WINDOW_SIZE_CHANGE = 'window_size_change';
+export { resizeEmitter };
+

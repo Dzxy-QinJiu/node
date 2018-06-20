@@ -584,6 +584,9 @@ const Contract = React.createClass({
 
         return (
             <div className="contract-list" data-tracename="合同管理">
+                <TopNav>
+                    <TopNav.MenuList />
+                </TopNav>
                 <div className="top-wrap">
                     <div className="privilege-btns">
                         {isContractView || this.state.type === VIEW_TYPE.REPAYMENT ? (

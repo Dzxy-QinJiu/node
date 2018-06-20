@@ -30,7 +30,7 @@ var SalesIndexRoute = React.createClass({
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
         _.some(sideBarMenus, function(menu) {
-            if (menu.routePath == 'sales/home') {
+            if (menu.routePath === 'sales/home') {
                 //跳到销售首页
                 history.replace('sales/home');
                 return true;
@@ -50,7 +50,7 @@ var MyAppIndexRoute = React.createClass({
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
         _.some(sideBarMenus, function(menu) {
-            if (menu.routePath == 'my_app') {
+            if (menu.routePath === 'my_app') {
                 //跳到销售首页
                 history.replace('my_app');
                 return true;
@@ -69,7 +69,7 @@ var ContractIndexRoute = React.createClass({
         var data = userData.getUserData();
         var subModules = data.subModules.contract;
         _.some(subModules, function(module) {
-            if (module.routePath == 'contract/dashboard') {
+            if (module.routePath === 'contract/dashboard') {
                 history.replace('contract/dashboard');
                 return true;
             }
@@ -121,88 +121,88 @@ function init(options) {
     _.each(user.modules, function(module) {
         switch (module) {
         //销售主页
-        case 'sales_home_page':
+            case 'sales_home_page':
             //如果是普通销售
-            if (user.isCommonSales) {
-                childRoutes.push(require('../../modules/common_sales_home_page'));
-            } else {
-                childRoutes.push(require('../../modules/sales_home_page'));
-            }
-            break;
+                if (user.isCommonSales) {
+                    childRoutes.push(require('../../modules/common_sales_home_page'));
+                } else {
+                    childRoutes.push(require('../../modules/sales_home_page'));
+                }
+                break;
             //域管理
-        case 'realm_manage':
-            childRoutes.push(require('../../modules/realm_manage'));
-            break;
+            case 'realm_manage':
+                childRoutes.push(require('../../modules/realm_manage'));
+                break;
             //用户管理
-        case 'user_manage':
-            childRoutes.push(require('../../modules/user_manage'));
-            break;
+            case 'user_manage':
+                childRoutes.push(require('../../modules/user_manage'));
+                break;
             //安全域运营分析
-        case 'analysis/realm':
-            childRoutes.push(require('./realm_analysis'));
-            break;
-        case 'oplate_user_analysis':
-            childRoutes.push(require('../../modules/oplate_user_analysis'));
-            break;
-        case 'oplate_customer_analysis':
-            childRoutes.push(require('../../modules/oplate_customer_analysis'));
-            break;
-            //角色权限管理
-        case 'background_management':
-            childRoutes.push(require('./background_management'));
-            break;
+            case 'analysis/realm':
+                childRoutes.push(require('./realm_analysis'));
+                break;
+            case 'oplate_user_analysis':
+                childRoutes.push(require('../../modules/oplate_user_analysis'));
+                break;
+            case 'oplate_customer_analysis':
+                childRoutes.push(require('../../modules/oplate_customer_analysis'));
+                break;
+            //后台管理
+            case 'background_management':
+                childRoutes.push(require('./background_management'));
+                break;
             //个人信息管理
-        case 'user_info_manage':
-            childRoutes.push(require('./user_info_manage'));
-            break;
+            case 'user_info_manage':
+                childRoutes.push(require('./user_info_manage'));
+                break;
             //客户关系管理
-        case 'crm':
-            childRoutes.push(require('../../modules/crm'));
-            break;
+            case 'crm':
+                childRoutes.push(require('../../modules/crm'));
+                break;
             //线索客户管理
-        case 'clue_customer':
-            childRoutes.push(require('../../modules/clue_customer'));
-            break;
+            case 'clue_customer':
+                childRoutes.push(require('../../modules/clue_customer'));
+                break;
             //通话记录
-        case 'call_record':
-            childRoutes.push(require('../../modules/call_record'));
-            break;
+            case 'call_record':
+                childRoutes.push(require('../../modules/call_record'));
+                break;
             //合同管理
-        case 'contract':
-            childRoutes.push(require('./contract'));
-            break;
+            case 'contract':
+                childRoutes.push(require('./contract'));
+                break;
             //应用管理
-        case 'app_manage':
-            childRoutes.push(require('../../modules/app_manage'));
-            break;
+            case 'app_manage':
+                childRoutes.push(require('../../modules/app_manage'));
+                break;
             //应用管理
-        case 'my_app_manage':
-            childRoutes.push(require('../../modules/my_app_manage'));
-            break;
+            case 'my_app_manage':
+                childRoutes.push(require('../../modules/my_app_manage'));
+                break;
             //应用用户管理
-        case 'user':
-            childRoutes.push(require('./app_user_manage'));
-            break;
+            case 'user':
+                childRoutes.push(require('./app_user_manage'));
+                break;
             //通知
-        case 'notification':
-            childRoutes.push(require('../../modules/notification'));
-            break;
-        case 'online':
-            childRoutes.push(require('./user_online'));
-            break;
-        case 'report':
-            childRoutes.push(require('./report'));
-            break;
-        case 'app_user_manage_apply':
-            childRoutes.push(require('../../modules/user_apply'));
-            break;
-        case 'app_overview':
-            childRoutes.push(require('../../modules/app_overview'));
-            break;
+            case 'notification':
+                childRoutes.push(require('../../modules/notification'));
+                break;
+            case 'online':
+                childRoutes.push(require('./user_online'));
+                break;
+            case 'report':
+                childRoutes.push(require('./report'));
+                break;
+            case 'app_user_manage_apply':
+                childRoutes.push(require('../../modules/user_apply'));
+                break;
+            case 'app_overview':
+                childRoutes.push(require('../../modules/app_overview'));
+                break;
             //日程管理
-        case 'schedule_management':
-            childRoutes.push(require('../../modules/schedule_management'));
-            break;
+            case 'schedule_management':
+                childRoutes.push(require('../../modules/schedule_management'));
+                break;
         }
     });
 

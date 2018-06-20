@@ -346,23 +346,61 @@ class LeftMenuClass {
                 id: 'CONTRACT',
                 name: backendIntl.get('menu.contract', '合同管理'),
                 routePath: 'contract',
+                privileges: [
+                    'OPLATE_CONTRACT_QUERY',
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ['OPLATE_CONTRACT_QUERY'],
                 subMenu: [{
-                    id: 'CONTRACT_LIST',
-                    name: backendIntl.get('menu.contract.list', '合同列表'),
-                    routePath: 'contract/list',
-                    privileges: [
-                        'OPLATE_CONTRACT_QUERY',
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ['OPLATE_CONTRACT_QUERY']
-                }, {
                     id: 'CONTRACT_DASHBOARD',
-                    name: backendIntl.get('contract.151', '合同仪表盘'),
+                    name: backendIntl.get('contract.175', '合同概览'),
                     routePath: 'contract/dashboard',
                     privileges: [
                         'OPLATE_REPAYMENT_ADD',
                     ],
                     showPrivileges: ['OPLATE_REPAYMENT_ADD']
+                }, {
+                    id: 'CONTRACT_SALES_LIST',
+                    name: backendIntl.get('contract.112', '销售合同'),
+                    routePath: 'contract/sell',
+                    privileges: ['OPLATE_CONTRACT_UPLOAD'],
+                    showPrivileges: ['OPLATE_CONTRACT_UPLOAD']
+                }, {
+                    id: 'CONTRACT_BUY_LIST',
+                    name: backendIntl.get('contract.9', '采购合同'),
+                    routePath: 'contract/buy',
+                    privileges: ['OPLATE_CONTRACT_QUERY'],
+                    showPrivileges: ['OPLATE_CONTRACT_QUERY']
+                }, {
+                    id: 'CONTRACT_REPAYMENT_LIST',
+                    name: backendIntl.get('contract.102', '合同回款'),
+                    routePath: 'contract/repayment',
+                    privileges: ['OPLATE_REPAYMENT_ADD'],
+                    showPrivileges: ['OPLATE_REPAYMENT_ADD']
+                }, {
+                    id: 'CONTRACT_COST_LIST',
+                    name: backendIntl.get('contract.133', '费用'),
+                    routePath: 'contract/cost',
+                    privileges: ['OPLATE_SALES_COST_QUERY'],
+                    showPrivileges: ['OPLATE_SALES_COST_QUERY']
+                },{
+                    id: 'CONTRACT_ANALYSIS',
+                    name: backendIntl.get('contract.188', '分析'),
+                    routePath: 'contract/analysis',
+                    privileges: ['OPLATE_CONTRACT_ANALYSIS'],
+                    showPrivileges: ['OPLATE_CONTRACT_ANALYSIS']
+                }, {
+                    id: 'CONTRACT_SALES_COMMISSION',
+                    name: backendIntl.get('contract.181', '提成计算'),
+                    routePath: 'contract/sales_commission',
+                    privileges: ['OPLATE_CONTRACT_SALERS_COMMISSION'],
+                    showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION']
+                }, {
+                    id: 'CONTRACT_COMMISSION_PAYMENT',
+                    name: backendIntl.get('contract.189', '提成发放'),
+                    routePath: 'contract/commission_payment',
+                    privileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD'],
+                    showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD']
                 }]
             },
             {

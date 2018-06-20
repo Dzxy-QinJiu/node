@@ -1,15 +1,28 @@
 var RightContent = require('../../../components/privilege/right-content');
-var Checker = require('../../../components/privilege/checker');
+
+var Checker = require('CMP_DIR/privilege/checker');
 //合同列表
-var Contract = require('../../../modules/contract');
+var Contract = require('MOD_DIR/contract');
 //合同仪表盘
-var ContractDashboard = require('../../../modules/contract/dashboard-index');
+var ContractDashboard = require('MOD_DIR/contract/dashboard-index');
+//分析
+const ContractAnalysis = require('MOD_DIR/contract/analysis');
+// 提成计算
+const SalesCommission = require('MOD_DIR/sales_commission');
+// 提成发放
+const CommissionPayment = require('MOD_DIR/commission_payment');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('contract',
         [
-            Contract,
             ContractDashboard,
+            Contract('sell'),
+            Contract('buy'),
+            Contract('repayment'),
+            Contract('cost'),
+            SalesCommission('sales_commission'),
+            CommissionPayment('commission_payment'),
+            ContractAnalysis
         ]
     );
     return childRoutes;

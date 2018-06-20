@@ -4,7 +4,7 @@
  * 包括共用状态和方法的定义以及共用字段的渲染
  */
 
-import {Form, Input, Select, DatePicker, Radio, Icon} from 'antd';
+import {Form, Input, Select, DatePicker, Icon} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const Validation = require('rc-form-validation');
@@ -15,7 +15,6 @@ import ajax from '../common/ajax';
 import routeList from '../common/route';
 const customerAjax = require('../../common/public/ajax/customer');
 import {CATEGORY, CONTRACT_STAGE, CONTRACT_LABEL, LABEL_NEW_SIGNING, PURCHASE_TYPE} from '../consts';
-import rightPanelUtil from '../../../components/rightPanel';
 import {VIEW_TYPE} from '../consts';
 import {regex} from 'ant-utils';
 
@@ -41,7 +40,7 @@ export default {
             formData.customers = [{}];
         } else {
             //编辑已有所属客户时，将选中状态都设为true
-            belongCustomerIsChoosen = _.map(formData.customers, customer => true);
+            belongCustomerIsChoosen = _.map(formData.customers, () => true);
         }
 
         return {
@@ -389,7 +388,7 @@ export default {
         return (
             <FormItem
                 {...formItemLayout}
-                label={Intl.get('sales.commission.role.representative': '销售代表')}
+                label={Intl.get('sales.commission.role.representative', '销售代表')}
                 validateStatus={this.getValidateStatus(validateName)}
                 help={this.getHelpMessage(validateName)}
             >
@@ -576,7 +575,7 @@ export default {
         belongCustomer.customer_sales_team_name = selectedCustomer.sales_team_name;
 
         //暂存表单数据
-        const formDataCopy = JSON.parse(JSON.stringify(formData));
+        // const formDataCopy = JSON.parse(JSON.stringify(formData));
 
         this.state.belongCustomerIsChoosen[index] = true;
 
@@ -702,7 +701,7 @@ export default {
 
             const startTime = this.state.formData.start_time;
             const endTime = this.state.formData.end_time;
-            const isStartTime = timeType === 'start_time' ? true : false;
+            const isStartTime = timeType === 'start_time';
             if (endTime && startTime) {
                 if (moment(endTime).isBefore(startTime)) {
                     if (isStartTime) {

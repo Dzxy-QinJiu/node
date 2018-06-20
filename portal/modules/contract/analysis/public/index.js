@@ -3,8 +3,8 @@
  */
 
 import './css/style.less';
-import { LAYOUT_CONSTANTS, CONTRACT_DEFAULT_PAGESIZE, CONTRACT_VIEW_AUTH} from './consts';
-import { Row, Col, Input, message } from 'antd';
+import {LAYOUT_CONSTANTS, CONTRACT_DEFAULT_PAGESIZE, CONTRACT_VIEW_AUTH} from './consts';
+import {Row, Col, Input, message} from 'antd';
 import FilterPanel from './view/filter-panel';
 import FilterSelector from './view/filter-selector';
 import TableList from './view/table-list';
@@ -14,7 +14,9 @@ import AnalysisAction from './action/analysis-action';
 var userData = require('../../../../public/sources/user-data');
 const userInfo = userData.getUserData();
 import ModalIntro from 'CMP_DIR/modal-intro';
-const { setWebsiteConfig, getLocalWebsiteConfig } = require('LIB_DIR/utils/websiteConfig');
+import TopNav from 'CMP_DIR/top-nav';
+
+const {setWebsiteConfig, getLocalWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 
 /**websiteConfig数据结构
  * personnelSetting: {
@@ -28,6 +30,7 @@ const personnelSetting = getLocalWebsiteConfig() || {};
 const haveSeenIntro = personnelSetting.haveSeenIntro && personnelSetting.haveSeenIntro.contractAnalysis;
 //窗口改变的事件emitter
 const resizeEmitter = require('PUB_DIR/sources/utils/emitters').resizeEmitter;
+const TOP_NAV_HEIGHT = 64;//顶部导航高度
 
 class ContractAnalysis extends React.Component {
     constructor(props) {
@@ -62,17 +65,20 @@ class ContractAnalysis extends React.Component {
         };
         this.onStoreChange = this.onStoreChange.bind(this);
     }
+
     componentDidMount() {
         //窗口大小改变事件
         resizeEmitter.on(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
         AnalysisStore.listen(this.onStoreChange);
         this.getTableList();
     }
+
     onStoreChange() {
         this.setState(
             AnalysisStore.getState()
         );
     }
+
     componentWillUnmount() {
         //卸载窗口大小改变事件
         resizeEmitter.removeListener(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
@@ -81,7 +87,7 @@ class ContractAnalysis extends React.Component {
     //窗口缩放时候的处理函数
     resizeHandler = (data) => {
         this.setState({
-            contentHeight: data.height
+            contentHeight: data.height - TOP_NAV_HEIGHT
         });
     }
     //获取已保存的表格列表
@@ -97,6 +103,7 @@ class ContractAnalysis extends React.Component {
         AnalysisAction.setSortId(sortId || '');
         AnalysisAction.getTableList(params);
     }
+
     //获取table行、列、值字段
     getTableInfo(params) {
         AnalysisAction.getTableInfo(params)
@@ -106,6 +113,7 @@ class ContractAnalysis extends React.Component {
                 this.handleTableData(this.processParams(this.state.fieldParamObj), this.state.contractType);
             });
     }
+
     //处理保存、预览所需参数
     processParams(fieldParamObj) {
         const mapList = list => list.map(field => ({
@@ -135,6 +143,7 @@ class ContractAnalysis extends React.Component {
         };
         return paramsObj;
     }
+
     //处理点击预览按钮
     onPreview(fieldParamObj, contractType) {
         this.setState({
@@ -143,6 +152,7 @@ class ContractAnalysis extends React.Component {
         });
         this.handleTableData(this.processParams(fieldParamObj), contractType);
     }
+
     //根据字段获取表格数据
     handleTableData(params, contractType) {
         switch (contractType) {
@@ -157,8 +167,9 @@ class ContractAnalysis extends React.Component {
                 break;
         }
     }
+
     //处理点击保存
-    onSave({ fieldParamObj, status, type }) {
+    onSave({fieldParamObj, status, type}) {
         if (!this.state.tableName) {
             message.error(Intl.get('contract.analysis.error.tip', '请填写分析表名称'));
             return;
@@ -177,10 +188,11 @@ class ContractAnalysis extends React.Component {
             .then(() => {
                 message.success(Intl.get('common.save.success', '保存成功'));
                 this.getTableList();
-            }, ({ errorMsg }) => {
+            }, ({errorMsg}) => {
                 message.error(errorMsg || Intl.get('common.save.failed', '保存失败'));
             });
     }
+
     //处理筛选条件变化
     handleFilterChange(params) {
         let filters = params.map(filter => {
@@ -190,7 +202,7 @@ class ContractAnalysis extends React.Component {
             };
             if (filter.fieldType === 'date' || filter.fieldType === 'num') {
                 obj.query_type = 'range';
-                $.extend(obj, { ...filter.params });
+                $.extend(obj, {...filter.params});
             } else {
                 obj.query_type = 'contains';
                 obj.contains = (filter.params && filter.params.item) && [filter.params.item];
@@ -199,15 +211,18 @@ class ContractAnalysis extends React.Component {
         });
         this.handleTableData($.extend(true, {},
             this.processParams(this.state.fieldParamObj),
-            { filters, contractType: this.state.contractType }
+            {filters, contractType: this.state.contractType}
         ), this.state.contractType);
     }
+
     handleTableClick(tableItem) {
-        this.getTableInfo({ id: tableItem.id });
+        this.getTableInfo({id: tableItem.id});
     }
+
     handleTableAdd() {
         AnalysisAction.resetState();
     }
+
     handleNameChange(e) {
         const tableName = e.target.value;
         if (tableName) {
@@ -216,6 +231,7 @@ class ContractAnalysis extends React.Component {
             });
         }
     }
+
     handleHideIntro() {
         this.setState({
             showIntro: false
@@ -227,6 +243,7 @@ class ContractAnalysis extends React.Component {
             });
         });
     }
+
     render() {
         var commonIntroModalLayout = {
             //展示孔比原图标要变化的宽度
@@ -243,7 +260,10 @@ class ContractAnalysis extends React.Component {
             tipAreaTop: -50,
         };
         return (
-            <div className="analysis-container" style={{ height: this.state.contentHeight }}>
+            <div className="contract-analysis-container">
+                <TopNav>
+                    <TopNav.MenuList />
+                </TopNav>
                 <div className="dashboard-content">
                     <Row gutter={2}>
                         <Col className="gutter-row" span={4}>
@@ -258,7 +278,7 @@ class ContractAnalysis extends React.Component {
                                     errorMsg: this.state.getTablelistErrorMsg,
                                     loadingMore: this.state.sortId && this.state.getTablelistLoading
                                 }}
-                                style={{ height: this.state.contentHeight }}
+                                style={{height: this.state.contentHeight}}
                             />
                         </Col>
                         <Col className="table-container" span={13}>
@@ -277,7 +297,7 @@ class ContractAnalysis extends React.Component {
                             />
                             <div className="table-content-wrapper">
                                 <TableContent
-                                    style={{ height: this.state.contentHeight - LAYOUT_CONSTANTS.TOP - this.state.selectorHeight }}
+                                    style={{height: this.state.contentHeight - LAYOUT_CONSTANTS.TOP - this.state.selectorHeight}}
                                     valueList={this.state.fieldParamObj.valueList}
                                     tableDataResult={{
                                         data: this.state.tableData,
@@ -290,7 +310,7 @@ class ContractAnalysis extends React.Component {
                         <Col className="gutter-row" span={7}>
                             <FilterPanel
                                 ref={ref => this.filterPanelRef = ref}
-                                style={{ height: this.state.contentHeight }}
+                                style={{height: this.state.contentHeight}}
                                 height={this.state.contentHeight}
                                 disableSave={
                                     this.state.loading ||
@@ -315,7 +335,7 @@ class ContractAnalysis extends React.Component {
                     /> : null}
                 </div>
                 {/* <GeminiScrollBar>
-                </GeminiScrollBar> */}
+                 </GeminiScrollBar> */}
             </div>
         );
     }
