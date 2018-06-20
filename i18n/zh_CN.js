@@ -151,6 +151,7 @@ var zh_CN = {
     'common.no.more.data': '没有更多数据了',
     'common.no.more.user': '没有更多用户了',
     'common.no.more.crm': '没有更多客户了',
+    'common.no.more.filter.crm': '没有符合条件的客户了',
     'common.no.more.schedule': '暂无计划',
     'common.no.more.order': '暂无订单',
     'common.no.clue': '暂无线索',
