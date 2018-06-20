@@ -348,6 +348,11 @@ var CustomerAnalysis = React.createClass({
                 sm: 24,
             },
             chartType: 'line',
+            noShowCondition: {
+                callback: conditions => {
+                    return this.state.timeType === 'day';
+                },
+            },
         }];
 
         return (
