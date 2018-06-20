@@ -123,7 +123,7 @@ function getDelayDisplayTime(delay) {
 const ApplyViewDetail = React.createClass({
     mixins: [FieldMixin, UserNameTextField],
     hasApprovalPrivilege(){
-        return hasPrivilege('USER_PWD_CHANGE_APPROVAL') ? true : false;
+        return hasPrivilege('USER_PWD_CHANGE_APPROVAL');
     },
     getDefaultProps() {
         return {
@@ -485,9 +485,8 @@ const ApplyViewDetail = React.createClass({
             return <span>{info.user_names[0]}</span>;
         }
         let maxUserNumber = this.getChangeMaxUserNumber();
-        let approvalP = this.hasApprovalPrivilege();
         return(<div>
-            {!approvalP ? <span>{info.user_names[0]}</span>
+            {!this.hasApprovalPrivilege() ? <span>{info.user_names[0]}</span>
                 : (this.state.isUserEdit ? (
                     <div className="user-name-wrap">
                         <Form horizontal>
@@ -597,9 +596,8 @@ const ApplyViewDetail = React.createClass({
         if (this.state.selectedDetailItem.isConsumed === 'true') {
             return <span>{info.nick_names[0]}</span>;
         }
-        let approvalP = this.hasApprovalPrivilege();
         return <div>
-            {!approvalP ? <span>{info.nick_names[0]}</span>
+            {!this.hasApprovalPrivilege() ? <span>{info.nick_names[0]}</span>
                 : (this.state.isNickNameEdit ?
                     ( <div className="user-name-wrap">
                         <Form horizontal>
@@ -844,7 +842,6 @@ const ApplyViewDetail = React.createClass({
                             } else {
                                 number = app.number || 1;
                             }
-                            let approvalP = this.hasApprovalPrivilege();
 
                             return (
                                 <tr key={app.app_id}>
@@ -854,7 +851,7 @@ const ApplyViewDetail = React.createClass({
                                         {this.renderApplyTime(app, custom_setting)}
                                     </td>
                                     <td>
-                                        {detailInfo.approval_state === '0' && rolesNames.length === 0 && approvalP ? <a
+                                        {detailInfo.approval_state === '0' && rolesNames.length === 0 && hasPrivilege('UPDATE_APP_EXTRA_GRANT') ? <a
                                             href="javascript:void(0)"
                                             title={Intl.get('user.apply.detail.table.no.role.title', '配置应用')}
                                             onClick={this.showAppConfigPanel.bind(this, app, detailInfo.account_type)}
@@ -1336,7 +1333,6 @@ const ApplyViewDetail = React.createClass({
         var selectedDetailItem = this.state.selectedDetailItem;
         var detailInfo = this.state.detailInfoObj.info;
         var user_ids = detailInfo.user_ids;
-        let approvalP = this.hasApprovalPrivilege();
 
         return (
             <div>
@@ -1366,7 +1362,7 @@ const ApplyViewDetail = React.createClass({
                     </dl>
                     {this.renderComment()}
                     {
-                        selectedDetailItem.isConsumed === 'true' || !approvalP ? null : (
+                        selectedDetailItem.isConsumed === 'true' || !this.hasApprovalPrivilege() ? null : (
                             <Form horizontal>
                                 <Validation ref="validation" onValidate={this.handleValidate}>
                                     <dl className="dl-horizontal detail_item">
