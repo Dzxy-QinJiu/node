@@ -313,7 +313,7 @@ const ApplyViewDetail = React.createClass({
                         return (
                             <li key={index}>
                                 <dl>
-                                    <dt>s
+                                    <dt>
                                         <img width="44" height="44"
                                             src={replyItem.user_logo || DefaultHeadIconImage}
                                             onError={this.userLogoOnError}/>
