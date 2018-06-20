@@ -21,7 +21,6 @@ class ClueRightPanel extends React.Component {
         super(props);
         this.state = {
             curCustomer: $.extend(true, {}, this.props.curCustomer),
-            isEdittingTime: false,//是否正在修改线索咨询时间
             relatedCustomer: {},//与线索相关联的客户
         };
     }
