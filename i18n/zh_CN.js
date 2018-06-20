@@ -1327,6 +1327,10 @@ var zh_CN = {
     'crm.apply.stop.placeholder': '请输入停用的原因',
     'crm.apply.update.password.placeholder': '请输入修改密码的要求',
     'crm.apply.other.placeholder': '请输入申请内容',
+    'crm.Administrative.level.0': '部委',
+    'crm.Administrative.level.1': '省部级',
+    'crm.Administrative.level.2': '地市级',
+    'crm.Administrative.level.3': '区县级',
     // 客户管理end
 
     // 客户分析start
