@@ -7,13 +7,13 @@ import {RightPanel, RightPanelClose} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import UserDetailEditField from 'CMP_DIR/basic-edit-field/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
+import DatePickerField from 'CMP_DIR/basic-edit-field/date-picker';
 import {checkEmail} from '../utils/clue-customer-utils';
 var clueCustomerAction = require('../action/clue-customer-action');
 var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 import AssignClueAndSelectCustomer from './assign-clue-and-select-customer';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
-import {DatePicker, Icon} from 'antd';
 const noop = function() {
 };
 class ClueRightPanel extends React.Component {
@@ -23,8 +23,6 @@ class ClueRightPanel extends React.Component {
             curCustomer: $.extend(true, {}, this.props.curCustomer),
             isEdittingTime: false,//是否正在修改线索咨询时间
             relatedCustomer: {},//与线索相关联的客户
-            loading: false,//正在修改线索时间
-            submitErrorMsg: '',//修改线索时间出错的提示
         };
     }
 
@@ -173,68 +171,13 @@ class ClueRightPanel extends React.Component {
             callback(Intl.get('clue.customer.fillin.clue.name', '请填写线索名称'));
         }
     };
-    handleEditSourceTime = () => {
-        this.setState({
-            isEdittingTime: true
-        });
-    };
-    changeSourceTime = (value) => {
-        let timestamp = value && value.valueOf() || '';
-        let curCustomer = this.state.curCustomer;
-        curCustomer.source_time = timestamp;
-        this.setState({
-            curCustomer: curCustomer
-        });
-    };
-    handleCancel = () => {
-        let curCustomer = this.state.curCustomer;
-        curCustomer.source_time = this.props.curCustomer.source_time;
-        this.setState({
-            isEdittingTime: false,
-            loading: false,
-            submitErrorMsg: '',
-            curCustomer: curCustomer
-        });
-    };
     //今天之后的日期不可以选
     disabledDate(current){
         return current > moment().endOf('day');
     }
-    handleSourceTimeSubmit = () => {
-        var curCustomer = this.state.curCustomer;
-        if (curCustomer.source_time === this.props.curCustomer.source_time){
-            this.setState({
-                isEdittingTime: false,
-            });
-            return;
-        }
-        var submitObj = {id: curCustomer.id, source_time: moment(curCustomer.source_time).valueOf()};
-        clueCustomerAjax.updateCluecustomerDetail(submitObj,(submitStatus) => {
-            if (submitStatus.submitType === 'loading'){
-                this.setState({
-                    loading: true,
-                    submitErrorMsg: '',
-                });
-            }else if (submitStatus.submitType === 'success'){
-                this.setState({
-                    loading: false,
-                    submitErrorMsg: '',
-                    isEdittingTime: false,
-                },() => {
-                    this.changeUserFieldSuccess(submitObj);
-                });
-            }else{
-                this.setState({
-                    loading: false,
-                    submitErrorMsg: Intl.get('failed.change.source.time', '修改线索咨询时间失败'),
-                });
-            }
-        });
-    };
 
     render() {
         var curCustomer = this.state.curCustomer || {};
-        console.log(curCustomer);
         var phone = '', qq = '', email = '', id = '', weChat = '';
         if (_.isArray(curCustomer.contacts) && curCustomer.contacts.length) {
             phone = _.isArray(curCustomer.contacts[0].phone) && curCustomer.contacts[0].phone.length ? curCustomer.contacts[0].phone[0] : '';
@@ -438,30 +381,15 @@ class ClueRightPanel extends React.Component {
                                         {Intl.get('crm.sales.clue.time', '线索时间')}：
                                     </dt>
                                     <dd>
-                                        {this.state.isEdittingTime ?
-                                            <div className="sourcetime_container">
-                                                <DatePicker
-                                                    disabledDate={this.disabledDate}
-                                                    defaultValue={moment(curCustomer.source_time)}
-                                                    onChange={this.changeSourceTime.bind(this)}
-                                                    allowClear={false}/>
-                                                <div className="tip-container">
-                                                    {this.state.loading ? <Icon type="loading"/> :
-                                                        <div>
-                                                            {this.state.submitErrorMsg ? <span className="ant-form-explain">{this.state.submitErrorMsg}</span> : null}
-                                                            <i title={Intl.get('common.update', '修改')} className="inline-block iconfont icon-choose"
-                                                                onClick={(e) => {this.handleSourceTimeSubmit(e);}}></i>
-                                                            <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
-                                                                onClick={(e) => {this.handleCancel(e);}}></i>
-                                                        </div>}
-
-                                                </div>
-                                            </div>
-                                            : <div>
-                                                {moment(curCustomer.source_time).format(oplateConsts.DATE_FORMAT)}
-                                                <i className="iconfont icon-update" title={Intl.get('common.update', '修改')}
-                                                    onClick={this.handleEditSourceTime}></i>
-                                            </div>}
+                                        <DatePickerField
+                                            disabled={hasNoPrivilegeEdit}
+                                            user_id={curCustomer.id}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                            value={curCustomer.source_time}
+                                            field="source_time"
+                                            disabledDate={this.disabledDate}
+                                        />
                                     </dd>
                                 </dl>
                             </div>

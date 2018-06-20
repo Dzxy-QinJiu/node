@@ -196,7 +196,6 @@ exports.distributeCluecustomerToSale = function(submitObj) {
 //更新线索客户的基本信息
 var updateCluecustomerDetailAjax;
 exports.updateCluecustomerDetail = function(submitObj, callback) {
-    _.isFunction(callback) && callback({submitType: 'loading'});
     var data = {},updateObj = {};
     //如果是修改联系人的相关信息时，不但要传客户的id还要传联系人的id
     //更新联系人的相关字段时
