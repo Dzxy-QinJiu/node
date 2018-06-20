@@ -309,11 +309,11 @@ const ApplyViewDetail = React.createClass({
                 {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/}
                 {/*title={Intl.get("common.get.again", "重新获取")}/>*/}
                 <ul>
-                    {replyList.map(replyItem => {
+                    {replyList.map((replyItem, index) => {
                         return (
                             <li key={index}>
                                 <dl>
-                                    <dt>
+                                    <dt>s
                                         <img width="44" height="44"
                                             src={replyItem.user_logo || DefaultHeadIconImage}
                                             onError={this.userLogoOnError}/>
