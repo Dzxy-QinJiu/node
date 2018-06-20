@@ -671,40 +671,40 @@ var Crm = React.createClass({
         let dayTime = '';
         //超xxx天未联系客户
         switch (condition.otherSelectedItem) {
-        case OTHER_FILTER_ITEMS.THIRTY_UNCONTACT://超30天未联系的客户
-            dayTime = DAY_TIME.THIRTY_DAY;
-            break;
-        case OTHER_FILTER_ITEMS.FIFTEEN_UNCONTACT://超15天未联系的客户
-            dayTime = DAY_TIME.FIFTEEN_DAY;
-            break;
-        case OTHER_FILTER_ITEMS.SEVEN_UNCONTACT://超7天未联系的客户
-            dayTime = DAY_TIME.SEVEN_DAY;
-            break;
-        case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
-            condition.contain_contact = 'false';
-            break;
-        case OTHER_FILTER_ITEMS.LAST_CALL_NO_RECORD://最后联系但未写跟进记录的客户
-            condition.call_and_remark = '1';
-            break;
-        case OTHER_FILTER_ITEMS.NO_RECORD_OVER_30DAYS://超30天未写跟进记录的客户
-            condition.last_trace = '0';
-            break;
-        case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
-            unexist.push('member_id');
-            break;
-        case OTHER_FILTER_ITEMS.INTEREST_MEMBER_IDS://被关注的客户
-            exist.push('interest_member_ids');
-            break;
-        case OTHER_FILTER_ITEMS.MY_INTERST://我关注的客户
-            condition.interest_member_ids = [crmUtil.getMyUserId()];
-            break;
-        case OTHER_FILTER_ITEMS.MULTI_ORDER://多个订单的客户
-            this.state.rangParams[0] = {
-                from: 2,
-                name: 'sales_opportunity_count',
-                type: 'long',
-            };
-            break;
+            case OTHER_FILTER_ITEMS.THIRTY_UNCONTACT://超30天未联系的客户
+                dayTime = DAY_TIME.THIRTY_DAY;
+                break;
+            case OTHER_FILTER_ITEMS.FIFTEEN_UNCONTACT://超15天未联系的客户
+                dayTime = DAY_TIME.FIFTEEN_DAY;
+                break;
+            case OTHER_FILTER_ITEMS.SEVEN_UNCONTACT://超7天未联系的客户
+                dayTime = DAY_TIME.SEVEN_DAY;
+                break;
+            case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
+                condition.contain_contact = 'false';
+                break;
+            case OTHER_FILTER_ITEMS.LAST_CALL_NO_RECORD://最后联系但未写跟进记录的客户
+                condition.call_and_remark = '1';
+                break;
+            case OTHER_FILTER_ITEMS.NO_RECORD_OVER_30DAYS://超30天未写跟进记录的客户
+                condition.last_trace = '0';
+                break;
+            case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
+                unexist.push('member_id');
+                break;
+            case OTHER_FILTER_ITEMS.INTEREST_MEMBER_IDS://被关注的客户
+                exist.push('interest_member_ids');
+                break;
+            case OTHER_FILTER_ITEMS.MY_INTERST://我关注的客户
+                condition.interest_member_ids = [crmUtil.getMyUserId()];
+                break;
+            case OTHER_FILTER_ITEMS.MULTI_ORDER://多个订单的客户
+                this.state.rangParams[0] = {
+                    from: 2,
+                    name: 'sales_opportunity_count',
+                    type: 'long',
+                };
+                break;
         }
         //超xx天未联系的客户过滤需传的参数
         if (dayTime) {
@@ -1401,7 +1401,7 @@ var Crm = React.createClass({
                             onChange={this.onTableChange}
                             scroll={{x: tableScrollX, y: this.state.tableHeight}}
                             locale={{
-                                emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.crm', '没有更多客户了')) : ''
+                                emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                             }}
                         />
                     </div>
