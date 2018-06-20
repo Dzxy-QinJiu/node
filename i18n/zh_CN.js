@@ -2257,5 +2257,6 @@ var zh_CN = {
     'noMoreTip.callRecord': '没有更多通话记录了',
     'noMoreTip.visitBack': '没有更多回访记录了',
     'noMoreTip.customer': '没有更多客户了',
+    'failed.change.source.time': '修改线索咨询时间失败'
 };
 export default zh_CN;
