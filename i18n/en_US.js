@@ -1312,6 +1312,10 @@ var en_US = {
     'crm.apply.stop.placeholder': 'Please enter the reason for discontinuation',//请输入停用的原因
     'crm.apply.update.password.placeholder': 'Please enter a request for a modified password',//请输入修改密码的要求
     'crm.apply.other.placeholder': 'Please enter the application content',//请输入申请内容
+    'crm.Administrative.level.0': 'Ministries',//部委
+    'crm.Administrative.level.1': 'Provincial level',//省部级
+    'crm.Administrative.level.2': 'Prefectural level',//地市级
+    'crm.Administrative.level.3': 'county level',//区县级
     // 客户管理end
 
     //客户分析 start
