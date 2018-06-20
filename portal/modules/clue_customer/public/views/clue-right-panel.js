@@ -219,6 +219,9 @@ class ClueRightPanel extends React.Component {
                 this.setState({
                     loading: false,
                     submitErrorMsg: '',
+                    isEdittingTime: false,
+                },() => {
+                    this.changeUserFieldSuccess(submitObj);
                 });
             }else{
                 this.setState({
