@@ -192,10 +192,6 @@ var CustomerAnalysis = React.createClass({
             //首次进来时，如果不是销售就获取下级团队/团队成员的统计数据
             customerPropertys.push('team');
         }
-        //选择天时，不展示趋势图
-        if (this.state.timeType !== 'day') {
-            customerPropertys.unshift('trend');
-        }
         //获取各统计图数据
         customerPropertys.forEach(customerProperty => {
             let customerType = 'added';
