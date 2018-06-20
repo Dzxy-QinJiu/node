@@ -296,36 +296,70 @@ var CustomerAnalysis = React.createClass({
             OplateCustomerAnalysisAction.getTransferCustomers(params);
         }
     },
+    //获取触发器
+    getEmitters: function() {
+        return [
+            {
+                instance: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: 'start_time',
+                }, {
+                    name: 'end_time',
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: 'team_ids',
+                }],
+            },
+        ];
+    },
+    //获取图表条件
+    getConditions: function() {
+        return [
+            {
+                name: 'starttime',
+                value: this.props.startTime,
+            },
+            {
+                name: 'endtime',
+                value: this.props.endTime,
+            },
+            {
+                name: 'team_ids',
+                value: '',
+            },
+            {
+                name: 'data_type',
+                value: this.getDataType(),
+                type: 'params',
+            },
+        ];
+    },
     //趋势统计
     getCustomerChart: function() {
-        if (this.state.isComposite) {
-            //所有应用的新增趋势统计
-            var list = _.isArray(this.state.trendAnalysis.data) ?
-                this.state.trendAnalysis.data : [];
-            return (
-                <CompositeLine
-                    width={this.chartWidth}
-                    list={list}
-                    title={Intl.get('customer.analysis.add.customer', '新增客户')}
-                    height={214}
-                    resultType={this.state.trendAnalysis.resultType}
-                />
-            );
-        } else {
-            //某个应用下的新增趋势统计
-            return (
-                <SingleLineChart
-                    width={this.chartWidth}
-                    list={this.state.trendAnalysis.data}
-                    title={Intl.get('customer.analysis.add.customer', '新增客户')}
-                    legend={[{
-                        name: Intl.get('user.analysis.formal', '正式'),
-                        key: 'formal'
-                    }, { name: Intl.get('common.trial', '试用'), key: 'trial' }]}
-                    resultType={this.state.trendAnalysis.resultType}
-                />
-            );
-        }
+        const charts = [{
+            title: Intl.get('customer.analysis.add.trend', '新增趋势'),
+            url: '/rest/analysis/customer/v2/added/trend',
+            layout: {
+                sm: 24,
+            },
+            chartType: 'line',
+        }];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                emitters={this.getEmitters()}
+                conditions={this.getConditions()}
+                cardContainer={false}
+                isGetDataOnMount={true}
+                style={{padding: 0}}
+            />
+        );
     },
     getStartDateText: function() {
         if (this.state.startTime) {
