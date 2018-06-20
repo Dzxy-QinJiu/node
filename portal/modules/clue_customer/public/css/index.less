@@ -331,10 +331,25 @@
         font-size: 18px;
         margin: 3px 0 0 20px;
         font-weight: 300;
+        span.inline-block{
+          display: inline-block;
+          max-width:300px;
+          span{
+            display: inline-block;
+            max-width:300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
       }
       .clue_detail_content{
         margin:10px 20px 20px 20px;
         background-color: #dde6ed;
+        .iconfont{
+          font-size: 14px;
+        }
+
         form .ant-form-item{
           input,textarea, .ant-select{
             width: 220px;
@@ -350,6 +365,28 @@
             white-space: normal;
             word-break: break-all;
           }
+        }
+        .detail_item.user_detail_item_sourcetime{
+          overflow: hidden;
+           .sourcetime_container{
+             .icon-close{
+               margin-left: 5px;
+             }
+             .ant-calendar-picker{
+               float: left;
+             }
+             .tip-container{
+                float: left;
+                margin-left: 10px;
+             }
+             .icon-update{
+               margin-left: 5px;
+             }
+             .ant-form-explain{
+               color:@error_tips_color;
+               margin-top: 5px;
+             }
+           }
         }
         .user-basic-edit-field-textarea.user-basic-edit-field{
           position: relative;

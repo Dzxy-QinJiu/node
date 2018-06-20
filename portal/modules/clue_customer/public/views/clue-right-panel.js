@@ -9,13 +9,11 @@ import UserDetailEditField from 'CMP_DIR/basic-edit-field/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
 import {checkEmail} from '../utils/clue-customer-utils';
 var clueCustomerAction = require('../action/clue-customer-action');
-var clueCustomerStore = require('../store/clue-customer-store');
 var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 import AssignClueAndSelectCustomer from './assign-clue-and-select-customer';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-import classNames from 'classnames';
-var userData = require('../../../../public/sources/user-data');
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import {DatePicker, Icon} from 'antd';
 const noop = function() {
 };
 class ClueRightPanel extends React.Component {
@@ -23,7 +21,10 @@ class ClueRightPanel extends React.Component {
         super(props);
         this.state = {
             curCustomer: $.extend(true, {}, this.props.curCustomer),
+            isEdittingTime: false,//是否正在修改线索咨询时间
             relatedCustomer: {},//与线索相关联的客户
+            loading: false,//正在修改线索时间
+            submitErrorMsg: '',//修改线索时间出错的提示
         };
     }
 
@@ -91,39 +92,45 @@ class ClueRightPanel extends React.Component {
     }
 
     onSelectCluesource = (updateSource) => {
-        this.state.curCustomer.clue_source = updateSource;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.clue_source = updateSource;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     onSelectAccessChannel = (updateChannel) => {
-        this.state.curCustomer.access_channel = updateChannel;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.access_channel = updateChannel;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     onSelectClueClassify = (updateClassify) => {
-        this.state.curCustomer.clue_classify = updateClassify;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.clue_classify = updateClassify;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     cancelEditClueChannel = () => {
-        this.state.curCustomer.access_channel = this.props.curCustomer.access_channel;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.access_channel = this.props.curCustomer.access_channel;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     cancelEditClueSource = () => {
-        this.state.curCustomer.clue_source = this.props.curCustomer.clue_source;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.clue_source = this.props.curCustomer.clue_source;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     cancelEditClueClassify = () => {
-        this.state.curCustomer.clue_classify = this.props.curCustomer.clue_classify;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.clue_classify = this.props.curCustomer.clue_classify;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     changeUserFieldSuccess = (newCustomerDetail) => {
@@ -166,9 +173,65 @@ class ClueRightPanel extends React.Component {
             callback(Intl.get('clue.customer.fillin.clue.name', '请填写线索名称'));
         }
     };
+    handleEditSourceTime = () => {
+        this.setState({
+            isEdittingTime: true
+        });
+    };
+    changeSourceTime = (value) => {
+        let timestamp = value && value.valueOf() || '';
+        let curCustomer = this.state.curCustomer;
+        curCustomer.source_time = timestamp;
+        this.setState({
+            curCustomer: curCustomer
+        });
+    };
+    handleCancel = () => {
+        let curCustomer = this.state.curCustomer;
+        curCustomer.source_time = this.props.curCustomer.source_time;
+        this.setState({
+            isEdittingTime: false,
+            loading: false,
+            submitErrorMsg: '',
+            curCustomer: curCustomer
+        });
+    };
+    //今天之后的日期不可以选
+    disabledDate(current){
+        return current > moment().endOf('day');
+    }
+    handleSourceTimeSubmit = () => {
+        var curCustomer = this.state.curCustomer;
+        if (curCustomer.source_time === this.props.curCustomer.source_time){
+            this.setState({
+                isEdittingTime: false,
+            });
+            return;
+        }
+        var submitObj = {id: curCustomer.id, source_time: moment(curCustomer.source_time).valueOf()};
+        clueCustomerAjax.updateCluecustomerDetail(submitObj,(submitStatus) => {
+            if (submitStatus.submitType === 'loading'){
+                this.setState({
+                    loading: true,
+                    submitErrorMsg: '',
+                });
+            }else if (submitStatus.submitType === 'success'){
+                this.setState({
+                    loading: false,
+                    submitErrorMsg: '',
+                });
+            }else{
+                this.setState({
+                    loading: false,
+                    submitErrorMsg: Intl.get('failed.change.source.time', '修改线索咨询时间失败'),
+                });
+            }
+        });
+    };
 
     render() {
         var curCustomer = this.state.curCustomer || {};
+        console.log(curCustomer);
         var phone = '', qq = '', email = '', id = '', weChat = '';
         if (_.isArray(curCustomer.contacts) && curCustomer.contacts.length) {
             phone = _.isArray(curCustomer.contacts[0].phone) && curCustomer.contacts[0].phone.length ? curCustomer.contacts[0].phone[0] : '';
@@ -367,6 +430,37 @@ class ClueRightPanel extends React.Component {
                                         />
                                     </dd>
                                 </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_sourcetime">
+                                    <dt>
+                                        {Intl.get('crm.sales.clue.time', '线索时间')}：
+                                    </dt>
+                                    <dd>
+                                        {this.state.isEdittingTime ?
+                                            <div className="sourcetime_container">
+                                                <DatePicker
+                                                    disabledDate={this.disabledDate}
+                                                    defaultValue={moment(curCustomer.source_time)}
+                                                    onChange={this.changeSourceTime.bind(this)}
+                                                    allowClear={false}/>
+                                                <div className="tip-container">
+                                                    {this.state.loading ? <Icon type="loading"/> :
+                                                        <div>
+                                                            {this.state.submitErrorMsg ? <span className="ant-form-explain">{this.state.submitErrorMsg}</span> : null}
+                                                            <i title={Intl.get('common.update', '修改')} className="inline-block iconfont icon-choose"
+                                                                onClick={(e) => {this.handleSourceTimeSubmit(e);}}></i>
+                                                            <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
+                                                                onClick={(e) => {this.handleCancel(e);}}></i>
+                                                        </div>}
+
+                                                </div>
+                                            </div>
+                                            : <div>
+                                                {moment(curCustomer.source_time).format(oplateConsts.DATE_FORMAT)}
+                                                <i className="iconfont icon-update" title={Intl.get('common.update', '修改')}
+                                                    onClick={this.handleEditSourceTime}></i>
+                                            </div>}
+                                    </dd>
+                                </dl>
                             </div>
                         </div>
                         <AssignClueAndSelectCustomer
@@ -381,7 +475,25 @@ class ClueRightPanel extends React.Component {
 
 ClueRightPanel.defaultProps = {
     curCustomer: {},
+    clueSourceArray: [],
+    accessChannelArray: [],
+    clueClassifyArray: [],
     showFlag: noop,
     hideRightPanel: noop,
+    updateClueSource: noop,
+    updateClueChannel: noop,
+    updateClueClassify: noop,
+};
+ClueRightPanel.propTypes = {
+    curCustomer: React.PropTypes.object,
+    clueSourceArray: React.PropTypes.object,
+    accessChannelArray: React.PropTypes.object,
+    clueClassifyArray: React.PropTypes.object,
+    showFlag: React.PropTypes.func,
+    hideRightPanel: React.PropTypes.func,
+    updateClueSource: React.PropTypes.func,
+    updateClueChannel: React.PropTypes.func,
+    updateClueClassify: React.PropTypes.func,
+
 };
 export default ClueRightPanel;

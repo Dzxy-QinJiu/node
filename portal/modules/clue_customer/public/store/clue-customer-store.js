@@ -34,7 +34,7 @@ ClueCustomerStore.prototype.getState = function() {
     this.lastCustomerId = '';//用于下拉加载的客户的id
     this.listenScrollBottom = true;//
     this.sorter = {
-        field: 'id',
+        field: 'start_time',
         order: 'descend'
     };//客户列表排序
     this.salesMan = '';//普通销售：userId，非普通销售（销售领导及运营人员）：userId&&teamId

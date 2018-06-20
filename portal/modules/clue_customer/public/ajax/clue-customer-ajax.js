@@ -195,7 +195,8 @@ exports.distributeCluecustomerToSale = function(submitObj) {
 };
 //更新线索客户的基本信息
 var updateCluecustomerDetailAjax;
-exports.updateCluecustomerDetail = function(submitObj) {
+exports.updateCluecustomerDetail = function(submitObj, callback) {
+    _.isFunction(callback) && callback({submitType: 'loading'});
     var data = {},updateObj = {};
     //如果是修改联系人的相关信息时，不但要传客户的id还要传联系人的id
     //更新联系人的相关字段时
@@ -209,7 +210,7 @@ exports.updateCluecustomerDetail = function(submitObj) {
         for (var key in submitObj){
             //要更新的字段
             data.updateItem = key;
-            if (key == 'contact_name'){
+            if (key === 'contact_name'){
                 //联系人的名字
                 updateObj.contacts[0]['name'] = submitObj[key];
             }else{
@@ -235,9 +236,11 @@ exports.updateCluecustomerDetail = function(submitObj) {
         type: 'put',
         data: data,
         success: function(list) {
+            _.isFunction(callback) && callback({submitType: 'success'});
             Deferred.resolve(list);
         },
         error: function(xhr) {
+            _.isFunction(callback) && callback({submitType: 'error'});
             Deferred.reject(xhr.responseJSON);
         }
     });
