@@ -344,6 +344,7 @@ var CustomerAnalysis = React.createClass({
                 sm: 24,
             },
             chartType: 'line',
+            dataField: 'data',
             noShowCondition: {
                 callback: conditions => {
                     return this.state.timeType === 'day';
