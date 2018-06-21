@@ -344,7 +344,8 @@ var CustomerAnalysis = React.createClass({
                 sm: 24,
             },
             chartType: 'line',
-            dataField: 'data',
+            dataField: '[0].data',
+            ajaxInstanceFlag: 'addedTrend',
             noShowCondition: {
                 callback: conditions => {
                     return this.state.timeType === 'day';
@@ -479,20 +480,25 @@ var CustomerAnalysis = React.createClass({
     },
     //获取客户阶段统计图
     getCustomerStageChart: function() {
+        const charts = [{
+            title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
+            url: '/rest/analysis/customer/stage/label/common/summary',
+            layout: {
+                sm: 24,
+            },
+            chartType: 'line',
+            ajaxInstanceFlag: 'customerStage',
+        }];
+
         return (
-            React.createElement(Analysis, {
-                handler: 'getCustomerStageAnalysis',
-                type: getDataAuthType().toLowerCase(),
-                chartType: 'funnel',
-                appId: 'all',
-                isGetDataOnMount: true,
-                processData: processCustomerStageChartData,
-                valueField: 'showValue',
-                height: 260,
-                minSize: '5%',
-                startTime: '0',//接口参数变了，startTime固定为0
-                endTime: this.state.endTime,
-            })
+            <AntcAnalysis
+                charts={charts}
+                emitters={this.getEmitters()}
+                conditions={this.getConditions()}
+                cardContainer={false}
+                isGetDataOnMount={true}
+                style={{padding: 0}}
+            />
         );
     },
     getStageChart: function() {
@@ -879,6 +885,7 @@ var CustomerAnalysis = React.createClass({
                 sm: 24,
             },
             dataField: 'list',
+            ajaxInstanceFlag: 'effectiveCustomer',
             option: {
                 pagination: false,
                 scroll: {y: 170},
