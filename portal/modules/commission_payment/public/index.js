@@ -12,7 +12,6 @@ import { AntcTable } from 'antc';
 import teamAjaxTrans from '../../common/public/ajax/team';
 const salesmanAjax = require('../../common/public/ajax/salesman');
 import CommissionRightPanel from './views/right-panel';
-import TopNav from 'CMP_DIR/top-nav';
 
 const searchFields = [
     {
@@ -365,9 +364,6 @@ const CommissionPayment = React.createClass({
     renderCommissionContent() {
         return (
             <div className="commission-payment-content">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 {this.renderSearchSelectCondition()}
                 {this.renderLoadingBlock()}
                 {this.renderCommissionPaymentTable()}

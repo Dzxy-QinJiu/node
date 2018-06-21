@@ -18,7 +18,6 @@ import SalesCommissionAjax from './ajax/index';
 import { handleTableData } from 'CMP_DIR/analysis/export-data-util.js';
 import {exportToCsv} from 'LIB_DIR/func';
 import AlertTimer from 'CMP_DIR/alert-timer';
-import TopNav from 'CMP_DIR/top-nav';
 
 const classnames = require('classnames');
 const searchFields = [
@@ -460,9 +459,6 @@ const SalesCommission = React.createClass({
         }
         return (
             <div className="sales-commission-panel" style={{height: this.state.containerHeight}}>
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <Row>
                     <Col md={responsiveGrid.md} lg={responsiveGrid.lg} xl={responsiveGrid.xl} xxl={responsiveGrid.xxl}>
                         {this.renderSaleContent()}

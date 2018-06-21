@@ -261,9 +261,6 @@ class ContractAnalysis extends React.Component {
         };
         return (
             <div className="contract-analysis-container">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <div className="dashboard-content">
                     <Row gutter={2}>
                         <Col className="gutter-row" span={4}>

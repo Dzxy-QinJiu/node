@@ -305,7 +305,7 @@ const ContractDashboard = React.createClass({
         ];
 
         return (
-            <div className="contract-dashboard" style={{height: this.state.contentHeight}}>
+            <div className="contract-dashboard" >
                 <GeminiScrollBar>
                     <div className="dashboard-content">
                         <Row>

@@ -1,8 +1,11 @@
 @import "../../../public/css/common-variables";
 @import "../../../components/antd-table-pagination/index.less";
-
+.contract-container{
+    padding:64px 16px 16px 20px;
+    height: 100%;
+}
 .contract-list {
-    padding: 80px 16px 16px;
+    padding: 16px;
     background: #fff;
     .top-wrap {
         height: 30px;
@@ -119,14 +122,14 @@
     @custom-column-right: 35px;
     .custom-column-button {
         position: absolute;
-        top: 18px;
+        top: 82px;
         right: @custom-column-right;
     }
 
     .custom-column-div {
         box-sizing: border-box;
         position: absolute;
-        top: 48px;
+        top: 112px;
         right: @custom-column-right;
         z-index: 999;
         background-color: #fff;
@@ -155,7 +158,7 @@
         z-index: 90;
         background: transparent;
     }
-    
+
     .hide-custom-column-div {
         display: none;
     }

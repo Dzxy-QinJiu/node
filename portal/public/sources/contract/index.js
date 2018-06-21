@@ -11,6 +11,8 @@ const ContractAnalysis = require('MOD_DIR/contract/analysis');
 const SalesCommission = require('MOD_DIR/sales_commission');
 // 提成发放
 const CommissionPayment = require('MOD_DIR/commission_payment');
+//合同容器
+const ContractContainer = require('MOD_DIR/contract/container');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('contract',
@@ -27,7 +29,6 @@ function getChildRoutes() {
     );
     return childRoutes;
 }
-
 module.exports = {
     path: 'contract',
     //在RightContent中用来做跳转,重要
@@ -36,5 +37,5 @@ module.exports = {
         var childRoutes = getChildRoutes();
         cb(null, childRoutes);
     },
-    component: RightContent
+    component: ContractContainer
 };

@@ -355,10 +355,8 @@ class LeftMenuClass {
                     id: 'CONTRACT_DASHBOARD',
                     name: backendIntl.get('contract.175', '合同概览'),
                     routePath: 'contract/dashboard',
-                    privileges: [
-                        'OPLATE_REPAYMENT_ADD',
-                    ],
-                    showPrivileges: ['OPLATE_REPAYMENT_ADD']
+                    privileges: ['OPLATE_SALES_COST_QUERY'],
+                    showPrivileges: ['OPLATE_SALES_COST_QUERY']
                 }, {
                     id: 'CONTRACT_SALES_LIST',
                     name: backendIntl.get('contract.112', '销售合同'),
@@ -381,9 +379,9 @@ class LeftMenuClass {
                     id: 'CONTRACT_COST_LIST',
                     name: backendIntl.get('contract.133', '费用'),
                     routePath: 'contract/cost',
-                    privileges: ['OPLATE_SALES_COST_QUERY'],
-                    showPrivileges: ['OPLATE_SALES_COST_QUERY']
-                },{
+                    privileges: ['OPLATE_PAYMENT_ADD'],
+                    showPrivileges: ['OPLATE_PAYMENT_ADD']
+                }, {
                     id: 'CONTRACT_ANALYSIS',
                     name: backendIntl.get('contract.188', '分析'),
                     routePath: 'contract/analysis',

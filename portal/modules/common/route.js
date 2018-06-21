@@ -2,6 +2,7 @@ const geoUrl = '/rest/geo/service/v1/';
 const customerUrl = '/rest/customer/v2/customer/';
 const userAnalysisUrl = '/rest/analysis/user/v1/';
 const contractAnalysisUrl = '/rest/analysis/contract/contract/';
+const contractV2AnalysisUrl = '/rest/analysis/contract_v2/statistics';
 const teamUrl = '/rest/base/v1/group/';
 const customerCommonAnalysisUrl = '/rest/analysis/customer/v1/common/';
 const customerManagerAnalysisUrl = '/rest/analysis/customer/v1/manager/';
@@ -110,6 +111,15 @@ module.exports = [{
         'MEMBER_WEBSITE_CONFIG'
     ]
 }, {
+    // 合同统计
+    method: 'get',
+    path: contractV2AnalysisUrl,
+    handler: 'getContractStaticAnalysisData',
+    module: 'contract/server/special-case-handler',
+    passport: {
+        'needLogin': true
+    }
+},{
     'method': 'get',//获取设备类型统计manager
     'path': userAnalysisV3Url + '/manager/device',
     'handler': 'getDeviceTypeBymanager',
