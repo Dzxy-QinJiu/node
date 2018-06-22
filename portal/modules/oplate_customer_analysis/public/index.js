@@ -449,7 +449,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     },
                     {
                         title: Intl.get('user.salesman', '销售人员'),
-                        dataIndex: 'customer_name',
+                        dataIndex: 'user_name',
                         width: 80
                     },
                     {
@@ -488,7 +488,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                 //在每个团队最后一个销售的数据后加上合计
                                 if (index === teamItem.team_result.length - 1) {
                                     list.push($.extend({}, teamItem.team_total, {
-                                        customer_name: Intl.get('sales.home.total.compute', '总计')
+                                        user_name: Intl.get('sales.home.total.compute', '总计')
                                     }));
                                 }                
                             });
