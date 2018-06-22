@@ -625,7 +625,7 @@ var CallRecordAnalyis = React.createClass({
                         {
                             this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
                                 // 通话数量
-                                this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true,CALL_RADIO_VALUES.COUNT) :
+                                this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true, CALL_RADIO_VALUES.COUNT) :
                                 // 通话时长
                                 this.renderCallChart(this.state.eachTeamCallList.list, this.durationTooltip, true,CALL_RADIO_VALUES.DURATION)
                         }
@@ -701,16 +701,131 @@ var CallRecordAnalyis = React.createClass({
             }
         }
     },
+    getCallTrendCategorys: function(dataList,isMutileLine, lineType) {
+        var data = [];
+        if (isMutileLine) {
+            var dataList = dataList[0];
+            _.each(dataList[lineType], (item) => {
+                data.push(new Date(item.timestamp));
+            });
+        } else {
+            dataList.forEach((item) => {
+                data.push(new Date(item.timestamp));
+            });
+        }
+        return data;
+    },
+    getCallTrendLegendData: function(dataList, isMutileLine) {
+        var data = [];
+        if (isMutileLine) {
+            data = _.map(dataList,'teamName');
+        }
+        return data;
+    },
+    getCallTrendDataSerise: function(dataList,isMutileLine, lineType) {
+        //共同的属性
+        var commonObj = {
+            data: [],
+            type: 'line',
+            symbolSize: 6
+        };
+        if (isMutileLine) {
+            var serise = [];
+            _.each(dataList, (dataItem) => {
+                var seriseItem = $.extend(true, {},{name: dataItem.teamName}, commonObj);
+                _.each(dataItem[lineType], (item) => {
+                    seriseItem.data.push(item.count);
+                });
+                serise.push(seriseItem);
+            });
+            return serise;
+        } else {
+            var serise = [$.extend(true, {},{itemStyle: {
+                normal: {
+                    color: '#4d96d1'
+                }
+            }},commonObj)];
+            dataList.forEach((item) => {
+                serise[0].data.push(item.count);
+            });
+        }
+        return serise;
+    },
+    getCallTrendEchartOptions: function(dataList, charTips, isMutileLine, lineType) {
+        return {
+            tooltip: {
+                trigger: 'axis',
+                // 图表中的提示数据信息
+                formatter: (params) => {
+                    var timeText, count, teamArr;
+                    if(_.isArray(params)){
+                        if (params.length === 1) {
+                            var params = params[0];
+                            timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
+                            count = params.data;
 
-    renderCallChart(data, charTips, isMutileLine, type) {
+                        } else if (params.length > 1) {
+                            timeText = [], count = [], teamArr = [];
+                            _.each(params, (paramsItem) => {
+                                timeText.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
+                                count.push(paramsItem.data || 0);
+                                teamArr.push(paramsItem.seriesName);
+                            });
+                        }
+                        return charTips(timeText, count, teamArr);
+                    }
+                }
+            },
+            legend: {
+                data: this.getCallTrendLegendData(dataList, isMutileLine,)
+            },
+            grid: {
+                x: 50,
+                y: 40,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
+            },
+            xAxis: [
+                {
+                    splitLine: false,
+                    splitArea: false,
+                    axisLabel: {
+                        formatter: () => { // 不显示x轴数值
+                            return '';
+                        }
+                    },
+                    axisTick: { // x轴不显示刻度
+                        show: false
+                    },
+                    data: this.getCallTrendCategorys(dataList, isMutileLine, lineType),
+                }
+            ],
+            yAxis: [
+                {
+                    splitLine: false,
+                    splitArea: false,
+                    axisLabel: {
+                        formatter: () => { // 不显示y轴数值
+                            return '';
+                        }
+                    },
+                    axisTick: { // y轴不显示刻度
+                        show: false
+                    }
+                }
+            ],
+            series: this.getCallTrendDataSerise(dataList,isMutileLine, lineType)
+        };
+    },
+
+    renderCallChart(dataList, charTips, isMutileLine, lineType) {
         return (
-            <TimeSeriesLinechart
-                isMutileLine={isMutileLine}
-                lineType={type}
-                dataList={data}
-                getToolTip={charTips}
-                width={this.state.trendWidth}
+            <AntcChart
                 height={this.state.trendHeight}
+                width={this.state.trendWidth}
+                option={this.getCallTrendEchartOptions(dataList, charTips, isMutileLine, lineType)}
+                resultType='success'
             />
         );
     },
@@ -869,15 +984,10 @@ var CallRecordAnalyis = React.createClass({
     //渲染有团队时，114和客服电话分析图的options
     getOneOneFourAndServiceHasTeamOptions: function(dataList) {
         return {
-            // animation: false,
             tooltip: this.getOneOneFourAndServiceHasTeamTooltip(),
             legend: {
                 show: true
             },
-            // toolbox: {
-            //     show: false
-            // },
-            // calculable: false,
             color: ['#3398DB'],
             grid: {
                 x: 50,
@@ -887,54 +997,20 @@ var CallRecordAnalyis = React.createClass({
             },
             xAxis: [
                 {
-                    // type: 'category',
                     data: _.map(dataList, 'name'),
-                    // splitLine: false,
-                    // axisLine: {
-                    //     lineStyle: {
-                    //         width: 1,
-                    //         color: '#d1d1d1'
-                    //     }
-                    // },
-                    // axisTick: {
-                    //     show: false
-                    // },
-                    axisLabel: {
-                        textStyle: {
-                            // color: '#939393',
-                            // align: this.props.xAxisLabelAlign
-                        },
-                        // interval: this.props.xAxisInterval,
-                        // rotate: this.props.xAxisRotate
-                    }
                 }
             ],
             yAxis: [
                 {
-                    // type: 'value',
-                    // splitLine: false,
-                    // axisLine: {
-                    //     lineStyle: {
-                    //         width: 1,
-                    //         color: '#d1d1d1'
-                    //     }
-                    // },
                     axisLabel: {
                         show: true,
                         interval: 'auto',
                         formatter: '{value}',
-                        //todo 最后要删掉
-                        textStyle: {
-                            color: '#FF0000'
-                        }
                     }
                 }
             ],
             series: [
                 {
-                    // type: 'bar',
-                    // barMaxWidth: 40,
-                    // barMinWidth: 4,
                     data: dataList.map(x => {
                         return [x.name,x.num,x.rate];
                     })
@@ -942,7 +1018,7 @@ var CallRecordAnalyis = React.createClass({
             ]
         };
     },
-    getPieOptions: function(dataList) {
+    getPieOptions: function(dataList, data) {
         return {
             tooltip: {
                 trigger: 'item',
@@ -957,9 +1033,11 @@ var CallRecordAnalyis = React.createClass({
 
             series: [
                 {
+                    // todo  type: 'pie' 组件中饼状图的option没有进行覆盖，等这个问题修改了再删除type: 'pie'
+                    type: 'pie',
                     radius: '55%',
                     center: ['50%', '60%'],
-                    // data: this.getOneOneFourAndServiceNoTeamSeries(),
+                    data: data,
                     label: {
                         normal: {
                             formatter: '{c}'
@@ -1035,13 +1113,6 @@ var CallRecordAnalyis = React.createClass({
                     });
                 }else{
                     data = this.getPieData(this.state.callRateList[type].list);
-                    // var legend = _.map(this.state.callRateList[type].list, 'name') || [];
-                    // data = legend.map((legendName,idx) => {
-                    //     return {
-                    //         name: legendName,
-                    //         value: dataList[idx].num // 注意：饼图中，value是key
-                    //     };
-                    // });
                 }
 
                 return (
@@ -1055,17 +1126,12 @@ var CallRecordAnalyis = React.createClass({
                                 resultType='success'
                             />
                         ) : (
+                            // todo  chartType='pie'  data={data} 组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
                             <AntcChart
-                                height="400"
-                                chartType="pie"
-                                data={data}
-                                option={this.getPieOptions(dataList)}
+                                height='400'
+                                option={this.getPieOptions(dataList, data)}
                                 resultType='success'
                             />
-
-                            // <PieChart
-                            //     dataList={this.state.callRateList[type].list}
-                            // />
                         )}
                     </div>
                 );
@@ -1121,22 +1187,18 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
-                // var data = this.state.customerData.customerPhase;
-                // data = this.getPieData();
+                var dataList = this.state.customerData.customerPhase;
+                var data = this.getPieData(dataList);
+                // todo  chartType='pie'     data={this.getPieData(data)} 组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
                 return (
                     <div>
                         <AntcChart
                             height="400"
-                            chartType="pie"
-                            data={this.getPieData(this.state.customerData.customerPhase)}
-                            option={this.getPieOptions(this.state.customerData.customerPhase)}
+                            option={this.getPieOptions(dataList, data)}
                             resultType='success'
                         />
                     </div>
                 );
-                /*<PieChart
-                 dataList={this.state.customerData.customerPhase}
-                 />*/
             }
         }
     },
@@ -1173,22 +1235,19 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
-                var data = this.state.customerData.OrderPhase;
+                var dataList = this.state.customerData.OrderPhase;
+                var data = this.getPieData(dataList);
+                // todo  chartType='pie'    data={this.getPieData(data)}组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
                 return (
                     <div>
                         <AntcChart
                             height="400"
-                            chartType="pie"
-                            data={this.getPieData(this.state.customerData.OrderPhase)}
-                            option={this.getPieOptions(this.state.customerData.OrderPhase)}
+                            option={this.getPieOptions(dataList,data)}
                             resultType='success'
                         />
                     </div>
                 );
             }
-            //<PieChart
-            //  dataList={this.state.customerData.OrderPhase}
-            // />
         }
     },
     renderCallAnalysisView: function() {
