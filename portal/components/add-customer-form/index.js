@@ -34,6 +34,9 @@ class AddCustomerForm extends React.Component {
             province: '',
             city: '',
             county: '',
+            province_code: '',
+            city_code: '',
+            county_code: '',
             address: '',//详细地址
             location: '',//经纬度
             administrative_level: '',//行政区划 默认是企业，是4
@@ -162,6 +165,9 @@ class AddCustomerForm extends React.Component {
             this.state.formData.province = result.pname;
             this.state.formData.city = result.cityname;
             this.state.formData.county = result.adname;
+            this.state.formData.province_code = result.pcode;
+            this.state.formData.city_code = result.citycode;
+            this.state.formData.county_code = result.adcode;
             this.state.formData.contacts0_phone = result.tel;
             this.setState({formData: this.state.formData});
         });
@@ -302,11 +308,14 @@ class AddCustomerForm extends React.Component {
         }];
     };
     //更新地址
-    updateLocation = (address) => {
-        var location = address.split('/');
-        this.state.formData.province = location[0] || '';
-        this.state.formData.city = location[1] || '';
-        this.state.formData.county = location[2] || '';
+    updateLocation = (addressObj) => {
+        this.state.formData.province = addressObj.provName || '';
+        this.state.formData.city = addressObj.cityName || '';
+        this.state.formData.county = addressObj.countyName || '';
+        this.state.formData.province_code = addressObj.provCode || '';
+        this.state.formData.city_code = addressObj.cityCode || '';
+        this.state.formData.county_code = addressObj.countyCode || '';
+        Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item'), '选择地址');
     };
     //选择不同的级别
     handleChangeAdminLevel = (index) => {
@@ -478,9 +487,9 @@ class AddCustomerForm extends React.Component {
                                             wrapperCol="17"
                                             label={Intl.get('realm.address', '地址')}
                                             placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                            prov={formData.province}
-                                            city={formData.city}
-                                            county={formData.county}
+                                            provName={formData.province}
+                                            cityName={formData.city}
+                                            countyName={formData.county}
                                             updateLocation={this.updateLocation}
                                         />
                                     </div>

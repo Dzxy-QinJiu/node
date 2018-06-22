@@ -35,7 +35,10 @@ BatchChangeStore.prototype.resetState = function() {
     this.territoryObj = {
         province: '',
         city: '',
-        county: ''
+        county: '',
+        province_code: '',
+        city_code: '',
+        county_code: ''
     };
     this.unSelectDataTip = '';//未选择数据就保存的提示信息
 };
@@ -48,7 +51,7 @@ BatchChangeStore.prototype.setUnSelectDataTip = function(tip) {
 BatchChangeStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];
     //客户所属销售下拉列表,过滤掉停用的成员
-    this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status == 1);
+    this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status === 1);
 };
 
 BatchChangeStore.prototype.setSalesMan = function(sales_man) {
@@ -79,11 +82,13 @@ BatchChangeStore.prototype.administrativeLevelChange = function(level) {
     this.unSelectDataTip = '';
 };
 //地址修改
-BatchChangeStore.prototype.locationChange = function(address) {
-    let location = address.split('/');
-    this.territoryObj.province = location[0] || '';
-    this.territoryObj.city = location[1] || '';
-    this.territoryObj.county = location[2] || '';
+BatchChangeStore.prototype.locationChange = function(addressObj) {
+    this.territoryObj.province = addressObj.provName || '';
+    this.territoryObj.city = addressObj.cityName || '';
+    this.territoryObj.county = addressObj.countyName || '';
+    this.territoryObj.province_code = addressObj.provCode || '';
+    this.territoryObj.city_code = addressObj.cityCode || '';
+    this.territoryObj.county_code = addressObj.countyCode || '';
     this.unSelectDataTip = '';
 };
 
@@ -97,7 +102,7 @@ BatchChangeStore.prototype.toggleTag = function({tag, isAdd}) {
     if (labels.indexOf(tag) > -1) {
         if (isAdd) return;
 
-        labels = labels.filter(theTag => theTag != tag);
+        labels = labels.filter(theTag => theTag !== tag);
         this.tags = labels;
     }
     else {

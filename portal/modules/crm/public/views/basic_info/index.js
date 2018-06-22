@@ -142,7 +142,7 @@ var BasicData = React.createClass({
     handleFocusCustomer: function(basicData) {
         var initialBasicData = JSON.parse(JSON.stringify(basicData));
         var myUserId = crmUtil.getMyUserId();
-        var hasFocusedCustomer = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids,myUserId) > -1;
+        var hasFocusedCustomer = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids, myUserId) > -1;
         Trace.traceEvent(this.getDOMNode(), hasFocusedCustomer ? '取消关注客户' : '关注客户');
         //请求数据
         let interestObj = {
@@ -181,7 +181,8 @@ var BasicData = React.createClass({
             <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
                     <div className="basic-info-administrative basic-info-item">
-                        <span title={Intl.get('crm.administrative.level', '行政级别')} className="iconfont icon-administrative basic-info-icon"/>
+                        <span title={Intl.get('crm.administrative.level', '行政级别')}
+                            className="iconfont icon-administrative basic-info-icon"/>
                         <BasicEditSelectField
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
@@ -195,7 +196,8 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-indestry basic-info-item">
-                        <span title={Intl.get('realm.industry', '行业')} className="iconfont icon-industry basic-info-icon"/>
+                        <span title={Intl.get('realm.industry', '行业')}
+                            className="iconfont icon-industry basic-info-icon"/>
                         <BasicEditSelectField
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
@@ -210,18 +212,22 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-address basic-info-item">
-                        <span title={Intl.get('realm.address', '地址')} className="iconfont icon-address basic-info-icon"/>
+                        <span title={Intl.get('crm.96', '地域')} className="iconfont icon-address basic-info-icon"/>
                         <LocationSelectField
                             id={basicData.id}
                             province={basicData.province}
                             city={basicData.city}
                             county={basicData.county}
+                            province_code={basicData.province_code}
+                            city_code={basicData.city_code}
+                            county_code={basicData.county_code}
                             saveEditLocation={this.saveEditBasicInfo.bind(this, 'address')}
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS')}
                         />
                     </div>
                     <div className="basic-info-detail-address basic-info-item">
-                        <span title={Intl.get('realm.full.address', '详细地址')} className="iconfont icon-detail-address basic-info-icon"/>
+                        <span title={Intl.get('realm.full.address', '详细地址')}
+                            className="iconfont icon-detail-address basic-info-icon"/>
                         <BasicEditInputField
                             id={basicData.id}
                             value={basicData.address}
