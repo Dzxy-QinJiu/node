@@ -91,9 +91,11 @@ var SelectFullWidth = React.createClass({
         }
         style.width = this.state.width;
         return (
-            <Select {...props} dropdownMatchSelectWidth={false}>
-                {children}
-            </Select>
+            <div id="selct-full-wrap">
+                <Select {...props} dropdownMatchSelectWidth={false} getPopupContainer={() => document.getElementById('customer-suggest')}>
+                    {children}
+                </Select>
+            </div>
         );
     }
 });
