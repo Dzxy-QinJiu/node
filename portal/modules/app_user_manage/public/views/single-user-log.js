@@ -40,7 +40,7 @@ var SingleUserLog = React.createClass({
             user_id: userId,
             starttime: this.state.startTime,
             endtime: this.state.endTime,
-            page: this.state.curPage,
+            page: 1,
             type_filter: this.state.typeFilter.join()
         };
         if (this.state.searchName) {
