@@ -578,6 +578,8 @@ var zh_CN = {
     'role.default.del.failed': '取消默认角色失败',
     'role.default.set.failed': '设置默认角色失败',
     'role.set.default': '设为默认角色',
+    'role.normal.sales': '普通销售',
+
     /*角色管理模块-end*/
     /*权限管理模块-start*/
     'authority.add.group': '添加权限组',
