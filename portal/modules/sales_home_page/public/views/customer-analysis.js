@@ -75,7 +75,6 @@ var CustomerAnalysis = React.createClass({
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
                     this.getStageChangeCustomers();
-                    this.getCustomerStageAnalysis();
                 });
             }
         });
@@ -97,15 +96,9 @@ var CustomerAnalysis = React.createClass({
             teamId = allSubTeamIds.join(',');
         }        
         OplateCustomerAnalysisAction.teamChange(teamId);
-        setTimeout(() => this.getCustomerStageAnalysis({
-            team_id
-        }));
     },
     onMemberChange(member_id) {
         OplateCustomerAnalysisAction.memberChange(member_id);
-        setTimeout(() => this.getCustomerStageAnalysis({
-            member_id
-        }));
     },
     getDataType: function() {
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
@@ -155,21 +148,6 @@ var CustomerAnalysis = React.createClass({
             ],
         };
         OplateCustomerAnalysisAction.getStageChangeCustomers(params);
-    },
-    //获取不同阶段客户数
-    getCustomerStageAnalysis: function(params) {
-        let teamId = this.state.currentTeamId;
-        if (teamId && teamId.includes(',')) {
-            teamId = teamId.split(',')[0];//此接口需要的teamid为最上级的团队id
-        }
-        let paramsObj = {
-            ...params,
-            starttime: this.state.startTime,
-            endtime: this.state.endTime,
-            app_id: 'all',
-            team_id: teamId
-        };
-        OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
     },
     getChartData: function() {
         const queryParams = {
@@ -223,7 +201,6 @@ var CustomerAnalysis = React.createClass({
         setTimeout(() => {
             this.getStageChangeCustomers();
             this.getTransferCustomers({ isFirst: true });
-            this.getCustomerStageAnalysis();
         });
 
         //绑定window的resize，进行缩放处理
@@ -311,6 +288,13 @@ var CustomerAnalysis = React.createClass({
                     name: 'team_ids',
                 }],
             },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_MEMBER,
+                callbackArgs: [{
+                    name: 'member_id',
+                }],
+            },
         ];
     },
     //获取图表条件
@@ -325,7 +309,15 @@ var CustomerAnalysis = React.createClass({
                 value: this.props.endTime,
             },
             {
+                name: 'app_id',
+                value: 'all',
+            },
+            {
                 name: 'team_ids',
+                value: '',
+            },
+            {
+                name: 'member_id',
                 value: '',
             },
             {
@@ -486,8 +478,9 @@ var CustomerAnalysis = React.createClass({
             layout: {
                 sm: 24,
             },
-            chartType: 'line',
+            chartType: 'funnel',
             ajaxInstanceFlag: 'customerStage',
+            processData: AntcAnalysis.utils.processCustomerStageData,
         }];
 
         return (
