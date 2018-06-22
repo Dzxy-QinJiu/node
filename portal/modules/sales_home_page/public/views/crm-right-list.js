@@ -223,18 +223,12 @@ let CrmRightList = React.createClass({
         }
     },
 
-    //如果销售橘色id为“normal”，则选择清空销售角色的函数,反之则选择改变销售角色的函数
+    //如果销售角色id为“normal”，则选择清空销售角色的函数,反之则选择改变销售角色的函数
     changeAllSalesRole(sales, options){
         if(options.key === 'normal'){
-            this.setState({
-                showNormalSales: false
-            });
             this.resetSalesRole(sales, options);
 
         }else{
-            this.setState({
-                showNormalSales: true
-            });
             this.changeSalesRole(sales, options);
         }
     },
@@ -269,7 +263,7 @@ let CrmRightList = React.createClass({
 
     //清空、重置销售角色
     resetSalesRole: function(sales,options) {
-        let selectRoleNormal = 'normal';
+        let selectRoleNormal = '';
         this.updateTeamMemberRole(sales, selectRoleNormal);
         $.ajax({
             url: `/rest/sales/role/reset/${sales.userId}`,
