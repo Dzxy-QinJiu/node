@@ -263,7 +263,7 @@ let CrmRightList = React.createClass({
 
     //清空、重置销售角色
     resetSalesRole: function(sales,options) {
-        let selectRoleNormal = '';
+        let selectRoleNormal = {};
         this.updateTeamMemberRole(sales, selectRoleNormal);
         $.ajax({
             url: `/rest/sales/role/reset/${sales.userId}`,
