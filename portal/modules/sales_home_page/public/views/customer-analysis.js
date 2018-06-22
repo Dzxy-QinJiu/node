@@ -334,9 +334,15 @@ var CustomerAnalysis = React.createClass({
     },
     //趋势统计
     getCustomerChart: function() {
+        let url = '/rest/analysis/customer/v2/:auth_type/added/trend';
+
+        if (getDataAuthType().toLowerCase() === 'common') {
+            url = '/rest/analysis/customer/v2/added/trend';
+        }
+
         const charts = [{
             title: Intl.get('customer.analysis.add.trend', '新增趋势'),
-            url: '/rest/analysis/customer/v2/added/trend',
+            url: url, 
             layout: {
                 sm: 24,
             },
