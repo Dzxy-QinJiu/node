@@ -703,16 +703,10 @@ var CallRecordAnalyis = React.createClass({
     },
     getCallTrendCategorys: function(dataList,isMutileLine, lineType) {
         var data = [];
-        if (isMutileLine) {
-            var dataList = dataList[0];
-            _.each(dataList[lineType], (item) => {
-                data.push(new Date(item.timestamp));
-            });
-        } else {
-            dataList.forEach((item) => {
-                data.push(new Date(item.timestamp));
-            });
-        }
+        var dataList = isMutileLine && dataList[0] ? dataList[0][lineType] : dataList;
+        _.each(dataList, (item) => {
+            data.push(new Date(item.timestamp));
+        });
         return data;
     },
     getCallTrendLegendData: function(dataList, isMutileLine) {
@@ -777,7 +771,7 @@ var CallRecordAnalyis = React.createClass({
                 }
             },
             legend: {
-                data: this.getCallTrendLegendData(dataList, isMutileLine,)
+                data: this.getCallTrendLegendData(dataList, isMutileLine)
             },
             grid: {
                 x: 50,
@@ -1106,7 +1100,9 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
-                var data = [], dataList = this.state.callRateList[type].list;
+                var data = [];
+                var callListType = this.state.callRateList[type];
+                var dataList = callListType && _.isArray(callListType.list) ? callListType.list : [];
                 if (this.state.teamList.list.length){
                     data = this.state.callRateList[type].list.map(x => {
                         return [x.name,x.num,x.rate];
