@@ -50,6 +50,7 @@ let CrmRightList = React.createClass({
     //获取销售角色列表
     getSalesRoleList: function() {
         getSalesTeamRoleList().sendRequest().success((data) => {
+            _.isArray(data) && data.unshift({id: [], name: Intl.get('role.normal.sales', '普通销售')});
             this.setState({
                 salesRoleList: _.isArray(data) ? data : [],
             });
@@ -61,9 +62,9 @@ let CrmRightList = React.createClass({
     },
     //渲染等待效果、暂无数据的提示
     renderTooltip: function(resultType, errorMsg) {
-        if (resultType == 'loading') {
+        if (resultType === 'loading') {
             return (<Icon type="loading"/>);
-        } else if (resultType == 'error' || resultType == 'noData') {
+        } else if (resultType === 'error' || resultType === 'noData') {
             return (<div className="no-data-tip">{errorMsg || Intl.get('sales.home.get.data.failed', '获取数据失败')}</div>);
         }
     },
@@ -221,6 +222,16 @@ let CrmRightList = React.createClass({
             });
         }
     },
+
+    changeAllSalesRole(sales, options){
+        if(options.key === 'item_0'){
+            this.resetSalesRole(sales, options);
+        }else{
+            this.changeSalesRole(sales, options);
+        }
+        // return _.find(this.state.salesRoleList, role => role.id === "normal") ? this.resetSalesRole(sales) :this.changeSalesRole(sales, options) ;
+    },
+
     changeSalesRole: function(sales, options) {
         if (sales.teamRoleId === options.key) {
             return;
@@ -247,10 +258,36 @@ let CrmRightList = React.createClass({
             }
         });
     },
+
+    resetSalesRole: function(sales,options) {
+        if (sales.teamRoleId === 'item_0') {
+            return;
+        }
+
+        let selectRoleNormal = [];
+        this.updateTeamMemberRole(sales, selectRoleNormal);
+        $.ajax({
+            url: `/rest/sales/role/reset/${sales.userId}`,
+            type: 'delete',
+            dateType: 'json',
+            success: (result) => {
+                if (result) {
+                    message.success(Intl.get('user.info.setting.succeess', '设置成功！'));
+                    //更新store中对应成员的销售角色
+                    SalesHomeAction.updateSalesTeamMembersObj(this.state.salesTeamMembersObj);
+                }
+            },
+            error: (errorInfo) => {
+                message.error(errorInfo.responseJSON);
+                //还原成员销售角色
+                this.setState({salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj)});
+            }
+        });
+    },
     //获取销售角色的菜单
     getSalesRoleMenus: function(sales) {
         let salesRoleList = this.state.salesRoleList;
-        return (<Menu selectedKeys={[sales.teamRoleId]} onClick={this.changeSalesRole.bind(this, sales)}>
+        return (<Menu selectedKeys={[sales.teamRoleId]} onClick={this.changeAllSalesRole.bind(this, sales)}>
             {_.isArray(salesRoleList) && salesRoleList.length ? _.map(salesRoleList, role => {
                 return (<Menu.Item key={role.id}>{role.name} </Menu.Item>);
             }) : null}
@@ -259,7 +296,7 @@ let CrmRightList = React.createClass({
     //获取销售团队的成员列表
     renderSalesRole: function(salesman) {
         let color = salesman.teamRoleColor || '#123';
-        if (salesman.status == 0) {//停用的就展示灰色的方块
+        if (salesman.status === 0) {//停用的就展示灰色的方块
             return (<span className="sales-item-icon"/>);
         } else if (salesman.teamRoleName) {//有销售角色时，展示不同颜色的角色图标
             return (<span className="iconfont icon-team-role sales-role-icon" style={{color: color}}
@@ -271,7 +308,7 @@ let CrmRightList = React.createClass({
     },
     renderSalesRoleSetBtn: function(salesman) {
         let salesRoleList = this.state.salesRoleList;
-        if (salesman.status != 0 && hasPrivilege('MEMBER_TEAM_ROLE_MANAGE') && _.isArray(salesRoleList) && salesRoleList.length) {
+        if (salesman.status !== 0 && hasPrivilege('MEMBER_TEAM_ROLE_MANAGE') && _.isArray(salesRoleList) && salesRoleList.length) {
             return (
                 <Dropdown overlay={this.getSalesRoleMenus(salesman)}
                     getPopupContainer={() => document.getElementById('sales-member-li' + salesman.userId)}>
@@ -295,19 +332,19 @@ let CrmRightList = React.createClass({
                 let salesRoleList = _.isArray(this.state.salesRoleList) ? this.state.salesRoleList : [];
                 let roleListLength = salesRoleList.length;
                 salesTeamMemberList.map((salesman, i) => {
-                    if (salesman.nickName.indexOf(this.state.searchValue) != -1) {
+                    if (salesman.nickName.indexOf(this.state.searchValue) !== -1) {
                         let name = salesman.nickName;
-                        if (salesman.status == 0) {
+                        if (salesman.status === 0) {
                             //停用状态
                             name += ' ( ' + Intl.get('common.stop', '停用') + ' ) ';
                         }
                         salesListLi.push(
                             <div>
-                                <li key={salesman.userId} className={salesman.status == 0 ? 'user-stop-li' : ''}
+                                <li key={salesman.userId} className={salesman.status === 0 ? 'user-stop-li' : ''}
                                     id={'sales-member-li' + salesman.userId}>
                                     {this.renderSalesRole(salesman)}
                                     <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
-                                    {salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
+                                    {salesman.status !== 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
                                         <span className="iconfont icon-phone-waiting"
                                             title={Intl.get('sales.status.calling', '正在打电话')}/>
                                         : null }
@@ -331,7 +368,7 @@ let CrmRightList = React.createClass({
         if (_.isArray(salesTeamList) && salesTeamList.length > 0) {
             salesTeamList.map((salesTeam, i) => {
                 let teamMemberCount = commonMethodUtil.getTeamMemberCount(salesTeam, 0, teamMemberCountList, true);
-                if (salesTeam.group_name.indexOf(this.state.searchValue) != -1) {
+                if (salesTeam.group_name.indexOf(this.state.searchValue) !== -1) {
                     let color = this.getBgColor(i);
                     salesListLi.push(<li key={salesTeam.group_id} onClick={e => this.selectSalesTeam(e, salesTeam)}>
                         <span className="sales-item-icon"
@@ -361,25 +398,25 @@ let CrmRightList = React.createClass({
     renderListContent: function() {
         let salesTitle = '', salesListLi = [], isShowSearch = true;
         switch (this.props.currShowType) {
-        case showTypeConstant.SALESMAN:
+            case showTypeConstant.SALESMAN:
             //没有销售团队时，并且是普通销售或者舆情秘书时，展示过期用户提醒
-            salesTitle = this.getSalesmanTitle();
-            isShowSearch = false;
-            //如果是通过点击团队成员列表 显示出来的销售，什么都不展示
-            if (this.props.currShowSalesman) {
-                salesListLi = '';
-            }
-            break;
-        case showTypeConstant.SALES_MEMBER_LIST:
+                salesTitle = this.getSalesmanTitle();
+                isShowSearch = false;
+                //如果是通过点击团队成员列表 显示出来的销售，什么都不展示
+                if (this.props.currShowSalesman) {
+                    salesListLi = '';
+                }
+                break;
+            case showTypeConstant.SALES_MEMBER_LIST:
             //当前展示的是该销售团队的成员列表
-            salesTitle = this.getSalesListTitle();
-            salesListLi = this.getSalesMemberList();
-            break;
-        case showTypeConstant.SALES_TEAM_LIST:
+                salesTitle = this.getSalesListTitle();
+                salesListLi = this.getSalesMemberList();
+                break;
+            case showTypeConstant.SALES_TEAM_LIST:
             //当前展示的是销售团队的列表
-            salesTitle = this.getSalesListTitle();
-            salesListLi = this.getSalesTeamList();
-            break;
+                salesTitle = this.getSalesListTitle();
+                salesListLi = this.getSalesTeamList();
+                break;
         }
         let salesListHeight = this.props.getSalesListHeight();
         return (
