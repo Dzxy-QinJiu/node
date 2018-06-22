@@ -33,6 +33,7 @@ import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {handleTableData} from 'CMP_DIR/analysis/export-data-util';
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import { MAP_PROVINCE } from 'LIB_DIR/consts';
+import {AntcChart} from 'antc';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -851,6 +852,140 @@ var CallRecordAnalyis = React.createClass({
                 </div>
             </div>);
     },
+    getOneOneFourAndServiceHasTeamTooltip: function() {
+        return {
+            show: true,
+            formatter: function(obj) {
+                return `<div>
+                           <span>${(obj.data[0])}</span>  
+                           <br/>  
+                           <span>${Intl.get('common.app.count', '数量')}:${(obj.data[1])}</span>  
+                           <br/>  
+                           <span>${Intl.get('oplate_bd_analysis_realm_industry.7', '占比')}:${(obj.value[2]).toFixed(2) + '%'}</span>
+                        </div>`;
+            }
+        };
+    },
+    //渲染有团队时，114和客服电话分析图的options
+    getOneOneFourAndServiceHasTeamOptions: function(dataList) {
+        return {
+            // animation: false,
+            tooltip: this.getOneOneFourAndServiceHasTeamTooltip(),
+            legend: {
+                show: true
+            },
+            // toolbox: {
+            //     show: false
+            // },
+            // calculable: false,
+            color: ['#3398DB'],
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30
+            },
+            xAxis: [
+                {
+                    // type: 'category',
+                    data: _.map(dataList, 'name'),
+                    // splitLine: false,
+                    // axisLine: {
+                    //     lineStyle: {
+                    //         width: 1,
+                    //         color: '#d1d1d1'
+                    //     }
+                    // },
+                    // axisTick: {
+                    //     show: false
+                    // },
+                    axisLabel: {
+                        textStyle: {
+                            // color: '#939393',
+                            // align: this.props.xAxisLabelAlign
+                        },
+                        // interval: this.props.xAxisInterval,
+                        // rotate: this.props.xAxisRotate
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    // type: 'value',
+                    // splitLine: false,
+                    // axisLine: {
+                    //     lineStyle: {
+                    //         width: 1,
+                    //         color: '#d1d1d1'
+                    //     }
+                    // },
+                    axisLabel: {
+                        show: true,
+                        interval: 'auto',
+                        formatter: '{value}',
+                        //todo 最后要删掉
+                        textStyle: {
+                            color: '#FF0000'
+                        }
+                    }
+                }
+            ],
+            series: [
+                {
+                    // type: 'bar',
+                    // barMaxWidth: 40,
+                    // barMinWidth: 4,
+                    data: dataList.map(x => {
+                        return [x.name,x.num,x.rate];
+                    })
+                }
+            ]
+        };
+    },
+    getPieOptions: function(dataList) {
+        return {
+            tooltip: {
+                trigger: 'item',
+                formatter: '<div class=\'echarts-tooltip\'>{b} : {c} ({d}%)</div>'
+            },
+            legend: {
+                orient: 'vertical',
+                right: '2%',
+                top: '2%',
+                data: _.map(dataList, 'name')
+            },
+
+            series: [
+                {
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    // data: this.getOneOneFourAndServiceNoTeamSeries(),
+                    label: {
+                        normal: {
+                            formatter: '{c}'
+                        }
+                    },
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+    },
+    getPieData: function(dataList){
+        var list = dataList || [];
+        var legend = _.map(dataList, 'name') || [];
+        return legend.map((legendName,idx) => {
+            return {
+                name: legendName,
+                value: list[idx].num // 注意：饼图中，value是key
+            };
+        });
+    },
 
     // 114占比
     renderCallRateChar(type) {
@@ -893,16 +1028,44 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
+                var data = [], dataList = this.state.callRateList[type].list;
+                if (this.state.teamList.list.length){
+                    data = this.state.callRateList[type].list.map(x => {
+                        return [x.name,x.num,x.rate];
+                    });
+                }else{
+                    data = this.getPieData(this.state.callRateList[type].list);
+                    // var legend = _.map(this.state.callRateList[type].list, 'name') || [];
+                    // data = legend.map((legendName,idx) => {
+                    //     return {
+                    //         name: legendName,
+                    //         value: dataList[idx].num // 注意：饼图中，value是key
+                    //     };
+                    // });
+                }
+
                 return (
                     <div>
                         {this.state.teamList.list.length ? (
-                            <RateBarChart
-                                dataList={this.state.callRateList[type].list}
+                            <AntcChart
+                                height="410"
+                                chartType="bar"
+                                data={data}
+                                option={this.getOneOneFourAndServiceHasTeamOptions(dataList)}
+                                resultType='success'
                             />
                         ) : (
-                            <PieChart
-                                dataList={this.state.callRateList[type].list}
+                            <AntcChart
+                                height="400"
+                                chartType="pie"
+                                data={data}
+                                option={this.getPieOptions(dataList)}
+                                resultType='success'
                             />
+
+                            // <PieChart
+                            //     dataList={this.state.callRateList[type].list}
+                            // />
                         )}
                     </div>
                 );
@@ -958,13 +1121,22 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
+                // var data = this.state.customerData.customerPhase;
+                // data = this.getPieData();
                 return (
                     <div>
-                        <PieChart
-                            dataList={this.state.customerData.customerPhase}
+                        <AntcChart
+                            height="400"
+                            chartType="pie"
+                            data={this.getPieData(this.state.customerData.customerPhase)}
+                            option={this.getPieOptions(this.state.customerData.customerPhase)}
+                            resultType='success'
                         />
                     </div>
                 );
+                /*<PieChart
+                 dataList={this.state.customerData.customerPhase}
+                 />*/
             }
         }
     },
@@ -1001,14 +1173,22 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
+                var data = this.state.customerData.OrderPhase;
                 return (
                     <div>
-                        <PieChart
-                            dataList={this.state.customerData.OrderPhase}
+                        <AntcChart
+                            height="400"
+                            chartType="pie"
+                            data={this.getPieData(this.state.customerData.OrderPhase)}
+                            option={this.getPieOptions(this.state.customerData.OrderPhase)}
+                            resultType='success'
                         />
                     </div>
                 );
             }
+            //<PieChart
+            //  dataList={this.state.customerData.OrderPhase}
+            // />
         }
     },
     renderCallAnalysisView: function() {
@@ -1156,24 +1336,24 @@ var CallRecordAnalyis = React.createClass({
         let memberList = this.state.memberList.list; // 成员数据
 
         // 第一个选择框渲染的数据
-        let firstOptions = FIRSR_SELECT_DATA.map((item) => {
-            return <Option value={item}>{item}</Option>;
+        let firstOptions = FIRSR_SELECT_DATA.map((item, index) => {
+            return <Option value={item} key={index}>{item}</Option>;
         });
 
         // 第二个选择框的数据
         let secondOptions = [];
         if (teamList.length === 1) { // 只展示成员选择框时
-            secondOptions = memberList.map((item) => {
-                return <Option value={item.name}>{item.name}</Option>;
+            secondOptions = memberList.map((item, index) => {
+                return <Option value={item.name} key={index}>{item.name}</Option>;
             });
         } else if (teamList.length > 1) { // 展示团队和成员
             if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
-                secondOptions = teamList.map((item) => {
-                    return <Option value={item.name}>{item.name}</Option>;
+                secondOptions = teamList.map((item, index) => {
+                    return <Option value={item.name} key={index}>{item.name}</Option>;
                 });
             } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
-                secondOptions = memberList.map((item) => {
-                    return <Option value={item.name}>{item.name}</Option>;
+                secondOptions = memberList.map((item, index) => {
+                    return <Option value={item.name} key={index}>{item.name}</Option>;
                 });
             }
         }
