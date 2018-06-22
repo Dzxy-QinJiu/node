@@ -325,6 +325,11 @@ var CustomerAnalysis = React.createClass({
                 value: this.getDataType(),
                 type: 'params',
             },
+            {
+                name: 'auth_type',
+                value: getDataAuthType().toLowerCase(),
+                type: 'params',
+            },
         ];
     },
     //趋势统计
@@ -474,7 +479,7 @@ var CustomerAnalysis = React.createClass({
     getCustomerStageChart: function() {
         const charts = [{
             title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
-            url: '/rest/analysis/customer/stage/label/common/summary',
+            url: '/rest/analysis/customer/stage/label/:auth_type/summary',
             layout: {
                 sm: 24,
             },
