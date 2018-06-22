@@ -1,8 +1,8 @@
 /**
  *  显示团队、成员筛选框的判断条件， 114占比显示饼图还是柱状图
  *
- *  this.state.teamList.length == 0 时，是普通销售，不显示筛选框，114展示为饼图
- *  this.state.teamList.length == 1 时，是销售基层领导，只有一个团队，显示成员，114柱状图
+ *  this.state.teamList.length === 0 时，是普通销售，不显示筛选框，114展示为饼图
+ *  this.state.teamList.length === 1 时，是销售基层领导，只有一个团队，显示成员，114柱状图
  *  this.state.teamList.length > 1 时， 有两个以上的团队，显示团队和成员的筛选框，114柱状图
  * */
 
@@ -27,11 +27,10 @@ import Spinner from 'CMP_DIR/spinner';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Trace from 'LIB_DIR/trace';
 import ScatterChart from 'CMP_DIR/chart/scatter';
-import {AntcTable} from 'antc';
+import { AntcTable, AntcCardContainer } from 'antc';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {handleTableData} from 'CMP_DIR/analysis/export-data-util';
-import {exportToCsv} from 'LIB_DIR/func';
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import { MAP_PROVINCE } from 'LIB_DIR/consts';
 //地图的formatter
@@ -133,7 +132,7 @@ var CallRecordAnalyis = React.createClass({
 
     // 获取团队或是成员的id
     getTeamOrMemberId(list, selectValue) {
-        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).pluck('id').value();
+        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
     },
 
     // 获取团队或成员的参数
@@ -142,14 +141,14 @@ var CallRecordAnalyis = React.createClass({
         let memberList = this.state.memberList.list; // 成员数据
         let secondSelectValue = this.state.secondSelectValue;
         let params = {};
-        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
             if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
                 let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
                 params.sales_team_id = secondSelectTeamId.join(',');
             }
         } else { // 成员时
-            if (this.state.secondSelectValue == LITERAL_CONSTANT.ALL) { // 全部时
-                let userIdArray = _.pluck(this.state.memberList.list, 'id');
+            if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) { // 全部时
+                let userIdArray = _.map(this.state.memberList.list, 'id');
                 params.user_id = userIdArray.join(',');
             } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
                 let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
@@ -166,7 +165,7 @@ var CallRecordAnalyis = React.createClass({
             reqBody = this.getTeamMemberParam();
         }
         if (params) {
-            if (params.deviceType && params.deviceType != 'all') {
+            if (params.deviceType && params.deviceType !== 'all') {
                 reqBody.deviceType = params && params.deviceType || this.state.callType;
             }
         }
@@ -186,7 +185,7 @@ var CallRecordAnalyis = React.createClass({
     },
     setChartContainerHeight: function() {
         //如果选择全部团队或者团队选择的个数大于4个时，把容器的高度撑高
-        if ((this.state.secondSelectValue == LITERAL_CONSTANT.ALL && this.state.switchStatus) || (_.isArray(this.state.secondSelectValue) && this.state.secondSelectValue.length > 4)){
+        if ((this.state.secondSelectValue === LITERAL_CONSTANT.ALL && this.state.switchStatus) || (_.isArray(this.state.secondSelectValue) && this.state.secondSelectValue.length > 4)){
             this.setState({
                 trendHeight: LAYOUT_HEIGHT.RESIZE_HEIGHT
             });
@@ -221,12 +220,12 @@ var CallRecordAnalyis = React.createClass({
         let teamList = this.state.teamList.list; // 团队数据
         let secondSelectValue = this.state.secondSelectValue;
         let params = {};
-        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
             if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
                 let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
                 params.sales_team_id = secondSelectTeamId.join(',');
             }else{
-                params.sales_team_id = _.pluck(teamList,'id').join(',');
+                params.sales_team_id = _.map(teamList,'id').join(',');
             }
         }
         return params;
@@ -237,7 +236,7 @@ var CallRecordAnalyis = React.createClass({
             reqBody = this.getTeamParamSeparately();
         }
         if (params) {
-            if (params.deviceType && params.deviceType != 'all') {
+            if (params.deviceType && params.deviceType !== 'all') {
                 reqBody.deviceType = params && params.deviceType || this.state.callType;
             }
         }
@@ -391,7 +390,7 @@ var CallRecordAnalyis = React.createClass({
     //获取销售列的标题
     getSalesColumnTitle: function() {
         var label = Intl.get('sales.home.sales', '销售');
-        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) {
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) {
             label = Intl.get('user.sales.team', '销售团队');
         }
         return label;
@@ -490,7 +489,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }];
         //当前展示的是客套类型的通话记录时，展示计费时长
-        if (this.state.callType == CALL_TYPE_OPTION.APP) {
+        if (this.state.callType === CALL_TYPE_OPTION.APP) {
             columns.push({
                 title: Intl.get('sales.home.phone.billing.time', '计费时长(分钟)'),
                 dataIndex: 'billingTime',
@@ -504,7 +503,7 @@ var CallRecordAnalyis = React.createClass({
         }
 
         //如果选中的是列表中展示的是团队名称时，才展示人均通话时长和通话数
-        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.secondSelectValue == LITERAL_CONSTANT.ALL) {
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.secondSelectValue === LITERAL_CONSTANT.ALL) {
             columns.splice(3, 0, {
                 title: Intl.get('call.record.average.call.duration', '人均时长'),
                 width: 114,
@@ -559,17 +558,17 @@ var CallRecordAnalyis = React.createClass({
 
     // 选择通话类型的值
     selectCallTypeValue(value){
-        if (value == CALL_TYPE_OPTION.PHONE) {
+        if (value === CALL_TYPE_OPTION.PHONE) {
             this.state.callType = CALL_TYPE_OPTION.PHONE;
-        } else if (value == CALL_TYPE_OPTION.APP) {
+        } else if (value === CALL_TYPE_OPTION.APP) {
             this.state.callType = CALL_TYPE_OPTION.APP;
-        } else if (value == CALL_TYPE_OPTION.ALL) {
+        } else if (value === CALL_TYPE_OPTION.ALL) {
             this.state.callType = CALL_TYPE_OPTION.ALL;
         }
         this.setState({
             callType: value
         }, () => {
-            if (this.state.callType == 'all') {
+            if (this.state.callType === 'all') {
                 this.refreshCallAnalysisData();
             } else {
                 this.refreshCallAnalysisData({deviceType: this.state.callType});
@@ -620,7 +619,7 @@ var CallRecordAnalyis = React.createClass({
                         <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
                     </RadioGroup>
                 </div>
-                {this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM ?
+                {this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
                     <div>
                         {
                             this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
@@ -811,11 +810,17 @@ var CallRecordAnalyis = React.createClass({
             );
         }
         return (
-            <AntcTable dataSource={this.state.salesPhoneList}
-                columns={this.getPhoneListColumn()}
-                pagination={false}
-                bordered
-            />
+            <AntcCardContainer
+                title={Intl.get('call.analysis.call.title', '通话信息')}
+                exportData={handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true))}
+                csvFileName="sales_phone_table.csv"
+            >
+                <AntcTable dataSource={this.state.salesPhoneList}
+                    columns={this.getPhoneListColumn()}
+                    pagination={false}
+                    bordered
+                />
+            </AntcCardContainer>
         );
     },
 
@@ -859,17 +864,17 @@ var CallRecordAnalyis = React.createClass({
         else {
             let rateArray = [];
             if (this.state.teamList.list.length) {
-                rateArray = _.pluck(this.state.callRateList[type].list, 'rate');
+                rateArray = _.map(this.state.callRateList[type].list, 'rate');
             }
             else { // 普通销售
-                rateArray = _.pluck(this.state.callRateList[type].list, 'count');
+                rateArray = _.map(this.state.callRateList[type].list, 'count');
             }
             // 没有数据的提示
-            if (!rateArray.length || _.max(rateArray) == 0) {
+            if (!rateArray.length || _.max(rateArray) === 0) {
                 return (
                     <div className="alert-wrap">
                         <Alert
-                            message={Intl.get('common.no.data', '暂无数据')}
+                            message={Intl.get('common.no.call.record', '暂无通话记录')}
                             type="info"
                             showIcon={true}
                         />
@@ -903,10 +908,6 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
         }
-    },
-    exportPhoneTable: function() {
-        let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true));
-        exportToCsv('sales_phone_table.csv',exportData);
     },
     getClickMap(zone) {
         CallAnalysisAction.showZoneDistribute(zone);
@@ -1019,7 +1020,7 @@ var CallRecordAnalyis = React.createClass({
             <div className="duration-count-chart col-xs-12">
                 <div className="trend-chart-title">
                     {Intl.get('call.record.trend.charts', ' 近一个月的通话趋势：')}
-                    {this.state.firstSelectValue == LITERAL_CONSTANT.TEAM ?
+                    {this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
                         <div className="each-team-trend">
                             {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
                             <Switch checked={this.state.switchStatus} onChange={this.handleSwitchChange} checkedChildren={Intl.get('user.yes', '是')}
@@ -1029,13 +1030,6 @@ var CallRecordAnalyis = React.createClass({
                 {this.renderCallTrendChart()}
             </div>
             <div style={{height: tableHeight}}>
-                {this.state.salesPhoneList.length ? (
-                    <div className="export-file" style={{top: this.state.trendHeight + 60}} onClick={this.exportPhoneTable.bind(this)}>
-                        <i className="iconfont icon-export"
-                            title={Intl.get('call.time.export.statistic', '点击导出通话时长统计')}>
-                            {Intl.get('common.export', '导出')}
-                        </i>
-                    </div>) : null}
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
                         <div className="call-info col-xs-12">
@@ -1136,9 +1130,9 @@ var CallRecordAnalyis = React.createClass({
     },
 
     handleFirstSelect() {
-        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM) {
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
             Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '选择成员过滤');
-        } else if (this.state.firstSelectValue == LITERAL_CONSTANT.MEMBER) {
+        } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
             Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '选择团队过滤');
         }
 
@@ -1146,12 +1140,12 @@ var CallRecordAnalyis = React.createClass({
 
     handleSelectTeamOrMember() {
         if (this.state.teamList.list.length > 1) {
-            if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM) {
+            if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
                 Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '根据团队过滤');
-            } else if (this.state.firstSelectValue == LITERAL_CONSTANT.MEMBER) {
+            } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
                 Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '根据成员过滤');
             }
-        } else if (this.state.teamList.list.length == 1) {
+        } else if (this.state.teamList.list.length === 1) {
             Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '根据成员过滤');
         }
     },
@@ -1168,16 +1162,16 @@ var CallRecordAnalyis = React.createClass({
 
         // 第二个选择框的数据
         let secondOptions = [];
-        if (teamList.length == 1) { // 只展示成员选择框时
+        if (teamList.length === 1) { // 只展示成员选择框时
             secondOptions = memberList.map((item) => {
                 return <Option value={item.name}>{item.name}</Option>;
             });
         } else if (teamList.length > 1) { // 展示团队和成员
-            if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM) {
+            if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
                 secondOptions = teamList.map((item) => {
                     return <Option value={item.name}>{item.name}</Option>;
                 });
-            } else if (this.state.firstSelectValue == LITERAL_CONSTANT.MEMBER) {
+            } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
                 secondOptions = memberList.map((item) => {
                     return <Option value={item.name}>{item.name}</Option>;
                 });
@@ -1215,8 +1209,8 @@ var CallRecordAnalyis = React.createClass({
             firstSelectValue: value,
             secondSelectValue: LITERAL_CONSTANT.ALL
         }, () => {
-            if (value == LITERAL_CONSTANT.MEMBER) {
-                let userIdArray = _.pluck(this.state.memberList.list, 'id');
+            if (value === LITERAL_CONSTANT.MEMBER) {
+                let userIdArray = _.map(this.state.memberList.list, 'id');
                 this.refreshCallAnalysisData({user_id: userIdArray.join(',')});
             } else {
                 this.refreshCallAnalysisData();
@@ -1227,9 +1221,9 @@ var CallRecordAnalyis = React.createClass({
     // 第二个选择框，具体的值：全部和多个选择之间的切换显示
     onSecondSelectChange(value) {
         // 处理选择全部和多个的情况
-        if (value[0] == LITERAL_CONSTANT.ALL && value.length > 1) {
+        if (value[0] === LITERAL_CONSTANT.ALL && value.length > 1) {
             value.shift(); // 选择具体的某个成员后或团队时，‘全部’应该删除
-        } else if (value[0] != LITERAL_CONSTANT.ALL && _.indexOf(value, LITERAL_CONSTANT.ALL) != -1 || value.length == 0) {
+        } else if (value[0] !== LITERAL_CONSTANT.ALL && _.indexOf(value, LITERAL_CONSTANT.ALL) !== -1 || value.length === 0) {
             value = LITERAL_CONSTANT.ALL; // 选择全部时，其他选项应该不显示
         }
         this.setState({
@@ -1237,7 +1231,7 @@ var CallRecordAnalyis = React.createClass({
         }, () => {
             this.setChartContainerHeight();
             this.refreshCallAnalysisData();
-            if (this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM){
+            if (this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM){
                 var reqBody = this.getCallAnalysisBodyParamSeparately();
                 this.getCallAnalysisTrendDataSeparately(reqBody);//每个团队分别的趋势图
             }

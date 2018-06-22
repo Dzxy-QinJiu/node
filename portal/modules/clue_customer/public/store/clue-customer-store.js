@@ -27,14 +27,14 @@ ClueCustomerStore.prototype.getState = function() {
         from: datePickerUtils.getMilliseconds(timeObj.start_time),
         to: datePickerUtils.getMilliseconds(timeObj.end_time, true),
         type: 'time',
-        name: 'start_time'
+        name: 'source_time'
     }];
     this.submitTraceErrMsg = '';//提交跟进内容报错的情况
     this.submitTraceLoading = false;//正在提交跟进内容
     this.lastCustomerId = '';//用于下拉加载的客户的id
     this.listenScrollBottom = true;//
     this.sorter = {
-        field: 'id',
+        field: 'start_time',
         order: 'descend'
     };//客户列表排序
     this.salesMan = '';//普通销售：userId，非普通销售（销售领导及运营人员）：userId&&teamId
@@ -75,7 +75,7 @@ ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
 };
 //更新线索客户的一些属性
 ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
-    var updateClue = _.find(this.curCustomers, clue => updateObj.id == clue.id);
+    var updateClue = _.find(this.curCustomers, clue => updateObj.id === clue.id);
     if (updateClue){
         updateClue.availability = updateObj.availability;
     }
@@ -115,7 +115,7 @@ ClueCustomerStore.prototype.processForList = function(curCustomers) {
         if (_.isArray(curCustomer.contacts)) {
             for (var j = 0; j < curCustomer.contacts.length; j++) {
                 var contact = curCustomer.contacts[j];
-                if (contact.def_contancts == 'true') {
+                if (contact.def_contancts === 'true') {
                     curCustomer.contact = contact.name;
                     curCustomer.contact_way = getContactWay(contact.phone);
                 }
@@ -164,9 +164,9 @@ ClueCustomerStore.prototype.setCurrentCustomer = function(id) {
 ClueCustomerStore.prototype.afterAddSalesClue = function(newCustomer) {
     var newArr = this.processForList([newCustomer]);
     newCustomer = newArr[0];
-    this.curCustomers = _.filter(this.curCustomers, customer => customer.id != newCustomer.id);
+    this.curCustomers = _.filter(this.curCustomers, customer => customer.id !== newCustomer.id);
     //只有筛选状态是待分配，并且筛选时间是今天的时候，才把这个新增客户加到列表中
-    if ((this.clueCustomerTypeFilter.status == '0' || this.clueCustomerTypeFilter.status == '') && this.rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= this.rangParams[0].to){
+    if ((this.clueCustomerTypeFilter.status === '0' || this.clueCustomerTypeFilter.status === '') && this.rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= this.rangParams[0].to){
         this.curCustomers.unshift(newCustomer);
         this.customersSize++;
     }
@@ -197,19 +197,19 @@ ClueCustomerStore.prototype.setUnSelectDataTip = function(tip) {
 ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail) {
     //修改客户相关的属性，直接传属性和客户的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
-    var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability'];
+    var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability','source_time'];
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性
             this.curCustomer[key] = newCustomerDetail[key];
         } else {
             //修改联系人的相关属性
-            if (key == 'contact_name') {
+            if (key === 'contact_name') {
                 this.curCustomer.contacts[0].name = newCustomerDetail[key];
                 this.curCustomer.contact = newCustomerDetail[key];
             } else {
                 this.curCustomer.contacts[0][key][0] = newCustomerDetail[key];
-                if (key == 'phone'){
+                if (key === 'phone'){
                     this.curCustomer.contact_way = newCustomerDetail[key];
                 }
             }
@@ -219,6 +219,6 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];
     //客户所属销售下拉列表，过滤掉停用的成员
-    this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status == 1);
+    this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status === 1);
 };
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

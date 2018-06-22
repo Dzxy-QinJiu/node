@@ -83,8 +83,6 @@ var en_VE = {
 
     'menu.appuser.apply': 'La aprobación de los usuarios',//用户审批
     'menu.download.app': 'Descargar APP',//下载APP
-
-
     //公共部分提取start
 
     'common.actived': 'Activado',//已激活

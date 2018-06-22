@@ -8,7 +8,7 @@
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 import Realm from '../dto/realm';
-var _ = require('underscore');
+var _ = require('lodash');
 var auth = require('../../../../lib/utils/auth');
 var realmRestApis = {
     //添加安全域地址
@@ -112,7 +112,7 @@ exports.addOwner = function(req, res, frontOwner) {
 //修改安全域
 exports.editRealm = function(req, res, frontRealm) {
     var editRealm = {};
-    if (frontRealm.status || frontRealm.status == 0) {
+    if (frontRealm.status || frontRealm.status === 0) {
         //启用、停用的修改
         editRealm = Realm.toRestStatusObject(frontRealm);
     } else {
@@ -136,7 +136,7 @@ exports.editRealm = function(req, res, frontRealm) {
 
 //启停安全域
 exports.updateRealmStatus = function(req, res, frontRealm) {
-    var flag = frontRealm.status == 0 ? 'disable' : 'enable';//成员的启停
+    var flag = frontRealm.status === 0 ? 'disable' : 'enable';//成员的启停
     return restUtil.authRest.put(
         {
             url: realmRestApis.updateRealmStatus + '/' + frontRealm.id + '/status/' + flag,
@@ -148,9 +148,9 @@ exports.updateRealmStatus = function(req, res, frontRealm) {
 // 修改邮箱服务器、短信服务器和微信配置信息
 exports.setServer = (req, res, realmId, reqBody, flag) => {
     let url = realmRestApis.settingEmailServer;
-    if (flag == 'sms') {
+    if (flag === 'sms') {
         url = realmRestApis.settingSmsServer;
-    } else if (flag == 'wechat') {
+    } else if (flag === 'wechat') {
         url = realmRestApis.settingWeChat;
     }
     return restUtil.authRest.post(

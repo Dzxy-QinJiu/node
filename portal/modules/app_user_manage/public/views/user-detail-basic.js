@@ -49,7 +49,7 @@ var UserDetailBasic = React.createClass({
     },
     componentDidUpdate: function(prevProps, prevState) {
         var newUserId = this.props.userId;
-        if (prevProps.userId != newUserId && newUserId) {
+        if (prevProps.userId !== newUserId && newUserId) {
             setTimeout(function() {
                 AppUserDetailAction.dismiss();
                 AppUserDetailAction.getUserDetail(newUserId);
@@ -209,11 +209,11 @@ var UserDetailBasic = React.createClass({
     },
     renderOverDraft: function(app) {
         var over_draft = /^[210]$/.test((app.over_draft + '')) ? app.over_draft + '' : '1';
-        if (over_draft == '0') {
+        if (over_draft === '0') {
             return Intl.get('user.status.immutability', '不变');
-        } else if (over_draft == '1') {
+        } else if (over_draft === '1') {
             return Intl.get('user.status.stop', '停用');
-        } else if (over_draft == '2') {
+        } else if (over_draft === '2') {
             return Intl.get('user.status.degrade', '降级');
         }
 
@@ -248,21 +248,21 @@ var UserDetailBasic = React.createClass({
         var end_time = moment(new Date(+app.end_time)).format(FORMAT);
         var establish_time = moment(new Date(+app.create_time)).format(FORMAT);
         var displayStartTime = '', displayEndTime = '', displayEstablishTime = '';
-        if (app.start_time == '0') {
+        if (app.start_time === '0') {
             displayStartTime = Intl.get('user.nothing', '无');
         } else if (start_time === 'Invalid date') {
             displayStartTime = Intl.get('common.unknown', '未知');
         } else {
             displayStartTime = start_time;
         }
-        if (app.end_time == '0') {
+        if (app.end_time === '0') {
             displayEndTime = Intl.get('user.nothing', '无');
         } else if (end_time === 'Invalid date') {
             displayEndTime = Intl.get('common.unknown', '未知');
         } else {
             displayEndTime = end_time;
         }
-        if (app.create_time == '0') {
+        if (app.create_time === '0') {
             displayEstablishTime = Intl.get('user.nothing', '无');
         } else if (establish_time === 'Invalid date') {
             displayEstablishTime = Intl.get('common.unknown', '未知');
@@ -295,7 +295,7 @@ var UserDetailBasic = React.createClass({
     //获取应用列表段
     getAppsBlock: function() {
         var _this = this;
-        var maxWidthApp = _.max(this.state.initialUser.apps, function(app) {
+        var maxWidthApp = _.maxBy(this.state.initialUser.apps, function(app) {
             return measureText.measureTextWidth(app.app_name, 12);
         });
         var maxWidth = 0;
@@ -317,9 +317,9 @@ var UserDetailBasic = React.createClass({
         };
         var despWidth = '';
         var className = 'logo';
-        if (language.lan() == 'es' || language.lan() == 'en') {
+        if (language.lan() === 'es' || language.lan() === 'en') {
             despWidth = '89%';
-        } else if (language.lan() == 'zh') {
+        } else if (language.lan() === 'zh') {
             className += ' pull-left';
             despWidth = LAYOUTS.ITEM_WIDTH - LAYOUTS.MARGIN_LEFT - maxWidth - 5;
         }
@@ -348,7 +348,7 @@ var UserDetailBasic = React.createClass({
                                     </div>
                                 ) : null
                             }
-                            {selectApp && selectApp.app_id == app.app_id && selectApp.qualify_label == 1 ? (
+                            {selectApp && selectApp.app_id === app.app_id && selectApp.qualify_label === 1 ? (
                                 <div className="qualified-tag-style">
                                     <span className="qualified_span">{Intl.get('common.qualified', '合格')}</span>
                                 </div>) : null}
@@ -376,7 +376,7 @@ var UserDetailBasic = React.createClass({
         //已经添加的应用
         var existApps = this.state.initialUser.apps || [];
         //已经添加的应用id数组
-        var existAppIds = _.pluck(existApps, 'app_id');
+        var existAppIds = _.map(existApps, 'app_id');
         //剩余没有添加的应用
         var leftApps = _.filter(allApps, (app) => {
             return existAppIds.indexOf(app.app_id) < 0;
@@ -470,7 +470,7 @@ var UserDetailBasic = React.createClass({
     },
     //对确认密码 进行校验
     checkRePass(rule, value, callback) {
-        if (value && value == this.refs.password.state.formData.input) {
+        if (value && value === this.refs.password.state.formData.input) {
             callback();
         } else {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));

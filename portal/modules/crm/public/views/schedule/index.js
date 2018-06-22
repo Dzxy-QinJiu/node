@@ -83,14 +83,14 @@ var CrmSchedule = React.createClass({
     //修改状态
     handleItemStatus: function(item) {
         //只能修改自己创建的日程的状态
-        if (user_id != item.member_id) {
+        if (user_id !== item.member_id) {
             return;
         }
         const reqData = {
             id: item.id,
-            status: item.status == 'false' ? 'handle' : 'false',
+            status: item.status === 'false' ? 'handle' : 'false',
         };
-        var status = item.status == 'false' ? '完成' : '未完成';
+        var status = item.status === 'false' ? '完成' : '未完成';
         Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
         ScheduleAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
@@ -128,10 +128,10 @@ var CrmSchedule = React.createClass({
     },
     updateScheduleList: function(newItem, type) {
         //如果是新增一个提醒
-        if (type == 'add') {
+        if (type === 'add') {
             newItem.edit = false;
             this.state.scheduleList.unshift(newItem);
-        } else if (type == 'delete') {
+        } else if (type === 'delete') {
             this.state.scheduleList = _.filter(this.state.scheduleList, (list) => {
                 return list.id !== newItem.id;
             });
@@ -143,7 +143,7 @@ var CrmSchedule = React.createClass({
 
 
     toggleScheduleContact(item, flag){
-        let curSchedule = _.find(this.state.scheduleList, schedule => schedule.id == item.id);
+        let curSchedule = _.find(this.state.scheduleList, schedule => schedule.id === item.id);
         curSchedule.isShowContactPhone = flag;
         this.setState({scheduleList: this.state.scheduleList});
     },
@@ -196,7 +196,7 @@ var CrmSchedule = React.createClass({
                 />);
         } else {
             //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get('common.no.data', '暂无数据')}/>);
+            return (<NoDataTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>);
         }
     },
     renderScheduleTitle(){

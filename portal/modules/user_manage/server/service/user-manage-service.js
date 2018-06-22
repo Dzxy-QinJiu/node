@@ -8,7 +8,7 @@
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var User = require('../dto/user');
-var _ = require('underscore');
+var _ = require('lodash');
 var auth = require('../../../../lib/utils/auth');
 
 var userRestApis = {
@@ -104,7 +104,7 @@ exports.addUser = function(req, res, frontUser) {
                 if (_.isObject(data)) {
                     frontUser.id = data.user_id;
                     if (_.isArray(data.roles) && data.roles.length) {
-                        frontUser.roleIds = _.pluck(data.roles, 'role_id');
+                        frontUser.roleIds = _.map(data.roles, 'role_id');
                     } else {
                         frontUser.roleIds = [];
                     }
@@ -146,7 +146,7 @@ exports.updateUserRoles = function(req, res, user) {
 };
 //启停用户
 exports.updateUserStatus = function(req, res, frontUser) {
-    var flag = frontUser.status == 0 ? 'disable' : 'enable';//成员的启停
+    var flag = +frontUser.status === 0 ? 'disable' : 'enable';//成员的启停
     return restUtil.authRest.put(
         {
             url: userRestApis.updateUserStatus + '/' + frontUser.id + '/status/' + flag,

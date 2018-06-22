@@ -481,7 +481,7 @@ class CustomerUsers extends React.Component {
             });
         } else {
             //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get('common.no.data', '暂无数据')}/>);
+            return (<NoDataTip tipContent={Intl.get('common.no.more.user', '没有更多用户了')}/>);
         }
     }
 

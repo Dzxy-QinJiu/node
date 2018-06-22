@@ -1,7 +1,7 @@
 require('./css/index.less');
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
-import {Table, Icon, Select, message} from 'antd';
+import {Select, message, Alert} from 'antd';
 import {AntcTable} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
@@ -586,6 +586,7 @@ var SalesHomePage = React.createClass({
                 listenScrollBottom: this.state.callBackRecord.listenScrollBottom,
                 handleScrollBottom,
                 showNoMoreDataTip: showNoMoreDataTip(),
+                noMoreDataText: Intl.get('noMoreTip.visitBack', '没有更多回访记录了')
             };
             return (
                 <div>
@@ -805,7 +806,7 @@ var SalesHomePage = React.createClass({
                     <div className="date-range-wrap">
                         <DatePicker
                             disableDateAfterToday={true}
-                            range="week"
+                            range={this.state.timeType}
                             onSelect={this.onSelectDate}>
                             <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
                             <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
@@ -836,7 +837,7 @@ var SalesHomePage = React.createClass({
                     : <div className="crm-home-container">
                         <div className={crmDataZone}>
                             {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
-                            {this.state.emailShowObj.isShowActiveEmail || !this.state.emailShowObj.email ?
+                            {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
                                 <ActiveEmailTip
                                     isAnimateShow={this.state.isAnimateShow}
                                     isAnimateHide={this.state.isAnimateHide}
@@ -844,7 +845,7 @@ var SalesHomePage = React.createClass({
                                     activeUserEmail={this.activeUserEmail}
                                     setWebConfigStatus={this.state.setWebConfigStatus}
                                     jumpToUserInfo={this.jumpToUserInfo}
-                                    addEmail={!this.state.emailShowObj.email}
+                                    addEmail={this.state.emailShowObj.isShowAddEmail}
                                 /> : null}
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}

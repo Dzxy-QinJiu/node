@@ -12,7 +12,7 @@ var Icon = require('antd').Icon;
 var React = require('react');
 var userInfoEmitter = require('../../public/sources/utils/emitters').userInfoEmitter;
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
-var _ = require('underscore');
+var _ = require('lodash');
 var UnreadMixin = require('./mixins/unread');
 var websiteConfig = require('../../lib/utils/websiteConfig');
 var setWebsiteConfigModuleRecord = websiteConfig.setWebsiteConfigModuleRecord;
@@ -228,10 +228,10 @@ var NavSidebar = React.createClass({
         var isHamburgerShow = hamburger.style.display;
         //要加引导的元素
         var $introElement = '', introModalLayout = {};
-        if (isHamburgerShow == 'none') {
+        if (isHamburgerShow === 'none') {
             $introElement = $('li.' + menu.routePath + '_ico a i');
             introModalLayout = commonIntroModalLayout;
-        } else if (isHamburgerShow == 'block') {
+        } else if (isHamburgerShow === 'block') {
             $introElement = $('#hamburger');
             introModalLayout = hamburgerIntroModalLayout;
         }
@@ -437,7 +437,7 @@ var NavSidebar = React.createClass({
             <div className="sidebar-applyentry">
                 <Link to={applyLinks[0].href} activeClassName="active">
                     <i className="iconfont icon-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}/>
-                    {this.state.messages.approve == 0 && this.state.hasUnreadReply ?
+                    {this.state.messages.approve === 0 && this.state.hasUnreadReply ?
                         <span className="iconfont icon-apply-message-tip"
                             title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
                 </Link>
@@ -538,7 +538,7 @@ var NavSidebar = React.createClass({
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
         var currentPageCategory = pathName.split('/')[0];
         //不在左侧循环输出的链接
-        var excludePathList = _.pluck(ExcludeLinkList, 'path');
+        var excludePathList = _.map(ExcludeLinkList, 'path');
         var _this = this;
         return (
             <nav className="navbar">
@@ -561,7 +561,7 @@ var NavSidebar = React.createClass({
                                         var category = menu.routePath.replace(/\/.*$/, '');
                                         var extraClass = currentPageCategory === category && pathName !== 'contract/dashboard' ? 'active' : '';
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
-                                        if (!(_.contains(NavSidebarLists, menu))) {
+                                        if (!(_.includes(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);
                                         }
                                         return (

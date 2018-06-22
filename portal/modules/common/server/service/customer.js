@@ -7,7 +7,7 @@ var urls = {
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var customerDto = require('../dto/customer');
-var _ = require('underscore');
+var _ = require('lodash');
 var transformUtils = require('../utils/transform-fields');
 exports.getCustomerSuggest = function(req,res,q,fields) {
     return restUtil.authRest.post({

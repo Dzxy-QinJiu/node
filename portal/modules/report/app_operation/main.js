@@ -79,7 +79,7 @@ const OperationReport = React.createClass({
         const list = data.data;
 
         if (_.isArray(list) && list.length) {
-            const amount = _.chain(list).pluck('count').reduce((m, n) => m + n, 0).value();
+            const amount = _.chain(list).map('count').reduce((m, n) => m + n, 0).value();
             this.state[key] = amount;
             this.setState(this.state);
         }
@@ -109,8 +109,8 @@ const OperationReport = React.createClass({
     //处理新增用户统计数据
     processNewAddedUserData(data) {
         if (_.isArray(data) && data.length) {
-            const trial = _.chain(data).pluck('trial').reduce((m, n) => m + n, 0).value();
-            const formal = _.chain(data).pluck('formal').reduce((m, n) => m + n, 0).value();
+            const trial = _.chain(data).map('trial').reduce((m, n) => m + n, 0).value();
+            const formal = _.chain(data).map('formal').reduce((m, n) => m + n, 0).value();
             this.setState({
                 newAddedTrial: trial,
                 newAddedFormal: formal,

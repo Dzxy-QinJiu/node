@@ -37,7 +37,7 @@ var SingleLineChart = React.createClass({
                 data: []
             };
         }
-        var legend = _.pluck(this.props.legend , 'name');
+        var legend = _.map(this.props.legend , 'name');
         legend.push( Intl.get('oplate_customer_analysis.15', '客户总数'));
         return {
             show: false,
@@ -59,7 +59,7 @@ var SingleLineChart = React.createClass({
                 name: legendInfo.name,
                 type: 'line',
                 smooth: true,
-                data: _.pluck(_this.props.list , legendInfo.key),
+                data: _.map(_this.props.list , legendInfo.key),
                 itemStyle: {
                     normal: {
                         color: currentColor

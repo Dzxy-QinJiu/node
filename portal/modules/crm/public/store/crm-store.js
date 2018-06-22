@@ -309,8 +309,8 @@ CrmStore.prototype.batchChangeSalesman = function({taskInfo, taskParams, curCust
     if (!tasks.length) {
         return;
     }
-    var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, 'taskDefine');
+    var curCustomerListMap = _.keyBy(curCustomers, 'id');
+    var targetCustomers = _.map(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         //如果当前客户是需要更新的客户，才更新
@@ -369,8 +369,8 @@ CrmStore.prototype.batchChangeTags = function({taskInfo, taskParams, curCustomer
     if (!tasks.length) {
         return;
     }
-    var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, 'taskDefine');
+    var curCustomerListMap = _.keyBy(curCustomers, 'id');
+    var targetCustomers = _.map(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         var customerInfo = curCustomerListMap[customerId];
@@ -423,8 +423,8 @@ CrmStore.prototype.batchChangeIndustry = function({taskInfo, taskParams, curCust
     if (!tasks.length) {
         return;
     }
-    var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, 'taskDefine');
+    var curCustomerListMap = _.keyBy(curCustomers, 'id');
+    var targetCustomers = _.map(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         var customerInfo = curCustomerListMap[customerId];
@@ -459,8 +459,8 @@ CrmStore.prototype.batchChangeLevel = function({taskInfo, taskParams, curCustome
     if (!tasks.length) {
         return;
     }
-    var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, 'taskDefine');
+    var curCustomerListMap = _.keyBy(curCustomers, 'id');
+    var targetCustomers = _.map(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         var customerInfo = curCustomerListMap[customerId];
@@ -500,8 +500,8 @@ CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCus
     if (!tasks.length) {
         return;
     }
-    var curCustomerListMap = _.indexBy(curCustomers, 'id');
-    var targetCustomers = _.pluck(tasks, 'taskDefine');
+    var curCustomerListMap = _.keyBy(curCustomers, 'id');
+    var targetCustomers = _.map(tasks, 'taskDefine');
     //遍历每一个客户
     _.each(targetCustomers, (customerId) => {
         var customerInfo = curCustomerListMap[customerId];

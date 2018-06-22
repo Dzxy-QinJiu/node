@@ -143,7 +143,7 @@ export const capitalizeFirstLetter = function(str) {
 // 地图中显示颜色的判断
 export const mapColorList = function(dataList) {
     // 返回的是字符串
-    let valueArray = _.pluck(_.isArray(dataList) && dataList || [], 'value');
+    let valueArray = _.map(_.isArray(dataList) && dataList || [], 'value');
     valueArray = _.map(valueArray, item => parseInt(item));
     let uniqArray = _.uniq(valueArray);
     let length = uniqArray.length;

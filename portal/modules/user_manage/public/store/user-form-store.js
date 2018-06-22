@@ -12,10 +12,8 @@ function UserFormStore() {
     //保存后的提示信息
     this.saveMsg = '';
     this.userNameExist = false;//用户名是否已存在
-    this.phoneExist = false;//电话是否已存在
     this.emailExist = false;//邮箱是否已存在
     this.userNameError = false;//用户名唯一性验证出错
-    this.phoneError = false;//电话唯一性验证出错
     this.emailError = false;//邮件唯一性验证出错
     this.savedUser = {};//添加用户成功后返回的用户信息
     //角色列表
@@ -105,26 +103,10 @@ UserFormStore.prototype.checkOnlyEmail = function(result) {
     }
 };
 
-//电话唯一性的验证
-UserFormStore.prototype.checkOnlyPhone = function(result) {
-    if (_.isString(result)) {
-        //验证出错！
-        this.phoneError = true;
-    } else {
-        this.phoneExist = result;
-    }
-};
-
 //重置用户验证的标志
 UserFormStore.prototype.resetUserNameFlags = function() {
     this.userNameExist = false;
     this.userNameError = false;
-};
-
-//重置电话验证的标志
-UserFormStore.prototype.resetPhoneFlags = function() {
-    this.phoneExist = false;
-    this.phoneError = false;
 };
 
 //重置邮箱验证的标志

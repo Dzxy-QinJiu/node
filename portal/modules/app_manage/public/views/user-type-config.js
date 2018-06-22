@@ -5,7 +5,7 @@
  */
 require('../css/user-type-config.less');
 import {Icon} from 'antd';
-var _ = require('underscore');
+var _ = require('lodash');
 var UserTypeConfigForm = require('./user-type-config-form');
 var UserTypeConfigList = require('./user-type-config-list');
 import Trace from 'LIB_DIR/trace';
@@ -60,7 +60,7 @@ var UserTypeConfig = React.createClass({
     //点击编辑按钮 区分修改和增加两种情况
     handleEdit: function(item) {
         var _this = this;
-        if (item.id != '') {
+        if (item.id !== '') {
             Trace.traceEvent($(this.getDOMNode()).find('.grantinfo-content-list'),'编辑用户类型配置');
             //编辑状态
             _this.setState({

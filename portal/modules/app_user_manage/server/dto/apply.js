@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 //用户审批列表转换
 exports.toRestObject = function(list) {
     var result = [];
@@ -218,7 +218,7 @@ exports.toDetailDelayRestObject = function(obj) {
         // 到期时间
         result.end_date = detail.end_date || '';
     }
-    if (detail.delay && detail.delay != '-1') {
+    if (detail.delay && detail.delay !== '-1') {
         result.delayTime = detail.delay || '';
     }
     //增加特殊属性

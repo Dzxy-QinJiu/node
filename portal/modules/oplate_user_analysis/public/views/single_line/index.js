@@ -56,7 +56,7 @@ var SingleLineChart = React.createClass({
                 stack: 'stack',
                 barMinWidth: 4,
                 barMaxWidth: 40,
-                data: _.pluck(_this.props.list , legendInfo.key),
+                data: _.map(_this.props.list , legendInfo.key),
             };
             series.push(bar);
         });        

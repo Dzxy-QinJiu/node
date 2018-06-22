@@ -83,8 +83,8 @@ const FILTER_OPTION = [
     }
 ];
 
-const filterOptions = FILTER_OPTION.map(x => (
-    <Option value={x.value}>{x.label}</Option>
+const filterOptions = FILTER_OPTION.map((x, index) => (
+    <Option key={index} value={x.value}>{x.label}</Option>
 ));
 
 const CallRecord = React.createClass({
@@ -775,18 +775,18 @@ const CallRecord = React.createClass({
     // 过滤小于7位的号码，如114、12580...
     selectFilterPhone(value) {
         switch (value) {
-        case '114':
-            Trace.traceEvent('通话记录界面', '仅显示小于7位的号码');
-            break;
-        case 'customer':
-            Trace.traceEvent('通话记录界面', '仅显示客户电话');
-            break;
-        case 'invalid':
-            Trace.traceEvent('通话记录界面', '仅显示客服电话');
-            break;
-        default:
-            Trace.traceEvent('通话记录界面', '显示全部电话');
-            break;
+            case '114':
+                Trace.traceEvent('通话记录界面', '仅显示小于7位的号码');
+                break;
+            case 'customer':
+                Trace.traceEvent('通话记录界面', '仅显示客户电话');
+                break;
+            case 'invalid':
+                Trace.traceEvent('通话记录界面', '仅显示客服电话');
+                break;
+            default:
+                Trace.traceEvent('通话记录界面', '显示全部电话');
+                break;
         }
         CallRecordActions.filterPhone(value);
         setTimeout(() => {
@@ -938,14 +938,16 @@ const CallRecord = React.createClass({
                         phoneNumber={this.state.phoneNumber}
                     />
                 </div>
-                <RightPanel
-                    className="call-analysis-panel"
-                    showFlag={this.state.isShowCallAnalysisPanel}
-                >
-                    <CallRecordAnalyis
-                        closeCallAnalysisPanel={this.closeCallAnalysisPanel}
-                    />
-                </RightPanel>
+                {this.state.isShowCallAnalysisPanel ? (
+                    <RightPanel
+                        className="call-analysis-panel"
+                        showFlag={this.state.isShowCallAnalysisPanel}
+                    >
+                        <CallRecordAnalyis
+                            closeCallAnalysisPanel={this.closeCallAnalysisPanel}
+                        />
+                    </RightPanel>
+                ) : null}
             </div>
         </RightContent >
         );
@@ -1083,7 +1085,8 @@ const CallRecord = React.createClass({
             loading: handleScrollLoading(),
             listenScrollBottom: this.state.callRecord.listenScrollBottom,
             handleScrollBottom: this.handleScrollBottom,
-            showNoMoreDataTip: this.showNoMoreDataTip()
+            showNoMoreDataTip: this.showNoMoreDataTip(),
+            noMoreDataText: Intl.get('noMoreTip.callRecord', '没有更多通话记录了')
         };
 
         return (

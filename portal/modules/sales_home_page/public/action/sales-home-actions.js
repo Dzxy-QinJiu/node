@@ -2,7 +2,7 @@ var salesHomeAjax = require('../ajax/sales-home-ajax');
 var userData = require('../../../../public/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
-var _ = require('underscore');
+var _ = require('lodash');
 
 function SalesHomeActions() {
     this.generateActions(

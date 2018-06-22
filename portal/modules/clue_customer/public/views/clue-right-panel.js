@@ -7,14 +7,12 @@ import {RightPanel, RightPanelClose} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import UserDetailEditField from 'CMP_DIR/basic-edit-field/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
+import DatePickerField from 'CMP_DIR/basic-edit-field/date-picker';
 import {checkEmail} from '../utils/clue-customer-utils';
 var clueCustomerAction = require('../action/clue-customer-action');
-var clueCustomerStore = require('../store/clue-customer-store');
 var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 import AssignClueAndSelectCustomer from './assign-clue-and-select-customer';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-import classNames from 'classnames';
-var userData = require('../../../../public/sources/user-data');
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
 const noop = function() {
 };
@@ -45,7 +43,7 @@ class ClueRightPanel extends React.Component {
                         //唯一性验证出错了
                         callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                     } else {
-                        if (_.isObject(data) && data.result == 'true') {
+                        if (_.isObject(data) && data.result === 'true') {
                             callback();
                         } else {
                             //已存在
@@ -91,51 +89,57 @@ class ClueRightPanel extends React.Component {
     }
 
     onSelectCluesource = (updateSource) => {
-        this.state.curCustomer.clue_source = updateSource;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.clue_source = updateSource;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     onSelectAccessChannel = (updateChannel) => {
-        this.state.curCustomer.access_channel = updateChannel;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.access_channel = updateChannel;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     onSelectClueClassify = (updateClassify) => {
-        this.state.curCustomer.clue_classify = updateClassify;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.clue_classify = updateClassify;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     cancelEditClueChannel = () => {
-        this.state.curCustomer.access_channel = this.props.curCustomer.access_channel;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.access_channel = this.props.curCustomer.access_channel;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     cancelEditClueSource = () => {
-        this.state.curCustomer.clue_source = this.props.curCustomer.clue_source;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.clue_source = this.props.curCustomer.clue_source;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     cancelEditClueClassify = () => {
-        this.state.curCustomer.clue_classify = this.props.curCustomer.clue_classify;
+        var curCustomer = this.state.curCustomer;
+        curCustomer.clue_classify = this.props.curCustomer.clue_classify;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: curCustomer
         });
     };
     changeUserFieldSuccess = (newCustomerDetail) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的
         for (var key in newCustomerDetail) {
-            if (key == 'clue_source' && !_.contains(this.props.clueSourceArray, newCustomerDetail[key])) {
+            if (key === 'clue_source' && !_.includes(this.props.clueSourceArray, newCustomerDetail[key])) {
                 this.props.updateClueSource(newCustomerDetail[key]);
             }
-            if (key == 'access_channel' && !_.contains(this.props.accessChannelArray, newCustomerDetail[key])) {
+            if (key === 'access_channel' && !_.includes(this.props.accessChannelArray, newCustomerDetail[key])) {
                 this.props.updateClueChannel(newCustomerDetail[key]);
             }
-            if (key == 'clue_classify' && !_.contains(this.props.clueClassifyArray, newCustomerDetail[key])) {
+            if (key === 'clue_classify' && !_.includes(this.props.clueClassifyArray, newCustomerDetail[key])) {
                 this.props.updateClueClassify(newCustomerDetail[key]);
             }
         }
@@ -155,7 +159,7 @@ class ClueRightPanel extends React.Component {
                     //唯一性验证出错了
                     callback(Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
                 } else {
-                    if (_.isObject(data) && data.result == 'true') {
+                    if (_.isObject(data) && data.result === 'true') {
                         callback();
                     } else {
                         callback(Intl.get('clue.customer.check.repeat', '该线索名称已存在'));
@@ -166,6 +170,10 @@ class ClueRightPanel extends React.Component {
             callback(Intl.get('clue.customer.fillin.clue.name', '请填写线索名称'));
         }
     };
+    //今天之后的日期不可以选
+    disabledDate(current){
+        return current > moment().endOf('day');
+    }
 
     render() {
         var curCustomer = this.state.curCustomer || {};
@@ -367,6 +375,22 @@ class ClueRightPanel extends React.Component {
                                         />
                                     </dd>
                                 </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_sourcetime">
+                                    <dt>
+                                        {Intl.get('crm.sales.clue.time', '线索时间')}：
+                                    </dt>
+                                    <dd>
+                                        <DatePickerField
+                                            disabled={hasNoPrivilegeEdit}
+                                            user_id={curCustomer.id}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                            value={curCustomer.source_time}
+                                            field="source_time"
+                                            disabledDate={this.disabledDate}
+                                        />
+                                    </dd>
+                                </dl>
                             </div>
                         </div>
                         <AssignClueAndSelectCustomer
@@ -381,7 +405,25 @@ class ClueRightPanel extends React.Component {
 
 ClueRightPanel.defaultProps = {
     curCustomer: {},
+    clueSourceArray: [],
+    accessChannelArray: [],
+    clueClassifyArray: [],
     showFlag: noop,
     hideRightPanel: noop,
+    updateClueSource: noop,
+    updateClueChannel: noop,
+    updateClueClassify: noop,
+};
+ClueRightPanel.propTypes = {
+    curCustomer: React.PropTypes.object,
+    clueSourceArray: React.PropTypes.object,
+    accessChannelArray: React.PropTypes.object,
+    clueClassifyArray: React.PropTypes.object,
+    showFlag: React.PropTypes.func,
+    hideRightPanel: React.PropTypes.func,
+    updateClueSource: React.PropTypes.func,
+    updateClueChannel: React.PropTypes.func,
+    updateClueClassify: React.PropTypes.func,
+
 };
 export default ClueRightPanel;

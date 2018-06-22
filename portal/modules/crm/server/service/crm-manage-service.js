@@ -1,7 +1,7 @@
 'use strict';
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-var _ = require('underscore');
+var _ = require('lodash');
 
 //上传超时时长
 var uploadTimeOut = 5 * 60 * 1000;

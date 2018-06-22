@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 
 // 通话分析中的数据的转换
 exports.toFrontCallAnalysis = function(data) {

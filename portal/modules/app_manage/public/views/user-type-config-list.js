@@ -6,7 +6,7 @@
 // 查看
 require('../css/user-type-config.less');
 import {Button, Icon} from 'antd';
-var _ = require('underscore');
+var _ = require('lodash');
 var Alert = require('antd').Alert;
 var getRoleLists = require('./getRoleLists');
 var rightPanelUtil = require('../../../../components/rightPanel');
@@ -51,7 +51,7 @@ var UserTypeConfigList = React.createClass({
     componentWillReceiveProps: function(nextProps) {
         var _this = this;
         var appId = nextProps.appId;
-        if (appId != _this.state.appId) {
+        if (appId !== _this.state.appId) {
             _this.props.appId = appId;
             _this.setState({
                 appId: appId,
@@ -79,10 +79,10 @@ var UserTypeConfigList = React.createClass({
         var appId = this.props.appId;
         getRoleLists.getRoleList(appId).then(function(roleList) {
             //角色的map数据类型，为获取角色的名字做准备
-            roleMap = _.indexBy(roleList, 'role_id');
+            roleMap = _.keyBy(roleList, 'role_id');
             getRoleLists.getPermissionMap(appId).then(function(permissionList) {
                 //权限的map数据类型，为获取权限的名字做准备
-                permissionMap = _.chain(permissionList).pluck('permission_list').flatten().indexBy('permission_id').value();
+                permissionMap = _.chain(permissionList).map('permission_list').flatten().keyBy('permission_id').value();
                 _this.getInitialData(roleMap, permissionMap);
             });
         });
@@ -115,7 +115,7 @@ var UserTypeConfigList = React.createClass({
     handlegetData: function(Msg, roleMap, permissionMap) {
         var _this = this;
         //页面展示数据map类型
-        var showDataByUserType = _.indexBy(_this.state.showData, 'user_type');
+        var showDataByUserType = _.keyBy(_this.state.showData, 'user_type');
         //真实数据
         var dataLists = [];
         //对后端返回的数据进行初步处理;去除上一个版本测试时创建的一些没用数据，加上角色权限的名称和开通周期属性
@@ -210,7 +210,7 @@ var UserTypeConfigList = React.createClass({
         return (list.map((item) => {
             var listId = item.id;
             //有配置信息的类型
-            if (listId != '') {
+            if (listId !== '') {
                 return (
                     <div className="usertypeconfig-item">
                         <div className="usertypeconfig-content">
@@ -221,11 +221,11 @@ var UserTypeConfigList = React.createClass({
                                     />
                                 </PrivilegeChecker>
                                 <div className="addbtn-tip">
-                                    {item.user_type == '试用用户' && '试用'}
-                                    {item.user_type == '正式用户' && '签约'}
-                                    {item.user_type == 'special' && '赠送'}
-                                    {item.user_type == 'training' && '培训'}
-                                    {item.user_type == 'internal' && '员工'}
+                                    {item.user_type === '试用用户' && '试用'}
+                                    {item.user_type === '正式用户' && '签约'}
+                                    {item.user_type === 'special' && '赠送'}
+                                    {item.user_type === 'training' && '培训'}
+                                    {item.user_type === 'internal' && '员工'}
                                 </div>
                             </div>
                             <div className="content-item">
@@ -233,12 +233,12 @@ var UserTypeConfigList = React.createClass({
                                         开通周期：
                                 </div>
                                 <div className="item-content">
-                                    {item.range == '1w' && '1周'}
-                                    {item.range == '0.5m' && '半个月'}
-                                    {item.range == '1m' && '1个月'}
-                                    {item.range == '6m' && '6个月'}
-                                    {item.range == '12m' && '12个月'}
-                                    {item.range == 'forever' && '永久'}
+                                    {item.range === '1w' && '1周'}
+                                    {item.range === '0.5m' && '半个月'}
+                                    {item.range === '1m' && '1个月'}
+                                    {item.range === '6m' && '6个月'}
+                                    {item.range === '12m' && '12个月'}
+                                    {item.range === 'forever' && '永久'}
                                 </div>
                             </div>
                             <div className="content-item">
@@ -246,9 +246,9 @@ var UserTypeConfigList = React.createClass({
                                     {Intl.get('user.expire.status', '到期状态')}：
                                 </div>
                                 <div className="item-content">
-                                    {item.over_draft == 0 && Intl.get('user.status.immutability', '不变')}
-                                    {item.over_draft == 1 && Intl.get('user.status.stop', '停用')}
-                                    {item.over_draft == 2 && Intl.get('user.status.degrade', '降级')}
+                                    {item.over_draft === 0 && Intl.get('user.status.immutability', '不变')}
+                                    {item.over_draft === 1 && Intl.get('user.status.stop', '停用')}
+                                    {item.over_draft === 2 && Intl.get('user.status.degrade', '降级')}
                                 </div>
                             </div>
                             <div className="content-item">
@@ -256,8 +256,8 @@ var UserTypeConfigList = React.createClass({
                                         多人登录：
                                 </div>
                                 <div className="item-content">
-                                    {item.mutilogin == 0 && '关闭'}
-                                    {item.mutilogin == 1 && '开启'}
+                                    {item.mutilogin === 0 && '关闭'}
+                                    {item.mutilogin === 1 && '开启'}
                                 </div>
                             </div>
                             <div className="content-item">
@@ -289,11 +289,11 @@ var UserTypeConfigList = React.createClass({
                                     onClick={_this.handleEditUserTypeConfig.bind(this, item)}></div>
                                 <div className="item-title">
                                         请为<span className="addbtn-tip">&nbsp;&nbsp;
-                                        {item.user_type == '试用用户' && '试用'}
-                                        {item.user_type == '正式用户' && '签约'}
-                                        {item.user_type == 'special' && '赠送'}
-                                        {item.user_type == 'training' && '培训'}
-                                        {item.user_type == 'internal' && '员工'}
+                                        {item.user_type === '试用用户' && '试用'}
+                                        {item.user_type === '正式用户' && '签约'}
+                                        {item.user_type === 'special' && '赠送'}
+                                        {item.user_type === 'training' && '培训'}
+                                        {item.user_type === 'internal' && '员工'}
                                     </span>
                                         &nbsp;&nbsp;用户设置默认角色、权限等信息
                                 </div>
@@ -330,7 +330,7 @@ var UserTypeConfigList = React.createClass({
                     >
                         {this.state.firstloading
                             ? <Spinner/>
-                            : (this.state.errMsg != '' ? this.handleErrResult() : this.showUserTypeConfigList())
+                            : (this.state.errMsg !== '' ? this.handleErrResult() : this.showUserTypeConfigList())
                         }
                     </GeminiScrollbar>
                 </div>

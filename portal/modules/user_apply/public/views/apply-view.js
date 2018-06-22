@@ -3,19 +3,19 @@ var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
 import UserApplyActions from '../action/user-apply-actions';
 import UserApplyStore from '../store/user-apply-store';
+import ApplyViewDetail from './apply-view-detail';
+import Trace from 'LIB_DIR/trace';
+import {storageUtil} from 'ant-utils';
 var Alert = require('antd').Alert;
 var classNames = require('classnames');
 var Dropdown = require('antd').Dropdown;
 var Menu = require('antd').Menu;
 var NoData = require('../../../../components/analysis-nodata');
-import ApplyViewDetail from './apply-view-detail';
 var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
 var UserData = require('../../../../public/sources/user-data');
 var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 var SearchInput = require('../../../../components/searchInput');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
-import Trace from 'LIB_DIR/trace';
-import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 
 var timeoutFunc;//定时方法
@@ -46,7 +46,7 @@ var ApplyTabContent = React.createClass({
             approval_state: UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType
         }, (count) => {
             //处理申请有过失败的情况，并且是筛选待审批的申请时,重新获取消息数；否则不发请求
-            if (this.state.dealApplyError == 'error' && this.state.applyListType === 'false') {
+            if (this.state.dealApplyError === 'error' && this.state.applyListType === 'false') {
                 //触发更新待审批数
                 updateUnapprovedCount(count);
                 UserApplyActions.updateDealApplyError('success');
@@ -140,7 +140,7 @@ var ApplyTabContent = React.createClass({
     },
     renderApplyListError: function() {
         var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== 'all';
-        var noDataSearch = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.searchKeyword != '';
+        var noDataSearch = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.searchKeyword !== '';
         if (this.state.applyListObj.loadingResult === 'error' || noData || noDataSearch) {
             var retry = (
                 <span>
@@ -182,7 +182,7 @@ var ApplyTabContent = React.createClass({
         return null;
     },
     getApplyStateText: function(obj) {
-        if (obj.isConsumed == 'true') {
+        if (obj.isConsumed === 'true') {
             if (obj.approval_state === '1') {
                 return Intl.get('user.apply.pass', '已通过');
             } else if (obj.approval_state === '2') {
@@ -222,7 +222,7 @@ var ApplyTabContent = React.createClass({
     renderApplyList: function() {
         let unreadReplyList = this.state.unreadReplyList;
         //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
-        let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType == 'all' && !this.state.searchKeyword;
+        let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType === 'all' && !this.state.searchKeyword;
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
                 {showUnreadTip ? (
@@ -232,7 +232,7 @@ var ApplyTabContent = React.createClass({
                             defaultMessage={'有未读回复的申请，{check}'}
                             values={{
                                 'check': <a onClick={this.toggleUnreadApplyList}>
-                                    {this.state.isCheckUnreadApplyList ? Intl.get('user.apply.cancel.check', '取消查看') : Intl.get('user.apply.check', '查看')}</a>
+                                    {this.state.isCheckUnreadApplyList ? Intl.get('user.apply.show.all.check', '查看全部申请') : Intl.get('user.apply.check', '查看')}</a>
                             }}
                         />
                     </li>
@@ -246,13 +246,13 @@ var ApplyTabContent = React.createClass({
                 {
                     this.state.applyListObj.list.map((obj, i) => {
                         var btnClass = classNames({
-                            processed: obj.isConsumed == 'true'
+                            processed: obj.isConsumed === 'true'
                         });
                         var currentClass = classNames({
-                            current: obj.id == this.state.selectedDetailItem.id && i == this.state.selectedDetailItemIdx
+                            current: obj.id === this.state.selectedDetailItem.id && i === this.state.selectedDetailItemIdx
                         });
                         //是否有未读回复
-                        let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.apply_id == obj.id);
+                        let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.apply_id === obj.id);
                         return (
                             <li key={obj.id} className={currentClass}
                                 onClick={this.clickShowDetail.bind(this, obj, i)}
@@ -304,15 +304,15 @@ var ApplyTabContent = React.createClass({
     },
     menuClick: function(obj) {
         let selectType = '';
-        if (obj.key == 'all') {
+        if (obj.key === 'all') {
             selectType = Intl.get('common.all', '全部');
-        } else if (obj.key == 'pass') {
+        } else if (obj.key === 'pass') {
             selectType = Intl.get('user.apply.pass', '已通过');
-        } else if (obj.key == 'false') {
+        } else if (obj.key === 'false') {
             selectType = Intl.get('user.apply.false', '待审批');
-        } else if (obj.key == 'reject') {
+        } else if (obj.key === 'reject') {
             selectType = Intl.get('user.apply.reject', '已驳回');
-        } else if (obj.key == 'cancel') {
+        } else if (obj.key === 'cancel') {
             selectType = Intl.get('user.apply.backout', '已撤销');
         }
         Trace.traceEvent($(this.getDOMNode()).find('.pull-left'), '根据' + selectType + '过滤');
@@ -347,7 +347,7 @@ var ApplyTabContent = React.createClass({
     pushDataListener: function(data) {
         //有数据，将是否展示更新tip
         if (UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY)) {
-            if (data && data.approval_state == 'pass') {
+            if (data && data.approval_state === 'pass') {
                 UserApplyActions.setShowUpdateTip(true);
             }
         } else if (data) {
@@ -437,7 +437,7 @@ var ApplyTabContent = React.createClass({
     getIsUnreadDetail: function() {
         let selectApplyId = this.state.selectedDetailItem ? this.state.selectedDetailItem.id : '';
         if (selectApplyId) {
-            return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id == selectApplyId);
+            return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id === selectApplyId);
         } else {
             return false;
         }
@@ -475,15 +475,15 @@ var ApplyTabContent = React.createClass({
             applyListHeight = this.getApplyListDivHeight();
         }
         var applyType = '';
-        if (this.state.applyListType == 'false') {
+        if (this.state.applyListType === 'false') {
             applyType = Intl.get('user.apply.false', '待审批');
-        } else if (this.state.applyListType == 'pass') {
+        } else if (this.state.applyListType === 'pass') {
             applyType = Intl.get('user.apply.pass', '已通过');
-        } else if (this.state.applyListType == 'reject') {
+        } else if (this.state.applyListType === 'reject') {
             applyType = '被驳回';
-        } else if (this.state.applyListType == 'true') {
+        } else if (this.state.applyListType === 'true') {
             applyType = '已审批';
-        } else if (this.state.applyListType == 'cancel') {
+        } else if (this.state.applyListType === 'cancel') {
             applyType = Intl.get('user.apply.backout', '已撤销');
         }
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;

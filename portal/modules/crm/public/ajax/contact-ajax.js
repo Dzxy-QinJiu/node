@@ -32,9 +32,11 @@ exports.getContactList = function(customerId) {
 };
 
 //添加一个联系人
+var addContactAjax = null;
 exports.addContact = function(contact) {
     var Deferred = $.Deferred();
-    $.ajax({
+    addContactAjax && addContactAjax.abort();
+    addContactAjax = $.ajax({
         url: '/rest/contact',
         dataType: 'json',
         type: 'post',

@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * Created by wangliping on 2017/8/23.
  * 添加销售线索面板
  */
-import { Form, Input, Select, message, DatePicker} from 'antd';
+import { Form, Input, Select, DatePicker} from 'antd';
 const FormItem = Form.Item;
 import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -77,7 +77,7 @@ const SalesClueAddForm = React.createClass({
                         clueCustomerCheckErrMsg: data
                     });
                 } else {
-                    if (_.isObject(data) && data.result == 'true') {
+                    if (_.isObject(data) && data.result === 'true') {
                         this.setState({
                             clueNameExist: false,
                             clueCustomerCheckErrMsg: ''
@@ -149,7 +149,7 @@ const SalesClueAddForm = React.createClass({
         var validation = this.refs.validation;
         validation.validate(valid => {
             //验证电话是否通过验证
-            this.phoneInputRef.props.form.validateFields({force: true}, (errors, values) => {
+            this.phoneInputRef.props.form.validateFields({force: true}, (errors) => {
                 if (this.state.clueNameExist || this.state.clueCustomerCheckErrMsg) {
                     valid = false;
                 }
@@ -157,14 +157,14 @@ const SalesClueAddForm = React.createClass({
                     return;
                 } else {
                     let submitObj = this.getSubmitObj();
-                    let addRoute = _.find(routes, (route) => route.handler == 'addSalesClue');
+                    let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
                     this.setState({isSaving: true, saveMsg: '', saveResult: ''});
                     ajax({
                         url: addRoute.path,
                         type: addRoute.method,
                         data: submitObj
                     }).then(data => {
-                        if (_.isObject(data) && data.code == 0) {
+                        if (_.isObject(data) && data.code === 0) {
                             //添加成功
                             this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                             this.setState({
@@ -172,13 +172,13 @@ const SalesClueAddForm = React.createClass({
                             });
                             clueCustomerAction.afterAddSalesClue(data.result);
                             //如果线索来源或者接入渠道,线索类型加入新的类型
-                            if (submitObj.clue_source && !_.contains(this.props.clueSourceArray,submitObj.clue_source)){
+                            if (submitObj.clue_source && !_.includes(this.props.clueSourceArray,submitObj.clue_source)){
                                 _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
                             }
-                            if (submitObj.access_channel && !_.contains(this.props.accessChannelArray,submitObj.access_channel)){
+                            if (submitObj.access_channel && !_.includes(this.props.accessChannelArray,submitObj.access_channel)){
                                 _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
                             }
-                            if (submitObj.clue_classify && !_.contains(this.props.clueClassifyArray,submitObj.clue_classify)){
+                            if (submitObj.clue_classify && !_.includes(this.props.clueClassifyArray,submitObj.clue_classify)){
                                 _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
                             }
                             //线索客户添加成功后的回调
@@ -204,7 +204,7 @@ const SalesClueAddForm = React.createClass({
     },
     //去掉保存后提示信息
     hideSaveTooltip: function() {
-        if (this.state.saveResult == 'success') {
+        if (this.state.saveResult === 'success') {
             this.setState({
                 isShowAssignAndRelate: true
             });
@@ -231,7 +231,7 @@ const SalesClueAddForm = React.createClass({
                             //唯一性验证出错了
                             callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                         } else {
-                            if (_.isObject(data) && data.result == 'true') {
+                            if (_.isObject(data) && data.result === 'true') {
                                 callback();
                             } else {
                                 //已存在
@@ -275,7 +275,7 @@ const SalesClueAddForm = React.createClass({
         return (
             <div className="add-form-wrap">
                 <GeminiScrollbar>
-                    <Form horizontal className="crm-add-form sales-clue-form">
+                    <Form horizontal className="crm-add-form sales-clue-form" id="sales-clue-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
                                 label={Intl.get('clue.customer.clue.name', '线索名称')}
@@ -365,6 +365,7 @@ const SalesClueAddForm = React.createClass({
                                     name="clue_source"
                                     onChange={this.setField.bind(this, 'clue_source')}
                                     value={formData.clue_source}
+                                    getPopupContainer={() => document.getElementById('sales-clue-form')}
                                 >
                                     {
                                         _.isArray(this.props.clueSourceArray) ?
@@ -387,6 +388,7 @@ const SalesClueAddForm = React.createClass({
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'access_channel')}
                                     value={formData.access_channel}
+                                    getPopupContainer={() => document.getElementById('sales-clue-form')}
                                 >
                                     {_.isArray(this.props.accessChannelArray) ?
                                         this.props.accessChannelArray.map((source, idx) => {
@@ -407,6 +409,7 @@ const SalesClueAddForm = React.createClass({
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'clue_classify')}
                                     value={formData.clue_classify}
+                                    getPopupContainer={() => document.getElementById('sales-clue-form')}
                                 >
                                     {_.isArray(this.props.clueClassifyArray) ?
                                         this.props.clueClassifyArray.map((source, idx) => {
@@ -440,7 +443,7 @@ const SalesClueAddForm = React.createClass({
                                 <div className="indicator">
                                     {saveResult ?
                                         (
-                                            <AlertTimer time={saveResult == 'error' ? 3000 : 600}
+                                            <AlertTimer time={saveResult === 'error' ? 3000 : 600}
                                                 message={this.state.saveMsg}
                                                 type={saveResult} showIcon
                                                 onHide={this.hideSaveTooltip}/>

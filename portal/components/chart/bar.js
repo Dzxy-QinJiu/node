@@ -76,7 +76,7 @@ var BarChart = React.createClass({
         }
         return {
             show: true,
-            data: _.pluck(this.props.legend , 'name')
+            data: _.map(this.props.legend , 'name')
         };
     },
     getCategories: function() {
@@ -87,9 +87,9 @@ var BarChart = React.createClass({
         }
         var categories = '';
         if (this.props.reverseChart){
-            categories = _.pluck(chartData.slice().reverse() , 'name');
+            categories = _.map(chartData.slice().reverse() , 'name');
         }else{
-            categories = _.pluck(chartData , 'name');
+            categories = _.map(chartData , 'name');
         }
         return categories;
     },
@@ -114,9 +114,9 @@ var BarChart = React.createClass({
         if (_.isEmpty(legend)) {
             const serie = _.clone(serieTpl);
             if (this.props.reverseChart){
-                serie.data = _.pluck(chartData.slice().reverse(), this.props.valueField);
+                serie.data = _.map(chartData.slice().reverse(), this.props.valueField);
             }else{
-                serie.data = _.pluck(chartData, this.props.valueField);
+                serie.data = _.map(chartData, this.props.valueField);
             }
             serie.itemStyle = {
                 normal: {
@@ -130,7 +130,7 @@ var BarChart = React.createClass({
                 var currentColor = COLORMULTIPLE[idx];
                 const serie = _.clone(serieTpl);
                 serie.name = legendItem.name;
-                serie.data = _.pluck(chartData , this.props.valueField || legendItem.key);
+                serie.data = _.map(chartData , this.props.valueField || legendItem.key);
                 serie.stack = 'stack';
                 serie.itemStyle = {
                     normal: {
@@ -148,7 +148,7 @@ var BarChart = React.createClass({
         if (this.props.dataField) {
             chartData = chartData[this.props.dataField];
         }
-        var industry = _.pluck(chartData.slice().reverse() , 'name');
+        var industry = _.map(chartData.slice().reverse() , 'name');
         if(!industry.length) {
             return 80;
         }
@@ -360,7 +360,7 @@ var BarChart = React.createClass({
                 var seriesName = obj.seriesName;
                 let timeDesc = Intl.get('oplate_customer_analysis.12', '至{time}为止', {time: _this.props.endDate});
                 if(_this.props.startDate){
-                    if(_this.props.startDate == _this.props.endDate) {
+                    if(_this.props.startDate === _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     }else{
                         timeDesc = _this.props.startDate + Intl.get('common.time.connector', '至') + _this.props.endDate;

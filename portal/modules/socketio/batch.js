@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 //后端国际化
 let BackendIntl = require('../../../portal/lib/utils/backend_intl');
 // 记录推送相关的日志

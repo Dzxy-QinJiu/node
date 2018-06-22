@@ -103,7 +103,7 @@ const OrderIndex = React.createClass({
             return Intl.get('user.status.stopped', '已停用');
         } else {
             let end_time = app.end_time;
-            if (end_time == 0) {
+            if (end_time === 0) {
                 return Intl.get('user.overdue.not.forever', '永不过期');
             } else if (end_time) {
                 const over_draft_status = this.getOverDraftStatus(app.over_draft);
@@ -275,7 +275,7 @@ const OrderIndex = React.createClass({
                                         onChange={_this.onChange}
                                         order={order}/>)
                             );
-                        })) : <NoDataTip tipContent={Intl.get('common.no.data', '暂无数据')}/>
+                        })) : <NoDataTip tipContent={Intl.get('common.no.more.order', '没有更多订单')}/>
                         }
                     </GeminiScrollbar>
                 </div>

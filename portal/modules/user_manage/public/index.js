@@ -244,15 +244,18 @@ var UserManage = React.createClass({
                             changeUserFieldSuccess={this.changeUserFieldSuccess}
                             updateUserStatus={this.updateUserStatus}
                         />
-                        <AddUserForm
-                            formType={this.state.formType}
-                            closeRightPanel={this.events.closeRightPanel}
-                            returnInfoPanel={this.events.returnInfoPanel}
-                            showUserInfo={this.events.showUserInfo.bind(this)}
-                            showContinueAddButton={this.events.showContinueAddButton}
-                            user={this.state.currentUser}
-                            userFormShow={this.state.userFormShow}
-                        />
+                        {this.state.userFormShow ?
+                            <AddUserForm
+                                formType={this.state.formType}
+                                closeRightPanel={this.events.closeRightPanel}
+                                returnInfoPanel={this.events.returnInfoPanel}
+                                showUserInfo={this.events.showUserInfo.bind(this)}
+                                showContinueAddButton={this.events.showContinueAddButton}
+                                user={this.state.currentUser}
+                                userFormShow={this.state.userFormShow}
+                            />
+                            : null}
+
                     </RightPanel>
                 </RightCardsContainer>
             </div>

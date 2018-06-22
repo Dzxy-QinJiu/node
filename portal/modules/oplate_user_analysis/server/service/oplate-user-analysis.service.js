@@ -6,7 +6,7 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var Promise = require('bluebird');
 var auth = require('../../../../lib/utils/auth');
-var _ = require('underscore');
+var _ = require('lodash');
 var EventEmitter = require('events').EventEmitter;
 //定义url
 var urls = {
@@ -116,8 +116,8 @@ exports.urls = urls;
 exports.getSummaryNumbers = function(req, res, queryParams) {
     let url = urls.getSummaryNumbers;
     //销售首页
-    if (queryParams.urltype == 'v2') {
-        if (queryParams.dataType == 'all') {
+    if (queryParams.urltype === 'v2') {
+        if (queryParams.dataType === 'all') {
             url = urls.v2.getAllSummaryNumbers;
         } else {
             url = urls.v2.getSummaryNumbers;
@@ -141,7 +141,7 @@ exports.getSummaryNumbers = function(req, res, queryParams) {
 // 获取总用户的用户统计
 exports.getTotalSummary = function(req, res, queryParams) {
     let url = urls.getTotalSummary;
-    if (queryParams.urltype == 'v2') {
+    if (queryParams.urltype === 'v2') {
         url = urls.v2.getTotalSummary;
     } else {//用户分析
         if (queryParams.authType) {//common、manager
@@ -161,8 +161,8 @@ exports.getTotalSummary = function(req, res, queryParams) {
 //获取新增用户的用户统计
 exports.getAddedSummary = function(req, res, queryParams) {
     let url = urls.getAddedSummary;
-    if (queryParams.urltype == 'v2') {
-        if (queryParams.dataType == 'all') {
+    if (queryParams.urltype === 'v2') {
+        if (queryParams.dataType === 'all') {
             url = urls.v2.getAllAddedSummary;
         } else {
             url = urls.v2.getAddedSummary;
@@ -216,7 +216,7 @@ exports.getAddedExpiredSummary = function(req, res, queryParams) {
 //获取总用户的团队统计
 exports.getTotalTeam = function(req, res, queryParams) {
     let url = urls.getTotalTeam;
-    if (queryParams.urltype == 'v2') {
+    if (queryParams.urltype === 'v2') {
         url = urls.v2.getTotalTeam;
     } else {//用户分析
         if (queryParams.authType) {//common、manager
@@ -236,8 +236,8 @@ exports.getTotalTeam = function(req, res, queryParams) {
 //获取新增用户的团队统计
 exports.getAddedTeam = function(req, res, queryParams) {
     let url = urls.getAddedTeam;
-    if (queryParams.urltype == 'v2') {
-        if (queryParams.dataType == 'all') {
+    if (queryParams.urltype === 'v2') {
+        if (queryParams.dataType === 'all') {
             url = urls.v2.getAllAddedTeam;
         } else {
             url = urls.v2.getAddedTeam;
@@ -291,7 +291,7 @@ exports.getAddedExpiredTeam = function(req, res, queryParams) {
 //获取总用户的地域统计
 exports.getTotalZone = function(req, res, queryParams) {
     let url = urls.getTotalZone;
-    if (queryParams.urltype == 'v2') {
+    if (queryParams.urltype === 'v2') {
         url = urls.v2.getTotalZone;
     } else {//用户分析
         if (queryParams.authType) {//common、manager
@@ -311,8 +311,8 @@ exports.getTotalZone = function(req, res, queryParams) {
 //获取新增用户的地域统计
 exports.getAddedZone = function(req, res, queryParams) {
     let url = urls.getAddedZone;
-    if (queryParams.urltype == 'v2') {
-        if (queryParams.dataType == 'all') {
+    if (queryParams.urltype === 'v2') {
+        if (queryParams.dataType === 'all') {
             url = urls.v2.getAllAddedZone;
         } else {
             url = urls.v2.getAddedZone;
@@ -366,7 +366,7 @@ exports.getAddedExpiredZone = function(req, res, queryParams) {
 //获取总用户的行业统计
 exports.getTotalIndustry = function(req, res, queryParams) {
     let url = urls.getTotalIndustry;
-    if (queryParams.urltype == 'v2') {
+    if (queryParams.urltype === 'v2') {
         url = urls.v2.getTotalIndustry;
     } else {//用户分析
         if (queryParams.authType) {//common、manager
@@ -396,9 +396,9 @@ exports.getSalesOpenUserAnalysis = function(req, res, queryParams) {
 //获取新增用户的行业统计
 exports.getAddedIndustry = function(req, res, queryParams) {
     let url = urls.getAddedIndustry;
-    if (queryParams.urltype == 'v2') {
+    if (queryParams.urltype === 'v2') {
         url = urls.v2.getAddedIndustry;
-        if (queryParams.dataType == 'all') {
+        if (queryParams.dataType === 'all') {
             url = urls.v2.getAllAddedIndustry;
         }
     } else {//用户分析
@@ -655,9 +655,9 @@ exports.getTotalMember = function(req, res, queryParams) {
 //获取新增成员
 exports.getAddedMember = function(req, res, queryParams) {
     let url = urls.getAddedMember;
-    if (queryParams.urltype == 'v2') {
+    if (queryParams.urltype === 'v2') {
         url = urls.v2.getAddedMember;
-        if (queryParams.dataType == 'all') {
+        if (queryParams.dataType === 'all') {
             url = urls.v2.getAllAddedMember;
         }
     } else {//用户分析

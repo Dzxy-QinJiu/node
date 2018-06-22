@@ -3,7 +3,7 @@
  */
 var language = require('../../../../public/language/getLanguage');
 require('PUB_DIR/css/card-info-common.less');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('PUB_DIR/css/card-info-es.less');
 }
 import {Spin,Icon,Pagination,Form,Input,Tag,Alert,DatePicker,message,Popconfirm} from 'antd';
@@ -95,7 +95,7 @@ var AppInfo = React.createClass({
         var managers = Intl.get('app.app.no.managers', '暂无管理员');
         if (_.isArray(appInfo.managers)) {
             //应用详情中展示管理员姓名
-            managers = _.pluck(appInfo.managers, 'managerName');
+            managers = _.map(appInfo.managers, 'managerName');
             managers = managers.join(',') || Intl.get('app.app.no.managers', '暂无管理员');
         }
         let realmId = userData.getUserData().auth.realm_id || '';
@@ -173,7 +173,7 @@ var AppInfo = React.createClass({
                 </span>
             </div>
             <div className="card-item">
-                {language.lan() == 'zh' || language.lan() == 'en' ? (
+                {language.lan() === 'zh' || language.lan() === 'en' ? (
                     <span>
                         <span className="card-item-left"><ReactIntl.FormattedMessage id="common.captcha"
                             defaultMessage="验证码"/>:</span>
@@ -187,7 +187,7 @@ var AppInfo = React.createClass({
                         defaultMessage="验证码"/>:</div>
                 )}
             </div>
-            {language.lan() == 'es' ? (
+            {language.lan() === 'es' ? (
                 <div className="card-item left-label-null-style">
                     <span className="card-item-right">
                         {Intl.get('secret.error', '密码输错') + '[' + (appInfo.captchaTime || ' ') + ']' + Intl.get('show.captcha', '次，出现验证码')}
@@ -244,7 +244,7 @@ var AppInfo = React.createClass({
     },
     //修改到期时间的处理
     handleSubmit: function() {
-        if (this.state.expireDate != this.props.appInfo.expireDate) {
+        if (this.state.expireDate !== this.props.appInfo.expireDate) {
             Trace.traceEvent($(this.getDOMNode()).find('.save-expire-date-icon'),'保存修改应用的到期时间');
             //如果有修改则进行保存
             let submitData = {

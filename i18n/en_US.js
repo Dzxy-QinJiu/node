@@ -51,6 +51,13 @@ var en_US = {
     //公共部分提取start
     'common.actived': 'Activated',//已激活
     'common.no.data': 'No data',//暂无数据
+    'common.no.more.clue': 'There is no more clue',//没有更多线索了
+    'common.no.more.user.log': 'There is no more log',//没有更多日志了
+    'common.no.more.abnormal.login': 'There is no more abnormal login',//没有更多异常登录了
+    'common.no.more.system.message': 'There is no more system message',//没有更多系统消息
+    'common.no.more.expired': 'There is no more expired and incomplete',//没有更多超时未完成了
+    'common.no.more.customer': 'There is no more customer',//没有更多客户了
+
     'common.all': 'All',//全部
     'common.role': 'Roles',//角色
     'common.password': 'password',//密码
@@ -143,6 +150,20 @@ var en_US = {
     'common.get.again': 'Retry',//重新获取
     'common.refresh': 'Refresh',//刷新
     'common.no.more.data': 'There is no more data',//没有更多数据了
+    'common.no.more.user': 'There is no more user',//沒有更多用戶了
+    'common.no.more.crm': 'There is no more customer',//没有更多客户了
+    'common.no.more.filter.crm': 'There is no customer match condition',//没有符合条件的客户了
+
+    'common.no.more.schedule': 'There is no schedule',//暂无计划
+    'common.no.more.order': 'There is no order',//没有更多订单
+    'common.no.more.trace.record': 'There is no trace record',//暂无跟进记录
+    'common.no.clue': 'There is no clue',//暂无线索
+    'common.no.audit': 'There is no audit',//暂无审计日志
+    'common.no.call.record': 'There is no call record',//暂无通话记录
+
+
+
+
     'common.yesno': 'whether',//是否
     'common.add.member': 'Add members',//添加成员
     'common.input.keyword': 'Please enter keywords',//输入关键词
@@ -949,6 +970,7 @@ var en_US = {
     'call.record.service.phone.rate': 'Statistics of the ratio of 114',//114占比统计
     'call.analysis.zone.distrute': 'Zone distribution of customers', // 客户的地域分布
     'call.analysis.map.return': 'Back to previous', // 返回上一级
+    'call.analysis.call.title': 'Call information', // 通话信息
     //通话分析-end
 
 
@@ -1019,6 +1041,7 @@ var en_US = {
     'user.apply.unread.reply.null': 'No unread reply，{return}',//已无未读回复的申请，{return}
     'user.apply.check': 'Check',//查看
     'user.apply.cancel.check': 'Cancel check',//取消查看
+    'user.apply.show.all.check': 'show all the applications',//查看全部申请
     'user.apply.unread.apply.list.failed': 'Failure to obtain an application list with unread reply',//获取有未读回复的申请列表失败
     'reply.pass.tip.content': '{approvalPerson} has passed the {userType} user {userNames}, that {salesName} has applied to the customer {customerName}',//{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'reply.reject.tip.content': '{approvalPerson} rejected the {userType} user {userNames}, that {salesName} applied to the customer {customerName}',//{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
@@ -1194,13 +1217,14 @@ var en_US = {
     'crm.204': 'Remove labels', // 移除标签
     'crm.205': 'Add labels', // 添加标签
     'crm.206': 'Update labels',//更新标签
-    'crm.207': 'A total of {count} customers',//共{count}个客户
+    'crm.207': 'A total of {count} customer',//共{count}个客户
     'crm.208': 'Failed to get the customer details', // 查看客户详情失败!
     'crm.209': 'Note: no more than 300 customers can be imported each time',//注意：每次导入的客户数量不能超过300条
     'crm.210': 'Some repeated customers already in the system,  have been marked in red color, please delete these record fist, then import',//存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     'crm.211': 'Trace content',//跟进内容
     'crm.212': 'Please select labels',//请选择标签
     'crm.213': 'Undistributed Customer',//未分配客户
+    'crm.215': 'A total of {count} clues',//共{count}个线索
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
     'crm.administrative.level': 'Administrative level',//行政级别
@@ -1285,6 +1309,13 @@ var en_US = {
     'crm.apply.user.unified.config': 'Unified configuration',//统一配置
     'crm.apply.user.separate.config': 'Separate configuration',//分别配置
     'crm.apply.user.new': 'Apply for new users',//申请新用户
+    'crm.apply.stop.placeholder': 'Please enter the reason for discontinuation',//请输入停用的原因
+    'crm.apply.update.password.placeholder': 'Please enter a request for a modified password',//请输入修改密码的要求
+    'crm.apply.other.placeholder': 'Please enter the application content',//请输入申请内容
+    'crm.Administrative.level.0': 'Ministries',//部委
+    'crm.Administrative.level.1': 'Provincial level',//省部级
+    'crm.Administrative.level.2': 'Prefectural level',//地市级
+    'crm.Administrative.level.3': 'county level',//区县级
     // 客户管理end
 
     //客户分析 start
@@ -2198,5 +2229,11 @@ var en_US = {
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
     'clue.analysis.consult.time': 'Consult time:',//咨询时间：
+    'noMoreTip.user': 'no more users',
+    'noMoreTip.log': 'no more logs',
+    'noMoreTip.callRecord': 'no more call records',
+    'noMoreTip.visitBack': 'no more visit record',
+    'noMoreTip.customer': 'no more customers',
+    'failed.change.source.time': 'Failed to change clue source time'//修改线索咨询时间失败
 };
 export default en_US;

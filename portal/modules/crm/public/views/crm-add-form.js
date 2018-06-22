@@ -84,7 +84,7 @@ var CRMAddForm = React.createClass({
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
-                list = _.pluck(list, 'industry');
+                list = _.map(list, 'industry');
             }
             this.setState({isLoadingIndustry: false, industryList: list});
         });
@@ -121,12 +121,19 @@ var CRMAddForm = React.createClass({
 
     //提交修改
     handleSubmit: function(e) {
+        if (this.state.isLoading){
+            return;
+        }
+        this.state.isLoading = true;
+        this.setState(this.state);
         e.preventDefault();
         var validation = this.refs.validation;
         validation.validate(valid => {
             //验证电话是否通过验证
             this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {}, (errors, values) => {
                 if (!valid || errors) {
+                    this.state.isLoading = false;
+                    this.setState(this.state);
                     return;
                 } else {
                     //先填写电话后编辑客户名或行业等带验证的字段时，电话内容会丢失，这里再加一下
@@ -138,10 +145,15 @@ var CRMAddForm = React.createClass({
                             if (result === 0) {
                                 //可以添加
                                 this.addCustomer();
-                            } else if (result > 0) {
+                            }else if(result > 0){
+                                this.state.isLoading = false;
+                                this.setState(this.state);
                                 //不可以添加
                                 message.warn(Intl.get('crm.should.add.customer', '您拥有的客户已达到上限，请不要再添加客户了'));
                             }
+                        }else{
+                            this.state.isLoading = false;
+                            this.setState(this.state);
                         }
                     });
                 }
@@ -151,26 +163,24 @@ var CRMAddForm = React.createClass({
 
     //添加客户
     addCustomer: function() {
-        this.state.isLoading = true;
-        this.setState(this.state);
         var formData = JSON.parse(JSON.stringify(this.state.formData));
         formData.name = $.trim(formData.name);
         formData.contacts0_phone = $.trim(formData.contacts0_phone);
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData);
         CrmAction.addCustomer(formData, result => {
-            this.state.isLoading = false;
             if (result.code === 0) {
                 message.success(Intl.get('user.user.add.success', '添加成功'));
                 if (_.isFunction(this.props.addOne)) {
                     this.props.addOne(result.result);
                 }
-                this.setState(this.getInitialState());
                 //拨打电话时，若客户列表中没有此号码，需添加客户
                 if (_.isFunction(this.props.updateCustomer)) {
                     this.props.updateCustomer(result.result);
                 }
+                this.setState(this.getInitialState());
             } else {
+                this.state.isLoading = false;
                 message.error(result);
                 this.setState(this.state);
             }
@@ -178,8 +188,8 @@ var CRMAddForm = React.createClass({
     },
 
     closeAddPanel: function() {
-        this.setState(this.getInitialState());
         this.props.hideAddForm();
+        this.setState(this.getInitialState());
     },
 
     //根据客户名在地理信息接口获取该客户的信息并填充到对应字段
@@ -272,7 +282,7 @@ var CRMAddForm = React.createClass({
                             {Intl.get('crm.68', '相似的客户还有')}:
                             {list.map(customer => {
                                 return (
-                                    <div>
+                                    <div key={customer.user_id}>
                                         {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)"
                                                 onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
@@ -371,7 +381,7 @@ var CRMAddForm = React.createClass({
                 <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加客户面板"/>
                 <div className="add-form-wrap">
                     <GeminiScrollbar>
-                        <Form horizontal className="crm-add-form" autocomplete="off">
+                        <Form horizontal className="crm-add-form" id="crm-add-form">
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 <FormItem
                                     label={Intl.get('crm.4', '客户名称')}
@@ -416,6 +426,8 @@ var CRMAddForm = React.createClass({
                                                 onSelect={(e) => {
                                                     this.handleSelect(e);
                                                 }}
+                                                getPopupContainer={() => document.getElementById('crm-add-form')}
+
                                             >
                                                 {industryOptions}
                                             </Select>
@@ -430,6 +442,7 @@ var CRMAddForm = React.createClass({
                                         name="administrative_level"
                                         onChange={this.setField.bind(this, 'administrative_level')}
                                         value={formData.administrative_level}
+                                        getPopupContainer={() => document.getElementById('crm-add-form')}
                                     >
                                         {this.getAdministrativeLevelOptions()}
                                     </Select>
@@ -522,6 +535,7 @@ var CRMAddForm = React.createClass({
                                             value={this.state.formData.contacts0_role}
                                             onChange={this.setField.bind(this, 'contacts0_role')}
                                             onSelect={this.handleRoleSelect}
+                                            getPopupContainer={() => document.getElementById('crm-add-form')}
                                         >
                                             {roleOptions}
                                         </Select>
@@ -560,4 +574,4 @@ var CRMAddForm = React.createClass({
         );
     }
 });
-module.exports = CRMAddForm;
+module.exports = CRMAddForm;

@@ -234,7 +234,7 @@ const CustomerRecord = React.createClass({
                 remark: addcontent,
             };
             CustomerRecordActions.addCustomerTrace(queryObj, () => {
-                this.props.refreshCustomerList(customerId);
+                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(customerId);
                 this.toggleAddRecordPanel();
             });
             // $('.add-content-input').focus();
@@ -255,7 +255,7 @@ const CustomerRecord = React.createClass({
             }
             CustomerRecordActions.setUpdateId(item.id);
             CustomerRecordActions.updateCustomerTrace(queryObj, () => {
-                this.props.refreshCustomerList(customerId);
+                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(customerId);
             });
         }
     },
@@ -617,7 +617,7 @@ const CustomerRecord = React.createClass({
             );
         } else if (recordLength === 0 && !this.state.customerRecordLoading) {
             //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get('common.no.data', '暂无数据')}/>);
+            return (<NoDataTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>);
         } else {
             var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
             let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));

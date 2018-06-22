@@ -58,7 +58,7 @@ var BasicData = React.createClass({
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
-                list = _.pluck(list, 'industry');
+                list = _.map(list, 'industry');
             }
             this.setState({isLoadingIndustryList: false, industryList: list});
         });

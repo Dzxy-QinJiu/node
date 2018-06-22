@@ -40,7 +40,7 @@ var IndustrySelectField = React.createClass({
         };
     },
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.customerId != this.state.customerId) {
+        if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
             let stateData = this.getInitialState();
             stateData.isMerge = nextProps.isMerge;
@@ -56,7 +56,7 @@ var IndustrySelectField = React.createClass({
         CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
-                list = _.pluck(list, 'industry');
+                list = _.map(list, 'industry');
             }
             this.setState({isLoadingList: false, list: list});
         });
@@ -69,7 +69,7 @@ var IndustrySelectField = React.createClass({
     },
     getSelectedText: function() {
         var target = _.find(this.state.list, (item) => {
-            return item == this.state.formData.industry;
+            return item === this.state.formData.industry;
         });
         return target ? target : <span>&nbsp;</span>;
     },
@@ -105,7 +105,7 @@ var IndustrySelectField = React.createClass({
         if (this.state.loading) {
             return;
         }
-        if(this.state.formData.industry == this.props.industry){
+        if(this.state.formData.industry === this.props.industry){
             this.backToDisplay();
             return;
         }

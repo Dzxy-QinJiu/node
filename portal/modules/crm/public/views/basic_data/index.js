@@ -7,7 +7,6 @@ var PrivilegeChecker = require('../../../../../components/privilege/checker').Pr
 let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import {Tag, Spin} from 'antd';
-var history = require('../../../../../public/sources/history');
 var FilterAction = require('../../action/filter-actions');
 let NameTextareaField = require('./name-textarea-field');
 let CommentTextareaField = require('./comment-textarea-field');
@@ -17,7 +16,7 @@ let LocationSelectField = require('./location-select-field');
 let SalesSelectField = require('./sales-select-field');
 let CrmAction = require('../../action/crm-actions');
 let CrmRepeatAction = require('../../action/customer-repeat-action');
-import {defineMessages, injectIntl} from 'react-intl';
+import {injectIntl} from 'react-intl';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
 import crmUtil from '../../utils/crm-util';
@@ -86,7 +85,7 @@ var BasicData = React.createClass({
             this.props.updateMergeCustomer(newBasicData);
         } else {
             CRMAction.submitBaiscForm(newBasicData, changedData, () => {
-                this.props.refreshCustomerList(newBasicData.id);
+                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(newBasicData.id);
                 FilterAction.getTagList();
             });
         }
@@ -135,7 +134,7 @@ var BasicData = React.createClass({
         this.setState({basicData: this.state.basicData});
     },
     getAdministrativeLevel: function(levelId) {
-        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
+        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     },
     //是否有转出客户的权限
@@ -187,8 +186,8 @@ var BasicData = React.createClass({
                                             }
                                             {basicData.qualify_label ? (
                                                 <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
-                                                    {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
+                                                    {basicData.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                                        basicData.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                                             }
                                         </dd>
                                     </dl>

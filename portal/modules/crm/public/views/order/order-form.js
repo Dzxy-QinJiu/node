@@ -49,7 +49,7 @@ const OrderForm = React.createClass({
                         OrderAction.afterAddOrder(data.result);
                         //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                         setTimeout(() => {
-                            this.props.refreshCustomerList(reqData.customer_id);
+                            _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
                         }, 200);
                     }
                     else {
@@ -62,7 +62,7 @@ const OrderForm = React.createClass({
     },
     onAppsChange: function(selectedApps) {
         Trace.traceEvent(this.getDOMNode(), '点击选中/取消选中某个应用');
-        this.state.formData.apps = _.pluck(selectedApps, 'client_id');
+        this.state.formData.apps = _.map(selectedApps, 'client_id');
         this.setState(this.state);
     },
     handleSelect: function() {
@@ -82,7 +82,7 @@ const OrderForm = React.createClass({
                         return true;
                     }
                 });
-                selectedAppListId = _.pluck(selectedAppList, 'client_id');
+                selectedAppListId = _.map(selectedAppList, 'client_id');
             }
             if (appList && appList.length > 0 && formData.apps && formData.apps.length > 0) {
                 apps = _.filter(appList, app => {
