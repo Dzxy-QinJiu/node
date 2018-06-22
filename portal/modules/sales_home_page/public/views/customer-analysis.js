@@ -501,6 +501,9 @@ var CustomerAnalysis = React.createClass({
             />
         );
     },
+    processOrderStageData: function(data) {
+        return AntcAnalysis.utils.processOrderStageData(this.state.salesStageList, data);
+    },
     getStageChart: function() {
         const charts = [{
             title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
@@ -510,9 +513,8 @@ var CustomerAnalysis = React.createClass({
             },
             chartType: 'horizontalStage',
             ajaxInstanceFlag: 'orderStage',
-            processData: AntcAnalysis.utils.processOrderStageData.bind(this, this.state.salesStageList),
+            processData: this.processOrderStageData,
         }];
-
         return (
             <AntcAnalysis
                 charts={charts}

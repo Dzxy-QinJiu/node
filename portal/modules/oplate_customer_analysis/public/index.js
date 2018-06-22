@@ -80,6 +80,11 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         window.open(url);
     },
 
+    //处理订单阶段数据
+    processOrderStageData: function(data) {
+        return AntcAnalysis.utils.processOrderStageData(this.state.stageList, data);
+    },
+
     //获取图表定义
     getCharts() {
         return [{
@@ -187,7 +192,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
             url: '/rest/analysis/customer/v1/:auth_type/:tab/stage',
             chartType: 'horizontalStage',
-            processData: AntcAnalysis.utils.processOrderStageData.bind(this, this.state.stageList),
+            processData: this.processOrderStageData,
             noShowCondition: {
                 tab: ['!', 'total'],
             },
