@@ -58,17 +58,10 @@ var CrmRightPanel = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.curCustomer && (nextProps.curCustomer.id !== this.state.curCustomer.id)) {
-            this.state.curCustomer = nextProps.curCustomer;
-            this.setState(this.state);
+        if (nextProps.curCustomer) {
+            this.setState({curCustomer: nextProps.curCustomer});
         } else if (nextProps.currentId !== this.props.currentId) {
             this.getCurCustomer(nextProps.currentId);
-        }
-        //是否关注客户的属性修改
-        if (nextProps.curCustomer && nextProps.curCustomer.id === this.state.curCustomer.id &&
-                !isEqualArray(nextProps.curCustomer.interest_member_ids, this.state.curCustomer.interest_member_ids)
-        ) {
-            this.state.curCustomer.interest_member_ids = nextProps.curCustomer.interest_member_ids;
         }
         this.setTabsContainerHeight();
     },

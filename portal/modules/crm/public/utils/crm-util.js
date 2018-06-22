@@ -97,7 +97,7 @@ exports.getCrmLabelCls = function(customer_label) {
 };
 
 //行政级别
-exports.administrativeLevels = [{id: '0',level: Intl.get('crm.Administrative.level.0', '部委')},
+exports.administrativeLevels = [{id: '0',level: Intl.get('crm.Administrative.level.0', '部委级')},
     {id: '1',level: Intl.get('crm.Administrative.level.1', '省部级')},
     {id: '2',level: Intl.get('crm.Administrative.level.2', '地市级')},
     {id: '3',level: Intl.get('crm.Administrative.level.3', '区县级')}];
