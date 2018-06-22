@@ -157,7 +157,7 @@ var CustomerAnalysis = React.createClass({
             dataType: this.getDataType()
         };
         //客户属性，对应各具体统计图，如行业、地域等
-        let customerPropertys = ['zone', 'industry', 'stage'];
+        let customerPropertys = ['zone', 'industry'];
         if (this.props.currShowSalesman) {
             //查看当前选择销售的统计数据
             queryParams.member_id = this.props.currShowSalesman.userId;
@@ -173,10 +173,6 @@ var CustomerAnalysis = React.createClass({
         //获取各统计图数据
         customerPropertys.forEach(customerProperty => {
             let customerType = 'added';
-            //销售阶段展示总数
-            if (customerProperty === 'stage') {
-                customerType = 'total';
-            }
             const reqData = _.extend({}, queryParams, {
                 customerType: customerType,
                 customerProperty: customerProperty
@@ -506,15 +502,25 @@ var CustomerAnalysis = React.createClass({
         );
     },
     getStageChart: function() {
-        const stageData = this.state.stageAnalysis.data;
-
-        const chartData = processOrderStageChartData(this.state.salesStageList, stageData);
+        const charts = [{
+            title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
+            url: '/rest/analysis/customer/v2/:auth_type/total/stage',
+            layout: {
+                sm: 24,
+            },
+            chartType: 'horizontalStage',
+            ajaxInstanceFlag: 'orderStage',
+            processData: AntcAnalysis.utils.processOrderStageData.bind(this, this.state.salesStageList),
+        }];
 
         return (
-            <AntcHorizontalStageChart
-                chartData={chartData}
-                width={this.chartWidth}
-                resultType={this.state.stageAnalysis.resultType}
+            <AntcAnalysis
+                charts={charts}
+                emitters={this.getEmitters()}
+                conditions={this.getConditions()}
+                cardContainer={false}
+                isGetDataOnMount={true}
+                style={{padding: 0}}
             />
         );
     },

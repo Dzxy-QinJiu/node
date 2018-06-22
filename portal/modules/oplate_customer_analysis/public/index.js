@@ -187,7 +187,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
             url: '/rest/analysis/customer/v1/:auth_type/:tab/stage',
             chartType: 'horizontalStage',
-            processData: AntcAnalysis.utils.processOrderStageData,
+            processData: AntcAnalysis.utils.processOrderStageData.bind(this, this.state.stageList),
             noShowCondition: {
                 tab: ['!', 'total'],
             },
