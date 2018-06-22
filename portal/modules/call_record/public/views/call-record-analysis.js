@@ -33,6 +33,7 @@ import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {handleTableData} from 'CMP_DIR/analysis/export-data-util';
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import { MAP_PROVINCE } from 'LIB_DIR/consts';
+import {AntcChart} from 'antc';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -624,7 +625,7 @@ var CallRecordAnalyis = React.createClass({
                         {
                             this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
                                 // 通话数量
-                                this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true,CALL_RADIO_VALUES.COUNT) :
+                                this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true, CALL_RADIO_VALUES.COUNT) :
                                 // 通话时长
                                 this.renderCallChart(this.state.eachTeamCallList.list, this.durationTooltip, true,CALL_RADIO_VALUES.DURATION)
                         }
@@ -700,16 +701,125 @@ var CallRecordAnalyis = React.createClass({
             }
         }
     },
+    getCallTrendCategorys: function(dataList,isMutileLine, lineType) {
+        var data = [];
+        var dataList = isMutileLine && dataList[0] ? dataList[0][lineType] : dataList;
+        _.each(dataList, (item) => {
+            data.push(new Date(item.timestamp));
+        });
+        return data;
+    },
+    getCallTrendLegendData: function(dataList, isMutileLine) {
+        var data = [];
+        if (isMutileLine) {
+            data = _.map(dataList,'teamName');
+        }
+        return data;
+    },
+    getCallTrendDataSerise: function(dataList,isMutileLine, lineType) {
+        //共同的属性
+        var commonObj = {
+            data: [],
+            type: 'line',
+            symbolSize: 6
+        };
+        if (isMutileLine) {
+            var serise = [];
+            _.each(dataList, (dataItem) => {
+                var seriseItem = $.extend(true, {},{name: dataItem.teamName}, commonObj);
+                _.each(dataItem[lineType], (item) => {
+                    seriseItem.data.push(item.count);
+                });
+                serise.push(seriseItem);
+            });
+            return serise;
+        } else {
+            var serise = [$.extend(true, {},{itemStyle: {
+                normal: {
+                    color: '#4d96d1'
+                }
+            }},commonObj)];
+            dataList.forEach((item) => {
+                serise[0].data.push(item.count);
+            });
+        }
+        return serise;
+    },
+    getCallTrendEchartOptions: function(dataList, charTips, isMutileLine, lineType) {
+        return {
+            tooltip: {
+                trigger: 'axis',
+                // 图表中的提示数据信息
+                formatter: (params) => {
+                    var timeText, count, teamArr;
+                    if(_.isArray(params)){
+                        if (params.length === 1) {
+                            var params = params[0];
+                            timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
+                            count = params.data;
 
-    renderCallChart(data, charTips, isMutileLine, type) {
+                        } else if (params.length > 1) {
+                            timeText = [], count = [], teamArr = [];
+                            _.each(params, (paramsItem) => {
+                                timeText.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
+                                count.push(paramsItem.data || 0);
+                                teamArr.push(paramsItem.seriesName);
+                            });
+                        }
+                        return charTips(timeText, count, teamArr);
+                    }
+                }
+            },
+            legend: {
+                data: this.getCallTrendLegendData(dataList, isMutileLine)
+            },
+            grid: {
+                x: 50,
+                y: 40,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
+            },
+            xAxis: [
+                {
+                    splitLine: false,
+                    splitArea: false,
+                    axisLabel: {
+                        formatter: () => { // 不显示x轴数值
+                            return '';
+                        }
+                    },
+                    axisTick: { // x轴不显示刻度
+                        show: false
+                    },
+                    data: this.getCallTrendCategorys(dataList, isMutileLine, lineType),
+                }
+            ],
+            yAxis: [
+                {
+                    splitLine: false,
+                    splitArea: false,
+                    axisLabel: {
+                        formatter: () => { // 不显示y轴数值
+                            return '';
+                        }
+                    },
+                    axisTick: { // y轴不显示刻度
+                        show: false
+                    }
+                }
+            ],
+            series: this.getCallTrendDataSerise(dataList,isMutileLine, lineType)
+        };
+    },
+
+    renderCallChart(dataList, charTips, isMutileLine, lineType) {
         return (
-            <TimeSeriesLinechart
-                isMutileLine={isMutileLine}
-                lineType={type}
-                dataList={data}
-                getToolTip={charTips}
-                width={this.state.trendWidth}
+            <AntcChart
                 height={this.state.trendHeight}
+                width={this.state.trendWidth}
+                option={this.getCallTrendEchartOptions(dataList, charTips, isMutileLine, lineType)}
+                resultType='success'
             />
         );
     },
@@ -851,6 +961,103 @@ var CallRecordAnalyis = React.createClass({
                 </div>
             </div>);
     },
+    getOneOneFourAndServiceHasTeamTooltip: function() {
+        return {
+            show: true,
+            formatter: function(obj) {
+                return `<div>
+                           <span>${(obj.data[0])}</span>  
+                           <br/>  
+                           <span>${Intl.get('common.app.count', '数量')}:${(obj.data[1])}</span>  
+                           <br/>  
+                           <span>${Intl.get('oplate_bd_analysis_realm_industry.7', '占比')}:${(obj.value[2]).toFixed(2) + '%'}</span>
+                        </div>`;
+            }
+        };
+    },
+    //渲染有团队时，114和客服电话分析图的options
+    getOneOneFourAndServiceHasTeamOptions: function(dataList) {
+        return {
+            tooltip: this.getOneOneFourAndServiceHasTeamTooltip(),
+            legend: {
+                show: true
+            },
+            color: ['#3398DB'],
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30
+            },
+            xAxis: [
+                {
+                    data: _.map(dataList, 'name'),
+                }
+            ],
+            yAxis: [
+                {
+                    axisLabel: {
+                        show: true,
+                        interval: 'auto',
+                        formatter: '{value}',
+                    }
+                }
+            ],
+            series: [
+                {
+                    data: dataList.map(x => {
+                        return [x.name,x.num,x.rate];
+                    })
+                }
+            ]
+        };
+    },
+    getPieOptions: function(dataList, data) {
+        return {
+            tooltip: {
+                trigger: 'item',
+                formatter: '<div class=\'echarts-tooltip\'>{b} : {c} ({d}%)</div>'
+            },
+            legend: {
+                orient: 'vertical',
+                right: '2%',
+                top: '2%',
+                data: _.map(dataList, 'name')
+            },
+
+            series: [
+                {
+                    // todo  type: 'pie' 组件中饼状图的option没有进行覆盖，等这个问题修改了再删除type: 'pie'
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    data: data,
+                    label: {
+                        normal: {
+                            formatter: '{c}'
+                        }
+                    },
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+    },
+    getPieData: function(dataList){
+        var list = dataList || [];
+        var legend = _.map(dataList, 'name') || [];
+        return legend.map((legendName,idx) => {
+            return {
+                name: legendName,
+                value: list[idx].num // 注意：饼图中，value是key
+            };
+        });
+    },
 
     // 114占比
     renderCallRateChar(type) {
@@ -893,15 +1100,33 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
+                var data = [];
+                var callListType = this.state.callRateList[type];
+                var dataList = callListType && _.isArray(callListType.list) ? callListType.list : [];
+                if (this.state.teamList.list.length){
+                    data = this.state.callRateList[type].list.map(x => {
+                        return [x.name,x.num,x.rate];
+                    });
+                }else{
+                    data = this.getPieData(this.state.callRateList[type].list);
+                }
+
                 return (
                     <div>
                         {this.state.teamList.list.length ? (
-                            <RateBarChart
-                                dataList={this.state.callRateList[type].list}
+                            <AntcChart
+                                height="410"
+                                chartType="bar"
+                                data={data}
+                                option={this.getOneOneFourAndServiceHasTeamOptions(dataList)}
+                                resultType='success'
                             />
                         ) : (
-                            <PieChart
-                                dataList={this.state.callRateList[type].list}
+                            // todo  chartType='pie'  data={data} 组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
+                            <AntcChart
+                                height='400'
+                                option={this.getPieOptions(dataList, data)}
+                                resultType='success'
                             />
                         )}
                     </div>
@@ -958,10 +1183,15 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
+                var dataList = this.state.customerData.customerPhase;
+                var data = this.getPieData(dataList);
+                // todo  chartType='pie'     data={this.getPieData(data)} 组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
                 return (
                     <div>
-                        <PieChart
-                            dataList={this.state.customerData.customerPhase}
+                        <AntcChart
+                            height="400"
+                            option={this.getPieOptions(dataList, data)}
+                            resultType='success'
                         />
                     </div>
                 );
@@ -1001,10 +1231,15 @@ var CallRecordAnalyis = React.createClass({
                 );
             }
             else {
+                var dataList = this.state.customerData.OrderPhase;
+                var data = this.getPieData(dataList);
+                // todo  chartType='pie'    data={this.getPieData(data)}组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
                 return (
                     <div>
-                        <PieChart
-                            dataList={this.state.customerData.OrderPhase}
+                        <AntcChart
+                            height="400"
+                            option={this.getPieOptions(dataList,data)}
+                            resultType='success'
                         />
                     </div>
                 );
@@ -1156,24 +1391,24 @@ var CallRecordAnalyis = React.createClass({
         let memberList = this.state.memberList.list; // 成员数据
 
         // 第一个选择框渲染的数据
-        let firstOptions = FIRSR_SELECT_DATA.map((item) => {
-            return <Option value={item}>{item}</Option>;
+        let firstOptions = FIRSR_SELECT_DATA.map((item, index) => {
+            return <Option value={item} key={index}>{item}</Option>;
         });
 
         // 第二个选择框的数据
         let secondOptions = [];
         if (teamList.length === 1) { // 只展示成员选择框时
-            secondOptions = memberList.map((item) => {
-                return <Option value={item.name}>{item.name}</Option>;
+            secondOptions = memberList.map((item, index) => {
+                return <Option value={item.name} key={index}>{item.name}</Option>;
             });
         } else if (teamList.length > 1) { // 展示团队和成员
             if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
-                secondOptions = teamList.map((item) => {
-                    return <Option value={item.name}>{item.name}</Option>;
+                secondOptions = teamList.map((item, index) => {
+                    return <Option value={item.name} key={index}>{item.name}</Option>;
                 });
             } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
-                secondOptions = memberList.map((item) => {
-                    return <Option value={item.name}>{item.name}</Option>;
+                secondOptions = memberList.map((item, index) => {
+                    return <Option value={item.name} key={index}>{item.name}</Option>;
                 });
             }
         }
