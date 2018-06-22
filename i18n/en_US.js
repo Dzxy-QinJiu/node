@@ -576,7 +576,7 @@ var en_US = {
     'role.default.del.failed': 'Failed to cancel default role',//取消默认角色失败
     'role.default.set.failed': 'Failed to set default role',//设置默认角色失败
     'role.set.default': 'Set default role',//设为默认角色
-    'role.normal.sales': 'Common salesman',
+    'role.normal.sales': 'Common salesman', //普通销售
 
     /*角色管理模块-end*/
     /*权限管理模块-start*/
