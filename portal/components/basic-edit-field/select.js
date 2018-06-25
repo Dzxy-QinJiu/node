@@ -121,7 +121,7 @@ let BasicEditSelectField = React.createClass({
                 });
             }
 
-            if (value != this.state.value) {
+            if (value !== this.state.value) {
                 if(_this.props.isMerge){//合并客户面板的处理
                     _this.props.updateMergeCustomer(user);
                     setDisplayState();
@@ -202,7 +202,7 @@ let BasicEditSelectField = React.createClass({
         );
 
         var selectBlock = this.state.displayType === 'edit' ? (
-            <div className="selectWrap" ref="selectWrap" key="select-wrap" id="area">
+            <div className="selectWrap" ref="selectWrap" key="select-wrap">
                 <Form horizontal autoComplete="off">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
@@ -225,7 +225,7 @@ let BasicEditSelectField = React.createClass({
                                     notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
                                     value={formData.select}
                                     onChange={this.onSelectChange}
-                                    getPopupContainer={() => document.getElementById('area')}
+                                    getPopupContainer={() => document.getElementById('basic-edit-select-wrap')}
                                 >
                                     {this.state.selectOptions}
                                 </Select>
@@ -241,7 +241,7 @@ let BasicEditSelectField = React.createClass({
         ) : null;
 
         return (
-            <div className={displayCls}>
+            <div className={displayCls} id="basic-edit-select-wrap">
                 {textBlock}
                 {selectBlock}
             </div>
