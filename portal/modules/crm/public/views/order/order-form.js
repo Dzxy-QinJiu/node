@@ -89,7 +89,7 @@ const OrderForm = React.createClass({
             }
         }
         return (
-            <Form horizontal className="order-form" id="select-wrap">
+            <Form horizontal className="order-form" id="order-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         label={Intl.get('sales.stage.sales.stage', '销售阶段')}
@@ -105,7 +105,7 @@ const OrderForm = React.createClass({
                                 onChange={this.setField.bind(this, 'sale_stages')}
                                 name="sale_stages"
                                 onSelect={this.handleSelect}
-                                getPopupContainer={() => document.getElementById('select-wrap')}
+                                getPopupContainer={() => document.getElementById('order-form')}
                             >
                                 {this.props.stageList.map(function(stage, index) {
                                     return (<Option value={stage.name} key={index}>{stage.name}</Option>);

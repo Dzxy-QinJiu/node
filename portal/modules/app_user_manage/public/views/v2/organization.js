@@ -189,14 +189,14 @@ var Organization = React.createClass({
         var options = this.getOrganizationOptions();
 
         return (
-            <div className={CLASS_PREFIX} ref="wrap" id="select-wrap">
+            <div className={CLASS_PREFIX} ref="wrap" id="organization-select-wrap">
                 <SelectFullWidth
                     showSearch
                     optionFilterProp="children"
                     onChange={this.onSelectChange}
                     value={this.state.organization_id}
                     notFoundContent={!options.length ? Intl.get('user.no.organization', '暂无组织') : Intl.get('user.no.related.organization', '无相关组织')}
-                    getPopupContainer={() => document.getElementById('select-wrap')}
+                    getPopupContainer={() => document.getElementById('organization-select-wrap')}
                 >
                     {options}
                 </SelectFullWidth>
