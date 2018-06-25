@@ -68,7 +68,8 @@ const OTHER_FILTER_ITEMS = {
     NO_RECORD_OVER_30DAYS: 'last_trace',//超30天未写跟进记录的客户
     INTEREST_MEMBER_IDS: 'interest_member_ids',//被关注的客户
     MY_INTERST: 'my_interest',//我关注的客户
-    MULTI_ORDER: 'multi_order'//多个订单的客户
+    MULTI_ORDER: 'multi_order',//多个订单的客户
+    AVAILABILITY: 'availability'//有效客户
 };
 //标签选项下的特殊标签
 const SPECIAL_LABEL = {
@@ -705,6 +706,10 @@ var Crm = React.createClass({
                     type: 'long',
                 };
                 break;
+            case OTHER_FILTER_ITEMS.AVAILABILITY://有效客户
+                condition.availability = '1';
+                break;
+
         }
         //超xx天未联系的客户过滤需传的参数
         if (dayTime) {

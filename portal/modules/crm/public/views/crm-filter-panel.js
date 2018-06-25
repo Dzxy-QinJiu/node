@@ -38,6 +38,9 @@ const otherFilterArray = [{
 }, {
     name: Intl.get('crm.order.more.customer', '多个订单的客户'),
     value: 'multi_order'
+}, {
+    name: Intl.get('crm.available.customer', '有效客户'),
+    value: 'availability'
 }];
 //只有管理员可以过滤未分配的客户
 if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
@@ -252,36 +255,39 @@ const CrmFilterPanel = React.createClass({
         FilterAction.setOtherSelectedItem(item);
         setTimeout(() => this.props.search());
         switch (item) {
-        case otherFilterArray[1].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '超30天未联系的筛选');
-            break;
-        case otherFilterArray[2].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '超15天未联系的筛选');
-            break;
-        case otherFilterArray[3].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '超7天未联系的筛选');
-            break;
-        case otherFilterArray[4].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '无联系方式的客户的筛选');
-            break;
-        case otherFilterArray[5].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '最后联系但未写更近记录客户的筛选');
-            break;
-        case otherFilterArray[6].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '超30天未写跟进记录客户的筛选');
-            break;
-        case otherFilterArray[7].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '被关注客户的筛选');
-            break;
-        case otherFilterArray[8].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '我关注客户的筛选');
-            break;
-        case otherFilterArray[9].value:
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '多个订单客户的筛选');
-            break;
+            case otherFilterArray[1].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '超30天未联系的筛选');
+                break;
+            case otherFilterArray[2].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '超15天未联系的筛选');
+                break;
+            case otherFilterArray[3].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '超7天未联系的筛选');
+                break;
+            case otherFilterArray[4].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '无联系方式的客户的筛选');
+                break;
+            case otherFilterArray[5].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '最后联系但未写更近记录客户的筛选');
+                break;
+            case otherFilterArray[6].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '超30天未写跟进记录客户的筛选');
+                break;
+            case otherFilterArray[7].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '被关注客户的筛选');
+                break;
+            case otherFilterArray[8].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '我关注客户的筛选');
+                break;
+            case otherFilterArray[9].value:
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '多个订单客户的筛选');
+                break;
         }
         if (otherFilterArray[10] && item === otherFilterArray[10].value) {
             Trace.traceEvent($(this.getDOMNode()).find('li'), '未分配客户的筛选');
+        }
+        if (otherFilterArray[11] && item === otherFilterArray[11].value) {
+            Trace.traceEvent($(this.getDOMNode()).find('li'), '有效客户');
         }
     },
     render: function() {
@@ -418,9 +424,9 @@ const CrmFilterPanel = React.createClass({
                         <dt>{Intl.get('crm.186', '其他')} :</dt>
                         <dd>
                             <ul>
-                                {otherFilterArray.map(item => {
+                                {otherFilterArray.map((item, index) => {
                                     return (
-                                        <li onClick={this.otherSelected.bind(this, item.value)}
+                                        <li key={index} onClick={this.otherSelected.bind(this, item.value)}
                                             className={this.state.condition.otherSelectedItem === item.value ? 'selected' : ''}>
                                             {item.name}
                                         </li>);

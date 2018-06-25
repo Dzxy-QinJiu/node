@@ -1276,6 +1276,7 @@ var zh_CN = {
     'crm.no.level': '无相关行政级别',
     'crm.stage.tag': '阶段标签',
     'crm.order.more.customer': '多个订单的客户',
+    'crm.available.customer': '有效客户',
     'crm.call.no.remark': '最后联系但未写跟进记录',
     'crm.call.no.remark.over30': '超30天未写跟进记录',
     'crm.last.contact': '最后联系',

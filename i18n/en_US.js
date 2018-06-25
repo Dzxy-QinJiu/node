@@ -1260,6 +1260,7 @@ var en_US = {
     'crm.no.level': 'No match administrative level',//无相关行政级别
     'crm.stage.tag': 'Phase label',//阶段标签
     'crm.order.more.customer': 'Multi-order customers',//多个订单的客户
+    'crm.available.customer': 'Available customers',//有效客户
     'crm.call.no.remark': 'Final contact but no record',//最后联系但未写跟进记录
     'crm.call.no.remark.over30': 'No follow-up records over 30 days',//超30天未写跟进记录
     'crm.last.contact': 'Final contact',//最后联系
