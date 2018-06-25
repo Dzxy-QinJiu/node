@@ -34,6 +34,7 @@ import crmAjax from '../../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
+import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -81,7 +82,7 @@ const CustomerRecord = React.createClass({
             filterType: '',//跟进类型的过滤
             filterStatus: '',//通话状态的过滤
             appList: [],//应用列表，用来展示舆情上报的应用名称
-            callNumber: this.props.callNumber || session.get('call_number') || '', // 座机号
+            callNumber: this.props.callNumber || session.get(savePositionCallNumberKey) || '', // 座机号
             getCallNumberError: '',
             ...CustomerRecordStore.getState()
         };
@@ -98,6 +99,7 @@ const CustomerRecord = React.createClass({
                 this.setState({
                     callNumber: result.phone_order
                 });
+                session.set(savePositionCallNumberKey, result.phone_order);
             }
         }, (errMsg) => {
             this.setState({

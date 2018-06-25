@@ -18,12 +18,13 @@ import ErrorDataTip from '../components/error-data-tip';
 import crmAjax from '../../ajax/index';
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
+import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
 
 var CrmSchedule = React.createClass({
     getInitialState: function() {
         return {
             customerId: this.props.curCustomer.id || '',
-            callNumber: this.props.callNumber || session.get('call_number') || '', // 座机号
+            callNumber: this.props.callNumber || session.get(savePositionCallNumberKey) || '', // 座机号
             getCallNumberError: '',
             ...ScheduleStore.getState()
         };
@@ -38,6 +39,7 @@ var CrmSchedule = React.createClass({
                 this.setState({
                     callNumber: result.phone_order
                 });
+                session.set(savePositionCallNumberKey, result.phone_order);
             }
         }, (errMsg) => {
             this.setState({

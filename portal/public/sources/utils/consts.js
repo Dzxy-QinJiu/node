@@ -166,3 +166,6 @@ export const CALL_TYPE_OPTION = {
     PHONE: 'phone',
     APP: 'app'
 };
+
+// 缓存在sessionStorage中的座席号的key
+export const savePositionCallNumberKey = 'callNumber';

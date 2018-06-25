@@ -13,6 +13,9 @@ var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar'
 import Spinner from 'CMP_DIR/spinner';
 import crmAjax from '../../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
+import { storageUtil } from 'ant-utils';
+const session = storageUtil.session;
+import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
 
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -27,7 +30,7 @@ import Trace from 'LIB_DIR/trace';
 var Contacts = React.createClass({
     getInitialState: function() {
         return {
-            callNumber: '', // 座机号
+            callNumber: this.props.callNumber || session.get(savePositionCallNumberKey) || '', // 座机号
             getCallNumberError: '', // 获取座机号失败的信息
             curCustomer: this.props.curCustomer,//当前查看详情的客户
             windowHeight: $(window).height(),
@@ -43,7 +46,9 @@ var Contacts = React.createClass({
             ContactAction.getContactList(this.props.curCustomer, this.props.isMerge);
         }
         //获取该用户的座席号
-        this.getUserPhoneNumber();
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         $(window).on('resize', this.onStoreChange);
     },
     componentWillReceiveProps: function(nextProps) {
@@ -77,6 +82,7 @@ var Contacts = React.createClass({
                 this.setState({
                     callNumber: result.phone_order
                 });
+                session.set(savePositionCallNumberKey, result.phone_order);
             }
         }, (errMsg) => {
             this.setState({

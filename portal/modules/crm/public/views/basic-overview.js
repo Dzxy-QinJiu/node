@@ -23,6 +23,7 @@ import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
+import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
 
 var BasicOverview = React.createClass({
     getInitialState: function() {
@@ -31,7 +32,7 @@ var BasicOverview = React.createClass({
             salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
             showDetailFlag: false,//控制客户详情展示隐藏的标识
             recommendTags: [],//推荐标签
-            callNumber: this.props.callNumber || session.get('call_number') || '', // 座机号
+            callNumber: this.props.callNumber || session.get(savePositionCallNumberKey) || '', // 座机号
             getCallNumberError: '',
         };
     },
@@ -46,6 +47,7 @@ var BasicOverview = React.createClass({
                 this.setState({
                     callNumber: result.phone_order
                 });
+                session.set(savePositionCallNumberKey, result.phone_order);
             }
         }, (errMsg) => {
             this.setState({

@@ -22,8 +22,6 @@ var CrmRightMergePanel = require('./views/crm-right-merge-panel');
 var userData = require('../../../public/sources/user-data');
 let OrderAction = require('./action/order-actions');
 var batchPushEmitter = require('../../../public/sources/utils/emitters').batchPushEmitter;
-// 没有消息的提醒
-var NoMoreDataTip = require('../../../components/no_more_data_tip');
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {crmEmitter} from 'OPLATE_EMITTER';
@@ -35,7 +33,9 @@ import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
-var CRMAction = require('./action/basic-overview-actions');
+import { storageUtil } from 'ant-utils';
+const session = storageUtil.session;
+import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -96,7 +96,7 @@ let member_id = userData.getUserData().user_id;
 var Crm = React.createClass({
     getInitialState: function() {
         return {
-            callNumber: '', // 座机号
+            callNumber: session.get(savePositionCallNumberKey) || '', // 座机号
             errMsg: '', // 获取座机号失败的信息
             ...this.getStateData()
         };
@@ -180,6 +180,7 @@ var Crm = React.createClass({
                 this.setState({
                     callNumber: result.phone_order
                 });
+                session.set(savePositionCallNumberKey, result.phone_order);
             }
         }, (errMsg) => {
             this.setState({
@@ -208,7 +209,9 @@ var Crm = React.createClass({
         crmEmitter.on(crmEmitter.IMPORT_CUSTOMER, this.onCustomerImport);
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
-        this.getUserPhoneNumber();
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         const query = _.clone(this.props.location.query);
         if (query.analysis_filter_field) {
             var filterField = query.analysis_filter_field;
@@ -451,7 +454,9 @@ var Crm = React.createClass({
                 updateCustomerDefContact: CrmAction.updateCustomerDefContact,
                 handleFocusCustomer: this.handleFocusCustomer,
                 showRightPanel: this.showRightPanel,
-                hideRightPanel: this.hideRightPanel
+                hideRightPanel: this.hideRightPanel,
+                callNumber: this.state.callNumber,
+                getCallNumberError: this.state.errMsg
             }
         });
     },
