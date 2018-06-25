@@ -31,10 +31,10 @@ import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 import crmAjax from '../../ajax/index';
-import userData from 'PUB_DIR/sources/user-data';
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
+import CallNumberUtil from '../../utils/call-number-util';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -92,20 +92,17 @@ const CustomerRecord = React.createClass({
         this.setState(state);
     },
     // 获取拨打电话的座席号
-    getUserPhoneNumber: function() {
-        let user_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(user_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
-                });
-                session.set(savePositionCallNumberKey, result.phone_order);
-            }
-        }, (errMsg) => {
+    getUserPhoneNumber() {
+        let callNumberInfo = CallNumberUtil.getUserPhoneNumber();
+        if (callNumberInfo.callNumber) {
             this.setState({
-                getCallNumberError: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                callNumber: callNumberInfo.callNumber
             });
-        });
+        } else if (callNumberInfo.errMsg) {
+            this.setState({
+                getCallNumberError: callNumberInfo.errMsg
+            });
+        }
     },
     componentDidMount: function() {
         CustomerRecordStore.listen(this.onStoreChange);

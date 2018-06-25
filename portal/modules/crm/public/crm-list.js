@@ -36,6 +36,7 @@ const extend = require('extend');
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
+import CallNumberUtil from './utils/call-number-util';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -174,19 +175,16 @@ var Crm = React.createClass({
     },
     // 获取拨打电话的座机号
     getUserPhoneNumber() {
-        let member_id = crmUtil.getMyUserId();
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
-                });
-                session.set(savePositionCallNumberKey, result.phone_order);
-            }
-        }, (errMsg) => {
+        let callNumberInfo = CallNumberUtil.getUserPhoneNumber();
+        if (callNumberInfo.callNumber) {
             this.setState({
-                errMsg: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                callNumber: callNumberInfo.callNumber
             });
-        });
+        } else if (callNumberInfo.errMsg) {
+            this.setState({
+                errMsg: callNumberInfo.errMsg
+            });
+        }
     },
 
     componentDidMount: function() {

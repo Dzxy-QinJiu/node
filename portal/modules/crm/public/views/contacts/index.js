@@ -11,12 +11,10 @@ var ContactAction = require('../../action/contact-action');
 //滚动条
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import Spinner from 'CMP_DIR/spinner';
-import crmAjax from '../../ajax/index';
-import userData from 'PUB_DIR/sources/user-data';
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
-
+import CallNumberUtil from '../../utils/call-number-util';
 //高度常量
 var LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -75,20 +73,17 @@ var Contacts = React.createClass({
         GeminiScrollbar.scrollTo(this.refs.scrollList, 0);
     },
     // 获取拨打电话的座席号
-    getUserPhoneNumber: function() {
-        let member_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
-                });
-                session.set(savePositionCallNumberKey, result.phone_order);
-            }
-        }, (errMsg) => {
+    getUserPhoneNumber() {
+        let callNumberInfo = CallNumberUtil.getUserPhoneNumber();
+        if (callNumberInfo.callNumber) {
             this.setState({
-                getCallNumberError: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                callNumber: callNumberInfo.callNumber
             });
-        });
+        } else if (callNumberInfo.errMsg) {
+            this.setState({
+                getCallNumberError: callNumberInfo.errMsg
+            });
+        }
     },
     render: function() {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;

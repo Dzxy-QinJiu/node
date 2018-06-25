@@ -19,6 +19,7 @@ import crmAjax from '../../ajax/index';
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
+import CallNumberUtil from '../../utils/call-number-util';
 
 var CrmSchedule = React.createClass({
     getInitialState: function() {
@@ -34,18 +35,16 @@ var CrmSchedule = React.createClass({
     },
     // 获取拨打电话的座席号
     getUserPhoneNumber: function() {
-        crmAjax.getUserPhoneNumber(user_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
-                });
-                session.set(savePositionCallNumberKey, result.phone_order);
-            }
-        }, (errMsg) => {
+        let callNumberInfo = CallNumberUtil.getUserPhoneNumber();
+        if (callNumberInfo.callNumber) {
             this.setState({
-                getCallNumberError: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                callNumber: callNumberInfo.callNumber
             });
-        });
+        } else if (callNumberInfo.errMsg) {
+            this.setState({
+                getCallNumberError: callNumberInfo.errMsg
+            });
+        }
     },
     componentDidMount: function() {
         ScheduleStore.listen(this.onStoreChange);
