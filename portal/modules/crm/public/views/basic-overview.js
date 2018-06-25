@@ -42,16 +42,23 @@ var BasicOverview = React.createClass({
     },
     // 获取拨打电话的座席号
     getUserPhoneNumber: function() {
-        let callNumberInfo = CallNumberUtil.getUserPhoneNumber();
-        if (callNumberInfo.callNumber) {
-            this.setState({
-                callNumber: callNumberInfo.callNumber
-            });
-        } else if (callNumberInfo.errMsg) {
-            this.setState({
-                getCallNumberError: callNumberInfo.errMsg
-            });
-        }
+        CallNumberUtil.getUserPhoneNumber( callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
+                this.setState({
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                });
+            }
+        });
     },
     componentDidMount: function() {
         basicOverviewStore.listen(this.onChange);
