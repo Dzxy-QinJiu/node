@@ -35,7 +35,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             error_message: '',//关联客户失败后的信息
             curShowCustomerId: '',//所查看客户的id
             isShowCustomerUserListPanel: false,
-            CustomerInfoOfCurrUser: {},
+            customerOfCurUser: {},
             //是否显示客户名后面的对号和叉号
             ShowUpdateOrClose: true,
             //关联客户所的推荐的客户列表
@@ -368,7 +368,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
     };
     closeCustomerUserListPanel = () => {
@@ -473,6 +473,8 @@ class AssignClueAndSelectCustomer extends React.Component {
 
     render() {
         var curClueDetail = this.state.curClueDetail;
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div>
                 <div className="sales-assign-wrap">
@@ -511,9 +513,10 @@ class AssignClueAndSelectCustomer extends React.Component {
                 >
                     { this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            customer_name={customerOfCurUser.name}
+                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>
@@ -525,5 +528,10 @@ class AssignClueAndSelectCustomer extends React.Component {
 
 AssignClueAndSelectCustomer.defaultProps = {
     curClueDetail: {}
+};
+AssignClueAndSelectCustomer.propTypes = {
+    curClueDetail: React.PropTypes.object,
+    customer_id: React.PropTypes.string,
+    customer_name: React.PropTypes.string,
 };
 export default AssignClueAndSelectCustomer;

@@ -64,7 +64,7 @@ var BasicOverview = React.createClass({
             if (appUserLength) {
                 basicOverviewAction.getCrmUserList({
                     customer_id: curCustomer.id,
-                    page_num: 1,
+                    id: '',
                     page_size: appUserLength
                 });
             } else {
@@ -139,7 +139,7 @@ var BasicOverview = React.createClass({
         }
     },
     getAdministrativeLevel: function(levelId) {
-        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
+        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     },
     //保存修改后的标签
@@ -245,7 +245,7 @@ var BasicOverview = React.createClass({
         />;
     },
     toggleScheduleContact(item, flag){
-        let curSchedule = _.find(this.state.scheduleList, schedule => schedule.id == item.id);
+        let curSchedule = _.find(this.state.scheduleList, schedule => schedule.id === item.id);
         curSchedule.isShowContactPhone = flag;
         this.setState({scheduleList: this.state.scheduleList});
     },
@@ -254,14 +254,14 @@ var BasicOverview = React.createClass({
     handleItemStatus: function(item) {
         const user_id = userData.getUserData().user_id;
         //只能修改自己创建的日程的状态
-        if (user_id != item.member_id) {
+        if (user_id !== item.member_id) {
             return;
         }
         const reqData = {
             id: item.id,
-            status: item.status == 'false' ? 'handle' : 'false',
+            status: item.status === 'false' ? 'handle' : 'false',
         };
-        var status = item.status == 'false' ? '完成' : '未完成';
+        var status = item.status === 'false' ? '完成' : '未完成';
         Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
         basicOverviewAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {

@@ -135,6 +135,7 @@ var AppUserManage = React.createClass({
             AppUserAction.getAppUserList({
                 //传递客户id
                 customer_id: customer_id,
+                page_size: this.props.user_size
             });
         }
         //记住上一次路由
@@ -149,6 +150,7 @@ var AppUserManage = React.createClass({
             AppUserAction.getAppUserList({
                 //传递客户id
                 customer_id: nextProps.customer_id,
+                page_size: nextProps.user_size
             });
         }
     },
@@ -388,48 +390,48 @@ var AppUserManage = React.createClass({
         var rightPanelView = null;
         if (this.state.isShowRightPanel) {
             switch (this.state.rightPanelType) {
-            case 'detail' :
-                rightPanelView = (
-                    <UserDetail userId={this.state.detailUser.user.user_id}
-                        appLists={this.state.detailUser.apps}
-                        isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
-                        selectedAppId={this.state.selectedAppId}
+                case 'detail' :
+                    rightPanelView = (
+                        <UserDetail userId={this.state.detailUser.user.user_id}
+                            appLists={this.state.detailUser.apps}
+                            isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
+                            selectedAppId={this.state.selectedAppId}
 
-                    />
-                );
-                break;
-            case 'addOrEditUser':
-                rightPanelView = (
-                    <AddOrEditUser operation_type={this.state.appUserFormType}/>
-                );
-                break;
-            case 'batch' :
-                rightPanelView = (
-                    <div className="full_size wrap_padding">
-                        <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
-                    </div>
-                );
-                break;
-            case 'applyUser':
+                        />
+                    );
+                    break;
+                case 'addOrEditUser':
+                    rightPanelView = (
+                        <AddOrEditUser operation_type={this.state.appUserFormType}/>
+                    );
+                    break;
+                case 'batch' :
+                    rightPanelView = (
+                        <div className="full_size wrap_padding">
+                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
+                        </div>
+                    );
+                    break;
+                case 'applyUser':
                 //发邮件使用的数据
-                var emailData = this.getEmailData();
-                //应用列表
-                var appListTransform = this.state.appList.map((obj) => {
-                    return {
-                        client_id: obj.app_id,
-                        client_name: obj.app_name,
-                        client_image: obj.app_logo
-                    };
-                });
-                rightPanelView = (
-                    <ApplyUser
-                        appList={appListTransform}
-                        users={this.state.selectedUserRows}
-                        customerId={this.state.customer_id}
-                        cancelApply={AppUserAction.closeRightPanel}
-                        emailData={emailData}
-                    />
-                );
+                    var emailData = this.getEmailData();
+                    //应用列表
+                    var appListTransform = this.state.appList.map((obj) => {
+                        return {
+                            client_id: obj.app_id,
+                            client_name: obj.app_name,
+                            client_image: obj.app_logo
+                        };
+                    });
+                    rightPanelView = (
+                        <ApplyUser
+                            appList={appListTransform}
+                            users={this.state.selectedUserRows}
+                            customerId={this.state.customer_id}
+                            cancelApply={AppUserAction.closeRightPanel}
+                            emailData={emailData}
+                        />
+                    );
             }
         }
         var topNavRightClass = classNames({
@@ -444,12 +446,12 @@ var AppUserManage = React.createClass({
 
         var showView = null;
         switch (currentView) {
-        case 'user':
-            showView = (<UserView customer_id={this.state.customer_id} />);
-            break;
-        case 'log':
-            showView = (<UserAuditLog />);
-            break;
+            case 'user':
+                showView = (<UserView customer_id={this.state.customer_id} />);
+                break;
+            case 'log':
+                showView = (<UserAuditLog />);
+                break;
         }
         //是否显示“过滤”按钮
         var showFilterBtn = this.state.selectedAppId;
