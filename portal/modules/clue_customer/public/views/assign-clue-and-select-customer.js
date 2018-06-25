@@ -19,6 +19,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+require('../css/assign-associate-wrap.less');
 class AssignClueAndSelectCustomer extends React.Component {
     constructor(props) {
         super(props);
@@ -416,9 +417,10 @@ class AssignClueAndSelectCustomer extends React.Component {
         if (_.isArray(newCustomerArr) && newCustomerArr[0]){
             var newCustomer = newCustomerArr[0];
             this.setState({
-                selectShowAddCustomer: true,
-                customer_id: newCustomer.id,
-                customer_name: newCustomer.name,
+                displayType: 'text',
+                selectShowAddCustomer: false,
+                relatedCustomerId: newCustomer.id,
+                relatedCustomerName: newCustomer.name,
             });
         }
     };
@@ -429,6 +431,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
                 formData ={this.state.curClueDetail}
+                isAssociateClue={true}
                 phoneNum= {phoneNum}
                 addOne={this.addOneCustomer}
             />
@@ -474,7 +477,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     render() {
         var curClueDetail = this.state.curClueDetail;
         return (
-            <div>
+            <div className="assign-associate-wrap">
                 <div className="sales-assign-wrap">
                     <h5>{Intl.get('cluecustomer.trace.person', '跟进人')}</h5>
                     <div className="sales-assign-content">
@@ -524,6 +527,13 @@ class AssignClueAndSelectCustomer extends React.Component {
 }
 
 AssignClueAndSelectCustomer.defaultProps = {
-    curClueDetail: {}
+    curClueDetail: {},
+    customer_id: '',
+    customer_name: ''
+};
+AssignClueAndSelectCustomer.propTypes = {
+    curClueDetail: React.PropTypes.object,
+    customer_id: React.PropTypes.string,
+    customer_name: React.PropTypes.string,
 };
 export default AssignClueAndSelectCustomer;
