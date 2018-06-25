@@ -124,6 +124,7 @@ SalesStageStore.prototype.deleteSalesStage = function(salesStage) {
             return true;
         }
     });
+    this.isSavingSalesStage = false;
 };
 
 SalesStageStore.prototype.salesStageOrderUp = function(salesStage) {
@@ -151,11 +152,11 @@ SalesStageStore.prototype.salesStageOrderDown = function(salesStage) {
     var oldIndex = parseInt(salesStage.index);
     this.salesStageList = _.filter(this.salesStageList, function(item) {
         var index = item.index;
-        if (parseInt(item.index) == oldIndex) {
+        if (parseInt(item.index) === oldIndex) {
             index = (parseInt(item.index) + 1).toString();
         }
 
-        if (parseInt(item.index) == (oldIndex + 1)) {
+        if (parseInt(item.index) === (oldIndex + 1)) {
             index = (parseInt(item.index) - 1).toString();
         }
         item.index = index;
