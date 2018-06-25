@@ -314,7 +314,7 @@ var CustomerSuggest = React.createClass({
             });
 
             return (
-                <div ref="customer_searchbox" className={wrapClassName} id="customer-suggest">
+                <div ref="customer_searchbox" className={wrapClassName}>
                     <Select
                         combobox
                         searchPlaceholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
@@ -325,7 +325,6 @@ var CustomerSuggest = React.createClass({
                         dropdownMatchSelectWidth={false}
                         dropdownClassName="customer_combobox_search"
                         notFoundContent={Intl.get('common.no.data', '暂无数据')}
-                        getPopupContainer={() => document.getElementById('customer-suggest')}
                     >
                         {
                             this.state.list.map(function(item) {

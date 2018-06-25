@@ -120,7 +120,7 @@ const SalesClueAddForm = React.createClass({
         };
         //生成线索客户的用户的id
         if (this.props.appUserId){
-            submitObj.app_user_id = this.props.appUserId;
+            submitObj.app_user_ids = [this.props.appUserId];
         }
         //联系人及联系方式的处理
         let contact = {def_contancts: 'true'};

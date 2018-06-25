@@ -166,6 +166,19 @@ var CRMAddForm = React.createClass({
         var formData = JSON.parse(JSON.stringify(this.state.formData));
         formData.name = $.trim(formData.name);
         formData.contacts0_phone = $.trim(formData.contacts0_phone);
+        var PropsFormData = this.props.formData;
+        if (this.props.isAssociateClue && PropsFormData){
+            //添加客户时，新创建的客户要关联该线索
+            //线索id
+            formData.customer_clue_id = PropsFormData.id;
+            //线索和客户关联的时间
+            formData.customer_clue_relation_time = moment().valueOf();
+            //线索创建时间
+            formData.customer_clue_start_time = PropsFormData.start_time;
+            //添加客户时，新创建的客户要关联注册的用户
+            formData.app_user_ids = PropsFormData.app_user_ids;
+        }
+
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData);
         CrmAction.addCustomer(formData, result => {
@@ -574,4 +587,4 @@ var CRMAddForm = React.createClass({
         );
     }
 });
-module.exports = CRMAddForm;
+module.exports = CRMAddForm;
