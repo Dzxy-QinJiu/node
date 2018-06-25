@@ -2,13 +2,11 @@ const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Form, Input, Select} from 'antd';
 const FormItem = Form.Item;
-const classnames = require('classnames');
 const OrderAction = require('../../action/order-actions');
 import SearchIconList from '../../../../../components/search-icon-list';
 import ValidateMixin from '../../../../../mixins/ValidateMixin';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
-import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 
 const OrderForm = React.createClass({
     mixins: [ValidateMixin],
@@ -91,7 +89,7 @@ const OrderForm = React.createClass({
             }
         }
         return (
-            <Form horizontal className="order-form">
+            <Form horizontal className="order-form" id="select-wrap">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         label={Intl.get('sales.stage.sales.stage', '销售阶段')}
@@ -107,6 +105,7 @@ const OrderForm = React.createClass({
                                 onChange={this.setField.bind(this, 'sale_stages')}
                                 name="sale_stages"
                                 onSelect={this.handleSelect}
+                                getPopupContainer={() => document.getElementById('select-wrap')}
                             >
                                 {this.props.stageList.map(function(stage, index) {
                                     return (<Option value={stage.name} key={index}>{stage.name}</Option>);
