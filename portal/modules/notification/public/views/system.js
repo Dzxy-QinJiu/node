@@ -44,7 +44,7 @@ let SystemNotification = React.createClass({
             status: STATUS.UNHANDLED,//未处理，handled:已处理
             showUpdateTip: false, //是否展示有新数据刷新的提示
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            CustomerInfoOfCurrUser: {}//当前展示用户所属客户的详情
+            customerOfCurUser: {}//当前展示用户所属客户的详情
         };
     },
     componentDidMount: function() {
@@ -328,7 +328,7 @@ let SystemNotification = React.createClass({
     ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
 
     },
@@ -339,6 +339,8 @@ let SystemNotification = React.createClass({
     },
     render: function() {
         let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP;
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div className="notification_system" data-tracename="系统消息列表">
                 <TopNav>
@@ -382,9 +384,10 @@ let SystemNotification = React.createClass({
                 >
                     { this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            customer_name={customerOfCurUser.name}
+                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>

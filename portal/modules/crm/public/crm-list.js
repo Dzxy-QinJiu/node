@@ -155,7 +155,7 @@ var Crm = React.createClass({
             cursor: true,//向前还是向后翻页
             pageValue: 0,//两次点击时的页数差
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+            customerOfCurUser: {},//当前展示用户所属客户的详情
         };
     },
     setRange: function(obj) {
@@ -480,13 +480,13 @@ var Crm = React.createClass({
      * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
      * */
     //获取要传到后端的所有团队id的数组
-    getRequestTeamIds: function(totalRequestTeams, teamTotalArr){
-        _.each(teamTotalArr,(team) => {
-            if (_.indexOf(totalRequestTeams, team.group_id) === -1){
+    getRequestTeamIds: function(totalRequestTeams, teamTotalArr) {
+        _.each(teamTotalArr, (team) => {
+            if (_.indexOf(totalRequestTeams, team.group_id) === -1) {
                 totalRequestTeams.push(team.group_id);
             }
-            if(team.child_groups){
-                this.getRequestTeamIds(totalRequestTeams,team.child_groups);
+            if (team.child_groups) {
+                this.getRequestTeamIds(totalRequestTeams, team.child_groups);
             }
         });
 
@@ -496,14 +496,14 @@ var Crm = React.createClass({
      * @param selectedTeams 实际选中的团队的id列表
      * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
      * */
-    traversingTeamTree: function(teamTreeList,selectedTeams,teamTotalArr) {
-        if(_.isArray(teamTreeList) && teamTreeList.length){
+    traversingTeamTree: function(teamTreeList, selectedTeams, teamTotalArr) {
+        if (_.isArray(teamTreeList) && teamTreeList.length) {
             _.each(teamTreeList, team => {
-                if (selectedTeams === team.group_id){
+                if (selectedTeams === team.group_id) {
                     teamTotalArr.push(team);
                 }
-                if(team.child_groups){
-                    this.traversingTeamTree(team.child_groups,selectedTeams,teamTotalArr);
+                if (team.child_groups) {
+                    this.traversingTeamTree(team.child_groups, selectedTeams, teamTotalArr);
                 }
             });
         }
@@ -645,21 +645,21 @@ var Crm = React.createClass({
         var teamTreeList = FilterStore.getState().teamTreeList;
         //实际选中的团队列表
         var selectedTeams = [];
-        if (filterStoreCondition && filterStoreCondition.sales_team_id){
+        if (filterStoreCondition && filterStoreCondition.sales_team_id) {
             selectedTeams = filterStoreCondition.sales_team_id.split(',');
         }
         //实际要传到后端的团队,默认是选中的团队
         var totalRequestTeams = JSON.parse(JSON.stringify(selectedTeams));
         var teamTotalArr = [];
         //跟据实际选中的id，获取包含下级团队的所有团队详情的列表teamTotalArr
-        _.each(selectedTeams,(teamId) => {
-            this.traversingTeamTree(teamTreeList,teamId,teamTotalArr);
+        _.each(selectedTeams, (teamId) => {
+            this.traversingTeamTree(teamTreeList, teamId, teamTotalArr);
         });
         //跟据包含下级团队的所有团队详情的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
         this.getRequestTeamIds(totalRequestTeams, teamTotalArr);
-        if (totalRequestTeams.length){
+        if (totalRequestTeams.length) {
             condition.sales_team_id = totalRequestTeams.join(',');
-        }else{
+        } else {
             delete condition.sales_team_id;
         }
 
@@ -1012,7 +1012,7 @@ var Crm = React.createClass({
     ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
 
     },
@@ -1082,8 +1082,10 @@ var Crm = React.createClass({
         var condition = this.state.condition;
         var curPageCustomers = this.state.curPageCustomers;
         var initalCurPageCustomers = JSON.parse(JSON.stringify(curPageCustomers));
-        if (condition && _.isArray(condition.interest_member_ids) && condition.interest_member_ids[0] && !interestObj.user_id){
-            curPageCustomers = _.filter(curPageCustomers,(item) => {return item.id !== interestObj.id;});
+        if (condition && _.isArray(condition.interest_member_ids) && condition.interest_member_ids[0] && !interestObj.user_id) {
+            curPageCustomers = _.filter(curPageCustomers, (item) => {
+                return item.id !== interestObj.id;
+            });
         }
         this.setState(
             {curPageCustomers: curPageCustomers}
@@ -1342,6 +1344,8 @@ var Crm = React.createClass({
         if (this.state.rightPanelIsShow) {
             this.renderCustomerDetail();
         }
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (<RightContent>
             <div className="crm_content" data-tracename="客户列表">
                 {
@@ -1437,9 +1441,10 @@ var Crm = React.createClass({
                 >
                     {this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            customer_name={customerOfCurUser.name}
+                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>

@@ -34,7 +34,7 @@ var SalesHomePage = React.createClass({
             curShowCustomerId: '',//展示客户详情的客户id
             curShowUserId: '',//展示用户详情的用户id
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+            customerOfCurUser: {},//当前展示用户所属客户的详情
             ...SalesHomeStore.getState()
         };
     },
@@ -80,7 +80,7 @@ var SalesHomePage = React.createClass({
     ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
 
     },
@@ -94,7 +94,7 @@ var SalesHomePage = React.createClass({
             customer_params: {
                 currentId: customer_id,
                 curCustomer: this.state.curCustomer,
-                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel.bind(this),
                 hideRightPanel: this.closeRightCustomerPanel
             }
         });
@@ -302,27 +302,27 @@ var SalesHomePage = React.createClass({
     },
     handleScrollBarBottom: function(listType) {
         switch (listType) {
-        case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
-            this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
-            break;
-        case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN://停用客户登录
-            this.getScrollData(this.state.appIllegalObj, this.getAppIlleageLogin);
-            break;
-        case ALL_LISTS_TYPE.LOGIN_FAILED://登录失败的客户
-            this.getScrollData(this.state.loginFailedObj, this.getLoginFailedNotices);
-            break;
-        case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN://关注客户登录
-            this.getScrollData(this.state.concernCustomerObj, this.getConcernedLogin);
-            break;
-        case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER://最近7天登录的客户
-            this.getScrollData(this.state.recentLoginCustomerObj, this.getRecentLoginCustomers);
-            break;
-        case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER://新分配的客户
-            this.getScrollData(this.state.newDistributeCustomer, this.getNewDistributeCustomer);
-            break;
-        case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://呼入未接通的电话
-            this.getScrollData(this.state.missCallObj, this.getMissCallTypeList);
-            break;
+            case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
+                this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
+                break;
+            case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN://停用客户登录
+                this.getScrollData(this.state.appIllegalObj, this.getAppIlleageLogin);
+                break;
+            case ALL_LISTS_TYPE.LOGIN_FAILED://登录失败的客户
+                this.getScrollData(this.state.loginFailedObj, this.getLoginFailedNotices);
+                break;
+            case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN://关注客户登录
+                this.getScrollData(this.state.concernCustomerObj, this.getConcernedLogin);
+                break;
+            case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER://最近7天登录的客户
+                this.getScrollData(this.state.recentLoginCustomerObj, this.getRecentLoginCustomers);
+                break;
+            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER://新分配的客户
+                this.getScrollData(this.state.newDistributeCustomer, this.getNewDistributeCustomer);
+                break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://呼入未接通的电话
+                this.getScrollData(this.state.missCallObj, this.getMissCallTypeList);
+                break;
         }
     },
     getScrollData: function(curDataObj, getDataFunction) {
@@ -371,55 +371,55 @@ var SalesHomePage = React.createClass({
         var rightPanel = null;
         switch (this.state.showCustomerPanel) {
         //今日日程列表
-        case ALL_LISTS_TYPE.SCHEDULE_TODAY:
-            rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.SCHEDULE_TODAY);
-            break;
+            case ALL_LISTS_TYPE.SCHEDULE_TODAY:
+                rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.SCHEDULE_TODAY);
+                break;
             //今日过期日程
-        case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
-            rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY);
-            break;
+            case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
+                rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY);
+                break;
             //即将过期的试用客户
-        case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
-            rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER);
-            break;
-        case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
-            rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER);
-            break;
+            case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
+                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER);
+                break;
+            case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
+                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER);
+                break;
             //即将过期的签约客户
-        case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
-            rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER);
-            break;
+            case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
+                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER);
+                break;
             //停用客户登录
-        case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
-            rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN);
-            break;
+            case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
+                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN);
+                break;
             //登录失败的客户
-        case ALL_LISTS_TYPE.LOGIN_FAILED:
-            rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.LOGIN_FAILED);
-            break;
+            case ALL_LISTS_TYPE.LOGIN_FAILED:
+                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.LOGIN_FAILED);
+                break;
             //关注客户登录
-        case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
-            rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN);
-            break;
+            case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
+                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN);
+                break;
             //最近X日登录的客户
-        case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
-            rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER);
-            break;
+            case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
+                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER);
+                break;
             //重复客户
-        case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
-            rightPanel = <CustomerRepeat
-                noNeedClose={true}
-                setInitialRepeatList ={true}
-                initialRepeatObj={this.state.repeatCustomerObj.errMsg || this.state.repeatCustomerObj.data}
-            />;
-            break;
+            case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
+                rightPanel = <CustomerRepeat
+                    noNeedClose={true}
+                    setInitialRepeatList ={true}
+                    initialRepeatObj={this.state.repeatCustomerObj.errMsg || this.state.repeatCustomerObj.data}
+                />;
+                break;
             //新分配的客户
-        case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
-            rightPanel = this.renderNewDistributeCustomer();
-            break;
-        case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
-            rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE);
-            break;
+            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
+                rightPanel = this.renderNewDistributeCustomer();
+                break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
+                rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE);
+                break;
         }
         return rightPanel;
     },
@@ -742,42 +742,42 @@ var SalesHomePage = React.createClass({
     switchDiffCustomerTotalCount: function(type) {
         var total = '';
         switch (type) {
-        case ALL_LISTS_TYPE.SCHEDULE_TODAY:
-            total = this.state.scheduleTodayObj.data.total;
-            break;
-        case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
-            total = this.state.scheduleExpiredTodayObj.data.total;
-            break;
-        case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
-            total = this.state.hasExpiredTryCustomer.data.total;
-            break;
-        case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
-            total = this.state.willExpiredTryCustomer.data.total;
-            break;
-        case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
-            total = this.state.willExpiredAssignCustomer.data.total;
-            break;
-        case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
-            total = this.state.appIllegalObj.data.total;
-            break;
-        case ALL_LISTS_TYPE.LOGIN_FAILED:
-            total = this.state.loginFailedObj.data.total;
-            break;
-        case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
-            total = this.state.concernCustomerObj.data.total;
-            break;
-        case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
-            total = this.state.recentLoginCustomerObj.data.total;
-            break;
-        case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
-            total = this.state.repeatCustomerObj.data.total;
-            break;
-        case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
-            total = this.state.newDistributeCustomer.data.total;
-            break;
-        case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
-            total = this.state.missCallObj.data.total;
-            break;
+            case ALL_LISTS_TYPE.SCHEDULE_TODAY:
+                total = this.state.scheduleTodayObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
+                total = this.state.scheduleExpiredTodayObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
+                total = this.state.hasExpiredTryCustomer.data.total;
+                break;
+            case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
+                total = this.state.willExpiredTryCustomer.data.total;
+                break;
+            case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
+                total = this.state.willExpiredAssignCustomer.data.total;
+                break;
+            case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
+                total = this.state.appIllegalObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.LOGIN_FAILED:
+                total = this.state.loginFailedObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
+                total = this.state.concernCustomerObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
+                total = this.state.recentLoginCustomerObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
+                total = this.state.repeatCustomerObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
+                total = this.state.newDistributeCustomer.data.total;
+                break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
+                total = this.state.missCallObj.data.total;
+                break;
         }
         return total;
     },
@@ -787,6 +787,8 @@ var SalesHomePage = React.createClass({
         var cls = classNames('customer-content-right', {
             'has-repeat-customer': this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
         });
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <RightContent>
                 <div className="sales_home_content" data-tracename="销售首页">
@@ -864,9 +866,10 @@ var SalesHomePage = React.createClass({
                     >
                         { this.state.isShowCustomerUserListPanel ?
                             <AppUserManage
-                                customer_id={this.state.CustomerInfoOfCurrUser.id}
+                                customer_id={customerOfCurUser.id}
                                 hideCustomerUserList={this.closeCustomerUserListPanel}
-                                customer_name={this.state.CustomerInfoOfCurrUser.name}
+                                customer_name={customerOfCurUser.name}
+                                user_size={customerUserSize}
                             /> : null
                         }
                     </RightPanel>

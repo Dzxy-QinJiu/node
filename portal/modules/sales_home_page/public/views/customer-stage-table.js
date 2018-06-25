@@ -20,7 +20,7 @@ class CustomerStageTable extends React.Component {
             selectedCustomerId: '',
             selectedCustomerIndex: '',
             isShowCustomerUserListPanel: false,
-            CustomerInfoOfCurrUser: {},
+            customerOfCurUser: {},
             tableHeight: 0,
         };
     }
@@ -50,7 +50,7 @@ class CustomerStageTable extends React.Component {
     ShowCustomerUserListPanel(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
     }
 
@@ -80,7 +80,7 @@ class CustomerStageTable extends React.Component {
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                 customer_params: {
                     currentId: item.customer_id,
-                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel.bind(this),
                     hideRightPanel: this.hideRightPanel
                 }
             });
@@ -140,6 +140,8 @@ class CustomerStageTable extends React.Component {
                     width: 100
                 }
             ];
+            let customerOfCurUser = this.state.customerOfCurUser;
+            let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
             return (
                 <div className="stage-changed-customer-list-wrapper">
                     {renderErr()}
@@ -166,9 +168,10 @@ class CustomerStageTable extends React.Component {
                     >
                         {this.state.isShowCustomerUserListPanel ?
                             <AppUserManage
-                                customer_id={this.state.CustomerInfoOfCurrUser.id}
+                                customer_id={this.state.customerOfCurUser.id}
                                 hideCustomerUserList={this.props.onClose}
-                                customer_name={this.state.CustomerInfoOfCurrUser.name}
+                                customer_name={this.state.customerOfCurUser.name}
+                                user_size={customerUserSize}
                             /> : null
                         }
                     </RightPanel>
