@@ -8,6 +8,7 @@ import {hasPrivilege} from '../../privilege/checker';
 const PropTypes = React.PropTypes;
 //class的前缀
 const CLASS_PREFIX = 'user-customer';
+const USER_CUSTOMER_SUGGEST_ID = 'user-customer-suggest-wrap';
 //空函数
 function noop(){}
 /**
@@ -56,7 +57,7 @@ class UserCustomer extends React.Component{
         ];
         const newState = {};
         _.each(propList , (prop) => {
-            if(this.props[prop] != nextProps[prop]) {
+            if(this.props[prop] !== nextProps[prop]) {
                 newState[prop] = nextProps[prop];
             }
         });
@@ -97,7 +98,7 @@ class UserCustomer extends React.Component{
     }
     renderCustomerBlock() {
         return (
-            <div className="select_text_wrap" style={{display: 'block'}}>
+            <div className="select_text_wrap" style={{display: 'block'}} id={USER_CUSTOMER_SUGGEST_ID}>
                 <CustomerSuggest
                     required={true}
                     customer_id={this.state.customer_id}
@@ -106,6 +107,7 @@ class UserCustomer extends React.Component{
                     onCustomerChoosen={this.onCustomerChoosen.bind(this)}
                     show_error={this.state.show_customer_error}
                     hideCustomerError={this.hideCustomerError.bind(this)}
+                    customerSuggestWrapId = {USER_CUSTOMER_SUGGEST_ID}
                 />
             </div>
         );
@@ -143,12 +145,15 @@ class UserCustomer extends React.Component{
         var input_val = $input[0] && $input.val();
         if(input_val !== undefined) {
             if(!input_val) {
-                this.state.customer_id = '';
-                this.state.customer_name = '';
-                this.state.sales_id = '';
-                this.state.sales_name = '';
-                this.state.sales_team_id = '';
-                this.state.sales_team_name = '';
+                this.setState({
+                    customer_id: '',
+                    customer_name: '',
+                    sales_id: '',
+                    sales_name: '',
+                    sales_team_id: '',
+                    sales_team_name: '',
+                });
+
             } else if(input_val !== this.props.customer_name) {
                 this.setState({
                     show_customer_error: true
@@ -310,7 +315,12 @@ UserCustomer.propTypes = {
     //客户id
     customer_id: PropTypes.string,
     //客户name
-    range: PropTypes.string,
+    customer_name: PropTypes.string,
+    sales_id: PropTypes.string,
+    sales_name: PropTypes.string,
+    sales_team_id: PropTypes.string,
+    sales_team_name: PropTypes.string,
+    user_id: PropTypes.string,
     //成功更改关联关系触发
     onChangeSuccess: PropTypes.func,
     //class名
