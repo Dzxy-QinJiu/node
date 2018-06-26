@@ -15,17 +15,13 @@ import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
-import crmAjax from '../../ajax/index';
-import { storageUtil } from 'ant-utils';
-const session = storageUtil.session;
-import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
-import CallNumberUtil from '../../utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
 
 var CrmSchedule = React.createClass({
     getInitialState: function() {
         return {
             customerId: this.props.curCustomer.id || '',
-            callNumber: this.props.callNumber || session.get(savePositionCallNumberKey) || '', // 座机号
+            callNumber: this.props.callNumber || '', // 座机号
             getCallNumberError: '',
             ...ScheduleStore.getState()
         };

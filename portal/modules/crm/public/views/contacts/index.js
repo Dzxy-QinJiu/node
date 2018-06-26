@@ -12,9 +12,7 @@ var ContactAction = require('../../action/contact-action');
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import Spinner from 'CMP_DIR/spinner';
 import { storageUtil } from 'ant-utils';
-const session = storageUtil.session;
-import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
-import CallNumberUtil from '../../utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
 //高度常量
 var LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -28,7 +26,7 @@ import Trace from 'LIB_DIR/trace';
 var Contacts = React.createClass({
     getInitialState: function() {
         return {
-            callNumber: this.props.callNumber || session.get(savePositionCallNumberKey) || '', // 座机号
+            callNumber: this.props.callNumber || '', // 座机号
             getCallNumberError: '', // 获取座机号失败的信息
             curCustomer: this.props.curCustomer,//当前查看详情的客户
             windowHeight: $(window).height(),

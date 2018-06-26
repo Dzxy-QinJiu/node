@@ -168,4 +168,4 @@ export const CALL_TYPE_OPTION = {
 };
 
 // 缓存在sessionStorage中的座席号的key
-export const savePositionCallNumberKey = 'callNumber';
+export const sessionCallNumberKey = 'callNumber';

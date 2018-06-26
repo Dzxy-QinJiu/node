@@ -33,10 +33,7 @@ import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
-import { storageUtil } from 'ant-utils';
-const session = storageUtil.session;
-import { savePositionCallNumberKey } from 'PUB_DIR/sources/utils/consts';
-import CallNumberUtil from './utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -97,7 +94,7 @@ let member_id = userData.getUserData().user_id;
 var Crm = React.createClass({
     getInitialState: function() {
         return {
-            callNumber: session.get(savePositionCallNumberKey) || '', // 座机号
+            callNumber: '', // 座机号
             errMsg: '', // 获取座机号失败的信息
             ...this.getStateData()
         };
@@ -214,9 +211,7 @@ var Crm = React.createClass({
         crmEmitter.on(crmEmitter.IMPORT_CUSTOMER, this.onCustomerImport);
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
-        if (this.state.callNumber === '') {
-            this.getUserPhoneNumber();
-        }
+        this.getUserPhoneNumber();
         const query = _.clone(this.props.location.query);
         if (query.analysis_filter_field) {
             var filterField = query.analysis_filter_field;
