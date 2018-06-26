@@ -24,6 +24,9 @@ unknownDataMap[unknownObj.key] = unknownObj.name;
 //权限类型
 const authType = hasPrivilege('CUSTOMER_ANALYSIS_MANAGER') ? 'manager' : 'common';
 
+//合格标签，1代表当前合格
+const QUALIFY_LABEL_PASS = 1;
+
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getInitialState() {
         return {
@@ -280,11 +283,20 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             argCallback: (arg) => {
                 const query = arg.query;
 
-                if (query && query.starttime && query.endtime) {
-                    query.start_time = 0;
-                    query.end_time = query.endtime;
-                    delete query.starttime;
-                    delete query.endtime;
+                if (query) {
+                    //starttime转成start_time，endtime转成end_time
+                    if (query.starttime && query.endtime) {
+                        query.start_time = 0;
+                        query.end_time = query.endtime;
+                        delete query.starttime;
+                        delete query.endtime;
+                    }
+
+                    //"试用合格"标签需要特殊处理
+                    if (query.customer_label === Intl.get('common.trial.qualified', '试用合格')) {
+                        query.customer_label = Intl.get('common.trial', '试用');
+                        query.qualify_label = QUALIFY_LABEL_PASS;
+                    }
                 }
             },
             noShowCondition: {
