@@ -1059,6 +1059,7 @@ var zh_CN = {
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
     'user.apply.no.new.refresh.tip': '无新申请',
+    'user.apply.last.follow.date': '最新跟进日期',
     // 用户审批end
 
     // 在线用户start

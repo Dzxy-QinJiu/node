@@ -1048,6 +1048,7 @@ var en_US = {
     'reply.cancel.tip.content': '{approvalPerson} revoked the {userType} user {userNames}, applied to the customer {customerName} ',//{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'user.apply.new.refresh.tip': 'Have a new application，refresh',//有新申请,点此刷新
     'user.apply.no.new.refresh.tip': 'No new application',//无新申请
+    'user.apply.last.follow.date': 'Latest follow up date',//最新跟进日期
     // 用户审批end
 
     // 在线用户start

@@ -335,6 +335,8 @@
 }
 
 .app_user_manage_apply_wrap.user-manage-v2 {
+  @font_color: #999999;
+  @apply_active_color: #5999c9;
   @bordercolor: #e1e9eb;
   padding: 0;
   min-width: 370px;
@@ -366,9 +368,8 @@
     @active_color: #5b9bcb;
     @border_color: #e6e9eb;
     @reply-message-tip-color: #f7a43e;
-    @apply_li_active_color: #5999c9;
-    @font_color: #999999;
     @approval_pending_color: #f68a4a;
+    @text-color: #313330;
     .searchbar {
       height: @apply_top_height;
       padding: 16px 20px 0 20px;
@@ -459,9 +460,9 @@
         cursor: pointer;
         &.current {
           background-color: #f8fdff;
-          border-left: 3px solid @apply_li_active_color;
+          border-left: 3px solid @apply_active_color;
           dt span {
-            color: @apply_li_active_color;
+            color: @apply_active_color;
           }
         }
         &:before {
@@ -525,14 +526,178 @@
         }
       }
     }
-
   }
 
   //申请详情
   .app_user_manage_apply_detail_wrap {
-    margin-left: -1px;
     color: #5d5d5d;
     position: relative;
+    padding: 20px;
+    //详情头部标题
+    .apply-detail-title {
+      height: 44px;
+      .apply-type-tip {
+        font-size: 14px;
+        color: @apply_active_color;
+      }
+      .order-id {
+        float: right;
+        font-size: 14px;
+        color: @font_color;
+      }
+    }
+    //客户、用户信息
+    .apply-detail-customer, .apply-detail-user, .apply-detail-common {
+      background-color: #f0f4f5;
+      margin-bottom: 10px;
+      padding: 0 10px;
+      .customer-icon-block, .user-icon-block, .common-icon-block {
+        float: left;
+        width: 50px;
+        height: 60px;
+        padding-left: 8px;
+        padding-top: 15px;
+        .icon-customer, .icon-user, .icon-common {
+          color: #9faaac;
+        }
+        .icon-customer {
+          font-size: 18px;
+        }
+        .icon-user {
+          font-size: 20px;
+        }
+        .icon-common {
+          font-size: 14px;
+        }
+      }
+      .customer-info-block, .user-info-block, .common-info-block {
+        display: inline-block;
+        padding: 16px 0 16px 16px;
+        border-left: 1px solid #e1e9eb;
+        .apply-info-label {
+          margin-top: 4px;
+          font-size: 14px;
+          color: #9f9fa1;
+          .user-info-label {
+            padding-right: 6px;
+          }
+          .user-info-text {
+            color: @text-color;
+          }
+        }
+      }
+      //客户信息
+      .customer-info-block {
+        .customer-name {
+          padding-bottom: 6px;
+          a {
+            font-size: 14px;
+            font-weight: bold;
+            color: @text-color;
+            text-decoration: none;
+          }
+          .icon-arrow-right {
+            padding-left: 4px;
+            font-size: 14px;
+            font-weight: normal;
+            color: #9ea9ad;
+          }
+        }
+      }
+      //用户信息
+      .user-info-block {
+        .user-info-text {
+          a {
+            color: @text-color;
+            margin-right: 10px;
+          }
+          .icon-update {
+            cursor: pointer;
+          }
+        }
+        //用户名
+        .edit-name-label {
+          float: left;
+          line-height: 26px;
+        }
+        .user-name-wrap {
+          display: inline-block;
+          width: 260px;
+          form {
+            float: left;
+            width: 200px;
+            .ant-form-item {
+              margin-bottom: 0;
+            }
+          }
+          .save-buttons {
+            float: left;
+            margin-top: 4px;
+          }
+        }
+        //密码
+        .password-label {
+          float: left;
+          line-height: 32px;
+        }
+        .apply-repassword-container {
+          padding-left: 37px;
+        }
+        .apply-change-password-style {
+          input {
+            height: 24px;
+            line-height: 24px;
+          }
+        }
+        //延期、到期时间
+        .delay-time-wrap {
+          .user-info-label {
+            float: left;
+            line-height: 26px;
+          }
+          .user-info-text {
+            display: inline-block;
+            .modify-delay-time-style {
+              input {
+                height: 26px;
+              }
+              .ant-select-selection--single {
+                height: 28px;
+              }
+              .select-modify-unit {
+                width: 70px;
+              }
+            }
+          }
+        }
+        .icon-choose, .icon-close {
+          margin-left: 10px;
+          cursor: pointer;
+        }
+        .icon-choose {
+          color: #4dbe50;
+        }
+        .icon-close {
+          color: #b50e0a;
+          font-size: 14px;
+        }
+        //应用
+        .apply_detail_apps {
+          float: left;
+          margin-top: 10px;
+        }
+        .apply_detail_operate {
+          float: left;
+          margin-left: 10px;
+        }
+      }
+      //备注
+      .common-info-block {
+        .apply-info-label {
+          margin-top: 0;
+        }
+      }
+    }
     .modal-backdrop, .modal {
       position: absolute;
     }
@@ -541,8 +706,10 @@
     }
     .apply-change-password-style {
       width: 230px;
+      display: inline-block;
+      vertical-align: bottom;
       .ant-form-item {
-        margin-bottom: 5px;
+        margin-bottom: 0;
       }
     }
     .ant-form-horizontal {
