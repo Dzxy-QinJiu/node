@@ -293,7 +293,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     }
 
                     //"试用合格"标签需要特殊处理
-                    if (query.customer_label && query.customer_label === Intl.get('common.trial.qualified', '试用合格')) {
+                    if (query.customer_label === Intl.get('common.trial.qualified', '试用合格')) {
                         query.customer_label = Intl.get('common.trial', '试用');
                         query.qualify_label = QUALIFY_LABEL_PASS;
                     }
