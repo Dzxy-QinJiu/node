@@ -969,6 +969,22 @@ var CustomerAnalysis = React.createClass({
         const charts = [{
             title: Intl.get('active.customer.trends.last.month', '近一月活跃客户趋势'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
+            argCallback: (arg) => {
+                const query = arg.query;
+
+                if (query && query.starttime && query.endtime) {
+                    query.start_time = moment().subtract(1, 'months').valueOf();
+                    query.end_time = moment().valueOf();
+                    delete query.starttime;
+                    delete query.endtime;
+                }
+            },
+            conditions: [
+                {
+                    name: 'interval',
+                    value: 'day',
+                },
+            ],
             ajaxInstanceFlag: 'lastMonthActiveCustomerTrend',
             layout: {
                 sm: 24,
@@ -1019,45 +1035,11 @@ var CustomerAnalysis = React.createClass({
             },
         }];
 
-        const emitters = [
-            {
-                instance: teamTreeEmitter,
-                event: teamTreeEmitter.SELECT_TEAM,
-                callbackArgs: [{
-                    name: 'team_ids',
-                }],
-            },
-        ];
-
-        const conditions = [
-            {
-                name: 'start_time',
-                value: moment().subtract(1, 'months').valueOf(),
-            },
-            {
-                name: 'end_time',
-                value: moment().valueOf(),
-            },
-            {
-                name: 'interval',
-                value: 'day',
-            },
-            {
-                name: 'team_ids',
-                value: '',
-            },
-            {
-                name: 'data_type',
-                value: this.getDataType(),
-                type: 'params',
-            },
-        ];
-
         return (
             <AntcAnalysis
                 charts={charts}
-                emitters={emitters}
-                conditions={conditions}
+                emitters={this.getEmitters()}
+                conditions={this.getConditions()}
                 cardContainer={false}
                 isGetDataOnMount={true}
                 style={{padding: 0}}
