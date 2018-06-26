@@ -6,10 +6,8 @@ import UserApplyStore from '../store/user-apply-store';
 import ApplyViewDetail from './apply-view-detail';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
-var Alert = require('antd').Alert;
 var classNames = require('classnames');
-var Dropdown = require('antd').Dropdown;
-var Menu = require('antd').Menu;
+import {Dropdown, Menu, Alert, Icon} from 'antd';
 var NoData = require('../../../../components/analysis-nodata');
 var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
 var UserData = require('../../../../public/sources/user-data');
@@ -202,7 +200,9 @@ var ApplyTabContent = React.createClass({
         return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
     },
     //(取消)展示有未读回复的申请列表
-    toggleUnreadApplyList: function() {
+    toggleUnreadApplyList: function(showUnreadTip) {
+        //没有未读回复，并且没有在查看未读回复列表下时，点击按钮不做处理
+        if (!showUnreadTip && !this.state.isCheckUnreadApplyList) return;
         UserApplyActions.setIsCheckUnreadApplyList(!this.state.isCheckUnreadApplyList);
         UserApplyActions.setLastApplyId('');
         setTimeout(() => {
@@ -221,28 +221,8 @@ var ApplyTabContent = React.createClass({
     },
     renderApplyList: function() {
         let unreadReplyList = this.state.unreadReplyList;
-        //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
-        let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType === 'all' && !this.state.searchKeyword;
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
-                {showUnreadTip ? (
-                    <li className="has-unread-reply-tip">
-                        <ReactIntl.FormattedMessage
-                            id="user.apply.unread.reply.check"
-                            defaultMessage={'有未读回复的申请，{check}'}
-                            values={{
-                                'check': <a onClick={this.toggleUnreadApplyList}>
-                                    {this.state.isCheckUnreadApplyList ? Intl.get('user.apply.show.all.check', '查看全部申请') : Intl.get('user.apply.check', '查看')}</a>
-                            }}
-                        />
-                    </li>
-                ) : this.state.isCheckUnreadApplyList ? (<li className="has-unread-reply-tip">
-                    <ReactIntl.FormattedMessage
-                        id="user.apply.unread.reply.null"
-                        defaultMessage={'已无未读回复的申请，{return}'}
-                        values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
-                    />
-                </li>) : null}
                 {
                     this.state.applyListObj.list.map((obj, i) => {
                         var btnClass = classNames({
@@ -288,24 +268,24 @@ var ApplyTabContent = React.createClass({
     },
     getApplyListType: function() {
         switch (this.state.applyListType) {
-        case 'all':
-            return this.state.ifClickedFilterLabel ? Intl.get('common.all', '全部') : Intl.get('user.apply.list', '申请列表');
-        case 'false':
-            return Intl.get('user.apply.false', '待审批');
-        case 'pass':
-            return Intl.get('user.apply.pass', '已通过');
-        case 'reject':
-            return Intl.get('user.apply.reject', '已驳回');
-        case 'true':
-            return Intl.get('user.apply.applied', '已审批');
-        case 'cancel':
-            return Intl.get('user.apply.backout', '已撤销');
+            case 'all':
+                return Intl.get('user.apply.all', '全部申请');
+            case 'false':
+                return Intl.get('user.apply.false', '待审批');
+            case 'pass':
+                return Intl.get('user.apply.pass', '已通过');
+            case 'reject':
+                return Intl.get('user.apply.reject', '已驳回');
+            case 'true':
+                return Intl.get('user.apply.applied', '已审批');
+            case 'cancel':
+                return Intl.get('user.apply.backout', '已撤销');
         }
     },
     menuClick: function(obj) {
         let selectType = '';
         if (obj.key === 'all') {
-            selectType = Intl.get('common.all', '全部');
+            selectType = Intl.get('user.apply.all', '全部申请');
         } else if (obj.key === 'pass') {
             selectType = Intl.get('user.apply.pass', '已通过');
         } else if (obj.key === 'false') {
@@ -328,20 +308,11 @@ var ApplyTabContent = React.createClass({
         }
     },
     refreshPage: function(e) {
+        if (!this.state.showUpdateTip) return;
         Trace.traceEvent(e, '点击了刷新');
         UserApplyActions.setLastApplyId('');
         setTimeout(() => this.fetchApplyList());
         UserApplyActions.setShowUpdateTip(false);
-    },
-    //展示更新提示
-    getUpdateTip: function() {
-        if (this.state.showUpdateTip) {
-            return (<div className="app_user_manage_apply_update"><ReactIntl.FormattedMessage
-                id="user.apply.show.update.tip" defaultMessage="数据已更新,是否"/>
-            <a href="javascript:void(0)" onClick={this.refreshPage}><ReactIntl.FormattedMessage id="common.refresh"
-                defaultMessage="刷新"/></a>
-            </div> );
-        }
     },
     //监听推送数据
     pushDataListener: function(data) {
@@ -359,7 +330,15 @@ var ApplyTabContent = React.createClass({
     handleScrollBarBottom: function() {
         this.fetchApplyList();
     },
-
+    getUnreadReplyTitle: function(showUnreadTip) {
+        let unreadReplyTitle = Intl.get('user.apply.no.unread.reply', '无未读回复');
+        if (this.state.isCheckUnreadApplyList) {//在查看未读回复列表下的提示
+            unreadReplyTitle = Intl.get('user.apply.show.all.check', '查看全部申请');
+        } else if (showUnreadTip) {
+            unreadReplyTitle = Intl.get('user.apply.unread.reply', '有未读回复');
+        }
+        return unreadReplyTitle;
+    },
     renderApplyHeader: function() {
         //如果是从url传入了参数applyId
         if (this.state.applyId) {
@@ -368,10 +347,9 @@ var ApplyTabContent = React.createClass({
             // 筛选菜单
             var menuList = (
                 UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
-                    <Menu onClick={this.menuClick} className="app_user_manage_apply_list_filter">
+                    <Menu onClick={this.menuClick} className="apply-filter-menu-list">
                         <Menu.Item key="all">
-                            <a href="javascript:void(0)"><ReactIntl.FormattedMessage id="common.all"
-                                defaultMessage="全部"/></a>
+                            <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
                         </Menu.Item>
                         <Menu.Item key="pass">
                             <a href="javascript:void(0)"><ReactIntl.FormattedMessage id="user.apply.pass"
@@ -392,37 +370,46 @@ var ApplyTabContent = React.createClass({
                     </Menu>
                 )
             );
-            //为了显示输入框而设置的class
-            var searchBarClass = classNames({
-                'input-group': true,
-                'input-group-sm': true,
-                'active': this.state.searchInputShow
-            });
+            let unreadReplyList = this.state.unreadReplyList;
+            //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
+            let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType === 'all' && !this.state.searchKeyword;
             return (
                 <div className="searchbar clearfix">
-                    {this.getUpdateTip()}
-                    <div className="pull-left">
-                        <div className={searchBarClass}>
-                            <SearchInput
-                                type="input"
-                                className="form-control"
-                                searchPlaceHolder={Intl.get('user.apply.search.placeholder', '申请人/客户名/用户名')}
-                                searchEvent={this.changeSearchInputValue}
-                            />
-                        </div>
-                    </div>
-                    <span className="pull-right">
+                    <div className="apply-type-filter" id="apply-type-container">
                         {
                             UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
-                                <Dropdown overlay={menuList}>
-                                    <a className="ant-dropdown-link" href="#">
-                                        {this.getApplyListType()} <span
-                                            className="glyphicon glyphicon-triangle-bottom"></span>
-                                    </a>
+                                <Dropdown overlay={menuList} placement="bottomCenter" getPopupContainer={() => document.getElementById('apply-type-container')}>
+                                    <span className="apply-type-filter-btn">
+                                        {this.getApplyListType()}
+                                        <span className="iconfont icon-arrow-down"/>
+                                    </span>
                                 </Dropdown>
                             )
                         }
-                    </span>
+                    </div>
+                    <div className="apply-search-wrap">
+                        <SearchInput
+                            type="input"
+                            className="form-control"
+                            searchPlaceHolder={Intl.get('user.apply.search.placeholder', '申请人/客户名/用户名')}
+                            searchEvent={this.changeSearchInputValue}
+                        />
+                    </div>
+                    {this.state.applyListType === 'all' && !this.state.searchKeyword ? (//只有在全部申请和没有搜索时才会展示刷新和查看未读回复的按钮
+                        <div className="search-btns">
+                            <span onClick={this.refreshPage}
+                                className={classNames('iconfont icon-refresh', {'has-new-apply': this.state.showUpdateTip})}
+                                title={this.state.showUpdateTip ? Intl.get('user.apply.new.refresh.tip', '有新申请，点此刷新') : Intl.get('user.apply.no.new.refresh.tip', '无新申请')}/>
+                            <div className={classNames('check-uread-reply-bg', {
+                                'active': this.state.isCheckUnreadApplyList
+                            })}>
+                                <span onClick={this.toggleUnreadApplyList.bind(this, showUnreadTip)}
+                                    className={classNames('iconfont icon-apply-message-tip', {
+                                        'has-unread-reply': showUnreadTip
+                                    })}
+                                    title={this.getUnreadReplyTitle(showUnreadTip)}/>
+                            </div>
+                        </div>) : null}
                 </div>
             );
         }

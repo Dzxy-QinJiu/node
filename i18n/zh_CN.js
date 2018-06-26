@@ -987,6 +987,7 @@ var zh_CN = {
     //通话分析-end
 
     // 用户审批start
+    'user.apply.all': '全部申请',
     'user.apply.list': '申请列表',
     'user.apply.search.placeholder': '申请人/客户名/用户名',
     'user.apply.pass': '已通过',
@@ -1048,6 +1049,7 @@ var zh_CN = {
     'user.apply.approve': '用户申请审批',
     'user.apply.approve.count': '有{approveCount}条审批消息',
     'user.apply.unread.reply': '有未读回复',
+    'user.apply.no.unread.reply': '无未读回复',
     'user.apply.refresh.reply.tip': '有新回复，点此{refreshTip}',
     'user.apply.unread.reply.check': '有未读回复的申请，{check}',
     'user.apply.unread.reply.null': '已无未读回复的申请，{return}',
@@ -1058,6 +1060,8 @@ var zh_CN = {
     'reply.pass.tip.content': '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.reject.tip.content': '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
+    'user.apply.new.refresh.tip': '有新申请，点此刷新',
+    'user.apply.no.new.refresh.tip': '无新申请',
     // 用户审批end
 
     // 在线用户start

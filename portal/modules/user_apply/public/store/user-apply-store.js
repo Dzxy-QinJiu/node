@@ -25,8 +25,6 @@ UserApplyStore.prototype.resetState = function() {
     };
     this.pageSize = 20;//一次获取的条数
     this.lastApplyId = '';//下拉加载数据时所需前一次获取的最后一个申请的id
-    //默认进去显示"申请列表"，筛选过后，再显示具体的标签
-    this.ifClickedFilterLabel = false;
     //左侧选中的要查看详情的项
     this.selectedDetailItem = {};
     //选中的查看详情的数组下标
@@ -77,7 +75,7 @@ UserApplyStore.prototype.clearUnreadReply = function(applyId) {
         //清除某条申请
         if (applyId) {
             applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
-            applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id != applyId);
+            applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id !== applyId);
         }
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
         session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
@@ -166,7 +164,6 @@ UserApplyStore.prototype.setLastApplyId = function(applyId) {
 UserApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
-    this.ifClickedFilterLabel = true;
     this.showUpdateTip = false;
     this.isCheckUnreadApplyList = false;
 };
