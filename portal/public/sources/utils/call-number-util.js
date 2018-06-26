@@ -1,30 +1,31 @@
 import userData from '../user-data';
-import crmAjax from 'MOD_DIR/crm/public//ajax/index';
+import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
-import { sessionCallNumberKey } from './consts';
-import { saveUserIdSessionKey, getSessionStorageObj } from './common-method-util';
+// 缓存在sessionStorage中的座席号的key
+const sessionCallNumberKey = 'callNumber';
 
 // 获取拨打电话的座席号
 exports.getUserPhoneNumber = function(cb) {
-    let phoneNumberInfo = {};
-    let storageValue = JSON.parse(session.get(saveUserIdSessionKey));
-    let callNumber = storageValue && storageValue[sessionCallNumberKey] ? storageValue[sessionCallNumberKey] : '';
+    let user_id = userData.getUserData().user_id;
+    let callNumberObj = {};
+    let storageObj = JSON.parse(session.get(sessionCallNumberKey));
+    let callNumber = storageObj && storageObj[user_id] ? storageObj[user_id] : '';
     if (callNumber) {
-        phoneNumberInfo.callNumber = callNumber;
-        cb(phoneNumberInfo);
+        callNumberObj.callNumber = callNumber;
+        cb(callNumberObj);
     } else {
-        let user_id = userData.getUserData().user_id;
         crmAjax.getUserPhoneNumber(user_id).then((result) => {
             if (result.phone_order) {
-                phoneNumberInfo.callNumber = result.phone_order;
-                let obj = getSessionStorageObj(sessionCallNumberKey, result.phone_order );
-                session.set(saveUserIdSessionKey, JSON.stringify(obj));
-                cb(phoneNumberInfo);
+                let storageCallNumberObj = {};
+                storageCallNumberObj[user_id] = result.phone_order;
+                session.set(sessionCallNumberKey, JSON.stringify(storageCallNumberObj));
+                callNumberObj.callNumber = result.phone_order;
+                cb(callNumberObj);
             }
         }, (errMsg) => {
-            phoneNumberInfo.errMsg = errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!');
-            cb(phoneNumberInfo);
+            callNumberObj.errMsg = errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!');
+            cb(callNumberObj);
         });
     }
 };

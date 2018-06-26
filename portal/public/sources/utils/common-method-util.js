@@ -9,10 +9,6 @@
  * @param teamMemberCountList: 所有团队成员人数统计列表[{team_id:xxx,available:{owner:xx,manager:xx,user:xx},total:xxx}]
  * @param filterManager: 是否过滤掉舆情秘书
  */
-const UserData = require('../user-data').getUserData();
-import {storageUtil} from 'ant-utils';
-const session = storageUtil.session;
-
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -175,19 +171,4 @@ exports.decodeHTML = function(text) {
     var output = temp.innerText || temp.textContent;
     temp = null;
     return output;
-};
-
-const userId = UserData && UserData.user_id || '';
-// 将当前用户user_id作为key，保存到sessionStorage中
-exports.saveUserIdSessionKey = userId;
-
-// 获取存储在sessionStorage中对象
-exports.getSessionStorageObj = function(property, callNumber) {
-    let sessionObj = {};
-    let sessionValue = session.get(userId);
-    if (sessionValue) {
-        sessionObj = JSON.parse(sessionValue);
-    }
-    sessionObj[property] = callNumber;
-    return sessionObj;
 };
