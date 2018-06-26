@@ -495,6 +495,10 @@ var CustomerAnalysis = React.createClass({
             chartType: 'funnel',
             ajaxInstanceFlag: 'customerStage',
             processData: processCustomerStageData,
+            customOption: {
+                valueField: 'showValue',
+                minSize: '5%',
+            },
         }];
 
         return (
