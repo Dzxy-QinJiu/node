@@ -22,8 +22,6 @@ var CrmRightMergePanel = require('./views/crm-right-merge-panel');
 var userData = require('../../../public/sources/user-data');
 let OrderAction = require('./action/order-actions');
 var batchPushEmitter = require('../../../public/sources/utils/emitters').batchPushEmitter;
-// 没有消息的提醒
-var NoMoreDataTip = require('../../../components/no_more_data_tip');
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {crmEmitter} from 'OPLATE_EMITTER';
@@ -35,7 +33,7 @@ import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
-var CRMAction = require('./action/basic-overview-actions');
+import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -174,17 +172,25 @@ var Crm = React.createClass({
     },
     // 获取拨打电话的座机号
     getUserPhoneNumber() {
-        let member_id = crmUtil.getMyUserId();
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
+        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        errMsg: ''
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        errMsg: callNumberInfo.errMsg
+                    });
+                }
+            } else {
                 this.setState({
-                    callNumber: result.phone_order
+                    callNumber: '',
+                    errMsg: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
                 });
             }
-        }, (errMsg) => {
-            this.setState({
-                errMsg: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-            });
         });
     },
 
@@ -451,7 +457,9 @@ var Crm = React.createClass({
                 updateCustomerDefContact: CrmAction.updateCustomerDefContact,
                 handleFocusCustomer: this.handleFocusCustomer,
                 showRightPanel: this.showRightPanel,
-                hideRightPanel: this.hideRightPanel
+                hideRightPanel: this.hideRightPanel,
+                callNumber: this.state.callNumber,
+                getCallNumberError: this.state.errMsg
             }
         });
     },

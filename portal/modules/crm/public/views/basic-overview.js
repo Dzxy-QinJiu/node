@@ -4,13 +4,10 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import TagCard from 'CMP_DIR/detail-card/tag-card';
 import SalesTeamCard from './basic_info/sales-team-card';
 import {isClueTag, isTurnOutTag, isHasCallBackTag} from '../utils/crm-util';
-import classNames from 'classnames';
 var basicOverviewStore = require('../store/basic-overview-store');
 var basicOverviewAction = require('../action/basic-overview-actions');
 var SalesTeamStore = require('../../../sales_team/public/store/sales-team-store');
-var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
-var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
-import {Tag, Spin, message} from 'antd';
+import {message} from 'antd';
 var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
@@ -24,6 +21,7 @@ import CustomerRecord from './customer_record';
 import ScheduleItem from './schedule/schedule-item';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
+import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
 
 var BasicOverview = React.createClass({
     getInitialState: function() {
@@ -31,14 +29,43 @@ var BasicOverview = React.createClass({
             ...basicOverviewStore.getState(),
             salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
             showDetailFlag: false,//控制客户详情展示隐藏的标识
-            recommendTags: []//推荐标签
+            recommendTags: [],//推荐标签
+            callNumber: this.props.callNumber || '', // 座机号
+            getCallNumberError: '',
         };
     },
     onChange: function() {
         this.setState({...basicOverviewStore.getState()});
     },
+    // 获取拨打电话的座席号
+    getUserPhoneNumber: function() {
+        CallNumberUtil.getUserPhoneNumber( callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
+                this.setState({
+                    callNumber: '',
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                });
+            }
+        });
+    },
     componentDidMount: function() {
         basicOverviewStore.listen(this.onChange);
+        //  获取拨打电话的座席号
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         basicOverviewAction.getBasicData(this.props.curCustomer);
         this.getRecommendTags();
         setTimeout(() => {
@@ -242,6 +269,8 @@ var BasicOverview = React.createClass({
             refreshCustomerList={this.props.refreshCustomerList}
             refreshSrollbar={this.refreshSrollbar}
             changeActiveKey={this.props.changeActiveKey}
+            callNumber={this.state.callNumber}
+            getCallNumberError={this.state.getCallNumberError}
         />;
     },
     toggleScheduleContact(item, flag){
@@ -276,13 +305,17 @@ var BasicOverview = React.createClass({
         });
     },
     renderScheduleItem: function(item) {
-        return (<ScheduleItem item={item}
-            hideDelete={true}
-            hasSplitLine={false}
-            isMerge={this.props.isMerge}
-            toggleScheduleContact={this.toggleScheduleContact}
-            handleItemStatus={this.handleItemStatus}
-        />);
+        return (
+            <ScheduleItem
+                item={item}
+                hideDelete={true}
+                hasSplitLine={false}
+                isMerge={this.props.isMerge}
+                toggleScheduleContact={this.toggleScheduleContact}
+                handleItemStatus={this.handleItemStatus}
+                callNumber={this.state.callNumber}
+                getCallNumberError={this.state.getCallNumberError}
+            />);
     },
     renderUnComplateScheduleList: function() {
         if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
