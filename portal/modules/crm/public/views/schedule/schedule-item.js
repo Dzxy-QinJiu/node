@@ -134,7 +134,7 @@ class ScheduleItem extends React.Component {
                                             {obj.name || ''}
                                             <span className='contact-phone'>{obj.phone}</span>
                                             {this.props.callNumber ?
-                                                <span className='iconfont icon-call-out'
+                                                <span className='iconfont icon-phone-call-out'
                                                     title={Intl.get('crm.click.call.phone', '点击拨打电话')}></span> : null}
                                         </Button>);
                                 })}
