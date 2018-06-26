@@ -21,7 +21,7 @@ var constantUtil = require('../util/constant');
 //这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
 var delayConstant = constantUtil.DELAY.TIMERANG;
 import Analysis from 'CMP_DIR/analysis';
-import { processCustomerStageChartData, processOrderStageChartData } from 'CMP_DIR/analysis/utils';
+import { processCustomerStageData, processOrderStageData } from 'PUB_DIR/sources/utils/analysis-util';
 import { AntcHorizontalStageChart, AntcTable } from 'antc';
 import { Button, Spin, Alert } from 'antd';
 const Spinner = require('CMP_DIR/spinner');
@@ -487,7 +487,7 @@ var CustomerAnalysis = React.createClass({
             },
             chartType: 'funnel',
             ajaxInstanceFlag: 'customerStage',
-            processData: AntcAnalysis.utils.processCustomerStageData,
+            processData: processCustomerStageData,
         }];
 
         return (
@@ -502,7 +502,7 @@ var CustomerAnalysis = React.createClass({
         );
     },
     processOrderStageData: function(data) {
-        return AntcAnalysis.utils.processOrderStageData(this.state.salesStageList, data);
+        return processOrderStageData(this.state.salesStageList, data);
     },
     getStageChart: function() {
         const charts = [{

@@ -8,6 +8,7 @@ import { AntcAnalysis } from 'antc';
 import AnalysisFilter from 'CMP_DIR/analysis/filter';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { parseAmount } from 'LIB_DIR/func';
+import { processCustomerStageData, processOrderStageData } from 'PUB_DIR/sources/utils/analysis-util';
 const TopNav = require('CMP_DIR/top-nav');
 const AnalysisMenu = require('CMP_DIR/analysis_menu');
 const userData = require('PUB_DIR/sources/user-data');
@@ -82,7 +83,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
     //处理订单阶段数据
     processOrderStageData: function(data) {
-        return AntcAnalysis.utils.processOrderStageData(this.state.stageList, data);
+        return processOrderStageData(this.state.stageList, data);
     },
 
     //获取图表定义
@@ -180,7 +181,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             title: Intl.get('oplate_customer_analysis.customer_stage', '客户阶段统计'),
             url: '/rest/analysis/customer/stage/label/:auth_type/summary',
             chartType: 'funnel',
-            processData: AntcAnalysis.utils.processCustomerStageData,
+            processData: processCustomerStageData,
             customOption: {
                 valueField: 'showValue',
                 minSize: '5%',
