@@ -176,15 +176,18 @@ var Crm = React.createClass({
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
                     this.setState({
-                        callNumber: callNumberInfo.callNumber
+                        callNumber: callNumberInfo.callNumber,
+                        errMsg: ''
                     });
                 } else if (callNumberInfo.errMsg) {
                     this.setState({
+                        callNumber: '',
                         errMsg: callNumberInfo.errMsg
                     });
                 }
             } else {
                 this.setState({
+                    callNumber: '',
                     errMsg: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
                 });
             }

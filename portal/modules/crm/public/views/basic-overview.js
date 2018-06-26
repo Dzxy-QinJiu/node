@@ -43,15 +43,18 @@ var BasicOverview = React.createClass({
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
                     this.setState({
-                        callNumber: callNumberInfo.callNumber
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
                     });
                 } else if (callNumberInfo.errMsg) {
                     this.setState({
+                        callNumber: '',
                         getCallNumberError: callNumberInfo.errMsg
                     });
                 }
             } else {
                 this.setState({
+                    callNumber: '',
                     getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
                 });
             }
