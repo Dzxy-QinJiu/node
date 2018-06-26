@@ -272,9 +272,9 @@ var CustomerAnalysis = React.createClass({
                 instance: dateSelectorEmitter,
                 event: dateSelectorEmitter.SELECT_DATE,
                 callbackArgs: [{
-                    name: 'start_time',
+                    name: 'starttime',
                 }, {
-                    name: 'end_time',
+                    name: 'endtime',
                 }],
             },
             {
