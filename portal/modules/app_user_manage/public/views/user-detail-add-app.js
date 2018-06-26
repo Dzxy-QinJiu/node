@@ -48,6 +48,7 @@ var wrapperCol = {span: 11};
 
 var CustomerSuggest = require('./customer_suggest/customer_suggest');
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
+const USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP = 'user-detail-add-app-customer-suggest-wrap';
 
 var UserDetailAddApp = React.createClass({
     getDefaultProps: function() {
@@ -1043,16 +1044,19 @@ var UserDetailAddApp = React.createClass({
             return null;
         }
         return (
-            <FormItem
-                label={Intl.get('common.belong.customer', '所属客户')}
-                labelCol={labelCol}
-                wrapperCol={wrapperCol}
-            >
-                <CustomerSuggest
-                    show_error={this.state.show_customer_error}
-                    onCustomerChoosen={this.onCustomerChoosen}
-                />
-            </FormItem>
+            <div id={USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP}>
+                <FormItem
+                    label={Intl.get('common.belong.customer', '所属客户')}
+                    labelCol={labelCol}
+                    wrapperCol={wrapperCol}
+                >
+                    <CustomerSuggest
+                        show_error={this.state.show_customer_error}
+                        onCustomerChoosen={this.onCustomerChoosen}
+                        customerSuggestWrapId={USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP}
+                    />
+                </FormItem>
+            </div>
         );
     },
     hasRolesBlock: function() {

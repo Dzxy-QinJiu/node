@@ -19,6 +19,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+let ASSIGNWRAPID = 'assign-clue-select-customer-wrap';
 require('../css/assign-associate-wrap.less');
 class AssignClueAndSelectCustomer extends React.Component {
     constructor(props) {
@@ -211,6 +212,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                         isShowUpdateOrClose={this.isShowUpdateOrClose}
                         noJumpToCrm={true}
                         addAssignedCustomer={this.addAssignedCustomer}
+                        customerSuggestWrapId={ASSIGNWRAPID}
                     />
                 </div>
             </div>
@@ -479,7 +481,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         let customerOfCurUser = this.state.customerOfCurUser;
         let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
-            <div className="assign-associate-wrap">
+            <div className="assign-associate-wrap" id={ASSIGNWRAPID}>
                 <div className="sales-assign-wrap">
                     <h5>{Intl.get('cluecustomer.trace.person', '跟进人')}</h5>
                     <div className="sales-assign-content">

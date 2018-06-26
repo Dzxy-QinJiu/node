@@ -28,7 +28,9 @@ var CustomerSuggest = React.createClass({
             //告诉调用的父组件，隐藏错误提示
             hideCustomerError: function() {},
             //搜索关键词
-            keyword: ''
+            keyword: '',
+            //外层的id
+            customerSuggestWrapId: ''
         };
     },
     componentWillReceiveProps: function(nextProps) {
@@ -60,6 +62,11 @@ var CustomerSuggest = React.createClass({
                 keyword: nextProps.keyword
             });
         }
+        if (this.props.customerSuggestWrapId !== nextProps.customerSuggestWrapId){
+            this.setState({
+                customerSuggestWrapId: nextProps.customerSuggestWrapId
+            });
+        }
     },
     getInitialState: function() {
         return {
@@ -86,7 +93,8 @@ var CustomerSuggest = React.createClass({
                 id: this.props.customer_id,
                 name: this.props.customer_name
             },
-            keyword: this.props.customer_name
+            keyword: this.props.customer_name,
+            customerSuggestWrapId: this.props.customerSuggestWrapId || 'app',
         };
     },
     customerAjaxReq: null,
@@ -313,6 +321,8 @@ var CustomerSuggest = React.createClass({
                 customer_searchbox_error: this.props.show_error && this.props.required
             });
 
+            var wrapSelectId = this.state.customerSuggestWrapId;
+
             return (
                 <div ref="customer_searchbox" className={wrapClassName}>
                     <Select
@@ -325,6 +335,7 @@ var CustomerSuggest = React.createClass({
                         dropdownMatchSelectWidth={false}
                         dropdownClassName="customer_combobox_search"
                         notFoundContent={Intl.get('common.no.data', '暂无数据')}
+                        getPopupContainer={() => document.getElementById(wrapSelectId)}
                     >
                         {
                             this.state.list.map(function(item) {
