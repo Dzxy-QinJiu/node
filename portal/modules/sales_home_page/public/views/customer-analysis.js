@@ -903,6 +903,22 @@ var CustomerAnalysis = React.createClass({
         const charts = [{
             title: Intl.get('effective.customer.statistics', '有效客户统计'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
+            argCallback: (arg) => {
+                const query = arg.query;
+
+                if (query && query.starttime && query.endtime) {
+                    query.start_time = query.starttime;
+                    query.end_time = query.endtime;
+                    delete query.starttime;
+                    delete query.endtime;
+                }
+            },
+            conditions: [
+                {
+                    name: 'interval',
+                    value: 'day',
+                },
+            ],
             chartType: 'table',
             layout: {
                 sm: 24,
@@ -937,54 +953,11 @@ var CustomerAnalysis = React.createClass({
             },
         }];
 
-        const emitters = [
-            {
-                instance: dateSelectorEmitter,
-                event: dateSelectorEmitter.SELECT_DATE,
-                callbackArgs: [{
-                    name: 'start_time',
-                }, {
-                    name: 'end_time',
-                }],
-            },
-            {
-                instance: teamTreeEmitter,
-                event: teamTreeEmitter.SELECT_TEAM,
-                callbackArgs: [{
-                    name: 'team_ids',
-                }],
-            },
-        ];
-
-        const conditions = [
-            {
-                name: 'start_time',
-                value: this.props.startTime,
-            },
-            {
-                name: 'end_time',
-                value: this.props.endTime,
-            },
-            {
-                name: 'interval',
-                value: 'day',
-            },
-            {
-                name: 'team_ids',
-                value: '',
-            },
-            {
-                name: 'data_type',
-                value: this.getDataType(),
-                type: 'params',
-            },
-        ];
-
         return (
             <AntcAnalysis
                 charts={charts}
-                emitters={emitters}
-                conditions={conditions}
+                emitters={this.getEmitters()}
+                conditions={this.getConditions()}
                 cardContainer={false}
                 isGetDataOnMount={true}
                 style={{padding: 0}}
