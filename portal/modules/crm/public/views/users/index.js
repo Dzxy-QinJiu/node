@@ -121,7 +121,7 @@ class CustomerUsers extends React.Component {
             lastUserId: lastUserId,
             crmUserList: crmUserList,
             total: totalSize,
-            listenScrollBottom: this.state.total > crmUserList.length
+            listenScrollBottom: totalSize > crmUserList.length
         });
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
     }
