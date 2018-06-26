@@ -482,6 +482,13 @@ var CustomerAnalysis = React.createClass({
         const charts = [{
             title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
             url: '/rest/analysis/customer/stage/label/:auth_type/summary',
+            argCallback: (arg) => {
+                const query = arg.query;
+
+                if (query && query.starttime) {
+                    query.starttime = 0;
+                }
+            },
             layout: {
                 sm: 24,
             },
