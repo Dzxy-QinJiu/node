@@ -27,13 +27,13 @@ exports.APPLY_LIST_LAYOUT_CONSTANTS = {
 };
 //申请详情滚动条参数
 exports.APPLY_DETAIL_LAYOUT_CONSTANTS = {
-    TOP_DELTA: 150,
-    BOTTOM_DELTA: 102
+    TOP_DELTA: 64,
+    BOTTOM_DELTA: 100
 };
 //申请详情滚动条-表单
 exports.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM = {
     //顶部距离
-    TOP_DELTA: 150,
+    TOP_DELTA: 64,
     //底部距离
     BOTTOM_DELTA: 100,
     //订单号高度
