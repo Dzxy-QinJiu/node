@@ -1238,7 +1238,10 @@ var zh_CN = {
     'crm.213': '未分配客户',
     'crm.214': '添加联系计划',
     'crm.215': '共{count}个线索',
-
+    'crm.216': '添加成功',
+    'crm.217': '获取列表失败',
+    'crm.218': '修改成功',
+    'crm.219': '修改失败',
     'crm.over.day.without.contact': '超{day}天未联系',
     'crm.customer.interested': '添加关注',
     'crm.customer.uninterested': '取消关注',

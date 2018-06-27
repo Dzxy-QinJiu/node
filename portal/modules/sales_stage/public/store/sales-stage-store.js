@@ -15,23 +15,8 @@ function SalesStageStore() {
     this.salesStageFormShow = false;
     this.salesStageEditOrder = false;
     this.isSavingSalesStage = false;
-
-    this.bindListeners({
-        getSalesStageList: SalesStageActions.getSalesStageList,
-        addSalesStage: SalesStageActions.addSalesStage,
-        editSalesStage: SalesStageActions.editSalesStage,
-        saveSalesStageOrder: SalesStageActions.saveSalesStageOrder,
-        deleteSalesStage: SalesStageActions.deleteSalesStage,
-        showSalesStageForm: SalesStageActions.showSalesStageForm,
-        hideSalesStageeForm: SalesStageActions.hideSalesStageeForm,
-        showSalesStageModalDialog: SalesStageActions.showSalesStageModalDialog,
-        hideSalesStageModalDialog: SalesStageActions.hideSalesStageModalDialog,
-        showSalesStageEditOrder: SalesStageActions.showSalesStageEditOrder,
-        hideSalesStageEditOrder: SalesStageActions.hideSalesStageEditOrder,
-        salesStageOrderUp: SalesStageActions.salesStageOrderUp,
-        changeIsSavingSalesStage: SalesStageActions.changeIsSavingSalesStage,
-        salesStageOrderDown: SalesStageActions.salesStageOrderDown
-    });
+    this.saveStageErrMsg = '';
+    this.bindActions(SalesStageActions);
 
     this.exportPublicMethods({
         getSalesStageListData: this.getSalesStageListData,
@@ -79,19 +64,27 @@ SalesStageStore.prototype.getSalesStageList = function(salesStageList) {
 //添加销售阶段
 SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
     var _this = this;
-    if (typeof salesStageCreated !== 'string') {
+    if(salesStageCreated.loading){
+        this.isSavingSalesStage = true;
+    } else if (!salesStageCreated.error) {
         $.each(salesStageCreated, function(i, salesStage) {
             _this.salesStageList.push(salesStage);
         });
+        this.isSavingSalesStage = false;
+        this.salesStageFormShow = false;
+
+    }else{
+        this.saveStageErrMsg = salesStageCreated.errorMsg;
+        this.isSavingSalesStage = false;
     }
-    this.salesStageFormShow = false;
 };
 
 //修改销售阶段
 SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
-
     var _this = this;
-    if (typeof salesStageModified !== 'string') {
+    if(salesStageModified.loading){
+        this.isSavingSalesStage = true;
+    }else if (!salesStageModified.error) {
         $.each(salesStageModified, function(i, salesStage) {
             var target = _.find(_this.salesStageList, function(item) {
                 if (item.id === salesStage.id) {
@@ -102,9 +95,13 @@ SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
                 _.extend(target, salesStage);
             }
         });
+        this.isSavingSalesStage = false;
+        this.salesStageFormShow = false;
+    }else {
+        this.saveStageErrMsg = salesStageModified.errorMsg;
+        this.isSavingSalesStage = false;
     }
-
-    this.salesStageFormShow = false;
+    // this.getErrMsg = salesStageModified.errorMsg;
 };
 
 SalesStageStore.prototype.saveSalesStageOrder = function(salesStageModified) {
@@ -183,7 +180,10 @@ SalesStageStore.prototype.showSalesStageForm = function(salesStage) {
 //隐藏右侧编辑面板
 SalesStageStore.prototype.hideSalesStageeForm = function() {
     this.salesStageFormShow = false;
+    this.saveStageErrMsg = '';
+
 };
+
 
 //展示删除销售阶段提示
 SalesStageStore.prototype.showSalesStageModalDialog = function(salesStage) {

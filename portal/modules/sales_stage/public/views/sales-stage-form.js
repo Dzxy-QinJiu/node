@@ -1,5 +1,9 @@
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
+import { Alert } from 'antd';
+
+var SalesStageStore = require('../store/sales-stage-store');
+
 /**
  * Created by jinfeng on 2015/12/28.
  */
@@ -45,6 +49,8 @@ var SalesStageForm = React.createClass({
     },
     getInitialState: function() {
         return {
+            ...SalesStageStore.getState(),
+
             status: {
                 id: {},
                 name: {},
@@ -62,7 +68,15 @@ var SalesStageForm = React.createClass({
         stateData.salesStageFormShow = nextProps.salesStageFormShow;
         this.setState(stateData);
     },
+    onChange: function() {
+        this.setState(SalesStageStore.getState());
+    },
+    componentWillUnmount: function() {
+        SalesStageStore.unlisten(this.onChange);
+    },
     componentDidUpdate: function() {
+        var _this = this;
+        SalesStageStore.listen(_this.onChange);
         if (this.state.formData.id) {
             this.refs.validation.validate(noop);
         }
@@ -104,6 +118,23 @@ var SalesStageForm = React.createClass({
         var _this = this;
         var formData = this.state.formData;
         var status = this.state.status;
+        var errorMsg = this.state.saveStageErrMsg;
+
+        //如果存在添加失败或者修改失败的错误信息，则提示
+        const renderErr = () => {
+            if (errorMsg) {
+                return (
+                    <div className="alert-error-msg">
+                        <Alert
+                            message={errorMsg}
+                            type="error"
+                            showIcon
+                        />
+                    </div>
+                );
+
+            }
+        };
         return (
             <RightPanel showFlag={this.state.salesStageFormShow} data-tracename="添加/编辑销售阶段">
                 <RightPanelClose onClick={this.handleCancel} data-tracename="关闭添加/编辑销售阶段"></RightPanelClose>
@@ -149,9 +180,9 @@ var SalesStageForm = React.createClass({
                                     />
                                 </Validator>
                             </FormItem>
-
                             <FormItem
                                 wrapperCol={{span: 23}}>
+                                {renderErr()}
                                 <RightPanelCancel onClick={this.handleCancel} data-tracename="取消销售阶段的添加/编辑">
                                     <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
                                 </RightPanelCancel>

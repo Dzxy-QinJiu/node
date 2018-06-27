@@ -1,5 +1,7 @@
 var salesStageAjax = require('../ajax/sales-stage-ajax');
 var userData = require('../../../../public/sources/user-data');
+import { message } from 'antd';
+
 function SalesStageActions() {
     this.generateActions({
         'getSalesStageList': 'getSalesStageList',
@@ -23,6 +25,8 @@ function SalesStageActions() {
         var _this = this;
         salesStageAjax.getSalesStageList().then(function(salesStageList) {
             _this.dispatch(salesStageList.result);
+        },function() {
+            message.error(Intl.get('crm.217','获取列表失败！'));
         });
     };
 
@@ -31,8 +35,13 @@ function SalesStageActions() {
         var _this = this;
         var salesStageArray = [];
         salesStageArray.push(salesStage);
+        _this.dispatch({loading: true,error: false});
         salesStageAjax.addSalesStage(salesStageArray).then(function(salesStageCreated) {
             _this.dispatch(salesStageCreated.result);
+            message.success(Intl.get('crm.216','添加成功！'));
+            _this.dispatch({loading: false,error: false,});
+        },function(errorMsg) {
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
@@ -43,6 +52,9 @@ function SalesStageActions() {
         salesStageArray.push(salesStage);
         salesStageAjax.editSalesStage(salesStageArray).then(function(salesStageModified) {
             _this.dispatch(salesStageModified.result);
+            message.success(Intl.get('crm.218','修改成功！'));
+        },function(errorMsg) {
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
@@ -61,7 +73,13 @@ function SalesStageActions() {
         idArray.push(salesStage.id);
         salesStageAjax.deleteSalesStage(idArray).then(function() {
             _this.dispatch(salesStage);
+            message.success(Intl.get('crm.138','删除成功！'));
+
+        },function(errorMsg) {
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+            message.error(Intl.get('crm.139','删除失败！'));
         });
+
     };
 
     //展示右侧编辑面板

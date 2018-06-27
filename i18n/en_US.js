@@ -1227,6 +1227,10 @@ var en_US = {
     'crm.212': 'Please select labels',//请选择标签
     'crm.213': 'Undistributed Customer',//未分配客户
     'crm.215': 'A total of {count} clues',//共{count}个线索
+    'crm.216': 'Add failed',//添加成功
+    'crm.217': 'Failed to get the list',//获取列表失败
+    'crm.218': 'Edit successfully',//修改成功
+    'crm.219': 'Edit Failed',//修改失败
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
     'crm.administrative.level': 'Administrative level',//行政级别
