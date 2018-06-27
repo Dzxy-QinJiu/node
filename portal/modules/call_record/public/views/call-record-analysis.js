@@ -34,6 +34,10 @@ import {handleTableData} from 'CMP_DIR/analysis/export-data-util';
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import { MAP_PROVINCE } from 'LIB_DIR/consts';
 import {AntcChart} from 'antc';
+import { AntcAnalysis } from 'antc';
+var hours = _.range(24);
+var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
+import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -620,26 +624,27 @@ var CallRecordAnalyis = React.createClass({
                         <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
                     </RadioGroup>
                 </div>
-                {this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
-                    <div>
-                        {
-                            this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
-                                // 通话数量
-                                this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true, CALL_RADIO_VALUES.COUNT) :
-                                // 通话时长
-                                this.renderCallChart(this.state.eachTeamCallList.list, this.durationTooltip, true,CALL_RADIO_VALUES.DURATION)
-                        }
-                    </div>
-                    : (<div>
-                        {
-                            this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
-                            // 通话数量
-                                this.renderCallChart(this.state.callList.count, this.countTooltip) :
-                            // 通话时长
-                                this.renderCallChart(this.state.callList.duration, this.durationTooltip)
-                        }
-                    </div>)}
-
+                <div style={{'height': this.state.trendHeight}}>
+                    {this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
+                        <div>
+                            {
+                                this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
+                                    // 通话数量
+                                    this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true, CALL_RADIO_VALUES.COUNT) :
+                                    // 通话时长
+                                    this.renderCallChart([], this.durationTooltip, true,CALL_RADIO_VALUES.DURATION)
+                            }
+                        </div>
+                        : (<div>
+                            {
+                                this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
+                                    // 通话数量
+                                    this.renderCallChart(this.state.callList.count, this.countTooltip) :
+                                    // 通话时长
+                                    this.renderCallChart([], this.durationTooltip)
+                            }
+                        </div>)}
+                </div>
             </div>
         );
     },
@@ -658,6 +663,31 @@ var CallRecordAnalyis = React.createClass({
         }
     },
 
+    getCallCounAndRecordOptions: function(data,dataName,dataType) {
+        var dataMax = _.maxBy(data, (item) => dataType === 'time' ? item.time : item.count);
+        var countMax = 0;
+        if (dataMax) {
+            countMax = dataType === 'time' ? dataMax.time : dataMax.count;
+        }
+        return {
+            tooltip: {
+                formatter: function(obj) {
+                    var weekdaysIndex = obj.seriesIndex;
+                    var hour = obj.value[0];
+                    var data = obj.value[1];
+                    if (dataType === 'time') {
+                        //时间格式的需要将秒数转成x小时x分x秒
+                        let timeObj = timeUtil.secondsToHourMinuteSecond(data);
+                        data = timeObj.timeDescr;
+                    }
+                    return `${days[weekdaysIndex]}${hour}${Intl.get('crm.75', '点')}
+                         <br/>
+                         ${dataName}：${data}`;
+                }
+            },
+        };
+    },
+
     // 渲染通话时段(时长/数量)的统计
     renderCallIntervalChart() {
         if (this.state.callIntervalData.loading) {
@@ -667,16 +697,42 @@ var CallRecordAnalyis = React.createClass({
         }
         let data = this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ? this.state.callIntervalData.countList : this.state.callIntervalData.timeList;
         if (_.isArray(data) && data.length) {
+            var recordCountCharts = [{
+                title: Intl.get('call.record.count', '通话数量统计：'),
+                chartType: 'scatter',
+                data: data,
+                layout: {
+                    sm: 24,
+                },
+                option: this.getCallCounAndRecordOptions(data, Intl.get('sales.home.call.cout', '通话数量')),
+                yAxisLabels: days,
+                xAxisLabels: hours,
+            }];
+            var recordRecordCharts = [{
+                title: Intl.get('call.record.time', '通话时长统计：'),
+                chartType: 'scatter',
+                data: data,
+                layout: {
+                    sm: 24,
+                },
+                option: this.getCallCounAndRecordOptions(data, Intl.get('call.record.call.duration', '通话时长'),'time'),
+                yAxisLabels: days,
+                xAxisLabels: hours,
+            }];
+
             return (this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ?
-                <ScatterChart list={data}
-                    title={Intl.get('call.record.count', '通话数量统计：')}
-                    dataName={Intl.get('sales.home.call.cout', '通话数量')}
+                <AntcAnalysis
+                    charts = {recordCountCharts}
+                    chartHeight={410}
+                    resultType='success'
                 /> :
-                <ScatterChart list={data}
-                    title={Intl.get('call.record.time', '通话时长统计：')}
-                    dataName={Intl.get('call.record.call.duration', '通话时长')}
-                    dataType="time"
-                />);
+                <AntcAnalysis
+                    charts = {recordRecordCharts}
+                    chartHeight={410}
+                    resultType='success'
+                />
+
+            );
         } else {
             if (this.state.callIntervalData.errMsg) {//错误提示
                 return (
@@ -814,12 +870,21 @@ var CallRecordAnalyis = React.createClass({
     },
 
     renderCallChart(dataList, charTips, isMutileLine, lineType) {
+        const charts = [{
+            chartType: 'line',
+            data: dataList,
+            layout: {
+                sm: 24,
+            },
+            option: this.getCallTrendEchartOptions(dataList, charTips, isMutileLine, lineType),
+            noExportCsv: true
+        }];
         return (
-            <AntcChart
-                height={this.state.trendHeight}
-                width={this.state.trendWidth}
-                option={this.getCallTrendEchartOptions(dataList, charTips, isMutileLine, lineType)}
+            <AntcAnalysis
+                charts={charts}
+                chartHeight={this.state.trendHeight}
                 resultType='success'
+                cardContainer={false}
             />
         );
     },
@@ -1012,7 +1077,7 @@ var CallRecordAnalyis = React.createClass({
             ]
         };
     },
-    getPieOptions: function(dataList, data) {
+    getPieOptions: function(dataList) {
         return {
             tooltip: {
                 trigger: 'item',
@@ -1027,11 +1092,8 @@ var CallRecordAnalyis = React.createClass({
 
             series: [
                 {
-                    // todo  type: 'pie' 组件中饼状图的option没有进行覆盖，等这个问题修改了再删除type: 'pie'
-                    type: 'pie',
                     radius: '55%',
                     center: ['50%', '60%'],
-                    data: data,
                     label: {
                         normal: {
                             formatter: '{c}'
@@ -1058,7 +1120,6 @@ var CallRecordAnalyis = React.createClass({
             };
         });
     },
-
     // 114占比
     renderCallRateChar(type) {
         if (this.state.callRateList[type].loading) {
@@ -1067,8 +1128,7 @@ var CallRecordAnalyis = React.createClass({
                     <Spinner />
                 </div>
             );
-        }
-        else {
+        } else {
             let rateArray = [];
             if (this.state.teamList.list.length) {
                 rateArray = _.map(this.state.callRateList[type].list, 'rate');
@@ -1101,8 +1161,12 @@ var CallRecordAnalyis = React.createClass({
             }
             else {
                 var data = [];
+                var title = Intl.get('call.record.service.phone.rate', '114占比统计');
                 var callListType = this.state.callRateList[type];
                 var dataList = callListType && _.isArray(callListType.list) ? callListType.list : [];
+                if (type === 'service'){
+                    title = Intl.get('call.record.servicecall', '客服电话统计：');
+                }
                 if (this.state.teamList.list.length){
                     data = this.state.callRateList[type].list.map(x => {
                         return [x.name,x.num,x.rate];
@@ -1110,22 +1174,38 @@ var CallRecordAnalyis = React.createClass({
                 }else{
                     data = this.getPieData(this.state.callRateList[type].list);
                 }
-
+                const barCharts = [{
+                    title: title,
+                    chartType: 'bar',
+                    data: data,
+                    layout: {
+                        sm: 24,
+                    },
+                    option: this.getOneOneFourAndServiceHasTeamOptions(dataList),
+                    noExportCsv: true
+                }];
+                const pieCharts = [{
+                    title: title,
+                    chartType: 'pie',
+                    data: data,
+                    layout: {
+                        sm: 24,
+                    },
+                    option: this.getPieOptions(dataList),
+                    noExportCsv: true
+                }];
                 return (
                     <div>
                         {this.state.teamList.list.length ? (
-                            <AntcChart
-                                height="410"
-                                chartType="bar"
-                                data={data}
-                                option={this.getOneOneFourAndServiceHasTeamOptions(dataList)}
+                            <AntcAnalysis
+                                charts={barCharts}
+                                chartHeight={410}
                                 resultType='success'
                             />
                         ) : (
-                            // todo  chartType='pie'  data={data} 组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
-                            <AntcChart
-                                height='400'
-                                option={this.getPieOptions(dataList, data)}
+                            <AntcAnalysis
+                                charts={pieCharts}
+                                chartHeight={400}
                                 resultType='success'
                             />
                         )}
@@ -1185,12 +1265,24 @@ var CallRecordAnalyis = React.createClass({
             else {
                 var dataList = this.state.customerData.customerPhase;
                 var data = this.getPieData(dataList);
-                // todo  chartType='pie'     data={this.getPieData(data)} 组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
+                var charts = [
+                    {
+                        title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
+                        chartType: 'pie',
+                        data: data,
+                        layout: {
+                            sm: 24,
+                        },
+                        option: this.getPieOptions(dataList),
+                        noExportCsv: true
+
+                    }
+                ];
                 return (
                     <div>
-                        <AntcChart
-                            height="400"
-                            option={this.getPieOptions(dataList, data)}
+                        <AntcAnalysis
+                            charts={charts}
+                            chartHeight={400}
                             resultType='success'
                         />
                     </div>
@@ -1233,12 +1325,24 @@ var CallRecordAnalyis = React.createClass({
             else {
                 var dataList = this.state.customerData.OrderPhase;
                 var data = this.getPieData(dataList);
-                // todo  chartType='pie'    data={this.getPieData(data)}组件中饼状图的option没有进行覆盖，等这个问题修改了再加上chartType
+                var charts = [
+                    {
+                        title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
+                        chartType: 'pie',
+                        data: data,
+                        layout: {
+                            sm: 24,
+                        },
+                        option: this.getPieOptions(dataList),
+                        noExportCsv: true
+
+                    }
+                ];
                 return (
                     <div>
-                        <AntcChart
-                            height="400"
-                            option={this.getPieOptions(dataList,data)}
+                        <AntcAnalysis
+                            charts={charts}
+                            chartHeight={400}
                             resultType='success'
                         />
                     </div>
@@ -1290,9 +1394,6 @@ var CallRecordAnalyis = React.createClass({
                             })}
                             <div className="call-service-rate col-xs-6">
                                 <div className="call-rate">
-                                    <div className="call-rate-title">
-                                        {Intl.get('call.record.service.phone.rate', '114占比统计')}:
-                                    </div>
                                     {this.renderCallRateChar('114')}
                                 </div>
                             </div>
@@ -1300,9 +1401,6 @@ var CallRecordAnalyis = React.createClass({
                         <div className="col-xs-12">
                             <div className="call-service-rate col-xs-6">
                                 <div className="call-rate">
-                                    <div className="call-rate-title">
-                                        {Intl.get('call.record.servicecall', '客服电话统计：')}
-                                    </div>
                                     {this.renderCallRateChar('service')}
                                 </div>
                             </div>
@@ -1327,27 +1425,18 @@ var CallRecordAnalyis = React.createClass({
                         <div className="col-xs-12">
                             <div className="call-stage-distribute col-xs-6">
                                 <div className="call-stage">
-                                    <div className="call-stage-title">
-                                        {Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计')}: 
-                                    </div>
                                     {this.renderCustomerPhase()}
                                 </div>
                             </div>
                             <div className="call-stage-distribute col-xs-6">
                                 <div className="call-sale">
-                                    <div className="call-sale-title">
-                                        {Intl.get('oplate_customer_analysis.11', '订单阶段统计')}:
-                                    </div>
                                     {this.renderOrderPhase()}
                                 </div>
                             </div>
                         </div>
                         <div className="col-xs-12">
                             <div className="call-zone-distribute">
-                                <div className="call-zone-title">
-                                    {Intl.get('call.analysis.zone.distrute', '客户的地域分布')}:
-                                </div>
-                                {this.renderCustomerZoneDistribute()}
+                                {this.renderCustomerZoneDistribute(Intl.get('call.analysis.zone.distrute', '客户的地域分布'))}
                             </div>
                         </div>
                     </div>

@@ -121,7 +121,7 @@ var ScatterChart = React.createClass({
             });
 
         });
-
+        //todo 没有
         echarts.util.each(data, (dataItem) => {
             let value = this.props.dataType === 'time' ? dataItem.time : dataItem.count;
             option.series[dataItem.week].data.push([dataItem.hour, value]);
