@@ -51,7 +51,7 @@ const CUSTOMER_TYPE_OPTIONS = [
     },
     {
         value: 'training',
-        name: Intl.get('oplate_customer_analysis.type.trianing', '培训用户')
+        name: Intl.get('oplate_customer_analysis.type.training', '培训用户')
     }
 ];
 
