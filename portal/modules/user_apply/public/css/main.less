@@ -4,7 +4,7 @@
 @import '../../../../components/antd-table-pagination/index.less';
 @import '../../../../components/ModalDialog/modalDialog-zh_CN.less';
 
-@apply_top_height: 64px; //头部的高度
+@apply-top-height: 64px; //头部的高度
 
 .right-pannel-default {
   .user_manage_userform {
@@ -335,8 +335,8 @@
 }
 
 .app_user_manage_apply_wrap.user-manage-v2 {
-  @font_color: #999999;
-  @apply_active_color: #5999c9;
+  @font-color: #999999;
+  @apply-active-color: #5999c9;
   @bordercolor: #e1e9eb;
   padding: 0;
   min-width: 370px;
@@ -365,13 +365,11 @@
     color: @color;
     border-right: 1px solid @bordercolor;
     height: 100vh;
-    @active_color: #5b9bcb;
-    @border_color: #e6e9eb;
     @reply-message-tip-color: #f7a43e;
-    @approval_pending_color: #f68a4a;
+    @approval-pending-color: #f68a4a;
     @text-color: #313330;
     .searchbar {
-      height: @apply_top_height;
+      height: @apply-top-height;
       padding: 16px 20px 0 20px;
       border-bottom: 1px solid @bordercolor;
       //申请类型筛选
@@ -460,9 +458,9 @@
         cursor: pointer;
         &.current {
           background-color: #f8fdff;
-          border-left: 3px solid @apply_active_color;
+          border-left: 3px solid @apply-active-color;
           dt span {
-            color: @apply_active_color;
+            color: @apply-active-color;
           }
         }
         &:before {
@@ -499,9 +497,9 @@
             float: right;
             line-height: 20px;
             font-size: 14px;
-            color: @approval_pending_color;
+            color: @approval-pending-color;
             &.processed {
-              color: @font_color;
+              color: @font-color;
             }
           }
         }
@@ -509,7 +507,7 @@
           line-height: 18px;
           font-size: 12px;
           padding-bottom: 6px;
-          color: @font_color;
+          color: @font-color;
           & > span {
             float: left;
             max-width: 65%;
@@ -540,12 +538,12 @@
       padding: 20px;
       .apply-type-tip {
         font-size: 14px;
-        color: @apply_active_color;
+        color: @apply-active-color;
       }
       .order-id {
         float: right;
         font-size: 14px;
-        color: @font_color;
+        color: @font-color;
       }
     }
     .apply-detail-content {
@@ -829,7 +827,7 @@
       .approval-info-label {
         padding-right: 6px;
         font-size: 14px;
-        color: @font_color;
+        color: @font-color;
       }
       .ant-form-item-control textarea {
         resize: none;
@@ -843,7 +841,7 @@
       }
       .approval_person {
         line-height: 22px;
-        color: @font_color;
+        color: @font-color;
         .pull-right {
           margin-right: 10px;
         }
