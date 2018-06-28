@@ -1,7 +1,7 @@
 var UserApplyActions = require('../action/user-apply-actions');
 var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
 import userData from 'PUB_DIR/sources/user-data';
-import { storageUtil } from 'ant-utils';
+import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 
 //用户审批界面使用的store
@@ -77,6 +77,7 @@ UserApplyStore.prototype.clearUnreadReply = function(applyId) {
             applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
             applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id !== applyId);
         }
+        this.unreadReplyList = applyUnreadReplyList;
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
         session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
         //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
@@ -128,6 +129,8 @@ UserApplyStore.prototype.getApplyList = function(obj) {
             if (this.isCheckUnreadApplyList) {
                 this.clearUnreadReply();
             }
+        } else {//下拉加载取得数据为空时需要取消下拉加载得处理（以防后端得total数据与真实获取得数据列表不一致时，一直触发下拉加载取数据得死循环问题）
+            this.listenScrollBottom = false;
         }
     }
 };
