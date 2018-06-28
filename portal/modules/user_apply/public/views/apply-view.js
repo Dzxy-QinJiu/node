@@ -34,6 +34,14 @@ function updateUnapprovedCount(count) {
 var ApplyTabContent = React.createClass({
 
     fetchApplyList: function() {
+        let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType;
+        let sort_field = 'produce_date';//全部类型、待审批下按申请时间倒序排
+        //[已通过、已驳回、已审批、已撤销
+        let approvedTypes = ['pass', 'reject', 'true', 'cancel'];
+        //已审批过的按审批时间倒序排
+        if (approvedTypes.indexOf(approval_state) !== -1) {
+            sort_field = 'consume_date';
+        }
         //如果是待审批的请求，获取到申请列表后，更新下待审批的数量。
         // 解决通过或驳回操作失败（后台其实是成功）后，刷新没有待审批的申请但数量不变的问题
         UserApplyActions.getApplyList({
@@ -41,7 +49,9 @@ var ApplyTabContent = React.createClass({
             page_size: this.state.pageSize,
             keyword: this.state.searchKeyword,
             isUnreadApply: this.state.isCheckUnreadApplyList,
-            approval_state: UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType
+            approval_state: approval_state,
+            sort_field: sort_field,
+            order: 'descend'
         }, (count) => {
             //处理申请有过失败的情况，并且是筛选待审批的申请时,重新获取消息数；否则不发请求
             if (this.state.dealApplyError === 'error' && this.state.applyListType === 'false') {
