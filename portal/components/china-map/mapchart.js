@@ -86,21 +86,22 @@ MapChart.prototype.getSplitList = function() {
 //获取echart的地图配置
 MapChart.prototype.getEchartOptions = function() {
     var option = {
+        //todo 待修改
         tooltip: this.getTooltipOptions(),
-        dataRange: {
-            x: 'left',
-            y: 'bottom',
-            orient: 'horizontal',
-            itemGap: 1,
-            itemWidth: 22,
-            itemHeight: 19,
-            splitList: this.getSplitList(),
-            color: oplateConsts.MAP_COLOR,
-            text: ['多','少'],
-            textStyle: {
-                color: '#80949d'
-            }
-        },
+        // dataRange: {
+        //     x: 'left',
+        //     y: 'bottom',
+        //     orient: 'horizontal',
+        //     itemGap: 1,
+        //     itemWidth: 22,
+        //     itemHeight: 19,
+        //     splitList: this.getSplitList(),
+        //     color: oplateConsts.MAP_COLOR,
+        //     text: ['多','少'],
+        //     textStyle: {
+        //         color: '#80949d'
+        //     }
+        // },
         series: [
             {
                 name: '中国',

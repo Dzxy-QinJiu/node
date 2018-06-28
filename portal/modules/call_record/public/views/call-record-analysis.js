@@ -664,12 +664,7 @@ var CallRecordAnalyis = React.createClass({
     },
 
     getCallCounAndRecordOptions: function(data,dataName,dataType) {
-        var dataMax = _.maxBy(data, (item) => dataType === 'time' ? item.time : item.count);
-        var countMax = 0;
-        if (dataMax) {
-            countMax = dataType === 'time' ? dataMax.time : dataMax.count;
-        }
-        return {
+        var options = {
             tooltip: {
                 formatter: function(obj) {
                     var weekdaysIndex = obj.seriesIndex;
@@ -685,7 +680,23 @@ var CallRecordAnalyis = React.createClass({
                          ${dataName}：${data}`;
                 }
             },
+            //todo 待修改
+            singleAxis: [],
+            title: [],
         };
+        _.each(days, (label, idx) => {
+            options.title.push({
+                top: (idx + 0.5) * 100 / 10 + '%'
+            });
+            options.singleAxis.push({
+                axisLabel: {
+                    show: label === Intl.get('user.time.saturday', '周六') ? true : false,
+                },
+                top: (idx * 100 / 10 + 5) + '%',
+                height: (100 / 10 - 10) + '%'
+            });
+        });
+        return options;
     },
 
     // 渲染通话时段(时长/数量)的统计
@@ -696,42 +707,32 @@ var CallRecordAnalyis = React.createClass({
             );
         }
         let data = this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ? this.state.callIntervalData.countList : this.state.callIntervalData.timeList;
+        let title = this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ? Intl.get('sales.home.call.cout', '通话数量') : Intl.get('call.record.call.duration', '通话时长');
+        let dataType = this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ? '' : 'time';
+        //todo 把数据中的time属性改成count，现在组件默认属性值是count还不支持自定义
+        if (this.state.selectedCallInterval !== CALL_RADIO_VALUES.COUNT){
+            _.each(data,(item) => {
+                item.count = item.time;
+            });
+        }
         if (_.isArray(data) && data.length) {
-            var recordCountCharts = [{
-                title: Intl.get('call.record.count', '通话数量统计：'),
+            var recordCharts = [{
+                title: Intl.get('call.record.interval', '通话时段统计'),
                 chartType: 'scatter',
                 data: data,
                 layout: {
                     sm: 24,
                 },
-                option: this.getCallCounAndRecordOptions(data, Intl.get('sales.home.call.cout', '通话数量')),
+                option: this.getCallCounAndRecordOptions(data, title, dataType),
                 yAxisLabels: days,
                 xAxisLabels: hours,
             }];
-            var recordRecordCharts = [{
-                title: Intl.get('call.record.time', '通话时长统计：'),
-                chartType: 'scatter',
-                data: data,
-                layout: {
-                    sm: 24,
-                },
-                option: this.getCallCounAndRecordOptions(data, Intl.get('call.record.call.duration', '通话时长'),'time'),
-                yAxisLabels: days,
-                xAxisLabels: hours,
-            }];
-
-            return (this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ?
+            return (
                 <AntcAnalysis
-                    charts = {recordCountCharts}
-                    chartHeight={410}
-                    resultType='success'
-                /> :
-                <AntcAnalysis
-                    charts = {recordRecordCharts}
+                    charts = {recordCharts}
                     chartHeight={410}
                     resultType='success'
                 />
-
             );
         } else {
             if (this.state.callIntervalData.errMsg) {//错误提示
@@ -813,7 +814,6 @@ var CallRecordAnalyis = React.createClass({
                             var params = params[0];
                             timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
                             count = params.data;
-
                         } else if (params.length > 1) {
                             timeText = [], count = [], teamArr = [];
                             _.each(params, (paramsItem) => {
@@ -871,6 +871,7 @@ var CallRecordAnalyis = React.createClass({
 
     renderCallChart(dataList, charTips, isMutileLine, lineType) {
         const charts = [{
+            title: Intl.get('call.record.trend.charts', ' 近一个月的通话趋势：'),
             chartType: 'line',
             data: dataList,
             layout: {
@@ -1217,15 +1218,83 @@ var CallRecordAnalyis = React.createClass({
     getClickMap(zone) {
         CallAnalysisAction.showZoneDistribute(zone);
     },
+    countTotal: function() {
+        var total = 0;
+        _.each(this.state.customerData.zoneList , function(obj) {
+            total += obj.value;
+        });
+        if(isNaN(total)) {
+            total = 0;
+        }
+        return total;
+    },
+    getCustomerZoneOptions: function() {
+        var originFormatter = mapFormatter;
+        var $tooltipDom = null;
+        var _this = this;
+        function getTooltipDom() {
+            if(!$tooltipDom || !$tooltipDom[0]) {
+                $tooltipDom = $(_this.refs.mapChartWrap).find('.echarts-tooltip');
+            }
+        }
+        return {
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: '#0b80e0',
+                textStyle: {
+                    color: '#fff'
+                },
+                formatter: function(obj) {
+                    getTooltipDom();
+                    if (obj.name === '南海诸岛') {
+                        $tooltipDom.addClass('notshow');
+                    } else {
+                        $tooltipDom.removeClass('notshow');
+                    }
+                    var newObj = $.extend(true, {}, obj);
+                    newObj.total = _this.countTotal();
+                    var html = originFormatter(newObj);
+                    return html;
+                }
+            }
+        };
+    },
+    provinceName: function(name) {
+        return MAP_PROVINCE[name];
+    },
     renderCustomerZoneDistribute() {
+
+        // return (<ChinaMap
+        //  width="900"
+        //  height="600"
+        //  dataList={this.state.customerData.zoneList}
+        //  formatter={mapFormatter}
+        //  // getClickEvent={this.getClickMap}
+        //  />);
+        var dataList = this.state.customerData.zoneList;
+        var arr = _.filter(dataList, item => item.name === '南海诸岛');
+        // var arr = dataList.concat();
+        // arr.push({
+        //     name: Intl.get('china.zone.distribute.south.island', '南海诸岛'),
+        // });
+        const charts = [{
+            title: Intl.get('call.analysis.zone.distrute', '客户的地域分布'),
+            chartType: 'map',
+            data: arr,
+            layout: {
+                sm: 12,
+            },
+            option: this.getCustomerZoneOptions(),
+            noExportCsv: true,
+        }];
+
+
         return (
             <div className="map-distribute">
-                <ChinaMap
-                    width="900"
-                    height="600"
-                    dataList={this.state.customerData.zoneList}
-                    formatter={mapFormatter}
-                    getClickEvent={this.getClickMap}
+                <AntcAnalysis
+                    charts={charts}
+                    chartHeight={600}
+                    resultType='success'
                 />
             </div>
         );
@@ -1358,7 +1427,6 @@ var CallRecordAnalyis = React.createClass({
              * */}
             <div className="duration-count-chart col-xs-12">
                 <div className="trend-chart-title">
-                    {Intl.get('call.record.trend.charts', ' 近一个月的通话趋势：')}
                     {this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
                         <div className="each-team-trend">
                             {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
@@ -1405,9 +1473,9 @@ var CallRecordAnalyis = React.createClass({
                                 </div>
                             </div>
                             <div className="call-interval-block col-xs-6">
-                                <div className="call-interval-title">
-                                    {Intl.get('call.record.interval', '通话时段统计')}
-                                </div>
+                                {/*<div className="call-interval-title">*/}
+                                {/*{Intl.get('call.record.interval', '通话时段统计')}*/}
+                                {/*</div>*/}
                                 <div className="call-interval-radio clearfix">
                                     <RadioGroup onChange={this.onChangeCallIntervalRadio}
                                         value={this.state.selectedCallInterval}>
@@ -1435,8 +1503,8 @@ var CallRecordAnalyis = React.createClass({
                             </div>
                         </div>
                         <div className="col-xs-12">
-                            <div className="call-zone-distribute">
-                                {this.renderCustomerZoneDistribute(Intl.get('call.analysis.zone.distrute', '客户的地域分布'))}
+                            <div className="call-zone-distribute" ref="mapChartWrap">
+                                {this.renderCustomerZoneDistribute()}
                             </div>
                         </div>
                     </div>
