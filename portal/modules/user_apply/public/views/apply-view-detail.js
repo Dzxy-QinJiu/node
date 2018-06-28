@@ -383,20 +383,19 @@ const ApplyViewDetail = React.createClass({
                             {this.renderDetailCustomerBlock(detailInfo)}
                             <div className="apply-detail-user apply-detail-info">
                                 <div className="user-icon-block">
-                                    <span className="iconfont icon-user" title={Intl.get('crm.detail.user', '用户')}/>
+                                    <span className="iconfont icon-user"/>
                                 </div>
                                 {this.renderDetailCenter(detailInfo)}
                             </div>
                             {detailInfo.comment ? (<div className="apply-detail-common apply-detail-info">
                                 <div className="common-icon-block">
-                                    <span className="iconfont icon-common" title={Intl.get('common.remark', '备注')}/>
+                                    <span className="iconfont icon-common"/>
                                 </div>
                                 {this.renderComment()}
                             </div>) : null}
                             <div className="apply-detail-reply-list apply-detail-info">
                                 <div className="reply-icon-block">
-                                    <span className="iconfont icon-apply-message-tip"
-                                        title={Intl.get('user.apply.reply.button', '回复')}/>
+                                    <span className="iconfont icon-apply-message-tip"/>
                                 </div>
                                 <div className="reply-info-block">
                                     <div className="reply-list-container">
@@ -423,8 +422,7 @@ const ApplyViewDetail = React.createClass({
         return (
             <div className="apply-detail-customer apply-detail-info">
                 <div className="customer-icon-block">
-                    <span className="iconfont icon-customer"
-                        title={Intl.get('common.belong.customer', '所属客户')}/>
+                    <span className="iconfont icon-customer"/>
                 </div>
                 <div className="customer-info-block apply-info-block">
                     <div className="customer-name">
@@ -1440,118 +1438,71 @@ const ApplyViewDetail = React.createClass({
             </Modal>
         );
     },
+    getApplyResultDscr(detailInfoObj){
+        let resultDscr = '';
+        switch (detailInfoObj.approval_state) {
+            case '1':
+                resultDscr = Intl.get('user.apply.detail.pass', '通过申请');
+                break;
+            case '2':
+                resultDscr = Intl.get('user.apply.detail.reject', '驳回申请');
+                break;
+            case '3':
+                resultDscr = Intl.get('user.apply.detail.backout', '撤销申请');
+                break;
+        }
+        return resultDscr;
+    },
 
+    getNoSecondTimeStr(time){
+        return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
+    },
     //渲染详情底部区域
     renderDetailBottom() {
         var selectedDetailItem = this.state.selectedDetailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
         var showBackoutApply = detailInfoObj.presenter_id === userData.getUserData().user_id;
-        if (selectedDetailItem.isConsumed === 'true') {
-            return (
-                <div className="approval_block">
-                    <div className="approval_inner_block">
-                        <dl className="dl-horizontal detail_item">
-                            <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见"/>
-                            </dt>
-                            <dd>
-                                {detailInfoObj.approval_state === '0' && ''}
-                                {detailInfoObj.approval_state === '1' && Intl.get('user.apply.pass', '已通过')}
-                                {detailInfoObj.approval_state === '2' && Intl.get('user.apply.reject', '已驳回')}
-                                {detailInfoObj.approval_state === '3' && Intl.get('user.apply.backout', '已撤销')}
-                            </dd>
-                        </dl>
-                        {detailInfoObj.approval_comment ? (
-                            <dl className="dl-horizontal detail_item">
-                                <dt><ReactIntl.FormattedMessage id="user.apply.detail.remark" defaultMessage="批注"/>
-                                </dt>
-                                <dd>
-                                    <span>
-                                        {detailInfoObj.approval_comment}
-                                    </span>
-                                </dd>
-                            </dl>
-                        ) : null}
-
-                        <Row className="approval_person clearfix">
-                            <Col span={6}>
-                                {/**已审批*/}
-                                {detailInfoObj.approval_state === '3' ? (
-                                    <div className="approval_person" style={{paddingTop: '10px'}}>
-                                        <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
-                                            defaultMessage="撤销人"/>
-                                        <em>{detailInfoObj.sales_name}</em>
-                                    </div>
-                                ) : (
-                                    <div className="approval_person" style={{paddingTop: '10px'}}>
-                                        <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
-                                            defaultMessage="审批人"/>
-                                        <em>{detailInfoObj.approval_person}</em>
-                                    </div>
-                                )}
-                            </Col>
-                            <Col span={18}>
-                                <div className="pull-right">
-                                    {this.renderReplyFormResult()}
-                                </div>
-                            </Col>
-                        </Row>
-                    </div>
-                </div>
-            );
-        } else {
-            //是否显示审批人
-            var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
-                userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
-                userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
-                userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
-            return (
-                <div className="approval_block approval_block_form">
-                    <div className="approval_inner_block">
-                        <Row className="approval_person clearfix">
-                            <Col span={6}>
-                                {
-                                    isRealmAdmin ? <span>
-                                        <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
-                                            defaultMessage="审批人"/>
-                                        <em>{userData.getUserData().nick_name}</em>
-                                    </span> : <span>&nbsp;</span>
-                                }
-                                {
-                                    hasPrivilege('APPLY_CANCEL') && showBackoutApply ? <span>
-                                        <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
-                                            defaultMessage="撤销人"/>
-                                        <em>{userData.getUserData().nick_name}</em>
-                                    </span> : <span>&nbsp;</span>
-                                }
-                            </Col>
-                            <Col span={18}>
-                                <div className="pull-right">
-                                    {this.renderReplyFormResult()}
-                                    {
-                                        hasPrivilege('APPLY_CANCEL') && showBackoutApply ?
-                                            <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.saleConfirmBackoutApply}><ReactIntl.FormattedMessage
-                                                    id="user.apply.detail.backout"
-                                                    defaultMessage="撤销申请"/></Button> : null
-                                    }
-
-                                    {
-                                        isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
-                                            onClick={this.submitApprovalForm.bind(this, '1')}><ReactIntl.FormattedMessage
-                                                id="user.apply.detail.button.pass" defaultMessage="通过"/></Button> : null
-                                    }
-                                    {
-                                        isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
-                                            onClick={this.submitApprovalForm.bind(this, '2')}><ReactIntl.FormattedMessage
-                                                id="common.apply.reject" defaultMessage="驳回"/></Button> : null
-                                    }
-                                </div>
-                            </Col>
-                        </Row>
-                    </div>
-                </div>
-            );
-        }
+        //是否显示通过驳回
+        var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
+        //是否审批
+        let isConsumed = selectedDetailItem.isConsumed === 'true';
+        return (
+            <div className="approval_block">
+                <Row className="approval_person clearfix">
+                    <Col span={8}>
+                        <span className="approval-info-label">
+                            {isConsumed ? this.getNoSecondTimeStr(selectedDetailItem.approval_time) : this.getNoSecondTimeStr(selectedDetailItem.time)}
+                        </span>
+                        <span className="approval-info-label">
+                            {isConsumed ? detailInfoObj.approval_person || '' : selectedDetailItem.presenter || ''}
+                            {isConsumed ? this.getApplyResultDscr(detailInfoObj) : Intl.get('crm.109', '申请')}
+                        </span>
+                    </Col>
+                    <Col span={16}>
+                        <div className="pull-right">
+                            {this.renderReplyFormResult()}
+                            {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.saleConfirmBackoutApply}>
+                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
+                                </Button>) : null}
+                            {isRealmAdmin ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.submitApprovalForm.bind(this, '1')}>
+                                    {Intl.get('user.apply.detail.button.pass', '通过')}
+                                </Button>) : null}
+                            {isRealmAdmin ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.submitApprovalForm.bind(this, '2')}>
+                                    {Intl.get('common.apply.reject', '驳回')}
+                                </Button>) : null}
+                        </div>
+                    </Col>
+                </Row>
+            </div>);
     },
     // 用户名重名时
     renderDuplicationName(errorMsg){
