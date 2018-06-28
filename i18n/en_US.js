@@ -1361,6 +1361,12 @@ var en_US = {
     'oplate_customer_analysis.newCustomerCount': 'Count of new customers created by sales', //'新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': 'Total count of new customer', //'新开账号数总数',
     'oplate_customer_analysis.customerLoginCount': 'New login customer count', //'新开客户登录数',
+    'oplate_customer_analysis.type.all': 'all',
+    'oplate_customer_analysis.type.trial': 'trial',
+    'oplate_customer_analysis.type.formal': 'formal',
+    'oplate_customer_analysis.type.employee': 'employee',
+    'oplate_customer_analysis.type.gift': 'gift',
+    'oplate_customer_analysis.type.training': 'training',
     //客户分析 end
     //合同管理 start
     'contract.4': 'Party A',//甲方@

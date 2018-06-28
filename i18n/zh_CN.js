@@ -1377,6 +1377,12 @@ var zh_CN = {
     'oplate_customer_analysis.newCustomerCount': '新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': '新开账号数总数',
     'oplate_customer_analysis.customerLoginCount': '新开通客户登录数',
+    'oplate_customer_analysis.type.all': '全部类型',
+    'oplate_customer_analysis.type.trial': '试用用户',
+    'oplate_customer_analysis.type.formal': '正式用户',
+    'oplate_customer_analysis.type.employee': '员工用户',
+    'oplate_customer_analysis.type.gift': '赠送用户',
+    'oplate_customer_analysis.type.training': '培训用户',
     // 客户分析end
     'contract.4': '甲方',
     'contract.5': '更新',
