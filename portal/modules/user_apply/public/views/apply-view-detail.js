@@ -408,6 +408,7 @@ const ApplyViewDetail = React.createClass({
                                             onChange={this.commentInputChange}
                                             placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
                                         ) : null}
+                                        {this.renderReplyFormResult()}
                                     </div>
                                 </div>
                             </div>
@@ -566,8 +567,10 @@ const ApplyViewDetail = React.createClass({
                                             <a href="javascript:void(0)"
                                                 onClick={this.showUserDetail.bind(this, id)}
                                                 data-tracename="查看用户详情">{detailInfo.user_names[idx]}</a>
-                                            {_.isArray(detailInfo.nick_names) && detailInfo.nick_names[idx] ? `(${detailInfo.nick_names[idx]})` : null}
-                                            {idx !== detailInfo.user_names.length - 1 ? ', ' : null}
+                                            <span className="user-nick-name">
+                                                {_.isArray(detailInfo.nick_names) && detailInfo.nick_names[idx] ? `(${detailInfo.nick_names[idx]})` : null}
+                                                {idx !== detailInfo.user_names.length - 1 ? ',  ' : null}
+                                            </span>
                                         </span>);
                                 })
                             }
@@ -575,28 +578,34 @@ const ApplyViewDetail = React.createClass({
                     </div>);
             } else {
                 if (detailInfo.user_names && detailInfo.user_names.length === 1) {
-                    return (
-                        <div>
-                            <div className="apply-info-label">
-                                <div className="user-info-label edit-name-label">
-                                    {Intl.get('crm.detail.user', '用户')}:
-                                </div>
-                                <span className="user-info-text">{this.renderUserNameBlock(detailInfo)}</span>
+                    let userNameEle = (
+                        <div className="apply-info-label clearfix">
+                            <div className="user-info-label edit-name-label">
+                                {Intl.get('crm.detail.user', '用户')}:
                             </div>
-                            <div className="apply-info-label">
-                                <div className="user-info-label edit-name-label">
-                                    {Intl.get('common.nickname', '昵称')}:
-                                </div>
-                                <span className="user-info-text">{this.renderNickNameBlock(detailInfo)}</span>
-                            </div>
+                            <span className="user-info-text">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
+                    let nickNameEle = (
+                        <div className="apply-info-label clearfix">
+                            <div className="user-info-label edit-name-label">
+                                {Intl.get('common.nickname', '昵称')}:
+                            </div>
+                            <span className="user-info-text">{this.renderNickNameBlock(detailInfo)}</span>
+                        </div>);
+                    return [userNameEle, nickNameEle];
                 } else {
                     return (
                         <div className="apply-info-label">
                             <span className="user-info-label">{Intl.get('crm.detail.user', '用户')}:</span>
                             <span className="user-info-text">
-                                {`${_.first(detailInfo.user_names)}(${_.first(detailInfo.nick_names)})`}
-                                ～ {`${_.last(detailInfo.user_names)}(${_.last(detailInfo.nick_names)})`}
+                                {_.first(detailInfo.user_names)}
+                                <span className="user-nick-name">
+                                    ({_.first(detailInfo.nick_names)})
+                                </span>
+                                ～ {_.last(detailInfo.user_names)}
+                                <span className="user-nick-name">
+                                   ({_.last(detailInfo.nick_names)})
+                                </span>
                             </span>
                         </div>);
                 }
@@ -775,7 +784,7 @@ const ApplyViewDetail = React.createClass({
                             }
                             return (
                                 <tr key={app.app_id}>
-                                    <td>{app.client_name}</td>
+                                    <td className='apply-app-name'>{app.client_name}</td>
                                     {isExistUserApply ? null : <td className="apply-app-numbers">{number}</td>}
                                     <td className="desp_time">
                                         {this.renderApplyTime(app, custom_setting)}
@@ -842,7 +851,7 @@ const ApplyViewDetail = React.createClass({
 
                             return (
                                 <tr key={app.app_id}>
-                                    <td>{app.client_name}</td>
+                                    <td className='apply-app-name'>{app.client_name}</td>
                                     {isExistUserApply ? null : <td className="apply-app-numbers">{number}</td>}
                                     <td className="desp_time">
                                         {this.renderApplyTime(app, custom_setting)}
@@ -942,7 +951,7 @@ const ApplyViewDetail = React.createClass({
         return (
             <div className="user-info-block apply-user-detail-block apply-info-block">
                 {this.renderApplyDetailUserNames(detailInfo)}
-                <div className="apply-info-label">
+                <div className="apply-info-label clearfix">
                     <span className="user-info-label">{Intl.get('common.type', '类型')}:</span>
                     <span className="user-info-text">
                         {detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}
@@ -1020,8 +1029,10 @@ const ApplyViewDetail = React.createClass({
                                     <a href="javascript:void(0)"
                                         onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                         data-tracename="查看用户详情">{item}</a>
-                                    {_.isArray(detailInfo.nick_names) && detailInfo.nick_names[idx] ? `(${detailInfo.nick_names[idx]})` : null}
-                                    {idx !== detailInfo.user_names.length - 1 ? ', ' : null}
+                                    <span className="user-nick-name">
+                                        {_.isArray(detailInfo.nick_names) && detailInfo.nick_names[idx] ? `(${detailInfo.nick_names[idx]})` : null}
+                                        {idx !== detailInfo.user_names.length - 1 ? ', ' : null}
+                                    </span>
                                 </span>);
                         }) : null
                     }
@@ -1362,14 +1373,6 @@ const ApplyViewDetail = React.createClass({
                 showIcon={true}
             />;
         }
-        if (replyFormInfo.result === 'success') {
-            return <AlertTimer
-                message={Intl.get('user.apply.reply.success', '回复成功')}
-                type="success"
-                showIcon={true}
-                onHide={ApplyViewDetailActions.resetReplyFormResult}
-            />;
-        }
         return null;
     },
     //备注 输入框改变时候触发
@@ -1472,7 +1475,7 @@ const ApplyViewDetail = React.createClass({
         return (
             <div className="approval_block">
                 <Row className="approval_person clearfix">
-                    <Col span={8}>
+                    <Col span={10}>
                         <span className="approval-info-label">
                             {isConsumed ? this.getNoSecondTimeStr(selectedDetailItem.approval_time) : this.getNoSecondTimeStr(selectedDetailItem.time)}
                         </span>
@@ -1481,20 +1484,19 @@ const ApplyViewDetail = React.createClass({
                             {isConsumed ? this.getApplyResultDscr(detailInfoObj) : Intl.get('crm.109', '申请')}
                         </span>
                     </Col>
-                    <Col span={16}>
+                    <Col span={14}>
                         <div className="pull-right">
-                            {this.renderReplyFormResult()}
-                            {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
+                            {!isConsumed && hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.saleConfirmBackoutApply}>
                                     {Intl.get('user.apply.detail.backout', '撤销申请')}
                                 </Button>) : null}
-                            {isRealmAdmin ? (
+                            {!isConsumed && isRealmAdmin ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.submitApprovalForm.bind(this, '1')}>
                                     {Intl.get('user.apply.detail.button.pass', '通过')}
                                 </Button>) : null}
-                            {isRealmAdmin ? (
+                            {!isConsumed && isRealmAdmin ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.submitApprovalForm.bind(this, '2')}>
                                     {Intl.get('common.apply.reject', '驳回')}
