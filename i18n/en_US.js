@@ -2250,6 +2250,7 @@ var en_US = {
     'noMoreTip.callRecord': 'no more call records',
     'noMoreTip.visitBack': 'no more visit record',
     'noMoreTip.customer': 'no more customers',
-    'failed.change.source.time': 'Failed to change clue source time'//修改线索咨询时间失败
+    'failed.change.source.time': 'Failed to change clue source time',//修改线索咨询时间失败
+    'china.zone.distribute.south.island': 'South China Sea Islands'//南海诸岛
 };
 export default en_US;
