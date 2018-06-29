@@ -1209,7 +1209,7 @@ var CallRecordAnalyis = React.createClass({
         //  height="600"
         //  dataList={this.state.customerData.zoneList}
         //  formatter={mapFormatter}
-        //  // getClickEvent={this.getClickMap}
+        //  getClickEvent={this.getClickMap}
         //  />);
         var dataList = this.state.customerData.zoneList;
         var arr = dataList.concat();
