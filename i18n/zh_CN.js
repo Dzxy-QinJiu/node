@@ -864,6 +864,8 @@ var zh_CN = {
     'notification.system.untreated': '待处理',
     'notification.login.password.error': '报密码或验证码错误',
     'notification.login.failed': '登录失败',
+    'notification.system.handled.success': '处理成功',
+    'notification.system.handled.error': '处理失败',
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',

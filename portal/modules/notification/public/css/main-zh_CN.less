@@ -145,6 +145,7 @@
       }
     }
     li {
+      position: relative;
       display: inline-block;
       width: 100%;
       border-bottom: 1px solid #f1f1f1;
@@ -197,6 +198,26 @@
         }
         .show-handle-button-detail {
           padding: 10px 0;
+        }
+        // 处理通知消息的样式
+        .handle-notice-tips {
+          position: absolute;
+          top: 40px;
+          left: 120px;
+          .ant-alert-success,  .ant-alert-error{
+            background-color: #4E5C66;
+            .ant-alert-message, .ant-alert-description, .ant-alert-close-icon .anticon-cross{
+              color: #fff;
+            }
+          }
+          .ant-alert-success {
+            top: 20px;
+            height: 40px;
+          }
+          .ant-alert-error {
+            min-width: 200px;
+            height: 70px;
+          }
         }
       }
       .system-notice-time {

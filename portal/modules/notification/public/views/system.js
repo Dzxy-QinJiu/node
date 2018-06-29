@@ -18,6 +18,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import UserDetail from '../../../app_user_manage/public/views/user-detail';
 import {notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
+import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
 const PAGE_SIZE = 20;
@@ -46,7 +47,10 @@ let SystemNotification = React.createClass({
             showUpdateTip: false, //是否展示有新数据刷新的提示
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
-            selectedLiIndex: null //
+            selectedLiIndex: null,
+            handleNoticeMessageSuccessFlag: false, // 处理通知成功的信息提示
+            handleNoticeMessageErrorTips: '', // 处理通知失败的信息提示
+            noticeId: '', // 点击处理通知的id
         };
     },
     componentDidMount: function() {
@@ -272,15 +276,23 @@ let SystemNotification = React.createClass({
             return;
         }
         this.setHandlingFlag(notice, true);
+        this.setState({
+            noticeId: notice.id
+        });
         notificationAjax.handleSystemNotice(notice.id).then(result => {
             this.setHandlingFlag(notice, false);
             if (result) {//处理成功后，将该消息从未处理消息中删除
                 this.state.systemNotices = _.filter(this.state.systemNotices, item => item.id !== notice.id);
                 this.setState({systemNotices: this.state.systemNotices, totalSize: this.state.totalSize - 1});
+                this.setState({
+                    handleNoticeMessageSuccessFlag: true
+                });
             }
         }, errorMsg => {
             this.setHandlingFlag(notice, false);
-            message.error(errorMsg || Intl.get('notification.system.handle.failed', '将系统消息设为已处理失败'));
+            this.setState({
+                handleNoticeMessageErrorTips: errorMsg || Intl.get('notification.system.handle.failed', '将系统消息设为已处理失败')
+            });
         });
     },
     handleMouseEnter(event) {
@@ -296,6 +308,11 @@ let SystemNotification = React.createClass({
         } else if (event.target.className === 'system-notice-handled-item') {
             $('.system-notice-handled-item').removeClass('system-notice-hover-item');
         }
+    },
+    hideNoticeSucessTips() {
+        this.setState({
+            handleNoticeMessageSuccessFlag: false
+        });
     },
     //未处理的系统消息
     renderUnHandledNotice: function(notice, idx) {
@@ -330,6 +347,29 @@ let SystemNotification = React.createClass({
                                     <Icon type="loading"/> : null}
                             </Button> : null
                     }
+                    {this.state.noticeId === notice.id ? (
+                        <div className="handle-notice-tips">
+                            {this.state.handleNoticeMessageSuccessFlag ? (
+                                <AlertTimer
+                                    message={Intl.get('notification.system.handled.success', '处理成功')}
+                                    type="success"
+                                    time={3000}
+                                    showIcon
+                                    onHide={this.hideNoticeSucessTips()}
+                                />
+                            ) : null}
+                            {this.state.handleNoticeMessageErrorTips ? (
+                                <Alert
+                                    message={Intl.get('notification.system.handled.error', '处理失败')}
+                                    description={this.state.handleNoticeMessageErrorTips}
+                                    type="error"
+                                    showIcon
+                                    closable
+                                >
+                                </Alert>
+                            ) : null}
+                        </div>
+                    ) : null}
                 </div>
             </li>
         );
