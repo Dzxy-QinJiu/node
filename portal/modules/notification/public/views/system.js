@@ -152,7 +152,9 @@ let SystemNotification = React.createClass({
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
         let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
         return (
-            <li key={idx} className="system-notice-handled-item">
+            <li key={idx} className="system-notice-handled-item"
+                onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}
+            >
                 <h5 className="system-notice-type">{SYSTEM_NOTICE_TYPE_MAP[notice.type]}</h5>
                 <div className="system-notice-descr">
                     <a onClick={this.openCustomerDetail.bind(this, notice.customer_id)}>{notice.customer_name}</a>
@@ -164,8 +166,9 @@ let SystemNotification = React.createClass({
                         <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}</span> : ''}
                     {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
                 </div>
-                <div
-                    className="system-notice-time">{moment(notice.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</div>
+                <div className="system-notice-time">
+                    {moment(notice.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
+                </div>
             </li>
         );
     },
@@ -267,12 +270,28 @@ let SystemNotification = React.createClass({
             message.error(errorMsg || Intl.get('notification.system.handle.failed', '将系统消息设为已处理失败'));
         });
     },
+    handleMouseEnter(event) {
+        if (event.target.className === 'system-notice-unhandled-item') {
+            $('.system-notice-unhandled-item').addClass('system-notice-hover-item');
+        } else if (event.target.className === 'system-notice-handled-item') {
+            $('.system-notice-handled-item').addClass('system-notice-hover-item');
+        }
+    },
+    handleMouseLeave(event) {
+        if (event.target.className === 'system-notice-unhandled-item') {
+            $('.system-notice-unhandled-item').removeClass('system-notice-hover-item');
+        } else if (event.target.className === 'system-notice-handled-item') {
+            $('.system-notice-handled-item').removeClass('system-notice-hover-item');
+        }
+    },
     //未处理的系统消息
     renderUnHandledNotice: function(notice, idx) {
         let loginUser = userData.getUserData();
         let loginUserId = loginUser ? loginUser.user_id : '';//只可以处理自己的系统消息
         return (
-            <li key={idx} className="system-notice-unhandled-item">
+            <li key={idx} className="system-notice-unhandled-item" 
+                onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}
+            >
                 <div className="system-notice-title">
                     <h5 className="system-notice-type">{SYSTEM_NOTICE_TYPE_MAP[notice.type]}</h5>
                     <a onClick={this.openCustomerDetail.bind(this, notice.customer_id)}>{notice.customer_name}</a>
