@@ -22,6 +22,7 @@ import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
 const PAGE_SIZE = 20;
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
+const classnames = require('classnames');
 const STATUS_ARRAY = [{
     name: Intl.get('notification.system.untreated', '待处理'),
     value: STATUS.UNHANDLED
@@ -44,7 +45,8 @@ let SystemNotification = React.createClass({
             status: STATUS.UNHANDLED,//未处理，handled:已处理
             showUpdateTip: false, //是否展示有新数据刷新的提示
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            customerOfCurUser: {}//当前展示用户所属客户的详情
+            customerOfCurUser: {},//当前展示用户所属客户的详情
+            selectedLiIndex: null //
         };
     },
     componentDidMount: function() {
@@ -112,11 +114,14 @@ let SystemNotification = React.createClass({
         return !this.state.isLoadingSystemNotices &&
             this.state.systemNotices.length >= 10 && !this.state.listenScrollBottom;
     },
-    openCustomerDetail: function(customer_id) {
+    openCustomerDetail: function(customer_id, index) {
         if (this.state.curShowUserId) {
             this.closeRightUserPanel();
         }
-        this.setState({curShowCustomerId: customer_id});
+        this.setState({
+            curShowCustomerId: customer_id,
+            selectedLiIndex: index
+        });
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
@@ -151,17 +156,19 @@ let SystemNotification = React.createClass({
         //是否是异地登录的类型
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
         let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
+        let handleNoticeLiItemClass = classnames({
+            'system-notice-handled-item': true,
+            'select-li-item': idx === this.state.selectedLiIndex,
+        });
         return (
-            <li key={idx} className="system-notice-handled-item"
-                onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}
-            >
+            <li key={idx} className={handleNoticeLiItemClass} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
                 <h5 className="system-notice-type">{SYSTEM_NOTICE_TYPE_MAP[notice.type]}</h5>
                 <div className="system-notice-descr">
-                    <a onClick={this.openCustomerDetail.bind(this, notice.customer_id)}>{notice.customer_name}</a>
+                    <a onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>{notice.customer_name}</a>
                     {isOffsetLogin ? (Intl.get('notification.system.on', '在') + notice.content.current_location) : ''}
                     {Intl.get('notification.system.use.account', '用账号')}
                     {notice.user_name ? (
-                        <a onClick={this.openUserDetail.bind(this, notice.user_id)}>{notice.user_name}</a>) : null}
+                        <a onClick={this.openUserDetail.bind(this, notice.user_id, idx)}>{notice.user_name}</a>) : null}
                     {notice.app_name ?
                         <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}</span> : ''}
                     {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
@@ -206,15 +213,21 @@ let SystemNotification = React.createClass({
         }
     },
     closeRightCustomerPanel: function() {
-        this.setState({curShowCustomerId: ''});
+        this.setState({
+            curShowCustomerId: '',
+            selectedLiIndex: null
+        });
     },
-    openUserDetail: function(user_id) {
+    openUserDetail: function(user_id, index) {
         if (this.state.curShowCustomerId) {
             this.closeRightCustomerPanel();
         }
-        this.setState({curShowUserId: user_id});
+        this.setState({
+            curShowUserId: user_id,
+            selectedLiIndex: index
+        });
     },
-    renderUnHandledNoticeContent: function(notice) {
+    renderUnHandledNoticeContent: function(notice, idx) {
         let showList = [];
         if (_.isArray(notice.detail) && notice.detail.length > 3 && !notice.showMore) {//超过三条时，只展示前三条
             showList = notice.detail.slice(0, 3);
@@ -226,7 +239,7 @@ let SystemNotification = React.createClass({
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
             let isLoginFailed = item.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
             return <div className="system-notice-item" key={item.user_id}>
-                <a onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</a>
+                <a onClick={this.openUserDetail.bind(this, item.user_id, idx)}>{item.user_name}</a>
                 {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
                 {item.app_name ?
                     <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
@@ -288,16 +301,18 @@ let SystemNotification = React.createClass({
     renderUnHandledNotice: function(notice, idx) {
         let loginUser = userData.getUserData();
         let loginUserId = loginUser ? loginUser.user_id : '';//只可以处理自己的系统消息
+        let unhandleNoticeLiItemClass = classnames({
+            'system-notice-unhandled-item': true,
+            'select-li-item': idx === this.state.selectedLiIndex,
+        });
         return (
-            <li key={idx} className="system-notice-unhandled-item" 
-                onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}
-            >
+            <li key={idx} className={unhandleNoticeLiItemClass} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
                 <div className="system-notice-title">
                     <h5 className="system-notice-type">{SYSTEM_NOTICE_TYPE_MAP[notice.type]}</h5>
-                    <a onClick={this.openCustomerDetail.bind(this, notice.customer_id)}>{notice.customer_name}</a>
+                    <a onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>{notice.customer_name}</a>
                 </div>
                 <div className="system-notice-content">
-                    {this.renderUnHandledNoticeContent(notice)}
+                    {this.renderUnHandledNoticeContent(notice, idx)}
                     {notice.detail.length > 3 ?
                         <a className="notice-detail-more" onClick={this.checkMore.bind(this, notice)}>
                             {notice.showMore ? Intl.get('common.app.status.close', '关闭') : Intl.get('notification.system.more', '展开全部')}
@@ -316,7 +331,10 @@ let SystemNotification = React.createClass({
         );
     },
     closeRightUserPanel: function() {
-        this.setState({curShowUserId: ''});
+        this.setState({
+            curShowUserId: '',
+            selectedLiIndex: null
+        });
     },
     refreshSystemNotice: function() {
         this.setState({
