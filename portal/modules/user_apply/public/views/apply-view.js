@@ -104,10 +104,12 @@ var ApplyTabContent = React.createClass({
         UserApplyActions.refreshUnreadReplyList(unreadReplyList);
     },
     updateSelectedItem: function(message) {
-        const selectedDetailItem = this.state.selectedDetailItem;
-        selectedDetailItem.isConsumed = 'true';
-        selectedDetailItem.approval_state = message && message.approval || selectedDetailItem.approval_state;
-        this.setState({selectedDetailItem});
+        if(message && message.status === 'success'){
+            const selectedDetailItem = this.state.selectedDetailItem;
+            selectedDetailItem.isConsumed = 'true';
+            selectedDetailItem.approval_state = message && message.approval || selectedDetailItem.approval_state;
+            this.setState({selectedDetailItem});
+        }
         //处理申请成功还是失败,"success"/"error"
         UserApplyActions.updateDealApplyError(message && message.status || this.state.dealApplyError);
     },
