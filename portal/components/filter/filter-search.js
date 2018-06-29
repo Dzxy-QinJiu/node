@@ -37,6 +37,10 @@ class FilterSearch extends React.Component {
         data.forEach(item => {
             item.data.forEach(x => {
                 if (x) {
+                    if (item.groupId) {
+                        x.groupId = item.groupId;
+                    }
+                    x.groupName = item.groupName;
                     list.push(x);
                 }
             });
@@ -78,14 +82,24 @@ class FilterSearch extends React.Component {
         if (this.props.submitting) {
             return;
         }
+        filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {
+            filterName: this.state.filterName,
+            range: this.state.selectedRange,
+            plainFilterList: this.state.plainFilterList,//压平的数组，每项包含groupId、groupName、name、value
+            filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
+        });
+        //todo remove add emitter
+        this.setState({
+            showAddZone: false
+        });
         this.props.onSubmit({
             filterName: this.state.filterName,
             range: this.state.selectedRange,
-            filterList: this.state.selectedFilterList
+            filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
         });
     }
     render() {
-        const showInput = _.get(this.state.selectedFilterList, 'length') > 0;
+        const showInput = _.get(this.state.plainFilterList, 'length') > 0;
         const clearPopContent = (
             <div className="clear-confirm-pop-container">
                 <h5><Icon type="info-circle" />修改筛选范围，已勾选的客户将被清空</h5>
@@ -101,7 +115,7 @@ class FilterSearch extends React.Component {
                     showInput ?
                         <div className={this.state.showAddZone ? 'add-zone-wrapper filter-contianer clearfix' : 'filter-contianer clearfix'}>
                             <div className="show-zone">
-                                <Icon type="filter" />
+                                <Icon type="filter" onClick={this.props.toggleList}/>
                                 <ul className={this.state.showAddZone ? '' : 'collapse'}>
                                     {
                                         this.state.plainFilterList.map((x, idx) => (
@@ -163,7 +177,7 @@ class FilterSearch extends React.Component {
                             }
                         </div> : 
                         <div className="icon-container">                        
-                            <Icon type="filter" />
+                            <Icon type="filter" onClick={this.props.toggleList}/>
                         </div>
 
                 }
@@ -185,7 +199,8 @@ FilterSearch.propTypes = {
     style: 'object',
     key: 'string',
     submitting: 'boolean',
-    errorMsg: 'string'
+    errorMsg: 'string',
+    toggleList: 'function'
 };
 
 export default FilterSearch;

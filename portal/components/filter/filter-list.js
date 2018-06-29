@@ -7,6 +7,9 @@ class FilterList extends React.Component {
     constructor(props) {
         super();
         this.state = {
+            commonData: props.commonData || [],//todo 在外部维护
+            rawAdvancedData: props.advancedData || [],
+            advancedData: $.extend(true, [], props.advancedData) || [],
             collapsedCommon: true,
             collapsedAdvanced: true,
             selectedAdvancedMap: {},
@@ -18,6 +21,21 @@ class FilterList extends React.Component {
     }
     componentDidMount() {
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
+        filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
+    }
+    componentWillReceiveProps(newProps) {
+        const { commonData, advancedData } = newProps;
+        if (commonData && commonData.length && (JSON.stringify(commonData) !== JSON.stringify(this.state.commonData))) {
+            this.setState({
+                commonData
+            });
+        }
+        if (advancedData && advancedData.length && (JSON.stringify(advancedData) !== JSON.stringify(this.state.rawAdvancedData))) {
+            this.setState({
+                rawAdvancedData: advancedData,
+                advancedData
+            });
+        }
     }
     componentWillUnmount() {
         filterEmitter.removeListener(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
@@ -36,9 +54,22 @@ class FilterList extends React.Component {
                 break;
         }
     }
+    handleAddCommon = (item) => {
+        const { filterList, filterName, plainFilterList } = item;
+        const commonData = this.state.commonData;
+        commonData.push({
+            name: filterName,
+            value: filterName,
+            filterList,
+            plainFilterList
+        });
+        this.setState({
+            commonData
+        });
+    }
     handleClearAll() {
         this.setState({
-            selectedAdvancedMap: {},
+            advancedData: this.state.rawAdvancedData,
             selectedCommonIndex: ''
         }, () => {
             //发送选择筛选项事件
@@ -47,90 +78,94 @@ class FilterList extends React.Component {
         });
     }
     clearSelect(groupName) {
+        const advancedData = this.state.advancedData;
+        let clearGroupItem = advancedData.find(x => x.groupName === groupName);
+        if (clearGroupItem) {
+            clearGroupItem = this.state.rawAdvancedData.find(x => x.groupName === groupName);
+        }
         this.setState({
-            selectedAdvancedMap: $.extend({}, this.state.selectedAdvancedMap, {
-                [groupName]: {}
-            })
+            advancedData: advancedData
         }, () => {
-            const filterList = this.processSelectedFilters(this.state.selectedAdvancedMap);
+            const filterList = this.processSelectedFilters(this.state.advancedData);
             //发送选择筛选项事件
-            filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.selectedAdvancedMap));
+            filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
             this.props.onFilterChange(filterList);
-        });       
+        });
     }
     shareCommonItem(item) {
 
     }
     delCommonItem(item) {
-
+        let commonData = this.state.commonData;
+        commonData = commonData.filter(x => x.name !== item.name);
+        this.setState({
+            commonData
+        });
     }
     showCommonItemModal(commonItem) {
 
     }
+    mergeAdvancedData(filterList) {
+        const advancedData = $.extend(true, [], this.state.rawAdvancedData);
+        advancedData.forEach(oldGroup => {
+            if (oldGroup.data && oldGroup.data.length) {
+                oldGroup.data = oldGroup.data.map(x => {
+                    x.selected = false;
+                    let changedItem = null;
+                    const changedGroup = filterList.find(item => item.groupName === oldGroup.groupName);
+                    if (_.get(changedGroup, 'data.length')) {
+                        changedItem = changedGroup.data.find(filter => filter.value === x.value);
+                        if (changedItem) {
+                            x.selected = changedItem.selected;
+                        }
+                    }
+                    return x;
+                });
+            }
+        });
+        return advancedData;
+    }
     handleCommonItemClick(item, index) {
         this.setState({
             selectedCommonIndex: index,
-            selectedAdvancedMap: {}
+            advancedData: this.mergeAdvancedData(item.filterList)
+        }, () => {
+            filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.advancedData));
+            this.props.onFilterChange(this.processSelectedFilters(this.state.advancedData));
         });
-        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, item.filterList);
-        this.props.onFilterChange(item.filterList);
+        
     }
-    processSelectedFilters(selectedAdvancedMap, isSub) {
-        const filterList = [];
-        _.forEach(selectedAdvancedMap, (groupData, groupName) => {
-            if (groupData) {
-                const data = [];
-                _.forEach(groupData, (groupItem, key) => {
-                    data.push(groupItem);
-                });
-                const oldItem = this.props.advancedData.find(x => x.groupName === groupName) || {};
-                const groupItem = $.extend({}, oldItem, {
-                    groupName,
-                    data: data.filter(x => x)
-                });                
-                filterList.push(groupItem);
+    processSelectedFilters(rawfilterList) {
+        const filterList = $.extend(true, [], rawfilterList);
+        filterList.forEach(group => {
+            if (_.get(group, 'data.length') > 0) {
+                group.data = group.data.filter(x => x.selected);
             }
         });
-        if (isSub) {
-            const list = [];
-            filterList.forEach(x => {
-                if (x.data) {
-                    x.data.forEach(item => {
-                        if (item) {
-                            list.push(item);
-                        }
-                    });
-                }
-            });
-            return list;
-        }
         return filterList;
-    }   
-    handleAdvanedItemClick(groupItem, item, idx) {
-        const {groupName, singleSelect = false} = groupItem;
-        const map = this.state.selectedAdvancedMap;
-        if (!map[groupName]) {
-            map[groupName] = {};
-        }       
-        if (!map[groupName][idx]) {
-            //单选 或 不能与其他选项同时选中
-            if (singleSelect || item.selectOnly) {
-                map[groupName] = {};
-            }
-            map[groupName][idx] = item;
-        } else {
-            map[groupName][idx] = false;
+    }
+    handleAdvanedItemClick(groupItem, item, outIndex, innerIdx) {
+        const { groupName, singleSelect = false } = groupItem;
+        const advancedData = $.extend(true, [], this.state.advancedData);
+        const selectedGroupItem = advancedData.find((group, index) => index === outIndex);
+        let selectedItem = null;
+        if (selectedGroupItem.data && selectedGroupItem.data.length) {
+            selectedItem = selectedGroupItem.data.find((x, idx) => idx === innerIdx);
+        }
+        if (selectedItem) {
+            selectedItem.selected = !selectedItem.selected;
         }
         this.setState({
             selectedCommonIndex: '',
-            selectedAdvancedMap: map
+            advancedData
         });
-        const filterList = this.processSelectedFilters(map);
-        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(map));
+        const filterList = this.processSelectedFilters(advancedData);
+        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
         this.props.onFilterChange(filterList);
     }
     handleShowPop(type, visible) {
         let showHoverPop = this.state.showHoverPop;
+        let showClickPop = this.state.showClickPop;
         switch (type) {
             case 'hover':
                 showHoverPop = visible;
@@ -140,7 +175,8 @@ class FilterList extends React.Component {
                 break;
         }
         this.setState({
-            showHoverPop
+            showHoverPop,
+            showClickPop
         });
     }
     render() {
@@ -168,13 +204,14 @@ class FilterList extends React.Component {
                     >
                         <div className="common-container">
                             <h4 className="title icon-common-filter">常用筛选</h4>
-                            {!commonData || commonData.length === 0 ?
+                            {/* todo 用props.commonData */}
+                            {!this.state.commonData || this.state.commonData.length === 0 ?
                                 <div className="alert-container">
-                                    <Alert type="info" message="暂无常用筛选" showIcon/>
+                                    <Alert type="info" message="暂无常用筛选" showIcon />
                                 </div> :
                                 <ul>
                                     {
-                                        commonData.map((x, index) => {
+                                        this.state.commonData.map((x, index) => {
                                             //当前索引小于预设展示数量，或面板为展开时，显示item
                                             const showItem = (index < this.props.showCommonListLength) || !this.state.collapsedCommon;
                                             const getHoverContent = filterList => (
@@ -201,12 +238,13 @@ class FilterList extends React.Component {
                                                 'active': index === this.state.selectedCommonIndex
                                             });
                                             return (
-                                                <Popover key={index} placement="bottom" content={getHoverContent(x.filterList)} trigger="hover"
+                                                //todo plainFilterList 根据接口数据统一结构
+                                                <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
                                                     onVisibleChange={this.handleShowPop.bind(this, 'hover')}
                                                 // visible={this.state.showHoverPop && !this.state.showClickPop}
                                                 >
                                                     <li
-                                                        className={commonItemClass}                                                       
+                                                        className={commonItemClass}
                                                         key={index}
                                                     >
                                                         <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
@@ -231,7 +269,7 @@ class FilterList extends React.Component {
                         </div>
                     </StatusWrapper>
                     {
-                        this.props.advancedData.length > 0 ?
+                        this.state.advancedData.length > 0 ?
                             <StatusWrapper
                                 loading={advancedLoading}
                                 errorMsg={this.props.advancedErrorMsg}
@@ -249,7 +287,7 @@ class FilterList extends React.Component {
                                         !this.state.collapsedAdvanced ?
                                             <div className="advanced-items-wrapper">
                                                 {
-                                                    advancedData.map((groupItem, index) => {
+                                                    this.state.advancedData.map((groupItem, index) => {
                                                         if (!groupItem.data || groupItem.data.length === 0) {
                                                             return null;
                                                         } else {
@@ -272,9 +310,9 @@ class FilterList extends React.Component {
                                                                             groupItem.data.map((x, idx) => {
                                                                                 return (
                                                                                     <li
-                                                                                        className={_.get(this.state.selectedAdvancedMap, [groupItem.groupName, idx]) ? 'active titlecut' : 'titlecut'}
+                                                                                        className={x.selected ? 'active titlecut' : 'titlecut'}
                                                                                         key={idx}
-                                                                                        onClick={this.handleAdvanedItemClick.bind(this, groupItem, x, idx)}
+                                                                                        onClick={this.handleAdvanedItemClick.bind(this, groupItem, x, index, idx)}
                                                                                     >
                                                                                         {x.name}
                                                                                     </li>
@@ -304,7 +342,7 @@ FilterList.defaultProps = {
     advancedLoading: false,
     showCommonListLength: 7,
     key: '',
-    onFilterChange: function() {}
+    onFilterChange: function() { }
 };
 
 FilterList.propTypes = {

@@ -35,6 +35,7 @@ const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
 import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
 import { FilterInput } from 'CMP_DIR/filter';
+var classNames = require('classnames');
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -97,6 +98,7 @@ var Crm = React.createClass({
         return {
             callNumber: '', // 座机号
             errMsg: '', // 获取座机号失败的信息
+            showFilterList: true,
             ...this.getStateData()
         };
     },
@@ -1157,7 +1159,11 @@ var Crm = React.createClass({
             message.error(Intl.get('crm.delete.duplicate.customer.failed', '删除重复客户失败'));
         });
     },
-
+    toggleList() {
+        this.setState({
+            showFilterList: !this.state.showFilterList
+        });
+    },
     render: function() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1355,12 +1361,20 @@ var Crm = React.createClass({
         }
         let customerOfCurUser = this.state.customerOfCurUser;
         let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
+        const contentClassName = classNames({
+            'content-container': !this.props.fromSalesHome,
+            'content-full': !this.state.showFilterList
+        }); 
         return (<RightContent>
             <div className="crm_content" data-tracename="客户列表">
                 {
                     !this.props.fromSalesHome ?
-                        <div>
-                            <FilterInput />
+                        <div className="top-nav-border-fix">
+                            <div className="search-input-wrapper">
+                                <FilterInput 
+                                    toggleList={this.toggleList.bind(this)}
+                                />
+                            </div>
                             <FilterBlock>
                                 {selectCustomerLength ? (
                                     <div className="crm-list-selected-tip">
@@ -1388,16 +1402,7 @@ var Crm = React.createClass({
                         addOne={this.addOne}
                         showRightPanel={this.showRightPanel}
                     />
-                ) : null}
-                {FilterStore.getState().isPanelShow ? (
-                    <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
-                        <CrmFilterPanel
-                            search={this.search.bind(this, true)}
-                            filterPanelHeight={this.state.filterPanelHeight}
-                            changeTableHeight={this.changeTableHeight}
-                        />
-                    </div>
-                ) : null}
+                ) : null}                
                 <div id="content-block" className="content-block splice-table" ref="crmList"
                     style={{ display: shouldTableShow ? 'block' : 'none' }}>
                     <div className="tbody"
@@ -1406,16 +1411,16 @@ var Crm = React.createClass({
                     >
                         {
                             !this.props.fromSalesHome ?
-                                <div className="filter-container">
+                                <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
                                     <CrmFilterPanel
                                         search={this.search.bind(this, true)}
-                                        style={{ width: 300, height: this.state.tableHeight }}
+                                        style={{ width: 300, height: this.state.tableHeight + 100 }}
                                         filterPanelHeight={this.state.filterPanelHeight}
                                         changeTableHeight={this.changeTableHeight}
                                     />
                                 </div> : null
                         }
-                        <div className={!this.props.fromSalesHome ? 'content-container' : null}>
+                        <div className={contentClassName}>
                             <AntcTable
                                 rowSelection={rowSelection}
                                 rowKey={rowKey}

@@ -8,6 +8,7 @@
 @btn-grey: #D7D7D7;
 @btn-yellow: #EDA445;
 @bg-blue: #EEF7FE;
+@bd-grey: #DFDFE1;
 .gm-scroll-view {
     padding-right: 25px;
 }
@@ -194,14 +195,25 @@
 
 .search-wrapper {
     min-width: 320px;
-    height: 45px;
-    margin-left: 40px;
+    height: 45px;    
     position: relative;
     vertical-align: text-bottom;
     top: -4px;
+    .icon-container {
+        height: 30px;
+        text-align: center;
+        font-size: 17px;
+        padding-top: 3px;
+        width: 32px;
+        border: 1px solid @bd-grey;
+        border-radius: 4px;
+        color: @font-lightblue;
+        cursor: pointer;
+    }
     &.collapsed {
         min-width: initial;
-        position: static;
+        position: relative;
+        top: -19px;
         height: initial;
         margin-left: initial;
     }

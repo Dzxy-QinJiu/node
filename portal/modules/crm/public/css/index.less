@@ -3,6 +3,13 @@
 @import "../../../../public/css/iconfont";
 @filter-width: 288px;
 .crm_content{
+  .filter-block .block.search-input-select-block button{
+    display: none;
+  }
+  .top-nav-border-fix {
+    border-bottom: 1px dashed #ccc;
+    margin-top: -6px;
+  }
   //客户标签的样式设置
   .customer_name{
     .customer-label {
@@ -58,7 +65,7 @@
     height:30px;
     line-height:30px;
     margin-top:@filter_area_margin_top;
-    margin-left:@container_padding;
+    margin-left:@container_padding - 5px;
     width:450px;
     .search-input-container{
       display:inline-block;
@@ -128,7 +135,7 @@
   .search-input-wrapper {
     margin-top: 18px;
     margin-left: 40px;
-    vertical-align: top;
+    display: inline-block;
   }
   .content-block{
     .filter-container {
@@ -137,9 +144,16 @@
       min-width: @filter-width;
       height: 100%;
       position: absolute;
+      transition: all 0.5s;
+      &.filter-close {
+        left:0 - @filter-width;
+      }
     }
     .content-container {
       padding-left: @filter-width + 22px;
+      &.content-full {
+        padding-left: 0;
+      }
     }
     margin: @top_nav_height+2 @container_padding auto @container_padding;
     .ant-table-placeholder{
