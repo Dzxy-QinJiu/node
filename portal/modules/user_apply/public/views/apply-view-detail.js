@@ -12,7 +12,7 @@ import userData from '../../../../public/sources/user-data';
 import GeminiScrollbar from '../../../../components/react-gemini-scrollbar';
 import AppProperty from '../../../../components/user_manage_components/app-property-setting';
 import {Modal} from 'react-bootstrap';
-import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker} from 'antd';
+import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col} from 'antd';
 const Option = Select.Option;
 import FieldMixin from '../../../../components/antd-form-fieldmixin';
 import UserNameTextField from '../../../../components/user_manage_components/user-name-textfield/apply-input-index';
@@ -20,7 +20,7 @@ import UserNameTextfieldUtil from '../../../../components/user_manage_components
 const FormItem = Form.Item;
 import {Table} from 'react-bootstrap';
 import classNames from 'classnames';
-import {hasPrivilege} from '../../../../components/privilege/checker';
+import {hasPrivilege, PrivilegeChecker} from '../../../../components/privilege/checker';
 /*在审批界面显示用户的右侧面板开始*/
 require('../css/main.less');
 import UserDetail from '../../../app_user_manage/public/views/user-detail';
@@ -281,55 +281,39 @@ const ApplyViewDetail = React.createClass({
     },
     //渲染回复列表
     renderReplyList() {
-        if (!hasPrivilege('GET_APPLY_COMMENTS')) {
-            return null;
-        }
-        var replyListInfo = this.state.replyListInfo;
+        let replyListInfo = this.state.replyListInfo;
         if (replyListInfo.result === 'loading') {
-            return <div className="reply-loading-wrap">
-                <Icon type="loading"/>
-                <span className="reply-loading-text"><ReactIntl.FormattedMessage id="user.apply.reply.loading"
-                    defaultMessage="正在努力加载回复列表 ......"/></span>
-            </div>;
+            return (
+                <div className="reply-loading-wrap">
+                    <Icon type="loading"/>
+                    <span className="reply-loading-text">
+                        {Intl.get('user.apply.reply.loading', '正在努力加载回复列表 ......')}
+                    </span>
+                </div>);
         }
         if (replyListInfo.result === 'error') {
-            var message = <span>{replyListInfo.errorMsg}，<Icon type="reload" onClick={this.refreshReplyList}
-                title={Intl.get('common.get.again', '重新获取')}/></span>;
-            return <div>
-                <Alert
-                    message={message}
-                    type="error"
-                    showIcon={true}
-                />
-            </div>;
+            var message = (
+                <span>{replyListInfo.errorMsg}，<Icon type="reload" onClick={this.refreshReplyList}
+                    title={Intl.get('common.get.again', '重新获取')}/></span>);
+            return (<Alert message={message} type="error" showIcon={true}/> );
         }
         let replyList = replyListInfo.list;
         if (_.isArray(replyList) && replyList.length) {
-            return (<div>
-                {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/}
-                {/*title={Intl.get("common.get.again", "重新获取")}/>*/}
+            {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/
+            }
+            {/*title={Intl.get("common.get.again", "重新获取")}/>*/
+            }
+            return (
                 <ul>
                     {replyList.map((replyItem, index) => {
                         return (
-                            <li key={index}>
-                                <dl>
-                                    <dt>
-                                        <img width="44" height="44"
-                                            src={replyItem.user_logo || DefaultHeadIconImage}
-                                            onError={this.userLogoOnError}/>
-                                    </dt>
-                                    <dd>
-                                        <div>
-                                            <em>{replyItem.user_name}</em>
-                                            <span>{replyItem.date}</span>
-                                        </div>
-                                        <p>{replyItem.message}</p>
-                                    </dd>
-                                </dl>
+                            <li key={index} className="apply-info-label">
+                                <span className="user-info-label">{replyItem.user_name}:</span>
+                                <span className="user-info-text">{replyItem.message}</span>
+                                <span className="user-info-label reply-date-text">{replyItem.date}</span>
                             </li>);
                     })}
-                </ul>
-            </div>);
+                </ul>);
         } else {
             return null;
         }
@@ -364,54 +348,109 @@ const ApplyViewDetail = React.createClass({
             //计算详情高度
             applyDetailHeight = this.getApplyDetailHeight();
             // approval_state：0待审批，1通过 2驳回 3撤销，当是0时，保持高度不变，非0时，要增加回复框
-            if (detailInfo.approval_state !== CONSTANTS.APPLY_STATUS) {
-                if (detailInfo.approval_comment) {
-                    applyDetailHeight -= CONSTANTS.DETAIL_CONTAIN_COMMENT_HEIGHT;
-                } else {
-                    applyDetailHeight -= CONSTANTS.DETAIL_NO_COMMENT_HEIGHT;
-                }
-
-            }
+            // if (detailInfo.approval_state !== CONSTANTS.APPLY_STATUS) {
+            //     if (detailInfo.approval_comment) {
+            //         applyDetailHeight -= CONSTANTS.DETAIL_CONTAIN_COMMENT_HEIGHT;
+            //     } else {
+            //         applyDetailHeight -= CONSTANTS.DETAIL_NO_COMMENT_HEIGHT;
+            //     }
+            //
+            // }
             //启用滚动条
             GeminiScrollbarEnabled = true;
         }
         if (this.state.applyIsExpanded) {
             GeminiScrollbarEnabled = false;
         }
+        let selectedDetailItem = this.state.selectedDetailItem;
         return (
             <div>
-                <div className="apply_detail_uuid apply_detail_margin">
-                    <span><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/>：&nbsp;
-                        <a href="javascript:void(0)"
-                            onClick={this.showCustomerDetail.bind(this, detailInfo.customer_id)}
-                            data-tracename="查看客户详情"
-                        >{detailInfo.customer_name}</a>
+                <div className="apply-detail-title">
+                    <span className="apply-type-tip">
+                        {selectedDetailItem.topic || Intl.get('user.apply.id', '账号申请')}
                     </span>
-                    {detailInfo.last_contact_time ? (
-                        <span className="last-contact-time">
-                            <ReactIntl.FormattedMessage id="crm.7" defaultMessage="最后联系时间"/>：
-                            {moment(detailInfo.last_contact_time).format(oplateConsts.DATE_FORMAT)}
-                        </span>
-                    ) : null}
-                    {this.state.selectedDetailItem.order_id ? (
-                        <span className="order"><ReactIntl.FormattedMessage id="user.apply.detail.order"
-                            defaultMessage="订单"/>：&nbsp;{this.state.selectedDetailItem.order_id}</span>) : null}
+                    {selectedDetailItem.order_id ? (
+                        <span className="order-id">
+                            {Intl.get('crm.147', '订单号')}：{selectedDetailItem.order_id}
+                        </span>) : null}
                 </div>
-                <div style={{height: applyDetailHeight}} ref="geminiWrap">
-                    <GeminiScrollbar enabled={GeminiScrollbarEnabled} ref="gemini">
-                        <div>
-                            {this.renderDetailCenter()}
-                            <div className="reply_list_wrap"
-                                style={{display: this.state.applyIsExpanded ? 'none' : 'block'}}>
-                                {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
-                                {this.renderReplyList()}
+                <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
+                    {this.state.applyIsExpanded ? (
+                        <PrivilegeChecker check='APP_USER_APPLY_APPROVAL'>
+                            {this.renderDetailForm(detailInfo)}
+                        </PrivilegeChecker>) : (
+                        <GeminiScrollbar enabled={GeminiScrollbarEnabled} ref="gemini">
+                            {this.renderDetailCustomerBlock(detailInfo)}
+                            <div className="apply-detail-user apply-detail-info">
+                                <div className="user-icon-block">
+                                    <span className="iconfont icon-user"/>
+                                </div>
+                                {this.renderDetailCenter(detailInfo)}
                             </div>
-                        </div>
-                    </GeminiScrollbar>
+                            {detailInfo.comment ? (<div className="apply-detail-common apply-detail-info">
+                                <div className="common-icon-block">
+                                    <span className="iconfont icon-common"/>
+                                </div>
+                                {this.renderComment()}
+                            </div>) : null}
+                            <div className="apply-detail-reply-list apply-detail-info">
+                                <div className="reply-icon-block">
+                                    <span className="iconfont icon-apply-message-tip"/>
+                                </div>
+                                <div className="reply-info-block">
+                                    <div className="reply-list-container">
+                                        {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
+                                        {hasPrivilege('GET_APPLY_COMMENTS') ? this.renderReplyList() : null}
+                                        {hasPrivilege('CREATE_APPLY_COMMENT') ? (
+                                            <Input addonAfter={(
+                                                <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
+                                            value={this.state.formData.comment}
+                                            onChange={this.commentInputChange}
+                                            placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>
+                                        ) : null}
+                                        {this.renderReplyFormResult()}
+                                    </div>
+                                </div>
+                            </div>
+                        </GeminiScrollbar>
+                    )}
                 </div>
                 {this.renderDetailBottom()}
             </div>
         );
+    },
+    renderDetailCustomerBlock: function(detailInfo) {
+        return (
+            <div className="apply-detail-customer apply-detail-info">
+                <div className="customer-icon-block">
+                    <span className="iconfont icon-customer"/>
+                </div>
+                <div className="customer-info-block apply-info-block">
+                    <div className="customer-name">
+                        <a href="javascript:void(0)"
+                            onClick={this.showCustomerDetail.bind(this, detailInfo.customer_id)}
+                            data-tracename="查看客户详情"
+                            title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
+                        >
+                            {detailInfo.customer_name}
+                            <span className="iconfont icon-arrow-right"/>
+                        </a>
+                    </div>
+                    {detailInfo.last_contact_time ? (
+                        <div className="apply-info-label">
+                            <span className="user-info-label">
+                                {Intl.get('user.apply.last.follow.date', '最新跟进日期')}:
+                            </span>
+                            {moment(detailInfo.last_contact_time).format(oplateConsts.DATE_FORMAT)}
+                        </div>) : null}
+                    <div className="apply-info-label">
+                        <span className="user-info-label">
+                            {Intl.get('common.belong.sales', '所属销售')}:
+                        </span>
+                        {detailInfo.sales_name || ''} - {detailInfo.sales_team_name || ''}
+                    </div>
+                </div>
+            </div>);
     },
     toggleApplyExpanded(bool) {
         ApplyViewDetailActions.toggleApplyExpanded(bool);
@@ -485,19 +524,17 @@ const ApplyViewDetail = React.createClass({
             return <span>{info.user_names[0]}</span>;
         }
         let maxUserNumber = this.getChangeMaxUserNumber();
-        return(<div>
+        return (<div>
             {!this.hasApprovalPrivilege() ? <span>{info.user_names[0]}</span>
                 : (this.state.isUserEdit ? (
                     <div className="user-name-wrap">
-                        <Form horizontal>
+                        <Form>
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 {this.renderUserNameTextField({existCheck: true, number: maxUserNumber})}
                             </Validation>
                         </Form>
-                        <div className="distance">
+                        <div className="save-buttons">
                             <span className="iconfont icon-choose" onClick={this.userNameSure}></span>
-                        </div>
-                        <div className="distance">
                             <span className="iconfont icon-close" onClick={this.userNameCancel}></span>
                         </div>
                     </div>
@@ -512,65 +549,67 @@ const ApplyViewDetail = React.createClass({
         </div>);
     },
     //渲染用户名
-    renderApplyDetailUsernames() {
-        var info = this.state.detailInfoObj.info;
+    renderApplyDetailUserNames(detailInfo) {
         //已有用戶
         if (this.isExistUserApply()) {
-            var user_ids = info.user_ids;
-            if (!_.isArray(user_ids)) {
-                user_ids = [];
-            }
-            return (
-                <ul className="list-unstyled">
-                    {
-                        info.user_names.map((name, idx) => {
-                            return (
-                                <li key={name}><a href="javascript:void(0)"
-                                    onClick={this.showUserDetail.bind(this, user_ids[idx])}
-                                    data-tracename="查看用户详情">{name}</a>
-                                </li>
-                            );
-                        })
-                    }
-                </ul>
-            );
+            return this.renderApplyUserNames(detailInfo);
         } else {
             //新用戶申请，审批通过增加id字段后
-            if (info.user_ids && info.user_ids.length !== 0) {
+            if (_.isArray(detailInfo.user_ids) && detailInfo.user_ids.length) {
                 return (
-                    <ul className="list-unstyled">
-                        {
-                            info.user_ids.map((id, idx) => {
-
-                                return (
-                                    <li key={id}><a href="javascript:void(0)"
-                                        onClick={this.showUserDetail.bind(this, id)}
-                                        data-tracename="查看用户详情"> {info.user_names[idx]}</a>
-                                    </li>
-                                );
-
-                            })
-                        }
-                    </ul>
-                );
+                    <div className="apply-info-label">
+                        <span className="user-info-label">{Intl.get('crm.detail.user', '用户')}:</span>
+                        <span className="user-info-text">
+                            {
+                                detailInfo.user_ids.map((id, idx) => {
+                                    return (
+                                        <span key={idx}>
+                                            <a href="javascript:void(0)"
+                                                onClick={this.showUserDetail.bind(this, id)}
+                                                data-tracename="查看用户详情">{detailInfo.user_names[idx]}</a>
+                                            <span className="user-nick-name">
+                                                {_.isArray(detailInfo.nick_names) && detailInfo.nick_names[idx] ? `(${detailInfo.nick_names[idx]})` : null}
+                                                {idx !== detailInfo.user_names.length - 1 ? ',  ' : null}
+                                            </span>
+                                        </span>);
+                                })
+                            }
+                        </span>
+                    </div>);
             } else {
-                if (info.user_names && info.user_names.length === 1) {
-                    return (
-                        <ul className="list-unstyled">
-                            <li className="user-name-edit-block">
-                                {this.renderUserNameBlock(info)}
-                            </li>
-                        </ul>
-                    );
+                if (detailInfo.user_names && detailInfo.user_names.length === 1) {
+                    let userNameEle = (
+                        <div className="apply-info-label clearfix">
+                            <div className="user-info-label edit-name-label">
+                                {Intl.get('crm.detail.user', '用户')}:
+                            </div>
+                            <span className="user-info-text">{this.renderUserNameBlock(detailInfo)}</span>
+                        </div>);
+                    let nickNameEle = (
+                        <div className="apply-info-label clearfix">
+                            <div className="user-info-label edit-name-label">
+                                {Intl.get('common.nickname', '昵称')}:
+                            </div>
+                            <span className="user-info-text">{this.renderNickNameBlock(detailInfo)}</span>
+                        </div>);
+                    return [userNameEle, nickNameEle];
                 } else {
                     return (
-                        <ul className="list-unstyled">
-                            <li>{_.first(info.user_names)}～{_.last(info.user_names)}</li>
-                        </ul>
-                    );
+                        <div className="apply-info-label">
+                            <span className="user-info-label">{Intl.get('crm.detail.user', '用户')}:</span>
+                            <span className="user-info-text">
+                                {_.first(detailInfo.user_names)}
+                                <span className="user-nick-name">
+                                    ({_.first(detailInfo.nick_names)})
+                                </span>
+                                ～ {_.last(detailInfo.user_names)}
+                                <span className="user-nick-name">
+                                   ({_.last(detailInfo.nick_names)})
+                                </span>
+                            </span>
+                        </div>);
                 }
             }
-
         }
     },
     //将昵称设置为编辑状态
@@ -605,10 +644,8 @@ const ApplyViewDetail = React.createClass({
                                 {this.renderNickNameTextField({existCheck: true})}
                             </Validation>
                         </Form>
-                        <div className="distance">
+                        <div className="save-buttons">
                             <span className="iconfont icon-choose" onClick={this.nickNameSure}></span>
-                        </div>
-                        <div className="distance">
                             <span className="iconfont icon-close" onClick={this.nickNameCancel}></span>
                         </div>
                     </div>
@@ -623,39 +660,7 @@ const ApplyViewDetail = React.createClass({
                 )}
         </div>;
     },
-    //渲染昵称
-    renderApplyDetailNicknames() {
-        var info = this.state.detailInfoObj.info;
-        if (this.isExistUserApply()) {
-            return (
-                <ul className="list-unstyled">
-                    {
-                        info.nick_names.map(function(name) {
-                            return (
-                                <li key={name}>{name}</li>
-                            );
-                        })
-                    }
-                </ul>
-            );
-        } else {
-            if (info.nick_names && info.nick_names.length === 1) {
-                return (
-                    <ul className="list-unstyled">
-                        <li className="user-name-edit-block">
-                            {this.renderNickNameBlock(info)}
-                        </li>
-                    </ul>
-                );
-            } else {
-                return (
-                    <ul className="list-unstyled">
-                        <li>{_.first(info.nick_names)}～{_.last(info.nick_names)}</li>
-                    </ul>
-                );
-            }
-        }
-    },
+
     //渲染开通周期
     renderApplyTime(app, custom_setting) {
         let displayStartTime = '', displayEndTime = '', displayText = '';
@@ -739,11 +744,12 @@ const ApplyViewDetail = React.createClass({
         const detailInfo = this.state.detailInfoObj.info;
         if (detailInfo.comment) {
             return (
-                <dl className="dl-horizontal detail_item">
-                    <dt><ReactIntl.FormattedMessage id="common.remark" defaultMessage="备注"/></dt>
-                    <dd>{detailInfo.comment}</dd>
-                </dl>
-            );
+                <div className="common-info-block apply-info-block">
+                    <div className="apply-info-label">
+                        <span className="user-info-label">{Intl.get('common.remark', '备注')}:</span>
+                        <span className="user-info-text">{detailInfo.comment}</span>
+                    </div>
+                </div>);
         } else {
             return null;
         }
@@ -778,7 +784,7 @@ const ApplyViewDetail = React.createClass({
                             }
                             return (
                                 <tr key={app.app_id}>
-                                    <td>{app.client_name}</td>
+                                    <td className='apply-app-name'>{app.client_name}</td>
                                     {isExistUserApply ? null : <td className="apply-app-numbers">{number}</td>}
                                     <td className="desp_time">
                                         {this.renderApplyTime(app, custom_setting)}
@@ -845,27 +851,28 @@ const ApplyViewDetail = React.createClass({
 
                             return (
                                 <tr key={app.app_id}>
-                                    <td>{app.client_name}</td>
+                                    <td className='apply-app-name'>{app.client_name}</td>
                                     {isExistUserApply ? null : <td className="apply-app-numbers">{number}</td>}
                                     <td className="desp_time">
                                         {this.renderApplyTime(app, custom_setting)}
                                     </td>
                                     <td>
-                                        {detailInfo.approval_state === '0' && rolesNames.length === 0 && hasPrivilege('UPDATE_APP_EXTRA_GRANT') ? <a
-                                            href="javascript:void(0)"
-                                            title={Intl.get('user.apply.detail.table.no.role.title', '配置应用')}
-                                            onClick={this.showAppConfigPanel.bind(this, app, detailInfo.account_type)}
-                                            data-tracename="点击了请配置"
-                                        >
-                                            <ReactIntl.FormattedMessage id="user.apply.detail.table.no.role"
-                                                defaultMessage="请配置"/>
-                                        </a> : (
-                                            rolesNames.map((item) => {
-                                                return (
-                                                    <div key={item}>{item}</div>
-                                                );
-                                            })
-                                        )}
+                                        {detailInfo.approval_state === '0' && rolesNames.length === 0 && hasPrivilege('UPDATE_APP_EXTRA_GRANT') ?
+                                            <a
+                                                href="javascript:void(0)"
+                                                title={Intl.get('user.apply.detail.table.no.role.title', '配置应用')}
+                                                onClick={this.showAppConfigPanel.bind(this, app, detailInfo.account_type)}
+                                                data-tracename="点击了请配置"
+                                            >
+                                                <ReactIntl.FormattedMessage id="user.apply.detail.table.no.role"
+                                                    defaultMessage="请配置"/>
+                                            </a> : (
+                                                rolesNames.map((item) => {
+                                                    return (
+                                                        <div key={item}>{item}</div>
+                                                    );
+                                                })
+                                            )}
                                     </td>
                                     {
                                         permissionNameIndex ? (<td>
@@ -888,69 +895,9 @@ const ApplyViewDetail = React.createClass({
         );
     },
 
-    //渲染详情内容
-    renderDetailContent() {
-        if (this.state.applyIsExpanded) {
-            return null;
-        }
-        const detailInfo = this.state.detailInfoObj.info;
-        // 判断是否显示权限项
-        let permissionNameIndex = 'false';
-        let appsLen = (detailInfo.apps && detailInfo.apps.length) || 0;
-        for (let i = 0; i < appsLen; i++) {
-            permissionNameIndex = _.has(detailInfo.apps[i], 'permissionsNames') && detailInfo.apps[i].permissionsNames.length > 0;
-            if (permissionNameIndex) {
-                break;
-            }
-        }
-        const appsSetting = this.appsSetting;
-        const isExistUserApply = this.isExistUserApply();
-        return (
-            <div>
-                <div className="col-xs-6 col-md-5 apply_detail_desp">
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
-                        <dd>{detailInfo.sales_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
-                        <dd>{detailInfo.sales_team_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight: 0}}>{this.renderApplyDetailUsernames()}</dd>
-                    </dl>
-                    {isExistUserApply ? (null) : ( <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.nickname" defaultMessage="昵称"/></dt>
-                        <dd style={{paddingRight: 0}}>{this.renderApplyDetailNicknames()}</dd>
-                    </dl>)}
-
-
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.type" defaultMessage="类型"/></dt>
-                        <dd>{detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}</dd>
-                    </dl>
-                    {this.renderComment()}
-                </div>
-                <div className="col-xs-6 col-md-7 apply_detail_apps">
-                    {/**
-                     不显示角色和权限的情况：
-                     detailInfo.approval_state === '0' &&  !hasPrivilege("GET_APP_EXTRA_GRANTS") 销售人员待审批的情况
-                     detailInfo.approval_state === '2'表示是已驳回的应用，
-                     detailInfo.approval_state === '3'表示是已撤销的应用，
-                     */}
-                    { detailInfo.approval_state === '0' && !hasPrivilege('GET_APP_EXTRA_GRANTS') ||
-                    detailInfo.approval_state === '2' ||
-                    detailInfo.approval_state === '3' ?
-                        this.renderAppTable() : this.renderAppTableRolePermission()
-                    }
-                </div>
-            </div>
-        );
-    },
     //渲染每个应用设置区域
-    renderDetailForm() {
-        const selectedApps = this.state.detailInfoObj.info.apps;
+    renderDetailForm(detailInfo) {
+        const selectedApps = detailInfo.apps;
         let height = this.getApplyDetailHeight();
         if (height !== 'auto') {
             height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT;
@@ -974,8 +921,10 @@ const ApplyViewDetail = React.createClass({
         }
 
         return (
-            <div className="apply_custom_setting_wrap"
-                style={{display: this.state.applyIsExpanded ? 'block' : 'none'}}>
+            <div className="apply_custom_setting_wrap">
+                <div className="apply_detail_operate clearfix">
+                    {this.renderDetailOperateBtn()}
+                </div>
                 <AppProperty {...appComponentProps}/>
             </div>
         );
@@ -986,93 +935,143 @@ const ApplyViewDetail = React.createClass({
         this.appsSetting = appsSetting;
     },
     //渲染用户申请
-    renderApplyUser: function() {
-        var detailInfo = this.state.detailInfoObj.info;
+    renderApplyUser: function(detailInfo) {
+        if (this.state.applyIsExpanded) {
+            return null;
+        }
+        // 判断是否显示权限项
+        let permissionNameIndex = 'false';
+        let appsLen = (detailInfo.apps && detailInfo.apps.length) || 0;
+        for (let i = 0; i < appsLen; i++) {
+            permissionNameIndex = _.has(detailInfo.apps[i], 'permissionsNames') && detailInfo.apps[i].permissionsNames.length > 0;
+            if (permissionNameIndex) {
+                break;
+            }
+        }
         return (
-            <div className="app_detail_info_style  clearfix">
-                <div className="apply_detail_operate apply_detail_margin clearfix">
-                    {this.renderDetailOperateBtn()}
+            <div className="user-info-block apply-user-detail-block apply-info-block">
+                {this.renderApplyDetailUserNames(detailInfo)}
+                <div className="apply-info-label clearfix">
+                    <span className="user-info-label">{Intl.get('common.type', '类型')}:</span>
+                    <span className="user-info-text">
+                        {detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}
+                    </span>
                 </div>
-                <div className="apply_detail_margin">
-                    {hasPrivilege('APP_USER_APPLY_APPROVAL') ?
-                        this.renderDetailForm() : null
+                <div className="col-12 apply_detail_apps">
+                    <div className="apply_detail_operate clearfix">
+                        {this.renderDetailOperateBtn()}
+                    </div>
+                    {/** 不显示角色和权限的情况：
+                     detailInfo.approval_state === '0' &&  !hasPrivilege("GET_APP_EXTRA_GRANTS") 销售人员待审批的情况
+                     detailInfo.approval_state === '2'表示是已驳回的应用，
+                     detailInfo.approval_state === '3'表示是已撤销的应用，
+                     */}
+                    { detailInfo.approval_state === '0' && !hasPrivilege('GET_APP_EXTRA_GRANTS') ||
+                    detailInfo.approval_state === '2' ||
+                    detailInfo.approval_state === '3' ?
+                        this.renderAppTable() : this.renderAppTableRolePermission()
                     }
-                    {this.renderDetailContent()}
                 </div>
-            </div>
-        );
+            </div>);
     },
     //销售渲染申请开通状态
-    renderDetailChangeStatus: function() {
+    renderDetailChangeStatus: function(detailInfo) {
         return (
-            <div className="clearfix">
-                <div className="apply_detail_simple">
-                    {this.renderDetailChangeStatusContent()}
+            <div className="user-info-block apply-info-block">
+                {this.renderApplyUserNames(detailInfo)}
+                {this.renderApplyAppNames(detailInfo)}
+                <div className="apply-info-label">
+                    <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
+                    <span className="user-info-text">
+                        {detailInfo.status === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}
+                    </span>
                 </div>
             </div>
         );
     },
     //渲染销售申请修改密码
-    renderDetailChangePassword: function() {
+    renderDetailChangePassword: function(detailInfo) {
+        let selectedDetailItem = this.state.selectedDetailItem;
         return (
-            <div className="clearfix">
-                <div className="apply_detail_simple">
-                    {this.renderChangePasswordContent()}
-                </div>
+            <div className="user-info-block apply-info-block">
+                {this.renderApplyUserNames(detailInfo)}
+                {
+                    selectedDetailItem.isConsumed === 'true' || !this.hasApprovalPrivilege() ? null : (
+                        <Form horizontal>
+                            <Validation ref="validation" onValidate={this.handleValidate}>
+                                <div className="apply-info-label">
+                                    <div className="user-info-label password-label">
+                                        {Intl.get('common.password', '密码')}:
+                                    </div>
+                                    {this.renderPasswordBlock()}
+                                </div>
+                                <div className="apply-repassword-container">
+                                    {this.renderConfirmPasswordBlock()}
+                                </div>
+                            </Validation>
+                        </Form>
+                    )
+                }
             </div>
         );
     },
+
+    renderApplyUserNames: function(detailInfo) {
+        let user_ids = detailInfo.user_ids;
+        return (
+            <div className="apply-info-label">
+                <span className="user-info-label">{Intl.get('crm.detail.user', '用户')}:</span>
+                <span className="user-info-text">
+                    { _.isArray(detailInfo.user_names) && detailInfo.user_names.length ?
+                        detailInfo.user_names.map((item, idx) => {
+                            return (
+                                <span key={idx}>
+                                    <a href="javascript:void(0)"
+                                        onClick={this.showUserDetail.bind(this, user_ids[idx])}
+                                        data-tracename="查看用户详情">{item}</a>
+                                    <span className="user-nick-name">
+                                        {_.isArray(detailInfo.nick_names) && detailInfo.nick_names[idx] ? `(${detailInfo.nick_names[idx]})` : null}
+                                        {idx !== detailInfo.user_names.length - 1 ? ', ' : null}
+                                    </span>
+                                </span>);
+                        }) : null
+                    }
+                </span>
+            </div>);
+    },
+
     //渲染销售申请修改其他信息
-    renderDetailChangeOther: function() {
+    renderDetailChangeOther: function(detailInfo) {
         return (
-            <div className="clearfix">
-                <div className="apply_detail_simple">
-                    {this.renderChangeOtherContent()}
-                </div>
+            <div className="user-info-block apply-info-block">
+                {this.renderApplyUserNames(detailInfo)}
             </div>
         );
     },
-    //渲染申请密码详情
-    renderChangeOtherContent: function() {
-        var detailInfo = this.state.detailInfoObj.info;
-        var user_ids = detailInfo.user_ids;
-        return (
-            <div>
-                <div className="col-xs-6 col-md-12 apply_detail_desp">
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
-                        <dd>{detailInfo.sales_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
-                        <dd>{detailInfo.sales_team_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight: 0}}>
-                            <ul className="list-unstyled">
-                                {
-                                    detailInfo.user_names.map((item, idx) => {
-                                        return <li key={idx}><a href="javascript:void(0)"
-                                            onClick={this.showUserDetail.bind(this, user_ids[idx])}
-                                            data-tracename="查看用户详情">{item}</a>
-                                        </li>;
-                                    })
-                                }
-                            </ul>
-                        </dd>
-                    </dl>
-                    {this.renderComment()}
-                </div>
-            </div>
-        );
+    renderApplyAppNames: function(detailInfo) {
+        return (<div className="apply-info-label">
+            <span className="user-info-label">{Intl.get('common.app', '应用')}:</span>
+            <span className="user-info-text">
+                {detailInfo.app_name || ''}
+            </span>
+        </div>);
     },
     //渲染用户延期
-    renderDetailDelayTime: function() {
+    renderDetailDelayTime: function(detailInfo) {
+        var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
         return (
-            <div className="clearfix">
-                <div className="apply_detail_simple">
-                    {this.renderDelayDetailContent()}
+            <div className="user-info-block apply-info-block">
+                {this.renderApplyUserNames(detailInfo)}
+                {this.renderApplyAppNames(detailInfo)}
+                <div className="apply-info-label delay-time-wrap">
+                    <div className="user-info-label">{this.renderApplyDelayName()}:</div>
+                    <span className="user-info-text">
+                        {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
+                        {isRealmAdmin ? this.renderModifyDelayTime() : null}
+                    </span>
                 </div>
             </div>
         );
@@ -1219,7 +1218,6 @@ const ApplyViewDetail = React.createClass({
         return (
             <div className="apply-change-password-style">
                 <FormItem
-                    label=""
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
                     validateStatus={this.renderValidateStyle('apply_detail_password')}
@@ -1251,7 +1249,6 @@ const ApplyViewDetail = React.createClass({
         var formData = this.state.formData;
         return (<div className="apply-change-password-style">
             <FormItem
-                label=""
                 labelCol={{span: 0}}
                 wrapperCol={{span: 24}}
                 validateStatus={this.renderValidateStyle('confirmPassword')}
@@ -1282,106 +1279,6 @@ const ApplyViewDetail = React.createClass({
         } else {
             callback();
         }
-    },
-    //渲染修改开通状态
-    renderDetailChangeStatusContent: function() {
-        var detailInfo = this.state.detailInfoObj.info;
-        var user_ids = detailInfo.user_ids;
-        return (
-            <div>
-                <div className="col-xs-6 col-md-12 apply_detail_desp">
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
-                        <dd>{detailInfo.sales_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
-                        <dd>{detailInfo.sales_team_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称"/></dt>
-                        <dd>{(detailInfo.app_name || '').split('、').map((app_name) => {
-                            return <p key={app_name}>{app_name}</p>;
-                        })}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight: 0}}>
-                            <ul className="list-unstyled">
-                                {
-                                    detailInfo.user_names.map((item, idx) => {
-                                        return <li key={idx}><a href="javascript:void(0)"
-                                            onClick={this.showUserDetail.bind(this, user_ids[idx])}
-                                            data-tracename="查看用户详情">{item}</a>
-                                        </li>;
-                                    })
-                                }
-                            </ul>
-                        </dd>
-                    </dl>
-                    {this.renderComment()}
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态"/></dt>
-                        <dd>{detailInfo.status === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}</dd>
-                    </dl>
-                </div>
-            </div>
-        );
-    },
-    //渲染申请密码详情
-    renderChangePasswordContent: function() {
-        var selectedDetailItem = this.state.selectedDetailItem;
-        var detailInfo = this.state.detailInfoObj.info;
-        var user_ids = detailInfo.user_ids;
-
-        return (
-            <div>
-                <div className="col-xs-6 col-md-12 apply_detail_desp">
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
-                        <dd>{detailInfo.sales_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
-                        <dd>{detailInfo.sales_team_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight: 0}}>
-                            <ul className="list-unstyled">
-                                {
-                                    detailInfo.user_names.map((item, idx) => {
-                                        return <li key={idx}><a href="javascript:void(0)"
-                                            onClick={this.showUserDetail.bind(this, user_ids[idx])}
-                                            data-tracename="查看用户详情">{item}</a>
-                                        </li>;
-                                    })
-                                }
-                            </ul>
-                        </dd>
-                    </dl>
-                    {this.renderComment()}
-                    {
-                        selectedDetailItem.isConsumed === 'true' || !this.hasApprovalPrivilege() ? null : (
-                            <Form horizontal>
-                                <Validation ref="validation" onValidate={this.handleValidate}>
-                                    <dl className="dl-horizontal detail_item">
-                                        <dt>
-                                            {Intl.get('common.password', '密码')}</dt>
-                                        <dd>{this.renderPasswordBlock()}</dd>
-                                    </dl>
-                                    <dl className="dl-horizontal detail_item">
-                                        <dt><ReactIntl.FormattedMessage id="common.confirm.password"
-                                            defaultMessage="确认密码"/></dt>
-                                        <dd>{this.renderConfirmPasswordBlock()}</dd>
-                                    </dl>
-                                </Validation>
-                            </Form>
-                        )
-                    }
-                </div>
-            </div>
-        );
     },
     //延期，修改应用状态，修改密码，渲染“所属客户”
     //如果只有一个客户，这里才渲染，多个客户的情况，node端不返回前端数据（没有customer_name和customer_id）
@@ -1429,72 +1326,18 @@ const ApplyViewDetail = React.createClass({
         return delayTime;
     },
 
-    //渲染延期详情
-    renderDelayDetailContent: function() {
-        var detailInfo = this.state.detailInfoObj.info;
-        var user_ids = detailInfo.user_ids;
-        var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
-            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
-        return (
-            <div>
-                <div className="col-xs-6 col-md-12 apply_detail_desp">
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
-                        <dd>{detailInfo.sales_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
-                        <dd>{detailInfo.sales_team_name}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称"/></dt>
-                        <dd>{(detailInfo.app_name || '').split('、').map((app_name) => {
-                            return <p key={app_name}>{app_name}</p>;
-                        })}</dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight: 0}}>
-                            <ul className="list-unstyled">
-                                {
-                                    detailInfo.user_names.map((item, idx) => {
-                                        return <li key={idx}><a href="javascript:void(0)"
-                                            onClick={this.showUserDetail.bind(this, user_ids[idx])}
-                                            data-tracename="查看用户详情">{item}</a>
-                                        </li>;
-                                    })
-                                }
-                            </ul>
-                        </dd>
-                    </dl>
-                    <dl className="dl-horizontal detail_item">
-                        <dt>{this.renderApplyDelayName()}</dt>
-                        <dd >
-                            {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
-                            {isRealmAdmin ? this.renderModifyDelayTime() : null}
-                        </dd>
-                    </dl>
-                    {this.renderComment()}
-                </div>
-            </div>
-        );
-    },
     //渲染详情内容区域
-    renderDetailCenter() {
-        var detailInfoObj = this.state.detailInfoObj || {};
-        var detailInfoObjInfo = detailInfoObj.info || {};
-        if (detailInfoObjInfo.type === 'apply_pwd_change') {
-            return this.renderDetailChangePassword();
-        } else if (detailInfoObjInfo.type === 'apply_sth_else') {
-            return this.renderDetailChangeOther();
-        } else if (detailInfoObjInfo.type === 'apply_grant_delay') {
-            return this.renderDetailDelayTime();
-        } else if (detailInfoObjInfo.type === 'apply_grant_status_change') {
-            return this.renderDetailChangeStatus();
+    renderDetailCenter(detailInfo) {
+        if (detailInfo.type === 'apply_pwd_change') {
+            return this.renderDetailChangePassword(detailInfo);
+        } else if (detailInfo.type === 'apply_sth_else') {
+            return this.renderDetailChangeOther(detailInfo);
+        } else if (detailInfo.type === 'apply_grant_delay') {
+            return this.renderDetailDelayTime(detailInfo);
+        } else if (detailInfo.type === 'apply_grant_status_change') {
+            return this.renderDetailChangeStatus(detailInfo);
         } else {
-            return this.renderApplyUser();
+            return this.renderApplyUser(detailInfo);
         }
     },
     //添加一条回复
@@ -1528,14 +1371,6 @@ const ApplyViewDetail = React.createClass({
                 message={replyFormInfo.errorMsg}
                 type="error"
                 showIcon={true}
-            />;
-        }
-        if (replyFormInfo.result === 'success') {
-            return <AlertTimer
-                message={Intl.get('user.apply.reply.success', '回复成功')}
-                type="success"
-                showIcon={true}
-                onHide={ApplyViewDetailActions.resetReplyFormResult}
             />;
         }
         return null;
@@ -1606,159 +1441,70 @@ const ApplyViewDetail = React.createClass({
             </Modal>
         );
     },
-
-    // 回复框
-    renderReplyContent() {
-        return (
-            <Form horizontal>
-                <FormItem
-                    label=""
-                    labelCol={{span: 0}}
-                    wrapperCol={{span: 24}}
-                >
-                    <Input
-                        value={this.state.formData.comment}
-                        placeholder={Intl.get('user.apply.reply.placeholder', '请填写内容')}
-                        type="textarea"
-                        onChange={this.commentInputChange}
-                        autosize={{minRows: 2}}
-                    />
-                </FormItem>
-            </Form>
-        );
+    getApplyResultDscr(detailInfoObj){
+        let resultDscr = '';
+        switch (detailInfoObj.approval_state) {
+            case '1':
+                resultDscr = Intl.get('user.apply.detail.pass', '通过申请');
+                break;
+            case '2':
+                resultDscr = Intl.get('user.apply.detail.reject', '驳回申请');
+                break;
+            case '3':
+                resultDscr = Intl.get('user.apply.detail.backout', '撤销申请');
+                break;
+        }
+        return resultDscr;
     },
 
+    getNoSecondTimeStr(time){
+        return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
+    },
     //渲染详情底部区域
     renderDetailBottom() {
         var selectedDetailItem = this.state.selectedDetailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
         var showBackoutApply = detailInfoObj.presenter_id === userData.getUserData().user_id;
-        if (selectedDetailItem.isConsumed === 'true') {
-            return (
-                <div className="approval_block">
-                    <GeminiScrollbar>
-                        <div className="approval_inner_block">
-                            <dl className="dl-horizontal detail_item">
-                                <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见"/>
-                                </dt>
-                                <dd>
-                                    {detailInfoObj.approval_state === '0' && ''}
-                                    {detailInfoObj.approval_state === '1' && Intl.get('user.apply.pass', '已通过')}
-                                    {detailInfoObj.approval_state === '2' && Intl.get('user.apply.reject', '已驳回')}
-                                    {detailInfoObj.approval_state === '3' && Intl.get('user.apply.backout', '已撤销')}
-                                </dd>
-                            </dl>
-                            {detailInfoObj.approval_comment ? (
-                                <dl className="dl-horizontal detail_item">
-                                    <dt><ReactIntl.FormattedMessage id="user.apply.detail.remark" defaultMessage="批注"/>
-                                    </dt>
-                                    <dd>
-                                        <span>
-                                            {detailInfoObj.approval_comment}
-                                        </span>
-                                    </dd>
-                                </dl>
-                            ) : null}
-
-                            <div className="approval_person clearfix">
-                                <div style={{marginTop: '6px'}}>
-                                    {this.renderReplyContent()}
-                                </div>
-                                <div className="col-6">
-                                    {/**已审批*/}
-                                    {detailInfoObj.approval_state === '3' ? (
-                                        <div className="approval_person" style={{paddingTop: '10px'}}>
-                                            <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
-                                                defaultMessage="撤销人"/>
-                                            <em>{detailInfoObj.sales_name}</em>
-                                        </div>
-                                    ) : (
-                                        <div className="approval_person" style={{paddingTop: '10px'}}>
-                                            <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
-                                                defaultMessage="审批人"/>
-                                            <em>{detailInfoObj.approval_person}</em>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="col-18">
-                                    <div className="pull-right">
-                                        {this.renderReplyFormResult()}
-                                        {
-                                            hasPrivilege('CREATE_APPLY_COMMENT') ?
-                                                <Button type="primary" className="btn-primary-sure"
-                                                    onClick={this.addReply}><ReactIntl.FormattedMessage
-                                                        id="user.apply.reply.button" defaultMessage="回复"/></Button> : null
-                                        }
-                                    </div>
-                                </div>
-                            </div>
+        //是否显示通过驳回
+        var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
+        //是否审批
+        let isConsumed = selectedDetailItem.isConsumed === 'true';
+        return (
+            <div className="approval_block">
+                <Row className="approval_person clearfix">
+                    <Col span={10}>
+                        <span className="approval-info-label">
+                            {isConsumed ? this.getNoSecondTimeStr(selectedDetailItem.approval_time) : this.getNoSecondTimeStr(selectedDetailItem.time)}
+                        </span>
+                        <span className="approval-info-label">
+                            {isConsumed ? detailInfoObj.approval_person || '' : selectedDetailItem.presenter || ''}
+                            {isConsumed ? this.getApplyResultDscr(detailInfoObj) : Intl.get('crm.109', '申请')}
+                        </span>
+                    </Col>
+                    <Col span={14}>
+                        <div className="pull-right">
+                            {!isConsumed && hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.saleConfirmBackoutApply}>
+                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
+                                </Button>) : null}
+                            {!isConsumed && isRealmAdmin ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.submitApprovalForm.bind(this, '1')}>
+                                    {Intl.get('user.apply.detail.button.pass', '通过')}
+                                </Button>) : null}
+                            {!isConsumed && isRealmAdmin ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.submitApprovalForm.bind(this, '2')}>
+                                    {Intl.get('common.apply.reject', '驳回')}
+                                </Button>) : null}
                         </div>
-                    </GeminiScrollbar>
-                </div>
-            );
-        } else {
-            //是否显示审批人
-            var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
-                userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
-                userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
-                userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
-            return (
-                <div className="approval_block approval_block_form">
-                    <GeminiScrollbar>
-                        <div className="approval_inner_block">
-                            {this.renderReplyContent()}
-                            <div className="approval_person clearfix">
-                                <div className="col-6">
-                                    {
-                                        isRealmAdmin ? <span>
-                                            <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
-                                                defaultMessage="审批人"/>
-                                            <em>{userData.getUserData().nick_name}</em>
-                                        </span> : <span>&nbsp;</span>
-                                    }
-                                    {
-                                        hasPrivilege('APPLY_CANCEL') && showBackoutApply ? <span>
-                                            <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
-                                                defaultMessage="撤销人"/>
-                                            <em>{userData.getUserData().nick_name}</em>
-                                        </span> : <span>&nbsp;</span>
-                                    }
-                                </div>
-                                <div className="col-18">
-                                    <div className="pull-right">
-                                        {this.renderReplyFormResult()}
-                                        {
-                                            hasPrivilege('CREATE_APPLY_COMMENT') ?
-                                                <Button type="primary" className="btn-primary-sure"
-                                                    onClick={this.addReply}><ReactIntl.FormattedMessage
-                                                        id="user.apply.reply.button" defaultMessage="回复"/></Button> : null
-                                        }
-                                        {
-                                            hasPrivilege('APPLY_CANCEL') && showBackoutApply ?
-                                                <Button type="primary" className="btn-primary-sure"
-                                                    onClick={this.saleConfirmBackoutApply}><ReactIntl.FormattedMessage
-                                                        id="user.apply.detail.backout"
-                                                        defaultMessage="撤销申请"/></Button> : null
-                                        }
-
-                                        {
-                                            isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.submitApprovalForm.bind(this, '1')}><ReactIntl.FormattedMessage
-                                                    id="user.apply.detail.button.pass" defaultMessage="通过"/></Button> : null
-                                        }
-                                        {
-                                            isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.submitApprovalForm.bind(this, '2')}><ReactIntl.FormattedMessage
-                                                    id="common.apply.reject" defaultMessage="驳回"/></Button> : null
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </GeminiScrollbar>
-                </div>
-            );
-        }
+                    </Col>
+                </Row>
+            </div>);
     },
     // 用户名重名时
     renderDuplicationName(errorMsg){

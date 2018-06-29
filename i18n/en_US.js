@@ -1011,7 +1011,9 @@ var en_US = {
     'user.apply.reply.no.content': 'please input reply content', // 请填写回复内容
     'user.apply.reply.loading': 'Trying to load the reply list', // 正在努力加载回复列表 ...... ###############
     'user.apply.detail.button.pass': 'agree', // 通过
-    'user.apply.detail.backout': 'revoke', //Revoke the application  撤销申请
+    'user.apply.detail.backout': 'cancel application', //Revoke the application  撤销申请
+    'user.apply.detail.pass': 'approve application',//通过申请
+    'user.apply.detail.reject': 'reject application',//驳回申请
     'user.apply.detail.suggest': 'opinion', // opinion  意见
     'user.apply.detail.remark': 'postil', // 批注
     'user.apply.detail.expanded.title': 'returns the abbreviated content', // 返回缩略内容
@@ -1052,6 +1054,7 @@ var en_US = {
     'reply.cancel.tip.content': '{approvalPerson} revoked the {userType} user {userNames}, applied to the customer {customerName} ',//{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'user.apply.new.refresh.tip': 'Have a new application，refresh',//有新申请,点此刷新
     'user.apply.no.new.refresh.tip': 'No new application',//无新申请
+    'user.apply.last.follow.date': 'Latest follow up date',//最新跟进日期
     // 用户审批end
 
     // 在线用户start

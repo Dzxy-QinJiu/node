@@ -1022,6 +1022,8 @@ var zh_CN = {
     'user.apply.reply.loading': '正在努力加载回复列表 ......',
     'user.apply.detail.button.pass': '通过',
     'user.apply.detail.backout': '撤销申请',
+    'user.apply.detail.pass': '通过申请',
+    'user.apply.detail.reject': '驳回申请',
     'user.apply.detail.suggest': '意见',
     'user.apply.detail.remark': '批注',
     'user.apply.detail.expanded.title': '返回缩略内容',
@@ -1062,6 +1064,7 @@ var zh_CN = {
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
     'user.apply.no.new.refresh.tip': '无新申请',
+    'user.apply.last.follow.date': '最新跟进日期',
     // 用户审批end
 
     // 在线用户start

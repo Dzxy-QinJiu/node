@@ -335,6 +335,8 @@
 }
 
 .app_user_manage_apply_wrap.user-manage-v2 {
+  @font-color: #999999;
+  @apply-active-color: #5999c9;
   @bordercolor: #e1e9eb;
   padding: 0;
   min-width: 370px;
@@ -364,9 +366,8 @@
     border-right: 1px solid @bordercolor;
     height: 100vh;
     @reply-message-tip-color: #f7a43e;
-    @apply-li-active-color: #5999c9;
-    @font-color: #999999;
     @approval-pending-color: #f68a4a;
+    @text-color: #313330;
     .searchbar {
       height: @apply-top-height;
       padding: 16px 20px 0 20px;
@@ -457,9 +458,9 @@
         cursor: pointer;
         &.current {
           background-color: #f8fdff;
-          border-left: 3px solid @apply-li-active-color;
+          border-left: 3px solid @apply-active-color;
           dt span {
-            color: @apply-li-active-color;
+            color: @apply-active-color;
           }
         }
         &:before {
@@ -505,7 +506,7 @@
         dd {
           line-height: 18px;
           font-size: 12px;
-          padding-bottom: 10px;
+          padding-bottom: 6px;
           color: @font-color;
           & > span {
             float: left;
@@ -523,14 +524,271 @@
         }
       }
     }
-
   }
 
   //申请详情
   .app_user_manage_apply_detail_wrap {
-    margin-left: -1px;
+    @apply-detail-bg-color: #f0f4f5;
     color: #5d5d5d;
     position: relative;
+    height: 100vh;
+    //详情头部标题
+    .apply-detail-title {
+      height: 64px;
+      padding: 20px;
+      .apply-type-tip {
+        font-size: 14px;
+        color: @apply-active-color;
+      }
+      .order-id {
+        float: right;
+        font-size: 14px;
+        color: @font-color;
+      }
+    }
+    .apply-detail-content {
+      padding: 0 20px;
+    }
+    //客户、用户、备注、回复信息
+    .apply-detail-info {
+      background-color: @apply-detail-bg-color;
+      margin-bottom: 10px;
+      padding: 0 10px;
+      .reply-icon-block {
+        z-index: 2;
+      }
+      .customer-icon-block, .user-icon-block, .common-icon-block, .reply-icon-block {
+        float: left;
+        width: 50px;
+        height: 60px;
+        padding-left: 8px;
+        padding-top: 15px;
+        .icon-customer, .icon-user, .icon-common, .icon-apply-message-tip {
+          color: #9faaac;
+        }
+        .icon-customer {
+          font-size: 18px;
+        }
+        .icon-user {
+          font-size: 20px;
+        }
+        .icon-common {
+          font-size: 14px;
+        }
+      }
+      .apply-info-block {
+        display: inline-block;
+        padding: 16px 0 16px 16px;
+        border-left: 1px solid @bordercolor;
+      }
+      .apply-info-label {
+        margin-top: 4px;
+        font-size: 14px;
+        color: #9f9fa1;
+        .user-info-label {
+          padding-right: 6px;
+        }
+        .user-info-text {
+          color: @text-color;
+        }
+      }
+      //客户信息
+      .customer-info-block {
+        .customer-name {
+          padding-bottom: 6px;
+          a {
+            font-size: 14px;
+            font-weight: bold;
+            color: @text-color;
+            text-decoration: none;
+          }
+          .icon-arrow-right {
+            padding-left: 4px;
+            font-size: 14px;
+            font-weight: normal;
+            color: #9ea9ad;
+          }
+        }
+      }
+      //用户信息
+      .user-info-block {
+        .user-info-text {
+          a {
+            color: @text-color;
+          }
+          .icon-update {
+            cursor: pointer;
+          }
+          .user-nick-name {
+            color: @font-color;
+          }
+        }
+        //用户名
+        .edit-name-label {
+          float: left;
+          line-height: 26px;
+        }
+        .user-name-wrap {
+          display: inline-block;
+          width: 260px;
+          form {
+            float: left;
+            width: 200px;
+            .ant-form-item {
+              margin-bottom: 0;
+            }
+          }
+          .save-buttons {
+            float: left;
+            margin-top: 4px;
+          }
+        }
+        //密码
+        .password-label {
+          float: left;
+          line-height: 32px;
+        }
+        .apply-repassword-container {
+          padding-left: 37px;
+        }
+        .apply-change-password-style {
+          input {
+            height: 24px;
+            line-height: 24px;
+          }
+        }
+        //延期、到期时间
+        .delay-time-wrap {
+          .user-info-label {
+            float: left;
+            line-height: 26px;
+          }
+          .user-info-text {
+            display: inline-block;
+            .modify-delay-time-style {
+              input {
+                height: 26px;
+              }
+              .ant-select-selection--single {
+                height: 28px;
+              }
+              .select-modify-unit {
+                width: 70px;
+              }
+            }
+          }
+        }
+        .icon-choose, .icon-close {
+          margin-left: 10px;
+          cursor: pointer;
+        }
+        .icon-choose {
+          color: #4dbe50;
+        }
+        .icon-close {
+          color: #b50e0a;
+          font-size: 14px;
+        }
+        //应用
+        .apply_detail_apps {
+          position: relative;
+          padding-top: 10px;
+          table {
+            border-color: @bordercolor;
+            margin-bottom: 0;
+          }
+          tr {
+            background-color: #fff;
+          }
+          .apply-detail-head {
+            background-color: transparent;
+          }
+        }
+        .apply_detail_operate {
+          position: absolute;
+          top: -16px;
+          right: 0;
+        }
+      }
+      //备注
+      .common-info-block {
+        .apply-info-label {
+          margin-top: 0;
+        }
+      }
+    }
+    //回复列表外层容器
+    .apply-detail-reply-list {
+      position: relative;
+      float: left;
+      width: 100%;
+      .reply-info-block {
+        position: relative;
+        width: 100%;
+        padding-left: 50px;
+        z-index: 0;
+        .reply-list-container {
+          padding: 16px 10px 16px 16px;
+          border-left: 1px solid @bordercolor;
+          li {
+            margin-bottom: 6px;
+          }
+          //回复
+          .ant-input-group-wrapper {
+            margin-top: 4px;
+          }
+          .ant-input-group-addon {
+            padding: 4px 14px;
+            background-color: #fff;
+          }
+        }
+        .apply-info-label {
+          margin-top: 0;
+          .reply-date-text {
+            float: right;
+            padding-right: 0;
+          }
+        }
+        .refresh-reply-data-tip {
+          display: inline-block;
+          width: 100%;
+          line-height: 27px;
+          text-align: center;
+        }
+        //loading外层容器
+        .reply-loading-wrap {
+          display: block;
+          text-align: center;
+          margin: 0 0 0 8px;
+          font-size: 18px;
+        }
+        //loading文字容器
+        .reply-loading-text {
+          font-size: 12px;
+          margin: 0 0 0 10px;
+        }
+        //提示容器
+        .ant-alert {
+          display: inline-block;
+        }
+        //刷新样式
+        .anticon-reload {
+          cursor: pointer;
+          &.pull-right {
+            margin: 10px 10px 0 0;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+    //申请用户的各应用配置面板
+    .apply_custom_setting_wrap {
+      background-color: @apply-detail-bg-color;
+      .apply_detail_operate {
+        padding-right: 6px;
+      }
+    }
+
     .modal-backdrop, .modal {
       position: absolute;
     }
@@ -539,8 +797,10 @@
     }
     .apply-change-password-style {
       width: 230px;
+      display: inline-block;
+      vertical-align: bottom;
       .ant-form-item {
-        margin-bottom: 5px;
+        margin-bottom: 0;
       }
     }
     .ant-form-horizontal {
@@ -561,15 +821,18 @@
       cursor: pointer;
     }
     .approval_block {
+      width: 100%;
+      height: 48px;
       overflow: hidden;
-      border-top: 1px dashed #c9c9c9;
-      margin: 0 0 0 30px;
-      height: 200px;
+      padding: 10px 20px;
+      border-top: 1px solid #f0f4f5;
+      .approval-info-label {
+        padding-right: 6px;
+        font-size: 14px;
+        color: @font-color;
+      }
       .ant-form-item-control textarea {
         resize: none;
-      }
-      .approval_inner_block {
-        margin-right: 31px;
       }
       .approval_text {
         padding-top: 15px;
@@ -578,64 +841,17 @@
         font-size: 16px;
         color: #506470;
       }
-      .dl-horizontal {
-        padding-top: 5px;
-        padding-bottom: 5px;
-        font-size: 14px;
-        dt {
-          width: 70px;
-          line-height: 22px;
-          font-weight: normal;
-          text-align: left;
-          color: #7a7e81;
-          letter-spacing: 20px;
-          float: left;
-          overflow: hidden;
-          clear: left;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        dd {
-          color: #7a7e81;
-          line-height: 22px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          span {
-            margin-left: -22px;
-          }
-        }
-      }
       .approval_person {
         line-height: 22px;
-        color: #bdbdbd;
-        em {
-          font-weight: normal;
-          font-style: normal;
-          margin-left: 10px;
+        color: @font-color;
+        .pull-right {
+          margin-right: 10px;
         }
         .col-3 {
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
         }
-      }
-    }
-    .approval_block_form {
-      padding-top: 21px;
-      padding-bottom: 6px;
-      margin-top: 0;
-      height: 148px;
-      label {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        font-weight: normal;
-        text-align: left;
-        font-size: 14px;
-        letter-spacing: 20px;
-      }
-      .ant-form-item-control textarea {
-        resize: none;
       }
     }
     .btn-primary-sure {
@@ -841,4 +1057,3 @@
     border-top: 1px solid #f3f5f7;
   }
 }
-
