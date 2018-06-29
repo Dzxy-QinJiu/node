@@ -152,6 +152,8 @@ var en_US = {
     'common.no.more.data': 'There is no more data',//没有更多数据了
     'common.no.more.user': 'There is no more user',//沒有更多用戶了
     'common.no.more.crm': 'There is no more customer',//没有更多客户了
+    'common.no.more.filter.crm': 'There is no customer match condition',//没有符合条件的客户了
+
     'common.no.more.schedule': 'There is no schedule',//暂无计划
     'common.no.more.order': 'There is no order',//没有更多订单
     'common.no.more.trace.record': 'There is no trace record',//暂无跟进记录
@@ -574,6 +576,8 @@ var en_US = {
     'role.default.del.failed': 'Failed to cancel default role',//取消默认角色失败
     'role.default.set.failed': 'Failed to set default role',//设置默认角色失败
     'role.set.default': 'Set default role',//设为默认角色
+    'role.normal.sales': 'Common salesman', //普通销售
+
     /*角色管理模块-end*/
     /*权限管理模块-start*/
     'authority.add.group': 'Add Privilege Group',//添加权限组
@@ -1263,6 +1267,7 @@ var en_US = {
     'crm.no.level': 'No match administrative level',//无相关行政级别
     'crm.stage.tag': 'Phase label',//阶段标签
     'crm.order.more.customer': 'Multi-order customers',//多个订单的客户
+    'crm.available.customer': 'Available customers',//有效客户
     'crm.call.no.remark': 'Final contact but no record',//最后联系但未写跟进记录
     'crm.call.no.remark.over30': 'No follow-up records over 30 days',//超30天未写跟进记录
     'crm.last.contact': 'Final contact',//最后联系
@@ -1317,6 +1322,10 @@ var en_US = {
     'crm.apply.stop.placeholder': 'Please enter the reason for discontinuation',//请输入停用的原因
     'crm.apply.update.password.placeholder': 'Please enter a request for a modified password',//请输入修改密码的要求
     'crm.apply.other.placeholder': 'Please enter the application content',//请输入申请内容
+    'crm.Administrative.level.0': 'Ministry level',//部委级
+    'crm.Administrative.level.1': 'Provincial level',//省部级
+    'crm.Administrative.level.2': 'Prefectural level',//地市级
+    'crm.Administrative.level.3': 'county level',//区县级
     // 客户管理end
 
     //客户分析 start
@@ -1355,6 +1364,12 @@ var en_US = {
     'oplate_customer_analysis.newCustomerCount': 'Count of new customers created by sales', //'新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': 'Total count of new customer', //'新开账号数总数',
     'oplate_customer_analysis.customerLoginCount': 'New login customer count', //'新开客户登录数',
+    'oplate_customer_analysis.type.all': 'all',
+    'oplate_customer_analysis.type.trial': 'trial',
+    'oplate_customer_analysis.type.formal': 'formal',
+    'oplate_customer_analysis.type.employee': 'employee',
+    'oplate_customer_analysis.type.gift': 'gift',
+    'oplate_customer_analysis.type.training': 'training',
     //客户分析 end
     //合同管理 start
     'contract.4': 'Party A',//甲方@
@@ -2235,5 +2250,6 @@ var en_US = {
     'noMoreTip.callRecord': 'no more call records',
     'noMoreTip.visitBack': 'no more visit record',
     'noMoreTip.customer': 'no more customers',
+    'failed.change.source.time': 'Failed to change clue source time'//修改线索咨询时间失败
 };
 export default en_US;

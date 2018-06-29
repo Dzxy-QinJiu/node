@@ -14,36 +14,36 @@ const processForTrace = function(item) {
         //根据不同的类型
         if (item.type) {
             switch (item.type) {
-            case 'visit':
-                iconClass = 'icon-visit-briefcase';
-                title = Intl.get('customer.visit', '拜访');
-                des = Intl.get('customer.visit.customer', '拜访客户');
-                break;
-            case 'phone':
-                iconClass = 'icon-contact-phone';
-                title = Intl.get('customer.phone.system', '电话系统');
-                des = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : '';
-                break;
-            case 'app':
-                iconClass = 'icon-contact-ketao-app';
-                title = Intl.get('customer.ketao.app', '客套app');
-                des = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : '';
-                break;
-            case 'call_back':
-                iconClass = 'icon-callback';
-                title = Intl.get('common.callback', '回访');
-                des = Intl.get('common.callback.customer', '回访客户');
-                break;
-            case 'data_report':
-                iconClass = 'icon-report-delivery';
-                title = Intl.get('crm.trace.delivery.report', '舆情报送');
-                des = Intl.get('crm.trace.delivery.report', '舆情报送');
-                break;
-            case 'other':
-                iconClass = 'icon-trace-other';
-                title = Intl.get('customer.other', '其他');
-                des = Intl.get('customer.follow.customer', '跟进客户');
-                break;
+                case 'visit':
+                    iconClass = 'icon-visit-briefcase';
+                    title = Intl.get('customer.visit', '拜访');
+                    des = Intl.get('customer.visit.customer', '拜访客户');
+                    break;
+                case 'phone':
+                    iconClass = 'icon-contact-phone';
+                    title = Intl.get('customer.phone.system', '电话系统');
+                    des = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : '';
+                    break;
+                case 'app':
+                    iconClass = 'icon-contact-ketao-app';
+                    title = Intl.get('customer.ketao.app', '客套app');
+                    des = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : '';
+                    break;
+                case 'call_back':
+                    iconClass = 'icon-callback';
+                    title = Intl.get('common.callback', '回访');
+                    des = Intl.get('common.callback.customer', '回访客户');
+                    break;
+                case 'data_report':
+                    iconClass = 'icon-report-delivery';
+                    title = Intl.get('crm.trace.delivery.report', '舆情报送');
+                    des = Intl.get('crm.trace.delivery.report', '舆情报送');
+                    break;
+                case 'other':
+                    iconClass = 'icon-trace-other';
+                    title = Intl.get('customer.other', '其他');
+                    des = Intl.get('customer.follow.customer', '跟进客户');
+                    break;
             }
         }
         des && tip.push(des);
@@ -95,11 +95,15 @@ exports.getCrmLabelCls = function(customer_label) {
     }
     return customerLabelCls;
 };
+
 //行政级别
-exports.administrativeLevels = [{id: '1',level: '省部级'},{id: '2',level: '地市级'},{id: '3',level: '区县级'}];
+exports.administrativeLevels = [{id: '0',level: Intl.get('crm.Administrative.level.0', '部委级')},
+    {id: '1',level: Intl.get('crm.Administrative.level.1', '省部级')},
+    {id: '2',level: Intl.get('crm.Administrative.level.2', '地市级')},
+    {id: '3',level: Intl.get('crm.Administrative.level.3', '区县级')}];
 exports.filterAdministrativeLevel = (level) => {
     //4：乡镇、街道，目前只要求展示到区县，所以此级别不展示
-    return level > 0 && level !== 4 ? level + '' : '';
+    return level >= 0 && level !== 4 ? level + '' : '';
 };
 exports.processForTrace = processForTrace;
 exports.isClueTag = isClueTag;

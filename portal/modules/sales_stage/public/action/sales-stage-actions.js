@@ -59,8 +59,8 @@ function SalesStageActions() {
         var _this = this;
         var idArray = [];
         idArray.push(salesStage.id);
-        salesStageAjax.deleteSalesStage(idArray).then(function(salesStageDelete) {
-            _this.actions.getSalesStageList();
+        salesStageAjax.deleteSalesStage(idArray).then(function() {
+            _this.dispatch(salesStage);
         });
     };
 

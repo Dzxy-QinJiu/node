@@ -137,7 +137,7 @@ const ApplyViewDetail = React.createClass({
         return {
             appConfig: appConfig,
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+            customerOfCurUser: {},//当前展示用户所属客户的详情
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -1815,7 +1815,7 @@ const ApplyViewDetail = React.createClass({
     ShowCustomerUserListPanel(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
 
     },
@@ -1848,7 +1848,8 @@ const ApplyViewDetail = React.createClass({
             'col-md-8': true,
             'app_user_manage_apply_detail_wrap': true
         });
-
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div className={cls} data-tracename="审批详情界面">
                 {this.renderApplyDetailLoading()}
@@ -1887,9 +1888,10 @@ const ApplyViewDetail = React.createClass({
                         >
                             {this.state.isShowCustomerUserListPanel ?
                                 <AppUserManage
-                                    customer_id={this.state.CustomerInfoOfCurrUser.id}
+                                    customer_id={this.state.customerOfCurUser.id}
                                     hideCustomerUserList={this.closeCustomerUserListPanel}
-                                    customer_name={this.state.CustomerInfoOfCurrUser.name}
+                                    customer_name={this.state.customerOfCurUser.name}
+                                    user_size={customerUserSize}
                                 /> : null
                             }
                         </RightPanel> : null

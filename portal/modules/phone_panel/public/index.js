@@ -59,7 +59,7 @@ class PhonePanel extends React.Component {
             addAppFeedbackErrMsg: '',//添加客户反馈失败后的提示
             customerLayoutHeight: 0,//跟进记录内容确定后，下面客户详情所占的大小
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+            customerOfCurUser: {},//当前展示用户所属客户的详情
             isInitialHeight: true, //恢复到初始的高度
             addCustomer: false,//是否需要添加客户 true代码需要添加客户，false代表不需要添加客户
             applyFormCustomerName: '',//申请用户面板用到的客户名
@@ -99,15 +99,17 @@ class PhonePanel extends React.Component {
             } else {
                 phoneNum = phonemsgObj.to || phonemsgObj.dst;
             }
-            this.setState({
-                phoneNum: phoneNum
-            });
+            this.setStatePhoneNumb(phoneNum);
             //记录一下拨打电话的时间及通话的id
             phoneRecordObj.callid = phonemsgObj.callid;
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
         }
     }
-
+    setStatePhoneNumb(phoneNum){
+        this.setState({
+            phoneNum: phoneNum
+        });
+    }
     componentWillReceiveProps(nextProps) {
         //获取客户详情
         this.setState({
@@ -464,7 +466,7 @@ class PhonePanel extends React.Component {
     ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
 
     };
@@ -545,6 +547,8 @@ class PhonePanel extends React.Component {
             'phone-alert-modal-title': true,
             'initial-height': this.state.isInitialHeight
         });
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div data-tracename="电话弹屏" id="phone-status-content">
                 <div className={AddMoreInfoCls}>
@@ -568,9 +572,10 @@ class PhonePanel extends React.Component {
                 >
                     { this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            customer_id={this.state.customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            customer_name={this.state.customerOfCurUser.name}
+                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel> : null}
@@ -648,5 +653,12 @@ PhonePanel.defaultProps = {
         call_params: null,//后端推送过来的电话状态相关的参数
         customer_params: null//客户详情相关的参数
     }
+};
+
+PhonePanel.propTypes = {
+    showFlag: React.PropTypes.bool,
+    paramObj: React.PropTypes.object,
+    setInitialPhoneObj: React.PropTypes.func,
+    closePhonePanel: React.PropTypes.func
 };
 export default PhonePanel;

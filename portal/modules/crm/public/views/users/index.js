@@ -49,7 +49,7 @@ class CustomerUsers extends React.Component {
         super(props);
         this.state = {
             isLoading: false,//是否正在获取用户列表
-            pageNum: 1,
+            lastUserId: '',//用于下拉加载的最后一个用户id
             crmUserList: [],
             total: 0,
             errorMsg: '',//获取客户开通的用户列表的错误提示
@@ -70,7 +70,7 @@ class CustomerUsers extends React.Component {
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
         if (nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
-            this.setState({curCustomer: nextProps.curCustomer, pageNum: 1});
+            this.setState({curCustomer: nextProps.curCustomer, lastUserId: ''});
             setTimeout(() => {
                 this.getCrmUserList();
             });
@@ -80,12 +80,12 @@ class CustomerUsers extends React.Component {
     //获取客户开通的用户列表
     getCrmUserList() {
         if (!this.state.curCustomer.id) return;
-        if (this.state.pageNum === 1) {
+        if (!this.state.lastUserId) {
             this.setState({isLoading: true});
         }
         crmAjax.getCrmUserList({
             customer_id: this.state.curCustomer.id,
-            page_num: this.state.pageNum,
+            id: this.state.lastUserId,
             page_size: PAGE_SIZE
         }).then((result) => {
             this.setCrmUserData(result);
@@ -101,22 +101,27 @@ class CustomerUsers extends React.Component {
     //获取客户开通的用户列表后的数据设置
     setCrmUserData(result) {
         let crmUserList = this.state.crmUserList;
+        let lastUserId = this.state.lastUserId;
+        let totalSize = this.state.total;
         if (result && _.isArray(result.data)) {
-            if (this.state.pageNum === 1) {
+            if (!lastUserId) {
                 crmUserList = result.data;
             } else {
                 crmUserList = crmUserList.concat(result.data);
             }
-            this.state.pageNum++;
-            this.state.total = result.total || 0;
+            totalSize = result.total || 0;
+            let lastData = crmUserList[crmUserList.length - 1];
+            if (lastData && lastData.user && lastData.user.user_id) {
+                lastUserId = lastData.user.user_id;
+            }
         }
         this.setState({
             isLoading: false,
             errorMsg: '',
-            pageNum: this.state.pageNum,
+            lastUserId: lastUserId,
             crmUserList: crmUserList,
-            total: this.state.total,
-            listenScrollBottom: this.state.total > crmUserList.length
+            total: totalSize,
+            listenScrollBottom: totalSize > crmUserList.length
         });
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
     }
@@ -232,10 +237,10 @@ class CustomerUsers extends React.Component {
         let appList = userObj.apps;
         let userId = userObj.user ? userObj.user.user_id : '';
         if (_.isArray(appList) && appList.length) {
-            return appList.map((app) => {
+            return appList.map((app,index) => {
                 if (isShowCheckbox) {
                     return (
-                        <Checkbox checked={app.checked}
+                        <Checkbox checked={app.checked} key={index}
                             onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
                             {this.renderUserAppItem(app)}
                         </Checkbox>);
@@ -449,10 +454,10 @@ class CustomerUsers extends React.Component {
         let isShowCheckbox = isApplyButtonShow && !this.props.isMerge;
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
-            return crmUserList.map((userObj) => {
+            return crmUserList.map((userObj, index) => {
                 let user = _.isObject(userObj) ? userObj.user : {};
                 return (
-                    <div className="crm-user-item">
+                    <div className="crm-user-item" key={index}>
                         <div className="crm-user-name">
                             {isShowCheckbox ? (
                                 <Checkbox checked={user.checked}
@@ -546,5 +551,12 @@ class CustomerUsers extends React.Component {
 CustomerUsers.defaultProps = {
     isMerge: false,
     curCustomer: {}
+};
+
+CustomerUsers.propTypes = {
+    isMerge: React.PropTypes.bool,
+    curCustomer: React.PropTypes.object,
+    closeOpenAppPanel: React.PropTypes.func,
+    ShowCustomerUserListPanel: React.PropTypes.func
 };
 export default CustomerUsers;

@@ -151,6 +151,7 @@ var zh_CN = {
     'common.no.more.data': '没有更多数据了',
     'common.no.more.user': '没有更多用户了',
     'common.no.more.crm': '没有更多客户了',
+    'common.no.more.filter.crm': '没有符合条件的客户了',
     'common.no.more.schedule': '暂无计划',
     'common.no.more.order': '暂无订单',
     'common.no.clue': '暂无线索',
@@ -577,6 +578,8 @@ var zh_CN = {
     'role.default.del.failed': '取消默认角色失败',
     'role.default.set.failed': '设置默认角色失败',
     'role.set.default': '设为默认角色',
+    'role.normal.sales': '普通销售',
+
     /*角色管理模块-end*/
     /*权限管理模块-start*/
     'authority.add.group': '添加权限组',
@@ -1280,6 +1283,7 @@ var zh_CN = {
     'crm.no.level': '无相关行政级别',
     'crm.stage.tag': '阶段标签',
     'crm.order.more.customer': '多个订单的客户',
+    'crm.available.customer': '有效客户',
     'crm.call.no.remark': '最后联系但未写跟进记录',
     'crm.call.no.remark.over30': '超30天未写跟进记录',
     'crm.last.contact': '最后联系',
@@ -1334,6 +1338,10 @@ var zh_CN = {
     'crm.apply.stop.placeholder': '请输入停用的原因',
     'crm.apply.update.password.placeholder': '请输入修改密码的要求',
     'crm.apply.other.placeholder': '请输入申请内容',
+    'crm.Administrative.level.0': '部委级',
+    'crm.Administrative.level.1': '省部级',
+    'crm.Administrative.level.2': '地市级',
+    'crm.Administrative.level.3': '区县级',
     // 客户管理end
 
     // 客户分析start
@@ -1372,6 +1380,12 @@ var zh_CN = {
     'oplate_customer_analysis.newCustomerCount': '新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': '新开账号数总数',
     'oplate_customer_analysis.customerLoginCount': '新开通客户登录数',
+    'oplate_customer_analysis.type.all': '全部类型',
+    'oplate_customer_analysis.type.trial': '试用用户',
+    'oplate_customer_analysis.type.formal': '正式用户',
+    'oplate_customer_analysis.type.employee': '员工用户',
+    'oplate_customer_analysis.type.gift': '赠送用户',
+    'oplate_customer_analysis.type.training': '培训用户',
     // 客户分析end
     'contract.4': '甲方',
     'contract.5': '更新',
@@ -2259,5 +2273,6 @@ var zh_CN = {
     'noMoreTip.callRecord': '没有更多通话记录了',
     'noMoreTip.visitBack': '没有更多回访记录了',
     'noMoreTip.customer': '没有更多客户了',
+    'failed.change.source.time': '修改线索咨询时间失败'
 };
 export default zh_CN;

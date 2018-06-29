@@ -3,14 +3,10 @@
 var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
 var rightPanelUtil = require('../../../../components/rightPanel/index');
-var RightPanel = rightPanelUtil.RightPanel;
-var RightPanelClose = rightPanelUtil.RightPanelClose;
-var RightPanelReturn = rightPanelUtil.RightPanelReturn;
 var Contacts = require('./contacts');
 var Dynamic = require('./dynamic');
 var CrmSchedule = require('./schedule');
 var Order = require('./order');
-var ApplyUserForm = require('./apply-user-form');
 var CustomerRecord = require('./customer_record');
 var crmAjax = require('../ajax');
 import Trace from 'LIB_DIR/trace';
@@ -19,6 +15,7 @@ import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
 import {isEqualArray} from 'LIB_DIR/func';
+
 const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
     CONTACT_TAB: '2',//联系人
@@ -58,17 +55,10 @@ var CrmRightPanel = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.curCustomer && (nextProps.curCustomer.id !== this.state.curCustomer.id)) {
-            this.state.curCustomer = nextProps.curCustomer;
-            this.setState(this.state);
+        if (nextProps.curCustomer) {
+            this.setState({curCustomer: nextProps.curCustomer});
         } else if (nextProps.currentId !== this.props.currentId) {
             this.getCurCustomer(nextProps.currentId);
-        }
-        //是否关注客户的属性修改
-        if (nextProps.curCustomer && nextProps.curCustomer.id === this.state.curCustomer.id &&
-                !isEqualArray(nextProps.curCustomer.interest_member_ids, this.state.curCustomer.interest_member_ids)
-        ) {
-            this.state.curCustomer.interest_member_ids = nextProps.curCustomer.interest_member_ids;
         }
         this.setTabsContainerHeight();
     },
@@ -150,6 +140,8 @@ var CrmRightPanel = React.createClass({
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         editCustomerBasic={this.props.editCustomerBasic}
                                         changeActiveKey={this.changeActiveKey}
+                                        callNumber={this.props.callNumber}
+                                        getCallNumberError={this.props.getCallNumberError}
                                     />
                                 ) : null}
                             </TabPane>
@@ -162,6 +154,8 @@ var CrmRightPanel = React.createClass({
                                         updateCustomerDefContact={this.props.updateCustomerDefContact}
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         curCustomer={this.state.curCustomer}
+                                        callNumber={this.props.callNumber}
+                                        getCallNumberError={this.props.getCallNumberError}
                                     />
                                 ) : null}
                             </TabPane>
@@ -173,6 +167,8 @@ var CrmRightPanel = React.createClass({
                                     <CustomerRecord
                                         curCustomer={this.state.curCustomer}
                                         refreshCustomerList={this.props.refreshCustomerList}
+                                        callNumber={this.props.callNumber}
+                                        getCallNumberError={this.props.getCallNumberError}
                                     />
                                 ) : null}
                             </TabPane>
@@ -222,6 +218,8 @@ var CrmRightPanel = React.createClass({
                                 {this.state.activeKey === TAB_KEYS.SCHEDULE_TAB ? (
                                     <CrmSchedule
                                         curCustomer={this.state.curCustomer}
+                                        callNumber={this.props.callNumber}
+                                        getCallNumberError={this.props.getCallNumberError}
                                     />
                                 ) : null}
                             </TabPane>

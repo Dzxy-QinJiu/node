@@ -108,7 +108,7 @@ var CrmBatchChange = React.createClass({
         BatchChangeActions.setLoadingState(true);
         //如果是批量变更或者转出所属销售的，需要先看一下该销售已经拥有的客户数量再加上这些是否已经达到上限
         var member_id = this.state.sales_man.split('&&')[0];
-        if (transferType == BATCH_OPERATE_TYPE.USER || transferType == BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER){
+        if (transferType === BATCH_OPERATE_TYPE.USER || transferType === BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER){
             //如果是选中全部的客户，要用全部客户的数量
             var selectedCustomerNum = this.props.selectedCustomer.length;
             if (this.props.selectAllMatched) {
@@ -117,7 +117,7 @@ var CrmBatchChange = React.createClass({
             CrmAction.getCustomerLimit({member_id: member_id, num: selectedCustomerNum}, (result) => {
                 if (_.isNumber(result) && result > 0){
                     //超过销售拥有客户的上限
-                    var warningTip = transferType == BATCH_OPERATE_TYPE.USER ? Intl.get('crm.change.over.limit', '变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售',{num: result}) : Intl.get('crm.transfer.over.limit', '转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出',{num: result});
+                    var warningTip = transferType === BATCH_OPERATE_TYPE.USER ? Intl.get('crm.change.over.limit', '变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售',{num: result}) : Intl.get('crm.transfer.over.limit', '转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出',{num: result});
                     message.warn(warningTip);
                     BatchChangeActions.setLoadingState(false);
                 }else{
@@ -149,7 +149,7 @@ var CrmBatchChange = React.createClass({
 
         BatchChangeActions.doBatch(transferType, condition, (result) => {
             BatchChangeActions.setLoadingState(false);
-            if (result.code == 0) {
+            if (result.code === 0) {
                 //批量操作参数
                 let is_select_all = !!this.props.selectAllMatched;
                 //全部记录的个数
@@ -230,7 +230,7 @@ var CrmBatchChange = React.createClass({
         }
         BatchChangeActions.doBatch(type, condition, (result) => {
             BatchChangeActions.setLoadingState(false);
-            if (result.code == 0) {
+            if (result.code === 0) {
                 //批量操作参数
                 var is_select_all = !!this.props.selectAllMatched;
                 //全部记录的个数
@@ -289,7 +289,7 @@ var CrmBatchChange = React.createClass({
         }
         BatchChangeActions.doBatch('industry', condition, (result) => {
             BatchChangeActions.setLoadingState(false);
-            if (result.code == 0) {
+            if (result.code === 0) {
                 //批量操作参数
                 var is_select_all = !!this.props.selectAllMatched;
                 //全部记录的个数
@@ -346,7 +346,7 @@ var CrmBatchChange = React.createClass({
         }
         BatchChangeActions.doBatch('address', condition, (result) => {
             BatchChangeActions.setLoadingState(false);
-            if (result.code == 0) {
+            if (result.code === 0) {
                 //批量操作参数
                 var is_select_all = !!this.props.selectAllMatched;
                 //全部记录的个数
@@ -401,7 +401,7 @@ var CrmBatchChange = React.createClass({
         }
         BatchChangeActions.doBatch('administrative_level', condition, (result) => {
             BatchChangeActions.setLoadingState(false);
-            if (result.code == 0) {
+            if (result.code === 0) {
                 //批量操作参数
                 var is_select_all = !!this.props.selectAllMatched;
                 //全部记录的个数
@@ -594,8 +594,8 @@ var CrmBatchChange = React.createClass({
             <div className="op-pane change-territory">
                 {<AntcAreaSelection labelCol="0" wrapperCol="24" width="210"
                     isAlwayShow={true}
-                    prov={territoryObj.province} city={territoryObj.city}
-                    county={territoryObj.county}
+                    provName={territoryObj.province} cityName={territoryObj.city}
+                    countyName={territoryObj.county}
                     updateLocation={this.updateLocation}/>}
             </div>
         );
@@ -605,7 +605,7 @@ var CrmBatchChange = React.createClass({
         let recommendTagsArray = _.isArray(this.state.recommendTags) ? this.state.recommendTags : [];
         let unionTagsArray = _.union(recommendTagsArray, selectedTagsArray);
         //过滤掉“线索”、“转出”标签，“线索“、“转出”标签不可添加、修改、删除
-        unionTagsArray = _.filter(unionTagsArray, tag => tag != Intl.get('crm.sales.clue', '线索') && tag != Intl.get('crm.qualified.roll.out', '转出'));
+        unionTagsArray = _.filter(unionTagsArray, tag => tag !== Intl.get('crm.sales.clue', '线索') && tag !== Intl.get('crm.qualified.roll.out', '转出'));
         let tagsJsx = unionTagsArray.map((tag, index) => {
             let className = 'customer-tag';
             className += selectedTagsArray.indexOf(tag) > -1 ? ' tag-selected' : '';
@@ -624,7 +624,7 @@ var CrmBatchChange = React.createClass({
                 <div className="block-tag-edit">
                     {tagsJsx}
                 </div>
-                {this.state.currentTab == BATCH_OPERATE_TYPE.CHANGE_TAG || this.state.currentTab == BATCH_OPERATE_TYPE.ADD_TAG ? (
+                {this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_TAG || this.state.currentTab === BATCH_OPERATE_TYPE.ADD_TAG ? (
                     <Input placeholder={Intl.get('crm.28', '按Enter键添加新标签')}
                         onChange={this.setField.bind(this, 'tag')}
                         value={this.state.formData.tag}

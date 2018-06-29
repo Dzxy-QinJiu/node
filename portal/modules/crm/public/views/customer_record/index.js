@@ -30,6 +30,9 @@ import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
+import crmAjax from '../../ajax/index';
+import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+
 var classNames = require('classnames');
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -76,6 +79,8 @@ const CustomerRecord = React.createClass({
             filterType: '',//跟进类型的过滤
             filterStatus: '',//通话状态的过滤
             appList: [],//应用列表，用来展示舆情上报的应用名称
+            callNumber: this.props.callNumber || '', // 座机号
+            getCallNumberError: '',
             ...CustomerRecordStore.getState()
         };
     },
@@ -83,8 +88,35 @@ const CustomerRecord = React.createClass({
         var state = CustomerRecordStore.getState();
         this.setState(state);
     },
+    // 获取拨打电话的座席号
+    getUserPhoneNumber() {
+        CallNumberUtil.getUserPhoneNumber( callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
+                this.setState({
+                    callNumber: '',
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                });
+            }
+        });
+    },
     componentDidMount: function() {
         CustomerRecordStore.listen(this.onStoreChange);
+        //  获取拨打电话的座席号
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
         var customer_id = this.props.curCustomer.customer_id || this.props.curCustomer.id;
         this.getContactPhoneNum(customer_id, () => {
@@ -495,6 +527,29 @@ const CustomerRecord = React.createClass({
             </div>
         );
     },
+    // 自动拨号
+    handleClickCallOut(phone) {
+        Trace.traceEvent(this.getDOMNode(), '拨打电话');
+        if (this.props.getCallNumberError) {
+            message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
+        } else {
+            if (this.state.callNumber) {
+                let reqData = {
+                    from: this.state.callNumber,
+                    to: phone
+                };
+                crmAjax.callOut(reqData).then((result) => {
+                    if (result.code === 0) {
+                        message.success('拨打成功！');
+                    }
+                }, (errMsg) => {
+                    message.error(errMsg || '拨打失败！');
+                });
+            } else {
+                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
+            }
+        }
+    },
     renderTimeLineItem: function(item, hasSplitLine) {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
@@ -508,6 +563,10 @@ const CustomerRecord = React.createClass({
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     <span>{traceDsc}</span>
+                    {(item.type === 'phone' || item.type === 'app') && this.state.callNumber ?
+                        <i className="iconfont icon-call-out call-out"
+                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
+                            onClick={this.handleClickCallOut.bind(this, item.dst)}></i> : null}
                 </p>
                 {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
                     <div className="item-detail-content" id={item.id}>

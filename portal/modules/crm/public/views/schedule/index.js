@@ -2,33 +2,61 @@ require('../../css/schedule.less');
 var ScheduleStore = require('../../store/schedule-store');
 var ScheduleAction = require('../../action/schedule-action');
 var CrmScheduleForm = require('./form');
-import {Icon, message, Button, Alert, Popover} from 'antd';
+import {message} from 'antd';
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 var TimeLine = require('CMP_DIR/time-line-new');
 import Trace from 'LIB_DIR/trace';
-const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
 import Spinner from 'CMP_DIR/spinner';
-import classNames from 'classnames';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
+import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+
 var CrmSchedule = React.createClass({
     getInitialState: function() {
         return {
             customerId: this.props.curCustomer.id || '',
+            callNumber: this.props.callNumber || '', // 座机号
+            getCallNumberError: '',
             ...ScheduleStore.getState()
         };
     },
     onStoreChange: function() {
         this.setState(ScheduleStore.getState());
     },
+    // 获取拨打电话的座席号
+    getUserPhoneNumber: function() {
+        CallNumberUtil.getUserPhoneNumber( callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
+                this.setState({
+                    callNumber: '',
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                });
+            }
+        });
+    },
     componentDidMount: function() {
         ScheduleStore.listen(this.onStoreChange);
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         //获取日程管理列表
         this.getScheduleList();
     },
@@ -161,12 +189,15 @@ var CrmSchedule = React.createClass({
             );
         } else {
             return (
-                <ScheduleItem item={item}
+                <ScheduleItem
+                    item={item}
                     hasSplitLine={hasSplitLine}
                     isMerge={this.props.isMerge}
                     toggleScheduleContact={this.toggleScheduleContact}
                     deleteSchedule={this.deleteSchedule}
                     handleItemStatus={this.handleItemStatus}
+                    callNumber={this.state.callNumber}
+                    getCallNumberError={this.state.getCallNumberError}
                 />);
         }
     },

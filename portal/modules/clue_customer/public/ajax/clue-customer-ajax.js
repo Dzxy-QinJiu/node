@@ -209,7 +209,7 @@ exports.updateCluecustomerDetail = function(submitObj) {
         for (var key in submitObj){
             //要更新的字段
             data.updateItem = key;
-            if (key == 'contact_name'){
+            if (key === 'contact_name'){
                 //联系人的名字
                 updateObj.contacts[0]['name'] = submitObj[key];
             }else{

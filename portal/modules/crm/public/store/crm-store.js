@@ -481,7 +481,10 @@ CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCus
     var {
         province,
         city,
-        county
+        county,
+        province_code,
+        city_code,
+        county_code
     } = taskParams;
     //解析tasks
     var {
@@ -509,6 +512,9 @@ CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCus
         customerInfo.province = province;
         customerInfo.city = city;
         customerInfo.county = county;
+        customerInfo.province_code = province_code;
+        customerInfo.city_code = city_code;
+        customerInfo.county_code = county_code;
     });
 };
 CrmStore.prototype.setPageNum = function(pageNum) {

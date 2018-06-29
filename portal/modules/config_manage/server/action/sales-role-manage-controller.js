@@ -34,6 +34,14 @@ exports.deleteSalesRole = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//清空销售角色
+exports.resetSalesRole = function(req, res) {
+    salesRoleManageService.resetSalesRole(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 //修改销售的角色
 exports.changeSalesRole = function(req, res) {
     salesRoleManageService.changeSalesRole(req, res, req.body).on('success', function(data) {

@@ -11,9 +11,7 @@ var ContactAction = require('../../action/contact-action');
 //滚动条
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import Spinner from 'CMP_DIR/spinner';
-import crmAjax from '../../ajax/index';
-import userData from 'PUB_DIR/sources/user-data';
-
+import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
 //高度常量
 var LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -27,7 +25,7 @@ import Trace from 'LIB_DIR/trace';
 var Contacts = React.createClass({
     getInitialState: function() {
         return {
-            callNumber: '', // 座机号
+            callNumber: this.props.callNumber || '', // 座机号
             getCallNumberError: '', // 获取座机号失败的信息
             curCustomer: this.props.curCustomer,//当前查看详情的客户
             windowHeight: $(window).height(),
@@ -43,7 +41,9 @@ var Contacts = React.createClass({
             ContactAction.getContactList(this.props.curCustomer, this.props.isMerge);
         }
         //获取该用户的座席号
-        this.getUserPhoneNumber();
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         $(window).on('resize', this.onStoreChange);
     },
     componentWillReceiveProps: function(nextProps) {
@@ -70,18 +70,26 @@ var Contacts = React.createClass({
         GeminiScrollbar.scrollTo(this.refs.scrollList, 0);
     },
     // 获取拨打电话的座席号
-    getUserPhoneNumber: function() {
-        let member_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
+    getUserPhoneNumber() {
+        CallNumberUtil.getUserPhoneNumber( callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
                 this.setState({
-                    callNumber: result.phone_order
+                    callNumber: '',
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
                 });
             }
-        }, (errMsg) => {
-            this.setState({
-                getCallNumberError: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-            });
         });
     },
     render: function() {
