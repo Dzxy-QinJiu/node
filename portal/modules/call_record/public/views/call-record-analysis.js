@@ -40,10 +40,18 @@ function mapFormatter(obj) {
     if (MAP_PROVINCE[obj.name]) {
         name = Intl.get('oplate_bd_analysis_realm_zone.1', '省份');
     }
-    return [
-        name + '：' + obj.name,
-        Intl.get('oplate_bd_analysis_realm_industry.6', '个数') + '：' + (isNaN(obj.value) ? 0 : obj.value)
-    ].join('<br/>');
+    //todo 该处待修改
+    if (isNaN(obj.value) || obj.value === 0){
+        return [
+            Intl.get('oplate_bd_analysis_realm_industry.6', '个数') + '：' + 0
+        ].join('<br/>');
+    }else{
+        return [
+            name + '：' + obj.name,
+            Intl.get('oplate_bd_analysis_realm_industry.6', '个数') + '：' + (isNaN(obj.value) ? 0 : obj.value)
+        ].join('<br/>');
+    }
+
 }
 // 用于布局趋势图的宽度
 const LAYOUT_WIDTH = {
@@ -1203,38 +1211,40 @@ var CallRecordAnalyis = React.createClass({
         return MAP_PROVINCE[name];
     },
     renderCustomerZoneDistribute() {
-
-        // return (<ChinaMap
-        //  width="900"
-        //  height="600"
-        //  dataList={this.state.customerData.zoneList}
-        //  formatter={mapFormatter}
-        //  getClickEvent={this.getClickMap}
-        //  />);
-        var dataList = this.state.customerData.zoneList;
-        var arr = dataList.concat();
-        arr.push({
-            name: Intl.get('china.zone.distribute.south.island', '南海诸岛'),
-        });
-        const charts = [{
-            title: Intl.get('call.analysis.zone.distrute', '客户的地域分布'),
-            chartType: 'map',
-            data: arr,
-            layout: {
-                sm: 12,
-            },
-            option: this.getCustomerZoneOptions(),
-            noExportCsv: true,
-            resultType: 'success'
-        }];
-        return (
-            <div className="map-distribute">
-                <AntcAnalysis
-                    charts={charts}
-                    chartHeight={CHART_LAYOUT_HEIGHT.MAP_HEIGHT}
-                />
-            </div>
-        );
+        return (<ChinaMap
+            width="900"
+            height="600"
+            dataList={this.state.customerData.zoneList}
+            formatter={mapFormatter}
+            getClickEvent={this.getClickMap}
+        />);
+        // var dataList = this.state.customerData.zoneList;
+        // var arr = dataList.concat();
+        // arr.push({
+        //     name: Intl.get('china.zone.distribute.south.island', '南海诸岛'),
+        //     value: 0
+        // });
+        // const charts = [{
+        //     title: Intl.get('call.analysis.zone.distrute', '客户的地域分布'),
+        //     chartType: 'map',
+        //     data: arr,
+        //     layout: {
+        //         sm: 12,
+        //     },
+        //     option: this.getCustomerZoneOptions(),
+        //     noExportCsv: true,
+        //     resultType: 'success',
+        //     onProvinceClick: this.getClickMap,
+        //     provinceData: arr
+        // }];
+        // return (
+        //     <div className="map-distribute">
+        //         <AntcAnalysis
+        //             charts={charts}
+        //             chartHeight={CHART_LAYOUT_HEIGHT.MAP_HEIGHT}
+        //         />
+        //     </div>
+        // );
     },
     renderCustomerPhase() {
         var resultType = this.getResultType(this.state.customerData.loading, this.state.customerData.errMsg);
@@ -1401,6 +1411,9 @@ var CallRecordAnalyis = React.createClass({
                             </div>
                         </div>
                         <div className="col-xs-12">
+                            <div>
+                                {Intl.get('call.analysis.zone.distrute', '客户的地域分布')}
+                            </div>
                             <div className="call-zone-distribute" ref="mapChartWrap">
                                 {this.renderCustomerZoneDistribute()}
                             </div>
