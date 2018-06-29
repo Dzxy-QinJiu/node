@@ -43,7 +43,6 @@ var ApplyTabContent = React.createClass({
             sort_field = 'consume_date';
         }
         //如果是待审批的请求，获取到申请列表后，更新下待审批的数量。
-        // 解决通过或驳回操作失败（后台其实是成功）后，刷新没有待审批的申请但数量不变的问题
         UserApplyActions.getApplyList({
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
@@ -384,7 +383,7 @@ var ApplyTabContent = React.createClass({
                     <div className="apply-type-filter" id="apply-type-container">
                         {
                             UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
-                                <Dropdown overlay={menuList} placement="bottomCenter"
+                                <Dropdown overlay={menuList} placement="bottomLeft"
                                     getPopupContainer={() => document.getElementById('apply-type-container')}>
                                     <span className="apply-type-filter-btn">
                                         {this.getApplyListType()}
