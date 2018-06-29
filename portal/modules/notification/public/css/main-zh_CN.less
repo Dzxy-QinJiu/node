@@ -109,19 +109,14 @@
 //系统消息
 .notification_system {
   margin-top: -15px;
-  .notification-status-select, .notification-type-select {
-    position: absolute;
-    top: @filter_area_margin_top;
-    z-index: 11;
+  .notification-type-select {
+    float: left;
+    margin-top: 16px;
+    margin-right: 16px;
+    margin-left: 20px;
   }
   .notification-status-select {
-    left: 132px;
-    .ant-select {
-      width: 70px;
-    }
-  }
-  .notification-type-select {
-    left: 40px;
+    margin-top: 16px;
   }
   //刷新新系统消息的提示
   .system-notice-update {

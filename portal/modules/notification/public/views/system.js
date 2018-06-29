@@ -309,7 +309,7 @@ let SystemNotification = React.createClass({
             $('.system-notice-handled-item').removeClass('system-notice-hover-item');
         }
     },
-    hideNoticeSucessTips() {
+    hideNoticeSuccessTips() {
         this.setState({
             handleNoticeMessageSuccessFlag: false
         });
@@ -355,7 +355,7 @@ let SystemNotification = React.createClass({
                                     type="success"
                                     time={3000}
                                     showIcon
-                                    onHide={this.hideNoticeSucessTips()}
+                                    onHide={this.hideNoticeSuccessTips()}
                                 />
                             ) : null}
                             {this.state.handleNoticeMessageErrorTips ? (
