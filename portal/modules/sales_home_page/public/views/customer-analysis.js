@@ -279,23 +279,6 @@ var CustomerAnalysis = React.createClass({
         }
         return moment(new Date(+this.state.endTime)).format(DATE_FORMAT);
     },
-    //地域统计
-    getZoneChart: function() {
-        var startDate = this.getStartDateText();
-        var endDate = this.getEndDateText();
-        return (
-            <BarChart
-                width={this.chartWidth}
-                list={this.state.zoneAnalysis.data}
-                title={Intl.get('user.analysis.address', '地域统计')}
-                legend={legend}
-                startDate={startDate}
-                endDate={endDate}
-                showLabel={true}
-                resultType={this.state.zoneAnalysis.resultType}
-            />
-        );
-    },
     //获取通过点击统计图中的柱子跳转到用户列表时需传的参数
     getJumpProps: function() {
         let analysis_filter_field = 'sales_id', currShowSalesTeam = this.props.currShowSalesTeam;
@@ -320,27 +303,6 @@ var CustomerAnalysis = React.createClass({
             }
         };
     },
-    //团队统计
-    getTeamChart: function() {
-        var startDate = this.getStartDateText();
-        var endDate = this.getEndDateText();
-        let list = this.state.teamAnalysis.data;
-        let resultType = this.state.teamAnalysis.resultType;
-        //getJumpProps={this.getJumpProps}
-        //getSaleIdByName={this.props.getSaleIdByName}
-        return (
-            <BarChart
-                width={this.chartWidth}
-                list={list}
-                title={Intl.get('user.analysis.team', '团队统计')}
-                legend={legend}
-                startDate={startDate}
-                endDate={endDate}
-                showLabel={true}
-                resultType={resultType}
-            />
-        );
-    },
     //活跃客户数的统计
     getActiveCustomerChart: function() {
         var startDate = this.getStartDateText();
@@ -362,23 +324,6 @@ var CustomerAnalysis = React.createClass({
         );
     },
 
-    getIndustryChart: function() {
-        var startDate = this.getStartDateText();
-        var endDate = this.getEndDateText();
-        return (
-            <ReverseBarChart
-                list={this.state.industryAnalysis.data}
-                title={Intl.get('user.analysis.industry', '行业统计')}
-                width={this.chartWidth}
-                height={214}
-                startDate={startDate}
-                endDate={endDate}
-                legend={legend}
-                showLabel={true}
-                resultType={this.state.industryAnalysis.resultType}
-            />
-        );
-    },
     processOrderStageData: function(data) {
         return processOrderStageData(this.state.salesStageList, data);
     },
@@ -829,7 +774,6 @@ var CustomerAnalysis = React.createClass({
             ],
             chartType: 'table',
             dataField: 'list',
-            ajaxInstanceFlag: 'effectiveCustomer',
             option: {
                 pagination: false,
                 scroll: {y: 170},
@@ -875,7 +819,6 @@ var CustomerAnalysis = React.createClass({
                     value: 'day',
                 },
             ],
-            ajaxInstanceFlag: 'lastMonthActiveCustomerTrend',
             chartType: 'line',
             processOption: (option, chartProps) => {
                 let activeCustomerData = [];
@@ -933,7 +876,6 @@ var CustomerAnalysis = React.createClass({
             })(),
             chartType: 'line',
             dataField: '[0].data',
-            ajaxInstanceFlag: 'addedTrend',
             noShowCondition: {
                 callback: conditions => {
                     return this.state.timeType === 'day';
@@ -950,7 +892,6 @@ var CustomerAnalysis = React.createClass({
                 }
             },
             chartType: 'funnel',
-            ajaxInstanceFlag: 'customerStage',
             processData: processCustomerStageData,
             customOption: {
                 valueField: 'showValue',
@@ -960,24 +901,34 @@ var CustomerAnalysis = React.createClass({
             title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
             url: '/rest/analysis/customer/v2/:auth_type/total/stage',
             chartType: 'horizontalStage',
-            ajaxInstanceFlag: 'orderStage',
             processData: this.processOrderStageData,
+        }, {
+            title: Intl.get('user.analysis.location.add', '地域-新增'),
+            chartType: 'bar',
+            data: this.state.zoneAnalysis.data,
+            resultType: this.state.zoneAnalysis.resultType,
+        }, {
+            title: Intl.get('user.analysis.industry.add', '行业-新增'),
+            chartType: 'bar',
+            data: this.state.industryAnalysis.data,
+            resultType: this.state.industryAnalysis.resultType,
+        }, {
+            title: Intl.get('user.analysis.team.add', '团队-新增'),
+            chartType: 'bar',
+            data: this.state.teamAnalysis.data,
+            resultType: this.state.teamAnalysis.resultType,
         }];
     },
     renderChartContent: function() {
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
-        const charts = this.getCharts(); 
-        const emitters = this.getEmitters(); 
-        const conditions = this.getConditions(); 
         return (
             <div className="chart_list">
                 <AntcAnalysis
-                    charts={charts}
-                    emitters={emitters}
-                    conditions={conditions}
+                    charts={this.getCharts()}
+                    emitters={this.getEmitters()}
+                    conditions={this.getConditions()}
                     isGetDataOnMount={true}
-                    isUseScrollBar={true}
                 />
             </div>
         );
