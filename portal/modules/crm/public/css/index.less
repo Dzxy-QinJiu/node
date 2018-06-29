@@ -1,6 +1,7 @@
 @import "../../../../components/antd-table-pagination/index.less";
 @import "../../../../public/css/common-variables";
 @import "../../../../public/css/iconfont";
+@filter-width: 288px;
 .crm_content{
   //客户标签的样式设置
   .customer_name{
@@ -68,6 +69,8 @@
     }
   }
   .filter-block{
+    display:inline-block;
+    position: initial;
     .block{
       display:inline-block;
       vertical-align:middle;
@@ -119,7 +122,25 @@
     color:#a9a9a9;
     cursor:default;
   }
+  #content-block {
+    margin: 0 22px;
+  }
+  .search-wrapper {
+    margin-top: 20px;
+    margin-left: 40px;
+    vertical-align: top;
+  }
   .content-block{
+    .filter-container {
+      float: left;
+      border-right: 1px solid #ccc;
+      min-width: @filter-width;
+      height: 100%;
+      position: absolute;
+    }
+    .content-container {
+      padding-left: @filter-width + 22px;
+    }
     margin: @top_nav_height+2 @container_padding auto @container_padding;
     .ant-table-placeholder{
       min-height: 550px;
@@ -271,9 +292,6 @@
   }
 
   .crm-filter-panel{
-    margin:85px 10px -75px;
-    padding:0 40px;
-    border-bottom:2px dotted #edf1f2;
     dt{
       display:table-cell;
       width:90px;
