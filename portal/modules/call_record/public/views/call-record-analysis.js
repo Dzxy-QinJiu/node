@@ -1307,7 +1307,7 @@ var CallRecordAnalyis = React.createClass({
     },
     //获取错误提示的信息及点击重试的方法
     getErrorTipAndRetryFunction: function(errTip,callback) {
-        var errMsg = errTip ? errTip : Intl.get('user.info.active', '激活');
+        var errMsg = errTip ? errTip : Intl.get('contract.111', '获取数据失败');
         if (_.isFunction(callback)){
             return (
                 <span>{errMsg},<a onClick={callback}>{Intl.get('user.info.retry', '请重试')}</a></span>
