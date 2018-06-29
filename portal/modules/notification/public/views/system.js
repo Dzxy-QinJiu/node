@@ -23,7 +23,7 @@ const Option = Select.Option;
 const PAGE_SIZE = 20;
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
 const STATUS_ARRAY = [{
-    name: Intl.get('notification.system.untreated', '未处理'),
+    name: Intl.get('notification.system.untreated', '待处理'),
     value: STATUS.UNHANDLED
 }, {
     name: Intl.get('notification.system.handled', '已处理'),
@@ -350,7 +350,7 @@ let SystemNotification = React.createClass({
                             value={this.state.selectedNoticeType}
                             onChange={this.handleTypeChange}
                         >
-                            <Option value="">{Intl.get('common.all', '全部')}</Option>
+                            <Option value="">{Intl.get('user.online.all.type', '全部类型')}</Option>
                             {_.map(SYSTEM_NOTICE_TYPE_MAP, (key, val) => {
                                 return (<Option value={val}>{key}</Option>);
                             })}

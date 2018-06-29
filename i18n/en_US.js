@@ -857,7 +857,7 @@ var en_US = {
     'notification.system.handle.failed': 'Set the system message to failed processing',//将系统消息设为已处理失败
     'notification.system.handled.set': 'Handle',//处理
     'notification.system.handled': 'Handled',//已处理
-    'notification.system.untreated': 'Untreated',//未处理
+    'notification.system.untreated': 'Untreated',//待处理
     'notification.login.password.error': 'Password or verification code error',//报密码或验证码错误
     'notification.login.failed': 'Login failed', //登录失败
     //通知end
