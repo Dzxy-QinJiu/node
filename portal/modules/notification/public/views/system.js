@@ -1,5 +1,5 @@
 require('../../../app_user_manage/public/css/main-zh_CN.less');
-import {Alert, Select, message, Icon} from 'antd';
+import {Alert, Select, message, Icon, Button} from 'antd';
 import LAYOUT from '../utils/layout';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import Spinner from 'CMP_DIR/spinner';
@@ -305,6 +305,10 @@ let SystemNotification = React.createClass({
             'system-notice-unhandled-item': true,
             'select-li-item': idx === this.state.selectedLiIndex,
         });
+        let noticeDetailClass = classnames({
+            'notice-detail-more': true,
+            'show-handle-button-detail': loginUserId === notice.member_id
+        });
         return (
             <li key={idx} className={unhandleNoticeLiItemClass} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
                 <div className="system-notice-title">
@@ -314,17 +318,17 @@ let SystemNotification = React.createClass({
                 <div className="system-notice-content">
                     {this.renderUnHandledNoticeContent(notice, idx)}
                     {notice.detail.length > 3 ?
-                        <a className="notice-detail-more" onClick={this.checkMore.bind(this, notice)}>
+                        <a className={noticeDetailClass} onClick={this.checkMore.bind(this, notice)}>
                             {notice.showMore ? Intl.get('common.app.status.close', '关闭') : Intl.get('notification.system.more', '展开全部')}
                         </a> : null}
                     {notice.detail.length > 3 && loginUserId === notice.member_id ?
                         <span className="notice-split-line">|</span> : ''}
                     {
                         loginUserId === notice.member_id ?
-                            <a className="notice-handled-set" onClick={this.handleSystemNotice.bind(this, notice)}>
+                            <Button className="notice-handled-set" onClick={this.handleSystemNotice.bind(this, notice)}>
                                 {Intl.get('notification.system.handled.set', '处理')}{notice.isHandling ?
                                     <Icon type="loading"/> : null}
-                            </a> : null
+                            </Button> : null
                     }
                 </div>
             </li>
