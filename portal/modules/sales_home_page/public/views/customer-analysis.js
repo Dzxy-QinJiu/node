@@ -265,104 +265,6 @@ var CustomerAnalysis = React.createClass({
             OplateCustomerAnalysisAction.getTransferCustomers(params);
         }
     },
-    //获取触发器
-    getEmitters: function() {
-        return [
-            {
-                instance: dateSelectorEmitter,
-                event: dateSelectorEmitter.SELECT_DATE,
-                callbackArgs: [{
-                    name: 'starttime',
-                }, {
-                    name: 'endtime',
-                }],
-            },
-            {
-                instance: teamTreeEmitter,
-                event: teamTreeEmitter.SELECT_TEAM,
-                callbackArgs: [{
-                    name: 'team_ids',
-                }],
-            },
-            {
-                instance: teamTreeEmitter,
-                event: teamTreeEmitter.SELECT_MEMBER,
-                callbackArgs: [{
-                    name: 'member_id',
-                }],
-            },
-        ];
-    },
-    //获取图表条件
-    getConditions: function() {
-        return [
-            {
-                name: 'starttime',
-                value: this.props.startTime,
-            },
-            {
-                name: 'endtime',
-                value: this.props.endTime,
-            },
-            {
-                name: 'app_id',
-                value: 'all',
-            },
-            {
-                name: 'team_ids',
-                value: '',
-            },
-            {
-                name: 'member_id',
-                value: '',
-            },
-            {
-                name: 'data_type',
-                value: this.getDataType(),
-                type: 'params',
-            },
-            {
-                name: 'auth_type',
-                value: getDataAuthType().toLowerCase(),
-                type: 'params',
-            },
-        ];
-    },
-    //趋势统计
-    getCustomerChart: function() {
-        let url = '/rest/analysis/customer/v2/:auth_type/added/trend';
-
-        if (getDataAuthType().toLowerCase() === 'common') {
-            url = '/rest/analysis/customer/v2/added/trend';
-        }
-
-        const charts = [{
-            title: Intl.get('customer.analysis.add.trend', '新增趋势'),
-            url: url, 
-            layout: {
-                sm: 24,
-            },
-            chartType: 'line',
-            dataField: '[0].data',
-            ajaxInstanceFlag: 'addedTrend',
-            noShowCondition: {
-                callback: conditions => {
-                    return this.state.timeType === 'day';
-                },
-            },
-        }];
-
-        return (
-            <AntcAnalysis
-                charts={charts}
-                emitters={this.getEmitters()}
-                conditions={this.getConditions()}
-                cardContainer={false}
-                isGetDataOnMount={true}
-                style={{padding: 0}}
-            />
-        );
-    },
     getStartDateText: function() {
         if (this.state.startTime) {
             return moment(new Date(+this.state.startTime)).format(DATE_FORMAT);
@@ -477,65 +379,8 @@ var CustomerAnalysis = React.createClass({
             />
         );
     },
-    //获取客户阶段统计图
-    getCustomerStageChart: function() {
-        const charts = [{
-            title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
-            url: '/rest/analysis/customer/stage/label/:auth_type/summary',
-            argCallback: (arg) => {
-                const query = arg.query;
-
-                if (query && query.starttime) {
-                    query.starttime = 0;
-                }
-            },
-            layout: {
-                sm: 24,
-            },
-            chartType: 'funnel',
-            ajaxInstanceFlag: 'customerStage',
-            processData: processCustomerStageData,
-            customOption: {
-                valueField: 'showValue',
-                minSize: '5%',
-            },
-        }];
-
-        return (
-            <AntcAnalysis
-                charts={charts}
-                emitters={this.getEmitters()}
-                conditions={this.getConditions()}
-                cardContainer={false}
-                isGetDataOnMount={true}
-                style={{padding: 0}}
-            />
-        );
-    },
     processOrderStageData: function(data) {
         return processOrderStageData(this.state.salesStageList, data);
-    },
-    getStageChart: function() {
-        const charts = [{
-            title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
-            url: '/rest/analysis/customer/v2/:auth_type/total/stage',
-            layout: {
-                sm: 24,
-            },
-            chartType: 'horizontalStage',
-            ajaxInstanceFlag: 'orderStage',
-            processData: this.processOrderStageData,
-        }];
-        return (
-            <AntcAnalysis
-                charts={charts}
-                emitters={this.getEmitters()}
-                conditions={this.getConditions()}
-                cardContainer={false}
-                isGetDataOnMount={true}
-                style={{padding: 0}}
-            />
-        );
     },
     //处理阶段点击的回调 
     handleStageNumClick: function(item, type) {
@@ -898,13 +743,76 @@ var CustomerAnalysis = React.createClass({
     numToPercent(num) {
         return (num * 100).toFixed(2) + '%';
     },
-    //获取有效客户图表
-    getEffectiveCustomerChart() {
-        const charts = [{
+    //获取触发器
+    getEmitters: function() {
+        return [
+            {
+                instance: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: 'starttime',
+                }, {
+                    name: 'endtime',
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: 'team_ids',
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_MEMBER,
+                callbackArgs: [{
+                    name: 'member_id',
+                }],
+            },
+        ];
+    },
+    //获取图表条件
+    getConditions: function() {
+        return [
+            {
+                name: 'starttime',
+                value: this.props.startTime,
+            },
+            {
+                name: 'endtime',
+                value: this.props.endTime,
+            },
+            {
+                name: 'app_id',
+                value: 'all',
+            },
+            {
+                name: 'team_ids',
+                value: '',
+            },
+            {
+                name: 'member_id',
+                value: '',
+            },
+            {
+                name: 'data_type',
+                value: this.getDataType(),
+                type: 'params',
+            },
+            {
+                name: 'auth_type',
+                value: getDataAuthType().toLowerCase(),
+                type: 'params',
+            },
+        ];
+    },
+    //获取图表
+    getCharts: function() {
+        return [{
             title: Intl.get('effective.customer.statistics', '有效客户统计'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
             argCallback: (arg) => {
-                const query = arg.query;
+                let query = arg.query;
 
                 if (query && query.starttime && query.endtime) {
                     query.start_time = query.starttime;
@@ -920,9 +828,6 @@ var CustomerAnalysis = React.createClass({
                 },
             ],
             chartType: 'table',
-            layout: {
-                sm: 24,
-            },
             dataField: 'list',
             ajaxInstanceFlag: 'effectiveCustomer',
             option: {
@@ -951,26 +856,11 @@ var CustomerAnalysis = React.createClass({
                     },
                 ],
             },
-        }];
-
-        return (
-            <AntcAnalysis
-                charts={charts}
-                emitters={this.getEmitters()}
-                conditions={this.getConditions()}
-                cardContainer={false}
-                isGetDataOnMount={true}
-                style={{padding: 0}}
-            />
-        );
-    },
-    //获取近一月活跃客户趋势图
-    getLastMonthActiveCustomerChart() {
-        const charts = [{
+        }, {
             title: Intl.get('active.customer.trends.last.month', '近一月活跃客户趋势'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
             argCallback: (arg) => {
-                const query = arg.query;
+                let query = arg.query;
 
                 if (query && query.starttime && query.endtime) {
                     query.start_time = moment().subtract(1, 'months').valueOf();
@@ -986,9 +876,6 @@ var CustomerAnalysis = React.createClass({
                 },
             ],
             ajaxInstanceFlag: 'lastMonthActiveCustomerTrend',
-            layout: {
-                sm: 24,
-            },
             chartType: 'line',
             processOption: (option, chartProps) => {
                 let activeCustomerData = [];
@@ -1033,128 +920,65 @@ var CustomerAnalysis = React.createClass({
                     `;
                 };
             },
-        }];
+        }, {
+            title: Intl.get('customer.analysis.add.trend', '新增趋势'),
+            url: (() => {
+                let url = '/rest/analysis/customer/v2/:auth_type/added/trend';
 
-        return (
-            <AntcAnalysis
-                charts={charts}
-                emitters={this.getEmitters()}
-                conditions={this.getConditions()}
-                cardContainer={false}
-                isGetDataOnMount={true}
-                style={{padding: 0}}
-            />
-        );
+                if (getDataAuthType().toLowerCase() === 'common') {
+                    url = '/rest/analysis/customer/v2/added/trend';
+                }
+
+                return url;
+            })(),
+            chartType: 'line',
+            dataField: '[0].data',
+            ajaxInstanceFlag: 'addedTrend',
+            noShowCondition: {
+                callback: conditions => {
+                    return this.state.timeType === 'day';
+                },
+            },
+        }, {
+            title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
+            url: '/rest/analysis/customer/stage/label/:auth_type/summary',
+            argCallback: (arg) => {
+                let query = arg.query;
+                 
+                if (query && query.starttime) {
+                    query.starttime = 0;
+                }
+            },
+            chartType: 'funnel',
+            ajaxInstanceFlag: 'customerStage',
+            processData: processCustomerStageData,
+            customOption: {
+                valueField: 'showValue',
+                minSize: '5%',
+            },
+        }, {
+            title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
+            url: '/rest/analysis/customer/v2/:auth_type/total/stage',
+            chartType: 'horizontalStage',
+            ajaxInstanceFlag: 'orderStage',
+            processData: this.processOrderStageData,
+        }];
     },
     renderChartContent: function() {
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
+        const charts = this.getCharts(); 
+        const emitters = this.getEmitters(); 
+        const conditions = this.getConditions(); 
         return (
             <div className="chart_list">
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title="有效客户统计">
-                    <div className="chart-holder" data-tracename="有效客户统计">
-                        <div className="title">
-                            {Intl.get('effective.customer.statistics', '有效客户统计')}
-                        </div>
-                        {this.getEffectiveCustomerChart()}
-                    </div>
-                </div>
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title="近一月活跃客户趋势">
-                    <div className="chart-holder" data-tracename="近一月活跃客户趋势">
-                        <div className="title">
-                            {Intl.get('active.customer.trends.last.month', '近一月活跃客户趋势')}
-                        </div>
-                        {this.getLastMonthActiveCustomerChart()}
-                    </div>
-                </div>
-                {this.state.timeType !== 'day' ? (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get('customer.analysis.add.trend', '新增趋势')}>
-                        <div className="chart-holder" ref="chartWidthDom" data-tracename="新增趋势统计">
-                            <div className="title"><ReactIntl.FormattedMessage
-                                id="customer.analysis.add.trend" defaultMessage="新增趋势" /></div>
-                            {this.getCustomerChart()}
-                        </div>
-                    </div>) : null}
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计')}>
-                    <div className="chart-holder" data-tracename="客户阶段统计">
-                        <div className="title">
-                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage"
-                                defaultMessage="客户阶段统计" />
-                        </div>
-                        {this.getCustomerStageChart()}
-                    </div>
-                </div>
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get('oplate_customer_analysis.11', '订单阶段统计')}>
-                    <div className="chart-holder" data-tracename="订单阶段统计">
-                        <div className="title">
-                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.11" defaultMessage="订单阶段统计" />
-                        </div>
-                        {this.getStageChart()}
-                    </div>
-                </div>
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get('user.analysis.location.add', '地域-新增')}>
-                    <div className="chart-holder">
-                        <div className="title"><ReactIntl.FormattedMessage id="user.analysis.location.add"
-                            defaultMessage="地域-新增" /></div>
-                        {this.getZoneChart()}
-                    </div>
-                </div>
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get('user.analysis.industry.add', '行业-新增')}>
-                    <div className="chart-holder" data-tracename="行业-新增统计">
-                        <div className="title"><ReactIntl.FormattedMessage id="user.analysis.industry.add"
-                            defaultMessage="行业-新增" /></div>
-                        {this.getIndustryChart()}
-                    </div>
-                </div>
-                {hideTeamChart ? null : (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get('user.analysis.team.add', '团队-新增')}>
-                        <div className="chart-holder" data-tracename="团队-新增统计">
-                            <div className="title"><ReactIntl.FormattedMessage id="user.analysis.team.add"
-                                defaultMessage="团队-新增" />
-                            </div>
-                            {this.getTeamChart()}
-                        </div>
-                    </div>
-                )}
-                {
-                    //hideTeamChart ? null : (
-                    //<div className="analysis_chart col-md-6 col-sm-12"
-                    //     data-title={Intl.get("user.analysis.active.customer","活跃客户")+"-"+Intl.get("sales.home.new.add", "新增")}>
-                    //    <div className="chart-holder">
-                    //        <div
-                    //            className="title">{Intl.get("user.analysis.active.customer", "活跃客户") + "-" + Intl.get("sales.home.new.add", "新增")}</div>
-                    //        {this.getActiveCustomerChart()}
-                    //    </div>
-                    //</div>)
-                }
-                <div className="analysis_chart  col-sm-12 col-md-6"
-                    data-title={Intl.get('crm.sales.newTrailCustomer', '新开客户数统计')}>
-                    <NewTrailCustomerTable
-                        result={this.state.stageCustomerNum}
-                        params={{
-                            startTime: this.props.startTime,
-                            endTime: this.props.endTime,
-                            teamId: this.state.currentTeamId,
-                            memberId: this.state.currentMemberId
-                        }}
-                    />
-                </div>
-                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
-                    data-title={Intl.get('user.analysis.moveoutCustomer', '转出客户统计')}>
-                    {this.renderTransferedCustomerTable()}
-                </div>
-                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
-                    data-title={Intl.get('crm.sales.customerStage', '客户阶段变更统计')}>
-                    {this.renderCustomerStage()}
-                </div>                
+                <AntcAnalysis
+                    charts={charts}
+                    emitters={emitters}
+                    conditions={conditions}
+                    isGetDataOnMount={true}
+                    isUseScrollBar={true}
+                />
             </div>
         );
     },
