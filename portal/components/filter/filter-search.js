@@ -115,7 +115,7 @@ class FilterSearch extends React.Component {
                     showInput ?
                         <div className={this.state.showAddZone ? 'add-zone-wrapper filter-contianer clearfix' : 'filter-contianer clearfix'}>
                             <div className="show-zone">
-                                <Icon type="filter" onClick={this.props.toggleList}/>
+                                <Icon type="filter" onClick={this.props.toggleList} />
                                 <ul className={this.state.showAddZone ? '' : 'collapse'}>
                                     {
                                         this.state.plainFilterList.map((x, idx) => (
@@ -126,10 +126,11 @@ class FilterSearch extends React.Component {
                                     }
                                 </ul>
                                 <div className="btn-bar">
-                                    <i className="icon-common-filter" onClick={this.showAddZone.bind(this, true)}></i>
+                                    <Icon type="bars" title="保存为常用筛选" onClick={this.showAddZone.bind(this, true)}/>
+                                    {/* <i className="icon-common-filter" ></i> */}
                                 </div>
                                 <Popover className="filter-search-confirm-clear-pop" placement="bottom" content={clearPopContent} trigger="click" visible={this.state.showConfirmPop}>
-                                    <Icon title="保存为常用筛选" type="close-circle" onClick={this.showConfirmPop.bind(this, true)} />
+                                    <Icon type="close-circle" onClick={this.showConfirmPop.bind(this, true)} />
                                 </Popover>
                             </div>
                             {
@@ -175,9 +176,9 @@ class FilterSearch extends React.Component {
                                         </div>
                                     </div> : null
                             }
-                        </div> : 
-                        <div className="icon-container">                        
-                            <Icon type="filter" onClick={this.props.toggleList}/>
+                        </div> :
+                        <div className="icon-container">
+                            <Icon type="filter" onClick={this.props.toggleList} />
                         </div>
 
                 }

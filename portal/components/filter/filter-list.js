@@ -203,7 +203,8 @@ class FilterList extends React.Component {
                         size="small"
                     >
                         <div className="common-container">
-                            <h4 className="title icon-common-filter">常用筛选</h4>
+                            {/* icon-common-filter */}
+                            <h4 className="title">常用筛选</h4>
                             {/* todo 用props.commonData */}
                             {!this.state.commonData || this.state.commonData.length === 0 ?
                                 <div className="alert-container">
@@ -277,7 +278,8 @@ class FilterList extends React.Component {
                             >
                                 <div className="advanced-container">
                                     <h4 className="title">
-                                        <p className="icon-advanced-filter">高级筛选</p>
+                                        {/* todo icon-advanced-filter */}
+                                        <p className="">高级筛选</p>
                                         <Icon
                                             type={this.state.collapsedAdvanced ? 'down' : 'up'}
                                             onClick={this.toggleCollapse.bind(this, 'advanced')}

@@ -1404,7 +1404,7 @@ var Crm = React.createClass({
                     />
                 ) : null}                
                 <div id="content-block" className="content-block splice-table" ref="crmList"
-                    style={{ display: shouldTableShow ? 'block' : 'none' }}>
+                >
                     <div className="tbody"
                         ref="tableWrap"
                         style={{ height: this.state.tableHeight + '!important' }}
@@ -1420,7 +1420,7 @@ var Crm = React.createClass({
                                     />
                                 </div> : null
                         }
-                        <div className={contentClassName}>
+                        <div className={contentClassName} style={{ display: shouldTableShow ? 'block' : 'none' }}>
                             <AntcTable
                                 rowSelection={rowSelection}
                                 rowKey={rowKey}
