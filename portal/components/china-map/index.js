@@ -32,22 +32,22 @@ var ChinaMap = React.createClass({
             var options = mapUtil.getEchartOptions();
             this.echartInstance = echarts.init(chartWrap,macronsTheme);
             this.echartInstance.setOption(options);
-            // if (this.props.getClickEvent) {
-            //     this.echartInstance.on('click', params => {
-            //         this.props.getClickEvent(params.name);
-            //         this.setState({
-            //             showReturnBtn: true
-            //         });
-            //         let transName = this.provinceName(params.name);
-            //         if (transName) {
-            //             const provinceName = require('echarts-eefung/map/json/province/' + transName);
-            //             echarts.registerMap(params.name, provinceName);
-            //             options.series[0].mapType = params.name;
-            //             options.series[0].data = this.props.dataList;
-            //             this.echartInstance.setOption(options);
-            //         }
-            //     });
-            // }
+            if (this.props.getClickEvent) {
+                this.echartInstance.on('click', params => {
+                    this.props.getClickEvent(params.name);
+                    this.setState({
+                        showReturnBtn: true
+                    });
+                    let transName = this.provinceName(params.name);
+                    if (transName) {
+                        const provinceName = require('echarts-eefung/map/json/province/' + transName);
+                        echarts.registerMap(params.name, provinceName);
+                        options.series[0].mapType = params.name;
+                        options.series[0].data = this.props.dataList;
+                        this.echartInstance.setOption(options);
+                    }
+                });
+            }
         }
     },
     componentDidMount: function() {
