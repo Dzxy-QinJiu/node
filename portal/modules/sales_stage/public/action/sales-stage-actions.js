@@ -31,28 +31,30 @@ function SalesStageActions() {
     };
 
     //添加销售阶段
-    this.addSalesStage = function(salesStage) {
+    this.addSalesStage = function(salesStage, callback) {
         var _this = this;
         var salesStageArray = [];
         salesStageArray.push(salesStage);
         _this.dispatch({loading: true,error: false});
         salesStageAjax.addSalesStage(salesStageArray).then(function(salesStageCreated) {
             _this.dispatch(salesStageCreated.result);
-            message.success(Intl.get('crm.216','添加成功！'));
             _this.dispatch({loading: false,error: false,});
+            _.isFunction(callback) && callback();
         },function(errorMsg) {
             _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
     //修改销售阶段
-    this.editSalesStage = function(salesStage) {
+    this.editSalesStage = function(salesStage, callback) {
         var _this = this;
         var salesStageArray = [];
         salesStageArray.push(salesStage);
+        _this.dispatch({loading: true,error: false});
         salesStageAjax.editSalesStage(salesStageArray).then(function(salesStageModified) {
             _this.dispatch(salesStageModified.result);
-            message.success(Intl.get('crm.218','修改成功！'));
+            _this.dispatch({loading: false,error: false,});
+            _.isFunction(callback) && callback();
         },function(errorMsg) {
             _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
@@ -67,17 +69,19 @@ function SalesStageActions() {
     };
 
     //删除销售阶段
-    this.deleteSalesStage = function(salesStage) {
+    this.deleteSalesStage = function(salesStage, callback) {
         var _this = this;
         var idArray = [];
         idArray.push(salesStage.id);
+        _this.dispatch({loading: true,error: false});
         salesStageAjax.deleteSalesStage(idArray).then(function() {
             _this.dispatch(salesStage);
-            message.success(Intl.get('crm.138','删除成功！'));
-
+            _this.dispatch({loading: false,error: false,});
+            _.isFunction(callback) && callback({error: false});
         },function(errorMsg) {
             _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
-            message.error(Intl.get('crm.139','删除失败！'));
+            _.isFunction(callback) && callback({error: true});
+
         });
 
     };

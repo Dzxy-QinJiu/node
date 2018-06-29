@@ -16,6 +16,7 @@ function SalesStageStore() {
     this.salesStageEditOrder = false;
     this.isSavingSalesStage = false;
     this.saveStageErrMsg = '';
+    this.deleteStageErrMsg = '';
     this.bindActions(SalesStageActions);
 
     this.exportPublicMethods({
@@ -24,10 +25,10 @@ function SalesStageStore() {
         getCurrentSalesStageData: this.getCurrentSalesStageData,
         getCurrentSalesStageListData: this.getCurrentSalesStageListData,
         isFormShowFnc: this.isFormShowFnc,
+
         isEditOrderFnc: this.isEditOrderFnc
     });
 }
-
 SalesStageStore.prototype.getSalesStageListData = function() {
     return this.getState().salesStageList;
 };
@@ -70,9 +71,9 @@ SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
         $.each(salesStageCreated, function(i, salesStage) {
             _this.salesStageList.push(salesStage);
         });
+        this.saveStageErrMsg = '';
         this.isSavingSalesStage = false;
         this.salesStageFormShow = false;
-
     }else{
         this.saveStageErrMsg = salesStageCreated.errorMsg;
         this.isSavingSalesStage = false;
@@ -95,6 +96,7 @@ SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
                 _.extend(target, salesStage);
             }
         });
+        this.saveStageErrMsg = '';
         this.isSavingSalesStage = false;
         this.salesStageFormShow = false;
     }else {
@@ -105,23 +107,31 @@ SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
 };
 
 SalesStageStore.prototype.saveSalesStageOrder = function(salesStageModified) {
-
     if (typeof salesStageModified !== 'string') {
         this.salesStageList = salesStageModified;
     }
-
     this.salesStageEditOrder = false;
     this.isSavingSalesStage = false;
 };
 
 //删除销售阶段
 SalesStageStore.prototype.deleteSalesStage = function(salesStage) {
-    this.salesStageList = _.filter(this.salesStageList, function(item) {
-        if (item.id !== salesStage.id) {
-            return true;
-        }
-    });
-    this.isSavingSalesStage = false;
+    if(salesStage.loading){
+        this.isSavingSalesStage = true;
+    }else if(!salesStage.error) {
+        this.salesStageList = _.filter(this.salesStageList, function(item) {
+            if (item.id !== salesStage.id) {
+                return true;
+            }
+        });
+        this.isSavingSalesStage = false;
+        this.deleteStageErrMsg = '';
+        this.salesStageFormShow = false;
+    }else {
+        this.isSavingSalesStage = false;
+        this.deleteStageErrMsg = salesStage.errorMsg;
+
+    }
 };
 
 SalesStageStore.prototype.salesStageOrderUp = function(salesStage) {

@@ -7,13 +7,14 @@ var PrivilegeChecker = require('../../../components/privilege/checker').Privileg
 var TopNav = require('../../../components/top-nav');
 var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var leftWidth = 281; // 75+45+117+44 左侧导航宽度+右侧内容左边距+右侧右侧边距+销售阶段内容左侧边距
-
 var SalesStageStore = require('./store/sales-stage-store');
 var SalesStageAction = require('./action/sales-stage-actions');
 var SalesStageForm = require('./views/sales-stage-form');
 var SalesStageInfo = require('./views/sales-stage-info');
 var Spinner = require('../../../components/spinner');
 import Trace from 'LIB_DIR/trace';
+import { message } from 'antd';
+
 function getStateFromStore(_this) {
     return {
         salesStageList: SalesStageStore.getSalesStageListData(),
@@ -22,13 +23,15 @@ function getStateFromStore(_this) {
         isFormShow: SalesStageStore.isFormShowFnc(),
         isEditOrder: SalesStageStore.isEditOrderFnc(),
         isSavingSalesStage: SalesStageStore.getIsSavingSalesStage(),
-        salesStageWidth: _this.salesStageWidthFnc()
+        salesStageWidth: _this.salesStageWidthFnc(),
     };
 }
 
 var SalesStagePage = React.createClass({
     getInitialState: function() {
-        return getStateFromStore(this);
+        return {
+            saveStageErrMsg: '',
+            ...getStateFromStore(this)};
     },
 
     onChange: function() {
@@ -72,15 +75,26 @@ var SalesStagePage = React.createClass({
 
         submitSalesStageForm: function(salesStage) {
             if (salesStage.id) {
-                SalesStageAction.editSalesStage(salesStage);
+                SalesStageAction.editSalesStage(salesStage, () => {
+                    message.success(Intl.get('crm.218', '修改成功！'));
+                });
             } else {
-                SalesStageAction.addSalesStage(salesStage);
+                SalesStageAction.addSalesStage(salesStage, () => {
+                    message.success(Intl.get('crm.216', '添加成功！'));
+                });
             }
         },
 
         deleteSalesStage: function(salesStage) {
             SalesStageAction.changeIsSavingSalesStage();
-            SalesStageAction.deleteSalesStage(salesStage);
+            SalesStageAction.deleteSalesStage(salesStage, (result) => {
+                if(!result.error){
+                    message.success(Intl.get('crm.138', '删除成功！'));
+                }else{
+                    message.error(Intl.get('crm.139', '删除失败！'));
+                }
+            });
+
         },
 
         showSalesStageModalDialog: function(salesStage) {

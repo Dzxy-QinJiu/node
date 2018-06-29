@@ -4,6 +4,8 @@ import { Alert } from 'antd';
 
 var SalesStageStore = require('../store/sales-stage-store');
 
+
+
 /**
  * Created by jinfeng on 2015/12/28.
  */
@@ -49,8 +51,6 @@ var SalesStageForm = React.createClass({
     },
     getInitialState: function() {
         return {
-            ...SalesStageStore.getState(),
-
             status: {
                 id: {},
                 name: {},
@@ -62,11 +62,15 @@ var SalesStageForm = React.createClass({
         };
     },
     componentWillReceiveProps: function(nextProps) {
-        this.refs.validation.reset();
-        var stateData = this.getInitialState();
-        stateData.formData = nextProps.salesStage;
-        stateData.salesStageFormShow = nextProps.salesStageFormShow;
-        this.setState(stateData);
+        if(!this.state.salesStageFormShow) {
+            this.refs.validation.reset();
+            var stateData = this.getInitialState();
+            stateData.formData = nextProps.salesStage;
+            stateData.salesStageFormShow = nextProps.salesStageFormShow;
+            this.setState(stateData);
+        }else{
+            return null;
+        }
     },
     onChange: function() {
         this.setState(SalesStageStore.getState());
@@ -99,7 +103,6 @@ var SalesStageForm = React.createClass({
         e.preventDefault();
         this.props.cancelSalesStageForm();
     },
-
     //保存角色信息
     handleSubmit: function(e) {
         e.preventDefault();
@@ -132,7 +135,6 @@ var SalesStageForm = React.createClass({
                         />
                     </div>
                 );
-
             }
         };
         return (
@@ -158,7 +160,6 @@ var SalesStageForm = React.createClass({
                                     />
                                 </Validator>
                             </FormItem>
-
 
                             <FormItem
                                 label={Intl.get('common.describe', '描述：')}
