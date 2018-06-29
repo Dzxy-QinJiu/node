@@ -707,7 +707,7 @@ var Crm = React.createClass({
                 };
                 break;
             case OTHER_FILTER_ITEMS.AVAILABILITY://有效客户
-                condition.availability = '1';
+                condition.availability = '0';
                 break;
 
         }
