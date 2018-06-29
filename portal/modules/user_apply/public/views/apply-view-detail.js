@@ -1478,31 +1478,41 @@ const ApplyViewDetail = React.createClass({
                 <Row className="approval_person clearfix">
                     <Col span={10}>
                         <span className="approval-info-label">
-                            {isConsumed ? this.getNoSecondTimeStr(selectedDetailItem.approval_time) : this.getNoSecondTimeStr(selectedDetailItem.time)}
+                            {this.getNoSecondTimeStr(selectedDetailItem.time)}
                         </span>
                         <span className="approval-info-label">
-                            {isConsumed ? detailInfoObj.approval_person || '' : selectedDetailItem.presenter || ''}
-                            {isConsumed ? this.getApplyResultDscr(detailInfoObj) : Intl.get('crm.109', '申请')}
+                            {selectedDetailItem.presenter || ''}
+                            {Intl.get('crm.109', '申请')}
                         </span>
                     </Col>
                     <Col span={14}>
-                        <div className="pull-right">
-                            {!isConsumed && hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.saleConfirmBackoutApply}>
-                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
-                                </Button>) : null}
-                            {!isConsumed && isRealmAdmin ? (
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.submitApprovalForm.bind(this, '1')}>
-                                    {Intl.get('user.apply.detail.button.pass', '通过')}
-                                </Button>) : null}
-                            {!isConsumed && isRealmAdmin ? (
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.submitApprovalForm.bind(this, '2')}>
-                                    {Intl.get('common.apply.reject', '驳回')}
-                                </Button>) : null}
-                        </div>
+                        {isConsumed ? (
+                            <div className="pull-right">
+                                <span className="approval-info-label">
+                                    {this.getNoSecondTimeStr(selectedDetailItem.approval_time)}
+                                </span>
+                                <span className="approval-info-label">
+                                    {detailInfoObj.approval_person || ''}
+                                    {this.getApplyResultDscr(detailInfoObj)}
+                                </span>
+                            </div>) : (
+                            <div className="pull-right">
+                                {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
+                                    <Button type="primary" className="btn-primary-sure" size="small"
+                                        onClick={this.saleConfirmBackoutApply}>
+                                        {Intl.get('user.apply.detail.backout', '撤销申请')}
+                                    </Button>) : null}
+                                {isRealmAdmin ? (
+                                    <Button type="primary" className="btn-primary-sure" size="small"
+                                        onClick={this.submitApprovalForm.bind(this, '1')}>
+                                        {Intl.get('user.apply.detail.button.pass', '通过')}
+                                    </Button>) : null}
+                                {isRealmAdmin ? (
+                                    <Button type="primary" className="btn-primary-sure" size="small"
+                                        onClick={this.submitApprovalForm.bind(this, '2')}>
+                                        {Intl.get('common.apply.reject', '驳回')}
+                                    </Button>) : null}
+                            </div>)}
                     </Col>
                 </Row>
             </div>);
