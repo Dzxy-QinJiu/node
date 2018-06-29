@@ -384,7 +384,7 @@ var ApplyTabContent = React.createClass({
                     <div className="apply-type-filter" id="apply-type-container">
                         {
                             UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
-                                <Dropdown overlay={menuList} placement="bottomCenter"
+                                <Dropdown overlay={menuList} placement="bottomLeft"
                                     getPopupContainer={() => document.getElementById('apply-type-container')}>
                                     <span className="apply-type-filter-btn">
                                         {this.getApplyListType()}
