@@ -706,7 +706,10 @@ var CallRecordAnalyis = React.createClass({
             yAxisLabels: days,
             xAxisLabels: hours,
             noExportCsv: true,
-            resultType: resultType
+            resultType: resultType,
+            errMsgRender: () => {
+                return this.getErrorTipAndRetryFunction(this.state.callIntervalData.errMsg);
+            }
         }];
         return (
             <AntcAnalysis
@@ -842,7 +845,10 @@ var CallRecordAnalyis = React.createClass({
             },
             option: this.getCallTrendEchartOptions(dataList, charTips, isMutileLine, lineType),
             noExportCsv: true,
-            resultType: resultType
+            resultType: resultType,
+            errMsgRender: () => {
+                return this.getErrorTipAndRetryFunction(isError);
+            }
         }];
 
         return (
@@ -1114,7 +1120,10 @@ var CallRecordAnalyis = React.createClass({
             },
             option: this.getOneOneFourAndServiceHasTeamOptions(dataList),
             noExportCsv: true,
-            resultType: resultType
+            resultType: resultType,
+            errMsgRender: () => {
+                return this.getErrorTipAndRetryFunction(this.state.callRateList[type].errMsg);
+            }
         }];
         const pieCharts = [{
             title: title,
@@ -1125,7 +1134,10 @@ var CallRecordAnalyis = React.createClass({
             },
             option: this.getPieOptions(dataList),
             noExportCsv: true,
-            resultType: resultType
+            resultType: resultType,
+            errMsgRender: () => {
+                return this.getErrorTipAndRetryFunction(this.state.callRateList[type].errMsg);
+            }
         }];
         return (
             <div>
@@ -1238,7 +1250,10 @@ var CallRecordAnalyis = React.createClass({
                 },
                 option: this.getPieOptions(dataList),
                 noExportCsv: true,
-                resultType: resultType
+                resultType: resultType,
+                errMsgRender: () => {
+                    return this.getErrorTipAndRetryFunction(this.state.customerData.errMsg);
+                }
             }
         ];
         return (
@@ -1264,7 +1279,10 @@ var CallRecordAnalyis = React.createClass({
                 },
                 option: this.getPieOptions(dataList),
                 noExportCsv: true,
-                resultType: resultType
+                resultType: resultType,
+                errMsgRender: () => {
+                    return this.getErrorTipAndRetryFunction(this.state.customerData.errMsg);
+                }
             }
         ];
         return (
@@ -1286,6 +1304,19 @@ var CallRecordAnalyis = React.createClass({
             resultType = 'success';
         }
         return resultType;
+    },
+    //获取错误提示的信息及点击重试的方法
+    getErrorTipAndRetryFunction: function(errTip,callback) {
+        var errMsg = errTip ? errTip : Intl.get('user.info.active', '激活');
+        if (_.isFunction(callback)){
+            return (
+                <span>{errMsg},<a onClick={callback}>{Intl.get('user.info.retry', '请重试')}</a></span>
+            );
+        }else{
+            return (
+                <span>{errMsg}</span>
+            );
+        }
     },
     renderCallAnalysisView: function() {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
