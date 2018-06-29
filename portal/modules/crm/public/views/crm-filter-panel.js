@@ -369,10 +369,16 @@ const CrmFilterPanel = React.createClass({
             {
                 groupName: Intl.get('common.tag', '标签'),
                 groupId: 'labels',
-                data: _.drop(this.state.tagList).map(x => ({
-                    name: x.show_name,
-                    value: x.name
-                }))
+                data: _.drop(this.state.tagList).map(x => {
+                    const item = {
+                        name: x.show_name,
+                        value: x.name
+                    };
+                    if (x.name === Intl.get('crm.tag.unknown', '未打标签的客户')) {
+                        item.selectOnly = true;
+                    }
+                    return item;
+                })
             },
             {
                 groupName: Intl.get('crm.competing.products', '竞品'),

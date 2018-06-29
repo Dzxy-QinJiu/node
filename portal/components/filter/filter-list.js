@@ -51,11 +51,12 @@ class FilterList extends React.Component {
             selectedAdvancedMap: $.extend({}, this.state.selectedAdvancedMap, {
                 [groupName]: {}
             })
-        });
-        const filterList = this.processSelectedFilters(this.state.selectedAdvancedMap);
-        //发送选择筛选项事件
-        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.selectedAdvancedMap, true));
-        this.props.onFilterChange(filterList);
+        }, () => {
+            const filterList = this.processSelectedFilters(this.state.selectedAdvancedMap);
+            //发送选择筛选项事件
+            filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.selectedAdvancedMap));
+            this.props.onFilterChange(filterList);
+        });       
     }
     shareCommonItem(item) {
 
@@ -112,7 +113,8 @@ class FilterList extends React.Component {
             map[groupName] = {};
         }       
         if (!map[groupName][idx]) {
-            if (singleSelect) {
+            //单选 或 不能与其他选项同时选中
+            if (singleSelect || item.selectOnly) {
                 map[groupName] = {};
             }
             map[groupName][idx] = item;
@@ -124,7 +126,7 @@ class FilterList extends React.Component {
             selectedAdvancedMap: map
         });
         const filterList = this.processSelectedFilters(map);
-        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(map, true));
+        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(map));
         this.props.onFilterChange(filterList);
     }
     handleShowPop(type, visible) {

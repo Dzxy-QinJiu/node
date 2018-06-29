@@ -33,9 +33,18 @@ class FilterSearch extends React.Component {
         filterEmitter.removeListener(filterEmitter.SELECT_FILTERS + this.props.key, this.onSelectFilters);
     }
     onSelectFilters = data => {
+        const list = [];
+        data.forEach(item => {
+            item.data.forEach(x => {
+                if (x) {
+                    list.push(x);
+                }
+            });
+        });
         this.setState({
             selectedFilterList: data,
-            filterName: data.map(x => x.name).join('+')
+            plainFilterList: list,
+            filterName: list.map(x => x.name).join('+')
         });
     }
     showAddZone(isShow) {
@@ -72,7 +81,7 @@ class FilterSearch extends React.Component {
         this.props.onSubmit({
             filterName: this.state.filterName,
             range: this.state.selectedRange,
-            filterList: this.state.selectedFilterList.map(x => x.value)
+            filterList: this.state.selectedFilterList
         });
     }
     render() {
@@ -87,15 +96,15 @@ class FilterSearch extends React.Component {
             </div>
         );
         return (
-            <div className="search-wrapper" style={this.props.style}>
+            <div className={showInput ? 'search-wrapper' : 'collapsed search-wrapper'} style={this.props.style}>
                 {
                     showInput ?
-                        <div className="filter-contianer collapsed clearfix">
+                        <div className={this.state.showAddZone ? 'add-zone-wrapper filter-contianer clearfix' : 'filter-contianer clearfix'}>
                             <div className="show-zone">
                                 <Icon type="filter" />
                                 <ul className={this.state.showAddZone ? '' : 'collapse'}>
                                     {
-                                        this.state.selectedFilterList.map((x, idx) => (
+                                        this.state.plainFilterList.map((x, idx) => (
                                             <li className="active" key={idx}>
                                                 {x.name}
                                             </li>
@@ -105,9 +114,8 @@ class FilterSearch extends React.Component {
                                 <div className="btn-bar">
                                     <i className="icon-common-filter" onClick={this.showAddZone.bind(this, true)}></i>
                                 </div>
-
                                 <Popover className="filter-search-confirm-clear-pop" placement="bottom" content={clearPopContent} trigger="click" visible={this.state.showConfirmPop}>
-                                    <Icon type="close-circle" onClick={this.showConfirmPop.bind(this, true)} />
+                                    <Icon title="保存为常用筛选" type="close-circle" onClick={this.showConfirmPop.bind(this, true)} />
                                 </Popover>
                             </div>
                             {
@@ -154,7 +162,7 @@ class FilterSearch extends React.Component {
                                     </div> : null
                             }
                         </div> : 
-                        <div className="search-wrapper">                        
+                        <div className="icon-container">                        
                             <Icon type="filter" />
                         </div>
 

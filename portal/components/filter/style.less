@@ -193,12 +193,30 @@
 }
 
 .search-wrapper {
+    min-width: 320px;
+    height: 45px;
+    margin-left: 40px;
+    position: relative;
+    vertical-align: text-bottom;
+    top: -4px;
+    &.collapsed {
+        min-width: initial;
+        position: static;
+        height: initial;
+        margin-left: initial;
+    }
     display:inline-block;
-    background: white;    
+    background: white;
     .filter-contianer {
-        min-width: 310px;
+        min-width: 320px;
         &.collapsed {
             min-width: initial;
+        }
+        &.add-zone-wrapper {
+            box-shadow: 1px 3px 4px #ccc;
+            position: absolute;
+            background: white;
+            z-index: 999999;
         }
         border: 1px solid @font-lightblue;
         border-radius: 5px;
@@ -220,15 +238,14 @@
                 float: right;
             }
             ul {
-                padding: 7px 0;
+                padding: 5px 0;
                 display: inline-block;
                 max-width: calc(~"100% - 68px");
-                margin-top: -3px;
                 &.collapse {
                     overflow: hidden;
                     text-overflow: ellipsis;
                     -webkit-line-clamp: 1;
-                    height: 30px;
+                    height: 25px;
                     -webkit-box-orient: vertical;
                     white-space: nowrap;
                     word-wrap: normal; //兼容ie8
