@@ -375,10 +375,10 @@ const ApplyViewDetail = React.createClass({
                         </span>) : null}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
-                    {this.state.applyIsExpanded ? (
-                        <PrivilegeChecker check='APP_USER_APPLY_APPROVAL'>
-                            {this.renderDetailForm(detailInfo)}
-                        </PrivilegeChecker>) : (
+                    <PrivilegeChecker check='APP_USER_APPLY_APPROVAL'>
+                        {this.renderDetailForm(detailInfo)}
+                    </PrivilegeChecker>
+                    {this.state.applyIsExpanded ? null : (
                         <GeminiScrollbar enabled={GeminiScrollbarEnabled} ref="gemini">
                             {this.renderDetailCustomerBlock(detailInfo)}
                             <div className="apply-detail-user apply-detail-info">
@@ -921,7 +921,8 @@ const ApplyViewDetail = React.createClass({
         }
 
         return (
-            <div className="apply_custom_setting_wrap">
+            <div className="apply_custom_setting_wrap"
+                style={{display: this.state.applyIsExpanded ? 'block' : 'none'}}>
                 <div className="apply_detail_operate clearfix">
                     {this.renderDetailOperateBtn()}
                 </div>
@@ -1713,7 +1714,7 @@ const ApplyViewDetail = React.createClass({
                 aria-labelledby="contained-modal-title"
             >
                 <Modal.Body>
-                    <div className="approval_loading">
+                    <div className="approval-confirm-tip">
                         <p>
                             {this.state.rolesNotSettingModalDialog.appNames.join('、')}
                             <ReactIntl.FormattedMessage id="user.apply.detail.role.modal.content"
@@ -1739,7 +1740,7 @@ const ApplyViewDetail = React.createClass({
                 >
                     <Modal.Body>
                         <div className="approval_loading">
-                            <Spinner type="line-spin"/>
+                            <Spinner/>
                             <p><ReactIntl.FormattedMessage id="user.apply.detail.submit.sending"
                                 defaultMessage="审批中..."/></p>
                         </div>
