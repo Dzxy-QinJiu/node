@@ -12,6 +12,7 @@ class FilterList extends React.Component {
         }
         this.state = {
             commonData: props.commonData || [],//todo 在外部维护
+            stopListenCommonData: false,//是否从外部接收新的commonData
             rawAdvancedData: props.advancedData || [],
             advancedData: $.extend(true, [], props.advancedData) || [],
             collapsedCommon: true,
@@ -30,7 +31,7 @@ class FilterList extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         const { commonData, advancedData } = newProps;
-        if (commonData && commonData.length && (JSON.stringify(commonData) !== JSON.stringify(this.state.commonData))) {
+        if (!this.state.stopListenCommonData && commonData && commonData.length && (JSON.stringify(commonData) !== JSON.stringify(this.state.commonData))) {
             this.setState({
                 commonData
             });
@@ -82,6 +83,7 @@ class FilterList extends React.Component {
             plainFilterList
         });
         this.setState({
+            stopListenCommonData: true,//修改过常用筛选后，不在从外部接收新的数据todo
             commonData,
             collapsedCommon: false
         });
@@ -219,7 +221,9 @@ class FilterList extends React.Component {
             //单选或不能与其它选项同时选中时，清空本组其他选中状态
             if (singleSelect || item.selectOnly) {
                 selectedGroupItem.data = selectedGroupItem.data.map(x => {
-                    x.selected = false;
+                    if (x.value !== selectedItem.value) {
+                        x.selected = false;                        
+                    }
                     return x;
                 });
             }
