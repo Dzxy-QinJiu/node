@@ -122,7 +122,7 @@ class FilterSearch extends React.Component {
             filterName: this.state.filterName,
             range: this.state.selectedRange,
             plainFilterList: this.state.plainFilterList,//压平的数组，每项包含groupId、groupName、name、value
-            filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
+            data: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
         });
         //todo remove add emitter
         this.setState({

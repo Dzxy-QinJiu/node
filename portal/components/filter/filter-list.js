@@ -69,7 +69,7 @@ class FilterList extends React.Component {
         }
     }
     handleAddCommon = (item) => {
-        const { filterList, filterName, plainFilterList } = item;
+        const { data, filterName, plainFilterList } = item;
         const commonData = this.state.commonData;
         if (commonData.find(x => x.name === filterName)) {
             message.error('常用筛选已存在');
@@ -78,7 +78,7 @@ class FilterList extends React.Component {
         commonData.push({
             name: filterName,
             value: filterName,
-            filterList,
+            data,
             plainFilterList
         });
         this.setState({
@@ -158,19 +158,28 @@ class FilterList extends React.Component {
         const filterList = this.processSelectedFilters(data);
         switch (type) {
             case 'common':
-                this.setState({
-                    selectedCommonIndex: index,
-                    advancedData: this.mergeAdvancedData(data.filterList)
-                }, () => {
-                    filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.advancedData));
+                //当常用筛选项所属组在高级筛选项中能找到，就修改已选中的高级筛选项组
+                if (this.state.advancedData.find(item => item.groupName === data.groupName)) {
+                    this.setState({
+                        selectedCommonIndex: index,
+                        advancedData: this.mergeAdvancedData(data.filterList)
+                    }, () => {
+                        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.advancedData));                        
+                    });
                     this.props.onFilterChange(this.processSelectedFilters(this.state.advancedData));
-                });
+                } else {//否则直接发送常用筛选项的选中值
+                    this.setState({
+                        selectedCommonIndex: index,
+                    });
+                    this.props.onFilterChange([data]);
+                }                
+                //todo 没有filterList 的场景处理          
                 break;
             case 'advanced':
                 this.setState({
                     selectedCommonIndex: '',
                     advancedData: data
-                });                
+                });
                 filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
                 this.props.onFilterChange(filterList);
                 break;
@@ -208,10 +217,10 @@ class FilterList extends React.Component {
             }
             if (selectedItem) {
                 selectedItem.selected = !selectedItem.selected;
-    
+
             }
         }
-        
+
         //存在选中的客户时，切换筛选条件需要先提示，确认后再修改筛选条件
         if (this.props.showSelectTip) {
             filterEmitter.emit(filterEmitter.ASK_FOR_CHANGE, {
@@ -308,7 +317,8 @@ class FilterList extends React.Component {
                                                             className={commonItemClass}
                                                             key={index}
                                                         >
-                                                            <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
+                                                            {/* //todo 鼠标经过左右滚动标题 */}
+                                                            <span className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
                                                             {
                                                                 x.readOnly ?
                                                                     <span className="btn">...</span> :
@@ -452,7 +462,7 @@ FilterList.defaultProps = {
         name: '',
         value: "",
         readOnly: [boolean],//标识是否能删除
-        filterList: [//结构与advancedData相同
+        data: [//结构与advancedData.data相同
 
         ],
         plainFilterList: [

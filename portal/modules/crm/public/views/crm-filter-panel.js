@@ -9,6 +9,7 @@ import { FilterList } from 'CMP_DIR/filter';
 //行政级别筛选项
 let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
 const UNKNOWN = Intl.get('user.unknown', '未知');
+const COMMON_OTHER_ITEM = 'otherSelectedItem';
 const otherFilterArray = [{
     name: Intl.get('common.all', '全部'),
     value: ''
@@ -303,6 +304,8 @@ const CrmFilterPanel = React.createClass({
                         condition[item.groupId] = condition[item.groupId][0] || '';
                     }
                     
+                } else if (item.groupId === COMMON_OTHER_ITEM ){
+
                 } else {
                     condition.sales_opportunities = [];
                     condition.sales_opportunities.push($.extend(true, {},this.state.condition.sales_opportunities[0], {
@@ -339,8 +342,18 @@ const CrmFilterPanel = React.createClass({
             show_name: Intl.get('user.unknown', '未知')
         }].concat(this.state.stageList);
         const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.state.industryList);
-        const commonData = otherFilterArray.map(x => {
+        const commonData = _.drop(otherFilterArray).map(x => {
             x.readOnly = true;
+            x.groupId = COMMON_OTHER_ITEM;
+            x.groupName = Intl.get('crm.186', '其他');
+            x.data = [{
+                name: x.name,
+                value: x.value
+            }];
+            x.plainFilterList = [{
+                name: x.name,
+                value: x.value
+            }];
             return x;
         });
         const advancedData = [
