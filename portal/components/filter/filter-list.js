@@ -187,18 +187,23 @@ class FilterList extends React.Component {
     }
     handleCommonItemClick(item, index) {
         //存在选中的客户时，切换筛选条件需要先提示，确认后再修改筛选条件
+        let selectedIndex = this.state.selectedCommonIndex;
+        let newSelectIndex = index;
+        if (selectedIndex === index) {
+            newSelectIndex = '';
+        }
         if (this.props.showSelectTip) {
             filterEmitter.emit(filterEmitter.ASK_FOR_CHANGE, {
                 type: 'common',
                 data: item,
-                index
+                index: newSelectIndex
             });
             return;
         }
         this.handleChangePermitted({
             type: 'common',
             data: item,
-            index
+            index: newSelectIndex
         });
     }
     handleAdvanedItemClick(groupItem, item, outIndex, innerIdx) {
