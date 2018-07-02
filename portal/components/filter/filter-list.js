@@ -1,17 +1,21 @@
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import { Alert, Icon, Popover } from 'antd';
+import { Alert, Icon, Popover, message } from 'antd';
 var classNames = require('classnames');
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 import filterEmitter from './emitter';
 class FilterList extends React.Component {
     constructor(props) {
         super();
+        let collapsedAdvanced = true;
+        if (!props.commonData.length) {
+            collapsedAdvanced = false;
+        }
         this.state = {
             commonData: props.commonData || [],//todo 在外部维护
             rawAdvancedData: props.advancedData || [],
             advancedData: $.extend(true, [], props.advancedData) || [],
             collapsedCommon: true,
-            collapsedAdvanced: true,
+            collapsedAdvanced,
             selectedAdvancedMap: {},
             selectedCommonIndex: '',
             showClickPop: false,//用于在点击pop时隐藏hover的popover
@@ -22,6 +26,7 @@ class FilterList extends React.Component {
     componentDidMount() {
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
+        filterEmitter.on(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
     }
     componentWillReceiveProps(newProps) {
         const { commonData, advancedData } = newProps;
@@ -36,9 +41,18 @@ class FilterList extends React.Component {
                 advancedData
             });
         }
+        //没有常用筛选时，展开高级筛选
+        if (!newProps.commonData.length && !this.props.commonData.length) {
+            this.setState({
+                collapsedAdvanced: false
+            });
+        }
+
     }
     componentWillUnmount() {
         filterEmitter.removeListener(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
+        filterEmitter.removeListener(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
+        filterEmitter.removeListener(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
     }
     toggleCollapse(type) {
         switch (type) {
@@ -57,6 +71,10 @@ class FilterList extends React.Component {
     handleAddCommon = (item) => {
         const { filterList, filterName, plainFilterList } = item;
         const commonData = this.state.commonData;
+        if (commonData.find(x => x.name === filterName)) {
+            message.error('常用筛选已存在');
+            return;
+        }
         commonData.push({
             name: filterName,
             value: filterName,
@@ -78,13 +96,15 @@ class FilterList extends React.Component {
         });
     }
     clearSelect(groupName) {
-        const advancedData = this.state.advancedData;
+        const advancedData = $.extend(true, [], this.state.advancedData);
         let clearGroupItem = advancedData.find(x => x.groupName === groupName);
-        if (clearGroupItem) {
-            clearGroupItem = this.state.rawAdvancedData.find(x => x.groupName === groupName);
+        if (_.get(clearGroupItem, 'data.length')) {
+            clearGroupItem.data.forEach(x => {
+                x.selected = false;
+            });
         }
         this.setState({
-            advancedData: advancedData
+            advancedData
         }, () => {
             const filterList = this.processSelectedFilters(this.state.advancedData);
             //发送选择筛选项事件
@@ -125,16 +145,6 @@ class FilterList extends React.Component {
         });
         return advancedData;
     }
-    handleCommonItemClick(item, index) {
-        this.setState({
-            selectedCommonIndex: index,
-            advancedData: this.mergeAdvancedData(item.filterList)
-        }, () => {
-            filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.advancedData));
-            this.props.onFilterChange(this.processSelectedFilters(this.state.advancedData));
-        });
-        
-    }
     processSelectedFilters(rawfilterList) {
         const filterList = $.extend(true, [], rawfilterList);
         filterList.forEach(group => {
@@ -144,6 +154,44 @@ class FilterList extends React.Component {
         });
         return filterList;
     }
+    handleChangePermitted = ({ type, data, index }) => {
+        const filterList = this.processSelectedFilters(data);
+        switch (type) {
+            case 'common':
+                this.setState({
+                    selectedCommonIndex: index,
+                    advancedData: this.mergeAdvancedData(data.filterList)
+                }, () => {
+                    filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.advancedData));
+                    this.props.onFilterChange(this.processSelectedFilters(this.state.advancedData));
+                });
+                break;
+            case 'advanced':
+                this.setState({
+                    selectedCommonIndex: '',
+                    advancedData: data
+                });                
+                filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
+                this.props.onFilterChange(filterList);
+                break;
+        }
+    }
+    handleCommonItemClick(item, index) {
+        //存在选中的客户时，切换筛选条件需要先提示，确认后再修改筛选条件
+        if (this.props.showSelectTip) {
+            filterEmitter.emit(filterEmitter.ASK_FOR_CHANGE, {
+                type: 'common',
+                data: item,
+                index
+            });
+            return;
+        }
+        this.handleChangePermitted({
+            type: 'common',
+            data: item,
+            index
+        });
+    }
     handleAdvanedItemClick(groupItem, item, outIndex, innerIdx) {
         const { groupName, singleSelect = false } = groupItem;
         const advancedData = $.extend(true, [], this.state.advancedData);
@@ -151,17 +199,31 @@ class FilterList extends React.Component {
         let selectedItem = null;
         if (selectedGroupItem.data && selectedGroupItem.data.length) {
             selectedItem = selectedGroupItem.data.find((x, idx) => idx === innerIdx);
+            //单选或不能与其它选项同时选中时，清空本组其他选中状态
+            if (singleSelect || item.selectOnly) {
+                selectedGroupItem.data = selectedGroupItem.data.map(x => {
+                    x.selected = false;
+                    return x;
+                });
+            }
+            if (selectedItem) {
+                selectedItem.selected = !selectedItem.selected;
+    
+            }
         }
-        if (selectedItem) {
-            selectedItem.selected = !selectedItem.selected;
+        
+        //存在选中的客户时，切换筛选条件需要先提示，确认后再修改筛选条件
+        if (this.props.showSelectTip) {
+            filterEmitter.emit(filterEmitter.ASK_FOR_CHANGE, {
+                type: 'advanced',
+                data: advancedData,
+            });
+            return;
         }
-        this.setState({
-            selectedCommonIndex: '',
-            advancedData
+        this.handleChangePermitted({
+            type: 'advanced',
+            data: advancedData
         });
-        const filterList = this.processSelectedFilters(advancedData);
-        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
-        this.props.onFilterChange(filterList);
     }
     handleShowPop(type, visible) {
         let showHoverPop = this.state.showHoverPop;
@@ -181,18 +243,18 @@ class FilterList extends React.Component {
     }
     render() {
         const { commonLoading, advancedLoading, commonData, advancedData } = this.props;
-        const isGroupSelected = groupName => {
-            if (!this.state.selectedAdvancedMap[groupName]) {
-                return false;
-            } else {
-                let flag = false;
-                _.forEach(this.state.selectedAdvancedMap[groupName], (value, key) => {
-                    if (value) {
-                        flag = true;
-                    }
-                });
+        const isGroupSelected = groupItem => {
+            let flag = false;
+            if (!_.get(groupItem, 'data.length')) {
                 return flag;
             }
+            groupItem.data.forEach(x => {
+                if (x.selected) {
+                    flag = true;
+                    return;
+                }
+            });
+            return flag;
         };
         return (
             <GeminiScrollbar style={this.props.style} className={this.props.className}>
@@ -202,14 +264,12 @@ class FilterList extends React.Component {
                         errorMsg={this.props.commonErrorMsg}
                         size="small"
                     >
-                        <div className="common-container">
-                            {/* icon-common-filter */}
-                            <h4 className="title">常用筛选</h4>
-                            {/* todo 用props.commonData */}
-                            {!this.state.commonData || this.state.commonData.length === 0 ?
-                                <div className="alert-container">
-                                    <Alert type="info" message="暂无常用筛选" showIcon />
-                                </div> :
+                        {!this.state.commonData || this.state.commonData.length === 0 ?
+                            null :
+                            <div className="common-container">
+                                {/* icon-common-filter */}
+                                <h4 className="title">常用筛选</h4>
+                                {/* todo 用props.commonData */}
                                 <ul>
                                     {
                                         this.state.commonData.map((x, index) => {
@@ -230,7 +290,6 @@ class FilterList extends React.Component {
                                             );
                                             const getClickContent = item => (
                                                 <ul className="btn-container">
-                                                    <li onClick={this.shareCommonItem.bind(this, item)}>分享</li>
                                                     <li onClick={this.delCommonItem.bind(this, item)}>删除</li>
                                                 </ul>
                                             );
@@ -238,22 +297,44 @@ class FilterList extends React.Component {
                                                 'hide': !showItem,
                                                 'active': index === this.state.selectedCommonIndex
                                             });
-                                            return (
-                                                //todo plainFilterList 根据接口数据统一结构
-                                                <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
-                                                    onVisibleChange={this.handleShowPop.bind(this, 'hover')}
-                                                // visible={this.state.showHoverPop && !this.state.showClickPop}
-                                                >
+                                            if (x.plainFilterList) {
+                                                return (
+                                                    //todo plainFilterList 根据接口数据统一结构
+                                                    <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
+                                                        onVisibleChange={this.handleShowPop.bind(this, 'hover')}
+                                                    // visible={this.state.showHoverPop && !this.state.showClickPop}
+                                                    >
+                                                        <li
+                                                            className={commonItemClass}
+                                                            key={index}
+                                                        >
+                                                            <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
+                                                            {
+                                                                x.readOnly ?
+                                                                    <span className="btn">...</span> :
+                                                                    <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
+                                                                        <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
+                                                                    </Popover>
+                                                            }
+                                                        </li>
+                                                    </Popover>);
+                                            } else {
+                                                return (
                                                     <li
                                                         className={commonItemClass}
                                                         key={index}
                                                     >
                                                         <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
-                                                        <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
-                                                            <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
-                                                        </Popover>
+                                                        {
+                                                            x.readOnly ?
+                                                                <span className="btn">...</span> :
+                                                                <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
+                                                                    <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
+                                                                </Popover>
+                                                        }
                                                     </li>
-                                                </Popover>);
+                                                );
+                                            }
                                         })
                                     }
                                     {
@@ -266,8 +347,11 @@ class FilterList extends React.Component {
                                             </li> : null
                                     }
                                 </ul>
-                            }
-                        </div>
+                            </div>
+                        }
+
+
+
                     </StatusWrapper>
                     {
                         this.state.advancedData.length > 0 ?
@@ -298,7 +382,7 @@ class FilterList extends React.Component {
                                                                     <h4 className="title">
                                                                         {groupItem.groupName}
                                                                         {
-                                                                            isGroupSelected(groupItem.groupName) ?
+                                                                            isGroupSelected(groupItem) ?
                                                                                 <span
                                                                                     className="clear-btn"
                                                                                     onClick={this.clearSelect.bind(this, groupItem.groupName)}
@@ -346,6 +430,37 @@ FilterList.defaultProps = {
     key: '',
     onFilterChange: function() { }
 };
+/**
+ * advancedData=[
+ * {
+ *      groupName: "",
+ *      groupId: "",//可选
+ *      singleSelect: [boolean]//可选，标识是否单选。默认多选
+ *      data: [
+ *          {
+ *              name,
+ *              value,
+ *              selec
+ *          }
+ *      ]
+ * }]
+ * 
+ * 
+ * 
+ * commonData = [
+    {
+        name: '',
+        value: "",
+        readOnly: [boolean],//标识是否能删除
+        filterList: [//结构与advancedData相同
+
+        ],
+        plainFilterList: [
+            //压平的advancedData
+        ]
+    }
+] 
+ */
 
 FilterList.propTypes = {
     commonData: 'array',
@@ -358,6 +473,7 @@ FilterList.propTypes = {
     key: 'string',
     onFilterChange: 'function',
     style: 'object',
-    className: 'string'
+    className: 'string',
+    showSelectTip: 'boolean'
 };
 export default FilterList;

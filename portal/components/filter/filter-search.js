@@ -23,14 +23,25 @@ class FilterSearch extends React.Component {
             filterName: '',
             showAddZone: false,
             selectedRange: RANGE_OPTIONS[0].value,
-            showConfirmPop: false
+            showConfirmPop: false,
+            changeRequestData: null,
+            showList: false
         };
     }
     componentDidMount() {
         filterEmitter.on(filterEmitter.SELECT_FILTERS + this.props.key, this.onSelectFilters);
+        filterEmitter.on(filterEmitter.ASK_FOR_CHANGE + this.props.key, this.handleChangeRequest);
     }
     componentWillUnmount() {
         filterEmitter.removeListener(filterEmitter.SELECT_FILTERS + this.props.key, this.onSelectFilters);
+        filterEmitter.removeListener(filterEmitter.ASK_FOR_CHANGE + this.props.key, this.handleChangeRequest);
+    }
+    //将请求修改筛选的数据保存,方便确认修改后再发送回去
+    handleChangeRequest = (data) => {
+        this.setState({
+            changeRequestData: data,
+            showConfirmPop: true
+        });
     }
     onSelectFilters = data => {
         const list = [];
@@ -48,7 +59,7 @@ class FilterSearch extends React.Component {
         this.setState({
             selectedFilterList: data,
             plainFilterList: list,
-            filterName: list.map(x => x.name).join('+')
+            filterName: list.map(x => x.name).join('+')            
         });
     }
     showAddZone(isShow) {
@@ -56,10 +67,22 @@ class FilterSearch extends React.Component {
             showAddZone: isShow
         });
     }
-    handleClear() {
+    handleConfirmEdit() {
         this.showAddZone(false);
         this.showConfirmPop(false);
-        filterEmitter.emit(filterEmitter.CLEAR_FILTERS + this.props.key);
+        if (this.props.showSelectChangeTip) {
+            if(this.state.changeRequestData) {
+                filterEmitter.emit(filterEmitter.CHANGE_PERMITTED, this.state.changeRequestData);
+                //确认修改后，清空之前请求修改的数据，防止点击全部清空时发送事件
+                this.setState({
+                    changeRequestData: null
+                });
+            } else {
+                filterEmitter.emit(filterEmitter.CLEAR_FILTERS);
+            }
+           
+        }
+        // filterEmitter.emit(filterEmitter.CLEAR_FILTERS + this.props.key);
     }
     handleNameChange(e) {
         const value = $.trim(e.target.value);
@@ -76,7 +99,20 @@ class FilterSearch extends React.Component {
     showConfirmPop(isShow) {
         this.setState({
             showConfirmPop: isShow
+        });        
+    }
+    handleClearAll() {
+        if (this.props.showSelectChangeTip) {
+            this.showConfirmPop(true);
+        } else {
+            filterEmitter.emit(filterEmitter.CLEAR_FILTERS);
+        }
+    }
+    handleToggle() {
+        this.setState({
+            showList: !this.state.showList
         });
+        this.props.toggleList();
     }
     handleSubmit() {
         if (this.props.submitting) {
@@ -99,12 +135,13 @@ class FilterSearch extends React.Component {
         });
     }
     render() {
+        //是否展示输入框形式的已选择的筛选项
         const showInput = _.get(this.state.plainFilterList, 'length') > 0;
         const clearPopContent = (
             <div className="clear-confirm-pop-container">
                 <h5><Icon type="info-circle" />修改筛选范围，已勾选的客户将被清空</h5>
                 <div className="btn-bar">
-                    <Button onClick={this.handleClear.bind(this)}>确认修改</Button>
+                    <Button onClick={this.handleConfirmEdit.bind(this)}>确认修改</Button>
                     <Button onClick={this.showConfirmPop.bind(this, false)}>{Intl.get('common.cancel', '取消')}</Button>
                 </div>
             </div>
@@ -115,7 +152,9 @@ class FilterSearch extends React.Component {
                     showInput ?
                         <div className={this.state.showAddZone ? 'add-zone-wrapper filter-contianer clearfix' : 'filter-contianer clearfix'}>
                             <div className="show-zone">
-                                <Icon type="filter" onClick={this.props.toggleList} />
+                                <span className={this.state.showList ? 'icon-wrapper active' : 'icon-wrapper'}>
+                                    <Icon type="filter" onClick={this.handleToggle.bind(this)} />
+                                </span>
                                 <ul className={this.state.showAddZone ? '' : 'collapse'}>
                                     {
                                         this.state.plainFilterList.map((x, idx) => (
@@ -126,11 +165,17 @@ class FilterSearch extends React.Component {
                                     }
                                 </ul>
                                 <div className="btn-bar">
-                                    <Icon type="bars" title="保存为常用筛选" onClick={this.showAddZone.bind(this, true)}/>
+                                    <Icon type="bars" title="保存为常用筛选" onClick={this.showAddZone.bind(this, true)} />
                                     {/* <i className="icon-common-filter" ></i> */}
                                 </div>
-                                <Popover className="filter-search-confirm-clear-pop" placement="bottom" content={clearPopContent} trigger="click" visible={this.state.showConfirmPop}>
-                                    <Icon type="close-circle" onClick={this.showConfirmPop.bind(this, true)} />
+                                <Popover
+                                    overlayClassName="filter-search-confirm-clear-pop"
+                                    placement="bottom"
+                                    content={clearPopContent}
+                                    trigger="click"
+                                    visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
+                                >
+                                    <Icon type="close-circle" onClick={this.handleClearAll.bind(this)} />
                                 </Popover>
                             </div>
                             {
@@ -177,8 +222,8 @@ class FilterSearch extends React.Component {
                                     </div> : null
                             }
                         </div> :
-                        <div className="icon-container">
-                            <Icon type="filter" onClick={this.props.toggleList} />
+                        <div className={this.state.showList ? 'icon-container active' : 'icon-container'}>
+                            <Icon type="filter" onClick={this.handleToggle.bind(this)} />
                         </div>
 
                 }
@@ -192,7 +237,8 @@ FilterSearch.defaultProps = {
     style: {
         maxWidth: 320
     },
-    key: ''
+    key: '',
+    showSelectChangeTip: false
 };
 
 FilterSearch.propTypes = {
@@ -201,7 +247,8 @@ FilterSearch.propTypes = {
     key: 'string',
     submitting: 'boolean',
     errorMsg: 'string',
-    toggleList: 'function'
+    toggleList: 'function',
+    showSelectChangeTip: 'boolean'
 };
 
 export default FilterSearch;

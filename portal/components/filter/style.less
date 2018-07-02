@@ -4,7 +4,7 @@
 @font-lightblue: #2095F4;
 @bg-grey: #EDF0F5;
 @font-black: #333333;
-@pd-l: 20px;
+@pd-l: 10px;
 @btn-grey: #D7D7D7;
 @btn-yellow: #EDA445;
 @bg-blue: #EEF7FE;
@@ -121,10 +121,11 @@
     .advanced-container {
         margin-top: 18px;
         padding-left: @pd-l;
-        .title {
-            font-size: 13px;
-            line-height: 2.5;
+        &>.title {
+            font-size: 14px;
+            line-height: 36px;
             font-weight: 600;
+            color: @font-black;
             p {
                 display: inline-block;
             }
@@ -137,6 +138,12 @@
         .group-container {
             font-size: 12px;
             line-height: 2;
+            .title {
+                font-size: 12px;
+                line-height: 24px;
+                font-weight: initial;
+                color: @font-black;
+            }
             .clear-btn {
                 cursor: pointer;
                 color: @font-blue;
@@ -144,15 +151,20 @@
             }
         }
         ul.item-container {
-            margin-left: -6px;
-            margin-right: -6px;
+            margin-top: 2px;
+            margin-left: -10px;
+            margin-right: -10px;
+            margin-bottom: 11px;
+            font-size: 0;
             li {
                 display: inline-block;
-                margin: 3px;
-                margin-top: -3px;
-                padding: 3px;
+                margin: 2px 3px;
+                padding: 0 7px;
                 border-radius: 4px;
                 cursor: pointer;
+                color: @font-grey;
+                font-size: 14px;
+                line-height: 24px;
                 &.active,
                 &:hover {
                     .active();
@@ -207,8 +219,11 @@
         width: 32px;
         border: 1px solid @bd-grey;
         border-radius: 4px;
-        color: @font-lightblue;
+        color: @btn-grey;
         cursor: pointer;
+        &.active {
+            color: @font-lightblue;    
+        }
     }
     &.collapsed {
         min-width: initial;
@@ -221,6 +236,10 @@
     background: white;
     .filter-contianer {
         min-width: 320px;
+        position: absolute;
+        z-index: 9;
+        background: white;
+        max-width: 100%;
         &.collapsed {
             min-width: initial;
         }
@@ -231,29 +250,49 @@
             z-index: 999999;
         }
         border: 1px solid @font-lightblue;
-        border-radius: 5px;
+        border-radius: 3px;
         .show-zone {
             position: relative;
+            span.icon-wrapper {
+                &.active {
+                    .anticon-filter {
+                        color: @font-lightblue;
+                    }
+                }
+            }
             .anticon {
                 vertical-align: top;
                 cursor: pointer;
             }
             .anticon-filter {
-                font-size: 19px;
-                color: @font-lightblue;
-                margin: 7px 0 0 7px;
+                font-size: 19px;                
+                margin: 5px 0 0 2px;
+                color: @btn-grey;
             }
             .anticon-close-circle {
-                margin: 7px 7px 0 0;
+                margin: 7px 0px 0 0;
                 font-size: 14px;
                 color: @font-grey;
                 float: right;
             }
             ul {
-                padding: 5px 0;
+                padding: 2px 0;
                 display: inline-block;
-                max-width: calc(~"100% - 68px");
+                max-width: calc(~"100% - 70px");
+                &.collapse:hover {
+                    overflow: initial;
+                    text-overflow: initial;
+                    -webkit-line-clamp: initial;
+                    height: initial;
+                    -webkit-box-orient: initial;
+                    white-space: initial;
+                    word-wrap: initial; //兼容ie8
+                    li {
+                        display: inline-block;
+                    }
+                }
                 &.collapse {
+                    padding: 5px 0;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     -webkit-line-clamp: 1;
@@ -278,7 +317,7 @@
             .btn-bar {
                 margin-left: 6px;
                 float: right;
-                width: 15px;
+                width: 28px;
                 &:before {
                     display: inline-block;
                     content: "";
@@ -288,9 +327,10 @@
                     height: 100%;
                 }
                 i {
-                    margin-left: 2px;
+                    margin-left: 5px;
                     margin-top: 5px;
                     cursor: pointer;
+                    font-size: 19px;
                     color: @btn-yellow;
                 }
             }

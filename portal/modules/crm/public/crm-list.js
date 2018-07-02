@@ -98,7 +98,7 @@ var Crm = React.createClass({
         return {
             callNumber: '', // 座机号
             errMsg: '', // 获取座机号失败的信息
-            showFilterList: true,
+            showFilterList: false,//是否展示筛选区域
             ...this.getStateData()
         };
     },
@@ -837,7 +837,7 @@ var Crm = React.createClass({
         btnClass += isWebMini ? 'handle-btn-mini' : 'handle-btn-container';
         if (this.state.selectedCustomer.length) {
             //选择客户后，展示合并和批量变更的按钮
-            return (<div>
+            return (<div className="top-btn-wrapper" >
                 <PrivilegeChecker
                     check="CUSTOMER_MERGE_CUSTOMER"
                     className={btnClass}
@@ -859,7 +859,7 @@ var Crm = React.createClass({
                 </PrivilegeChecker>
             </div>);
         } else {
-            return (<div>
+            return (<div className="top-btn-wrapper" >
                 <PrivilegeChecker
                     check="CRM_REPEAT"
                     className={btnClass + ' customer-repeat-btn'}
@@ -1372,6 +1372,7 @@ var Crm = React.createClass({
                         <div className="top-nav-border-fix">
                             <div className="search-input-wrapper">
                                 <FilterInput 
+                                    showSelectChangeTip={_.get(this.state.selectedCustomer, 'length')}
                                     toggleList={this.toggleList.bind(this)}
                                 />
                             </div>
@@ -1384,7 +1385,7 @@ var Crm = React.createClass({
                                 ) : null}
                                 <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
                                     <CrmFilter
-                                        ref="crmFilter"
+                                        ref="crmFilter"                                        
                                         search={this.search.bind(this, true)}
                                         changeTableHeight={this.changeTableHeight}
                                         crmFilterValue={this.state.crmFilterValue}
@@ -1414,6 +1415,7 @@ var Crm = React.createClass({
                                 <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
                                     <CrmFilterPanel
                                         search={this.search.bind(this, true)}
+                                        showSelectTip={_.get(this.state.selectedCustomer, 'length')}
                                         style={{ width: 300, height: this.state.tableHeight + 100 }}
                                         filterPanelHeight={this.state.filterPanelHeight}
                                         changeTableHeight={this.changeTableHeight}

@@ -339,6 +339,10 @@ const CrmFilterPanel = React.createClass({
             show_name: Intl.get('user.unknown', '未知')
         }].concat(this.state.stageList);
         const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.state.industryList);
+        const commonData = otherFilterArray.map(x => {
+            x.readOnly = true;
+            return x;
+        });
         const advancedData = [
             {
                 groupName: Intl.get('crm.detail.sales.role', '销售角色'),
@@ -415,19 +419,15 @@ const CrmFilterPanel = React.createClass({
                         name: x,
                         value: x
                     }))
-            },
-            {
-                groupName: Intl.get('crm.186', '其他'),
-                groupId: 'otherSelectedItem',
-                singleSelect: true,
-                data: otherFilterArray
-            },
+            }            
         ];
         return (
             <div data-tracename="筛选">
                 <div className="crm-filter-panel">
                     <FilterList
                         style={this.props.style}
+                        showSelectTip={this.props.showSelectTip}    
+                        commonData={commonData}                    
                         advancedData={advancedData}
                         onFilterChange={this.handleFilterChange.bind(this)}
                     />                   

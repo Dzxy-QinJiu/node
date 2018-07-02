@@ -7,4 +7,6 @@ filterEmitter.SELECT_FILTERS = 'selectFilters';
 filterEmitter.ADD_COMMON = 'addCommon';
 filterEmitter.SHOW_LIST = 'showList';
 filterEmitter.CLOSE_LIST = 'closeList';
+filterEmitter.ASK_FOR_CHANGE = 'askForChange';
+filterEmitter.CHANGE_PERMITTED = 'changePermitted';
 export default filterEmitter;
