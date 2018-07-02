@@ -497,6 +497,8 @@ var zh_CN = {
     'user.suggest.name.two': '创建{user01}或{user02}？',
     'user.exist.suggest.name': '用户名{user}已存在，是否创建{user01}?',
     'user.exist.name': '用户名{user}已存在，请重新命名',
+    'user.exist.name.check.user': '用户名已存在，是否查询{check}',
+    'user.exisit.the.name': '该用户',
     'user.check.fail': '用户名校验出错！',
     'user.select.realm': '选择安全域',
     'user.select.realm.title': '安全域',
