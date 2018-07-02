@@ -261,7 +261,7 @@ var ApplyTabContent = React.createClass({
                                     </dd>
                                     <dd className="clearfix">
                                         <span>{Intl.get('user.apply.presenter', '申请人')}:{obj.presenter}</span>
-                                        <em>{this.getTimeStr(obj.time, oplateConsts.DATE_TIME_FORMAT)}</em>
+                                        <em>{this.getTimeStr(obj.time, oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</em>
                                     </dd>
                                 </dl>
                             </li>

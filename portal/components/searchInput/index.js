@@ -236,7 +236,7 @@ const SearchInput = React.createClass({
                 )}
                 {(this.props.type === 'input' && this.refs.searchInput && this.refs.searchInput.value) ||
                  (this.props.type === 'select' && this.state.keyword) ? (
-                        <Icon type="cross-circle-o" className="search-icon" onClick={this.closeSearchInput}/>
+                        <span className="iconfont icon-circle-close search-icon" onClick={this.closeSearchInput}/>
                     ) : (<Icon type="search" className="search-icon" onClick={this.onSearchButtonClick}/>
                     )}
             </div>
