@@ -508,7 +508,8 @@ const AddOrEditUser = React.createClass({
     renameUser(){
         this.setState({
             suggestNames: '',
-            sugNamesErrorMsg: ''
+            sugNamesErrorMsg: '',
+            userId: ''
         });
     },
 
