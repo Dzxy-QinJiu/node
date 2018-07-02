@@ -2275,6 +2275,7 @@ var zh_CN = {
     'noMoreTip.customer': '没有更多客户了',
     'failed.change.source.time': '修改线索咨询时间失败',
     'china.zone.distribute.south.island': '南海诸岛',
-    'clue.customer.analysis.trend': '趋势'
+    'clue.customer.analysis.trend': '趋势',
+    'clue.stage.statics': '线索阶段统计'
 };
 export default zh_CN;

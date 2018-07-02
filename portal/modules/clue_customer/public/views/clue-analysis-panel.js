@@ -16,6 +16,7 @@ const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 import CustomerStageTable from 'MOD_DIR/sales_home_page/public/views/customer-stage-table';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+import {AntcAnalysis} from 'antc';
 class ClueAnalysisPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -147,11 +148,74 @@ class ClueAnalysisPanel extends React.Component {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     }
+    //获取错误提示的信息及点击重试的方法
+    getErrorTipAndRetryFunction(errTip, callback) {
+        var errMsg = errTip ? errTip : Intl.get('contract.111', '获取数据失败');
+        if (_.isFunction(callback)) {
+            return (
+                <span>{errMsg},<a onClick={callback}>{Intl.get('user.info.retry', '请重试')}</a></span>
+            );
+        } else {
+            return (
+                <span>{errMsg}</span>
+            );
+        }
+    }
+    processClueStaticsStageData(){
+        const customerStages = [
+            {
+                tagName: Intl.get('sales.stage.message', '信息'),
+                tagValue: 'message',
+            },
+            {
+                tagName: Intl.get('sales.stage.intention', '意向'),
+                tagValue: 'intention',
+            },
+            {
+                tagName: Intl.get('common.trial', '试用'),
+                tagValue: 'trial',
+            },
+            {
+                tagName: Intl.get('common.qualified', '合格'),
+                tagValue: 'qualified',
+            },
+            {
+                tagName: Intl.get('sales.stage.signed', '签约'),
+                tagValue: 'signed',
+            },
+        ];
+        return [{'name': '合格','showValue': 100},
+            {'name': '意向','showValue': 30},
+            {'name': '签约','showValue': 80}];
+    }
     //渲染概览页的chart
     renderChartsOverview(){
+
+        var clueTrendCharts = [
+            {
+                title: Intl.get('clue.stage.statics','线索阶段统计'),
+                chartType: 'funnel',
+                processData: this.processClueStaticsStageData,
+                layout: {
+                    sm: 24,
+                },
+                // option: this.getPieOptions(),
+                noExportCsv: true,
+                resultType: 'success',
+                errMsgRender: () => {
+                    return this.getErrorTipAndRetryFunction();
+                }
+            }
+        ];
+
         return (
             <div className="clue-analysis-overview-container">
-
+                <div className="clue-trend-analysis col-xs-6">
+                    <AntcAnalysis
+                        charts={clueTrendCharts}
+                        chartHeight={400}
+                    />
+                </div>
             </div>
         );
     }
