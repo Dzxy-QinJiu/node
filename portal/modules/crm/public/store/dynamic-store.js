@@ -19,7 +19,7 @@ DynamicStore.prototype.getDynamicList = function(data) {
     } else {
         this.isLoading = false;
         this.errorMsg = '';
-        this.dynamicList = _.get(data, 'data.list[0]') ? data.list : [];
+        this.dynamicList = _.get(data, 'list[0]') ? data.list : [];
     }
 };
 
