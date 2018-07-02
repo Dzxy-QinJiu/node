@@ -11,7 +11,8 @@ import ClueAnalysisStore from '../store/clue-analysis-store';
 import ClueAnalysisAction from '../action/clue-analysis-action';
 import DatePicker from 'CMP_DIR/datepicker';
 import {AntcTable} from 'antc';
-import { Select} from 'antd';
+import {Select, Tabs} from 'antd';
+const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 import CustomerStageTable from 'MOD_DIR/sales_home_page/public/views/customer-stage-table';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
@@ -146,6 +147,14 @@ class ClueAnalysisPanel extends React.Component {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     }
+    //渲染概览页的chart
+    renderChartsOverview(){
+        return (
+            <div className="clue-analysis-overview-container">
+
+            </div>
+        );
+    }
     render() {
         const handleNum = num => {
             if (num && num > 0) {
@@ -234,50 +243,73 @@ class ClueAnalysisPanel extends React.Component {
         };
         return (
             <div className="clue-analysis-panel">
-                <TopNav>
-                    <div className="date-range-wrap">
-                        <div className="consult-time">
-                            {Intl.get('clue.analysis.consult.time', '咨询时间：')}
-                        </div>
-                        <DatePicker
-                            disableDateAfterToday={true}
-                            range="year"
-                            onSelect={this.onSelectDate}>
-                            <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
-                            <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                            <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                            <DatePicker.Option
-                                value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                            <DatePicker.Option
-                                value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
-                            <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
-                            <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                        </DatePicker>
-                        <div className="filter-clue-wrap">
-                            {this.filterClueTypeSelect()}
-                        </div>
-                    </div>
+                <div className="date-picker-container">
+                    <DatePicker
+                        disableDateAfterToday={true}
+                        range="year"
+                        onSelect={this.onSelectDate}>
+                        <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                        <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                        <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                        <DatePicker.Option
+                            value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                        <DatePicker.Option
+                            value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                        <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
+                        <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
+                    </DatePicker>
                     <RightPanelClose onClick={this.closeClueAnalysisPanel}/>
-                </TopNav>
-                <div className="analysis-clue-container">
-                    <AntcTable
-                        loading={this.state.getClueAnalysisLoading}
-                        columns={columns}
-                        scroll={{ x: true, y: 200 }}
-                        pagination={false}
-                        dataSource={this.state.clueAnalysisList}
-                    />
                 </div>
-                <RightPanel
-                    className="customer-stage-table-wrapper"
-                    showFlag={this.state.showCustomerIds.length}
-                >
-                    {this.state.showCustomerIds.length ?
-                        <CustomerStageTable
-                            result={stageChangedCustomerList}
-                            onClose={this.closeCustomersContentPanel}
-                        /> : null}
-                </RightPanel>
+                <Tabs>
+                    <TabPane tab={Intl.get('crm.basic.overview', '概览')} key="1">{this.renderChartsOverview()}</TabPane>
+                    <TabPane tab={Intl.get('clue.customer.analysis.trend', '趋势')} key="2">Content of tab 2</TabPane>
+                </Tabs>
+
+
+                {/*<TopNav>*/}
+                {/*<div className="date-range-wrap">*/}
+                {/*<div className="consult-time">*/}
+                {/*{Intl.get('clue.analysis.consult.time', '咨询时间：')}*/}
+                {/*</div>*/}
+                {/*<DatePicker*/}
+                {/*disableDateAfterToday={true}*/}
+                {/*range="year"*/}
+                {/*onSelect={this.onSelectDate}>*/}
+                {/*<DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>*/}
+                {/*<DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>*/}
+                {/*<DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>*/}
+                {/*<DatePicker.Option*/}
+                {/*value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>*/}
+                {/*<DatePicker.Option*/}
+                {/*value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>*/}
+                {/*<DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>*/}
+                {/*<DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>*/}
+                {/*</DatePicker>*/}
+                {/*<div className="filter-clue-wrap">*/}
+                {/*{this.filterClueTypeSelect()}*/}
+                {/*</div>*/}
+                {/*</div>*/}
+                {/*<RightPanelClose onClick={this.closeClueAnalysisPanel}/>*/}
+                {/*</TopNav>*/}
+                {/*<div className="analysis-clue-container">*/}
+                {/*<AntcTable*/}
+                {/*loading={this.state.getClueAnalysisLoading}*/}
+                {/*columns={columns}*/}
+                {/*scroll={{ x: true, y: 200 }}*/}
+                {/*pagination={false}*/}
+                {/*dataSource={this.state.clueAnalysisList}*/}
+                {/*/>*/}
+                {/*</div>*/}
+                {/*<RightPanel*/}
+                {/*className="customer-stage-table-wrapper"*/}
+                {/*showFlag={this.state.showCustomerIds.length}*/}
+                {/*>*/}
+                {/*{this.state.showCustomerIds.length ?*/}
+                {/*<CustomerStageTable*/}
+                {/*result={stageChangedCustomerList}*/}
+                {/*onClose={this.closeCustomersContentPanel}*/}
+                {/*/> : null}*/}
+                {/*</RightPanel>*/}
             </div>
         );
     }
