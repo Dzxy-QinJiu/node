@@ -1,32 +1,29 @@
 var salesStageAjax = require('../ajax/sales-stage-ajax');
 var userData = require('../../../../public/sources/user-data');
-import { message } from 'antd';
 
 function SalesStageActions() {
-    this.generateActions({
-        'getSalesStageList': 'getSalesStageList',
-        'addSalesStage': 'addSalesStage',
-        'editSalesStage': 'editSalesStage',
-        'deleteSalesStage': 'deleteSalesStage',
-        'saveSalesStageOrder': 'saveSalesStageOrder',
-        'showSalesStageForm': 'showSalesStageForm',
-        'hideSalesStageeForm': 'hideSalesStageeForm',
-        'showSalesStageModalDialog': 'showSalesStageModalDialog',
-        'hideSalesStageModalDialog': 'hideSalesStageModalDialog',
-        'showSalesStageEditOrder': 'showSalesStageEditOrder',
-        'hideSalesStageEditOrder': 'hideSalesStageEditOrder',
-        'salesStageOrderUp': 'salesStageOrderUp',
-        'salesStageOrderDown': 'salesStageOrderDown',
-        'changeIsSavingSalesStage': 'changeIsSavingSalesStage'
-    });
+    this.generateActions(
+        'getSalesStageList',
+        'addSalesStage',
+        'editSalesStage',
+        'deleteSalesStage',
+        'saveSalesStageOrder',
+        'showSalesStageForm',
+        'hideSalesStageeForm',
+        'showSalesStageModalDialog',
+        'hideSalesStageModalDialog',
+        'showSalesStageEditOrder',
+        'hideSalesStageEditOrder',
+        'salesStageOrderUp',
+        'salesStageOrderDown',
+        'changeIsSavingSalesStage'
+    );
 
     //获取销售阶段列表
     this.getSalesStageList = function() {
         var _this = this;
         salesStageAjax.getSalesStageList().then(function(salesStageList) {
             _this.dispatch(salesStageList.result);
-        },function() {
-            message.error(Intl.get('crm.217','获取列表失败！'));
         });
     };
 
@@ -37,8 +34,7 @@ function SalesStageActions() {
         salesStageArray.push(salesStage);
         _this.dispatch({loading: true,error: false});
         salesStageAjax.addSalesStage(salesStageArray).then(function(salesStageCreated) {
-            _this.dispatch(salesStageCreated.result);
-            _this.dispatch({loading: false,error: false,});
+            _this.dispatch({loading: false,error: false, value: salesStageCreated.result});
             _.isFunction(callback) && callback();
         },function(errorMsg) {
             _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
@@ -52,8 +48,7 @@ function SalesStageActions() {
         salesStageArray.push(salesStage);
         _this.dispatch({loading: true,error: false});
         salesStageAjax.editSalesStage(salesStageArray).then(function(salesStageModified) {
-            _this.dispatch(salesStageModified.result);
-            _this.dispatch({loading: false,error: false,});
+            _this.dispatch({loading: false,error: false, value: salesStageModified.result});
             _.isFunction(callback) && callback();
         },function(errorMsg) {
             _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
@@ -75,8 +70,7 @@ function SalesStageActions() {
         idArray.push(salesStage.id);
         _this.dispatch({loading: true,error: false});
         salesStageAjax.deleteSalesStage(idArray).then(function() {
-            _this.dispatch(salesStage);
-            _this.dispatch({loading: false,error: false,});
+            _this.dispatch({loading: false,error: false, value: salesStage});
             _.isFunction(callback) && callback({error: false});
         },function(errorMsg) {
             _this.dispatch({loading: false,error: true, errorMsg: errorMsg});

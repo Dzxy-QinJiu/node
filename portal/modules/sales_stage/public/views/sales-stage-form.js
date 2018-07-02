@@ -68,8 +68,6 @@ var SalesStageForm = React.createClass({
             stateData.formData = nextProps.salesStage;
             stateData.salesStageFormShow = nextProps.salesStageFormShow;
             this.setState(stateData);
-        }else{
-            return null;
         }
     },
     onChange: function() {

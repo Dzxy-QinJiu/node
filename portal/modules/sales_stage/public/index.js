@@ -17,12 +17,7 @@ import { message } from 'antd';
 
 function getStateFromStore(_this) {
     return {
-        salesStageList: SalesStageStore.getSalesStageListData(),
-        currentSalesStage: SalesStageStore.getCurrentSalesStageData(),
-        currentSalesStageListData: SalesStageStore.getCurrentSalesStageListData(),
-        isFormShow: SalesStageStore.isFormShowFnc(),
-        isEditOrder: SalesStageStore.isEditOrderFnc(),
-        isSavingSalesStage: SalesStageStore.getIsSavingSalesStage(),
+        ...SalesStageStore.getState(),
         salesStageWidth: _this.salesStageWidthFnc(),
     };
 }
@@ -148,7 +143,7 @@ var SalesStagePage = React.createClass({
                 <TopNav>
                     <TopNav.MenuList/>
                     {
-                        this.state.isEditOrder ?
+                        this.state.salesStageEditOrder ?
                             (<div className="sales-stage-top-div-group">
                                 <div className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
@@ -181,7 +176,7 @@ var SalesStagePage = React.createClass({
 
                 <SalesStageForm
                     salesStage={this.state.currentSalesStage}
-                    salesStageFormShow={this.state.isFormShow}
+                    salesStageFormShow={this.state.salesStageFormShow}
                     cancelSalesStageForm={this.events.hideSalesStageeForm}
                     submitSalesStageForm={this.events.submitSalesStageForm}
                 >
@@ -207,7 +202,7 @@ var SalesStagePage = React.createClass({
                                             showSalesStageForm={_this.events.showSalesStageForm.bind(_this)}
                                             salesStageOrderUp={_this.events.salesStageOrderUp}
                                             salesStageOrderDown={_this.events.salesStageOrderDown}
-                                            isEditOrder={_this.state.isEditOrder}
+                                            salesStageEditOrder={_this.state.salesStageEditOrder}
                                         >
                                         </SalesStageInfo>
                                     </li>

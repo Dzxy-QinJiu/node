@@ -18,39 +18,7 @@ function SalesStageStore() {
     this.saveStageErrMsg = '';
     this.deleteStageErrMsg = '';
     this.bindActions(SalesStageActions);
-
-    this.exportPublicMethods({
-        getSalesStageListData: this.getSalesStageListData,
-        getIsSavingSalesStage: this.getIsSavingSalesStage,
-        getCurrentSalesStageData: this.getCurrentSalesStageData,
-        getCurrentSalesStageListData: this.getCurrentSalesStageListData,
-        isFormShowFnc: this.isFormShowFnc,
-
-        isEditOrderFnc: this.isEditOrderFnc
-    });
 }
-SalesStageStore.prototype.getSalesStageListData = function() {
-    return this.getState().salesStageList;
-};
-SalesStageStore.prototype.getIsSavingSalesStage = function() {
-    return this.getState().isSavingSalesStage;
-};
-
-SalesStageStore.prototype.getCurrentSalesStageData = function() {
-    return this.getState().currentSalesStage;
-};
-
-SalesStageStore.prototype.isFormShowFnc = function() {
-    return this.getState().salesStageFormShow;
-};
-
-SalesStageStore.prototype.isEditOrderFnc = function() {
-    return this.getState().salesStageEditOrder;
-};
-
-SalesStageStore.prototype.getCurrentSalesStageListData = function() {
-    return this.getState().currentSalesStageList;
-};
 
 //获取销售阶段列表
 SalesStageStore.prototype.getSalesStageList = function(salesStageList) {
@@ -68,7 +36,7 @@ SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
     if(salesStageCreated.loading){
         this.isSavingSalesStage = true;
     } else if (!salesStageCreated.error) {
-        $.each(salesStageCreated, function(i, salesStage) {
+        $.each(salesStageCreated.value, function(i, salesStage) {
             _this.salesStageList.push(salesStage);
         });
         this.saveStageErrMsg = '';
@@ -86,12 +54,8 @@ SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
     if(salesStageModified.loading){
         this.isSavingSalesStage = true;
     }else if (!salesStageModified.error) {
-        $.each(salesStageModified, function(i, salesStage) {
-            var target = _.find(_this.salesStageList, function(item) {
-                if (item.id === salesStage.id) {
-                    return true;
-                }
-            });
+        $.each(salesStageModified.value, function(i, salesStage) {
+            var target = _.find(_this.salesStageList, item => item.id === salesStage.id);
             if (target) {
                 _.extend(target, salesStage);
             }
@@ -119,11 +83,7 @@ SalesStageStore.prototype.deleteSalesStage = function(salesStage) {
     if(salesStage.loading){
         this.isSavingSalesStage = true;
     }else if(!salesStage.error) {
-        this.salesStageList = _.filter(this.salesStageList, function(item) {
-            if (item.id !== salesStage.id) {
-                return true;
-            }
-        });
+        this.salesStageList = _.filter(this.salesStageList,item => item.id !== salesStage.value.id);
         this.isSavingSalesStage = false;
         this.deleteStageErrMsg = '';
         this.salesStageFormShow = false;
