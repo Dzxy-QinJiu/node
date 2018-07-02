@@ -1,27 +1,26 @@
 var DynamicActions = require('../action/dynamic-action');
 
 function DynamicStore() {
+    this.isLoading = false;//正在获取动态列表
     this.dynamicList = [];
+    this.errorMsg = '';//获取动态列表错误提示
     //绑定action方法
-    this.bindListeners({
-        //获取动态列表
-        'getDynamicList': DynamicActions.getDynamicList
-    });
-    //绑定view方法
-    this.exportPublicMethods({
-        getDynamicListFromView: this.getDynamicListFromView
-    });
-
+    this.bindActions(DynamicActions);
 }
 
-//ToView-获取动态列表
-DynamicStore.prototype.getDynamicListFromView = function() {
-    return this.getState().dynamicList;
-};
-
 //获取动态列表
-DynamicStore.prototype.getDynamicList = function(list) {
-    this.dynamicList = list;
+DynamicStore.prototype.getDynamicList = function(data) {
+    if (data.loading) {
+        this.isLoading = true;
+        this.errorMsg = '';
+    } else if (data.errorMsg) {
+        this.isLoading = false;
+        this.errorMsg = data.errorMsg;
+    } else {
+        this.isLoading = false;
+        this.errorMsg = '';
+        this.dynamicList = _.get(data, 'data.list[0]') ? data.list : [];
+    }
 };
 
-module.exports = alt.createStore(DynamicStore , 'DynamicStore');
+module.exports = alt.createStore(DynamicStore, 'DynamicStore');

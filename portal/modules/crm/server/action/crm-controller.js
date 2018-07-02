@@ -258,9 +258,9 @@ exports.getDynamicList = function(req, res) {
     var customer_id = req.params.customer_id;
     crmService.getDynamicList(req, res, customer_id)
         .on('success', function(data) {
-            res.json(data.result);
+            res.status(200).json(data.result);
         }).on('error', function(err) {
-            res.json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 
