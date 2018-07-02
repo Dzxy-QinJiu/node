@@ -1226,7 +1226,10 @@ var CallRecordAnalyis = React.createClass({
             option: this.getCustomerZoneOptions(),
             noExportCsv: true,
             resultType: 'success',
-            onMapClick: this.getClickMap,
+            events: [{
+                name: 'click',
+                func: this.getClickMap
+            }]
         }];
         return (
             <div className="map-distribute">
