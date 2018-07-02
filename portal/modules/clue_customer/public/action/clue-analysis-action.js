@@ -15,10 +15,19 @@ function ClueAnalysisActions() {
         'changeAccess',
         'changeSource'
     );
-    //标记线索是否有效
+    //获取线索分析列表
     this.getClueAnalysis = function(data) {
         this.dispatch({error: false, loading: true});
         clueAnalysisAjax.getClueAnalysis(data).then((result) => {
+            this.dispatch({error: false, loading: false, data: result});
+        },(errorMsg) => {
+            this.dispatch({error: true, loading: false,errorMsg: errorMsg});
+        });
+    };
+    //获取线索统计列表
+    this.getClueStatics = function(queryParams, pathParams) {
+        this.dispatch({error: false, loading: true});
+        clueAnalysisAjax.getClueStatics(queryParams, pathParams).then((result) => {
             this.dispatch({error: false, loading: false, data: result});
         },(errorMsg) => {
             this.dispatch({error: true, loading: false,errorMsg: errorMsg});

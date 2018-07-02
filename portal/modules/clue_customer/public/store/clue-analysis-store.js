@@ -16,13 +16,21 @@ ClueAnalysisStore.prototype.setInitState = function() {
     this.getClueAnalysisErrMsg = false;//获取线索分析失败
     this.customersList = [];//要展示的客户
     this.getCustomersLoading = false;//正在获取客户
-    this.getCustomersErrMsg = false;//获取客户失败
+    this.getCustomersErrMsg = '';//获取客户失败
     //开始时间
     this.source_start_time = moment().startOf('year').valueOf();
     //结束时间
     this.source_end_time = moment().valueOf();
     this.selectedAccess = Intl.get('common.all', '全部');
     this.selectedSource = Intl.get('common.all', '全部');
+    //获取线索统计的相关参数
+    this.staticsPageSize = 20;
+    //获取线索统计的页码
+    this.staticsNum = 1;
+    this.staticsFiled = 'clue_source';
+    this.clueStaticsList = [];//线索统计列表
+    this.getClueStaticsLoading = false;//正在获取线索统计
+    this.getClueStaticsErrMsg = '';//获取线索统计失败
 
 };
 ClueAnalysisStore.prototype.changeSearchTime = function(timeObj) {
@@ -48,6 +56,20 @@ ClueAnalysisStore.prototype.getClueAnalysis = function(result) {
         this.getClueAnalysisLoading = false;
         this.getClueAnalysisErrMsg = '';
         this.clueAnalysisList = result.data;
+    }
+};
+ClueAnalysisStore.prototype.getClueStatics = function(result) {
+    if (result.loading) {
+        this.getClueStaticsLoading = true;
+        this.getClueStaticsErrMsg = '';
+    } else if (result.error) {
+        this.getClueStaticsLoading = false;
+        this.getClueStaticsErrMsg = result.errorMsg;
+    } else {
+        this.getClueStaticsLoading = false;
+        this.getClueStaticsErrMsg = '';
+        this.clueStaticsList = this.clueStaticsList.concat(result.data);
+        this.staticsNum++;
     }
 };
 ClueAnalysisStore.prototype.getCustomerById = function(result) {

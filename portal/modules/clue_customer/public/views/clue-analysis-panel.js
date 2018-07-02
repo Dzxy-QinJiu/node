@@ -14,6 +14,7 @@ import {AntcTable} from 'antc';
 import { Select} from 'antd';
 const Option = Select.Option;
 import CustomerStageTable from 'MOD_DIR/sales_home_page/public/views/customer-stage-table';
+import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 class ClueAnalysisPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -25,6 +26,8 @@ class ClueAnalysisPanel extends React.Component {
 
     componentDidMount() {
         this.refreshClueAnalysisData();
+        //获取线索统计列表
+        this.getClueStaticsList();
         ClueAnalysisStore.listen(this.onStoreChange);
     }
     onStoreChange = () => {
@@ -33,7 +36,7 @@ class ClueAnalysisPanel extends React.Component {
     componentWillUnmount() {
         ClueAnalysisStore.unlisten(this.onStoreChange);
     }
-
+    //获取线索分析列表
     getClueAnalysisList() {
         let queryParams = {
             source_start_time: this.state.source_start_time,
@@ -49,6 +52,19 @@ class ClueAnalysisPanel extends React.Component {
             queryParams.clue_source = this.state.selectedSource;
         }
         ClueAnalysisAction.getClueAnalysis(queryParams);
+    }
+    //获取线索统计列表
+    getClueStaticsList() {
+        let queryParams = {
+
+        };
+        let pathParams = {
+            field: this.state.staticsFiled,
+            page_size: this.state.staticsPageSize,
+            num: this.state.staticsNum,
+        };
+
+        ClueAnalysisAction.getClueStatics(queryParams, pathParams);
     }
 
     refreshClueAnalysisData() {
@@ -127,7 +143,7 @@ class ClueAnalysisPanel extends React.Component {
     };
     //获取行政级别
     getAdministrativeLevel(levelId) {
-        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
+        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     }
     render() {
@@ -269,7 +285,14 @@ class ClueAnalysisPanel extends React.Component {
 ClueAnalysisPanel.defaultProps = {
     closeClueAnalysisPanel: function() {
     },
+    accessChannelArray: [],
+    clueSourceArray: [],
 
 
+};
+ClueAnalysisPanel.propTypes = {
+    clueSourceArray: React.PropTypes.object,
+    accessChannelArray: React.PropTypes.object,
+    closeClueAnalysisPanel: React.PropTypes.func
 };
 export default ClueAnalysisPanel;

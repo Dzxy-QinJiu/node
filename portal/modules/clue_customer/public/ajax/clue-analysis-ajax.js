@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/24.
  */
-//获取线索统计列表
+//获取线索分析列表
 exports.getClueAnalysis = function(data) {
     var Deferred = $.Deferred();
     $.ajax({
@@ -35,6 +35,23 @@ exports.getCustomerById = function(data) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
+        }
+    });
+    return Deferred.promise();
+};
+//获取线索统计列表
+exports.getClueStatics = function(queryParams, pathParams) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/statics/' + pathParams.field + '/' + pathParams.page_size + '/' + pathParams.num,
+        dataType: 'json',
+        type: 'post',
+        data: queryParams,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
