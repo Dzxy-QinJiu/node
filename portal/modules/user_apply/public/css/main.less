@@ -409,13 +409,13 @@
         line-height: 30px;
         .icon-refresh {
           margin-right: 10px;
-          color: #a0abaf;
+          color: #edeef0;
         }
         span.icon-apply-message-tip {
           font-size: 18px;
-          color: #a0abaf;
+          color: #edeef0;
         }
-        .has-unread-reply, .has-new-apply {
+        span.has-unread-reply, span.has-new-apply {
           color: @reply-message-tip-color;
           cursor: pointer;
         }
@@ -455,7 +455,15 @@
         cursor: default;
       }
       li {
+        position: relative;
+        padding-left: 20px;
+        padding-right: 20px;
+        border-left: 3px solid transparent;
+        border-bottom: 1px solid #f0f4f7;
         cursor: pointer;
+        &:hover{
+          background-color: #f8fdff;
+        }
         &.current {
           background-color: #f8fdff;
           border-left: 3px solid @apply-active-color;
@@ -463,19 +471,6 @@
             color: @apply-active-color;
           }
         }
-        &:before {
-          content: " ";
-          position: absolute;
-          bottom: -1px;
-          left: 0;
-          right: 0;
-          overflow: hidden;
-          border-bottom: 1px solid #f0f4f7;
-        }
-        position: relative;
-        padding-left: 20px;
-        padding-right: 20px;
-        border-left: 3px solid transparent;
         em, dt {
           font-weight: normal;
           font-style: normal;
@@ -496,7 +491,6 @@
           em {
             float: right;
             line-height: 20px;
-            font-size: 14px;
             color: @approval-pending-color;
             &.processed {
               color: @font-color;
