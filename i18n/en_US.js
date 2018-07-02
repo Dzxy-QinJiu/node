@@ -500,6 +500,8 @@ var en_US = {
     'user.suggest.name.two': 'Create username {user01} or {user02}', // 创建{user01}或{user02}
     'user.exist.suggest.name': '{user}is already taken. wheather to create {user01}', // 用户名{user}已存在，是否创建{user01}?
     'user.exist.name': '{user}is already taken.please rename', // 用户名{user}已存在，请重新命名
+    'user.exist.name.check.user': 'The username already exists, Whether to query {check}', // 用户名已存在，是否查询{check}
+    'user.exisit.the.name': 'the user', // 该用户
     'user.check.fail': 'Failed to verify the username.', // 用户名校验出错！
     'user.select.realm': 'Select Realm', // 选择安全域
     'user.select.realm.title': 'Realm', // 安全域：
