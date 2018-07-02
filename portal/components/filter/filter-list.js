@@ -82,7 +82,8 @@ class FilterList extends React.Component {
             plainFilterList
         });
         this.setState({
-            commonData
+            commonData,
+            collapsedCommon: false
         });
     }
     handleClearAll() {
@@ -313,7 +314,8 @@ class FilterList extends React.Component {
                                                 'hide': !showItem,
                                                 'active': index === this.state.selectedCommonIndex
                                             });
-                                            if (x.plainFilterList) {
+                                            //todo 没有多个高级筛选的常用筛选不展示popover
+                                            if (x.plainFilterList && !x.readOnly) {
                                                 return (
                                                     //todo plainFilterList 根据接口数据统一结构
                                                     <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
