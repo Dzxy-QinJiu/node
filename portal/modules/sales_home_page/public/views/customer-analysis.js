@@ -135,6 +135,21 @@ var CustomerAnalysis = React.createClass({
             OplateCustomerAnalysisAction.getStageChangeCustomerList(paramObj);
         }
     },
+    //获取不同阶段客户数
+    getCustomerStageAnalysis: function(params) {
+        let teamId = this.state.currentTeamId;
+        if (teamId && teamId.includes(',')) {
+            teamId = teamId.split(',')[0];//此接口需要的teamid为最上级的团队id
+        }
+        let paramsObj = {
+            ...params,
+            starttime: this.state.startTime,
+            endtime: this.state.endTime,
+            app_id: 'all',
+            team_id: teamId
+        };
+        OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
+    },
     //获取客户阶段变更数据
     getStageChangeCustomers: function() {
         let params = {
@@ -197,6 +212,7 @@ var CustomerAnalysis = React.createClass({
         setTimeout(() => {
             this.getStageChangeCustomers();
             this.getTransferCustomers({ isFirst: true });
+            this.getCustomerStageAnalysis();
         });
 
         //绑定window的resize，进行缩放处理
@@ -917,6 +933,37 @@ var CustomerAnalysis = React.createClass({
             chartType: 'bar',
             data: this.state.teamAnalysis.data,
             resultType: this.state.teamAnalysis.resultType,
+        }, {
+            title: Intl.get('crm.sales.newTrailCustomer', '新开客户数统计'),
+            chartType: 'table',
+            data: this.state.stageCustomerNum.data,
+            resultType: this.state.stageCustomerNum.loading ? 'loading' : '',
+            option: {
+                pagination: false,
+                columns: [
+                    {
+                        title: Intl.get('common.trial', '试用'),
+                        dataIndex: 'trial',
+                        key: 'trial',
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, text, '试用')}>{text}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('sales.stage.signed', '签约'),
+                        dataIndex: 'signed',
+                        key: 'signed',
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, text, '签约')}>{text}</span>
+                            );
+                        }
+                    }
+                ],
+            },
         }];
     },
     renderChartContent: function() {
