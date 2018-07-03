@@ -71,21 +71,22 @@ DetailCard.defaultProps = {
     },//渲染自定义的处理保存的按钮
     saveErrorMsg: ''//保存的错误提示
 };
+const PropTypes = React.PropTypes;
 DetailCard.propTypes = {
-    title: React.PropTypes.string || React.PropTypes.element,
-    titleDescr: React.PropTypes.string || React.PropTypes.element,
-    titleRightBlock: React.PropTypes.string || React.PropTypes.element,
-    titleBottomBorderNone: React.PropTypes.bool,
-    content: React.PropTypes.string || React.PropTypes.element,
-    bottom: React.PropTypes.string || React.PropTypes.element,
-    className: React.PropTypes.string,
-    isEdit: React.PropTypes.bool,
-    loading: React.PropTypes.bool,
-    okBtnText: React.PropTypes.string,
-    cancelBtnText: React.PropTypes.string,
-    handleSubmit: React.PropTypes.func,
-    handleCancel: React.PropTypes.func,
-    renderHandleSaveBtns: React.PropTypes.func,
-    saveErrorMsg: React.PropTypes.string
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    titleDescr: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    titleRightBlock: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    titleBottomBorderNone: PropTypes.bool,
+    content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    bottom: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    className: PropTypes.string,
+    isEdit: PropTypes.bool,
+    loading: PropTypes.bool,
+    okBtnText: PropTypes.string,
+    cancelBtnText: PropTypes.string,
+    handleSubmit: PropTypes.func,
+    handleCancel: PropTypes.func,
+    renderHandleSaveBtns: PropTypes.func,
+    saveErrorMsg: PropTypes.string
 };
 export default DetailCard;
