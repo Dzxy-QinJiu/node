@@ -1345,6 +1345,7 @@ var zh_CN = {
     'crm.Administrative.level.2': '地市级',
     'crm.Administrative.level.3': '区县级',
     'crm.dynamic.no.data': '该客户还没有动态',
+    'crm.no.contact.way.tip': '暂无联系方式，请{addTip}',
     // 客户管理end
 
     // 客户分析start

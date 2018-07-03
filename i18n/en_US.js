@@ -1329,6 +1329,7 @@ var en_US = {
     'crm.Administrative.level.2': 'Prefectural level',//地市级
     'crm.Administrative.level.3': 'county level',//区县级
     'crm.dynamic.no.data': 'The customer has no dynamic',//该客户还没有动态
+    'crm.no.contact.way.tip': 'No contact, please {addTip}',//暂无联系方式，请{addTip}
     // 客户管理end
 
     //客户分析 start

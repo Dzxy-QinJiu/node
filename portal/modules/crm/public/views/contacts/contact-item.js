@@ -90,7 +90,7 @@ var ContactItem = React.createClass({
                     to: phone
                 };
                 crmAjax.callOut(reqData).then((result) => {
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         message.success('拨打成功！');
                     }
                 }, (errMsg) => {
@@ -127,7 +127,7 @@ var ContactItem = React.createClass({
         return contactInfo;
     },
     //渲染联系人标题区
-    renderContactTitle(){
+    renderContactTitle(contactEleList){
         let contact = this.props.contact.contact;
         let isExpanded = this.props.contact.isExpanded;
         //默认联系人
@@ -146,11 +146,9 @@ var ContactItem = React.createClass({
                 <span className="contact-name" title={contact.name}>{contact.name}</span>
                 {contact.role || contact.department || contact.position ? (
                     <span className="contact-info">
-                        (
                         <span className="contact-info-content" title={this.getContactInfo(contact)}>
                             {this.getContactInfo(contact)}
                         </span>
-                        )
                     </span>) : null}
                 {this.props.contact.isShowDeleteContactConfirm ? (
                     <span className="contact-delete-buttons">
@@ -168,10 +166,11 @@ var ContactItem = React.createClass({
                             onClick={this.showDeleteContactConfirm}/>
                         <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.showEditContactForm}
                             data-tracename="点击编辑联系人按钮"/>
-                        <span className={contactWayClassName}
-                            data-tracename={isExpanded ? '收起联系方式' : '展开其他联系方式'}
-                            title={isExpanded ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('crm.contact.way.show', '展开其他联系方式')}
-                            onClick={this.toggleContactWay}/>
+                        {contactEleList.length > 1 ? (//超过一种联系方式时，再展示展开其他联系方式的按钮
+                            <span className={contactWayClassName}
+                                data-tracename={isExpanded ? '收起联系方式' : '展开其他联系方式'}
+                                title={isExpanded ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('crm.contact.way.show', '展开其他联系方式')}
+                                onClick={this.toggleContactWay}/>) : null}
                     </span>)}
             </span>);
     },
@@ -191,46 +190,87 @@ var ContactItem = React.createClass({
             </div>);
         }) : null;
     },
-
-    //渲染联系方式展示区
-    renderContactWay(){
+    getContactEleList(){
         let contact = this.props.contact.contact;
-        return (<div className="contact-way-container">
-            <div className="contact-way-type">
-                <div className="iconfont icon-phone-call-out contact-way-icon" title={Intl.get('common.phone', '电话')}/>
-                <div className="contact-phone-content contact-way-content">
-                    {this.renderContactWayContent(contact, 'phone')}
-                </div>
-            </div>
-            {this.props.contact.isExpanded ? ( <div className="contact-way-other">
+        let contactList = [];
+        if (this.hasContactWay(contact, 'phone')) {
+            contactList.push(
+                <div className="contact-way-type">
+                    <div className="iconfont icon-phone-call-out contact-way-icon"
+                        title={Intl.get('common.phone', '电话')}/>
+                    <div className="contact-phone-content contact-way-content">
+                        {this.renderContactWayContent(contact, 'phone')}
+                    </div>
+                </div>);
+        }
+        if (this.hasContactWay(contact, 'qq')) {
+            contactList.push(
                 <div className="contact-way-type">
                     <div className="iconfont icon-qq contact-way-icon" title="QQ"/>
                     <div className="contact-way-content">
                         {this.renderContactWayContent(contact, 'qq')}
                     </div>
-                </div>
+                </div>);
+        }
+        if (this.hasContactWay(contact, 'weChat')) {
+            contactList.push(
                 <div className="contact-way-type">
                     <div className="iconfont icon-weChat contact-way-icon" title={Intl.get('crm.58', '微信')}/>
                     <div className="contact-way-content">
                         {this.renderContactWayContent(contact, 'weChat')}
                     </div>
-                </div>
+                </div>);
+        }
+        if (this.hasContactWay(contact, 'email')) {
+            contactList.push(
                 <div className="contact-way-type">
-                    <div className="iconfont icon-email contact-way-icon"
-                        title={Intl.get('common.email', '邮箱')}/>
+                    <div className="iconfont icon-email contact-way-icon" title={Intl.get('common.email', '邮箱')}/>
                     <div className="contact-way-content">
                         {this.renderContactWayContent(contact, 'email')}
                     </div>
-                </div>
-            </div>) : null}
-        </div>);
+                </div>);
+        }
+        return contactList;
     },
+    //渲染联系方式展示区
+    renderContactWay(contactEleList){
+        if (contactEleList[0]) {
+            return (
+                <div className="contact-way-container">
+                    {contactEleList[0]}
+                    {contactEleList.length > 1 && this.props.contact.isExpanded ? (
+                        <div className="contact-way-other">
+                            {contactEleList.map((contactEle, index) => {
+                                if (index > 0) {
+                                    return contactEle;
+                                }
+                                return null;
+                            })}
+                        </div>) : null}
+                </div>);
+        } else {
+            return (
+                <div className="contact-way-container">
+                    <div className="no-contact-way-tip">
+                        <ReactIntl.FormattedMessage
+                            id='crm.no.contact.way.tip'
+                            defaultMessage={'暂无联系方式，请{addTip}'}
+                            values={{
+                                'addTip': <a onClick={this.showEditContactForm}>{Intl.get('common.add', '添加')}</a>,
+                            }}
+                        />
+                    </div>
+                </div>);
+        }
+    },
+
     render(){
         let containerClassName = classNames('contact-item-container', {
             'contact-delete-border': this.props.contact.isShowDeleteContactConfirm
         });
-        return (<DetailCard title={this.renderContactTitle()}
-            content={this.renderContactWay()}
+        let contactEleList = this.getContactEleList();
+        return (<DetailCard title={this.renderContactTitle(contactEleList)}
+            content={this.renderContactWay(contactEleList)}
             className={containerClassName}/>);
     }
 });
