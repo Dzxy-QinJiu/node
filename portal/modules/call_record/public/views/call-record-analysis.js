@@ -28,7 +28,6 @@ import {AntcTable, AntcCardContainer} from 'antc';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {handleTableData} from 'CMP_DIR/analysis/export-data-util';
-const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import {MAP_PROVINCE} from 'LIB_DIR/consts';
 import {AntcAnalysis} from 'antc';
 var hours = _.range(24);
@@ -1211,40 +1210,35 @@ var CallRecordAnalyis = React.createClass({
         return MAP_PROVINCE[name];
     },
     renderCustomerZoneDistribute() {
-        return (<ChinaMap
-            width="900"
-            height="600"
-            dataList={this.state.customerData.zoneList}
-            formatter={mapFormatter}
-            getClickEvent={this.getClickMap}
-        />);
-        // var dataList = this.state.customerData.zoneList;
-        // var arr = dataList.concat();
-        // arr.push({
-        //     name: Intl.get('china.zone.distribute.south.island', '南海诸岛'),
-        //     value: 0
-        // });
-        // const charts = [{
-        //     title: Intl.get('call.analysis.zone.distrute', '客户的地域分布'),
-        //     chartType: 'map',
-        //     data: arr,
-        //     layout: {
-        //         sm: 12,
-        //     },
-        //     option: this.getCustomerZoneOptions(),
-        //     noExportCsv: true,
-        //     resultType: 'success',
-        //     onProvinceClick: this.getClickMap,
-        //     provinceData: arr
-        // }];
-        // return (
-        //     <div className="map-distribute">
-        //         <AntcAnalysis
-        //             charts={charts}
-        //             chartHeight={CHART_LAYOUT_HEIGHT.MAP_HEIGHT}
-        //         />
-        //     </div>
-        // );
+        var dataList = this.state.customerData.zoneList;
+        var arr = dataList.concat();
+        arr.push({
+            name: Intl.get('china.zone.distribute.south.island', '南海诸岛'),
+            value: 0
+        });
+        const charts = [{
+            title: Intl.get('call.analysis.zone.distrute', '客户的地域分布'),
+            chartType: 'map',
+            data: arr,
+            layout: {
+                sm: 12,
+            },
+            option: this.getCustomerZoneOptions(),
+            noExportCsv: true,
+            resultType: 'success',
+            events: [{
+                name: 'click',
+                func: this.getClickMap
+            }]
+        }];
+        return (
+            <div className="map-distribute">
+                <AntcAnalysis
+                    charts={charts}
+                    chartHeight={CHART_LAYOUT_HEIGHT.MAP_HEIGHT}
+                />
+            </div>
+        );
     },
     renderCustomerPhase() {
         var resultType = this.getResultType(this.state.customerData.loading, this.state.customerData.errMsg);
