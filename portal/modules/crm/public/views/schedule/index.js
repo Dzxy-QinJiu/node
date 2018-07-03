@@ -215,7 +215,7 @@ var CrmSchedule = React.createClass({
     },
     //联系计划列表区域
     renderScheduleLists: function() {
-        if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
+        if (_.get(this.state, 'scheduleList[0]')) {
             return (
                 <TimeLine
                     list={this.state.scheduleList}
@@ -234,8 +234,8 @@ var CrmSchedule = React.createClass({
         return (
             <div className="schedule-title">
                 <span>{Intl.get('crm.right.schedule', '联系计划')}:</span>
-                {!(_.isArray(this.state.scheduleList) && this.state.scheduleList.length) ? (
-                    <span className="no-data-text">{Intl.get('common.no.more.schedule', '暂无计划')}</span>) : null}
+                {!_.get(this.state, 'scheduleList[0]') && !this.state.isLoadingScheduleList ? (
+                    <span className="no-data-text">{}</span>) : null}
                 {this.props.isMerge ? null : (
                     <span className="iconfont icon-add schedule-add-btn"
                         title={Intl.get('crm.214', '添加联系计划')}
@@ -244,12 +244,19 @@ var CrmSchedule = React.createClass({
             </div>);
     },
     render(){
+        let hasNoData = !_.get(this.state, 'scheduleList[0]') && !this.state.isLoadingScheduleList;
+        let addBtn = this.props.isMerge ? null : (<span className="iconfont icon-add schedule-add-btn"
+            title={Intl.get('crm.214', '添加联系计划')}
+            onClick={this.addSchedule}/>);
         return (
             <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
                 listenScrollBottom={this.state.listenScrollBottom}>
-                <DetailCard title={this.renderScheduleTitle()}
+                <DetailCard title={`${Intl.get('crm.right.schedule', '联系计划')}:`}
+                    titleDescr={hasNoData ? Intl.get('common.no.more.schedule', '暂无计划') : ''}
+                    titleRightBlock={addBtn}
+                    titleBottomBorderNone={hasNoData}//没有数据时，标题下面没有下边框
                     content={this.renderScheduleContent()}
-                    className={classNames('schedule-contianer', {'no-data-card': !(_.isArray(this.state.scheduleList) && this.state.scheduleList.length)})}/>
+                    className='schedule-contianer'/>
             </RightPanelScrollBar>
         );
     }

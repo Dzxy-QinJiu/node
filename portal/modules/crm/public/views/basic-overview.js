@@ -342,16 +342,6 @@ var BasicOverview = React.createClass({
         }
         return null;
     },
-    renderRecordTitle: function() {
-        var recordLength = this.state.customerRecord.length;
-        return (
-            <span>
-
-                {!recordLength && !this.state.customerRecordLoading ? (
-                    <span className="no-data-text">{}</span>) : null}
-            </span>
-        );
-    },
     render: function() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
@@ -359,7 +349,7 @@ var BasicOverview = React.createClass({
         if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
-        var recordLength = this.state.customerRecord.length;
+        var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
@@ -396,7 +386,8 @@ var BasicOverview = React.createClass({
                     {this.renderUnComplateScheduleList()}
                     <DetailCard
                         title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
-                        noDataTip={!recordLength && !this.state.customerRecordLoading ? Intl.get('common.no.more.trace.record', '暂无跟进记录') : ''}
+                        titleBottomBorderNone={noRecordData}
+                        titleDescr={noRecordData ? Intl.get('common.no.more.trace.record', '暂无跟进记录') : ''}
                         content={this.renderCustomerRcord()}
                     />
                 </div>
