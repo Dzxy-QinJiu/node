@@ -6,6 +6,13 @@
 @box_shadow_color: #cac8c8;
 @item_height: 24px;
 //展示状态下的卡片
+.no-data-card.detail-card-container{
+  .detail-card-title{
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}
 .detail-card-container {
   float: left;
   width: @card_width;
@@ -21,6 +28,10 @@
     padding-bottom: @card_margin;
     color: #999999;
     font-size: 14px;
+    .no-data-text{
+      padding-left: 4px;
+      color: #d2d0d0;
+    }
   }
   .detail-card-bottom {
     float: left;
