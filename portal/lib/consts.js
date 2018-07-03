@@ -17,6 +17,8 @@ module.exports = {
     DATE_YEAR_MONTH_FORMAT: 'YYYY-MM',
     //只包含月和日的日期格式
     DATE_MONTH_DAY_FORMAT: 'MM-DD',
+    // 时间格式为：MM-DD HH:mm
+    DATE_MONTH_DAY_HOUR_MIN_FORMAT: 'MM-DD HH:mm',
     //一天的时间的毫秒数
     ONE_DAY_TIME_RANGE: 24 * 60 * 60 * 1000,
     //组织列表中的类型判断

@@ -56,57 +56,57 @@ exports.getFormatMinuteTime = function(time = 0) {
 //计算出不同过期时间段对应的开始时间 本天 本周 本月 半年
 exports.getStartTime = function(time) {
     switch (time) {
-    case 'day':
-        return moment().startOf('day').valueOf();
-    case 'week':
-        return moment().startOf('week').valueOf();
-    case 'month':
-        return moment().startOf('month').valueOf();
-    case 'half_year':
-        return moment().valueOf();
+        case 'day':
+            return moment().startOf('day').valueOf();
+        case 'week':
+            return moment().startOf('week').valueOf();
+        case 'month':
+            return moment().startOf('month').valueOf();
+        case 'half_year':
+            return moment().valueOf();
     }
 };
 
 //计算出不同过期时间段对应的结束时间 本天 本周 本月 半年
 exports.getEndTime = function(time) {
     switch (time) {
-    case 'day':
-        return moment().endOf('day').valueOf();
-    case 'week':
-        return moment().endOf('week').valueOf();
-    case 'month':
-        return moment().endOf('month').valueOf();
-    case 'half_year':
-        return moment().add(6, 'months').valueOf();
+        case 'day':
+            return moment().endOf('day').valueOf();
+        case 'week':
+            return moment().endOf('week').valueOf();
+        case 'month':
+            return moment().endOf('month').valueOf();
+        case 'half_year':
+            return moment().add(6, 'months').valueOf();
     }
 };
 //某个日期时星期几
 exports.getCurrentWeek = function(time) {
     var Week = moment(time).format('dddd');
     switch (Week) {
-    case 'Monday':
-        Week = Intl.get('schedule.user.time.monday', '星期一');
-        break;
-    case 'Tuesday':
-        Week = Intl.get('schedule.user.time.tuesday', '星期二');
-        break;
-    case 'Wednesday':
-        Week = Intl.get('schedule.user.time.wednesday', '星期三');
-        break;
-    case 'Thursday':
-        Week = Intl.get('schedule.user.time.thursday', '星期四');
-        break;
-    case 'Friday':
-        Week = Intl.get('schedule.user.time.friday', '星期五');
-        break;
-    case 'Saturday':
-        Week = Intl.get('schedule.user.time.saturday', '星期六');
-        break;
-    case 'Sunday':
-        Week = Intl.get('schedule.user.time.sunday', '星期日');
-        break;
-    default:
-        break;
+        case 'Monday':
+            Week = Intl.get('schedule.user.time.monday', '星期一');
+            break;
+        case 'Tuesday':
+            Week = Intl.get('schedule.user.time.tuesday', '星期二');
+            break;
+        case 'Wednesday':
+            Week = Intl.get('schedule.user.time.wednesday', '星期三');
+            break;
+        case 'Thursday':
+            Week = Intl.get('schedule.user.time.thursday', '星期四');
+            break;
+        case 'Friday':
+            Week = Intl.get('schedule.user.time.friday', '星期五');
+            break;
+        case 'Saturday':
+            Week = Intl.get('schedule.user.time.saturday', '星期六');
+            break;
+        case 'Sunday':
+            Week = Intl.get('schedule.user.time.sunday', '星期日');
+            break;
+        default:
+            break;
     }
     return Week;
 };
@@ -165,4 +165,34 @@ exports.getFutureTimeStr = function(time) {
         }
     }
     return timeStr;
+};
+
+// 获取所传时间是今天hh:mm、昨天hh:mm、前天hh:mm 、今年的时间（MM-DD hh:mm）, 其他时间显示（YYYY-MM-DD hh:mm）
+exports.transTimeFormat = function(time) {
+    let formatTime = '';
+    let timeYear = moment(time).get('year'); // 所传时间当前的年份
+    let nowYear = moment().get('year'); // 当前时间当前的年份
+    if (timeYear === nowYear) { // 同一年
+        let timeMonth = moment(time).get('month'); // 所传时间当前的月份
+        let nowMonth = moment().get('month'); // 当前时间当前的月份
+        if (timeMonth === nowMonth) {
+            let timeDate = moment(time).get('date'); // 所传时间当前的月份
+            let nowDate = moment().get('date'); // 当前时间当前的月份
+            if (timeDate === nowDate) {
+                formatTime = Intl.get('user.time.today', '今天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
+            } else if (nowDate - timeDate === 1) {
+                formatTime = Intl.get('user.time.yesterday', '昨天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
+            } else if (nowDate - timeDate === 2) {
+                formatTime = Intl.get('sales.frontpage.before.yesterday', '前天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
+            } else {
+                formatTime = moment(time).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT);
+            }
+        } else if (timeMonth < nowMonth) {
+            formatTime = moment(time).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT);
+        }
+    } else if (timeYear < nowYear) { // YYYY-MM-DD hh:mm
+        formatTime = moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+    }
+
+    return formatTime;
 };

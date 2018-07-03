@@ -24,6 +24,7 @@ const Option = Select.Option;
 const PAGE_SIZE = 20;
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
 const classnames = require('classnames');
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 const STATUS_ARRAY = [{
     name: Intl.get('notification.system.untreated', '待处理'),
     value: STATUS.UNHANDLED
@@ -183,9 +184,9 @@ let SystemNotification = React.createClass({
                     {notice.app_name ?
                         <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}</span> : ''}
                     {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
-                </div>
-                <div className="system-notice-time">
-                    {moment(notice.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
+                    <span className="system-notice-time">
+                        {',' + TimeUtil.transTimeFormat(notice.create_time)}
+                    </span>
                 </div>
             </li>
         );
@@ -240,9 +241,7 @@ let SystemNotification = React.createClass({
     },
     renderUnHandledNoticeContent: function(notice, idx) {
         let showList = [];
-        if (_.isArray(notice.detail) && notice.detail.length > 3 && !notice.showMore) {//超过三条时，只展示前三条
-            showList = notice.detail.slice(0, 3);
-        } else {
+        if (_.isArray(notice.detail) && notice.detail.length) {
             showList = notice.detail;
         }
         return showList.map((item) => {
@@ -259,14 +258,6 @@ let SystemNotification = React.createClass({
                     className="system-notice-time">{moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
             </div>;
         });
-    },
-    checkMore: function(notice) {
-        _.some(this.state.systemNotices, item => {
-            if (item.id === notice.id) {
-                item.showMore = !item.showMore;
-            }
-        });
-        this.setState({systemNotices: this.state.systemNotices});
     },
     setHandlingFlag: function(notice, flag) {
         _.some(this.state.systemNotices, item => {
@@ -359,12 +350,6 @@ let SystemNotification = React.createClass({
                 </div>
                 <div className="system-notice-content">
                     {this.renderUnHandledNoticeContent(notice, idx)}
-                    {notice.detail.length > 3 ?
-                        <a className={noticeDetailClass} onClick={this.checkMore.bind(this, notice)}>
-                            {notice.showMore ? Intl.get('common.app.status.close', '关闭') : Intl.get('notification.system.more', '展开全部')}
-                        </a> : null}
-                    {notice.detail.length > 3 && loginUserId === notice.member_id ?
-                        <span className="notice-split-line">|</span> : ''}
                     {
                         loginUserId === notice.member_id ?
                             <Button className="notice-handled-set" onClick={this.handleSystemNotice.bind(this, notice)}>
