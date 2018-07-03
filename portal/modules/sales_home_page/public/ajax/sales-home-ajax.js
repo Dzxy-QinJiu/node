@@ -340,7 +340,8 @@ exports.getCallBackList = function(paramsObj, filterObj) {
     let url = '/rest/call_record/' + auth_type;
     var paramsArray = Object.keys(paramsObj.params).map(function(key) {
         return paramsObj.params[key];
-    }); url += paramsArray.join('/');
+    });
+    url += paramsArray.join('/');
     url += '?';
     if (paramsObj.query.lastId) {
         url += querystring.stringify({id: paramsObj.query.lastId, filter_phone: queryCustomer}); // 是否过滤114和无效的电话号码(客户电话需要过滤)
