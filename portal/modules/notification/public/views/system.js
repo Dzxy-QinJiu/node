@@ -164,11 +164,18 @@ let SystemNotification = React.createClass({
             'system-notice-handled-item': true,
             'select-li-item': idx === this.state.selectedLiIndex,
         });
+        let iconfontClassName = this.getIconFontClassName(notice.type);
         return (
             <li key={idx} className={handleNoticeLiItemClass} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-                <h5 className="system-notice-type">{SYSTEM_NOTICE_TYPE_MAP[notice.type]}</h5>
+                <div className="system-notice-title">
+                    <i className={iconfontClassName}></i>
+                    <div className="system-notice-type">
+                        {SYSTEM_NOTICE_TYPE_MAP[notice.type]}
+                        <i className='iconfont icon-arrow'></i>
+                    </div>
+                    <div className="customer-name" onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>{notice.customer_name}</div>
+                </div>
                 <div className="system-notice-descr">
-                    <a onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>{notice.customer_name}</a>
                     {isOffsetLogin ? (Intl.get('notification.system.on', '在') + notice.content.current_location) : ''}
                     {Intl.get('notification.system.use.account', '用账号')}
                     {notice.user_name ? (
@@ -314,6 +321,19 @@ let SystemNotification = React.createClass({
             handleNoticeMessageSuccessFlag: false
         });
     },
+    getIconFontClassName(type) {
+        let iconfontClassName = 'iconfont';
+        if (type === 'concerCustomerLogin') { // 关注客户登录
+            iconfontClassName += ' icon-concern-customer-login';
+        } else if (type === 'appIllegal') { // 停用客户登录
+            iconfontClassName += ' icon-deactivate-customer-login';
+        } else if (type === 'loginFailed') { // 登录失败
+            iconfontClassName += ' icon-login-failed';
+        } else if (type === 'illegalLocation') { // 异地登录
+            iconfontClassName += ' icon-remote-login';
+        }
+        return iconfontClassName;
+    },
     //未处理的系统消息
     renderUnHandledNotice: function(notice, idx) {
         let loginUser = userData.getUserData();
@@ -326,11 +346,16 @@ let SystemNotification = React.createClass({
             'notice-detail-more': true,
             'show-handle-button-detail': loginUserId === notice.member_id
         });
+        let iconfontClassName = this.getIconFontClassName(notice.type);
         return (
             <li key={idx} className={unhandleNoticeLiItemClass} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
                 <div className="system-notice-title">
-                    <h5 className="system-notice-type">{SYSTEM_NOTICE_TYPE_MAP[notice.type]}</h5>
-                    <a onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>{notice.customer_name}</a>
+                    <i className={iconfontClassName}></i>
+                    <div className="system-notice-type">
+                        {SYSTEM_NOTICE_TYPE_MAP[notice.type]}
+                        <i className='iconfont icon-arrow'></i>
+                    </div>
+                    <div className="customer-name" onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>{notice.customer_name}</div>
                 </div>
                 <div className="system-notice-content">
                     {this.renderUnHandledNoticeContent(notice, idx)}
