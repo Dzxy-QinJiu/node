@@ -23,17 +23,23 @@ class DetailCard extends React.Component {
 
     render() {
         let className = classNames(this.props.className, 'detail-card-container', {
-            'detail-card-edit-status': this.props.isEdit,
-            'no-data-card': this.props.noDataTip
+            'detail-card-edit-status': this.props.isEdit
+        });
+        let titleClass = classNames('detail-card-title', {
+            'title-border-bottom-none': this.props.titleBottomBorderNone || this.props.isEdit//编辑状态下，title也没有下边框
         });
         //若果没有标题时，编辑状态的内容不显示border
         let contentCl = classNames('detail-card-content', {'card-content-edit-status': this.props.isEdit && this.props.title});
         return (
             <div className={className}>
-                {this.props.title ? (<div className="detail-card-title">
-                    {this.props.title}
-                    {this.props.noDataTip ? <span className="no-data-text">{this.props.noDataTip}</span> : null}
-                </div>) : null}
+                {this.props.title || this.props.titleDescr || this.props.titleRightBlock ? (
+                    <div className={titleClass}>
+                        {this.props.title}
+                        {this.props.titleDescr ?
+                            <span className="title-descr-style">{this.props.titleDescr}</span> : null}
+                        {this.props.titleRightBlock ?
+                            <span className="title-right-block">{this.props.titleRightBlock}</span> : null}
+                    </div>) : null}
                 {this.props.content ? (
                     <div className={contentCl}>
                         {this.props.content}
@@ -46,6 +52,10 @@ class DetailCard extends React.Component {
 }
 DetailCard.defaultProps = {
     title: null,//卡片的标题(string|ReactNode)
+    //titleDescr和titleRightBlock可以单独传，如果样式不符合也可以自定义从title中传进来
+    titleDescr: null,//标题后面的灰色描述（像‘暂无xxx’的提示）
+    titleRightBlock: null,//标题右侧的操作区（像编辑、添加、删除等按钮）
+    titleBottomBorderNone: false,//标题是否没有下边框, 默认有
     content: null,//卡片张展示的内容(string|ReactNode)
     bottom: null,//卡片底部的信息(string|ReactNode)
     className: '',//自定义类
@@ -53,7 +63,6 @@ DetailCard.defaultProps = {
     loading: false,//是否正在保存
     okBtnText: '',//保存按钮上的描述
     cancelBtnText: '',//取消按钮上的描述
-    noDataTip: null,//没有数据时，标题后面的暂无xxx提示
     handleSubmit: function() {
     },//保存的处理
     handleCancel: function() {
@@ -64,6 +73,9 @@ DetailCard.defaultProps = {
 };
 DetailCard.propTypes = {
     title: React.PropTypes.string || React.PropTypes.element,
+    titleDescr: React.PropTypes.string || React.PropTypes.element,
+    titleRightBlock: React.PropTypes.string || React.PropTypes.element,
+    titleBottomBorderNone: React.PropTypes.bool,
     content: React.PropTypes.string || React.PropTypes.element,
     bottom: React.PropTypes.string || React.PropTypes.element,
     className: React.PropTypes.string,
@@ -71,7 +83,6 @@ DetailCard.propTypes = {
     loading: React.PropTypes.bool,
     okBtnText: React.PropTypes.string,
     cancelBtnText: React.PropTypes.string,
-    noDataTip: React.PropTypes.string,
     handleSubmit: React.PropTypes.func,
     handleCancel: React.PropTypes.func,
     renderHandleSaveBtns: React.PropTypes.func,
