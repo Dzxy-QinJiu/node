@@ -331,8 +331,7 @@ let SystemNotification = React.createClass({
         });
         notificationAjax.handleSystemNotice(notice.id).then(result => {
             this.setHandlingFlag(notice, false);
-            if (result) {//处理成功后，将该消息从未处理消息中删除
-                this.state.systemNotices = _.filter(this.state.systemNotices, item => item.id !== notice.id);
+            if (result) {
                 this.setState({
                     systemNotices: this.state.systemNotices,
                     totalSize: this.state.totalSize - 1,
@@ -347,6 +346,8 @@ let SystemNotification = React.createClass({
         });
     },
     hideNoticeSuccessTips() {
+        //处理成功后，将该消息从未处理消息中删除,随处理失败的提示消失
+        this.state.systemNotices = _.filter(this.state.systemNotices, item => item.id !== this.state.noticeId);
         this.setState({
             handleNoticeMessageSuccessFlag: false
         });
@@ -401,7 +402,7 @@ let SystemNotification = React.createClass({
                                     type="success"
                                     time={3000}
                                     showIcon
-                                    onHide={this.hideNoticeSuccessTips()}
+                                    onHide={this.hideNoticeSuccessTips}
                                 />
                             ) : null}
                             {this.state.handleNoticeMessageErrorTips ? (
