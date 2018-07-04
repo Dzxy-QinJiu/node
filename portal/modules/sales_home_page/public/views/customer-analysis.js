@@ -1034,6 +1034,23 @@ var CustomerAnalysis = React.createClass({
                 <div ref="chart_list" style={{ height: layoutParams.chartListHeight }}>
                     {this.renderContent()}
                 </div>
+                <RightPanel
+                    className="customer-stage-table-wrapper"
+                    showFlag={this.state.isShowCustomerStageTable}
+                >
+                    {this.state.isShowCustomerStageTable ?
+                        <CustomerStageTable
+                            params={this.state.selectedCustomerStage}
+                            result={this.state.stageChangedCustomerList}
+                            onClose={this.toggleCusStageMetic}
+                            handleScrollBottom={this.getStageChangeCustomerList.bind(this)}
+                            showNoMoreData={!this.state.stageChangedCustomerList.loading &&
+                                !this.state.stageChangedCustomerList.listenScrollBottom &&
+                                this.state.stageChangedCustomerList.lastId &&
+                                !this.state.stageChangedCustomerList.data.length >= DEFAULT_TABLE_PAGESIZE
+                            }
+                        /> : null}
+                </RightPanel>
             </div>
         );
     }
