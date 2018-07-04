@@ -863,9 +863,12 @@ var zh_CN = {
     'notification.system.handle.failed': '将系统消息设为已处理失败',
     'notification.system.handled.set': '处理',
     'notification.system.handled': '已处理',
-    'notification.system.untreated': '未处理',
+    'notification.system.untreated': '待处理',
     'notification.login.password.error': '报密码或验证码错误',
     'notification.login.failed': '登录失败',
+    'notification.system.handled.success': '处理成功',
+    'notification.system.handled.error': '处理失败',
+    'notification.system.login.count': '{count}次，最后一次',
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',

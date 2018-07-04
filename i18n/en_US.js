@@ -859,9 +859,12 @@ var en_US = {
     'notification.system.handle.failed': 'Set the system message to failed processing',//将系统消息设为已处理失败
     'notification.system.handled.set': 'Handle',//处理
     'notification.system.handled': 'Handled',//已处理
-    'notification.system.untreated': 'Untreated',//未处理
+    'notification.system.untreated': 'Untreated',//待处理
     'notification.login.password.error': 'Password or verification code error',//报密码或验证码错误
     'notification.login.failed': 'Login failed', //登录失败
+    'notification.system.handled.success': 'Successfully processed', // 处理成功
+    'notification.system.handled.error': 'Failed processed', // 处理失败
+    'notification.system.login.count': '{count} counts, last time', // {count}次，最后一次
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
