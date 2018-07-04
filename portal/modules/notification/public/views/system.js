@@ -273,7 +273,6 @@ let SystemNotification = React.createClass({
     },
     // idx表示的是系统通知的条数
     renderUnHandledNoticeContent: function(notice, idx) {
-        console.log('notice:', notice);
         let showList = [];
         if (_.isArray(notice.detail) && notice.detail.length) {
             showList = this.handleNoticeDetailData(notice.detail);
