@@ -242,11 +242,16 @@ let SystemNotification = React.createClass({
             selectedLiIndex: index
         });
     },
+    // 待处理数据整合,同一个用户登录同一个应用，计算登录次数以及获取最后一次登录时间
     handleNoticeDetailData(noticeDetail) {
         let noticeDetailData = _.cloneDeep(noticeDetail);
+        // 登录的用户名 eg: [a, b]
         let userName = _.chain(noticeDetailData).map('user_name').uniq().value();
+        // 登录的应用名 eg: ['鹰击', '鹰眼']
         let appName = _.chain(noticeDetailData).map('app_name').uniq().value();
         let userAppArray = [];
+        // 可能出现的用户登录应用的情况
+        // eg: [{user_name: a, app_name: '鹰击'},{user_name: a, app_name: '鹰眼'},{user_name: b, app_name: '鹰击'},{user_name: b, app_name: '鹰眼'}]
         userName.forEach( (nameItem) => {
             appName.forEach( (appItem) => {
                 userAppArray.push({user_name: nameItem, app_name: appItem});
@@ -255,6 +260,7 @@ let SystemNotification = React.createClass({
         let processData = [];
         userAppArray.forEach( (item) => {
             let processObj = {};
+            // 同一个用户登录同一个应用，次数累加，获取最后一次登录时间
             noticeDetailData.forEach( (noticeItem, index) => {
                 if (item.user_name === noticeItem.user_name && item.app_name === noticeItem.app_name) {
                     if (processObj && processObj.app_name) {
@@ -360,13 +366,13 @@ let SystemNotification = React.createClass({
     },
     getIconFontClassName(type) {
         let iconfontClassName = 'iconfont';
-        if (type === 'concerCustomerLogin') { // 关注客户登录
+        if (type === SYSTEM_NOTICE_TYPES.FOCUS_CUSTOMER_LOGIN) { // 关注客户登录
             iconfontClassName += ' icon-concern-customer-login';
-        } else if (type === 'appIllegal') { // 停用客户登录
+        } else if (type === SYSTEM_NOTICE_TYPES.DISABLE_CUSTOMER_LOGIN) { // 停用客户登录
             iconfontClassName += ' icon-deactivate-customer-login';
-        } else if (type === 'loginFailed') { // 登录失败
+        } else if (type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED) { // 登录失败
             iconfontClassName += ' icon-login-failed';
-        } else if (type === 'illegalLocation') { // 异地登录
+        } else if (type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN) { // 异地登录
             iconfontClassName += ' icon-remote-login';
         }
         return iconfontClassName;
