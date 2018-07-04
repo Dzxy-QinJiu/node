@@ -22,9 +22,12 @@ import ScheduleItem from './schedule/schedule-item';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
 import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import CustomerRecordStore from '../store/customer-record-store';
+import Spinner from 'CMP_DIR/spinner';
 
 var BasicOverview = React.createClass({
     getInitialState: function() {
+        let customerRecordState = CustomerRecordStore.getState();
         return {
             ...basicOverviewStore.getState(),
             salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
@@ -32,14 +35,23 @@ var BasicOverview = React.createClass({
             recommendTags: [],//推荐标签
             callNumber: this.props.callNumber || '', // 座机号
             getCallNumberError: '',
+            customerRecordLoading: customerRecordState.customerRecordLoading,
+            customerRecord: customerRecordState.customerRecord
         };
     },
     onChange: function() {
         this.setState({...basicOverviewStore.getState()});
     },
+    onRecordStoreChange: function() {
+        let customerRecordState = CustomerRecordStore.getState();
+        this.setState({
+            customerRecordLoading: customerRecordState.customerRecordLoading,
+            customerRecord: customerRecordState.customerRecord
+        });
+    },
     // 获取拨打电话的座席号
     getUserPhoneNumber: function() {
-        CallNumberUtil.getUserPhoneNumber( callNumberInfo => {
+        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
                     this.setState({
@@ -62,6 +74,7 @@ var BasicOverview = React.createClass({
     },
     componentDidMount: function() {
         basicOverviewStore.listen(this.onChange);
+        CustomerRecordStore.listen(this.onRecordStoreChange);
         //  获取拨打电话的座席号
         if (this.state.callNumber === '') {
             this.getUserPhoneNumber();
@@ -124,6 +137,7 @@ var BasicOverview = React.createClass({
     },
     componentWillUnmount: function() {
         basicOverviewStore.unlisten(this.onChange);
+        CustomerRecordStore.unlisten(this.onRecordStoreChange);
     },
 
     //展示按客户搜索到的用户列表
@@ -320,8 +334,9 @@ var BasicOverview = React.createClass({
     renderUnComplateScheduleList: function() {
         if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return _.map(this.state.scheduleList, item => {
+                let title = item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : '';
                 return (
-                    <DetailCard title={ item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : ''}
+                    <DetailCard title={title + ' ' + Intl.get('crm.right.schedule', '联系计划')}
                         content={this.renderScheduleItem(item)}/>);
             });
         }
@@ -334,6 +349,7 @@ var BasicOverview = React.createClass({
         if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
+        var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
@@ -368,7 +384,10 @@ var BasicOverview = React.createClass({
                         saveTags={this.saveEditTags}
                     />
                     {this.renderUnComplateScheduleList()}
-                    <DetailCard title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
+                    <DetailCard
+                        title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
+                        titleBottomBorderNone={noRecordData}
+                        titleDescr={noRecordData ? Intl.get('common.no.more.trace.record', '暂无跟进记录') : ''}
                         content={this.renderCustomerRcord()}
                     />
                 </div>

@@ -121,6 +121,13 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{
+            method: 'post',
+            path: '/rest/clue/statics/:field/:page_size/:num',
+            handler: 'getClueStatics',
+            passport: {
+                'needLogin': true
+            }
         }
     ]
 };

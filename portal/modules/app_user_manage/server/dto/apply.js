@@ -8,6 +8,7 @@ exports.toRestObject = function(list) {
             topic: item.topic,
             presenter: item.producer ? item.producer.nick_name : '',
             time: item.produce_date,
+            approval_time: item.consume_date || '',
             id: item.id,
             order_id: item.message.order_id,
             customer_id: item.message.customer_id,
@@ -25,22 +26,22 @@ function transferApprovalStateToNumber(approval_state) {
     var result_approval_state = '';
     switch (approval_state) {
     //全部和未审批都是0
-    case 'all':
-    case 'false':
-        result_approval_state = '0';
-        break;
+        case 'all':
+        case 'false':
+            result_approval_state = '0';
+            break;
         //通过是1
-    case 'pass':
-        result_approval_state = '1';
-        break;
+        case 'pass':
+            result_approval_state = '1';
+            break;
         //驳回是2
-    case 'reject':
-        result_approval_state = '2';
-        break;
+        case 'reject':
+            result_approval_state = '2';
+            break;
         // 撤销是3
-    case 'cancel':
-        result_approval_state = '3';
-        break;
+        case 'cancel':
+            result_approval_state = '3';
+            break;
     }
     return result_approval_state;
 }
@@ -146,6 +147,10 @@ exports.toDetailRestObject = function(obj) {
     result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
     //审批人
     result.approval_person = serverResult.approval_person || '';
+    //申请时间
+    result.time = serverResult.produce_date || '';
+    //审批时间
+    result.approval_time = serverResult.consume_date || '';
     //增加特殊属性
     result = addProperties(result, obj);
     return result;
@@ -213,6 +218,10 @@ exports.toDetailDelayRestObject = function(obj) {
     result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
     //审批人
     result.approval_person = serverResult.approval_person || '';
+    //申请时间
+    result.time = serverResult.produce_date || '';
+    //审批时间
+    result.approval_time = serverResult.consume_date || '';
     //延期时间
     if (detail.end_date) {
         // 到期时间
@@ -271,6 +280,10 @@ exports.toDetailChangePwdOtherRestObject = function(obj) {
     result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
     //审批人
     result.approval_person = serverResult.approval_person || '';
+    //申请时间
+    result.time = serverResult.produce_date || '';
+    //审批时间
+    result.approval_time = serverResult.consume_date || '';
     //增加特殊属性
     result = addProperties(result, obj);
     return result;
@@ -326,6 +339,10 @@ exports.toDetailStatusRestObject = function(obj) {
     result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
     //审批人
     result.approval_person = serverResult.approval_person || '';
+    //申请时间
+    result.time = serverResult.produce_date || '';
+    //审批时间
+    result.approval_time = serverResult.consume_date || '';
     //增加特殊属性
     result = addProperties(result, obj);
     return result;

@@ -5,17 +5,17 @@ const Validator = Validation.Validator;
  */
 //右侧面板样式，上一步、下一步，滑动布局等
 var language = require('../../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../../../../components/user_manage_components/css/right-panel-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('../../../../../components/user_manage_components/css/right-panel-zh_CN.less');
 }
 
 //表单样式，表单项高度，输入框宽度等
 var language = require('../../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../../../../components/user_manage_components/css/form-basic-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('../../../../../components/user_manage_components/css/form-basic-zh_CN.less');
 }
 
@@ -86,6 +86,7 @@ const AddOrEditUser = React.createClass({
             sugNamesErrorMsg: '', // 建议用户名出错的信息
             selectRealmId: selectRealmId, // 选择的安全域的id
             selectRealmName: selectRealmName, // 选择的安全域的名称
+            userId: '', // 用户id
             ...AppUserFormStore.getState()
         };
     },
@@ -110,7 +111,7 @@ const AddOrEditUser = React.createClass({
     isAddOnlyOneUser(){
         let formData = this.state.formData;
         //用户名为邮箱格式时，只能添加一个用户
-        return formData.user_name.indexOf('@') != -1 && formData.count_number > 1;
+        return formData.user_name.indexOf('@') !== -1 && +formData.count_number > 1;
     },
 
     // 添加一个用户时，是否渲染建议用户名
@@ -125,7 +126,7 @@ const AddOrEditUser = React.createClass({
             // 保存建议的用户名
             tempSuggestNames = _.clone(result);
             if (_.isArray(result)) {
-                if (result.length == 1 && result[0] == formData.user_name) { // 建议用户名和添加用户名一致时，则点击下一步时通过
+                if (result.length === 1 && result[0] === formData.user_name) { // 建议用户名和添加用户名一致时，则点击下一步时通过
                     AppUserFormActions.turnStep(direction);
                 } else { // 否则，则不通过
                     this.setState({
@@ -147,7 +148,7 @@ const AddOrEditUser = React.createClass({
         //首先检查表单
         validation.validate((valid) => {
             let hasError = false;
-            let onlyOneUser = formData.user_name.indexOf('@') != -1 && formData.count_number > 1;
+            let onlyOneUser = formData.user_name.indexOf('@') !== -1 && +formData.count_number > 1;
             if (!valid || this.isAddOnlyOneUser()) {
                 hasError = true;
             }
@@ -164,15 +165,25 @@ const AddOrEditUser = React.createClass({
             }
 
             // 选择了建议的用户名，则不用再次发送请求
-            if (tempSuggestNames.length && _.indexOf(tempSuggestNames, formData.user_name) != -1) {
+            if (tempSuggestNames.length && _.indexOf(tempSuggestNames, formData.user_name) !== -1) {
                 //检验通过了，切换到下一步
                 AppUserFormActions.turnStep(direction);
-            } else if (formData.count_number == 1) { // 申请一个用户名时，提示用户名
+            } else if (+formData.count_number === 1) { // 申请一个用户名时，提示用户名
                 if (formData.customer_id) { // 存在customer_id，才提示用户名
                     this.renderAddOneUserIsTips(direction);
-                } else { // customer_id为空时，通过
-                    //检验通过了，切换到下一步
-                    AppUserFormActions.turnStep(direction);
+                } else { // customer_id为空时，根据添加的用户名查询用户信息，看是否存在
+                    UserExistsAjax.userExists(formData.user_name).then((userInfo) => { // 存在重复的用户名
+                        if (userInfo && userInfo.user_id) {
+                            this.setState({
+                                userId: userInfo.user_id
+                            });
+                        } else {
+                            //检验通过了，切换到下一步
+                            AppUserFormActions.turnStep(direction);
+                        }
+                    }, () => {
+                        AppUserFormActions.turnStep(direction);
+                    });
                 }
             } else { // 添加多个用户时
                 //检验通过了，切换到下一步
@@ -190,9 +201,9 @@ const AddOrEditUser = React.createClass({
         //点击下一步的时候进行检查
         if (direction === 'next') {
             //检查基本信息，检验通过再进行下一步
-            if (step == 0) {
+            if (step === 0) {
                 this.checkBasicInfoValidator(direction);
-            } else if (step == 1) {
+            } else if (step === 1) {
                 //检查是否至少选择了一个应用
                 if (!this.state.selectedApps.length) {
                     //没选择应用，显示提示
@@ -202,7 +213,7 @@ const AddOrEditUser = React.createClass({
                     //检验通过了，切换到下一步
                     AppUserFormActions.turnStep(direction);
                 }
-            } else if (step == 2) {
+            } else if (step === 2) {
                 //检验通过了，切换到下一步
                 AppUserFormActions.turnStep(direction);
             }
@@ -241,7 +252,7 @@ const AddOrEditUser = React.createClass({
         result.description = (formData.description || '').trim();
         //组织
         result.group_id = this.state.organization || '';
-        if (result.number == 1) {
+        if (result.number === 1) {
             var nick_name = formData.nick_name.trim();
             if (nick_name) {
                 result.nick_name = nick_name;
@@ -322,32 +333,11 @@ const AddOrEditUser = React.createClass({
         const extraData = this.getExtraData();
         //添加用户
         AppUserFormActions.addAppUser(submitData, extraData, () => {
-            //判断是否是添加单个用户，添加单个用户的话，打开详情
-            if (+submitData.number === 1) {
-                // 添加的用户信息到入库，有个时间差，为了拿到添加用户的user_id,显示用户详情，所以加了setTimeout()
-                setTimeout(() => {
-                    //通过用户名查询用户信息
-                    UserExistsAjax.userExists(submitData.user_name).then((userInfo) => {
-                        //关闭面板，并重置表单到默认状态
-                        this.closeAppUserForm();
-                        //展示详情
-                        AppUserActions.showUserDetail({
-                            user: {
-                                user_id: userInfo.user_id
-                            }
-                        });
-                    }, () => {
-                        //关闭面板，并重置表单到默认状态
-                        this.closeAppUserForm();
-                    });
-                }, 500);
-            } else {
-                //500毫秒的时间，看清楚添加成功的提示
-                setTimeout(() => {
-                    //关闭面板，并重置表单到默认状态
-                    this.closeAppUserForm();
-                }, 500);
-            }
+            //500毫秒的时间，看清楚添加成功的提示
+            setTimeout(() => {
+                //关闭面板，并重置表单到默认状态
+                this.closeAppUserForm();
+            }, 500);
         });
     },
     onCustomerChoosen: function(info) {
@@ -445,7 +435,7 @@ const AddOrEditUser = React.createClass({
             );
         } else if (suggestNames) {
             let length = suggestNames.length;
-            if (length == 2) {
+            if (length === 2) {
                 return (
                     <div className="suggest-name-tips">
                         <ReactIntl.FormattedMessage
@@ -460,7 +450,7 @@ const AddOrEditUser = React.createClass({
                         />
                     </div>
                 );
-            } else if (length == 1) {
+            } else if (length === 1) {
                 return (
                     <div className="suggest-name-tips">
                         <ReactIntl.FormattedMessage
@@ -487,10 +477,39 @@ const AddOrEditUser = React.createClass({
         }
     },
 
+    handleClickShowUserDetail() {
+        //关闭面板，并重置表单到默认状态
+        this.closeAppUserForm();
+        //展示详情
+        AppUserActions.showUserDetail({
+            user: {
+                user_id: this.state.userId
+            }
+        });
+    },
+
+    // 没有选择客户名，添加用户名重复的提示信息
+    renderAddOnerUserDuplicateTips() {
+        return (
+            <div className="suggest-name-tips">
+                <ReactIntl.FormattedMessage
+                    id="user.exist.name.check.user"
+                    defaultMessage={'用户名已存在，是否查询{check}'}
+                    values={{
+                        'check': <a href='javascript:void(0)' onClick={this.handleClickShowUserDetail}>
+                            {Intl.get('user.exisit.the.name', '该用户')}
+                        </a>
+                    }}
+                />
+            </div>
+        );
+    },
+
     renameUser(){
         this.setState({
             suggestNames: '',
-            sugNamesErrorMsg: ''
+            sugNamesErrorMsg: '',
+            userId: ''
         });
     },
 
@@ -526,7 +545,7 @@ const AddOrEditUser = React.createClass({
                                         onFocus={this.renameUser}
                                     />
                                 </Validator>
-                                {this.renderAddUserNameTips()}
+                                {this.state.userId ? this.renderAddOnerUserDuplicateTips() : this.renderAddUserNameTips()}
                             </FormItem>
                         </div>
                     </div>
@@ -543,7 +562,7 @@ const AddOrEditUser = React.createClass({
                         </div>
                     </div>
                     {
-                        formData.count_number == 1 ? (
+                        +formData.count_number === 1 ? (
                             <div>
                                 <div className="form-item">
                                     <div className="form-item-label required_label"><ReactIntl.FormattedMessage
@@ -849,7 +868,7 @@ const AddOrEditUser = React.createClass({
     onSelectedRealm(value) {
         let realmList = AppUserStore.getState().realmList;
         let selectObj = _.find(realmList, (item) => {
-            return item.realm_id == value;
+            return item.realm_id === value;
         });
         this.setState({
             selectRealmId: value,
@@ -860,8 +879,8 @@ const AddOrEditUser = React.createClass({
     // 渲染安全域
     renderSelectRealm() {
         let realmList = AppUserStore.getState().realmList;
-        let options = realmList.map((item) => {
-            return (<Option value={item.realm_id}>{item.realm_name}</Option>);
+        let options = realmList.map((item, index) => {
+            return (<Option value={item.realm_id} key={index}>{item.realm_name}</Option>);
         });
         return (
             <div className="realm-list">

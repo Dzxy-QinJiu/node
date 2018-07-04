@@ -90,7 +90,7 @@ const CustomerRecord = React.createClass({
     },
     // 获取拨打电话的座席号
     getUserPhoneNumber() {
-        CallNumberUtil.getUserPhoneNumber( callNumberInfo => {
+        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
                     this.setState({
@@ -674,8 +674,8 @@ const CustomerRecord = React.createClass({
                 <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
                     retryFunc={this.retryChangeRecord}/>
             );
-        } else if (recordLength === 0 && !this.state.customerRecordLoading) {
-            //加载完成，没有数据的情况
+        } else if (recordLength === 0 && !this.state.customerRecordLoading && !this.props.isOverViewPanel) {
+            //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）
             return (<NoDataTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>);
         } else {
             var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
