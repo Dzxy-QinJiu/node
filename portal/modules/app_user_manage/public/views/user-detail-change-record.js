@@ -124,7 +124,7 @@ var UserDetailChangeRecord = React.createClass({
         }else if (item.operate === 'GrantUpdate' && item.detail){
             //授权的更新
             //修改了用户的状态
-            item.detail.status && (item.detail.status === 0 ? (status += Intl.get('user.disabled.this.user.on.app','停用了该用户在此应用的授权')) : (status += Intl.get('user.enabled.this.user.on.app','启用了该用户在此应用的授权')));
+            item.detail.status && (item.detail.status === '0' ? (status += Intl.get('user.disabled.this.user.on.app','停用了该用户在此应用的授权')) : (status += Intl.get('user.enabled.this.user.on.app','启用了该用户在此应用的授权')));
             //修改了用户的角色
             item.detail.roles && (role += Intl.get('user.change.role.to', '修改了该用户的角色，改为{role}。',{'role': item.detail.roles}));
             //修改了用户的类型
@@ -138,17 +138,17 @@ var UserDetailChangeRecord = React.createClass({
             }
             (item.detail.begin || item.detail.end) && (timerange += Intl.get('user.change.grant.time','将该用户的授权时间改为从{begin}到{end}。',{'begin': begin,'end': end}));
             //是否过期停用
-            item.detail.overDraft && (item.detail.overDraft === 0 ? (overdraft += Intl.get('user.cancel.overdraft','取消了到期停用。')) : (overdraft += Intl.get('user.setting.overdraft','设置了到期停用。')));
+            item.detail.overDraft && (item.detail.overDraft === '0' ? (overdraft += Intl.get('user.cancel.overdraft','取消了到期停用。')) : (overdraft += Intl.get('user.setting.overdraft','设置了到期停用。')));
             //是否二步认证
-            item.detail.isTwoFactor && (item.detail.isTwoFactor === 0 ? (istwofactor += Intl.get('user.close.twofactor','关闭了二步认证。')) : (istwofactor += Intl.get('user.open.twofactor','开启了二步认证。')));
+            item.detail.isTwoFactor && (item.detail.isTwoFactor === '0' ? (istwofactor += Intl.get('user.close.twofactor','关闭了二步认证。')) : (istwofactor += Intl.get('user.open.twofactor','开启了二步认证。')));
             //是否多人登录
-            item.detail.mutilogin && (item.detail.mutilogin === 0 ? (mutilogin += Intl.get('user.close.multilogin','关闭了多人登录。')) : (mutilogin += Intl.get('user.open.multilogin','开启了多人登录。')));
+            item.detail.mutilogin && (item.detail.mutilogin === '0' ? (mutilogin += Intl.get('user.close.multilogin','关闭了多人登录。')) : (mutilogin += Intl.get('user.open.multilogin','开启了多人登录。')));
                 
             desc = desc + status + role + tags + timerange + overdraft + istwofactor + mutilogin;
         }else if (item.operate === 'UserInfoUpdate' && item.detail){
             //基本信息的修改
             //修改了用户的状态
-            item.detail.status && (item.detail.status === 0 ? (status += Intl.get('user.disabled.this.user', '停用了该用户。')) : (status += Intl.get('user.enabled.this.user', '启用了该用户。')));
+            item.detail.status && (item.detail.status === '0' ? (status += Intl.get('user.disabled.this.user', '停用了该用户。')) : (status += Intl.get('user.enabled.this.user', '启用了该用户。')));
             //修改了昵称
             item.detail.nick_name && (nickname += Intl.get('user.change.nick_name.to', '修改了该用户的昵称，改为{nick_name}。',{'nick_name': item.detail.nick_name}));
             // 修改了密码
