@@ -8,6 +8,8 @@
 var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
+var Promise = require('bluebird');
+var EventEmitter = require('events').EventEmitter;
 const restApis = {
     //获取线索来源
     getClueSource: '/rest/customer/v2/clue/clue_source/100/1',
@@ -183,12 +185,42 @@ exports.getClueAnalysis = function(req, res) {
             res: res
         }, req.body);
 };
-//线索统计
-exports.getClueStatics = function(req, res) {
-    return restUtil.authRest.post(
-        {
+function getClueStaticsList(req, res) {
+    let queryObj = {};
+    queryObj.rang_params = JSON.parse(req.body.rangParams);
+    queryObj.query = req.body.query;
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.post({
             url: restApis.getClueStatics.replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
             req: req,
             res: res
-        }, req.body);
+        }, queryObj, {
+            success: function(eventEmitter, data) {
+                resolve(data);
+            },
+            error: function(eventEmitter, errorDesc) {
+                reject(errorDesc.message);
+            }
+        });
+    });
+}
+//线索统计
+exports.getClueStatics = function(req, res) {
+    //有效数据 无效数据 “0” 有效，“1” 无效"
+    var emitter = new EventEmitter();
+    let getClueStaticsLists = [];
+    for (var i = 0; i < 2; i++) {
+        req.body.query = {'availability': i + ''};
+        getClueStaticsLists.push(getClueStaticsList(req, res));
+    }
+    Promise.all(getClueStaticsLists).then((dataList) => {
+        var responseData = {
+            'availabilityData': dataList[0] || [],
+            'inavaililityData': dataList[1] || [],
+        };
+        emitter.emit('success', responseData);
+    }).catch((errorMsg) => {
+        emitter.emit('error', errorMsg);
+    });
+    return emitter;
 };

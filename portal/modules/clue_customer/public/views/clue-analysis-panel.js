@@ -17,6 +17,9 @@ const Option = Select.Option;
 import CustomerStageTable from 'MOD_DIR/sales_home_page/public/views/customer-stage-table';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import {AntcAnalysis} from 'antc';
+import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
+const PIE_CENTER_POSITION = ['50%', '60%'];
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 class ClueAnalysisPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -28,54 +31,77 @@ class ClueAnalysisPanel extends React.Component {
 
     componentDidMount() {
         this.refreshClueAnalysisData();
-        //获取线索统计列表
-        this.getClueStaticsList();
         ClueAnalysisStore.listen(this.onStoreChange);
     }
+
     onStoreChange = () => {
         this.setState(ClueAnalysisStore.getState());
     };
+
     componentWillUnmount() {
         ClueAnalysisStore.unlisten(this.onStoreChange);
     }
-    //获取线索分析列表
-    getClueAnalysisList() {
+
+    //获取线索阶段分析列表
+    getClueStageList = () => {
         let queryParams = {
-            source_start_time: this.state.source_start_time,
-            source_end_time: this.state.source_end_time
+            source_start_time: this.state.start_time,
+            source_end_time: this.state.end_time
         };
-        if (!this.state.source_start_time){
+        if (!this.state.start_time) {
             queryParams = {};
         }
-        if (this.state.selectedAccess !== Intl.get('common.all', '全部')){
+        if (this.state.selectedAccess !== Intl.get('common.all', '全部')) {
             queryParams.access_channel = this.state.selectedAccess;
         }
-        if (this.state.selectedSource !== Intl.get('common.all', '全部')){
+        if (this.state.selectedSource !== Intl.get('common.all', '全部')) {
             queryParams.clue_source = this.state.selectedSource;
         }
-        ClueAnalysisAction.getClueAnalysis(queryParams);
-    }
-    //获取线索统计列表
-    getClueStaticsList() {
-        let queryParams = {
-
-        };
+        ClueAnalysisAction.getClueStageAnalysis(queryParams);
+    };
+    //获取线索来源统计
+    getClueSourceLists = () => {
         let pathParams = {
-            field: this.state.staticsFiled,
+            field: 'clue_source',
             page_size: this.state.staticsPageSize,
             num: this.state.staticsNum,
         };
+        ClueAnalysisAction.getClueStatics(pathParams, this.state.rangeParams);
+    };
+    //获取线索接入渠道统计列表
+    getClueAccessChannelList = () => {
+        let pathParams = {
+            field: 'access_channel',
+            page_size: this.state.staticsPageSize,
+            num: this.state.staticsNum,
+        };
+        ClueAnalysisAction.getClueStatics(pathParams, this.state.rangeParams);
+    };
+    //获取线索分类统计列表
+    getClueClassifyList = () => {
+        let pathParams = {
+            field: 'clue_classify',
+            page_size: this.state.staticsPageSize,
+            num: this.state.staticsNum,
+        };
+        ClueAnalysisAction.getClueStatics(pathParams, this.state.rangeParams);
+    };
+    //获取线索是否关联客户统计
 
-        ClueAnalysisAction.getClueStatics(queryParams, pathParams);
-    }
 
     refreshClueAnalysisData() {
-        //获取线索分析列表
-        this.getClueAnalysisList();
+        //获取线索阶段分析列表
+        this.getClueStageList();
+        //获取线索来源统计列表
+        this.getClueSourceLists();
+        //获取线索接入渠道
+        this.getClueAccessChannelList();
+        //获取线索分类
+        this.getClueClassifyList();
     }
 
     onSelectDate = (startTime, endTime) => {
-        let timeObj = {sourceStartTime: startTime, sourceEndTime: endTime};
+        let timeObj = {startTime: startTime, endTime: endTime};
         ClueAnalysisAction.changeSearchTime(timeObj);
         setTimeout(() => {
             this.refreshClueAnalysisData();
@@ -94,8 +120,8 @@ class ClueAnalysisPanel extends React.Component {
         });
     };
 
-    filterClueTypeSelect(){
-        var accessChannelArr = _.extend([],this.props.accessChannelArray);
+    filterClueTypeSelect() {
+        var accessChannelArr = _.extend([], this.props.accessChannelArray);
         accessChannelArr.unshift(Intl.get('common.all', '全部'));
         const AccessOptions = accessChannelArr.map((x, idx) => (
             <Option key={idx} value={x}>{x}</Option>
@@ -107,7 +133,7 @@ class ClueAnalysisPanel extends React.Component {
         ));
         return (
             <div className="clue-select-container">
-                {Intl.get('crm.sales.clue.access.channel', '接入渠道')}：
+                {Intl.get('clue.analysis.access.channel', '渠道')}：
                 <Select
                     value={this.state.selectedAccess}
                     dropdownMatchSelectWidth={false}
@@ -115,7 +141,7 @@ class ClueAnalysisPanel extends React.Component {
                 >
                     {AccessOptions}
                 </Select>
-                {Intl.get('crm.sales.clue.source', '线索来源')}：
+                {Intl.get('clue.analysis.source', '来源')}：
                 <Select
                     value={this.state.selectedSource}
                     dropdownMatchSelectWidth={false}
@@ -127,14 +153,15 @@ class ClueAnalysisPanel extends React.Component {
             </div>
         );
     }
+
     handleShowCustomerInfo = (ids, label) => {
         var idsStr = ids.join(',');
-        ClueAnalysisAction.getCustomerById(idsStr,label);
+        ClueAnalysisAction.getCustomerById(idsStr, label);
         this.setState({
             showCustomerIds: ids,
         });
     };
-    closeCustomersContentPanel=() => {
+    closeCustomersContentPanel = () => {
         this.setState({
             showCustomerIds: []
         });
@@ -148,25 +175,9 @@ class ClueAnalysisPanel extends React.Component {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     }
-    //获取错误提示的信息及点击重试的方法
-    getErrorTipAndRetryFunction(errTip, callback) {
-        var errMsg = errTip ? errTip : Intl.get('contract.111', '获取数据失败');
-        if (_.isFunction(callback)) {
-            return (
-                <span>{errMsg},<a onClick={callback}>{Intl.get('user.info.retry', '请重试')}</a></span>
-            );
-        } else {
-            return (
-                <span>{errMsg}</span>
-            );
-        }
-    }
-    processClueStaticsStageData(){
+
+    processClueStaticsStageData() {
         const customerStages = [
-            {
-                tagName: Intl.get('sales.stage.message', '信息'),
-                tagValue: 'message',
-            },
             {
                 tagName: Intl.get('sales.stage.intention', '意向'),
                 tagValue: 'intention',
@@ -176,46 +187,268 @@ class ClueAnalysisPanel extends React.Component {
                 tagValue: 'trial',
             },
             {
-                tagName: Intl.get('common.qualified', '合格'),
+                tagName: Intl.get('common.trial.qualified', '试用合格'),
                 tagValue: 'qualified',
             },
             {
                 tagName: Intl.get('sales.stage.signed', '签约'),
                 tagValue: 'signed',
-            },
-        ];
-        return [{'name': '合格','showValue': 100},
-            {'name': '意向','showValue': 30},
-            {'name': '签约','showValue': 80}];
-    }
-    //渲染概览页的chart
-    renderChartsOverview(){
-
-        var clueTrendCharts = [
-            {
-                title: Intl.get('clue.stage.statics','线索阶段统计'),
-                chartType: 'funnel',
-                processData: this.processClueStaticsStageData,
-                layout: {
-                    sm: 24,
-                },
-                // option: this.getPieOptions(),
-                noExportCsv: true,
-                resultType: 'success',
-                errMsgRender: () => {
-                    return this.getErrorTipAndRetryFunction();
-                }
             }
         ];
 
+        let processedData = [];
+        let prevStageValue;
+        customerStages.forEach(stage => {
+            let targetObj = _.find(this.state.clueStageList, (item) => {
+                return item.label === stage.tagName;
+            });
+            let stageValue = 0;
+            if (targetObj) {
+                stageValue = targetObj.num;
+            }
+            if (stageValue) {
+                //保留原始值，用于在图表上显示
+                const showValue = stageValue;
+
+                // 如果下一阶段的值比上一阶段的值大，则将下一阶段的值变得比上一阶段的值小，以便能正确排序
+                if (prevStageValue && stageValue > prevStageValue) {
+                    stageValue = prevStageValue * 0.8;
+                }
+
+                //将暂存的上一阶段的值更新为当前阶段的值，以供下一循环中使用
+                prevStageValue = stageValue;
+
+                processedData.push({
+                    name: stage.tagName,
+                    value: stageValue,
+                    showValue,
+                });
+            }
+        });
+
+        return processedData;
+    }
+
+    handleDataList(originData) {
+        var innerCircleData = [{
+                name: Intl.get('clue.analysis.ability', '有效'),
+                value: 0
+            },{
+                name: Intl.get('clue.analysis.inability', '无效'),
+                value: 0
+            }], outerCircleData = [], tooltipData = [];
+        _.forEach(originData, (dataItem, index) => {
+            if (index === 'inavaililityData' && _.isArray(dataItem.result)) {
+                _.forEach(dataItem.result, (item) => {
+                    _.forEach(item, (value, key) => {
+                        outerCircleData.push({
+                            'value': value,
+                            'name': key
+                        });
+                        innerCircleData[1].value += value;
+                    });
+                });
+            } else if (index === 'availabilityData' && _.isArray(dataItem.result)) {
+                _.forEach(dataItem.result, (item) => {
+                    _.forEach(item, (value, key) => {
+                        outerCircleData.push({
+                            'value': value,
+                            'name': key
+                        });
+                        innerCircleData[0].value += value;
+                    });
+                });
+            }
+        });
+        return {
+            'innerCircleData': innerCircleData,
+            'outerCircleData': outerCircleData,
+        };
+
+    }
+    //线索来源
+    renderSourceAnalysis() {
+        var clueData = this.state.clueSourceList;
+        var originData = clueData.list;
+        var DataObj = this.handleDataList(originData);
+        var clueSourceCharts = [
+            {
+                title: Intl.get('clue.analysis.source.chart','来源统计'),
+                chartType: 'pie',
+                layout: {
+                    sm: 24,
+                },
+                data: DataObj.innerCircleData,
+                option: this.getChartsOptions(DataObj, Intl.get('clue.analysis.source.chart','来源统计'),PIE_CENTER_POSITION),
+                noExportCsv: true,
+                resultType: getResultType(clueData.loading, clueData.errMsg),
+                errMsgRender: () => {
+                    return getErrorTipAndRetryFunction(clueData.errMsg, this.getClueSourceLists);
+                }
+            }
+        ];
         return (
-            <div className="clue-analysis-overview-container">
-                <div className="clue-trend-analysis col-xs-6">
-                    <AntcAnalysis
-                        charts={clueTrendCharts}
-                        chartHeight={400}
-                    />
-                </div>
+            <div>
+                <AntcAnalysis
+                    charts={clueSourceCharts}
+                    chartHeight={400}
+                />
+            </div>
+        );
+    }
+    //线索分类
+    renderClassifyAnalysis(){
+        var clueData = this.state.clueClassifyList;
+        var originData = clueData.list;
+        var DataObj = this.handleDataList(originData);
+        var clueClassifyCharts = [
+            {
+                title: Intl.get('clue.analysis.classify.chart','分类统计'),
+                chartType: 'pie',
+                layout: {
+                    sm: 24,
+                },
+                data: DataObj.innerCircleData,
+                option: this.getChartsOptions(DataObj, Intl.get('clue.analysis.classify.chart','分类统计'),PIE_CENTER_POSITION),
+                noExportCsv: true,
+                resultType: getResultType(clueData.loading, clueData.errMsg),
+                errMsgRender: () => {
+                    return getErrorTipAndRetryFunction(clueData.errMsg, this.getClueClassifyList);
+                }
+            }
+        ];
+        return (
+            <div>
+                <AntcAnalysis
+                    charts={clueClassifyCharts}
+                    chartHeight={400}
+                />
+            </div>
+        );
+    }
+    //获取options的配置
+    getChartsOptions(DataObj,title,centerPosition){
+        var option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            legend: {
+                orient: 'horizontal',
+                type: 'scroll',
+                x: 'left',
+                pageIconSize: 10,
+            },
+            series: [
+                {
+                    name: title,
+                    type: 'pie',
+                    selectedMode: 'single',
+                    radius: [0, '20%'],
+                    label: {
+                        normal: {
+                            position: 'inner',
+                            formatter: '{b}'
+                        },
+
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    center: centerPosition,
+                    data: DataObj.innerCircleData
+                },
+                {
+                    name: title,
+                    type: 'pie',
+                    radius: ['35%', '60%'],
+                    center: centerPosition,
+                    data: DataObj.outerCircleData
+                }
+            ]
+        };
+        return option;
+    }
+    //线索渠道
+    renderAccessAnalysis() {
+        var clueData = this.state.clueAccessChannelList;
+        var originData = clueData.list;
+        var DataObj = this.handleDataList(originData);
+        var clueAccessCharts = [
+            {
+                title: Intl.get('clue.analysis.access.chart', '渠道统计'),
+                chartType: 'pie',
+                layout: {
+                    sm: 24,
+                },
+                data: DataObj.innerCircleData,
+                option: this.getChartsOptions(DataObj, Intl.get('clue.analysis.access.chart', '渠道统计'),PIE_CENTER_POSITION),
+                noExportCsv: true,
+                resultType: getResultType(clueData.loading, clueData.errMsg),
+                errMsgRender: () => {
+                    return getErrorTipAndRetryFunction(clueData.errMsg, this.getClueAccessChannelList);
+                }
+            }
+        ];
+        return (
+            <div>
+                <AntcAnalysis
+                    charts={clueAccessCharts}
+                    chartHeight={400}
+                />
+            </div>
+        );
+    }
+
+    //渲染概览页的chart
+    renderChartsOverview() {
+        var clueStageCharts = [
+            {
+                title: Intl.get('clue.stage.statics', '线索阶段统计'),
+                chartType: 'funnel',
+                data: this.processClueStaticsStageData(),
+                layout: {
+                    sm: 24,
+                },
+                noExportCsv: true,
+                resultType: getResultType(this.state.getClueStageLoading, this.state.getClueStageErrMsg),
+                customOption: {
+                    valueField: 'showValue',
+                    minSize: '5%',
+                },
+                errMsgRender: () => {
+                    return getErrorTipAndRetryFunction(this.state.getClueStageErrMsg, this.getClueStageList);
+                }
+            }
+        ];
+        var HEIGHT = $(window).height() - $('.clue-analysis-panel .ant-tabs-nav-container').height() - 10;
+        return (
+            <div className="clue-analysis-overview-container" style={{'height': HEIGHT}}>
+                <GeminiScrollbar>
+                    <div className="clue-trend-analysis col-xs-6">
+                        <div className="filter-clue-wrap">
+                            {this.filterClueTypeSelect()}
+                        </div>
+                        <AntcAnalysis
+                            charts={clueStageCharts}
+                            chartHeight={400}
+                        />
+                    </div>
+                    {/*线索渠道统计*/}
+                    <div className="clue-access-analysis col-xs-6">
+                        {this.renderAccessAnalysis()}
+                    </div>
+                    {/*线索来源统计*/}
+                    <div className="clue-source-analysis col-xs-6">
+                        {this.renderSourceAnalysis()}
+                    </div>
+                    {/*线索分类统计*/}
+                    <div className="clue-classify-analysis col-xs-6">
+                        {this.renderClassifyAnalysis()}
+                    </div>
+                </GeminiScrollbar>
             </div>
         );
     }
@@ -231,65 +464,70 @@ class ClueAnalysisPanel extends React.Component {
                 align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get('sales.stage.intention', '意向')){
+                    if (record.label === Intl.get('sales.stage.intention', '意向')) {
                         return (
-                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                            <div className="customer-num"
+                                onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
                             </div>
                         );
                     }
 
                 }
-            },{
+            }, {
                 title: Intl.get('common.trial', '试用'),
                 align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get('common.trial', '试用')){
+                    if (record.label === Intl.get('common.trial', '试用')) {
                         return (
-                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                            <div className="customer-num"
+                                onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
                             </div>
                         );
                     }
 
                 }
-            },{
+            }, {
                 title: Intl.get('common.trial.qualified', '试用合格'),
                 align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get('common.trial.qualified', '试用合格')){
+                    if (record.label === Intl.get('common.trial.qualified', '试用合格')) {
                         return (
-                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                            <div className="customer-num"
+                                onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
                             </div>
                         );
                     }
 
                 }
-            },{
+            }, {
                 title: Intl.get('sales.stage.signed', '签约'),
                 align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get('sales.stage.signed', '签约')){
+                    if (record.label === Intl.get('sales.stage.signed', '签约')) {
                         return (
-                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                            <div className="customer-num"
+                                onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
                             </div>
                         );
                     }
 
                 }
-            },{
+            }, {
                 title: Intl.get('sales.stage.lost', '流失'),
                 align: 'right',
                 width: 100,
                 render: (text, record, index) => {
-                    if (record.label === Intl.get('sales.stage.lost', '流失')){
+                    if (record.label === Intl.get('sales.stage.lost', '流失')) {
                         return (
-                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                            <div className="customer-num"
+                                onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
                                 {handleNum(record.num)}
                             </div>
                         );
@@ -308,72 +546,33 @@ class ClueAnalysisPanel extends React.Component {
         return (
             <div className="clue-analysis-panel">
                 <div className="date-picker-container">
-                    <DatePicker
-                        disableDateAfterToday={true}
-                        range="year"
-                        onSelect={this.onSelectDate}>
-                        <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
-                        <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                        <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                        <DatePicker.Option
-                            value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                        <DatePicker.Option
-                            value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
-                        <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
-                        <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                    </DatePicker>
+                    <div className="date-picker-wrap">
+                        <span className="date-picker-tip">
+                            {Intl.get('clue.analysis.consult.time', '咨询时间：')}
+                        </span>
+                        <DatePicker
+                            disableDateAfterToday={true}
+                            range="year"
+                            onSelect={this.onSelectDate}>
+                            <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                            <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                            <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                            <DatePicker.Option
+                                value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                            <DatePicker.Option
+                                value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                            <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
+                            <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
+                        </DatePicker>
+                    </div>
                     <RightPanelClose onClick={this.closeClueAnalysisPanel}/>
                 </div>
-                <Tabs>
-                    <TabPane tab={Intl.get('crm.basic.overview', '概览')} key="1">{this.renderChartsOverview()}</TabPane>
-                    <TabPane tab={Intl.get('clue.customer.analysis.trend', '趋势')} key="2">Content of tab 2</TabPane>
-                </Tabs>
-
-
-                {/*<TopNav>*/}
-                {/*<div className="date-range-wrap">*/}
-                {/*<div className="consult-time">*/}
-                {/*{Intl.get('clue.analysis.consult.time', '咨询时间：')}*/}
-                {/*</div>*/}
-                {/*<DatePicker*/}
-                {/*disableDateAfterToday={true}*/}
-                {/*range="year"*/}
-                {/*onSelect={this.onSelectDate}>*/}
-                {/*<DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option*/}
-                {/*value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option*/}
-                {/*value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>*/}
-                {/*</DatePicker>*/}
-                {/*<div className="filter-clue-wrap">*/}
-                {/*{this.filterClueTypeSelect()}*/}
-                {/*</div>*/}
-                {/*</div>*/}
-                {/*<RightPanelClose onClick={this.closeClueAnalysisPanel}/>*/}
-                {/*</TopNav>*/}
-                {/*<div className="analysis-clue-container">*/}
-                {/*<AntcTable*/}
-                {/*loading={this.state.getClueAnalysisLoading}*/}
-                {/*columns={columns}*/}
-                {/*scroll={{ x: true, y: 200 }}*/}
-                {/*pagination={false}*/}
-                {/*dataSource={this.state.clueAnalysisList}*/}
-                {/*/>*/}
-                {/*</div>*/}
-                {/*<RightPanel*/}
-                {/*className="customer-stage-table-wrapper"*/}
-                {/*showFlag={this.state.showCustomerIds.length}*/}
-                {/*>*/}
-                {/*{this.state.showCustomerIds.length ?*/}
-                {/*<CustomerStageTable*/}
-                {/*result={stageChangedCustomerList}*/}
-                {/*onClose={this.closeCustomersContentPanel}*/}
-                {/*/> : null}*/}
-                {/*</RightPanel>*/}
+                <div className="analysis-chart-wrap">
+                    <Tabs>
+                        <TabPane tab={Intl.get('crm.basic.overview', '概览')}
+                            key="1">{this.renderChartsOverview()}</TabPane>
+                    </Tabs>
+                </div>
             </div>
         );
     }
@@ -383,8 +582,6 @@ ClueAnalysisPanel.defaultProps = {
     },
     accessChannelArray: [],
     clueSourceArray: [],
-
-
 };
 ClueAnalysisPanel.propTypes = {
     clueSourceArray: React.PropTypes.object,

@@ -3,8 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/24.
  */
-//获取线索分析列表
-exports.getClueAnalysis = function(data) {
+//获取线索阶段分析列表
+exports.getClueStageAnalysis = function(data) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/clue/analysis',
@@ -40,13 +40,16 @@ exports.getCustomerById = function(data) {
     return Deferred.promise();
 };
 //获取线索统计列表
-exports.getClueStatics = function(queryParams, pathParams) {
+exports.getClueStatics = function(pathParams, rangParams) {
+    var data = {
+        rangParams: JSON.stringify(rangParams),
+    };
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/clue/statics/' + pathParams.field + '/' + pathParams.page_size + '/' + pathParams.num,
         dataType: 'json',
         type: 'post',
-        data: queryParams,
+        data: data,
         success: function(list) {
             Deferred.resolve(list);
         },

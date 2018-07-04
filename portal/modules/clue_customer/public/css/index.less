@@ -494,10 +494,39 @@
   .clue-analysis-panel{
     padding:10px 20px;
     position: relative;
-    .range-datepicker{
+    height: 100%;
+    .date-picker-wrap{
       position: absolute;
       right:100px;
       top:25px;
+      .range-datepicker{
+        display: inline-block;
+      }
+      .date-picker-tip{
+        position: relative;
+        top:-10px;
+      }
+    }
+    //图表的样式
+    .analysis-chart-wrap{
+      .clue-analysis-overview-container {
+        .clue-trend-analysis {
+          position: relative;
+          .filter-clue-wrap {
+            position: absolute;
+            z-index: 2;
+            right:30px;
+            top: 16px;
+            .clue-select-container {
+              .ant-select {
+                margin-right: 10px;
+                width: auto;
+              }
+            }
+
+          }
+        }
+      }
     }
 
   }

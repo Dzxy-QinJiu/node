@@ -34,6 +34,7 @@ import {AntcAnalysis} from 'antc';
 var hours = _.range(24);
 var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
+import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -692,7 +693,6 @@ var CallRecordAnalyis = React.createClass({
 
     // 渲染通话时段(时长/数量)的统计
     renderCallIntervalChart() {
-        var resultType = this.getResultType(this.state.callIntervalData.loading, this.state.callIntervalData.errMsg);
         var isCallCount = this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT;
         let data = isCallCount ? this.state.callIntervalData.countList : this.state.callIntervalData.timeList;
         let title = isCallCount ? Intl.get('sales.home.call.cout', '通话数量') : Intl.get('call.record.call.duration', '通话时长');
@@ -714,9 +714,9 @@ var CallRecordAnalyis = React.createClass({
             yAxisLabels: days,
             xAxisLabels: hours,
             noExportCsv: true,
-            resultType: resultType,
+            resultType: getResultType(this.state.callIntervalData.loading, this.state.callIntervalData.errMsg),
             errMsgRender: () => {
-                return this.getErrorTipAndRetryFunction(this.state.callIntervalData.errMsg);
+                return getErrorTipAndRetryFunction(this.state.callIntervalData.errMsg);
             }
         }];
         return (
@@ -843,7 +843,6 @@ var CallRecordAnalyis = React.createClass({
     renderCallChart(dataList, charTips, isMutileLine, lineType) {
         var isLoading = this.state.callList.loading || this.state.eachTeamCallList.loading;
         var isError = this.state.callList.errMsg || this.state.eachTeamCallList.errMsg;
-        var resultType = this.getResultType(isLoading, isError);
         const charts = [{
             title: Intl.get('call.record.trend.charts', ' 近一个月的通话趋势：'),
             chartType: 'line',
@@ -853,9 +852,9 @@ var CallRecordAnalyis = React.createClass({
             },
             option: this.getCallTrendEchartOptions(dataList, charTips, isMutileLine, lineType),
             noExportCsv: true,
-            resultType: resultType,
+            resultType: getResultType(isLoading, isError),
             errMsgRender: () => {
-                return this.getErrorTipAndRetryFunction(isError);
+                return getErrorTipAndRetryFunction(isError);
             }
         }];
 
@@ -1100,7 +1099,7 @@ var CallRecordAnalyis = React.createClass({
     },
     // 114占比和客服电话统计
     renderCallRateChar(type) {
-        var resultType = this.getResultType(this.state.callRateList[type].loading, this.state.callRateList[type].errMsg);
+        var resultType = getResultType(this.state.callRateList[type].loading, this.state.callRateList[type].errMsg);
         var data = [];
         var title = Intl.get('call.record.service.phone.rate', '114占比统计');
         var callListType = this.state.callRateList[type];
@@ -1130,7 +1129,7 @@ var CallRecordAnalyis = React.createClass({
             noExportCsv: true,
             resultType: resultType,
             errMsgRender: () => {
-                return this.getErrorTipAndRetryFunction(this.state.callRateList[type].errMsg);
+                return getErrorTipAndRetryFunction(this.state.callRateList[type].errMsg);
             }
         }];
         const pieCharts = [{
@@ -1144,7 +1143,7 @@ var CallRecordAnalyis = React.createClass({
             noExportCsv: true,
             resultType: resultType,
             errMsgRender: () => {
-                return this.getErrorTipAndRetryFunction(this.state.callRateList[type].errMsg);
+                return getErrorTipAndRetryFunction(this.state.callRateList[type].errMsg);
             }
         }];
         return (
@@ -1247,7 +1246,6 @@ var CallRecordAnalyis = React.createClass({
         // );
     },
     renderCustomerPhase() {
-        var resultType = this.getResultType(this.state.customerData.loading, this.state.customerData.errMsg);
         var dataList = this.state.customerData.customerPhase;
         var data = this.getPieData(dataList);
         var charts = [
@@ -1260,9 +1258,9 @@ var CallRecordAnalyis = React.createClass({
                 },
                 option: this.getPieOptions(dataList),
                 noExportCsv: true,
-                resultType: resultType,
+                resultType: getResultType(this.state.customerData.loading, this.state.customerData.errMsg),
                 errMsgRender: () => {
-                    return this.getErrorTipAndRetryFunction(this.state.customerData.errMsg);
+                    return getErrorTipAndRetryFunction(this.state.customerData.errMsg);
                 }
             }
         ];
@@ -1276,7 +1274,6 @@ var CallRecordAnalyis = React.createClass({
         );
     },
     renderOrderPhase() {
-        var resultType = this.getResultType(this.state.customerData.loading, this.state.customerData.errMsg);
         var dataList = this.state.customerData.OrderPhase;
         var data = this.getPieData(dataList);
         var charts = [
@@ -1289,9 +1286,9 @@ var CallRecordAnalyis = React.createClass({
                 },
                 option: this.getPieOptions(dataList),
                 noExportCsv: true,
-                resultType: resultType,
+                resultType: getResultType(this.state.customerData.loading, this.state.customerData.errMsg),
                 errMsgRender: () => {
-                    return this.getErrorTipAndRetryFunction(this.state.customerData.errMsg);
+                    return getErrorTipAndRetryFunction(this.state.customerData.errMsg);
                 }
             }
         ];
@@ -1303,30 +1300,6 @@ var CallRecordAnalyis = React.createClass({
                 />
             </div>
         );
-    },
-    getResultType: function(isLoading, isError) {
-        var resultType = '';
-        if (isLoading) {
-            resultType = 'loading';
-        } else if (isError) {
-            resultType = 'error';
-        } else {
-            resultType = 'success';
-        }
-        return resultType;
-    },
-    //获取错误提示的信息及点击重试的方法
-    getErrorTipAndRetryFunction: function(errTip,callback) {
-        var errMsg = errTip ? errTip : Intl.get('contract.111', '获取数据失败');
-        if (_.isFunction(callback)){
-            return (
-                <span>{errMsg},<a onClick={callback}>{Intl.get('user.info.retry', '请重试')}</a></span>
-            );
-        }else{
-            return (
-                <span>{errMsg}</span>
-            );
-        }
     },
     renderCallAnalysisView: function() {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;

@@ -360,7 +360,6 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                    filterOption={false}
                                     searchPlaceholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
                                     name="clue_source"
                                     onChange={this.setField.bind(this, 'clue_source')}
@@ -383,7 +382,6 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                    filterOption={false}
                                     searchPlaceholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'access_channel')}
@@ -404,7 +402,6 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                    filterOption={false}
                                     searchPlaceholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'clue_classify')}

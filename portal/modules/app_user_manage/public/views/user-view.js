@@ -19,7 +19,7 @@ var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavE
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import language from 'PUB_DIR/language/getLanguage';
 import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/sales-clue-add-form';
-import {clueSourceArray, accessChannelArray} from 'PUB_DIR/sources/utils/consts';
+import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/consts';
 //异常登录的类型
@@ -41,6 +41,7 @@ var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 50
 };
+import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 
 var UserTabContent = React.createClass({
     getInitialState: function() {
@@ -50,6 +51,7 @@ var UserTabContent = React.createClass({
             defaultClueData: {},//添加线索客户的默认信息
             accessChannelArray: accessChannelArray,//线索渠道
             clueSourceArray: clueSourceArray,//线索来源
+            clueClassifyArray: clueClassifyArray,//线索分类
             producingClueCustomerItem: {},//正在生成线索客户的用户
             ...AppUserStore.getState()
         };
@@ -58,7 +60,7 @@ var UserTabContent = React.createClass({
         clueCustomerAjax.getClueSource().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
-                    clueSourceArray: _.union(this.state.clueSourceArray, data.result)
+                    clueSourceArray: _.union(this.state.clueSourceArray, removeSpacesAndEnter(data.result))
                 });
             }
         }, errorMsg => {
@@ -70,12 +72,24 @@ var UserTabContent = React.createClass({
         clueCustomerAjax.getClueChannel().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
-                    accessChannelArray: _.union(this.state.accessChannelArray, data.result)
+                    accessChannelArray: _.union(this.state.accessChannelArray, removeSpacesAndEnter(data.result))
                 });
             }
         }, errorMsg => {
             // eslint-disable-next-line no-console
             console.log('获取线索渠道出错了 ' + errorMsg);
+        });
+    },
+    getClueClassify: function() {
+        clueCustomerAjax.getClueClassify().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    clueClassifyArray: _.union(this.state.clueClassifyArray, removeSpacesAndEnter(data.result))
+                });
+            }
+        }, errorMsg => {
+            // eslint-disable-next-line no-console
+            console.log('获取线索分类出错了 ' + errorMsg);
         });
     },
     fetchUserList: function(obj) {
@@ -1085,6 +1099,13 @@ var UserTabContent = React.createClass({
             accessChannelArray: this.state.accessChannelArray
         });
     },
+    //更新线索分类
+    updateClueClassify: function(newClue) {
+        this.state.clueClassifyArray.push(newClue);
+        this.setState({
+            clueClassifyArray: this.state.clueClassifyArray
+        });
+    },
     //线索客户添加完毕后
     afterAddSalesClue: function() {
         AppUserAction.updateUserAppsInfo(this.state.producingClueCustomerItem);
@@ -1106,8 +1127,10 @@ var UserTabContent = React.createClass({
                         hideAddForm={this.hideClueAddForm}
                         accessChannelArray={this.state.accessChannelArray}
                         clueSourceArray={this.state.clueSourceArray}
+                        clueClassifyArray={this.state.clueClassifyArray}
                         updateClueSource={this.updateClueSource}
                         updateClueChannel={this.updateClueChannel}
+                        updateClueClassify={this.updateClueClassify}
                         afterAddSalesClue={this.afterAddSalesClue}
                     />
                 ) : null}
