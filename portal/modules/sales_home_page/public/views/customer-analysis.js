@@ -524,7 +524,7 @@ var CustomerAnalysis = React.createClass({
                         onChange={this.onTransferSortChange.bind(this)}
                         dataSource={this.state.transferCustomers.data}
                         loading={loadingFirst}
-                        scroll={{y: 175}}
+                        scroll={{y: TABLE_HIGHT}}
                     />
                     <div className="load-more-container">
                         {showLoadingMore ? renderLoadMore() : null}
@@ -627,6 +627,7 @@ var CustomerAnalysis = React.createClass({
     },
     //获取图表
     getCharts: function() {
+        const TABLE_HIGHT = 175;
         const handleNum = num => {
             if (num && num > 0) {
                 return '+' + num;
@@ -804,6 +805,7 @@ var CustomerAnalysis = React.createClass({
             resultType: this.state.stageCustomerNum.loading ? 'loading' : '',
             option: {
                 pagination: false,
+                scroll: {y: TABLE_HIGHT},
                 columns: [
                     {
                         title: Intl.get('common.trial', '试用'),
@@ -838,6 +840,7 @@ var CustomerAnalysis = React.createClass({
             resultType: this.state.transferCustomers.loading ? 'loading' : '',
             option: {
                 pagination: false,
+                scroll: {y: TABLE_HIGHT},
                 columns: [
                     {
                         title: Intl.get('common.login.time', '时间'),
@@ -889,6 +892,7 @@ var CustomerAnalysis = React.createClass({
             resultType: this.state.customerStage.loading ? 'loading' : '',
             option: {
                 pagination: false,
+                scroll: {y: TABLE_HIGHT},
                 columns: [
                     {
                         title: Intl.get('crm.146', '日期'),
