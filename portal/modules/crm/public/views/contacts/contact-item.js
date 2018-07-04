@@ -166,7 +166,7 @@ var ContactItem = React.createClass({
                             onClick={this.showDeleteContactConfirm}/>
                         <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.showEditContactForm}
                             data-tracename="点击编辑联系人按钮"/>
-                        {contactEleList.length > 1 ? (//超过一种联系方式时，再展示展开其他联系方式的按钮
+                        {_.isArray(contactEleList) && contactEleList.length > 1 ? (//超过一种联系方式时，再展示展开其他联系方式的按钮
                             <span className={contactWayClassName}
                                 data-tracename={isExpanded ? '收起联系方式' : '展开其他联系方式'}
                                 title={isExpanded ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('crm.contact.way.show', '展开其他联系方式')}
@@ -234,7 +234,7 @@ var ContactItem = React.createClass({
     },
     //渲染联系方式展示区
     renderContactWay(contactEleList){
-        if (contactEleList[0]) {
+        if (_.get(contactEleList,'[0]')) {
             return (
                 <div className="contact-way-container">
                     {contactEleList[0]}
