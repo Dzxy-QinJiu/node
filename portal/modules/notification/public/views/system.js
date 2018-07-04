@@ -169,7 +169,7 @@ let SystemNotification = React.createClass({
         });
         let iconfontClassName = this.getIconFontClassName(notice.type);
         return (
-            <li key={idx} className={handleNoticeLiItemClass} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
+            <li key={idx} className={handleNoticeLiItemClass}>
                 <div className="system-notice-title">
                     <i className={iconfontClassName}></i>
                     <div className="system-notice-type">
@@ -345,20 +345,6 @@ let SystemNotification = React.createClass({
             });
         });
     },
-    handleMouseEnter(event) {
-        if (event.target.className === 'system-notice-unhandled-item') {
-            $('.system-notice-unhandled-item').addClass('system-notice-hover-item');
-        } else if (event.target.className === 'system-notice-handled-item') {
-            $('.system-notice-handled-item').addClass('system-notice-hover-item');
-        }
-    },
-    handleMouseLeave(event) {
-        if (event.target.className === 'system-notice-unhandled-item') {
-            $('.system-notice-unhandled-item').removeClass('system-notice-hover-item');
-        } else if (event.target.className === 'system-notice-handled-item') {
-            $('.system-notice-handled-item').removeClass('system-notice-hover-item');
-        }
-    },
     hideNoticeSuccessTips() {
         this.setState({
             handleNoticeMessageSuccessFlag: false
@@ -387,7 +373,7 @@ let SystemNotification = React.createClass({
         });
         let iconfontClassName = this.getIconFontClassName(notice.type);
         return (
-            <li key={idx} className={unhandleNoticeLiItemClass} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
+            <li key={idx} className={unhandleNoticeLiItemClass}>
                 <div className="system-notice-title">
                     <i className={iconfontClassName}></i>
                     <div className="system-notice-type">
