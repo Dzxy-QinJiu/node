@@ -791,6 +791,9 @@ var CustomerAnalysis = React.createClass({
         }, {
             title: Intl.get('user.analysis.industry.add', '行业-新增'),
             chartType: 'bar',
+            customOption: {
+                reverse: true
+            },
             data: this.state.industryAnalysis.data,
             resultType: this.state.industryAnalysis.resultType,
         }, {
