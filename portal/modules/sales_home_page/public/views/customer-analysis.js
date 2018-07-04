@@ -370,164 +370,6 @@ var CustomerAnalysis = React.createClass({
     onStageSortChange(pagination, filters, sorter) {
         this.getStageChangeCustomers(sorter.order);
     },
-    renderCustomerStage: function() {
-        const handleNum = num => {
-            if (num && num > 0) {
-                return '+' + num;
-            }
-        };
-        const columns = [
-            {
-                title: Intl.get('crm.146', '日期'),
-                dataIndex: 'time',
-                key: 'time',
-                width: 100
-            }, {
-                title: Intl.get('sales.stage.message', '信息'),
-                dataIndex: 'map.信息',
-                key: 'info',
-                render: (text, item, index) => {
-                    return (
-                        <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, '信息')}>{handleNum(text)}</span>
-                    );
-                }
-            }, {
-                title: Intl.get('sales.stage.intention', '意向'),
-                dataIndex: 'map.意向',
-                key: 'intention',
-                render: (text, item, index) => {
-                    return (
-                        <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, '意向')}>{handleNum(text)}</span>
-                    );
-                }
-            }, {
-                title: Intl.get('common.trial', '试用'),
-                dataIndex: 'map.试用',
-                key: 'trial',
-                render: (text, item, index) => {
-                    return (
-                        <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, '试用')}>{handleNum(text)}</span>
-                    );
-                }
-            }, {
-                title: Intl.get('common.trial.qualified', '试用合格'),
-                dataIndex: 'map.试用合格',
-                key: 'trial.qualified',
-                render: (text, item, index) => {
-                    return (
-                        <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, '试用合格')}>{handleNum(text)}</span>
-                    );
-                }
-            }, {
-                title: Intl.get('common.trial.unqualified', '试用不合格'),
-                dataIndex: 'map.试用不合格',
-                key: 'unqualified',
-                width: 100,
-                render: (text, item, index) => {
-                    return (
-                        <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, '试用不合格')}>{handleNum(text)}</span>
-                    );
-                }
-            }, {
-                title: Intl.get('sales.stage.signed', '签约'),
-                dataIndex: 'map.签约',
-                key: 'signed',
-                render: (text, item, index) => {
-                    return (
-                        <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, '签约')}>{handleNum(text)}</span>
-                    );
-                }
-            }, {
-                title: Intl.get('sales.stage.lost', '流失'),
-                dataIndex: 'map.流失',
-                key: 'map.流失',
-                render: (text, item, index) => {
-                    return (
-                        <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, '流失')}>{handleNum(text)}</span>
-                    );
-                }
-            }, {
-                title: Intl.get('sales.home.sales', '销售'),
-                dataIndex: 'memberName',
-                key: 'memberName'
-            }, {
-                title: Intl.get('common.belong.team', '所属团队'),
-                dataIndex: 'salesTeam',
-                key: 'salesTeam',
-                width: 80
-            }
-        ];
-        const loading = this.state.customerStage.loading;
-        const renderErr = () => {
-            if (this.state.customerStage.errorMsg) {
-                return (
-                    <div className="alert-container">
-                        <Alert
-                            message={this.state.customerStage.errorMsg}
-                            type="error"
-                            showIcon
-                        />
-                    </div>
-                );
-            }
-        };
-        const renderSpiner = () => {
-            if (loading) {
-                return (
-                    <Spinner />
-                );
-            }
-        };
-        const hideTable = this.state.customerStage.errorMsg || loading;
-        return (
-            <div
-                className="chart-holder stage-change-customer-container scrollbar-container"
-                data-tracename="客户阶段变更统计"
-            >
-                <div className="title">
-                    {Intl.get('crm.sales.customerStage', '客户阶段变更统计')}
-                </div>
-                {renderErr()}
-                {renderSpiner()}
-                <div className={hideTable ? 'hide' : ''}>
-                    <AntcTable
-                        util={{ zoomInSortArea: true }}
-                        dataSource={this.state.customerStage.data}
-                        pagination={false}
-                        columns={columns}
-                        onChange={this.onStageSortChange.bind(this)}
-                        scroll={{y: 175}}
-                    />
-                </div>
-                <RightPanel
-                    className="customer-stage-table-wrapper"
-                    showFlag={this.state.isShowCustomerStageTable}
-                >
-                    {this.state.isShowCustomerStageTable ?
-                        <CustomerStageTable
-                            params={this.state.selectedCustomerStage}
-                            result={this.state.stageChangedCustomerList}
-                            onClose={this.toggleCusStageMetic}
-                            handleScrollBottom={this.getStageChangeCustomerList.bind(this)}
-                            showNoMoreData={!this.state.stageChangedCustomerList.loading &&
-                                !this.state.stageChangedCustomerList.listenScrollBottom &&
-                                this.state.stageChangedCustomerList.lastId &&
-                                !this.state.stageChangedCustomerList.data.length >= DEFAULT_TABLE_PAGESIZE
-                            }
-                        /> : null}
-                </RightPanel>
-            </div >
-        );
-
-
-    },
     changeCurrentTab: function(tabName, event) {
         OplateCustomerAnalysisAction.changeCurrentTab(tabName);
         this.getChartData();
@@ -785,6 +627,12 @@ var CustomerAnalysis = React.createClass({
     },
     //获取图表
     getCharts: function() {
+        const handleNum = num => {
+            if (num && num > 0) {
+                return '+' + num;
+            }
+        };
+
         return [{
             title: Intl.get('effective.customer.statistics', '有效客户统计'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
@@ -1029,6 +877,105 @@ var CustomerAnalysis = React.createClass({
                         width: 100,
                     }
 
+                ],
+            },
+        }, {
+            title: Intl.get('crm.sales.customerStage', '客户阶段变更统计'),
+            chartType: 'table',
+            layout: {
+                sm: 24,
+            },
+            data: this.state.customerStage.data,
+            resultType: this.state.customerStage.loading ? 'loading' : '',
+            option: {
+                pagination: false,
+                columns: [
+                    {
+                        title: Intl.get('crm.146', '日期'),
+                        dataIndex: 'time',
+                        key: 'time',
+                        width: 100
+                    }, {
+                        title: Intl.get('sales.stage.message', '信息'),
+                        dataIndex: 'map.信息',
+                        key: 'info',
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, item, '信息')}>{handleNum(text)}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('sales.stage.intention', '意向'),
+                        dataIndex: 'map.意向',
+                        key: 'intention',
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, item, '意向')}>{handleNum(text)}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('common.trial', '试用'),
+                        dataIndex: 'map.试用',
+                        key: 'trial',
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, item, '试用')}>{handleNum(text)}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('common.trial.qualified', '试用合格'),
+                        dataIndex: 'map.试用合格',
+                        key: 'trial.qualified',
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, item, '试用合格')}>{handleNum(text)}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('common.trial.unqualified', '试用不合格'),
+                        dataIndex: 'map.试用不合格',
+                        key: 'unqualified',
+                        width: 100,
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, item, '试用不合格')}>{handleNum(text)}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('sales.stage.signed', '签约'),
+                        dataIndex: 'map.签约',
+                        key: 'signed',
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, item, '签约')}>{handleNum(text)}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('sales.stage.lost', '流失'),
+                        dataIndex: 'map.流失',
+                        key: 'map.流失',
+                        render: (text, item, index) => {
+                            return (
+                                <span className="customer-stage-number"
+                                    onClick={this.handleStageNumClick.bind(this, item, '流失')}>{handleNum(text)}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('sales.home.sales', '销售'),
+                        dataIndex: 'memberName',
+                        key: 'memberName'
+                    }, {
+                        title: Intl.get('common.belong.team', '所属团队'),
+                        dataIndex: 'salesTeam',
+                        key: 'salesTeam',
+                        width: 80
+                    }
                 ],
             },
         }];
