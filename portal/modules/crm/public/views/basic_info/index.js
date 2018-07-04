@@ -196,6 +196,8 @@ var BasicData = React.createClass({
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY')}
                             placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, 'administrative_level')}
+                            noDataTip={Intl.get('crm.basic.no.administrative', '暂无行政级别')}
+                            addDataTip={Intl.get('crm.basic.add.administrative', '添加行政级别')}
                         />
                     </div>
                     <div className="basic-info-indestry basic-info-item">
@@ -214,6 +216,8 @@ var BasicData = React.createClass({
                             placeholder={Intl.get('crm.22', '请选择行业')}
                             editBtnTip={Intl.get('crm.163', '设置行业')}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
+                            noDataTip={Intl.get('crm.basic.no.industry', '暂无行业')}
+                            addDataTip={Intl.get('crm.basic.add.industry', '添加行业')}
                         />
                     </div>
                     <div className="basic-info-address basic-info-item">
@@ -231,6 +235,8 @@ var BasicData = React.createClass({
                             county_code={basicData.county_code}
                             saveEditLocation={this.saveEditBasicInfo.bind(this, 'address')}
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS')}
+                            noDataTip={Intl.get('crm.basic.no.location', '暂无地域信息')}
+                            addDataTip={Intl.get('crm.basic.add.location', '添加地域信息')}
                         />
                     </div>
                     <div className="basic-info-detail-address basic-info-item">
@@ -246,6 +252,8 @@ var BasicData = React.createClass({
                             placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS')}
                             saveEditInput={this.saveEditBasicInfo.bind(this, 'detail_address')}
+                            noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
+                            addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
                         />
                     </div>
                     <div className="basic-info-remark basic-info-item">
@@ -260,6 +268,8 @@ var BasicData = React.createClass({
                             placeholder={Intl.get('user.input.remark', '请输入备注')}
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_REMARK')}
                             saveEditInput={this.saveEditBasicInfo.bind(this, 'remarks')}
+                            noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                            addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                         />
                     </div>
                 </div>

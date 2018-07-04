@@ -35,6 +35,10 @@ const BasicEditField = React.createClass({
             value: '',
             //input编辑区的宽度
             width: '100%',
+            //无数据时的提示（没有修改权限时提示没有数据）
+            noDataTip: '',
+            //添加数据的提示（有修改权限时，提示补充数据）
+            addDataTip: '',
             //编辑按钮的提示文案
             editBtnTip: Intl.get('common.update', '修改'),
             //修改成功
@@ -215,17 +219,28 @@ const BasicEditField = React.createClass({
 
         var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
 
-        var textBlock = this.state.displayType === 'text' ? (
-            <div>
-                <span className="inline-block basic-info-text">
-                    {displayText}{this.props.afterValTip ? this.props.afterValTip : ''}
-                </span>
-                {this.props.hasEditPrivilege ? (
-                    <DetailEditBtn title={this.props.editBtnTip}
-                        onClick={this.setEditable.bind(this)}/>) : null
-                }
-            </div>
-        ) : null;
+        var textBlock = null;
+        if (this.state.displayType === 'text') {
+            if (displayText) {
+                textBlock = (
+                    <div>
+                        <span className="inline-block basic-info-text">
+                            {displayText}{this.props.afterValTip || ''}
+                        </span>
+                        {this.props.hasEditPrivilege ? (
+                            <DetailEditBtn title={this.props.editBtnTip}
+                                onClick={this.setEditable.bind(this)}/>) : null}
+                    </div>);
+            } else {
+                textBlock = (
+                    <span className="inline-block basic-info-text no-data-descr">
+                        {this.props.hasEditPrivilege ? (
+                            <a onClick={this.setEditable.bind(this)}>{this.props.addDataTip}</a>) : this.props.noDataTip}
+
+                    </span>
+                );
+            }
+        }
 
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">

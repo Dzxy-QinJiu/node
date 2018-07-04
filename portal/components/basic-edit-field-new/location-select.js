@@ -12,6 +12,10 @@ const LocationSelectField = React.createClass({
             countyName: '',
             //编辑区的宽度
             width: '100%',
+            //无数据时的提示（没有修改权限时提示没有数据）
+            noDataTip: '',
+            //添加数据的提示（有修改权限时，提示补充数据）
+            addDataTip: '',
             //编辑按钮的提示文案
             editBtnTip: Intl.get('crm.175', '设置地域'),
             onChange: function() {
@@ -131,16 +135,28 @@ const LocationSelectField = React.createClass({
             location.push(this.state.county);
         }
         if (this.state.displayType === 'text') {
-            return (
-                <div className="basic-location-field basic-edit-field">
-                    <span className="inline-block basic-info-text">{location.join('/')}</span>
-                    {this.props.hasEditPrivilege ? (
-                        <DetailEditBtn title={this.props.editBtnTip}
-                            onClick={this.changeDisplayType.bind(this, 'edit')}/>) : null
-                    }
-                </div>
-            );
+            if (location.length) {
+                return (
+                    <div className="basic-location-field basic-edit-field">
+                        <span className="inline-block basic-info-text">{location.join('/')}</span>
+                        {this.props.hasEditPrivilege ? (
+                            <DetailEditBtn title={this.props.editBtnTip}
+                                onClick={this.changeDisplayType.bind(this, 'edit')}/>) : null
+                        }
+                    </div>);
+            } else {
+                return (
+                    <div className="basic-location-field basic-edit-field">
+                        <span className="inline-block basic-info-text no-data-descr">
+                            {this.props.hasEditPrivilege ? (
+                                <a onClick={this.changeDisplayType.bind(this, 'edit')}>{this.props.addDataTip}</a>) : this.props.noDataTip}
+
+                        </span>
+                    </div>
+                );
+            }
         }
+
         return (<div className="basic-edit-field location-edit-field">
             <AntcAreaSelection labelCol="0" wrapperCol="24" width={this.props.width || '100%'}
                 placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
