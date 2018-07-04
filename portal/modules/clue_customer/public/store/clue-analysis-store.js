@@ -92,7 +92,6 @@ ClueAnalysisStore.prototype.getClueStatics = function(result) {
         dataObj.loading = false;
         dataObj.errMsg = '';
         dataObj.list = result.data;
-        // this.staticsNum++;
     }
     switch (result.type) {
         case 'clue_source':
