@@ -40,7 +40,7 @@ let SystemNotification = React.createClass({
             systemNotices: [],//系统消息列表
             totalSize: 0,//系统消息总数
             lastSystemNoticeId: '',//用来下拉加载的当前展示的最后一个通知的id
-            listenScrollBottom: true,//是否监听下拉加载
+            listenScrollBottom: false,//是否监听下拉加载
             selectedNoticeType: '',//当前选中的要查看的通知类型
             curShowCustomerId: '',//展示客户详情的客户id
             curShowUserId: '',//展示用户详情的用户id
@@ -140,7 +140,8 @@ let SystemNotification = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find('.notification-type-select'), '类型筛选');
         this.setState({
             selectedNoticeType: val,
-            lastSystemNoticeId: ''
+            lastSystemNoticeId: '',
+            listenScrollBottom: false
         });
         setTimeout(() => {
             this.getSystemNotices();
@@ -151,7 +152,8 @@ let SystemNotification = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find('.notification-status-select'), '处理/未处理筛选');
         this.setState({
             status: status,
-            lastSystemNoticeId: ''
+            lastSystemNoticeId: '',
+            listenScrollBottom: false
         });
         setTimeout(() => {
             this.getSystemNotices();
@@ -186,7 +188,7 @@ let SystemNotification = React.createClass({
                         <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}</span> : ''}
                     {isLoginFailed ? <span>,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
                     <span className="system-notice-time">
-                        {',' + TimeUtil.transTimeFormat(notice.create_time)}
+                        {'，' + TimeUtil.transTimeFormat(notice.create_time)}
                     </span>
                 </div>
             </li>
@@ -376,10 +378,6 @@ let SystemNotification = React.createClass({
         let unhandleNoticeLiItemClass = classnames({
             'system-notice-unhandled-item': true,
             'select-li-item': idx === this.state.selectedLiIndex,
-        });
-        let noticeDetailClass = classnames({
-            'notice-detail-more': true,
-            'show-handle-button-detail': loginUserId === notice.member_id
         });
         let iconfontClassName = this.getIconFontClassName(notice.type);
         return (
