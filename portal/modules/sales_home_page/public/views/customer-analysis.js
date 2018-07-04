@@ -31,6 +31,8 @@ const DEFAULT_TABLE_PAGESIZE = 10;
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
+const RightPanelClose = rightPanelUtil.RightPanelClose;
+const CrmList = require('MOD_DIR/crm/public/crm-list');
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 import NewTrailCustomerTable from './new-trail-and-aign-customer';
@@ -824,7 +826,7 @@ var CustomerAnalysis = React.createClass({
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, text, '试用')}>{text}</span>
+                                    onClick={this.handleNewAddedCustomerNumClick.bind(this, text, '试用')}>{text}</span>
                             );
                         }
                     }, {
@@ -834,7 +836,7 @@ var CustomerAnalysis = React.createClass({
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, text, '签约')}>{text}</span>
+                                    onClick={this.handleNewAddedCustomerNumClick.bind(this, text, '签约')}>{text}</span>
                             );
                         }
                     }
@@ -1024,11 +1026,52 @@ var CustomerAnalysis = React.createClass({
             );
         }
     },
+    showCustomerTable(isShow) {
+        this.setState({
+            isShowCustomerTable: isShow
+        });
+    },
+    //新开客户统计表格数字点击处理函数
+    handleNewAddedCustomerNumClick(num, type) {
+        //客户数为0时不打开客户列表面板
+        if (!num || num === '0') {
+            return;
+        }
+        this.setState({
+            newAddedCustomerType: type,
+            isShowCustomerTable: true
+        });
+    },
+
     render: function() {
         let layoutParams = this.props.getChartLayoutParams();
         this.chartWidth = layoutParams.chartWidth;
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
+
+        const newAddedCustomerParams = {
+            queryObj: {                
+            },
+            rangParams: [{
+                from: this.props.startTime,
+                to: this.props.endTime,
+                type: 'time',
+                name: 'start_time'
+            }],
+            condition: {
+                customer_label: this.state.newAddedCustomerType,
+                term_fields: ['customer_label'],                
+            }
+        };
+
+        if (this.state.currentTeamId) {
+            newAddedCustomerParams.condition.sales_team_id = this.state.currentTeamId;
+        }
+
+        if (this.state.currentMemberId) {
+            newAddedCustomerParams.queryObj.user_id = this.state.currentMemberId;
+        }
+
         return (
             <div className="oplate_customer_analysis">
                 <div ref="chart_list" style={{ height: layoutParams.chartListHeight }}>
@@ -1036,7 +1079,7 @@ var CustomerAnalysis = React.createClass({
                 </div>
                 <RightPanel
                     className="customer-stage-table-wrapper"
-                    showFlag={this.state.isShowCustomerStageTable}
+                    showFlag={this.state.isShowCustomerStageTable || this.state.isShowCustomerTable}
                 >
                     {this.state.isShowCustomerStageTable ?
                         <CustomerStageTable
@@ -1050,6 +1093,21 @@ var CustomerAnalysis = React.createClass({
                                 !this.state.stageChangedCustomerList.data.length >= DEFAULT_TABLE_PAGESIZE
                             }
                         /> : null}
+
+                    {
+                        this.state.isShowCustomerTable ?
+                            <div className="customer-table-close topNav">
+                                <RightPanelClose
+                                    title={Intl.get('common.app.status.close', '关闭')}
+                                    onClick={this.showCustomerTable.bind(this, false)}
+                                />
+                                <CrmList
+                                    location={{ query: '' }}
+                                    fromSalesHome={true}
+                                    params={newAddedCustomerParams}
+                                />
+                            </div> : null
+                    }
                 </RightPanel>
             </div>
         );
