@@ -2279,6 +2279,15 @@ var zh_CN = {
     'noMoreTip.visitBack': '没有更多回访记录了',
     'noMoreTip.customer': '没有更多客户了',
     'failed.change.source.time': '修改线索咨询时间失败',
-    'china.zone.distribute.south.island': '南海诸岛'
+    'china.zone.distribute.south.island': '南海诸岛',
+    'clue.customer.analysis.trend': '趋势',
+    'clue.stage.statics': '线索阶段统计',
+    'clue.analysis.access.channel': '渠道',
+    'clue.analysis.source': '来源',
+    'clue.analysis.access.chart': '渠道统计',
+    'clue.analysis.ability': '有效',
+    'clue.analysis.inability': '无效',
+    'clue.analysis.source.chart': '来源统计',
+    'clue.analysis.classify.chart': '分类统计'
 };
 export default zh_CN;

@@ -2256,6 +2256,15 @@ var en_US = {
     'noMoreTip.visitBack': 'no more visit record',
     'noMoreTip.customer': 'no more customers',
     'failed.change.source.time': 'Failed to change clue source time',//修改线索咨询时间失败
-    'china.zone.distribute.south.island': 'South China Sea Islands'//南海诸岛
+    'china.zone.distribute.south.island': 'South China Sea Islands',//南海诸岛
+    'clue.customer.analysis.trend': 'Trend',//趋势
+    'clue.stage.statics': 'Clue stage statistics',//线索阶段统计
+    'clue.analysis.access.channel': 'channel',//渠道
+    'clue.analysis.source': 'source',//来源
+    'clue.analysis.access.chart': 'Channel statistics',//渠道统计
+    'clue.analysis.ability': 'Effective',//有效
+    'clue.analysis.inability': 'Invalid',//无效
+    'clue.analysis.source.chart': 'Source statistics',//来源统计
+    'clue.analysis.classify.chart': 'Classify statistics'//分类统计
 };
 export default en_US;
