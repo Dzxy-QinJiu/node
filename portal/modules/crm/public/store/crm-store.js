@@ -183,7 +183,16 @@ CrmStore.prototype.editBasicSuccess = function(newBasic) {
 CrmStore.prototype.updateCustomerDefContact = function(contact) {
     if (contact && contact.customer_id) {
         let updateCustomer = _.find(this.curCustomers, customer => customer.id === contact.customer_id);
-        updateCustomer.contacts = [contact];
+        //删除默认联系人
+        if(contact.isDelDefaultContact){
+            delete updateCustomer.contact;
+            delete updateCustomer.contact_way;
+            delete updateCustomer.contacts;
+            delete updateCustomer.contact_name;
+            delete updateCustomer.phones;
+        }else{
+            updateCustomer.contacts = [contact];
+        }
     }
 };
 //获取过滤条件中的销售阶段

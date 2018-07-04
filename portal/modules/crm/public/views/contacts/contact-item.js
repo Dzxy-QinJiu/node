@@ -64,7 +64,16 @@ var ContactItem = React.createClass({
             Trace.traceEvent(this.getDOMNode(), '确认删除联系人');
             let customerId = this.props.contact.contact.customer_id;
             ContactAction.deleteContact(this.props.contact, () => {
-                this.props.refreshCustomerList(customerId);
+                //删的默认联系人
+                if (_.get(this.props, 'contact.contact') && this.props.contact.contact.def_contancts === 'true') {
+                    if (_.isFunction(this.props.updateCustomerDefContact)) {
+                        //删除列表中的默认联系人
+                        this.props.updateCustomerDefContact({
+                            ...this.props.contact.contact,
+                            isDelDefaultContact: true
+                        });
+                    }
+                }
             });
         }
     },
@@ -234,7 +243,7 @@ var ContactItem = React.createClass({
     },
     //渲染联系方式展示区
     renderContactWay(contactEleList){
-        if (_.get(contactEleList,'[0]')) {
+        if (_.get(contactEleList, '[0]')) {
             return (
                 <div className="contact-way-container">
                     {contactEleList[0]}
