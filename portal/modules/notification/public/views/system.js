@@ -388,7 +388,7 @@ let SystemNotification = React.createClass({
                 <div className="system-notice-content">
                     {this.renderUnHandledNoticeContent(notice, idx)}
                     {
-                        loginUserId !== notice.member_id ?
+                        loginUserId === notice.member_id ?
                             <Button className="notice-handled-set" disabled={this.state.noticeId === notice.id}
                                 onClick={this.handleSystemNotice.bind(this, notice)}
                             >
