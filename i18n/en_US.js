@@ -1331,6 +1331,17 @@ var en_US = {
     'crm.Administrative.level.2': 'Prefectural level',//地市级
     'crm.Administrative.level.3': 'county level',//区县级
     'crm.dynamic.no.data': 'The customer has no dynamic',//该客户还没有动态
+    'crm.no.contact.way.tip': 'No contact, please {addTip}',//暂无联系方式，请{addTip}
+    'crm.basic.no.remark': 'No remark',//暂无备注
+    'crm.basic.add.remark': 'Add remark',//添加备注
+    'crm.basic.no.address': 'No detailed address',//暂无详细地址
+    'crm.basic.add.address': 'Add detailed address',//添加详细地址
+    'crm.basic.no.location': 'No region',//暂无地域信息
+    'crm.basic.add.location': 'Add region',//添加地域信息
+    'crm.basic.no.industry': 'No industry',//暂无行业
+    'crm.basic.add.industry': 'Add industry',//添加行业
+    'crm.basic.no.administrative': 'No administrative level',//暂无行政级别
+    'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
     // 客户管理end
 
     //客户分析 start
