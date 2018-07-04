@@ -333,8 +333,9 @@ let SystemNotification = React.createClass({
             this.setHandlingFlag(notice, false);
             if (result) {//处理成功后，将该消息从未处理消息中删除
                 this.state.systemNotices = _.filter(this.state.systemNotices, item => item.id !== notice.id);
-                this.setState({systemNotices: this.state.systemNotices, totalSize: this.state.totalSize - 1});
                 this.setState({
+                    systemNotices: this.state.systemNotices,
+                    totalSize: this.state.totalSize - 1,
                     handleNoticeMessageSuccessFlag: true
                 });
             }
