@@ -28,7 +28,9 @@ const Spinner = require('CMP_DIR/spinner');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 import CustomerStageTable from './customer-stage-table';
 const DEFAULT_TABLE_PAGESIZE = 10;
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+const Emitters = require('PUB_DIR/sources/utils/emitters');
+const teamTreeEmitter = Emitters.teamTreeEmitter;
+const phoneMsgEmitter = Emitters.phoneMsgEmitter;
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const RightPanelClose = rightPanelUtil.RightPanelClose;
@@ -36,10 +38,7 @@ const CrmList = require('MOD_DIR/crm/public/crm-list');
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 import NewTrailCustomerTable from './new-trail-and-aign-customer';
-const Emitters = require('PUB_DIR/sources/utils/emitters');
-const dateSelectorEmitter = Emitters.dateSelectorEmitter;
-const appSelectorEmitter = Emitters.appSelectorEmitter;
-const teamTreeEmitter = Emitters.teamTreeEmitter;
+
 //客户分析
 var CustomerAnalysis = React.createClass({
     getStateData: function() {
@@ -548,69 +547,6 @@ var CustomerAnalysis = React.createClass({
     numToPercent(num) {
         return (num * 100).toFixed(2) + '%';
     },
-    //获取触发器
-    getEmitters: function() {
-        return [
-            {
-                instance: dateSelectorEmitter,
-                event: dateSelectorEmitter.SELECT_DATE,
-                callbackArgs: [{
-                    name: 'starttime',
-                }, {
-                    name: 'endtime',
-                }],
-            },
-            {
-                instance: teamTreeEmitter,
-                event: teamTreeEmitter.SELECT_TEAM,
-                callbackArgs: [{
-                    name: 'team_ids',
-                }],
-            },
-            {
-                instance: teamTreeEmitter,
-                event: teamTreeEmitter.SELECT_MEMBER,
-                callbackArgs: [{
-                    name: 'member_id',
-                }],
-            },
-        ];
-    },
-    //获取图表条件
-    getConditions: function() {
-        return [
-            {
-                name: 'starttime',
-                value: this.props.startTime,
-            },
-            {
-                name: 'endtime',
-                value: this.props.endTime,
-            },
-            {
-                name: 'app_id',
-                value: 'all',
-            },
-            {
-                name: 'team_ids',
-                value: '',
-            },
-            {
-                name: 'member_id',
-                value: '',
-            },
-            {
-                name: 'data_type',
-                value: this.getDataType(),
-                type: 'params',
-            },
-            {
-                name: 'auth_type',
-                value: getDataAuthType().toLowerCase(),
-                type: 'params',
-            },
-        ];
-    },
     //处理转出客户点击
     handleTransferedCustomerClick: function(item, index) {
         this.setState({
@@ -1003,8 +939,8 @@ var CustomerAnalysis = React.createClass({
             <div className="chart_list">
                 <AntcAnalysis
                     charts={this.getCharts()}
-                    emitters={this.getEmitters()}
-                    conditions={this.getConditions()}
+                    emitters={this.props.emitters}
+                    conditions={this.props.conditions}
                     isGetDataOnMount={true}
                 />
             </div>
