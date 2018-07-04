@@ -612,7 +612,7 @@ var CustomerAnalysis = React.createClass({
         ];
     },
     //处理转出客户点击
-    handleTransferedCustomerClick: (item, index) => {
+    handleTransferedCustomerClick: function(item, index) {
         this.setState({
             showRightPanel: true,
             selectedCustomerId: item.customer_id,
