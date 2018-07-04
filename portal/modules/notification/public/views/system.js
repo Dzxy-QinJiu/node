@@ -172,9 +172,10 @@ let SystemNotification = React.createClass({
                     <i className={iconfontClassName}></i>
                     <div className="system-notice-type">
                         {SYSTEM_NOTICE_TYPE_MAP[notice.type]}
-                        <i className='iconfont icon-arrow'></i>
                     </div>
-                    <div className="customer-name" onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>{notice.customer_name}</div>
+                    <div className="customer-name" onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>
+                        {notice.customer_name}<i className='iconfont icon-arrow'></i>
+                    </div>
                 </div>
                 <div className="system-notice-descr">
                     {isOffsetLogin ? (Intl.get('notification.system.on', '在') + notice.content.current_location) : ''}
@@ -183,7 +184,7 @@ let SystemNotification = React.createClass({
                         <a onClick={this.openUserDetail.bind(this, notice.user_id, idx)}>{notice.user_name}</a>) : null}
                     {notice.app_name ?
                         <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}</span> : ''}
-                    {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
+                    {isLoginFailed ? <span>,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
                     <span className="system-notice-time">
                         {',' + TimeUtil.transTimeFormat(notice.create_time)}
                     </span>
@@ -286,9 +287,13 @@ let SystemNotification = React.createClass({
                 {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
                 {item.app_name ?
                     <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
-                {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')},</span> : null}
+                {isLoginFailed ? <span>，{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
                 <span className="system-notice-time">
-                    {item.login_count === 1 ? TimeUtil.transTimeFormat(item.create_time) : (<span>
+                    {item.login_count === 1 ? (
+                        <span>
+                            ，{TimeUtil.transTimeFormat(item.create_time)}
+                        </span>
+                    ) : (<span>
                         <ReactIntl.FormattedMessage id="notification.system.login.count"
                             defaultMessage={'{count}次,最后一次'}
                             values={{count: <span className="login-count">{item.login_count}</span>}}/>
@@ -383,9 +388,10 @@ let SystemNotification = React.createClass({
                     <i className={iconfontClassName}></i>
                     <div className="system-notice-type">
                         {SYSTEM_NOTICE_TYPE_MAP[notice.type]}
-                        <i className='iconfont icon-arrow'></i>
                     </div>
-                    <div className="customer-name" onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>{notice.customer_name}</div>
+                    <div className="customer-name" onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>
+                        {notice.customer_name}<i className='iconfont icon-arrow'></i>
+                    </div>
                 </div>
                 <div className="system-notice-content">
                     {this.renderUnHandledNoticeContent(notice, idx)}
