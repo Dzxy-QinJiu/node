@@ -59,7 +59,7 @@ class FilterSearch extends React.Component {
         this.setState({
             selectedFilterList: data,
             plainFilterList: list,
-            filterName: list.map(x => x.name).join('+')            
+            filterName: list.map(x => x.name).join('+')
         });
     }
     showAddZone(isShow) {
@@ -71,7 +71,7 @@ class FilterSearch extends React.Component {
         this.showAddZone(false);
         this.showConfirmPop(false);
         if (this.props.showSelectChangeTip) {
-            if(this.state.changeRequestData) {
+            if (this.state.changeRequestData) {
                 filterEmitter.emit(filterEmitter.CHANGE_PERMITTED, this.state.changeRequestData);
                 //确认修改后，清空之前请求修改的数据，防止点击全部清空时发送事件
                 this.setState({
@@ -80,7 +80,7 @@ class FilterSearch extends React.Component {
             } else {
                 filterEmitter.emit(filterEmitter.CLEAR_FILTERS);
             }
-           
+
         }
         // filterEmitter.emit(filterEmitter.CLEAR_FILTERS + this.props.key);
     }
@@ -99,7 +99,7 @@ class FilterSearch extends React.Component {
     showConfirmPop(isShow) {
         this.setState({
             showConfirmPop: isShow
-        });        
+        });
     }
     handleClearAll() {
         if (this.props.showSelectChangeTip) {
@@ -222,8 +222,11 @@ class FilterSearch extends React.Component {
                                     </div> : null
                             }
                         </div> :
-                        <div className={this.state.showList ? 'icon-container active' : 'icon-container'}>
-                            <Icon type="filter" onClick={this.handleToggle.bind(this)} />
+                        <div
+                            onClick={this.handleToggle.bind(this)}
+                            className={this.state.showList ? 'icon-container active' : 'icon-container'}
+                        >
+                            <Icon type="filter" />
                         </div>
 
                 }

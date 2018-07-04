@@ -846,7 +846,7 @@ var Crm = React.createClass({
                 >
                     {isWebMini ? <i className="iconfont icon-merge-btn" /> : Intl.get('crm.0', '合并客户')}
                 </PrivilegeChecker>
-                <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE">
+                <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className="batch-btn-wrapper">
                     <CrmBatchChange isWebMini={isWebMini}
                         currentId={this.state.currentId}
                         hideBatchChange={this.hideBatchChange}
