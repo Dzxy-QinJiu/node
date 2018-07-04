@@ -786,19 +786,26 @@ var CustomerAnalysis = React.createClass({
         }, {
             title: Intl.get('user.analysis.location.add', '地域-新增'),
             chartType: 'bar',
+            customOption: {
+                showValue: true,
+            },
             data: this.state.zoneAnalysis.data,
             resultType: this.state.zoneAnalysis.resultType,
         }, {
             title: Intl.get('user.analysis.industry.add', '行业-新增'),
             chartType: 'bar',
             customOption: {
-                reverse: true
+                reverse: true,
+                showValue: true,
             },
             data: this.state.industryAnalysis.data,
             resultType: this.state.industryAnalysis.resultType,
         }, {
             title: Intl.get('user.analysis.team.add', '团队-新增'),
             chartType: 'bar',
+            customOption: {
+                showValue: true,
+            },
             data: this.state.teamAnalysis.data,
             resultType: this.state.teamAnalysis.resultType,
         }, {
