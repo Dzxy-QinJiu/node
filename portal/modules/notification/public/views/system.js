@@ -239,23 +239,59 @@ let SystemNotification = React.createClass({
             selectedLiIndex: index
         });
     },
+    handleNoticeDetailData(noticeDetail) {
+        let noticeDetailData = _.cloneDeep(noticeDetail);
+        let userName = _.chain(noticeDetailData).map('user_name').uniq().value();
+        let appName = _.chain(noticeDetailData).map('app_name').uniq().value();
+        let userAppArray = [];
+        userName.forEach( (nameItem) => {
+            appName.forEach( (appItem) => {
+                userAppArray.push({user_name: nameItem, app_name: appItem});
+            });
+        } );
+        let processData = [];
+        userAppArray.forEach( (item) => {
+            let processObj = {};
+            noticeDetailData.forEach( (noticeItem, index) => {
+                if (item.user_name === noticeItem.user_name && item.app_name === noticeItem.app_name) {
+                    if (processObj && processObj.app_name) {
+                        processObj.login_count += 1;
+                        if (processObj.create_time < noticeItem.create_time) {
+                            processObj.create_time = noticeItem.create_time;
+                        }
+                    } else {
+                        noticeItem.login_count = 1;
+                        processObj = noticeItem;
+                    }
+                }
+            } );
+            if (processObj && processObj.app_name) {
+                processData.push(processObj);
+            }
+        } );
+        return processData;
+    },
+    // idx表示的是系统通知的条数
     renderUnHandledNoticeContent: function(notice, idx) {
+        console.log('notice:', notice);
         let showList = [];
         if (_.isArray(notice.detail) && notice.detail.length) {
-            showList = notice.detail;
+            showList = this.handleNoticeDetailData(notice.detail);
         }
-        return showList.map((item) => {
+        return showList.map((item, index) => {
             //是否是异地登录的类型
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
             let isLoginFailed = item.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
-            return <div className="system-notice-item" key={item.user_id}>
-                <a onClick={this.openUserDetail.bind(this, item.user_id, idx)}>{item.user_name}</a>
+            return <div className="system-notice-item" key={index}>
+                <a onClick={this.openUserDetail.bind(this, item.user_id, index)}>{item.user_name}</a>
                 {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
                 {item.app_name ?
                     <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
-                {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
-                <span
-                    className="system-notice-time">{moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
+                {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')},</span> : null}
+                <span className="system-notice-time">
+                    {item.login_count !== 1 ? (item.login_count + '次,最后一次 ' ) : null }
+                    {TimeUtil.transTimeFormat(item.create_time)}
+                </span>
             </div>;
         });
     },
@@ -325,7 +361,7 @@ let SystemNotification = React.createClass({
         }
         return iconfontClassName;
     },
-    //未处理的系统消息
+    //未处理的系统消息  idx表示的是共有多少条系统通知
     renderUnHandledNotice: function(notice, idx) {
         let loginUser = userData.getUserData();
         let loginUserId = loginUser ? loginUser.user_id : '';//只可以处理自己的系统消息
