@@ -67,7 +67,9 @@ const OTHER_FILTER_ITEMS = {
     INTEREST_MEMBER_IDS: 'interest_member_ids',//被关注的客户
     MY_INTERST: 'my_interest',//我关注的客户
     MULTI_ORDER: 'multi_order',//多个订单的客户
-    AVAILABILITY: 'availability'//有效客户
+    AVAILABILITY: 'availability',//有效客户
+    SEVEN_LOGIN: 'seven_login',//一周内登录
+    MONTH_LOGIN: 'month_login',//一个月内登录
 };
 //标签选项下的特殊标签
 const SPECIAL_LABEL = {
@@ -678,6 +680,7 @@ var Crm = React.createClass({
         };
         //其他筛选
         let dayTime = '';
+        let dayTimeLogin = '';
         //超xxx天未联系客户
         switch (condition.otherSelectedItem) {
             case OTHER_FILTER_ITEMS.THIRTY_UNCONTACT://超30天未联系的客户
@@ -688,6 +691,12 @@ var Crm = React.createClass({
                 break;
             case OTHER_FILTER_ITEMS.SEVEN_UNCONTACT://超7天未联系的客户
                 dayTime = DAY_TIME.SEVEN_DAY;
+                break;
+            case OTHER_FILTER_ITEMS.SEVEN_LOGIN://近一周活跃用户
+                dayTimeLogin = DAY_TIME.SEVEN_DAY;
+                break;
+            case OTHER_FILTER_ITEMS.MONTH_LOGIN://近一个月活跃用户
+                dayTimeLogin = DAY_TIME.THIRTY_DAY;
                 break;
             case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
                 condition.contain_contact = 'false';
@@ -715,7 +724,7 @@ var Crm = React.createClass({
                 };
                 break;
             case OTHER_FILTER_ITEMS.AVAILABILITY://有效客户
-                condition.availability = '1';
+                condition.availability = '0';
                 break;
 
         }
@@ -726,8 +735,17 @@ var Crm = React.createClass({
                 name: 'last_contact_time',
                 type: 'time'
             };
-        } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
-            //不是超xx天未联系的客户、也不是多个订单客户的过滤时，传默认的设置
+        }
+        //xx天活跃客户过滤需传的参数
+        else if (dayTimeLogin) {
+            this.state.rangParams[0] = {
+                from: moment().valueOf() - dayTimeLogin,
+                name: 'last_login_time',
+                type: 'time'
+            };
+        }
+        else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
+            //既不是超xx天未联系的客户、也不是xx天的活跃用户、还不是多个订单客户的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }
         if (unexist.length > 0) {

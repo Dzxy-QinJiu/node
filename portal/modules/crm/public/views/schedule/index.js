@@ -13,9 +13,9 @@ import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
-import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
 import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import classNames from 'classnames';
 
 var CrmSchedule = React.createClass({
     getInitialState: function() {
@@ -31,7 +31,7 @@ var CrmSchedule = React.createClass({
     },
     // 获取拨打电话的座席号
     getUserPhoneNumber: function() {
-        CallNumberUtil.getUserPhoneNumber( callNumberInfo => {
+        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
                     this.setState({
@@ -215,7 +215,7 @@ var CrmSchedule = React.createClass({
     },
     //联系计划列表区域
     renderScheduleLists: function() {
-        if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
+        if (_.get(this.state, 'scheduleList[0]')) {
             return (
                 <TimeLine
                     list={this.state.scheduleList}
@@ -227,13 +227,15 @@ var CrmSchedule = React.createClass({
                 />);
         } else {
             //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>);
+            return null;
         }
     },
     renderScheduleTitle(){
         return (
             <div className="schedule-title">
                 <span>{Intl.get('crm.right.schedule', '联系计划')}:</span>
+                {!_.get(this.state, 'scheduleList[0]') && !this.state.isLoadingScheduleList ? (
+                    <span className="no-data-text">{}</span>) : null}
                 {this.props.isMerge ? null : (
                     <span className="iconfont icon-add schedule-add-btn"
                         title={Intl.get('crm.214', '添加联系计划')}
@@ -242,12 +244,19 @@ var CrmSchedule = React.createClass({
             </div>);
     },
     render(){
+        let hasNoData = !_.get(this.state, 'scheduleList[0]') && !this.state.isLoadingScheduleList;
+        let addBtn = this.props.isMerge ? null : (<span className="iconfont icon-add schedule-add-btn"
+            title={Intl.get('crm.214', '添加联系计划')}
+            onClick={this.addSchedule}/>);
         return (
             <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
                 listenScrollBottom={this.state.listenScrollBottom}>
-                <DetailCard title={this.renderScheduleTitle()}
+                <DetailCard title={`${Intl.get('crm.right.schedule', '联系计划')}:`}
+                    titleDescr={hasNoData ? Intl.get('common.no.more.schedule', '暂无计划') : ''}
+                    titleRightBlock={addBtn}
+                    titleBottomBorderNone={hasNoData}//没有数据时，标题下面没有下边框
                     content={this.renderScheduleContent()}
-                    className="schedule-contianer"/>
+                    className='schedule-contianer'/>
             </RightPanelScrollBar>
         );
     }

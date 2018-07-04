@@ -500,6 +500,8 @@ var en_US = {
     'user.suggest.name.two': 'Create username {user01} or {user02}', // 创建{user01}或{user02}
     'user.exist.suggest.name': '{user}is already taken. wheather to create {user01}', // 用户名{user}已存在，是否创建{user01}?
     'user.exist.name': '{user}is already taken.please rename', // 用户名{user}已存在，请重新命名
+    'user.exist.name.check.user': 'The username already exists, Whether to query {check}', // 用户名已存在，是否查询{check}
+    'user.exisit.the.name': 'the user', // 该用户
     'user.check.fail': 'Failed to verify the username.', // 用户名校验出错！
     'user.select.realm': 'Select Realm', // 选择安全域
     'user.select.realm.title': 'Realm', // 安全域：
@@ -1014,7 +1016,9 @@ var en_US = {
     'user.apply.reply.no.content': 'please input reply content', // 请填写回复内容
     'user.apply.reply.loading': 'Trying to load the reply list', // 正在努力加载回复列表 ...... ###############
     'user.apply.detail.button.pass': 'agree', // 通过
-    'user.apply.detail.backout': 'revoke', //Revoke the application  撤销申请
+    'user.apply.detail.backout': 'cancel application', //Revoke the application  撤销申请
+    'user.apply.detail.pass': 'approve application',//通过申请
+    'user.apply.detail.reject': 'reject application',//驳回申请
     'user.apply.detail.suggest': 'opinion', // opinion  意见
     'user.apply.detail.remark': 'postil', // 批注
     'user.apply.detail.expanded.title': 'returns the abbreviated content', // 返回缩略内容
@@ -1055,6 +1059,7 @@ var en_US = {
     'reply.cancel.tip.content': '{approvalPerson} revoked the {userType} user {userNames}, applied to the customer {customerName} ',//{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'user.apply.new.refresh.tip': 'Have a new application，refresh',//有新申请,点此刷新
     'user.apply.no.new.refresh.tip': 'No new application',//无新申请
+    'user.apply.last.follow.date': 'Latest follow up date',//最新跟进日期
     // 用户审批end
 
     // 在线用户start
@@ -1235,6 +1240,8 @@ var en_US = {
     'crm.213': 'Undistributed Customer',//未分配客户
     'crm.215': 'A total of {count} clues',//共{count}个线索
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
+    'crm.recent.week.active': 'Recent week active customers',//近一周活跃用户
+    'crm.recent.month.active': 'Recent month active customers',//近一月活跃用户
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
     'crm.administrative.level': 'Administrative level',//行政级别
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
@@ -1326,6 +1333,18 @@ var en_US = {
     'crm.Administrative.level.1': 'Provincial level',//省部级
     'crm.Administrative.level.2': 'Prefectural level',//地市级
     'crm.Administrative.level.3': 'county level',//区县级
+    'crm.dynamic.no.data': 'The customer has no dynamic',//该客户还没有动态
+    'crm.no.contact.way.tip': 'No contact, please {addTip}',//暂无联系方式，请{addTip}
+    'crm.basic.no.remark': 'No remark',//暂无备注
+    'crm.basic.add.remark': 'Add remark',//添加备注
+    'crm.basic.no.address': 'No detailed address',//暂无详细地址
+    'crm.basic.add.address': 'Add detailed address',//添加详细地址
+    'crm.basic.no.location': 'No region',//暂无地域信息
+    'crm.basic.add.location': 'Add region',//添加地域信息
+    'crm.basic.no.industry': 'No industry',//暂无行业
+    'crm.basic.add.industry': 'Add industry',//添加行业
+    'crm.basic.no.administrative': 'No administrative level',//暂无行政级别
+    'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
     // 客户管理end
 
     //客户分析 start
@@ -2250,6 +2269,7 @@ var en_US = {
     'noMoreTip.callRecord': 'no more call records',
     'noMoreTip.visitBack': 'no more visit record',
     'noMoreTip.customer': 'no more customers',
-    'failed.change.source.time': 'Failed to change clue source time'//修改线索咨询时间失败
+    'failed.change.source.time': 'Failed to change clue source time',//修改线索咨询时间失败
+    'china.zone.distribute.south.island': 'South China Sea Islands'//南海诸岛
 };
 export default en_US;

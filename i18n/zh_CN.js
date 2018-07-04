@@ -497,6 +497,8 @@ var zh_CN = {
     'user.suggest.name.two': '创建{user01}或{user02}？',
     'user.exist.suggest.name': '用户名{user}已存在，是否创建{user01}?',
     'user.exist.name': '用户名{user}已存在，请重新命名',
+    'user.exist.name.check.user': '用户名已存在，是否查询{check}',
+    'user.exisit.the.name': '该用户',
     'user.check.fail': '用户名校验出错！',
     'user.select.realm': '选择安全域',
     'user.select.realm.title': '安全域',
@@ -1025,6 +1027,8 @@ var zh_CN = {
     'user.apply.reply.loading': '正在努力加载回复列表 ......',
     'user.apply.detail.button.pass': '通过',
     'user.apply.detail.backout': '撤销申请',
+    'user.apply.detail.pass': '通过申请',
+    'user.apply.detail.reject': '驳回申请',
     'user.apply.detail.suggest': '意见',
     'user.apply.detail.remark': '批注',
     'user.apply.detail.expanded.title': '返回缩略内容',
@@ -1065,6 +1069,7 @@ var zh_CN = {
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
     'user.apply.no.new.refresh.tip': '无新申请',
+    'user.apply.last.follow.date': '最新跟进日期',
     // 用户审批end
 
     // 在线用户start
@@ -1247,6 +1252,8 @@ var zh_CN = {
     'crm.215': '共{count}个线索',
 
     'crm.over.day.without.contact': '超{day}天未联系',
+    'crm.recent.week.active': '近一周的活跃用户',
+    'crm.recent.month.active': '近一个月的活跃用户',
     'crm.customer.interested': '添加关注',
     'crm.customer.uninterested': '取消关注',
     'crm.customer.failed.interested': '修改失败',
@@ -1342,6 +1349,18 @@ var zh_CN = {
     'crm.Administrative.level.1': '省部级',
     'crm.Administrative.level.2': '地市级',
     'crm.Administrative.level.3': '区县级',
+    'crm.dynamic.no.data': '该客户还没有动态',
+    'crm.no.contact.way.tip': '暂无联系方式，请{addTip}',
+    'crm.basic.no.remark': '暂无备注',
+    'crm.basic.add.remark': '添加备注',
+    'crm.basic.no.address': '暂无详细地址',
+    'crm.basic.add.address': '添加详细地址',
+    'crm.basic.no.location': '暂无地域信息',
+    'crm.basic.add.location': '添加地域信息',
+    'crm.basic.no.industry': '暂无行业',
+    'crm.basic.add.industry': '添加行业',
+    'crm.basic.no.administrative': '暂无行政级别',
+    'crm.basic.add.administrative': '添加行政级别',
     // 客户管理end
 
     // 客户分析start
@@ -2273,6 +2292,7 @@ var zh_CN = {
     'noMoreTip.callRecord': '没有更多通话记录了',
     'noMoreTip.visitBack': '没有更多回访记录了',
     'noMoreTip.customer': '没有更多客户了',
-    'failed.change.source.time': '修改线索咨询时间失败'
+    'failed.change.source.time': '修改线索咨询时间失败',
+    'china.zone.distribute.south.island': '南海诸岛'
 };
 export default zh_CN;
