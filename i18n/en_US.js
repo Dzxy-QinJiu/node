@@ -862,6 +862,7 @@ var en_US = {
     'notification.login.failed': 'Login failed', //登录失败
     'notification.system.handled.success': 'Successfully processed', // 处理成功
     'notification.system.handled.error': 'Failed processed', // 处理失败
+    'notification.system.login.count': '{count} counts, last time', // {count}次，最后一次
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序

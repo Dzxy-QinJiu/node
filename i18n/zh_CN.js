@@ -866,6 +866,7 @@ var zh_CN = {
     'notification.login.failed': '登录失败',
     'notification.system.handled.success': '处理成功',
     'notification.system.handled.error': '处理失败',
+    'notification.system.login.count': '{count}次，最后一次',
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',

@@ -289,8 +289,12 @@ let SystemNotification = React.createClass({
                     <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
                 {isLoginFailed ? <span> ,{Intl.get('notification.login.password.error', '报密码或验证码错误')},</span> : null}
                 <span className="system-notice-time">
-                    {item.login_count !== 1 ? (item.login_count + '次,最后一次 ' ) : null }
-                    {TimeUtil.transTimeFormat(item.create_time)}
+                    {item.login_count === 1 ? TimeUtil.transTimeFormat(item.create_time) : (<span>
+                        <ReactIntl.FormattedMessage id="notification.system.login.count"
+                            defaultMessage={'{count}次,最后一次'}
+                            values={{count: <span className="login-count">{item.login_count}</span>}}/>
+                        <span className="login-time">{TimeUtil.transTimeFormat(item.create_time)}</span>
+                    </span>)}
                 </span>
             </div>;
         });
