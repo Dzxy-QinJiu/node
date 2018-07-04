@@ -767,6 +767,22 @@ var CustomerAnalysis = React.createClass({
             },
         ];
     },
+    //处理转出客户点击
+    handleTransferedCustomerClick: (item, index) => {
+        this.setState({
+            showRightPanel: true,
+            selectedCustomerId: item.customer_id,
+            selectedCustomerIndex: index
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: item.customer_id,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                hideRightPanel: this.hideRightPanel
+            }
+        });
+    },
     //获取图表
     getCharts: function() {
         return [{
@@ -962,6 +978,57 @@ var CustomerAnalysis = React.createClass({
                             );
                         }
                     }
+                ],
+            },
+        }, {
+            title: Intl.get('user.analysis.moveoutCustomer', '转出客户统计'),
+            chartType: 'table',
+            layout: {
+                sm: 24,
+            },
+            data: this.state.transferCustomers.data,
+            resultType: this.state.transferCustomers.loading ? 'loading' : '',
+            option: {
+                pagination: false,
+                columns: [
+                    {
+                        title: Intl.get('common.login.time', '时间'),
+                        dataIndex: 'time',
+                        key: 'time',
+                        sorter: true,
+                        width: 100,
+                    }, {
+                        title: Intl.get('crm.41', '客户名'),
+                        dataIndex: 'customer_name',
+                        key: 'customer_name',
+                        className: 'customer-name',
+                        sorter: true,
+                        width: 300,
+                        render: (text, item, index) => {
+                            return (
+                                <span className="transfer-customer-cell"
+                                    onClick={this.handleTransferedCustomerClick.bind(this, item, index)}>{text}</span>
+                            );
+                        }
+                    }, {
+                        title: Intl.get('crm.customer.transfer.sales', '销售代表'),
+                        dataIndex: 'old_member_nick_name',
+                        key: 'old_member_nick_name',
+                        sorter: true,
+                        width: 100,
+                    }, {
+                        title: Intl.get('crm.customer.transfer.manager', '客户经理'),
+                        dataIndex: 'new_member_nick_name',
+                        key: 'new_member_nick_name',
+                        sorter: true,
+                        width: 100,
+                    }, {
+                        title: Intl.get('user.sales.team', '销售团队'),
+                        dataIndex: 'sales_team',
+                        key: 'sales_team',
+                        width: 100,
+                    }
+
                 ],
             },
         }];
