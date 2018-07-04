@@ -177,13 +177,16 @@ var BasicData = React.createClass({
         let industryOptions = this.state.industryList.map((item, i) => {
             return (<Option key={i} value={item}>{item}</Option>);
         });
+        const EDIT_FEILD_WIDTH = 395, EDIT_FEILD_WIDTH_LESS = 370;
         return (
             <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
                     <div className="basic-info-administrative basic-info-item">
-                        <span title={Intl.get('crm.administrative.level', '行政级别')}
-                            className="iconfont icon-administrative basic-info-icon"/>
+                        <span className="basic-info-label">
+                            {Intl.get('crm.administrative.level', '行政级别')}:
+                        </span>
                         <BasicEditSelectField
+                            width={EDIT_FEILD_WIDTH_LESS}
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
                             displayText={this.getAdministrativeLevel(level)}
@@ -196,9 +199,11 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-indestry basic-info-item">
-                        <span title={Intl.get('realm.industry', '行业')}
-                            className="iconfont icon-industry basic-info-icon"/>
+                        <span className="basic-info-label">
+                            {Intl.get('realm.industry', '行业')}:
+                        </span>
                         <BasicEditSelectField
+                            width={EDIT_FEILD_WIDTH}
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
                             displayText={basicData.industry}
@@ -212,8 +217,11 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-address basic-info-item">
-                        <span title={Intl.get('crm.96', '地域')} className="iconfont icon-address basic-info-icon"/>
+                        <span className="basic-info-label">
+                            {Intl.get('crm.96', '地域')}:
+                        </span>
                         <LocationSelectField
+                            width={EDIT_FEILD_WIDTH}
                             id={basicData.id}
                             province={basicData.province}
                             city={basicData.city}
@@ -226,9 +234,11 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-detail-address basic-info-item">
-                        <span title={Intl.get('realm.full.address', '详细地址')}
-                            className="iconfont icon-detail-address basic-info-icon"/>
+                        <span className="basic-info-label">
+                            {Intl.get('realm.full.address', '详细地址')}:
+                        </span>
                         <BasicEditInputField
+                            width={EDIT_FEILD_WIDTH_LESS}
                             id={basicData.id}
                             value={basicData.address}
                             field="address"
@@ -239,8 +249,9 @@ var BasicData = React.createClass({
                         />
                     </div>
                     <div className="basic-info-remark basic-info-item">
-                        <span title={Intl.get('common.remark', '备注')} className="iconfont icon-remark basic-info-icon"/>
+                        <span className="basic-info-label">{Intl.get('common.remark', '备注')}:</span>
                         <BasicEditInputField
+                            width={EDIT_FEILD_WIDTH}
                             id={basicData.id}
                             type="textarea"
                             field="remarks"

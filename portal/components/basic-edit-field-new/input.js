@@ -33,6 +33,8 @@ const BasicEditField = React.createClass({
             placeholder: Intl.get('user.email.write.tip', '请填写邮箱'),
             //显示的值
             value: '',
+            //input编辑区的宽度
+            width: '100%',
             //编辑按钮的提示文案
             editBtnTip: Intl.get('common.update', '修改'),
             //修改成功
@@ -143,8 +145,8 @@ const BasicEditField = React.createClass({
                     displayType: 'text'
                 });
             };
-            if ((this.props.type === 'password' && value != secretPassword)
-                || (value != this.state.value)) {
+            if ((this.props.type === 'password' && value !== secretPassword)
+                || (value !== this.state.value)) {
                 this.props.saveEditInput(saveObj, () => {
                     setDisplayState();
                 }, errorMsg => {
@@ -227,7 +229,7 @@ const BasicEditField = React.createClass({
 
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
-                <Form horizontal autoComplete="off">
+                <Form horizontal autoComplete="off" style={{width: this.props.width || '100%'}}>
                     <input type="password" style={{display: 'none'}} name="input" autoComplete="off"/>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem

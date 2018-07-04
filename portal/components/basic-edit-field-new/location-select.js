@@ -10,6 +10,8 @@ const LocationSelectField = React.createClass({
             provinceName: '',
             cityName: '',
             countyName: '',
+            //编辑区的宽度
+            width: '100%',
             //编辑按钮的提示文案
             editBtnTip: Intl.get('crm.175', '设置地域'),
             onChange: function() {
@@ -140,7 +142,7 @@ const LocationSelectField = React.createClass({
             );
         }
         return (<div className="basic-edit-field location-edit-field">
-            <AntcAreaSelection labelCol="0" wrapperCol="24"
+            <AntcAreaSelection labelCol="0" wrapperCol="24" width={this.props.width || '100%'}
                 placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
                 provName={this.state.province}
                 cityName={this.state.city}
