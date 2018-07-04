@@ -173,21 +173,14 @@ exports.transTimeFormat = function(time) {
     let timeYear = moment(time).get('year'); // 所传时间当前的年份
     let nowYear = moment().get('year'); // 当前时间当前的年份
     if (timeYear === nowYear) { // 同一年
-        let timeMonth = moment(time).get('month'); // 所传时间当前的月份
-        let nowMonth = moment().get('month'); // 当前时间当前的月份
-        if (timeMonth === nowMonth) {
-            let timeDate = moment(time).get('date'); // 所传时间当前的月份
-            let nowDate = moment().get('date'); // 当前时间当前的月份
-            if (timeDate === nowDate) {
-                formatTime = Intl.get('user.time.today', '今天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
-            } else if (nowDate - timeDate === 1) {
-                formatTime = Intl.get('user.time.yesterday', '昨天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
-            } else if (nowDate - timeDate === 2) {
-                formatTime = Intl.get('sales.frontpage.before.yesterday', '前天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
-            } else {
-                formatTime = moment(time).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT);
-            }
-        } else if (timeMonth < nowMonth) {
+        let diffDays = moment().diff(moment(time), 'days'); // 比较当前时间与所传时间差的天数
+        if (diffDays === 0) {
+            formatTime = Intl.get('user.time.today', '今天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
+        } else if (diffDays === 1) {
+            formatTime = Intl.get('user.time.yesterday', '昨天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
+        } else if (diffDays === 2) {
+            formatTime = Intl.get('sales.frontpage.before.yesterday', '前天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
+        } else {
             formatTime = moment(time).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT);
         }
     } else if (timeYear < nowYear) { // YYYY-MM-DD hh:mm
