@@ -2297,5 +2297,14 @@ var zh_CN = {
     'phone.status.record.content': '请填写本次跟进内容',
     'phone.status.other.hang.out': '对方挂断',
     'phone.status.contact.later': '联系人现在不在，之后再联系',
+    'clue.customer.analysis.trend': '趋势',
+    'clue.stage.statics': '线索阶段统计',
+    'clue.analysis.access.channel': '渠道',
+    'clue.analysis.source': '来源',
+    'clue.analysis.access.chart': '渠道统计',
+    'clue.analysis.ability': '有效',
+    'clue.analysis.inability': '无效',
+    'clue.analysis.source.chart': '来源统计',
+    'clue.analysis.classify.chart': '分类统计'
 };
 export default zh_CN;

@@ -2274,5 +2274,14 @@ var en_US = {
     'phone.status.record.content': 'Please fill in this follow-up content',//请填写本次跟进内容
     'phone.status.other.hang.out': 'The other hangs up',//对方挂断
     'phone.status.contact.later': 'The contact is not here now, please contact later',//联系人现在不在，之后再联系
+    'clue.customer.analysis.trend': 'Trend',//趋势
+    'clue.stage.statics': 'Clue stage statistics',//线索阶段统计
+    'clue.analysis.access.channel': 'channel',//渠道
+    'clue.analysis.source': 'source',//来源
+    'clue.analysis.access.chart': 'Channel statistics',//渠道统计
+    'clue.analysis.ability': 'Effective',//有效
+    'clue.analysis.inability': 'Invalid',//无效
+    'clue.analysis.source.chart': 'Source statistics',//来源统计
+    'clue.analysis.classify.chart': 'Classify statistics'//分类统计
 };
 export default en_US;
