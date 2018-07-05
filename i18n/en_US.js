@@ -1333,7 +1333,7 @@ var en_US = {
     'crm.Administrative.level.1': 'Provincial level',//省部级
     'crm.Administrative.level.2': 'Prefectural level',//地市级
     'crm.Administrative.level.3': 'county level',//区县级
-    'crm.dynamic.no.data': 'The customer has no dynamic',//该客户还没有动态
+    'crm.dynamic.no.data': 'No dynamic',//暂无动态
     'crm.no.contact.way.tip': 'No contact, please {addTip}',//暂无联系方式，请{addTip}
     'crm.basic.no.remark': 'No remark',//暂无备注
     'crm.basic.add.remark': 'Add remark',//添加备注
@@ -1347,6 +1347,9 @@ var en_US = {
     'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
     'crm.overview.apply.user.tip': 'The customer has no user yet',//该客户还没有用户
     'crm.no.trace.record': 'The customer has not been followed up', //还没有跟进过该客户
+    'crm.no.contact.tip': 'The customer has not yet added a contact',//该客户还没有添加过联系人
+    'crm.no.contact': 'No contact',//暂无联系人
+    'crm.no.order.tip': 'The customer has not yet added a order',//该客户还没有添加过订单
     // 客户管理end
 
     //客户分析 start

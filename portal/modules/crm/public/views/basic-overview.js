@@ -303,7 +303,7 @@ var BasicOverview = React.createClass({
                     <span className="no-user-tip-content">
                         {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                     </span>
-                    <Button onClick={this.toggleApplyForm.bind(this)}>
+                    <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
                         {Intl.get('crm.apply.user.new', '申请新用户')}
                     </Button>
                 </div>);

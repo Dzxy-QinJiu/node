@@ -18,6 +18,19 @@
   word-wrap: break-word;
   word-break: break-all;
 }
+//客户详情中添加、申请按钮
+button.crm-detail-add-btn {
+  height: 24px;
+  padding: 0 8px;
+  float: right;
+  color: @btn_color;
+  border: 1px solid #d9d9d9;
+}
+//客户详情中总数及没有数据的提示
+.crm-detail-total-tip {
+  line-height: 24px;
+  color: #999999;
+}
 
 .basic-info-contianer {
   float: left;
@@ -60,30 +73,27 @@
         font-size: 12px;
         color: @white_color;
       }
-      .customer-label.info-tag-style{
+      .customer-label.info-tag-style {
         background-color: @info-tag-color;
       }
-      .customer-label.intent-tag-style{
+      .customer-label.intent-tag-style {
         background-color: @intent-tag-color;
       }
-      .customer-label.trial-tag-style{
+      .customer-label.trial-tag-style {
         background-color: @trial-tag-color;
       }
-      .customer-label.sign-tag-style{
+      .customer-label.sign-tag-style {
         background-color: @sign-tag-color;
       }
-      .customer-label.qualified-tag-style{
+      .customer-label.qualified-tag-style {
         background-color: @qualified-tag-color;
       }
-      .customer-label.history-qualified-tag-style{
+      .customer-label.history-qualified-tag-style {
         background-color: @history-qualified-tag-color;
       }
-      .customer-label.loss-tag-style{
-        background-color:@loss-tag-color;
+      .customer-label.loss-tag-style {
+        background-color: @loss-tag-color;
       }
-
-
-
 
       //客户名
       span.basic-name-text {
@@ -141,7 +151,7 @@
       float: left;
       width: 100%;
       min-height: 24px;
-      .basic-info-label{
+      .basic-info-label {
         float: left;
         line-height: 24px;
         color: @font_color;

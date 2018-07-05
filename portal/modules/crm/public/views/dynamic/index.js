@@ -67,7 +67,7 @@ var Dynamic = React.createClass({
                             timeField="date"
                             render={this.timeLineItemRender}
                         />
-                    </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '该客户还没有动态')}/>}
+                    </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
             </RightPanelScrollBar>
         );
     }
