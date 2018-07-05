@@ -551,7 +551,7 @@ class PhonePanel extends React.Component {
         let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div data-tracename="电话弹屏" id="phone-status-content">
-                <div className={AddMoreInfoCls}>
+                <div className={AddMoreInfoCls} id="phone-alert-modal-inner">
                     <PhoneStatusTop
                         phoneAlertModalTitleCls={PhoneAlertModalTitleCls}
                         phonemsgObj={phonemsgObj}
