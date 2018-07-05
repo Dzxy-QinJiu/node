@@ -16,7 +16,8 @@ function SalesStageActions() {
         'hideSalesStageEditOrder',
         'salesStageOrderUp',
         'salesStageOrderDown',
-        'changeIsSavingSalesStage'
+        'changeIsSavingSalesStage',
+        'deleteIsSavingSalesStage'
     );
 
     //获取销售阶段列表
@@ -120,6 +121,10 @@ function SalesStageActions() {
     };
 
     this.changeIsSavingSalesStage = function() {
+        this.dispatch();
+    };
+
+    this.deleteIsSavingSalesStage = function() {
         this.dispatch();
     };
 

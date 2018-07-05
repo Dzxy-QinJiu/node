@@ -81,7 +81,7 @@ var SalesStagePage = React.createClass({
         },
 
         deleteSalesStage: function(salesStage) {
-            SalesStageAction.changeIsSavingSalesStage();
+            SalesStageAction.deleteIsSavingSalesStage();
             SalesStageAction.deleteSalesStage(salesStage, (result) => {
                 if(!result.error){
                     message.success(Intl.get('crm.138', '删除成功！'));
@@ -183,7 +183,7 @@ var SalesStagePage = React.createClass({
                 </SalesStageForm>
 
                 <div className="sales-stage-table-block">
-                    {this.state.isSavingSalesStage ? (<div className="sales-stage-block">
+                    {this.state.isSavingSalesStageHome ? (<div className="sales-stage-block">
                         <Spinner className="sales-stage-saving"/>
                     </div>) : null}
                     <ul className="sales-stage-timeline">

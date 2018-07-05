@@ -15,6 +15,7 @@ function SalesStageStore() {
     this.salesStageFormShow = false;
     this.salesStageEditOrder = false;
     this.isSavingSalesStage = false;
+    this.isSavingSalesStageHome = false;
     this.saveStageErrMsg = '';
     this.deleteStageErrMsg = '';
     this.bindActions(SalesStageActions);
@@ -81,14 +82,14 @@ SalesStageStore.prototype.saveSalesStageOrder = function(salesStageModified) {
 //删除销售阶段
 SalesStageStore.prototype.deleteSalesStage = function(salesStage) {
     if(salesStage.loading){
-        this.isSavingSalesStage = true;
+        this.isSavingSalesStageHome = true;
     }else if(!salesStage.error) {
         this.salesStageList = _.filter(this.salesStageList,item => item.id !== salesStage.value.id);
-        this.isSavingSalesStage = false;
+        this.isSavingSalesStageHome = false;
         this.deleteStageErrMsg = '';
         this.salesStageFormShow = false;
     }else {
-        this.isSavingSalesStage = false;
+        this.isSavingSalesStageHome = false;
         this.deleteStageErrMsg = salesStage.errorMsg;
 
     }
@@ -172,6 +173,10 @@ SalesStageStore.prototype.showSalesStageEditOrder = function() {
 
 SalesStageStore.prototype.changeIsSavingSalesStage = function() {
     this.isSavingSalesStage = true;
+};
+
+SalesStageStore.prototype.deleteIsSavingSalesStage = function() {
+    this.isSavingSalesStageHome = true;
 };
 
 //取消编辑销售阶段顺序
