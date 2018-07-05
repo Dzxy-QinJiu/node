@@ -197,6 +197,12 @@ var UserAnlyis = React.createClass({
             chartType: 'line',
             data: this.state.userAnalysis.data,
             resultType: this.state.userAnalysis.resultType,
+            option: {
+                legend: {
+                    type: 'scroll',
+                    pageIconSize: 10,
+                },
+            },
             customOption: {
                 multi: true,
                 serieNameField: 'app_name',
@@ -225,32 +231,25 @@ var UserAnlyis = React.createClass({
             chartType: 'bar',
             customOption: {
                 stack: true,
+                legendData: chartLegend,
             },
             data: this.state.zoneAnalysis.data,
             resultType: this.state.zoneAnalysis.resultType,
         }, {
             title: Intl.get('user.analysis.industry.add', '行业-新增'),
             chartType: 'bar',
-            option: {
-                legend: {
-                    data: chartLegend,
-                },
-            },
             customOption: {
                 stack: true,
+                legendData: chartLegend,
             },
             data: this.state.industryAnalysis.data,
             resultType: this.state.industryAnalysis.resultType,
         }, {
             title: Intl.get('user.analysis.team.add', '团队-新增'),
             chartType: 'bar',
-            option: {
-                legend: {
-                    data: chartLegend,
-                },
-            },
             customOption: {
                 stack: true,
+                legendData: chartLegend,
             },
             data: this.state.teamOrMemberAnalysis.data,
             resultType: this.state.teamOrMemberAnalysis.resultType,
