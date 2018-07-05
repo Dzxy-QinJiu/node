@@ -294,16 +294,5 @@ phoneStatusTop.propTypes = {
     isAddingMoreProdctInfo: React.PropTypes.boolean,
     contactNameObj: React.PropTypes.object,
     handleAddProductFeedback: React.PropTypes.func,
-
-
-    item: React.PropTypes.object,
-    hasSplitLine: React.PropTypes.boolean,
-    isMerge: React.PropTypes.boolean,
-    hideDelete: React.PropTypes.boolean,
-    toggleScheduleContact: React.PropTypes.func,
-    deleteSchedule: React.PropTypes.func,
-    handleItemStatus: React.PropTypes.func,
-    getCallNumberError: React.PropTypes.string,
-    callNumber: React.PropTypes.number
 };
 export default phoneStatusTop;
