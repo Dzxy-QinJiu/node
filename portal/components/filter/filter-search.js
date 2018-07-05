@@ -226,7 +226,16 @@ class FilterSearch extends React.Component {
                             onClick={this.handleToggle.bind(this)}
                             className={this.state.showList ? 'icon-container active' : 'icon-container'}
                         >
-                            <Icon type="filter" />
+                            
+                            <Popover
+                                overlayClassName="filter-search-confirm-clear-pop"
+                                placement="bottom"
+                                content={clearPopContent}
+                                trigger="click"
+                                visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
+                            >
+                                <Icon type="filter" />
+                            </Popover>
                         </div>
 
                 }

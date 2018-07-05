@@ -185,7 +185,7 @@ class FilterList extends React.Component {
         return _.difference(this.state.advancedData.map(x => x.groupName), filterList.map(x => x.groupName)).length < this.state.advancedData.length;
     }
     //向search发送修改筛选条件的请求
-    handleChangePermitted({ type, data, index }) {
+    handleChangePermitted = ({ type, data, index }) => {
         let filterList = [];
         let allSelectedFilterData = [];//所有选中的筛选项，包含高级筛选项和常用筛选项
         const selectedCommonItem = this.state.commonData[this.state.selectedCommonIndex];
