@@ -30,7 +30,7 @@ const restApis = {
     //线索名、电话唯一性验证
     checkOnlySalesClue: '/rest/customer/v2/clue/repeat/search',
     //将线索和客户进行关联
-    RelateClueAndCustomer: '/rest/customer/v2/customer/:type/customer_clue_relation',
+    RelateClueAndCustomer: '/rest/customer/v2/clue/:type/customer_clue_relation',
     //导入线索
     upload: '/rest/customer/v2/clue/upload/preview',
     //确认导入线索预览
