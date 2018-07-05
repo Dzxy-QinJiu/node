@@ -331,13 +331,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
                 url: '/rest/analysis/user/v1/:auth_type/apps/:tab/team',
                 useChartFilter: false,
-                option: {
-                    legend: {
-                        data: USER_TYPES,
-                    },
-                },
                 customOption: {
                     stack: true,
+                    legendData: USER_TYPES,
                 },
                 csvOption: {
                     rowNames: USER_TYPES_WITH_TITLE,
@@ -359,13 +355,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
                 url: '/rest/analysis/user/v1/:auth_type/apps/:tab/zone',
                 useChartFilter: false,
-                option: {
-                    legend: {
-                        data: USER_TYPES,
-                    },
-                },
                 customOption: {
                     stack: true,
+                    legendData: USER_TYPES,
                 },
                 csvOption: {
                     rowNames: USER_TYPES_WITH_TITLE,
@@ -387,13 +379,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
                 url: '/rest/analysis/user/v1/:auth_type/apps/:tab/industry',
                 useChartFilter: false,
-                option: {
-                    legend: {
-                        data: USER_TYPES,
-                    },
-                },
                 customOption: {
                     stack: true,
+                    legendData: USER_TYPES,
                 },
                 csvOption: {
                     rowNames: USER_TYPES_WITH_TITLE,
