@@ -421,6 +421,11 @@ var CustomerAnalysis = React.createClass({
             }
         };
 
+        //从 unknown 到 未知 的映射
+        let unknownDataMap = {
+            unknown: Intl.get('user.unknown', '未知') 
+        };
+
         return [{
             title: Intl.get('effective.customer.statistics', '有效客户统计'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
@@ -577,6 +582,7 @@ var CustomerAnalysis = React.createClass({
                 showValue: true,
             },
             data: this.state.zoneAnalysis.data,
+            nameValueMap: unknownDataMap,
             resultType: this.state.zoneAnalysis.resultType,
         }, {
             title: Intl.get('user.analysis.industry.add', '行业-新增'),
@@ -586,6 +592,7 @@ var CustomerAnalysis = React.createClass({
                 showValue: true,
             },
             data: this.state.industryAnalysis.data,
+            nameValueMap: unknownDataMap,
             resultType: this.state.industryAnalysis.resultType,
         }, {
             title: Intl.get('user.analysis.team.add', '团队-新增'),
@@ -594,6 +601,7 @@ var CustomerAnalysis = React.createClass({
                 showValue: true,
             },
             data: this.state.teamAnalysis.data,
+            nameValueMap: unknownDataMap,
             resultType: this.state.teamAnalysis.resultType,
         }, {
             title: Intl.get('crm.sales.newTrailCustomer', '新开客户数统计'),

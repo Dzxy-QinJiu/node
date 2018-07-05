@@ -193,6 +193,11 @@ var UserAnlyis = React.createClass({
 
     //获取图表
     getCharts: function() {
+        //从 unknown 到 未知 的映射
+        let unknownDataMap = {
+            unknown: Intl.get('user.unknown', '未知') 
+        };
+
         return [{
             title: Intl.get('user.analysis.user.add', '用户-新增'),
             chartType: 'line',
@@ -235,6 +240,7 @@ var UserAnlyis = React.createClass({
                 legendData: chartLegend,
             },
             data: this.state.zoneAnalysis.data,
+            nameValueMap: unknownDataMap,
             resultType: this.state.zoneAnalysis.resultType,
         }, {
             title: Intl.get('user.analysis.industry.add', '行业-新增'),
@@ -245,6 +251,7 @@ var UserAnlyis = React.createClass({
                 legendData: chartLegend,
             },
             data: this.state.industryAnalysis.data,
+            nameValueMap: unknownDataMap,
             resultType: this.state.industryAnalysis.resultType,
         }, {
             title: Intl.get('user.analysis.team.add', '团队-新增'),
@@ -254,6 +261,7 @@ var UserAnlyis = React.createClass({
                 legendData: chartLegend,
             },
             data: this.state.teamOrMemberAnalysis.data,
+            nameValueMap: unknownDataMap,
             resultType: this.state.teamOrMemberAnalysis.resultType,
         }];
     },
