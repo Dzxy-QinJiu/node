@@ -16,11 +16,11 @@ import ApplyOpenAppPanel from 'MOD_DIR/app_user_manage/public/views/v2/apply-use
 import ApplyUserForm from '../apply-user-form';
 import CrmUserApplyForm from './crm-user-apply-form';
 import crmAjax from '../../ajax';
-import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import classNames from 'classnames';
 import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
     STOP_USE: 'stopUse',//停用
@@ -127,20 +127,10 @@ class CustomerUsers extends React.Component {
     }
 
     getAppList() {
-        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(result => {
-            let list = [];
-            if (_.isArray(result) && result.length) {
-                list = result.map(function(app) {
-                    return {
-                        client_id: app.app_id,
-                        client_name: app.app_name,
-                        client_image: app.app_logo
-                    };
-                });
+        commonDataUtil.getAppList(appList => {
+            if (_.get(appList, '[0]')) {
+                this.setState({appList: appList});
             }
-            this.setState({appList: list});
-        }).error(errorMsg => {
-            this.setState({appList: []});
         });
     }
 

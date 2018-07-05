@@ -11,7 +11,7 @@ var ContactAction = require('../../action/contact-action');
 //滚动条
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import Spinner from 'CMP_DIR/spinner';
-import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 //高度常量
 var LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度

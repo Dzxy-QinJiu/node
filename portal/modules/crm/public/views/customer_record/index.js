@@ -31,7 +31,7 @@ import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 import crmAjax from '../../ajax/index';
-import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 
 var classNames = require('classnames');
 //用于布局的高度

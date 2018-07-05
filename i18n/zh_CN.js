@@ -1361,6 +1361,7 @@ var zh_CN = {
     'crm.basic.add.industry': '添加行业',
     'crm.basic.no.administrative': '暂无行政级别',
     'crm.basic.add.administrative': '添加行政级别',
+    'crm.overview.apply.user.tip': '该客户还没有用户',
     // 客户管理end
 
     // 客户分析start

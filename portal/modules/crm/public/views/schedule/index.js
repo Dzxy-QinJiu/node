@@ -14,7 +14,7 @@ import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import ErrorDataTip from '../components/error-data-tip';
-import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import classNames from 'classnames';
 
 var CrmSchedule = React.createClass({
