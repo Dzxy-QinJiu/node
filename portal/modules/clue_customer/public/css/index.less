@@ -492,36 +492,40 @@
   background-color: #fff;
   display: block;
   .clue-analysis-panel{
-    >.topNav{
-      left: 0!important;
+    padding:10px 20px;
+    position: relative;
+    height: 100%;
+    .date-picker-wrap{
+      position: absolute;
+      right:100px;
+      top:25px;
+      .range-datepicker{
+        display: inline-block;
+      }
+      .date-picker-tip{
+        position: relative;
+        top:-10px;
+      }
     }
-  }
-  .date-range-wrap {
-     .range-datepicker {
-      float: left;
-      margin-top: 20px;
-      margin-left: 10px;
-    }
-    .consult-time{
-      float: left;
-      margin-top: 25px;
-      margin-left: 10px;
-    }
-  }
-  .analysis-clue-container{
-    margin: 66px 20px 0 20px;
-    .customer-num{
-      cursor: pointer;
-      font-weight: bold;
-    }
-  }
-  .filter-clue-wrap{
-    float: left;
-    margin: 20px 0 0 15px;
-    .clue-select-container{
-      .ant-select{
-        margin-right: 10px;
-        width: auto;
+    //图表的样式
+    .analysis-chart-wrap{
+      .clue-analysis-overview-container {
+        .clue-trend-analysis {
+          position: relative;
+          .filter-clue-wrap {
+            position: absolute;
+            z-index: 2;
+            right:30px;
+            top: 16px;
+            .clue-select-container {
+              .ant-select {
+                margin-right: 10px;
+                width: auto;
+              }
+            }
+
+          }
+        }
       }
     }
   }

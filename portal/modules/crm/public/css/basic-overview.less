@@ -4,6 +4,10 @@
 @btn_color: #8da8c5;
 @card_margin: 8px;
 .basic-overview-contianer {
+  .no-data-text {
+    padding-left: 4px;
+    color: #d2d0d0;
+  }
   //有应用签约到期的提示
   .app-expire-tip {
     line-height: 18px;
@@ -52,16 +56,16 @@
         width: 345px;
       }
     }
-    .button-container{
-      button{
+    .button-container {
+      button {
         float: right;
         margin-left: 10px;
         height: 24px;
       }
-      .button-transfer{
+      .button-transfer {
         background-color: transparent;
         color: #108ee9;
-        &:hover{
+        &:hover {
           background-color: #108ee9;
           color: #ffffff;
         }
@@ -86,8 +90,9 @@
       }
       .iconfont.icon-add {
         position: absolute;
-        top: 10px;
+        top: 12px;
         right: 10px;
+        margin-top: 0;
       }
     }
     .customer-container {

@@ -34,6 +34,14 @@ function updateUnapprovedCount(count) {
 var ApplyTabContent = React.createClass({
 
     fetchApplyList: function() {
+        let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType;
+        let sort_field = 'produce_date';//全部类型、待审批下按申请时间倒序排
+        //[已通过、已驳回、已审批、已撤销
+        let approvedTypes = ['pass', 'reject', 'true', 'cancel'];
+        //已审批过的按审批时间倒序排
+        if (approvedTypes.indexOf(approval_state) !== -1) {
+            sort_field = 'consume_date';
+        }
         //如果是待审批的请求，获取到申请列表后，更新下待审批的数量。
         // 解决通过或驳回操作失败（后台其实是成功）后，刷新没有待审批的申请但数量不变的问题
         UserApplyActions.getApplyList({
@@ -41,7 +49,9 @@ var ApplyTabContent = React.createClass({
             page_size: this.state.pageSize,
             keyword: this.state.searchKeyword,
             isUnreadApply: this.state.isCheckUnreadApplyList,
-            approval_state: UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType
+            approval_state: approval_state,
+            sort_field: sort_field,
+            order: 'descend'
         }, (count) => {
             //处理申请有过失败的情况，并且是筛选待审批的申请时,重新获取消息数；否则不发请求
             if (this.state.dealApplyError === 'error' && this.state.applyListType === 'false') {
@@ -94,10 +104,12 @@ var ApplyTabContent = React.createClass({
         UserApplyActions.refreshUnreadReplyList(unreadReplyList);
     },
     updateSelectedItem: function(message) {
-        const selectedDetailItem = this.state.selectedDetailItem;
-        selectedDetailItem.isConsumed = 'true';
-        selectedDetailItem.approval_state = message && message.approval || selectedDetailItem.approval_state;
-        this.setState({selectedDetailItem});
+        if(message && message.status === 'success'){
+            const selectedDetailItem = this.state.selectedDetailItem;
+            selectedDetailItem.isConsumed = 'true';
+            selectedDetailItem.approval_state = message && message.approval || selectedDetailItem.approval_state;
+            this.setState({selectedDetailItem});
+        }
         //处理申请成功还是失败,"success"/"error"
         UserApplyActions.updateDealApplyError(message && message.status || this.state.dealApplyError);
     },
@@ -249,7 +261,7 @@ var ApplyTabContent = React.createClass({
                                     </dd>
                                     <dd className="clearfix">
                                         <span>{Intl.get('user.apply.presenter', '申请人')}:{obj.presenter}</span>
-                                        <em>{this.getTimeStr(obj.time, oplateConsts.DATE_TIME_FORMAT)}</em>
+                                        <em>{this.getTimeStr(obj.time, oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</em>
                                     </dd>
                                 </dl>
                             </li>
@@ -351,21 +363,17 @@ var ApplyTabContent = React.createClass({
                         <Menu.Item key="all">
                             <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
                         </Menu.Item>
+                        <Menu.Item key="false">
+                            <a href="javascript:void(0)">{Intl.get('user.apply.false', '待审批')}</a>
+                        </Menu.Item>
                         <Menu.Item key="pass">
-                            <a href="javascript:void(0)"><ReactIntl.FormattedMessage id="user.apply.pass"
-                                defaultMessage="已通过"/></a>
+                            <a href="javascript:void(0)">{Intl.get('user.apply.pass', '已通过')}</a>
                         </Menu.Item>
                         <Menu.Item key="reject">
-                            <a href="javascript:void(0)"><ReactIntl.FormattedMessage id="user.apply.reject"
-                                defaultMessage="已驳回"/></a>
-                        </Menu.Item>
-                        <Menu.Item key="false">
-                            <a href="javascript:void(0)"><ReactIntl.FormattedMessage id="user.apply.false"
-                                defaultMessage="待审批"/></a>
+                            <a href="javascript:void(0)">{Intl.get('user.apply.reject', '已驳回')}</a>
                         </Menu.Item>
                         <Menu.Item key="cancel">
-                            <a href="javascript:void(0)"><ReactIntl.FormattedMessage id="user.apply.backout"
-                                defaultMessage="已撤销"/></a>
+                            <a href="javascript:void(0)">{Intl.get('user.apply.backout', '已撤销')}</a>
                         </Menu.Item>
                     </Menu>
                 )
@@ -378,7 +386,8 @@ var ApplyTabContent = React.createClass({
                     <div className="apply-type-filter" id="apply-type-container">
                         {
                             UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
-                                <Dropdown overlay={menuList} placement="bottomCenter" getPopupContainer={() => document.getElementById('apply-type-container')}>
+                                <Dropdown overlay={menuList} placement="bottomLeft"
+                                    getPopupContainer={() => document.getElementById('apply-type-container')}>
                                     <span className="apply-type-filter-btn">
                                         {this.getApplyListType()}
                                         <span className="iconfont icon-arrow-down"/>

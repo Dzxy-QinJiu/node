@@ -13,14 +13,27 @@
   margin-top: @card_margin;
   border-radius: 3px;
   background-color: #ffffff;
+  .title-border-bottom-none.detail-card-title{
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
   .detail-card-title {
     width: @card_width;
     min-height: @item_height;
-    border-bottom: 1px solid #f5f5f5;
     margin-bottom: @card_margin;
     padding-bottom: @card_margin;
+    border-bottom: 1px solid #f5f5f5;
     color: #999999;
     font-size: 14px;
+    .title-descr-style{
+      padding-left: 4px;
+      color: #d2d0d0;
+    }
+    .title-right-block{
+      float: right;
+      color: #8da8c5;
+    }
   }
   .detail-card-bottom {
     float: left;
@@ -35,10 +48,6 @@
 //编辑状态下的卡片,有阴影
 .detail-card-edit-status {
   box-shadow: 0 8px 10px @box_shadow_color;
-  .detail-card-title {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
   .card-content-edit-status {
     border: 1px solid #d3eafc;
     padding: 10px;

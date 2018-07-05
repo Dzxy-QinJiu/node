@@ -500,6 +500,8 @@ var en_US = {
     'user.suggest.name.two': 'Create username {user01} or {user02}', // 创建{user01}或{user02}
     'user.exist.suggest.name': '{user}is already taken. wheather to create {user01}', // 用户名{user}已存在，是否创建{user01}?
     'user.exist.name': '{user}is already taken.please rename', // 用户名{user}已存在，请重新命名
+    'user.exist.name.check.user': 'The username already exists, Whether to query {check}', // 用户名已存在，是否查询{check}
+    'user.exisit.the.name': 'the user', // 该用户
     'user.check.fail': 'Failed to verify the username.', // 用户名校验出错！
     'user.select.realm': 'Select Realm', // 选择安全域
     'user.select.realm.title': 'Realm', // 安全域：
@@ -1011,7 +1013,9 @@ var en_US = {
     'user.apply.reply.no.content': 'please input reply content', // 请填写回复内容
     'user.apply.reply.loading': 'Trying to load the reply list', // 正在努力加载回复列表 ...... ###############
     'user.apply.detail.button.pass': 'agree', // 通过
-    'user.apply.detail.backout': 'revoke', //Revoke the application  撤销申请
+    'user.apply.detail.backout': 'cancel application', //Revoke the application  撤销申请
+    'user.apply.detail.pass': 'approve application',//通过申请
+    'user.apply.detail.reject': 'reject application',//驳回申请
     'user.apply.detail.suggest': 'opinion', // opinion  意见
     'user.apply.detail.remark': 'postil', // 批注
     'user.apply.detail.expanded.title': 'returns the abbreviated content', // 返回缩略内容
@@ -1052,6 +1056,7 @@ var en_US = {
     'reply.cancel.tip.content': '{approvalPerson} revoked the {userType} user {userNames}, applied to the customer {customerName} ',//{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'user.apply.new.refresh.tip': 'Have a new application，refresh',//有新申请,点此刷新
     'user.apply.no.new.refresh.tip': 'No new application',//无新申请
+    'user.apply.last.follow.date': 'Latest follow up date',//最新跟进日期
     // 用户审批end
 
     // 在线用户start
@@ -1232,6 +1237,8 @@ var en_US = {
     'crm.213': 'Undistributed Customer',//未分配客户
     'crm.215': 'A total of {count} clues',//共{count}个线索
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
+    'crm.recent.week.active': 'Recent week active customers',//近一周活跃用户
+    'crm.recent.month.active': 'Recent month active customers',//近一月活跃用户
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
     'crm.administrative.level': 'Administrative level',//行政级别
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
@@ -1323,6 +1330,7 @@ var en_US = {
     'crm.Administrative.level.1': 'Provincial level',//省部级
     'crm.Administrative.level.2': 'Prefectural level',//地市级
     'crm.Administrative.level.3': 'county level',//区县级
+    'crm.dynamic.no.data': 'The customer has no dynamic',//该客户还没有动态
     // 客户管理end
 
     //客户分析 start
@@ -1361,6 +1369,12 @@ var en_US = {
     'oplate_customer_analysis.newCustomerCount': 'Count of new customers created by sales', //'新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': 'Total count of new customer', //'新开账号数总数',
     'oplate_customer_analysis.customerLoginCount': 'New login customer count', //'新开客户登录数',
+    'oplate_customer_analysis.type.all': 'all',
+    'oplate_customer_analysis.type.trial': 'trial',
+    'oplate_customer_analysis.type.formal': 'formal',
+    'oplate_customer_analysis.type.employee': 'employee',
+    'oplate_customer_analysis.type.gift': 'gift',
+    'oplate_customer_analysis.type.training': 'training',
     //客户分析 end
     //合同管理 start
     'contract.4': 'Party A',//甲方@
@@ -2241,6 +2255,16 @@ var en_US = {
     'noMoreTip.callRecord': 'no more call records',
     'noMoreTip.visitBack': 'no more visit record',
     'noMoreTip.customer': 'no more customers',
-    'failed.change.source.time': 'Failed to change clue source time'//修改线索咨询时间失败
+    'failed.change.source.time': 'Failed to change clue source time',//修改线索咨询时间失败
+    'china.zone.distribute.south.island': 'South China Sea Islands',//南海诸岛
+    'clue.customer.analysis.trend': 'Trend',//趋势
+    'clue.stage.statics': 'Clue stage statistics',//线索阶段统计
+    'clue.analysis.access.channel': 'channel',//渠道
+    'clue.analysis.source': 'source',//来源
+    'clue.analysis.access.chart': 'Channel statistics',//渠道统计
+    'clue.analysis.ability': 'Effective',//有效
+    'clue.analysis.inability': 'Invalid',//无效
+    'clue.analysis.source.chart': 'Source statistics',//来源统计
+    'clue.analysis.classify.chart': 'Classify statistics'//分类统计
 };
 export default en_US;
