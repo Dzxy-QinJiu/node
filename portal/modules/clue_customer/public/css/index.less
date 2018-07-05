@@ -492,41 +492,66 @@
   background-color: #fff;
   display: block;
   .clue-analysis-panel{
-    padding:10px 20px;
+    background: #f3f5f7;
     position: relative;
     height: 100%;
-    .date-picker-wrap{
-      position: absolute;
-      right:100px;
-      top:25px;
-      .range-datepicker{
-        display: inline-block;
-      }
-      .date-picker-tip{
-        position: relative;
-        top:-10px;
+    .analysis-chart-wrap{
+      .ant-tabs-top{
+        width: 100%;
+        .ant-tabs-bar{
+          margin-bottom: 0;
+          .ant-tabs-nav .ant-tabs-tab{
+            padding-left: 25px!important;
+          }
+          .ant-tabs-nav-container{
+            font-size: 16px;
+            line-height: 2.1;
+            height: 64px;
+          }
+        }
       }
     }
+    .date-picker-container{
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 10;
+      width: 400px;
+      .date-picker-wrap{
+        position: absolute;
+        right:92px;
+        top:18px;
+        z-index: 10;
+        .range-datepicker{
+          display: inline-block;
+        }
+        .date-picker-tip{
+          position: relative;
+          top:-10px;
+        }
+      }
+    }
+
+     .close-pannel{
+      margin-top:20px;
+    }
+
     //图表的样式
     .analysis-chart-wrap{
+      .ant-tabs-bar{
+        background: #fff;
+      }
       .clue-analysis-overview-container {
-        background:#f3f5f9;
+        padding-top:16px;
         .clue-trend-analysis, .clue-access-analysis, .clue-source-analysis, .clue-classify-analysis{
           padding-left: 0;
           padding-right:0;
-        }
-        .clue-trend-analysis,.clue-source-analysis{
-          .antc-analysis .analysis-charts{
-            padding-left: 32px;
-          }
+
         }
         .clue-access-analysis,.clue-classify-analysis{
           .antc-analysis .analysis-charts{
-            padding-right: 32px;
+            padding-left: 0px;
           }
-        }
-        .clue-trend-analysis, .clue-access-analysis{
-          margin-bottom:16px;
         }
 
         .clue-trend-analysis {
