@@ -3,33 +3,15 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/23.
  */
-import {Button, Tag, Select, Input} from 'antd';
+import {Button, Tag, Select} from 'antd';
 const Option = Select.Option;
-const {TextArea} = Input;
 const TAG_COLOR = '#2196f3';
 import Trace from 'LIB_DIR/trace';
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
-import {isEqualArray} from 'LIB_DIR/func';
-import {PHONERINGSTATUS} from '../consts';
-const DIVLAYOUT = {
-    //出现跟进内容输入框后的高度
-    TRACELAYOUT: 160,
-    //顶部初始的高度
-    INITIALTRACELAYOUT: 86,
-    //弹屏上部标题和输入框,添加按钮高度之和
-    TRACE_CONTAINER_LAYOUT: 250,
-    //弹屏上下的padding之和
-    TRACE_CONTAINER_PADDING: 105,
-    //弹屏上部标题的高度
-    TRACE_INITIAL_CONTAINER_LAYOUT: 126
-};
-const RESPONSE_LAYOUT_CONSTANTS = {
-    MARGIN: 20,//跟进记录展示内容上下的margin值
-    TITLE_HEIGHT: 100//客户名称和电话展示的高度
-};
+import {PHONERINGSTATUS, commonPhoneDesArray} from '../consts';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -69,13 +51,13 @@ class phoneStatusTop extends React.Component {
             isAddingMoreProdctInfo: nextProps.isAddingMoreProdctInfo
         });
         //如果接听后，把状态isConnected 改为true
-        if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
+        if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             this.setState({
                 isConnected: true
             });
         }
         var $modal = $('#phone-status-content');
-        if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT) {
+        if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
             this.setInitialData(phonemsgObj);
         }
     }
@@ -138,8 +120,8 @@ class phoneStatusTop extends React.Component {
         });
     };
     //将输入框中的文字放在state上
-    handleInputChange = (e) => {
-        phoneAlertAction.setContent(e.target.value);
+    handleInputChange = (value) => {
+        phoneAlertAction.setContent(value);
     };
     handleSelectCustomer = (customerId) => {
         this.setState({
@@ -152,15 +134,26 @@ class phoneStatusTop extends React.Component {
             phoneAlertAction.setSubmitErrMsg('');
         };
         const options = this.state.customerInfoArr.map((item) => (
-            <Option value={item.id}>{item.name}</Option>
+            <Option value={item.id} key={item.id}>{item.name}</Option>
         ));
         //通话记录的编辑状态
         if (this.state.isEdittingTrace) {
             return (
                 <div>
                     <div className="input-item">
-                        <TextArea placeholder="请填写本次跟进内容" onChange={this.handleInputChange}
-                            value={this.state.inputContent} autosize={{minRows: 2, maxRows: 6}}/>
+                        <Select combobox
+                            searchPlaceholder={Intl.get('phone.status.record.content', '请填写本次跟进内容')}
+                            onChange={this.handleInputChange}
+                            value={this.state.inputContent}
+                            getPopupContainer={() => document.getElementById('phone-alert-modal-inner')}
+                        >
+                            {
+                                _.isArray(commonPhoneDesArray) ?
+                                    commonPhoneDesArray.map((Des, idx) => {
+                                        return (<Option key={idx} value={Des}>{Des}</Option>);
+                                    }) : null
+                            }
+                        </Select>
                     </div>
                     <div className="modal-submit-tip">
                         {this.state.submittingTraceMsg ? (
@@ -209,7 +202,7 @@ class phoneStatusTop extends React.Component {
         var phoneNum = this.props.contactNameObj && this.props.contactNameObj.contact ? this.props.contactNameObj.contact + '-' : '';
         if (phonemsgObj.call_type === 'IN') {
             phoneNum += phonemsgObj.extId;
-            if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) {
+            if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
                 phoneNum += phonemsgObj.dst;
             }
         } else {
@@ -219,15 +212,15 @@ class phoneStatusTop extends React.Component {
             phoneNum: phoneNum,
             tip: ''
         };
-        if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            if (phonemsgObj.call_type == 'IN') {
+        if (phonemsgObj.type === PHONERINGSTATUS.ALERT) {
+            if (phonemsgObj.call_type === 'IN') {
                 desTipObj.tip = `${Intl.get('call.record.call.in.pick.phone', '有电话打入，请拿起话机')}`;
             } else {
                 desTipObj.tip = `${Intl.get('call.record.phone.alerting', '已振铃，等待对方接听')}`;
             }
-        } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
+        } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             desTipObj.tip = `${Intl.get('call.record.phone.answered', '正在通话中')}`;
-        } else if (phonemsgObj.type == PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) {
+        } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
             desTipObj.tip = `${Intl.get('call.record.phone.unknown', '结束通话')}`;
         }
         return desTipObj;
@@ -241,15 +234,15 @@ class phoneStatusTop extends React.Component {
     render() {
         var iconFontCls = 'modal-icon iconfont';
         var phonemsgObj = this.state.phonemsgObj;
-        if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            if (phonemsgObj.call_type == 'OU') {
+        if (phonemsgObj.type === PHONERINGSTATUS.ALERT) {
+            if (phonemsgObj.call_type === 'OU') {
                 iconFontCls += ' icon-callrecord-out';
-            } else if (phonemsgObj.call_type == 'IN') {
+            } else if (phonemsgObj.call_type === 'IN') {
                 iconFontCls += ' icon-callrecord-in';
             }
-        } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
+        } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             iconFontCls += ' icon-phone-answering';
-        } else if (phonemsgObj.type == PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) {
+        } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
             iconFontCls += ' icon-phone-bye';
         }
         //获取页面描述
@@ -269,7 +262,7 @@ class phoneStatusTop extends React.Component {
                 </div>
                 <div className="trace-content-container">
                     { //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
-                        (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem() : null
+                        (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem() : null
                     }
                 </div>
                 {!this.state.isAddingMoreProdctInfo && this.state.showAddFeedback ? (
@@ -286,6 +279,31 @@ phoneStatusTop.defaultProps = {
     addMoreInfoCls: '',
     phoneAlertModalTitleCls: '',
     phonemsgObj: {},
-    addTraceItemId: ''
+    addTraceItemId: '',
+    detailCustomerId: '',
+    isAddingMoreProdctInfo: false,
+    contactNameObj: {},
+    handleAddProductFeedback: function() {}
+};
+phoneStatusTop.propTypes = {
+    addMoreInfoCls: React.PropTypes.string,
+    phoneAlertModalTitleCls: React.PropTypes.string,
+    phonemsgObj: React.PropTypes.object,
+    addTraceItemId: React.PropTypes.string,
+    detailCustomerId: React.PropTypes.string,
+    isAddingMoreProdctInfo: React.PropTypes.boolean,
+    contactNameObj: React.PropTypes.object,
+    handleAddProductFeedback: React.PropTypes.func,
+
+
+    item: React.PropTypes.object,
+    hasSplitLine: React.PropTypes.boolean,
+    isMerge: React.PropTypes.boolean,
+    hideDelete: React.PropTypes.boolean,
+    toggleScheduleContact: React.PropTypes.func,
+    deleteSchedule: React.PropTypes.func,
+    handleItemStatus: React.PropTypes.func,
+    getCallNumberError: React.PropTypes.string,
+    callNumber: React.PropTypes.number
 };
 export default phoneStatusTop;

@@ -2293,6 +2293,9 @@ var zh_CN = {
     'noMoreTip.visitBack': '没有更多回访记录了',
     'noMoreTip.customer': '没有更多客户了',
     'failed.change.source.time': '修改线索咨询时间失败',
-    'china.zone.distribute.south.island': '南海诸岛'
+    'china.zone.distribute.south.island': '南海诸岛',
+    'phone.status.record.content': '请填写本次跟进内容',
+    'phone.status.other.hang.out': '对方挂断',
+    'phone.status.contact.later': '联系人现在不在，之后再联系',
 };
 export default zh_CN;

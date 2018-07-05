@@ -2270,6 +2270,9 @@ var en_US = {
     'noMoreTip.visitBack': 'no more visit record',
     'noMoreTip.customer': 'no more customers',
     'failed.change.source.time': 'Failed to change clue source time',//修改线索咨询时间失败
-    'china.zone.distribute.south.island': 'South China Sea Islands'//南海诸岛
+    'china.zone.distribute.south.island': 'South China Sea Islands',//南海诸岛
+    'phone.status.record.content': 'Please fill in this follow-up content',//请填写本次跟进内容
+    'phone.status.other.hang.out': 'The other hangs up',//对方挂断
+    'phone.status.contact.later': 'The contact is not here now, please contact later',//联系人现在不在，之后再联系
 };
 export default en_US;
