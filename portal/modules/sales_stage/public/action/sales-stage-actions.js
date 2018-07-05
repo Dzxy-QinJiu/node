@@ -35,8 +35,8 @@ function SalesStageActions() {
         salesStageArray.push(salesStage);
         _this.dispatch({loading: true,error: false});
         salesStageAjax.addSalesStage(salesStageArray).then(function(salesStageCreated) {
-            _this.dispatch({loading: false,error: false, value: salesStageCreated.result});
             _.isFunction(callback) && callback();
+            _this.dispatch({loading: false,error: false, value: salesStageCreated.result});
         },function(errorMsg) {
             _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
@@ -49,8 +49,8 @@ function SalesStageActions() {
         salesStageArray.push(salesStage);
         _this.dispatch({loading: true,error: false});
         salesStageAjax.editSalesStage(salesStageArray).then(function(salesStageModified) {
-            _this.dispatch({loading: false,error: false, value: salesStageModified.result});
             _.isFunction(callback) && callback();
+            _this.dispatch({loading: false,error: false, value: salesStageModified.result});
         },function(errorMsg) {
             _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });

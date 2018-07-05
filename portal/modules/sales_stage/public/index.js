@@ -71,10 +71,12 @@ var SalesStagePage = React.createClass({
         submitSalesStageForm: function(salesStage) {
             if (salesStage.id) {
                 SalesStageAction.editSalesStage(salesStage, () => {
+                    SalesStageAction.hideSalesStageeForm();
                     message.success(Intl.get('crm.218', '修改成功！'));
                 });
             } else {
                 SalesStageAction.addSalesStage(salesStage, () => {
+                    SalesStageAction.hideSalesStageeForm();
                     message.success(Intl.get('crm.216', '添加成功！'));
                 });
             }

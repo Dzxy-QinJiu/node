@@ -41,7 +41,6 @@ SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
             _this.salesStageList.push(salesStage);
         });
         this.saveStageErrMsg = '';
-        this.isSavingSalesStage = false;
         this.salesStageFormShow = false;
     }else{
         this.saveStageErrMsg = salesStageCreated.errorMsg;
@@ -62,7 +61,6 @@ SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
             }
         });
         this.saveStageErrMsg = '';
-        this.isSavingSalesStage = false;
         this.salesStageFormShow = false;
     }else {
         this.saveStageErrMsg = salesStageModified.errorMsg;
@@ -150,6 +148,7 @@ SalesStageStore.prototype.showSalesStageForm = function(salesStage) {
 
 //隐藏右侧编辑面板
 SalesStageStore.prototype.hideSalesStageeForm = function() {
+    this.isSavingSalesStage = false;
     this.salesStageFormShow = false;
     this.saveStageErrMsg = '';
 
