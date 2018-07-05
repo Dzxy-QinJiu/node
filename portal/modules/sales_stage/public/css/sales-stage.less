@@ -19,6 +19,31 @@
       width: 275px;
     }
   }
+  .sales-stage-table-block-right {
+    position: relative;
+    float: left;
+
+    .sales-stage-block {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      margin: auto;
+      z-index: 10;
+
+      .sales-stage-saving {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+      }
+    }
+  }
   .sales-stage-table-block {
     padding-top: 37px;
     position: relative;
@@ -201,7 +226,12 @@
   }
   .right-pannel-default {
     .form-cancel-btn {
-      margin-right: 42px;
+      margin-right: 5px;
+    }
+    .alert-error-msg{
+      position: absolute;
+      margin-top: 18px;
+      margin-left: 60px;
     }
   }
 }
