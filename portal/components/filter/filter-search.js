@@ -190,7 +190,7 @@ class FilterSearch extends React.Component {
                                                 <Input placeholder={Intl.get('filters.tip.name', '请输入常用筛选名称')} value={this.state.filterName} onChange={this.handleNameChange.bind(this)} />
                                             </div>
                                         </div>
-                                        <div className="item-container">
+                                        {/* <div className="item-container">
                                             <span className="label">
                                                 类型
                                             </span>
@@ -203,7 +203,7 @@ class FilterSearch extends React.Component {
                                                     }
                                                 </Radio.Group>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         <div className="search-btn-bar">
                                             {
                                                 this.props.errorMsg ?

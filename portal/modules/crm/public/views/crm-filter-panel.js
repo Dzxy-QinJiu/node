@@ -293,27 +293,31 @@ const CrmFilterPanel = React.createClass({
         }
     },
     handleFilterChange(data) {
-        const condition = {};    
+        console.log(data);
+        const condition = {};
+        if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
+            condition[COMMON_OTHER_ITEM] = '';
+        }
         data.forEach(item => {
             if (item.groupId) {
                 if (item.groupId !== 'sales_opportunities') {
                     condition[item.groupId] = item.data.map(x => x.value);
-                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'otherSelectedItem'].includes(item.groupId)) {
+                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', COMMON_OTHER_ITEM].includes(item.groupId)) {
                         condition[item.groupId] = condition[item.groupId].join(',');
                     } else if (item.singleSelect) {
                         condition[item.groupId] = condition[item.groupId][0] || '';
                     }
-                    
-                } else if (item.groupId === COMMON_OTHER_ITEM ){
+
+                } else if (item.groupId === COMMON_OTHER_ITEM) {
 
                 } else {
                     condition.sales_opportunities = [];
-                    condition.sales_opportunities.push($.extend(true, {},this.state.condition.sales_opportunities[0], {
+                    condition.sales_opportunities.push($.extend(true, {}, this.state.condition.sales_opportunities[0], {
                         sale_stages: item.data.map(x => x.value)
                     }));
                     condition.sales_opportunities[0].sale_stages = condition.sales_opportunities[0].sale_stages.join(',');
                 }
-                
+
             }
         });
         FilterAction.setCondition(condition);
@@ -348,7 +352,15 @@ const CrmFilterPanel = React.createClass({
             x.groupName = Intl.get('crm.186', '其他');
             x.data = [{
                 name: x.name,
-                value: x.value
+                value: x.value,
+                groupId: COMMON_OTHER_ITEM,
+                groupName: Intl.get('crm.186', '其他'),
+                data: [{
+                    name: x.name,
+                    value: x.value,
+                    groupId: COMMON_OTHER_ITEM,
+                    groupName: Intl.get('crm.186', '其他'),
+                }]
             }];
             x.plainFilterList = [{
                 name: x.name,
@@ -432,18 +444,18 @@ const CrmFilterPanel = React.createClass({
                         name: x,
                         value: x
                     }))
-            }            
+            }
         ];
         return (
             <div data-tracename="筛选">
                 <div className="crm-filter-panel">
                     <FilterList
                         style={this.props.style}
-                        showSelectTip={this.props.showSelectTip}    
-                        commonData={commonData}                    
+                        showSelectTip={this.props.showSelectTip}
+                        commonData={commonData}
                         advancedData={advancedData}
                         onFilterChange={this.handleFilterChange.bind(this)}
-                    />                   
+                    />
                 </div>
             </div>
         );

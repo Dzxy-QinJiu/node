@@ -28,6 +28,7 @@ class FilterList extends React.Component {
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.on(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
+        this.handleChangePermitted = this.handleChangePermitted.bind(this);
     }
     componentWillReceiveProps(newProps) {
         const { commonData, advancedData } = newProps;
@@ -95,7 +96,7 @@ class FilterList extends React.Component {
         }, () => {
             //发送选择筛选项事件
             filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, []);
-            this.props.onFilterChange([]);
+            this.props.onFilterChange(this.processSelectedFilters(this.state.advancedData));
         });
     }
     clearSelect(groupName) {
@@ -128,6 +129,7 @@ class FilterList extends React.Component {
     showCommonItemModal(commonItem) {
 
     }
+    //将已选中的高级筛选项合并到原筛选项中
     mergeAdvancedData(filterList) {
         const advancedData = $.extend(true, [], this.state.rawAdvancedData);
         advancedData.forEach(oldGroup => {
@@ -148,8 +150,10 @@ class FilterList extends React.Component {
         });
         return advancedData;
     }
+    // 过滤出选中状态的筛选项,对外提供的结构
     processSelectedFilters(rawfilterList) {
-        const filterList = $.extend(true, [], rawfilterList);
+        let filterList = $.extend(true, [], rawfilterList);
+        // filterList = this.filterSelectedGroup(filterList);
         filterList.forEach(group => {
             if (_.get(group, 'data.length') > 0) {
                 group.data = group.data.filter(x => x.selected);
@@ -157,34 +161,91 @@ class FilterList extends React.Component {
         });
         return filterList;
     }
-    handleChangePermitted = ({ type, data, index }) => {
+    //整合常用筛选和高级筛选的筛选项, isMix为true时，将commonData中的高级筛选项从advancedData中剔除
+    unionFilterList(commonData, advancedData, isMix) {
+        if (isMix) {
+            const commonGroupNames = commonData.map(x => x.groupName);
+            const filterList = advancedData.filter(group => !commonGroupNames.includes(group.groupName));
+            return commonData.concat(this.processSelectedFilters(filterList));
+        } else {
+            return commonData.concat(this.processSelectedFilters(advancedData));
+        }
+    }
+    //过滤出选中状态的组
+    filterSelectedGroup(filterList) {
+        let data = $.extend([], filterList);
+        data = data.filter(groupItem => {
+            return _.get(groupItem, 'data.length');
+        });
+        return data;
+    }
+    //判断Filterlist中是否包含高级筛选项组 todo只包含高级筛选项
+    isContainAdvanced(data) {
         const filterList = this.processSelectedFilters(data);
+        return _.difference(this.state.advancedData.map(x => x.groupName), filterList.map(x => x.groupName)).length < this.state.advancedData.length;
+    }
+    //向search发送修改筛选条件的请求
+    handleChangePermitted({ type, data, index }) {
+        let filterList = [];
+        let allSelectedFilterData = [];//所有选中的筛选项，包含高级筛选项和常用筛选项
+        const selectedCommonItem = this.state.commonData[this.state.selectedCommonIndex];
+        let hasAdvanceGroup = false;
         switch (type) {
             case 'common':
-                //当常用筛选项所属组在高级筛选项中能找到，就修改已选中的高级筛选项组
-                if (this.state.advancedData.find(item => item.groupName === data.groupName)) {
+                filterList = this.processSelectedFilters(data.data);
+                //选择的常用筛选中包含高级筛选项
+                if (this.isContainAdvanced(data.data)) {
+                    allSelectedFilterData = this.unionFilterList(data.data, this.state.advancedData, true);
                     this.setState({
                         selectedCommonIndex: index,
-                        advancedData: this.mergeAdvancedData(data.filterList)
+                        advancedData: this.mergeAdvancedData(filterList)
                     }, () => {
-                        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, this.processSelectedFilters(this.state.advancedData));                        
+                        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, allSelectedFilterData);
+                        this.props.onFilterChange(allSelectedFilterData);
                     });
-                    this.props.onFilterChange(this.processSelectedFilters(this.state.advancedData));
-                } else {//否则直接发送常用筛选项的选中值
+                } else {
+                    //选择的常用筛选中不包含高级筛选项, 对外和search提供两者的union        
+                    allSelectedFilterData = this.unionFilterList(data.data, this.state.advancedData);
                     this.setState({
-                        selectedCommonIndex: index,
+                        selectedCommonIndex: index,//todo此处不清空advancedData，可以和高级筛选项同时选中
+                        // advancedData: this.state.rawAdvancedData
+                    }, () => {
+                        filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, allSelectedFilterData);
                     });
-                    this.props.onFilterChange([data]);
-                }                
-                //todo 没有filterList 的场景处理          
+                    this.props.onFilterChange(allSelectedFilterData);
+                }
+                //todo 没有filterList 的场景处理
                 break;
             case 'advanced':
-                this.setState({
-                    selectedCommonIndex: '',
-                    advancedData: data
-                });
-                filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
-                this.props.onFilterChange(filterList);
+                filterList = this.processSelectedFilters(data);
+                if (selectedCommonItem && _.get(selectedCommonItem, 'data.length')) {
+                    hasAdvanceGroup = this.isContainAdvanced(selectedCommonItem.data);
+                }
+                //已选择的常用筛选中不包含高级筛选项，保留已选择的常用筛选，对外提供两者的union,对search提供两者的union
+                if (!hasAdvanceGroup) {
+                    this.setState({
+                        advancedData: data
+                    });
+                    let list = [];
+                    if (selectedCommonItem) {
+                        //todo why convert to array?
+                        list = this.unionFilterList(selectedCommonItem.data, filterList);
+                    }
+                    else {
+                        list = filterList;
+                    }
+                    filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, list);
+                    this.props.onFilterChange(list);
+                }
+                //已选择的常用筛选包含高级筛选项, 清空已选择的常用筛选,对外提供advancedData,对search提供advancedData
+                else {
+                    this.setState({
+                        selectedCommonIndex: '',
+                        advancedData: data
+                    });
+                    filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
+                    this.props.onFilterChange(filterList);
+                }
                 break;
         }
     }
@@ -192,11 +253,20 @@ class FilterList extends React.Component {
         //存在选中的客户时，切换筛选条件需要先提示，确认后再修改筛选条件
         let selectedIndex = this.state.selectedCommonIndex;
         let newSelectIndex = index;
-        let dataItem = item;
+        let dataItem = $.extend(true, {}, item);
         if (selectedIndex === index) {
             newSelectIndex = '';
             dataItem.data = [];
         }
+        // if (item.data) {
+        //     if (!Array.isArray(item.data)) {                
+        //         //将原‘其它’中的选项伪装成高级筛选项的结构；方便出现在顶部筛选框中           
+        //         dataItem.data = [item];
+        //     }
+        //     else {
+        //         // dataItem = dataItem.data;
+        //     }
+        // }
         if (this.props.showSelectTip) {
             filterEmitter.emit(filterEmitter.ASK_FOR_CHANGE, {
                 type: 'common',
@@ -204,33 +274,42 @@ class FilterList extends React.Component {
                 index: newSelectIndex
             });
             return;
+        } else {
+            this.handleChangePermitted({
+                type: 'common',
+                data: dataItem,
+                index: newSelectIndex
+            });
         }
-        this.handleChangePermitted({
-            type: 'common',
-            data: dataItem,
-            index: newSelectIndex
-        });
     }
+
     handleAdvanedItemClick(groupItem, item, outIndex, innerIdx) {
         const { groupName, singleSelect = false } = groupItem;
         const advancedData = $.extend(true, [], this.state.advancedData);
         const selectedGroupItem = advancedData.find((group, index) => index === outIndex);
         let selectedItem = null;
         if (selectedGroupItem.data && selectedGroupItem.data.length) {
+            let selectOnlyItem = selectedGroupItem.data.find(x => x.selectOnly);
             selectedItem = selectedGroupItem.data.find((x, idx) => idx === innerIdx);
             //单选或不能与其它选项同时选中时，清空本组其他选中状态
             if (singleSelect || item.selectOnly) {
                 selectedGroupItem.data = selectedGroupItem.data.map(x => {
                     if (x.value !== selectedItem.value) {
-                        x.selected = false;                        
+                        x.selected = false;
                     }
                     return x;
                 });
             }
+            //已选中的选项是singleSelect,则取消选中 
+            else if (_.get(selectOnlyItem, 'selected')) {
+                selectOnlyItem.selected = false;
+            }
             if (selectedItem) {
                 selectedItem.selected = !selectedItem.selected;
-
             }
+            this.setState({
+                advancedData
+            });
         }
 
         //存在选中的客户时，切换筛选条件需要先提示，确认后再修改筛选条件
@@ -240,11 +319,12 @@ class FilterList extends React.Component {
                 data: advancedData,
             });
             return;
+        } else {
+            this.handleChangePermitted({
+                type: 'advanced',
+                data: advancedData
+            });
         }
-        this.handleChangePermitted({
-            type: 'advanced',
-            data: advancedData
-        });
     }
     handleShowPop(type, visible) {
         let showHoverPop = this.state.showHoverPop;
@@ -334,7 +414,7 @@ class FilterList extends React.Component {
                                                             <span className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
                                                             {
                                                                 x.readOnly ?
-                                                                    <span className="btn">...</span> :
+                                                                    null :
                                                                     <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
                                                                         <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
                                                                     </Popover>
@@ -350,7 +430,7 @@ class FilterList extends React.Component {
                                                         <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
                                                         {
                                                             x.readOnly ?
-                                                                <span className="btn">...</span> :
+                                                                null :
                                                                 <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
                                                                     <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
                                                                 </Popover>
