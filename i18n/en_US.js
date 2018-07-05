@@ -1240,8 +1240,8 @@ var en_US = {
     'crm.213': 'Undistributed Customer',//未分配客户
     'crm.215': 'A total of {count} clues',//共{count}个线索
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
-    'crm.recent.week.active': 'Recent week active customers',//近一周活跃用户
-    'crm.recent.month.active': 'Recent month active customers',//近一月活跃用户
+    'crm.recent.week.active': 'Recent week active customers',//近一周活跃客户
+    'crm.recent.month.active': 'Recent month active customers',//近一月活跃客户
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
     'crm.administrative.level': 'Administrative level',//行政级别
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别

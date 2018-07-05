@@ -1252,8 +1252,8 @@ var zh_CN = {
     'crm.215': '共{count}个线索',
 
     'crm.over.day.without.contact': '超{day}天未联系',
-    'crm.recent.week.active': '近一周的活跃用户',
-    'crm.recent.month.active': '近一个月的活跃用户',
+    'crm.recent.week.active': '近一周的活跃客户',
+    'crm.recent.month.active': '近一个月的活跃客户',
     'crm.customer.interested': '添加关注',
     'crm.customer.uninterested': '取消关注',
     'crm.customer.failed.interested': '修改失败',
