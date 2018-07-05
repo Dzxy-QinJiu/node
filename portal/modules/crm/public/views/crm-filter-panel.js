@@ -42,10 +42,10 @@ const otherFilterArray = [{
     name: Intl.get('crm.available.customer', '有效客户'),
     value: 'availability'
 },{
-    name: Intl.get('crm.recent.week.active', '近一周的活跃用户'),
+    name: Intl.get('crm.recent.week.active', '近一周的活跃客户'),
     value: 'seven_login'
 },{
-    name: Intl.get('crm.recent.month.active', '近一个月的活跃用户'),
+    name: Intl.get('crm.recent.month.active', '近一个月的活跃客户'),
     value: 'month_login'
 },];
 //只有管理员可以过滤未分配的客户
@@ -289,10 +289,10 @@ const CrmFilterPanel = React.createClass({
                 Trace.traceEvent($(this.getDOMNode()).find('li'), '多个订单客户的筛选');
                 break;
             case otherFilterArray[12].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '近一周的活跃用户的筛选');
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '近一周的活跃客户的筛选');
                 break;
             case otherFilterArray[13].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '近一个月的活跃用户的筛选');
+                Trace.traceEvent($(this.getDOMNode()).find('li'), '近一个月的活跃客户的筛选');
                 break;
         }
         if (otherFilterArray[10] && item === otherFilterArray[10].value) {
