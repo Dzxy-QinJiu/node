@@ -942,6 +942,7 @@ var CustomerAnalysis = React.createClass({
                     emitters={this.props.emitters}
                     conditions={this.props.conditions}
                     isGetDataOnMount={true}
+                    style={{marginLeft: -10, marginRight: -5}}
                 />
             </div>
         );
