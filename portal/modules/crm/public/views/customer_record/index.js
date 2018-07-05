@@ -676,7 +676,7 @@ const CustomerRecord = React.createClass({
             );
         } else if (recordLength === 0 && !this.state.customerRecordLoading && !this.props.isOverViewPanel) {
             //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）
-            return (<NoDataTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>);
+            return (<NoDataTip tipContent={Intl.get('crm.no.trace.record', '还没有跟进过该客户')}/>);
         } else {
             var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
             let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));

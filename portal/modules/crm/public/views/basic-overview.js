@@ -60,6 +60,8 @@ var BasicOverview = React.createClass({
                         callNumber: callNumberInfo.callNumber,
                         getCallNumberError: ''
                     });
+                    //有坐席号，展示未处理的电联的联系计划
+                    this.getNotCompletedScheduleList(this.props.curCustomer);
                 } else if (callNumberInfo.errMsg) {
                     this.setState({
                         callNumber: '',
@@ -85,7 +87,6 @@ var BasicOverview = React.createClass({
         this.getRecommendTags();
         setTimeout(() => {
             this.getCrmUserList(this.props.curCustomer);
-            this.getNotCompletedScheduleList(this.props.curCustomer);
         });
     },
     getAppList: function() {
@@ -142,7 +143,10 @@ var BasicOverview = React.createClass({
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
             setTimeout(() => {
                 this.getCrmUserList(nextProps.curCustomer);
-                this.getNotCompletedScheduleList(nextProps.curCustomer);
+                if(this.state.callNumber){
+                    //有坐席号，需要展示未处理的电联的联系计划
+                    this.getNotCompletedScheduleList(nextProps.curCustomer);
+                }
             });
         }
     },
@@ -443,7 +447,7 @@ var BasicOverview = React.createClass({
                     <DetailCard
                         title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
                         titleBottomBorderNone={noRecordData}
-                        titleDescr={noRecordData ? Intl.get('common.no.more.trace.record', '暂无跟进记录') : ''}
+                        titleDescr={noRecordData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : ''}
                         content={this.renderCustomerRcord()}
                     />
                 </div>

@@ -1346,6 +1346,7 @@ var en_US = {
     'crm.basic.no.administrative': 'No administrative level',//暂无行政级别
     'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
     'crm.overview.apply.user.tip': 'The customer has no user yet',//该客户还没有用户
+    'crm.no.trace.record': 'The customer has not been followed up', //还没有跟进过该客户
     // 客户管理end
 
     //客户分析 start
