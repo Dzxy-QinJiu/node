@@ -9,6 +9,13 @@
 @btn-yellow: #EDA445;
 @bg-blue: #EEF7FE;
 @bd-grey: #DFDFE1;
+@bg-trans-black: rgba(79, 93, 102, 0.97);
+
+.filter-search-confirm-clear-pop {
+    .ant-popover-arrow:after {
+        border-bottom-color: @bg-trans-black!important;
+    }
+}
 .gm-scroll-view {
     padding-right: 25px;
 }
@@ -175,7 +182,7 @@
 }
 
 .clear-confirm-pop-container {
-    background: rgba(79, 93, 102, 0.97);
+    background: @bg-trans-black;
     margin: -8px -16px;
     padding: 6px 14px;
     h5 {
