@@ -202,5 +202,5 @@ exports.removeSpacesAndEnter = function(dataArr){
     dataArr.forEach((item, index) => {
         dataArr[index] = $.trim(item.replace(/[\r\n]/g,''));
     });
-    return _.union(dataArr);
+    return _.uniq(dataArr);
 };

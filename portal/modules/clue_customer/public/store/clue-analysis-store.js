@@ -24,7 +24,7 @@ ClueAnalysisStore.prototype.setInitState = function() {
     this.selectedAccess = Intl.get('common.all', '全部');
     this.selectedSource = Intl.get('common.all', '全部');
     //获取线索统计的相关参数
-    this.staticsPageSize = 1000;
+    this.staticsPageSize = 1000;//一次取出
     //获取线索统计的页码
     this.staticsNum = 1;
     //线索来源统计
