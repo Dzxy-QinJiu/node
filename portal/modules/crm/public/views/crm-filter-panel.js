@@ -305,7 +305,6 @@ const CrmFilterPanel = React.createClass({
         }
     },
     handleFilterChange(data) {
-        console.log(data);
         const condition = {};
         if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
             condition[COMMON_OTHER_ITEM] = '';
