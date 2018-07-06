@@ -160,8 +160,6 @@ var zh_CN = {
     'common.no.call.record': '暂无通话记录',
 
 
-
-
     'common.yesno': '是否',
     'common.add.member': '添加成员',
     'common.input.keyword': '输入关键词',
@@ -1378,6 +1376,10 @@ var zh_CN = {
     'crm.order.status.lost': '已丢单',
     'crm.order.closing': '订单关闭中',
     'crm.order.close.failed': '关闭订单失败',
+    'crm.order.no.stage': '暂无销售阶段',
+    'crm.order.add.stage': '添加销售阶段',
+    'crm.order.no.budget': '暂无预算',
+    'crm.order.add.budget': '添加预算',
     // 客户管理end
 
     // 客户分析start

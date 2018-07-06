@@ -162,8 +162,6 @@ var en_US = {
     'common.no.call.record': 'There is no call record',//暂无通话记录
 
 
-
-
     'common.yesno': 'whether',//是否
     'common.add.member': 'Add members',//添加成员
     'common.input.keyword': 'Please enter keywords',//输入关键词
@@ -1363,6 +1361,10 @@ var en_US = {
     'crm.order.status. lost': 'Lost',//已赢单
     'crm.order.closing': 'Order closing',//订单关闭中
     'crm.order.close.failed': 'Closing the order failure',//关闭订单失败
+    'crm.order.no.stage': 'No sales stage',//暂无销售阶段
+    'crm.order.add.stage': 'Add sales stage',//添加销售阶段
+    'crm.order.no.budget': 'No budget',//暂无预算
+    'crm.order.add.budget': 'Add budget',//添加预算
     // 客户管理end
 
     //客户分析 start

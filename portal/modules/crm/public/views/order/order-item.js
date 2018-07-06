@@ -345,6 +345,7 @@ const OrderItem = React.createClass({
         let stageOptions = _.map(this.props.stageList, (stage, index) => {
             return (<Option value={stage.name} key={index}>{stage.name}</Option>);
         });
+        const EDIT_FEILD_WIDTH = 350;
         return (
             <div className="order-item modal-container">
                 {
@@ -359,6 +360,7 @@ const OrderItem = React.createClass({
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get('sales.stage.sales.stage', '销售阶段')}:</span>
                     <BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
                         id={order.id}
                         displayText={order.sale_stages}
                         value={order.sale_stages}
@@ -367,6 +369,8 @@ const OrderItem = React.createClass({
                         hasEditPrivilege={order.oppo_status ? false : true}
                         placeholder={Intl.get('crm.155', '请选择销售阶段')}
                         saveEditSelect={this.editOrderStage}
+                        noDataTip={Intl.get('crm.order.no.stage','暂无销售阶段')}
+                        addDataTip={Intl.get('crm.order.add.stage','添加销售阶段')}
                     />
                 </div>
                 <div className="order-item-content order-application-list">
@@ -405,6 +409,7 @@ const OrderItem = React.createClass({
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get('crm.148', '预算金额')}:</span>
                     <BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
                         id={order.id}
                         type="number"
                         field="budget"
@@ -413,11 +418,14 @@ const OrderItem = React.createClass({
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                         hasEditPrivilege={order.oppo_status ? false : true}
                         saveEditInput={this.saveOrderBasicInfo}
+                        noDataTip={Intl.get('crm.order.no.budget','暂无预算')}
+                        addDataTip={Intl.get('crm.order.add.budget','添加预算')}
                     />
                 </div>
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get('crm.order.remarks', '订单备注')}:</span>
                     <BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
                         id={order.id}
                         type="textarea"
                         field="remarks"
@@ -426,6 +434,8 @@ const OrderItem = React.createClass({
                         placeholder={Intl.get('user.input.remark', '请输入备注')}
                         hasEditPrivilege={order.oppo_status ? false : true}
                         saveEditInput={this.saveOrderBasicInfo}
+                        noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                        addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                     />
                 </div>
                 {applyBtnText && this.props.isApplyButtonShow ? (
