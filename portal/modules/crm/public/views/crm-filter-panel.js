@@ -1,24 +1,26 @@
-import {getSelected} from '../../../../lib/utils/filter-utils';
+import { getSelected } from '../../../../lib/utils/filter-utils';
 var FilterStore = require('../store/filter-store');
 var FilterAction = require('../action/filter-actions');
 import Trace from 'LIB_DIR/trace';
-import {administrativeLevels} from '../utils/crm-util';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import { administrativeLevels } from '../utils/crm-util';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import userData from 'PUB_DIR/sources/user-data';
+import { FilterList } from 'CMP_DIR/filter';
 //行政级别筛选项
-let filterLevelArray = [{id: '', level: Intl.get('common.all', '全部')}].concat(administrativeLevels);
+let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
 const UNKNOWN = Intl.get('user.unknown', '未知');
+const COMMON_OTHER_ITEM = 'otherSelectedItem';
 const otherFilterArray = [{
     name: Intl.get('common.all', '全部'),
     value: ''
 }, {
-    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 30}),
+    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 30 }),
     value: 'thirty_uncontact'
 }, {
-    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 15}),
+    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 15 }),
     value: 'fifteen_uncontact'
 }, {
-    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 7}),
+    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 7 }),
     value: 'seven_uncontact'
 }, {
     name: Intl.get('crm.no.contact.way', '无联系方式客户'),
@@ -83,7 +85,7 @@ const CrmFilterPanel = React.createClass({
     componentDidUpdate: function(prevProps) {
         var filterPanelHeight = $('.crm-filter-panel').outerHeight(true);
         if (prevProps.filterPanelHeight !== filterPanelHeight) {
-            this.props.changeTableHeight(filterPanelHeight);
+            // this.props.changeTableHeight(filterPanelHeight);
         }
     },
     componentWillUnmount: function() {
@@ -302,6 +304,38 @@ const CrmFilterPanel = React.createClass({
             Trace.traceEvent($(this.getDOMNode()).find('li'), '有效客户');
         }
     },
+    handleFilterChange(data) {
+        const condition = {};
+        if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
+            condition[COMMON_OTHER_ITEM] = '';
+        }
+        data.forEach(item => {
+            if (item.groupId) {
+                if (item.groupId !== 'sales_opportunities') {
+                    condition[item.groupId] = item.data.map(x => x.value);
+                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', COMMON_OTHER_ITEM].includes(item.groupId)) {
+                        condition[item.groupId] = condition[item.groupId].join(',');
+                    } else if (item.singleSelect) {
+                        condition[item.groupId] = condition[item.groupId][0] || '';
+                    }
+
+                } else if (item.groupId === COMMON_OTHER_ITEM) {
+
+                } else {
+                    condition.sales_opportunities = [];
+                    condition.sales_opportunities.push($.extend(true, {}, this.state.condition.sales_opportunities[0], {
+                        sale_stages: item.data.map(x => x.value)
+                    }));
+                    condition.sales_opportunities[0].sale_stages = condition.sales_opportunities[0].sale_stages.join(',');
+                }
+
+            }
+        });
+        FilterAction.setCondition(condition);
+        setTimeout(() => {
+            this.props.search();
+        });
+    },
     render: function() {
         const appListJsx = this.state.appList.map((app, idx) => {
             let className = app.client_id === this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
@@ -318,134 +352,121 @@ const CrmFilterPanel = React.createClass({
         //所以这个地方需要判断一下sale_stages属性是否存在，若不存在则用空值替代
         const currentStage = this.state.condition.sales_opportunities[0].sale_stages || '';
         const selectedStages = currentStage.split(',');
-        const stageArray = [{name: '', show_name: Intl.get('common.all', '全部')}, {
+        const stageArray = [{ name: '', show_name: Intl.get('common.all', '全部') }, {
             name: Intl.get('user.unknown', '未知'),
             show_name: Intl.get('user.unknown', '未知')
         }].concat(this.state.stageList);
-        const stageListJsx = stageArray.map((stage, idx) => {
-            let className = selectedStages.indexOf(stage.name) > -1 ? 'selected' : '';
-            return <li key={idx} onClick={this.stageSelected.bind(this, stage.name)}
-                className={className}>{stage.show_name}</li>;
-        });
-        const tagListJsx = this.state.tagList.map((tag, idx) => {
-            let className = this.state.condition.labels.indexOf(tag.name) > -1 ? 'selected' : '';
-            return <li key={idx} onClick={this.tagSelected.bind(this, tag.name)}
-                className={className}>{tag.show_name}</li>;
-        });
-        const stageTagListJsx = this.state.stageTagList.map((tag, idx) => {
-            let className = this.state.condition.customer_label === tag.name ? 'selected' : '';
-            return <li key={idx} onClick={this.stageTagSelected.bind(this, tag.name)}
-                className={className}>{tag.show_name}</li>;
-        });
-        const competitorListJsx = this.state.competitorList.map((tag, idx) => {
-            let className = this.state.condition.competing_products.indexOf(tag.name) > -1 ? 'selected' : '';
-            return <li key={idx} onClick={this.competitorSelected.bind(this, tag.name)}
-                className={className}>{tag.show_name}</li>;
-        });
         const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.state.industryList);
-        const industryListJsx = industryArray.map((item, idx) => {
-            let className = this.state.condition.industry.split(',').indexOf(item) > -1 ? 'selected' : '';
-            return <li key={idx} onClick={this.industrySelected.bind(this, item)}
-                className={className}>{item || Intl.get('common.all', '全部')}</li>;
+        const commonData = _.drop(otherFilterArray).map(x => {
+            x.readOnly = true;
+            x.groupId = COMMON_OTHER_ITEM;
+            x.groupName = Intl.get('crm.186', '其他');
+            x.data = [{
+                name: x.name,
+                value: x.value,
+                groupId: COMMON_OTHER_ITEM,
+                groupName: Intl.get('crm.186', '其他'),
+                data: [{
+                    name: x.name,
+                    value: x.value,
+                    groupId: COMMON_OTHER_ITEM,
+                    groupName: Intl.get('crm.186', '其他'),
+                }]
+            }];
+            x.plainFilterList = [{
+                name: x.name,
+                value: x.value
+            }];
+            return x;
         });
-        //行政级别
-        const levelListJsx = filterLevelArray.map((item, idx) => {
-            let className = this.state.condition.administrative_level.split(',').indexOf(item.id) > -1 ? 'selected' : '';
-            return <li key={idx} onClick={this.levelSelected.bind(this, item.id)}
-                className={className}>{item.level}</li>;
-        });
-        const provinceListJsx = ['', Intl.get('user.unknown', '未知')].concat(this.state.provinceList).map((item, idx) => {
-            let className = this.state.condition.province.split(',').indexOf(item) > -1 ? 'selected' : '';
-            return <li key={idx} onClick={this.provinceSelected.bind(this, item)}
-                className={className}>{item || Intl.get('common.all', '全部')}</li>;
-        });
-        //销售角色
-        const salesRoleListJsx = this.state.salesRoleList.map((role, idx) => {
-            let className = this.state.condition.member_role === role.name ? 'selected' : '';
-            return <li key={idx} onClick={this.salesRoleSelected.bind(this, role.name)}
-                className={className}>{role.show_name}</li>;
-        });
+        const advancedData = [
+            {
+                groupName: Intl.get('crm.detail.sales.role', '销售角色'),
+                groupId: 'member_role',
+                data: _.drop(this.state.salesRoleList).map(x => ({
+                    name: x.show_name,
+                    value: x.name
+                }))
+            },
+            {
+                groupName: Intl.get('crm.order.stage', '订单阶段'),
+                groupId: 'sales_opportunities',
+                singleSelect: true,
+                data: _.drop(stageArray).map(x => ({
+                    name: x.show_name,
+                    value: x.name
+                }))
+            },
+            {
+                groupName: Intl.get('weekly.report.customer.stage', '客户阶段'),
+                groupId: 'customer_label',
+                singleSelect: true,
+                data: _.drop(this.state.stageTagList).map(x => ({
+                    name: x.show_name,
+                    value: x.name
+                }))
+            },
+            {
+                groupName: Intl.get('common.tag', '标签'),
+                groupId: 'labels',
+                data: _.drop(this.state.tagList).map(x => {
+                    const item = {
+                        name: x.show_name,
+                        value: x.name
+                    };
+                    if (x.name === Intl.get('crm.tag.unknown', '未打标签的客户')) {
+                        item.selectOnly = true;
+                    }
+                    return item;
+                })
+            },
+            {
+                groupName: Intl.get('crm.competing.products', '竞品'),
+                groupId: 'competing_products',
+                data: _.drop(this.state.competitorList).map(x => ({
+                    name: x.show_name,
+                    value: x.name
+                }))
+            },
+            {
+                groupName: Intl.get('realm.industry', '行业'),
+                groupId: 'industry',
+                singleSelect: true,
+                data: _.drop(industryArray).map(x => ({
+                    name: x,
+                    value: x
+                }))
+            },
+            {
+                groupName: Intl.get('crm.administrative.level', '行政级别'),
+                groupId: 'administrative_level',
+                data: _.drop(filterLevelArray).map(x => ({
+                    name: x.level,
+                    value: x.id
+                }))
+            },
+            {
+                groupName: Intl.get('crm.96', '地域'),
+                groupId: 'province',
+                singleSelect: true,
+                data: [Intl.get('user.unknown', '未知')]
+                    .concat(this.state.provinceList)
+                    .map(x => ({
+                        name: x,
+                        value: x
+                    }))
+            }
+        ];
         return (
             <div data-tracename="筛选">
                 <div className="crm-filter-panel">
-                    {true ? null : (
-                        <dl>
-                            <dt>{Intl.get('common.app', '应用')}:</dt>
-                            <dd>
-                                <ul>{appListJsx}</ul>
-                            </dd>
-                        </dl>
-                    )}
-                    {teamListJsx.length === 1 ? null : (
-                        <dl>
-                            <dt><ReactIntl.FormattedMessage id="user.sales.team" defaultMessage="销售团队"/> :</dt>
-                            <dd>
-                                <ul>{teamListJsx}</ul>
-                            </dd>
-                        </dl>
-                    )}
-                    <dl>
-                        <dt>{Intl.get('crm.detail.sales.role', '销售角色')} :</dt>
-                        <dd>
-                            <ul>{salesRoleListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get('crm.order.stage','订单阶段')} :</dt>
-                        <dd>
-                            <ul>{stageListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get('weekly.report.customer.stage', '客户阶段')} :</dt>
-                        <dd>
-                            <ul>{stageTagListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get('common.tag', '标签')} :</dt>
-                        <dd>
-                            <ul>{tagListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get('crm.competing.products', '竞品')} :</dt>
-                        <dd>
-                            <ul>{competitorListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get('realm.industry', '行业')} :</dt>
-                        <dd>
-                            <ul>{industryListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get('crm.administrative.level', '行政级别')} :</dt>
-                        <dd>
-                            <ul>{levelListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get('crm.96', '地域')} :</dt>
-                        <dd>
-                            <ul>{provinceListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get('crm.186', '其他')} :</dt>
-                        <dd>
-                            <ul>
-                                {otherFilterArray.map((item, index) => {
-                                    return (
-                                        <li key={index} onClick={this.otherSelected.bind(this, item.value)}
-                                            className={this.state.condition.otherSelectedItem === item.value ? 'selected' : ''}>
-                                            {item.name}
-                                        </li>);
-                                })}
-                            </ul>
-                        </dd>
-                    </dl>
+                    <FilterList
+                        style={this.props.style}
+                        showSelectTip={this.props.showSelectTip}
+                        commonData={commonData}
+                        advancedData={advancedData}
+                        onFilterChange={this.handleFilterChange.bind(this)}
+                    />
                 </div>
             </div>
         );

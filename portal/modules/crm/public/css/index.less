@@ -1,383 +1,423 @@
 @import "../../../../components/antd-table-pagination/index.less";
 @import "../../../../public/css/common-variables";
 @import "../../../../public/css/iconfont";
-.crm_content{
-  //客户标签的样式设置
-  .customer_name{
-    .customer-label {
-      float: right;
-      margin-left: 4px;
-      margin-right: 0;
-      padding: 0 5px;
-      height: 20px;
-      line-height: 19px;
-      font-size: 12px;
-      color: @tag-font-color;
-      background-color: #b8c4ca;
+@filter-width: 288px;
+.crm_content {
+    .filter-block .block.search-input-select-block button {
+        display: none;
     }
-  }
-  .customer-label.info-tag-style{
-    background-color: @info-tag-color;
-  }
-  .customer-label.intent-tag-style{
-    background-color: @intent-tag-color;
-  }
-  .customer-label.trial-tag-style{
-    background-color: @trial-tag-color;
-  }
-  .customer-label.sign-tag-style{
-    background-color: @sign-tag-color;
-  }
-  .customer-label.qualified-tag-style{
-    background-color: @qualified-tag-color;
-  }
-  .customer-label.history-qualified-tag-style{
-    background-color: @history-qualified-tag-color;
-  }
-  .customer-label.loss-tag-style{
-    background-color:@loss-tag-color;
-  }
-  .customer-label.re-contract{
-    background-color:@re-contract-color;
-  }
-
-  td .comments-fix {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  .last-contact-time{
-    float: left;
-    margin-right: 10px;
-  }
-  .ant-spin-container .ant-table-pagination li:first-child{
-    position: absolute;
-    left: 5px;
-  }
-  .search-input-select-block{
-    float:left;
-    height:30px;
-    line-height:30px;
-    margin-top:@filter_area_margin_top;
-    margin-left:@container_padding;
-    width:450px;
-    .search-input-container{
-      display:inline-block;
-      max-width:@filter_input_width;
-    }
-    .ant-btn{
-      .filter_btn;
-    }
-  }
-  .filter-block{
-    .block{
-      display:inline-block;
-      vertical-align:middle;
-    }
-    //已选xx项的提示
-    .crm-list-selected-tip{
-      float: left;
-      padding-left: 58px;
-      height: 30px;
-      line-height: 30px;
-      margin-top: 20px;
-      .icon-sys-notice{
-        color: #4d96d1;
-        font-size: 18px;
-        font-weight: bold;
-        float: left;
-        margin-right: 5px;
-      }
-      a{
-        margin-left: 5px;
-        color: #108ee9;
-        text-decoration: none;
-        &:hover{
-          color: #62AFE6;
+    .top-nav-border-fix {
+        position: relative;
+        margin-top: -6px;
+        .top-btn-wrapper {
+            position: absolute;
+            display: inline-block;
+            float: right;
+            right: 0;
+            .batch-btn-wrapper {
+                overflow: hidden;
+                position: relative;
+                right: 3px;
+                .crm-batch-change-container {
+                    float: left;
+                    margin-left: 20px;
+                    margin-top: 20px;
+                    margin-right: 5px;
+                    button {
+                        margin-left: 5px;
+                        padding: 0 10px;
+                    }
+                }
+            }
         }
-      }
+    } //客户标签的样式设置
+    .customer_name {
+        .customer-label {
+            float: right;
+            margin-left: 4px;
+            margin-right: 0;
+            padding: 0 5px;
+            height: 20px;
+            line-height: 19px;
+            font-size: 12px;
+            color: @tag-font-color;
+            background-color: #b8c4ca;
+        }
     }
-    //缩小浏览器时，操作按钮变图标后的样式设置
-    .handle-btn-mini{
-      float:right;
-      width:40px;
-      height:75px;
-      line-height:75px;
-      text-align:center;
-      color:#4d96d1;
-      cursor:pointer;
-      .iconfont, .anticon-plus{
-        font-size:22px;
-      }
-      .icon-merge-btn{
-        font-size:24px;
-      }
-      .anticon-plus{
-        vertical-align:middle;
-      }
+    .customer-label.info-tag-style {
+        background-color: @info-tag-color;
     }
-  }
-  .filter-block .gray{
-    color:#a9a9a9;
-    cursor:default;
-  }
-  .content-block{
-    margin: @top_nav_height+2 @container_padding auto @container_padding;
-    .ant-table-placeholder{
-      min-height: 550px;
+    .customer-label.intent-tag-style {
+        background-color: @intent-tag-color;
     }
-    table{
-      background:#fff;
+    .customer-label.trial-tag-style {
+        background-color: @trial-tag-color;
     }
-    .ant-alert{
-      position:relative;
-      margin-bottom:0;
-      width:auto;
-      top:0;
-      left:0;
-      text-align:left;
+    .customer-label.sign-tag-style {
+        background-color: @sign-tag-color;
     }
-    .no-more-data-tip .ant-alert{
-      text-align: center;
+    .customer-label.qualified-tag-style {
+        background-color: @qualified-tag-color;
     }
-  }
-  .ant-alert{
-    position:absolute;
-    z-index:100;
-    width:180px;
-    top:20px;
-    left:70%;
-    text-align:center;
-  }
-  .handle-btn-container{
-    div:focus, span:focus{
-      outline:0;
+    .customer-label.history-qualified-tag-style {
+        background-color: @history-qualified-tag-color;
     }
-  }
-  .order-btn-class{
-    border:0px;
-    width:25px;
-    background-color:transparent;
-    text-align:center;
-    padding:0px;
-    color:#B6C2C9;
-    font-size:16px;
-    border-radius:100px;
-    &:hover{
-      color:#9BA4A8;
-      background-color:transparent;
+    .customer-label.loss-tag-style {
+        background-color: @loss-tag-color;
     }
-  }
-  .crm-add-form{
-    padding-top:33px;
-    position: relative;
-
-    .check-only-error{
-      margin-top:-@margin-bottom;
-      line-height:20px;
-      margin-bottom:10px;
-      margin-left:100px;
-      color:@error_tips_color;
-      width:@edit_input_width;
+    td .comments-fix {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
-    .tip-customer-exist{
-      margin-top:-@margin-bottom;
-      line-height:20px;
-      margin-bottom:10px;
-      margin-left:100px;
+    .last-contact-time {
+        float: left;
+        margin-right: 10px;
     }
-    .input-red-border{
-      position:relative;
-      display:inline-block;
-      padding:6px 7px;
-      border:1px solid @error_tips_color;
-      line-height:1.5;
-      color:#666;
-      background-color:#fff;
-      background-image:none;
-      box-shadow:0 0 0 2px #ffddcc;
-      cursor:text;
-
+    .ant-spin-container .ant-table-pagination li:first-child {
+        position: absolute;
+        left: 5px;
     }
-    .industry-list-loading{
-      line-height:35px;
-      color:#666;
-      padding-left:10px;
-      .anticon-loading{
-        font-size:16px;
-        margin-left:10px;
-      }
+    .search-input-select-block {
+        float: left;
+        height: 30px;
+        line-height: 30px;
+        margin-top: @filter_area_margin_top;
+        margin-left: @container_padding - 5px;
+        width: 450px;
+        .search-input-container {
+            display: inline-block;
+            max-width: @filter_input_width;
+        }
+        .ant-btn {
+            .filter_btn;
+        }
     }
-    .ant-select{
-      width:@edit_input_width;
+    .filter-block {
+        display: inline-block;
+        position: initial;
+        .block {
+            display: inline-block;
+            vertical-align: middle;
+        } //已选xx项的提示
+        .crm-list-selected-tip {
+            float: left;
+            // padding-left: 58px;
+            padding-left: 15px;
+            height: 30px;
+            line-height: 30px;
+            margin-top: 20px;
+            .icon-sys-notice {
+                color: #4d96d1;
+                font-size: 18px;
+                font-weight: bold;
+                float: left;
+                margin-right: 5px;
+            }
+            a {
+                margin-left: 5px;
+                color: #108ee9;
+                text-decoration: none;
+                &:hover {
+                    color: #62AFE6;
+                }
+            }
+        } //缩小浏览器时，操作按钮变图标后的样式设置
+        .handle-btn-mini {
+            float: right;
+            width: 40px;
+            height: 75px;
+            line-height: 75px;
+            text-align: center;
+            color: #4d96d1;
+            cursor: pointer;
+            .iconfont,
+            .anticon-plus {
+                font-size: 22px;
+            }
+            .icon-merge-btn {
+                font-size: 24px;
+            }
+            .anticon-plus {
+                vertical-align: middle;
+            }
+        }
     }
-    .ant-form-item-control{
-      width:@edit_input_width;
+    .filter-block .gray {
+        color: #a9a9a9;
+        cursor: default;
     }
-  }
-  .crm-add-form-loading{
-    margin-top: -300px;
-  }
-  .content-block{
-    tbody{
-      cursor:pointer;
+    #content-block {
+        margin: 0 22px;
     }
-  }
-  .total{
-    position:absolute;
-    bottom: 33px;
-    font-size: 13px;
-    left:150px;
-    display:none;
-  }
-
-  .content-block .clearfix .ant-table tbody .current-row:hover,
-  .content-block .ant-table tbody .current-row{
-    background:#DFEAF3 !important;
-  }
-
-  .ant-select-selection--multiple{
-    min-height:35px;
-    ul{
-      margin-top:3px;
-      input{
-        margin-top:-10px
-      }
+    .search-input-wrapper {
+        margin-top: 18px;
+        margin-left: 32px;
+        display: inline-block;
     }
-  }
-
-  .customer-list-tags{
-    margin-top:10px;
-    .ant-tag{
-      border-radius:4px;
-      background:#d1d9db;
+    .content-block {
+        .filter-container {
+            float: left;
+            border-right: 1px solid #ccc;
+            min-width: @filter-width;
+            height: 100%;
+            position: absolute;
+            transition: all 0.5s;
+            &.filter-close {
+                left: 0 - @filter-width;
+            }
+        }
+        .content-container {
+            padding-left: @filter-width + 22px;
+            &.content-full {
+                padding-left: 0;
+            }
+        }
+        margin: @top_nav_height+2 @container_padding auto @container_padding;
+        .ant-table-placeholder {
+            min-height: 550px;
+        }
+        table {
+            background: #fff;
+        }
+        .ant-alert {
+            position: relative;
+            margin-bottom: 0;
+            width: auto;
+            top: 0;
+            left: 0;
+            text-align: left;
+        }
+        .no-more-data-tip .ant-alert {
+            text-align: center;
+        }
     }
-  }
-
-  .customer_name {
-    overflow: hidden;
-    .focus-customer{
-      float: right;
-      margin-left:4px;
+    .ant-alert {
+        position: absolute;
+        z-index: 100;
+        width: 180px;
+        top: 20px;
+        left: 70%;
+        text-align: center;
     }
-    .iconfont{
-      color:#e2e2e2;
-      margin-top: -2px;
-      &:hover{
-        color:#F9B706;
-      }
+    .handle-btn-container {
+        div:focus,
+        span:focus {
+            outline: 0;
+        }
     }
-    .icon-interested{
-      color:#F9B706;
+    .order-btn-class {
+        border: 0px;
+        width: 25px;
+        background-color: transparent;
+        text-align: center;
+        padding: 0px;
+        color: #B6C2C9;
+        font-size: 16px;
+        border-radius: 100px;
+        &:hover {
+            color: #9BA4A8;
+            background-color: transparent;
+        }
     }
-  }
-
-  .crm-filter-panel{
-    margin:85px 10px -75px;
-    padding:0 40px;
-    border-bottom:2px dotted #edf1f2;
-    dt{
-      display:table-cell;
-      width:90px;
-      vertical-align:top;
-      font-size:13px;
-      padding-top:3px;
+    .crm-add-form {
+        padding-top: 33px;
+        position: relative;
+        .check-only-error {
+            margin-top: -@margin-bottom;
+            line-height: 20px;
+            margin-bottom: 10px;
+            margin-left: 100px;
+            color: @error_tips_color;
+            width: @edit_input_width;
+        }
+        .tip-customer-exist {
+            margin-top: -@margin-bottom;
+            line-height: 20px;
+            margin-bottom: 10px;
+            margin-left: 100px;
+        }
+        .input-red-border {
+            position: relative;
+            display: inline-block;
+            padding: 6px 7px;
+            border: 1px solid @error_tips_color;
+            line-height: 1.5;
+            color: #666;
+            background-color: #fff;
+            background-image: none;
+            box-shadow: 0 0 0 2px #ffddcc;
+            cursor: text;
+        }
+        .industry-list-loading {
+            line-height: 35px;
+            color: #666;
+            padding-left: 10px;
+            .anticon-loading {
+                font-size: 16px;
+                margin-left: 10px;
+            }
+        }
+        .ant-select {
+            width: @edit_input_width;
+        }
+        .ant-form-item-control {
+            width: @edit_input_width;
+        }
     }
-    dd{
-      display:table-cell;
-      li{
-        float:left;
-        margin-right:20px;
-        margin-bottom:10px;
-        cursor:pointer;
-        padding:3px 10px;
-      }
-      li.selected{
-        background:#4d96d1;
-        color:#fff;
-        border-radius:4px;
-      }
+    .crm-add-form-loading {
+        margin-top: -300px;
     }
-  }
-  .table-loading-wrap{
-    position:fixed;
-    top:90px;
-    right:0;
-    bottom:90px;
-    left:0;
-    z-index:9;
-    .loader8{
-      position:absolute;
-      top:0;
-      right:0;
-      left:0;
-      bottom:0;
+    .content-block {
+        tbody {
+            cursor: pointer;
+        }
     }
-  }
-  .call-out {
-    cursor: pointer;
-    font-size: 16px;
-  }
-  .ant-pagination{
-    margin: 10px 0;
-  }
-  .ant-pagination-jump-next + li{
-    display: none;
-  }
+    .total {
+        position: absolute;
+        bottom: 33px;
+        font-size: 13px;
+        left: 150px;
+        display: none;
+    }
+    .content-block .clearfix .ant-table tbody .current-row:hover,
+    .content-block .ant-table tbody .current-row {
+        background: #DFEAF3 !important;
+    }
+    .ant-select-selection--multiple {
+        min-height: 35px;
+        ul {
+            margin-top: 3px;
+            input {
+                margin-top: -10px
+            }
+        }
+    }
+    .customer-list-tags {
+        margin-top: 10px;
+        .ant-tag {
+            border-radius: 4px;
+            background: #d1d9db;
+        }
+    }
+    .customer_name {
+        overflow: hidden;
+        .focus-customer {
+            float: right;
+            margin-left: 4px;
+        }
+        .iconfont {
+            color: #e2e2e2;
+            margin-top: -2px;
+            &:hover {
+                color: #F9B706;
+            }
+        }
+        .icon-interested {
+            color: #F9B706;
+        }
+    }
+    .crm-filter-panel {
+        dt {
+            display: table-cell;
+            width: 90px;
+            vertical-align: top;
+            font-size: 13px;
+            padding-top: 3px;
+        }
+        dd {
+            display: table-cell;
+            li {
+                float: left;
+                margin-right: 20px;
+                margin-bottom: 10px;
+                cursor: pointer;
+                padding: 3px 10px;
+            }
+            li.selected {
+                background: #4d96d1;
+                color: #fff;
+                border-radius: 4px;
+            }
+        }
+    }
+    .table-loading-wrap {
+        position: fixed;
+        top: 90px;
+        right: 0;
+        bottom: 90px;
+        left: 0;
+        z-index: 9;
+        .loader8 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+        }
+    }
+    .call-out {
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .ant-pagination {
+        margin: 10px 0;
+    }
+    .ant-pagination-jump-next+li {
+        display: none;
+    }
 }
 
 // 导入客户下载模板文件
-.import-crm-template-panel .right-pannel-default{
-  width:420px;
-  transform:translateX(100%);
-  -webkit-transform:translateX(100%);
-  font-size:14px;
-  .import-tips{
-    margin-top:60px;
-    margin-left:20px;
-    a{
-      text-decoration:none;
+.import-crm-template-panel .right-pannel-default {
+    width: 420px;
+    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    font-size: 14px;
+    .import-tips {
+        margin-top: 60px;
+        margin-left: 20px;
+        a {
+            text-decoration: none;
+        }
+        p {
+            padding-bottom: 20px;
+        }
     }
-    p{
-      padding-bottom:20px;
+    .import-file {
+        float: right;
+        margin-right: 20px;
+        .ant-btn {
+            margin-bottom: 3px;
+        }
+        .import-crm,
+        .ant-btn .ant-btn-ghost {
+            border: 1px solid #4d96d1;
+            border-radius: 5px;
+            padding: 4px 11px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .import-crm {
+            margin-right: 12px;
+            color: #fff;
+            background-color: #4d96d1;
+            border-color: #4d96d1;
+        }
     }
-  }
-  .import-file{
-    float:right;
-    margin-right:20px;
-    .ant-btn{
-      margin-bottom:3px;
-    }
-    .import-crm, .ant-btn .ant-btn-ghost{
-      border:1px solid #4d96d1;
-      border-radius:5px;
-      padding:4px 11px;
-      font-size:12px;
-      cursor:pointer;
-    }
-    .import-crm{
-      margin-right:12px;
-      color:#fff;
-      background-color:#4d96d1;
-      border-color:#4d96d1;
-    }
-  }
 }
 
 .customer-import-modal.ant-modal-body {
     max-height: 400px;
     overflow-y: auto;
-
     .column-contact-way {
         white-space: pre;
     }
-
     .customer-repeat {
         color: red;
     }
-
     .import-warning {
         float: left;
         line-height: 28px;
@@ -394,4 +434,3 @@
         font-size: 14px;
     }
 }
-
