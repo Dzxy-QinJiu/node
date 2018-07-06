@@ -25,7 +25,8 @@ function ClueCustomerActions() {
         'setUnSelectDataTip',//未选择销售人员的提醒信息
         'afterEditCustomerDetail',//修改线索客户完成后更新列表中的信息
         'updateClueProperty',//修改线索是否有效属性
-        'removeClueItem'//删除某条线索
+        'removeClueItem',//删除某条线索
+        'afterModifiedAssocaitedCustomer',//修改当前线索的绑定客户后在列表中修改该条线索所绑定的客户
     );
     //获取线索客户列表
     this.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {

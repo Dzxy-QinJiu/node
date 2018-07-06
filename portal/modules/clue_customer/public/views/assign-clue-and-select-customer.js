@@ -31,9 +31,8 @@ class AssignClueAndSelectCustomer extends React.Component {
             isShowCustomerError: false,//是否展示出错
             customer_id: '',//将要关联客户的id
             customer_name: '',//将要关联客户的名字
-            relatedCustomer: {},//已经关联上的客户的详情
-            relatedCustomerName: '',//已经关联上的客户名称
-            relatedCustomerId: '',//已经关联上的客户的id
+            relatedCustomerName: this.props.curClueDetail.customer_name || '',//已经关联上的客户名称
+            relatedCustomerId: this.props.curClueDetail.customer_id || '',//已经关联上的客户的id
             error_message: '',//关联客户失败后的信息
             curShowCustomerId: '',//所查看客户的id
             isShowCustomerUserListPanel: false,
@@ -55,36 +54,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         return userData.isSalesManager();
     }
     componentDidMount(){
-        this.queryCustomerByClueId(this.state.curClueDetail.id);
         this.getRecommendAssociatedCustomer();
-    }
-    //根据线索的id查询该线索关联的客户
-    queryCustomerByClueId(currentId) {
-        if (currentId) {
-            crmAjax.queryCustomer({customer_clue_id: currentId}, 1, 1).then((data) => {
-                if (data && _.isArray(data.result)) {
-                    if (data.result.length) {
-                        this.setState({
-                            relatedCustomer: data.result[0],
-                            relatedCustomerName: data.result[0].name,
-                            relatedCustomerId: data.result[0].id
-                        });
-                    } else {
-                        this.setState({
-                            relatedCustomer: {},
-                            relatedCustomerName: '',
-                            relatedCustomerId: ''
-                        });
-                    }
-                }
-            }, () => {
-                this.setState({
-                    relatedCustomer: {},
-                    relatedCustomerName: '',
-                    relatedCustomerId: ''
-                });
-            });
-        }
     }
     getCustomerByPhoneOrName(queryType,condition, rangParams, pageSize, sorter, queryObj){
         crmAjax.queryCustomer(condition, rangParams, pageSize, sorter, queryObj).then((data) => {
@@ -142,9 +112,10 @@ class AssignClueAndSelectCustomer extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.state.curClueDetail.id !== nextProps.curClueDetail.id) {
-            this.queryCustomerByClueId(nextProps.curClueDetail.id);
             this.setState({
                 curClueDetail: nextProps.curClueDetail,
+                relatedCustomerId: nextProps.curClueDetail.customer_id,
+                relatedCustomerName: nextProps.curClueDetail.customer_name,
                 recommendCustomerLists: []
             },() => {
                 this.getRecommendAssociatedCustomer();
@@ -236,11 +207,13 @@ class AssignClueAndSelectCustomer extends React.Component {
         var submitObj = {
             //线索的id
             id: this.state.curClueDetail.id,
-            //客户的id
-            customer_id: customerId,
-            //客户的名称
-            customer_name: customerName
         };
+        if (customerId){
+            //客户的id
+            submitObj.customer_id = customerId;
+            //客户的名称
+            submitObj.customer_name = customerName;
+        }
         this.setState({
             submitType: 'loading'
         });
@@ -255,19 +228,24 @@ class AssignClueAndSelectCustomer extends React.Component {
             type: 'put',
             data: JSON.stringify(submitObj),
             success: () => {
+                var curClueDetail = this.state.curClueDetail;
+                curClueDetail.customer_id = customerId;
+                curClueDetail.customer_name = customerName;
                 this.setState({
+                    curClueDetail: curClueDetail,
                     selectShowAddCustomer: false,
                     error_message: '',
                     submitType: 'success',
                     relatedCustomerName: customerName,
                     relatedCustomerId: customerId
                 });
+                clueCustomerAction.afterModifiedAssocaitedCustomer(curClueDetail);
             },
             error: (xhr) => {
                 this.setState({
                     submitType: 'error',
-                    relatedCustomerName: '',
-                    relatedCustomerId: '',
+                    relatedCustomerName: this.props.curClueDetail.customer_name,
+                    relatedCustomerId: this.props.curClueDetail.customer_id,
                     error_message: xhr.responseJSON || Intl.get('common.edit.failed', '修改失败')
                 });
             }
