@@ -696,6 +696,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 app_id: 'all',
                 tab: ['added_expired'],
             },
+            csvOption: {
+                reverse: true,
+            },
             subChart: {
                 chartType: 'table',
                 option: {
