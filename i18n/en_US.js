@@ -1351,6 +1351,7 @@ var en_US = {
     'crm.no.contact': 'No contact',//暂无联系人
     'crm.no.order.tip': 'The customer has not yet added a order',//该客户还没有添加过订单
     'crm.detail.no.user': 'No users',//暂无用户
+    'crm.detail.no.schedule': 'The customer has not added a schedule',//该客户还没有添加过联系计划
     // 客户管理end
 
     //客户分析 start

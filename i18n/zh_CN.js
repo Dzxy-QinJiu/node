@@ -1367,6 +1367,7 @@ var zh_CN = {
     'crm.no.contact': '暂无联系人',
     'crm.no.order.tip': '该客户还没有添加过订单',
     'crm.detail.no.user': '暂无用户',
+    'crm.detail.no.schedule': '该客户还没有添加过联系计划',
     // 客户管理end
 
     // 客户分析start
