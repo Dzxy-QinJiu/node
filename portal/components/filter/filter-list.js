@@ -1,6 +1,7 @@
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { Alert, Icon, Popover, message } from 'antd';
 var classNames = require('classnames');
+import PropTypes from 'prop-types';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 import filterEmitter from './emitter';
 class FilterList extends React.Component {
