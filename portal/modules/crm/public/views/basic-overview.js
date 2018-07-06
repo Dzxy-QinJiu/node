@@ -119,8 +119,11 @@ var BasicOverview = React.createClass({
                 });
             } else {
                 basicOverviewAction.setCrmUserList([]);
-                //该客户没有用户时需要引导申请，申请用户时需要应用列表
-                this.getAppList();
+                //销售及销售主管才有用户申请
+                if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                    //该客户没有用户时需要引导申请，申请用户时需要应用列表
+                    this.getAppList();
+                }
             }
         }
     },
@@ -143,7 +146,7 @@ var BasicOverview = React.createClass({
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
             setTimeout(() => {
                 this.getCrmUserList(nextProps.curCustomer);
-                if(this.state.callNumber){
+                if (this.state.callNumber) {
                     //有坐席号，需要展示未处理的电联的联系计划
                     this.getNotCompletedScheduleList(nextProps.curCustomer);
                 }
@@ -285,30 +288,34 @@ var BasicOverview = React.createClass({
     },
     //渲染申请用户的提示\面板
     renderApplyUserBlock: function() {
-        if (this.state.applyFormShowFlag) {
-            return (
-                <ApplyUserForm
-                    applyFrom="crmUserList"
-                    apps={[]}
-                    appList={this.state.appList}
-                    users={[]}
-                    customerName={this.props.curCustomer.name}
-                    customerId={this.props.curCustomer.id}
-                    cancelApply={this.toggleApplyForm.bind(this)}
-                />);
-        } else {
-            let tip = (
-                <div className="overview-user-tip">
-                    <span className="iconfont icon-warn-icon"/>
-                    <span className="no-user-tip-content">
-                        {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
-                    </span>
-                    <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
-                        {Intl.get('crm.apply.user.new', '申请新用户')}
-                    </Button>
-                </div>);
-            return (<DetailCard content={tip} className="apply-user-tip-contianer"/>);
+        //只有销售和销售主管才会申请
+        if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+            if (this.state.applyFormShowFlag) {
+                return (
+                    <ApplyUserForm
+                        applyFrom="crmUserList"
+                        apps={[]}
+                        appList={this.state.appList}
+                        users={[]}
+                        customerName={this.props.curCustomer.name}
+                        customerId={this.props.curCustomer.id}
+                        cancelApply={this.toggleApplyForm.bind(this)}
+                    />);
+            } else {
+                let tip = (
+                    <div className="overview-user-tip">
+                        <span className="iconfont icon-warn-icon"/>
+                        <span className="no-user-tip-content">
+                            {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
+                        </span>
+                        <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
+                            {Intl.get('crm.apply.user.new', '申请新用户')}
+                        </Button>
+                    </div>);
+                return (<DetailCard content={tip} className="apply-user-tip-contianer"/>);
+            }
         }
+        return null;
     },
     toggleApplyForm: function() {
         let applyFormShowFlag = !this.state.applyFormShowFlag;

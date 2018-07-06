@@ -1350,6 +1350,7 @@ var en_US = {
     'crm.no.contact.tip': 'The customer has not yet added a contact',//该客户还没有添加过联系人
     'crm.no.contact': 'No contact',//暂无联系人
     'crm.no.order.tip': 'The customer has not yet added a order',//该客户还没有添加过订单
+    'crm.detail.no.user': 'No users',//暂无用户
     // 客户管理end
 
     //客户分析 start
