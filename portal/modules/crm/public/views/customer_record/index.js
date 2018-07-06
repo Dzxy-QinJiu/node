@@ -9,7 +9,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('../../css/customer-trace-zh_CN.less');
 }
-import {Icon, message, Radio, Input, Menu, Dropdown} from 'antd';
+import {Icon, message, Radio, Input, Menu, Dropdown, Button} from 'antd';
 const RadioGroup = Radio.Group;
 const {TextArea} = Input;
 import CustomerRecordActions from '../../action/customer-record-action';
@@ -31,7 +31,8 @@ import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 import crmAjax from '../../ajax/index';
-import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -659,12 +660,29 @@ const CustomerRecord = React.createClass({
             />);
     },
 
+    getRecordListShowHeight: function() {
+        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+        let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
+        //减头部的客户基本信息高度
+        divHeight -= basicInfoHeight;
+        if ($('.phone-alert-modal-title').size()) {
+            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
+        }
+        //减添加跟进记录面版的高度
+        if (this.state.addRecordPanelShow) {
+            divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
+        } else {//减共xxx条的高度
+            divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+        }
+        return divHeight;
+    },
+
     renderCustomerRecordLists: function() {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
-                <div className="show-customer-trace">
+                <div className="customer-trace-loading">
                     <Spinner />
                 </div>
             );
@@ -676,26 +694,16 @@ const CustomerRecord = React.createClass({
             );
         } else if (recordLength === 0 && !this.state.customerRecordLoading && !this.props.isOverViewPanel) {
             //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）
-            return (<NoDataTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>);
+            return (
+                <div className="no-record-container" style={{'height': this.getRecordListShowHeight()}}>
+                    <NoDataIconTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>
+                </div>);
         } else {
-            var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-            let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
-            //减头部的客户基本信息高度
-            divHeight -= basicInfoHeight;
-            if ($('.phone-alert-modal-title').size()) {
-                divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-            }
-            //减添加跟进记录面版的高度
-            if (this.state.addRecordPanelShow) {
-                divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
-            } else {//减共xxx条的高度
-                divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
-            }
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
                     {this.props.isOverViewPanel ? this.renderTimeLine() : (
-                        <div className="show-content" style={{'height': divHeight}}>
+                        <div className="show-content" style={{'height': this.getRecordListShowHeight()}}>
                             <GeminiScrollbar
                                 handleScrollBottom={this.handleScrollBarBottom}
                                 listenScrollBottom={this.state.listenScrollBottom}
@@ -769,37 +777,45 @@ const CustomerRecord = React.createClass({
         }
 
     },
+
     render: function() {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get('customer.confirm.trace', '是否添加此跟进内容？');
         var closedModalTip = $.trim(this.state.detailContent) ? '取消补充跟进内容' : '取消添加跟进内容';
-
+        //是否是在跟进记录下没有数据
+        let isRecordTabNoData = !_.get(this.state, 'customerRecord[0]') && !this.state.customerRecordLoading && !this.props.isOverViewPanel;
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
                     <div className="trace-top-block">
-                        <span className="total-tip">
-                            <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
-                                values={{'n': this.state.total + ''}}/>
+                        <span className="total-tip crm-detail-total-tip">
+                            {isRecordTabNoData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : (
+                                <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
+                                    values={{'n': this.state.total + ''}}/>)}
                         </span>
-                        {this.props.isMerge ? null : (
+                        {this.props.isMerge ? null : this.props.isOverViewPanel ? (
                             <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
-                                title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>)
+                                title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>) : (
+                            <Button className='crm-detail-add-btn'
+                                onClick={this.toggleAddRecordPanel.bind(this, '')}>
+                                {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
+                            </Button>)
                         }
-                        <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
-                            <a className="ant-dropdown-link trace-filter-item">
-                                {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
-                                <Icon type="down"/>
-                            </a>
-                        </Dropdown>
-                        <Dropdown overlay={this.getTypeMenu()} trigger={['click']}>
-                            <a className="ant-dropdown-link trace-filter-item">
-                                {this.state.filterType ? CALL_TYPE_MAP[this.state.filterType] : Intl.get('sales.frontpage.trace.type', '跟进类型')}
-                                <Icon type="down"/>
-                            </a>
-                        </Dropdown>
-
+                        {_.get(this.state, 'customerRecord[0]') ? (
+                            <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
+                                <a className="ant-dropdown-link trace-filter-item">
+                                    {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
+                                    <Icon type="down"/>
+                                </a>
+                            </Dropdown>) : null}
+                        {_.get(this.state, 'customerRecord[0]') ? (
+                            <Dropdown overlay={this.getTypeMenu()} trigger={['click']}>
+                                <a className="ant-dropdown-link trace-filter-item">
+                                    {this.state.filterType ? CALL_TYPE_MAP[this.state.filterType] : Intl.get('sales.frontpage.trace.type', '跟进类型')}
+                                    <Icon type="down"/>
+                                </a>
+                            </Dropdown>) : null}
                     </div>)
                 }
                 <div className="show-container" id="show-container">

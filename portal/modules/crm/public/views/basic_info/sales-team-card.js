@@ -315,7 +315,7 @@ var SalesTeamCard = React.createClass({
                     <div className="sales-role">
                         <span className="sales-team-label">{Intl.get('crm.detail.sales.role', '销售角色')}:</span>
                         <span className="sales-team-text">
-                            {this.state.salesRole}
+                            {this.state.salesRole || Intl.get('role.normal.sales', '普通销售')}
                         </span>
                     </div>}
             </div>
@@ -344,7 +344,6 @@ var SalesTeamCard = React.createClass({
         });
         return (
             <div className="sales-team-edit-block" id="sales-team-edit-block">
-                <span className="edit-label">{Intl.get('crm.sales.update', '修改为')}</span>
                 <Select
                     placeholder={Intl.get('crm.17', '请选择销售人员')}
                     showSearch

@@ -1352,7 +1352,7 @@ var zh_CN = {
     'crm.Administrative.level.1': '省部级',
     'crm.Administrative.level.2': '地市级',
     'crm.Administrative.level.3': '区县级',
-    'crm.dynamic.no.data': '该客户还没有动态',
+    'crm.dynamic.no.data': '暂无动态',
     'crm.no.contact.way.tip': '暂无联系方式，请{addTip}',
     'crm.basic.no.remark': '暂无备注',
     'crm.basic.add.remark': '添加备注',
@@ -1364,6 +1364,13 @@ var zh_CN = {
     'crm.basic.add.industry': '添加行业',
     'crm.basic.no.administrative': '暂无行政级别',
     'crm.basic.add.administrative': '添加行政级别',
+    'crm.overview.apply.user.tip': '该客户还没有用户',
+    'crm.no.trace.record': '还没有跟进过该客户',
+    'crm.no.contact.tip': '该客户还没有添加过联系人',
+    'crm.no.contact': '暂无联系人',
+    'crm.no.order.tip': '该客户还没有添加过订单',
+    'crm.detail.no.user': '暂无用户',
+    'crm.detail.no.schedule': '该客户还没有添加过联系计划',
     // 客户管理end
 
     // 客户分析start

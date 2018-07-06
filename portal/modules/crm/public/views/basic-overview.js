@@ -7,7 +7,7 @@ import {isClueTag, isTurnOutTag, isHasCallBackTag} from '../utils/crm-util';
 var basicOverviewStore = require('../store/basic-overview-store');
 var basicOverviewAction = require('../action/basic-overview-actions');
 var SalesTeamStore = require('../../../sales_team/public/store/sales-team-store');
-import {message} from 'antd';
+import {message, Button} from 'antd';
 var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
@@ -21,9 +21,9 @@ import CustomerRecord from './customer_record';
 import ScheduleItem from './schedule/schedule-item';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
-import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import CustomerRecordStore from '../store/customer-record-store';
-import Spinner from 'CMP_DIR/spinner';
+import ApplyUserForm from './apply-user-form';
 
 var BasicOverview = React.createClass({
     getInitialState: function() {
@@ -36,7 +36,9 @@ var BasicOverview = React.createClass({
             callNumber: this.props.callNumber || '', // 座机号
             getCallNumberError: '',
             customerRecordLoading: customerRecordState.customerRecordLoading,
-            customerRecord: customerRecordState.customerRecord
+            customerRecord: customerRecordState.customerRecord,
+            appList: [],
+            applyFormShowFlag: false
         };
     },
     onChange: function() {
@@ -51,13 +53,15 @@ var BasicOverview = React.createClass({
     },
     // 获取拨打电话的座席号
     getUserPhoneNumber: function() {
-        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
+        commonDataUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
                     this.setState({
                         callNumber: callNumberInfo.callNumber,
                         getCallNumberError: ''
                     });
+                    //有坐席号，展示未处理的电联的联系计划
+                    this.getNotCompletedScheduleList(this.props.curCustomer);
                 } else if (callNumberInfo.errMsg) {
                     this.setState({
                         callNumber: '',
@@ -83,7 +87,11 @@ var BasicOverview = React.createClass({
         this.getRecommendTags();
         setTimeout(() => {
             this.getCrmUserList(this.props.curCustomer);
-            this.getNotCompletedScheduleList(this.props.curCustomer);
+        });
+    },
+    getAppList: function() {
+        commonDataUtil.getAppList(appList => {
+            this.setState({appList: appList});
         });
     },
     //获取推荐标签列表
@@ -109,6 +117,11 @@ var BasicOverview = React.createClass({
                 });
             } else {
                 basicOverviewAction.setCrmUserList([]);
+                //销售及销售主管才有用户申请
+                if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                    //该客户没有用户时需要引导申请，申请用户时需要应用列表
+                    this.getAppList();
+                }
             }
         }
     },
@@ -131,7 +144,10 @@ var BasicOverview = React.createClass({
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
             setTimeout(() => {
                 this.getCrmUserList(nextProps.curCustomer);
-                this.getNotCompletedScheduleList(nextProps.curCustomer);
+                if (this.state.callNumber) {
+                    //有坐席号，需要展示未处理的电联的联系计划
+                    this.getNotCompletedScheduleList(nextProps.curCustomer);
+                }
             });
         }
     },
@@ -255,7 +271,7 @@ var BasicOverview = React.createClass({
             //排序，优先展示短时间到期的
             expireTrialUsers.sort((obj1, obj2) => obj1.overDraftDays - obj2.overDraftDays);
             let tip = (
-                <div className="app-expire-tip">
+                <div className="overview-user-tip">
                     <span className="iconfont icon-warn-icon"/>
                     <span className="expire-tip-content">
                         {Intl.get('crm.overview.expire.tip', '有应用{days}试用到期', {days: expireTrialUsers[0].overDraftTimeStr})}
@@ -268,12 +284,60 @@ var BasicOverview = React.createClass({
             return null;
         }
     },
+    //渲染申请用户的提示\面板
+    renderApplyUserBlock: function() {
+        //只有销售和销售主管才会申请
+        if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+            if (this.state.applyFormShowFlag) {
+                return (
+                    <ApplyUserForm
+                        applyFrom="crmUserList"
+                        apps={[]}
+                        appList={this.state.appList}
+                        users={[]}
+                        customerName={this.props.curCustomer.name}
+                        customerId={this.props.curCustomer.id}
+                        cancelApply={this.toggleApplyForm.bind(this)}
+                    />);
+            } else {
+                let tip = (
+                    <div className="overview-user-tip">
+                        <span className="iconfont icon-warn-icon"/>
+                        <span className="no-user-tip-content">
+                            {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
+                        </span>
+                        <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
+                            {Intl.get('crm.apply.user.new', '申请新用户')}
+                        </Button>
+                    </div>);
+                return (<DetailCard content={tip} className="apply-user-tip-contianer"/>);
+            }
+        }
+        return null;
+    },
+    toggleApplyForm: function() {
+        let applyFormShowFlag = !this.state.applyFormShowFlag;
+        this.setState({applyFormShowFlag: applyFormShowFlag});
+    },
     turnToUserList(){
         if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey('4');
     },
     refreshSrollbar(){
         //渲染完跟进记录列表后需要重新render来刷新滚动条（因为跟进记录渲染完成后不会走概览页的render，所以滚动条的高度计算还是一开始没有跟进记录时的界面高度）
         this.setState(this.state);
+    },
+    renderUserApplyForm() {
+        return (
+            <ApplyUserForm
+                applyFrom="crmUserList"
+                apps={[]}
+                appList={this.state.appList}
+                users={[]}
+                customerName={this.props.curCustomer.name}
+                customerId={this.props.curCustomer.id}
+                cancelApply={this.closeRightPanel.bind(this)}
+            />
+        );
     },
     renderCustomerRcord: function() {
         return <CustomerRecord
@@ -342,6 +406,7 @@ var BasicOverview = React.createClass({
         }
         return null;
     },
+
     render: function() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
@@ -353,7 +418,7 @@ var BasicOverview = React.createClass({
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {this.renderExpireTip()}
+                    {_.get(basicData, 'app_user_ids[0]') ? this.renderExpireTip() : this.renderApplyUserBlock()}
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
@@ -387,7 +452,7 @@ var BasicOverview = React.createClass({
                     <DetailCard
                         title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
                         titleBottomBorderNone={noRecordData}
-                        titleDescr={noRecordData ? Intl.get('common.no.more.trace.record', '暂无跟进记录') : ''}
+                        titleDescr={noRecordData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : ''}
                         content={this.renderCustomerRcord()}
                     />
                 </div>
