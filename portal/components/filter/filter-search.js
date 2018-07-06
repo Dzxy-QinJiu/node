@@ -254,13 +254,13 @@ FilterSearch.defaultProps = {
 };
 
 FilterSearch.propTypes = {
-    onSubmit: 'function',
-    style: 'object',
-    key: 'string',
-    submitting: 'boolean',
-    errorMsg: 'string',
-    toggleList: 'function',
-    showSelectChangeTip: 'boolean'
+    onSubmit: PropTypes.func,
+    style: PropTypes.object,
+    key: PropTypes.string,
+    submitting: PropTypes.bool,
+    errorMsg: PropTypes.string,
+    toggleList: PropTypes.func,
+    showSelectChangeTip: PropTypes.bool,
 };
 
 export default FilterSearch;
