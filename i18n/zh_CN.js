@@ -1371,6 +1371,13 @@ var zh_CN = {
     'crm.no.order.tip': '该客户还没有添加过订单',
     'crm.detail.no.user': '暂无用户',
     'crm.detail.no.schedule': '该客户还没有添加过联系计划',
+    'crm.order.status.underway': '进行中',
+    'crm.order.status.win': '赢单',
+    'crm.order.status.lose': '丢单',
+    'crm.order.status.won': '已赢单',
+    'crm.order.status.lost': '已丢单',
+    'crm.order.closing': '订单关闭中',
+    'crm.order.close.failed': '关闭订单失败',
     // 客户管理end
 
     // 客户分析start

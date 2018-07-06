@@ -228,7 +228,7 @@ const OrderIndex = React.createClass({
             <div className="order-container" data-tracename="订单页面">
                 {this.state.isAddFormShow ? null : (<div className="order-top-block">
                     <span className="total-tip crm-detail-total-tip">
-                        {orderListLength ? (
+                        {this.state.orderListLoading ? null : orderListLength ? (
                             <ReactIntl.FormattedMessage
                                 id="sales.frontpage.total.list"
                                 defaultMessage={'共{n}条'}

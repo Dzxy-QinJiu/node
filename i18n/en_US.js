@@ -1356,6 +1356,13 @@ var en_US = {
     'crm.no.order.tip': 'The customer has not yet added a order',//该客户还没有添加过订单
     'crm.detail.no.user': 'No users',//暂无用户
     'crm.detail.no.schedule': 'The customer has not added a schedule',//该客户还没有添加过联系计划
+    'crm.order.status.underway': 'Underway',//进行中
+    'crm.order.status.win': 'Win',//赢单
+    'crm.order.status.lose': 'Lose',//丢单
+    'crm.order.status.won': 'Won',//已赢单
+    'crm.order.status. lost': 'Lost',//已赢单
+    'crm.order.closing': 'Order closing',//订单关闭中
+    'crm.order.close.failed': 'Closing the order failure',//关闭订单失败
     // 客户管理end
 
     //客户分析 start
