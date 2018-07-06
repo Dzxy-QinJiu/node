@@ -87,9 +87,12 @@ var PageFrame = React.createClass({
                     <div className="col-xs-10">
                         {this.props.children}
                         {this.state.phonePanelShow ? (
-                            <PhonePanel showFlag={this.state.phonePanelShow}
+                            <PhonePanel
+                                showFlag={this.state.phonePanelShow}
                                 paramObj={this.state.paramObj}
-                                closePhonePanel={this.closePhonePanel}/>) : null}
+                                closePhonePanel={this.closePhonePanel}
+                                notificationCustomer={this.state.isShowNotificationPanel}
+                            />) : null}
                         {
                             this.state.isShowNotificationPanel ? (
                                 <Notification />

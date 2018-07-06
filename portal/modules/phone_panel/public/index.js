@@ -608,9 +608,16 @@ class PhonePanel extends React.Component {
     render() {
         let paramObj = this.state.paramObj;
         let className = classNames('right-panel-content', {'crm-right-panel-content-slide': this.state.applyUserShowFlag});
+        let rightPanelClassName = 'crm-right-panel  white-space-nowrap table-btn-fix';
+        if (this.state.applyUserShowFlag || this.state.openAppShowFlag) {
+            rightPanelClassName = 'apply-user-form-panel  white-space-nowrap table-btn-fix';
+        }
+        if (this.props.notificationCustomer) {
+            rightPanelClassName += ' notification-system-customer';
+        }
         return (
             <RightPanel showFlag={this.props.showFlag}
-                className={this.state.applyUserShowFlag || this.state.openAppShowFlag ? 'apply-user-form-panel  white-space-nowrap table-btn-fix' : 'crm-right-panel  white-space-nowrap table-btn-fix'}
+                className={rightPanelClassName}
                 data-tracename={paramObj.call_params ? '电话弹屏' : '客户详情'}>
                 <span className="iconfont icon-close" onClick={(e) => {
                     this.hidePhonePanel(e);
@@ -659,6 +666,7 @@ PhonePanel.propTypes = {
     showFlag: React.PropTypes.bool,
     paramObj: React.PropTypes.object,
     setInitialPhoneObj: React.PropTypes.func,
-    closePhonePanel: React.PropTypes.func
+    closePhonePanel: React.PropTypes.func,
+    notificationCustomer: React.PropTypes.bool
 };
 export default PhonePanel;
