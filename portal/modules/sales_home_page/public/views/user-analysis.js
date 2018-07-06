@@ -164,8 +164,6 @@ var UserAnlyis = React.createClass({
     },
 
     renderChartContent: function() {
-        //销售不展示团队的数据统计
-        let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
             <div className="chart_list">
                 <AntcAnalysis
@@ -197,6 +195,9 @@ var UserAnlyis = React.createClass({
         let unknownDataMap = {
             unknown: Intl.get('user.unknown', '未知') 
         };
+
+        //销售不展示团队的数据统计
+        const hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
 
         return [{
             title: Intl.get('user.analysis.user.add', '用户-新增'),
@@ -259,6 +260,9 @@ var UserAnlyis = React.createClass({
             customOption: {
                 stack: true,
                 legendData: chartLegend,
+            },
+            noShowCondition: {
+                callback: () => hideTeamChart,
             },
             data: this.state.teamOrMemberAnalysis.data,
             nameValueMap: unknownDataMap,
