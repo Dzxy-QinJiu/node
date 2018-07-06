@@ -613,17 +613,17 @@ FilterList.defaultProps = {
  */
 
 FilterList.propTypes = {
-    commonData: 'array',
-    advancedData: 'array',
-    commonLoading: 'boolean',
-    commonErrorMsg: 'string',
-    advancedLoading: 'boolean',
-    advancedErrorMsg: 'string',
-    showCommonListLength: 'bumber',
-    key: 'string',
-    onFilterChange: 'function',
-    style: 'object',
-    className: 'string',
-    showSelectTip: 'boolean'
+    commonData: PropTypes.array,
+    advancedData: PropTypes.array,
+    commonLoading: PropTypes.bool,
+    commonErrorMsg: PropTypes.string,
+    advancedLoading: PropTypes.bool,
+    advancedErrorMsg: PropTypes.string,
+    showCommonListLength: PropTypes.bumber,
+    key: PropTypes.string,
+    onFilterChange: PropTypes.func,
+    style: PropTypes.object,
+    className: PropTypes.string,
+    showSelectTip: PropTypes.bool
 };
 export default FilterList;
