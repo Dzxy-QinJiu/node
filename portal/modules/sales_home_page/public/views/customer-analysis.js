@@ -417,13 +417,6 @@ var CustomerAnalysis = React.createClass({
         //表格内容高度
         const TABLE_HIGHT = 175;
 
-        //数字前显示加号
-        const handleNum = num => {
-            if (num && num > 0) {
-                return '+' + num;
-            }
-        };
-
         //从 unknown 到 未知 的映射
         let unknownDataMap = {
             unknown: Intl.get('user.unknown', '未知') 
@@ -703,6 +696,21 @@ var CustomerAnalysis = React.createClass({
                 sm: 24,
             },
             data: this.state.customerStage.data,
+            processData: data => {
+                _.each(data, dataItem => {
+                    _.each(dataItem.map, (v, k) => {
+                        //数字前显示加号
+                        if (v && v > 0) {
+                            v = '+' + v;
+                        }
+
+                        //将各阶段数据直接放到数据对象下，方便表格渲染时使用
+                        dataItem[k] = v;
+                    });
+                });
+
+                return data;
+            },
             resultType: this.state.customerStage.loading ? 'loading' : '',
             option: {
                 pagination: false,
@@ -715,73 +723,73 @@ var CustomerAnalysis = React.createClass({
                         width: 100
                     }, {
                         title: Intl.get('sales.stage.message', '信息'),
-                        dataIndex: 'map.信息',
+                        dataIndex: '信息',
                         key: 'info',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, item, '信息')}>{handleNum(text)}</span>
+                                    onClick={this.handleStageNumClick.bind(this, item, '信息')}>{text}</span>
                             );
                         }
                     }, {
                         title: Intl.get('sales.stage.intention', '意向'),
-                        dataIndex: 'map.意向',
+                        dataIndex: '意向',
                         key: 'intention',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, item, '意向')}>{handleNum(text)}</span>
+                                    onClick={this.handleStageNumClick.bind(this, item, '意向')}>{text}</span>
                             );
                         }
                     }, {
                         title: Intl.get('common.trial', '试用'),
-                        dataIndex: 'map.试用',
+                        dataIndex: '试用',
                         key: 'trial',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, item, '试用')}>{handleNum(text)}</span>
+                                    onClick={this.handleStageNumClick.bind(this, item, '试用')}>{text}</span>
                             );
                         }
                     }, {
                         title: Intl.get('common.trial.qualified', '试用合格'),
-                        dataIndex: 'map.试用合格',
+                        dataIndex: '试用合格',
                         key: 'trial.qualified',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, item, '试用合格')}>{handleNum(text)}</span>
+                                    onClick={this.handleStageNumClick.bind(this, item, '试用合格')}>{text}</span>
                             );
                         }
                     }, {
                         title: Intl.get('common.trial.unqualified', '试用不合格'),
-                        dataIndex: 'map.试用不合格',
+                        dataIndex: '试用不合格',
                         key: 'unqualified',
                         width: 100,
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, item, '试用不合格')}>{handleNum(text)}</span>
+                                    onClick={this.handleStageNumClick.bind(this, item, '试用不合格')}>{text}</span>
                             );
                         }
                     }, {
                         title: Intl.get('sales.stage.signed', '签约'),
-                        dataIndex: 'map.签约',
+                        dataIndex: '签约',
                         key: 'signed',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, item, '签约')}>{handleNum(text)}</span>
+                                    onClick={this.handleStageNumClick.bind(this, item, '签约')}>{text}</span>
                             );
                         }
                     }, {
                         title: Intl.get('sales.stage.lost', '流失'),
-                        dataIndex: 'map.流失',
-                        key: 'map.流失',
+                        dataIndex: '流失',
+                        key: '流失',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
-                                    onClick={this.handleStageNumClick.bind(this, item, '流失')}>{handleNum(text)}</span>
+                                    onClick={this.handleStageNumClick.bind(this, item, '流失')}>{text}</span>
                             );
                         }
                     }, {
