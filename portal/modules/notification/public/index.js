@@ -1,7 +1,7 @@
 var language = require('../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/main-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('./css/main-zh_CN.less');
 }
 //顶部导航
@@ -18,6 +18,7 @@ var Notification = React.createClass({
         return (
             <div className="notification_wrap">
                 <div className="notification_content">
+                    <div className="shade"></div>
                     <SystemNotification/>
                 </div>
             </div>

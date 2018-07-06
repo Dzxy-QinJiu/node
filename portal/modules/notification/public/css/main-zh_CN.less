@@ -25,6 +25,18 @@
 
 //外层容器
 .notification_content {
+  // 遮罩层样式
+  .shade {
+    position: absolute;
+    top: 0;
+    left: 52%;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.3;
+  }
+  width: 50%;
   margin-top: @top_nav_height;
   padding: 21px @container_padding 10px @container_padding;
   .loader8 {
@@ -233,5 +245,8 @@
     bottom: 20px;
     margin-left: 20px;
     font-size: 14px;
+  }
+  .right-pannel-default {
+    left: 51%;
   }
 }
