@@ -37,7 +37,6 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 const CrmList = require('MOD_DIR/crm/public/crm-list');
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
-import NewTrailCustomerTable from './new-trail-and-aign-customer';
 
 //客户分析
 var CustomerAnalysis = React.createClass({
