@@ -414,7 +414,10 @@ var CustomerAnalysis = React.createClass({
     },
     //获取图表
     getCharts: function() {
+        //表格内容高度
         const TABLE_HIGHT = 175;
+
+        //数字前显示加号
         const handleNum = num => {
             if (num && num > 0) {
                 return '+' + num;
@@ -425,6 +428,9 @@ var CustomerAnalysis = React.createClass({
         let unknownDataMap = {
             unknown: Intl.get('user.unknown', '未知') 
         };
+
+        //销售不展示团队的数据统计
+        const hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
 
         return [{
             title: Intl.get('effective.customer.statistics', '有效客户统计'),
@@ -599,6 +605,9 @@ var CustomerAnalysis = React.createClass({
             chartType: 'bar',
             customOption: {
                 showValue: true,
+            },
+            noShowCondition: {
+                callback: () => hideTeamChart,
             },
             data: this.state.teamAnalysis.data,
             nameValueMap: unknownDataMap,
@@ -790,8 +799,6 @@ var CustomerAnalysis = React.createClass({
         }];
     },
     renderChartContent: function() {
-        //销售不展示团队的数据统计
-        let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
             <div className="chart_list">
                 <AntcAnalysis
@@ -840,12 +847,9 @@ var CustomerAnalysis = React.createClass({
     render: function() {
         let layoutParams = this.props.getChartLayoutParams();
         this.chartWidth = layoutParams.chartWidth;
-        //销售不展示团队的数据统计
-        let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
 
         const newAddedCustomerParams = {
-            queryObj: {                
-            },
+            queryObj: {},
             rangParams: [{
                 from: this.props.startTime,
                 to: this.props.endTime,
