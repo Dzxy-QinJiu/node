@@ -16,12 +16,15 @@ var Notification = React.createClass({
     },
     render: function() {
         return (
-            <div className="notification_wrap">
-                <div className="notification_content">
-                    <div className="shade"></div>
-                    <SystemNotification/>
+            <div className="notification-system-panel">
+                <div className="shade"></div>
+                <div className="notification_wrap">
+                    <div className="notification_content">
+                        <SystemNotification/>
+                    </div>
                 </div>
             </div>
+           
         );
     }
 });

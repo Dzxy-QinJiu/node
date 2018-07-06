@@ -12,6 +12,7 @@ var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 import PhonePanel from 'MOD_DIR/phone_panel/public';
 import AudioPlayer from 'CMP_DIR/audioPlayer';
+import Notification from 'MOD_DIR/notification/public/index';
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
     call_params: null//后端推送过来的通话状态相关的参数
@@ -22,7 +23,8 @@ var PageFrame = React.createClass({
             phonePanelShow: false,//是否展示拨打电话面板（包括：客户详情）
             paramObj: $.extend(true, {}, emptyParamObj),
             audioPanelShow: false,//是否展示播放录音面板
-            audioParamObj: {}
+            audioParamObj: {},
+            isShowNotificationPanel: false // 是否展示系统通知面板
         };
     },
     componentDidMount: function() {
@@ -69,13 +71,18 @@ var PageFrame = React.createClass({
             this.state.audioParamObj.closeAudioPlayContainer();
         }
     },
+    showNotificationPanel() {
+        this.setState({
+            isShowNotificationPanel: !this.state.isShowNotificationPanel
+        });
+    },
     render: function() {
         var audioParamObj = this.state.audioParamObj;
         return (
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-xs-2">
-                        <LeftMenu />
+                        <LeftMenu showNotificationPanel={this.showNotificationPanel}/>
                     </div>
                     <div className="col-xs-10">
                         {this.props.children}
@@ -83,6 +90,11 @@ var PageFrame = React.createClass({
                             <PhonePanel showFlag={this.state.phonePanelShow}
                                 paramObj={this.state.paramObj}
                                 closePhonePanel={this.closePhonePanel}/>) : null}
+                        {
+                            this.state.isShowNotificationPanel ? (
+                                <Notification />
+                            ) : null
+                        }
                     </div>
                 </div>
                 {this.state.audioPanelShow && audioParamObj ? (
