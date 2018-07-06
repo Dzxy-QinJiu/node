@@ -33,7 +33,7 @@ import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
-import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import { FilterInput } from 'CMP_DIR/filter';
 var classNames = require('classnames');
 
@@ -1544,4 +1544,4 @@ var Crm = React.createClass({
     }
 });
 
-module.exports = Crm;
+module.exports = Crm;
