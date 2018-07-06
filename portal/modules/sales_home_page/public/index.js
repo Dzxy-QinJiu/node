@@ -1,6 +1,8 @@
 require('./css/index.less');
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
+const teamTreeEmitter = Emitters.teamTreeEmitter;
+var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
 import {Select, message, Alert} from 'antd';
 import {AntcTable} from 'antc';
 import Trace from 'LIB_DIR/trace';
@@ -520,6 +522,8 @@ var SalesHomePage = React.createClass({
                 getSaleIdByName={this.getSaleIdByName}
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
+                emitters={this.getEmitters()}
+                conditions={this.getConditions()}
             />);
         } else if (this.state.activeView === viewConstant.USER) {
             return (<UserAnalysis ref="userView" startTime={this.state.start_time} endTime={this.state.end_time}
@@ -782,6 +786,69 @@ var SalesHomePage = React.createClass({
                 team_id={this.state.currShowSalesTeam.group_id}
             />
         );
+    },
+    //获取触发器
+    getEmitters: function() {
+        return [
+            {
+                instance: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: 'starttime',
+                }, {
+                    name: 'endtime',
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: 'team_ids',
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_MEMBER,
+                callbackArgs: [{
+                    name: 'member_id',
+                }],
+            },
+        ];
+    },
+    //获取图表条件
+    getConditions: function() {
+        return [
+            {
+                name: 'starttime',
+                value: this.state.start_time,
+            },
+            {
+                name: 'endtime',
+                value: this.state.end_time,
+            },
+            {
+                name: 'app_id',
+                value: 'all',
+            },
+            {
+                name: 'team_ids',
+                value: '',
+            },
+            {
+                name: 'member_id',
+                value: '',
+            },
+            {
+                name: 'data_type',
+                value: this.getDataType(),
+                type: 'params',
+            },
+            {
+                name: 'auth_type',
+                value: getDataAuthType().toLowerCase(),
+                type: 'params',
+            },
+        ];
     },
     //渲染客户关系首页
     render: function() {
