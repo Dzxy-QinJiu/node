@@ -71,7 +71,7 @@ var PageFrame = React.createClass({
             this.state.audioParamObj.closeAudioPlayContainer();
         }
     },
-    showNotificationPanel() {
+    toggleNotificationPanel() {
         this.setState({
             isShowNotificationPanel: !this.state.isShowNotificationPanel
         });
@@ -82,7 +82,7 @@ var PageFrame = React.createClass({
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-xs-2">
-                        <LeftMenu showNotificationPanel={this.showNotificationPanel}/>
+                        <LeftMenu toggleNotificationPanel={this.toggleNotificationPanel}/>
                     </div>
                     <div className="col-xs-10">
                         {this.props.children}

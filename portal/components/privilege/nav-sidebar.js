@@ -410,9 +410,9 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
-    showNotificationPanel(event) {
+    toggleNotificationPanel(event) {
         event.stopPropagation();
-        this.props.showNotificationPanel();
+        this.props.toggleNotificationPanel();
     },
     getNotificationBlock: function() {
         var notificationLinks = this.getLinkListByPrivilege(NotificationLinkList);
@@ -420,7 +420,7 @@ var NavSidebar = React.createClass({
             return null;
         }
         return (
-            <div className="notification" onClick={this.showNotificationPanel}>
+            <div className="notification" onClick={this.toggleNotificationPanel}>
                 <i className="iconfont icon-tongzhi" title={Intl.get('menu.system.notification', '系统消息')}></i>
             </div>
         );
