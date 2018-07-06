@@ -128,9 +128,7 @@ class CustomerUsers extends React.Component {
 
     getAppList() {
         commonDataUtil.getAppList(appList => {
-            if (_.get(appList, '[0]')) {
-                this.setState({appList: appList});
-            }
+            this.setState({appList: appList});
         });
     }
 

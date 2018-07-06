@@ -91,9 +91,7 @@ var BasicOverview = React.createClass({
     },
     getAppList: function() {
         commonDataUtil.getAppList(appList => {
-            if (_.get(appList, '[0]')) {
-                this.setState({appList: appList});
-            }
+            this.setState({appList: appList});
         });
     },
     //获取推荐标签列表
