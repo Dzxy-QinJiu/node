@@ -148,7 +148,7 @@ var UserDetailChangeRecord = React.createClass({
         }else if (item.operate === 'UserInfoUpdate' && item.detail){
             //基本信息的修改
             //修改了用户的状态
-            item.detail.status && (item.detail.status === '0' ? (status += Intl.get('user.disabled.this.user', '停用了该用户。')) : (status += Intl.get('user.enabled.this.user', '启用了该用户。')));
+            item.detail.status && (item.detail.status === '0' ? (status += Intl.get('user.disabled.this.user', '关闭了在该应用下的授权。')) : (status += Intl.get('user.enabled.this.user', '启用了在该应用下的授权。')));
             //修改了昵称
             item.detail.nick_name && (nickname += Intl.get('user.change.nick_name.to', '修改了该用户的昵称，改为{nick_name}。',{'nick_name': item.detail.nick_name}));
             // 修改了密码
