@@ -108,21 +108,37 @@ class FilterList extends React.Component {
                 x.selected = false;
             });
         }
-        //已选中的常用筛选中包含高级筛选时，直接清空常用筛选
+        
         if (this.state.selectedCommonIndex &&
-            _.get(this.state, ['commonData', this.state.selectedCommonIndex, 'data', 'length']) &&
-            this.isContainAdvanced(this.state.commonData[this.state.selectedCommonIndex].data)) {
-            selectedCommonIndex = '';
+            _.get(this.state, ['commonData', this.state.selectedCommonIndex, 'data', 'length'])
+        ) {
+            //已选中的常用筛选中包含高级筛选时，直接清空常用筛选
+            if (this.isContainAdvanced(this.state.commonData[this.state.selectedCommonIndex].data)) {                
+                selectedCommonIndex = '';
+                this.setState({
+                    selectedCommonIndex,
+                    advancedData
+                }, () => {
+                    const filterList = this.processSelectedFilters(this.state.advancedData);
+                    //发送选择筛选项事件
+                    filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
+                    this.props.onFilterChange(filterList);
+                });
+            }
+            //否则对外、对search提供两者union 
+            else {
+                this.setState({
+                    advancedData
+                }, () => {
+                    //选择的常用筛选中不包含高级筛选项, 对外和search提供两者的union        
+                    const allSelectedFilterData = this.unionFilterList(this.state.commonData[this.state.selectedCommonIndex].data, this.state.advancedData);
+                    //发送选择筛选项事件
+                    filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, allSelectedFilterData);
+                    this.props.onFilterChange(allSelectedFilterData);
+                });
+            }
         }
-        this.setState({
-            selectedCommonIndex,
-            advancedData
-        }, () => {
-            const filterList = this.processSelectedFilters(this.state.advancedData);
-            //发送选择筛选项事件
-            filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
-            this.props.onFilterChange(filterList);
-        });
+        
     }
     shareCommonItem(item) {
 
@@ -317,6 +333,7 @@ class FilterList extends React.Component {
                 }
             });
         }
+       
         if (selectedGroupItem.data && selectedGroupItem.data.length) {
             let selectOnlyItem = selectedGroupItem.data.find(x => x.selectOnly);
             selectedItem = selectedGroupItem.data.find((x, idx) => idx === innerIdx);
