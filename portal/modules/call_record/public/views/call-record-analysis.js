@@ -424,12 +424,19 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
             width: 114,
-            dataIndex: isExport ? 'totalTime' : 'totalTimeFormated',
+            dataIndex: 'totalTime',
             key: 'total_time',
             sorter: function(a, b) {
                 return a.totalTime - b.totalTime;
             },
-            className: 'has-filter table-data-align-right'
+            className: 'has-filter table-data-align-right',
+            render: function(text, record, index){
+                return (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
+            }
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             width: 114,
@@ -442,12 +449,19 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get('sales.home.average.duration', '日均时长'),
             width: 114,
-            dataIndex: isExport ? 'averageTime' : 'averageTimeFormated',
+            dataIndex: 'averageTime',
             key: 'average_time',
             sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
             },
-            className: 'has-filter table-data-align-right'
+            className: 'has-filter table-data-align-right',
+            render: function(text, record, index){
+                return (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
+            }
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
             width: 114,
@@ -523,11 +537,18 @@ var CallRecordAnalyis = React.createClass({
                 title: Intl.get('call.record.average.call.duration', '人均时长'),
                 width: 114,
                 align: 'right',
-                dataIndex: isExport ? 'personAverageTime' : 'personAverageTimeFormated',
+                dataIndex: 'personAverageTime',
                 key: 'person_average_time',
                 sorter: function(a, b) {
                     return a.personAverageTime - b.personAverageTime;
                 },
+                render: function(text, record, index){
+                    return (
+                        <span>
+                            {TimeUtil.getFormatTime(text)}
+                        </span>
+                    );
+                }
             }, {
                 title: Intl.get('call.record.average.connected', '人均接通数'),
                 width: 114,
@@ -953,25 +974,24 @@ var CallRecordAnalyis = React.createClass({
 
     // 通话率列表
     renderCallInfo() {
-        if (this.state.loading) {
-            return (
-                <div>
-                    <Spinner />
-                </div>
-            );
-        }
+        var callInfoCharts = [{
+            title: Intl.get('call.analysis.call.title', '通话信息'),
+            chartType: 'table',
+            layout: {
+                sm: 24,
+            },
+            resultType: this.state.loading ? 'loading' : 'suceess',
+            data: this.state.salesPhoneList,
+            option: {
+                pagination: false,
+                bordered: true,
+                columns: this.getPhoneListColumn()
+            }
+        }];
         return (
-            <AntcCardContainer
-                title={Intl.get('call.analysis.call.title', '通话信息')}
-                exportData={handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true))}
-                csvFileName="sales_phone_table.csv"
-            >
-                <AntcTable dataSource={this.state.salesPhoneList}
-                    columns={this.getPhoneListColumn()}
-                    pagination={false}
-                    bordered
-                />
-            </AntcCardContainer>
+            <AntcAnalysis
+                charts={callInfoCharts}
+            />
         );
     },
 
@@ -979,28 +999,28 @@ var CallRecordAnalyis = React.createClass({
      * titleObj={title:"通话时长",dataKey:"billsec"}
      */
     renderCallTopTen(dataObj, titleObj){
+        var callTopTenCharts = [{
+            title: titleObj.title + 'TOP10',
+            chartType: 'table',
+            resultType: dataObj.loading ? 'loading' : 'suceess',
+            data: dataObj.data,
+            layout: {
+                sm: 24,
+            },
+            noExportCsv: true,
+            option: {
+                pagination: false,
+                bordered: true,
+                columns: this.getCallDurTopColumn(titleObj)
+            }
+        }];
         return (
             <div className="call-top  col-xs-6">
-                <div className="call-duration-top-ten">
-                    <div className="call-duration-title">
-                        {titleObj.title}TOP10:
-                    </div>
-                    {dataObj.loading ? <Spinner /> : dataObj.errMsg ? (
-                        <div className="alert-wrap">
-                            <Alert
-                                message={titleObj.errMsg}
-                                type="error"
-                                showIcon={true}
-                            />
-                        </div>
-                    ) : <AntcTable
-                        dataSource={dataObj.data}
-                        columns={this.getCallDurTopColumn(titleObj)}
-                        pagination={false}
-                        bordered
-                    />}
-                </div>
-            </div>);
+                <AntcAnalysis
+                    charts={callTopTenCharts}
+                />
+            </div>
+        );
     },
     getOneOneFourAndServiceHasTeamTooltip: function() {
         return {
@@ -1378,9 +1398,6 @@ var CallRecordAnalyis = React.createClass({
                             </div>
                         </div>
                         <div className="col-xs-12">
-                            <div>
-                                {Intl.get('call.analysis.zone.distrute', '客户的地域分布')}
-                            </div>
                             <div className="call-zone-distribute" ref="mapChartWrap">
                                 {this.renderCustomerZoneDistribute()}
                             </div>

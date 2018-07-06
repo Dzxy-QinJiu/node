@@ -5,7 +5,7 @@ var DynamicStore = require('../../store/dynamic-store');
 var DynamicAction = require('../../action/dynamic-action');
 var TimeLine = require('../../../../../components/time-line');
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
-import NoDataTip from '../components/no-data-tip';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
 
 var Dynamic = React.createClass({
@@ -67,7 +67,7 @@ var Dynamic = React.createClass({
                             timeField="date"
                             render={this.timeLineItemRender}
                         />
-                    </div>) : <NoDataTip tipContent={Intl.get('crm.dynamic.no.data', '该客户还没有动态')}/>}
+                    </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
             </RightPanelScrollBar>
         );
     }

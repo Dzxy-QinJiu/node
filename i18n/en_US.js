@@ -859,9 +859,12 @@ var en_US = {
     'notification.system.handle.failed': 'Set the system message to failed processing',//将系统消息设为已处理失败
     'notification.system.handled.set': 'Handle',//处理
     'notification.system.handled': 'Handled',//已处理
-    'notification.system.untreated': 'Untreated',//未处理
+    'notification.system.untreated': 'Untreated',//待处理
     'notification.login.password.error': 'Password or verification code error',//报密码或验证码错误
     'notification.login.failed': 'Login failed', //登录失败
+    'notification.system.handled.success': 'Successfully processed', // 处理成功
+    'notification.system.handled.error': 'Failed processed', // 处理失败
+    'notification.system.login.count': '{count} counts, last time', // {count}次，最后一次
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
@@ -1236,9 +1239,13 @@ var en_US = {
     'crm.212': 'Please select labels',//请选择标签
     'crm.213': 'Undistributed Customer',//未分配客户
     'crm.215': 'A total of {count} clues',//共{count}个线索
+    'crm.216': 'Add failed',//添加成功
+    'crm.217': 'Failed to get the list',//获取列表失败
+    'crm.218': 'Edit successfully',//修改成功
+    'crm.219': 'Edit Failed',//修改失败
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
-    'crm.recent.week.active': 'Recent week active customers',//近一周活跃用户
-    'crm.recent.month.active': 'Recent month active customers',//近一月活跃用户
+    'crm.recent.week.active': 'Recent week active customers',//近一周活跃客户
+    'crm.recent.month.active': 'Recent month active customers',//近一月活跃客户
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
     'crm.administrative.level': 'Administrative level',//行政级别
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
@@ -1330,7 +1337,25 @@ var en_US = {
     'crm.Administrative.level.1': 'Provincial level',//省部级
     'crm.Administrative.level.2': 'Prefectural level',//地市级
     'crm.Administrative.level.3': 'county level',//区县级
-    'crm.dynamic.no.data': 'The customer has no dynamic',//该客户还没有动态
+    'crm.dynamic.no.data': 'No dynamic',//暂无动态
+    'crm.no.contact.way.tip': 'No contact, please {addTip}',//暂无联系方式，请{addTip}
+    'crm.basic.no.remark': 'No remark',//暂无备注
+    'crm.basic.add.remark': 'Add remark',//添加备注
+    'crm.basic.no.address': 'No detailed address',//暂无详细地址
+    'crm.basic.add.address': 'Add detailed address',//添加详细地址
+    'crm.basic.no.location': 'No region',//暂无地域信息
+    'crm.basic.add.location': 'Add region',//添加地域信息
+    'crm.basic.no.industry': 'No industry',//暂无行业
+    'crm.basic.add.industry': 'Add industry',//添加行业
+    'crm.basic.no.administrative': 'No administrative level',//暂无行政级别
+    'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
+    'crm.overview.apply.user.tip': 'The customer has no user yet',//该客户还没有用户
+    'crm.no.trace.record': 'The customer has not been followed up', //还没有跟进过该客户
+    'crm.no.contact.tip': 'The customer has not yet added a contact',//该客户还没有添加过联系人
+    'crm.no.contact': 'No contact',//暂无联系人
+    'crm.no.order.tip': 'The customer has not yet added a order',//该客户还没有添加过订单
+    'crm.detail.no.user': 'No users',//暂无用户
+    'crm.detail.no.schedule': 'The customer has not added a schedule',//该客户还没有添加过联系计划
     // 客户管理end
 
     //客户分析 start
@@ -2257,6 +2282,9 @@ var en_US = {
     'noMoreTip.customer': 'no more customers',
     'failed.change.source.time': 'Failed to change clue source time',//修改线索咨询时间失败
     'china.zone.distribute.south.island': 'South China Sea Islands',//南海诸岛
+    'phone.status.record.content': 'Please fill in this follow-up content',//请填写本次跟进内容
+    'phone.status.other.hang.out': 'The other hangs up',//对方挂断
+    'phone.status.contact.later': 'The contact is not here now, please contact later',//联系人现在不在，之后再联系
     'clue.customer.analysis.trend': 'Trend',//趋势
     'clue.stage.statics': 'Clue stage statistics',//线索阶段统计
     'clue.analysis.access.channel': 'channel',//渠道

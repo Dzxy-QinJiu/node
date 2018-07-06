@@ -120,6 +120,7 @@
   //错误提示
   .ant-alert {
     display: inline-block;
+    margin-left: 20px;
   }
   //分页器左边的loading
   .pagination_wrapper {
@@ -147,19 +148,12 @@
 //系统消息
 .notification_system {
   margin-top: -15px;
-  .notification-status-select, .notification-type-select {
-    position: absolute;
-    top: @filter_area_margin_top;
-    z-index: 11;
+  .notification-type-select {
+    float: left;
+    margin: 16px 16px 0 20px;
   }
   .notification-status-select {
-    left: 40px;
-    .ant-select {
-      width: 85px;
-    }
-  }
-  .notification-type-select {
-    right: 126px;
+    margin-top: 16px;
   }
   //刷新新系统消息的提示
   .system-notice-update{
@@ -167,29 +161,45 @@
     font-size: 14px;
   }
   .system_message_list {
-    .system-notice-handled-item {
-      .system-notice-type {
-        width: 100%;
+    .select-li-item, li:hover{
+      background-color: #f8fdff;
+      .system-notice-content {
+        .notice-handled-set {
+          color: #fff;
+          background-color: #4E96D1;
+        }
       }
     }
     li {
+      position: relative;
       display: inline-block;
       width: 100%;
       border-bottom: 1px solid #f1f1f1;
       padding: 15px 0 5px 20px;
       font-size: 14px;
       .system-notice-title {
-        display: inline-block;
-        width: 100%;
-        a {
+        .icon-login-failed, .icon-concern-customer-login, .icon-deactivate-customer-login, .icon-remote-login {
           float: left;
+          margin: -1px 5px 0 0;
+          color: #F9B706;
+          font-size: 14px;
+        }
+        .icon-arrow {
+          color: #ced4d6;
+        }
+        .customer-name {
+          clear: both;
+          font-size: 16px;
+          font-weight: bold;
+          cursor: pointer;
         }
       }
       .system-notice-type {
         float: left;
         margin-right: 10px;
         padding-bottom: 5px;
-        font-size: 16px;
+        font-size: 14px;
+        font-weight: bold;
       }
       .system-notice-content {
         display: inline-block;
@@ -207,6 +217,10 @@
           color: #8fd5f1;
         }
         .notice-handled-set {
+          font-size: 14px;
+          margin: 10px 0 20px;
+          height: 24px;
+          color: #108ee9;
           .anticon-loading {
             padding: 0 5px;
           }
@@ -216,13 +230,38 @@
             padding-right: 5px;
           }
           .system-notice-time {
-            padding-left: 10px;
+            .login-count {
+              color: #108ee9;
+              padding: 0 2px;
+            }
+            .login-time {
+              padding-left: 5px;
+            }
+          }
+        }
+        // 处理通知消息的样式
+        .handle-notice-tips {
+          position: absolute;
+          top: 40px;
+          left: 120px;
+          .ant-alert-success,  .ant-alert-error{
+            background-color: #4E5C66;
+            .ant-alert-message, .ant-alert-description, .ant-alert-close-icon .anticon-cross{
+              color: #fff;
+            }
+          }
+          .ant-alert-success {
+            top: 20px;
+            height: 40px;
+          }
+          .ant-alert-error {
+            min-width: 200px;
+            height: 70px;
           }
         }
       }
       .system-notice-time {
         color: #a0a0a0;
-        font-size: 13px;
       }
     }
   }
@@ -232,5 +271,4 @@
     margin-left: 20px;
     font-size: 14px;
   }
-  
 }

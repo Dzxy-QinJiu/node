@@ -11,3 +11,8 @@ export const PHONERINGSTATUS = {
     phone: 'phone',//通话结束后，后端推送过来的最后一个状态（销售、管理员打电话）
     call_back: 'call_back'//通话结束后，运营人员的回访电话，后端推送过来的最后一个状态
 };
+export const commonPhoneDesArray = [
+    Intl.get('call.record.state.no.answer', '未接听'),
+    Intl.get('phone.status.other.hang.out', '对方挂断'),
+    Intl.get('phone.status.contact.later', '联系人现在不在，之后再联系')
+];

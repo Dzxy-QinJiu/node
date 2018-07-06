@@ -33,6 +33,12 @@ const BasicEditField = React.createClass({
             placeholder: Intl.get('user.email.write.tip', '请填写邮箱'),
             //显示的值
             value: '',
+            //input编辑区的宽度
+            width: '100%',
+            //无数据时的提示（没有修改权限时提示没有数据）
+            noDataTip: '',
+            //添加数据的提示（有修改权限时，提示补充数据）
+            addDataTip: '',
             //编辑按钮的提示文案
             editBtnTip: Intl.get('common.update', '修改'),
             //修改成功
@@ -143,8 +149,8 @@ const BasicEditField = React.createClass({
                     displayType: 'text'
                 });
             };
-            if ((this.props.type === 'password' && value != secretPassword)
-                || (value != this.state.value)) {
+            if ((this.props.type === 'password' && value !== secretPassword)
+                || (value !== this.state.value)) {
                 this.props.saveEditInput(saveObj, () => {
                     setDisplayState();
                 }, errorMsg => {
@@ -213,21 +219,32 @@ const BasicEditField = React.createClass({
 
         var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
 
-        var textBlock = this.state.displayType === 'text' ? (
-            <div>
-                <span className="inline-block basic-info-text">
-                    {displayText}{this.props.afterValTip ? this.props.afterValTip : ''}
-                </span>
-                {this.props.hasEditPrivilege ? (
-                    <DetailEditBtn title={this.props.editBtnTip}
-                        onClick={this.setEditable.bind(this)}/>) : null
-                }
-            </div>
-        ) : null;
+        var textBlock = null;
+        if (this.state.displayType === 'text') {
+            if (displayText) {
+                textBlock = (
+                    <div>
+                        <span className="inline-block basic-info-text">
+                            {displayText}{this.props.afterValTip || ''}
+                        </span>
+                        {this.props.hasEditPrivilege ? (
+                            <DetailEditBtn title={this.props.editBtnTip}
+                                onClick={this.setEditable.bind(this)}/>) : null}
+                    </div>);
+            } else {
+                textBlock = (
+                    <span className="inline-block basic-info-text no-data-descr">
+                        {this.props.hasEditPrivilege ? (
+                            <a onClick={this.setEditable.bind(this)}>{this.props.addDataTip}</a>) : this.props.noDataTip}
+
+                    </span>
+                );
+            }
+        }
 
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
-                <Form horizontal autoComplete="off">
+                <Form horizontal autoComplete="off" style={{width: this.props.width || '100%'}}>
                     <input type="password" style={{display: 'none'}} name="input" autoComplete="off"/>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem

@@ -695,10 +695,10 @@ var Crm = React.createClass({
             case OTHER_FILTER_ITEMS.SEVEN_UNCONTACT://超7天未联系的客户
                 dayTime = DAY_TIME.SEVEN_DAY;
                 break;
-            case OTHER_FILTER_ITEMS.SEVEN_LOGIN://近一周活跃用户
+            case OTHER_FILTER_ITEMS.SEVEN_LOGIN://近一周活跃客户
                 dayTimeLogin = DAY_TIME.SEVEN_DAY;
                 break;
-            case OTHER_FILTER_ITEMS.MONTH_LOGIN://近一个月活跃用户
+            case OTHER_FILTER_ITEMS.MONTH_LOGIN://近一个月活跃客户
                 dayTimeLogin = DAY_TIME.THIRTY_DAY;
                 break;
             case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
@@ -748,7 +748,7 @@ var Crm = React.createClass({
             };
         }
         else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
-            //既不是超xx天未联系的客户、也不是xx天的活跃用户、还不是多个订单客户的过滤时，传默认的设置
+            //既不是超xx天未联系的客户、也不是xx天的活跃、还不是多个订单客户的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }
         if (unexist.length > 0) {
@@ -1544,4 +1544,4 @@ var Crm = React.createClass({
     }
 });
 
-module.exports = Crm;
+module.exports = Crm;

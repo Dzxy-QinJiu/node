@@ -55,7 +55,7 @@ var SalesStageInfo = React.createClass({
                         className="sales-stage-content-describe">{salesStage.description}</div>
                 </div>
                 {
-                    this.props.isEditOrder ?
+                    this.props.salesStageEditOrder ?
                         (<div className="sales-stage-btn-div order-arrow">
                             <Button className="sales-stage-btn-class icon-arrow-up iconfont"
                                 onClick={_this.salesStageOrderUp.bind(this, salesStage)}
