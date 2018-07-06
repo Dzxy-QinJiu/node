@@ -479,8 +479,8 @@ var en_US = {
     'user.role.is': 'role is {role}.',//，角色为{role}
     'user.tag.is': 'type is {tag}.',//，类型为{tag}
     'user.create.this.user': 'Create this user',//创建了该用户
-    'user.disabled.this.user': 'disabled this user',//停用了该用户。
-    'user.enabled.this.user': 'enabled this user',//启用了该用户。
+    'user.disabled.this.user': 'Turn off authorization of the application',//关闭了在该应用下的授权。
+    'user.enabled.this.user': 'Turn on authorization of the application',//启用了在该应用下的授权。
     'user.disabled.this.user.on.app': 'disabled the authorization of this user on the application',//停用了该用户在此应用的授权
     'user.enabled.this.user.on.app': 'enabled the authorization of this user on the application',//启用了该用户在此应用的授权
     'user.change.role.to': 'change this user\'s role to {role}',//修改了该用户的角色，改为{role}。
