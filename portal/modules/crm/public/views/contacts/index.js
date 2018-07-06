@@ -1,5 +1,4 @@
 require('../../css/contact.less');
-var Icon = require('antd').Icon;
 //一个用于显示的联系人
 var ContactItem = require('./contact-item');
 //联系人表单
@@ -11,9 +10,9 @@ var ContactAction = require('../../action/contact-action');
 //滚动条
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import Spinner from 'CMP_DIR/spinner';
-import crmAjax from '../../ajax/index';
-import userData from 'PUB_DIR/sources/user-data';
-
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import {Button} from 'antd';
 //高度常量
 var LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -27,7 +26,7 @@ import Trace from 'LIB_DIR/trace';
 var Contacts = React.createClass({
     getInitialState: function() {
         return {
-            callNumber: '', // 座机号
+            callNumber: this.props.callNumber || '', // 座机号
             getCallNumberError: '', // 获取座机号失败的信息
             curCustomer: this.props.curCustomer,//当前查看详情的客户
             windowHeight: $(window).height(),
@@ -43,7 +42,9 @@ var Contacts = React.createClass({
             ContactAction.getContactList(this.props.curCustomer, this.props.isMerge);
         }
         //获取该用户的座席号
-        this.getUserPhoneNumber();
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         $(window).on('resize', this.onStoreChange);
     },
     componentWillReceiveProps: function(nextProps) {
@@ -70,18 +71,26 @@ var Contacts = React.createClass({
         GeminiScrollbar.scrollTo(this.refs.scrollList, 0);
     },
     // 获取拨打电话的座席号
-    getUserPhoneNumber: function() {
-        let member_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
+    getUserPhoneNumber() {
+        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
                 this.setState({
-                    callNumber: result.phone_order
+                    callNumber: '',
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
                 });
             }
-        }, (errMsg) => {
-            this.setState({
-                getCallNumberError: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-            });
         });
     },
     render: function() {
@@ -111,19 +120,27 @@ var Contacts = React.createClass({
                         contactListLength={contactListLength}
                         refreshCustomerList={this.props.refreshCustomerList}/>) : (
                     <div className="contact-top-block">
-                        <span className="total-tip">
-                            <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
-                                values={{'n': contactListLength + ''}}/>
-                        </span>
+                        {this.state.contactListLoading ? null : (
+                            <span className="total-tip crm-detail-total-tip">
+                                {contactListLength ? (
+                                    <ReactIntl.FormattedMessage
+                                        id="sales.frontpage.total.list"
+                                        defaultMessage={'共{n}条'}
+                                        values={{'n': contactListLength + ''}}/>) :
+                                    Intl.get('crm.no.contact.tip', '该客户还没有添加过联系人')}
+                            </span>
+                        )}
                         {this.props.isMerge ? null : (
-                            <span className="iconfont icon-add" title={Intl.get('crm.detail.contact.add', '添加联系人')}
-                                onClick={this.showAddContactForm.bind(this)}/>
+                            <Button className='crm-detail-add-btn' onClick={this.showAddContactForm.bind(this)}>
+                                {Intl.get('crm.detail.contact.add', '添加联系人')}
+                            </Button>
                         )}
                     </div>
                 )}
                 <div className="contact-list-container" style={{height: divHeight}} ref="scrollList">
                     <GeminiScrollbar>
-                        {this.state.contactListLoading ? (<Spinner/>) : this.state.contactList.map((contact, i) => {
+                        {this.state.contactListLoading ? (
+                            <Spinner/>) : contactListLength ? this.state.contactList.map((contact, i) => {
                             if (contact) {
                                 return contact.isShowEditContactForm ?
                                     (<ContactForm contact={contact}
@@ -147,7 +164,7 @@ var Contacts = React.createClass({
                             } else {
                                 return '';
                             }
-                        })}
+                        }) : <NoDataIconTip tipContent={Intl.get('crm.no.contact', '暂无联系人')}/>}
                     </GeminiScrollbar>
                 </div>
             </div>

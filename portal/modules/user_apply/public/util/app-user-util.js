@@ -22,20 +22,20 @@ exports.emitter = new EventEmitter();
 
 //申请列表滚动条参数
 exports.APPLY_LIST_LAYOUT_CONSTANTS = {
-    TOP_DELTA: 150,
-    BOTTOM_DELTA: 83
+    TOP_DELTA: 64,
+    BOTTOM_DELTA: 80
 };
 //申请详情滚动条参数
 exports.APPLY_DETAIL_LAYOUT_CONSTANTS = {
-    TOP_DELTA: 150,
-    BOTTOM_DELTA: 102
+    TOP_DELTA: 64,
+    BOTTOM_DELTA: 48
 };
 //申请详情滚动条-表单
 exports.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM = {
     //顶部距离
-    TOP_DELTA: 150,
+    TOP_DELTA: 64,
     //底部距离
-    BOTTOM_DELTA: 100,
+    BOTTOM_DELTA: 48,
     //订单号高度
     ORDER_DIV_HEIGHT: 47,
     //返回按钮高度

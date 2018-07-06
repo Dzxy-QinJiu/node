@@ -7,11 +7,7 @@ exports.userExists = function(userName) {
         url: '/rest/appuser/name/' + encodeURIComponent(userName),
         dataType: 'json',
         success: (user) => {
-            if(user && user.user_id) {
-                Deferred.resolve(user);
-            } else {
-                Deferred.reject();
-            }
+            Deferred.resolve(user);
         },
         error: (xhr,statusText) => {
             if(statusText !== 'abort') {

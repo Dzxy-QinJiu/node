@@ -2,33 +2,62 @@ require('../../css/schedule.less');
 var ScheduleStore = require('../../store/schedule-store');
 var ScheduleAction = require('../../action/schedule-action');
 var CrmScheduleForm = require('./form');
-import {Icon, message, Button, Alert, Popover} from 'antd';
+import {message, Button} from 'antd';
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 var TimeLine = require('CMP_DIR/time-line-new');
 import Trace from 'LIB_DIR/trace';
-const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
 import Spinner from 'CMP_DIR/spinner';
-import classNames from 'classnames';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
-import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import classNames from 'classnames';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+
 var CrmSchedule = React.createClass({
     getInitialState: function() {
         return {
             customerId: this.props.curCustomer.id || '',
+            callNumber: this.props.callNumber || '', // 座机号
+            getCallNumberError: '',
             ...ScheduleStore.getState()
         };
     },
     onStoreChange: function() {
         this.setState(ScheduleStore.getState());
     },
+    // 获取拨打电话的座席号
+    getUserPhoneNumber: function() {
+        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
+                this.setState({
+                    callNumber: '',
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                });
+            }
+        });
+    },
     componentDidMount: function() {
         ScheduleStore.listen(this.onStoreChange);
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         //获取日程管理列表
         this.getScheduleList();
     },
@@ -161,12 +190,15 @@ var CrmSchedule = React.createClass({
             );
         } else {
             return (
-                <ScheduleItem item={item}
+                <ScheduleItem
+                    item={item}
                     hasSplitLine={hasSplitLine}
                     isMerge={this.props.isMerge}
                     toggleScheduleContact={this.toggleScheduleContact}
                     deleteSchedule={this.deleteSchedule}
                     handleItemStatus={this.handleItemStatus}
+                    callNumber={this.state.callNumber}
+                    getCallNumberError={this.state.getCallNumberError}
                 />);
         }
     },
@@ -184,7 +216,7 @@ var CrmSchedule = React.createClass({
     },
     //联系计划列表区域
     renderScheduleLists: function() {
-        if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
+        if (_.get(this.state, 'scheduleList[0]')) {
             return (
                 <TimeLine
                     list={this.state.scheduleList}
@@ -196,13 +228,15 @@ var CrmSchedule = React.createClass({
                 />);
         } else {
             //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>);
+            return null;
         }
     },
     renderScheduleTitle(){
         return (
             <div className="schedule-title">
                 <span>{Intl.get('crm.right.schedule', '联系计划')}:</span>
+                {!_.get(this.state, 'scheduleList[0]') && !this.state.isLoadingScheduleList ? (
+                    <span className="no-data-text">{}</span>) : null}
                 {this.props.isMerge ? null : (
                     <span className="iconfont icon-add schedule-add-btn"
                         title={Intl.get('crm.214', '添加联系计划')}
@@ -214,9 +248,26 @@ var CrmSchedule = React.createClass({
         return (
             <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
                 listenScrollBottom={this.state.listenScrollBottom}>
-                <DetailCard title={this.renderScheduleTitle()}
-                    content={this.renderScheduleContent()}
-                    className="schedule-contianer"/>
+                <div className="schedule-top-block">
+                    <span className="total-tip crm-detail-total-tip">
+                        {this.state.total ? (
+                            <ReactIntl.FormattedMessage
+                                id="sales.frontpage.total.list"
+                                defaultMessage={'共{n}条'}
+                                values={{'n': this.state.total + ''}}/>) :
+                            Intl.get('crm.detail.no.schedule', '该客户还没有添加过联系计划')}
+                    </span>
+                    {this.props.isMerge ? null : (
+                        <Button className='crm-detail-add-btn'
+                            onClick={this.addSchedule.bind(this, '')}>
+                            {Intl.get('crm.214', '添加联系计划')}
+                        </Button>
+                    )}
+                </div>
+                {this.state.isLoadingScheduleList ? (<Spinner/>) : _.get(this.state, 'scheduleList[0]') ? (
+                    <DetailCard className='schedule-contianer'
+                        content={this.renderScheduleContent()}/>) : (
+                    <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>)}
             </RightPanelScrollBar>
         );
     }

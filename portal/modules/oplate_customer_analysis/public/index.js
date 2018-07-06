@@ -16,7 +16,7 @@ const emitters = require('PUB_DIR/sources/utils/emitters');
 const querystring = require('querystring');
 
 //从 unknown 到 未知 的对应关系对象
-const unknownObj = {name: Intl.get('user.unknown', '未知'), key: 'unknown'};
+const unknownObj = { name: Intl.get('user.unknown', '未知'), key: 'unknown' };
 
 //从 unknown 到 未知 的映射
 let unknownDataMap = {};
@@ -24,6 +24,37 @@ unknownDataMap[unknownObj.key] = unknownObj.name;
 
 //权限类型
 const authType = hasPrivilege('CUSTOMER_ANALYSIS_MANAGER') ? 'manager' : 'common';
+
+//合格标签，1代表当前合格
+const QUALIFY_LABEL_PASS = 1;
+
+//销售新开客户类型
+const CUSTOMER_TYPE_OPTIONS = [
+    {
+        value: '',
+        name: Intl.get('oplate_customer_analysis.type.all', '全部类型')
+    },
+    {
+        value: '试用用户',
+        name: Intl.get('oplate_customer_analysis.type.trial', '试用用户')
+    },
+    {
+        value: '正式用户',
+        name: Intl.get('oplate_customer_analysis.type.formal', '正式用户')
+    },
+    {
+        value: 'internal',
+        name: Intl.get('oplate_customer_analysis.type.employee', '员工用户')
+    },
+    {
+        value: 'special',
+        name: Intl.get('oplate_customer_analysis.type.gift', '赠送用户')
+    },
+    {
+        value: 'training',
+        name: Intl.get('oplate_customer_analysis.type.training', '培训用户')
+    }
+];
 
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getInitialState() {
@@ -45,7 +76,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         ajax.send({
             url: '/rest/customer/v2/customer/industries'
         }).then(result => {
-            this.setState({industry: result.result});
+            this.setState({ industry: result.result });
         });
     },
 
@@ -54,7 +85,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         ajax.send({
             url: '/rest/customer/v2/salestage'
         }).then(result => {
-            this.setState({stageList: result.result});
+            this.setState({ stageList: result.result });
         });
     },
 
@@ -203,11 +234,20 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             argCallback: (arg) => {
                 const query = arg.query;
 
-                if (query && query.starttime && query.endtime) {
-                    query.start_time = 0;
-                    query.end_time = query.endtime;
-                    delete query.starttime;
-                    delete query.endtime;
+                if (query) {
+                    //starttime转成start_time，endtime转成end_time
+                    if (query.starttime && query.endtime) {
+                        query.start_time = 0;
+                        query.end_time = query.endtime;
+                        delete query.starttime;
+                        delete query.endtime;
+                    }
+
+                    //"试用合格"标签需要特殊处理
+                    if (query.customer_label === Intl.get('common.trial.qualified', '试用合格')) {
+                        query.customer_label = Intl.get('common.trial', '试用');
+                        query.qualify_label = QUALIFY_LABEL_PASS;
+                    }
                 }
             },
             noShowCondition: {
@@ -303,7 +343,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     optionsCallback: () => {
                         return [
                             {
-                                name: Intl.get('oplate_customer_analysis.allIndustries', '全部行业'), 
+                                name: Intl.get('oplate_customer_analysis.allIndustries', '全部行业'),
                                 value: '',
                             },
                         ].concat(this.state.industry);
@@ -313,7 +353,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 }, {
                     options: [
                         {
-                            name: Intl.get('oplate_customer_analysis.allLabel', '全部标签'), 
+                            name: Intl.get('oplate_customer_analysis.allLabel', '全部标签'),
                             value: '',
                         },
                         Intl.get('sales.stage.message', '信息'),
@@ -372,7 +412,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     },
                     {
                         title: Intl.get('user.salesman', '销售人员'),
-                        dataIndex: 'customer_name',
+                        dataIndex: 'user_name',
                         width: 80
                     },
                     {
@@ -404,16 +444,16 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                 sale.team_name = teamItem.team_name;
                                 if (list.find(item => item.team_name === teamItem.team_name)) {
                                     sale.rowSpan = 0;
-                                } else {                    
+                                } else {
                                     sale.rowSpan = teamItem.team_result.length;
                                 }
                                 list.push(sale);
                                 //在每个团队最后一个销售的数据后加上合计
                                 if (index === teamItem.team_result.length - 1) {
                                     list.push($.extend({}, teamItem.team_total, {
-                                        customer_name: Intl.get('sales.home.total.compute', '总计')
+                                        user_name: Intl.get('sales.home.total.compute', '总计')
                                     }));
-                                }                
+                                }
                             });
                         });
                         //在数据最后添加总的合计
@@ -427,6 +467,17 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     return list;
                 },
             },
+            cardContainer: {
+                selectors: [{
+                    options: CUSTOMER_TYPE_OPTIONS,
+                    activeOption: '',
+                    conditionName: 'tags',
+                }],
+            },
+            conditions: [{
+                name: 'tags',
+                value: '',
+            }],
         }];
     },
 

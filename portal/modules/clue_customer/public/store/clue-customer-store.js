@@ -34,7 +34,7 @@ ClueCustomerStore.prototype.getState = function() {
     this.lastCustomerId = '';//用于下拉加载的客户的id
     this.listenScrollBottom = true;//
     this.sorter = {
-        field: 'id',
+        field: 'start_time',
         order: 'descend'
     };//客户列表排序
     this.salesMan = '';//普通销售：userId，非普通销售（销售领导及运营人员）：userId&&teamId
@@ -83,6 +83,12 @@ ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
 //标记线索为无效线索后，线索状态变成已跟进，在页面上不展示该条数据
 ClueCustomerStore.prototype.removeClueItem = function(updateObj) {
     this.curCustomers = _.filter(this.curCustomers, clue => updateObj.id !== clue.id);
+};
+//绑定客户改变后，把列表中绑定的客户信息也修改了
+//标记线索为无效线索后，线索状态变成已跟进，在页面上不展示该条数据
+ClueCustomerStore.prototype.afterModifiedAssocaitedCustomer = function(updateClue) {
+    var targetIndex = _.findIndex(this.curCustomers, clue => updateClue.id === clue.id);
+    this.curCustomers[targetIndex] = updateClue;
 };
 //添加或更新跟进内容
 ClueCustomerStore.prototype.addCluecustomerTrace = function(result) {
@@ -197,7 +203,7 @@ ClueCustomerStore.prototype.setUnSelectDataTip = function(tip) {
 ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail) {
     //修改客户相关的属性，直接传属性和客户的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
-    var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability'];
+    var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability','source_time'];
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性

@@ -1,6 +1,8 @@
 import {Form} from 'antd';
 import CustomerSuggest from '../../../modules/app_user_manage/public/views/customer_suggest/customer_suggest';
 const FormItem = Form.Item;
+const ASSIGNWRAPID = 'user-customer-suggest-wrap';
+require('./index.less');
 
 const UserCustomerSuggestField = {
     //获取“所属客户”输入框中的内容
@@ -10,7 +12,7 @@ const UserCustomerSuggestField = {
     },
     renderUserCustomerSuggestBlock() {
         return (
-            <div className="user-customer-suggestfield-block" ref="customer_searchbox">
+            <div className="user-customer-suggestfield-block" ref="customer_searchbox" id={ASSIGNWRAPID}>
                 <FormItem
                     label=""
                     labelCol={{span: 0}}
@@ -21,6 +23,7 @@ const UserCustomerSuggestField = {
                         show_error={this.state.isShowCustomerError}
                         onCustomerChoosen={this.onCustomerChoosen}
                         hideCustomerError={this.hideCustomerError}
+                        customerSuggestWrapId={ASSIGNWRAPID}
                     />
                 </FormItem>
             </div>

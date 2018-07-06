@@ -9,7 +9,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('../../css/customer-trace-zh_CN.less');
 }
-import {Icon, message, Radio, Input, Menu, Dropdown} from 'antd';
+import {Icon, message, Radio, Input, Menu, Dropdown, Button} from 'antd';
 const RadioGroup = Radio.Group;
 const {TextArea} = Input;
 import CustomerRecordActions from '../../action/customer-record-action';
@@ -30,6 +30,10 @@ import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
+import crmAjax from '../../ajax/index';
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+
 var classNames = require('classnames');
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -76,6 +80,8 @@ const CustomerRecord = React.createClass({
             filterType: '',//跟进类型的过滤
             filterStatus: '',//通话状态的过滤
             appList: [],//应用列表，用来展示舆情上报的应用名称
+            callNumber: this.props.callNumber || '', // 座机号
+            getCallNumberError: '',
             ...CustomerRecordStore.getState()
         };
     },
@@ -83,8 +89,35 @@ const CustomerRecord = React.createClass({
         var state = CustomerRecordStore.getState();
         this.setState(state);
     },
+    // 获取拨打电话的座席号
+    getUserPhoneNumber() {
+        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
+                    });
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
+                this.setState({
+                    callNumber: '',
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                });
+            }
+        });
+    },
     componentDidMount: function() {
         CustomerRecordStore.listen(this.onStoreChange);
+        //  获取拨打电话的座席号
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
         var customer_id = this.props.curCustomer.customer_id || this.props.curCustomer.id;
         this.getContactPhoneNum(customer_id, () => {
@@ -495,6 +528,29 @@ const CustomerRecord = React.createClass({
             </div>
         );
     },
+    // 自动拨号
+    handleClickCallOut(phone) {
+        Trace.traceEvent(this.getDOMNode(), '拨打电话');
+        if (this.props.getCallNumberError) {
+            message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
+        } else {
+            if (this.state.callNumber) {
+                let reqData = {
+                    from: this.state.callNumber,
+                    to: phone
+                };
+                crmAjax.callOut(reqData).then((result) => {
+                    if (result.code === 0) {
+                        message.success('拨打成功！');
+                    }
+                }, (errMsg) => {
+                    message.error(errMsg || '拨打失败！');
+                });
+            } else {
+                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
+            }
+        }
+    },
     renderTimeLineItem: function(item, hasSplitLine) {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
@@ -508,6 +564,10 @@ const CustomerRecord = React.createClass({
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     <span>{traceDsc}</span>
+                    {(item.type === 'phone' || item.type === 'app') && this.state.callNumber ?
+                        <i className="iconfont icon-call-out call-out"
+                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
+                            onClick={this.handleClickCallOut.bind(this, item.dst)}></i> : null}
                 </p>
                 {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
                     <div className="item-detail-content" id={item.id}>
@@ -600,12 +660,29 @@ const CustomerRecord = React.createClass({
             />);
     },
 
+    getRecordListShowHeight: function() {
+        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+        let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
+        //减头部的客户基本信息高度
+        divHeight -= basicInfoHeight;
+        if ($('.phone-alert-modal-title').size()) {
+            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
+        }
+        //减添加跟进记录面版的高度
+        if (this.state.addRecordPanelShow) {
+            divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
+        } else {//减共xxx条的高度
+            divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+        }
+        return divHeight;
+    },
+
     renderCustomerRecordLists: function() {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
-                <div className="show-customer-trace">
+                <div className="customer-trace-loading">
                     <Spinner />
                 </div>
             );
@@ -615,28 +692,18 @@ const CustomerRecord = React.createClass({
                 <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
                     retryFunc={this.retryChangeRecord}/>
             );
-        } else if (recordLength === 0 && !this.state.customerRecordLoading) {
-            //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>);
+        } else if (recordLength === 0 && !this.state.customerRecordLoading && !this.props.isOverViewPanel) {
+            //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）
+            return (
+                <div className="no-record-container" style={{'height': this.getRecordListShowHeight()}}>
+                    <NoDataIconTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>
+                </div>);
         } else {
-            var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-            let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
-            //减头部的客户基本信息高度
-            divHeight -= basicInfoHeight;
-            if ($('.phone-alert-modal-title').size()) {
-                divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-            }
-            //减添加跟进记录面版的高度
-            if (this.state.addRecordPanelShow) {
-                divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
-            } else {//减共xxx条的高度
-                divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
-            }
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
                     {this.props.isOverViewPanel ? this.renderTimeLine() : (
-                        <div className="show-content" style={{'height': divHeight}}>
+                        <div className="show-content" style={{'height': this.getRecordListShowHeight()}}>
                             <GeminiScrollbar
                                 handleScrollBottom={this.handleScrollBarBottom}
                                 listenScrollBottom={this.state.listenScrollBottom}
@@ -710,37 +777,45 @@ const CustomerRecord = React.createClass({
         }
 
     },
+
     render: function() {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get('customer.confirm.trace', '是否添加此跟进内容？');
         var closedModalTip = $.trim(this.state.detailContent) ? '取消补充跟进内容' : '取消添加跟进内容';
-
+        //是否是在跟进记录下没有数据
+        let isRecordTabNoData = !_.get(this.state, 'customerRecord[0]') && !this.state.customerRecordLoading && !this.props.isOverViewPanel;
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
                     <div className="trace-top-block">
-                        <span className="total-tip">
-                            <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
-                                values={{'n': this.state.total + ''}}/>
+                        <span className="total-tip crm-detail-total-tip">
+                            {isRecordTabNoData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : (
+                                <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
+                                    values={{'n': this.state.total + ''}}/>)}
                         </span>
-                        {this.props.isMerge ? null : (
+                        {this.props.isMerge ? null : this.props.isOverViewPanel ? (
                             <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
-                                title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>)
+                                title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>) : (
+                            <Button className='crm-detail-add-btn'
+                                onClick={this.toggleAddRecordPanel.bind(this, '')}>
+                                {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
+                            </Button>)
                         }
-                        <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
-                            <a className="ant-dropdown-link trace-filter-item">
-                                {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
-                                <Icon type="down"/>
-                            </a>
-                        </Dropdown>
-                        <Dropdown overlay={this.getTypeMenu()} trigger={['click']}>
-                            <a className="ant-dropdown-link trace-filter-item">
-                                {this.state.filterType ? CALL_TYPE_MAP[this.state.filterType] : Intl.get('sales.frontpage.trace.type', '跟进类型')}
-                                <Icon type="down"/>
-                            </a>
-                        </Dropdown>
-
+                        {_.get(this.state, 'customerRecord[0]') ? (
+                            <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
+                                <a className="ant-dropdown-link trace-filter-item">
+                                    {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
+                                    <Icon type="down"/>
+                                </a>
+                            </Dropdown>) : null}
+                        {_.get(this.state, 'customerRecord[0]') ? (
+                            <Dropdown overlay={this.getTypeMenu()} trigger={['click']}>
+                                <a className="ant-dropdown-link trace-filter-item">
+                                    {this.state.filterType ? CALL_TYPE_MAP[this.state.filterType] : Intl.get('sales.frontpage.trace.type', '跟进类型')}
+                                    <Icon type="down"/>
+                                </a>
+                            </Dropdown>) : null}
                     </div>)
                 }
                 <div className="show-container" id="show-container">

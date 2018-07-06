@@ -10,9 +10,9 @@ let TimeUtil = require('../../../../public/sources/utils/time-format-util');
 let StatisticTotal = React.createClass({
     //渲染等待效果、暂无数据的提示
     renderTooltip: function(totalObj) {
-        if (totalObj.resultType == 'loading') {
+        if (totalObj.resultType === 'loading') {
             return (<Icon type="loading"/>);
-        } else if (totalObj.resultType == 'error') {
+        } else if (totalObj.resultType === 'error') {
             return (<div className="no-total-data">{Intl.get('sales.home.get.data.failed', '获取数据失败')}</div>);
         }
     },
@@ -26,7 +26,7 @@ let StatisticTotal = React.createClass({
         return (<div className="statistic-total-content">
             <span className="crm-add-data add-data-style">
                 <span className="total-data-desc">{Intl.get('sales.home.new.add', '新增')}&nbsp;</span>
-                {customerData.added || 0}
+                <span className='num'>{customerData.added || 0}</span>
             </span>
             <span className="crm-total-data total-data-style">
                 <ReactIntl.FormattedMessage
@@ -48,7 +48,7 @@ let StatisticTotal = React.createClass({
         return (<div className="statistic-total-content">
             <span className="user-add-data add-data-style">
                 <span className="total-data-desc">{Intl.get('sales.home.new.add', '新增')}&nbsp;</span>
-                {userData.added || 0}
+                <span className='num'>{userData.added || 0}</span>
             </span>
             <span className="user-total-data total-data-style">
                 <ReactIntl.FormattedMessage
@@ -68,15 +68,15 @@ let StatisticTotal = React.createClass({
         }
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
         return (<div className="statistic-total-content">
-            <span className="phone-total-time phone-total-data">
-                {time.hours > 0 ? <span>{time.hours}<span
+            <span className="add-data-style phone-total-time phone-total-data">
+                {time.hours > 0 ? <span className='num'>{time.hours}<span
                     className="total-data-desc">{Intl.get('user.time.hour', '小时')} </span></span> : null}
                 {time.minutes > 0 ?
-                    <span>{time.minutes}<span
+                    <span className='num'>{time.minutes}<span
                         className="total-data-desc">{Intl.get('user.time.minute', '分')} </span></span> : null}
-                {time.second > 0 ? <span>{time.second}<span
+                {time.second > 0 ? <span className='num'>{time.second}<span
                     className="total-data-desc">{Intl.get('user.time.second', '秒')} </span></span> : null}
-                {time.timeDescr == 0 ? time.timeDescr : null}
+                {time.timeDescr === 0 ? time.timeDescr : null}
             </span>
 
             <span className="phone-total-count total-data-style">
@@ -104,11 +104,11 @@ let StatisticTotal = React.createClass({
         }
         return (
             <div className='statistic-total-content'>
-                <span>
+                <span className='add-data-style'>
                     <ReactIntl.FormattedMessage
                         id='sales.home.total.count'
                         defaultMessage={'共{template}个'}
-                        values={{'template': <span className='add-data-style'>{callBackRecord.total || '0'}</span>}}
+                        values={{'template': <span className='num'>{callBackRecord.total || '0'}</span>}}
                     />
                 </span>
             </div>
@@ -128,7 +128,7 @@ let StatisticTotal = React.createClass({
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.CUSTOMER)}
                         data-tracename="查看客户统计"
-                        className={classNames('total-data-container', {'total-data-item-active': activeView == viewConstant.CUSTOMER})}>
+                        className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.CUSTOMER})}>
                         <p>{Intl.get('sales.home.customer', '客户')}</p>
                         {this.renderCustomerContent()}
                     </div>
@@ -136,7 +136,7 @@ let StatisticTotal = React.createClass({
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.USER)}
                         data-tracename="查看用户统计"
-                        className={classNames('total-data-container', {'total-data-item-active': activeView == viewConstant.USER})}>
+                        className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.USER})}>
                         <p>{Intl.get('sales.home.user', '用户')}</p>
                         {this.renderUserContent()}
                     </div>
@@ -144,7 +144,7 @@ let StatisticTotal = React.createClass({
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.PHONE)}
                         data-tracename="查看电话统计"
-                        className={classNames('total-data-container', {'total-data-item-active': activeView == viewConstant.PHONE})}>
+                        className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.PHONE})}>
                         <p>{Intl.get('common.phone', '电话')}</p>
                         {this.renderPhoneContent()}
                     </div>

@@ -172,3 +172,35 @@ exports.decodeHTML = function(text) {
     temp = null;
     return output;
 };
+//使用分析组件时，获取组件状态的函数
+exports.getResultType = function(isLoading, isError) {
+    var resultType = '';
+    if (isLoading) {
+        resultType = 'loading';
+    } else if (isError) {
+        resultType = 'error';
+    } else {
+        resultType = 'success';
+    }
+    return resultType;
+};
+//获取数据失败及重试方法
+exports.getErrorTipAndRetryFunction = function(errTip,callback) {
+    var errMsg = errTip ? errTip : Intl.get('contract.111', '获取数据失败');
+    if (_.isFunction(callback)){
+        return (
+            <span>{errMsg},<a onClick={callback}>{Intl.get('user.info.retry', '请重试')}</a></span>
+        );
+    }else{
+        return (
+            <span>{errMsg}</span>
+        );
+    }
+};
+//去掉数组中元素的回车和空格,然后对数组进行去重
+exports.removeSpacesAndEnter = function(dataArr){
+    dataArr.forEach((item, index) => {
+        dataArr[index] = $.trim(item.replace(/[\r\n]/g,''));
+    });
+    return _.uniq(dataArr);
+};

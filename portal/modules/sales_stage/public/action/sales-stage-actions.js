@@ -1,22 +1,24 @@
 var salesStageAjax = require('../ajax/sales-stage-ajax');
 var userData = require('../../../../public/sources/user-data');
+
 function SalesStageActions() {
-    this.generateActions({
-        'getSalesStageList': 'getSalesStageList',
-        'addSalesStage': 'addSalesStage',
-        'editSalesStage': 'editSalesStage',
-        'deleteSalesStage': 'deleteSalesStage',
-        'saveSalesStageOrder': 'saveSalesStageOrder',
-        'showSalesStageForm': 'showSalesStageForm',
-        'hideSalesStageeForm': 'hideSalesStageeForm',
-        'showSalesStageModalDialog': 'showSalesStageModalDialog',
-        'hideSalesStageModalDialog': 'hideSalesStageModalDialog',
-        'showSalesStageEditOrder': 'showSalesStageEditOrder',
-        'hideSalesStageEditOrder': 'hideSalesStageEditOrder',
-        'salesStageOrderUp': 'salesStageOrderUp',
-        'salesStageOrderDown': 'salesStageOrderDown',
-        'changeIsSavingSalesStage': 'changeIsSavingSalesStage'
-    });
+    this.generateActions(
+        'getSalesStageList',
+        'addSalesStage',
+        'editSalesStage',
+        'deleteSalesStage',
+        'saveSalesStageOrder',
+        'showSalesStageForm',
+        'hideSalesStageeForm',
+        'showSalesStageModalDialog',
+        'hideSalesStageModalDialog',
+        'showSalesStageEditOrder',
+        'hideSalesStageEditOrder',
+        'salesStageOrderUp',
+        'salesStageOrderDown',
+        'changeIsSavingSalesStage',
+        'deleteIsSavingSalesStage'
+    );
 
     //获取销售阶段列表
     this.getSalesStageList = function() {
@@ -27,22 +29,30 @@ function SalesStageActions() {
     };
 
     //添加销售阶段
-    this.addSalesStage = function(salesStage) {
+    this.addSalesStage = function(salesStage, callback) {
         var _this = this;
         var salesStageArray = [];
         salesStageArray.push(salesStage);
+        _this.dispatch({loading: true,error: false});
         salesStageAjax.addSalesStage(salesStageArray).then(function(salesStageCreated) {
-            _this.dispatch(salesStageCreated.result);
+            _.isFunction(callback) && callback();
+            _this.dispatch({loading: false,error: false, value: salesStageCreated.result});
+        },function(errorMsg) {
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
     //修改销售阶段
-    this.editSalesStage = function(salesStage) {
+    this.editSalesStage = function(salesStage, callback) {
         var _this = this;
         var salesStageArray = [];
         salesStageArray.push(salesStage);
+        _this.dispatch({loading: true,error: false});
         salesStageAjax.editSalesStage(salesStageArray).then(function(salesStageModified) {
-            _this.dispatch(salesStageModified.result);
+            _.isFunction(callback) && callback();
+            _this.dispatch({loading: false,error: false, value: salesStageModified.result});
+        },function(errorMsg) {
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
@@ -55,13 +65,20 @@ function SalesStageActions() {
     };
 
     //删除销售阶段
-    this.deleteSalesStage = function(salesStage) {
+    this.deleteSalesStage = function(salesStage, callback) {
         var _this = this;
         var idArray = [];
         idArray.push(salesStage.id);
-        salesStageAjax.deleteSalesStage(idArray).then(function(salesStageDelete) {
-            _this.actions.getSalesStageList();
+        _this.dispatch({loading: true,error: false});
+        salesStageAjax.deleteSalesStage(idArray).then(function() {
+            _this.dispatch({loading: false,error: false, value: salesStage});
+            _.isFunction(callback) && callback({error: false});
+        },function(errorMsg) {
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+            _.isFunction(callback) && callback({error: true});
+
         });
+
     };
 
     //展示右侧编辑面板
@@ -104,6 +121,10 @@ function SalesStageActions() {
     };
 
     this.changeIsSavingSalesStage = function() {
+        this.dispatch();
+    };
+
+    this.deleteIsSavingSalesStage = function() {
         this.dispatch();
     };
 

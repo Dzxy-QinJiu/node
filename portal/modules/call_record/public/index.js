@@ -14,7 +14,7 @@ const CallRecordList = React.createClass({
             showRightPanel: false,// 标记显示右侧客户详情面板 false不显示 true显示
             clickCustomerData: '',// 点击客户的数据
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+            customerOfCurUser: {},//当前展示用户所属客户的详情
         };
     },
     // 关闭客户详情面板
@@ -62,7 +62,7 @@ const CallRecordList = React.createClass({
     ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
     },
     closeCustomerUserListPanel: function() {
@@ -71,6 +71,8 @@ const CallRecordList = React.createClass({
         });
     },
     render: function() {
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div>
                 <div className='call-record-wrap table-btn-fix' data-tracename="通话记录界面">
@@ -85,9 +87,10 @@ const CallRecordList = React.createClass({
                 >
                     {this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            customer_name={customerOfCurUser.name}
+                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>

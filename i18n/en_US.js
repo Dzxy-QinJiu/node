@@ -152,6 +152,8 @@ var en_US = {
     'common.no.more.data': 'There is no more data',//没有更多数据了
     'common.no.more.user': 'There is no more user',//沒有更多用戶了
     'common.no.more.crm': 'There is no more customer',//没有更多客户了
+    'common.no.more.filter.crm': 'There is no customer match condition',//没有符合条件的客户了
+
     'common.no.more.schedule': 'There is no schedule',//暂无计划
     'common.no.more.order': 'There is no order',//没有更多订单
     'common.no.more.trace.record': 'There is no trace record',//暂无跟进记录
@@ -498,6 +500,8 @@ var en_US = {
     'user.suggest.name.two': 'Create username {user01} or {user02}', // 创建{user01}或{user02}
     'user.exist.suggest.name': '{user}is already taken. wheather to create {user01}', // 用户名{user}已存在，是否创建{user01}?
     'user.exist.name': '{user}is already taken.please rename', // 用户名{user}已存在，请重新命名
+    'user.exist.name.check.user': 'The username already exists, Whether to query {check}', // 用户名已存在，是否查询{check}
+    'user.exisit.the.name': 'the user', // 该用户
     'user.check.fail': 'Failed to verify the username.', // 用户名校验出错！
     'user.select.realm': 'Select Realm', // 选择安全域
     'user.select.realm.title': 'Realm', // 安全域：
@@ -574,6 +578,8 @@ var en_US = {
     'role.default.del.failed': 'Failed to cancel default role',//取消默认角色失败
     'role.default.set.failed': 'Failed to set default role',//设置默认角色失败
     'role.set.default': 'Set default role',//设为默认角色
+    'role.normal.sales': 'Common salesman', //普通销售
+
     /*角色管理模块-end*/
     /*权限管理模块-start*/
     'authority.add.group': 'Add Privilege Group',//添加权限组
@@ -853,9 +859,12 @@ var en_US = {
     'notification.system.handle.failed': 'Set the system message to failed processing',//将系统消息设为已处理失败
     'notification.system.handled.set': 'Handle',//处理
     'notification.system.handled': 'Handled',//已处理
-    'notification.system.untreated': 'Untreated',//未处理
+    'notification.system.untreated': 'Untreated',//待处理
     'notification.login.password.error': 'Password or verification code error',//报密码或验证码错误
     'notification.login.failed': 'Login failed', //登录失败
+    'notification.system.handled.success': 'Successfully processed', // 处理成功
+    'notification.system.handled.error': 'Failed processed', // 处理失败
+    'notification.system.login.count': '{count} counts, last time', // {count}次，最后一次
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
@@ -973,6 +982,7 @@ var en_US = {
 
 
     // 用户审批start
+    'user.apply.all': 'All applications',//全部申请
     'user.apply.list': 'Apply List ', //申请列表
     'user.apply.search.placeholder': 'presenter/customer/username', // 申请人/客户名/用户名
     'user.apply.pass': 'passed', // 已通过
@@ -1006,7 +1016,9 @@ var en_US = {
     'user.apply.reply.no.content': 'please input reply content', // 请填写回复内容
     'user.apply.reply.loading': 'Trying to load the reply list', // 正在努力加载回复列表 ...... ###############
     'user.apply.detail.button.pass': 'agree', // 通过
-    'user.apply.detail.backout': 'revoke', //Revoke the application  撤销申请
+    'user.apply.detail.backout': 'cancel application', //Revoke the application  撤销申请
+    'user.apply.detail.pass': 'approve application',//通过申请
+    'user.apply.detail.reject': 'reject application',//驳回申请
     'user.apply.detail.suggest': 'opinion', // opinion  意见
     'user.apply.detail.remark': 'postil', // 批注
     'user.apply.detail.expanded.title': 'returns the abbreviated content', // 返回缩略内容
@@ -1034,6 +1046,7 @@ var en_US = {
     'user.apply.approve': 'User application for approval',//用户申请审批
     'user.apply.approve.count': 'There are {approveCount} approval messages',//有{approveCount}条审批消息
     'user.apply.unread.reply': 'Have unread reply',//有未读回复
+    'user.apply.no.unread.reply': 'No unread reply',//无未读回复
     'user.apply.refresh.reply.tip': 'Have a new reply, {refreshTip}',//有新回复，点此{refreshTip}
     'user.apply.unread.reply.check': 'Application for unread reply, {check}',//有未读回复的申请，{check}
     'user.apply.unread.reply.null': 'No unread reply，{return}',//已无未读回复的申请，{return}
@@ -1044,6 +1057,9 @@ var en_US = {
     'reply.pass.tip.content': '{approvalPerson} has passed the {userType} user {userNames}, that {salesName} has applied to the customer {customerName}',//{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'reply.reject.tip.content': '{approvalPerson} rejected the {userType} user {userNames}, that {salesName} applied to the customer {customerName}',//{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     'reply.cancel.tip.content': '{approvalPerson} revoked the {userType} user {userNames}, applied to the customer {customerName} ',//{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}
+    'user.apply.new.refresh.tip': 'Have a new application，refresh',//有新申请,点此刷新
+    'user.apply.no.new.refresh.tip': 'No new application',//无新申请
+    'user.apply.last.follow.date': 'Latest follow up date',//最新跟进日期
     // 用户审批end
 
     // 在线用户start
@@ -1223,7 +1239,13 @@ var en_US = {
     'crm.212': 'Please select labels',//请选择标签
     'crm.213': 'Undistributed Customer',//未分配客户
     'crm.215': 'A total of {count} clues',//共{count}个线索
+    'crm.216': 'Add failed',//添加成功
+    'crm.217': 'Failed to get the list',//获取列表失败
+    'crm.218': 'Edit successfully',//修改成功
+    'crm.219': 'Edit Failed',//修改失败
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
+    'crm.recent.week.active': 'Recent week active customers',//近一周活跃客户
+    'crm.recent.month.active': 'Recent month active customers',//近一月活跃客户
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
     'crm.administrative.level': 'Administrative level',//行政级别
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
@@ -1256,6 +1278,7 @@ var en_US = {
     'crm.no.level': 'No match administrative level',//无相关行政级别
     'crm.stage.tag': 'Phase label',//阶段标签
     'crm.order.more.customer': 'Multi-order customers',//多个订单的客户
+    'crm.available.customer': 'Available customers',//有效客户
     'crm.call.no.remark': 'Final contact but no record',//最后联系但未写跟进记录
     'crm.call.no.remark.over30': 'No follow-up records over 30 days',//超30天未写跟进记录
     'crm.last.contact': 'Final contact',//最后联系
@@ -1310,6 +1333,29 @@ var en_US = {
     'crm.apply.stop.placeholder': 'Please enter the reason for discontinuation',//请输入停用的原因
     'crm.apply.update.password.placeholder': 'Please enter a request for a modified password',//请输入修改密码的要求
     'crm.apply.other.placeholder': 'Please enter the application content',//请输入申请内容
+    'crm.Administrative.level.0': 'Ministry level',//部委级
+    'crm.Administrative.level.1': 'Provincial level',//省部级
+    'crm.Administrative.level.2': 'Prefectural level',//地市级
+    'crm.Administrative.level.3': 'county level',//区县级
+    'crm.dynamic.no.data': 'No dynamic',//暂无动态
+    'crm.no.contact.way.tip': 'No contact, please {addTip}',//暂无联系方式，请{addTip}
+    'crm.basic.no.remark': 'No remark',//暂无备注
+    'crm.basic.add.remark': 'Add remark',//添加备注
+    'crm.basic.no.address': 'No detailed address',//暂无详细地址
+    'crm.basic.add.address': 'Add detailed address',//添加详细地址
+    'crm.basic.no.location': 'No region',//暂无地域信息
+    'crm.basic.add.location': 'Add region',//添加地域信息
+    'crm.basic.no.industry': 'No industry',//暂无行业
+    'crm.basic.add.industry': 'Add industry',//添加行业
+    'crm.basic.no.administrative': 'No administrative level',//暂无行政级别
+    'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
+    'crm.overview.apply.user.tip': 'The customer has no user yet',//该客户还没有用户
+    'crm.no.trace.record': 'The customer has not been followed up', //还没有跟进过该客户
+    'crm.no.contact.tip': 'The customer has not yet added a contact',//该客户还没有添加过联系人
+    'crm.no.contact': 'No contact',//暂无联系人
+    'crm.no.order.tip': 'The customer has not yet added a order',//该客户还没有添加过订单
+    'crm.detail.no.user': 'No users',//暂无用户
+    'crm.detail.no.schedule': 'The customer has not added a schedule',//该客户还没有添加过联系计划
     // 客户管理end
 
     //客户分析 start
@@ -1348,6 +1394,12 @@ var en_US = {
     'oplate_customer_analysis.newCustomerCount': 'Count of new customers created by sales', //'新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': 'Total count of new customer', //'新开账号数总数',
     'oplate_customer_analysis.customerLoginCount': 'New login customer count', //'新开客户登录数',
+    'oplate_customer_analysis.type.all': 'all',
+    'oplate_customer_analysis.type.trial': 'trial',
+    'oplate_customer_analysis.type.formal': 'formal',
+    'oplate_customer_analysis.type.employee': 'employee',
+    'oplate_customer_analysis.type.gift': 'gift',
+    'oplate_customer_analysis.type.training': 'training',
     //客户分析 end
     //合同管理 start
     'contract.4': 'Party A',//甲方@
@@ -2228,5 +2280,19 @@ var en_US = {
     'noMoreTip.callRecord': 'no more call records',
     'noMoreTip.visitBack': 'no more visit record',
     'noMoreTip.customer': 'no more customers',
+    'failed.change.source.time': 'Failed to change clue source time',//修改线索咨询时间失败
+    'china.zone.distribute.south.island': 'South China Sea Islands',//南海诸岛
+    'phone.status.record.content': 'Please fill in this follow-up content',//请填写本次跟进内容
+    'phone.status.other.hang.out': 'The other hangs up',//对方挂断
+    'phone.status.contact.later': 'The contact is not here now, please contact later',//联系人现在不在，之后再联系
+    'clue.customer.analysis.trend': 'Trend',//趋势
+    'clue.stage.statics': 'Clue stage statistics',//线索阶段统计
+    'clue.analysis.access.channel': 'channel',//渠道
+    'clue.analysis.source': 'source',//来源
+    'clue.analysis.access.chart': 'Channel statistics',//渠道统计
+    'clue.analysis.ability': 'Effective',//有效
+    'clue.analysis.inability': 'Invalid',//无效
+    'clue.analysis.source.chart': 'Source statistics',//来源统计
+    'clue.analysis.classify.chart': 'Classify statistics'//分类统计
 };
 export default en_US;

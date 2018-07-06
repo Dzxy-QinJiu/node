@@ -11,23 +11,53 @@ function ClueAnalysisStore() {
     this.bindActions(ClueAnalysisAction);
 }
 ClueAnalysisStore.prototype.setInitState = function() {
-    this.clueAnalysisList = [];//线索分析列表
-    this.getClueAnalysisLoading = false;//正在获取线索分析
-    this.getClueAnalysisErrMsg = false;//获取线索分析失败
+    this.clueStageList = [];//线索阶段分析列表
+    this.getClueStageLoading = false;//正在获取线索阶段分析
+    this.getClueStageErrMsg = false;//获取线索阶段分析失败
     this.customersList = [];//要展示的客户
     this.getCustomersLoading = false;//正在获取客户
-    this.getCustomersErrMsg = false;//获取客户失败
+    this.getCustomersErrMsg = '';//获取客户失败
     //开始时间
-    this.source_start_time = moment().startOf('year').valueOf();
+    this.start_time = moment().startOf('year').valueOf();
     //结束时间
-    this.source_end_time = moment().valueOf();
+    this.end_time = moment().valueOf();
     this.selectedAccess = Intl.get('common.all', '全部');
     this.selectedSource = Intl.get('common.all', '全部');
-
+    //获取线索统计的相关参数
+    this.staticsPageSize = 1000;//一次取出
+    //获取线索统计的页码
+    this.staticsNum = 1;
+    //线索来源统计
+    this.clueSourceList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索接入渠道
+    this.clueAccessChannelList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索分类
+    this.clueClassifyList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索分类统计
+    this.rangeParams = [{
+        from: this.start_time,
+        to: this.end_time,
+        type: 'time',
+        name: 'source_time'
+    }];
 };
 ClueAnalysisStore.prototype.changeSearchTime = function(timeObj) {
-    this.source_start_time = timeObj.sourceStartTime;
-    this.source_end_time = timeObj.sourceEndTime;
+    this.start_time = timeObj.startTime;
+    this.end_time = timeObj.endTime;
+    this.rangeParams[0].from = this.start_time;
+    this.rangeParams[0].to = this.end_time;
 };
 
 ClueAnalysisStore.prototype.changeAccess = function(access) {
@@ -37,17 +67,42 @@ ClueAnalysisStore.prototype.changeAccess = function(access) {
 ClueAnalysisStore.prototype.changeSource = function(source) {
     this.selectedSource = source;
 };
-ClueAnalysisStore.prototype.getClueAnalysis = function(result) {
+ClueAnalysisStore.prototype.getClueStageAnalysis = function(result) {
     if (result.loading) {
-        this.getClueAnalysisLoading = true;
-        this.getClueAnalysisErrMsg = '';
+        this.getClueStageLoading = true;
+        this.getClueStageErrMsg = '';
     } else if (result.error) {
-        this.getClueAnalysisLoading = false;
-        this.getClueAnalysisErrMsg = result.errorMsg;
+        this.getClueStageLoading = false;
+        this.getClueStageErrMsg = result.errorMsg;
     } else {
-        this.getClueAnalysisLoading = false;
-        this.getClueAnalysisErrMsg = '';
-        this.clueAnalysisList = result.data;
+        this.getClueStageLoading = false;
+        this.getClueStageErrMsg = '';
+        this.clueStageList = result.data;
+    }
+};
+ClueAnalysisStore.prototype.getClueStatics = function(result) {
+    var dataObj = {};
+    if (result.loading) {
+        dataObj.loading = true;
+        dataObj.errMsg = '';
+    } else if (result.error) {
+        dataObj.loading = false;
+        dataObj.errMsg = result.errorMsg;
+    } else {
+        dataObj.loading = false;
+        dataObj.errMsg = '';
+        dataObj.list = result.data;
+    }
+    switch (result.type) {
+        case 'clue_source':
+            this.clueSourceList = dataObj;
+            break;
+        case 'access_channel':
+            this.clueAccessChannelList = dataObj;
+            break;
+        case 'clue_classify':
+            this.clueClassifyList = dataObj;
+            break;
     }
 };
 ClueAnalysisStore.prototype.getCustomerById = function(result) {

@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * Created by wangliping on 2017/8/23.
  * 添加销售线索面板
  */
-import { Form, Input, Select, message, DatePicker} from 'antd';
+import { Form, Input, Select, DatePicker} from 'antd';
 const FormItem = Form.Item;
 import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -120,7 +120,7 @@ const SalesClueAddForm = React.createClass({
         };
         //生成线索客户的用户的id
         if (this.props.appUserId){
-            submitObj.app_user_id = this.props.appUserId;
+            submitObj.app_user_ids = [this.props.appUserId];
         }
         //联系人及联系方式的处理
         let contact = {def_contancts: 'true'};
@@ -149,7 +149,7 @@ const SalesClueAddForm = React.createClass({
         var validation = this.refs.validation;
         validation.validate(valid => {
             //验证电话是否通过验证
-            this.phoneInputRef.props.form.validateFields({force: true}, (errors, values) => {
+            this.phoneInputRef.props.form.validateFields({force: true}, (errors) => {
                 if (this.state.clueNameExist || this.state.clueCustomerCheckErrMsg) {
                     valid = false;
                 }
@@ -360,7 +360,6 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                    filterOption={false}
                                     searchPlaceholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
                                     name="clue_source"
                                     onChange={this.setField.bind(this, 'clue_source')}
@@ -383,7 +382,6 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                    filterOption={false}
                                     searchPlaceholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'access_channel')}
@@ -404,7 +402,6 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                    filterOption={false}
                                     searchPlaceholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
                                     name="access_channel"
                                     onChange={this.setField.bind(this, 'clue_classify')}

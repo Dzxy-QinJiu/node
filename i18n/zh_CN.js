@@ -151,6 +151,7 @@ var zh_CN = {
     'common.no.more.data': '没有更多数据了',
     'common.no.more.user': '没有更多用户了',
     'common.no.more.crm': '没有更多客户了',
+    'common.no.more.filter.crm': '没有符合条件的客户了',
     'common.no.more.schedule': '暂无计划',
     'common.no.more.order': '暂无订单',
     'common.no.clue': '暂无线索',
@@ -496,6 +497,8 @@ var zh_CN = {
     'user.suggest.name.two': '创建{user01}或{user02}？',
     'user.exist.suggest.name': '用户名{user}已存在，是否创建{user01}?',
     'user.exist.name': '用户名{user}已存在，请重新命名',
+    'user.exist.name.check.user': '用户名已存在，是否查询{check}',
+    'user.exisit.the.name': '该用户',
     'user.check.fail': '用户名校验出错！',
     'user.select.realm': '选择安全域',
     'user.select.realm.title': '安全域',
@@ -577,6 +580,8 @@ var zh_CN = {
     'role.default.del.failed': '取消默认角色失败',
     'role.default.set.failed': '设置默认角色失败',
     'role.set.default': '设为默认角色',
+    'role.normal.sales': '普通销售',
+
     /*角色管理模块-end*/
     /*权限管理模块-start*/
     'authority.add.group': '添加权限组',
@@ -858,9 +863,12 @@ var zh_CN = {
     'notification.system.handle.failed': '将系统消息设为已处理失败',
     'notification.system.handled.set': '处理',
     'notification.system.handled': '已处理',
-    'notification.system.untreated': '未处理',
+    'notification.system.untreated': '待处理',
     'notification.login.password.error': '报密码或验证码错误',
     'notification.login.failed': '登录失败',
+    'notification.system.handled.success': '处理成功',
+    'notification.system.handled.error': '处理失败',
+    'notification.system.login.count': '{count}次，最后一次',
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',
@@ -984,6 +992,7 @@ var zh_CN = {
     //通话分析-end
 
     // 用户审批start
+    'user.apply.all': '全部申请',
     'user.apply.list': '申请列表',
     'user.apply.search.placeholder': '申请人/客户名/用户名',
     'user.apply.pass': '已通过',
@@ -1018,6 +1027,8 @@ var zh_CN = {
     'user.apply.reply.loading': '正在努力加载回复列表 ......',
     'user.apply.detail.button.pass': '通过',
     'user.apply.detail.backout': '撤销申请',
+    'user.apply.detail.pass': '通过申请',
+    'user.apply.detail.reject': '驳回申请',
     'user.apply.detail.suggest': '意见',
     'user.apply.detail.remark': '批注',
     'user.apply.detail.expanded.title': '返回缩略内容',
@@ -1045,6 +1056,7 @@ var zh_CN = {
     'user.apply.approve': '用户申请审批',
     'user.apply.approve.count': '有{approveCount}条审批消息',
     'user.apply.unread.reply': '有未读回复',
+    'user.apply.no.unread.reply': '无未读回复',
     'user.apply.refresh.reply.tip': '有新回复，点此{refreshTip}',
     'user.apply.unread.reply.check': '有未读回复的申请，{check}',
     'user.apply.unread.reply.null': '已无未读回复的申请，{return}',
@@ -1055,6 +1067,9 @@ var zh_CN = {
     'reply.pass.tip.content': '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.reject.tip.content': '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}',
     'reply.cancel.tip.content': '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}',
+    'user.apply.new.refresh.tip': '有新申请，点此刷新',
+    'user.apply.no.new.refresh.tip': '无新申请',
+    'user.apply.last.follow.date': '最新跟进日期',
     // 用户审批end
 
     // 在线用户start
@@ -1235,8 +1250,13 @@ var zh_CN = {
     'crm.213': '未分配客户',
     'crm.214': '添加联系计划',
     'crm.215': '共{count}个线索',
-
+    'crm.216': '添加成功',
+    'crm.217': '获取列表失败',
+    'crm.218': '修改成功',
+    'crm.219': '修改失败',
     'crm.over.day.without.contact': '超{day}天未联系',
+    'crm.recent.week.active': '近一周的活跃客户',
+    'crm.recent.month.active': '近一个月的活跃客户',
     'crm.customer.interested': '添加关注',
     'crm.customer.uninterested': '取消关注',
     'crm.customer.failed.interested': '修改失败',
@@ -1273,6 +1293,7 @@ var zh_CN = {
     'crm.no.level': '无相关行政级别',
     'crm.stage.tag': '阶段标签',
     'crm.order.more.customer': '多个订单的客户',
+    'crm.available.customer': '有效客户',
     'crm.call.no.remark': '最后联系但未写跟进记录',
     'crm.call.no.remark.over30': '超30天未写跟进记录',
     'crm.last.contact': '最后联系',
@@ -1327,6 +1348,29 @@ var zh_CN = {
     'crm.apply.stop.placeholder': '请输入停用的原因',
     'crm.apply.update.password.placeholder': '请输入修改密码的要求',
     'crm.apply.other.placeholder': '请输入申请内容',
+    'crm.Administrative.level.0': '部委级',
+    'crm.Administrative.level.1': '省部级',
+    'crm.Administrative.level.2': '地市级',
+    'crm.Administrative.level.3': '区县级',
+    'crm.dynamic.no.data': '暂无动态',
+    'crm.no.contact.way.tip': '暂无联系方式，请{addTip}',
+    'crm.basic.no.remark': '暂无备注',
+    'crm.basic.add.remark': '添加备注',
+    'crm.basic.no.address': '暂无详细地址',
+    'crm.basic.add.address': '添加详细地址',
+    'crm.basic.no.location': '暂无地域信息',
+    'crm.basic.add.location': '添加地域信息',
+    'crm.basic.no.industry': '暂无行业',
+    'crm.basic.add.industry': '添加行业',
+    'crm.basic.no.administrative': '暂无行政级别',
+    'crm.basic.add.administrative': '添加行政级别',
+    'crm.overview.apply.user.tip': '该客户还没有用户',
+    'crm.no.trace.record': '还没有跟进过该客户',
+    'crm.no.contact.tip': '该客户还没有添加过联系人',
+    'crm.no.contact': '暂无联系人',
+    'crm.no.order.tip': '该客户还没有添加过订单',
+    'crm.detail.no.user': '暂无用户',
+    'crm.detail.no.schedule': '该客户还没有添加过联系计划',
     // 客户管理end
 
     // 客户分析start
@@ -1365,6 +1409,12 @@ var zh_CN = {
     'oplate_customer_analysis.newCustomerCount': '新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': '新开账号数总数',
     'oplate_customer_analysis.customerLoginCount': '新开通客户登录数',
+    'oplate_customer_analysis.type.all': '全部类型',
+    'oplate_customer_analysis.type.trial': '试用用户',
+    'oplate_customer_analysis.type.formal': '正式用户',
+    'oplate_customer_analysis.type.employee': '员工用户',
+    'oplate_customer_analysis.type.gift': '赠送用户',
+    'oplate_customer_analysis.type.training': '培训用户',
     // 客户分析end
     'contract.4': '甲方',
     'contract.5': '更新',
@@ -2252,5 +2302,19 @@ var zh_CN = {
     'noMoreTip.callRecord': '没有更多通话记录了',
     'noMoreTip.visitBack': '没有更多回访记录了',
     'noMoreTip.customer': '没有更多客户了',
+    'failed.change.source.time': '修改线索咨询时间失败',
+    'china.zone.distribute.south.island': '南海诸岛',
+    'phone.status.record.content': '请填写本次跟进内容',
+    'phone.status.other.hang.out': '对方挂断',
+    'phone.status.contact.later': '联系人现在不在，之后再联系',
+    'clue.customer.analysis.trend': '趋势',
+    'clue.stage.statics': '线索阶段统计',
+    'clue.analysis.access.channel': '渠道',
+    'clue.analysis.source': '来源',
+    'clue.analysis.access.chart': '渠道统计',
+    'clue.analysis.ability': '有效',
+    'clue.analysis.inability': '无效',
+    'clue.analysis.source.chart': '来源统计',
+    'clue.analysis.classify.chart': '分类统计'
 };
 export default zh_CN;
