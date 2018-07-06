@@ -19,7 +19,7 @@ var Notification = React.createClass({
             <div className="notification-system-panel">
                 <div className="shade"></div>
                 <div className="notification_wrap">
-                    <div className="notification_content">
+                    <div className="notification_content" id="system-notice">
                         <SystemNotification/>
                     </div>
                 </div>
