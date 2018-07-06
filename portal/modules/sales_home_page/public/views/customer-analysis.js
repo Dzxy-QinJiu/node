@@ -494,7 +494,6 @@ var CustomerAnalysis = React.createClass({
             chartType: 'line',
             dataField: 'total',
             processData: data => {
-                console.log(data);
                 _.each(data, dataItem => {
                     dataItem.name = dataItem.date_str.substr(5);
                     dataItem.value = dataItem.active;
