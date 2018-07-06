@@ -176,12 +176,10 @@ class AssignClueAndSelectCustomer extends React.Component {
     onCustomerChoosen = (info) => {
         var customer_id = info && info.customer && info.customer.id || '';
         var customer_name = info && info.customer && info.customer.name || '';
-        if (customer_id) {
-            this.setState({
-                customer_id: customer_id,
-                customer_name: customer_name,
-            });
-        }
+        this.setState({
+            customer_id: customer_id,
+            customer_name: customer_name,
+        });
     };
     //是否显示对号和叉号
     isShowUpdateOrClose = (flag) => {
@@ -237,16 +235,12 @@ class AssignClueAndSelectCustomer extends React.Component {
         //要提交的数据
         var submitObj = {
             //线索的id
-            customer_clue_id: this.state.curClueDetail.id,
-            //将要关联的客户id
-            id: customerId,
-            //线索的创建时间
-            customer_clue_start_time: this.state.curClueDetail.start_time
+            id: this.state.curClueDetail.id,
+            //客户的id
+            customer_id: customerId,
+            //客户的名称
+            customer_name: customerName
         };
-        //销售线索关联客户时，将注册用户的id传过去
-        if (this.state.curClueDetail && this.state.curClueDetail.app_user_id){
-            submitObj.app_user_ids = [this.state.curClueDetail.app_user_id];
-        }
         this.setState({
             submitType: 'loading'
         });
@@ -535,11 +529,6 @@ AssignClueAndSelectCustomer.defaultProps = {
     curClueDetail: {},
     customer_id: '',
     customer_name: ''
-};
-AssignClueAndSelectCustomer.propTypes = {
-    curClueDetail: React.PropTypes.object,
-    customer_id: React.PropTypes.string,
-    customer_name: React.PropTypes.string,
 };
 AssignClueAndSelectCustomer.propTypes = {
     curClueDetail: React.PropTypes.object,
