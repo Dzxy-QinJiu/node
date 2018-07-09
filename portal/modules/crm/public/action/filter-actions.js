@@ -1,15 +1,5 @@
 var FilterAjax = require('../ajax/filter-ajax');
-//遍历团队树
-function traversingTeamTree(treeList,list) {
-    if(_.isArray(treeList) && treeList.length){
-        _.each(treeList, team => {
-            list.push({group_id: team.group_id,group_name: team.group_name});
-            if(team.child_groups){
-                traversingTeamTree(team.child_groups,list);
-            }
-        });
-    }
-}
+import { traversingTeamTree } from 'PUB_DIR/sources/utils/common-method-util';
 
 function FilterAction() {
     this.generateActions(
