@@ -10,14 +10,10 @@
 @bg-blue: #EEF7FE;
 @bd-grey: #DFDFE1;
 @bg-trans-black: rgba(79, 93, 102, 0.97);
-
 .filter-search-confirm-clear-pop {
     .ant-popover-arrow:after {
-        border-bottom-color: @bg-trans-black!important;
+        border-bottom-color: @bg-trans-black !important;
     }
-}
-.gm-scroll-view {
-    padding-right: 25px;
 }
 
 .active() {
@@ -31,6 +27,37 @@
         width: initial;
         display: inline-block;
         position: relative;
+    }
+}
+
+.clear-confirm-pop-container {
+    background: @bg-trans-black;
+    margin: -8px -16px;
+    padding: 6px 14px;
+    h5 {
+        color: white;
+        line-height: 28px;
+        vertical-align: middle;
+        .anticon {
+            margin-right: 7px;
+            color: @btn-yellow;
+        }
+        font-size: 14px;
+    }
+    .btn-bar {
+        text-align: right;
+        color: white;
+        margin-top: 7px;
+        button {
+            outline: none;
+            border: none;
+            color: @font-grey;
+            &:first-child {
+                background: @btn-yellow;
+                color: white;
+            }
+            margin-left: 8px;
+        }
     }
 }
 
@@ -64,150 +91,124 @@
     }
 }
 
-.filter-wrapper {
-    .titlecut {
-        display: block;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        white-space: nowrap;
-        word-wrap: normal; //兼容ie8
-        overflow: hidden;
-        text-overflow: ellipsis;
+.filter-container {
+    .gm-scroll-view {
+        padding-right: 25px;
     }
-    .alert-container {
-        text-align: center;
-        margin-top: 30px;
-        .ant-alert {
-            width: initial;
-            display: inline-block;
+    .filter-wrapper {
+        .titlecut {
+            display: block;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            white-space: nowrap;
+            word-wrap: normal; //兼容ie8
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-    }
-    .common-container {
-        font-size: 14px;
-        h4 {
+        .alert-container {
+            text-align: center;
+            margin-top: 30px;
+            .ant-alert {
+                width: initial;
+                display: inline-block;
+            }
+        }
+        .common-container {
             font-size: 14px;
+            h4 {
+                font-size: 14px;
+                line-height: 2;
+            }
             line-height: 2;
-        }
-        line-height: 2;
-        padding-left: @pd-l;
-        ul {
-            margin-left: -5px;
-            li {
-                cursor: pointer;
-                padding-left: 5px;
-                border-radius: 4px;
-                position: relative;
-                &.active,
-                &:hover {
-                    color: @font-lightblue;
-                    background: @bg-blue;
-                    span.btn {
+            padding-left: @pd-l;
+            ul {
+                margin-left: -5px;
+                li {
+                    cursor: pointer;
+                    padding-left: 5px;
+                    border-radius: 4px;
+                    position: relative;
+                    &.active,
+                    &:hover {
+                        color: @font-lightblue;
                         background: @bg-blue;
+                        span.btn {
+                            background: @bg-blue;
+                        }
+                    }
+                    span.btn {
+                        font-weight: 600;
+                        position: absolute;
+                        right: 0;
+                        top: -5px;
+                        background: white;
+                    }
+                    span.common-item-content {
+                        display: block;
+                        padding-right: 30px;
                     }
                 }
-                span.btn {
-                    font-weight: 600;
-                    position: absolute;
-                    right: 0;
-                    top: -5px;
-                    background: white;
-                }
-                span.common-item-content {
-                    display: block;
-                    padding-right: 30px;
-                }
             }
-        }
-        .title {
-            color: @font-yellow;
-        }
-        .collapse-btn {
-            color: @font-blue;
-        }
-    }
-    .advanced-container {
-        margin-top: 18px;
-        padding-left: @pd-l;
-        &>.title {
-            font-size: 14px;
-            line-height: 36px;
-            font-weight: 600;
-            color: @font-black;
-            p {
-                display: inline-block;
-            }
-            .anticon {
-                float: right;
-                margin-top: 10px;
-                cursor: pointer;
-            }
-        }
-        .group-container {
-            font-size: 12px;
-            line-height: 2;
             .title {
-                font-size: 12px;
-                line-height: 24px;
-                font-weight: initial;
-                color: @font-black;
+                color: @font-yellow;
             }
-            .clear-btn {
-                cursor: pointer;
+            .collapse-btn {
                 color: @font-blue;
-                float: right;
             }
         }
-        ul.item-container {
-            margin-top: 2px;
-            margin-left: -10px;
-            margin-right: -10px;
-            margin-bottom: 11px;
-            font-size: 0;
-            li {
-                display: inline-block;
-                margin: 2px 3px;
-                padding: 0 7px;
-                border-radius: 4px;
-                cursor: pointer;
-                color: @font-grey;
+        .advanced-container {
+            margin-top: 18px;
+            padding-left: @pd-l;
+            &>.title {
                 font-size: 14px;
-                line-height: 24px;
-                &.active,
-                &:hover {
-                    .active();
+                line-height: 36px;
+                font-weight: 600;
+                color: @font-black;
+                p {
+                    display: inline-block;
+                }
+                .anticon {
+                    float: right;
+                    margin-top: 10px;
+                    cursor: pointer;
                 }
             }
-        }
-    }
-}
-
-.clear-confirm-pop-container {
-    background: @bg-trans-black;
-    margin: -8px -16px;
-    padding: 6px 14px;
-    h5 {
-        color: white;
-        line-height: 28px;
-        vertical-align: middle;
-        .anticon {
-            margin-right: 7px;
-            color: @btn-yellow;
-        }
-        font-size: 14px;
-    }
-    .btn-bar {
-        text-align: right;
-        color: white;
-        margin-top: 7px;
-        button {
-            outline: none;
-            border: none;
-            color: @font-grey;
-            &:first-child {
-                background: @btn-yellow;
-                color: white;
+            .group-container {
+                font-size: 12px;
+                line-height: 2;
+                .title {
+                    font-size: 12px;
+                    line-height: 24px;
+                    font-weight: initial;
+                    color: @font-black;
+                }
+                .clear-btn {
+                    cursor: pointer;
+                    color: @font-blue;
+                    float: right;
+                }
             }
-            margin-left: 8px;
+            ul.item-container {
+                margin-top: 2px;
+                margin-left: -10px;
+                margin-right: -10px;
+                margin-bottom: 11px;
+                font-size: 0;
+                li {
+                    display: inline-block;
+                    margin: 2px 3px;
+                    padding: 0 7px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    color: @font-grey;
+                    font-size: 14px;
+                    line-height: 24px;
+                    &.active,
+                    &:hover {
+                        .active();
+                    }
+                }
+            }
         }
     }
 }
