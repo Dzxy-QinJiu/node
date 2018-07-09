@@ -143,70 +143,72 @@ class UserCustomer extends React.Component{
         }
         var $input = $('.ant-select-search__field',this.refs.wrap);
         var input_val = $input[0] && $input.val();
-        if(input_val !== undefined) {
-            if(!input_val) {
-                this.setState({
-                    customer_id: '',
-                    customer_name: '',
-                    sales_id: '',
-                    sales_name: '',
-                    sales_team_id: '',
-                    sales_team_name: '',
-                });
+        setTimeout( () => {
+            if(input_val !== undefined) {
+                if(!input_val) {
+                    this.setState({
+                        customer_id: '',
+                        customer_name: '',
+                        sales_id: '',
+                        sales_name: '',
+                        sales_team_id: '',
+                        sales_team_name: '',
+                    });
 
-            } else if(input_val !== this.props.customer_name) {
-                this.setState({
-                    show_customer_error: true
-                });
-                return;
+                } else if(input_val !== this.props.customer_name) {
+                    this.setState({
+                        show_customer_error: true
+                    });
+                    return;
+                }
             }
-        }
-        //要提交的数据
-        var appUser = {
-            //用户id
-            user_id: this.props.user_id,
-            //客户id
-            customer_id: this.state.customer_id
-        };
-        var _this = this;
-        this.setState({
-            submitType: 'loading'
-        });
-        $.ajax({
-            url: '/rest/appuser',
-            dataType: 'json',
-            contentType: 'application/json',
-            type: 'put',
-            data: JSON.stringify(appUser),
-            success: function(bool) {
-                if(bool === true) {
+            //要提交的数据
+            var appUser = {
+                //用户id
+                user_id: this.props.user_id,
+                //客户id
+                customer_id: this.state.customer_id
+            };
+            var _this = this;
+            this.setState({
+                submitType: 'loading'
+            });
+            $.ajax({
+                url: '/rest/appuser',
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'put',
+                data: JSON.stringify(appUser),
+                success: function(bool) {
+                    if(bool === true) {
+                        _this.setState({
+                            error_message: '',
+                            submitType: 'success'
+                        });
+                        _this.props.onChangeSuccess({
+                            user_id: _this.props.user_id,
+                            customer_id: _this.state.customer_id ,
+                            customer_name: _this.state.customer_name,
+                            sales_id: _this.state.sales_id,
+                            sales_name: _this.state.sales_name,
+                            sales_team_id: _this.state.sales_team_id,
+                            sales_team_name: _this.state.sales_team_name
+                        });
+                    } else {
+                        _this.setState({
+                            error_message: Intl.get('common.edit.failed', '修改失败'),
+                            submitType: 'error'
+                        });
+                    }
+                },
+                error: function(xhr) {
                     _this.setState({
-                        error_message: '',
-                        submitType: 'success'
-                    });
-                    _this.props.onChangeSuccess({
-                        user_id: _this.props.user_id,
-                        customer_id: _this.state.customer_id ,
-                        customer_name: _this.state.customer_name,
-                        sales_id: _this.state.sales_id,
-                        sales_name: _this.state.sales_name,
-                        sales_team_id: _this.state.sales_team_id,
-                        sales_team_name: _this.state.sales_team_name
-                    });
-                } else {
-                    _this.setState({
-                        error_message: Intl.get('common.edit.failed', '修改失败'),
-                        submitType: 'error'
+                        submitType: 'error',
+                        error_message: xhr.responseJSON || Intl.get('common.edit.failed', '修改失败')
                     });
                 }
-            },
-            error: function(xhr) {
-                _this.setState({
-                    submitType: 'error',
-                    error_message: xhr.responseJSON || Intl.get('common.edit.failed', '修改失败')
-                });
-            }
-        });
+            });
+        } );
     }
     renderIndicator() {
         if(this.state.submitType === 'loading') {
