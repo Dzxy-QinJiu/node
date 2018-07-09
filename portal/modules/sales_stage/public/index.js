@@ -7,28 +7,26 @@ var PrivilegeChecker = require('../../../components/privilege/checker').Privileg
 var TopNav = require('../../../components/top-nav');
 var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var leftWidth = 281; // 75+45+117+44 左侧导航宽度+右侧内容左边距+右侧右侧边距+销售阶段内容左侧边距
-
 var SalesStageStore = require('./store/sales-stage-store');
 var SalesStageAction = require('./action/sales-stage-actions');
 var SalesStageForm = require('./views/sales-stage-form');
 var SalesStageInfo = require('./views/sales-stage-info');
 var Spinner = require('../../../components/spinner');
 import Trace from 'LIB_DIR/trace';
+import { message } from 'antd';
+
 function getStateFromStore(_this) {
     return {
-        salesStageList: SalesStageStore.getSalesStageListData(),
-        currentSalesStage: SalesStageStore.getCurrentSalesStageData(),
-        currentSalesStageListData: SalesStageStore.getCurrentSalesStageListData(),
-        isFormShow: SalesStageStore.isFormShowFnc(),
-        isEditOrder: SalesStageStore.isEditOrderFnc(),
-        isSavingSalesStage: SalesStageStore.getIsSavingSalesStage(),
-        salesStageWidth: _this.salesStageWidthFnc()
+        ...SalesStageStore.getState(),
+        salesStageWidth: _this.salesStageWidthFnc(),
     };
 }
 
 var SalesStagePage = React.createClass({
     getInitialState: function() {
-        return getStateFromStore(this);
+        return {
+            saveStageErrMsg: '',
+            ...getStateFromStore(this)};
     },
 
     onChange: function() {
@@ -72,15 +70,28 @@ var SalesStagePage = React.createClass({
 
         submitSalesStageForm: function(salesStage) {
             if (salesStage.id) {
-                SalesStageAction.editSalesStage(salesStage);
+                SalesStageAction.editSalesStage(salesStage, () => {
+                    SalesStageAction.hideSalesStageeForm();
+                    message.success(Intl.get('crm.218', '修改成功！'));
+                });
             } else {
-                SalesStageAction.addSalesStage(salesStage);
+                SalesStageAction.addSalesStage(salesStage, () => {
+                    SalesStageAction.hideSalesStageeForm();
+                    message.success(Intl.get('crm.216', '添加成功！'));
+                });
             }
         },
 
         deleteSalesStage: function(salesStage) {
-            SalesStageAction.changeIsSavingSalesStage();
-            SalesStageAction.deleteSalesStage(salesStage);
+            SalesStageAction.deleteIsSavingSalesStage();
+            SalesStageAction.deleteSalesStage(salesStage, (result) => {
+                if(!result.error){
+                    message.success(Intl.get('crm.138', '删除成功！'));
+                }else{
+                    message.error(Intl.get('crm.139', '删除失败！'));
+                }
+            });
+
         },
 
         showSalesStageModalDialog: function(salesStage) {
@@ -134,7 +145,7 @@ var SalesStagePage = React.createClass({
                 <TopNav>
                     <TopNav.MenuList/>
                     {
-                        this.state.isEditOrder ?
+                        this.state.salesStageEditOrder ?
                             (<div className="sales-stage-top-div-group">
                                 <div className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
@@ -167,14 +178,14 @@ var SalesStagePage = React.createClass({
 
                 <SalesStageForm
                     salesStage={this.state.currentSalesStage}
-                    salesStageFormShow={this.state.isFormShow}
+                    salesStageFormShow={this.state.salesStageFormShow}
                     cancelSalesStageForm={this.events.hideSalesStageeForm}
                     submitSalesStageForm={this.events.submitSalesStageForm}
                 >
                 </SalesStageForm>
 
                 <div className="sales-stage-table-block">
-                    {this.state.isSavingSalesStage ? (<div className="sales-stage-block">
+                    {this.state.isSavingSalesStageHome ? (<div className="sales-stage-block">
                         <Spinner className="sales-stage-saving"/>
                     </div>) : null}
                     <ul className="sales-stage-timeline">
@@ -193,7 +204,7 @@ var SalesStagePage = React.createClass({
                                             showSalesStageForm={_this.events.showSalesStageForm.bind(_this)}
                                             salesStageOrderUp={_this.events.salesStageOrderUp}
                                             salesStageOrderDown={_this.events.salesStageOrderDown}
-                                            isEditOrder={_this.state.isEditOrder}
+                                            salesStageEditOrder={_this.state.salesStageEditOrder}
                                         >
                                         </SalesStageInfo>
                                     </li>

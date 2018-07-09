@@ -2,6 +2,7 @@
  * 用户分析
  * Created by wangliping on 2016/11/23.
  */
+import { AntcAnalysis } from 'antc';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateUserAnalysisAction = require('../../../oplate_user_analysis/public/action/oplate-user-analysis.action');
 var OplateUserAnalysisStore = require('../../../oplate_user_analysis/public/store/oplate-user-analysis.store');
@@ -93,7 +94,7 @@ var UserAnlyis = React.createClass({
         }
         //获取总的统计分析数据
         //选择天时，不展示趋势图
-        if (this.state.timeType != 'day') {
+        if (this.state.timeType !== 'day') {
             OplateUserAnalysisAction.getAddedSummary(queryParams);
         }
         OplateUserAnalysisAction.getAddedZone(queryParams);
@@ -136,54 +137,6 @@ var UserAnlyis = React.createClass({
         }
         return moment(new Date(+this.state.endTime)).format(DATE_FORMAT);
     },
-    //总用户统计
-    getUserChart: function() {
-        if (this.state.isComposite) {
-            var list = _.isArray(this.state.userAnalysis.data) ?
-                this.state.userAnalysis.data : [];
-            return (
-                <CompositeLine
-                    width={this.chartWidth}
-                    list={list}
-                    title={Intl.get('user.analysis.total', '用户统计')}
-                    height={CHART_HEIGHT}
-                    resultType={this.state.userAnalysis.resultType}
-                />
-            );
-        } else {
-            return (
-                <SingleLineChart
-                    width={this.chartWidth}
-                    list={this.state.userAnalysis.data}
-                    title={Intl.get('user.analysis.total', '用户统计')}
-                    legend={[{
-                        name: Intl.get('user.analysis.formal', '正式'),
-                        key: 'formal'
-                    }, {name: Intl.get('common.trial', '试用'), key: 'trial'}]}
-                    resultType={this.state.userAnalysis.resultType}
-                />
-            );
-        }
-    },
-    //地域统计
-    getZoneChart: function() {
-        var startDate = this.getStartDateText();
-        var endDate = this.getEndDateText();
-        return (
-            <BarChart
-                width={this.chartWidth}
-                list={this.state.zoneAnalysis.data}
-                title={Intl.get('user.analysis.address', '地域统计')}
-                height={CHART_HEIGHT}
-                legendRight={LEGEND_RIGHT}
-                legend={chartLegend}
-                startDate={startDate}
-                endDate={endDate}
-                showLabel={true}
-                resultType={this.state.zoneAnalysis.resultType}
-            />
-        );
-    },
 
     //获取通过点击统计图中的柱子跳转到用户列表时需传的参数
     getJumpProps: function() {
@@ -209,80 +162,17 @@ var UserAnlyis = React.createClass({
             }
         };
     },
-    //团队统计
-    getTeamChart: function() {
-        var startDate = this.getStartDateText();
-        var endDate = this.getEndDateText();
-        //TODO 跳转的处理
-        //getJumpProps={this.getJumpProps}
-        //getSaleIdByName={this.props.getSaleIdByName}
-        return (
-            <BarChart
-                width={this.chartWidth}
-                height={CHART_HEIGHT}
-                legendRight={LEGEND_RIGHT}
-                list={this.state.teamOrMemberAnalysis.data}
-                title={Intl.get('user.analysis.team', '团队统计')}
-                legend={chartLegend}
-                startDate={startDate}
-                endDate={endDate}
-                resultType={this.state.teamOrMemberAnalysis.resultType}
-            />
-        );
-    },
 
-    getIndustryChart: function() {
-        var startDate = this.getStartDateText();
-        var endDate = this.getEndDateText();
-        return (
-            <ReverseBarChart
-                list={this.state.industryAnalysis.data}
-                title={Intl.get('user.analysis.industry', '行业统计')}
-                width={this.chartWidth}
-                height={CHART_HEIGHT}
-                legendRight={LEGEND_RIGHT}
-                startDate={startDate}
-                endDate={endDate}
-                legend={chartLegend}
-                resultType={this.state.industryAnalysis.resultType}
-            />
-        );
-    },
     renderChartContent: function() {
-        //销售不展示团队的数据统计
-        let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
             <div className="chart_list">
-                {this.state.timeType != 'day' ? (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get('user.analysis.user.add', '用户-新增')}>
-                        <div className="chart-holder" ref="chartWidthDom" data-tracename="用户-新增统计">
-                            <div className="title">{Intl.get('user.analysis.user.add', '用户-新增')}</div>
-                            {this.getUserChart()}
-                        </div>
-                    </div>) : null}
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get('user.analysis.location.add', '地域-新增')}>
-                    <div className="chart-holder" data-tracename="地域-新增统计">
-                        <div className="title">{Intl.get('user.analysis.location.add', '地域-新增')}</div>
-                        {this.getZoneChart()}
-                    </div>
-                </div>
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get('user.analysis.industry.add', '行业-新增')}>
-                    <div className="chart-holder" data-tracename="行业-新增统计">
-                        <div className="title">{Intl.get('user.analysis.industry.add', '行业-新增')}</div>
-                        {this.getIndustryChart()}
-                    </div>
-                </div>
-                {hideTeamChart ? null : (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get('user.analysis.team.add', '团队-新增')}>
-                        <div className="chart-holder" data-tracename="团队-新增统计">
-                            <div className="title">{Intl.get('user.analysis.team.add', '团队-新增')}</div>
-                            {this.getTeamChart()}
-                        </div>
-                    </div>)}
+                <AntcAnalysis
+                    charts={this.getCharts()}
+                    emitters={this.props.emitters}
+                    conditions={this.props.conditions}
+                    isGetDataOnMount={true}
+                    style={{marginLeft: -10, marginRight: -5}}
+                />
             </div>
         );
     },
@@ -297,6 +187,87 @@ var UserAnlyis = React.createClass({
                 </GeminiScrollbar>
             );
         }
+    },
+
+    //获取图表
+    getCharts: function() {
+        //从 unknown 到 未知 的映射
+        let unknownDataMap = {
+            unknown: Intl.get('user.unknown', '未知') 
+        };
+
+        //销售不展示团队的数据统计
+        const hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
+
+        return [{
+            title: Intl.get('user.analysis.user.add', '用户-新增'),
+            chartType: 'line',
+            data: this.state.userAnalysis.data,
+            resultType: this.state.userAnalysis.resultType,
+            option: {
+                legend: {
+                    type: 'scroll',
+                    pageIconSize: 10,
+                },
+            },
+            customOption: {
+                multi: true,
+                serieNameField: 'app_name',
+                serieNameValueMap: {
+                    '': Intl.get('oplate.user.analysis.22', '综合'),
+                },
+            },
+            generateCsvData: function(data) {
+                let csvData = [];
+                let thead = [Intl.get('common.app.name', '应用名称')];
+                let subData = data[0] && data[0].data;
+                if (!subData) return [];
+
+                thead = thead.concat(_.map(subData, 'name'));
+                csvData.push(thead);
+                _.each(data, dataItem => {
+                    const appName = dataItem.app_name || Intl.get('oplate.user.analysis.22', '综合');
+                    let tr = [appName];
+                    tr = tr.concat(_.map(dataItem.data, 'value'));
+                    csvData.push(tr);
+                });
+                return csvData;
+            },
+        }, {
+            title: Intl.get('user.analysis.location.add', '地域-新增'),
+            chartType: 'bar',
+            customOption: {
+                stack: true,
+                legendData: chartLegend,
+            },
+            data: this.state.zoneAnalysis.data,
+            nameValueMap: unknownDataMap,
+            resultType: this.state.zoneAnalysis.resultType,
+        }, {
+            title: Intl.get('user.analysis.industry.add', '行业-新增'),
+            chartType: 'bar',
+            customOption: {
+                stack: true,
+                reverse: true,
+                legendData: chartLegend,
+            },
+            data: this.state.industryAnalysis.data,
+            nameValueMap: unknownDataMap,
+            resultType: this.state.industryAnalysis.resultType,
+        }, {
+            title: Intl.get('user.analysis.team.add', '团队-新增'),
+            chartType: 'bar',
+            customOption: {
+                stack: true,
+                legendData: chartLegend,
+            },
+            noShowCondition: {
+                callback: () => hideTeamChart,
+            },
+            data: this.state.teamOrMemberAnalysis.data,
+            nameValueMap: unknownDataMap,
+            resultType: this.state.teamOrMemberAnalysis.resultType,
+        }];
     },
 
     render: function() {

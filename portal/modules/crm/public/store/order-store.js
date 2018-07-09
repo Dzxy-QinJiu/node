@@ -121,9 +121,13 @@ OrderStore.prototype.afterDelOrder = function(delOrderId) {
 //修改订单后的处理
 OrderStore.prototype.afterEditOrder = function(order) {
     let editOrder = _.find(this.orderList, item => item.id === order.id);
-    editOrder.budget = order.budget;
-    editOrder.remarks = order.remarks;
-    editOrder.isEdit = false;
+    if (order.oppo_status) {//订单状态的修改（丢单、赢单）
+        editOrder.oppo_status = order.oppo_status;
+    } else {
+        editOrder.budget = order.budget;
+        editOrder.remarks = order.remarks;
+        editOrder.isEdit = false;
+    }
 };
 //添加订单后的处理
 OrderStore.prototype.afterAddOrder = function(order) {

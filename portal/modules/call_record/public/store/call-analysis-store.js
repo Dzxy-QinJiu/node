@@ -1,6 +1,5 @@
 var CallAnalysisActions = require('../action/call-analysis-action');
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
-import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import userData from 'PUB_DIR/sources/user-data';
 import {formatRoundingPercentData} from 'PUB_DIR/sources/utils/common-method-util';
 function CallAnalysisStore() {
@@ -237,11 +236,9 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
             var returnObj = {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
-                averageTimeFormated: TimeUtil.getFormatTime(salesPhone.averageTime),
                 name: salesPhone.name || '',//销售或者团队的名称
                 totalAnswer: getData(salesPhone.totalAnswer),//总接通数
                 totalTime: getData(salesPhone.totalTime),//总时长
-                totalTimeFormated: TimeUtil.getFormatTime(salesPhone.totalTime),
                 callinCount: getData(salesPhone.callinCount),//呼入次数
                 callinSuccess: getData(salesPhone.callinSuccess),//成功呼入
                 callinRate: formatRoundingPercentData(salesPhone.callinRate),//呼入接通率
@@ -253,8 +250,7 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
 
             if (memberTotal){
                 returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess) / memberTotal).toFixed(), //人均接通数
-                returnObj.personAverageTime = (getData(salesPhone.totalTime) / memberTotal).toFixed(),//人均通话时长
-                returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime) / memberTotal).toFixed());//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
+                returnObj.personAverageTime = (getData(salesPhone.totalTime) / memberTotal).toFixed();//人均通话时长
             }
 
             return returnObj;

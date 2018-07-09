@@ -26,6 +26,12 @@ let BasicEditSelectField = React.createClass({
             filterOption: true,
             //字段
             field: 'role',
+            //编辑区的宽度
+            width: '100%',
+            //无数据时的提示（没有修改权限时提示没有数据）
+            noDataTip: '',
+            //添加数据的提示（有修改权限时，提示补充数据）
+            addDataTip: '',
             //是否有修改权限
             hasEditPrivilege: false,
             //验证条件
@@ -105,17 +111,20 @@ let BasicEditSelectField = React.createClass({
             var saveObj = {id: this.props.id};
             saveObj[this.props.field] = value;
             this.setState({loading: true});
-            const setDisplayState = () => {
+            const setDisplayState = (displayText) => {
                 this.setState({
                     loading: false,
                     submitErrorMsg: '',
                     value: value,
-                    displayType: 'text'
+                    displayType: 'text',
+                    displayText: displayText || ''
                 });
             };
-            if (value != this.state.value) {
+            if (value !== this.state.value) {
                 this.props.saveEditSelect(saveObj, () => {
-                    setDisplayState();
+                    let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === value);
+                    let displayText = _.get(curOptions,'props') ? curOptions.props.children : '';
+                    setDisplayState(displayText);
                 }, (errorMsg) => {
                     this.setState({
                         loading: false,
@@ -123,7 +132,7 @@ let BasicEditSelectField = React.createClass({
                     });
                 });
             } else {
-                setDisplayState();
+                setDisplayState(this.state.displayText);
             }
         });
     },
@@ -155,20 +164,34 @@ let BasicEditSelectField = React.createClass({
             'editing': this.state.displayType === 'edit'
         });
 
-        var textBlock = this.state.displayType === 'text' ? (
-            <div>
-                <span className="inline-block basic-info-text">
-                    {this.props.displayText}
-                </span>
-                {this.props.hasEditPrivilege ? (
-                    <DetailEditBtn title={this.props.editBtnTip}
-                        onClick={this.setEditable.bind(this)}/>) : null
-                }
-            </div>
-        ) : null;
+        var textBlock = null;
+        if (this.state.displayType === 'text') {
+            if (this.state.displayText) {
+                textBlock = (
+                    <div>
+                        <span className="inline-block basic-info-text">
+                            {this.state.displayText}
+                        </span>
+                        {this.props.hasEditPrivilege ? (
+                            <DetailEditBtn title={this.props.editBtnTip}
+                                onClick={this.setEditable.bind(this)}/>) : null
+                        }
+                    </div>);
+            } else {
+                textBlock = (
+                    <span className="inline-block basic-info-text no-data-descr">
+                        {this.props.hasEditPrivilege ? (
+                            <a onClick={this.setEditable.bind(this)}>{this.props.addDataTip}</a>) : this.props.noDataTip}
+
+                    </span>
+                );
+            }
+        }
+
+
         var selectBlock = this.state.displayType === 'edit' ? (
             <div className="selectWrap" ref="selectWrap" key="select-wrap">
-                <Form horizontal autoComplete="off">
+                <Form horizontal autoComplete="off" style={{width: this.props.width || '100%'}}>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             labelCol={{span: 0}}

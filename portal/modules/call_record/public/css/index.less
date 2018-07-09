@@ -395,14 +395,12 @@
           .analysis-wrapper {
             min-width: 1300px;
             .call-info {
+              padding-left:0;
+              padding-right:0;
               .card-container {
                 .card-title {
                   border-bottom: none;
                   padding: 0 0 10px;
-                  .title-name {
-                    font-size: 14px;
-                    padding: 0;
-                  }
                   .additional-content{
                     .icon-export {
                       padding-right: 15px;
@@ -484,6 +482,12 @@
           }
           .call-info, .call-top, .call-service-rate, .call-stage-distribute{
             min-height: 100px;
+          }
+          .call-top{
+            .card-container {
+              .card-title {
+                border-bottom: none;
+              }}
           }
           .alert-wrap {
             text-align: center;

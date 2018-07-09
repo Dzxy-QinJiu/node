@@ -2,7 +2,7 @@ require('../../css/schedule.less');
 var ScheduleStore = require('../../store/schedule-store');
 var ScheduleAction = require('../../action/schedule-action');
 var CrmScheduleForm = require('./form');
-import {message} from 'antd';
+import {message, Button} from 'antd';
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 var TimeLine = require('CMP_DIR/time-line-new');
 import Trace from 'LIB_DIR/trace';
@@ -14,8 +14,9 @@ import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import ErrorDataTip from '../components/error-data-tip';
-import CallNumberUtil from 'PUB_DIR/sources/utils/call-number-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import classNames from 'classnames';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 
 var CrmSchedule = React.createClass({
     getInitialState: function() {
@@ -244,19 +245,29 @@ var CrmSchedule = React.createClass({
             </div>);
     },
     render(){
-        let hasNoData = !_.get(this.state, 'scheduleList[0]') && !this.state.isLoadingScheduleList;
-        let addBtn = this.props.isMerge ? null : (<span className="iconfont icon-add schedule-add-btn"
-            title={Intl.get('crm.214', '添加联系计划')}
-            onClick={this.addSchedule}/>);
         return (
             <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
                 listenScrollBottom={this.state.listenScrollBottom}>
-                <DetailCard title={`${Intl.get('crm.right.schedule', '联系计划')}:`}
-                    titleDescr={hasNoData ? Intl.get('common.no.more.schedule', '暂无计划') : ''}
-                    titleRightBlock={addBtn}
-                    titleBottomBorderNone={hasNoData}//没有数据时，标题下面没有下边框
-                    content={this.renderScheduleContent()}
-                    className='schedule-contianer'/>
+                <div className="schedule-top-block">
+                    <span className="total-tip crm-detail-total-tip">
+                        {this.state.total ? (
+                            <ReactIntl.FormattedMessage
+                                id="sales.frontpage.total.list"
+                                defaultMessage={'共{n}条'}
+                                values={{'n': this.state.total + ''}}/>) :
+                            Intl.get('crm.detail.no.schedule', '该客户还没有添加过联系计划')}
+                    </span>
+                    {this.props.isMerge ? null : (
+                        <Button className='crm-detail-add-btn'
+                            onClick={this.addSchedule.bind(this, '')}>
+                            {Intl.get('crm.214', '添加联系计划')}
+                        </Button>
+                    )}
+                </div>
+                {this.state.isLoadingScheduleList ? (<Spinner/>) : _.get(this.state, 'scheduleList[0]') ? (
+                    <DetailCard className='schedule-contianer'
+                        content={this.renderScheduleContent()}/>) : (
+                    <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>)}
             </RightPanelScrollBar>
         );
     }

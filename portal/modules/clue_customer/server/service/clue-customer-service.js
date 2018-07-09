@@ -8,6 +8,8 @@
 var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
+var Promise = require('bluebird');
+var EventEmitter = require('events').EventEmitter;
 const restApis = {
     //获取线索来源
     getClueSource: '/rest/customer/v2/clue/clue_source/100/1',
@@ -28,15 +30,17 @@ const restApis = {
     //线索名、电话唯一性验证
     checkOnlySalesClue: '/rest/customer/v2/clue/repeat/search',
     //将线索和客户进行关联
-    RelateClueAndCustomer: '/rest/customer/v2/customer/:type/customer_clue_relation',
+    RelateClueAndCustomer: '/rest/customer/v2/clue/:type/customer_clue_relation',
     //导入线索
     upload: '/rest/customer/v2/clue/upload/preview',
     //确认导入线索预览
     uploadClueConfirm: '/rest/customer/v2/clue/upload/confirm/:flag',
     //删除某条线索
     deleteRepeatClue: 'rest/customer/v2/clue/upload/preview/:index',
+    //获取线索分析
+    getClueAnalysis: '/rest/analysis/customer/v2/clue/customer/label',
     //获取线索统计
-    getClueAnalysis: '/rest/analysis/customer/v2/clue/customer/label'
+    getClueStatics: '/rest/customer/v2/clue/statistical/:field/:page_size/:num',
 
 };
 //查询客户
@@ -172,7 +176,7 @@ exports.deleteRepeatClue = function(req, res) {
             res: res
         }, null);
 };
-
+//线索分析
 exports.getClueAnalysis = function(req, res) {
     return restUtil.authRest.post(
         {
@@ -180,4 +184,43 @@ exports.getClueAnalysis = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+function getClueStaticsList(req, res) {
+    let queryObj = {};
+    queryObj.rang_params = JSON.parse(req.body.rangParams);
+    queryObj.query = req.body.query;
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.post({
+            url: restApis.getClueStatics.replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
+            req: req,
+            res: res
+        }, queryObj, {
+            success: function(eventEmitter, data) {
+                resolve(data);
+            },
+            error: function(eventEmitter, errorDesc) {
+                reject(errorDesc.message);
+            }
+        });
+    });
+}
+//线索统计
+exports.getClueStatics = function(req, res) {
+    //有效数据 无效数据 “0” 有效，“1” 无效"
+    var emitter = new EventEmitter();
+    let getClueStaticsLists = [];
+    for (var i = 0; i < 2; i++) {
+        req.body.query = {'availability': i + ''};
+        getClueStaticsLists.push(getClueStaticsList(req, res));
+    }
+    Promise.all(getClueStaticsLists).then((dataList) => {
+        var responseData = {
+            'availabilityData': dataList[0] || [],
+            'inavaililityData': dataList[1] || [],
+        };
+        emitter.emit('success', responseData);
+    }).catch((errorMsg) => {
+        emitter.emit('error', errorMsg);
+    });
+    return emitter;
 };

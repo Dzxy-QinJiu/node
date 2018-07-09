@@ -110,6 +110,40 @@
                   color:#fff;
                   background-color: @qualified-tag-color;
                 }
+                .customer-label {
+                  margin-left: 4px;
+                  margin-right: 0;
+                  padding: 0 5px;
+                  height: 20px;
+                  line-height: 19px;
+                  font-size: 12px;
+                  color: @tag-font-color;
+                  background-color: #b8c4ca;
+                }
+                .customer-label.info-tag-style{
+                  background-color: @info-tag-color;
+                }
+                .customer-label.intent-tag-style{
+                  background-color: @intent-tag-color;
+                }
+                .customer-label.trial-tag-style{
+                  background-color: @trial-tag-color;
+                }
+                .customer-label.sign-tag-style{
+                  background-color: @sign-tag-color;
+                }
+                .customer-label.qualified-tag-style{
+                  background-color: @qualified-tag-color;
+                }
+                .customer-label.history-qualified-tag-style{
+                  background-color: @history-qualified-tag-color;
+                }
+                .customer-label.loss-tag-style{
+                  background-color:@loss-tag-color;
+                }
+                .customer-label.re-contract{
+                  background-color:@re-contract-color;
+                }
               }
             }
             .contact-container{
@@ -492,36 +526,83 @@
   background-color: #fff;
   display: block;
   .clue-analysis-panel{
-    >.topNav{
-      left: 0!important;
+    background: #f3f5f7;
+    position: relative;
+    height: 100%;
+    .analysis-chart-wrap{
+      .ant-tabs-top{
+        width: 100%;
+        .ant-tabs-bar{
+          margin-bottom: 0;
+          .ant-tabs-nav .ant-tabs-tab{
+            padding-left: 25px!important;
+          }
+          .ant-tabs-nav-container{
+            font-size: 16px;
+            line-height: 2.1;
+            height: 64px;
+          }
+        }
+      }
     }
-  }
-  .date-range-wrap {
-     .range-datepicker {
-      float: left;
-      margin-top: 20px;
-      margin-left: 10px;
+    .date-picker-container{
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 10;
+      width: 400px;
+      .date-picker-wrap{
+        position: absolute;
+        right:92px;
+        top:18px;
+        z-index: 10;
+        .range-datepicker{
+          display: inline-block;
+        }
+        .date-picker-tip{
+          position: relative;
+          top:-10px;
+        }
+      }
     }
-    .consult-time{
-      float: left;
-      margin-top: 25px;
-      margin-left: 10px;
+
+     .close-pannel{
+      margin-top:20px;
     }
-  }
-  .analysis-clue-container{
-    margin: 66px 20px 0 20px;
-    .customer-num{
-      cursor: pointer;
-      font-weight: bold;
-    }
-  }
-  .filter-clue-wrap{
-    float: left;
-    margin: 20px 0 0 15px;
-    .clue-select-container{
-      .ant-select{
-        margin-right: 10px;
-        width: auto;
+
+    //图表的样式
+    .analysis-chart-wrap{
+      .ant-tabs-bar{
+        background: #fff;
+      }
+      .clue-analysis-overview-container {
+        padding-top:16px;
+        .clue-trend-analysis, .clue-access-analysis, .clue-source-analysis, .clue-classify-analysis{
+          padding-left: 0;
+          padding-right:0;
+
+        }
+        .clue-access-analysis,.clue-classify-analysis{
+          .antc-analysis .analysis-charts{
+            padding-left: 0px;
+          }
+        }
+
+        .clue-trend-analysis {
+          position: relative;
+          .filter-clue-wrap {
+            position: absolute;
+            z-index: 2;
+            right:30px;
+            top: 16px;
+            .clue-select-container {
+              .ant-select {
+                margin-right: 10px;
+                width: auto;
+              }
+            }
+          }
+        }
       }
     }
   }

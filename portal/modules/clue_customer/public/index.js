@@ -39,6 +39,8 @@ import {AntcTable} from 'antc';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 import ClueAnalysisPanel from './views/clue-analysis-panel';
+import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
+import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -117,7 +119,7 @@ const ClueCustomer = React.createClass({
         clueCustomerAjax.getClueSource().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
-                    clueSourceArray: _.union(this.state.clueSourceArray, data.result)
+                    clueSourceArray: _.union(this.state.clueSourceArray, removeSpacesAndEnter(data.result))
                 });
             }
         }, errorMsg => {
@@ -129,7 +131,7 @@ const ClueCustomer = React.createClass({
         clueCustomerAjax.getClueChannel().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
-                    accessChannelArray: _.union(this.state.accessChannelArray, data.result)
+                    accessChannelArray: _.union(this.state.accessChannelArray, removeSpacesAndEnter(data.result))
                 });
             }
         }, errorMsg => {
@@ -141,7 +143,7 @@ const ClueCustomer = React.createClass({
         clueCustomerAjax.getClueClassify().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
-                    clueClassifyArray: _.union(this.state.clueClassifyArray, data.result)
+                    clueClassifyArray: _.union(this.state.clueClassifyArray, removeSpacesAndEnter(data.result))
                 });
             }
         }, errorMsg => {
@@ -567,8 +569,14 @@ const ClueCustomer = React.createClass({
                                 <i></i>
                                 <Col sm={12} lg={4}>
                                     <div className="customer-info-wrap">
-                                        <h4>{item.name}
-                                            {item.availability === 1 ? <Tag className="inavailable-tag">{Intl.get('sales.clue.is.enable','无效')}</Tag> : null}
+                                        <h4>
+                                            {item.customer_label ? (
+                                                <Tag
+                                                    className={crmUtil.getCrmLabelCls(item.customer_label)}>
+                                                    {item.customer_label}</Tag>) : null
+                                            }
+                                            {item.name}
+                                            {item.availability === '1' ? <Tag className="inavailable-tag">{Intl.get('sales.clue.is.enable','无效')}</Tag> : null}
                                         </h4>
                                         <p>{item.source}</p>
                                         <span className="hidden record-id">{item.id}</span>
@@ -965,6 +973,7 @@ const ClueCustomer = React.createClass({
                             clueClassifyArray={this.state.clueClassifyArray}
                             updateClueSource={this.updateClueSource}
                             updateClueChannel={this.updateClueChannel}
+                            updateClueClassify={this.updateClueClassify}
                         />
                     ) : null}
                     <ClueImportTemplate
@@ -1022,7 +1031,6 @@ const ClueCustomer = React.createClass({
                             closeClueAnalysisPanel={this.closeClueAnalysisPanel}
                         />
                     </RightPanel> : null}
-
                 </div>
             </RightContent>
         );

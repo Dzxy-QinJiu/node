@@ -1,4 +1,4 @@
-import {Button, Radio, message, Alert, Select} from 'antd';
+import {Button, Radio, message, Alert, Select, Icon} from 'antd';
 const Option = Select.Option;
 const ModalDialog = require('../../../../../components/ModalDialog');
 const Spinner = require('../../../../../components/spinner');
@@ -16,7 +16,11 @@ import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import classNames from 'classnames';
 import ApplyUserForm from '../apply-user-form';
-
+//订单状态
+const ORDER_STATUS = {
+    WIN: 'win',//赢单
+    LOSE: 'lose'//丢单
+};
 const OrderItem = React.createClass({
     getInitialState: function() {
         return {
@@ -33,7 +37,9 @@ const OrderItem = React.createClass({
             isShowApplyUserForm: false,//是否展示申请用户的表单
             applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
             applyUserApps: [],//申请用户对应的应用列表
-            customerName: this.props.customerName//申请用户时用客户名作为昵称
+            customerName: this.props.customerName,//申请用户时用客户名作为昵称
+            isClosingOrder: false,//正在关闭订单
+            closeOrderErrorMsg: '',//关闭订单失败的错误提示
         };
     },
 
@@ -68,30 +74,30 @@ const OrderItem = React.createClass({
     handleModalOK: function(order) {
         Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确定删除订单');
         switch (this.state.modalDialogType) {
-        case 1:
-            //删除订单
-            if (this.props.isMerge) {
-                //合并客户时，删除订单
-                this.props.delMergeCustomerOrder(order.id);
-            } else {
-                this.setState({isLoading: true});
-                OrderAction.deleteOrder({}, {id: order.id}, result => {
-                    this.setState({isLoading: false});
-                    if (result.code === 0) {
-                        message.success(Intl.get('crm.138', '删除成功'));
-                        OrderAction.afterDelOrder(order.id);
-                        //稍后后再去重新获取数据，以防止后端更新未完成从而取到的还是旧数据
-                        setTimeout(() => {
-                            //删除订单后，更新客户列表中的客户信息
-                            _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(order.customer_id);
-                        }, 1000);
-                    }
-                    else {
-                        message.error(Intl.get('crm.139', '删除失败'));
-                    }
-                });
-            }
-            break;
+            case 1:
+                //删除订单
+                if (this.props.isMerge) {
+                    //合并客户时，删除订单
+                    this.props.delMergeCustomerOrder(order.id);
+                } else {
+                    this.setState({isLoading: true});
+                    OrderAction.deleteOrder({}, {id: order.id}, result => {
+                        this.setState({isLoading: false});
+                        if (result.code === 0) {
+                            message.success(Intl.get('crm.138', '删除成功'));
+                            OrderAction.afterDelOrder(order.id);
+                            //稍后后再去重新获取数据，以防止后端更新未完成从而取到的还是旧数据
+                            setTimeout(() => {
+                                //删除订单后，更新客户列表中的客户信息
+                                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(order.customer_id);
+                            }, 1000);
+                        }
+                        else {
+                            message.error(Intl.get('crm.139', '删除失败'));
+                        }
+                    });
+                }
+                break;
         }
     },
 
@@ -265,7 +271,33 @@ const OrderItem = React.createClass({
             contractId: this.props.order.contract_id
         }, '/contract/list', {});
     },
-
+    //关闭订单（赢单、丢单）
+    closeOrder: function(status) {
+        if (this.state.isClosingOrder) return;
+        this.setState({isClosingOrder: true});
+        let order = this.state.formData;
+        let saveOrder = {
+            customer_id: order.customer_id,
+            id: order.id,
+            oppo_status: status
+        };
+        OrderAction.editOrder(saveOrder, {}, (result) => {
+            if (result && result.code === 0) {
+                order.oppo_status = status;
+                this.setState({
+                    isClosingOrder: false,
+                    closeOrderErrorMsg: '',
+                    formData: order
+                });
+                OrderAction.afterEditOrder(saveOrder);
+            } else {
+                this.setState({
+                    isClosingOrder: false,
+                    closeOrderErrorMsg: result || Intl.get('crm.order.close.failed', '关闭订单失败')
+                });
+            }
+        });
+    },
     renderOrderContent() {
         const order = this.state.formData;
         let selectedAppList = [];
@@ -313,6 +345,7 @@ const OrderItem = React.createClass({
         let stageOptions = _.map(this.props.stageList, (stage, index) => {
             return (<Option value={stage.name} key={index}>{stage.name}</Option>);
         });
+        const EDIT_FEILD_WIDTH = 350;
         return (
             <div className="order-item modal-container">
                 {
@@ -327,14 +360,17 @@ const OrderItem = React.createClass({
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get('sales.stage.sales.stage', '销售阶段')}:</span>
                     <BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
                         id={order.id}
                         displayText={order.sale_stages}
                         value={order.sale_stages}
                         field="sale_stages"
                         selectOptions={stageOptions}
-                        hasEditPrivilege={true}
+                        hasEditPrivilege={order.oppo_status ? false : true}
                         placeholder={Intl.get('crm.155', '请选择销售阶段')}
                         saveEditSelect={this.editOrderStage}
+                        noDataTip={Intl.get('crm.order.no.stage','暂无销售阶段')}
+                        addDataTip={Intl.get('crm.order.add.stage','添加销售阶段')}
                     />
                 </div>
                 <div className="order-item-content order-application-list">
@@ -366,34 +402,40 @@ const OrderItem = React.createClass({
                                     </div>
                                 );
                             })}
-                            <DetailEditBtn onClick={this.showAppPanel}/>
+                            {order.oppo_status ? null : <DetailEditBtn onClick={this.showAppPanel}/>}
                         </div>
                     )}
                 </div>
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get('crm.148', '预算金额')}:</span>
                     <BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
                         id={order.id}
                         type="number"
                         field="budget"
                         value={order.budget}
                         afterValTip={Intl.get('contract.139', '万')}
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
-                        hasEditPrivilege={true}
+                        hasEditPrivilege={order.oppo_status ? false : true}
                         saveEditInput={this.saveOrderBasicInfo}
+                        noDataTip={Intl.get('crm.order.no.budget','暂无预算')}
+                        addDataTip={Intl.get('crm.order.add.budget','添加预算')}
                     />
                 </div>
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get('crm.order.remarks', '订单备注')}:</span>
                     <BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
                         id={order.id}
                         type="textarea"
                         field="remarks"
                         value={order.remarks}
                         editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                         placeholder={Intl.get('user.input.remark', '请输入备注')}
-                        hasEditPrivilege={true}
+                        hasEditPrivilege={order.oppo_status ? false : true}
                         saveEditInput={this.saveOrderBasicInfo}
+                        noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                        addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                     />
                 </div>
                 {applyBtnText && this.props.isApplyButtonShow ? (
@@ -432,14 +474,28 @@ const OrderItem = React.createClass({
             </div>
         );
     },
+    renderOrderStatus(status){
+        let descr = Intl.get('crm.order.status.underway', '进行中'), statusClass = 'order-status-underway';
+        if (status) {
+            if (status === ORDER_STATUS.WIN) {
+                descr = Intl.get('crm.order.status.won', '已赢单');
+                statusClass = 'order-status-win';
+            } else if (status === ORDER_STATUS.LOSE) {
+                descr = Intl.get('crm.order.status.lost', '已丢单');
+                statusClass = 'order-status-lose';
+            }
+        }
+        return (<span className={`order-status ${statusClass}`}> {descr}</span>);
+    },
     renderOrderTitle(){
         const order = this.state.formData;
         return (
             <span className="order-item-title">
+                {this.renderOrderStatus(order.oppo_status)}
                 <span className="order-time">
                     {order.time ? moment(order.time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : ''}
                 </span>
-                <span className="order-item-buttons">
+                {order.oppo_status ? null : <span className="order-item-buttons">
                     {this.state.modalDialogFlag ? (
                         <span className="item-delete-buttons">
                             <Button className="item-delete-cancel delete-button-style"
@@ -454,8 +510,26 @@ const OrderItem = React.createClass({
                         <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
                             data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
                     }
-                </span>
+                </span>}
             </span>
+        );
+    },
+    renderOrderBottom(){
+        if (this.state.formData.oppo_status) return null;
+        return (
+            <div className="order-bottom-wrap">
+                {this.state.isClosingOrder ? (
+                    <span>{Intl.get('crm.order.closing', '订单关闭中')}<Icon type="loading"/></span>) : (
+                    <span>
+                        <Button className='order-bottom-button'
+                            onClick={this.closeOrder.bind(this, ORDER_STATUS.WIN)}>{Intl.get('crm.order.status.win', '赢单')}</Button>
+                        <Button className='order-bottom-button'
+                            onClick={this.closeOrder.bind(this, ORDER_STATUS.LOSE)}>{Intl.get('crm.order.status.lose', '丢单')}</Button>
+                        {this.state.closeOrderErrorMsg ? (
+                            <span className="order-close-error-tip">{this.state.closeOrderErrorMsg}</span>) : null}
+                    </span>)}
+                <span className="order-user">{this.state.formData.user_name || ''}</span>
+            </div>
         );
     },
     render(){
@@ -466,6 +540,7 @@ const OrderItem = React.createClass({
             <div>
                 <DetailCard title={this.renderOrderTitle()}
                     content={this.renderOrderContent()}
+                    bottom={this.renderOrderBottom()}
                     className={containerClassName}/>
                 {this.state.isShowApplyUserForm ? (
                     <ApplyUserForm
