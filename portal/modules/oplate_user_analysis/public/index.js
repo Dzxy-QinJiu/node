@@ -189,6 +189,15 @@ const onlineTimeReqData = getRangeReqData(
     , 60
 );
 
+//将请求参数值中的delayed转为delay
+function processArgDelayed(arg) {
+    const analysisType = _.get(arg, 'query.analysis_type');
+
+    if (analysisType === 'delayed') {
+        arg.query.analysis_type = 'delay';
+    }
+}
+
 var OPLATE_USER_ANALYSIS = React.createClass({
     //获取图表定义
     getCharts: function() {
@@ -677,6 +686,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             chartTabCondition
             ],
+            argCallback: processArgDelayed,
             chartType: 'wordcloud',
             unit: Intl.get('common.label.times', '次'),
             noShowCondition: {
@@ -721,6 +731,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             chartTabCondition
             ],
+            argCallback: processArgDelayed,
             chartType: 'wordcloud',
             unit: Intl.get('common.time.unit.day', '天'),
             noShowCondition: {
@@ -740,6 +751,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             chartTabCondition
             ],
+            argCallback: processArgDelayed,
             chartType: 'wordcloud',
             unit: Intl.get('common.label.hours', '小时'),
             multiple: 60,
@@ -759,6 +771,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             chartTabCondition
             ],
+            argCallback: processArgDelayed,
             chartType: 'bar',
             option: {
                 tooltip: {
