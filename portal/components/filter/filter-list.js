@@ -138,6 +138,15 @@ class FilterList extends React.Component {
                     this.props.onFilterChange(allSelectedFilterData);
                 });
             }
+        } else {
+            this.setState({
+                advancedData
+            }, () => {
+                const filterList = this.processSelectedFilters(this.state.advancedData);
+                //发送选择筛选项事件
+                filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, filterList);
+                this.props.onFilterChange(filterList);
+            });
         }
         
     }

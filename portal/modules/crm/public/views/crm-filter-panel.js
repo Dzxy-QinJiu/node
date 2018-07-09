@@ -313,7 +313,7 @@ const CrmFilterPanel = React.createClass({
             if (item.groupId) {
                 if (item.groupId !== 'sales_opportunities') {
                     condition[item.groupId] = item.data.map(x => x.value);
-                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', COMMON_OTHER_ITEM].includes(item.groupId)) {
+                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', COMMON_OTHER_ITEM].includes(item.groupId)) {
                         condition[item.groupId] = condition[item.groupId].join(',');
                     } else if (item.singleSelect) {
                         condition[item.groupId] = condition[item.groupId][0] || '';
@@ -386,6 +386,14 @@ const CrmFilterPanel = React.createClass({
                 data: _.drop(this.state.salesRoleList).map(x => ({
                     name: x.show_name,
                     value: x.name
+                }))
+            },
+            {
+                groupName: Intl.get('user.sales.team', '销售团队'),
+                groupId: 'sales_team_id',
+                data: _.drop(this.state.teamList).map(x => ({
+                    name: x.group_name,
+                    value: x.group_id
                 }))
             },
             {
