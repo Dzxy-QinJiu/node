@@ -137,6 +137,46 @@ class UserCustomer extends React.Component{
             this.onCustomerChoosen();
         }
     }
+    changeCustomerAjax(appUser) {
+        this.setState({
+            submitType: 'loading'
+        });
+        $.ajax({
+            url: '/rest/appuser',
+            dataType: 'json',
+            contentType: 'application/json',
+            type: 'put',
+            data: JSON.stringify(appUser),
+            success: (bool) => {
+                if(bool === true) {
+                    this.setState({
+                        error_message: '',
+                        submitType: 'success'
+                    });
+                    this.props.onChangeSuccess({
+                        user_id: this.props.user_id,
+                        customer_id: this.state.customer_id ,
+                        customer_name: this.state.customer_name,
+                        sales_id: this.state.sales_id,
+                        sales_name: this.state.sales_name,
+                        sales_team_id: this.state.sales_team_id,
+                        sales_team_name: this.state.sales_team_name
+                    });
+                } else {
+                    this.setState({
+                        error_message: Intl.get('common.edit.failed', '修改失败'),
+                        submitType: 'error'
+                    });
+                }
+            },
+            error: (xhr) => {
+                this.setState({
+                    submitType: 'error',
+                    error_message: xhr.responseJSON || Intl.get('common.edit.failed', '修改失败')
+                });
+            }
+        });
+    }
     submit() {
         if(this.state.submitType === 'loading') {
             return;
@@ -152,8 +192,15 @@ class UserCustomer extends React.Component{
                     sales_name: '',
                     sales_team_id: '',
                     sales_team_name: '',
+                }, () => {
+                    //要提交的数据
+                    let appUser = {
+                        user_id: this.props.user_id,
+                        customer_id: this.state.customer_id
+                    };
+                    this.changeCustomerAjax(appUser);
                 });
-
+                return;
             } else if(input_val !== this.props.customer_name) {
                 this.setState({
                     show_customer_error: true
@@ -168,45 +215,7 @@ class UserCustomer extends React.Component{
             //客户id
             customer_id: this.state.customer_id
         };
-        var _this = this;
-        this.setState({
-            submitType: 'loading'
-        });
-        $.ajax({
-            url: '/rest/appuser',
-            dataType: 'json',
-            contentType: 'application/json',
-            type: 'put',
-            data: JSON.stringify(appUser),
-            success: function(bool) {
-                if(bool === true) {
-                    _this.setState({
-                        error_message: '',
-                        submitType: 'success'
-                    });
-                    _this.props.onChangeSuccess({
-                        user_id: _this.props.user_id,
-                        customer_id: _this.state.customer_id ,
-                        customer_name: _this.state.customer_name,
-                        sales_id: _this.state.sales_id,
-                        sales_name: _this.state.sales_name,
-                        sales_team_id: _this.state.sales_team_id,
-                        sales_team_name: _this.state.sales_team_name
-                    });
-                } else {
-                    _this.setState({
-                        error_message: Intl.get('common.edit.failed', '修改失败'),
-                        submitType: 'error'
-                    });
-                }
-            },
-            error: function(xhr) {
-                _this.setState({
-                    submitType: 'error',
-                    error_message: xhr.responseJSON || Intl.get('common.edit.failed', '修改失败')
-                });
-            }
-        });
+        this.changeCustomerAjax(appUser);
     }
     renderIndicator() {
         if(this.state.submitType === 'loading') {
