@@ -204,3 +204,22 @@ exports.removeSpacesAndEnter = function(dataArr){
     });
     return _.uniq(dataArr);
 };
+
+/**
+ * 递归遍历团队树
+ * @param treeList 要遍历的团队树，
+ * @param list 遍历出的所有团队的列表
+ */
+function traversingTeamTree(treeList,list) {
+    if(_.isArray(treeList) && treeList.length){
+        _.each(treeList, team => {
+            list.push({group_id: team.group_id,group_name: team.group_name});
+            if(team.child_groups){
+                traversingTeamTree(team.child_groups,list);
+            }
+        });
+    }
+}
+
+//遍历团队树
+exports.traversingTeamTree = traversingTeamTree;
