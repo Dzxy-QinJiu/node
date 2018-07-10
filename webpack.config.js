@@ -17,18 +17,14 @@ var path = require('path');
 var webpack = require('webpack');
 var config = require('./conf/config');
 var fs = require('fs');
-var autoprefixer = require("autoprefixer");
 var HappyPack = require("happypack");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var CleanWebpackPlugin = require('clean-webpack-plugin');
+
 //打包模式
 var webpackMode = config.webpackMode || 'dev';
 
-//线上环境清除之前生成的文件
-if (webpackMode === 'production') {
-    require('shelljs/global');
-    rm('-rf', 'dist');
-}
 //webpack entry入口
 var entry = function () {
     var entryMap = {
@@ -122,23 +118,19 @@ var loadersLists = [
     /*css,less*/
     {
         test: /\.css?$/,
-        use: [
-            {loader: "happypack/loader?id=css"}
-        ],
+        use: "happypack/loader?id=css",
         include: [
             path.resolve(__dirname, "portal"),
             path.resolve(__dirname, "node_modules/bootstrap"),
             path.resolve(__dirname, "node_modules/antd"),
             path.resolve(__dirname, "node_modules/rc-calendar"),
             path.resolve(__dirname, "node_modules/react-date-picker"),
-            path.resolve(__dirname, "node_modules/antc"),
-            path.resolve(__dirname, "node_modules/react-big-calendar")
+            path.resolve(__dirname, "node_modules/antc")
         ]
-    }, {
+    },
+    {
         test: /\.less$/,
-        use: [
-            {loader: "happypack/loader?id=less"}
-        ],
+        use: "happypack/loader?id=less",
         include: [
             path.resolve(__dirname, "portal"),
             path.resolve(__dirname, "node_modules/antc")
@@ -149,11 +141,13 @@ var loadersLists = [
         use: [
             {loader: "json"}
         ],
+        include: [
+            path.resolve(__dirname, "portal")
+        ]
     }
 ];
 //webpack的plugins列表
 var pluginLists = [
-    autoprefixer,
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.ProvidePlugin({
         React: 'react',
@@ -170,6 +164,10 @@ var pluginLists = [
     }),
     new webpack.DllReferencePlugin({
         context: path.join(__dirname),
+        manifest: require("./dll/reactRel-manifest.json")
+    }),
+    new webpack.DllReferencePlugin({
+        context: path.join(__dirname),
         manifest: require("./dll/vendor-manifest.json")
     }),
     new HappyPack(jsLoader),
@@ -178,42 +176,45 @@ var pluginLists = [
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
     new CopyWebpackPlugin([
         {from: 'portal/public/sources/piwik.js'},
-    ]),
+    ])
 ];
 //热替换插件
 if (webpackMode !== 'production') {
     pluginLists.push(new webpack.HotModuleReplacementPlugin());
+    pluginLists.push(new BundleAnalyzerPlugin());
 }
-//压缩混淆插件
 if (webpackMode === 'production') {
+    pluginLists.push(new CleanWebpackPlugin(['dist']));
     pluginLists.push(new webpack.DefinePlugin({
         'process.env': {
             'NODE_ENV': JSON.stringify("production")
         }
     }));
-    pluginLists.push(new UglifyJSPlugin({
-        test: /(\.jsx|\.js)$/,
-        parallel: true,
-        sourceMap: false,
-        uglifyOptions: {
-            ecma: 6,
-            output: {
-                comments: false,
-            },
-            warnings: false
-        }
-    }));
 }
 
 var webpackConfig = {
+    mode: webpackMode === 'production' ? 'production' : 'development',
     cache: true,
     entry: entry(),
     output: {
         path: path.join(__dirname, 'dist'),
         filename: '[name].bundle.js',
         //为了对JS路径进行加密
-        chunkFilename: 'chunk.[chunkhash].js',
+        chunkFilename: 'chunk.[name].[chunkhash].js',
         publicPath: '/resources/'
+    },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    filename: '[name].bundle.js',
+                    name: 'common',
+                    test: /(\.js|\.jsx)$/,
+                    chunks: "initial",
+                    minChunks: 2
+                }
+            }
+        }
     },
     plugins: pluginLists,
     module: {

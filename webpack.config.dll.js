@@ -5,10 +5,45 @@
  */
 var path = require('path');
 var webpack = require('webpack');
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
+var config = require('./conf/config');
+var webpackMode = config.webpackMode || 'dev';
+
+var pluginLists = [
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
+    new webpack.DllPlugin({
+        path: path.join(__dirname, "dll", "[name]-manifest.json"),
+        name: "[name]"
+    }),
+];
+
+if (webpackMode === 'production') {
+    pluginLists.push(new webpack.DefinePlugin({
+        'process.env': {
+            'NODE_ENV': JSON.stringify("production")
+        }
+    }));
+    pluginLists.push(new UglifyJSPlugin({
+            test: /(\.jsx|\.js)$/,
+            parallel: true,
+            sourceMap: false,
+            uglifyOptions: {
+                ecma: 6,
+                output: {
+                    comments: false,
+                },
+                warnings: false
+            }
+        }));
+}
+
 //webpack config
 module.exports = {
+    mode: webpackMode === 'production' ? 'production' : 'development',
     entry: {
+        reactRel: ['react', 'react-dom', 'react-intl', 'antd',
+            'intl-messageformat', 'react-router', 'bootstrap',
+            'react-bootstrap'],
         vendor: [path.join(__dirname, "portal", "vendors.js")]
     },
     output: {
@@ -32,28 +67,5 @@ module.exports = {
             history$: 'history/umd/History.min.js'
         }
     },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify("production")
-            }
-        }),
-        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
-        new webpack.DllPlugin({
-            path: path.join(__dirname, "dll", "[name]-manifest.json"),
-            name: "[name]"
-        }),
-        new UglifyJSPlugin({
-            test: /(\.jsx|\.js)$/,
-            parallel: true,
-            sourceMap: false,
-            uglifyOptions: {
-                ecma: 6,
-                output: {
-                    comments: false,
-                },
-                warnings: false
-            }
-        })
-    ]
+    plugins: pluginLists,
 };
