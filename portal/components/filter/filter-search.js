@@ -1,6 +1,7 @@
 import filterEmitter from './emitter';
 import { Icon, Input, Button, Radio, Popover, Alert } from 'antd';
 import PropTypes from 'prop-types';
+import Trace from 'LIB_DIR/trace';
 
 const RANGE_OPTIONS = [
     {
@@ -101,10 +102,11 @@ class FilterSearch extends React.Component {
             showConfirmPop: isShow
         });
     }
-    handleClearAll() {
+    handleClearAll(e) {
         if (this.props.showSelectChangeTip) {
             this.showConfirmPop(true);
         } else {
+            Trace.traceEvent(e, '清空筛选条件');
             filterEmitter.emit(filterEmitter.CLEAR_FILTERS);
         }
     }
@@ -114,10 +116,11 @@ class FilterSearch extends React.Component {
         });
         this.props.toggleList();
     }
-    handleSubmit() {
+    handleSubmit(e) {
         if (this.props.submitting) {
             return;
         }
+        Trace.traceEvent(e, '保存为常用筛选');
         filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {
             filterName: this.state.filterName,
             range: this.state.selectedRange,
