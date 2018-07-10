@@ -4,6 +4,7 @@ var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 import filterEmitter from './emitter';
+import Trace from 'LIB_DIR/trace';
 class FilterList extends React.Component {
     constructor(props) {
         super();
@@ -483,6 +484,7 @@ class FilterList extends React.Component {
                                                     <li
                                                         className={commonItemClass}
                                                         key={index}
+                                                        data-tracename="选择常用筛选"
                                                     >
                                                         <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
                                                         {
@@ -531,7 +533,7 @@ class FilterList extends React.Component {
                                     </h4>
                                     {
                                         !this.state.collapsedAdvanced ?
-                                            <div className="advanced-items-wrapper">
+                                            <div className="advanced-items-wrapper" data-tracename="高级筛选">
                                                 {
                                                     this.state.advancedData.map((groupItem, index) => {
                                                         if (!groupItem.data || groupItem.data.length === 0) {
@@ -544,6 +546,7 @@ class FilterList extends React.Component {
                                                                         {
                                                                             isGroupSelected(groupItem) ?
                                                                                 <span
+                                                                                    data-tracename={`清空"${groupItem.groupName}"筛选条件`}
                                                                                     className="clear-btn"
                                                                                     onClick={this.clearSelect.bind(this, groupItem.groupName)}
                                                                                 >
@@ -558,6 +561,7 @@ class FilterList extends React.Component {
                                                                                     <li
                                                                                         className={x.selected ? 'active titlecut' : 'titlecut'}
                                                                                         key={idx}
+                                                                                        data-tracename={`选择"${groupItem.groupName}"筛选条件`}
                                                                                         onClick={this.handleAdvanedItemClick.bind(this, groupItem, x, index, idx)}
                                                                                     >
                                                                                         {x.name}

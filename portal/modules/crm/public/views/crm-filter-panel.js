@@ -381,22 +381,6 @@ const CrmFilterPanel = React.createClass({
         });
         const advancedData = [
             {
-                groupName: Intl.get('crm.detail.sales.role', '销售角色'),
-                groupId: 'member_role',
-                data: _.drop(this.state.salesRoleList).map(x => ({
-                    name: x.show_name,
-                    value: x.name
-                }))
-            },
-            {
-                groupName: Intl.get('user.sales.team', '销售团队'),
-                groupId: 'sales_team_id',
-                data: _.drop(this.state.teamList).map(x => ({
-                    name: x.group_name,
-                    value: x.group_id
-                }))
-            },
-            {
                 groupName: Intl.get('crm.order.stage', '订单阶段'),
                 groupId: 'sales_opportunities',
                 singleSelect: true,
@@ -465,6 +449,25 @@ const CrmFilterPanel = React.createClass({
                     }))
             }
         ];
+        //非普通销售才有销售角色和团队
+        if (!userData.getUserData().isCommonSales) {
+            advancedData.unshift({
+                groupName: Intl.get('crm.detail.sales.role', '销售角色'),
+                groupId: 'member_role',
+                data: _.drop(this.state.salesRoleList).map(x => ({
+                    name: x.show_name,
+                    value: x.name
+                }))
+            },
+            {
+                groupName: Intl.get('user.sales.team', '销售团队'),
+                groupId: 'sales_team_id',
+                data: _.drop(this.state.teamList).map(x => ({
+                    name: x.group_name,
+                    value: x.group_id
+                }))
+            });
+        }
         return (
             <div data-tracename="筛选">
                 <div className="crm-filter-panel">
