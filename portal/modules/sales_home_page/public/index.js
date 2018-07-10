@@ -843,6 +843,7 @@ var SalesHomePage = React.createClass({
         return [{
             title: Intl.get('weekly.report.call.statics': '电话统计'),
             chartType: 'table',
+            height: 'auto',
             layout: {
                 sm: 24,
             },
@@ -854,6 +855,7 @@ var SalesHomePage = React.createClass({
         }, {
             title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
             chartType: 'table',
+            height: 'auto',
             layout: {
                 sm: 24,
             },
@@ -868,6 +870,7 @@ var SalesHomePage = React.createClass({
         }, {
             title: Intl.get('call.analysis.total.time', '通话总时长') + 'TOP10',
             chartType: 'table',
+            height: 'auto',
             layout: {
                 sm: 24,
             },
