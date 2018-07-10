@@ -33,7 +33,7 @@ class SearchIconList extends React.Component {
         let count = 0;
         _.each(totalList , (item) => {
             const entity = item.entity;
-            return _.some(searchFields , function(field) {
+            _.each(searchFields , function(field) {
                 let searchContent = entity && entity[field] || '';
                 if(searchContent.toString().toLowerCase().indexOf(keyword) >= 0) {
                     item.searched = true;
@@ -197,6 +197,7 @@ SearchIconList.propTypes = {
     totalList: PropTypes.array,
     selectedList: PropTypes.array,
     name_field: PropTypes.string,
+    id_field: PropTypes.string,
     search_fields: PropTypes.array,
     onItemsChange: PropTypes.func,
     notFoundContent: PropTypes.string
