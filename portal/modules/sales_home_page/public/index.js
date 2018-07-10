@@ -4,7 +4,7 @@ const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
 import {Select, message, Alert} from 'antd';
-import {AntcTable} from 'antc';
+import {AntcTable, AntcAnalysis} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
 var RightContent = require('../../../components/privilege/right-content');
@@ -541,22 +541,10 @@ var SalesHomePage = React.createClass({
                 {this.filterCallTypeSelect()}
                 <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
                     <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
-                        <AntcTable dataSource={this.state.salesPhoneList} columns={this.getPhoneListColumn()}
-                            loading={this.state.isLoadingPhoneList}
-                            scroll={{x: this.getPhoneTableMinWidth()}}
-                            pagination={false} bordered util={{zoomInSortArea: true}}
-                            onChange={this.onTableChange}
+                        <AntcAnalysis
+                            charts={this.getPhoneAnalysisCharts()}
+                            style={{padding: 0}}
                         />
-                        {/*根据电话的排序的通话次数TOP10*/}
-                        {this.renderCallTopTen(this.state.callTotalCountObj, {
-                            title: Intl.get('call.analysis.total.count', '通话总次数'),
-                            dataKey: 'count'
-                        })}
-                        {/*根据电话的排序的通话总时长TOP10*/}
-                        {this.renderCallTopTen(this.state.callTotalTimeObj, {
-                            title: Intl.get('call.analysis.total.time', '通话总时长'),
-                            dataKey: 'sum'
-                        })}
                     </GeminiScrollbar>
                 </div>
             </div>);
@@ -849,6 +837,49 @@ var SalesHomePage = React.createClass({
                 type: 'params',
             },
         ];
+    },
+    //获取电话统计图表列表
+    getPhoneAnalysisCharts() {
+        return [{
+            title: Intl.get('weekly.report.call.statics': '电话统计'),
+            chartType: 'table',
+            layout: {
+                sm: 24,
+            },
+            data: this.state.salesPhoneList,
+            resultType: this.state.isLoadingPhoneList ? 'loading' : '',
+            option: {
+                columns: this.getPhoneListColumn(),
+            },
+        }, {
+            title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
+            chartType: 'table',
+            layout: {
+                sm: 24,
+            },
+            data: this.state.callTotalCountObj.data,
+            resultType: this.state.callTotalCountObj.loading ? 'loading' : '',
+            option: {
+                columns: this.getCallDurTopColumn({
+                    title: Intl.get('call.analysis.total.count', '通话总次数'),
+                    dataKey: 'count'
+                }),
+            },
+        }, {
+            title: Intl.get('call.analysis.total.time', '通话总时长') + 'TOP10',
+            chartType: 'table',
+            layout: {
+                sm: 24,
+            },
+            data: this.state.callTotalTimeObj.data,
+            resultType: this.state.callTotalTimeObj.loading ? 'loading' : '',
+            option: {
+                columns: this.getCallDurTopColumn({
+                    title: Intl.get('call.analysis.total.time', '通话总时长'),
+                    dataKey: 'sum'
+                }),
+            },
+        }];
     },
     //渲染客户关系首页
     render: function() {
