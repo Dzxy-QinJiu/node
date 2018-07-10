@@ -24,13 +24,10 @@ OpenAppStore.prototype.resetState = function() {
 };
 
 OpenAppStore.prototype.getRoleList = resultHandler('roleList', function({ data }) {
-    this.roleList.data = [{
-        role_define: 'realm_manager',
-        role_name: '管理员'
-    }];
+    this.roleList.data = data;
 });
 
-OpenAppStore.prototype.getUserList = resultHandler('userList', function({ data }) {
+OpenAppStore.prototype.getAllUsers = resultHandler('userList', function({ data }) {
     this.userList.data = data;
 });
 

@@ -1,4 +1,5 @@
 import { Button, Modal, Form, Select } from 'antd';
+const Option = Select.Option;
 require('./style/index.less');
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
@@ -8,7 +9,7 @@ const OpenAppStore = require('./store');
 const FormItem = Form.Item;
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { USER_STATUS } from './consts';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 const itemLayout = {
     labelCol: { span: 6 },
@@ -45,13 +46,13 @@ class OpenApp extends React.Component {
         OpenAppAction.getRoleList('36v8tudu9Z36101ee2p2NV2nB1Zl4Guclc0XCyUKNow');
     }
     getUserList(role) {
-        const params = {
-            cur_page: 1,
-            page_size: 1000,
-            role_param: role || '',
-            status: USER_STATUS.ENABLED//只查询启用状态的成员
+        const data = {
+            query: {
+                cur_page: 1,
+                page_size: 20,
+            }
         };
-        OpenAppAction.getUserList(params);
+        OpenAppAction.getAllUsers(data);
     }
     handleCheckDetail(app) {
         if (this.state.selectedApp.client_id !== app.client_id) {
@@ -76,10 +77,19 @@ class OpenApp extends React.Component {
             isShowAppDetail: isShow
         });
     }
+    handleSubmit() {
+
+    }
     render() {
         const renderRoleFormItem = (role, index) => (
-            <FormItem {...itemLayout} key={index} label={Intl.get('common.app.name', '应用名称')}>
-                123123
+            <FormItem {...itemLayout} key={index} label={role.role_name}>
+                <Select multiple={true}>
+                    {
+                        this.state.userList.data.map((user, index) => (
+                            <Option key={index} value={user.user_id}>{user.user_name}</Option>
+                        ))
+                    }
+                </Select>
             </FormItem>
         );
         return (
@@ -122,12 +132,14 @@ class OpenApp extends React.Component {
                                         >
                                             <div className="role-from-wrapper">
                                                 {
-                                                    this.state.roleList.data.map((role, index) => {
-                                                        renderRoleFormItem(role, index);
-                                                    })
+                                                    this.state.roleList.data.map((role, index) => renderRoleFormItem(role, index))
                                                 }
                                             </div>
                                         </StatusWrapper>
+                                    </div>
+                                    <div className="btn-bar">
+                                        <Button type="primary" onClick={this.handleSubmit.bind(this)}>{Intl.get('common.sure', '确定')}</Button>
+                                        <Button onClick={this.handleCloseDetail.bind(this)}>{Intl.get('common.cancel', '取消')}</Button>
                                     </div>
                                 </div>
                             </div> : null

@@ -1,4 +1,10 @@
 .open-app-wrapper {
+    .btn-bar {
+        text-align: right;
+        button {
+            margin-left: 10px;
+        }
+    }
     legend {
         width: initial;
         border: initial;
@@ -30,6 +36,9 @@
         }
     }
     .app-detail-wrapper {
+        .btn-bar {
+            padding-right: 25px;
+        }
         &.right-pannel-default .close-pannel {
             position: absolute;
             float: none;
@@ -38,9 +47,12 @@
         }
         .app-detail-container {
             margin: 20px;
-            .title {
-            }
             .content {
+                h5 {
+                    margin-bottom: 30px;
+                    padding-left: 10px;
+                    font-size: 15px;
+                }
                 margin-top: 30px;
                 .role-from-wrapper {
                     margin-top: 10px;

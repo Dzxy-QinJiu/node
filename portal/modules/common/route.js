@@ -282,4 +282,12 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
+}, {
+    //获取所有成员基本信息（仅包含姓名、id，不分页)
+    'method': 'get',
+    'path': '/rest/base/v1/user/list/users',
+    'handler': 'getAllUsers',
+    'passport': {
+        'needLogin': true
+    }
 }];
