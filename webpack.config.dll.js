@@ -5,7 +5,7 @@
  */
 var path = require('path');
 var webpack = require('webpack');
-
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 var config = require('./conf/config');
 var webpackMode = config.webpackMode || 'dev';
 
