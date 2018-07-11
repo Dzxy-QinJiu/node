@@ -862,7 +862,7 @@ var SalesHomePage = React.createClass({
             option: {
                 columns: this.getPhoneListColumn(),
                 util: {zoomInSortArea: true},
-                onChange: this.onCallBackTableChange,
+                onChange: this.onTableChange,
             },
         }, {
             title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
