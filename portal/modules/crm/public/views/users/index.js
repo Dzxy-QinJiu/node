@@ -475,7 +475,7 @@ class CustomerUsers extends React.Component {
                         );
                     })}
                 </ul>);
-        } else {
+        } else if(this.state.applyType !== APPLY_TYPES.NEW_USERS ){//没有用户时，展开申请用户面板时，不展示暂无用户的提示
             //加载完成，没有数据的情况
             return (<NoDataIconTip tipContent={Intl.get('crm.detail.no.user', '暂无用户')}/>);
         }
