@@ -97,14 +97,14 @@ const AddProduct = React.createClass({
                             </FormItem>
                             <FormItem 
                                 label={index === 0 ? '数量（个）' : ''}
-                                validateStatus={this.getValidateStatus('num' + index)}
-                                help={this.getHelpMessage('num' + index)}
+                                validateStatus={this.getValidateStatus('count' + index)}
+                                help={this.getHelpMessage('count' + index)}
                             >
                                 <Validator rules={[{required: true, message: Intl.get('contract.89', '请填写数量')}, {pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字')}]}>
                                     <Input
-                                        name={'num' + index}
-                                        value={(isNaN(product.num) ? '' : product.num).toString()}
-                                        onChange={this.setField2.bind(this, 'num', index)}
+                                        name={'count' + index}
+                                        value={(isNaN(product.count) ? '' : product.count).toString()}
+                                        onChange={this.setField2.bind(this, 'count', index)}
                                     />
                                 </Validator>
                             </FormItem>

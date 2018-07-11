@@ -2,7 +2,7 @@
  * 销售合同基本信息展示及编辑页面
  */
 
-import {Form, Input, Select, Row, Col} from 'antd';
+import { Form, Input, Select, Row, Col } from 'antd';
 const FormItem = Form.Item;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import BasicMixin from './mixin-basic';
@@ -12,16 +12,16 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {getTeamName, getLabelName} from './utils';
+import { getTeamName, getLabelName } from './utils';
 import AddBasic from './add-basic';
 import AddProduct from './add-product';
 import DetailRepayment from './detail-repayment';
-import {REPAYMENT_OWN_COLUMNS} from '../consts';
+import { REPAYMENT_OWN_COLUMNS } from '../consts';
 const Validation = require('rc-form-validation');
-import {AntcMdTable} from 'antc';
+import { AntcMdTable } from 'antc';
 const extend = require('extend');
-import {parseAmount} from 'LIB_DIR/func';
-import {VIEW_TYPE} from '../consts';
+import { parseAmount } from 'LIB_DIR/func';
+import { VIEW_TYPE } from '../consts';
 
 const REFS = {
     //合同基本信息表单组件ref
@@ -199,8 +199,8 @@ const DetailBasic = React.createClass({
             },
             {
                 title: Intl.get('common.app.count', '数量'),
-                dataIndex: 'num',
-                key: 'num',
+                dataIndex: 'count',
+                key: 'count',
                 render: function(text) {
                     return <span>{text}个</span>;
                 }
@@ -211,7 +211,7 @@ const DetailBasic = React.createClass({
                 key: 'total_price',
                 render: (text) => {
                     return <span>{this.formatValues(text)}</span>;
-                }
+                } 
             },
             {
                 title: Intl.get('contract.141', '提成比例'),
@@ -253,18 +253,17 @@ const DetailBasic = React.createClass({
                             userList={this.props.userList}
                             getUserList={this.props.getUserList}
                             isGetUserSuccess={this.props.isGetUserSuccess}
+                            isEdit={true}
                         />
                         <div className="op-buttons">
-                            <RightPanelCancel onClick={this.hideBasicInfoForm}><ReactIntl.FormattedMessage
-                                id="common.cancel" defaultMessage="取消"/></RightPanelCancel>
-                            <RightPanelSubmit onClick={this.handleSubmit}><ReactIntl.FormattedMessage id="common.sure"
-                                defaultMessage="确定"/></RightPanelSubmit>
+                            <RightPanelCancel onClick={this.hideBasicInfoForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
+                            <RightPanelSubmit onClick={this.handleSubmit}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
                         </div>
                     </div>
                 ) : null}
 
                 {!this.state.isAppEdit && !this.state.isBasicInfoEdit && !this.state.isRepaymentEdit ? (
-                    <div className="basic-info">
+                    <div className="basic-info"> 
                         <div className="block-title">
                             <div className="detail-item">
                                 {contract.num}
@@ -277,12 +276,12 @@ const DetailBasic = React.createClass({
                                 {Intl.get('contract.4', '甲方')}:
                                 {contract.buyer}
                             </div>
-
+    
                             {isEditBtnShow ? (
                                 <div className="edit-zone">
                                     {this.renderLabelField()}
                                     {this.renderStageField()}
-                                    <RightPanelEdit
+                                    <RightPanelEdit 
                                         onClick={this.showBasicInfoForm}
                                     />
                                 </div>
@@ -321,7 +320,7 @@ const DetailBasic = React.createClass({
                                 <ReactIntl.FormattedMessage
                                     id="contract.33"
                                     values={{'num': contract.copy_number}}
-                                    defaultMessage={'{num}份'}/>
+                                    defaultMessage={'{num}份'} />
                             </div>
                         ) : null}
                         <Row>
@@ -359,13 +358,13 @@ const DetailBasic = React.createClass({
                             <div className="detail-item">
                                 {Intl.get('crm.6', '负责人')}:
                                 {contract.user_name}
-                                &nbsp;-
+                            &nbsp;-
                                 {contract.sales_team || getTeamName(this.props.teamList, contract.sales_team_id)}
                             </div>
                             <div className="detail-item">
-                                {Intl.get('sales.commission.role.representative', '销售代表')}:
+                                {Intl.get('sales.commission.role.representative': '销售代表')}:
                                 {contract.sales_rep}
-                                &nbsp;-
+                            &nbsp;-
                                 {contract.sales_rep_team || getTeamName(this.props.teamList, contract.sales_rep_team_id)}
                             </div>
                         </div>
@@ -381,18 +380,15 @@ const DetailBasic = React.createClass({
                             updateScrollBar={this.props.updateScrollBar}
                         />
                         <div className="op-buttons">
-                            <RightPanelCancel onClick={this.hideAppForm}><ReactIntl.FormattedMessage id="common.cancel"
-                                defaultMessage="取消"/></RightPanelCancel>
-                            <RightPanelSubmit onClick={this.handleSubmit.bind(this, 'app')}><ReactIntl.FormattedMessage
-                                id="common.sure" defaultMessage="确定"/></RightPanelSubmit>
+                            <RightPanelCancel onClick={this.hideAppForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
+                            <RightPanelSubmit onClick={this.handleSubmit.bind(this, 'app')}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
                         </div>
                     </div>
                 ) : null}
 
                 {this.state.isRepaymentEdit ? (
                     <div>
-                        <RightPanelCancel onClick={this.hideRepaymentForm}
-                            style={{margin: '0 37px 10px 0'}}>返回合同详情页</RightPanelCancel>
+                        <RightPanelCancel onClick={this.hideRepaymentForm} style={{margin: '0 37px 10px 0'}}>返回合同详情页</RightPanelCancel>
                         <DetailRepayment
                             ref="detailRepayment"
                             contract={this.props.contract}
@@ -417,7 +413,7 @@ const DetailBasic = React.createClass({
                                 </Col>
                             </Row>
                             {hasPrivilege('OPLATE_REPAYMENT_ADD') ? (
-                                <RightPanelEdit
+                                <RightPanelEdit 
                                     onClick={this.showRepaymentForm}
                                 />
                             ) : null}
@@ -437,7 +433,7 @@ const DetailBasic = React.createClass({
                         <div className="block-title">
                             {Intl.get('contract.178', '购买产品')}
                             {hasPrivilege('OPLATE_CONTRACT_UPDATE') ? (
-                                <RightPanelEdit
+                                <RightPanelEdit 
                                     onClick={this.showAppForm}
                                 />
                             ) : null}
@@ -452,7 +448,7 @@ const DetailBasic = React.createClass({
                 ) : null}
 
                 {!this.state.isAppEdit && !this.state.isBasicInfoEdit && !this.state.isRepaymentEdit ? (
-                    <div className="basic-info">
+                    <div className="basic-info"> 
                         <div className="block-title">
                             <div className="detail-item">
                                 {Intl.get('common.belong.customer', '所属客户')}
@@ -460,11 +456,11 @@ const DetailBasic = React.createClass({
                             {hasPrivilege('OPLATE_CONTRACT_UPDATE') ? (
                                 <div>
                                     {this.state.isBelongCustomerEdit ? (
-                                        <RightPanelClose
+                                        <RightPanelClose 
                                             onClick={this.hideBelongCustomerForm}
                                         />
                                     ) : (
-                                        <RightPanelEdit
+                                        <RightPanelEdit 
                                             onClick={this.showBelongCustomerForm}
                                         />
                                     )}
@@ -475,10 +471,8 @@ const DetailBasic = React.createClass({
                             <div className="belong-customer">
                                 <Validation ref="validation" onValidate={this.handleValidate}>
                                     {this.renderBelongCustomerField()}
-                                    <RightPanelSubmit
-                                        onClick={this.handleBelongCustomerSubmit}>{Intl.get('common.save', '保存')}</RightPanelSubmit>
-                                    <RightPanelCancel
-                                        onClick={this.hideBelongCustomerForm}>{Intl.get('common.cancel', '取消')}</RightPanelCancel>
+                                    <RightPanelSubmit onClick={this.handleBelongCustomerSubmit}>{Intl.get('common.save', '保存')}</RightPanelSubmit>
+                                    <RightPanelCancel onClick={this.hideBelongCustomerForm}>{Intl.get('common.cancel', '取消')}</RightPanelCancel>
                                 </Validation>
                             </div>
                         ) : (

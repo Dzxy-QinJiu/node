@@ -18,8 +18,8 @@ const AddBuyBasic = React.createClass({
             <Form horizontal className="add-basic">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {this.renderNumField()}
-                    {this.renderUserField(VIEW_TYPE.BUY)}
-                    {this.renderTeamField(VIEW_TYPE.BUY)}
+                    {this.renderUserField()}
+                    {this.renderTeamField()}
                     {this.renderPurchaseTypeField()}
                     {this.renderDateField()}
                     {this.renderAmountField()}

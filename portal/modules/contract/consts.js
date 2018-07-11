@@ -1,7 +1,7 @@
 //日期格式
 export const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 import Intl from '../../public/intl/intl';
-import {dateColumnRender, yesNoColumnRender} from '../../lib/func';
+import { dateColumnRender, yesNoColumnRender } from '../../lib/func';
 
 //视图类型
 export const VIEW_TYPE = {
@@ -35,15 +35,15 @@ export const CATEGORY = [PRODUCT, PROJECT, SERVICE, PURCHASE];
 
 // 采购合同分类
 export const PURCHASE_TYPE = [
-    {dataIndex: '1', name: Intl.get('contract.purchase.contract.type.fixed.assets', '固定资产')},
-    {dataIndex: '2', name: Intl.get('contract.purchase.contract.type.technical.service', '技术服务')},
-    {dataIndex: '3', name: Intl.get('contract.purchase.contract.type.office.purchase', '办公采购')},
-    {dataIndex: '4', name: Intl.get('contract.purchase.contract.type.cost.purchase', '成本采购')},
-    {dataIndex: '5', name: Intl.get('contract.purchase.contract.type.intellectual.property', '知识产权')},
-    {dataIndex: '6', name: Intl.get('contract.purchase.contract.type.market.promotion', '市场推广')},
-    {dataIndex: '7', name: Intl.get('contract.purchase.contract.type.house.rent', '房租')},
-    {dataIndex: '8', name: Intl.get('contract.purchase.contract.type.optical.fiber', '光纤')},
-    {dataIndex: '9', name: Intl.get('contract.purchase.contract.type.other', '其他')},
+    { dataIndex: '1', name: Intl.get('contract.purchase.contract.type.fixed.assets', '固定资产') },
+    { dataIndex: '2', name: Intl.get('contract.purchase.contract.type.technical.service', '技术服务') },
+    { dataIndex: '3', name: Intl.get('contract.purchase.contract.type.office.purchase', '办公采购') },
+    { dataIndex: '4', name: Intl.get('contract.purchase.contract.type.cost.purchase', '成本采购') },
+    { dataIndex: '5', name: Intl.get('contract.purchase.contract.type.intellectual.property', '知识产权') },
+    { dataIndex: '6', name: Intl.get('contract.purchase.contract.type.market.promotion', '市场推广') },
+    { dataIndex: '7', name: Intl.get('contract.purchase.contract.type.house.rent', '房租') },
+    { dataIndex: '8', name: Intl.get('contract.purchase.contract.type.optical.fiber', '光纤') },
+    { dataIndex: '9', name: Intl.get('contract.purchase.contract.type.other', '其他') },
 ];
 
 //搜索字段
@@ -116,7 +116,7 @@ const CONTRACT_BELONG_CUSTOMER_COLUMN = [
         render: text => {
             if (!_.isArray(text)) text = [];
 
-            return (
+            return ( 
                 <div>
                     {text.map((customer, index) => (<div key={index}>{customer.customer_name}</div>))}
                 </div>
@@ -262,6 +262,17 @@ export const SELLS_CONTRACT_COLUMNS = CONTRACT_NUM_COLUMN
     .concat(SELLS_CONTRACT_FINANCIAL_EXTEND_COLUMNS)
     .concat(CONTRACT_OTHER_COLUMNS);
 
+//销售合同表格导出列
+export const SELLS_CONTRACT_EXPORT_COLUMNS = CONTRACT_NUM_COLUMN
+    .concat(CONTRACT_BUYER_COLUMN)
+    .concat(CONTRACT_CUSTOMER_COLUMN)
+    .concat(CONTRACT_BELONG_CUSTOMER_COLUMN)
+    .concat(SELLS_CONTRACT_SPECIAL_COLUMNS)
+    .concat(CONTRACT_BASE_COLUMNS)
+    .concat(SELLS_CONTRACT_FINANCIAL_BASE_COLUMNS)
+    .concat(SELLS_CONTRACT_FINANCIAL_EXTEND_COLUMNS)
+    .concat(CONTRACT_OTHER_COLUMNS);
+
 //采购合同表格列
 export const BUY_CONTRACT_COLUMNS = CONTRACT_NUM_COLUMN
     .concat(CONTRACT_BASE_COLUMNS);
@@ -359,7 +370,7 @@ export const CONTRACT_STATIC_COLUMNS = [
     }, {
         title: Intl.get('contract.163', '续约'),
         dataIndex: 'renewal',
-    }, {
+    },{
         title: Intl.get('contract.171', '流失'),
         dataIndex: 'runOff',
     }, {

@@ -6,7 +6,7 @@ import Intl from '../../../public/intl/intl';
 const restLogger = require('../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 const Promise = require('bluebird');
-import { DATE_FORMAT, SELLS_CONTRACT_COLUMNS, BUY_CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS, CONTRACT_STATIC_COLUMNS, CONTRACT_LABEL, VIEW_TYPE, EXPORT_FILE_NAME } from '../consts';
+import { DATE_FORMAT, SELLS_CONTRACT_EXPORT_COLUMNS, BUY_CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS, CONTRACT_STATIC_COLUMNS, CONTRACT_LABEL, VIEW_TYPE, EXPORT_FILE_NAME } from '../consts';
 const colNames = _.map(CONTRACT_STATIC_COLUMNS, 'dataIndex');
 const countColNames = colNames.slice(1);
 const commonUrl = '/rest/analysis/contract/contract/v2/';
@@ -114,7 +114,7 @@ exports.exportData = function(req, res, next) {
     if (type === VIEW_TYPE.SELL) {
         fileName = EXPORT_FILE_NAME.SELL;
 
-        exportContract(SELLS_CONTRACT_COLUMNS, fileName);
+        exportContract(SELLS_CONTRACT_EXPORT_COLUMNS, fileName);
     } else if (type === VIEW_TYPE.BUY) {
         fileName = EXPORT_FILE_NAME.BUY;
 
@@ -191,7 +191,7 @@ exports.exportData = function(req, res, next) {
                     products.forEach(product => {
                         const productName = product.name;
                         if (productName) {
-                            const productValue = `${Intl.get('common.app.count', '数量')}:${product.num || ''} ${Intl.get('item.23', '总价')}:${product.total_price || ''}`;
+                            const productValue = `${Intl.get('common.app.count', '数量')}:${product.count || ''} ${Intl.get('item.23', '总价')}:${product.total_price || ''}`;
                             const nameIndex = columnTitles.indexOf(productName);
                             //如果该应用列不存在
                             if (nameIndex === -1) {

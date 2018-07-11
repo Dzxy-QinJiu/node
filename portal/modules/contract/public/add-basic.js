@@ -158,12 +158,14 @@ const AddBasic = React.createClass({
                     {this.renderLabelField()}
                     {formData.category ? this.renderCategoryField() : null}
                     {this.renderRemarksField()}
-                    <FormItem 
-                        {...formItemLayout2}
-                        label={Intl.get('common.belong.customer', '所属客户')}
-                    >
-                        {this.renderBelongCustomerField()}
-                    </FormItem>
+                    {this.props.isEdit ? null : (
+                        <FormItem 
+                            {...formItemLayout2}
+                            label={Intl.get('common.belong.customer', '所属客户')}
+                        >
+                            {this.renderBelongCustomerField()}
+                        </FormItem>
+                    )}
                 </Validation>
             </Form>
         );

@@ -57,26 +57,35 @@ const ContractDashboard = React.createClass({
 
         return React.createElement(component, componentProps, null);
     },
+
+    //改变数字格式
+    changeNumberFormat(num){
+        //把以元为单位的数字改为以万元为单位。
+        num = formatAmount(num);
+        //保留两位小数，不进行四舍五入
+        return Math.floor(num * 100) / 100;
+    },
+
     renderCountBoxContent(args, value) {
         return (
             <div>
                 <div>{args.title}</div>
                 <div className="count-content">
-                    {Intl.get('sales.home.new.add', '新增')} <span className="count-value">{args.type === 'repay' ? formatAmount(value) : value}</span> {args.unit}
+                    {Intl.get('sales.home.new.add', '新增')} <span className="count-value">{args.type === 'repay' ? this.changeNumberFormat(value) : value}</span> {args.unit}
                 </div>
                 {args.type === 'contract' && this.state.amount ? (
                     <div className="count-content">
-                        {Intl.get('contract.25', '合同额')} <span className="count-value">{formatAmount(this.state.amount)}</span> {Intl.get('contract.139', '万')}
+                        {Intl.get('contract.25', '合同额')} <span className="count-value">{this.changeNumberFormat(this.state.amount)}</span> {Intl.get('contract.139', '万')}
                     </div>
                 ) : null}
                 {args.type === 'contract' && this.state.grossProfit ? (
                     <div className="count-content">
-                        {Intl.get('contract.109', '毛利')} <span className="count-value">{formatAmount(this.state.grossProfit)}</span> {Intl.get('contract.139', '万')}
+                        {Intl.get('contract.109', '毛利')} <span className="count-value">{this.changeNumberFormat(this.state.grossProfit)}</span> {Intl.get('contract.139', '万')}
                     </div>
                 ) : null}
                 {args.type === 'repay' && this.state.repayGrossProfit ? (
                     <div className="count-content">
-                        {Intl.get('contract.109', '毛利')} <span className="count-value">{formatAmount(this.state.repayGrossProfit)}</span> {Intl.get('contract.139', '万')}
+                        {Intl.get('contract.109', '毛利')} <span className="count-value">{this.changeNumberFormat(this.state.repayGrossProfit)}</span> {Intl.get('contract.139', '万')}
                     </div>
                 ) : null}
             </div>
@@ -305,7 +314,7 @@ const ContractDashboard = React.createClass({
         ];
 
         return (
-            <div className="contract-dashboard" >
+            <div className="contract-dashboard" style={{height: this.state.contentHeight}} data-tracename="合同仪表盘">
                 <GeminiScrollBar>
                     <div className="dashboard-content">
                         <Row>
@@ -320,8 +329,8 @@ const ContractDashboard = React.createClass({
                                         const md = chart.md || 24;
                                         const lg = chart.lg || 12;
 
-                                        const contentProps = chart.content.props;
-                                        const refName = contentProps.refName;
+                                        const componentProps = chart.content.props;
+                                        const refName = componentProps.refName;
                                         const ref = this.refs[refName];
                                         const exportData = () => {
                                             if (refName === 'qian_dan_qing_kuang_tong_ji') {
