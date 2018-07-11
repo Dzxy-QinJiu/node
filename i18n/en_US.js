@@ -227,6 +227,7 @@ var en_US = {
     'common.request.timeout': 'Error. Request timeout',//'请求超时',
     'common.callback': 'Callback', //'回访',
     'common.callback.time': 'Callback time', // '回访时间'
+    'common.callback.analysis': 'Callback Analysis',//回访统计
     'common.callback.person': 'Callback person', // '回访人',
     'common.has.callback': 'Has callbacked', // '已回访',
     'common.callback.customer': 'Callback customer', // '回访客户',

@@ -4,7 +4,7 @@ const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
 import {Select, message, Alert} from 'antd';
-import {AntcTable, AntcAnalysis} from 'antc';
+import {AntcTable, AntcAnalysis, AntcCardContainer} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
 var RightContent = require('../../../components/privilege/right-content');
@@ -597,16 +597,19 @@ var SalesHomePage = React.createClass({
                     />
                     <div className='sales-table-container'>
                         <div className={tableClassnames} style={{height: this.getListBlockHeight()}}>
-                            <AntcTable
-                                dropLoad={dropLoadConfig}
-                                dataSource={this.state.callBackRecord.dataList}
-                                columns={this.getCallBackListColumn()}
-                                pagination={false}
-                                bordered
-                                util={{zoomInSortArea: true}}
-                                onChange={this.onCallBackTableChange}
-                                scroll={{y: 400}}
-                            />
+                            <AntcCardContainer
+                                title={Intl.get('common.callback.analysis', '回访统计')}
+                            >
+                                <AntcTable
+                                    dropLoad={dropLoadConfig}
+                                    dataSource={this.state.callBackRecord.dataList}
+                                    columns={this.getCallBackListColumn()}
+                                    pagination={false}
+                                    util={{zoomInSortArea: true}}
+                                    onChange={this.onCallBackTableChange}
+                                    scroll={{y: 400}}
+                                />
+                            </AntcCardContainer>
                         </div>
                     </div>
                 </div>
