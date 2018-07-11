@@ -861,6 +861,8 @@ var SalesHomePage = React.createClass({
             resultType: this.state.isLoadingPhoneList ? 'loading' : '',
             option: {
                 columns: this.getPhoneListColumn(),
+                util: {zoomInSortArea: true},
+                onChange: this.onCallBackTableChange,
             },
         }, {
             title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
