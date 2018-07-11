@@ -4,7 +4,7 @@ const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
 import {Select, message, Alert} from 'antd';
-import {AntcTable} from 'antc';
+import {AntcTable, AntcAnalysis} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
 var RightContent = require('../../../components/privilege/right-content');
@@ -295,6 +295,7 @@ var SalesHomePage = React.createClass({
             width: num_col_width
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.total.duration', '总时长'), 'totalTimeDescr'),
+            csvTitle: Intl.get('sales.home.total.duration', '总时长'),
             dataIndex: 'totalTimeDescr',
             key: 'total_time',
             sorter: function(a, b) {
@@ -304,6 +305,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'totalTimeDescr')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.total.connected', '总接通数'), 'calloutSuccess'),
+            csvTitle: Intl.get('sales.home.total.connected', '总接通数'),
             dataIndex: 'calloutSuccess',
             key: 'callout_success',
             sorter: function(a, b) {
@@ -313,6 +315,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'calloutSuccess')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.average.duration', '日均时长'), 'averageTimeDescr'),
+            csvTitle: Intl.get('sales.home.average.duration', '日均时长'),
             dataIndex: 'averageTimeDescr',
             key: 'average_time',
             sorter: function(a, b) {
@@ -322,6 +325,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'averageTimeDescr')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.average.connected', '日均接通数'), 'averageAnswer'),
+            csvTitle: Intl.get('sales.home.average.connected', '日均接通数'),
             dataIndex: 'averageAnswer',
             key: 'average_answer',
             sorter: function(a, b) {
@@ -331,6 +335,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(col_width, 'averageAnswer')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin', '呼入次数'), 'callinCount'),
+            csvTitle: Intl.get('sales.home.phone.callin', '呼入次数'),
             dataIndex: 'callinCount',
             key: 'callin_count',
             sorter: function(a, b) {
@@ -340,6 +345,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'callinCount')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin.success', '成功呼入'), 'callinSuccess'),
+            csvTitle: Intl.get('sales.home.phone.callin.success', '成功呼入'),
             dataIndex: 'callinSuccess',
             key: 'callin_success',
             sorter: function(a, b) {
@@ -349,6 +355,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'callinSuccess')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin.rate', '呼入接通率'), 'callinRate'),
+            csvTitle: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
             dataIndex: 'callinRate',
             key: 'callin_rate',
             sorter: function(a, b) {
@@ -358,6 +365,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(col_width, 'callinRate')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callout', '呼出次数'), 'calloutCount'),
+            csvTitle: Intl.get('sales.home.phone.callout', '呼出次数'),
             dataIndex: 'calloutCount',
             key: 'callout_count',
             sorter: function(a, b) {
@@ -367,6 +375,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'calloutCount')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callout.rate', '呼出接通率'), 'calloutRate'),
+            csvTitle: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
             dataIndex: 'calloutRate',
             key: 'callout_rate',
             sorter: function(a, b) {
@@ -379,6 +388,7 @@ var SalesHomePage = React.createClass({
         if (this.state.callType === CALL_TYPE_OPTION.APP) {
             columns.push({
                 title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.billing.time', '计费时长') + '(min)', 'billingTime'),
+                csvTitle: Intl.get('sales.home.phone.billing.time', '计费时长') + '(min)',
                 dataIndex: 'billingTime',
                 key: 'filling_time',
                 sorter: function(a, b) {
@@ -541,22 +551,10 @@ var SalesHomePage = React.createClass({
                 {this.filterCallTypeSelect()}
                 <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
                     <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
-                        <AntcTable dataSource={this.state.salesPhoneList} columns={this.getPhoneListColumn()}
-                            loading={this.state.isLoadingPhoneList}
-                            scroll={{x: this.getPhoneTableMinWidth()}}
-                            pagination={false} bordered util={{zoomInSortArea: true}}
-                            onChange={this.onTableChange}
+                        <AntcAnalysis
+                            charts={this.getPhoneAnalysisCharts()}
+                            style={{padding: 0}}
                         />
-                        {/*根据电话的排序的通话次数TOP10*/}
-                        {this.renderCallTopTen(this.state.callTotalCountObj, {
-                            title: Intl.get('call.analysis.total.count', '通话总次数'),
-                            dataKey: 'count'
-                        })}
-                        {/*根据电话的排序的通话总时长TOP10*/}
-                        {this.renderCallTopTen(this.state.callTotalTimeObj, {
-                            title: Intl.get('call.analysis.total.time', '通话总时长'),
-                            dataKey: 'sum'
-                        })}
                     </GeminiScrollbar>
                 </div>
             </div>);
@@ -849,6 +847,54 @@ var SalesHomePage = React.createClass({
                 type: 'params',
             },
         ];
+    },
+    //获取电话统计图表列表
+    getPhoneAnalysisCharts() {
+        return [{
+            title: Intl.get('weekly.report.call.statics': '电话统计'),
+            chartType: 'table',
+            height: 'auto',
+            layout: {
+                sm: 24,
+            },
+            data: this.state.salesPhoneList,
+            resultType: this.state.isLoadingPhoneList ? 'loading' : '',
+            option: {
+                columns: this.getPhoneListColumn(),
+                util: {zoomInSortArea: true},
+                onChange: this.onTableChange,
+            },
+        }, {
+            title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
+            chartType: 'table',
+            height: 'auto',
+            layout: {
+                sm: 24,
+            },
+            data: this.state.callTotalCountObj.data,
+            resultType: this.state.callTotalCountObj.loading ? 'loading' : '',
+            option: {
+                columns: this.getCallDurTopColumn({
+                    title: Intl.get('call.analysis.total.count', '通话总次数'),
+                    dataKey: 'count'
+                }),
+            },
+        }, {
+            title: Intl.get('call.analysis.total.time', '通话总时长') + 'TOP10',
+            chartType: 'table',
+            height: 'auto',
+            layout: {
+                sm: 24,
+            },
+            data: this.state.callTotalTimeObj.data,
+            resultType: this.state.callTotalTimeObj.loading ? 'loading' : '',
+            option: {
+                columns: this.getCallDurTopColumn({
+                    title: Intl.get('call.analysis.total.time', '通话总时长'),
+                    dataKey: 'sum'
+                }),
+            },
+        }];
     },
     //渲染客户关系首页
     render: function() {
