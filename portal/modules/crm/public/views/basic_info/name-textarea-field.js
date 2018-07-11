@@ -45,7 +45,7 @@ let NameTextareaField = React.createClass({
         };
     },
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.customerId != this.state.customerId) {
+        if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
             let stateData = this.getInitialState();
             stateData.isMerge = nextProps.isMerge;
@@ -57,11 +57,11 @@ let NameTextareaField = React.createClass({
 
     handleSubmit: function(e) {
         if (this.state.loading) return;
-        if (this.state.formData.name == this.props.name) {
+        if (this.state.formData.name === this.props.name) {
             this.props.setEditNameFlag(false);
             return;
         }
-        if (this.state.customerNameExist) return;
+        if (this.state.customerNameExist || this.state.checkNameError) return;
         let validation = this.refs.validation;
         validation.validate(valid => {
             if (!valid) {
@@ -129,14 +129,14 @@ let NameTextareaField = React.createClass({
     checkOnlyCustomerName: function(e) {
         var customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
-        if (customerName && customerName != this.props.name && nameRegex.test(customerName)) {
+        if (customerName && customerName !== this.props.name && nameRegex.test(customerName)) {
             Trace.traceEvent(e, '修改客户名');
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result == 'true') {
+                    if (data.result === 'true') {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
@@ -176,9 +176,9 @@ let NameTextareaField = React.createClass({
                     {list.length ? (
                         <div>
                             {Intl.get('crm.68', '相似的客户还有')}:
-                            {list.map(customer => {
+                            {list.map((customer, index) => {
                                 return (
-                                    <div>
+                                    <div key={index}>
                                         {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)"
                                                 onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>

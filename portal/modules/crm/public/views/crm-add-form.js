@@ -3,7 +3,7 @@ const Validator = Validation.Validator;
 import {regex} from 'ant-utils';
 const nameRegex = regex.customerNameRegex;
 import {Icon, Form, Input, Select, message}from 'antd';
-import { AntcAreaSelection } from 'antc';
+import {AntcAreaSelection} from 'antc';
 var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
@@ -118,10 +118,9 @@ var CRMAddForm = React.createClass({
         this.state.formData.county_code = addressObj.countyCode || '';
         Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item'), '选择地址');
     },
-
     //提交修改
     handleSubmit: function(e) {
-        if (this.state.isLoading){
+        if (this.state.isLoading) {
             return;
         }
         this.state.isLoading = true;
@@ -131,7 +130,8 @@ var CRMAddForm = React.createClass({
         validation.validate(valid => {
             //验证电话是否通过验证
             this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {}, (errors, values) => {
-                if (!valid || errors) {
+                //验证不通过、电话验证不通过、客户名是否已存在、客户名唯一性验证出错时不能保存
+                if (!valid || errors || this.state.customerNameExist || this.state.checkNameError) {
                     this.state.isLoading = false;
                     this.setState(this.state);
                     return;
@@ -145,13 +145,13 @@ var CRMAddForm = React.createClass({
                             if (result === 0) {
                                 //可以添加
                                 this.addCustomer();
-                            }else if(result > 0){
+                            } else if (result > 0) {
                                 this.state.isLoading = false;
                                 this.setState(this.state);
                                 //不可以添加
                                 message.warn(Intl.get('crm.should.add.customer', '您拥有的客户已达到上限，请不要再添加客户了'));
                             }
-                        }else{
+                        } else {
                             this.state.isLoading = false;
                             this.setState(this.state);
                         }
@@ -167,7 +167,7 @@ var CRMAddForm = React.createClass({
         formData.name = $.trim(formData.name);
         formData.contacts0_phone = $.trim(formData.contacts0_phone);
         var PropsFormData = this.props.formData;
-        if (this.props.isAssociateClue && PropsFormData){
+        if (this.props.isAssociateClue && PropsFormData) {
             //添加客户时，新创建的客户要关联该线索
             //线索id
             formData.customer_clue_id = PropsFormData.id;
@@ -247,11 +247,11 @@ var CRMAddForm = React.createClass({
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
-                    this.setState({customerNameExist: false, checkNameError: true});
+                    this.setState({customerNameExist: false, checkNameError: true, existCustomerList: []});
                 } else if (_.isObject(data)) {
                     if (data.result === 'true') {
                         //不存在
-                        this.setState({customerNameExist: false, checkNameError: false});
+                        this.setState({customerNameExist: false, checkNameError: false, existCustomerList: []});
                     } else {
                         //已存在
                         this.setState({customerNameExist: true, checkNameError: false, existCustomerList: data.list});
@@ -263,9 +263,10 @@ var CRMAddForm = React.createClass({
             //根据客户名查询地域、行业等信息并自动填充到相关字段
             this.autofillGeoInfo(customerName);
         } else {
-            this.setState({customerNameExist: false, checkNameError: false});
+            this.setState({customerNameExist: false, checkNameError: false, existCustomerList: []});
         }
     },
+
     //客户名唯一性验证的提示信息
     renderCustomerNameMsg: function() {
         if (this.state.customerNameExist) {
