@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 import filterEmitter from './emitter';
 import Trace from 'LIB_DIR/trace';
+import { FILTER_COMMON_RATE_KEY } from './consts';
+import { storageUtil } from 'ant-utils';
+const local = storageUtil.local;
 class FilterList extends React.Component {
     constructor(props) {
         super();
@@ -13,7 +16,8 @@ class FilterList extends React.Component {
             collapsedAdvanced = false;
         }
         this.state = {
-            commonData: props.commonData || [],//todo 在外部维护
+            rawCommonData: props.commonData,
+            commonData: this.sortByClickNum(props.commonData) || [],//todo 在外部维护
             stopListenCommonData: false,//是否从外部接收新的commonData
             rawAdvancedData: props.advancedData || [],
             advancedData: $.extend(true, [], props.advancedData) || [],
@@ -34,9 +38,10 @@ class FilterList extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         const { commonData, advancedData } = newProps;
-        if (!this.state.stopListenCommonData && commonData && commonData.length && (JSON.stringify(commonData) !== JSON.stringify(this.state.commonData))) {
+        if (!this.state.stopListenCommonData && commonData && commonData.length && (JSON.stringify(commonData) !== JSON.stringify(this.state.rawCommonData))) {
             this.setState({
-                commonData
+                rawCommonData: commonData,
+                commonData: this.sortByClickNum(commonData)
             });
         }
         if (advancedData && advancedData.length && (JSON.stringify(advancedData) !== JSON.stringify(this.state.rawAdvancedData))) {
@@ -57,7 +62,7 @@ class FilterList extends React.Component {
         filterEmitter.removeListener(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.removeListener(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.removeListener(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
-    }
+    }    
     toggleCollapse(type) {
         switch (type) {
             case 'common':
@@ -163,6 +168,30 @@ class FilterList extends React.Component {
     }
     showCommonItemModal(commonItem) {
 
+    }
+    //根据点击次数对commonData进行排序
+    sortByClickNum(commonData) {
+        const clickNumList = local.get(FILTER_COMMON_RATE_KEY) || Array.from({length: commonData.length}, x => 0);
+        const sortedCommonData = commonData.map((item, index) => {
+            return {
+                clickNum: clickNumList[index],
+                ...item
+            };
+        });
+        return _.sortBy(sortedCommonData, item => -item.clickNum);
+    }
+    //记录当前索引项的点击次数 key是localstorage中存贮所需的key
+    handleClickRecord(key, item) {
+        //点击项在原始数据中的索引
+        let rawIndex = '';
+        this.state.rawCommonData.forEach((x, index) => {
+            if (x.name === item.name) {
+                rawIndex = index;
+            }
+        });
+        const clickNumList = local.get(key) || Array.from({length: this.state.rawCommonData.length}, x => 0);
+        ++clickNumList[rawIndex];
+        local.set(key, clickNumList);
     }
     //将已选中的高级筛选项合并到原筛选项中
     mergeAdvancedData(filterList) {
@@ -306,6 +335,8 @@ class FilterList extends React.Component {
         if (selectedIndex === index) {
             return;
         }
+        //记录当前索引项的点击次数
+        this.handleClickRecord(FILTER_COMMON_RATE_KEY, item);
         if (this.props.showSelectTip) {
             filterEmitter.emit(filterEmitter.ASK_FOR_CHANGE, {
                 type: 'common',
