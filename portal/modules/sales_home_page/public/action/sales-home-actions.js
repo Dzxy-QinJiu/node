@@ -235,6 +235,15 @@ function SalesHomeActions() {
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });
     };
+
+    //获取App列表
+    this.getAppList = function() {
+        salesHomeAjax.getAppList().then( (list) => {
+            this.dispatch({error: false, list: list});
+        } , (errorMsg) => {
+            this.dispatch({error: true, errorMsg: errorMsg});
+        });
+    };
 }
 
 module.exports = alt.createActions(SalesHomeActions);

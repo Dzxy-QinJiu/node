@@ -188,7 +188,14 @@ var UserAnlyis = React.createClass({
             );
         }
     },
-
+    // 获取一段时间开通账号登录情况的权限
+    getAccountAuthType() {
+        let type = 'all';
+        if (hasPrivilege('USER_ANALYSIS_COMMON')) {
+            type = 'self';
+        }
+        return type;
+    },
     //获取图表
     getCharts: function() {
         //从 unknown 到 未知 的映射
@@ -267,6 +274,64 @@ var UserAnlyis = React.createClass({
             data: this.state.teamOrMemberAnalysis.data,
             nameValueMap: unknownDataMap,
             resultType: this.state.teamOrMemberAnalysis.resultType,
+        }, {
+            title: '一段时间内开通账号的登录情况统计',
+            url: '/rest/analysis/user/v3/:login_type/login/detail',
+            argCallback: (arg) => {
+                let query = arg.query;
+                if (query && query.starttime && query.endtime) {
+                    query.grant_create_begin_date = query.starttime;
+                    query.grant_create_end_date = query.endtime;
+                }
+            },
+            conditions: [
+                {
+                    name: 'app_id',
+                    value: this.props.selectedAppId,
+                },
+                {
+                    name: 'login_type',
+                    value: this.getAccountAuthType(),
+                    type: 'params'
+                }
+            ],
+            chartType: 'table',
+            layout: {
+                sm: 24,
+            },
+            option: {
+                columns: [
+                    {
+                        title: Intl.get('sales.home.sales', '销售'),
+                        dataIndex: 'member_name',
+                        width: '60%',
+                    },
+                    {
+                        title: '开通账号数',
+                        dataIndex: 'new_users',
+                        width: '20%',
+                    },
+                    {
+                        title: '实际登录账号数',
+                        dataIndex: 'login_user',
+                        width: '20%',
+                    },
+                ],
+            },
+            cardContainer: {
+                selectors: [{
+                    optionsCallback: () => {
+                        return this.props.appList.map( (item) => {
+                            return {
+                                name: item.app_name,
+                                value: item.app_id
+                            };
+                        } );
+                    },
+                    activeOption: this.props.selectedAppId,
+                    conditionName: 'app_id',
+                }],
+            },
         }];
     },
 

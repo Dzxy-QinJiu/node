@@ -80,6 +80,8 @@ var SalesHomePage = React.createClass({
         //获取统计团队内成员个数的列表
         SalesHomeAction.getTeamMemberCountList();
         SalesHomeAction.getSalesTeamList(type);
+        // 获取应用列表
+        SalesHomeAction.getAppList();
         this.refreshSalesListData();
         this.resizeLayout();
         $(window).resize(() => this.resizeLayout());
@@ -535,6 +537,10 @@ var SalesHomePage = React.createClass({
                 getSaleIdByName={this.getSaleIdByName}
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
+                emitters={this.getEmitters()}
+                conditions={this.getConditions()}
+                appList={this.state.appList} 
+                selectedAppId={this.state.selectedAppId}                  
             />);
         } else if (this.state.activeView === viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
@@ -847,7 +853,7 @@ var SalesHomePage = React.createClass({
                 name: 'auth_type',
                 value: getDataAuthType().toLowerCase(),
                 type: 'params',
-            },
+            }
         ];
     },
     //渲染客户关系首页
