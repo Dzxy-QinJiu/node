@@ -1640,6 +1640,9 @@ var en_US = {
     'user.analysis.moveoutCustomer': 'Move-out customer ',// '转出客户统计',
     'user.analysis.sales.users': 'Sales and opening of user statistics',//销售开通用户统计
     'user.analysis.active.user.area.statistics': 'Active user area statistics',//活跃用户地域统计
+    'user.analysis.account.login.statistics': 'Account login statistics', // 开通账号登录统计
+    'user.analysis.account.count': 'Number of open accounts', // 开通账号数
+    'user.analysis.account.login.count': 'Actual number of login accounts', // 实际登录数
 
     //销售首页-新增客户分析
     'customer.analysis': 'Customer Analysis',//客户分析@

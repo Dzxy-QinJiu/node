@@ -205,7 +205,7 @@ var UserAnlyis = React.createClass({
 
         //销售不展示团队的数据统计
         const hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
-
+        const TABLE_HEIGHT = 200;
         return [{
             title: Intl.get('user.analysis.user.add', '用户-新增'),
             chartType: 'line',
@@ -275,13 +275,17 @@ var UserAnlyis = React.createClass({
             nameValueMap: unknownDataMap,
             resultType: this.state.teamOrMemberAnalysis.resultType,
         }, {
-            title: '一段时间内开通账号的登录情况统计',
+            title: Intl.get('user.analysis.account.login.statistics', '开通账号登录统计'),
             url: '/rest/analysis/user/v3/:login_type/login/detail',
             argCallback: (arg) => {
                 let query = arg.query;
                 if (query && query.starttime && query.endtime) {
                     query.grant_create_begin_date = query.starttime;
                     query.grant_create_end_date = query.endtime;
+                }
+                if (query && query.team_ids ) {
+                    query.sales_team_id = query.team_ids;
+                    delete query.team_ids;
                 }
             },
             conditions: [
@@ -296,26 +300,27 @@ var UserAnlyis = React.createClass({
                 }
             ],
             chartType: 'table',
-            layout: {
-                sm: 24,
-            },
             option: {
+                pagination: false,
+                scroll: {y: TABLE_HEIGHT},
                 columns: [
                     {
                         title: Intl.get('sales.home.sales', '销售'),
                         dataIndex: 'member_name',
-                        width: '60%',
+                        width: '40%',
                     },
                     {
-                        title: '开通账号数',
+                        title: Intl.get('user.analysis.account.count', '开通账号数'),
                         dataIndex: 'new_users',
-                        width: '20%',
+                        align: 'right',
+                        width: '30%',
                     },
                     {
-                        title: '实际登录账号数',
+                        title: Intl.get('user.analysis.account.login.count', '实际登录数'),
                         dataIndex: 'login_user',
-                        width: '20%',
-                    },
+                        align: 'right',
+                        width: '30%',
+                    }
                 ],
             },
             cardContainer: {

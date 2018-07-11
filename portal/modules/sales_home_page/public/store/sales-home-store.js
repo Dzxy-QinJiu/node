@@ -693,7 +693,6 @@ SalesHomeStore.prototype.getCallBackList = function(result) {
 
 // 获取应用列表
 SalesHomeStore.prototype.getAppList = function(result) {
-    console.log('result:', result);
     if(result.error) {
         this.appList = [];
         this.selectedAppId = '';
