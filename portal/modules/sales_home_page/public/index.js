@@ -295,6 +295,7 @@ var SalesHomePage = React.createClass({
             width: num_col_width
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.total.duration', '总时长'), 'totalTimeDescr'),
+            csvTitle: Intl.get('sales.home.total.duration', '总时长'),
             dataIndex: 'totalTimeDescr',
             key: 'total_time',
             sorter: function(a, b) {
@@ -304,6 +305,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'totalTimeDescr')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.total.connected', '总接通数'), 'calloutSuccess'),
+            csvTitle: Intl.get('sales.home.total.connected', '总接通数'),
             dataIndex: 'calloutSuccess',
             key: 'callout_success',
             sorter: function(a, b) {
@@ -313,6 +315,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'calloutSuccess')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.average.duration', '日均时长'), 'averageTimeDescr'),
+            csvTitle: Intl.get('sales.home.average.duration', '日均时长'),
             dataIndex: 'averageTimeDescr',
             key: 'average_time',
             sorter: function(a, b) {
@@ -322,6 +325,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'averageTimeDescr')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.average.connected', '日均接通数'), 'averageAnswer'),
+            csvTitle: Intl.get('sales.home.average.connected', '日均接通数'),
             dataIndex: 'averageAnswer',
             key: 'average_answer',
             sorter: function(a, b) {
@@ -331,6 +335,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(col_width, 'averageAnswer')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin', '呼入次数'), 'callinCount'),
+            csvTitle: Intl.get('sales.home.phone.callin', '呼入次数'),
             dataIndex: 'callinCount',
             key: 'callin_count',
             sorter: function(a, b) {
@@ -340,6 +345,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'callinCount')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin.success', '成功呼入'), 'callinSuccess'),
+            csvTitle: Intl.get('sales.home.phone.callin.success', '成功呼入'),
             dataIndex: 'callinSuccess',
             key: 'callin_success',
             sorter: function(a, b) {
@@ -349,6 +355,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'callinSuccess')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin.rate', '呼入接通率'), 'callinRate'),
+            csvTitle: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
             dataIndex: 'callinRate',
             key: 'callin_rate',
             sorter: function(a, b) {
@@ -358,6 +365,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(col_width, 'callinRate')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callout', '呼出次数'), 'calloutCount'),
+            csvTitle: Intl.get('sales.home.phone.callout', '呼出次数'),
             dataIndex: 'calloutCount',
             key: 'callout_count',
             sorter: function(a, b) {
@@ -367,6 +375,7 @@ var SalesHomePage = React.createClass({
             width: this.getColumnMinWidth(num_col_width, 'calloutCount')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callout.rate', '呼出接通率'), 'calloutRate'),
+            csvTitle: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
             dataIndex: 'calloutRate',
             key: 'callout_rate',
             sorter: function(a, b) {
@@ -379,6 +388,7 @@ var SalesHomePage = React.createClass({
         if (this.state.callType === CALL_TYPE_OPTION.APP) {
             columns.push({
                 title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.billing.time', '计费时长') + '(min)', 'billingTime'),
+                csvTitle: Intl.get('sales.home.phone.billing.time', '计费时长') + '(min)',
                 dataIndex: 'billingTime',
                 key: 'filling_time',
                 sorter: function(a, b) {
