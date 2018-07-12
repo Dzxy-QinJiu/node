@@ -132,12 +132,19 @@ let CrmRightList = React.createClass({
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team_id, allChildTeamIds);
     },
     //通过面包屑返回到销售成员列表
-    returnSalesMemberList: function(e) {
+    returnSalesMemberList: function(e, team) {
+        let team_id = team.group_id;
         OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.returnSalesMemberList();
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
         Trace.traceEvent(e, '返回销售成员列表');
+        let allChildTeamIds = [];
+        //不是顶级的"销售团队列表"
+        if (team_id !== TOP_TEAM_ID) {
+            allChildTeamIds = this.getAllSubTeamId(team);
+        }
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team_id, allChildTeamIds);
     },
     //获取销售的标题
     getSalesmanTitle: function() {
@@ -153,14 +160,14 @@ let CrmRightList = React.createClass({
                 salesTitle = (<Breadcrumb>
                     {titleItem}
                     <Breadcrumb.Item><a
-                        onClick={ e => this.returnSalesMemberList(e) }>{currShowTeam.group_name}</a></Breadcrumb.Item>
+                        onClick={ e => this.returnSalesMemberList(e, currShowTeam) }>{currShowTeam.group_name}</a></Breadcrumb.Item>
                     <Breadcrumb.Item>{this.props.currShowSalesman.nickName}</Breadcrumb.Item>
                 </Breadcrumb>);
             } else {
                 //销售团队成员列表
                 var itemList = [];
                 itemList.push(<Breadcrumb.Item><a
-                    onClick={ e => this.returnSalesMemberList(e) }>{originTeamTree.group_name}</a></Breadcrumb.Item>);
+                    onClick={ e => this.returnSalesMemberList(e, currShowTeam) }>{originTeamTree.group_name}</a></Breadcrumb.Item>);
                 itemList.push(<Breadcrumb.Item>{this.props.currShowSalesman.nickName}</Breadcrumb.Item>);
                 salesTitle = (<Breadcrumb>{itemList}</Breadcrumb>);
             }

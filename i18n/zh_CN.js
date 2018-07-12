@@ -1668,7 +1668,10 @@ var zh_CN = {
     'user.analysis.moveoutCustomer': '转出客户统计',
     'user.analysis.sales.users': '销售开通用户统计',
     'user.analysis.active.user.area.statistics': '活跃用户地域统计',
-
+    'user.analysis.account.login.statistics': '开通账号登录统计',
+    'user.analysis.account.count': '开通账号数',
+    'user.analysis.account.login.count': '实际登录数',
+    
     //销售首页-新增客户分析
     'customer.analysis': '客户分析',
     'customer.analysis.add.customer': '新增客户',

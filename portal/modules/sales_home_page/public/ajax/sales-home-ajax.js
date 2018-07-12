@@ -1,6 +1,5 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import querystring from 'querystring';
-
 let teamAjax = require('../../../common/public/ajax/team');
 /**
  * 获取销售是什么角色
