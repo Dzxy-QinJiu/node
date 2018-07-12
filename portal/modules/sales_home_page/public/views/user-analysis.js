@@ -278,19 +278,16 @@ var UserAnlyis = React.createClass({
             url: '/rest/analysis/user/v3/:login_type/login/detail',
             argCallback: (arg) => {
                 let query = arg.query;
+
                 if (query) {
                     if (query.starttime && query.endtime) {
                         query.grant_create_begin_date = query.starttime;
                         query.grant_create_end_date = query.endtime;
                     }
-                    // 团队或成员参数
+                    // 团队参数
                     if (query.team_ids ) {
-                        if (query.member_id ) {
-                            delete query.team_ids;
-                        } else {
-                            query.sales_team_id = query.team_ids;
-                            delete query.team_ids;
-                        }
+                        query.sales_team_id = query.team_ids;
+                        delete query.team_ids;
                     }
                 }
             },

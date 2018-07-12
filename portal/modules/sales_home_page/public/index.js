@@ -819,6 +819,7 @@ var SalesHomePage = React.createClass({
                 event: teamTreeEmitter.SELECT_TEAM,
                 callbackArgs: [{
                     name: 'team_ids',
+                    exclusive: 'member_id'
                 }],
             },
             {
@@ -826,6 +827,7 @@ var SalesHomePage = React.createClass({
                 event: teamTreeEmitter.SELECT_MEMBER,
                 callbackArgs: [{
                     name: 'member_id',
+                    exclusive: 'team_ids'
                 }],
             },
         ];
