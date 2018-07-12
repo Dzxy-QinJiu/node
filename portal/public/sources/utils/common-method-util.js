@@ -223,3 +223,8 @@ function traversingTeamTree(treeList,list) {
 
 //遍历团队树
 exports.traversingTeamTree = traversingTeamTree;
+
+//不能选今天之前的时间
+exports.disabledBeforeToday = function(current) {
+    return current && current < moment().subtract(1, 'days').endOf('day');
+};

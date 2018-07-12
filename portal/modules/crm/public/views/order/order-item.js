@@ -17,6 +17,8 @@ import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import classNames from 'classnames';
 import ApplyUserForm from '../apply-user-form';
+import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
+
 //订单状态
 const ORDER_STATUS = {
     WIN: 'win',//赢单
@@ -293,10 +295,6 @@ const OrderItem = React.createClass({
         }
         return selectedAppList;
     },
-    //不能选今天之前的时间
-    disabledDate(current) {
-        return current && current < moment().subtract(1, 'days').endOf('day');
-    },
 
     renderOrderContent() {
         const order = this.state.formData;
@@ -406,7 +404,7 @@ const OrderItem = React.createClass({
                         placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
                         hasEditPrivilege={order.oppo_status ? false : true}
                         saveEditDateInput={this.saveOrderBasicInfo}
-                        disabledDate={this.disabledDate}
+                        disabledDate={disabledBeforeToday}
                         noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
                         addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
                     />
