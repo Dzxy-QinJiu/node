@@ -11,6 +11,7 @@ const hasPrivilege = require('../../../../../components/privilege/checker').hasP
 import Trace from 'LIB_DIR/trace';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -306,6 +307,11 @@ const OrderItem = React.createClass({
         }
         return selectedAppList;
     },
+    //不能选今天之前的时间
+    disabledDate(current) {
+        return current && current < moment().subtract(1, 'days').endOf('day');
+    },
+
     renderOrderContent() {
         const order = this.state.formData;
         let selectedAppList = this.getSelectedAppList(order);
@@ -402,6 +408,21 @@ const OrderItem = React.createClass({
                         saveEditInput={this.saveOrderBasicInfo}
                         noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
                         addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
+                    />
+                </div>
+                <div className="order-item-content">
+                    <span className="order-key">{Intl.get('crm.order.expected.deal', '预计成交')}:</span>
+                    <BasicEditDateField
+                        width={EDIT_FEILD_WIDTH}
+                        id={order.id}
+                        field="predict_finish_time"
+                        value={order.predict_finish_time}
+                        placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
+                        hasEditPrivilege={order.oppo_status ? false : true}
+                        saveEditDateInput={this.saveOrderBasicInfo}
+                        disabledDate={this.disabledDate}
+                        noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
+                        addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
                     />
                 </div>
                 <div className="order-item-content">

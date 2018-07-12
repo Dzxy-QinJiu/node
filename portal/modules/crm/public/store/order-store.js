@@ -126,6 +126,7 @@ OrderStore.prototype.afterEditOrder = function(order) {
     } else {
         editOrder.budget = order.budget;
         editOrder.remarks = order.remarks;
+        editOrder.predict_finish_time = order.predict_finish_time;
         editOrder.isEdit = false;
     }
 };
