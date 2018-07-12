@@ -127,7 +127,13 @@ class ClueAnalysisPanel extends React.Component {
     }
 
     getSourceTrendLists() {
-
+        var queryObj = {
+            start_time: this.state.start_time,
+            end_time: this.state.end_time,
+            field: 'clue_source',
+            interval: 'month'
+        };
+        ClueAnalysisAction.getClueTrendStatics(queryObj);
     }
 
     getChannelTrendLists() {

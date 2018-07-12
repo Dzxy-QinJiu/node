@@ -35,10 +35,10 @@ function ClueAnalysisActions() {
         });
     };
     //获取线索趋势统计列表
-    this.getClueTrendStatics = function(pathParams, rangeParams, queryParams) {
-        var type = pathParams.field;
+    this.getClueTrendStatics = function(queryObj) {
+        var type = queryObj.field;
         this.dispatch({error: false, loading: true, type: type});
-        clueAnalysisAjax.getClueTrendStatics(pathParams, rangeParams, queryParams).then((result) => {
+        clueAnalysisAjax.getClueTrendStatics(queryObj).then((result) => {
             this.dispatch({error: false, loading: false, data: result,type: type});
         },(errorMsg) => {
             this.dispatch({error: true, loading: false,errorMsg: errorMsg, type: type});

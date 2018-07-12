@@ -42,7 +42,7 @@ const restApis = {
     //获取线索统计
     getClueStatics: '/rest/customer/v2/clue/statistical/:field/:page_size/:num',
     //获取线索趋势统计
-    getClueTrendStatics: '/rest/analysis/customer/v2/:type/add/clue/trend/statistic',
+    getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
 
 };
 //查询客户
@@ -201,12 +201,24 @@ exports.getClueStatics = function(req, res) {
 
 };
 //线索趋势统计
-
 exports.getClueTrendStatics = function(req, res) {
+    var url = restApis.getClueTrendStatics.replace(':type', req.params.type);
+    if (req.body.start_time){
+        url += `?start_time=${req.body.start_time}`;
+    }
+    if (req.body.end_time){
+        url += `&end_time=${req.body.end_time}`;
+    }
+    if (req.body.field){
+        url += `&field=${req.body.field}`;
+    }
+    if (req.body.interval){
+        url += `&interval=${req.body.interval}`;
+    }
     return restUtil.authRest.get(
         {
-            url: restApis.getClueTrendStatics.replace(':type', req.params.type),
+            url: url,
             req: req,
             res: res
-        }, req.body);
+        }, null);
 };

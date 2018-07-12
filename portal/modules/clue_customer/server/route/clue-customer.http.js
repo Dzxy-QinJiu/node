@@ -129,7 +129,7 @@ module.exports = {
                 'needLogin': true
             }
         },{
-            method: 'get',
+            method: 'post',
             path: '/rest/clue/trend/statics/:type',
             handler: 'getClueTrendStatics',
             passport: {

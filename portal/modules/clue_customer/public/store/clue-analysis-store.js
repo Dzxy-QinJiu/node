@@ -150,23 +150,23 @@ ClueAnalysisStore.prototype.getClueTrendStatics = function(result) {
     } else {
         dataObj.loading = false;
         dataObj.errMsg = '';
-        dataObj.list = result.data.result;
+        dataObj.list = result.data.list;
     }
     switch (result.type) {
         case 'customer_label':
-            this.clueStageList = dataObj;
+            this.clueAssignedTrendList = dataObj;
             break;
         case 'clue_source':
-            this.clueSourceList = dataObj;
+            this.clueSourceTrendList = dataObj;
             break;
         case 'access_channel':
-            this.clueAccessChannelList = dataObj;
+            this.clueChannelTrendList = dataObj;
             break;
         case 'clue_classify':
-            this.clueClassifyList = dataObj;
+            this.clueClassiftyTrendList = dataObj;
             break;
         case 'availability':
-            this.clueAvailability = dataObj;
+            this.clueAvaibilityTrendList = dataObj;
     }
 };
 ClueAnalysisStore.prototype.getCustomerById = function(result) {
