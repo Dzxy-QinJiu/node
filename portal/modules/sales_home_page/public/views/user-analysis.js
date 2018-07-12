@@ -190,9 +190,9 @@ var UserAnlyis = React.createClass({
     },
     // 获取一段时间开通账号登录情况的权限
     getAccountAuthType() {
-        let type = 'all';
-        if (hasPrivilege('USER_ANALYSIS_COMMON')) {
-            type = 'self';
+        let type = 'self';
+        if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+            type = 'all';
         }
         return type;
     },
@@ -205,7 +205,6 @@ var UserAnlyis = React.createClass({
 
         //销售不展示团队的数据统计
         const hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
-        const TABLE_HEIGHT = 200;
         return [{
             title: Intl.get('user.analysis.user.add', '用户-新增'),
             chartType: 'line',
@@ -301,8 +300,6 @@ var UserAnlyis = React.createClass({
             ],
             chartType: 'table',
             option: {
-                pagination: false,
-                scroll: {y: TABLE_HEIGHT},
                 columns: [
                     {
                         title: Intl.get('sales.home.sales', '销售'),
@@ -328,8 +325,8 @@ var UserAnlyis = React.createClass({
                     optionsCallback: () => {
                         return this.props.appList.map( (item) => {
                             return {
-                                name: item.app_name,
-                                value: item.app_id
+                                name: item.client_name,
+                                value: item.client_id
                             };
                         } );
                     },

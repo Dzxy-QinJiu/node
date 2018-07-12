@@ -33,6 +33,7 @@ import history from 'PUB_DIR/sources/history';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -60,6 +61,8 @@ var SalesHomePage = React.createClass({
             updateScrollBar: false,//更新滚动条外
             phoneSorter: {},//电话的排序对象
             callBackSorter: {}, // 回访的排序对象
+            appList: [], //应用数组
+            selectedAppId: '' //选中的应用id
         };
     },
     onChange: function() {
@@ -74,6 +77,12 @@ var SalesHomePage = React.createClass({
             return '';
         }
     },
+    getAppList() {
+        commonDataUtil.getAppList(appList => {
+            let selectedAppId = appList.length && appList[0].client_id || '';
+            this.setState({appList: appList, selectedAppId: selectedAppId});
+        });
+    },
     componentDidMount: function() {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
@@ -81,7 +90,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getTeamMemberCountList();
         SalesHomeAction.getSalesTeamList(type);
         // 获取应用列表
-        SalesHomeAction.getAppList();
+        this.getAppList();
         this.refreshSalesListData();
         this.resizeLayout();
         $(window).resize(() => this.resizeLayout());

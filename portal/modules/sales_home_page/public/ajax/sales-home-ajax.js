@@ -1,6 +1,5 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import querystring from 'querystring';
-const appAjaxTrans = require('../../../common/public/ajax/app');
 let teamAjax = require('../../../common/public/ajax/team');
 /**
  * 获取销售是什么角色
@@ -362,21 +361,5 @@ exports.getCallBackList = function(paramsObj, filterObj) {
             }
         }
     });
-    return Deferred.promise();
-};
-
-/**
- * 获取应用列表
- */
-exports.getAppList = function() {
-    let Deferred = $.Deferred();
-    appAjaxTrans.getGrantApplicationListAjax().sendRequest().
-        success(function(list) {
-            Deferred.resolve(list);
-        }).error(function(xhr, code , errText) {
-            Deferred.reject();
-        }).timeout(function() {
-            Deferred.reject();
-        });
     return Deferred.promise();
 };

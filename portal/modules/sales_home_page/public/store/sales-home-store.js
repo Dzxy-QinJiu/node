@@ -80,8 +80,6 @@ SalesHomeStore.prototype.setInitState = function() {
         isShowActiveEmail: false, //是否展示邮箱激活提示
         isShowAddEmail: false//是否展示添加邮箱的提示, 不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
     };
-    this.appList = []; //应用数组
-    this.selectedAppId = ''; //选中的应用id
 };
 // 重置回访记录列表状态
 SalesHomeStore.prototype.resetCallBackRecord = function() {
@@ -687,19 +685,6 @@ SalesHomeStore.prototype.getCallBackList = function(result) {
             } else {
                 callBackRecord.listenScrollBottom = false;
             }
-        }
-    }
-};
-
-// 获取应用列表
-SalesHomeStore.prototype.getAppList = function(result) {
-    if(result.error) {
-        this.appList = [];
-        this.selectedAppId = '';
-    } else {
-        if (_.isArray(result.list) && result.list.length) {
-            this.appList = result.list;
-            this.selectedAppId = result.list[0].app_id;
         }
     }
 };
