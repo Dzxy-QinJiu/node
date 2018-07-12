@@ -7,6 +7,7 @@ import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 const OpenAppAction = require('./action');
 const OpenAppStore = require('./store');
 const FormItem = Form.Item;
+var TopNav = require('CMP_DIR/top-nav');
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { USER_STATUS } from './consts';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
@@ -15,14 +16,6 @@ const itemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 16 },
 };
-
-const appInfo = [
-    {
-        title: '合同管理',
-        desc: '合同管理可以帮您管理合同,统计和分析合同数据',
-        client_id: 'contract'
-    }
-];
 
 class OpenApp extends React.Component {
     constructor(props) {
@@ -35,15 +28,18 @@ class OpenApp extends React.Component {
     }
     componentDidMount() {
         OpenAppStore.listen(this.onStoreChange);
+        this.getAppList();
     }
     onStoreChange = () => {
         this.setState(
             OpenAppStore.getState()
         );
     }
+    getAppList() {
+        OpenAppAction.getAppList();
+    }
     getRoleList(clientId) {
-        console.log(hasPrivilege('ROLEP_RIVILEGE_ROLE_LIST'));
-        OpenAppAction.getRoleList('36v8tudu9Z36101ee2p2NV2nB1Zl4Guclc0XCyUKNow');
+        OpenAppAction.getRoleList(clientId);
     }
     getUserList(role) {
         const data = {
@@ -80,10 +76,21 @@ class OpenApp extends React.Component {
     handleSubmit() {
 
     }
+    handleSelectChange({ role_id }, value) {
+        OpenAppAction.changeRoleUser({
+            role_id,
+            ids: value
+        });
+    }
     render() {
         const renderRoleFormItem = (role, index) => (
             <FormItem {...itemLayout} key={index} label={role.role_name}>
-                <Select multiple={true}>
+                <Select
+                    multiple={true}
+                    value={role.userList.map(x => x.user_id)}
+                    onChange={this.handleSelectChange.bind(this, role)}
+                    showSearch={true}
+                >
                     {
                         this.state.userList.data.map((user, index) => (
                             <Option key={index} value={user.user_id}>{user.user_name}</Option>
@@ -94,19 +101,29 @@ class OpenApp extends React.Component {
         );
         return (
             <div className="open-app-wrapper">
-                <div className="">
-                    {
-                        appInfo.map((app, index) => (
-                            <fieldset key={index} className='app-container'>
-                                <legend>{app.title}</legend>
-                                <p>{app.desc}</p>
-                                <div className="btn-bar">
-                                    <Button onClick={this.handleCheckDetail.bind(this, app)}>查看详情</Button>
-                                </div>
-                            </fieldset>
-                        ))
-                    }
-                </div>
+                <TopNav>
+                    <TopNav.MenuList />
+                </TopNav>
+                <StatusWrapper
+                    loading={this.state.appList.loading}
+                    errorMsg={this.state.appList.errorMsg}
+                >
+                    <div className="">
+                        {
+                            this.state.appList.data.map((app, index) => (
+                                <fieldset key={index} className='app-container'>
+                                    <legend>{app.title}</legend>
+                                    <p>{app.desc}</p>
+                                    <div className="btn-bar">
+                                        <Button onClick={this.handleCheckDetail.bind(this, app)}>
+                                            {Intl.get('call.record.show.customer.detail', '查看详情')}
+                                        </Button>
+                                    </div>
+                                </fieldset>
+                            ))
+                        }
+                    </div>
+                </StatusWrapper>
                 <RightPanel
                     className="app-detail-wrapper"
                     showFlag={this.state.isShowAppDetail}
@@ -127,7 +144,7 @@ class OpenApp extends React.Component {
                                             开通范围
                                         </h5>
                                         <StatusWrapper
-                                            loading={this.state.roleList.loading}
+                                            loading={this.state.roleList.loading && this.state.roleUserList.loading}
                                             errorMsg={this.state.roleList.errorMsg}
                                         >
                                             <div className="role-from-wrapper">

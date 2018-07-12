@@ -5,10 +5,12 @@ import openAppAjax from './../ajax/index';
 
 function OpenAppAction() {
     this.generateActions(
-        
+        'changeRoleUser'
     );
+    this.getAppList = asyncDispatcher(openAppAjax.getAppList);
     this.getRoleList = asyncDispatcher(openAppAjax.getRoleList);
     this.getAllUsers = asyncDispatcher(openAppAjax.getAllUsers);
+    this.getRoleUserList = asyncDispatcher(openAppAjax.getRoleUserList);
 }
 
 module.exports = alt.createActions(OpenAppAction);

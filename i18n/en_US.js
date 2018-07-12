@@ -2302,6 +2302,7 @@ var en_US = {
     'clue.analysis.ability': 'Effective',//有效
     'clue.analysis.inability': 'Invalid',//无效
     'clue.analysis.source.chart': 'Source statistics',//来源统计
-    'clue.analysis.classify.chart': 'Classify statistics'//分类统计
+    'clue.analysis.classify.chart': 'Classify statistics',//分类统计
+    'back.openApp': 'Open app',//开通应用
 };
 export default en_US;

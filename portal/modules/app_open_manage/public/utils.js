@@ -5,7 +5,7 @@ const routeList = require('MOD_DIR/common/route');
  * 
  * @param ajax {promise} :异步请求的promise(jqXhr)
  * 默认dispatch请求的errorMsg, loading, data(请求数据), paramObj(请求参数)
- * 默认返回promise，方便前端获取请求状态
+ * 可以返回promise，方便前端获取请求状态
  */
 export const asyncDispatcher = function(ajax, usePromise) {
     return function(paramObj) {

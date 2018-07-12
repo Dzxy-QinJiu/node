@@ -9,14 +9,14 @@ require('./index.less');
 const StatusWrapper = ({ loading, errorMsg, children, size }) => {
     if (errorMsg) {
         const error = typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
-        return (<div className="status-wrapper">
+        return (<div className="status-wrapper clearfix">
             <div className="alert-container">
                 <Alert message={error} type="error" showIcon />
             </div>
         </div>);
     } else {
         return (
-            <div className="status-wrapper">
+            <div className="status-wrapper clearfix">
                 <div className={!loading ? 'hide' : 'spiner-container'}>
                     <div className="spin-wrapper">
                         <Spin size={size || 'large'} />

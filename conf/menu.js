@@ -251,7 +251,7 @@ class LeftMenuClass {
                         showPrivileges: ['CREATE_CONFIG_INDUSTRY']
                     }, {
                         id: 'OPENAPP',
-                        name: '开通应用',
+                        name: backendIntl.get('back.openApp', '开通应用'),
                         routePath: 'background_management/openApp',
                         privileges: [
                           
