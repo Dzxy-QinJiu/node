@@ -11,9 +11,9 @@ function ClueAnalysisStore() {
     this.bindActions(ClueAnalysisAction);
 }
 ClueAnalysisStore.prototype.setInitState = function() {
-    this.clueStageList = [];//线索阶段分析列表
-    this.getClueStageLoading = false;//正在获取线索阶段分析
-    this.getClueStageErrMsg = false;//获取线索阶段分析失败
+    // this.clueStageList = [];//线索阶段分析列表
+    // this.getClueStageLoading = false;//正在获取线索阶段分析
+    // this.getClueStageErrMsg = false;//获取线索阶段分析失败
     this.customersList = [];//要展示的客户
     this.getCustomersLoading = false;//正在获取客户
     this.getCustomersErrMsg = '';//获取客户失败
@@ -27,6 +27,12 @@ ClueAnalysisStore.prototype.setInitState = function() {
     this.staticsPageSize = 1000;//一次取出
     //获取线索统计的页码
     this.staticsNum = 1;
+    //线索阶段统计
+    this.clueStageList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
     //线索来源统计
     this.clueSourceList = {
         loading: false,
@@ -41,6 +47,42 @@ ClueAnalysisStore.prototype.setInitState = function() {
     };
     //线索分类
     this.clueClassifyList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索有效性统计
+    this.clueAvailability = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索来源趋势统计
+    this.clueSourceTrendList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索渠道趋势统计
+    this.clueChannelTrendList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索分类趋势统计
+    this.clueClassiftyTrendList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索有效性趋势统计
+    this.clueAvaibilityTrendList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    //线索签约趋势统计
+    this.clueAssignedTrendList = {
         loading: false,
         errMsg: '',
         list: []
@@ -67,19 +109,6 @@ ClueAnalysisStore.prototype.changeAccess = function(access) {
 ClueAnalysisStore.prototype.changeSource = function(source) {
     this.selectedSource = source;
 };
-ClueAnalysisStore.prototype.getClueStageAnalysis = function(result) {
-    if (result.loading) {
-        this.getClueStageLoading = true;
-        this.getClueStageErrMsg = '';
-    } else if (result.error) {
-        this.getClueStageLoading = false;
-        this.getClueStageErrMsg = result.errorMsg;
-    } else {
-        this.getClueStageLoading = false;
-        this.getClueStageErrMsg = '';
-        this.clueStageList = result.data;
-    }
-};
 ClueAnalysisStore.prototype.getClueStatics = function(result) {
     var dataObj = {};
     if (result.loading) {
@@ -91,9 +120,12 @@ ClueAnalysisStore.prototype.getClueStatics = function(result) {
     } else {
         dataObj.loading = false;
         dataObj.errMsg = '';
-        dataObj.list = result.data;
+        dataObj.list = result.data.result;
     }
     switch (result.type) {
+        case 'customer_label':
+            this.clueStageList = dataObj;
+            break;
         case 'clue_source':
             this.clueSourceList = dataObj;
             break;
@@ -103,6 +135,38 @@ ClueAnalysisStore.prototype.getClueStatics = function(result) {
         case 'clue_classify':
             this.clueClassifyList = dataObj;
             break;
+        case 'availability':
+            this.clueAvailability = dataObj;
+    }
+};
+ClueAnalysisStore.prototype.getClueTrendStatics = function(result) {
+    var dataObj = {};
+    if (result.loading) {
+        dataObj.loading = true;
+        dataObj.errMsg = '';
+    } else if (result.error) {
+        dataObj.loading = false;
+        dataObj.errMsg = result.errorMsg;
+    } else {
+        dataObj.loading = false;
+        dataObj.errMsg = '';
+        dataObj.list = result.data.result;
+    }
+    switch (result.type) {
+        case 'customer_label':
+            this.clueStageList = dataObj;
+            break;
+        case 'clue_source':
+            this.clueSourceList = dataObj;
+            break;
+        case 'access_channel':
+            this.clueAccessChannelList = dataObj;
+            break;
+        case 'clue_classify':
+            this.clueClassifyList = dataObj;
+            break;
+        case 'availability':
+            this.clueAvailability = dataObj;
     }
 };
 ClueAnalysisStore.prototype.getCustomerById = function(result) {

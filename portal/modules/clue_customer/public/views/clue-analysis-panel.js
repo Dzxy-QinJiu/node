@@ -21,6 +21,10 @@ import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/
 const PIE_CENTER_POSITION = ['50%', '60%'];
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const CHART_HEIGHT = '400';
+const TABS = {
+    'OVERVIEW': '1',
+    'TREND': '2'
+};
 class ClueAnalysisPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -43,22 +47,21 @@ class ClueAnalysisPanel extends React.Component {
         ClueAnalysisStore.unlisten(this.onStoreChange);
     }
 
-    //获取线索阶段分析列表
+    //获取线索阶段
     getClueStageList = () => {
-        let queryParams = {
-            source_start_time: this.state.start_time,
-            source_end_time: this.state.end_time
+        let pathParams = {
+            field: 'customer_label',
+            page_size: this.state.staticsPageSize,
+            num: this.state.staticsNum,
         };
-        if (!this.state.start_time) {
-            queryParams = {};
-        }
+        let queryParams = {};
         if (this.state.selectedAccess !== Intl.get('common.all', '全部')) {
             queryParams.access_channel = this.state.selectedAccess;
         }
         if (this.state.selectedSource !== Intl.get('common.all', '全部')) {
             queryParams.clue_source = this.state.selectedSource;
         }
-        ClueAnalysisAction.getClueStageAnalysis(queryParams);
+        ClueAnalysisAction.getClueStatics(pathParams, this.state.rangeParams, queryParams);
     };
     //获取线索来源统计
     getClueSourceLists = () => {
@@ -87,8 +90,15 @@ class ClueAnalysisPanel extends React.Component {
         };
         ClueAnalysisAction.getClueStatics(pathParams, this.state.rangeParams);
     };
-    //获取线索是否关联客户统计
-
+    //获取线索有效性统计
+    getClueAvailabilityList = () => {
+        let pathParams = {
+            field: 'availability',
+            page_size: this.state.staticsPageSize,
+            num: this.state.staticsNum,
+        };
+        ClueAnalysisAction.getClueStatics(pathParams, this.state.rangeParams);
+    };
 
     refreshClueAnalysisData() {
         //获取线索阶段分析列表
@@ -99,6 +109,41 @@ class ClueAnalysisPanel extends React.Component {
         this.getClueAccessChannelList();
         //获取线索分类
         this.getClueClassifyList();
+        //获取线索有效无效列表
+        this.getClueAvailabilityList();
+    }
+
+    getTrendChartList() {
+        //获取来源统计趋势
+        this.getSourceTrendLists();
+        //获取渠道统计趋势
+        this.getChannelTrendLists();
+        //获取分类统计趋势
+        this.getClassifyTrendLists();
+        //获取有效性趋势
+        this.getAvalibilityTrendLists();
+        //获取签约趋势
+        this.getAssignedTrendLists();
+    }
+
+    getSourceTrendLists() {
+
+    }
+
+    getChannelTrendLists() {
+
+    }
+
+    getClassifyTrendLists() {
+
+    }
+
+    getAvalibilityTrendLists() {
+
+    }
+
+    getAssignedTrendLists() {
+
     }
 
     onSelectDate = (startTime, endTime) => {
@@ -200,13 +245,14 @@ class ClueAnalysisPanel extends React.Component {
         let processedData = [];
         let prevStageValue;
         customerStages.forEach(stage => {
-            let targetObj = _.find(this.state.clueStageList, (item) => {
-                return item.label === stage.tagName;
-            });
             let stageValue = 0;
-            if (targetObj) {
-                stageValue = targetObj.num;
-            }
+            _.forEach(this.state.clueStageList.list, (item) => {
+                _.forEach(item, (value, key) => {
+                    if (key === stage.tagName) {
+                        stageValue = value;
+                    }
+                });
+            });
             if (stageValue) {
                 //保留原始值，用于在图表上显示
                 const showValue = stageValue;
@@ -230,46 +276,34 @@ class ClueAnalysisPanel extends React.Component {
         return processedData;
     }
 
-    handleDataList(originData) {
-        var innerCircleData = [{
-                name: Intl.get('clue.analysis.ability', '有效'),
-                value: 0
-            },{
-                name: Intl.get('clue.analysis.inability', '无效'),
-                value: 0
-            }], outerCircleData = [], tooltipData = [];
-        _.forEach(originData, (dataItem, ItemKey) => {
-            if (ItemKey === 'inavaililityData' && _.isArray(dataItem.result)) {
-                _.forEach(dataItem.result, (item) => {
-                    _.forEach(item, (value, key) => {
-                        outerCircleData.push({
-                            'value': value,
-                            'name': key || Intl.get('common.unknown', '未知')
-                        });
-                        innerCircleData[1].value += value;
-                    });
+    handleDataList(originData, isAvalibility) {
+        var data = [];
+        _.forEach(originData, (dataItem) => {
+            _.forEach(dataItem, (value, key) => {
+                if (isAvalibility) {
+                    if (key === '0') {
+                        key = Intl.get('clue.analysis.ability', '有效');
+                    }
+                    if (key === '1') {
+                        key = Intl.get('clue.analysis.inability', '无效');
+                    }
+                }
+                data.push({
+                    'value': value,
+                    'name': key || Intl.get('common.unknown', '未知')
                 });
-            } else if (ItemKey === 'availabilityData' && _.isArray(dataItem.result)) {
-                _.forEach(dataItem.result, (item) => {
-                    _.forEach(item, (value, key) => {
-                        outerCircleData.push({
-                            'value': value,
-                            'name': key || Intl.get('common.unknown', '未知')
-                        });
-                        innerCircleData[0].value += value;
-                    });
-                });
-            }
+            });
         });
-        return {
-            'innerCircleData': innerCircleData,
-            'outerCircleData': outerCircleData,
-        };
+        return data;
+    }
+
+    renderDiffTypeTrendChart() {
 
     }
-    renderDiffTypeChart(clueData, title, retryCallback){
+
+    renderDiffTypeChart(clueData, title, retryCallback, isAvalibility) {
         var originData = clueData.list;
-        var DataObj = this.handleDataList(originData);
+        var DataObj = this.handleDataList(originData, isAvalibility);
         var clueCharts = [
             {
                 title: title,
@@ -277,8 +311,8 @@ class ClueAnalysisPanel extends React.Component {
                 layout: {
                     sm: 24,
                 },
-                data: DataObj.innerCircleData,
-                option: this.getChartsOptions(DataObj, title,PIE_CENTER_POSITION),
+                data: DataObj,
+                option: this.getChartsOptions(DataObj, title, PIE_CENTER_POSITION),
                 noExportCsv: true,
                 resultType: getResultType(clueData.loading, clueData.errMsg),
                 errMsgRender: () => {
@@ -297,7 +331,7 @@ class ClueAnalysisPanel extends React.Component {
     }
 
     //获取options的配置
-    getChartsOptions(DataObj,title,centerPosition){
+    getChartsOptions(DataObj, title, centerPosition) {
         var option = {
             tooltip: {
                 trigger: 'item',
@@ -314,34 +348,51 @@ class ClueAnalysisPanel extends React.Component {
                 {
                     name: title,
                     type: 'pie',
-                    selectedMode: 'single',
-                    radius: [0, '20%'],
-                    label: {
-                        normal: {
-                            position: 'inner',
-                            formatter: '{b}'
-                        },
-
-                    },
-                    labelLine: {
-                        normal: {
-                            show: false
-                        }
-                    },
+                    radius: '55%',
                     center: centerPosition,
-                    data: DataObj.innerCircleData
-                },
-                {
-                    name: title,
-                    type: 'pie',
-                    radius: ['35%', '60%'],
-                    center: centerPosition,
-                    data: DataObj.outerCircleData
+                    data: DataObj
                 }
             ]
         };
         return option;
     }
+
+    //渲染趋势页的chart
+    renderChartsTrendView() {
+        var HEIGHT = $(window).height() - $('.clue-analysis-panel .ant-tabs-nav-container').height() - 10;
+        return (
+            <div className="clue-analysis-trend-container" style={{'height': HEIGHT}}>
+                <GeminiScrollbar>
+                    {/*来源统计*/}
+                    <div className="source-trend-analysis">
+                        {this.renderDiffTypeTrendChart()}
+                    </div>
+                    {/*渠道统计*/}
+                    <div className="channel-trend-analysis">
+                        {this.renderDiffTypeTrendChart()}
+                    </div>
+                    {/*分类统计*/}
+                    <div className="classify-trend-analysis">
+                        {this.renderDiffTypeTrendChart()}
+                    </div>
+                    {/*有效性统计*/}
+                    <div className="avalibility-trend-analysis">
+                        {this.renderDiffTypeTrendChart()}
+                    </div>
+                    {/*签约统计*/}
+                    <div className="assigned-trend-analysis">
+                        {this.renderDiffTypeTrendChart()}
+                    </div>
+                </GeminiScrollbar>
+            </div>
+        );
+    }
+
+    handleClickTabs = (e) => {
+        if (e === TABS.TREND) {
+            this.getTrendChartList();
+        }
+    };
     //渲染概览页的chart
     renderChartsOverview() {
         var clueStageCharts = [
@@ -353,13 +404,13 @@ class ClueAnalysisPanel extends React.Component {
                     sm: 24,
                 },
                 noExportCsv: true,
-                resultType: getResultType(this.state.getClueStageLoading, this.state.getClueStageErrMsg),
+                resultType: getResultType(this.state.clueStageList.loading, this.state.clueStageList.errMsg),
                 customOption: {
                     valueField: 'showValue',
                     minSize: '5%',
                 },
                 errMsgRender: () => {
-                    return getErrorTipAndRetryFunction(this.state.getClueStageErrMsg, this.getClueStageList);
+                    return getErrorTipAndRetryFunction(this.state.clueStageList.errMsg, this.getClueStageList);
                 }
             }
         ];
@@ -378,20 +429,25 @@ class ClueAnalysisPanel extends React.Component {
                     </div>
                     {/*线索渠道统计*/}
                     <div className="clue-access-analysis col-xs-6">
-                        {this.renderDiffTypeChart(this.state.clueAccessChannelList,Intl.get('clue.analysis.access.chart', '渠道统计'),this.getClueAccessChannelList)}
+                        {this.renderDiffTypeChart(this.state.clueAccessChannelList, Intl.get('clue.analysis.access.chart', '渠道统计'), this.getClueAccessChannelList)}
                     </div>
                     {/*线索来源统计*/}
                     <div className="clue-source-analysis col-xs-6">
-                        {this.renderDiffTypeChart(this.state.clueSourceList,Intl.get('clue.analysis.source.chart','来源统计'),this.getClueSourceLists)}
+                        {this.renderDiffTypeChart(this.state.clueSourceList, Intl.get('clue.analysis.source.chart', '来源统计'), this.getClueSourceLists)}
                     </div>
                     {/*线索分类统计*/}
                     <div className="clue-classify-analysis col-xs-6">
-                        {this.renderDiffTypeChart(this.state.clueClassifyList,Intl.get('clue.analysis.classify.chart','分类统计'),this.getClueClassifyList)}
+                        {this.renderDiffTypeChart(this.state.clueClassifyList, Intl.get('clue.analysis.classify.chart', '分类统计'), this.getClueClassifyList)}
+                    </div>
+                    {/*线索有效性统计*/}
+                    <div className="clue-ability-analysis col-xs-6">
+                        {this.renderDiffTypeChart(this.state.clueAvailability, Intl.get('clue.analysis.avalibility.chart', '有效性统计'), this.getClueAvailabilityList, true)}
                     </div>
                 </GeminiScrollbar>
             </div>
         );
     }
+
     render() {
         return (
             <div className="clue-analysis-panel">
@@ -418,9 +474,11 @@ class ClueAnalysisPanel extends React.Component {
                     <RightPanelClose onClick={this.closeClueAnalysisPanel}/>
                 </div>
                 <div className="analysis-chart-wrap">
-                    <Tabs>
+                    <Tabs onChange={this.handleClickTabs}>
                         <TabPane tab={Intl.get('crm.basic.overview', '概览')}
-                            key="1">{this.renderChartsOverview()}</TabPane>
+                            key={TABS.OVERVIEW}>{this.renderChartsOverview()}</TabPane>
+                        <TabPane tab={Intl.get('clue.customer.analysis.trend', '趋势')}
+                            key={TABS.TREND}>{this.renderChartsTrendView()}</TabPane>
                     </Tabs>
                 </div>
             </div>

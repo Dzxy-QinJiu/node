@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/5/24.
  */
 //获取线索阶段分析列表
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 exports.getClueStageAnalysis = function(data) {
     var Deferred = $.Deferred();
     $.ajax({
@@ -40,13 +41,35 @@ exports.getCustomerById = function(data) {
     return Deferred.promise();
 };
 //获取线索统计列表
-exports.getClueStatics = function(pathParams, rangParams) {
+exports.getClueStatics = function(pathParams, rangParams, queryParams) {
     var data = {
         rangParams: JSON.stringify(rangParams),
+        query: JSON.stringify(queryParams)
     };
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/clue/statics/' + pathParams.field + '/' + pathParams.page_size + '/' + pathParams.num,
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取线索趋势分析
+exports.getClueTrendStatics = function(data) {
+    var Deferred = $.Deferred();
+    var type = 'self';
+    if (hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL')){
+        type = 'all';
+    }
+    $.ajax({
+        url: '/rest/clue/trend/statics/' + type,
         dataType: 'json',
         type: 'post',
         data: data,
