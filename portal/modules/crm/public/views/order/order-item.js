@@ -45,14 +45,12 @@ const OrderItem = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.isMerge || nextProps.order && nextProps.order.id !== this.props.order.id) {
-            this.setState({
-                formData: JSON.parse(JSON.stringify(nextProps.order)),
-                stage: nextProps.order.sale_stages,
-                apps: nextProps.order.apps,
-                customerName: nextProps.customerName
-            });
-        }
+        this.setState({
+            formData: JSON.parse(JSON.stringify(nextProps.order)),
+            stage: nextProps.order.sale_stages,
+            apps: nextProps.order.apps,
+            customerName: nextProps.customerName
+        });
     },
 
     //展示是否删除的模态框
@@ -163,10 +161,6 @@ const OrderItem = React.createClass({
                 if (result && result.code === 0) {
                     if (_.isFunction(successFunc)) successFunc();
                     OrderAction.afterEditOrder(saveObj);
-                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                    setTimeout(() => {
-                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(saveObj.customer_id);
-                    }, 200);
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(result || Intl.get('common.save.failed', '保存失败'));
                 }
@@ -192,10 +186,6 @@ const OrderItem = React.createClass({
                     if (_.isFunction(successFunc)) successFunc();
                     this.state.formData.sale_stages = sale_stages;
                     this.setState(this.state);
-                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                    setTimeout(() => {
-                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
-                    }, 1000);
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(result || Intl.get('common.save.failed', '保存失败'));
                 }
@@ -221,10 +211,6 @@ const OrderItem = React.createClass({
                     this.state.formData.apps = reqData.apps;
                     this.state.isAppPanelShow = false;
                     this.state.submitErrorMsg = '';
-                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                    setTimeout(() => {
-                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
-                    }, 1000);
                 } else {
                     this.state.submitErrorMsg = result || Intl.get('common.save.failed', '保存失败');
                 }
