@@ -11,8 +11,6 @@ const userData = require('../../../../../public/sources/user-data');
 import Trace from 'LIB_DIR/trace';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import Spinner from 'CMP_DIR/spinner';
-import ApplyOpenAppPanel from 'MOD_DIR/app_user_manage/public/views/v2/apply-user';
-import CrmUserApplyForm from '../users/crm-user-apply-form';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import classNames from 'classnames';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';

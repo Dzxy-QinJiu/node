@@ -2,7 +2,7 @@ import ajax from '../../common/ajax';
 import crmAjax from '../ajax/index';
 const routes = require('../../common/route');
 var appAjaxTrans = require('../../../common/public/ajax/app');
-
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 function OrderActions() {
     this.generateActions(
         'getMergeOrderList',
@@ -39,20 +39,8 @@ function OrderActions() {
     });
 
     this.getAppList = function() {
-        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(list => {
-            list = list.map(function(app) {
-                return {
-                    client_id: app.app_id,
-                    client_name: app.app_name,
-                    client_logo: app.app_logo
-                };
-            });
-
-            this.dispatch(list);
-        }).error(errorMsg => {
-            this.dispatch(errorMsg.responseJSON);
-        }).timeout(errorMsg => {
-            this.dispatch(errorMsg.responseJSON);
+        commonDataUtil.getAppList(appList => {
+            this.dispatch(appList);
         });
     };
     //获取客户下的用户列表
