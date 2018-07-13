@@ -129,7 +129,7 @@ class ClueAnalysisPanel extends React.Component {
     getTrendQueryParams = (filed) => {
         var start_time = this.state.start_time;
         var end_time = this.state.end_time;
-        var one_day = oplateConsts.ONE_DAY_TIME_RANGE;
+        var oneMonth = 30 * oplateConsts.ONE_DAY_TIME_RANGE;//一个月的时间
         var queryObj = {
             start_time: start_time,
             end_time: end_time,
@@ -139,16 +139,19 @@ class ClueAnalysisPanel extends React.Component {
         //不同的时间段选择的聚合时间间隔interval也不一样
         //1个月内按天进行聚合 1-3个月内按周进行聚合 3-36个月按月进行聚合 36个月以上按年进行聚合
         if (start_time && end_time){
-            if (end_time - start_time < 31 * one_day || end_time - start_time === 31 * one_day ){
+            var timeRange = end_time - start_time;
+            if (timeRange < oneMonth || end_time - start_time === oneMonth ){
                 queryObj.interval = 'day';
-            }else if (end_time - start_time > 31 * one_day && (end_time - start_time < 3 * 31 * one_day || end_time - start_time === 3 * 31 * one_day)){
+            }else if (timeRange > oneMonth && (end_time - start_time < 3 * oneMonth || end_time - start_time === 3 * oneMonth)){
                 queryObj.interval = 'week';
-            }else if (end_time - start_time > 3 * 31 * one_day && (end_time - start_time < 36 * 31 * one_day || end_time - start_time === 36 * 31 * one_day)){
+            }else if (timeRange > 3 * oneMonth && (end_time - start_time < 36 * oneMonth || end_time - start_time === 36 * oneMonth)){
                 queryObj.interval = 'month';
-            }else if (end_time - start_time > 36 * 31 * one_day){
+            }else if (timeRange > 36 * oneMonth){
                 queryObj.interval = 'year';
             }
         }else{
+            queryObj.start_time = 0;
+            queryObj.end_time = moment().valueOf();
             queryObj.interval = 'year';
         }
         return queryObj;
@@ -475,6 +478,7 @@ class ClueAnalysisPanel extends React.Component {
     //渲染趋势页的chart
     renderChartsTrendView() {
         var HEIGHT = $(window).height() - $('.clue-analysis-panel .ant-tabs-nav-container').height() - 10;
+        
         return (
             <div className="clue-analysis-trend-container" style={{'height': HEIGHT}}>
                 <GeminiScrollbar>

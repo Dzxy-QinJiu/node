@@ -8,9 +8,6 @@
 var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-var Promise = require('bluebird');
-var EventEmitter = require('events').EventEmitter;
-var moment = require('moment');
 const restApis = {
     //获取线索来源
     getClueSource: '/rest/customer/v2/clue/clue_source/100/1',
@@ -204,15 +201,11 @@ exports.getClueStatics = function(req, res) {
 //线索趋势统计
 exports.getClueTrendStatics = function(req, res) {
     var url = restApis.getClueTrendStatics.replace(':type', req.params.type);
-    if (req.body.start_time){
+    if (req.body.start_time || req.body.start_time === 0){
         url += `?start_time=${req.body.start_time}`;
-    }else{
-        url += '?start_time=0';
     }
     if (req.body.end_time){
         url += `&end_time=${req.body.end_time}`;
-    }else{
-        url += `&end_time=${moment().valueOf()}`;
     }
     if (req.body.field){
         url += `&field=${req.body.field}`;
