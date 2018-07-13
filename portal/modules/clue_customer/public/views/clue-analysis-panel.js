@@ -30,6 +30,7 @@ class ClueAnalysisPanel extends React.Component {
         super(props);
         this.state = {
             showCustomerIds: [],//所有客户的id
+            showTab: TABS.OVERVIEW,//展示的tab页
             ...ClueAnalysisStore.getState()
         };
     }
@@ -125,50 +126,84 @@ class ClueAnalysisPanel extends React.Component {
         //获取签约趋势
         this.getAssignedTrendLists();
     }
-
-    getSourceTrendLists() {
+    getTrendQueryParams = (filed) => {
+        var start_time = this.state.start_time;
+        var end_time = this.state.end_time;
+        var one_day = oplateConsts.ONE_DAY_TIME_RANGE;
         var queryObj = {
-            start_time: this.state.start_time,
-            end_time: this.state.end_time,
-            field: 'clue_source',
-            interval: 'month'
+            start_time: start_time,
+            end_time: end_time,
+            field: filed,
+            interval: 'day'
         };
+        //不同的时间段选择的聚合时间间隔interval也不一样
+        //1个月内按天进行聚合 1-3个月内按周进行聚合 3-36个月按月进行聚合 36个月以上按年进行聚合
+        if (start_time && end_time){
+            if (end_time - start_time < 31 * one_day || end_time - start_time === 31 * one_day ){
+                queryObj.interval = 'day';
+            }else if (end_time - start_time > 31 * one_day && (end_time - start_time < 3 * 31 * one_day || end_time - start_time === 3 * 31 * one_day)){
+                queryObj.interval = 'week';
+            }else if (end_time - start_time > 3 * 31 * one_day && (end_time - start_time < 36 * 31 * one_day || end_time - start_time === 36 * 31 * one_day)){
+                queryObj.interval = 'month';
+            }else if (end_time - start_time > 36 * 31 * one_day){
+                queryObj.interval = 'year';
+            }
+        }else{
+            queryObj.interval = 'year';
+        }
+        return queryObj;
+    }
+    //来源统计
+    getSourceTrendLists() {
+        var queryObj = this.getTrendQueryParams('clue_source');
         ClueAnalysisAction.getClueTrendStatics(queryObj);
     }
-
+    //渠道趋势统计
     getChannelTrendLists() {
-
+        var queryObj = this.getTrendQueryParams('access_channel');
+        ClueAnalysisAction.getClueTrendStatics(queryObj);
     }
-
+    //分类趋势统计
     getClassifyTrendLists() {
-
+        var queryObj = this.getTrendQueryParams('clue_classify');
+        ClueAnalysisAction.getClueTrendStatics(queryObj);
     }
-
+    //有效性趋势统计
     getAvalibilityTrendLists() {
-
+        var queryObj = this.getTrendQueryParams('availability');
+        ClueAnalysisAction.getClueTrendStatics(queryObj);
     }
-
+    //签约趋势统计
     getAssignedTrendLists() {
-
+        var queryObj = this.getTrendQueryParams('customer_label');
+        ClueAnalysisAction.getClueTrendStatics(queryObj);
     }
 
     onSelectDate = (startTime, endTime) => {
         let timeObj = {startTime: startTime, endTime: endTime};
         ClueAnalysisAction.changeSearchTime(timeObj);
-        setTimeout(() => {
-            this.refreshClueAnalysisData();
-        });
+        if (this.state.showTab === TABS.OVERVIEW){
+            //如果点中的是第一个tab页,切换时间获取概览页的数据
+            setTimeout(() => {
+                this.refreshClueAnalysisData();
+            });
+        }else if (this.state.showTab === TABS.TREND){
+            setTimeout(() => {
+                this.getTrendChartList();
+            });
+        }
+
     };
     handleAccessSelect = (access) => {
         ClueAnalysisAction.changeAccess(access);
         setTimeout(() => {
-            this.refreshClueAnalysisData();
+            this.getClueStageList();
         });
     };
     handleSourceSelect = (source) => {
         ClueAnalysisAction.changeSource(source);
         setTimeout(() => {
-            this.refreshClueAnalysisData();
+            this.getClueStageList();
         });
     };
 
@@ -303,8 +338,71 @@ class ClueAnalysisPanel extends React.Component {
         return data;
     }
 
-    renderDiffTypeTrendChart() {
-
+    handleTrendData(originData, type) {
+        var trendData = [];
+        if (type === 'assigned'){
+            originData = _.filter(originData,(item) => {
+                return item.name === Intl.get('sales.stage.signed', '签约');
+            });
+        }
+        _.forEach(originData, (item, index) => {
+            var nameItem = item.name;
+            if (type === 'isAvaibility') {
+                if (nameItem === '0') {
+                    nameItem = Intl.get('clue.analysis.ability', '有效');
+                }
+                if (nameItem === '1') {
+                    nameItem = Intl.get('clue.analysis.inability', '无效');
+                }
+            }
+            if (nameItem === 'unknow' ){
+                nameItem = Intl.get('common.unknown', '未知');
+            }
+            trendData.push(
+                {
+                    clueName: nameItem,
+                    type: 'line',
+                    data: item.list
+                });
+            _.forEach(item.list, (subItem) => {
+                subItem.name = moment(subItem.date).format(oplateConsts.DATE_FORMAT);
+                subItem.value = subItem.count;
+            });
+        });
+        return trendData;
+    }
+    renderDiffTypeTrendChart(clueData, title, retryCallback, type) {
+        var originData = clueData.list;
+        var DataObj = this.handleTrendData(originData, type);
+        var clueCharts = [
+            {
+                title: title,
+                chartType: 'line',
+                layout: {
+                    sm: 24,
+                },
+                data: DataObj,
+                option: this.getChartsTrendOptions(),
+                noExportCsv: true,
+                customOption: {
+                    stack: false,
+                    multi: true,
+                    serieNameField: 'clueName',
+                },
+                resultType: getResultType(clueData.loading, clueData.errMsg),
+                errMsgRender: () => {
+                    return getErrorTipAndRetryFunction(clueData.errMsg, retryCallback);
+                }
+            }
+        ];
+        return (
+            <div>
+                <AntcAnalysis
+                    charts={clueCharts}
+                    chartHeight={CHART_HEIGHT}
+                />
+            </div>
+        );
     }
 
     renderDiffTypeChart(clueData, title, retryCallback, isAvalibility) {
@@ -362,6 +460,17 @@ class ClueAnalysisPanel extends React.Component {
         };
         return option;
     }
+    getChartsTrendOptions(){
+        var trendOption = {
+            legend: {
+                orient: 'horizontal',
+                type: 'scroll',
+                x: 'left',
+                pageIconSize: 10,
+            },
+        };
+        return trendOption;
+    }
 
     //渲染趋势页的chart
     renderChartsTrendView() {
@@ -370,24 +479,24 @@ class ClueAnalysisPanel extends React.Component {
             <div className="clue-analysis-trend-container" style={{'height': HEIGHT}}>
                 <GeminiScrollbar>
                     {/*来源统计*/}
-                    <div className="source-trend-analysis">
-                        {this.renderDiffTypeTrendChart()}
+                    <div className="source-trend-analysis col-xs-6">
+                        {this.renderDiffTypeTrendChart(this.state.clueSourceTrendList, Intl.get('clue.analysis.source.chart', '来源统计'), this.getSourceTrendLists)}
                     </div>
                     {/*渠道统计*/}
-                    <div className="channel-trend-analysis">
-                        {this.renderDiffTypeTrendChart()}
+                    <div className="channel-trend-analysis col-xs-6">
+                        {this.renderDiffTypeTrendChart(this.state.clueChannelTrendList, Intl.get('clue.analysis.access.chart', '渠道统计'), this.getChannelTrendLists)}
                     </div>
                     {/*分类统计*/}
-                    <div className="classify-trend-analysis">
-                        {this.renderDiffTypeTrendChart()}
+                    <div className="classify-trend-analysis col-xs-6">
+                        {this.renderDiffTypeTrendChart(this.state.clueClassiftyTrendList, Intl.get('clue.analysis.classify.chart', '分类统计'), this.getClassifyTrendLists)}
                     </div>
                     {/*有效性统计*/}
-                    <div className="avalibility-trend-analysis">
-                        {this.renderDiffTypeTrendChart()}
+                    <div className="avalibility-trend-analysis col-xs-6">
+                        {this.renderDiffTypeTrendChart(this.state.clueAvaibilityTrendList, Intl.get('clue.analysis.avalibility.chart', '有效性统计'), this.getAvalibilityTrendLists,'isAvaibility')}
                     </div>
                     {/*签约统计*/}
-                    <div className="assigned-trend-analysis">
-                        {this.renderDiffTypeTrendChart()}
+                    <div className="assigned-trend-analysis col-xs-6">
+                        {this.renderDiffTypeTrendChart(this.state.clueAssignedTrendList, Intl.get('clue.analysis.assigned.chart','签约统计'), this.getAssignedTrendLists,'assigned')}
                     </div>
                 </GeminiScrollbar>
             </div>
@@ -395,8 +504,13 @@ class ClueAnalysisPanel extends React.Component {
     }
 
     handleClickTabs = (e) => {
+        this.setState({
+            showTab: e
+        });
         if (e === TABS.TREND) {
             this.getTrendChartList();
+        }else if (e === TABS.OVERVIEW){
+            this.refreshClueAnalysisData();
         }
     };
     //渲染概览页的chart
@@ -453,7 +567,6 @@ class ClueAnalysisPanel extends React.Component {
             </div>
         );
     }
-
     render() {
         return (
             <div className="clue-analysis-panel">
@@ -491,6 +604,7 @@ class ClueAnalysisPanel extends React.Component {
         );
     }
 }
+
 ClueAnalysisPanel.defaultProps = {
     closeClueAnalysisPanel: function() {
     },

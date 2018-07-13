@@ -2302,6 +2302,8 @@ var en_US = {
     'clue.analysis.ability': 'Effective',//有效
     'clue.analysis.inability': 'Invalid',//无效
     'clue.analysis.source.chart': 'Source statistics',//来源统计
-    'clue.analysis.classify.chart': 'Classify statistics'//分类统计
+    'clue.analysis.classify.chart': 'Classify statistics',//分类统计
+    'clue.analysis.avalibility.chart': 'Validity statistics',//有效性统计
+    'clue.analysis.assigned.chart': 'Contract statistics'//签约统计
 };
 export default en_US;

@@ -537,6 +537,9 @@
           .ant-tabs-nav .ant-tabs-tab{
             padding-left: 25px!important;
           }
+          .ant-tabs-ink-bar{
+            background-color: transparent;
+          }
           .ant-tabs-nav-container{
             font-size: 16px;
             line-height: 2.1;
@@ -608,6 +611,15 @@
       //趋势图页样式
       .clue-analysis-trend-container{
         padding-top:16px;
+        .source-trend-analysis,.channel-trend-analysis, .classify-trend-analysis, .avalibility-trend-analysis, .assigned-trend-analysis{
+          padding-left: 0;
+          padding-right:0;
+        }
+        .channel-trend-analysis, .avalibility-trend-analysis{
+          .antc-analysis .analysis-charts{
+            padding-left: 0px;
+          }
+        }
       }
     }
   }

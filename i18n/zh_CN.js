@@ -2325,6 +2325,7 @@ var zh_CN = {
     'clue.analysis.inability': '无效',
     'clue.analysis.source.chart': '来源统计',
     'clue.analysis.classify.chart': '分类统计',
-    'clue.analysis.avalibility.chart': '有效性统计'
+    'clue.analysis.avalibility.chart': '有效性统计',
+    'clue.analysis.assigned.chart': '签约统计'
 };
 export default zh_CN;
