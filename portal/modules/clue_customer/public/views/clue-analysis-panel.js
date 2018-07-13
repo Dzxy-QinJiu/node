@@ -137,13 +137,13 @@ class ClueAnalysisPanel extends React.Component {
         //不同的时间段选择的聚合时间间隔interval也不一样
         if (start_time && end_time){
             var timeRange = end_time - start_time;
-            if (timeRange < oneMonth || timeRange === oneMonth ){
+            if (timeRange <= oneMonth ){
                 //1个月内按天进行聚合
                 queryObj.interval = 'day';
-            }else if (timeRange > oneMonth && (timeRange < threeMonth || timeRange === threeMonth)){
+            }else if (timeRange > oneMonth && (timeRange <= threeMonth)){
                 // 1-3个月内按周进行聚合（最大92天）
                 queryObj.interval = 'week';
-            }else if (timeRange > threeMonth && (timeRange < threeYear || timeRange === threeYear)){
+            }else if (timeRange > threeMonth && (timeRange <= threeYear)){
                 //3个月到3年按月进行聚合
                 queryObj.interval = 'month';
             }else if (timeRange > threeYear){
@@ -389,9 +389,6 @@ class ClueAnalysisPanel extends React.Component {
         return [{
             title: Intl.get('clue.analysis.source.chart', '来源统计'),
             chartType: 'line',
-            layout: {
-                sm: 12,
-            },
             data: this.handleTrendData(this.state.clueSourceTrendList.list),
             option: this.getChartsTrendOptions(),
             noExportCsv: true,
@@ -407,9 +404,6 @@ class ClueAnalysisPanel extends React.Component {
         },{
             title: Intl.get('clue.analysis.access.chart', '渠道统计'),
             chartType: 'line',
-            layout: {
-                sm: 12,
-            },
             data: this.handleTrendData(this.state.clueChannelTrendList.list),
             option: this.getChartsTrendOptions(),
             noExportCsv: true,
@@ -425,9 +419,6 @@ class ClueAnalysisPanel extends React.Component {
         },{
             title: Intl.get('clue.analysis.classify.chart', '分类统计'),
             chartType: 'line',
-            layout: {
-                sm: 12,
-            },
             data: this.handleTrendData(this.state.clueClassiftyTrendList.list),
             option: this.getChartsTrendOptions(),
             noExportCsv: true,
@@ -443,9 +434,6 @@ class ClueAnalysisPanel extends React.Component {
         },{
             title: Intl.get('clue.analysis.avalibility.chart', '有效性统计'),
             chartType: 'line',
-            layout: {
-                sm: 12,
-            },
             data: this.handleTrendData(this.state.clueAvaibilityTrendList.list,'isAvaibility'),
             option: this.getChartsTrendOptions(),
             noExportCsv: true,
@@ -461,9 +449,6 @@ class ClueAnalysisPanel extends React.Component {
         },{
             title: Intl.get('clue.analysis.assigned.chart','签约统计'),
             chartType: 'line',
-            layout: {
-                sm: 12,
-            },
             data: this.handleTrendData(this.state.clueAssignedTrendList.list,'assigned'),
             option: this.getChartsTrendOptions(),
             noExportCsv: true,
@@ -480,10 +465,9 @@ class ClueAnalysisPanel extends React.Component {
     }
     //渲染趋势页的chart
     renderChartsTrendView() {
-        var HEIGHT = $(window).height() - $('.clue-analysis-panel .ant-tabs-nav-container').height() - 10;
         var charts = this.getTrendCharts();
         return (
-            <div className="clue-analysis-trend-container" style={{'height': HEIGHT}}>
+            <div className="clue-analysis-trend-container">
                 <AntcAnalysis
                     charts={charts}
                     isUseScrollBar={true}
@@ -532,9 +516,6 @@ class ClueAnalysisPanel extends React.Component {
             title: Intl.get('clue.stage.statics', '线索阶段统计'),
             chartType: 'funnel',
             data: this.processClueStaticsStageData(),
-            layout: {
-                sm: 12,
-            },
             noExportCsv: true,
             resultType: getResultType(this.state.clueStageList.loading, this.state.clueStageList.errMsg),
             cardContainer: {
@@ -554,9 +535,6 @@ class ClueAnalysisPanel extends React.Component {
         },{
             title: Intl.get('clue.analysis.access.chart', '渠道统计'),
             chartType: 'pie',
-            layout: {
-                sm: 12,
-            },
             data: this.handleDataList(this.state.clueAccessChannelList.list),
             option: this.getChartsOptions(this.state.clueAccessChannelList.list, PIE_CENTER_POSITION),
             noExportCsv: true,
@@ -567,9 +545,6 @@ class ClueAnalysisPanel extends React.Component {
         },{
             title: Intl.get('clue.analysis.source.chart', '来源统计'),
             chartType: 'pie',
-            layout: {
-                sm: 12,
-            },
             data: this.handleDataList(this.state.clueSourceList.list),
             option: this.getChartsOptions(this.state.clueSourceList.list, PIE_CENTER_POSITION),
             noExportCsv: true,
@@ -580,9 +555,6 @@ class ClueAnalysisPanel extends React.Component {
         },{
             title: Intl.get('clue.analysis.classify.chart', '分类统计'),
             chartType: 'pie',
-            layout: {
-                sm: 12,
-            },
             data: this.handleDataList(this.state.clueClassifyList.list),
             option: this.getChartsOptions(this.state.clueClassifyList.list, PIE_CENTER_POSITION),
             noExportCsv: true,
@@ -593,9 +565,6 @@ class ClueAnalysisPanel extends React.Component {
         },{
             title: Intl.get('clue.analysis.avalibility.chart', '有效性统计'),
             chartType: 'pie',
-            layout: {
-                sm: 12,
-            },
             data: this.handleDataList(this.state.clueAvailability.list, true),
             option: this.getChartsOptions(this.state.clueAvailability.list,PIE_CENTER_POSITION),
             noExportCsv: true,
@@ -607,10 +576,9 @@ class ClueAnalysisPanel extends React.Component {
     }
     //渲染概览页的chart
     renderChartsOverview() {
-        var HEIGHT = $(window).height() - $('.clue-analysis-panel .ant-tabs-nav-container').height() - 10;
         const overviewCharts = this.getOverviewCharts();
         return (
-            <div className="clue-analysis-overview-container" style={{'height': HEIGHT}}>
+            <div className="clue-analysis-overview-container">
                 <AntcAnalysis
                     charts={overviewCharts}
                     isUseScrollBar={true}
