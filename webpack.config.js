@@ -162,30 +162,6 @@ var pluginLists = [
         Trace: path.resolve(__dirname, 'portal/lib/trace'),
         oplateConsts: path.resolve(__dirname, 'portal/lib/consts.js'),
     }),
-    new webpack.DllReferencePlugin({
-        context: path.join(__dirname),
-        manifest: require('./dll/reactRel-manifest.json')
-    }),
-    new webpack.DllReferencePlugin({
-        context: path.join(__dirname),
-        manifest: require('./dll/vendor-manifest.json')
-    }),
-    new webpack.DllReferencePlugin({
-        context: path.join(__dirname),
-        manifest: require('./dll/echarts-manifest.json')
-    }),
-    new webpack.DllReferencePlugin({
-        context: path.join(__dirname),
-        manifest: require('./dll/echartsEefung-manifest.json')
-    }),
-    new webpack.DllReferencePlugin({
-        context: path.join(__dirname),
-        manifest: require('./dll/echartMapJson-manifest.json')
-    }),
-    new webpack.DllReferencePlugin({
-        context: path.join(__dirname),
-        manifest: require('./dll/antd-manifest.json')
-    }),
     new HappyPack(jsLoader),
     new HappyPack(cssLoader),
     new HappyPack(lessLoader),
@@ -194,6 +170,50 @@ var pluginLists = [
         {from: 'portal/public/sources/piwik.js'},
     ])
 ];
+
+//DllReferencePlugin
+function addDllPlugins() {
+    var dllPluins = [
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname),
+            manifest: require('./dll/reactRel-manifest.json')
+        }),
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname),
+            manifest: require('./dll/vendor-manifest.json')
+        }),
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname),
+            manifest: require('./dll/world-manifest.json')
+        }),
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname),
+            manifest: require('./dll/china-manifest.json')
+        }),
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname),
+            manifest: require('./dll/province-manifest.json')
+        }),
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname),
+            manifest: require('./dll/echarts-manifest.json')
+        }),
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname),
+            manifest: require('./dll/echartsEefung-manifest.json')
+        }),
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname),
+            manifest: require('./dll/antd-manifest.json')
+        })];
+    dllPluins.forEach(function(plugin) {
+        pluginLists.push(plugin);
+    });
+}
+
+//执行
+addDllPlugins();
+
 //热替换插件
 if (webpackMode !== 'production') {
     pluginLists.push(new webpack.HotModuleReplacementPlugin());

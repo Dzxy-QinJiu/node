@@ -31,7 +31,9 @@ if (webpackMode === 'production') {
 module.exports = {
     mode: webpackMode === 'production' ? 'production' : 'development',
     entry: {
-        echartMapJson: [path.join(__dirname, 'portal', 'mapjson.js')],
+        world: [path.join(__dirname, 'portal/map', 'world.js')],
+        china: [path.join(__dirname, 'portal/map', 'china.js')],
+        province: [path.join(__dirname, 'portal/map', 'province.js')],
         echarts: ['echarts'],
         echartsEefung: ['echarts-eefung'],
         reactRel: ['react', 'react-dom', 'react-intl',

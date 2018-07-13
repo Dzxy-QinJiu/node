@@ -1,6 +1,3 @@
-require('echarts/map/json/china-cities.json');
-require('echarts/map/json/china-contour.json');
-require('echarts/map/json/china.json');
 require('echarts/map/json/province/anhui.json');
 require('echarts/map/json/province/aomen.json');
 require('echarts/map/json/province/beijing.json');
@@ -35,4 +32,4 @@ require('echarts/map/json/province/xinjiang.json');
 require('echarts/map/json/province/xizang.json');
 require('echarts/map/json/province/yunnan.json');
 require('echarts/map/json/province/zhejiang.json');
-require('echarts/map/json/world.json');
+
