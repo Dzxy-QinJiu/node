@@ -106,6 +106,7 @@ ClueAnalysisStore.prototype.changeAccess = function(access) {
 ClueAnalysisStore.prototype.changeSource = function(source) {
     this.selectedSource = source;
 };
+
 ClueAnalysisStore.prototype.getClueStatics = function(result) {
     var dataObj = {};
     if (result.loading) {
