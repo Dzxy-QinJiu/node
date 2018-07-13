@@ -22,6 +22,7 @@ var userData = require('PUB_DIR/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
 import Spinner from 'CMP_DIR/spinner';
+import SalesClueItem from './view/salse-clue-item';
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
@@ -160,6 +161,21 @@ var SalesHomePage = React.createClass({
         });
         //获取新分配的客户
         this.getNewDistributeCustomer();
+        //获取销售线索列表
+        this.getSalesClueLists();
+    },
+    //获取销售线索列表
+    getSalesClueLists: function(lastId) {
+        var constObj = {
+            salesClueTypeFilter: this.state.salesClueTypeFilter,
+            rangParamsSalesClue: this.state.rangParamsSalesClue,
+            page_size: this.state.page_size,
+            sorterSalesClue: this.state.sorterSalesClue,
+        };
+        if (lastId){
+            constObj.id = lastId;
+        }
+        SalesHomeAction.getClueCustomerList(constObj,['customer_id']);
     },
     //获取呼入未接通的电话
     getMissCallTypeList: function(lastId){
@@ -323,6 +339,9 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://呼入未接通的电话
                 this.getScrollData(this.state.missCallObj, this.getMissCallTypeList);
                 break;
+            case ALL_LISTS_TYPE.SALES_CLUE://销售线索
+                this.getScrollData(this.state.salesClueObj, this.getSalesClueLists);
+                break;
         }
     },
     getScrollData: function(curDataObj, getDataFunction) {
@@ -420,6 +439,8 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
                 rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE);
                 break;
+            case ALL_LISTS_TYPE.SALES_CLUE:
+                rightPanel = this.renderSalesClue();
         }
         return rightPanel;
     },
@@ -608,6 +629,31 @@ var SalesHomePage = React.createClass({
 
         }
     },
+    //渲染销售线索
+    renderSalesClue: function() {
+        var data = _.get(this.state.salesClueObj,'data.list',[]);
+        return (
+            <div className="sales-clue-container" data-tracename="销售线索">
+                {this.renderLoadingAndErrAndNodataContent(this.state.salesClueObj)}
+                <GeminiScrollbar
+                    handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.SALES_CLUE)}
+                    listenScrollBottom={this.state.listenScrollBottom}
+                >
+                    {_.map(data, (item) => {
+                        return (
+                            <SalesClueItem
+                                salesClueItemDetail= {item}
+                                callNumber={this.state.callNumber}
+                                errMsg={this.state.errMsg}
+                            />
+                        );
+                    })}
+                </GeminiScrollbar>
+            </div>
+
+        );
+
+    },
     afterHandleMessage: function(messageObj) {
         SalesHomeAction.afterHandleMessage(messageObj);
     },
@@ -743,40 +789,40 @@ var SalesHomePage = React.createClass({
         var total = '';
         switch (type) {
             case ALL_LISTS_TYPE.SCHEDULE_TODAY:
-                total = this.state.scheduleTodayObj.data.total;
+                total = _.get(this.state.scheduleTodayObj,'data.total','');
                 break;
             case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
-                total = this.state.scheduleExpiredTodayObj.data.total;
+                total = _.get(this.state.scheduleExpiredTodayObj,'data.total','');
                 break;
             case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
-                total = this.state.hasExpiredTryCustomer.data.total;
-                break;
-            case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
-                total = this.state.willExpiredTryCustomer.data.total;
+                total = _.get(this.state.hasExpiredTryCustomer,'data.total','');
                 break;
             case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
-                total = this.state.willExpiredAssignCustomer.data.total;
+                total = _.get(this.state.willExpiredAssignCustomer,'data.total','');
                 break;
             case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
-                total = this.state.appIllegalObj.data.total;
+                total = _.get(this.state.appIllegalObj,'data.total','');
                 break;
             case ALL_LISTS_TYPE.LOGIN_FAILED:
-                total = this.state.loginFailedObj.data.total;
+                total = _.get(this.state.loginFailedObj,'data.total','');
                 break;
             case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
-                total = this.state.concernCustomerObj.data.total;
+                total = _.get(this.state.concernCustomerObj,'data.total','');
                 break;
             case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
-                total = this.state.recentLoginCustomerObj.data.total;
+                total = _.get(this.state.recentLoginCustomerObj, 'data.total', '');
                 break;
             case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
-                total = this.state.repeatCustomerObj.data.total;
+                total = _.get(this.state.repeatCustomerObj,'data.total','');
                 break;
             case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
-                total = this.state.newDistributeCustomer.data.total;
+                total = _.get(this.state.newDistributeCustomer,'data.total','');
                 break;
             case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
-                total = this.state.missCallObj.data.total;
+                total = _.get(this.state.missCallObj,'data.total','');
+                break;
+            case ALL_LISTS_TYPE.SALES_CLUE:
+                total = _.get(this.state.salesClueObj,'data.total','');
                 break;
         }
         return total;
@@ -850,14 +896,12 @@ var SalesHomePage = React.createClass({
                         </ul>
                     </div>
                     <div className="main-content-container" style={{height: rightContentHeight}}>
-                        <GeminiScrollbar>
-                            <div className="customer-list-left" data-tracename="客户分类">
-                                {this.renderDiffCustomerPanel()}
-                            </div>
-                            <div className={cls} data-tracename="客户详情">
-                                {this.renderCustomerContent()}
-                            </div>
-                        </GeminiScrollbar>
+                        <div className="customer-list-left" data-tracename="客户分类">
+                            {this.renderDiffCustomerPanel()}
+                        </div>
+                        <div className={cls} data-tracename="客户详情">
+                            {this.renderCustomerContent()}
+                        </div>
                     </div>
                     {/*该客户下的用户列表*/}
                     <RightPanel

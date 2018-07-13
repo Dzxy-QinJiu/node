@@ -225,6 +225,7 @@ var zh_CN = {
     'common.request.timeout': '请求超时',
     'common.callback': '回访',
     'common.callback.time': '回访时间',
+    'common.callback.analysis': '回访统计',
     'common.callback.person': '回访人',
     'common.has.callback': '已回访',
     'common.callback.customer': '回访客户',
@@ -1667,7 +1668,10 @@ var zh_CN = {
     'user.analysis.moveoutCustomer': '转出客户统计',
     'user.analysis.sales.users': '销售开通用户统计',
     'user.analysis.active.user.area.statistics': '活跃用户地域统计',
-
+    'user.analysis.account.login.statistics': '开通账号登录统计',
+    'user.analysis.account.count': '开通账号数',
+    'user.analysis.account.login.count': '实际登录数',
+    
     //销售首页-新增客户分析
     'customer.analysis': '客户分析',
     'customer.analysis.add.customer': '新增客户',
@@ -2326,6 +2330,11 @@ var zh_CN = {
     'clue.analysis.source.chart': '来源统计',
     'clue.analysis.classify.chart': '分类统计',
     'clue.analysis.avalibility.chart': '有效性统计',
-    'clue.analysis.assigned.chart': '签约统计'
+    'clue.analysis.assigned.chart': '签约统计',
+    'sales.home.sales.clue': '待处理的线索',
+    'sales.home.will.trace': '待跟进',
+    'sales.home.i.trace': '我',
+    'sales.home.fill.in.trace.content': '请输入跟进内容',
+    'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示'
 };
 export default zh_CN;
