@@ -2306,6 +2306,11 @@ var en_US = {
     'clue.analysis.ability': 'Effective',//有效
     'clue.analysis.inability': 'Invalid',//无效
     'clue.analysis.source.chart': 'Source statistics',//来源统计
-    'clue.analysis.classify.chart': 'Classify statistics'//分类统计
+    'clue.analysis.classify.chart': 'Classify statistics',//分类统计
+    'sales.home.sales.clue': 'Sales Clue to be handled',//待处理的线索
+    'sales.home.will.trace': 'To be followed up',//待跟进
+    'sales.home.i.trace': 'I',//我
+    'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
+    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.'//本条线索处理完毕后，将不在首页展示
 };
 export default en_US;

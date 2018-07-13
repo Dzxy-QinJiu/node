@@ -5,7 +5,6 @@
  */
 var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
-let userData = require('PUB_DIR/sources/user-data');
 function ClueCustomerActions() {
     this.generateActions(
         'setCurrentCustomer',
@@ -84,9 +83,10 @@ function ClueCustomerActions() {
         this.dispatch({error: false, loading: true});
         clueCustomerAjax.addCluecustomerTrace(submitObj).then((result) => {
             this.dispatch({error: false, loading: false, submitTip: result});
-            _.isFunction(callback) && callback();
+            _.isFunction(callback) && callback({error: false});
         },(errorMsg) => {
             this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get('failed.submit.trace.content','添加跟进内容失败')});
+            _.isFunction(callback) && callback({error: true});
         });
     };
     //把线索客户分配给对应的销售

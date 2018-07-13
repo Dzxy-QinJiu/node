@@ -288,3 +288,32 @@ exports.getNewDistributeCustomer = function(condition, rangParams, pageSize, sor
     });
     return Deferred.promise();
 };
+//查询线索客户
+exports.getClueCustomerList = function(constObj, unexist_fields) {
+    var sorter = constObj.sorterSalesClue;
+    var data = {
+        salesClueTypeFilter: JSON.stringify(constObj.salesClueTypeFilter),
+        rangParams: JSON.stringify(constObj.rangParamsSalesClue),
+    };
+    //不存在的字段
+    if (unexist_fields){
+        data.unexist_fields = JSON.stringify(unexist_fields);
+    }
+    if (constObj.id){
+        data.lastClueId = constObj.id;
+    }
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/saleshome/v2/range/clue/' + constObj.page_size + '/' + sorter.field + '/' + sorter.order,
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

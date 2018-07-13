@@ -2,6 +2,7 @@ var SalesHomeActions = require('../action/sales-home-actions');
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 const STATUS = {UNHANDLED: 'unhandled', HANDLED: 'handled'};
 import {ALL_LISTS_TYPE} from 'PUB_DIR/sources/utils/consts';
+
 function SalesHomeStore() {
     this.setInitState();
     this.bindActions(SalesHomeActions);
@@ -154,6 +155,16 @@ SalesHomeStore.prototype.setInitState = function() {
             total: ''
         }
     };
+    //销售线索
+    this.salesClueObj = {
+        loading: false,
+        errMsg: '',
+        curPage: 1,
+        data: {
+            list: [],
+            total: ''
+        }
+    };
     this.rangParams = [{//默认展示今天的数据
         from: TimeStampUtil.getTodayTimeStamp().start_time,
         to: TimeStampUtil.getTodayTimeStamp().end_time,
@@ -174,6 +185,13 @@ SalesHomeStore.prototype.setInitState = function() {
         type: 'time',
         name: 'allot_time'
     }];
+    //销售线索
+    this.rangParamsSalesClue = [{//时间范围参数
+        from: 0,
+        to: moment().valueOf(),
+        type: 'time',
+        name: 'source_time'
+    }];
     //最近登录的客户
     this.sorterLogin = {
         field: 'last_login_time',//排序字段
@@ -189,6 +207,13 @@ SalesHomeStore.prototype.setInitState = function() {
         field: 'last_contact_time',//排序字段
         order: 'descend'
     };
+    this.sorterSalesClue = {
+        field: 'start_time',
+        order: 'descend'
+    };
+    //availability 查询有效线索  有效 '0' 无效线索 '1'
+    //status 线索的类型 待分配 '0 ' 已分配 '1' 已跟进 '2'
+    this.salesClueTypeFilter = {status: '1,2',availability: '0'};
     //开始时间
     this.start_time = TimeStampUtil.getTodayTimeStamp().start_time;
     //结束时间
@@ -457,6 +482,28 @@ SalesHomeStore.prototype.afterHandleMessage = function(messageObj) {
         this.loginFailedObj.data.list = _.filter(data, item => item.id !== messageObj.noticeId);
         this.loginFailedObj.data.total = this.appIllegalObj.data.total - 1;
     }
-
+};
+SalesHomeStore.prototype.getClueCustomerList = function(clueCustomers) {
+    var salesClue = this.salesClueObj;
+    if (clueCustomers.loading) {
+        salesClue.loading = true;
+        salesClue.errMsg = '';
+    } else if (clueCustomers.error) {
+        salesClue.loading = false;
+        salesClue.errMsg = clueCustomers.errorMsg;
+    } else {
+        salesClue.loading = false;
+        salesClue.errMsg = '';
+        let data = clueCustomers.clueCustomerObj.result;
+        salesClue.data.list = _.isArray(data) ? salesClue.data.list.concat(data) : [];
+        salesClue.data.total = clueCustomers.clueCustomerObj.total;
+    }
+};
+//处理线索无效后在列表中删除该线索
+SalesHomeStore.prototype.afterRemarkClue = function(updateItem) {
+    this.salesClueObj.data.list = _.filter(this.salesClueObj.data.list, (item) => {
+        return item.id !== updateItem.id;
+    });
+    this.salesClueObj.data.total--;
 };
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');

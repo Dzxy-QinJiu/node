@@ -227,6 +227,11 @@ exports.updateCluecustomerDetail = function(submitObj) {
         }
     }
     data.updateObj = JSON.stringify(updateObj);
+    var type = 'manager';
+    if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER')){
+        type = 'user';
+    }
+    data.type = type;
     var Deferred = $.Deferred();
     updateCluecustomerDetailAjax && updateCluecustomerDetailAjax.abort();
     updateCluecustomerDetailAjax = $.ajax({

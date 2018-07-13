@@ -239,6 +239,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                     relatedCustomerName: customerName,
                     relatedCustomerId: customerId
                 });
+                _.isFunction(this.props.afterModifiedAssocaitedCustomer) && this.props.afterModifiedAssocaitedCustomer(curClueDetail);
                 clueCustomerAction.afterModifiedAssocaitedCustomer(curClueDetail);
             },
             error: (xhr) => {
@@ -506,11 +507,15 @@ class AssignClueAndSelectCustomer extends React.Component {
 AssignClueAndSelectCustomer.defaultProps = {
     curClueDetail: {},
     customer_id: '',
-    customer_name: ''
+    customer_name: '',
+    afterModifiedAssocaitedCustomer: function() {
+
+    }
 };
 AssignClueAndSelectCustomer.propTypes = {
     curClueDetail: React.PropTypes.object,
     customer_id: React.PropTypes.string,
     customer_name: React.PropTypes.string,
+    afterModifiedAssocaitedCustomer: React.PropTypes.func,
 };
 export default AssignClueAndSelectCustomer;

@@ -2328,6 +2328,11 @@ var zh_CN = {
     'clue.analysis.ability': '有效',
     'clue.analysis.inability': '无效',
     'clue.analysis.source.chart': '来源统计',
-    'clue.analysis.classify.chart': '分类统计'
+    'clue.analysis.classify.chart': '分类统计',
+    'sales.home.sales.clue': '待处理的线索',
+    'sales.home.will.trace': '待跟进',
+    'sales.home.i.trace': '我',
+    'sales.home.fill.in.trace.content': '请输入跟进内容',
+    'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示'
 };
 export default zh_CN;

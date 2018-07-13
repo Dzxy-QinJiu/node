@@ -73,4 +73,4 @@ var Dynamic = React.createClass({
     }
 });
 
-module.exports = Dynamic;
+module.exports = Dynamic;
