@@ -38,7 +38,7 @@ module.exports = {
         echartsEefung: ['echarts-eefung'],
         reactRel: ['react', 'react-dom', 'react-intl',
             'intl-messageformat', 'react-router', 'bootstrap',
-            'react-bootstrap'],
+            'react-bootstrap','react-date-picker'],
         antd: ['antd'],
         vendor: [path.join(__dirname, 'portal', 'vendors.js')]
     },
