@@ -11,9 +11,6 @@ function ClueAnalysisStore() {
     this.bindActions(ClueAnalysisAction);
 }
 ClueAnalysisStore.prototype.setInitState = function() {
-    // this.clueStageList = [];//线索阶段分析列表
-    // this.getClueStageLoading = false;//正在获取线索阶段分析
-    // this.getClueStageErrMsg = false;//获取线索阶段分析失败
     this.customersList = [];//要展示的客户
     this.getCustomersLoading = false;//正在获取客户
     this.getCustomersErrMsg = '';//获取客户失败
