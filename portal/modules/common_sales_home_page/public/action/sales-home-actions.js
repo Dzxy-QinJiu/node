@@ -1,12 +1,13 @@
 var salesHomeAjax = require('../ajax/sales-home-ajax');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
-
+var salesClueAjax = require('MOD_DIR/clue_customer/public/ajax/clue-customer-ajax');
 function SalesHomeActions() {
     this.generateActions(
         'setInitState',//设置初始化数据
         'afterHandleStatus',//修改日程状态后的处理
-        'afterHandleMessage'//处理消息后的处理
+        'afterHandleMessage',//处理消息后的处理
+        'afterRemarkClue'//标记日程无效后的处理
     );
     this.getPhoneTotal = function(reqData) {
         let type = 'manager';
@@ -128,6 +129,20 @@ function SalesHomeActions() {
                 error: true,
                 loading: false,
                 errorMsg: errorMsg || Intl.get('failed.get.crm.list', '获取客户列表失败')
+            });
+        });
+    };
+    //查询销售线索
+    this.getClueCustomerList = function(constObj, unexist_fields) {
+        this.dispatch({error: false, loading: true});
+        salesHomeAjax.getClueCustomerList(constObj, unexist_fields).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({error: false, loading: false, clueCustomerObj: result});
+        }, (errorMsg) => {
+            this.dispatch({
+                error: true,
+                loading: false,
+                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
             });
         });
     };

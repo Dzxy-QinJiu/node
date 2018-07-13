@@ -123,6 +123,8 @@ export const ALL_LISTS_TYPE = {
     NEW_DISTRIBUTE_CUSTOMER: 'new_distribute_customer',//新分配的客户
     HAS_NO_CONNECTED_PHONE: 'has_no_connected_phone',//你有未接听的来电
     LOGIN_FAILED: 'loginFailed',//登录失败
+    SALES_CLUE: 'sales_clue',//销售线索
+
 };
 export const ALL_CUSTOMER_LISTS_TYPE = [
     {value: ALL_LISTS_TYPE.SCHEDULE_TODAY, name: Intl.get('sales.frontpage.will.contact.today', '今日待联系')},//今日计划联系日程列表
@@ -155,6 +157,11 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
         value: ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE,
         name: Intl.get('sales.frontpage.has.no.conneted', '您有电话未接听')
     },
+    {
+        value: ALL_LISTS_TYPE.SALES_CLUE,
+        name: Intl.get('sales.home.sales.clue', '待处理的线索')
+
+    }
 
 ];
 

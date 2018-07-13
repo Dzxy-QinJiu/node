@@ -16,6 +16,7 @@ var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
 const noop = function() {
 };
+require('../css/clue-right-panel.less');
 class ClueRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -205,6 +206,7 @@ class ClueRightPanel extends React.Component {
                                     modifySuccess={this.changeUserFieldSuccess}
                                     saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
                                     validators={[{validator: this.validatorClueNameBeforSubmit}]}
+                                    disabled={hasNoPrivilegeEdit}
                                 />
                             </h5>
                             <div className="clue_detail_content">
@@ -395,6 +397,7 @@ class ClueRightPanel extends React.Component {
                         </div>
                         <AssignClueAndSelectCustomer
                             curClueDetail={curCustomer}
+                            afterModifiedAssocaitedCustomer={this.props.afterModifiedAssocaitedCustomer}
                         />
                     </GeminiScrollbar>
                 </div>
@@ -413,6 +416,7 @@ ClueRightPanel.defaultProps = {
     updateClueSource: noop,
     updateClueChannel: noop,
     updateClueClassify: noop,
+    afterModifiedAssocaitedCustomer: noop,
 };
 ClueRightPanel.propTypes = {
     curCustomer: React.PropTypes.object,
@@ -424,6 +428,7 @@ ClueRightPanel.propTypes = {
     updateClueSource: React.PropTypes.func,
     updateClueChannel: React.PropTypes.func,
     updateClueClassify: React.PropTypes.func,
+    afterModifiedAssocaitedCustomer: React.PropTypes.func,
 
 };
 export default ClueRightPanel;

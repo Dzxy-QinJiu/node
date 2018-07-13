@@ -188,7 +188,14 @@ var UserAnlyis = React.createClass({
             );
         }
     },
-
+    // 获取一段时间开通账号登录情况的权限
+    getAccountAuthType() {
+        let type = 'self';
+        if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+            type = 'all';
+        }
+        return type;
+    },
     //获取图表
     getCharts: function() {
         //从 unknown 到 未知 的映射
@@ -198,7 +205,6 @@ var UserAnlyis = React.createClass({
 
         //销售不展示团队的数据统计
         const hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
-
         return [{
             title: Intl.get('user.analysis.user.add', '用户-新增'),
             chartType: 'line',
@@ -267,6 +273,71 @@ var UserAnlyis = React.createClass({
             data: this.state.teamOrMemberAnalysis.data,
             nameValueMap: unknownDataMap,
             resultType: this.state.teamOrMemberAnalysis.resultType,
+        }, {
+            title: Intl.get('user.analysis.account.login.statistics', '开通账号登录统计'),
+            url: '/rest/analysis/user/v3/:login_type/login/detail',
+            argCallback: (arg) => {
+                let query = arg.query;
+
+                if (query) {
+                    if (query.starttime && query.endtime) {
+                        query.grant_create_begin_date = query.starttime;
+                        query.grant_create_end_date = query.endtime;
+                    }
+                    // 团队参数
+                    if (query.team_ids ) {
+                        query.sales_team_id = query.team_ids;
+                        delete query.team_ids;
+                    }
+                }
+            },
+            conditions: [
+                {
+                    name: 'app_id',
+                    value: this.props.selectedAppId,
+                },
+                {
+                    name: 'login_type',
+                    value: this.getAccountAuthType(),
+                    type: 'params'
+                }
+            ],
+            chartType: 'table',
+            option: {
+                columns: [
+                    {
+                        title: Intl.get('sales.home.sales', '销售'),
+                        dataIndex: 'member_name',
+                        width: '40%',
+                    },
+                    {
+                        title: Intl.get('user.analysis.account.count', '开通账号数'),
+                        dataIndex: 'new_users',
+                        align: 'right',
+                        width: '30%',
+                    },
+                    {
+                        title: Intl.get('user.analysis.account.login.count', '实际登录数'),
+                        dataIndex: 'login_user',
+                        align: 'right',
+                        width: '30%',
+                    }
+                ],
+            },
+            cardContainer: {
+                selectors: [{
+                    optionsCallback: () => {
+                        return this.props.appList.map( (item) => {
+                            return {
+                                name: item.client_name,
+                                value: item.client_id
+                            };
+                        } );
+                    },
+                    activeOption: this.props.selectedAppId,
+                    conditionName: 'app_id',
+                }],
+            },
         }];
     },
 

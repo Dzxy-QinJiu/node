@@ -34,3 +34,13 @@ exports.getExpireCustomer = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+//获取线索客户列表
+exports.getSalesClueList = function(req, res) {
+    salesHomeService.getSalesClueList(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        })
+        .on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};

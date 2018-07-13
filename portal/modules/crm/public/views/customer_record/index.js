@@ -833,4 +833,4 @@ const CustomerRecord = React.createClass({
         );
     }
 });
-module.exports = CustomerRecord;
+module.exports = CustomerRecord;

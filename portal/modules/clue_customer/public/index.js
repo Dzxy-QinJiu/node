@@ -436,16 +436,18 @@ const ClueCustomer = React.createClass({
                 'customer_id': item.id,
                 'remark': textareVal
             };
-            clueCustomerAction.addCluecustomerTrace(submitObj, () => {
-                item.addTraceContent = false;
-                if (_.isArray(item.customer_traces) && item.customer_traces.length) {
-                    item.customer_traces[0].remark = textareVal;
-                } else {
-                    item.customer_traces = [{'remark': textareVal}];
+            clueCustomerAction.addCluecustomerTrace(submitObj, (result) => {
+                if (!result.error){
+                    item.addTraceContent = false;
+                    if (_.isArray(item.customer_traces) && item.customer_traces.length) {
+                        item.customer_traces[0].remark = textareVal;
+                    } else {
+                        item.customer_traces = [{'remark': textareVal}];
+                    }
+                    this.setState({
+                        curCustomers: this.state.curCustomers
+                    });
                 }
-                this.setState({
-                    curCustomers: this.state.curCustomers
-                });
             });
         }
     },
@@ -661,15 +663,17 @@ const ClueCustomer = React.createClass({
                                         </div>
                                     </Col> : null
                                 }
-                                <Col sm={3} lg={3}>
-                                    <div className="remark-clue-container">
-                                        <Button disabled={this.state.isRemarkingItem === item.id ? true : false} type="primary" onClick={this.handleClickRemarkBtn.bind(this, item)} data-tracename="点击标记线索是否有效">
-                                            {/*没有该字段，或该字段为0，表示该线索有效，为1表示无效*/}
-                                            {!item.availability || item.availability === '0' ? Intl.get('sales.remark.clue.able','线索无效') : Intl.get('sales.remark.clue.enable', '线索有效')}
-                                            {this.state.isRemarkingItem === item.id ? <Icon type="loading"/> : null}
-                                        </Button>
-                                    </div>
-                                </Col>
+                                {hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') ?
+                                    <Col sm={3} lg={3}>
+                                        <div className="remark-clue-container">
+                                            <Button disabled={this.state.isRemarkingItem === item.id ? true : false} type="primary" onClick={this.handleClickRemarkBtn.bind(this, item)} data-tracename="点击标记线索是否有效">
+                                                {/*没有该字段，或该字段为0，表示该线索有效，为1表示无效*/}
+                                                {!item.availability || item.availability === '0' ? Intl.get('sales.remark.clue.able','线索无效') : Intl.get('sales.remark.clue.enable', '线索有效')}
+                                                {this.state.isRemarkingItem === item.id ? <Icon type="loading"/> : null}
+                                            </Button>
+                                        </div>
+                                    </Col>
+                                    : null}
                             </Row>
                         </div>
                     </div>
@@ -1011,7 +1015,6 @@ const ClueCustomer = React.createClass({
                             showFlag={this.state.rightPanelIsShow}
                             currentId={this.state.currentId}
                             hideRightPanel={this.hideRightPanel}
-                            refreshCustomerList={this.refreshCustomerList}
                             curCustomer={this.state.curCustomer}
                             accessChannelArray={this.state.accessChannelArray}
                             clueSourceArray={this.state.clueSourceArray}

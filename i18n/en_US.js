@@ -227,6 +227,7 @@ var en_US = {
     'common.request.timeout': 'Error. Request timeout',//'请求超时',
     'common.callback': 'Callback', //'回访',
     'common.callback.time': 'Callback time', // '回访时间'
+    'common.callback.analysis': 'Callback Analysis',//回访统计
     'common.callback.person': 'Callback person', // '回访人',
     'common.has.callback': 'Has callbacked', // '已回访',
     'common.callback.customer': 'Callback customer', // '回访客户',
@@ -1640,6 +1641,9 @@ var en_US = {
     'user.analysis.moveoutCustomer': 'Move-out customer ',// '转出客户统计',
     'user.analysis.sales.users': 'Sales and opening of user statistics',//销售开通用户统计
     'user.analysis.active.user.area.statistics': 'Active user area statistics',//活跃用户地域统计
+    'user.analysis.account.login.statistics': 'Account login statistics', // 开通账号登录统计
+    'user.analysis.account.count': 'Number of open accounts', // 开通账号数
+    'user.analysis.account.login.count': 'Actual number of login accounts', // 实际登录数
 
     //销售首页-新增客户分析
     'customer.analysis': 'Customer Analysis',//客户分析@
@@ -2302,6 +2306,13 @@ var en_US = {
     'clue.analysis.ability': 'Effective',//有效
     'clue.analysis.inability': 'Invalid',//无效
     'clue.analysis.source.chart': 'Source statistics',//来源统计
-    'clue.analysis.classify.chart': 'Classify statistics'//分类统计
+    'clue.analysis.classify.chart': 'Classify statistics',//分类统计
+    'clue.analysis.avalibility.chart': 'Validity statistics',//有效性统计
+    'clue.analysis.assigned.chart': 'Contract statistics',//签约统计
+    'sales.home.sales.clue': 'Sales Clue to be handled',//待处理的线索
+    'sales.home.will.trace': 'To be followed up',//待跟进
+    'sales.home.i.trace': 'I',//我
+    'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
+    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.'//本条线索处理完毕后，将不在首页展示
 };
 export default en_US;
