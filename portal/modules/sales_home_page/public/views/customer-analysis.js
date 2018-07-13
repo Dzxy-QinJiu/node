@@ -494,8 +494,10 @@ var CustomerAnalysis = React.createClass({
             dataField: 'total',
             processData: data => {
                 _.each(data, dataItem => {
-                    dataItem.name = dataItem.date_str.substr(5);
-                    dataItem.value = dataItem.active;
+                    if (dataItem.date_str) {
+                        dataItem.name = dataItem.date_str.substr(5);
+                        dataItem.value = dataItem.active;
+                    }
                 });
 
                 return data;
