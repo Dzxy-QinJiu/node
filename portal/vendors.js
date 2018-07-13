@@ -9,8 +9,8 @@ require('immutable');
 require('color');
 require('jquery');
 require('lodash');
-require('echarts-eefung');
 require('moment');
 require('noty');
 require('socket.io-client');
+
 

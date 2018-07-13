@@ -16,8 +16,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var config = require('./conf/config');
-var fs = require('fs');
-var HappyPack = require("happypack");
+var HappyPack = require('happypack');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -26,7 +25,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 var webpackMode = config.webpackMode || 'dev';
 
 //webpack entry入口
-var entry = function () {
+var entry = function() {
     var entryMap = {
         app: ['./portal/public/index'],
         login: ['./portal/public/login']
@@ -57,93 +56,93 @@ var loadersLists = [
     {
         test: /(\.js|\.jsx)$/,
         use: [
-            {loader: "happypack/loader?id=js"}
+            {loader: 'happypack/loader?id=js'}
         ],
         include: [
-            path.join(__dirname, "portal"),
-            path.join(__dirname, "node_modules/component-util")
+            path.join(__dirname, 'portal'),
+            path.join(__dirname, 'node_modules/component-util')
         ]
     },
     {
         test: /\.(png|jpg)$/,
         use: [
-            {loader: "url?limit=8192"}
+            {loader: 'url?limit=8192'}
         ],
         include: [
-            path.resolve(__dirname, "portal")
+            path.resolve(__dirname, 'portal')
         ]
     },
     /* bootstrap-webpack config start */
     {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
         use: [
-            {loader: "url?limit=10000&mimetype=application/font-woff"}
+            {loader: 'url?limit=10000&mimetype=application/font-woff'}
         ],
         include: [
-            path.resolve(__dirname, "portal"),
-            path.resolve(__dirname, "node_modules/bootstrap")
+            path.resolve(__dirname, 'portal'),
+            path.resolve(__dirname, 'node_modules/bootstrap')
         ]
     },
     {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         use: [
-            {loader: "url?limit=10000&mimetype=application/octet-stream"}
+            {loader: 'url?limit=10000&mimetype=application/octet-stream'}
         ],
         include: [
-            path.resolve(__dirname, "portal"),
-            path.resolve(__dirname, "node_modules/bootstrap")
+            path.resolve(__dirname, 'portal'),
+            path.resolve(__dirname, 'node_modules/bootstrap')
         ]
     },
     {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: [
-            {loader: "file"}
+            {loader: 'file'}
         ],
         include: [
-            path.resolve(__dirname, "portal"),
-            path.resolve(__dirname, "node_modules/bootstrap")
+            path.resolve(__dirname, 'portal'),
+            path.resolve(__dirname, 'node_modules/bootstrap')
         ]
     },
     {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         use: [
-            {loader: "url?limit=10000&mimetype=image/svg+xml"}
+            {loader: 'url?limit=10000&mimetype=image/svg+xml'}
         ],
         include: [
-            path.resolve(__dirname, "portal"),
-            path.resolve(__dirname, "node_modules/bootstrap")
+            path.resolve(__dirname, 'portal'),
+            path.resolve(__dirname, 'node_modules/bootstrap')
         ]
     },
     /* bootstrap-webpack config end */
     /*css,less*/
     {
         test: /\.css?$/,
-        use: "happypack/loader?id=css",
+        use: 'happypack/loader?id=css',
         include: [
-            path.resolve(__dirname, "portal"),
-            path.resolve(__dirname, "node_modules/bootstrap"),
-            path.resolve(__dirname, "node_modules/antd"),
-            path.resolve(__dirname, "node_modules/rc-calendar"),
-            path.resolve(__dirname, "node_modules/react-date-picker"),
-            path.resolve(__dirname, "node_modules/antc"),
-            path.resolve(__dirname, "node_modules/react-big-calendar")
+            path.resolve(__dirname, 'portal'),
+            path.resolve(__dirname, 'node_modules/bootstrap'),
+            path.resolve(__dirname, 'node_modules/antd'),
+            path.resolve(__dirname, 'node_modules/rc-calendar'),
+            path.resolve(__dirname, 'node_modules/react-date-picker'),
+            path.resolve(__dirname, 'node_modules/antc'),
+            path.resolve(__dirname, 'node_modules/react-big-calendar')
         ]
     },
     {
         test: /\.less$/,
-        use: "happypack/loader?id=less",
+        use: 'happypack/loader?id=less',
         include: [
-            path.resolve(__dirname, "portal"),
-            path.resolve(__dirname, "node_modules/antc")
+            path.resolve(__dirname, 'portal'),
+            path.resolve(__dirname, 'node_modules/antc')
         ]
     },
     {
         test: /\.json$/,
         use: [
-            {loader: "json"}
+            {loader: 'json'}
         ],
         include: [
-            path.resolve(__dirname, "portal")
+            path.resolve(__dirname, 'portal')
         ]
     }
 ];
@@ -159,17 +158,33 @@ var pluginLists = [
         '_': 'lodash',
         moment: 'moment',
         ReactIntl: 'react-intl',
-        Intl: [path.resolve(__dirname, "portal/public/intl/intl.js"), "default"],
-        Trace: path.resolve(__dirname, "portal/lib/trace"),
-        oplateConsts: path.resolve(__dirname, "portal/lib/consts.js"),
+        Intl: [path.resolve(__dirname, 'portal/public/intl/intl.js'), 'default'],
+        Trace: path.resolve(__dirname, 'portal/lib/trace'),
+        oplateConsts: path.resolve(__dirname, 'portal/lib/consts.js'),
     }),
     new webpack.DllReferencePlugin({
         context: path.join(__dirname),
-        manifest: require("./dll/reactRel-manifest.json")
+        manifest: require('./dll/reactRel-manifest.json')
     }),
     new webpack.DllReferencePlugin({
         context: path.join(__dirname),
-        manifest: require("./dll/vendor-manifest.json")
+        manifest: require('./dll/vendor-manifest.json')
+    }),
+    new webpack.DllReferencePlugin({
+        context: path.join(__dirname),
+        manifest: require('./dll/echarts-manifest.json')
+    }),
+    new webpack.DllReferencePlugin({
+        context: path.join(__dirname),
+        manifest: require('./dll/echartsEefung-manifest.json')
+    }),
+    new webpack.DllReferencePlugin({
+        context: path.join(__dirname),
+        manifest: require('./dll/echartMapJson-manifest.json')
+    }),
+    new webpack.DllReferencePlugin({
+        context: path.join(__dirname),
+        manifest: require('./dll/antd-manifest.json')
     }),
     new HappyPack(jsLoader),
     new HappyPack(cssLoader),
@@ -188,7 +203,7 @@ if (webpackMode === 'production') {
     pluginLists.push(new CleanWebpackPlugin(['dist']));
     pluginLists.push(new webpack.DefinePlugin({
         'process.env': {
-            'NODE_ENV': JSON.stringify("production")
+            'NODE_ENV': JSON.stringify('production')
         }
     }));
 }
@@ -211,7 +226,7 @@ var webpackConfig = {
                     filename: '[name].bundle.js',
                     name: 'common',
                     test: /(\.js|\.jsx)$/,
-                    chunks: "initial",
+                    chunks: 'initial',
                     minChunks: 2
                 }
             }
@@ -223,12 +238,12 @@ var webpackConfig = {
         noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /History.min.js/]
     },
     resolveLoader: {
-        moduleExtensions: ["-loader"]
+        moduleExtensions: ['-loader']
     },
     resolve: {
         modules: [
-            path.join(__dirname, "portal"),
-            "node_modules"
+            path.join(__dirname, 'portal'),
+            'node_modules'
         ],
         //开发模式时使用符号链接所在位置而非其链接的目录的真实位置，方便本地模块调试
         //参考：https://doc.webpack-china.org/configuration/resolve/#resolve-symlinks
@@ -241,11 +256,11 @@ var webpackConfig = {
             alt: 'alt/dist/alt.min.js',
             jquery: 'jquery/dist/jquery.min.js',
             history$: 'history/umd/History.min.js',
-            OPLATE_EMITTER: path.resolve(__dirname, "portal/public/sources/utils/emitters"),
-            PUB_DIR: path.resolve(__dirname, "portal/public"),
-            LIB_DIR: path.resolve(__dirname, "portal/lib"),
-            CMP_DIR: path.resolve(__dirname, "portal/components"),
-            MOD_DIR: path.resolve(__dirname, "portal/modules"),
+            OPLATE_EMITTER: path.resolve(__dirname, 'portal/public/sources/utils/emitters'),
+            PUB_DIR: path.resolve(__dirname, 'portal/public'),
+            LIB_DIR: path.resolve(__dirname, 'portal/lib'),
+            CMP_DIR: path.resolve(__dirname, 'portal/components'),
+            MOD_DIR: path.resolve(__dirname, 'portal/modules'),
         }
     }
 };
