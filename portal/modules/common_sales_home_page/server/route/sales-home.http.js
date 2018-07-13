@@ -28,5 +28,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
+    }, {//获取线索客户
+        method: 'post',
+        path: '/rest/saleshome/v2/range/clue/:pageSize/:sortField/:sortOrder',
+        handler: 'getSalesClueList',
+        passport: {
+            needLogin: true
+        }
     }]
 };

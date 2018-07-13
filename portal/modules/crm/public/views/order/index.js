@@ -281,7 +281,7 @@ const OrderIndex = React.createClass({
                                         onChange={_this.onChange}
                                         order={order}/>)
                             );
-                        })) : <NoDataIconTip tipContent={Intl.get('common.no.more.order', '暂无订单')}/>
+                        })) : this.state.isAddFormShow ? null : <NoDataIconTip tipContent={Intl.get('common.no.more.order', '暂无订单')}/>
                         }
                     </GeminiScrollbar>
                 </div>

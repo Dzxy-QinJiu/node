@@ -56,7 +56,7 @@ class ContactItem extends React.Component {
                     to: phoneNumber.replace('-', '')
                 };
                 crmAjax.callOut(reqData).then((result) => {
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                     }
                 }, (errMsg) => {
@@ -77,19 +77,17 @@ class ContactItem extends React.Component {
         }
         return (
             <div className="contact-content">
-                <div className="pull-left contact-label">{Intl.get('call.record.contacts', '联系人')}:</div>
+                {this.props.showContactLabel ? <div className="pull-left contact-label">{Intl.get('call.record.contacts', '联系人')}:</div> : null}
                 {_.map(contactDetail, (contactItem, idx) => {
                     var contactName = $.trim(contactItem.name) || '';
                     return (
-                        <div className="contact-container">
+                        <div className="contact-container" key={idx}>
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
                                         var cls = classNames({
                                             'contact-name': contactItem.name
                                         });
-                                        var text = <span className="call-out-tip"><i
-                                            className="iconfont icon-phone-call-out-tip"></i>{Intl.get('common.sales.frontpage.click.phone', '点击即可拨打。')}</span>;
                                         return (
                                             <span className="contact-item"
                                                 onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
@@ -104,6 +102,30 @@ class ContactItem extends React.Component {
                                         );
                                     })}
                                 </span> : null}
+                            {_.isArray(contactItem.email) && contactItem.email.length ?
+                                <span className="email-container">
+                                    {_.map(contactItem.email,(emailItem) => {
+                                        return (
+                                            <span className="contact-item">
+                                                <i className="iconfont icon-email"></i>
+                                                {emailItem}
+                                            </span>
+                                        );
+                                    })}
+                                </span>
+                                : null}
+                            {_.isArray(contactItem.QQ) && contactItem.QQ.length ?
+                                <span className="qq-container">
+                                    {_.map(contactItem.QQ,(qqItem) => {
+                                        return (
+                                            <span className="contact-item">
+                                                <i className="iconfont icon-qq"></i>
+                                                {qqItem}
+                                            </span>
+                                        );
+                                    })}
+                                </span>
+                                : null}
                         </div>
                     );
                 })}
@@ -127,5 +149,15 @@ ContactItem.defaultProps = {
     customerData: {},//客户信息
     itemType: '',
     callNumber: '',//座机号
+    showContactLabel: true,//是否展示联系人这几个字
+    errMsg: ''
+};
+ContactItem.propTypes = {
+    contacts: React.PropTypes.object,//联系人信息
+    customerData: React.PropTypes.object,//客户信息
+    itemType: React.PropTypes.string,
+    callNumber: React.PropTypes.string,//座机号
+    showContactLabel: React.PropTypes.bool,//是否展示联系人这几个字
+    errMsg: React.PropTypes.string
 };
 export default ContactItem;

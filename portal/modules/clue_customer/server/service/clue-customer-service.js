@@ -8,8 +8,6 @@
 var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-var Promise = require('bluebird');
-var EventEmitter = require('events').EventEmitter;
 const restApis = {
     //获取线索来源
     getClueSource: '/rest/customer/v2/clue/clue_source/100/1',
@@ -26,7 +24,7 @@ const restApis = {
     //把线索客户分配给对应的销售
     distributeCluecustomerToSale: '/rest/customer/v2/clue/distribute/:type',
     //对线索客户的详情进行更新
-    updateCluecustomerDetail: '/rest/customer/v2/clue/update/manager/:updateItem',
+    updateCluecustomerDetail: '/rest/customer/v2/clue/update/:type/:updateItem',
     //线索名、电话唯一性验证
     checkOnlySalesClue: '/rest/customer/v2/clue/repeat/search',
     //将线索和客户进行关联
@@ -41,6 +39,8 @@ const restApis = {
     getClueAnalysis: '/rest/analysis/customer/v2/clue/customer/label',
     //获取线索统计
     getClueStatics: '/rest/customer/v2/clue/statistical/:field/:page_size/:num',
+    //获取线索趋势统计
+    getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
 
 };
 //查询客户
@@ -123,7 +123,7 @@ exports.updateCluecustomerDetail = function(req, res) {
     }
     return restUtil.authRest.put(
         {
-            url: restApis.updateCluecustomerDetail.replace(':updateItem', updateItem),
+            url: restApis.updateCluecustomerDetail.replace(':type', req.body.type).replace(':updateItem', updateItem),
             req: req,
             res: res
         }, JSON.parse(req.body.updateObj));
@@ -185,42 +185,38 @@ exports.getClueAnalysis = function(req, res) {
             res: res
         }, req.body);
 };
-function getClueStaticsList(req, res) {
+exports.getClueStatics = function(req, res) {
     let queryObj = {};
     queryObj.rang_params = JSON.parse(req.body.rangParams);
-    queryObj.query = req.body.query;
-    return new Promise((resolve, reject) => {
-        return restUtil.authRest.post({
-            url: restApis.getClueStatics.replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
+    if (req.body.query){
+        queryObj.query = JSON.parse(req.body.query);
+    }
+    return restUtil.authRest.post({
+        url: restApis.getClueStatics.replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
+        req: req,
+        res: res
+    }, queryObj);
+
+};
+//线索趋势统计
+exports.getClueTrendStatics = function(req, res) {
+    var url = restApis.getClueTrendStatics.replace(':type', req.params.type);
+    if (req.body.start_time || req.body.start_time === 0){
+        url += `?start_time=${req.body.start_time}`;
+    }
+    if (req.body.end_time){
+        url += `&end_time=${req.body.end_time}`;
+    }
+    if (req.body.field){
+        url += `&field=${req.body.field}`;
+    }
+    if (req.body.interval){
+        url += `&interval=${req.body.interval}`;
+    }
+    return restUtil.authRest.get(
+        {
+            url: url,
             req: req,
             res: res
-        }, queryObj, {
-            success: function(eventEmitter, data) {
-                resolve(data);
-            },
-            error: function(eventEmitter, errorDesc) {
-                reject(errorDesc.message);
-            }
-        });
-    });
-}
-//线索统计
-exports.getClueStatics = function(req, res) {
-    //有效数据 无效数据 “0” 有效，“1” 无效"
-    var emitter = new EventEmitter();
-    let getClueStaticsLists = [];
-    for (var i = 0; i < 2; i++) {
-        req.body.query = {'availability': i + ''};
-        getClueStaticsLists.push(getClueStaticsList(req, res));
-    }
-    Promise.all(getClueStaticsLists).then((dataList) => {
-        var responseData = {
-            'availabilityData': dataList[0] || [],
-            'inavaililityData': dataList[1] || [],
-        };
-        emitter.emit('success', responseData);
-    }).catch((errorMsg) => {
-        emitter.emit('error', errorMsg);
-    });
-    return emitter;
+        }, null);
 };

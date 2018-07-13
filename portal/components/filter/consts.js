@@ -1,0 +1,1 @@
+export const FILTER_COMMON_RATE_KEY = 'commonfilter';
