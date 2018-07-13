@@ -663,7 +663,7 @@ const ClueCustomer = React.createClass({
                                         </div>
                                     </Col> : null
                                 }
-                                {hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER') ?
+                                {hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') ?
                                     <Col sm={3} lg={3}>
                                         <div className="remark-clue-container">
                                             <Button disabled={this.state.isRemarkingItem === item.id ? true : false} type="primary" onClick={this.handleClickRemarkBtn.bind(this, item)} data-tracename="点击标记线索是否有效">

@@ -62,6 +62,9 @@ class SalesClueItem extends React.Component {
         });
     };
     handleSubmitContent = (item) => {
+        if (this.state.submitTraceLoading){
+            return;
+        }
         //获取填写的保存跟进记录的内容
         var textareVal = $.trim(this.state.submitContent);
         if (!textareVal) {
@@ -179,13 +182,13 @@ class SalesClueItem extends React.Component {
                     {hasRecordTrace ?
                         <div className="record-trace-container">
                             <span>
-                                {moment(salesClueItem.customer_traces[0].add_time).format(oplateConsts.DATE_FORMAT)}
+                                {_.get(salesClueItem,'customer_traces[0].add_time') ? moment(salesClueItem.customer_traces[0].add_time).format(oplateConsts.DATE_FORMAT) : ''}
                             </span>
                             <span className="trace-author">
                                 {Intl.get('sales.home.i.trace', '我')}:
                             </span>
                             <span>
-                                {salesClueItem.customer_traces[0].remark}
+                                {_.get(salesClueItem,'customer_traces[0].remark','')}
                                 <i className="iconfont icon-edit-btn"
                                     onClick={this.handleEditTrace.bind(this, salesClueItem)}></i>
                             </span>
@@ -303,7 +306,6 @@ class SalesClueItem extends React.Component {
                         />
                     </div>
                     : null}
-                {}
                 {this.state.isAssocaiteItem ?
                     <div className={associateCls}>
                         <ClueRightPanel
