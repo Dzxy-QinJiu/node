@@ -9,7 +9,7 @@ const OpenAppStore = require('./store');
 const FormItem = Form.Item;
 var TopNav = require('CMP_DIR/top-nav');
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import { USER_STATUS } from './consts';
+import { USER_STATUS, APP_STATUS } from './consts';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 const itemLayout = {
@@ -94,7 +94,7 @@ class OpenApp extends React.Component {
                     {
                         this.state.userList.data.map((user, index) => (
                             <Option key={index} value={user.user_id}>{user.user_name}</Option>
-                        ))
+                        )) 
                     }
                 </Select>
             </FormItem>
@@ -111,7 +111,7 @@ class OpenApp extends React.Component {
                     <div className="">
                         {
                             this.state.appList.data.map((app, index) => (
-                                <fieldset key={index} className='app-container'>
+                                <fieldset key={index} className={app.status === APP_STATUS.ENABLED ? 'app-container' : 'app-container disabled'}>
                                     <legend>{app.title}</legend>
                                     <p>{app.desc}</p>
                                     <div className="btn-bar">

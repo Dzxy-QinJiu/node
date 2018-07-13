@@ -7,7 +7,8 @@ openAppAjax.getAppList = params => {
         {
             title: '合同管理',
             desc: '合同管理可以帮您管理合同,统计和分析合同数据',
-            client_id: 'contract'
+            client_id: 'contract',
+            status: 1
         }
     ]);
 };
