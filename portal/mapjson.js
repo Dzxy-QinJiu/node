@@ -1,21 +1,3 @@
-// var fs = require('fs');
-// var statSync = fs.statSync;
-// var fspath = require('path');
-// var re = new RegExp('\\.json$');
-//
-// function requireJson(dir) {
-//     fs.readdirSync(dir)
-//         .forEach(function(path) {
-//             path = fspath.join(dir, path);
-//             if (statSync(path).isDirectory()) {
-//                 requireJson(path);
-//             } else if (path.match(re)) {
-//                 console.log('require("' + path + '");');
-//             }
-//         });
-// }
-//
-// requireJson('D:\\workplace\\curtao\\ketao-webapp\\node_modules\\echarts\\map\\json');
 require('echarts/map/json/china-cities.json');
 require('echarts/map/json/china-contour.json');
 require('echarts/map/json/china.json');
