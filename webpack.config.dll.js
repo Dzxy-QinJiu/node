@@ -31,16 +31,15 @@ if (webpackMode === 'production') {
 module.exports = {
     mode: webpackMode === 'production' ? 'production' : 'development',
     entry: {
-        world: [path.join(__dirname, 'portal/map', 'world.js')],
-        china: [path.join(__dirname, 'portal/map', 'china.js')],
-        province: [path.join(__dirname, 'portal/map', 'province.js')],
-        echarts: ['echarts'],
-        echartsEefung: ['echarts-eefung'],
+        vendor: [path.join(__dirname, 'portal', 'vendors.js')],
         reactRel: ['react', 'react-dom', 'react-intl',
             'intl-messageformat', 'react-router', 'bootstrap',
-            'react-bootstrap','react-date-picker'],
-        antd: ['antd'],
-        vendor: [path.join(__dirname, 'portal', 'vendors.js')]
+            'react-bootstrap','react-date-picker','antd'],
+        echarts: ['echarts'],
+        echartsEefung: ['echarts-eefung'],
+        world: [path.join(__dirname, 'portal/map', 'world.js')],
+        china: [path.join(__dirname, 'portal/map', 'china.js')],
+        province: [path.join(__dirname, 'portal/map', 'province.js')]
     },
     output: {
         path: path.join(__dirname, 'dll'),

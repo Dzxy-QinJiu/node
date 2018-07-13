@@ -176,11 +176,11 @@ function addDllPlugins() {
     var dllPluins = [
         new webpack.DllReferencePlugin({
             context: path.join(__dirname),
-            manifest: require('./dll/reactRel-manifest.json')
+            manifest: require('./dll/echarts-manifest.json')
         }),
         new webpack.DllReferencePlugin({
             context: path.join(__dirname),
-            manifest: require('./dll/vendor-manifest.json')
+            manifest: require('./dll/echartsEefung-manifest.json')
         }),
         new webpack.DllReferencePlugin({
             context: path.join(__dirname),
@@ -196,15 +196,11 @@ function addDllPlugins() {
         }),
         new webpack.DllReferencePlugin({
             context: path.join(__dirname),
-            manifest: require('./dll/echarts-manifest.json')
+            manifest: require('./dll/reactRel-manifest.json')
         }),
         new webpack.DllReferencePlugin({
             context: path.join(__dirname),
-            manifest: require('./dll/echartsEefung-manifest.json')
-        }),
-        new webpack.DllReferencePlugin({
-            context: path.join(__dirname),
-            manifest: require('./dll/antd-manifest.json')
+            manifest: require('./dll/vendor-manifest.json')
         })];
     dllPluins.forEach(function(plugin) {
         pluginLists.push(plugin);
