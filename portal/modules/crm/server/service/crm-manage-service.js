@@ -41,6 +41,8 @@ var crmRestApis = {
         updateName: '/rest/customer/v2/customer/:url_type/name',
         //修改客户标签
         updateLabel: '/rest/customer/v2/customer/:url_type/label',
+        //修改客户竞品
+        updateCompetitor: 'rest/customer/v2/customer/:url_type/competing_product',
         //修改客户地域
         updateAddress: '/rest/customer/v2/customer/:url_type/address',
         //更新客户行业
@@ -279,33 +281,36 @@ exports.updateCustomer = function(req, res, newCustomer) {
     let urlType = newCustomer.urlType;
     let url = crmRestApis.basic.updateComment;
     switch (type) {
-    case 'name':
-        url = crmRestApis.basic.updateName;
-        break;
-    case 'label':
-        url = crmRestApis.basic.updateLabel;
-        break;
-    case 'industry':
-        url = crmRestApis.basic.updateIndustry;
-        break;
-    case 'address':
-        url = crmRestApis.basic.updateAddress;
-        break;
-    case 'comment':
-        url = crmRestApis.basic.updateComment;
-        break;
-    case 'sales':
-        url = crmRestApis.basic.updateSales;
-        break;
-    case 'administrative_level':
-        url = crmRestApis.basic.updateAdministrativeLevel;
-        break;
-    case 'detail_address':
-        url = crmRestApis.basic.updateDetailAddress;
-        break;
-    case 'customer_interest':
-        url = crmRestApis.basic.updateInterest;
-        break;
+        case 'name':
+            url = crmRestApis.basic.updateName;
+            break;
+        case 'label':
+            url = crmRestApis.basic.updateLabel;
+            break;
+        case 'competing_products':
+            url = crmRestApis.basic.updateCompetitor;
+            break;
+        case 'industry':
+            url = crmRestApis.basic.updateIndustry;
+            break;
+        case 'address':
+            url = crmRestApis.basic.updateAddress;
+            break;
+        case 'comment':
+            url = crmRestApis.basic.updateComment;
+            break;
+        case 'sales':
+            url = crmRestApis.basic.updateSales;
+            break;
+        case 'administrative_level':
+            url = crmRestApis.basic.updateAdministrativeLevel;
+            break;
+        case 'detail_address':
+            url = crmRestApis.basic.updateDetailAddress;
+            break;
+        case 'customer_interest':
+            url = crmRestApis.basic.updateInterest;
+            break;
     }
     url = url.replace(':url_type', urlType);
     delete newCustomer.type;

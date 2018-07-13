@@ -1381,6 +1381,8 @@ var zh_CN = {
     'crm.order.add.stage': '添加销售阶段',
     'crm.order.no.budget': '暂无预算',
     'crm.order.add.budget': '添加预算',
+    'crm.input.new.competing': '请输入新竞品',
+    'crm.no.competing': '暂无竞品',
     // 客户管理end
 
     // 客户分析start

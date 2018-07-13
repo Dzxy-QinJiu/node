@@ -1366,6 +1366,8 @@ var en_US = {
     'crm.order.add.stage': 'Add sales stage',//添加销售阶段
     'crm.order.no.budget': 'No budget',//暂无预算
     'crm.order.add.budget': 'Add budget',//添加预算
+    'crm.input.new.competing': 'Please input new competitor',//请输入新竞品
+    'crm.no.competing': 'No competitor',//暂无竞品
     // 客户管理end
 
     //客户分析 start
