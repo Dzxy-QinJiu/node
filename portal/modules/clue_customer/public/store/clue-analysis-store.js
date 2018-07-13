@@ -4,7 +4,6 @@
  * Created by zhangshujuan on 2018/5/24.
  */
 var ClueAnalysisAction = require('../action/clue-analysis-action');
-import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
 function ClueAnalysisStore() {
     //初始化state数据
     this.setInitState();

@@ -607,25 +607,6 @@ class ClueAnalysisPanel extends React.Component {
     }
     //渲染概览页的chart
     renderChartsOverview() {
-        var clueStageCharts = [
-            {
-                title: Intl.get('clue.stage.statics', '线索阶段统计'),
-                chartType: 'funnel',
-                data: this.processClueStaticsStageData(),
-                layout: {
-                    sm: 24,
-                },
-                noExportCsv: true,
-                resultType: getResultType(this.state.clueStageList.loading, this.state.clueStageList.errMsg),
-                customOption: {
-                    valueField: 'showValue',
-                    minSize: '5%',
-                },
-                errMsgRender: () => {
-                    return getErrorTipAndRetryFunction(this.state.clueStageList.errMsg, this.getClueClassifyList);
-                }
-            }
-        ];
         var HEIGHT = $(window).height() - $('.clue-analysis-panel .ant-tabs-nav-container').height() - 10;
         const overviewCharts = this.getOverviewCharts();
         return (
