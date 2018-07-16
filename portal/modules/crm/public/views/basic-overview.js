@@ -229,7 +229,10 @@ var BasicOverview = React.createClass({
                     //更新列表中的标签
                     this.editBasicSuccess(submitData);
                     this.state.basicData.labels = tags;
-                    this.setState({basicData: this.state.basicData});
+                    this.setState({
+                        basicData: this.state.basicData,
+                        recommendTags: _.union(this.state.recommendTags, tags)
+                    });
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc();
                 }
@@ -254,8 +257,11 @@ var BasicOverview = React.createClass({
                     if (_.isFunction(successFunc)) successFunc();
                     //更新列表中的竞品
                     this.editBasicSuccess(submitData);
-                    this.state.basicData.labels = tags;
-                    this.setState({basicData: this.state.basicData});
+                    this.state.basicData.competing_products = competitors;
+                    this.setState({
+                        basicData: this.state.basicData,
+                        competitorList: _.union(this.state.competitorList, competitors)
+                    });
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc();
                 }
@@ -469,19 +475,15 @@ var BasicOverview = React.createClass({
                         salesTeamId={basicData.sales_team_id}
                         modifySuccess={this.editBasicSuccess}
                     />
-                    { _.isArray(basicData.competing_products) && basicData.competing_products.length ? (
-                        <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-competing-products">
-                            <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
-                                placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
-                                tags={basicData.competing_products}
-                                recommendTags={this.state.competitorList}
-                                data={basicData}
-                                enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL')}
-                                noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
-                                saveTags={this.saveEditCompetitors}
-                            />
-                        </dl>
-                    ) : null}
+                    <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
+                        placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
+                        tags={basicData.competing_products}
+                        recommendTags={this.state.competitorList}
+                        data={basicData}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL')}
+                        noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
+                        saveTags={this.saveEditCompetitors}
+                    />
                     <TagCard title={`${Intl.get('common.tag', '标签')}:`}
                         placeholder={Intl.get('crm.input.new.tag', '请输入新标签')}
                         data={basicData}
