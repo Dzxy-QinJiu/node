@@ -644,7 +644,7 @@ const ClueCustomer = React.createClass({
                                         </p> : null}
                                     </div>
                                 </Col> : null}
-                                {(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) ?
+                                {(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && this.isSalesManager())) ?
                                     <Col sm={3} lg={2}>
                                         <div className="action-button-wrap">
                                             <AntcDropdown

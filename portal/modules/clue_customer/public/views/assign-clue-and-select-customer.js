@@ -460,7 +460,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                     <div className="sales-assign-content">
                         <SalesSelectField
                             ref="distribute"
-                            enableEdit={(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER'))) ? true : false}
+                            enableEdit={(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && this.isSalesManager())) ? true : false}
                             isMerge={true}
                             updateMergeCustomer={this.distributeCustomerToSale}
                             customerId={curClueDetail.id}
