@@ -20,6 +20,7 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 var Spinner = require('CMP_DIR/spinner');
 import ClueRightPanel from './views/clue-right-panel';
 var userData = require('../../../public/sources/user-data');
+var user = userData.getUserData();
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 var rightPanelShow = false;
@@ -78,7 +79,7 @@ const ClueCustomer = React.createClass({
         }
         clueCustomerAction.getSalesManList();
         //管理员、销售领导默认展示待分配的线索客户 0
-        if (this.isSalesManager()){
+        if (userData.isSalesManager()){
             //管理员、销售领导 默认展示待分配的线索客户 status对应0
             clueCustomerAction.setFilterType(SELECT_TYPE.WILL_DISTRIBUTE);
         }else if (this.isOperation()){
@@ -329,10 +330,6 @@ const ClueCustomer = React.createClass({
                 {contactWay}
             </div>
         );
-    },
-    //是否是销售领导 或者是域管理员
-    isSalesManager() {
-        return userData.isSalesManager();
     },
     //是否是运营人员
     isOperation(){
@@ -644,7 +641,7 @@ const ClueCustomer = React.createClass({
                                         </p> : null}
                                     </div>
                                 </Col> : null}
-                                {(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && this.isSalesManager())) ?
+                                {(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) ?
                                     <Col sm={3} lg={2}>
                                         <div className="action-button-wrap">
                                             <AntcDropdown

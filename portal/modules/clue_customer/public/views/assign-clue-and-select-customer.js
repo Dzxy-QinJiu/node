@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/3/28.
  */
 var userData = require('../../../../public/sources/user-data');
+var user = userData.getUserData();
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var clueCustomerAction = require('../action/clue-customer-action');
 var SalesSelectField = require('MOD_DIR/crm/public/views/basic_data/sales-select-field');
@@ -48,10 +49,6 @@ class AssignClueAndSelectCustomer extends React.Component {
             isShowAddCustomer: false,//是否展示添加客户内容
             selectShowAddCustomer: false,
         };
-    }
-    //是否是销售领导
-    isSalesManager() {
-        return userData.isSalesManager();
     }
     componentDidMount(){
         this.getRecommendAssociatedCustomer();
@@ -460,7 +457,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                     <div className="sales-assign-content">
                         <SalesSelectField
                             ref="distribute"
-                            enableEdit={(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && this.isSalesManager())) ? true : false}
+                            enableEdit={(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) ? true : false}
                             isMerge={true}
                             updateMergeCustomer={this.distributeCustomerToSale}
                             customerId={curClueDetail.id}

@@ -8,6 +8,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import DatePicker from 'CMP_DIR/datepicker';
 var userData = require('PUB_DIR/sources/user-data');
+var user = userData.getUserData();
 var clueCustomerAction = require('../action/clue-customer-action');
 var clueCustomerStore = require('../store/clue-customer-store');
 import Trace from 'LIB_DIR/trace';
@@ -22,10 +23,6 @@ class ClueCustomerSearchBlock extends React.Component {
     }
     componentDidMount(){
         clueCustomerStore.listen(this.onStoreChange);
-    }
-    //是否是普通销售(多角色时：非销售领导、域管理员)的判断
-    isSales() {
-        return userData.hasRole('sales') && !userData.isSalesManager();
     }
     //是否是运营人员
     isOperation(){
@@ -56,7 +53,7 @@ class ClueCustomerSearchBlock extends React.Component {
     render() {
         //是否是运营人员
         var isOperation = this.isOperation();
-        var defaultValue = this.isSales() ? SELECT_TYPE.HAS_DISTRIBUTE : (isOperation ? '' : '0');
+        var defaultValue = user.isCommonSales ? SELECT_TYPE.HAS_DISTRIBUTE : (isOperation ? '' : '0');
         return (
             <div className="block search-input-select-block" data-tracename="筛选线索客户">
                 <div className="radio-group-wrap">
@@ -65,7 +62,7 @@ class ClueCustomerSearchBlock extends React.Component {
                         {isOperation ? <RadioButton value="">
                             {Intl.get('common.all', '全部')}
                         </RadioButton> : null}
-                        {this.isSales() ? null : <RadioButton value="0" >
+                        {user.isCommonSales ? null : <RadioButton value="0" >
                             {Intl.get('clue.customer.will.distribution','待分配')}
                         </RadioButton>}
                         <RadioButton value="1">
@@ -96,4 +93,12 @@ class ClueCustomerSearchBlock extends React.Component {
         );
     }
 }
+ClueCustomerSearchBlock.defaultProps = {
+    onTypeChange: function() {
+
+    }
+};
+ClueCustomerSearchBlock.propTypes = {
+    onTypeChange: React.PropTypes.func,
+};
 export default ClueCustomerSearchBlock;
