@@ -2,7 +2,7 @@
 @background:#eff4f9;
 .weekly-report-container{
   .weekly-report-wrap{
-    padding: 25px 50px 25px 30px;
+    padding: 84px 20px 25px 20px;
     .weekly-report-content{
       padding: 0;
       margin: 0 0 21px 17px;
@@ -101,7 +101,8 @@
                 }
                 tr{
                   .attendance-remark{
-                    margin: 10px;
+                    position: relative;
+                    padding-left: 10px;
                     .icon-update{
                       margin-left: 10px;
                       display: none;
@@ -127,6 +128,8 @@
                   &:hover{
                     .attendance-remark .icon-update{
                       display: inline-block;
+                      position: absolute;
+                      top:-3px;
                     }
                   }
                 }
@@ -141,6 +144,18 @@
                     border:none;
                   }
                 }
+              }
+            }
+            .contract-info-wrap{
+              .ant-alert-error{
+                width: 360px;
+                margin:20px auto;
+              }
+            }
+            .repayment-info-wrap{
+              .ant-alert-error{
+                width: 360px;
+                margin:20px auto;
               }
             }
           }

@@ -2339,6 +2339,7 @@ var zh_CN = {
     'sales.home.will.trace': '待跟进',
     'sales.home.i.trace': '我',
     'sales.home.fill.in.trace.content': '请输入跟进内容',
-    'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示'
+    'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示',
+    'analysis.weekly.report': '周报分析'
 };
 export default zh_CN;
