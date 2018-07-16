@@ -1381,6 +1381,8 @@ var zh_CN = {
     'crm.order.add.stage': '添加销售阶段',
     'crm.order.no.budget': '暂无预算',
     'crm.order.add.budget': '添加预算',
+    'crm.input.new.competing': '请输入新竞品',
+    'crm.no.competing': '暂无竞品',
     'crm.order.expected.deal': '预计成交',
     'crm.order.expected.deal.placeholder': '请选择预计成交时间',
     'crm.order.no.expected.deal.time': '暂无预计成交时间',

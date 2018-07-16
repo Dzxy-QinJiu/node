@@ -1366,6 +1366,8 @@ var en_US = {
     'crm.order.add.stage': 'Add sales stage',//添加销售阶段
     'crm.order.no.budget': 'No budget',//暂无预算
     'crm.order.add.budget': 'Add budget',//添加预算
+    'crm.input.new.competing': 'Please input new competitor',//请输入新竞品
+    'crm.no.competing': 'No competitor',//暂无竞品
     'crm.order.expected.deal': 'Expected deal',//预计成交
     'crm.order.expected.deal.placeholder': 'Please select expected deal time', //请选择预计成交时间
     'crm.order.no.expected.deal.time': 'No expected deal time',//暂无预计成交时间

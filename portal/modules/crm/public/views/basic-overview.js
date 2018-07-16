@@ -15,6 +15,7 @@ let CrmRepeatAction = require('../action/customer-repeat-action');
 import crmUtil from '../utils/crm-util';
 import crmAjax from '../ajax';
 import batchAjax from '../ajax/batch-change-ajax';
+import filterAjax from '../ajax/filter-ajax';
 import userData from 'PUB_DIR/sources/user-data';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import CustomerRecord from './customer_record';
@@ -38,7 +39,8 @@ var BasicOverview = React.createClass({
             customerRecordLoading: customerRecordState.customerRecordLoading,
             customerRecord: customerRecordState.customerRecord,
             appList: [],
-            applyFormShowFlag: false
+            applyFormShowFlag: false,
+            competitorList: []
         };
     },
     onChange: function() {
@@ -85,6 +87,7 @@ var BasicOverview = React.createClass({
         }
         basicOverviewAction.getBasicData(this.props.curCustomer);
         this.getRecommendTags();
+        this.getCompetitorList();
         setTimeout(() => {
             this.getCrmUserList(this.props.curCustomer);
         });
@@ -102,6 +105,14 @@ var BasicOverview = React.createClass({
                 let recommendTags = _.filter(data.result, tag => !isClueTag(tag) && !isTurnOutTag(tag) && !isHasCallBackTag(tag));
                 this.setState({recommendTags: recommendTags});
             }
+        });
+    },
+
+    getCompetitorList: function() {
+        filterAjax.getCompetitorList().then((list) => {
+            this.setState({competitorList: _.isArray(list) ? list : []});
+        }, (errorMsg) => {
+            this.setState({competitorList: []});
         });
     },
     //获取客户开通的用户列表
@@ -227,6 +238,33 @@ var BasicOverview = React.createClass({
             });
         }
     },
+
+    saveEditCompetitors: function(competitors, successFunc, errorFunc) {
+        let submitData = {
+            id: this.state.basicData.id,
+            competing_products: competitors,
+            type: 'competing_products',
+        };
+        if (this.props.isMerge) {
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
+            if (_.isFunction(successFunc)) successFunc();
+        } else {
+            crmAjax.updateCustomer(submitData).then(result => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    //更新列表中的竞品
+                    this.editBasicSuccess(submitData);
+                    this.state.basicData.labels = tags;
+                    this.setState({basicData: this.state.basicData});
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, errorMsg => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        }
+    },
+
 
     //是否有转出客户的权限
     enableTransferCustomer: function() {
@@ -434,8 +472,13 @@ var BasicOverview = React.createClass({
                     { _.isArray(basicData.competing_products) && basicData.competing_products.length ? (
                         <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-competing-products">
                             <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
+                                placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
                                 tags={basicData.competing_products}
-                                enableEdit={false}
+                                recommendTags={this.state.competitorList}
+                                data={basicData}
+                                enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL')}
+                                noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
+                                saveTags={this.saveEditCompetitors}
                             />
                         </dl>
                     ) : null}
