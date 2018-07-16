@@ -581,31 +581,31 @@ const WeeklyReportDetail = React.createClass({
     renderDiffTypeTable(type){
         var data = {}, retryFunction = '', columns = {};
         switch (type) {
-        case 'callInfo'://电话接通率
-            data = this.state.salesPhone;
-            retryFunction = this.getCallInfoData;
-            columns = this.getPhoneListColumn();
-            break;
-        case 'contactInfo'://合同信息
-            data = this.state.contractData;
-            retryFunction = this.getContractData;
-            columns = this.getContractListColumn();
-            break;
-        case 'repaymentInfo'://回款信息
-            data = this.state.repaymentData;
-            retryFunction = this.getRepaymentData;
-            columns = this.getRepaymentListColumn();
-            break;
-        case 'regionOverlay'://区域覆盖情况
-            data = this.state.regionOverlayData;
-            retryFunction = this.getRegionOverlayData;
-            columns = this.getRegionOverlayListColumn();
-            break;
-        case 'customerStageInfo'://客户阶段统计
-            data = this.state.customerStageData;
-            retryFunction = this.getCustomerStageData;
-            columns = this.getCustomerStageListColumn();
-            break;
+            case 'callInfo'://电话接通率
+                data = this.state.salesPhone;
+                retryFunction = this.getCallInfoData;
+                columns = this.getPhoneListColumn();
+                break;
+            case 'contactInfo'://合同信息
+                data = this.state.contractData;
+                retryFunction = this.getContractData;
+                columns = this.getContractListColumn();
+                break;
+            case 'repaymentInfo'://回款信息
+                data = this.state.repaymentData;
+                retryFunction = this.getRepaymentData;
+                columns = this.getRepaymentListColumn();
+                break;
+            case 'regionOverlay'://区域覆盖情况
+                data = this.state.regionOverlayData;
+                retryFunction = this.getRegionOverlayData;
+                columns = this.getRegionOverlayListColumn();
+                break;
+            case 'customerStageInfo'://客户阶段统计
+                data = this.state.customerStageData;
+                retryFunction = this.getCustomerStageData;
+                columns = this.getCustomerStageListColumn();
+                break;
         }
 
         if (data.loading) {
@@ -649,7 +649,7 @@ const WeeklyReportDetail = React.createClass({
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
         return height;
     },
     render: function() {

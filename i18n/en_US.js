@@ -2313,6 +2313,7 @@ var en_US = {
     'sales.home.will.trace': 'To be followed up',//待跟进
     'sales.home.i.trace': 'I',//我
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
-    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.'//本条线索处理完毕后，将不在首页展示
+    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
+    'analysis.weekly.report': 'Weekly report'//周报分析
 };
 export default en_US;

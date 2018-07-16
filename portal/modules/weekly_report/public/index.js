@@ -15,6 +15,8 @@ var classNames = require('classnames');
 var WeekReportUtil = require('./utils/weekly-report-utils');
 import WeeklyReportDetail from './view/weekly-report-detail';
 import {Alert} from 'antd';
+var TopNav = require('CMP_DIR/top-nav');
+var AnalysisMenu = require('CMP_DIR/analysis_menu');
 const WeeklyReport = React.createClass({
     getInitialState: function() {
         return {
@@ -102,7 +104,7 @@ const WeeklyReport = React.createClass({
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
         return height;
     },
     //左侧标题列表顶部的筛选区域
@@ -139,33 +141,34 @@ const WeeklyReport = React.createClass({
         var noShowReportDetail = this.state.teamDescArr.length === 0;
         return (
             <div className="weekly-report-container">
+                <TopNav>
+                    <AnalysisMenu/>
+                </TopNav>
                 <div className="weekly-report-wrap">
                     <div className="weekly-report-content clearfix">
-                        <GeminiScrollbar>
-                            <div className="col-md-3 weekly-report-title-wrap">
-                                <div className="search-bar clearfix">
-                                    {this.renderSearchBarHeader()}
+                        <div className="col-md-3 weekly-report-title-wrap">
+                            <div className="search-bar clearfix">
+                                {this.renderSearchBarHeader()}
+                            </div>
+                            <div>
+                                <div style={{height: reportTitleListHeight}}>
+                                    <GeminiScrollbar>
+                                        <div className="report-des-content">
+                                            {this.renderWeeklyReportTitle()}
+                                        </div>
+                                    </GeminiScrollbar>
                                 </div>
-                                <div>
-                                    <div style={{height: reportTitleListHeight}}>
-                                        <GeminiScrollbar>
-                                            <div className="report-des-content">
-                                                {this.renderWeeklyReportTitle()}
-                                            </div>
-                                        </GeminiScrollbar>
-                                    </div>
-                                </div>
+                            </div>
 
-                            </div>
-                            <div className="col-md-9 weekly-report-detail-wrap">
-                                {noShowReportDetail ? null : (
-                                    <WeeklyReportDetail
-                                        selectedItem={this.state.selectedReportItem}
-                                        memberList={this.state.memberList}
-                                    />
-                                )}
-                            </div>
-                        </GeminiScrollbar>
+                        </div>
+                        <div className="col-md-9 weekly-report-detail-wrap">
+                            {noShowReportDetail ? null : (
+                                <WeeklyReportDetail
+                                    selectedItem={this.state.selectedReportItem}
+                                    memberList={this.state.memberList}
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
