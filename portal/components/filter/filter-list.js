@@ -512,12 +512,11 @@ class FilterList extends React.Component {
                                 size="small"
                             >
                                 <div className="advanced-container">
-                                    <h4 className="title">
+                                    <h4 className="title" onClick={this.toggleCollapse.bind(this, 'advanced')}>
                                         {/* todo icon-advanced-filter */}
                                         <p className="">高级筛选</p>
                                         <Icon
-                                            type={this.state.collapsedAdvanced ? 'down' : 'up'}
-                                            onClick={this.toggleCollapse.bind(this, 'advanced')}
+                                            type={this.state.collapsedAdvanced ? 'down' : 'up'}                                            
                                         />
                                     </h4>
                                     {
