@@ -545,22 +545,18 @@ const ApplyUserForm = React.createClass({
                         help={this.getHelpMessage('selectAppIds')}
                         required
                     >
-                        {this.state.applyFrom === 'order' ? _.map(this.state.apps, app => {
-                            return (<SquareLogoTag name={app ? app.client_name : ''}
-                                logo={app ? app.client_logo : ''}/>);
-                        }) : (
-                            <Validator rules={[{
-                                required: true,
-                                message: Intl.get('user.app.select.please', '请选择应用'),
-                                type: 'array'
-                            }]}>
-                                <Select mode="tags" value={selectAppIds} name='selectAppIds'
-                                    dropdownClassName="apply-user-apps-dropdown"
-                                    placeholder={Intl.get('user.app.select.please', '请选择应用')}
-                                    onChange={this.handleChangeApps.bind(this)}>
-                                    {this.getAppOptions(selectAppIds)}
-                                </Select>
-                            </Validator>)}
+                        <Validator rules={[{
+                            required: true,
+                            message: Intl.get('user.app.select.please', '请选择应用'),
+                            type: 'array'
+                        }]}>
+                            <Select mode="tags" value={selectAppIds} name='selectAppIds'
+                                dropdownClassName="apply-user-apps-dropdown"
+                                placeholder={Intl.get('user.app.select.please', '请选择应用')}
+                                onChange={this.handleChangeApps.bind(this)}>
+                                {this.getAppOptions(selectAppIds)}
+                            </Select>
+                        </Validator>
                     </FormItem>
                     {_.isArray(selectAppIds) && selectAppIds.length ? (
                         <ApplyUserAppConfig apps={this.state.apps}

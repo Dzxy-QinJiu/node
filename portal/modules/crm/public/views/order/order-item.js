@@ -11,16 +11,23 @@ const hasPrivilege = require('../../../../../components/privilege/checker').hasP
 import Trace from 'LIB_DIR/trace';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import classNames from 'classnames';
 import ApplyUserForm from '../apply-user-form';
+import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
+
 //订单状态
 const ORDER_STATUS = {
     WIN: 'win',//赢单
     LOSE: 'lose'//丢单
 };
+//展示申请签约用户的阶段
+const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')];
+//展示申请试用用户的阶段
+const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')];
 const OrderItem = React.createClass({
     getInitialState: function() {
         return {
@@ -44,14 +51,12 @@ const OrderItem = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.isMerge || nextProps.order && nextProps.order.id !== this.props.order.id) {
-            this.setState({
-                formData: JSON.parse(JSON.stringify(nextProps.order)),
-                stage: nextProps.order.sale_stages,
-                apps: nextProps.order.apps,
-                customerName: nextProps.customerName
-            });
-        }
+        this.setState({
+            formData: JSON.parse(JSON.stringify(nextProps.order)),
+            stage: nextProps.order.sale_stages,
+            apps: nextProps.order.apps,
+            customerName: nextProps.customerName
+        });
     },
 
     //展示是否删除的模态框
@@ -162,10 +167,6 @@ const OrderItem = React.createClass({
                 if (result && result.code === 0) {
                     if (_.isFunction(successFunc)) successFunc();
                     OrderAction.afterEditOrder(saveObj);
-                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                    setTimeout(() => {
-                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(saveObj.customer_id);
-                    }, 200);
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(result || Intl.get('common.save.failed', '保存失败'));
                 }
@@ -191,10 +192,6 @@ const OrderItem = React.createClass({
                     if (_.isFunction(successFunc)) successFunc();
                     this.state.formData.sale_stages = sale_stages;
                     this.setState(this.state);
-                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                    setTimeout(() => {
-                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
-                    }, 1000);
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(result || Intl.get('common.save.failed', '保存失败'));
                 }
@@ -220,10 +217,6 @@ const OrderItem = React.createClass({
                     this.state.formData.apps = reqData.apps;
                     this.state.isAppPanelShow = false;
                     this.state.submitErrorMsg = '';
-                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                    setTimeout(() => {
-                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
-                    }, 1000);
                 } else {
                     this.state.submitErrorMsg = result || Intl.get('common.save.failed', '保存失败');
                 }
@@ -298,36 +291,19 @@ const OrderItem = React.createClass({
             }
         });
     },
+
+    getSelectedAppList(order){
+        let selectedAppList = [];
+        if (_.get(order, 'apps[0]')) {
+            selectedAppList = _.filter(this.props.appList, app => order.apps.indexOf(app.client_id) > -1);
+        }
+        return selectedAppList;
+    },
+
     renderOrderContent() {
         const order = this.state.formData;
-        let selectedAppList = [];
-        let selectedAppListId = [];
-        if (order.apps && order.apps.length > 0) {
-            selectedAppList = this.props.appList.filter(app => {
-                if (order.apps.indexOf(app.client_id) > -1) {
-                    return true;
-                }
-            });
-            selectedAppListId = _.map(selectedAppList, 'client_id');
-        }
-        const appList = this.props.appList;
-        let apps = [];
-        if (appList && appList.length > 0 && order.apps && order.apps.length > 0) {
-            apps = _.filter(appList, app => {
-                if (order.apps.indexOf(app.client_id) > -1) return true;
-            });
-        }
-
-        //申请按钮文字
-        let applyBtnText = '';
-        //申请类型
-        let applyType = Intl.get('common.trial.user', '试用用户');
-        if ([Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')].indexOf(order.sale_stages) > -1) {
-            applyBtnText = Intl.get('user.apply.user.official', '申请签约用户');
-            applyType = Intl.get('common.trial.official', '正式用户');
-        } else if ([Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')].indexOf(order.sale_stages) > -1) {
-            applyBtnText = Intl.get('common.apply.user.trial', '申请试用用户');
-        }
+        let selectedAppList = this.getSelectedAppList(order);
+        let selectedAppListId = _.map(selectedAppList, 'client_id');
 
         //区分删除和申请用户的类，用来控制模态框样式的不同
         let className = 'order-item order-view modal-container';
@@ -369,8 +345,8 @@ const OrderItem = React.createClass({
                         hasEditPrivilege={order.oppo_status ? false : true}
                         placeholder={Intl.get('crm.155', '请选择销售阶段')}
                         saveEditSelect={this.editOrderStage}
-                        noDataTip={Intl.get('crm.order.no.stage','暂无销售阶段')}
-                        addDataTip={Intl.get('crm.order.add.stage','添加销售阶段')}
+                        noDataTip={Intl.get('crm.order.no.stage', '暂无销售阶段')}
+                        addDataTip={Intl.get('crm.order.add.stage', '添加销售阶段')}
                     />
                 </div>
                 <div className="order-item-content order-application-list">
@@ -395,7 +371,7 @@ const OrderItem = React.createClass({
                         </div>
                     ) : (
                         <div className="order-application-div">
-                            {apps.map(function(app, i) {
+                            {selectedAppList.map(function(app, i) {
                                 return (
                                     <div className="app-item" key={i}>
                                         {app.client_name}
@@ -418,8 +394,23 @@ const OrderItem = React.createClass({
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                         hasEditPrivilege={order.oppo_status ? false : true}
                         saveEditInput={this.saveOrderBasicInfo}
-                        noDataTip={Intl.get('crm.order.no.budget','暂无预算')}
-                        addDataTip={Intl.get('crm.order.add.budget','添加预算')}
+                        noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
+                        addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
+                    />
+                </div>
+                <div className="order-item-content">
+                    <span className="order-key">{Intl.get('crm.order.expected.deal', '预计成交')}:</span>
+                    <BasicEditDateField
+                        width={EDIT_FEILD_WIDTH}
+                        id={order.id}
+                        field="predict_finish_time"
+                        value={order.predict_finish_time}
+                        placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
+                        hasEditPrivilege={order.oppo_status ? false : true}
+                        saveEditDateInput={this.saveOrderBasicInfo}
+                        disabledDate={disabledBeforeToday}
+                        noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
+                        addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
                     />
                 </div>
                 <div className="order-item-content">
@@ -438,23 +429,6 @@ const OrderItem = React.createClass({
                         addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                     />
                 </div>
-                {applyBtnText && this.props.isApplyButtonShow ? (
-                    <div className="order-item-content">
-                        <Button type="ghost" className="order-introduce-btn"
-                            onClick={this.showApplyForm.bind(this, applyType, order, apps)}
-                        >
-                            {applyBtnText}
-                        </Button>
-                        {this.state.isAlertShow ? (
-                            <Alert
-                                className="add-app-tip"
-                                message={Intl.get('crm.153', '请先添加应用')}
-                                type="error"
-                                showIcon
-                            />
-                        ) : null}
-                    </div>
-                ) : null}
                 {/*<div className="order-introduce">*/}
                 {/*{this.props.order.contract_id ? (*/}
                 {/*<Button type="ghost" className="order-introduce-btn pull-right"*/}
@@ -515,20 +489,42 @@ const OrderItem = React.createClass({
         );
     },
     renderOrderBottom(){
-        if (this.state.formData.oppo_status) return null;
+        let order = this.state.formData;
+        //申请按钮文字
+        let applyBtnText = '';
+        //申请类型
+        let applyType = Intl.get('common.trial.user', '试用用户');
+        if (APPLY_OFFICIALL_STAGES.indexOf(order.sale_stages) > -1) {
+            applyBtnText = Intl.get('user.apply.user.official', '申请签约用户');
+            applyType = Intl.get('common.trial.official', '正式用户');
+        } else if (APPLY_TIAL_STAGES.indexOf(order.sale_stages) > -1) {
+            applyBtnText = Intl.get('common.apply.user.trial', '申请试用用户');
+        }
+        let selectedAppList = this.getSelectedAppList(order);
         return (
             <div className="order-bottom-wrap">
+                {applyBtnText && this.props.isApplyButtonShow && order.oppo_status !== ORDER_STATUS.LOSE ? (//丢单后不展示申请用户按钮
+                    <Button className="order-bottom-button"
+                        onClick={this.showApplyForm.bind(this, applyType, order, selectedAppList)}
+                    >
+                        {applyBtnText}
+                    </Button>
+                ) : null}
                 {this.state.isClosingOrder ? (
-                    <span>{Intl.get('crm.order.closing', '订单关闭中')}<Icon type="loading"/></span>) : (
                     <span>
-                        <Button className='order-bottom-button'
-                            onClick={this.closeOrder.bind(this, ORDER_STATUS.WIN)}>{Intl.get('crm.order.status.win', '赢单')}</Button>
-                        <Button className='order-bottom-button'
-                            onClick={this.closeOrder.bind(this, ORDER_STATUS.LOSE)}>{Intl.get('crm.order.status.lose', '丢单')}</Button>
+                        {Intl.get('crm.order.closing', '订单关闭中')}<Icon type="loading"/>
+                    </span>) : order.oppo_status ? null : (
+                    <span>
+                        <Button className='order-bottom-button' onClick={this.closeOrder.bind(this, ORDER_STATUS.WIN)}>
+                            {Intl.get('crm.order.status.win', '赢单')}
+                        </Button>
+                        <Button className='order-bottom-button' onClick={this.closeOrder.bind(this, ORDER_STATUS.LOSE)}>
+                            {Intl.get('crm.order.status.lose', '丢单')}
+                        </Button>
                         {this.state.closeOrderErrorMsg ? (
                             <span className="order-close-error-tip">{this.state.closeOrderErrorMsg}</span>) : null}
                     </span>)}
-                <span className="order-user">{this.state.formData.user_name || ''}</span>
+                <span className="order-user">{order.user_name || ''}</span>
             </div>
         );
     },
@@ -550,6 +546,7 @@ const OrderItem = React.createClass({
                         customerName={this.state.customerName}
                         cancelApply={this.cancelApply}
                         applyFrom="order"
+                        appList={this.props.appList}
                     />
                 ) : null}
             </div>);
