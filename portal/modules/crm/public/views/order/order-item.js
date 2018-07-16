@@ -24,6 +24,10 @@ const ORDER_STATUS = {
     WIN: 'win',//赢单
     LOSE: 'lose'//丢单
 };
+//展示申请签约用户的阶段
+const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')];
+//展示申请试用用户的阶段
+const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')];
 const OrderItem = React.createClass({
     getInitialState: function() {
         return {
@@ -490,10 +494,10 @@ const OrderItem = React.createClass({
         let applyBtnText = '';
         //申请类型
         let applyType = Intl.get('common.trial.user', '试用用户');
-        if ([Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')].indexOf(order.sale_stages) > -1) {
+        if (APPLY_OFFICIALL_STAGES.indexOf(order.sale_stages) > -1) {
             applyBtnText = Intl.get('user.apply.user.official', '申请签约用户');
             applyType = Intl.get('common.trial.official', '正式用户');
-        } else if ([Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')].indexOf(order.sale_stages) > -1) {
+        } else if (APPLY_TIAL_STAGES.indexOf(order.sale_stages) > -1) {
             applyBtnText = Intl.get('common.apply.user.trial', '申请试用用户');
         }
         let selectedAppList = this.getSelectedAppList(order);

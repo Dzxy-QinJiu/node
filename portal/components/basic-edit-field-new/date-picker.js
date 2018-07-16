@@ -8,49 +8,24 @@
  */
 require('./css/basic-edit-field.less');
 import {Form, DatePicker} from 'antd';
-var FormItem = Form.Item;
-var classNames = require('classnames');
+const FormItem = Form.Item;
+import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
 
-var DatePickerEditField = React.createClass({
-    getDefaultProps: function() {
-        return {
-            id: '1',
-            //字段
-            field: 'time',
-            //是否有修改权限
-            hasEditPrivilege: false,
-            //显示时间对应的时间戳
-            value: '',
-            //编辑按钮的提示文案
-            editBtnTip: Intl.get('common.update', '修改'),
-            //不能选择的时间
-            disabledDate: null,
-            //展示的时间格式
-            format: '',
-            //请填写
-            placeholder: '',
-            //编辑区的宽度
-            width: '100%',
-            //无数据时的提示（没有修改权限时提示没有数据）
-            noDataTip: '',
-            //添加数据的提示（有修改权限时，提示补充数据）
-            addDataTip: '',
-            saveEditDateInput: function() {
-            }
-        };
-    },
-    getInitialState: function() {
-        return {
+class DatePickerEditField extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             loading: false,
             displayType: this.props.displayType || 'text',
             value: this.props.value,
             submitErrorMsg: '',
         };
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.id !== this.props.id) {
             this.setState({
                 value: nextProps.value,
@@ -59,16 +34,17 @@ var DatePickerEditField = React.createClass({
                 submitErrorMsg: '',
             });
         }
-    },
-    setEditable: function(e) {
+    }
+
+    setEditable(e) {
         this.setState({
             displayType: 'edit',
             value: this.state.value,
         });
         Trace.traceEvent(e, '点击编辑' + this.props.field);
-    },
+    }
 
-    handleSubmit: function(e) {
+    handleSubmit(e) {
         Trace.traceEvent(e, '保存对' + this.props.field + '的修改');
         var value = this.state.value;
         var saveObj = {
@@ -101,24 +77,26 @@ var DatePickerEditField = React.createClass({
         } else {
             setDisplayState();
         }
-    },
-    handleCancel: function(e) {
+    }
+
+    handleCancel(e) {
         this.setState({
             value: this.props.value,
             displayType: 'text',
             submitErrorMsg: ''
         });
         Trace.traceEvent(e, '取消对' + this.props.field + '的修改');
-    },
+    }
 
-    changeSourceTime: function(value) {
+    changeSourceTime(value) {
         let timestamp = value && value.valueOf() || '';
         this.setState({
             value: timestamp
         });
 
-    },
-    render: function() {
+    }
+
+    render() {
         var displayCls = classNames({
             'basic-edit-field': true,
             'editing': this.state.displayType === 'edit'
@@ -164,8 +142,8 @@ var DatePickerEditField = React.createClass({
                         {this.props.hideButtonBlock ? null :
                             <SaveCancelButton loading={this.state.loading}
                                 saveErrorMsg={this.state.submitErrorMsg}
-                                handleSubmit={this.handleSubmit}
-                                handleCancel={this.handleCancel}
+                                handleSubmit={this.handleSubmit.bind(this)}
+                                handleCancel={this.handleCancel.bind(this)}
                             />}
                     </div>
                 </Form>
@@ -178,6 +156,52 @@ var DatePickerEditField = React.createClass({
             </div>
         );
     }
-});
-
-module.exports = DatePickerEditField;
+}
+DatePickerEditField.defaultProps = {
+    id: '1',
+    //字段
+    field: 'time',
+    //展示类型，text:文本展示状态，edit:编辑状态
+    displayType: 'text',
+    //是否有修改权限
+    hasEditPrivilege: false,
+    //显示时间对应的时间戳
+    value: '',
+    //编辑按钮的提示文案
+    editBtnTip: Intl.get('common.update', '修改'),
+    //不能选择的时间
+    disabledDate: null,
+    //展示的时间格式
+    format: '',
+    //请填写
+    placeholder: '',
+    //编辑区的宽度
+    width: '100%',
+    //无数据时的提示（没有修改权限时提示没有数据）
+    noDataTip: '',
+    //添加数据的提示（有修改权限时，提示补充数据）
+    addDataTip: '',
+    //是否隐藏保存取消按钮
+    hideButtonBlock: false,
+    //保存时间框的修改方法
+    saveEditDateInput: function() {
+    }
+};
+const PropTypes = React.PropTypes;
+DatePickerEditField.propTypes = {
+    id: PropTypes.string,
+    field: PropTypes.string,
+    displayType: PropTypes.string,
+    hasEditPrivilege: PropTypes.bool,
+    value: PropTypes.string,
+    editBtnTip: PropTypes.string,
+    disabledDate: PropTypes.func,
+    format: PropTypes.string,
+    placeholder: PropTypes.string,
+    width: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+    noDataTip: PropTypes.string,
+    addDataTip: PropTypes.string,
+    hideButtonBlock: PropTypes.bool,
+    saveEditDateInput: PropTypes.func
+};
+export default DatePickerEditField;
