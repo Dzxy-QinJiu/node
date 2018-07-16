@@ -159,6 +159,10 @@ const OrderItem = React.createClass({
     //修改订单的预算、备注
     saveOrderBasicInfo: function(saveObj, successFunc, errorFunc) {
         saveObj.customer_id = this.props.order.customer_id;
+        //预算展示的是元，接口中需要的是万
+        if(_.has(saveObj,'budget')){
+            saveObj.budget = saveObj.budget / 10000;
+        }
         if (this.props.isMerge) {
             if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(saveObj);
             if (_.isFunction(successFunc)) successFunc();
@@ -389,8 +393,8 @@ const OrderItem = React.createClass({
                         id={order.id}
                         type="number"
                         field="budget"
-                        value={order.budget}
-                        afterValTip={Intl.get('contract.139', '万')}
+                        value={order.budget * 10000}
+                        afterValTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                         hasEditPrivilege={order.oppo_status ? false : true}
                         saveEditInput={this.saveOrderBasicInfo}

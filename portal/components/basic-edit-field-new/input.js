@@ -15,6 +15,7 @@ import {PassStrengthBar} from '../password-strength-bar';
 import Trace from 'LIB_DIR/trace';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
+import { parseAmount } from 'LIB_DIR/func';
 
 const BasicEditField = React.createClass({
     mixins: [FieldMixin],
@@ -216,11 +217,13 @@ const BasicEditField = React.createClass({
             'basic-edit-field': true,
             'editing': this.state.displayType === 'edit'
         });
-
-        var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
-
         var textBlock = null;
         if (this.state.displayType === 'text') {
+            var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
+            //如果是数字类型，展示时，千分位加，分隔的处理
+            if(this.props.type === 'number' && displayText){
+                displayText = parseAmount(displayText);
+            }
             if (displayText) {
                 textBlock = (
                     <div>
@@ -263,7 +266,8 @@ const BasicEditField = React.createClass({
                                         autoComplete="off"
                                         onFocus={this.onFocusInput.bind(this, this.props.type)}
                                         onBlur={this.onBlurInput.bind(this, this.props.type)}
-                                        autosize={{minRows: 2, maxRows: 6}}/>
+                                        autosize={{minRows: 2, maxRows: 6}}
+                                    />
                                     : <Input name="input"
                                         type={this.props.type}
                                         placeholder={this.props.placeholder}
@@ -272,6 +276,7 @@ const BasicEditField = React.createClass({
                                         autoComplete="off"
                                         onFocus={this.onFocusInput.bind(this, this.props.type)}
                                         onBlur={this.onBlurInput.bind(this, this.props.type)}
+                                        addonAfter={this.props.afterValTip || ''}
                                     />}
                             </Validator>
                         </FormItem>
