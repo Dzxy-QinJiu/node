@@ -142,3 +142,12 @@ exports.getClueStatics = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+//获取线索趋势统计
+exports.getClueTrendStatics = function(req, res) {
+    clueCustomerService.getClueTrendStatics(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};

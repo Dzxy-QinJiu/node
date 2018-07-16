@@ -1368,6 +1368,10 @@ var en_US = {
     'crm.order.add.budget': 'Add budget',//添加预算
     'crm.input.new.competing': 'Please input new competitor',//请输入新竞品
     'crm.no.competing': 'No competitor',//暂无竞品
+    'crm.order.expected.deal': 'Expected deal',//预计成交
+    'crm.order.expected.deal.placeholder': 'Please select expected deal time', //请选择预计成交时间
+    'crm.order.no.expected.deal.time': 'No expected deal time',//暂无预计成交时间
+    'crm.order.add.expected.deal.time': 'Add expected deal time',//添加预计成交时间
     // 客户管理end
 
     //客户分析 start
@@ -2309,10 +2313,13 @@ var en_US = {
     'clue.analysis.inability': 'Invalid',//无效
     'clue.analysis.source.chart': 'Source statistics',//来源统计
     'clue.analysis.classify.chart': 'Classify statistics',//分类统计
+    'clue.analysis.avalibility.chart': 'Validity statistics',//有效性统计
+    'clue.analysis.assigned.chart': 'Contract statistics',//签约统计
     'sales.home.sales.clue': 'Sales Clue to be handled',//待处理的线索
     'sales.home.will.trace': 'To be followed up',//待跟进
     'sales.home.i.trace': 'I',//我
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
-    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.'//本条线索处理完毕后，将不在首页展示
+    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
+    'analysis.weekly.report': 'Weekly report'//周报分析
 };
 export default en_US;

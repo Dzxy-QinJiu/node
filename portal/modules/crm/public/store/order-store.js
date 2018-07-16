@@ -124,8 +124,15 @@ OrderStore.prototype.afterEditOrder = function(order) {
     if (order.oppo_status) {//订单状态的修改（丢单、赢单）
         editOrder.oppo_status = order.oppo_status;
     } else {
-        editOrder.budget = order.budget;
-        editOrder.remarks = order.remarks;
+        if (_.has(order,'budget')){
+            editOrder.budget = order.budget;
+        }
+        if (_.has(order,'remarks')){
+            editOrder.remarks = order.remarks;
+        }
+        if (_.has(order,'predict_finish_time')){
+            editOrder.predict_finish_time = order.predict_finish_time;
+        }
         editOrder.isEdit = false;
     }
 };

@@ -1,13 +1,13 @@
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-import {Form, Input, Select} from 'antd';
+import {Form, Input, Select, DatePicker} from 'antd';
 const FormItem = Form.Item;
 const OrderAction = require('../../action/order-actions');
 import SearchIconList from '../../../../../components/search-icon-list';
 import ValidateMixin from '../../../../../mixins/ValidateMixin';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
-
+import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
 const OrderForm = React.createClass({
     mixins: [ValidateMixin],
 
@@ -63,6 +63,14 @@ const OrderForm = React.createClass({
         this.state.formData.apps = _.map(selectedApps, 'client_id');
         this.setState(this.state);
     },
+    changeExpectedTime: function(value) {
+        let timestamp = value && value.valueOf() || '';
+        let formData = this.state.formData;
+        formData.predict_finish_time = timestamp;
+        this.setState({
+            formDate: formData
+        });
+    },
     handleSelect: function() {
         Trace.traceEvent(this.getDOMNode(), '选择销售阶段');
     },
@@ -117,7 +125,6 @@ const OrderForm = React.createClass({
                         label={Intl.get('crm.148', '预算金额')}
                         labelCol={{span: 4}}
                         wrapperCol={{span: 20}}
-                        hasFeedback
                         validateStatus={this.getValidateStatus('budget')}
                         help={this.getHelpMessage('budget')}
                     >
@@ -128,6 +135,17 @@ const OrderForm = React.createClass({
                                 onChange={this.setField.bind(this, 'budget')}
                             />
                         </Validator>
+                    </FormItem>
+                    <FormItem
+                        label={Intl.get('crm.order.expected.deal', '预计成交')}
+                        labelCol={{span: 4}}
+                        wrapperCol={{span: 20}}
+                    >
+                        <DatePicker
+                            disabledDate={disabledBeforeToday}
+                            defaultValue={formData.predict_finish_time ? moment(formData.predict_finish_time) : null}
+                            onChange={this.changeExpectedTime.bind(this)}
+                            allowClear={false}/>
                     </FormItem>
                     <FormItem
                         className="order-app-edit-block"

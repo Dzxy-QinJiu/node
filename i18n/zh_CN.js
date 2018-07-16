@@ -1383,6 +1383,10 @@ var zh_CN = {
     'crm.order.add.budget': '添加预算',
     'crm.input.new.competing': '请输入新竞品',
     'crm.no.competing': '暂无竞品',
+    'crm.order.expected.deal': '预计成交',
+    'crm.order.expected.deal.placeholder': '请选择预计成交时间',
+    'crm.order.no.expected.deal.time': '暂无预计成交时间',
+    'crm.order.add.expected.deal.time': '添加预计成交时间',
     // 客户管理end
 
     // 客户分析start
@@ -2331,10 +2335,13 @@ var zh_CN = {
     'clue.analysis.inability': '无效',
     'clue.analysis.source.chart': '来源统计',
     'clue.analysis.classify.chart': '分类统计',
+    'clue.analysis.avalibility.chart': '有效性统计',
+    'clue.analysis.assigned.chart': '签约统计',
     'sales.home.sales.clue': '待处理的线索',
     'sales.home.will.trace': '待跟进',
     'sales.home.i.trace': '我',
     'sales.home.fill.in.trace.content': '请输入跟进内容',
-    'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示'
+    'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示',
+    'analysis.weekly.report': '周报分析'
 };
 export default zh_CN;
