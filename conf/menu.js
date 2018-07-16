@@ -305,17 +305,17 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['OPLATE_USER_ANALYSIS_SUMMARY']
             },
-            //周报统计
-            {
-                id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('menu.user.analysis', '运营分析'),
-                routePath: 'analysis/weekly_report',
-                privileges: [
-                    'CALLRECORD_ASKFORLEAVE_ADD',
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
-            },
+            // //周报统计
+            // {
+            //     id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
+            //     name: backendIntl.get('analysis.weekly.report', '周报分析'),
+            //     routePath: 'analysis/weekly_report',
+            //     privileges: [
+            //         'CALLRECORD_ASKFORLEAVE_ADD',
+            //     ],
+            //     //有这个权限，才显示入口图标
+            //     showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
+            // },
             {
                 id: 'SALES_HOME_PAGE', //唯一标识，销售首页
                 name: backendIntl.get('menu.sales.homepage', '销售主页'),
