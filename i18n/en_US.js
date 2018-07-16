@@ -156,6 +156,7 @@ var en_US = {
 
     'common.no.more.schedule': 'There is no schedule',//暂无计划
     'common.no.more.order': 'There is no order',//没有更多订单
+    'common.no.more.contract': 'No contract', // 暂无合同
     'common.no.more.trace.record': 'There is no trace record',//暂无跟进记录
     'common.no.clue': 'There is no clue',//暂无线索
     'common.no.audit': 'There is no audit',//暂无审计日志
@@ -1366,6 +1367,7 @@ var en_US = {
     'crm.order.add.stage': 'Add sales stage',//添加销售阶段
     'crm.order.no.budget': 'No budget',//暂无预算
     'crm.order.add.budget': 'Add budget',//添加预算
+    'crm.no.contract.tip': 'The customer has not yet added a contract.', // 该客户还没有添加过合同
     'crm.order.expected.deal': 'Expected deal',//预计成交
     'crm.order.expected.deal.placeholder': 'Please select expected deal time', //请选择预计成交时间
     'crm.order.no.expected.deal.time': 'No expected deal time',//暂无预计成交时间

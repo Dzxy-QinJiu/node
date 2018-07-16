@@ -7,6 +7,7 @@ var Contacts = require('./contacts');
 var Dynamic = require('./dynamic');
 var CrmSchedule = require('./schedule');
 var Order = require('./order');
+import Contract from './contract';
 var CustomerRecord = require('./customer_record');
 var crmAjax = require('../ajax');
 import Trace from 'LIB_DIR/trace';
@@ -22,10 +23,9 @@ const TAB_KEYS = {
     TRACE_TAB: '3',//跟进记录
     USER_TAB: '4',//用户
     ORDER_TAB: '5',//订单
-    DYNAMIC_TAB: '6',//动态
-    SCHEDULE_TAB: '7',//日程（联系计划）
-
-
+    CONTRACT_TAB: '6', // 合同
+    DYNAMIC_TAB: '7',//动态
+    SCHEDULE_TAB: '8'//日程（联系计划）
 };
 var CrmRightPanel = React.createClass({
     getInitialState: function() {
@@ -197,6 +197,16 @@ var CrmRightPanel = React.createClass({
                                         curCustomer={this.state.curCustomer}
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         showApplyUserForm={this.showApplyUserForm}
+                                    />
+                                ) : null}
+                            </TabPane>
+                            <TabPane
+                                tab={Intl.get('contract.125', '合同')}
+                                key={TAB_KEYS.CONTRACT_TAB}
+                            >
+                                {this.state.activeKey === TAB_KEYS.CONTRACT_TAB ? (
+                                    <Contract
+                                        curCustomer={this.state.curCustomer}
                                     />
                                 ) : null}
                             </TabPane>
