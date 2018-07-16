@@ -526,7 +526,14 @@ const WeeklyReportDetail = React.createClass({
     },
     getContractType(){
         let authType = 'common';
-        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+        if (hasPrivilege('KETAO_CONTRACT_ANALYSIS_REPORT_FORM')) {
+            authType = 'manager';
+        }
+        return authType;
+    },
+    getOverlayType(){
+        let authType = 'common';
+        if (hasPrivilege('KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER')) {
             authType = 'manager';
         }
         return authType;
@@ -566,7 +573,7 @@ const WeeklyReportDetail = React.createClass({
         var queryObj = _.clone(this.getQueryParams());
         queryObj.team_id = queryObj.team_ids;
         delete queryObj.team_ids;
-        let type = this.getContractType();
+        let type = this.getOverlayType();
         WeeklyReportDetailAction.getRegionOverlayInfo(queryObj, type);
     },
     //获取客户阶段情况
@@ -574,7 +581,7 @@ const WeeklyReportDetail = React.createClass({
         var queryObj = _.clone(this.getQueryParams());
         queryObj.team_id = queryObj.team_ids;
         delete queryObj.team_ids;
-        let type = this.getContractType();
+        let type = this.getOverlayType();
         WeeklyReportDetailAction.getCustomerStageInfo(queryObj, type);
     },
     //渲染不同的表格
