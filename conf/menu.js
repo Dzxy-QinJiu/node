@@ -353,29 +353,30 @@ class LeftMenuClass {
                         showPrivileges: ['OPLATE_ONLINE_USER_LIST']
                     }]
             },
-            {
-                id: 'CONTRACT',
-                name: backendIntl.get('menu.contract', '合同管理'),
-                routePath: 'contract',
-                subMenu: [{
-                    id: 'CONTRACT_LIST',
-                    name: backendIntl.get('menu.contract.list', '合同列表'),
-                    routePath: 'contract/list',
-                    privileges: [
-                        'OPLATE_CONTRACT_QUERY',
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ['OPLATE_CONTRACT_QUERY']
-                }, {
-                    id: 'CONTRACT_DASHBOARD',
-                    name: backendIntl.get('contract.151', '合同仪表盘'),
-                    routePath: 'contract/dashboard',
-                    privileges: [
-                        'OPLATE_REPAYMENT_ADD',
-                    ],
-                    showPrivileges: ['OPLATE_REPAYMENT_ADD']
-                }]
-            },
+            //TODO 合同管理的不展示，先注释掉
+            // {
+            //     id: 'CONTRACT',
+            //     name: backendIntl.get('menu.contract', '合同管理'),
+            //     routePath: 'contract',
+            //     subMenu: [{
+            //         id: 'CONTRACT_LIST',
+            //         name: backendIntl.get('menu.contract.list', '合同列表'),
+            //         routePath: 'contract/list',
+            //         privileges: [
+            //             'OPLATE_CONTRACT_QUERY',
+            //         ],
+            //         //有这个权限，才显示入口图标
+            //         showPrivileges: ['OPLATE_CONTRACT_QUERY']
+            //     }, {
+            //         id: 'CONTRACT_DASHBOARD',
+            //         name: backendIntl.get('contract.151', '合同仪表盘'),
+            //         routePath: 'contract/dashboard',
+            //         privileges: [
+            //             'OPLATE_REPAYMENT_ADD',
+            //         ],
+            //         showPrivileges: ['OPLATE_REPAYMENT_ADD']
+            //     }]
+            // },
             {
                 id: 'OPLATE_REPORT',//唯一标识
                 name: backendIntl.get('menu.report', '分析报告'),
