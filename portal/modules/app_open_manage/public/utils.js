@@ -17,7 +17,8 @@ export const asyncDispatcher = function(ajax, usePromise) {
                     _this.dispatch({ loading: false, data, paramObj, errorMsg: '' });
                     resolve({ data });
                 }, function(error) {
-                    _this.dispatch({ loading: false, data: null, errorMsg: error && error.message || error, paramObj });
+                    const errorObj = JSON.parse(error);
+                    _this.dispatch({ loading: false, data: null, errorMsg: errorObj && errorObj.message || errorObj, paramObj });
                     reject(error);
                 });
             });
@@ -25,7 +26,8 @@ export const asyncDispatcher = function(ajax, usePromise) {
         ajax(paramObj).then(function(data) {
             _this.dispatch({ loading: false, data, paramObj, errorMsg: '' });
         }, function(error) {
-            _this.dispatch({ loading: false, data: null, errorMsg: error && error.message || error, paramObj });
+            const errorObj = JSON.parse(error);
+            _this.dispatch({ loading: false, data: null, errorMsg: errorObj && errorObj.message || errorObj, paramObj });
         });
         
     };

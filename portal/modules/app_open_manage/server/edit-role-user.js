@@ -4,8 +4,7 @@ const ajax = require('../../common/ajax');
 const Promise = require('bluebird');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 
-
-exports.editAppRoleList = function(req, res, next) {
+exports.editRoleToUsers = function(req, res, next) {
     const Intl = new BackendIntl(req);
     const addParams = req.body.addParams;
     const delParams = req.body.delParams;
@@ -36,9 +35,8 @@ exports.editAppRoleList = function(req, res, next) {
                 });
             }
             else {
-                res.status(500).json({success: false, errorMsg: Intl.get('common.save.failed', '保存失败')});
+                res.status(500).json({ success: false, errorMsg: Intl.get('common.save.failed', '保存失败') });
             }
-
         })
         .catch(codeMessage => {
             res.status(500).json(codeMessage);
