@@ -114,7 +114,7 @@ class PhonePanel extends React.Component {
         //获取客户详情
         //只把客户详情赋值
         let paramObj = this.state.paramObj;
-        paramObj.customer_params = _.get(nextProps, 'paramObj.customer_params',null);
+        paramObj.customer_params = _.cloneDeep(_.get(nextProps, 'paramObj.customer_params',null));
         if (nextProps.paramObj.call_params) {
             var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
             if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
