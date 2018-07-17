@@ -138,7 +138,7 @@ class PhonePanel extends React.Component {
                 if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
                     this.setInitialData(phonemsgObj);
                 }
-                paramObj.call_params = _.get(nextProps, 'paramObj.call_params',null);
+                paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params',null));
             }
         }
         this.setState({
