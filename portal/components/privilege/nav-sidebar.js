@@ -410,9 +410,9 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
-    toggleNotificationPanel(flag, event) {
+    toggleNotificationPanel(event) {
         event.stopPropagation();
-        this.props.toggleNotificationPanel(flag);
+        this.props.toggleNotificationPanel();
     },
     getNotificationBlock: function() {
         var notificationLinks = this.getLinkListByPrivilege(NotificationLinkList);
@@ -420,7 +420,7 @@ var NavSidebar = React.createClass({
             return null;
         }
         return (
-            <div className="notification" onClick={this.toggleNotificationPanel.bind(this, '')}>
+            <div className="notification" onClick={this.toggleNotificationPanel}>
                 <i className="iconfont icon-tongzhi" title={Intl.get('menu.system.notification', '系统消息')}></i>
             </div>
         );
@@ -530,6 +530,10 @@ var NavSidebar = React.createClass({
     hideModalIntro: function() {
         this.saveModalClicked();
     },
+    closeNotificationPanel(event) {
+        event.stopPropagation();
+        this.props.closeNotificationPanel();
+    },
     render: function() {
         var windowHeight = this.navContainerHeightFnc();
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
@@ -538,7 +542,7 @@ var NavSidebar = React.createClass({
         var excludePathList = _.map(ExcludeLinkList, 'path');
         var _this = this;
         return (
-            <nav className="navbar" onClick={this.toggleNotificationPanel.bind(this, false)}>
+            <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
                     <div className="logo-and-menus" ref="logoAndMenus"
                     >
