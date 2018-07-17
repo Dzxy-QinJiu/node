@@ -74,14 +74,20 @@ var PageFrame = React.createClass({
     toggleNotificationPanel(flag) {
         if (flag === false) {
             this.setState({
-                isShowNotificationPanel: false
+                isShowNotificationPanel: false,
+                phonePanelShow: false
             });
         } else {
             this.setState({
                 isShowNotificationPanel: !this.state.isShowNotificationPanel
+            }, () => {
+                if (this.state.isShowNotificationPanel === false) {
+                    this.setState({
+                        phonePanelShow: false
+                    });
+                }
             });
         }
-
     },
     render: function() {
         var audioParamObj = this.state.audioParamObj;
