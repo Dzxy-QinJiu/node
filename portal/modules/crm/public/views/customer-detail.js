@@ -16,6 +16,7 @@ import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
 import {isEqualArray} from 'LIB_DIR/func';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
@@ -200,16 +201,20 @@ var CrmRightPanel = React.createClass({
                                     />
                                 ) : null}
                             </TabPane>
-                            <TabPane
-                                tab={Intl.get('contract.125', '合同')}
-                                key={TAB_KEYS.CONTRACT_TAB}
-                            >
-                                {this.state.activeKey === TAB_KEYS.CONTRACT_TAB ? (
-                                    <Contract
-                                        curCustomer={this.state.curCustomer}
-                                    />
-                                ) : null}
-                            </TabPane>
+                            {
+                                hasPrivilege('OPLATE_CONTRACT_QUERY') ? (
+                                    <TabPane
+                                        tab={Intl.get('contract.125', '合同')}
+                                        key={TAB_KEYS.CONTRACT_TAB}
+                                    >
+                                        {this.state.activeKey === TAB_KEYS.CONTRACT_TAB ? (
+                                            <Contract
+                                                curCustomer={this.state.curCustomer}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                ) : null
+                            }
                             <TabPane
                                 tab={Intl.get('crm.39', '动态')}
                                 key={TAB_KEYS.DYNAMIC_TAB}
