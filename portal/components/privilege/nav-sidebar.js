@@ -530,6 +530,10 @@ var NavSidebar = React.createClass({
     hideModalIntro: function() {
         this.saveModalClicked();
     },
+    closeNotificationPanel(event) {
+        event.stopPropagation();
+        this.props.closeNotificationPanel();
+    },
     render: function() {
         var windowHeight = this.navContainerHeightFnc();
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
@@ -538,11 +542,11 @@ var NavSidebar = React.createClass({
         var excludePathList = _.map(ExcludeLinkList, 'path');
         var _this = this;
         return (
-            <nav className="navbar">
+            <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
                     <div className="logo-and-menus" ref="logoAndMenus"
                     >
-                        <div className="header-logo">
+                        <div className="header-logo" >
                             <Logo />
                         </div>
                         <div className="collapse navbar-collapse">
