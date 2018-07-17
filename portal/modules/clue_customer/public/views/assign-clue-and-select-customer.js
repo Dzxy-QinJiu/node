@@ -49,10 +49,6 @@ class AssignClueAndSelectCustomer extends React.Component {
             selectShowAddCustomer: false,
         };
     }
-    //是否是销售领导
-    isSalesManager() {
-        return userData.isSalesManager();
-    }
     componentDidMount(){
         this.getRecommendAssociatedCustomer();
     }
@@ -453,6 +449,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         var curClueDetail = this.state.curClueDetail;
         let customerOfCurUser = this.state.customerOfCurUser;
         let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
+        let user = userData.getUserData();
         return (
             <div className="assign-associate-wrap" id={ASSIGNWRAPID}>
                 <div className="sales-assign-wrap">
@@ -460,7 +457,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                     <div className="sales-assign-content">
                         <SalesSelectField
                             ref="distribute"
-                            enableEdit={(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER'))) ? true : false}
+                            enableEdit={(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) ? true : false}
                             isMerge={true}
                             updateMergeCustomer={this.distributeCustomerToSale}
                             customerId={curClueDetail.id}
