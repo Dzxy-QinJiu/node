@@ -46,9 +46,7 @@ var AppUserRestApis = {
     //获取应用列表
     getAppList: '/rest/base/v1/application',
     //获取用户列表
-    getUsers: '/rest/base/v1/user/search',
-    //根据某个角色获取用户列表
-    getUsersByRoleId: '/rest/base/v1/user/role/userlist',
+    getUsers: '/rest/base/v1/user/search/test',
     //获取用户详情
     getUserDetail: '/rest/base/v1/user/:user_id/detail',
     //批量更新
@@ -209,8 +207,6 @@ exports.getUsers = function(req, res, obj) {
     var requestUrl = '';
     if (obj.customer_id) {
         requestUrl = AppUserRestApis.getCustomerUsers;
-    } else if (obj.role_id) {
-        requestUrl = AppUserRestApis.getUsersByRoleId;
     } else {
         requestUrl = AppUserRestApis.getUsers;
     }
@@ -257,33 +253,33 @@ exports.batchUpdate = function(req, res, field, data, application_ids) {
     var restUrl = '';
     switch (field) {
     //批量 添加/修改 应用
-    case 'grant_application':
-        restUrl = AppUserRestApis.BATCH_GRANT_APPLICATION;
-        break;
+        case 'grant_application':
+            restUrl = AppUserRestApis.BATCH_GRANT_APPLICATION;
+            break;
         //批量修改密码
-    case 'change_password':
-        restUrl = AppUserRestApis.BATCH_UPDATE_USER_PASSWORD;
-        break;
+        case 'change_password':
+            restUrl = AppUserRestApis.BATCH_UPDATE_USER_PASSWORD;
+            break;
         //批量修改类型
-    case 'grant_type':
-        restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_TYPE;
-        break;
+        case 'grant_type':
+            restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_TYPE;
+            break;
         //批量修改开通状态
-    case 'grant_status':
-        restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_STATUS;
-        break;
+        case 'grant_status':
+            restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_STATUS;
+            break;
         //批量延期
-    case 'grant_period':
-        restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_PERIOD;
-        break;
+        case 'grant_period':
+            restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_PERIOD;
+            break;
         //批量修改客户
-    case 'grant_customer':
-        restUrl = AppUserRestApis.BATCH_UPDATE_USER_CUSTOMER;
-        break;
+        case 'grant_customer':
+            restUrl = AppUserRestApis.BATCH_UPDATE_USER_CUSTOMER;
+            break;
         //批量修改角色
-    case 'grant_roles':
-        restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_ROLES;
-        break;
+        case 'grant_roles':
+            restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_ROLES;
+            break;
     }
     return restUtil.authRest.put({
         url: restUrl,
@@ -353,7 +349,7 @@ exports.getCustomerUsers = function(req, res, obj) {
         req: req,
         res: res
     }, {
-        num: obj.num,
+        id: obj.id,
         page_size: obj.page_size,
         filter_content: obj.filter_content
     });

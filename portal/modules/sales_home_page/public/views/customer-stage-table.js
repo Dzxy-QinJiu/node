@@ -141,7 +141,6 @@ class CustomerStageTable extends React.Component {
                 }
             ];
             let customerOfCurUser = this.state.customerOfCurUser;
-            let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
             return (
                 <div className="stage-changed-customer-list-wrapper">
                     {renderErr()}
@@ -168,10 +167,9 @@ class CustomerStageTable extends React.Component {
                     >
                         {this.state.isShowCustomerUserListPanel ?
                             <AppUserManage
-                                customer_id={this.state.customerOfCurUser.id}
+                                customer_id={customerOfCurUser.id}
                                 hideCustomerUserList={this.props.onClose}
-                                customer_name={this.state.customerOfCurUser.name}
-                                user_size={customerUserSize}
+                                customer_name={customerOfCurUser.name}
                             /> : null
                         }
                     </RightPanel>

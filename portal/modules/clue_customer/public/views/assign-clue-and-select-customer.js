@@ -452,7 +452,6 @@ class AssignClueAndSelectCustomer extends React.Component {
     render() {
         var curClueDetail = this.state.curClueDetail;
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div className="assign-associate-wrap" id={ASSIGNWRAPID}>
                 <div className="sales-assign-wrap">
@@ -494,7 +493,6 @@ class AssignClueAndSelectCustomer extends React.Component {
                             customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
                             customer_name={customerOfCurUser.name}
-                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>

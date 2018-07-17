@@ -24,8 +24,8 @@ AppUserStore.prototype.resetState = function() {
     this.appUserList = [];
     //是否监听滚动
     this.listenScrollBottom = true;
-    //应用用户的翻页页数
-    this.appUserPage = 1;
+    //用于下拉加载的userId
+    this.lastUserId = '';
     //首先获取localStorage中保存的页数
     this.pageSize = 20;
     //应用用户总条数
@@ -124,7 +124,7 @@ AppUserStore.prototype.showBatchOperate = function() {
 AppUserStore.prototype.getAppUserList = function(result) {
     if(result.loading) {
         this.appUserListResult = 'loading';
-        if(this.appUserPage === 1) {
+        if(!this.lastUserId) {
             this.appUserList = [];
             this.listenScrollBottom = false;
         }
@@ -149,13 +149,13 @@ AppUserStore.prototype.getAppUserList = function(result) {
                     _.find(currentList[i].apps, app => {return app.exception_mark_date;}) ? true : false
                 );
             }
-            if(this.appUserPage === 1) {
+            if(!this.lastUserId) {
                 this.appUserCount = result.data.total;
                 if(typeof this.appUserCount === 'string') {
                     this.appUserCount = parseInt(this.appUserCount);
                 }
             }
-        } else if(this.appUserPage === 1) {
+        } else if(!this.lastUserId) {
             this.appUserCount = 0;
         }
         //对是否还能下拉加载处理开始
@@ -170,8 +170,8 @@ AppUserStore.prototype.getAppUserList = function(result) {
         }
         //对是否还能下拉加载处理结束
         if(currentList.length > 0 && !('stopScroll' in result)) {
-            this.appUserPage++;
             this.appUserList = this.appUserList.concat(currentList);
+            this.lastUserId = _.get(this.appUserList, `[${this.appUserList.length - 1}].user.user_id`,'');
         }
         //为appUserList添加key字段
         this.appUserList.forEach(function(item) {
@@ -210,9 +210,9 @@ AppUserStore.prototype.clearSelectedRows = function() {
     //告诉外部，选中的行有变化
     AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.SELECTED_USER_ROW_CHANGE,this.selectedUserRows);
 };
-//FromAction-设置用户列表翻页页数
-AppUserStore.prototype.setAppUserPage = function(page) {
-    this.appUserPage = page;
+//FromAction-设置下拉加载的
+AppUserStore.prototype.setLastUserId = function(userId) {
+    this.lastUserId = userId;
     //切换分页的时候，清除刚才选中的行
     this.clearSelectedRows();
 };
@@ -227,7 +227,7 @@ AppUserStore.prototype.setSelectedAppId = function(appId) {
         let obj = AppUserUtil.getLocalStorageObj('logViewAppId',this.selectedAppId );
         storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
     }
-    this.appUserPage = 1;
+    this.lastUserId = '';
     //切换应用的时候，清除刚才选中的行
     this.clearSelectedRows();
     //如果是切换到全部应用，则清除筛选条件
@@ -376,7 +376,7 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
         }
 
     }
-    this.appUserPage = 1;
+    this.lastUserId = '';
 };
 
 //更新一个用户的一个应用成功后，同步列表中的数据
@@ -467,7 +467,7 @@ AppUserStore.prototype.updateAppField = function(result) {
 AppUserStore.prototype.changeTableSort = function(sorter) {
     this.sort_field = sorter && sorter.sort_field || '';
     this.sort_order = sorter && sorter.sort_order || '';
-    this.appUserPage = 1;
+    this.lastUserId = '';
 };
 
 //显示申请用户的表单
@@ -1174,7 +1174,7 @@ AppUserStore.prototype.filterUserByRole = function(role_id) {
         this.keywordValue = '';
     }
     this.filterRoles.selectedRole = role_id;
-    this.appUserPage = 1;
+    this.lastUserId = '';
 };
 
 // 安全域列表

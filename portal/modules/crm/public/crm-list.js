@@ -1378,7 +1378,6 @@ var Crm = React.createClass({
             this.renderCustomerDetail();
         }
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         const contentClassName = classNames({
             'content-container': !this.props.fromSalesHome,
             'content-full': !this.state.showFilterList
@@ -1495,7 +1494,6 @@ var Crm = React.createClass({
                             customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
                             customer_name={customerOfCurUser.name}
-                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>

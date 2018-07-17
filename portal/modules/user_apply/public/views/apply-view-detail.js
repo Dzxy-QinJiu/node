@@ -1860,7 +1860,6 @@ const ApplyViewDetail = React.createClass({
             'app_user_manage_apply_detail_wrap': true
         });
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div className={cls} data-tracename="审批详情界面">
                 {this.renderApplyDetailLoading()}
@@ -1899,10 +1898,9 @@ const ApplyViewDetail = React.createClass({
                         >
                             {this.state.isShowCustomerUserListPanel ?
                                 <AppUserManage
-                                    customer_id={this.state.customerOfCurUser.id}
+                                    customer_id={customerOfCurUser.id}
                                     hideCustomerUserList={this.closeCustomerUserListPanel}
-                                    customer_name={this.state.customerOfCurUser.name}
-                                    user_size={customerUserSize}
+                                    customer_name={customerOfCurUser.name}
                                 /> : null
                             }
                         </RightPanel> : null

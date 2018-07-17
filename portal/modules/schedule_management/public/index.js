@@ -332,7 +332,6 @@ const ScheduleManagement = React.createClass({
             { label: <span><i className="iconfont icon-schedule-other"></i>{Intl.get('common.others', '其他')}</span>, value: 'other' },
         ];
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div data-tracename="日程管理界面" className="schedule-list-content">
                 <ExpireScheduleLists
@@ -385,7 +384,6 @@ const ScheduleManagement = React.createClass({
                             customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
                             customer_name={customerOfCurUser.name}
-                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>
