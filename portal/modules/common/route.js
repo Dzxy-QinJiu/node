@@ -285,8 +285,66 @@ module.exports = [{
 }, {
     //获取所有成员基本信息（仅包含姓名、id，不分页)
     'method': 'get',
-    'path': '/rest/base/v1/user/list/users',
+    'path': '/rest/base/v1/user/list/members',
     'handler': 'getAllUsers',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取应用下角色{query: tags}
+    'method': 'get',
+    'path': '/rest/base/v1/role/client/roles',
+    'handler': 'getAppRoles',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取角色下成员{query: {page_size, page_num, role_id}}
+    'method': 'get',
+    'path': '/rest/base/v1/user/role/users',
+    'handler': 'getRoleUsers',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取应用下角色(含角色下成员 {query: {tags, page_size, page_num, role_id}, })
+    'method': 'get',
+    'path': '/appInfo/:tagName',
+    'handler': 'getAppRoleList',
+    module: 'app_open_manage/server/get-role-user',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取应用信息
+    'method': 'get',
+    'path': '/rest/base/v1/role/tag/contract/info',
+    'handler': 'getAppList',
+    'passport': {
+        'needLogin': true
+    }
+},{
+    //给成员增加角色
+    'method': 'put',
+    'path': '/rest/base/v1/user/role/updates',
+    'handler': 'addRoleToUsers',
+    'passport': {
+        'needLogin': true
+    }
+},{
+    //给成员删除角色
+    'method': 'put',
+    'path': '/rest/base/v1/user/role/update',
+    'handler': 'delRoelToUsers',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //给成员更新角色
+    'method': 'put',
+    'path': '/updateRoleForUsers',
+    'handler': 'editRoelToUsers',
+    module: 'app_open_manage/server/edit-role-user',
     'passport': {
         'needLogin': true
     }

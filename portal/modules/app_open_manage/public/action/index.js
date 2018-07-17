@@ -8,9 +8,8 @@ function OpenAppAction() {
         'changeRoleUser'
     );
     this.getAppList = asyncDispatcher(openAppAjax.getAppList);
-    this.getRoleList = asyncDispatcher(openAppAjax.getRoleList);
+    this.getAppRoleList = asyncDispatcher(openAppAjax.getAppRoleList);
     this.getAllUsers = asyncDispatcher(openAppAjax.getAllUsers);
-    this.getRoleUserList = asyncDispatcher(openAppAjax.getRoleUserList);
 }
 
 module.exports = alt.createActions(OpenAppAction);

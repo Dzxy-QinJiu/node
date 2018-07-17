@@ -9,7 +9,7 @@ const OpenAppStore = require('./store');
 const FormItem = Form.Item;
 var TopNav = require('CMP_DIR/top-nav');
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import { USER_STATUS, APP_STATUS } from './consts';
+import { USER_STATUS, APP_STATUS, MAX_PAGESIZE } from './consts';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 const itemLayout = {
@@ -38,24 +38,24 @@ class OpenApp extends React.Component {
     getAppList() {
         OpenAppAction.getAppList();
     }
-    getRoleList(clientId) {
-        OpenAppAction.getRoleList(clientId);
-    }
-    getUserList(role) {
-        const data = {
+    getRoleList(app) {
+        OpenAppAction.getAppRoleList({
             query: {
-                cur_page: 1,
-                page_size: 20,
+                tags: app.tags.join(','),
+                page_size: MAX_PAGESIZE,
+                page_num: 1
             }
-        };
-        OpenAppAction.getAllUsers(data);
+        });
+    }
+    getUserList(role) {        
+        OpenAppAction.getAllUsers();
     }
     handleCheckDetail(app) {
-        if (this.state.selectedApp.client_id !== app.client_id) {
+        if (this.state.selectedApp.tags_name !== app.tags_name) {
             this.setState({
                 selectedApp: app
             }, () => {
-                this.getRoleList(app.client_id);
+                this.getRoleList(app);
                 this.getUserList();
                 this.showAppDetail(true);
             });
@@ -93,7 +93,7 @@ class OpenApp extends React.Component {
                 >
                     {
                         this.state.userList.data.map((user, index) => (
-                            <Option key={index} value={user.user_id}>{user.user_name}</Option>
+                            <Option key={index} value={user.user_id}>{user.nick_name || user.user_name}</Option>
                         )) 
                     }
                 </Select>
@@ -112,8 +112,8 @@ class OpenApp extends React.Component {
                         {
                             this.state.appList.data.map((app, index) => (
                                 <fieldset key={index} className={app.status === APP_STATUS.ENABLED ? 'app-container' : 'app-container disabled'}>
-                                    <legend>{app.title}</legend>
-                                    <p>{app.desc}</p>
+                                    <legend>{app.tags_name}</legend>
+                                    <p>{app.tags_description}</p>
                                     <div className="btn-bar">
                                         <Button onClick={this.handleCheckDetail.bind(this, app)}>
                                             {Intl.get('call.record.show.customer.detail', '查看详情')}
@@ -141,10 +141,11 @@ class OpenApp extends React.Component {
                                     </h4>
                                     <div className="content">
                                         <h5>
-                                            开通范围
+                                            {Intl.get('back.openApp.range', '开通范围')}
                                         </h5>
                                         <StatusWrapper
-                                            loading={this.state.roleList.loading && this.state.roleUserList.loading}
+                                            loading={this.state.roleList.loading || this.state.userList.loading}
+                                            size='medium'
                                             errorMsg={this.state.roleList.errorMsg}
                                         >
                                             <div className="role-from-wrapper">

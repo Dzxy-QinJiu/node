@@ -81,7 +81,7 @@ function getPushServerByEureka() {
  * @param data 消息数据
  */
 function notifyChannelListener(data) {
-    pushLogger.debug('后端推送的消息数据:' + data);
+    // pushLogger.debug('后端推送的消息数据:' + data);
     // 将查询结果返给浏览器
     var messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
@@ -211,7 +211,7 @@ function offlineChannelListener(data) {
  * @param data 系统消息
  */
 function systemNoticeListener(notice) {
-    pushLogger.debug('后端推送的系统消息数据:' + JSON.stringify(notice));
+    // pushLogger.debug('后端推送的系统消息数据:' + JSON.stringify(notice));
     if (notice && notice.member_id) {//消息接收者
         //找到消息接收者对应的socket，将数据推送到浏览器
         let socketArray = socketStore[notice.member_id] || [];
@@ -241,7 +241,7 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
-    pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
+    // pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.isArray(unreadList) && unreadList.length) {
         //所有未读回复的列表按接收者分组{userId1:[{member_id,update_time...},{}],userId2:[{...},{...}]}
         let memberUnreadObj = _.groupBy(unreadList, 'member_id');
@@ -343,7 +343,7 @@ module.exports.startSocketio = function(nodeServer) {
                 });
                 //将当前用户应用的socket、token保存到内存中
                 socketStore[session.user.userid] = socketArray;
-                pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+                // pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
             } else {
                 var sid = socket.request && socket.request.sessionId;
                 if (err) {

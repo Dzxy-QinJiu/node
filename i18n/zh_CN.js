@@ -2326,5 +2326,6 @@ var zh_CN = {
     'clue.analysis.source.chart': '来源统计',
     'clue.analysis.classify.chart': '分类统计',
     'back.openApp': '开通应用',
+    'back.openApp.range': '开通范围',
 };
 export default zh_CN;

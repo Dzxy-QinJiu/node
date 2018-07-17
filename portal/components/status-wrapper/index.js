@@ -1,5 +1,5 @@
 /**
- * 为传入的内容维护加载状态和错误信息
+ * 为包裹的JSX(props.children)维护加载状态和错误信息
  * @param loading[boolean]
  * @param errorMsg[string]
  * @param size['small'|'medium'|'large'] spin的尺寸，默认large
