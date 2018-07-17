@@ -12,7 +12,7 @@ var Notification = React.createClass({
         $('body').css('overflow', 'hidden');
     },
     componentWillUnmount: function() {
-        $('body').css('overflow', 'auto');
+        $('body').css('overflow', 'hidden');
     },
     render: function() {
         return (
