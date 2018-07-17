@@ -37,7 +37,7 @@ var AlertTimer = require('../../../../components/alert-timer');
 var UserData = require('../../../../public/sources/user-data');
 
 // 应用的默认配置
-var UserTypeConfigForm = require('../../../my_app_manage/public/views/user-type-config-form');
+var UserTypeConfigForm = require('./user-type-config-form');
 var BootstrapButton = require('react-bootstrap').Button;
 import Trace from 'LIB_DIR/trace';
 var moment = require('moment');

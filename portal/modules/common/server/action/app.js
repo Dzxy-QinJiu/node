@@ -47,3 +47,11 @@ exports.getAppsDefaultConfig = (req, res) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//根据id获取应用信息
+exports.getCurAppById = function(req, res) {
+    appService.getCurAppById(req, res, req.params.app_id).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
