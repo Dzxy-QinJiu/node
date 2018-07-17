@@ -252,7 +252,7 @@ const AddOrEditUser = React.createClass({
         result.description = (formData.description || '').trim();
         //组织
         result.group_id = this.state.organization || '';
-        if (result.number === 1) {
+        if (result.number === '1') {
             var nick_name = formData.nick_name.trim();
             if (nick_name) {
                 result.nick_name = nick_name;
