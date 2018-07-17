@@ -8,7 +8,9 @@ var urls = {
     // 获取当前应用的在线用户的地域数据
     getOnLineUserZone: '/rest/analysis/user/v1/online/onlineStatistics/:client_id/:select_mode',
     //获取应用的默认配置
-    getAppConfigPromise: '/rest/base/v1/application/extra/grantinfos'
+    getAppConfigPromise: '/rest/base/v1/application/extra/grantinfos',
+    //通过id获取应用详细信息
+    getCurAppById: '/rest/base/v1/application/id'
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
@@ -140,4 +142,22 @@ exports.getAppsDefaultConfig = (req, res, queryParams) => {
             req: req,
             res: res
         },queryParams);
+};
+
+//通过id获取应用的详细信息
+exports.getCurAppById = function(req, res, appId) {
+    return restUtil.authRest.get(
+        {
+            url: urls.getCurAppById + '/' + appId,
+            req: req,
+            res: res
+        }, null, {
+            success: function(eventEmitter, data) {
+                //处理数据
+                if (data) {
+                    data = appDto.toFrontObject(data);
+                }
+                eventEmitter.emit('success', data);
+            }
+        });
 };
