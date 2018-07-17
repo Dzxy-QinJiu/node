@@ -5,7 +5,6 @@
 
 'use strict';
 
-require('../nock');
 //域管理服务
 var appManageServic = require('../service/app-manage-service');
 
