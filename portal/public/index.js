@@ -1,18 +1,9 @@
-require('bootstrap/dist/css/bootstrap.min.css');
-require('bootstrap/dist/js/bootstrap.min.js');
-require('antd/dist/antd.min.css');
-var Alt = require('alt');
-window.alt = new Alt();
-require('./sources/jquery.ajax.trans.js');
-require('./sources/jquery.ajax.global.js');
-require('./sources/browser.sniff.js');
-require('es6-shim');
-require('./sources/push/index.less');
+require.ensure(['./sources/dependence'], function(require) {
+    require('./sources/dependence');
+});
 var userData = require('./sources/user-data');
 var AppStarter = require('./sources/app-starter');
 var PrivilegeGet = require('./sources/privilege-get');
-var EventEmitter = require('events');
-window.emitter = new EventEmitter();
 var PrivilegeGetReact = null;
 var appDom = $('#app')[0];
 var websiteConfig = require('../lib/utils/websiteConfig');

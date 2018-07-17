@@ -5,24 +5,54 @@
  */
 var path = require('path');
 var webpack = require('webpack');
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var config = require('./conf/config');
+var webpackMode = config.webpackMode || 'dev';
+
+var pluginLists = [
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
+    new webpack.DllPlugin({
+        path: path.join(__dirname, 'dll', '[name]-manifest.json'),
+        name: '[name]'
+    }),
+];
+
+if (webpackMode === 'production') {
+    pluginLists.push(new webpack.DefinePlugin({
+        'process.env': {
+            'NODE_ENV': JSON.stringify('production')
+        }
+    }));
+} else {
+    pluginLists.push(new BundleAnalyzerPlugin());
+}
+
 //webpack config
 module.exports = {
+    mode: webpackMode === 'production' ? 'production' : 'development',
     entry: {
-        vendor: [path.join(__dirname, "portal", "vendors.js")]
+        vendor: [path.join(__dirname, 'portal', 'vendors.js')],
+        reactRel: ['react', 'react-dom', 'react-intl',
+            'intl-messageformat', 'react-router', 'bootstrap',
+            'react-bootstrap','react-date-picker','antd'],
+        echarts: ['echarts'],
+        echartsEefung: ['echarts-eefung'],
+        world: [path.join(__dirname, 'portal/map', 'world.js')],
+        china: [path.join(__dirname, 'portal/map', 'china.js')],
+        province: [path.join(__dirname, 'portal/map', 'province.js')]
     },
     output: {
-        path: path.join(__dirname, "dll"),
-        filename: "dll.[name].js",
-        library: "[name]"
+        path: path.join(__dirname, 'dll'),
+        filename: 'dll.[name].js',
+        library: '[name]'
     },
     module: {
         noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /History.min.js/]
     },
     resolve: {
         modules: [
-            path.resolve(__dirname, "portal"),
-            "node_modules"
+            path.resolve(__dirname, 'portal'),
+            'node_modules'
         ],
         extensions: ['.js', '.jsx'],
         alias: {
@@ -32,28 +62,5 @@ module.exports = {
             history$: 'history/umd/History.min.js'
         }
     },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify("production")
-            }
-        }),
-        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
-        new webpack.DllPlugin({
-            path: path.join(__dirname, "dll", "[name]-manifest.json"),
-            name: "[name]"
-        }),
-        new UglifyJSPlugin({
-            test: /(\.jsx|\.js)$/,
-            parallel: true,
-            sourceMap: false,
-            uglifyOptions: {
-                ecma: 6,
-                output: {
-                    comments: false,
-                },
-                warnings: false
-            }
-        })
-    ]
+    plugins: pluginLists,
 };

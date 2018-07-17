@@ -61,7 +61,7 @@ exports.toRestObject = function(frontObj) {
     if (frontObj.image) {
         restObject.client_logo = frontObj.image;
     }
-    if (frontObj.status || frontObj.status == 0) {
+    if (frontObj.status || frontObj.status === 0) {
         restObject.status = frontObj.status;
     }
     if (frontObj.descr || frontObj.descr === '') {
