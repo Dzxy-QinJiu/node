@@ -112,9 +112,9 @@ class PhonePanel extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         //获取客户详情
-        this.setState({
-            paramObj: $.extend(true, {}, nextProps.paramObj)
-        });
+        //只把客户详情赋值
+        let paramObj = this.state.paramObj;
+        paramObj.customer_params = _.cloneDeep(_.get(nextProps, 'paramObj.customer_params',null));
         if (nextProps.paramObj.call_params) {
             var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
             if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
@@ -138,8 +138,12 @@ class PhonePanel extends React.Component {
                 if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
                     this.setInitialData(phonemsgObj);
                 }
+                paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params',null));
             }
         }
+        this.setState({
+            paramObj: paramObj
+        });
     }
 
     setInitialData(phonemsgObj) {

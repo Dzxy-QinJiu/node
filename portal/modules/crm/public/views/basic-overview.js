@@ -63,7 +63,10 @@ var BasicOverview = React.createClass({
                         getCallNumberError: ''
                     });
                     //有坐席号，展示未处理的电联的联系计划
-                    this.getNotCompletedScheduleList(this.props.curCustomer);
+                    setTimeout(() => {
+                        this.getNotCompletedScheduleList(this.props.curCustomer);
+                    });
+
                 } else if (callNumberInfo.errMsg) {
                     this.setState({
                         callNumber: '',
