@@ -964,7 +964,7 @@ const ClueCustomer = React.createClass({
                             clueCustomerValue={this.state.clueCustomerValue}
                             onTypeChange={this.onTypeChange}
                         />
-                        {hasPrivilege('CRM_CLUE_STATISTICAL') && (hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF')) ? this.renderClueAnalysisBtn() : null}
+                        {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
                         {this.renderHandleBtn()}
                         {this.renderImportClue()}
                         <div className="filter-block-line"></div>
