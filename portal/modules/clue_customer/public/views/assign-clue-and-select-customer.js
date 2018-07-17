@@ -4,7 +4,6 @@
  * Created by zhangshujuan on 2018/3/28.
  */
 var userData = require('../../../../public/sources/user-data');
-var user = userData.getUserData();
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var clueCustomerAction = require('../action/clue-customer-action');
 var SalesSelectField = require('MOD_DIR/crm/public/views/basic_data/sales-select-field');
@@ -450,6 +449,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         var curClueDetail = this.state.curClueDetail;
         let customerOfCurUser = this.state.customerOfCurUser;
         let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
+        let user = userData.getUserData();
         return (
             <div className="assign-associate-wrap" id={ASSIGNWRAPID}>
                 <div className="sales-assign-wrap">

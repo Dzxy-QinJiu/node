@@ -20,7 +20,6 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 var Spinner = require('CMP_DIR/spinner');
 import ClueRightPanel from './views/clue-right-panel';
 var userData = require('../../../public/sources/user-data');
-var user = userData.getUserData();
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 var rightPanelShow = false;
@@ -522,6 +521,7 @@ const ClueCustomer = React.createClass({
     },
     //线索客户列表
     renderClueCustomerList(){
+        let user = userData.getUserData();
         var customerList = this.state.curCustomers;
         var dropDownContent = <Button type="primary" data-tracename="点击分配线索客户按钮">
             {Intl.get('clue.customer.distribute','分配')}
