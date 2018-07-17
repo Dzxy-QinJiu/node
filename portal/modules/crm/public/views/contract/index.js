@@ -2,6 +2,7 @@ require('../../css/contract.less');
 const GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import Spinner from 'CMP_DIR/spinner';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ContractAction from '../../action/contract-action';
 import ContractStore from '../../store/contract-store';
@@ -78,26 +79,29 @@ const Contract = React.createClass({
             divHeight -= LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;
         }
         let contractListLength = this.state.contractList.data.length || 0;
-        
+        let loading = this.state.contractList.loading;
         return (
             <div className="contract-container" data-tracename="合同页面">
                 {
-                    contractListLength ? <ReactIntl.FormattedMessage
+                    loading ? null : (contractListLength ? <ReactIntl.FormattedMessage
                         id="sales.frontpage.total.list"
                         defaultMessage={'共{n}条'}
-                        values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有添加过合同')
+                        values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有添加过合同'))
                 }
                 <div className="contract-container-scroll" style={{height: divHeight}}>
                     <GeminiScrollbar>
-                        {contractListLength ? this.state.contractList.data.map( (contract, index) => {
-                            return (
-                                <ContractItem 
-                                    key={index}
-                                    customerId={this.state.curCustomer.id}
-                                    contract={contract}
-                                />
-                            );
-                        } ) : <NoDataIconTip tipContent={Intl.get('common.no.more.contract', '暂无合同')}/>
+                        {
+                            loading ? <Spinner /> : (
+                                contractListLength ? this.state.contractList.data.map( (contract, index) => {
+                                    return (
+                                        <ContractItem
+                                            key={index}
+                                            customerId={this.state.curCustomer.id}
+                                            contract={contract}
+                                        />
+                                    );
+                                } ) : <NoDataIconTip tipContent={Intl.get('common.no.more.contract', '暂无合同')}/>
+                            )
                         }
                     </GeminiScrollbar>
                 </div>

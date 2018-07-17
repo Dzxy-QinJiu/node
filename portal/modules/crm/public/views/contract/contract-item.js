@@ -1,7 +1,6 @@
-const Spinner = require('../../../../../components/spinner');
 import DetailCard from 'CMP_DIR/detail-card';
-import classNames from 'classnames';
-import { parseAmount } from 'LIB_DIR/func';
+import { num as antUtilsNum } from 'ant-utils';
+const parseAmount = antUtilsNum.parseAmount;
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -66,8 +65,8 @@ const ContractItem = React.createClass({
                     <span className="contract-value">{this.formatValues(contract.contract_amount)}</span>
                 </div>
                 <div className="contract-item-content">
-                    <span className="contract-label">{Intl.get('contract.25', '合同额')}:</span>
-                    <span className="contract-value"> {this.formatValues(contract.gross_profit)}</span>
+                    <span className="contract-label">毛利:</span>
+                    <span className="contract-value">{this.formatValues(contract.gross_profit)}</span>
                 </div>
             </div>
         );
