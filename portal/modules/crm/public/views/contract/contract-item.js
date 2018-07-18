@@ -76,7 +76,7 @@ const ContractItem = React.createClass({
         const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : '';
         return (
             <div className="contract-bottom-wrap">
-                {contract.user_name} 添加于 {date}
+                {contract.user_name} 签订于 {date}
             </div>
         );
     },

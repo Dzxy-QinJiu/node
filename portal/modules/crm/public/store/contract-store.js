@@ -2,9 +2,9 @@ import ContractAction from '../action/contract-action';
 
 class ContractStore {
     constructor(){
-        this.sortField = 'id'; // 排序字段
+        this.sortField = 'date'; // 排序字段
         this.order = 'descend'; //排序方向
-        this.pageSize = 1;
+        this.pageSize = 100;
         this.resetState();
         this.bindActions(ContractAction);
     }
