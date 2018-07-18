@@ -46,7 +46,7 @@ var AppUserRestApis = {
     //获取应用列表
     getAppList: '/rest/base/v1/application',
     //获取用户列表
-    getUsers: '/rest/base/v1/user/search/test',
+    getUsers: '/rest/base/v1/user/search',
     //获取用户详情
     getUserDetail: '/rest/base/v1/user/:user_id/detail',
     //批量更新
