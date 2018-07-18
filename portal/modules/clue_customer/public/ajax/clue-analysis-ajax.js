@@ -5,22 +5,6 @@
  */
 //获取线索阶段分析列表
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-exports.getClueStageAnalysis = function(data) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/clue/analysis',
-        dataType: 'json',
-        type: 'post',
-        data: data,
-        success: function(list) {
-            Deferred.resolve(list);
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 exports.getCustomerById = function(data) {
     var Deferred = $.Deferred();
     var pageSize = 10;

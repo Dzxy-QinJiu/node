@@ -129,7 +129,7 @@ class phoneStatusTop extends React.Component {
         });
     };
 
-    renderTraceItem() {
+    renderTraceItem(phonemsgObj) {
         var onHide = function() {
             phoneAlertAction.setSubmitErrMsg('');
         };
@@ -150,6 +150,10 @@ class phoneStatusTop extends React.Component {
                             {
                                 _.isArray(commonPhoneDesArray) ?
                                     commonPhoneDesArray.map((Des, idx) => {
+                                    //如果电话已经接通，不需要展示 “未接通这个提示”
+                                        if (phonemsgObj.billsec > 0 && idx === 0){
+                                            return;
+                                        }
                                         return (<Option key={idx} value={Des}>{Des}</Option>);
                                     }) : null
                             }
@@ -262,7 +266,7 @@ class phoneStatusTop extends React.Component {
                 </div>
                 <div className="trace-content-container">
                     { //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
-                        (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem() : null
+                        (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem(phonemsgObj) : null
                     }
                 </div>
                 {!this.state.isAddingMoreProdctInfo && this.state.showAddFeedback ? (

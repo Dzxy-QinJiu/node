@@ -2061,7 +2061,7 @@ var zh_CN = {
     'call.record.call.in.pick.phone': '有电话打入，请拿起话机',
     'call.record.phone.alerting': '已振铃，等待对方接听',
     'call.record.phone.answered': '正在通话中',
-    'call.record.phone.unknown': '结束通话',
+    'call.record.phone.unknown': '通话结束',
     'crm.phone.failed.add.trace': '添加跟进记录失败',
     'crm.phone.success.add.trace': '添加跟进记录成功',
     'crm.phone.failed.get.customer': '查询此号码对应的客户信息失败',

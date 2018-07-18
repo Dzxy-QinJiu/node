@@ -451,8 +451,8 @@ class AssignClueAndSelectCustomer extends React.Component {
         let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         let user = userData.getUserData();
         return (
-            <div className="assign-associate-wrap" id={ASSIGNWRAPID}>
-                <div className="sales-assign-wrap">
+            <div className="assign-associate-wrap" id={ASSIGNWRAPID} >
+                <div className="sales-assign-wrap" data-tracename="分配销售">
                     <h5>{Intl.get('cluecustomer.trace.person', '跟进人')}</h5>
                     <div className="sales-assign-content">
                         <SalesSelectField
@@ -469,7 +469,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                         />
                     </div>
                 </div>
-                <div className="associate-customer-wrap">
+                <div className="associate-customer-wrap" data-tracename="关联客户">
                     <h5>{Intl.get('clue.customer.associate.customer', '关联客户')}</h5>
                     {
                         this.state.isShowAddCustomer ? this.renderAddCustomer() : <div className="customer-text-and-edit">

@@ -2023,7 +2023,7 @@ var en_US = {
     'call.record.call.in.pick.phone': 'There is a phone call, please pick up the phone',//有电话打入，请拿起话机
     'call.record.phone.alerting': 'The phone is ringing, Waiting for answering',//已振铃，等待对方接听
     'call.record.phone.answered': 'Calling ',//正在通话中
-    'call.record.phone.unknown': 'Hang up the call',//结束通话
+    'call.record.phone.unknown': 'Hang up the call',//通话结束
     'crm.phone.failed.add.trace': 'Failed to add trace record',//添加跟进记录失败
     'crm.phone.success.add.trace': 'Add trace record successfully!',//添加跟进记录成功
     'crm.phone.failed.get.customer': 'Failed to query the customer connectting to this phone number',//查询此号码对应的客户信息失败

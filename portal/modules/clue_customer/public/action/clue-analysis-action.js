@@ -15,15 +15,6 @@ function ClueAnalysisActions() {
         'changeAccess',
         'changeSource'
     );
-    //获取线索阶段分析列表
-    this.getClueStageAnalysis = function(data) {
-        this.dispatch({error: false, loading: true});
-        clueAnalysisAjax.getClueStageAnalysis(data).then((result) => {
-            this.dispatch({error: false, loading: false, data: result});
-        },(errorMsg) => {
-            this.dispatch({error: true, loading: false,errorMsg: errorMsg});
-        });
-    };
     //获取线索统计列表
     this.getClueStatics = function(pathParams, rangeParams, queryParams) {
         var type = pathParams.field;

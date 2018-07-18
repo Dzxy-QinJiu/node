@@ -16,6 +16,7 @@ import {AntcAnalysis} from 'antc';
 import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
 const PIE_CENTER_POSITION = ['50%', '60%'];
 const CHART_HEIGHT = '400';
+var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 const TABS = {
     'OVERVIEW': '1',
     'TREND': '2'
@@ -614,10 +615,10 @@ class ClueAnalysisPanel extends React.Component {
                 </div>
                 <div className="analysis-chart-wrap">
                     <Tabs onChange={this.handleClickTabs}>
-                        <TabPane tab={Intl.get('crm.basic.overview', '概览')}
-                            key={TABS.OVERVIEW}>{this.renderChartsOverview()}</TabPane>
-                        <TabPane tab={Intl.get('clue.customer.analysis.trend', '趋势')}
-                            key={TABS.TREND}>{this.renderChartsTrendView()}</TabPane>
+                        {hasPrivilege('CRM_CLUE_STATISTICAL') ? <TabPane tab={Intl.get('crm.basic.overview', '概览')}
+                            key={TABS.OVERVIEW}>{this.renderChartsOverview()}</TabPane> : null }
+                        {hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? <TabPane tab={Intl.get('clue.customer.analysis.trend', '趋势')}
+                            key={TABS.TREND}>{this.renderChartsTrendView()}</TabPane> : null}
                     </Tabs>
                 </div>
             </div>
