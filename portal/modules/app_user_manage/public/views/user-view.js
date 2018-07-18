@@ -718,27 +718,27 @@ var UserTabContent = React.createClass({
                     </ul>
                 </dd>
             </dl>
-            <dl>
-                <dt>{Intl.get('oplate.user.label', '用户标签')}：</dt>
-                <dd>
-                    <ul>
-                        <li onClick={this.toggleSearchField.bind(this, 'tag_all', '')}
-                            className={this.getFilterFieldClass('tag_all', '')}><ReactIntl.FormattedMessage
-                                id="common.all" defaultMessage="全部"/></li>
-                        <li onClick={this.toggleSearchField.bind(this, 'create_tag', 'register')}
-                            className={this.getFilterFieldClass('create_tag', 'register')}>{Intl.get('oplate.user.register.self', '自注册')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '1')}
-                            className={this.getFilterFieldClass('qualify_label', '1')}>{Intl.get('common.qualified', '合格')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'new')}
-                            className={this.getFilterFieldClass('contract_tag', 'new')}>{Intl.get('contract.162', '新签约')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'renew')}
-                            className={this.getFilterFieldClass('contract_tag', 'renew')}>{Intl.get('contract.163', '续约')}</li>
-                    </ul>
-                </dd>
-            </dl>
             {/*从客户列表中打开某个客户的用户列表时，不需要下面的筛选项*/}
             {this.props.customer_id ? null : (
                 <div>
+                    <dl>
+                        <dt>{Intl.get('oplate.user.label', '用户标签')}：</dt>
+                        <dd>
+                            <ul>
+                                <li onClick={this.toggleSearchField.bind(this, 'tag_all', '')}
+                                    className={this.getFilterFieldClass('tag_all', '')}><ReactIntl.FormattedMessage
+                                        id="common.all" defaultMessage="全部"/></li>
+                                <li onClick={this.toggleSearchField.bind(this, 'create_tag', 'register')}
+                                    className={this.getFilterFieldClass('create_tag', 'register')}>{Intl.get('oplate.user.register.self', '自注册')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '1')}
+                                    className={this.getFilterFieldClass('qualify_label', '1')}>{Intl.get('common.qualified', '合格')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'new')}
+                                    className={this.getFilterFieldClass('contract_tag', 'new')}>{Intl.get('contract.162', '新签约')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'renew')}
+                                    className={this.getFilterFieldClass('contract_tag', 'renew')}>{Intl.get('contract.163', '续约')}</li>
+                            </ul>
+                        </dd>
+                    </dl>
                     {Oplate.hideSomeItem ? null : (
                         <dl>
                             <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/>：</dt>
