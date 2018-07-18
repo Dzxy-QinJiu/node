@@ -1594,6 +1594,8 @@ var zh_CN = {
     'contract.165': '成本构成',
     'contract.166': '签单情况统计表',
     'contract.167': '首笔回款',
+    'contract.168': '有效期',
+    'contract.169': '{uername} 签订于{date}',
 
     // 应用运营报告start
     'app_operation.0': '一、用户总体统计',

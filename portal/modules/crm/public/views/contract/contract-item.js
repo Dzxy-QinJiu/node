@@ -20,7 +20,7 @@ const ContractItem = React.createClass({
     renderContractTitle() {
         const contract = this.state.formData;
         return (
-            <span className="contract-item-title">合同号:{contract.num}</span>
+            <span className="contract-item-title">{Intl.get('contract.24', '合同号')}:{contract.num}</span>
         );
     },
     // 格式化数值
@@ -53,7 +53,7 @@ const ContractItem = React.createClass({
                     <span className="contract-value">{contract.customer_name}</span>
                 </div>
                 <div className="contract-item-content">
-                    <span className="contract-label">有效期:</span>
+                    <span className="contract-label">{Intl.get('contract.168', '有效期')}:</span>
                     <span className="contract-value">
                         {start_time}
                         {end_time ? Intl.get('common.time.connector', '至') : ''}
@@ -65,7 +65,7 @@ const ContractItem = React.createClass({
                     <span className="contract-value">{this.formatValues(contract.contract_amount)}</span>
                 </div>
                 <div className="contract-item-content">
-                    <span className="contract-label">毛利:</span>
+                    <span className="contract-label">{Intl.get('contract.109', '毛利')}:</span>
                     <span className="contract-value">{this.formatValues(contract.gross_profit)}</span>
                 </div>
             </div>
@@ -76,7 +76,14 @@ const ContractItem = React.createClass({
         const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : '';
         return (
             <div className="contract-bottom-wrap">
-                {contract.user_name} 签订于 {date}
+                <ReactIntl.FormattedMessage
+                    id="contract.169"
+                    defaultMessage={'{uername}签订于{date}'}
+                    values={{
+                        'uername': <span className="signed-username">{contract.user_name}</span>,
+                        'date': date
+                    }}
+                />
             </div>
         );
     },

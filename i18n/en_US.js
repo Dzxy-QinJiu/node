@@ -1568,6 +1568,8 @@ var en_US = {
     'contract.165': 'cost structure',//成本构成
     'contract.166': 'Table of signing statistics',//签订情况统计表
     'contract.167': 'first time repayment',//首笔回款
+    'contract.168': 'Validity period', // 有效期
+    'contract.169': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
     //合同管理  end
 
     // 应用的运营报告start
