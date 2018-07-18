@@ -10,64 +10,6 @@ class LeftMenuClass {
         let backendIntl = new BackendIntl(this.req);
         var leftMenuList = [
             {
-                id: 'REALM_MANAGE', //唯一标识
-                name: backendIntl.get('menu.realm', '安全域管理'),
-                routePath: 'realm',
-                privileges: [
-                    'REALM_MANAGE_ADD_REALM', //添
-                    'REALM_MANAGE_EDIT_REALM', //改
-                    'REALM_MANAGE_DELETE_REALM',//删
-                    'REALM_MANAGE_LIST_REALMS',//查
-                    'REALM_MANAGE_USE'//停用、启用
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['REALM_MANAGE_LIST_REALMS']
-            }, {
-                id: 'APP_OVERVIEW', //唯一标识
-                name: '应用概览',
-                routePath: 'app_overview',
-                privileges: [
-                    'GET_APPLICATION_RECORD'//查
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['GET_APPLICATION_RECORD']
-            },
-            {
-                id: 'APP_MANAGE', //唯一标识
-                name: backendIntl.get('menu.app', '应用管理'),
-                routePath: 'app',
-                privileges: [
-                    'APP_MANAGE_ADD_APP', //添
-                    'APP_MANAGE_EDIT_APP', //改
-                    //"APP_MANAGE_DELETE_APP",//删
-                    'APP_MANAGE_LIST_APPS',//查
-                    'APP_MANAGE_USE',//停用、启用
-                    'APP_MANAGE_LIST_LOG'//个人日志
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['APP_MANAGE_LIST_APPS']
-            },
-            {
-                id: 'MY_APP_MANAGE',
-                name: backendIntl.get('menu.myapp', '我的应用'),
-                routePath: 'my_app',
-                privileges: [
-                    'USER_INFO_MYAPP',//我的应用列表
-                    'USER_INFO_MYAPP_EDIT', //我的应用的修改
-                    'USER_INFO_MYAPP_ROLE_ADD',//添加我的应用中的角色
-                    'USER_INFO_MYAPP_ROLE_DELETE',//删除我的应用中的角色
-                    'USER_INFO_MYAPP_ROLE_EDIT',//修改我的应用中的角色
-                    'USER_INFO_MYAPP_ROLE_LIST',//查看我的应用中的角色
-                    'USER_INFO_MYAPP_AUTHORITY_ADD',//添加我的应用中的权限
-                    'USER_INFO_MYAPP_AUTHORITY_DELETE',//删除我的应用中的权限
-                    'USER_INFO_MYAPP_AUTHORITY_EDIT',//修改我的应用中的权限
-                    'USER_INFO_MYAPP_AUTHORITY_LIST',//查看我的应用中的权限
-                    'REFRESH_SECRET'//刷新应用密钥
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['USER_INFO_MYAPP']
-            },
-            {
                 id: 'CRM',
                 name: backendIntl.get('menu.crm', '客户管理'),
                 routePath: 'crm',
@@ -253,39 +195,6 @@ class LeftMenuClass {
                 ]
             },
             {
-                id: 'OPLATE_BD_REALM_ANALYSIS',//唯一标识
-                name: backendIntl.get('menu.realm.analysis', '运营分析'),
-                routePath: 'analysis/realm',
-                subMenu: [{
-                    id: 'OPLATE_BD_ANALYSIS_REALM_ZONE',
-                    name: backendIntl.get('menu.realm.analysis.zone', '地域分析'),
-                    routePath: 'analysis/realm/zone',
-                    privileges: [
-                        'OPLATE_BD_ANALYSIS_REALM_ZONE'//地域分析-当前安全域开通总数
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ['OPLATE_BD_ANALYSIS_REALM_ZONE']
-                }, {
-                    id: 'OPLATE_BD_ANALYSIS_REALM_INDUSTRY',
-                    name: backendIntl.get('menu.realm.analysis.industry', '行业分析'),
-                    routePath: 'analysis/realm/industry',
-                    privileges: [
-                        'OPLATE_BD_ANALYSIS_REALM_INDUSTRY',//行业分析-当前安全域开通总数
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ['OPLATE_BD_ANALYSIS_REALM_INDUSTRY']
-                }, {
-                    id: 'OPLATE_BD_ANALYSIS_REALM_ESTABLISH',
-                    name: backendIntl.get('menu.realm.analysis.establish', '开启时间统计'),
-                    routePath: 'analysis/realm/establish',
-                    privileges: [
-                        'OPLATE_BD_ANALYSIS_REALM_ESTABLISH',//开启时间统计-安全域开通总数统计
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ['OPLATE_BD_ANALYSIS_REALM_ESTABLISH']
-                }]
-            },
-            {
                 id: 'OPLATE_CUSTOMER_ANALYSIS',//唯一标识
                 name: backendIntl.get('menu.customer.analysis', '运营分析'),
                 routePath: 'analysis/customer',
@@ -327,32 +236,6 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['GET_MY_CALL_RECORD', 'GET_ALL_CALL_RECORD']// 获取我的电话统计记录
             },
-            {
-                id: 'OPLATE_ONLINE_USER',//唯一标识
-                name: backendIntl.get('menu.online.user', '在线用户'),
-                routePath: 'online',
-                subMenu: [
-                    //    {
-                    //    id: "OPLATE_ONLINE_USER_ANALYSIS",
-                    //    name: "在线用户统计",
-                    //    routePath: "online/analysis",
-                    //    privileges: [
-                    //        "OPLATE_ONLINE_USER_ANALYSIS",
-                    //    ],
-                    //    //有这个权限，才显示入口图标
-                    //    showPrivileges: ["OPLATE_ONLINE_USER_ANALYSIS"]
-                    //},
-                    {
-                        id: 'OPLATE_ONLINE_USER_LIST',
-                        name: backendIntl.get('menu.online.user.list', '在线用户列表'),
-                        routePath: 'online/list',
-                        privileges: [
-                            'OPLATE_ONLINE_USER_LIST',
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: ['OPLATE_ONLINE_USER_LIST']
-                    }]
-            },
             //TODO 合同管理的不展示，先注释掉
             // {
             //     id: 'CONTRACT',
@@ -377,30 +260,6 @@ class LeftMenuClass {
             //         showPrivileges: ['OPLATE_REPAYMENT_ADD']
             //     }]
             // },
-            {
-                id: 'OPLATE_REPORT',//唯一标识
-                name: backendIntl.get('menu.report', '分析报告'),
-                routePath: 'report',
-                subMenu: [{
-                    id: 'OPERATION_REPORT',
-                    name: backendIntl.get('menu.operation.report', '运营报告'),
-                    routePath: 'report/operation',
-                    privileges: [
-                        'OPERATION_REPORT'
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ['OPERATION_REPORT']
-                }, {
-                    id: 'APP_OPERATION_REPORT',
-                    name: backendIntl.get('menu.app.operation.report', '应用运营报告'),
-                    routePath: 'report/app_operation',
-                    privileges: [
-                        'APP_OPERATION_REPORT'
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ['APP_OPERATION_REPORT']
-                }]
-            },
             {
                 id: 'USER_INFO_MANAGE',//唯一标识
                 name: backendIntl.get('menu.userinfo.manage', '个人信息管理'),
