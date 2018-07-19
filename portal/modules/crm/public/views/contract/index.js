@@ -5,14 +5,7 @@ import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ContractAction from '../../action/contract-action';
 import ContractStore from '../../store/contract-store';
 import ContractItem from './contract-item';
-//高度常量
-const LAYOUT_CONSTANTS = {
-    MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
-    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    MARGIN_BOTTOM: 8, //跟进记录页的下边距
-    ADD_ORDER_HEIGHHT: 155,//添加订单面板的高度
-    TOP_TOTAL_HEIGHT: 30//共xxx条的高度
-};
+import RightPanelScrollBar from '../components/rightPanelScrollBar';
 
 const Contract = React.createClass({
     getInitialState() {
@@ -60,22 +53,6 @@ const Contract = React.createClass({
         $(window).off('resize', this.onStoreChange);
     },
     render() {
-        let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-        //减头部的客户基本信息高度
-        divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
-        if ($('.phone-alert-modal-title').size()) {
-            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-        }
-        //减添加合同面版的高度
-        if (this.state.isShowAddContactForm) {
-            divHeight -= LAYOUT_CONSTANTS.ADD_ORDER_HEIGHHT;
-        } else {//减共xxx条的高度
-            divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
-        }
-        //合并面板，去掉客户选择框的高度
-        if (this.props.isMerge) {
-            divHeight -= LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;
-        }
         let contractListLength = this.state.contractList.data.length || 0;
         let loading = this.state.contractList.loading;
         return (
@@ -86,8 +63,8 @@ const Contract = React.createClass({
                         defaultMessage={'共{n}条'}
                         values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有添加过合同'))
                 }
-                <div className="contract-container-scroll" style={{height: divHeight}}>
-                    <GeminiScrollbar>
+                <RightPanelScrollBar totalHeight={contractListLength}>
+                    <div className="contract-container-scroll">
                         {
                             loading ? <Spinner /> : (
                                 contractListLength ? this.state.contractList.data.map( (contract, index) => {
@@ -101,8 +78,8 @@ const Contract = React.createClass({
                                 } ) : <NoDataIconTip tipContent={Intl.get('common.no.more.contract', '暂无合同')}/>
                             )
                         }
-                    </GeminiScrollbar>
-                </div>
+                    </div>
+                </RightPanelScrollBar>
             </div>
         );
     }
