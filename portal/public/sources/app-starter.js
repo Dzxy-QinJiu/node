@@ -42,26 +42,6 @@ var SalesIndexRoute = React.createClass({
     }
 });
 
-//如果访问/，销售人员跳转到销售首页的第一个路由
-var MyAppIndexRoute = React.createClass({
-    //当组件即将加载的时候，跳转到第一个路由
-    componentWillMount: function() {
-        var data = userData.getUserData();
-        var sideBarMenus = data.sideBarMenus;
-        _.some(sideBarMenus, function(menu) {
-            if (menu.routePath === 'my_app') {
-                //跳到销售首页
-                history.replace('my_app');
-                return true;
-            }
-        });
-    },
-    //渲染内容为空，只做跳转
-    render: function() {
-        return null;
-    }
-});
-
 //跳转到合同仪表盘
 var ContractIndexRoute = React.createClass({
     componentWillMount: function() {
@@ -152,12 +132,6 @@ function init() {
             case 'notification':
                 childRoutes.push(require('../../modules/notification'));
                 break;
-            case 'online':
-                childRoutes.push(require('./user_online'));
-                break;
-            case 'report':
-                childRoutes.push(require('./report'));
-                break;
             case 'app_user_manage_apply':
                 childRoutes.push(require('../../modules/user_apply'));
                 break;
@@ -187,12 +161,7 @@ function init() {
                         component: TurnPageIndexRoute
                     });
                 } else {
-                    //应用管理员或应用所有者跳到我的应用首页
-                    if (userData.hasRole(userData.ROLE_CONSTANS.APP_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.APP_OWNER)) {
-                        callback(null, {
-                            component: MyAppIndexRoute
-                        });
-                    } else if (hasPrivilege('GET_ALL_CALL_RECORD') || //GET_ALL_CALL_RECORD 获取所有电话统计记录的权限
+                    if (hasPrivilege('GET_ALL_CALL_RECORD') || //GET_ALL_CALL_RECORD 获取所有电话统计记录的权限
                         hasPrivilege('GET_MY_CALL_RECORD')) {//GET_MY_CALL_RECORD 获取我的电话统计记录的权限
                         //客套销售首页视图的权限跳到销售主页
                         callback(null, {
@@ -221,4 +190,4 @@ function init() {
     );
 }
 
-exports.init = init;
+exports.init = init;
