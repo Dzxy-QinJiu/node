@@ -147,7 +147,9 @@ const ContractItem = React.createClass({
                     contract.stage === '待审' && contract.remarks ? (
                         <div className="contract-item-content">
                             <span className="contract-label">{Intl.get('common.remark', '备注')}:</span>
-                            <span className="contract-value">{contract.remarks}</span>
+                            <span className="contract-value contract-remarks">
+                                {contract.remarks}
+                            </span>
                         </div>
                     ) : null
                 }
