@@ -31,7 +31,7 @@ var userBatch = require('./batch');
 var _ = require('lodash');
 var auth = require('../../lib/utils/auth');
 var sessionExpireEmitter = require('../../public/sources/utils/emitters').sessionExpireEmitter;
-
+let pushDto = require('./push-dto');
 var client = null;
 //存储用户id对应的socketId、token的对象
 var socketStore = {};
@@ -94,7 +94,7 @@ function notifyChannelListener(data) {
                     socketArray.forEach(function(socketObj) {
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
-                            socket.emit('mes', messageObj);
+                            socket.emit('mes', pushDto.applyMessageToFrontend(messageObj));
                         }
                     });
                 }
