@@ -154,6 +154,7 @@ var zh_CN = {
     'common.no.more.filter.crm': '没有符合条件的客户了',
     'common.no.more.schedule': '暂无计划',
     'common.no.more.order': '暂无订单',
+    'common.no.more.contract': '暂无合同',
     'common.no.clue': '暂无线索',
     'common.no.audit': '暂无审计日志',
     'common.no.more.trace.record': '暂无跟进记录',
@@ -1381,6 +1382,7 @@ var zh_CN = {
     'crm.order.add.stage': '添加销售阶段',
     'crm.order.no.budget': '暂无预算',
     'crm.order.add.budget': '添加预算',
+    'crm.no.contract.tip': '该客户还没有添加过合同',
     'crm.input.new.competing': '请输入新竞品',
     'crm.no.competing': '暂无竞品',
     'crm.order.expected.deal': '预计成交',
@@ -1594,6 +1596,8 @@ var zh_CN = {
     'contract.165': '成本构成',
     'contract.166': '签单情况统计表',
     'contract.167': '首笔回款',
+    'contract.168': '有效期',
+    'contract.169': '{uername} 签订于{date}',
 
     // 应用运营报告start
     'app_operation.0': '一、用户总体统计',

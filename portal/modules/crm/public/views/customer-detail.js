@@ -7,6 +7,7 @@ var Contacts = require('./contacts');
 var Dynamic = require('./dynamic');
 var CrmSchedule = require('./schedule');
 var Order = require('./order');
+import Contract from './contract';
 var CustomerRecord = require('./customer_record');
 var crmAjax = require('../ajax');
 import Trace from 'LIB_DIR/trace';
@@ -15,6 +16,7 @@ import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
 import {isEqualArray} from 'LIB_DIR/func';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
@@ -22,10 +24,9 @@ const TAB_KEYS = {
     TRACE_TAB: '3',//跟进记录
     USER_TAB: '4',//用户
     ORDER_TAB: '5',//订单
-    DYNAMIC_TAB: '6',//动态
-    SCHEDULE_TAB: '7',//日程（联系计划）
-
-
+    CONTRACT_TAB: '6', // 合同
+    DYNAMIC_TAB: '7',//动态
+    SCHEDULE_TAB: '8'//日程（联系计划）
 };
 var CrmRightPanel = React.createClass({
     getInitialState: function() {
@@ -200,6 +201,20 @@ var CrmRightPanel = React.createClass({
                                     />
                                 ) : null}
                             </TabPane>
+                            {
+                                hasPrivilege('OPLATE_CONTRACT_QUERY') ? (
+                                    <TabPane
+                                        tab={Intl.get('contract.125', '合同')}
+                                        key={TAB_KEYS.CONTRACT_TAB}
+                                    >
+                                        {this.state.activeKey === TAB_KEYS.CONTRACT_TAB ? (
+                                            <Contract
+                                                curCustomer={this.state.curCustomer}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                ) : null
+                            }
                             <TabPane
                                 tab={Intl.get('crm.39', '动态')}
                                 key={TAB_KEYS.DYNAMIC_TAB}

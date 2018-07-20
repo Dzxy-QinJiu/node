@@ -1,0 +1,54 @@
+@font-color: #999999;
+@btn_color: #8ba9c3;
+@block-line-color: #D1DADE;
+@font_color: #464b4e;
+.contract-container {
+  .contract-top-block {
+    //共xxx条
+    .total-tip {
+      color: @font-color;
+    }
+    //添加订单按钮
+    .iconfont.icon-add {
+      float: right;
+      font-size: 16px;
+      color: @btn_color;
+    }
+  }
+  //无数据的提示
+  .no-data-tip{
+    float: left;
+  }
+  // 合同展示样式
+  .contract-container-scroll {
+    .contract-item-container {
+      .contract-item-title {
+        color: #B5C6D9;
+        padding-bottom: 12px;
+      }
+      .contract-item {
+        width: 100%;
+        font-size: 14px;
+        .contract-item-content {
+          margin-bottom: 4px;
+          //描述与值
+          .contract-label {
+            float: left;
+            line-height: 24px;
+            width: 52px;
+            text-align: right;
+          }
+          .contract-value {
+            line-height: 24px;
+            padding-left: 8px;
+            color: @font_color;
+          }
+        }
+      }
+      .contract-bottom-wrap {
+        float: right;
+        padding: 8px 5px 0 0;
+      }
+    }
+  }
+}

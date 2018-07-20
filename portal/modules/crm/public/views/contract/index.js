@@ -1,0 +1,88 @@
+require('../../css/contract.less');
+const GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
+import Spinner from 'CMP_DIR/spinner';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import ContractAction from '../../action/contract-action';
+import ContractStore from '../../store/contract-store';
+import ContractItem from './contract-item';
+import RightPanelScrollBar from '../components/rightPanelScrollBar';
+
+const Contract = React.createClass({
+    getInitialState() {
+        return {
+            curCustomer: this.props.curCustomer,//当前查看详情的客户
+            windowHeight: $(window).height(),
+            ...ContractStore.getState()
+        };
+    },
+    onStoreChange() {
+        this.setState(ContractStore.getState());
+    },
+    getParams() {
+        return {
+            pageSize: this.state.pageSize,
+            sortField: this.state.sortField,
+            order: this.state.order
+        };
+    },
+    componentDidMount() {
+        ContractStore.listen(this.onStoreChange);
+        let params = this.getParams();
+        let reqBody = {query: {'customer_id': this.props.curCustomer.id}};
+        if (this.props.curCustomer) {
+            ContractAction.getContractByCustomerId(params, reqBody);
+        }
+        $(window).on('resize', this.onStoreChange);
+    },
+    componentWillReceiveProps(nextProps) {
+        let oldCustomerId = this.state.curCustomer.id;
+        if (nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
+            this.setState({
+                curCustomer: nextProps.curCustomer
+            });
+            let params = this.getParams();
+            let reqBody = {query: {'customer_id': nextProps.curCustomer.id}};
+            setTimeout(() => {
+                ContractAction.resetState();
+                ContractAction.getContractByCustomerId(params, reqBody);
+            });
+        }
+    },
+    componentWillUnmount() {
+        ContractStore.unlisten(this.onStoreChange);
+        $(window).off('resize', this.onStoreChange);
+    },
+    render() {
+        let contractListLength = this.state.contractList.data.length || 0;
+        let loading = this.state.contractList.loading;
+        return (
+            <div className="contract-container" data-tracename="合同页面">
+                {
+                    loading ? null : (contractListLength ? <ReactIntl.FormattedMessage
+                        id="sales.frontpage.total.list"
+                        defaultMessage={'共{n}条'}
+                        values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有添加过合同'))
+                }
+                <RightPanelScrollBar totalHeight={contractListLength}>
+                    <div className="contract-container-scroll">
+                        {
+                            loading ? <Spinner /> : (
+                                contractListLength ? this.state.contractList.data.map( (contract, index) => {
+                                    return (
+                                        <ContractItem
+                                            key={index}
+                                            customerId={this.state.curCustomer.id}
+                                            contract={contract}
+                                        />
+                                    );
+                                } ) : <NoDataIconTip tipContent={Intl.get('common.no.more.contract', '暂无合同')}/>
+                            )
+                        }
+                    </div>
+                </RightPanelScrollBar>
+            </div>
+        );
+    }
+});
+
+module.exports = Contract;

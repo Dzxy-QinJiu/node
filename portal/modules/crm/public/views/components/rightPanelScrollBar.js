@@ -10,7 +10,8 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
     TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    MARGIN_BOTTOM: 8 //面板的下边距
+    MARGIN_BOTTOM: 8 ,//面板的下边距
+    TOP_TOTAL_HEIGHT: 30 //共xxx条的高度
 };
 class RightPanelScrollBar extends React.Component {
     constructor(props) {
@@ -30,6 +31,11 @@ class RightPanelScrollBar extends React.Component {
         if ($('.phone-alert-modal-title').size()) {
             divHeight -= $('.phone-alert-modal-title').outerHeight(true);
         }
+        // 减去条数的高度
+        if (this.props.totalHeight) {
+            divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+        }
+      
         //合并面板，去掉客户选择框的高度
         if (this.props.isMerge) {
             divHeight = divHeight - LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;
@@ -48,5 +54,12 @@ RightPanelScrollBar.defaultProps = {
     listenScrollBottom: false,
     handleScrollBottom: function() {
     }
+};
+RightPanelScrollBar.propTypes = {
+    handleScrollBottom: React.PropTypes.func,
+    isMerge: React.PropTypes.boolean,
+    listenScrollBottom: React.PropTypes.boolean,
+    children: React.PropTypes.element,
+    totalHeight: React.PropTypes.number
 };
 export default RightPanelScrollBar;
