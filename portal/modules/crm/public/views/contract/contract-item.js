@@ -51,15 +51,17 @@ const ContractItem = React.createClass({
         });
         return (
             <span className="app-icon-name">
-                {appName && matchAppObj && matchAppObj.client_image ? (
-                    <span className="app-self">
-                        <img src={matchAppObj.client_image} />
-                    </span>
-                ) : (
-                    <span className='app-default'>
-                        <i className='iconfont icon-app-default'></i>
-                    </span>
-                )}
+                {appName ? (
+                    matchAppObj && matchAppObj.client_image ? (
+                        <span className="app-self">
+                            <img src={matchAppObj.client_image} />
+                        </span>
+                    ) : (
+                        <span className='app-default'>
+                            <i className='iconfont icon-app-default'></i>
+                        </span>
+                    )
+                ) : null}
                 <span className='app-name'>{appName}</span>
             </span>
         );
