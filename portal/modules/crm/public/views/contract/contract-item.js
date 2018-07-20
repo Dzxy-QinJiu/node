@@ -72,7 +72,7 @@ const ContractItem = React.createClass({
                 title: Intl.get('common.app', '应用'),
                 dataIndex: 'name',
                 key: 'name',
-                width: '60%',
+                width: '50%',
                 render: (text, record, index) => {
                     return <span className="app-info">{this.renderAppIconName(text, record.id)}</span>;
                 }
@@ -87,9 +87,9 @@ const ContractItem = React.createClass({
                 title: Intl.get('contract.172', '金额(元)'),
                 dataIndex: 'total_price',
                 key: 'total_price',
-                width: '20%',
+                width: '30%',
                 render: (text) => {
-                    return <span>{parseAmount(text)}</span>;
+                    return <span>{parseAmount(text.toFixed(2))}</span>;
                 }
             }
         ];
