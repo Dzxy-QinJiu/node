@@ -1368,6 +1368,8 @@ var en_US = {
     'crm.order.no.budget': 'No budget',//暂无预算
     'crm.order.add.budget': 'Add budget',//添加预算
     'crm.no.contract.tip': 'The customer has not yet added a contract.', // 该客户还没有添加过合同
+    'crm.input.new.competing': 'Please input new competitor',//请输入新竞品
+    'crm.no.competing': 'No competitor',//暂无竞品
     'crm.order.expected.deal': 'Expected deal',//预计成交
     'crm.order.expected.deal.placeholder': 'Please select expected deal time', //请选择预计成交时间
     'crm.order.no.expected.deal.time': 'No expected deal time',//暂无预计成交时间
@@ -2025,7 +2027,7 @@ var en_US = {
     'call.record.call.in.pick.phone': 'There is a phone call, please pick up the phone',//有电话打入，请拿起话机
     'call.record.phone.alerting': 'The phone is ringing, Waiting for answering',//已振铃，等待对方接听
     'call.record.phone.answered': 'Calling ',//正在通话中
-    'call.record.phone.unknown': 'Hang up the call',//结束通话
+    'call.record.phone.unknown': 'Hang up the call',//通话结束
     'crm.phone.failed.add.trace': 'Failed to add trace record',//添加跟进记录失败
     'crm.phone.success.add.trace': 'Add trace record successfully!',//添加跟进记录成功
     'crm.phone.failed.get.customer': 'Failed to query the customer connectting to this phone number',//查询此号码对应的客户信息失败
@@ -2321,6 +2323,7 @@ var en_US = {
     'sales.home.will.trace': 'To be followed up',//待跟进
     'sales.home.i.trace': 'I',//我
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
-    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.'//本条线索处理完毕后，将不在首页展示
+    'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
+    'analysis.weekly.report': 'Weekly report'//周报分析
 };
 export default en_US;

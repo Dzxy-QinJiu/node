@@ -1383,6 +1383,8 @@ var zh_CN = {
     'crm.order.no.budget': '暂无预算',
     'crm.order.add.budget': '添加预算',
     'crm.no.contract.tip': '该客户还没有添加过合同',
+    'crm.input.new.competing': '请输入新竞品',
+    'crm.no.competing': '暂无竞品',
     'crm.order.expected.deal': '预计成交',
     'crm.order.expected.deal.placeholder': '请选择预计成交时间',
     'crm.order.no.expected.deal.time': '暂无预计成交时间',
@@ -2063,7 +2065,7 @@ var zh_CN = {
     'call.record.call.in.pick.phone': '有电话打入，请拿起话机',
     'call.record.phone.alerting': '已振铃，等待对方接听',
     'call.record.phone.answered': '正在通话中',
-    'call.record.phone.unknown': '结束通话',
+    'call.record.phone.unknown': '通话结束',
     'crm.phone.failed.add.trace': '添加跟进记录失败',
     'crm.phone.success.add.trace': '添加跟进记录成功',
     'crm.phone.failed.get.customer': '查询此号码对应的客户信息失败',
@@ -2343,6 +2345,7 @@ var zh_CN = {
     'sales.home.will.trace': '待跟进',
     'sales.home.i.trace': '我',
     'sales.home.fill.in.trace.content': '请输入跟进内容',
-    'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示'
+    'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示',
+    'analysis.weekly.report': '周报分析'
 };
 export default zh_CN;

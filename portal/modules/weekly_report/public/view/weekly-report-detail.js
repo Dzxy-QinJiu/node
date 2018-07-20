@@ -526,7 +526,14 @@ const WeeklyReportDetail = React.createClass({
     },
     getContractType(){
         let authType = 'common';
-        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+        if (hasPrivilege('KETAO_CONTRACT_ANALYSIS_REPORT_FORM')) {
+            authType = 'manager';
+        }
+        return authType;
+    },
+    getOverlayType(){
+        let authType = 'common';
+        if (hasPrivilege('KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER')) {
             authType = 'manager';
         }
         return authType;
@@ -566,7 +573,7 @@ const WeeklyReportDetail = React.createClass({
         var queryObj = _.clone(this.getQueryParams());
         queryObj.team_id = queryObj.team_ids;
         delete queryObj.team_ids;
-        let type = this.getContractType();
+        let type = this.getOverlayType();
         WeeklyReportDetailAction.getRegionOverlayInfo(queryObj, type);
     },
     //获取客户阶段情况
@@ -574,38 +581,38 @@ const WeeklyReportDetail = React.createClass({
         var queryObj = _.clone(this.getQueryParams());
         queryObj.team_id = queryObj.team_ids;
         delete queryObj.team_ids;
-        let type = this.getContractType();
+        let type = this.getOverlayType();
         WeeklyReportDetailAction.getCustomerStageInfo(queryObj, type);
     },
     //渲染不同的表格
     renderDiffTypeTable(type){
         var data = {}, retryFunction = '', columns = {};
         switch (type) {
-        case 'callInfo'://电话接通率
-            data = this.state.salesPhone;
-            retryFunction = this.getCallInfoData;
-            columns = this.getPhoneListColumn();
-            break;
-        case 'contactInfo'://合同信息
-            data = this.state.contractData;
-            retryFunction = this.getContractData;
-            columns = this.getContractListColumn();
-            break;
-        case 'repaymentInfo'://回款信息
-            data = this.state.repaymentData;
-            retryFunction = this.getRepaymentData;
-            columns = this.getRepaymentListColumn();
-            break;
-        case 'regionOverlay'://区域覆盖情况
-            data = this.state.regionOverlayData;
-            retryFunction = this.getRegionOverlayData;
-            columns = this.getRegionOverlayListColumn();
-            break;
-        case 'customerStageInfo'://客户阶段统计
-            data = this.state.customerStageData;
-            retryFunction = this.getCustomerStageData;
-            columns = this.getCustomerStageListColumn();
-            break;
+            case 'callInfo'://电话接通率
+                data = this.state.salesPhone;
+                retryFunction = this.getCallInfoData;
+                columns = this.getPhoneListColumn();
+                break;
+            case 'contactInfo'://合同信息
+                data = this.state.contractData;
+                retryFunction = this.getContractData;
+                columns = this.getContractListColumn();
+                break;
+            case 'repaymentInfo'://回款信息
+                data = this.state.repaymentData;
+                retryFunction = this.getRepaymentData;
+                columns = this.getRepaymentListColumn();
+                break;
+            case 'regionOverlay'://区域覆盖情况
+                data = this.state.regionOverlayData;
+                retryFunction = this.getRegionOverlayData;
+                columns = this.getRegionOverlayListColumn();
+                break;
+            case 'customerStageInfo'://客户阶段统计
+                data = this.state.customerStageData;
+                retryFunction = this.getCustomerStageData;
+                columns = this.getCustomerStageListColumn();
+                break;
         }
 
         if (data.loading) {
@@ -649,7 +656,7 @@ const WeeklyReportDetail = React.createClass({
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
         return height;
     },
     render: function() {

@@ -78,7 +78,7 @@ const ClueCustomer = React.createClass({
         }
         clueCustomerAction.getSalesManList();
         //管理员、销售领导默认展示待分配的线索客户 0
-        if (this.isSalesManager()){
+        if (userData.isSalesManager()){
             //管理员、销售领导 默认展示待分配的线索客户 status对应0
             clueCustomerAction.setFilterType(SELECT_TYPE.WILL_DISTRIBUTE);
         }else if (this.isOperation()){
@@ -330,10 +330,6 @@ const ClueCustomer = React.createClass({
             </div>
         );
     },
-    //是否是销售领导 或者是域管理员
-    isSalesManager() {
-        return userData.isSalesManager();
-    },
     //是否是运营人员
     isOperation(){
         return userData.hasRole('operations');
@@ -525,6 +521,7 @@ const ClueCustomer = React.createClass({
     },
     //线索客户列表
     renderClueCustomerList(){
+        let user = userData.getUserData();
         var customerList = this.state.curCustomers;
         var dropDownContent = <Button type="primary" data-tracename="点击分配线索客户按钮">
             {Intl.get('clue.customer.distribute','分配')}
@@ -644,7 +641,7 @@ const ClueCustomer = React.createClass({
                                         </p> : null}
                                     </div>
                                 </Col> : null}
-                                {(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) ?
+                                {(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) ?
                                     <Col sm={3} lg={2}>
                                         <div className="action-button-wrap">
                                             <AntcDropdown
@@ -964,7 +961,7 @@ const ClueCustomer = React.createClass({
                             clueCustomerValue={this.state.clueCustomerValue}
                             onTypeChange={this.onTypeChange}
                         />
-                        {this.renderClueAnalysisBtn()}
+                        {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
                         {this.renderHandleBtn()}
                         {this.renderImportClue()}
                         <div className="filter-block-line"></div>

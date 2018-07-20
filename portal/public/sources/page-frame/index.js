@@ -74,6 +74,18 @@ var PageFrame = React.createClass({
     toggleNotificationPanel() {
         this.setState({
             isShowNotificationPanel: !this.state.isShowNotificationPanel
+        }, () => {
+            if (this.state.isShowNotificationPanel === false) {
+                this.setState({
+                    phonePanelShow: false
+                });
+            }
+        });
+    },
+    closeNotificationPanel() {
+        this.setState({
+            isShowNotificationPanel: false,
+            phonePanelShow: false
         });
     },
     render: function() {
@@ -82,7 +94,7 @@ var PageFrame = React.createClass({
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-xs-2">
-                        <LeftMenu toggleNotificationPanel={this.toggleNotificationPanel}/>
+                        <LeftMenu toggleNotificationPanel={this.toggleNotificationPanel} closeNotificationPanel={this.closeNotificationPanel}/>
                     </div>
                     <div className="col-xs-10">
                         {this.props.children}

@@ -4,20 +4,11 @@
  * Created by liwenjun on 2016/5/25.
  */
 require('alt');
-require('antd');
-require('react');
-require('react-dom');
-require('react-intl');
-require('intl-messageformat');
-require('react-router');
-require('react-bootstrap');
-require('jquery');
-require('bootstrap');
-require('lodash');
 require('history');
-require('echarts-eefung');
 require('immutable');
 require('color');
+require('jquery');
+require('lodash');
 require('moment');
 require('noty');
 require('socket.io-client');

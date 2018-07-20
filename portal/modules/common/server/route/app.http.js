@@ -41,5 +41,17 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'get',
+        'path': '/rest/app/:app_id',
+        'handler': 'getCurAppById',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            //"APP_MANAGE_LIST_APPS"
+            //有一个需求：获取一个app_id对应的logo
+            //如果限制了权限，产品总经理看在线用户统计的时候，将不能显示应用logo
+        ]
     }]
 };

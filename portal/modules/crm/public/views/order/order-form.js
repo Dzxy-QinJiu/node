@@ -35,6 +35,8 @@ const OrderForm = React.createClass({
                 return;
             } else {
                 let reqData = JSON.parse(JSON.stringify(this.state.formData));
+                //接口中需要转换成万后的数据
+                _.set(reqData,'budget',reqData.budget / 10000);
                 delete reqData.isEdit;
                 //保存
                 reqData.customer_id = this.props.customerId;
@@ -133,6 +135,7 @@ const OrderForm = React.createClass({
                             <Input value={formData.budget}
                                 name="budget"
                                 onChange={this.setField.bind(this, 'budget')}
+                                addonAfter={Intl.get('contract.82', '元')}
                             />
                         </Validator>
                     </FormItem>

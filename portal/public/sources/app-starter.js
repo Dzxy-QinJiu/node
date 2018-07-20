@@ -2,7 +2,6 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var Router = require('react-router').Router;
 var userData = require('./user-data');
 var history = require('./history');
-var Message = require('antd').message;
 
 import Translate from '../intl/i18nTemplate';
 
@@ -95,28 +94,10 @@ var TurnPageIndexRoute = React.createClass({
         return null;
     }
 });
-//获取角色
-function getUserType(callback) {
-    $.ajax({
-        url: '/rest/group_position',
-        dataType: 'json',
-        type: 'get',
-        success: function(list) {
-            if (callback)
-                callback.call(this, _.isArray(list) ? list[0] : '');
-        },
-        error: function(error) {
-            Message.error(error.responseJSON);
-            if (callback)
-                callback.call(this, '');
-        }
-    });
-}
 
 //获取权限之后,系统入口
-function init(options) {
+function init() {
     var childRoutes = [];
-    childRoutes.push(require('../../modules/weekly_report'));
     var user = userData.getUserData();
     _.each(user.modules, function(module) {
         switch (module) {
@@ -129,17 +110,9 @@ function init(options) {
                     childRoutes.push(require('../../modules/sales_home_page'));
                 }
                 break;
-            //域管理
-            case 'realm_manage':
-                childRoutes.push(require('../../modules/realm_manage'));
-                break;
             //用户管理
             case 'user_manage':
                 childRoutes.push(require('../../modules/user_manage'));
-                break;
-            //安全域运营分析
-            case 'analysis/realm':
-                childRoutes.push(require('./realm_analysis'));
                 break;
             case 'oplate_user_analysis':
                 childRoutes.push(require('../../modules/oplate_user_analysis'));
@@ -147,7 +120,7 @@ function init(options) {
             case 'oplate_customer_analysis':
                 childRoutes.push(require('../../modules/oplate_customer_analysis'));
                 break;
-            //角色权限管理
+            //后台管理
             case 'background_management':
                 childRoutes.push(require('./background_management'));
                 break;
@@ -171,14 +144,6 @@ function init(options) {
             case 'contract':
                 childRoutes.push(require('./contract'));
                 break;
-            //应用管理
-            case 'app_manage':
-                childRoutes.push(require('../../modules/app_manage'));
-                break;
-            //应用管理
-            case 'my_app_manage':
-                childRoutes.push(require('../../modules/my_app_manage'));
-                break;
             //应用用户管理
             case 'user':
                 childRoutes.push(require('./app_user_manage'));
@@ -196,12 +161,12 @@ function init(options) {
             case 'app_user_manage_apply':
                 childRoutes.push(require('../../modules/user_apply'));
                 break;
-            case 'app_overview':
-                childRoutes.push(require('../../modules/app_overview'));
-                break;
             //日程管理
             case 'schedule_management':
                 childRoutes.push(require('../../modules/schedule_management'));
+                break;
+            case 'weekly_report_analysis':
+                childRoutes.push(require('../../modules/weekly_report'));
                 break;
         }
     });
@@ -256,4 +221,4 @@ function init(options) {
     );
 }
 
-exports.init = init;
+exports.init = init;
