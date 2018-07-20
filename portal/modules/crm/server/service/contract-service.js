@@ -1,6 +1,7 @@
 'use strict';
 const restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 const restUtil = require('ant-auth-request').restUtil(restLogger);
+const contractDto = require('../dto/contract');
 
 const restApis = {
     // 根据客户id获取合同信息
@@ -17,5 +18,17 @@ exports.getContractByCustomerId = (req, res) => {
                 replace(':order', params.order),
             req: req,
             res: res
-        }, JSON.parse(req.body.rangParams));
+        }, JSON.parse(req.body.rangParams),{
+            success: (eventEmitter, data) => {
+                let list = [];
+                //处理数据
+                if (data && data.list && data.list.length) {
+                    list = contractDto.toRestObject(data.list);
+                }
+                eventEmitter.emit('success', {list: list, total: data.total});
+            },
+            error: (eventEmitter, errorObj) => {
+                eventEmitter.emit('error', errorObj.message);
+            }
+        });
 };

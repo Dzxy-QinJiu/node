@@ -1,4 +1,5 @@
 import DetailCard from 'CMP_DIR/detail-card';
+import { AntcTable } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 
@@ -8,7 +9,6 @@ const ContractItem = React.createClass({
             formData: JSON.parse(JSON.stringify(this.props.contract)),
         };
     },
-
     componentWillReceiveProps(nextProps) {
         if (this.props.customerId !== nextProps.customerId) {
             this.setState({
@@ -20,7 +20,13 @@ const ContractItem = React.createClass({
     renderContractTitle() {
         const contract = this.state.formData;
         return (
-            <span className="contract-item-title">{Intl.get('contract.24', '合同号')}:{contract.num}</span>
+            <div className='contract-title'>
+                {contract.stage === '待审' ? (
+                    <span className="contract-item-stage">{Intl.get('contract.170', '合同待审')}</span>
+                ) : (
+                    <span className="contract-item-title">{Intl.get('contract.24', '合同号')}:{contract.num}</span>
+                )}
+            </div>
         );
     },
     // 格式化数值
@@ -37,6 +43,67 @@ const ContractItem = React.createClass({
             value = parseAmount(value);
         }
         return showUnit ? value + Intl.get('contract.155', '元') : value;
+    },
+    renderAppIconName(appName, appId) {
+        let appList = this.props.appList;
+        let matchAppObj = _.find( appList, (appItem) => {
+            return appItem.client_id === appId;
+        });
+        return (
+            <span className="app-icon-name">
+                {appName ? (
+                    matchAppObj && matchAppObj.client_image ? (
+                        <span className="app-self">
+                            <img src={matchAppObj.client_image} />
+                        </span>
+                    ) : (
+                        <span className='app-default'>
+                            <i className='iconfont icon-app-default'></i>
+                        </span>
+                    )
+                ) : null}
+                <span className='app-name'>{appName}</span>
+            </span>
+        );
+    },
+    getProductColumns() {
+        return [
+            {
+                title: Intl.get('common.app', '应用'),
+                dataIndex: 'name',
+                key: 'name',
+                width: '50%',
+                render: (text, record, index) => {
+                    return <span className="app-info">{this.renderAppIconName(text, record.id)}</span>;
+                }
+            },
+            {
+                title: Intl.get('contract.171', '用户个数'),
+                dataIndex: 'count',
+                width: '20%',
+                key: 'count'
+            },
+            {
+                title: Intl.get('contract.172', '金额(元)'),
+                dataIndex: 'total_price',
+                key: 'total_price',
+                width: '30%',
+                render: (text) => {
+                    return <span>{parseAmount(text.toFixed(2))}</span>;
+                }
+            }
+        ];
+    },
+    renderProductInfo(products) {
+        let columns = this.getProductColumns(products);
+        return (
+            <AntcTable
+                dataSource={products}
+                columns={columns}
+                pagination={false}
+                bordered
+            />
+        );
     },
     renderContractContent() {
         const contract = this.state.formData;
@@ -68,6 +135,24 @@ const ContractItem = React.createClass({
                     <span className="contract-label">{Intl.get('contract.109', '毛利')}:</span>
                     <span className="contract-value">{this.formatValues(contract.gross_profit)}</span>
                 </div>
+                {
+                    contract.stage === '待审' ? (
+                        <div className="contract-item-content">
+                            <span className="contract-label">{Intl.get('contract.95', '产品信息')}:</span>
+                            <span className="contract-value">{this.renderProductInfo(contract.products)}</span>
+                        </div>
+                    ) : null
+                }
+                {
+                    contract.stage === '待审' && contract.remarks ? (
+                        <div className="contract-item-content">
+                            <span className="contract-label">{Intl.get('common.remark', '备注')}:</span>
+                            <span className="contract-value contract-remarks">
+                                {contract.remarks}
+                            </span>
+                        </div>
+                    ) : null
+                }
             </div>
         );
     },

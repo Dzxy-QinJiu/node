@@ -6,12 +6,14 @@ import ContractAction from '../../action/contract-action';
 import ContractStore from '../../store/contract-store';
 import ContractItem from './contract-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 
 const Contract = React.createClass({
     getInitialState() {
         return {
             curCustomer: this.props.curCustomer,//当前查看详情的客户
             windowHeight: $(window).height(),
+            appList: [],
             ...ContractStore.getState()
         };
     },
@@ -25,8 +27,14 @@ const Contract = React.createClass({
             order: this.state.order
         };
     },
+    getAppList() {
+        commonDataUtil.getAppList(appList => {
+            this.setState({appList: appList});
+        });
+    },
     componentDidMount() {
         ContractStore.listen(this.onStoreChange);
+        this.getAppList();
         let params = this.getParams();
         let reqBody = {query: {'customer_id': this.props.curCustomer.id}};
         if (this.props.curCustomer) {
@@ -73,6 +81,7 @@ const Contract = React.createClass({
                                             key={index}
                                             customerId={this.state.curCustomer.id}
                                             contract={contract}
+                                            appList={this.state.appList}
                                         />
                                     );
                                 } ) : <NoDataIconTip tipContent={Intl.get('common.no.more.contract', '暂无合同')}/>
