@@ -22,10 +22,17 @@
   // 合同展示样式
   .contract-container-scroll {
     .contract-item-container {
-      .contract-item-title {
-        color: #B5C6D9;
-        padding-bottom: 12px;
+      .contract-title {
+        .contract-item-stage {
+          color: #F9B706;
+          padding-bottom: 12px;
+        }
+        .contract-item-title {
+          color: #B5C6D9;
+          padding-bottom: 12px;
+        }
       }
+
       .contract-item {
         width: 100%;
         font-size: 14px;
@@ -35,13 +42,42 @@
           .contract-label {
             float: left;
             line-height: 24px;
-            width: 52px;
+            width: 60px;
             text-align: right;
           }
           .contract-value {
             line-height: 24px;
             padding-left: 8px;
             color: @font_color;
+            .app-info {
+              .app-icon-name {
+                .app-self {
+                  img {
+                    width: 24px;
+                    height: 24px;
+                  }
+                }
+                .app-default {
+                  padding: 5px 4px 3px;
+                  background-color: #a8b2b5;
+                  border-radius: 3px;
+                  .icon-app-default {
+                    color: #fff;
+                  }
+                }
+                .app-name {
+                  padding-left: 8px;
+                }
+              }
+            }
+            .antc-table {
+              display: inline-block;
+              width: 345px;
+              .ant-table-thead {
+                background-color: #F5F5F5;
+              }
+            }
+
           }
         }
       }

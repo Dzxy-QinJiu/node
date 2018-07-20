@@ -1570,6 +1570,9 @@ var en_US = {
     'contract.167': 'first time repayment',//首笔回款
     'contract.168': 'Validity period', // 有效期
     'contract.169': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
+    'contract.170': 'Contract pending', // 合同待审
+    'contract.171': 'Number of users', // 用户个数
+    'contract.172': 'Amount (yuan)', // 金额(元)
     //合同管理  end
 
     // 应用的运营报告start
