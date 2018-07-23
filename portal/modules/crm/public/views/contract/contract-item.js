@@ -24,6 +24,14 @@ const ContractItem = React.createClass({
     },
     renderContractTitle() {
         const contract = this.state.formData;
+        let contractStage = 'contract-stage';
+        if (contract.stage === '审核') {
+            contractStage += ' contract-review';
+        } else if (contract.stage === '归档') {
+            contractStage += ' contract-filed';
+        } else if (contract.stage === '报废') {
+            contractStage += 'contract-scrapped';
+        }
         let contractClass = classNames('iconfont',{
             'icon-down-twoline': !contract.isShowAllContractInfo,
             'icon-up-twoline': contract.isShowAllContractInfo
@@ -35,7 +43,10 @@ const ContractItem = React.createClass({
                 {contract.stage === '待审' ? (
                     <span className="contract-item-stage">{Intl.get('contract.170', '合同待审')}</span>
                 ) : (
-                    <span className="contract-item-title">{Intl.get('contract.24', '合同号')}:{contract.num}</span>
+                    <span className='contract-item-title'>
+                        <span className={contractStage}>[{contract.stage}] </span>
+                        <span className='contract-num'>{contract.num}</span>
+                    </span>
                 )}
                 <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
             </div>
