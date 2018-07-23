@@ -82,6 +82,8 @@ const CustomerRecord = React.createClass({
             appList: [],//应用列表，用来展示舆情上报的应用名称
             callNumber: this.props.callNumber || '', // 座机号
             getCallNumberError: '',
+            addRecordNullTip: '',//添加跟进记录内容为空的提示
+            editRecordNullTip: '', //编辑跟进内容为空的提示
             ...CustomerRecordStore.getState()
         };
     },
@@ -299,12 +301,24 @@ const CustomerRecord = React.createClass({
         CustomerRecordActions.setType(this.state.initialType);
         CustomerRecordActions.setContent(this.state.initialContent);
         this.toggleAddRecordPanel();
+        this.setState({addRecordNullTip: ''});
         // $('.add-content-input').animate({height: '36px'});
     },
 
     //顶部增加客户跟进记录输入时的处理
     handleInputChange: function(e) {
-        CustomerRecordActions.setContent(e.target.value);
+        let value = $.trim(e.target.value);
+        CustomerRecordActions.setContent(value);
+        //有输入的内容，则清空必填项验证的提示
+        if(value){
+            this.setState({
+                addRecordNullTip: ''
+            });
+        } else {
+            this.setState({
+                addRecordNullTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空')
+            });
+        }
     },
     //点击保存按钮，展示模态框
     showModalDialog: function(item) {
@@ -318,11 +332,8 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.updateItem(item);
             } else {
                 this.setState({
-                    addDetailErrTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空'),
-                });
-                //输入框中的内容置为空
-                this.setState({
-                    detailContent: '',
+                    editRecordNullTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空'),
+                    detailContent: ''
                 });
             }
         } else {
@@ -334,11 +345,8 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.changeAddButtonType('add');
             } else {
                 this.setState({
-                    addErrTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空'),
-                });
-                //输入框中的内容置为空
-                this.setState({
-                    inputContent: '',
+                    addRecordNullTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空'),
+                    inputContent: ''
                 });
             }
         }
@@ -359,13 +367,15 @@ const CustomerRecord = React.createClass({
                         </Radio>
                     </RadioGroup>
                 </div>
-                <div className="add-trace-item">
+                <div className={classNames('add-trace-item',{'no-record-item': this.state.addRecordNullTip})}>
                     <span className="add-trace-label">{Intl.get('call.record.follow.content', '跟进内容')}</span>
                     <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容，保存后不可修改')}
                         value={this.state.inputContent}
                         onChange={this.handleInputChange}
                         autosize={{minRows: 2, maxRows: 6}}
                     />
+                    {this.state.addRecordNullTip ? (
+                        <div className="record-null-tip add-record-null-tip">{this.state.addRecordNullTip}</div>) : null}
                     <SaveCancelButton loading={this.state.addCustomerLoading}
                         saveErrorMsg={this.state.addCustomerErrMsg}
                         handleSubmit={this.showModalDialog}
@@ -395,23 +405,35 @@ const CustomerRecord = React.createClass({
             customerRecord: this.state.customerRecord,
             detailContent: this.state.initialDetailContent,
             isEdit: false,
-            addDetailErrTip: ''
+            editRecordNullTip: ''
         });
     },
     handleAddDetailChange: function(e) {
         //补充客户跟进记录
-        CustomerRecordActions.setDetailContent(e.target.value);
+        let value = $.trim(e.target.value);
+        CustomerRecordActions.setDetailContent(value);
+        if(value){
+            this.setState({
+                editRecordNullTip: ''
+            });
+        } else {
+            this.setState({
+                editRecordNullTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空')
+            });
+        }
     },
     renderAddDetail: function(item) {
         //补充跟进记录
         return (
             <div className="add-customer-trace">
-                <div className="add-trace-item">
+                <div className={classNames('add-trace-item',{'no-record-item': this.state.editRecordNullTip})}>
                     <TextArea placeholder={Intl.get('add.customer.trace.detail', '请补充跟进记录详情，保存后不可修改')}
                         value={this.state.detailContent}
                         onChange={this.handleAddDetailChange}
                         autosize={{minRows: 2, maxRows: 6}}
                     />
+                    {this.state.editRecordNullTip ? (
+                        <div className="record-null-tip">{this.state.editRecordNullTip}</div>) : null}
                     <SaveCancelButton loading={this.state.addCustomerLoading}
                         saveErrorMsg={this.state.addCustomerErrMsg}
                         handleSubmit={this.showModalDialog.bind(this, item)}
@@ -833,4 +855,4 @@ const CustomerRecord = React.createClass({
         );
     }
 });
-module.exports = CustomerRecord;
+module.exports = CustomerRecord;

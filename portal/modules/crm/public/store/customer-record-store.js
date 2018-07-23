@@ -20,7 +20,6 @@ CustomerRecordStore.prototype.resetState = function() {
     this.selectedtracetype = 'other';//下拉框选中的类型
     this.initialType = 'other';//下拉框默认选中的类型
     this.total = 0;//共获取的数据总数
-    this.addErrTip = '';//添加内容为空的提示
     this.inputContent = '';//输入框中的内容
     this.initialContent = '';
     this.addContentDetailShow = 'false';//增加详情的输入框是否显示
