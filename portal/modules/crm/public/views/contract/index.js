@@ -1,5 +1,4 @@
 require('../../css/contract.less');
-const GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ContractAction from '../../action/contract-action';

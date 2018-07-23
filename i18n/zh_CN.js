@@ -1601,6 +1601,7 @@ var zh_CN = {
     'contract.170': '合同待审',
     'contract.171': '用户个数',
     'contract.172': '金额(元)',
+    'contract.173': '暂无产品信息',
 
     // 应用运营报告start
     'app_operation.0': '一、用户总体统计',

@@ -1575,6 +1575,7 @@ var en_US = {
     'contract.170': 'Contract pending', // 合同待审
     'contract.171': 'Number of users', // 用户个数
     'contract.172': 'Amount (yuan)', // 金额(元)
+    'contract.173': 'No product information', // 暂无产品信息
     //合同管理  end
 
     // 应用的运营报告start
