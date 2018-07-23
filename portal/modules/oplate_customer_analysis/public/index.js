@@ -501,13 +501,13 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
     getEmitters() {
         return [{
-            instance: emitters.appSelectorEmitter,
+            emitter: emitters.appSelectorEmitter,
             event: emitters.appSelectorEmitter.SELECT_APP,
             callbackArgs: [{
                 name: 'app_id',
             }],
         }, {
-            instance: emitters.dateSelectorEmitter,
+            emitter: emitters.dateSelectorEmitter,
             event: emitters.dateSelectorEmitter.SELECT_DATE,
             callbackArgs: [{
                 name: 'starttime',
@@ -531,7 +531,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
                 <AntcAnalysis
                     charts={charts}
-                    emitters={this.getEmitters()}
+                    emitterConfigList={this.getEmitters()}
                     isUseScrollBar={true}
                     chartHeight={240}
                     conditions={[{

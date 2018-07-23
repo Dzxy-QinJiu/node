@@ -543,7 +543,7 @@ var SalesHomePage = React.createClass({
                 getSaleIdByName={this.getSaleIdByName}
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
-                emitters={this.getEmitters()}
+                emitterConfigList={this.getEmitters()}
                 conditions={this.getConditions()}
             />);
         } else if (this.state.activeView === viewConstant.USER) {
@@ -556,7 +556,7 @@ var SalesHomePage = React.createClass({
                 getSaleIdByName={this.getSaleIdByName}
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
-                emitters={this.getEmitters()}
+                emitterConfigList={this.getEmitters()}
                 conditions={this.getConditions()}
                 appList={this.state.appList} 
                 selectedAppId={this.state.selectedAppId}                  
@@ -807,7 +807,7 @@ var SalesHomePage = React.createClass({
     getEmitters: function() {
         return [
             {
-                instance: dateSelectorEmitter,
+                emitter: dateSelectorEmitter,
                 event: dateSelectorEmitter.SELECT_DATE,
                 callbackArgs: [{
                     name: 'starttime',
@@ -816,7 +816,7 @@ var SalesHomePage = React.createClass({
                 }],
             },
             {
-                instance: teamTreeEmitter,
+                emitter: teamTreeEmitter,
                 event: teamTreeEmitter.SELECT_TEAM,
                 callbackArgs: [{
                     name: 'team_ids',
@@ -824,7 +824,7 @@ var SalesHomePage = React.createClass({
                 }],
             },
             {
-                instance: teamTreeEmitter,
+                emitter: teamTreeEmitter,
                 event: teamTreeEmitter.SELECT_MEMBER,
                 callbackArgs: [{
                     name: 'member_id',
