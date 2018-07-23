@@ -123,7 +123,7 @@ const ContractItem = React.createClass({
         return (
             <div className="contract-item">
                 <div className="contract-item-content">
-                    <span className="contract-label">  {Intl.get('contract.4', '甲方')}:</span>
+                    <span className="contract-label">{Intl.get('contract.4', '甲方')}:</span>
                     <span className="contract-value">{contract.buyer}</span>
                 </div>
                 <div className="contract-item-content">
@@ -150,7 +150,9 @@ const ContractItem = React.createClass({
                     contract.isShowAllContractInfo ? (
                         <div className="contract-item-content">
                             <span className="contract-label">{Intl.get('contract.95', '产品信息')}:</span>
-                            <span className="contract-value">{this.renderProductInfo(contract.products)}</span>
+                            <span className="contract-value">
+                                {contract.products === '' ? Intl.get('contract.173', '暂无产品信息') : this.renderProductInfo(contract.products)}
+                            </span>
                         </div>
                     ) : null
                 }
