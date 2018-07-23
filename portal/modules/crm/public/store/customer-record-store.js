@@ -33,7 +33,6 @@ CustomerRecordStore.prototype.resetState = function() {
     this.pageSize = 10;//每页的加载条数
     this.curPage = 1;//当前页
     this.isEdit = false;//当前有一条数据处在编辑状态
-    this.addDetailErrTip = '';//补充内容为空的提示
     this.modalDialogFlag = false;//是否显示模态框
     this.saveButtonType = '';//点击增加跟进记录的保存还是补充跟进记录的保存
     this.edittingItem = [];//当前正在编辑添加详情的那条跟进记录
