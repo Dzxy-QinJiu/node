@@ -18,8 +18,9 @@ const ContractItem = React.createClass({
         }
     },
     toggleContractDetail() {
-        this.state.formData.isShowAllContractInfo = !this.state.formData.isShowAllContractInfo;
-        this.setState({});
+        let formData = this.state.formData;
+        formData.isShowAllContractInfo = !formData.isShowAllContractInfo;
+        this.setState({formData});
     },
     renderContractTitle() {
         const contract = this.state.formData;
@@ -151,7 +152,7 @@ const ContractItem = React.createClass({
                         <div className="contract-item-content">
                             <span className="contract-label">{Intl.get('contract.95', '产品信息')}:</span>
                             <span className="contract-value">
-                                {contract.products === '' ? Intl.get('contract.173', '暂无产品信息') : this.renderProductInfo(contract.products)}
+                                {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('contract.173', '暂无产品信息')}
                             </span>
                         </div>
                     ) : null
