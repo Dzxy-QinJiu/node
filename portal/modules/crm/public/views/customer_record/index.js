@@ -62,6 +62,8 @@ const CALL_TYPE_MAP = {
     'data_report': Intl.get('crm.trace.delivery.report', '舆情报送'),
     'other': Intl.get('customer.other', '其他')
 };
+//跟进记录为空时的提示
+const TRACE_NULL_TIP = Intl.get('customer.trace.content', '客户跟进记录内容不能为空');
 
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
@@ -316,7 +318,7 @@ const CustomerRecord = React.createClass({
             });
         } else {
             this.setState({
-                addRecordNullTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空')
+                addRecordNullTip: TRACE_NULL_TIP
             });
         }
     },
@@ -332,7 +334,7 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.updateItem(item);
             } else {
                 this.setState({
-                    editRecordNullTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空'),
+                    editRecordNullTip: TRACE_NULL_TIP,
                     detailContent: ''
                 });
             }
@@ -345,7 +347,7 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.changeAddButtonType('add');
             } else {
                 this.setState({
-                    addRecordNullTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空'),
+                    addRecordNullTip: TRACE_NULL_TIP,
                     inputContent: ''
                 });
             }
@@ -418,7 +420,7 @@ const CustomerRecord = React.createClass({
             });
         } else {
             this.setState({
-                editRecordNullTip: Intl.get('customer.trace.content', '客户跟进记录内容不能为空')
+                editRecordNullTip: TRACE_NULL_TIP
             });
         }
     },
