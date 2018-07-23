@@ -9,6 +9,7 @@
 @split_line_color: #f5f5f5;
 @hover_color: #2196f3;
 @report_delivery_color: #f7a33f;
+@error_color: #f04134;
 .customer-container {
   .trace-top-block {
     //共xxx条
@@ -71,6 +72,16 @@
       textarea {
         width: 350px;
       }
+      .record-null-tip{
+        margin-top: 2px;
+        color: @error_color;
+      }
+      .record-null-tip.add-record-null-tip{
+        margin-left: 60px;
+      }
+    }
+    .no-record-item textarea{
+      border-color: @error_color;
     }
   }
   //跟进记录列表（下部时间线）展示面板
@@ -186,4 +197,4 @@
       }
     }
   }
-}
+}
