@@ -46,7 +46,7 @@ exports.scheduleMsgToFrontend = function(scheduleMsg) {
 };
 
 //登录踢出数据
-exports.scheduleMsgToFrontend = function(offlineMsg) {
+exports.offlineMsgToFrontend = function(offlineMsg) {
     return {
         country: offlineMsg.country,//登录地的国家
         ip: offlineMsg.ip,//登录地的ip

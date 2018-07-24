@@ -172,7 +172,7 @@ function offlineChannelListener(data) {
                             newSocketArray.push(socketObj);
                         } else {
                             //推出消息后，设置socket对应的session失效
-                            socket.emit('offline', pushDto.scheduleMsgToFrontend(userObj));
+                            socket.emit('offline', pushDto.offlineMsgToFrontend(userObj));
                             getSessionFromStore(socket, function(err, session) {
                                 if (!err && session) {
                                     session.destroy();
