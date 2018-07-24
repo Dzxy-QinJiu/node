@@ -118,14 +118,11 @@ function phoneEventChannelListener(data) {
             socketArray.forEach(function(socketObj) {
                 var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                 if (socket) {
-                    socket.emit('phonemsg', phonemsgObj);
+                    socket.emit('phonemsg', pushDto.phoneMsgToFrontend(phonemsgObj));
                 }
             });
         }
-
     }
-
-
 }
 
 /*
