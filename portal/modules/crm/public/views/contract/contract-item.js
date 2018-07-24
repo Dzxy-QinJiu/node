@@ -30,7 +30,7 @@ const ContractItem = React.createClass({
         } else if (contract.stage === '归档') {
             contractStage += ' contract-filed';
         } else if (contract.stage === '报废') {
-            contractStage += 'contract-scrapped';
+            contractStage += ' contract-scrapped';
         }
         let contractClass = classNames('iconfont',{
             'icon-down-twoline': !contract.isShowAllContractInfo,
