@@ -35,3 +35,41 @@ exports.phoneMsgToFrontend = function(phoneMsg) {
         billsec: phoneMsg.billsec //通话时长
     };
 };
+
+//日程提醒数据
+exports.scheduleMsgToFrontend = function(scheduleMsg) {
+    return {
+        contacts: scheduleMsg.contacts,//联系人列表
+        customer_name: scheduleMsg.customer_name,//客户名
+        content: scheduleMsg.content,//日程内容
+    };
+};
+
+//登录踢出数据
+exports.scheduleMsgToFrontend = function(offlineMsg) {
+    return {
+        country: offlineMsg.country,//登录地的国家
+        ip: offlineMsg.ip,//登录地的ip
+        province: offlineMsg.province,//登录地的省
+        city: offlineMsg.city,//登录地的市
+    };
+};
+
+//系统通知的数据
+exports.systemMsgToFrontend = function(systemMsg) {
+    return {
+        type: systemMsg.type,//系统通知的类型，appIllegal：停用登录，concerCustomerLogin：关注客户登录，illegalLocation：异地登录，loginFailed：登录时报密码或验证码错误
+        customer_name: systemMsg.customer_name,//客户名
+        content: systemMsg.content,//异地登录时，异地登录的信息
+        user_name: systemMsg.user_name,//登录的账号
+        app_name: systemMsg.app_name,//登录的应用
+    };
+};
+//未读回复的数据
+exports.unreadReplyToFrontend = function(unreadReply) {
+    return {
+        member_id: unreadReply.member_id,//谁的未读回复
+        push_type: unreadReply.push_type,//推送类型（历史-1，即可0，延时1）
+        apply_id: unreadReply.apply_id//有未读回复的申请id
+    };
+};
