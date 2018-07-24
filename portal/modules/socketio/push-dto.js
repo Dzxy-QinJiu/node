@@ -20,3 +20,56 @@ exports.applyMessageToFrontend = function(messageObj) {
         topic: messageObj.topic, //客户提醒的内容
     };
 };
+//后端推送的通话数据转换
+exports.phoneMsgToFrontend = function(phoneMsg) {
+    return {
+        id: phoneMsg.id,//通话记录的id,用于保存填写的跟进记录（只有当通话结束后type=phone时，推送过来的数据中才会有id）
+        type: phoneMsg.type,//'ALERT', 'ANSWERED', 'phone'/ 'call_back'等通话状态
+        customers: phoneMsg.customers,//当前拨打的电话对应的客户{id,name}列表（通常只有一个客户，个别电话会存在一个电话对应多个客户）
+        call_type: phoneMsg.call_type,//'IN':呼入，‘OU’:呼出
+        extId: phoneMsg.extId,//呼入的电话
+        to: phoneMsg.to,//呼出的电话
+        dst: phoneMsg.dst,//呼出的电话（个别状态下，没有to需要取dst）
+        callid: phoneMsg.callid, //通话id,一个通话中，'ALERT', 'ANSWERED', 'phone'/'call_back'状态的callid相同
+        recevied_time: phoneMsg.recevied_time, //通话状态的接收时间，'ALERT', 'ANSWERED', 'phone'/'call_back'状态的接收时间是有序（后面的状态接收时间要在前面状态之后）
+        billsec: phoneMsg.billsec //通话时长
+    };
+};
+
+//日程提醒数据
+exports.scheduleMsgToFrontend = function(scheduleMsg) {
+    return {
+        contacts: scheduleMsg.contacts,//联系人列表
+        customer_name: scheduleMsg.customer_name,//客户名
+        content: scheduleMsg.content,//日程内容
+    };
+};
+
+//登录踢出数据
+exports.offlineMsgToFrontend = function(offlineMsg) {
+    return {
+        country: offlineMsg.country,//登录地的国家
+        ip: offlineMsg.ip,//登录地的ip
+        province: offlineMsg.province,//登录地的省
+        city: offlineMsg.city,//登录地的市
+    };
+};
+
+//系统通知的数据
+exports.systemMsgToFrontend = function(systemMsg) {
+    return {
+        type: systemMsg.type,//系统通知的类型，appIllegal：停用登录，concerCustomerLogin：关注客户登录，illegalLocation：异地登录，loginFailed：登录时报密码或验证码错误
+        customer_name: systemMsg.customer_name,//客户名
+        content: systemMsg.content,//异地登录时，异地登录的信息
+        user_name: systemMsg.user_name,//登录的账号
+        app_name: systemMsg.app_name,//登录的应用
+    };
+};
+//未读回复的数据
+exports.unreadReplyToFrontend = function(unreadReply) {
+    return {
+        member_id: unreadReply.member_id,//谁的未读回复
+        push_type: unreadReply.push_type,//推送类型（历史-1，即可0，延时1）
+        apply_id: unreadReply.apply_id//有未读回复的申请id
+    };
+};
