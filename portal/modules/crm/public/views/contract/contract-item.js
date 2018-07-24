@@ -44,7 +44,9 @@ const ContractItem = React.createClass({
                     <span className="contract-item-stage">{Intl.get('contract.170', '合同待审')}</span>
                 ) : (
                     <span className='contract-item-title'>
-                        <span className={contractStage}>[{contract.stage}] </span>
+                        <span className={contractStage}>
+                            <span className='contract-left-bracket'>[</span>{contract.stage}<span className='contract-right-bracket'>]</span>
+                        </span>
                         <span className='contract-num'>{contract.num}</span>
                     </span>
                 )}
