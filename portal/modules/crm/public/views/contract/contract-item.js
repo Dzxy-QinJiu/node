@@ -24,14 +24,12 @@ const ContractItem = React.createClass({
     },
     renderContractTitle() {
         const contract = this.state.formData;
-        let contractStage = 'contract-stage';
-        if (contract.stage === '审核') {
-            contractStage += ' contract-review';
-        } else if (contract.stage === '归档') {
-            contractStage += ' contract-filed';
-        } else if (contract.stage === '报废') {
-            contractStage += ' contract-scrapped';
-        }
+        let contractStageClass = classNames('contract-stage', {
+            'contract-pending': contract.stage === '待审',
+            'contract-review': contract.stage === '审核',
+            'contract-filed': contract.stage === '归档',
+            'contract-scrapped': contract.stage === '报废'
+        });
         let contractClass = classNames('iconfont',{
             'icon-down-twoline': !contract.isShowAllContractInfo,
             'icon-up-twoline': contract.isShowAllContractInfo
@@ -40,11 +38,11 @@ const ContractItem = React.createClass({
             Intl.get('crm.basic.detail.show', '展开详情');
         return (
             <div className='contract-title'>
-                {contract.stage === '待审' ? (
-                    <span className="contract-item-stage">{Intl.get('contract.170', '合同待审')}</span>
+                {contract.stage === '待审' && contract.num === '' ? (
+                    <span className='contract-item-stage'>{Intl.get('contract.170', '合同待审')}</span>
                 ) : (
                     <span className='contract-item-title'>
-                        <span className={contractStage}>
+                        <span className={contractStageClass}>
                             <span className='contract-left-bracket'>[</span>{contract.stage}<span className='contract-right-bracket'>]</span>
                         </span>
                         <span className='contract-num'>{contract.num}</span>

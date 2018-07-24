@@ -2,6 +2,11 @@
 @btn_color: #8ba9c3;
 @block-line-color: #D1DADE;
 @font_color: #464b4e;
+@pending-font-color: #F9B706; // 合同待审字体颜色
+@review-font-color: #2196f3; // 合同审核字体颜色
+@filed-font-color: #9fb5cd; // 合同归档字体颜色
+@twoline-font-color: #8da8c5; // 展开/收起颜色
+
 .contract-container {
   .contract-top-block {
     //共xxx条
@@ -24,13 +29,11 @@
     .contract-item-container {
       .contract-title {
         .contract-item-stage {
-          color: #F9B706;
+          color: @pending-font-color;
           padding-bottom: 12px;
         }
         .contract-item-title {
           font-family: SimHei;
-          font-size: 16px;
-          padding-bottom: 12px;
           .contract-stage {
             padding-right: 8px;
             .contract-left-bracket{
@@ -40,22 +43,25 @@
               padding-left: 2px;
             }
           }
+          .contract-pending {
+            color: @pending-font-color;
+          }
           .contract-review {
-            color: #2196f3;
+            color: @review-font-color;
           }
           .contract-filed {
-            color: #9fb5cd;
+            color: @filed-font-color;
           }
           .contract-scrapped {
             color: @font-color;
           }
           .contract-num {
-            color: #464b4e;
+            color: @font_color;
           }
         }
         .iconfont {
           float: right;
-          color: #8da8c5;
+          color: @twoline-font-color;
         }
       }
 
@@ -70,6 +76,7 @@
             line-height: 24px;
             width: 60px;
             text-align: right;
+            color: @font-color;
           }
           .contract-value {
             line-height: 24px;
