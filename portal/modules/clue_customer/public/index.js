@@ -77,14 +77,13 @@ const ClueCustomer = React.createClass({
             this.getClueClassify();
         }
         clueCustomerAction.getSalesManList();
-        //管理员、销售领导默认展示待分配的线索客户 0
-        if (userData.isSalesManager()){
-            //管理员、销售领导 默认展示待分配的线索客户 status对应0
-            clueCustomerAction.setFilterType(SELECT_TYPE.WILL_DISTRIBUTE);
-        }else if (this.isOperation()){
+        if (this.isOperation()){
             //运营人员  运营人员默认展示全部线索客户 status对应""
             clueCustomerAction.setFilterType(SELECT_TYPE.ALL);
-        } else{
+        } else if (this.isSalesLeaderOrManager()){
+            //管理员、销售领导 默认展示待分配的线索客户 status对应0
+            clueCustomerAction.setFilterType(SELECT_TYPE.WILL_DISTRIBUTE);
+        }else {
             //普通销售 销售默认展示已分配的线索客户 status对应1
             clueCustomerAction.setFilterType(SELECT_TYPE.HAS_DISTRIBUTE);
         }
@@ -333,6 +332,10 @@ const ClueCustomer = React.createClass({
     //是否是运营人员
     isOperation(){
         return userData.hasRole('operations');
+    },
+    //是否是销售领导或者管理员
+    isSalesLeaderOrManager(){
+        return !userData.getUserData().isCommonSales || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
     },
     renderSalesBlock() {
         let dataList = [];

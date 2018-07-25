@@ -55,15 +55,6 @@ exports.hasRole = function(role) {
     return false;
 };
 
-//是否销售领导或管理员
-exports.isSalesManager = function() {
-    const roles = UserData.roles || [];
-    if ((!UserData.isCommonSales && roles.indexOf(ROLE_CONSTANS.OPERATION_PERSON) === -1) || roles.indexOf(ROLE_CONSTANS.REALM_ADMIN) > -1) {
-        return true;
-    }
-    return false;
-};
-
 //用户是否含有某个角色
 exports.hasOnlyRole = function(role) {
     const roles = UserData.roles || [];
