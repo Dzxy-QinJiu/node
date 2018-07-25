@@ -228,6 +228,8 @@ exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
         }
     }
     data.updateObj = JSON.stringify(updateObj);
+    //是否
+
     var type = 'user';
     if (isMarkingAvalibility){
         if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER')){

@@ -66,7 +66,7 @@ const LAYOUT_HEIGHT = {
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 75,
+    TOP_DISTANCE: 70,
     BOTTOM_DISTANCE: 70
 };
 //图表的高度
@@ -1240,7 +1240,7 @@ var CallRecordAnalyis = React.createClass({
             chartType: 'map',
             data: arr,
             layout: {
-                sm: 12,
+                sm: 24,
             },
             option: this.getCustomerZoneOptions(),
             noExportCsv: true,
@@ -1316,7 +1316,7 @@ var CallRecordAnalyis = React.createClass({
         );
     },
     renderCallAnalysisView: function() {
-        const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
+        const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE;
         return (<div className="call-table-container" ref="phoneList">
             {/**
              *  通话数量和通话时长的趋势图
@@ -1339,7 +1339,7 @@ var CallRecordAnalyis = React.createClass({
                         <div className="call-info col-xs-12">
                             {this.renderCallInfo()}
                         </div>
-                        <div className="col-xs-12">
+                        <div className="call-range col-xs-12">
                             {/*根据电话的排序的通话次数TOP10*/}
                             {this.renderCallTopTen(this.state.callTotalCountObj, {
                                 title: Intl.get('call.analysis.total.count', '通话总次数'),
@@ -1351,19 +1351,19 @@ var CallRecordAnalyis = React.createClass({
                                 dataKey: 'sum'
                             })}
                         </div>
-                        <div className="col-xs-12">
+                        <div className="call-duration col-xs-12">
                             {/*根据电话的排序的单次通话时长TOP10*/}
                             {this.renderCallTopTen(this.state.callDurList, {
                                 title: Intl.get('sales.home.call.top.ten', '单次通话时长'),
                                 dataKey: 'billsec'
                             })}
-                            <div className="call-service-rate col-xs-6">
+                            <div className="call-rate-service-rate col-xs-6">
                                 <div className="call-rate">
                                     {this.renderCallRateChar('114')}
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xs-12">
+                        <div className="call-rate col-xs-12">
                             <div className="call-service-rate col-xs-6">
                                 <div className="call-rate">
                                     {this.renderCallRateChar('service')}
@@ -1385,8 +1385,8 @@ var CallRecordAnalyis = React.createClass({
 
                             </div>
                         </div>
-                        <div className="col-xs-12">
-                            <div className="call-stage-distribute col-xs-6">
+                        <div className="call-stage col-xs-12">
+                            <div className="customer-stage-distribute col-xs-6">
                                 <div className="call-stage">
                                     {this.renderCustomerPhase()}
                                 </div>
@@ -1398,10 +1398,13 @@ var CallRecordAnalyis = React.createClass({
                             </div>
                         </div>
                         <div className="col-xs-12">
-                            <div className="call-zone-distribute" ref="mapChartWrap">
-                                {this.renderCustomerZoneDistribute()}
+                            <div className="call-zone col-xs-6">
+                                <div className="call-zone-distribute" ref="mapChartWrap">
+                                    {this.renderCustomerZoneDistribute()}
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </GeminiScrollBar>
             </div>
