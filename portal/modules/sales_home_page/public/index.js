@@ -563,7 +563,6 @@ var SalesHomePage = React.createClass({
             />);
         } else if (this.state.activeView === viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
-                {this.filterCallTypeSelect()}
                 <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
                     <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
                         <AntcAnalysis
@@ -883,6 +882,11 @@ var SalesHomePage = React.createClass({
                 columns: this.getPhoneListColumn(),
                 util: {zoomInSortArea: true},
                 onChange: this.onTableChange,
+            },
+            cardContainer: {
+                props: {
+                    subTitle: this.filterCallTypeSelect(),
+                },
             },
         }, {
             title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
