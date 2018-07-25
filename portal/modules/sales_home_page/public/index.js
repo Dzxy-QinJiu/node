@@ -417,6 +417,7 @@ var SalesHomePage = React.createClass({
                 title: this.getCallBackColumnTitle(Intl.get('common.callback.time', '回访时间'), 'call_date'),
                 dataIndex: 'call_date',
                 width: 100,
+                className: 'has-sorter',
                 sorter: function(a, b) {
                     return a.call_date - b.call_date;
                 },
