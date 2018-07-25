@@ -58,7 +58,7 @@ exports.hasRole = function(role) {
 //是否销售领导或管理员
 exports.isSalesManager = function() {
     const roles = UserData.roles || [];
-    if ((roles.indexOf(ROLE_CONSTANS.SALES) > -1 && !UserData.isCommonSales) || roles.indexOf(ROLE_CONSTANS.REALM_ADMIN) > -1) {
+    if ((!UserData.isCommonSales && roles.indexOf(ROLE_CONSTANS.OPERATION_PERSON) === -1) || roles.indexOf(ROLE_CONSTANS.REALM_ADMIN) > -1) {
         return true;
     }
     return false;
