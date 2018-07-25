@@ -13,7 +13,8 @@
  *       >
  */
 require('./index.less');
-import {Input, Icon} from 'antd';
+import {Input, Radio} from 'antd';
+const RadioGroup = Radio.Group;
 import classNames from 'classnames';
 class AlwaysShowSelect extends React.Component {
     constructor(props) {
@@ -21,7 +22,7 @@ class AlwaysShowSelect extends React.Component {
         this.state = {
             value: this.props.value || '',
             searchVal: '',
-            isSearch: false
+            isSearch: false,
         };
     }
 
@@ -53,22 +54,36 @@ class AlwaysShowSelect extends React.Component {
     //获取选择下拉选项
     getSelectOptions = (dataList) => {
         if (dataList.length) {
-            let options = dataList.map(data => {
+            let options = dataList.map((data, index) => {
                 let className = classNames('select-item', {'item-active': data.value === this.state.value});
-                return (<li className={className}
-                    onClick={this.onSelectChange.bind(this, data)}>{data.name}</li>);
+                var splitArr = data.name.split('-');
+                var dataDsp = data.name;
+                if (_.isArray(splitArr) && splitArr.length){
+                    dataDsp = <span><span className="sales-name">{splitArr[0]}</span><span>-</span><span className="team-name">{splitArr[1]}</span></span>;
+                }
+                return (<li className={className} key={index}
+                    onClick={this.onSelectChange.bind(this, data)}>
+                    <Radio value={data.value}>
+                        {dataDsp}
+                    </Radio>
+                </li>);
             });
             if (this.props.hasClearOption) {//有清空选择的选项
                 let className = classNames('select-item', {'item-active': !this.state.value});
                 options.unshift(<li className={className}
-                    onClick={this.onSelectChange.bind(this, {name: '', value: ''})}>&nbsp;</li>);
+                    onClick={this.onSelectChange.bind(this, {name: '', value: ''})}>
+                    <Radio value=' '>
+                    &nbsp;
+                    </Radio>
+                </li>);
             }
             return options;
         } else {
-            return (<li className="select-item-no-content">{this.props.notFoundContent}</li>);
+            return (<li className="select-item-no-content">
+                {this.props.notFoundContent}
+            </li>);
         }
     };
-
     render() {
         //获取搜索后的列表数据
         let dataList = _.filter(this.props.dataList, data => data.name.indexOf(this.state.searchVal) !== -1);
@@ -93,7 +108,9 @@ class AlwaysShowSelect extends React.Component {
                     />
                 </div>
                 <ul className="select-options">
-                    {this.getSelectOptions(dataList)}
+                    <RadioGroup value={this.state.value}>
+                        {this.getSelectOptions(dataList)}
+                    </RadioGroup>
                 </ul>
             </div>
         );
@@ -110,5 +127,14 @@ AlwaysShowSelect.defaultProps = {
     getSelectContent: function() {
 
     }//取到所展示的内容
+};
+AlwaysShowSelect.propTypes = {
+    placeholder: React.PropTypes.string,
+    value: React.PropTypes.string,
+    hasClearOption: React.PropTypes.bool,
+    dataList: React.PropTypes.object,
+    notFoundContent: React.PropTypes.string,
+    onChange: React.PropTypes.func,
+    getSelectContent: React.PropTypes.func
 };
 export default AlwaysShowSelect;

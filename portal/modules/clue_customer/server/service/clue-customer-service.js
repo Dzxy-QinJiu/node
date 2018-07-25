@@ -38,7 +38,7 @@ const restApis = {
     //获取线索分析
     getClueAnalysis: '/rest/analysis/customer/v2/clue/customer/label',
     //获取线索统计
-    getClueStatics: '/rest/customer/v2/clue/statistical/:field/:page_size/:num',
+    getClueStatics: '/rest/customer/v2/clue/:type/statistical/:field/:page_size/:num',
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
 
@@ -191,8 +191,9 @@ exports.getClueStatics = function(req, res) {
     if (req.body.query){
         queryObj.query = JSON.parse(req.body.query);
     }
+
     return restUtil.authRest.post({
-        url: restApis.getClueStatics.replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
+        url: restApis.getClueStatics.replace(':type',req.params.type).replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
         req: req,
         res: res
     }, queryObj);

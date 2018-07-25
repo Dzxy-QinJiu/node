@@ -123,7 +123,7 @@ module.exports = {
             }
         },{
             method: 'post',
-            path: '/rest/clue/statics/:field/:page_size/:num',
+            path: '/rest/clue/statics/:type/:field/:page_size/:num',
             handler: 'getClueStatics',
             passport: {
                 'needLogin': true
