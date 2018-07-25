@@ -102,7 +102,7 @@ function ClueCustomerActions() {
     };
     //标记线索是否有效
     this.updateCluecustomerDetail = function(submitObj,callback) {
-        clueCustomerAjax.updateCluecustomerDetail(submitObj).then((result) => {
+        clueCustomerAjax.updateCluecustomerDetail(submitObj, true).then((result) => {
             _.isFunction(callback) && callback();
         },(errorMsg) => {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
