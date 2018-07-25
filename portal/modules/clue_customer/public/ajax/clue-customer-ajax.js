@@ -195,10 +195,11 @@ exports.distributeCluecustomerToSale = function(submitObj) {
 };
 //更新线索客户的基本信息
 var updateCluecustomerDetailAjax;
-exports.updateCluecustomerDetail = function(submitObj) {
+exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
     var data = {},updateObj = {};
     //如果是修改联系人的相关信息时，不但要传客户的id还要传联系人的id
     //更新联系人的相关字段时
+    //isMarkingAvalibility  true标记线索无效 false 或者不传值：线索基础信息的更改
     if (submitObj.contact_id){
         //客户的id
         updateObj.id = submitObj.user_id;
@@ -228,9 +229,16 @@ exports.updateCluecustomerDetail = function(submitObj) {
     }
     data.updateObj = JSON.stringify(updateObj);
     var type = 'user';
-    if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER')){
-        type = 'manager';
+    if (isMarkingAvalibility){
+        if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER')){
+            type = 'manager';
+        }
+    }else{
+        if (hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER')){
+            type = 'manager';
+        }
     }
+
     data.type = type;
     var Deferred = $.Deferred();
     updateCluecustomerDetailAjax && updateCluecustomerDetailAjax.abort();
