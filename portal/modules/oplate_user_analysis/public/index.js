@@ -390,6 +390,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 useChartFilter: false,
                 customOption: {
                     stack: true,
+                    reverse: true,
                     legendData: USER_TYPES,
                 },
                 csvOption: {
