@@ -571,9 +571,14 @@
         }
       }
       .apply-info-block {
-        display: inline-block;
-        padding: 16px 0 16px 16px;
-        border-left: 1px solid @bordercolor;
+        position: relative;
+        width: 100%;
+        padding-left: 50px;
+        z-index: 0;
+        .apply-info-content{
+          padding: 16px 10px 16px 16px;
+          border-left: 1px solid @bordercolor;
+        }
       }
       .apply-info-label {
         margin-top: 4px;
@@ -619,8 +624,12 @@
         }
         //用户名
         .edit-name-label {
-          float: left;
+          display: inline-block;
           line-height: 26px;
+        }
+        .edit-name-wrap{
+          display: inline-block;
+          vertical-align: top;
         }
         .user-name-wrap {
           display: inline-block;
@@ -717,13 +726,7 @@
       float: left;
       width: 100%;
       .reply-info-block {
-        position: relative;
-        width: 100%;
-        padding-left: 50px;
-        z-index: 0;
         .reply-list-container {
-          padding: 16px 10px 16px 16px;
-          border-left: 1px solid @bordercolor;
           li {
             margin-bottom: 6px;
           }
