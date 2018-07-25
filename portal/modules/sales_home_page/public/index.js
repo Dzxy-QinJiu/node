@@ -420,7 +420,6 @@ var SalesHomePage = React.createClass({
                 sorter: function(a, b) {
                     return a.call_date - b.call_date;
                 },
-                className: 'has-sorter table-data-align-right',
                 render: (call_date) => {
                     var displayTime = moment(new Date(+call_date)).format(DATE_TIME_FORMAT);
                     return (
@@ -434,19 +433,16 @@ var SalesHomePage = React.createClass({
                 title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
                 width: 100,
-                className: 'table-data-align-right',
             },
             {
                 title: Intl.get('menu.trace', '跟进记录'),
                 dataIndex: 'remark',
                 width: 100,
-                className: 'table-data-align-right',
             },
             {
                 title: Intl.get('common.callback.person', '回访人'),
                 dataIndex: 'nick_name',
                 width: 100,
-                className: 'table-data-align-right',
             }
         ];
         return columns;
