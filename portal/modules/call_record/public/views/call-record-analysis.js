@@ -66,7 +66,7 @@ const LAYOUT_HEIGHT = {
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 75,
+    TOP_DISTANCE: 70,
     BOTTOM_DISTANCE: 70
 };
 //图表的高度
@@ -1316,7 +1316,7 @@ var CallRecordAnalyis = React.createClass({
         );
     },
     renderCallAnalysisView: function() {
-        const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
+        const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE;
         return (<div className="call-table-container" ref="phoneList">
             {/**
              *  通话数量和通话时长的趋势图

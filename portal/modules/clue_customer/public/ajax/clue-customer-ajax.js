@@ -227,6 +227,8 @@ exports.updateCluecustomerDetail = function(submitObj) {
         }
     }
     data.updateObj = JSON.stringify(updateObj);
+    //是否
+
     var type = 'user';
     if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER')){
         type = 'manager';
