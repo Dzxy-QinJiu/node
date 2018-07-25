@@ -1,9 +1,10 @@
 
 
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
+    require('../css/user-detail-zh_CN.less');
     require('../css/user-detail-es_VE.less');
-}else if (language.lan() == 'zh'){
+} else if (language.lan() === 'zh') {
     require('../css/user-detail-zh_CN.less');
     require('../css/third-party-app-config.less');
 }
@@ -26,6 +27,7 @@ var AppUserUtil = require('../util/app-user-util');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import ThirdPartyAppConfig from './third_app/third-party-app-config';
 import ThirdAppDetail from './third_app/third-app-detail';
+import { StatusWrapper } from 'antc';
 
 var UserDetail = React.createClass({
     getDefaultProps: function() {
@@ -40,6 +42,12 @@ var UserDetail = React.createClass({
     getInitialState: function() {
         return {
             activeKey: '1',//tab激活页的key
+            //用户基本信息
+            userInfo: {
+                data: null,
+                loading: false,
+                erorMsg: ''
+            },
             ...AppUserPanelSwitchStore.getState()
         };
     },
@@ -52,41 +60,41 @@ var UserDetail = React.createClass({
     //面板向左滑
     panelSwitchLeft: function(timeout) {
         clearTimeout(this.panelSwitchTimeout);
-        if(!timeout) {
+        if (!timeout) {
             $(this.refs.wrap).addClass('move_left');
         } else {
             this.panelSwitchTimeout = setTimeout(() => {
                 $(this.refs.wrap).addClass('move_left');
-            },timeout);
+            }, timeout);
         }
     },
     //面板向右滑
     panelSwitchRight: function(timeout) {
         clearTimeout(this.panelSwitchTimeout);
-        if(!timeout) {
+        if (!timeout) {
             $(this.refs.wrap).removeClass('move_left');
         } else {
             this.panelSwitchTimeout = setTimeout(() => {
                 $(this.refs.wrap).removeClass('move_left');
-            } , timeout);
+            }, timeout);
         }
     },
     componentDidMount: function() {
-        $(window).on('resize' , this.reLayout);
+        $(window).on('resize', this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
-        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT , this.panelSwitchLeft);
-        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT , this.panelSwitchRight);
+        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
+        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
     },
     componentWillUnmount: function() {
-        $(window).off('resize' , this.reLayout);
+        $(window).off('resize', this.reLayout);
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
-        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT , this.panelSwitchLeft);
-        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT , this.panelSwitchRight);
+        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
+        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
     },
     closeRightPanel: function() {
-        if(_.isFunction(this.props.closeRightPanel)){
+        if (_.isFunction(this.props.closeRightPanel)) {
             this.props.closeRightPanel();
-        }else{
+        } else {
             AppUserAction.closeRightPanel();
         }
         AppUserDetailAction.dismiss();
@@ -94,61 +102,66 @@ var UserDetail = React.createClass({
         emitter.emit('user_detail_close_right_panel');
     },
 
-    changeTab: function(key){
+    changeTab: function(key) {
         this.setState({
             activeKey: key
         });
     },
 
+    getBasicInfo(userInfo) {
+        this.setState({
+            userInfo
+        });
+    },
     render: function() {
         var moveView = null;
-        if(this.state.panel_switch_currentView) {
-            let {thirdApp} = this.state;
-            switch(this.state.panel_switch_currentView) {
-            case 'app':
-                var initialUser = AppUserDetailStore.getState().initialUser;
-                moveView = (<UserDetailAddApp initialUser={initialUser}/>);
-                break;
-            case 'editapp':
-                var initialUser = AppUserDetailStore.getState().initialUser;
-                var appInfo = this.state.panel_switch_appToEdit;
-                moveView = (
-                    <UserDetailEditApp
-                        initialUser={initialUser}
-                        appInfo={appInfo}/>
-                );
-                break;
-            case 'thirdapp':
-                moveView = (
-                    <ThirdAppDetail {...thirdApp}/>
-                );
+        if (this.state.panel_switch_currentView) {
+            let { thirdApp } = this.state;
+            switch (this.state.panel_switch_currentView) {
+                case 'app':
+                    var initialUser = AppUserDetailStore.getState().initialUser;
+                    moveView = (<UserDetailAddApp initialUser={initialUser} />);
+                    break;
+                case 'editapp':
+                    var initialUser = AppUserDetailStore.getState().initialUser;
+                    var appInfo = this.state.panel_switch_appToEdit;
+                    moveView = (
+                        <UserDetailEditApp
+                            initialUser={initialUser}
+                            appInfo={appInfo} />
+                    );
+                    break;
+                case 'thirdapp':
+                    moveView = (
+                        <ThirdAppDetail {...thirdApp} />
+                    );
             }
         }
         //当前选择的应用（用户详情的接口中无法返回应用是否合格的属性，需要用用户列表接口中返回的应用是否合格属性）
         let selectApp = {};
-        if(this.props.selectedAppId){
-            selectApp = _.find(this.props.appLists,app => app.app_id === this.props.selectedAppId);
+        if (this.props.selectedAppId) {
+            selectApp = _.find(this.props.appLists, app => app.app_id === this.props.selectedAppId);
         }
         var tabPaneList = [
             <TabPane tab={Intl.get('user.basic.info', '基本资料')} key="1">
-                {this.state.activeKey == '1' ? <div className="user_manage_user_detail">
-                    <UserDetailBasic userId={this.props.userId} selectApp={selectApp}/>
+                {this.state.activeKey === '1' ? <div className="user_manage_user_detail">
+                    <UserDetailBasic userId={this.props.userId} selectApp={selectApp} getBasicInfo={this.getBasicInfo} />
                 </div> : null}
             </TabPane>
         ];
-        if(hasPrivilege('USER_AUDIT_LOG_LIST')) {
+        if (hasPrivilege('USER_AUDIT_LOG_LIST')) {
             tabPaneList.push(
                 <TabPane tab="用户分析" key="2">
-                    {this.state.activeKey == '2' ? <div className="user-analysis">
-                        <UserLoginAnalysis userId={this.props.userId} selectedAppId={this.props.selectedAppId}/>
+                    {this.state.activeKey === '2' ? <div className="user-analysis">
+                        <UserLoginAnalysis userId={this.props.userId} selectedAppId={this.props.selectedAppId} />
                     </div> : null}
                 </TabPane>
             );
             tabPaneList.push(
                 <TabPane tab="审计日志" key="3">
-                    {this.state.activeKey == '3' ? <div className="user-log">
-                        <SingleUserLog 
-                            userId={this.props.userId} 
+                    {this.state.activeKey === '3' ? <div className="user-log">
+                        <SingleUserLog
+                            userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
                             appLists={this.props.appLists}
                         />
@@ -156,10 +169,10 @@ var UserDetail = React.createClass({
                 </TabPane>
             );
         }
-        if(hasPrivilege('USER_TIME_LINE')) {
+        if (hasPrivilege('USER_TIME_LINE')) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.change.record', '变更记录')} key="4">
-                    {this.state.activeKey == '4' ? <div className="user_manage_user_record">
+                    {this.state.activeKey === '4' ? <div className="user_manage_user_record">
                         <UserDetailChangeRecord
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
@@ -169,10 +182,10 @@ var UserDetail = React.createClass({
             );
         }
         //异常登录isShownExceptionTab
-        if (hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && this.props.isShownExceptionTab){
+        if (hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && this.props.isShownExceptionTab) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.login.abnormal', '异常登录')} key="5">
-                    {this.state.activeKey == '5' ? <div className="user_manage_login_abnormal">
+                    {this.state.activeKey === '5' ? <div className="user_manage_login_abnormal">
                         <UserAbnormalLogin
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
@@ -194,16 +207,38 @@ var UserDetail = React.createClass({
                 </TabPane>
             );
         }
+        const { userInfo } = this.state;
         return (
-            <div className="full_size app_user_full_size user_manage_user_detail_wrap" ref="wrap">
-                <RightPanelClose onClick={this.closeRightPanel}/>
-                <div className="full_size app_user_full_size_item wrap_padding">
-                    <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
-                        {tabPaneList}
-                    </Tabs>
-                </div>
-                <div className="full_size app_user_full_size_item">
-                    {moveView}
+            <div className="right-panel-wrapper">
+                <span className="iconfont icon-close" onClick={this.closeRightPanel} />
+                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content" ref="wrap">
+                    <StatusWrapper
+                        loading={userInfo.loading}
+                        size='small'
+                    >
+                        <div className="basic-info-contianer" data-trace="客户基本信息">
+                            <div className="basic-info-title-block">
+                                <div className="basic-info-name">
+                                    <span className="basic-name-text">{_.get(userInfo, 'data.user_name')}</span>
+                                </div>
+                                <div className="basic-info-btns">
+                                    修改密码
+                                </div>
+                            </div>
+                            <div className="basic-info-content">
+                                <p>{Intl.get('common.nickname', '昵称')}: {_.get(userInfo, 'data.nick_name')}</p>
+                                <p>{Intl.get('common.remark', '备注')}: {_.get(userInfo, 'data.description')}</p>
+                            </div>
+                        </div>
+                    </StatusWrapper>
+                    <div className="full_size app_user_full_size_item wrap_padding">
+                        <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
+                            {tabPaneList}
+                        </Tabs>
+                    </div>
+                    <div className="full_size app_user_full_size_item">
+                        {moveView}
+                    </div>
                 </div>
             </div>
         );

@@ -535,7 +535,7 @@ var AppUserManage = React.createClass({
                     </div>
 
                 </div>
-                <RightPanel className="app_user_manage_rightpanel white-space-nowrap"
+                <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-panel"
                     showFlag={this.state.isShowRightPanel}>
                     {
                         rightPanelView
