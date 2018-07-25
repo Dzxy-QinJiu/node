@@ -9,3 +9,13 @@ exports.getContractByCustomerId = (req, res) => {
             res.status(500).json(err && err.message);
         });
 };
+
+// 添加合同
+exports.addContract = (req, res) => {
+    contractService.addContract(req, res)
+        .on('success', (data) => {
+            res.status(200).json(data);
+        }).on('error', (err) => {
+            res.status(500).json(err && err.message);
+        });
+};

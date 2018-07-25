@@ -3,7 +3,8 @@ const contractAjax = require('../ajax/contract-ajax');
 class ContractAction {
     constructor() {
         this.generateActions(
-            'resetState'
+            'resetState',
+            'showForm'
         );
     }
     // 获取合同信息

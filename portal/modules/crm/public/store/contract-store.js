@@ -5,6 +5,7 @@ class ContractStore {
         this.sortField = 'date'; // 排序字段
         this.order = 'descend'; //排序方向
         this.pageSize = 100;
+        this.isAddFormShow = false; // 是否显示添加合同面板，默默false
         this.resetState();
         this.bindActions(ContractAction);
     }
@@ -28,6 +29,9 @@ class ContractStore {
                 this.contractList.data = list;
             }
         }
+    }
+    showForm() {
+        this.isAddFormShow = true;
     }
 }
 

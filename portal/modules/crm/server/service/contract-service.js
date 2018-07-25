@@ -6,6 +6,8 @@ const contractDto = require('../dto/contract');
 const restApis = {
     // 根据客户id获取合同信息
     getContractByCustomerId: '/rest/contract/v2/contract/range/:page_size/:sort_field/:order',
+    // 添加/更新 合同的url
+    urlContract: '/rest/contract/v1/contract/:type'
 };
 
 exports.getContractByCustomerId = (req, res) => {
@@ -31,4 +33,16 @@ exports.getContractByCustomerId = (req, res) => {
                 eventEmitter.emit('error', errorObj.message);
             }
         });
+};
+
+// 添加合同
+exports.addContract = (req, res) => {
+    let url = restApis.urlContract;
+    let params = req.params;
+    return restUtil.authRest.post(
+        {
+            url: url.replace(':type', params.type),
+            req: req,
+            res: res
+        }, req.body);
 };

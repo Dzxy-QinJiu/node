@@ -13,5 +13,14 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    }, {
+        // 添加合同
+        'method': 'post',
+        'path': '/rest/crm/add/contract/:type',
+        'handler': 'addContract',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
     }]
 };

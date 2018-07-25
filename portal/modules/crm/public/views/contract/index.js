@@ -1,4 +1,5 @@
 require('../../css/contract.less');
+import { Button } from 'antd';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ContractAction from '../../action/contract-action';
@@ -6,6 +7,7 @@ import ContractStore from '../../store/contract-store';
 import ContractItem from './contract-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import ContractForm from './contract-form';
 
 const Contract = React.createClass({
     getInitialState() {
@@ -59,19 +61,39 @@ const Contract = React.createClass({
         ContractStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
     },
+    showForm() {
+        ContractAction.showForm();
+    },
     render() {
         let contractListLength = this.state.contractList.data.length || 0;
         let loading = this.state.contractList.loading;
+        console.log('this.props.curCustomer:',this.props.curCustomer);
         return (
             <div className="contract-container" data-tracename="合同页面">
                 {
-                    loading ? null : (contractListLength ? <ReactIntl.FormattedMessage
+                    this.state.isAddFormShow || loading ? null : (contractListLength ? <ReactIntl.FormattedMessage
                         id="sales.frontpage.total.list"
                         defaultMessage={'共{n}条'}
                         values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有添加过合同'))
                 }
+                {this.props.isMerge ? null : (
+                    <Button className='crm-detail-add-btn'
+                        onClick={this.showForm.bind(this, '')}>
+                        {Intl.get('contract.98', '添加合同')}
+                    </Button>
+                )}
                 <RightPanelScrollBar totalHeight={contractListLength}>
                     <div className="contract-container-scroll">
+                        {
+                            this.state.isAddFormShow ? (
+                                <ContractForm
+                                    contract={{}}
+                                    curCustomer={this.props.curCustomer}
+                                    customerId={this.props.curCustomer.id}
+                                    appList={this.state.appList}
+                                />
+                            ) : null
+                        }
                         {
                             loading ? <Spinner /> : (
                                 contractListLength ? this.state.contractList.data.map( (contract, index) => {
@@ -83,7 +105,9 @@ const Contract = React.createClass({
                                             appList={this.state.appList}
                                         />
                                     );
-                                } ) : <NoDataIconTip tipContent={Intl.get('common.no.more.contract', '暂无合同')}/>
+                                } ) : (
+                                    this.state.isAddFormShow ? null : <NoDataIconTip tipContent={Intl.get('common.no.more.contract', '暂无合同')}/>
+                                )
                             )
                         }
                     </div>
