@@ -331,7 +331,7 @@ const ClueCustomer = React.createClass({
     },
     //是否是运营人员
     isOperation(){
-        return userData.hasRole('operations');
+        return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     },
     //是否是销售领导或者管理员
     isSalesLeaderOrManager(){
