@@ -287,7 +287,7 @@ class CrmUserApplyForm extends React.Component {
         let divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
         if (this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
-            label = Intl.get(' user.time.end', '到期时间');
+            label = Intl.get('user.time.end', '到期时间');
         } else {
             label = Intl.get('common.delay.time', '延期时间');
         }
