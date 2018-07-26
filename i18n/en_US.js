@@ -1374,7 +1374,9 @@ var en_US = {
     'crm.order.expected.deal.placeholder': 'Please select expected deal time', //请选择预计成交时间
     'crm.order.no.expected.deal.time': 'No expected deal time',//暂无预计成交时间
     'crm.order.add.expected.deal.time': 'Add expected deal time',//添加预计成交时间
-    'crm.order.add.to': 'add to {time}',//创建于{time}
+    'crm.order.add.to': 'add to {time}',//添加于{time}
+    'crm.order.close.step': 'Close the order',//关闭订单
+    'crm.order.update.confirm': 'Do you want to modify the order phase',//确定要修改订单阶段？
     // 客户管理end
 
     //客户分析 start

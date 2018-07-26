@@ -1,4 +1,4 @@
-import {Button, Radio, message, Alert, Select, Icon} from 'antd';
+import {Button, message, Select, Icon, Menu, Dropdown, Popconfirm} from 'antd';
 const Option = Select.Option;
 const ModalDialog = require('../../../../../components/ModalDialog');
 const Spinner = require('../../../../../components/spinner');
@@ -18,7 +18,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import classNames from 'classnames';
 import ApplyUserForm from '../apply-user-form';
 import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
-
+import StepsBar from 'CMP_DIR/steps-bar';
 //订单状态
 const ORDER_STATUS = {
     WIN: 'win',//赢单
@@ -160,7 +160,7 @@ const OrderItem = React.createClass({
     saveOrderBasicInfo: function(saveObj, successFunc, errorFunc) {
         saveObj.customer_id = this.props.order.customer_id;
         //预算展示的是元，接口中需要的是万
-        if(_.has(saveObj,'budget')){
+        if (_.has(saveObj, 'budget')) {
             saveObj.budget = saveObj.budget / 10000;
         }
         if (this.props.isMerge) {
@@ -453,8 +453,8 @@ const OrderItem = React.createClass({
         );
     },
     renderOrderStatus(status){
-        let descr = Intl.get('crm.order.status.underway', '进行中'), statusClass = 'order-status-underway';
         if (status) {
+            let descr = '', statusClass = '';
             if (status === ORDER_STATUS.WIN) {
                 descr = Intl.get('crm.order.status.won', '已赢单');
                 statusClass = 'order-status-win';
@@ -462,17 +462,50 @@ const OrderItem = React.createClass({
                 descr = Intl.get('crm.order.status.lost', '已丢单');
                 statusClass = 'order-status-lose';
             }
+            return (<span className={`order-status ${statusClass}`}> {descr}</span>);
         }
-        return (<span className={`order-status ${statusClass}`}> {descr}</span>);
+        return null;
+    },
+    selectCloseOrderStatus({item, key, selectedKeys}){
+
+    },
+    renderOrderStage(curStage){
+        let stageList = this.props.stageList;
+        let stageStepList = _.map(stageList, stage => {
+            const stageName = stage.name ? stage.name.split('阶段')[0] : '';
+            return {
+                title: (
+                    <Popconfirm title={Intl.get('crm.order.update.confirm', '确定要修改订单阶段？')}>
+                        {stageName}
+                    </Popconfirm>)
+            };
+        });
+        const menu = (
+            <Menu onSelect={this.selectCloseOrderStatus}>
+                <Menu.Item key={ORDER_STATUS.WIN}>
+                    {Intl.get('crm.order.status.win', '赢单')}
+                </Menu.Item>
+                <Menu.Item key={ORDER_STATUS.LOSE}>
+                    {Intl.get('crm.order.status.lose', '丢单')}
+                </Menu.Item>
+            </Menu>
+        );
+        //关闭订单项
+        const closeOrderStep = (
+            <Dropdown overlay={menu}>
+                <span>{Intl.get('crm.order.close.step', '关闭订单')}</span>
+            </Dropdown>);
+        stageStepList.push({title: closeOrderStep});
+        let currentStageIndex = _.findIndex(stageList, stage => stage.name === curStage);
+        return (
+            <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}/>);
     },
     renderOrderTitle(){
         const order = this.state.formData;
         return (
             <span className="order-item-title">
                 {this.renderOrderStatus(order.oppo_status)}
-                <span className="order-time">
-                    {order.time ? moment(order.time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : ''}
-                </span>
+                {this.renderOrderStage(order.sale_stages)}
                 {order.oppo_status ? null : <span className="order-item-buttons">
                     {this.state.modalDialogFlag ? (
                         <span className="item-delete-buttons">
@@ -529,7 +562,7 @@ const OrderItem = React.createClass({
                         {this.state.closeOrderErrorMsg ? (
                             <span className="order-close-error-tip">{this.state.closeOrderErrorMsg}</span>) : null}
                     </span>)}
-                <span className="order-add-time">{Intl.get('crm.order.add.to', '添加于{time}',{time: createTime})}</span>
+                <span className="order-add-time">{Intl.get('crm.order.add.to', '添加于{time}', {time: createTime})}</span>
                 <span className="order-user">{order.user_name || ''}</span>
             </div>
         );
