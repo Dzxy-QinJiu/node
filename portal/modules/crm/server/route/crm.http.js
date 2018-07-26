@@ -27,7 +27,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS'
+                'CRM_LIST_CUSTOMERS','CUSTOMER_ALL'
             ]
         },
         {
@@ -89,7 +89,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS'
+                'CRM_LIST_CUSTOMERS','CUSTOMER_ALL'
             ]
         },
         {
@@ -100,7 +100,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS'
+                'CUSTOMER_ADD'
             ]
         },
         {
@@ -111,7 +111,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS'
+                'CRM_DELETE_CUSTOMER'
             ]
         },
         {
@@ -138,9 +138,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: [
-                'CRM_LIST_CUSTOMERS'
-            ]
+            privileges: []
         },
         {
             method: 'put',
@@ -159,7 +157,7 @@ module.exports = {
                 'needLogin': true
             },
             'privileges': [
-                'CRM_LIST_CUSTOMERS'
+                'CRM_LIST_CUSTOMERS','CUSTOMER_ALL'
             ]
         },
         {
@@ -170,7 +168,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS'
+                'CRM_LIST_CUSTOMERS','CUSTOMER_ALL'
             ]
         },
         {
