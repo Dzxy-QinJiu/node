@@ -23,6 +23,7 @@
 @label_color: #999999;
 @btn_color: #8da8c5;
 @card_margin: 8px;
+@bg-lightblue: #EEF7FE;
 //换行
 .overflow-break {
     white-space: normal;
@@ -33,6 +34,47 @@
 //新版客户详情的样式
 //TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
 .right-panel {
+    .contact-card-container {
+        .detail-card-content {
+            position: relative;
+        }
+        .user-basic-edit-field {
+            // padding: 10px 0px;
+            .buttons {
+                float: left;
+                width: 100%;
+                position: static;
+            }
+        }
+        .sales-team {
+            margin: 0 -12px;
+            padding: 0 12px;
+            .user-basic-edit-field {
+                i.iconfont {
+                    float: right;
+                }
+            }
+            .sales-team-label {
+                position: absolute;
+            }
+            .sales-team-text {
+                float: left;
+                width: 100%;
+                padding-left: 50px;
+            }
+            i.iconfont {
+                display: none;
+                margin-top: -2px;
+                float: right;
+            }
+            &:hover {
+                background: @bg-lightblue;
+                i.iconfont {
+                    display: inline-block;
+                }
+            }
+        }
+    }
     .right-panel-content-slide {
         -webkit-transform: translateX(-700px);
         transform: translateX(-700px);

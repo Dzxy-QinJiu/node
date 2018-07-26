@@ -28,6 +28,8 @@ import DetailCard from 'CMP_DIR/detail-card';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_suggest/customer_suggest';
 import UserBasicCard from './user-basic/user-basic-card';
+import OrgCard from './user-basic/org-card';
+import ContactCard from './user-basic/contact-card';
 
 const FORMAT = oplateConsts.DATE_FORMAT;
 
@@ -583,32 +585,32 @@ var UserDetailBasic = React.createClass({
                     onChangeSuccess={this.userCustomerChangeSuccess}
                     user_id={userInfo.user_id}
                 />
-                <DetailCard
-                    title={Intl.get('crm.5', '联系方式')}
-                    content={(
-                        <div className="sales-team-show-block">
-                            <div className="sales-team">
-                                <span className="sales-team-label">
-                                    {Intl.get('common.email', '邮箱')}
-                                </span>
-                                <span className="sales-team-text">
-                                    {userInfo.email}
-                                </span>
-                            </div>
-                            <div className="sales-team">
-                                <span className="sales-team-label">
-                                    {Intl.get('user.phone', '手机号')}
-                                </span>
-                                <span className="sales-team-text">
-                                    {userInfo.phone}
-                                </span>
-                                <DetailEditBtn
-                                    title={Intl.get('common.edit', '编辑')}
-                                    onClick={this.toggleEdit}
-                                />
-                            </div>
-                        </div>
-                    )}
+                <ContactCard
+                    user_id={userInfo.user_id}
+                    userInfo={this.state.initialUser.user}
+                    phone={{
+                        value: userInfo.phone,
+                        field: 'phone',
+                        type: 'text',
+                        disabled: hasPrivilege('APP_USER_EDIT') ? false : true,
+                        validators: [{ validator: this.checkPhone }],
+                        placeholder: Intl.get('user.input.phone', '请输入手机号'),
+                        title: Intl.get('user.phone.set.tip', '修改手机号')
+                    }}
+                    email={{
+                        value: userInfo.email,
+                        field: 'email',
+                        type: 'text',
+                        disabled: hasPrivilege('APP_USER_EDIT') ? false : true,
+                        validators: [{
+                            type: 'email',
+                            required: true,
+                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                        }],
+                        placeholder: Intl.get('member.input.email', '请输入邮箱'),
+                        title: Intl.get('user.email.set.tip', '修改邮箱')
+                    }}
+                    saveEditInput={AppUserAjax.editAppUser}
                 />
                 {/* <dl className="dl-horizontal user_detail_item detail_item">
                     <dt>
@@ -650,6 +652,15 @@ var UserDetailBasic = React.createClass({
                         />
                     </dd>
                 </dl> */}
+                <OrgCard
+                    user_id={userInfo.user_id}
+                    showBtn={true}
+                    organization_id={userInfo.group_id}
+                    organization_name={userInfo.group_name}
+                    onModifySuccess={this.organizationChangeSuccess}
+                    userInfo={this.state.initialUser.user}
+                    sales_team={this.state.initialUser.sales_team}
+                />
                 <dl className="dl-horizontal user_detail_item detail_item">
                     <dt>
                         {Intl.get('common.password', '密码')}
@@ -703,44 +714,7 @@ var UserDetailBasic = React.createClass({
                     onChangeSuccess={this.userCustomerChangeSuccess}
                     user_id={userInfo.user_id}
                 /> */}
-                <DetailCard
-                    title={(
-                        <div className="sales-team-show-block">
-                            <div className="sales-team">
-                                <span className="sales-team-label">
-                                    所属组织
-                                </span>
-                                <span className="sales-team-text">
-                                    {userInfo.group_name}
-                                </span>
-                            </div>                            
-                        </div>
-                    )}
-                    content={(
-                        <div className="sales-team-show-block">
-                            <div className="sales-team">
-                                <span className="sales-team-label">
-                                    {Intl.get('common.email', '邮箱')}
-                                </span>
-                                <span className="sales-team-text">
-                                    {userInfo.email}
-                                </span>
-                            </div>
-                            <div className="sales-team">
-                                <span className="sales-team-label">
-                                    {Intl.get('user.phone', '手机号')}
-                                </span>
-                                <span className="sales-team-text">
-                                    {userInfo.phone}
-                                </span>
-                                <DetailEditBtn
-                                    title={Intl.get('common.edit', '编辑')}
-                                    onClick={this.toggleEdit}
-                                />
-                            </div>
-                        </div>
-                    )}
-                />
+
                 <dl className="dl-horizontal user_detail_item detail_item">
                     <dt>
                         {Intl.get('user.organization', '组织')}

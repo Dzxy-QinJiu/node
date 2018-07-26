@@ -228,17 +228,16 @@ class UserBasicCard extends React.Component {
         );
     }
 }
-const PropTypes = React.PropTypes;
 UserBasicCard.propTypes = {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-    customer_id: PropType.string,
-    customer_name: PropType.string,
-    displayType: PropType.string,
-    sales_id: PropType.string,
-    sales_name: PropType.string,
-    sales_team_id: PropType.string,
-    sales_team_name: PropType.string,
-    onChangeSuccess: PropType.func,
-    user_id: PropType.string,
+    customer_id: PropTypes.string,
+    customer_name: PropTypes.string,
+    displayType: PropTypes.string,
+    sales_id: PropTypes.string,
+    sales_name: PropTypes.string,
+    sales_team_id: PropTypes.string,
+    sales_team_name: PropTypes.string,
+    onChangeSuccess: PropTypes.func,
+    user_id: PropTypes.string,
 };
 export default UserBasicCard;
