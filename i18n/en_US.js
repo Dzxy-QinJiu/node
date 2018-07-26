@@ -2306,5 +2306,7 @@ var en_US = {
     'back.openApp': 'Open app',//开通应用
     'back.openApp.range': 'range of open-app',//'开通范围',
     'back.openApp.apply': 'apply', //'申请开通',
+    'back.openApp.tip.success': 'open successed',//'开通成功',
+    'back.openApp.tip.fail': 'open failed',//'开通失败',
 };
 export default en_US;

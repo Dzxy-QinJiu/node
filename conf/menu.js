@@ -257,7 +257,7 @@ class LeftMenuClass {
                           
                         ],
                         //有这个权限，才显示入口图标
-                        showPrivileges: ['CREATE_CONFIG_INDUSTRY']
+                        showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
                     }
                 ]
             },

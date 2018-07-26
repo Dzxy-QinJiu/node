@@ -1,4 +1,4 @@
-import { Button, Modal, Form, Select, Icon } from 'antd';
+import { Button, Modal, Form, Select, Icon, message } from 'antd';
 const Option = Select.Option;
 require('./style/index.less');
 import rightPanelUtil from 'CMP_DIR/rightPanel';
@@ -62,7 +62,17 @@ class OpenApp extends React.Component {
         }
     }
     handleApplyOpen(app) {
-        
+        OpenAppAction.openApp({
+            params: {
+                roleId: app.id
+            }
+        }).then(result => {
+            if (result) {
+                message.success(Intl.get('back.openApp.tip.success', '开通成功'));
+            } else {
+                message.error(Intl.get('back.openApp.tip.fail', '开通失败'));
+            }
+        });
     }
     handleCloseDetail() {
         this.setState({

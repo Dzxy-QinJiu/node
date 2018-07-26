@@ -69,7 +69,7 @@ OpenAppStore.prototype.changeRoleItemEdit = function({ index, isShow }) {
     this.roleList.data[index].showEdit = isShow;
 };
 
-OpenAppAction.prototype.openApp = resultHandler('openAppResult');
+OpenAppStore.prototype.openApp = resultHandler('openAppResult');
 
 
 module.exports = alt.createStore(OpenAppStore, 'OpenAppStore');

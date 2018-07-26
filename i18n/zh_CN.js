@@ -2328,5 +2328,7 @@ var zh_CN = {
     'back.openApp': '开通应用',
     'back.openApp.range': '开通范围',
     'back.openApp.apply': '申请开通',
+    'back.openApp.tip.success': '开通成功',
+    'back.openApp.tip.fail': '开通失败',
 };
 export default zh_CN;
