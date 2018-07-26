@@ -35,6 +35,9 @@
 //TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
 .right-panel {
     .contact-card-container {
+        .user-basic-edit-field-input.user-basic-edit-field.editing {
+            padding: 10px 0;
+        }
         .detail-card-content {
             position: relative;
         }
@@ -49,6 +52,7 @@
         .sales-team {
             margin: 0 -12px;
             padding: 0 12px;
+            position: relative;
             .user-basic-edit-field {
                 i.iconfont {
                     float: right;
@@ -56,10 +60,12 @@
             }
             .sales-team-label {
                 position: absolute;
+                top: 4px;
             }
             .sales-team-text {
                 float: left;
                 width: 100%;
+                padding: 5px 0;
                 padding-left: 50px;
             }
             i.iconfont {
@@ -84,6 +90,17 @@
         width: 100%;
         background-color: @white_color;
         padding: @right_panel_padding @right_panel_padding 12px @right_panel_padding;
+        font-size: 12px;
+        .basic-info-content {
+            margin-top: 6px;
+            p {
+                line-height: 25px;
+                span {
+                    word-break: break-all;
+                    white-space: normal;
+                }
+            }
+        }
         .basic-info-title-block {
             .basic-info-name {
                 position: relative;

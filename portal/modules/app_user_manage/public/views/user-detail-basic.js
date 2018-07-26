@@ -533,40 +533,7 @@ var UserDetailBasic = React.createClass({
         })();
         let userInfo = this.state.initialUser.user;
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
-            <div>
-                {/* <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                    <dt>
-                        {Intl.get('common.username', '用户名')}
-                    </dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.user_id}
-                            value={userInfo.user_name}
-                            field="user_name"
-                            disabled={true}
-                        />
-
-                    </dd>
-                </dl> */}
-                {/* <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                    <dt>
-                        {Intl.get('common.nickname', '昵称')}
-                    </dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.user_id}
-                            value={userInfo.nick_name}
-                            field="nick_name"
-                            type="text"
-                            modifySuccess={this.changeUserFieldSuccess}
-                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
-                            validators={[{required: true, message: Intl.get('user.nickname.write.tip', '请填写昵称')}]}
-                            placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
-                            title={Intl.get('user.nickname.set.tip', '设置昵称')}
-                            saveEditInput={AppUserAjax.editAppUser}
-                        />
-                    </dd>
-                </dl> */}
+            <div>                
                 <dl className="dl-horizontal user_detail_item detail_item user_detail_item_status">
                     <dt>
                         {Intl.get('user.user.status', '用户状态')}
@@ -611,47 +578,7 @@ var UserDetailBasic = React.createClass({
                         title: Intl.get('user.email.set.tip', '修改邮箱')
                     }}
                     saveEditInput={AppUserAjax.editAppUser}
-                />
-                {/* <dl className="dl-horizontal user_detail_item detail_item">
-                    <dt>
-                        {Intl.get('common.email', '邮箱')}
-                    </dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.user_id}
-                            value={userInfo.email}
-                            field="email"
-                            type="text"
-                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
-                            validators={[{
-                                type: 'email',
-                                required: true,
-                                message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                            }]}
-                            placeholder={Intl.get('member.input.email', '请输入邮箱')}
-                            title={Intl.get('user.email.set.tip', '修改邮箱')}
-                            saveEditInput={AppUserAjax.editAppUser}
-                        />
-                    </dd>
-                </dl>
-                <dl className="dl-horizontal user_detail_item detail_item">
-                    <dt>
-                        {Intl.get('user.phone', '手机号')}
-                    </dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.user_id}
-                            value={userInfo.phone}
-                            field="phone"
-                            type="text"
-                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
-                            validators={[{ validator: this.checkPhone }]}
-                            placeholder={Intl.get('user.input.phone', '请输入手机号')}
-                            title={Intl.get('user.phone.set.tip', '修改手机号')}
-                            saveEditInput={AppUserAjax.editAppUser}
-                        />
-                    </dd>
-                </dl> */}
+                />               
                 <OrgCard
                     user_id={userInfo.user_id}
                     showBtn={true}
@@ -704,31 +631,6 @@ var UserDetailBasic = React.createClass({
                         </dd>
                     </dl>
                 ) : null}
-                {/* <UserCustomer
-                    customer_id={this.state.customer_id}
-                    customer_name={this.state.customer_name}
-                    sales_id={this.state.initialUser.sales.sales_id}
-                    sales_name={this.state.initialUser.sales.sales_name}
-                    sales_team_id={this.state.initialUser.sales_team.sales_team_id}
-                    sales_team_name={this.state.initialUser.sales_team.sales_team_name}
-                    onChangeSuccess={this.userCustomerChangeSuccess}
-                    user_id={userInfo.user_id}
-                /> */}
-
-                <dl className="dl-horizontal user_detail_item detail_item">
-                    <dt>
-                        {Intl.get('user.organization', '组织')}
-                    </dt>
-                    <dd>
-                        <Organization
-                            user_id={userInfo.user_id}
-                            showBtn={true}
-                            organization_id={userInfo.group_id}
-                            organization_name={userInfo.group_name}
-                            onModifySuccess={this.organizationChangeSuccess}
-                        />
-                    </dd>
-                </dl>
                 <dl className="dl-horizontal user_detail_item detail_item"
                     style={{ whiteSpace: 'normal', wordBreak: 'break-all' }}>
                     <dt>

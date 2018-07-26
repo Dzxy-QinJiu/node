@@ -48,6 +48,7 @@ var UserDetail = React.createClass({
                 loading: false,
                 erorMsg: ''
             },
+            showBasicDetail: true,
             ...AppUserPanelSwitchStore.getState()
         };
     },
@@ -84,13 +85,32 @@ var UserDetail = React.createClass({
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
+        document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
     },
     componentWillUnmount: function() {
         $(window).off('resize', this.reLayout);
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
+        document.querySelector('.gm-scroll-view').removeEventListener('mousewheel', this.handleWheel, false);
     },
+    wheelTimer: null,
+    handleWheel: function(e) {
+        clearTimeout(this.wheelTimer);
+        this.wheelTimer = setTimeout(() => {
+            if (e.deltaY < 0) {
+                this.setState({
+                    showBasicDetail: true
+                });
+            }
+            if (e.deltaY > 0) {
+                this.setState({
+                    showBasicDetail: false
+                });
+            }
+        }, 100);        
+    },
+    
     closeRightPanel: function() {
         if (_.isFunction(this.props.closeRightPanel)) {
             this.props.closeRightPanel();
@@ -112,6 +132,9 @@ var UserDetail = React.createClass({
         this.setState({
             userInfo
         });
+    },
+    handleScroll() {
+        console.log(arguments);
     },
     render: function() {
         var moveView = null;
@@ -217,7 +240,7 @@ var UserDetail = React.createClass({
                         size='small'
                     >
                         <div className="basic-info-contianer" data-trace="客户基本信息">
-                            <div className="basic-info-title-block">
+                            <div className="basic-info-title-block clearfix">
                                 <div className="basic-info-name">
                                     <span className="basic-name-text">{_.get(userInfo, 'data.user_name')}</span>
                                 </div>
@@ -225,7 +248,7 @@ var UserDetail = React.createClass({
                                     修改密码
                                 </div>
                             </div>
-                            <div className="basic-info-content">
+                            <div className={this.state.showBasicDetail ? 'basic-info-content' : 'hide'}>
                                 <p>{Intl.get('common.nickname', '昵称')}: {_.get(userInfo, 'data.nick_name')}</p>
                                 <p>{Intl.get('common.remark', '备注')}: {_.get(userInfo, 'data.description')}</p>
                             </div>
