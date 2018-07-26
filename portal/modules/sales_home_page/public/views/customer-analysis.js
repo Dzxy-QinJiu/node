@@ -37,6 +37,7 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 const CrmList = require('MOD_DIR/crm/public/crm-list');
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
+const showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;
 
 //客户分析
 var CustomerAnalysis = React.createClass({
@@ -411,7 +412,35 @@ var CustomerAnalysis = React.createClass({
             }
         });
     },
-    //获取图表
+    //获取试用合格客户数统计图表
+    getTrialQualifiedChart() {
+        let chart = {
+            title: '试用合格客户数统计',
+        };
+
+        if (this.state.currShowType === showTypeConstant.SALESMAN) {
+            _.extend(chart, {
+                chartType: '',
+            });
+        } else {
+            _.extend(chart, {
+                chartType: 'table',
+                resultType: '',
+                data: [{
+                    name: '李四',
+                }],
+                option: {
+                    columns: [{
+                        title: '销售',
+                        dataIndex: 'name',
+                    }],
+                },
+            });
+        }
+
+        return chart;
+    },
+    //获取图表列表
     getCharts: function() {
         //表格内容高度
         const TABLE_HIGHT = 175;
@@ -424,7 +453,7 @@ var CustomerAnalysis = React.createClass({
         //销售不展示团队的数据统计
         const hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
 
-        return [{
+        let charts = [{
             title: Intl.get('effective.customer.statistics', '有效客户统计'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
             argCallback: (arg) => {
@@ -792,6 +821,11 @@ var CustomerAnalysis = React.createClass({
                 ],
             },
         }];
+
+        const trialQualifiedChart = this.getTrialQualifiedChart();
+        charts.unshift(trialQualifiedChart);
+
+        return charts;
     },
     renderChartContent: function() {
         return (
