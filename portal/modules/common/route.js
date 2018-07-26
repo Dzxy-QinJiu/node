@@ -318,8 +318,16 @@ module.exports = [{
 }, {
     //获取应用信息
     'method': 'get',
-    'path': '/rest/base/v1/role/tag/contract/info',
+    'path': '/rest/base/v1/role/client/rolefunctions',
     'handler': 'getAppList',
+    'passport': {
+        'needLogin': true
+    }
+},{
+    //开通应用
+    'method': 'get',
+    'path': '/rest/base/v1/role/:roleId/visible/true',
+    'handler': 'openApp',
     'passport': {
         'needLogin': true
     }
@@ -334,7 +342,7 @@ module.exports = [{
 },{
     //给成员删除角色
     'method': 'put',
-    'path': '/rest/base/v1/user/role/update',
+    'path': '/rest/base/v1/user/role/updates/remove',
     'handler': 'delRoleToUsers',
     'passport': {
         'needLogin': true

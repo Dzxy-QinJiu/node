@@ -2304,6 +2304,7 @@ var en_US = {
     'clue.analysis.source.chart': 'Source statistics',//来源统计
     'clue.analysis.classify.chart': 'Classify statistics',//分类统计
     'back.openApp': 'Open app',//开通应用
-    'back.openApp.range': 'range of open-app'//'开通范围',
+    'back.openApp.range': 'range of open-app',//'开通范围',
+    'back.openApp.apply': 'apply', //'申请开通',
 };
 export default en_US;

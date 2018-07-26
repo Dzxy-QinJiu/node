@@ -1,4 +1,4 @@
-import { Button, Modal, Form, Select } from 'antd';
+import { Button, Modal, Form, Select, Icon } from 'antd';
 const Option = Select.Option;
 require('./style/index.less');
 import rightPanelUtil from 'CMP_DIR/rightPanel';
@@ -13,8 +13,8 @@ import { USER_STATUS, APP_STATUS, MAX_PAGESIZE } from './consts';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 const itemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 16 },
+    labelCol: { span: 5 },
+    wrapperCol: { span: 18 },
 };
 
 class OpenApp extends React.Component {
@@ -47,7 +47,7 @@ class OpenApp extends React.Component {
             }
         });
     }
-    getUserList(role) {        
+    getUserList(role) {
         OpenAppAction.getAllUsers();
     }
     handleCheckDetail(app) {
@@ -61,6 +61,9 @@ class OpenApp extends React.Component {
             });
         }
     }
+    handleApplyOpen(app) {
+        
+    }
     handleCloseDetail() {
         this.setState({
             selectedApp: {}
@@ -73,14 +76,26 @@ class OpenApp extends React.Component {
             isShowAppDetail: isShow
         });
     }
-    handleSubmit() {
-
+    handleSubmit(index) {
+        const addParmas = {
+            'member_ids': [
+                'string'
+            ],
+            'role_ids': [
+                'string'
+            ]
+        };
+        const delParams = {};
+        OpenAppAction.editRoleToUsers(params, true);
     }
     handleSelectChange({ role_id }, value) {
         OpenAppAction.changeRoleUser({
             role_id,
             ids: value
         });
+    }
+    changeItemEdit(isShow, index, ) {
+        OpenAppAction.changeRoleItemEdit({ isShow, index });
     }
     render() {
         const renderRoleFormItem = (role, index) => (
@@ -90,13 +105,24 @@ class OpenApp extends React.Component {
                     value={role.userList.map(x => x.user_id)}
                     onChange={this.handleSelectChange.bind(this, role)}
                     showSearch={true}
+                    disabled={!role.showEdit || this.state.editRoleResult.loading}
                 >
                     {
                         this.state.userList.data.map((user, index) => (
                             <Option key={index} value={user.user_id}>{user.nick_name || user.user_name}</Option>
-                        )) 
+                        ))
                     }
                 </Select>
+                <div className="role-item-btn-bar">
+                    {
+                        role.showEdit ?
+                            <span className="">
+                                <Icon type="check" onClick={this.handleSubmit.bind(this, index)} />
+                                <Icon type="close" onClick={this.changeItemEdit.bind(this, false, index)} />
+                            </span> :
+                            <Icon type="edit" onClick={this.changeItemEdit.bind(this, true, index)} />
+                    }
+                </div>
             </FormItem>
         );
         return (
@@ -115,9 +141,13 @@ class OpenApp extends React.Component {
                                     <legend>{app.tags_name}</legend>
                                     <p>{app.tags_description}</p>
                                     <div className="btn-bar">
-                                        <Button onClick={this.handleCheckDetail.bind(this, app)}>
-                                            {Intl.get('call.record.show.customer.detail', '查看详情')}
-                                        </Button>
+                                        {app.status === APP_STATUS.ENABLED ?
+                                            <Button onClick={this.handleCheckDetail.bind(this, app)}>
+                                                {Intl.get('call.record.show.customer.detail', '查看详情')}
+                                            </Button> :
+                                            <Button onClick={this.handleApplyOpen.bind(this, app)}>
+                                                {Intl.get('back.openApp.apply', '申请开通')}
+                                            </Button>}
                                     </div>
                                 </fieldset>
                             ))
@@ -155,10 +185,10 @@ class OpenApp extends React.Component {
                                             </div>
                                         </StatusWrapper>
                                     </div>
-                                    <div className="btn-bar">
+                                    {/* <div className="btn-bar">
                                         <Button type="primary" onClick={this.handleSubmit.bind(this)}>{Intl.get('common.sure', '确定')}</Button>
                                         <Button onClick={this.handleCloseDetail.bind(this)}>{Intl.get('common.cancel', '取消')}</Button>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div> : null
                     }

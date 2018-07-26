@@ -4,8 +4,8 @@ export const USER_STATUS = {
 };
 
 export const APP_STATUS = {
-    ENABLED: 1,
-    DISABLED: 0
+    ENABLED: true,
+    DISABLED: false
 };
 
 export const MAX_PAGESIZE = 10000;

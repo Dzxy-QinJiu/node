@@ -70,7 +70,7 @@ export const ajaxPro = (handler, paramsObj) => {
             url: route.path,
             type: route.method
         };
-        if (paramsObj) {
+        if (paramsObj) { 
             if (paramsObj.params) {
                 config.params = paramsObj.params;
             }

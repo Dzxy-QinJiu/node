@@ -80,12 +80,10 @@ const BackendConfigLinkList = [
         key: 'sales_team',
         privilege: 'BGM_SALES_TEAM_LIST'
     }, {
-        key: 'open_app',
         name: Intl.get('back.openApp', '开通应用'),
-        routePath: '/background_management/openApp',
-        privileges: [
-            //todo 权限
-        ]
+        href: '/background_management/openApp',
+        key: 'open_app',
+        privileges: 'BGM_SALES_TEAM_LIST'//todo 权限
     }, {
         name: Intl.get('menu.config', '配置'),
         href: '/background_management/configaration',
