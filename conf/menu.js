@@ -27,7 +27,7 @@ class LeftMenuClass {
                     'CUSTOMER_UPDATE'//合并重复客户
                 ],
                 //有这个权限，才显示入口图标
-                showPrivileges: ['CRM_LIST_CUSTOMERS']
+                showPrivileges: ['CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL']
             },
             {
                 id: 'ClUE_CUSTOMER',
