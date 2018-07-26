@@ -1389,6 +1389,7 @@ var zh_CN = {
     'crm.order.expected.deal.placeholder': '请选择预计成交时间',
     'crm.order.no.expected.deal.time': '暂无预计成交时间',
     'crm.order.add.expected.deal.time': '添加预计成交时间',
+    'crm.order.add.to': '添加于{time}',
     // 客户管理end
 
     // 客户分析start

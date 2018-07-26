@@ -505,6 +505,7 @@ const OrderItem = React.createClass({
             applyBtnText = Intl.get('common.apply.user.trial', '申请试用用户');
         }
         let selectedAppList = this.getSelectedAppList(order);
+        let createTime = order.time ? moment(order.time).format(oplateConsts.DATE_FORMAT) : '';
         return (
             <div className="order-bottom-wrap">
                 {applyBtnText && this.props.isApplyButtonShow && order.oppo_status !== ORDER_STATUS.LOSE ? (//丢单后不展示申请用户按钮
@@ -528,6 +529,7 @@ const OrderItem = React.createClass({
                         {this.state.closeOrderErrorMsg ? (
                             <span className="order-close-error-tip">{this.state.closeOrderErrorMsg}</span>) : null}
                     </span>)}
+                <span className="order-add-time">{Intl.get('crm.order.add.to', '添加于{time}',{time: createTime})}</span>
                 <span className="order-user">{order.user_name || ''}</span>
             </div>
         );
