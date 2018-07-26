@@ -55,15 +55,6 @@ exports.hasRole = function(role) {
     return false;
 };
 
-//是否销售管理员
-exports.isSalesManager = function() {
-    const roles = UserData.roles || [];
-    if (!UserData.isCommonSales || roles.indexOf('realm_manager') > -1) {
-        return true;
-    }
-    return false;
-};
-
 //用户是否含有某个角色
 exports.hasOnlyRole = function(role) {
     const roles = UserData.roles || [];
@@ -74,7 +65,7 @@ exports.hasOnlyRole = function(role) {
 };
 
 //角色常量
-exports.ROLE_CONSTANS = {
+const ROLE_CONSTANS = {
     //应用管理员
     APP_ADMIN: 'app_manager',
     //应用所有者
@@ -100,4 +91,5 @@ exports.ROLE_CONSTANS = {
     //财务
     ACCOUNTANT: 'accountant'
 };
+exports.ROLE_CONSTANS = ROLE_CONSTANS;
 
