@@ -428,11 +428,15 @@ var CustomerAnalysis = React.createClass({
                 resultType: '',
                 data: [{
                     name: '李四',
+                    last_month: 3,
                 }],
                 option: {
                     columns: [{
                         title: '销售',
                         dataIndex: 'name',
+                    }, {
+                        title: '上月',
+                        dataIndex: 'last_month',
                     }],
                 },
             });
