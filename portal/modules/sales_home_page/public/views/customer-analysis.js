@@ -412,6 +412,17 @@ var CustomerAnalysis = React.createClass({
             }
         });
     },
+    //处理试用合格客户数统计数字点击事件
+    handleTrialQualifiedNumClick() {
+    },
+    //试用合格客户数统计数字渲染函数
+    trialQualifiedNumRender(text, record) {
+        return (
+            <span onClick={this.handleTrialQualifiedNumClick} style={{cursor: 'pointer'}}>
+                {text}
+            </span>
+        );
+    },
     //获取试用合格客户数统计图表
     getTrialQualifiedChart() {
         let chart = {
@@ -437,6 +448,7 @@ var CustomerAnalysis = React.createClass({
                     }, {
                         title: '上月',
                         dataIndex: 'last_month',
+                        render: this.trialQualifiedNumRender,
                     }],
                 },
             });
