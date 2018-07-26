@@ -62,17 +62,25 @@ class OpenApp extends React.Component {
         }
     }
     handleApplyOpen(app) {
-        OpenAppAction.openApp({
-            params: {
-                roleId: app.id
+        Modal.confirm({
+            title: Intl.get('back.openApp.confirm', '确认要开通{appName}功能吗', {appName: app.tags_name}),
+            onOk: () => {
+                OpenAppAction.openApp({
+                    params: {
+                        roleId: app.role_id
+                    }
+                }).then(result => {
+                    if (result) {
+                        message.success(Intl.get('back.openApp.tip.success', '开通成功'));
+                        OpenAppAction.changeAppStatus(app);
+                    } else {
+                        message.error(Intl.get('back.openApp.tip.fail', '开通失败'));
+                    }
+                }).catch(err => {
+                    message.error((err && err.message) || Intl.get('back.openApp.tip.fail', '开通失败'));
+                });
             }
-        }).then(result => {
-            if (result) {
-                message.success(Intl.get('back.openApp.tip.success', '开通成功'));
-            } else {
-                message.error(Intl.get('back.openApp.tip.fail', '开通失败'));
-            }
-        });
+        });        
     }
     handleCloseDetail() {
         this.setState({
@@ -87,16 +95,43 @@ class OpenApp extends React.Component {
         });
     }
     handleSubmit(index) {
-        const addParmas = {
-            'member_ids': [
-                'string'
-            ],
-            'role_ids': [
-                'string'
-            ]
+        const editRoleId = _.get(this.state.roleList, ['data', index, 'role_id']);
+        const userList = _.get(this.state.roleList, ['data', index, 'userList']);
+        const rawUserList = _.get(this.state.roleList, ['data', index, 'rawUserList']);
+        const pubUserList = _.intersectionBy(userList, rawUserList, 'user_id');
+        const addUsers = _.differenceBy(userList, pubUserList, 'user_id');
+        const delUsers = _.differenceBy(rawUserList, pubUserList, 'user_id');
+        const addParams = {
+            'member_ids': addUsers.map(x => x.user_id),
+            'role_ids': [editRoleId]
         };
-        const delParams = {};
-        OpenAppAction.editRoleToUsers(params, true);
+        const delParams = {
+            'member_ids': delUsers.map(x => x.user_id),
+            'role_ids': [editRoleId]
+        };
+        const params = {};
+        if (addParams.member_ids.length) {
+            params.addParams = addParams;
+        }
+        if (delParams.member_ids.length) {
+            params.delParams = delParams;
+        }
+        OpenAppAction.editRoleToUsers({
+            data: params
+        }).then(({ data }) => {
+            if (data.success) {
+                message.success(Intl.get('common.save.success', '保存成功'));
+                this.changeItemEdit({
+                    isShow: false,
+                    index,
+                    isSuccess: true
+                });
+            } else {
+                message.error(Intl.get('common.save.failed', '保存失败'));
+            }
+        }).catch(err => {
+            message.error((err && err.message) || Intl.get('common.save.failed', '保存失败'));
+        });
     }
     handleSelectChange({ role_id }, value) {
         OpenAppAction.changeRoleUser({
@@ -104,8 +139,9 @@ class OpenApp extends React.Component {
             ids: value
         });
     }
-    changeItemEdit(isShow, index, ) {
-        OpenAppAction.changeRoleItemEdit({ isShow, index });
+    //此处为防止event充当参数，所以把参数放到对象中
+    changeItemEdit(params) {
+        OpenAppAction.changeRoleItemEdit(params);
     }
     render() {
         const renderRoleFormItem = (role, index) => (
@@ -126,11 +162,20 @@ class OpenApp extends React.Component {
                 <div className="role-item-btn-bar">
                     {
                         role.showEdit ?
-                            <span className="">
-                                <Icon type="check" onClick={this.handleSubmit.bind(this, index)} />
-                                <Icon type="close" onClick={this.changeItemEdit.bind(this, false, index)} />
-                            </span> :
-                            <Icon type="edit" onClick={this.changeItemEdit.bind(this, true, index)} />
+                            <StatusWrapper
+                                loading={this.state.editRoleResult.loading}
+                                size='small'
+                            >
+                                <span className="">
+                                    <Icon type="check" onClick={this.handleSubmit.bind(this, index)} />
+                                    <Icon type="close" onClick={this.changeItemEdit.bind(this, {
+                                        isShow: false, index, isCancel: true
+                                    })} />
+                                </span>
+                            </StatusWrapper> :
+                            <Icon type="edit" onClick={this.changeItemEdit.bind(this, {
+                                isShow: true, index
+                            })} />
                     }
                 </div>
             </FormItem>
@@ -194,11 +239,7 @@ class OpenApp extends React.Component {
                                                 }
                                             </div>
                                         </StatusWrapper>
-                                    </div>
-                                    {/* <div className="btn-bar">
-                                        <Button type="primary" onClick={this.handleSubmit.bind(this)}>{Intl.get('common.sure', '确定')}</Button>
-                                        <Button onClick={this.handleCloseDetail.bind(this)}>{Intl.get('common.cancel', '取消')}</Button>
-                                    </div> */}
+                                    </div>                                    
                                 </div>
                             </div> : null
                     }

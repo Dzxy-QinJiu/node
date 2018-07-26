@@ -325,7 +325,7 @@ module.exports = [{
     }
 },{
     //开通应用
-    'method': 'get',
+    'method': 'put',
     'path': '/rest/base/v1/role/:roleId/visible/true',
     'handler': 'openApp',
     'passport': {

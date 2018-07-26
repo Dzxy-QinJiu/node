@@ -6,12 +6,13 @@ import openAppAjax from './../ajax/index';
 function OpenAppAction() {
     this.generateActions(
         'changeRoleUser',
-        'changeRoleItemEdit'
+        'changeRoleItemEdit',
+        'changeAppStatus'
     );
     this.getAppList = asyncDispatcher(openAppAjax.getAppList);
     this.getAppRoleList = asyncDispatcher(openAppAjax.getAppRoleList);
     this.getAllUsers = asyncDispatcher(openAppAjax.getAllUsers);
-    this.editRoleToUsers = asyncDispatcher(openAppAjax.editRoleToUsers);
+    this.editRoleToUsers = asyncDispatcher(openAppAjax.editRoleToUsers, true);
     this.openApp = asyncDispatcher(openAppAjax.openApp, true);
 }
 

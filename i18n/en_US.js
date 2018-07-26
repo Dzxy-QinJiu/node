@@ -2308,5 +2308,6 @@ var en_US = {
     'back.openApp.apply': 'apply', //'申请开通',
     'back.openApp.tip.success': 'open successed',//'开通成功',
     'back.openApp.tip.fail': 'open failed',//'开通失败',
+    'back.openApp.confirm': 'Are you sure to open {appName} ?'
 };
 export default en_US;

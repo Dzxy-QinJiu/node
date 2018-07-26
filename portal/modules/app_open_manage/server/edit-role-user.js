@@ -1,3 +1,9 @@
+/**
+ * @argument addParams {
+ * }
+ * @argument delParams 
+ */
+
 const restHandler = require('../../common/rest');
 const _ = require('lodash');
 const ajax = require('../../common/ajax');
@@ -6,26 +12,33 @@ let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 
 exports.editRoleToUsers = function(req, res, next) {
     const Intl = new BackendIntl(req);
-    const addParams = req.body.addParams;
-    const delParams = req.body.delParams;
-    const addPromise = new Promise((resolve, reject) => {
-        req.body = addParams;
-        restHandler.addRoleToUsers(req, res, false).on('success', result => {
-            resolve(result);
-        })
-            .on('error', codeMessage => {
-                reject(codeMessage);
-            });
-    });
-    const delPromise = new Promise((resolve, reject) => {
-        req.body = delParams;
-        restHandler.delRoleToUsers(req, res, false).on('success', result => {
-            resolve(result);
-        })
-            .on('error', codeMessage => {
-                reject(codeMessage);
-            });
-    });
+    const body = JSON.parse(req.body.reqData);
+    const addParams = body.addParams;
+    const delParams = body.delParams;
+    let addPromise = Promise.resolve({success: true});
+    if (addParams) {
+        addPromise = new Promise((resolve, reject) => {
+            req.body.reqData = JSON.stringify(addParams);
+            restHandler.addRoleToUsers(req, res, false).on('success', result => {
+                resolve(result);
+            })
+                .on('error', codeMessage => {
+                    reject(codeMessage);
+                });
+        });
+    }
+    let delPromise = Promise.resolve({success: true});
+    if (delParams) {        
+        delPromise = new Promise((resolve, reject) => {
+            req.body.reqData = JSON.stringify(delParams);
+            restHandler.delRoleToUsers(req, res, false).on('success', result => {
+                resolve(result);
+            })
+                .on('error', codeMessage => {
+                    reject(codeMessage);
+                });
+        });
+    }    
     Promise.all([addPromise, delPromise])
         .then(resultList => {
             if (resultList[0] && resultList[1]) {

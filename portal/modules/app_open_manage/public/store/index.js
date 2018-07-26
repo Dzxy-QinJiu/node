@@ -33,7 +33,8 @@ OpenAppStore.prototype.resetState = function() {
 };
 
 OpenAppStore.prototype.getAppList = resultHandler('appList', function({ data }) {
-    this.appList.data = data.map(x => ({
+    this.appList.data = data.filter(x => x.name).map(x => ({
+        role_id: x.id,
         tags_name: x.name,
         tags_description: x.description,
         tags: x.tags,
@@ -61,15 +62,23 @@ OpenAppStore.prototype.changeRoleUser = function(params) {
     });
 };
 
-OpenAppStore.prototype.changeRoleItemEdit = function({ index, isShow }) {
+OpenAppStore.prototype.changeRoleItemEdit = function({ index, isShow, isCancel, isSuccess }) {
+    const roleItem = this.roleList.data[index];
     //取消编辑时，将角色下成员重置
-    if (!isShow) {
-        this.roleList.data[index].userList = this.roleList.data[index].rawUserList;
+    if (isCancel) {
+        roleItem.userList = roleItem.rawUserList;
     }
-    this.roleList.data[index].showEdit = isShow;
+    //修改成功时，将rawuserList更新为userList
+    if (isSuccess) {
+        roleItem.rawUserList = roleItem.userList;
+    }
+    roleItem.showEdit = isShow;
 };
 
 OpenAppStore.prototype.openApp = resultHandler('openAppResult');
 
+OpenAppStore.prototype.changeAppStatus = function(app) {
+    this.appList.data.find(x => x.id === app.id).visible = true;
+};
 
 module.exports = alt.createStore(OpenAppStore, 'OpenAppStore');

@@ -2330,5 +2330,6 @@ var zh_CN = {
     'back.openApp.apply': '申请开通',
     'back.openApp.tip.success': '开通成功',
     'back.openApp.tip.fail': '开通失败',
+    'back.openApp.confirm': '确认要开通{appName}功能吗',
 };
 export default zh_CN;
