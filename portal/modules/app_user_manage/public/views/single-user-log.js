@@ -252,7 +252,7 @@ var SingleUserLog = React.createClass({
                                 <p>
                                     <span className="log-detail">{userLogInformation.user_ip }</span>
                                     <span className="log-detail">
-                                        {userLogInformation.location.indexOf('null') !== -1 ? '' : userLogInformation.location}
+                                        {userLogInformation.location && userLogInformation.location.indexOf('null') !== -1 ? '' : userLogInformation.location}
                                         {userLogInformation.area}
                                     </span>
                                     <span className="log-detail">{Intl.get('common.client', '客户端')}: {userLogInformation.os}</span>
