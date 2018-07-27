@@ -473,22 +473,40 @@ var CustomerAnalysis = React.createClass({
     },
     //获取试用合格客户数统计图表
     getTrialQualifiedChart() {
+        let resultType = '';
+
+        let data = [{
+            name: '李四',
+            last_month: 3,
+            this_month: 4,
+            this_month_add: 1,
+            this_month_back: 1,
+            this_month_lose: 2,
+            this_month_pure_add: 1,
+            history_highest: 3,
+            this_month_than_history_highest: 1,
+        }];
+
         let chart = {
             title: '试用合格客户数统计',
+            resultType,
+            data,
         };
 
         if (this.state.currShowType === showTypeConstant.SALESMAN) {
             _.extend(chart, {
-                chartType: '',
+                chartType: 'bar',
+                option: {
+                    legend: [
+                        '上月',
+                        '本月',
+                        '历史最高',
+                    ],
+                },
             });
         } else {
             _.extend(chart, {
                 chartType: 'table',
-                resultType: '',
-                data: [{
-                    name: '李四',
-                    last_month: 3,
-                }],
                 option: {
                     columns: [{
                         title: '销售',
