@@ -41,7 +41,8 @@ const restApis = {
     getClueStatics: '/rest/customer/v2/clue/:type/statistical/:field/:page_size/:num',
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
-
+    //线索的全文搜索
+    getClueByFullText: '/rest/customer/v2/clue/query/fulltext/:page_size/:sort_field/:order',
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -220,4 +221,16 @@ exports.getClueTrendStatics = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+//线索全文搜索
+exports.getClueFulltext = function(req, res) {
+    var url = restApis.getClueByFullText.replace(':page_size',req.params.page_size).replace(':sort_field',req.params.field).replace(':order',req.params.order);
+    if (req.query.keyword){
+        url += `?keyword=${req.query.keyword}`;
+    }
+    return restUtil.authRest.post({
+        url: url,
+        req: req,
+        res: res
+    }, req.body);
 };

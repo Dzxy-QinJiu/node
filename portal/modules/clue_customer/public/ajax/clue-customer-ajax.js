@@ -14,6 +14,7 @@ const DISTRIBUTEAUTHS = {
 };
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
+var userData = require('PUB_DIR/sources/user-data');
 //查询线索客户
 exports.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
     pageSize = pageSize || 20;
@@ -244,6 +245,32 @@ exports.updateCluecustomerDetail = function(submitObj) {
         },
         error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取全文搜索的线索
+exports.getClueFulltext = function(queryObj) {
+    var pageSize = queryObj.pageSize || 20;
+    var sorter = queryObj.sorter ? queryObj.sorter : {field: 'id', order: 'descend'};
+    var data = {
+        userId: userData.getUserData().user_id
+    };
+    var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order;
+    if(queryObj.lastClueId){
+        url += `?id=${queryObj.lastClueId}`;
+    }
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: url ,
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();

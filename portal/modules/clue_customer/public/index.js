@@ -14,6 +14,7 @@ var userData = require('../../../public/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+var SearchInput = require('CMP_DIR/searchInputNew');
 import {message, Icon, Row, Col, Button, Alert, Input, Tag, Modal, Select} from 'antd';
 const Option = Select.Option;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -29,12 +30,13 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 import SalesClueItem from 'MOD_DIR/common_sales_home_page/public/view/sales-clue-item';
 import ClueAnalysisPanel from './views/clue-analysis-panel';
-import SalesClueAddForm from './views/sales-clue-add-form';
+import SalesClueAddForm from './views/add-clues-form';
 import ClueImportTemplate from './views/clue-import-template';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
 import {AntcTable} from 'antc';
+import classNames from 'classnames';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -520,13 +522,21 @@ const ClueCustomer = React.createClass({
         this.state.rightPanelIsShow = false;
         rightPanelShow = false;
         this.setState(this.state);
-        setTimeout(() => {
-            this.getClueCustomerList();
+        if (this.state.keyword){
+            setTimeout(() => {
+                this.getClueCustomerList();
+                if (!flag) {
+                    this.getClueStatusLists();
+                }
+            });
+        }else{
+            clueCustomerAction.getClueFulltext();
             if (!flag) {
                 this.getClueStatusLists();
             }
+        }
 
-        });
+
     },
     onSelectDate: function(start_time, end_time) {
         if (!start_time) {
@@ -639,6 +649,16 @@ const ClueCustomer = React.createClass({
             //todo 刷新线索列表
             this.getClueCustomerList();
         });
+    },
+    searchFullTextEvent: function() {
+        var keyWord = this.refs.searchInput.state.formData;
+        //如果keyword存在，就用全文搜索的接口
+
+        clueCustomerAction.setKeyWord(keyWord);
+
+        //如果keyword不存在，就用获取线索的接口
+        this.onTypeChange();
+
     },
     renderImportModalFooter: function() {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
@@ -791,12 +811,15 @@ const ClueCustomer = React.createClass({
                 }
             }
         ];
+        var cls = classNames('right-panel-modal',
+            {'show-modal': this.state.clueAddFormShow
+            });
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索客户列表">
                     <TopNav>
                         <div className="date-picker-wrap">
-                            <span className="consult-time">{Intl.get('clue.analysis.consult.time', '咨询时间：')}</span>
+                            <span className="consult-time">{Intl.get('clue.analysis.consult.time', '咨询时间')}</span>
                             <DatePicker
                                 disableDateAfterToday={true}
                                 range="week"
@@ -842,8 +865,15 @@ const ClueCustomer = React.createClass({
                                 </Select>
                             </div>
                             <div className="search-container">
-                                <Input addonAfter={<Icon type="search"/>}
-                                    placeholder={Intl.get('clue.search.by.name', '按线索名搜索')}/>
+                                {/*<Input addonAfter={<Icon type="search"/>}*/}
+                                {/*placeholder={Intl.get('clue.search.by.name', '按线索名搜索')}*/}
+
+                                {/*/>*/}
+                                <SearchInput
+                                    ref="serachInput"
+                                    searchEvent={this.searchFullTextEvent}
+                                    searchPlaceholder = {Intl.get('clue.search.full.text','全文搜索')}
+                                />
                             </div>
                             <div className="pull-right add-anlysis-handle-btns">
                                 {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
@@ -856,17 +886,20 @@ const ClueCustomer = React.createClass({
                     <div className="clue-content-container">
                         {this.renderLoadingAndErrAndNodataContent()}
                     </div>
-                    {this.state.clueAddFormShow ? (
-                        <SalesClueAddForm
-                            hideAddForm={this.hideClueAddForm}
-                            accessChannelArray={this.state.accessChannelArray}
-                            clueSourceArray={this.state.clueSourceArray}
-                            clueClassifyArray={this.state.clueClassifyArray}
-                            updateClueSource={this.updateClueSource}
-                            updateClueChannel={this.updateClueChannel}
-                            updateClueClassify={this.updateClueClassify}
-                        />
-                    ) : null}
+                    <div className={cls}>
+                        {this.state.clueAddFormShow ? (
+                            <SalesClueAddForm
+                                hideAddForm={this.hideClueAddForm}
+                                accessChannelArray={this.state.accessChannelArray}
+                                clueSourceArray={this.state.clueSourceArray}
+                                clueClassifyArray={this.state.clueClassifyArray}
+                                updateClueSource={this.updateClueSource}
+                                updateClueChannel={this.updateClueChannel}
+                                updateClueClassify={this.updateClueClassify}
+                            />
+                        ) : null}
+                    </div>
+
                     <ClueImportTemplate
                         showFlag={this.state.clueImportTemplateFormShow}
                         closeClueTemplatePanel={this.closeClueTemplatePanel}

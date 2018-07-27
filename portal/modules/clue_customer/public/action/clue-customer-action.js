@@ -26,7 +26,8 @@ function ClueCustomerActions() {
         'updateClueProperty',//修改线索是否有效属性
         'removeClueItem',//删除某条线索
         'afterModifiedAssocaitedCustomer',//修改当前线索的绑定客户后在列表中修改该条线索所绑定的客户
-        'afterAddClueTrace'//添加完线索的跟进记录后
+        'afterAddClueTrace',//添加完线索的跟进记录后
+        'setKeyWord',//设置关键字
     );
     //获取线索客户列表
     this.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
@@ -107,6 +108,20 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback();
         },(errorMsg) => {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
+    };
+    //线索的全文搜索
+    this.getClueFulltext = function(queryObj) {
+        this.dispatch({error: false, loading: true});
+        clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({error: false, loading: false, clueCustomerObj: result});
+        }, (errorMsg) => {
+            this.dispatch({
+                error: true,
+                loading: false,
+                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
+            });
         });
     };
 }

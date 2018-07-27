@@ -135,6 +135,13 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{
+            method: 'post',
+            path: '/rest/get/clue/fulltext/:page_size/:sort_field/:order',
+            handler: 'getClueFulltext',
+            passport: {
+                'needLogin': true
+            }
         }
     ]
 };

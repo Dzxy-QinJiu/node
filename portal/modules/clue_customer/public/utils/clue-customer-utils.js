@@ -6,10 +6,10 @@ export const checkCustomerName = function(rule, value, callback) {
         if (nameRegex.test(value)) {
             callback();
         } else {
-            callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
+            callback(new Error(Intl.get('clue.name.rule', '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
         }
     } else {
-        callback(new Error(Intl.get('crm.81', '请填写客户名称')));
+        callback(new Error(Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')));
     }
 };
 export const checkEmail = function(rule, value, callback) {

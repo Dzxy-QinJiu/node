@@ -151,3 +151,13 @@ exports.getClueTrendStatics = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+//全文搜索线索
+exports.getClueFulltext = function(req, res) {
+    clueCustomerService.getClueFulltext(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        })
+        .on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};

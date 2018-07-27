@@ -42,6 +42,7 @@ ClueCustomerStore.prototype.getState = function() {
     this.unSelectDataTip = '';//未选择数据就保存的提示信息
     this.distributeLoading = false;//线索客户正在分配给某个销售
     this.distributeErrMsg = '';//线索客户分配失败
+    this.searchKeyword = '';//线索全文搜索的关键字
 };
 //查询线索客户
 ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
@@ -53,6 +54,36 @@ ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
         this.clueCustomerErrMsg = clueCustomers.errorMsg;
     } else {
         let data = clueCustomers.clueCustomerObj;
+        let list = data ? data.result : [];
+        if (this.lastCustomerId) {
+            this.curCustomers = this.curCustomers.concat(this.processForList(list));
+        } else {
+            this.curCustomers = this.processForList(list);
+        }
+        this.lastCustomerId = this.curCustomers.length ? _.last(this.curCustomers).id : '';
+        this.customersSize = data ? data.total : 0;
+        this.listenScrollBottom = this.customersSize > this.curCustomers.length;
+        this.isLoading = false;
+        //跟据线索客户不同的状态进行排序
+        this.curCustomers = _.sortBy(this.curCustomers, (item) => {
+            return item.status;
+        });
+        //刷新当前右侧面板中打开的客户的数据
+        if (this.currentId) {
+            this.setCurrentCustomer(this.currentId);
+        }
+    }
+};
+//全文查询线索
+ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
+    if (clueData.loading) {
+        this.isLoading = true;
+        this.clueCustomerErrMsg = '';
+    } else if (clueData.error) {
+        this.isLoading = false;
+        this.clueCustomerErrMsg = clueData.errorMsg;
+    } else {
+        let data = clueData.clueCustomerObj;
         let list = data ? data.result : [];
         if (this.lastCustomerId) {
             this.curCustomers = this.curCustomers.concat(this.processForList(list));
@@ -232,4 +263,8 @@ ClueCustomerStore.prototype.getSalesManList = function(list) {
     //客户所属销售下拉列表，过滤掉停用的成员
     this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status === 1);
 };
+ClueCustomerStore.prototype.setKeyWord = function(keyword) {
+
+};
+
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

@@ -594,7 +594,7 @@ class ClueAnalysisPanel extends React.Component {
                 <div className="date-picker-container">
                     <div className="date-picker-wrap">
                         <span className="date-picker-tip">
-                            {Intl.get('clue.analysis.consult.time', '咨询时间：')}
+                            {Intl.get('clue.analysis.consult.time', '咨询时间')}
                         </span>
                         <DatePicker
                             disableDateAfterToday={true}
