@@ -415,15 +415,16 @@ var CallRecordAnalyis = React.createClass({
      * @param isExport 是否是导出时调用的，导出时，时长都展示秒数
      */
     getPhoneListColumn: function(isExport) {
+        let col_width = 95, num_col_width = 80;
         let columns = [{
             title: this.getSalesColumnTitle(),
-            width: 90,
+            width: col_width,
             dataIndex: 'name',
             className: 'table-data-align-left',
             key: 'name'
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
-            width: 100,
+            width: num_col_width,
             dataIndex: 'totalTime',
             key: 'total_time',
             sorter: function(a, b) {
@@ -439,7 +440,7 @@ var CallRecordAnalyis = React.createClass({
             }
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'calloutSuccess',
             key: 'callout_success',
             sorter: function(a, b) {
@@ -448,7 +449,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.average.duration', '日均时长'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'averageTime',
             key: 'average_time',
             sorter: function(a, b) {
@@ -464,7 +465,7 @@ var CallRecordAnalyis = React.createClass({
             }
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
-            width: 114,
+            width: col_width,
             dataIndex: 'averageAnswer',
             key: 'average_answer',
             sorter: function(a, b) {
@@ -473,7 +474,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin', '呼入次数'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'callinCount',
             key: 'callin_count',
             sorter: function(a, b) {
@@ -482,7 +483,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin.success', '成功呼入'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'callinSuccess',
             key: 'callin_success',
             sorter: function(a, b) {
@@ -491,7 +492,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
-            width: 114,
+            width: col_width,
             dataIndex: 'callinRate',
             key: 'callin_rate',
             sorter: function(a, b) {
@@ -500,7 +501,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callout', '呼出次数'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'calloutCount',
             key: 'callout_count',
             sorter: function(a, b) {
@@ -509,7 +510,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
-            width: 114,
+            width: col_width,
             dataIndex: 'calloutRate',
             key: 'callout_rate',
             sorter: function(a, b) {
@@ -535,7 +536,7 @@ var CallRecordAnalyis = React.createClass({
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.secondSelectValue === LITERAL_CONSTANT.ALL) {
             columns.splice(3, 0, {
                 title: Intl.get('call.record.average.call.duration', '人均时长'),
-                width: 114,
+                width: col_width,
                 align: 'right',
                 dataIndex: 'personAverageTime',
                 key: 'person_average_time',
@@ -551,7 +552,7 @@ var CallRecordAnalyis = React.createClass({
                 }
             }, {
                 title: Intl.get('call.record.average.connected', '人均接通数'),
-                width: 114,
+                width: col_width,
                 align: 'right',
                 dataIndex: 'personAverageAnswer',
                 key: 'person_average_answer',
