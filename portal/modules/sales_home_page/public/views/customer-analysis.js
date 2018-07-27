@@ -489,19 +489,34 @@ var CustomerAnalysis = React.createClass({
 
         let chart = {
             title: '试用合格客户数统计',
+            layout: {sm: 24},
             resultType,
             data,
         };
 
-        if (this.state.currShowType === showTypeConstant.SALESMAN) {
+        if (this.state.currShowType !== showTypeConstant.SALESMAN) {
             _.extend(chart, {
                 chartType: 'bar',
-                option: {
-                    legend: [
+                processOption: (option, chartProps) => {
+                    option.legend = {
+                        data: [
+                            '上月',
+                            '本月',
+                            '历史最高',
+                        ],
+                    };
+                    console.log(option);
+                    _.set(option, 'xAxis[0].data', [
                         '上月',
+                        '本月新增',
+                        '本月回流',
+                        '本月流失',
+                        '本月比上月净增',
                         '本月',
+                        '本月比历史最高净增',
                         '历史最高',
-                    ],
+                    ]);
+
                 },
             });
         } else {
