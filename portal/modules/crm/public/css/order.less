@@ -26,7 +26,23 @@
     border: 1px solid @delete_confirm_color;
   }
   .order-item-container {
+    .detail-card-title, .order-item-title {
+      float: left;
+      width: 100%;
+    }
     .order-item-title {
+      .step-bar-component {
+        float: left;
+        width: 100%;
+        margin-left: -20px;
+      }
+      .close-order-lose-wrap {
+        background-color: #eef7fe;
+        padding: 6px 6px 0 6px;
+        .basic-edit-field form .ant-form-item .ant-input {
+          margin-left: 0;
+        }
+      }
       //订单状态
       .order-status {
         margin-right: 4px;
@@ -35,9 +51,6 @@
         font-size: 12px;
         color: #ffffff;
       }
-      //.order-status-underway{
-      //  background-color: #f0a145;
-      //}
       .order-status-win.order-status {
         background-color: #e8f5fd;
         color: #96aeca;
@@ -58,6 +71,12 @@
           font-size: 16px;
           color: #8da8c5;
           margin-left: 4px;
+        }
+        .iconfont.icon-delete {
+          width: 20px;
+          height: 20px;
+          margin-left: 0;
+          margin-top: 14px;
         }
         //删除确认按钮区
         .item-delete-buttons {

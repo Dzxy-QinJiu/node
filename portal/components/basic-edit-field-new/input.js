@@ -15,7 +15,7 @@ import {PassStrengthBar} from '../password-strength-bar';
 import Trace from 'LIB_DIR/trace';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
-import { parseAmount } from 'LIB_DIR/func';
+import {parseAmount} from 'LIB_DIR/func';
 
 const BasicEditField = React.createClass({
     mixins: [FieldMixin],
@@ -51,12 +51,18 @@ const BasicEditField = React.createClass({
             },
             saveEditInput: function() {
             },
+            cancelEditInput: function() {
+            },
             //行数
             rows: 5,
             //是否展示密码强度
             showPasswordStrength: false,
             //属性值后面紧跟的提示信息
-            afterValTip: ''
+            afterValTip: '',
+            //保存按钮的文字展示
+            okBtnText: '',
+            //取消按钮的文字展示
+            cancelBtnText: ''
         };
     },
     getInitialState: function() {
@@ -177,7 +183,8 @@ const BasicEditField = React.createClass({
             displayType: 'text',
             submitErrorMsg: ''
         });
-        this.props.onDisplayTypeChange('text');
+        if (_.isFunction(this.props.onDisplayTypeChange)) this.props.onDisplayTypeChange('text');
+        if (_.isFunction(this.props.cancelEditInput)) this.props.cancelEditInput();
         Trace.traceEvent(e, '取消对' + this.props.field + '的修改');
     },
     onFocusInput: function(type, event) {
@@ -221,7 +228,7 @@ const BasicEditField = React.createClass({
         if (this.state.displayType === 'text') {
             var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
             //如果是数字类型，展示时，千分位加，分隔的处理
-            if(this.props.type === 'number' && displayText){
+            if (this.props.type === 'number' && displayText) {
                 displayText = parseAmount(displayText);
             }
             if (displayText) {
@@ -286,6 +293,8 @@ const BasicEditField = React.createClass({
                             saveErrorMsg={this.state.submitErrorMsg}
                             handleSubmit={this.handleSubmit}
                             handleCancel={this.handleCancel}
+                            okBtnText={this.props.okBtnText}
+                            cancelBtnText={this.props.cancelBtnText}
                         /> : null}
                 </Form>
             </div>
