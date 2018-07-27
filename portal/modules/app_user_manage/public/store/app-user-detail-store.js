@@ -81,10 +81,19 @@ AppUserDetailStore.prototype.getUserDetail = function(result) {
     } else {
         this.getDetailErrorMsg = '';
         this.initialUser = result.userDetail;
+        this.initialUser.apps = this.initialUser.apps.map(x => {
+            x.showDetail = false;
+            return x;
+        });
         //用户所属字段赋值
         this.customer_id = result.userDetail.customer.customer_id || '';
         this.customer_name = result.userDetail.customer.customer_name || '';
     }
+};
+
+//切换展示应用详情
+AppUserDetailStore.prototype.showAppDetail = function({app, isShow}) {
+    this.initialUser.apps.find(x => x.app_id === app.app_id).showDetail = isShow;
 };
 
 //禁用全部应用
@@ -186,7 +195,7 @@ AppUserDetailStore.prototype.changeAppFieldSuccess = function(result) {
                 if(key in result) {
                     //开通状态字段特殊处理
                     if(key === 'status') {
-                        targetApp.is_disabled = result[key] == '1' ? 'false' : 'true';
+                        targetApp.is_disabled = result[key] === '1' ? 'false' : 'true';
                     } else {
                     //其他字段直接赋值
                         targetApp[key] = result[key];

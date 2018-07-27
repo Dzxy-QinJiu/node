@@ -24,16 +24,108 @@
 @btn_color: #8da8c5;
 @card_margin: 8px;
 @bg-lightblue: #EEF7FE;
+@app-logo-width: 24px;
+@app-logo-mr: 7px;
+@app-pl: @app-logo-width + @app-logo-mr;
+@font-lightblue: #9FB5CC;
 //换行
 .overflow-break {
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
 }
-
+.user_manage_user_detail_wrap{
+    &.move_left{
+        transform: translateX(-500px)!important;
+    }
+    .user-detail-edit-app-v2 {
+        background-color: @right_panel_bgcolor !important
+    }
+}
 //新版客户详情的样式
 //TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
 .right-panel {
+    .app_wrap {
+        .add_app_btns {
+            float: right;
+        }
+        .detail-card-container {
+            .detail-card-content {
+                ul.app_list {
+                    padding: 0;
+                    margin-top: 10x;
+                    li {
+                        margin: 0 -13px;
+                        margin-bottom: 10px;
+                        margin-right: 0;
+                        padding: 0 13px;
+                        background: initial;
+                        &.hide-detail {
+                            background: @bg-lightblue;
+                            line-height: 50px;
+                            .logo-container {
+                                margin-top: 12px;
+                            }
+                        }
+                        .title-container {
+                            .logo-container {
+                                float: left;
+                                vertical-align: middle;
+                                width: @app-logo-width;
+                                height: @app-logo-width;
+                                border-radius: 4px;
+                                margin-right: @app-logo-mr;
+                                overflow: hidden;
+                                img {
+                                    width: 100%;
+                                    height: @app-logo-width;
+                                }
+                                .no-user-logo-div {
+                                    height: 24px;
+                                    width: 24px;
+                                    line-height: 24px;
+                                    font-size: 12px;
+                                    border-radius: 4px;
+                                    display: block;
+                                }
+                            }
+                            p {
+                                margin-right: 8px;
+                                width: 160px;
+                                vertical-align: middle;
+                                float: left;
+                                font-size: 15px;
+                            }
+                            span.btn-bar {
+                                float: right;
+                                .collapse-btn {
+                                    span {
+                                        color: @font-lightblue;
+                                        cursor: pointer;
+                                        margin-right: 17px;
+                                    }
+                                }
+                            }
+                        }
+                        .desp {
+                            margin-left: @app-pl;
+                            .app-prop-list {
+                                font-size: 13px;
+                                &>span {
+                                    width: 45%;
+                                }
+                                margin-top:0;
+                                line-height: 22px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .user_manage_user_detail {
+        padding-top: 0!important;
+    }
     .contact-card-container {
         .user-basic-edit-field-input.user-basic-edit-field.editing {
             padding: 10px 0;
@@ -42,7 +134,6 @@
             position: relative;
         }
         .user-basic-edit-field {
-            // padding: 10px 0px;
             .buttons {
                 float: left;
                 width: 100%;
@@ -86,6 +177,23 @@
         transform: translateX(-700px);
     } //客户名和按钮展示区域
     .basic-info-contianer {
+        .edit-pw-container {
+            background: @bg-lightblue;
+            padding: 13px;
+            .user-basic-edit-field-input:first-child {
+                .ant-form-item-control {
+                    margin-bottom: 5px;
+                }
+            }
+            .btn-bar {
+                margin-top: 10px;
+                button {
+                    margin-right: 13px;
+                    height: 24px;
+                    ;
+                }
+            }
+        }
         float: left;
         width: 100%;
         background-color: @white_color;
@@ -107,7 +215,7 @@
                 float: left;
                 width: 368px;
                 padding-right: 26px;
-                border-right: 1px solid @split_line_color;
+                border-right: none;
                 &:extend(.overflow-break);
             } //查看详情、关注按钮区域的样式
             .basic-info-btns {
@@ -169,7 +277,6 @@
             height: 24px;
         }
         .button-transfer {
-            background-color: transparent;
             color: #108ee9;
             &:hover {
                 background-color: #108ee9;

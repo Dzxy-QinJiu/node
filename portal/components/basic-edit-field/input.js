@@ -15,6 +15,7 @@ var autosize = require('autosize');
 import Trace from 'LIB_DIR/trace';
 require('./css/basic-edit-field.less');
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import { PropTypes } from 'prop-types';
 
 var UserBasicEditField = React.createClass({
     mixins: [FieldMixin],
@@ -264,8 +265,8 @@ var UserBasicEditField = React.createClass({
         ) : this.props.showBtn ? 
             (<div>
                 <SaveCancelButton
-                    handleCancel={this.handleCancel.bind(this)}
-                    handleSubmit={this.handleSubmit.bind(this)}
+                    handleCancel={this.handleCancel}
+                    handleSubmit={this.handleSubmit}
                 />
             </div>) :
             (<div>
@@ -323,5 +324,6 @@ var UserBasicEditField = React.createClass({
         );
     }
 });
-
+UserBasicEditField.propTypes = {
+};
 module.exports = UserBasicEditField;

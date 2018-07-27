@@ -27,7 +27,10 @@ var AppUserUtil = require('../util/app-user-util');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import ThirdPartyAppConfig from './third_app/third-party-app-config';
 import ThirdAppDetail from './third_app/third-app-detail';
+var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
 import { StatusWrapper } from 'antc';
+import { Button } from 'antd';
+var AppUserAjax = require('../ajax/app-user-ajax');
 
 var UserDetail = React.createClass({
     getDefaultProps: function() {
@@ -49,6 +52,7 @@ var UserDetail = React.createClass({
                 erorMsg: ''
             },
             showBasicDetail: true,
+            showEditPw: false,
             ...AppUserPanelSwitchStore.getState()
         };
     },
@@ -108,9 +112,9 @@ var UserDetail = React.createClass({
                     showBasicDetail: false
                 });
             }
-        }, 100);        
+        }, 100);
     },
-    
+
     closeRightPanel: function() {
         if (_.isFunction(this.props.closeRightPanel)) {
             this.props.closeRightPanel();
@@ -133,8 +137,40 @@ var UserDetail = React.createClass({
             userInfo
         });
     },
-    handleScroll() {
-        console.log(arguments);
+    //控制显示编辑密码区域
+    showEditPw(isShow) {
+        this.setState({
+            showEditPw: isShow
+        });
+    },
+    onPasswordValueChange: function() {
+        if (this.confirmPasswordRef && this.confirmPasswordRef.state.formData.input) {
+            this.confirmPasswordRef.refs.validation.forceValidate();
+        }
+    }, 
+    //对密码 进行校验
+    checkPass(rule, value, callback) {
+        if (value && value.match(passwordRegex)) {
+            let passStrength = getPassStrenth(value);
+            this.passwordRef.setState({ passStrength: passStrength });
+            callback();
+        } else {
+            this.passwordRef.setState({
+                passStrength: {
+                    passBarShow: false,
+                    passStrength: 'L'
+                }
+            });
+            callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
+        }
+    },
+    //对确认密码 进行校验
+    checkRePass(rule, value, callback) {
+        if (value && value === this.passwordRef.state.formData.input) {
+            callback();
+        } else {
+            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
+        }
     },
     render: function() {
         var moveView = null;
@@ -168,7 +204,7 @@ var UserDetail = React.createClass({
         var tabPaneList = [
             <TabPane tab={Intl.get('user.basic.info', '基本资料')} key="1">
                 {this.state.activeKey === '1' ? <div className="user_manage_user_detail">
-                    <UserDetailBasic userId={this.props.userId} selectApp={selectApp} getBasicInfo={this.getBasicInfo} />
+                    <UserDetailBasic userId={this.props.userId} selectApp={selectApp} getBasicInfo={this.getBasicInfo} ref={ref => this.userDetailRef = ref} />
                 </div> : null}
             </TabPane>
         ];
@@ -245,12 +281,55 @@ var UserDetail = React.createClass({
                                     <span className="basic-name-text">{_.get(userInfo, 'data.user_name')}</span>
                                 </div>
                                 <div className="basic-info-btns">
-                                    修改密码
+                                    <span className="iconfont icon-edit-pw" onClick={() => { this.showEditPw(true); }} />
+                                    {
+                                        !userInfo.loading ? this.userDetailRef && this.userDetailRef.renderUserStatus(userInfo.data) : null
+                                    }
                                 </div>
                             </div>
                             <div className={this.state.showBasicDetail ? 'basic-info-content' : 'hide'}>
-                                <p>{Intl.get('common.nickname', '昵称')}: {_.get(userInfo, 'data.nick_name')}</p>
-                                <p>{Intl.get('common.remark', '备注')}: {_.get(userInfo, 'data.description')}</p>
+                                {
+                                    this.state.showEditPw ?
+                                        <div className="edit-pw-container">
+                                            <UserDetailEditField
+                                                ref={ref => this.passwordRef = ref}
+                                                displayType="edit"
+                                                user_id={userInfo.user_id}
+                                                value={Intl.get('user.password.tip', '保密中')}
+                                                field="password"
+                                                type="password"
+                                                hideButtonBlock={true}
+                                                showPasswordStrength={true}
+                                                disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
+                                                validators={[{ validator: this.userDetailRef.checkPass }]}
+                                                placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
+                                                title={Intl.get('user.batch.password.reset', '重置密码')}
+                                                onDisplayTypeChange={this.userDetailRef.onPasswordDisplayTypeChange}
+                                                onValueChange={this.onPasswordValueChange}
+                                            />
+                                            <UserDetailEditField
+                                                hideButtonBlock={true}
+                                                ref={ref => this.confirmPasswordRef = ref}
+                                                user_id={userInfo.user_id}
+                                                displayType="edit"
+                                                field="password"
+                                                type="password"
+                                                placeholder={Intl.get('member.type.password.again', '请再次输入密码')}
+                                                validators={[{ validator: this.checkRePass }]}
+                                                onDisplayTypeChange={this.userDetailRef.onConfirmPasswordDisplayTypeChange}
+                                                modifySuccess={this.userDetailRef.onConfirmPasswordDisplayTypeChange}
+                                                saveEditInput={AppUserAjax.editAppUser}
+                                            />
+                                            <div className="btn-bar">
+                                                <Button type='primary' onClick={() => {if(this.confirmPasswordRef) this.confirmPasswordRef.handleSubmit();}}>{Intl.get('common.confirm', '确认')}</Button>
+                                                <Button onClick={() => { this.showEditPw(false); }}>{Intl.get('common.cancel', '取消')}</Button>
+                                            </div>
+                                        </div> :
+                                        <div>
+                                            <p>{Intl.get('common.nickname', '昵称')}: {_.get(userInfo, 'data.nick_name')}</p>
+                                            <p>{Intl.get('common.remark', '备注')}: {_.get(userInfo, 'data.description')}</p>
+                                        </div>
+                                }
                             </div>
                         </div>
                     </StatusWrapper>

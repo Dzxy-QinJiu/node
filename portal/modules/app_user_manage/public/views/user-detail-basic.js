@@ -294,7 +294,7 @@ var UserDetailBasic = React.createClass({
         }
         return (
             <div className="rows-3">
-                <div className="app-prop-list">
+                <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
                     <span><ReactIntl.FormattedMessage id="user.time.start"
                         defaultMessage="开通时间" />：{displayEstablishTime}</span>
                     <span><ReactIntl.FormattedMessage id="user.start.time"
@@ -304,8 +304,8 @@ var UserDetailBasic = React.createClass({
                         defaultMessage="用户类型" />：{this.getUserTypeText(app)}</span>}
                     <span><ReactIntl.FormattedMessage id="user.expire.status"
                         defaultMessage="到期状态" />：{this.renderOverDraft(app)}</span>
-                    <span><ReactIntl.FormattedMessage id="common.app.status"
-                        defaultMessage="开通状态" />：{this.renderStatus(app)}</span>
+                    {/* <span><ReactIntl.FormattedMessage id="common.app.status"
+                        defaultMessage="开通状态" />：{this.renderStatus(app)}</span> */}
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.two.step.certification"
                         defaultMessage="二步认证" />：{this.renderIsTwoFactor(app)}</span>}
 
@@ -314,6 +314,9 @@ var UserDetailBasic = React.createClass({
                 </div>
             </div>
         );
+    },
+    showAppDetail: function(params) {
+        AppUserDetailAction.showAppDetail(params);
     },
     //获取应用列表段
     getAppsBlock: function() {
@@ -349,44 +352,56 @@ var UserDetailBasic = React.createClass({
         let selectApp = this.props.selectApp;
         return (
             <ul className="app_list">
-                {this.state.initialUser.apps.map(function(app) {
+                {this.state.initialUser.apps.map(app => {
+                    const hideDetail = !app.showDetail && app.is_disabled === 'true';
                     return (
-                        <li className="clearfix list-unstyled" key={app.app_id}>
-                            <div className={className} title={app.app_name}>
-                                <DefaultUserLogoTitle
-                                    nickName={app.app_name}
-                                    userLogo={app.app_logo}
-                                />
-                                <p style={{ width: maxWidth }}>{app.app_name}</p>
+                        <li className={hideDetail ? 'clearfix list-unstyled hide-detail' : 'clearfix list-unstyled'} key={app.app_id}>
+                            <div className="title-container">
+                                <span className="logo-container" title={app.app_name}>
+                                    <DefaultUserLogoTitle
+                                        nickName={app.app_name}
+                                        userLogo={app.app_logo}
+                                    />
+                                </span>
+                                <p>{app.app_name}</p>
+                                <span className="icon-suffix">
+                                   
+                                </span>
+                                <span className="btn-bar">
+                                    {
+                                        app.is_disabled === 'true' ?
+                                            <span className="collapse-btn">
+                                                {
+                                                    app.showDetail ?
+                                                        <span onClick={() => this.showAppDetail({ app, isShow: false })}>收起停用前设置</span> :
+                                                        <span onClick={() => this.showAppDetail({ app, isShow: true })}>展开停用前设置</span>
+                                                }
+                                            </span> :
+                                            null
+                                    }
+                                    {this.renderStatus(app)}
+                                </span>
                             </div>
-                            <div className="desp pull-left" style={{ width: despWidth }}>
+                            <div className="desp pull-left">
                                 {
                                     _this.renderAppInfo(app)
                                 }
                             </div>
-                            {
-                                (app.is_disabled === 'true' || app.is_disabled === true) ? (
-                                    <div className="is_disabled">
-                                        <span className="disabled_span">{Intl.get('common.stop', '停用')}</span>
-                                    </div>
-                                ) : null
-                            }
-                            {selectApp && selectApp.app_id === app.app_id && selectApp.qualify_label === 1 ? (
-                                <div className="qualified-tag-style">
-                                    <span className="qualified_span">{Intl.get('common.qualified', '合格')}</span>
-                                </div>) : null}
 
-                            <PrivilegeChecker
-                                check="APP_USER_EDIT"
-                                tagName="div"
-                                className="operate"
-                            >
-                                <a href="javascript:void(0)"
-                                    onClick={_this.editSingleApp.bind(_this, app)}
-                                    title={Intl.get('user.app.change', '变更应用')}>
-                                    <span className="iconfont icon-guanli"></span>
-                                </a>
-                            </PrivilegeChecker>
+                            {
+                                !hideDetail ?
+                                    <PrivilegeChecker
+                                        check="APP_USER_EDIT"
+                                        tagName="div"
+                                        className="operate"
+                                    >
+                                        <a href="javascript:void(0)"
+                                            onClick={_this.editSingleApp.bind(_this, app)}
+                                            title={Intl.get('user.app.change', '变更应用')}>
+                                            <span className="iconfont icon-guanli"></span>
+                                        </a>
+                                    </PrivilegeChecker> : null
+                            }
                         </li>
                     );
                 })}
@@ -504,7 +519,7 @@ var UserDetailBasic = React.createClass({
         let userStatus = user.status;
         if (!hasPrivilege('APP_USER_EDIT')) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
-        }
+        }       
         return (<UserStatusSwitch userId={user.user_id} status={userStatus === '1' ? true : false} />);
     },
     render: function() {
@@ -534,14 +549,6 @@ var UserDetailBasic = React.createClass({
         let userInfo = this.state.initialUser.user;
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
             <div>                
-                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_status">
-                    <dt>
-                        {Intl.get('user.user.status', '用户状态')}
-                    </dt>
-                    <dd>
-                        {this.renderUserStatus(userInfo)}
-                    </dd>
-                </dl>
                 <UserBasicCard
                     customer_id={this.state.customer_id}
                     customer_name={this.state.customer_name}
@@ -578,7 +585,7 @@ var UserDetailBasic = React.createClass({
                         title: Intl.get('user.email.set.tip', '修改邮箱')
                     }}
                     saveEditInput={AppUserAjax.editAppUser}
-                />               
+                />
                 <OrgCard
                     user_id={userInfo.user_id}
                     showBtn={true}
@@ -588,72 +595,21 @@ var UserDetailBasic = React.createClass({
                     userInfo={this.state.initialUser.user}
                     sales_team={this.state.initialUser.sales_team}
                 />
-                <dl className="dl-horizontal user_detail_item detail_item">
-                    <dt>
-                        {Intl.get('common.password', '密码')}
-                    </dt>
-                    <dd>
-                        <UserDetailEditField
-                            ref="password"
-                            user_id={userInfo.user_id}
-                            value={Intl.get('user.password.tip', '保密中')}
-                            field="password"
-                            type="password"
-                            hideButtonBlock={true}
-                            showPasswordStrength={true}
-                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
-                            validators={[{ validator: this.checkPass }]}
-                            placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
-                            title={Intl.get('user.batch.password.reset', '重置密码')}
-                            onDisplayTypeChange={this.onPasswordDisplayTypeChange}
-                            onValueChange={this.onPasswordValueChange}
-                        />
-                    </dd>
-                </dl>
-                {this.state.isConfirmPasswordShow ? (
-                    <dl className="dl-horizontal user_detail_item detail_item">
-                        <dt>
-                            {Intl.get('common.confirm.password', '确认密码')}
-                        </dt>
-                        <dd>
-                            <UserDetailEditField
-                                ref="confirmPassword"
-                                user_id={userInfo.user_id}
-                                displayType="edit"
-                                field="password"
-                                type="password"
-                                placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
-                                validators={[{ validator: this.checkRePass }]}
-                                onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
-                                modifySuccess={this.onConfirmPasswordDisplayTypeChange}
-                                saveEditInput={AppUserAjax.editAppUser}
-                            />
-                        </dd>
-                    </dl>
-                ) : null}
-                <dl className="dl-horizontal user_detail_item detail_item"
-                    style={{ whiteSpace: 'normal', wordBreak: 'break-all' }}>
-                    <dt>
-                        {Intl.get('common.remark', '备注')}
-                    </dt>
-                    <dd>
-                        <UserDetailEditField
-                            rows="3"
-                            user_id={userInfo.user_id}
-                            value={userInfo.description}
-                            field="description"
-                            type="textarea"
-                            modifySuccess={this.changeUserFieldSuccess}
-                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
-                            validators={[{ message: Intl.get('user.remark.write.tip', '请填写备注') }]}
-                            placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
-                            title={Intl.get('user.remark.set.tip', '设置备注')}
-                            saveEditInput={AppUserAjax.editAppUser}
-                        />
-                    </dd>
-                </dl>
                 <div className="app_wrap" ref="app_wrap">
-                    <dl className="dl-horizontal user_detail_item detail_item clearfix">
+                    <DetailCard
+                        title={(<div className="sales-team-show-block">
+                            <div className="sales-team">
+                                <span className="sales-team-label">
+                                    <ReactIntl.FormattedMessage id="user.batch.app.open" defaultMessage="开通产品" />
+                                </span>
+                                <div className="add_app_btns">
+                                    {this.renderAddAppBtn()}
+                                </div>
+                            </div>
+                        </div>)}
+                        content={this.getAppsBlock()}
+                    />
+                    {/* <dl className="dl-horizontal user_detail_item detail_item clearfix">
                         <dt><ReactIntl.FormattedMessage id="user.batch.app.open" defaultMessage="开通产品" /></dt>
                         <dd className="operate_app_btns">
                             <div className="add_app_btns">
@@ -664,7 +620,7 @@ var UserDetailBasic = React.createClass({
                             </div>
                         </dd>
                     </dl>
-                    {this.getAppsBlock()}
+                    {this.getAppsBlock()} */}
                 </div>
                 <BootstrapModal
                     show={this.state.modalStatus.disable_all.showModal}
