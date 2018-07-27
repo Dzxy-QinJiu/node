@@ -20,3 +20,26 @@ exports.getContractByCustomerId = function(reqData, reqBody) {
     });
     return Deferred.promise();
 };
+
+// 添加合同
+let addContractAjax = null;
+exports.addContract = function(reqData, reqBody) {
+    addContractAjax && addContractAjax.abort();
+    let url = '/rest/crm/add/contract/' + reqData.type;
+    const Deferred = $.Deferred();
+    addContractAjax = $.ajax({
+        url: url,
+        dataType: 'json',
+        type: 'post',
+        data: {rangParams: JSON.stringify(reqBody)},
+        success: (data) => {
+            Deferred.resolve(data);
+        },
+        error: (xhr, textStatus) => {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

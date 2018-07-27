@@ -67,7 +67,17 @@ const Contract = React.createClass({
     render() {
         let contractListLength = this.state.contractList.data.length || 0;
         let loading = this.state.contractList.loading;
-        console.log('this.props.curCustomer:',this.props.curCustomer);
+        // 添加合同对象的默认值
+        let contract = {
+            customer_name: this.props.curCustomer.name,
+            buyer: this.props.curCustomer.name,
+            stage: '待审',
+            date: moment().valueOf(),
+            start_time: moment().valueOf(),
+            end_time: moment().add(1, 'year').valueOf(),
+            contract_amount: 0,
+            gross_profit: 0,
+        };
         return (
             <div className="contract-container" data-tracename="合同页面">
                 {
@@ -87,7 +97,7 @@ const Contract = React.createClass({
                         {
                             this.state.isAddFormShow ? (
                                 <ContractForm
-                                    contract={{}}
+                                    contract={contract}
                                     curCustomer={this.props.curCustomer}
                                     customerId={this.props.curCustomer.id}
                                     appList={this.state.appList}

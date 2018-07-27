@@ -4,6 +4,7 @@
 require('./index.less');
 import { Checkbox } from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+const PropTypes = React.PropTypes;
 
 class SelectAppList extends React.Component {
     constructor(props) {

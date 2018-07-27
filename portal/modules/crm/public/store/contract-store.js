@@ -12,7 +12,7 @@ class ContractStore {
     resetState(){
         // 合同列表
         this.contractList = {
-            loading: true, // loading
+            loading: false, // loading
             data: [], //数据列表
             errMsg: '' // 获取失败的提示
         };
@@ -30,8 +30,18 @@ class ContractStore {
             }
         }
     }
+    // 显示添加面板
     showForm() {
         this.isAddFormShow = true;
+    }
+    // 隐藏添加面板
+    hideForm() {
+        this.isAddFormShow = false;
+    }
+    // 更新列表信息
+    refreshContractList(contract) {
+        this.isAddFormShow = false;
+        this.contractList.data.unshift(contract);
     }
 }
 

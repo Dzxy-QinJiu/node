@@ -7,7 +7,7 @@ const restApis = {
     // 根据客户id获取合同信息
     getContractByCustomerId: '/rest/contract/v2/contract/range/:page_size/:sort_field/:order',
     // 添加/更新 合同的url
-    urlContract: '/rest/contract/v1/contract/:type'
+    urlContract: '/rest/contract/v2/contract/:type'
 };
 
 exports.getContractByCustomerId = (req, res) => {
@@ -44,5 +44,5 @@ exports.addContract = (req, res) => {
             url: url.replace(':type', params.type),
             req: req,
             res: res
-        }, req.body);
+        }, JSON.parse(req.body.rangParams));
 };

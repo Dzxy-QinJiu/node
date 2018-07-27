@@ -1,22 +1,25 @@
-const Validation = require('rc-form-validation');
-import ValidateMixin from '../../../../../mixins/ValidateMixin';
-import { Form, Input, InputNumber, Icon, DatePicker,Popover, Button} from 'antd';
-const RangePicker = DatePicker.RangePicker;
+import { Form, Input, Select, Icon, DatePicker,Popover} from 'antd';
 const FormItem = Form.Item;
+const Option = Select.Option;
+const RangePicker = DatePicker.RangePicker;
 import DetailCard from 'CMP_DIR/detail-card';
-import SelectAppList from '../../../../../components/select-app-list';
+import SelectAppList from 'CMP_DIR/select-app-list';
 import { AntcTable } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
+const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
+import ContractAction from '../../action/contract-action';
+const UserData = require('PUB_DIR/sources/user-data');
+const ContractAjax = require('../../ajax/contract-ajax');
 
-const ContractForm = React.createClass( {
-    mixins: [ValidateMixin],
+const Contract = React.createClass( {
     getInitialState() {
         return {
             isLoading: false,
             errorMsg: '',
             visible: false, // 是否显示应用选择项
             isShowSelectAppTable: false, // 是否显示应用表格
+            contractType: '产品合同', // 合同类型
             formData: JSON.parse(JSON.stringify(this.props.contract)),
         };
     },
@@ -25,13 +28,6 @@ const ContractForm = React.createClass( {
             this.state.formData.customerName = nextProps.curCustomer.name;
             this.setState({});
         }
-    },
-    handleTimeChange(dates, dateStrings) {
-        console.log('From: ', dates[0], ', to: ', dates[1]);
-        console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
-    },
-    handleOk(value) {
-
     },
     handleSureBtn() {
         this.setState({
@@ -152,6 +148,46 @@ const ContractForm = React.createClass( {
             />
         );
     },
+    // 甲方
+    handleCustomerName(event) {
+        let formData = this.state.formData;
+        formData.buyer = event.target.value;
+        this.setState({formData});
+    },
+    // 合同类型
+    handleSelectContractType(value) {
+        this.setState({
+            contractType: value
+        });
+    },
+    // 签订时间
+    handleSignContractDate(date) {
+        let formData = this.state.formData;
+        let timestamp = date && date.valueOf() || '';
+        formData.date = timestamp;
+        this.setState({formData});
+    },
+    // 有效期
+    handleValidityTimeRange(dates) {
+        let formData = this.state.formData;
+        let startTime = dates && dates[0] && dates[0].valueOf() || '';
+        let endTime = dates && dates[1] && dates[1].valueOf() || '';
+        formData.start_time = startTime;
+        formData.end_time = endTime;
+        this.setState({formData});
+    },
+    // 合同额
+    handleContractAmount(event) {
+        let formData = this.state.formData;
+        formData.contract_amount = removeCommaFromNum(event.target.value);
+        this.setState({formData});
+    },
+    // 毛利
+    handleContractGross(event) {
+        let formData = this.state.formData;
+        formData.gross_profit = removeCommaFromNum(event.target.value);
+        this.setState({formData});
+    },
     renderContractForm() {
         const formItemLayout = {
             labelCol: { span: 4 },
@@ -163,72 +199,111 @@ const ContractForm = React.createClass( {
                 <div className='contract-title'>{Intl.get('contract.98', '添加合同')}</div>
                 <div className='contract-form'>
                     <Form>
-                        <Validation ref='validation' onValidate={this.handleValidate}>
-                            <FormItem {...formItemLayout} label={Intl.get('contract.4', '甲方')}>
-                                <Input
-                                    name='customer_name'
-                                    id='customer_name'
-                                    value={formData.customer_name || this.props.curCustomer.name}
-                                    onChange={this.setField.bind(this, 'customer_name')}
-                                />
-                            </FormItem>
-                            <FormItem {...formItemLayout} label={Intl.get('contract.34', '签订时间')}>
-                                <DatePicker
-                                    name='date'
-                                    id='date'
-                                    value={moment(formData.date) || moment().valueOf()}
-                                    onChange={this.setField.bind(this, 'date')}
-                                />
-                            </FormItem>
-                            {/***
-                             <FormItem {...formItemLayout} label='有效期'>
-                             <RangePicker
-                             className='validity-time'
-                             ranges={{ '有效期一年': [moment(), moment().add(1, 'year')] }}
-                             onChange={this.handleTimeChange}
-                             onOk={this.handleOk}
-                             showTime
-                             />
+                        <FormItem {...formItemLayout} label={Intl.get('contract.4', '甲方')}>
+                            <Input
+                                value={formData.buyer}
+                                onChange={this.handleCustomerName}
+                            />
+                        </FormItem>
+                        <FormItem
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 20 }}
+                            label={Intl.get('contract.37', '合同类型')}
+                        >
+                            <Select
+                                showSearch
+                                optionFilterProp="children"
+                                value={this.state.contractType}
+                                onChange={this.handleSelectContractType}
+                            >
+                                <Option value="产品合同">{Intl.get('contract.6', '产品合同')}</Option>
+                                <Option value="项目合同">{Intl.get('contract.7', '项目合同')}</Option>
+                                <Option value="服务合同">{Intl.get('contract.8', '服务合同')}</Option>
+                            </Select>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label={Intl.get('contract.34', '签订时间')}>
+                            <DatePicker
+                                value={moment(formData.date)}
+                                onChange={this.handleSignContractDate}
+                            />
+                        </FormItem>
+                        <FormItem {...formItemLayout} label='有效期'>
+                            <RangePicker
+                                className='validity-time'
+                                ranges={{ '有效期一年': [moment(formData.start_time), moment(formData.end_time)] }}
+                                placeholder={['开始时间', '结束时间']}
+                                onChange={this.handleValidityTimeRange}
+                                allowClear={false}
+                            />
 
-                             </FormItem>
-                             */}
-                            <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
-                                <Input
-                                    name='contract_amount'
-                                    id='contract_amount'
-                                    value={this.parseAmount(formData.contract_amount)}
-                                    onChange={this.setField.bind(this, 'contract_amount')}
-                                />
-                            </FormItem>
-                            <FormItem {...formItemLayout} label={Intl.get('contract.109', '毛利')}>
-                                <Input
-                                    name='gross_profit'
-                                    id='gross_profit'
-                                    value={this.parseAmount(formData.gross_profit)}
-                                    onChange={this.setField.bind(this, 'gross_profit')}
-                                />
-                            </FormItem>
-                            <FormItem {...formItemLayout} label={Intl.get('contract.95', '产品信息')}>
-                                <Popover content={this.popContent()}
-                                    trigger='click'
-                                    visible={this.state.visible}
-                                    onVisibleChange={this.handleVisibleChange}
-                                    placement='bottomLeft'
-                                >
-                                    {
-                                        this.state.isShowSelectAppTable ? this.renderProductInfo() : null
-                                    }
-                                    <div className='product-info'>
-                                        <Icon type='plus'/>
-                                        <span className='add-title'>{Intl.get('common.app', '应用')}</span>
-                                    </div>
-                                </Popover>
-                            </FormItem>
-                        </Validation>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
+                            <Input
+                                value={parseAmount(formData.contract_amount)}
+                                onChange={this.handleContractAmount}
+                            />
+                        </FormItem>
+                        <FormItem {...formItemLayout} label={Intl.get('contract.109', '毛利')}>
+                            <Input
+                                value={parseAmount(formData.gross_profit)}
+                                onChange={this.handleContractGross}
+                            />
+                        </FormItem>
+                        <FormItem {...formItemLayout} label={Intl.get('contract.95', '产品信息')}>
+                            <Popover content={this.popContent()}
+                                trigger='click'
+                                visible={this.state.visible}
+                                onVisibleChange={this.handleVisibleChange}
+                                placement='bottomLeft'
+                            >
+                                {
+                                    this.state.isShowSelectAppTable ? this.renderProductInfo() : null
+                                }
+                                <div className='product-info'>
+                                    <Icon type='plus'/>
+                                    <span className='add-title'>{Intl.get('common.app', '应用')}</span>
+                                </div>
+                            </Popover>
+                        </FormItem>
                     </Form>
                 </div>
             </div>
         );
+    },
+    handleSubmit(event) {
+        event.preventDefault();
+        this.props.form.validateFields((err) => {
+            if (err) {
+                return;
+            } else {
+                // 添加时的数据
+                let reqData = this.state.formData;
+                reqData.category = this.state.contractType; // 合同类型
+                reqData.user_id = UserData.getUserData().user_id || '';
+                reqData.user_name = UserData.getUserData().user_name || '';
+                reqData.products = [{count: '1', total_price: '1000'}]; // 产品信息
+                reqData.customers = [{customer_name: reqData.customer_name, customer_id: this.props.customerId}]; // 客户信息
+                this.setState({isLoading: true});
+                ContractAjax.addContract({type: 'sell'}, reqData).then( (resData) => {
+                    if (resData && resData.code === 0) {
+                        this.state.errorMsg = '';
+                        this.state.isLoading = false;
+                        ContractAction.refreshContractList(resData.result);
+                    } else {
+                        this.state.errorMsg = Intl.get('crm.154', '添加失败');
+                    }
+                    this.setState(this.state);
+                }, (errMsg) => {
+                    this.setState({
+                        isLoading: false,
+                        errMsg: errMsg || Intl.get('crm.154', '添加失败')
+                    });
+                });
+            }
+        });
+    },
+    handleCancel() {
+        ContractAction.hideForm();
     },
     render(){
         return (
@@ -237,11 +312,13 @@ const ContractForm = React.createClass( {
                 isEdit={true}
                 className='contract-form-container'
                 loading={this.state.isLoading}
-                saveErrorMsg={this.state.errorMsg}
+                saveErrorMsg={this.state.errMsg}
                 handleSubmit={this.handleSubmit}
                 handleCancel={this.handleCancel}
             />);
     }
 });
+
+const ContractForm = Form.create()(Contract);
 
 module.exports = ContractForm;
