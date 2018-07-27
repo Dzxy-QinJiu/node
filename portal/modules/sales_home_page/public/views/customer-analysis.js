@@ -413,8 +413,19 @@ var CustomerAnalysis = React.createClass({
             }
         });
     },
+    //关闭试用合格客户列表面板
+    closeTrialQualifiedTable() {
+        this.setState({isShowTrialQualifiedTable: false});
+    },
     //处理试用合格客户数统计数字点击事件
     handleTrialQualifiedNumClick() {
+        this.setState({
+            isShowTrialQualifiedTable: true,
+            trialQualifiedResult: {
+                loading: true,
+            },
+        });
+
         const customerIds = '36mvh13nka_53cd3bdd-a0d3-4299-a3f9-403a7f40e5fc,36mvh13nka_ec89a8ee-2c1f-40e6-b2fc-8bccac5a0b07';
 
         const pageSize = customerIds.split(',').length;
@@ -428,10 +439,10 @@ var CustomerAnalysis = React.createClass({
                 },
             },
         })
-            //请求成功
+        //请求成功
             .done(result => {
             })
-            //请求失败
+        //请求失败
             .fail(err => {
             });
     },
@@ -942,8 +953,17 @@ var CustomerAnalysis = React.createClass({
                 </div>
                 <RightPanel
                     className="customer-stage-table-wrapper"
-                    showFlag={this.state.isShowCustomerStageTable || this.state.isShowCustomerTable}
+                    showFlag={this.state.isShowCustomerStageTable || this.state.isShowCustomerTable || this.state.isShowTrialQualifiedTable}
                 >
+                    {this.state.isShowTrialQualifiedTable ?
+                        <CustomerStageTable
+                            params={{}}
+                            result={this.state.trialQualifiedResult}
+                            onClose={this.closeTrialQualifiedTable}
+                            handleScrollBottom={() => {}}
+                            showNoMoreData={false}
+                        /> : null}
+
                     {this.state.isShowCustomerStageTable ?
                         <CustomerStageTable
                             params={this.state.selectedCustomerStage}
