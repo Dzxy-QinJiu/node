@@ -47,7 +47,8 @@ const OrderItem = React.createClass({
             customerName: this.props.customerName,//申请用户时用客户名作为昵称
             isClosingOrder: false,//正在关闭订单
             closeOrderErrorMsg: '',//关闭订单失败的错误提示
-            curOrderCloseStatus: ''//当前选择的订单的关闭状态
+            curOrderCloseStatus: '',//当前选择的订单的关闭状态
+            isExpandDetail: false,//关闭的订单是否展示详情
         };
     },
 
@@ -336,7 +337,8 @@ const OrderItem = React.createClass({
                 }
                 {order.oppo_status === ORDER_STATUS.LOSE ? (
                     <div className="order-item-content">
-                        <span className="order-key">{Intl.get('crm.order.lose.reason', '丢单原因')}:</span>
+                        <span
+                            className="order-key order-lose-reason">{Intl.get('crm.order.lose.reason', '丢单原因')}:</span>
                         <BasicEditInputField
                             width={EDIT_FEILD_WIDTH}
                             id={order.id}
@@ -350,86 +352,89 @@ const OrderItem = React.createClass({
                             addDataTip={Intl.get('crm.fill.order.lose.reason', '补充丢单原因')}
                         />
                     </div>) : null}
-                <div className="order-item-content order-application-list">
-                    <span className="order-key">{Intl.get('call.record.application.product', '应用产品')}:</span>
-                    {this.state.isAppPanelShow ? (
-                        <div className="order-app-edit-block">
-                            <SearchIconList
-                                totalList={this.props.appList}
-                                selectedList={selectedAppList}
-                                selectedListId={selectedAppListId}
-                                id_field="client_id"
-                                name_field="client_name"
-                                image_field="client_image"
-                                search_fields={['client_name']}
-                                onItemsChange={this.onAppsChange}
-                            />
-                            <SaveCancelButton loading={this.state.isLoading}
-                                saveErrorMsg={this.state.submitErrorMsg}
-                                handleSubmit={this.editOrderApp}
-                                handleCancel={this.closeAppPanel}
+                {!order.oppo_status || (order.oppo_status && this.state.isExpandDetail) ? (//订单未关闭、订单关闭并且展示详情的状态下
+                    <div>
+                        <div className="order-item-content order-application-list">
+                            <span className="order-key">{Intl.get('call.record.application.product', '应用产品')}:</span>
+                            {this.state.isAppPanelShow ? (
+                                <div className="order-app-edit-block">
+                                    <SearchIconList
+                                        totalList={this.props.appList}
+                                        selectedList={selectedAppList}
+                                        selectedListId={selectedAppListId}
+                                        id_field="client_id"
+                                        name_field="client_name"
+                                        image_field="client_image"
+                                        search_fields={['client_name']}
+                                        onItemsChange={this.onAppsChange}
+                                    />
+                                    <SaveCancelButton loading={this.state.isLoading}
+                                        saveErrorMsg={this.state.submitErrorMsg}
+                                        handleSubmit={this.editOrderApp}
+                                        handleCancel={this.closeAppPanel}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="order-application-div">
+                                    {selectedAppList.map(function(app, i) {
+                                        return (
+                                            <div className="app-item" key={i}>
+                                                {app.client_name}
+                                            </div>
+                                        );
+                                    })}
+                                    {order.oppo_status ? null : <DetailEditBtn onClick={this.showAppPanel}/>}
+                                </div>
+                            )}
+                        </div>
+                        <div className="order-item-content">
+                            <span className="order-key">{Intl.get('crm.148', '预算金额')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={order.id}
+                                type="number"
+                                field="budget"
+                                value={order.budget * 10000}
+                                afterValTip={Intl.get('contract.82', '元')}
+                                placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
+                                hasEditPrivilege={order.oppo_status ? false : true}
+                                saveEditInput={this.saveOrderBasicInfo}
+                                noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
+                                addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
                             />
                         </div>
-                    ) : (
-                        <div className="order-application-div">
-                            {selectedAppList.map(function(app, i) {
-                                return (
-                                    <div className="app-item" key={i}>
-                                        {app.client_name}
-                                    </div>
-                                );
-                            })}
-                            {order.oppo_status ? null : <DetailEditBtn onClick={this.showAppPanel}/>}
+                        <div className="order-item-content">
+                            <span className="order-key">{Intl.get('crm.order.expected.deal', '预计成交')}:</span>
+                            <BasicEditDateField
+                                width={EDIT_FEILD_WIDTH}
+                                id={order.id}
+                                field="predict_finish_time"
+                                value={order.predict_finish_time}
+                                placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
+                                hasEditPrivilege={order.oppo_status ? false : true}
+                                saveEditDateInput={this.saveOrderBasicInfo}
+                                disabledDate={disabledBeforeToday}
+                                noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
+                                addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
+                            />
                         </div>
-                    )}
-                </div>
-                <div className="order-item-content">
-                    <span className="order-key">{Intl.get('crm.148', '预算金额')}:</span>
-                    <BasicEditInputField
-                        width={EDIT_FEILD_WIDTH}
-                        id={order.id}
-                        type="number"
-                        field="budget"
-                        value={order.budget * 10000}
-                        afterValTip={Intl.get('contract.82', '元')}
-                        placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
-                        hasEditPrivilege={order.oppo_status ? false : true}
-                        saveEditInput={this.saveOrderBasicInfo}
-                        noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
-                        addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
-                    />
-                </div>
-                <div className="order-item-content">
-                    <span className="order-key">{Intl.get('crm.order.expected.deal', '预计成交')}:</span>
-                    <BasicEditDateField
-                        width={EDIT_FEILD_WIDTH}
-                        id={order.id}
-                        field="predict_finish_time"
-                        value={order.predict_finish_time}
-                        placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
-                        hasEditPrivilege={order.oppo_status ? false : true}
-                        saveEditDateInput={this.saveOrderBasicInfo}
-                        disabledDate={disabledBeforeToday}
-                        noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
-                        addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
-                    />
-                </div>
-                <div className="order-item-content">
-                    <span className="order-key">{Intl.get('crm.order.remarks', '订单备注')}:</span>
-                    <BasicEditInputField
-                        width={EDIT_FEILD_WIDTH}
-                        id={order.id}
-                        type="textarea"
-                        field="remarks"
-                        value={order.remarks}
-                        editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
-                        placeholder={Intl.get('user.input.remark', '请输入备注')}
-                        hasEditPrivilege={order.oppo_status ? false : true}
-                        saveEditInput={this.saveOrderBasicInfo}
-                        noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
-                        addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
-                    />
-                </div>
+                        <div className="order-item-content">
+                            <span className="order-key">{Intl.get('crm.order.remarks', '订单备注')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={order.id}
+                                type="textarea"
+                                field="remarks"
+                                value={order.remarks}
+                                editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
+                                placeholder={Intl.get('user.input.remark', '请输入备注')}
+                                hasEditPrivilege={order.oppo_status ? false : true}
+                                saveEditInput={this.saveOrderBasicInfo}
+                                noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                                addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
+                            />
+                        </div>
+                    </div>) : null}
                 {/*<div className="order-introduce">*/}
                 {/*{this.props.order.contract_id ? (*/}
                 {/*<Button type="ghost" className="order-introduce-btn pull-right"*/}
@@ -451,15 +456,21 @@ const OrderItem = React.createClass({
     },
     renderOrderStatus(status){
         if (status) {
-            let descr = '', statusClass = '';
+            let descr = '', statusClass = '', iconClass = '';
             if (status === ORDER_STATUS.WIN) {
-                descr = Intl.get('crm.order.status.won', '已赢单');
+                descr = Intl.get('crm.order.status.won', '赢单');
                 statusClass = 'order-status-win';
+                iconClass = 'iconfont icon-order-win';
             } else if (status === ORDER_STATUS.LOSE) {
-                descr = Intl.get('crm.order.status.lost', '已丢单');
+                descr = Intl.get('crm.order.status.lost', '丢单');
                 statusClass = 'order-status-lose';
+                iconClass = 'iconfont icon-order-lose';
             }
-            return (<span className={`order-status ${statusClass}`}> {descr}</span>);
+            return (
+                <span className={`order-status ${statusClass}`}>
+                    <span className={iconClass}/>
+                    <span className='order-status-descr'>{descr}</span>
+                </span>);
         }
         return null;
     },
@@ -527,11 +538,25 @@ const OrderItem = React.createClass({
                 />
             </div>);
     },
+    toggleOrderDetail(){
+        let isExpandDetail = this.state.isExpandDetail;
+        this.setState({isExpandDetail: !isExpandDetail});
+    },
     renderOrderTitle(){
+        let isExpandDetail = this.state.isExpandDetail;
         const order = this.state.formData;
+        const expandIconClassName = classNames('iconfont order-expand-icon', {
+            'icon-up-twoline': isExpandDetail,
+            'icon-down-twoline': !isExpandDetail
+        });
         return (
             <span className="order-item-title">
-                {order.oppo_status ? this.renderOrderStatus(order.oppo_status) : (
+                {order.oppo_status ? (
+                    <span>
+                        {this.renderOrderStatus(order.oppo_status)}
+                        <span className={expandIconClassName} onClick={this.toggleOrderDetail}
+                            title={isExpandDetail ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}/>
+                    </span>) : (
                     <span>
                         {this.state.curOrderCloseStatus === ORDER_STATUS.LOSE ? this.renderLoseOrderForm(order) :
                             this.state.modalDialogFlag ? null : this.renderOrderStage(order.sale_stages)}
@@ -586,7 +611,8 @@ const OrderItem = React.createClass({
     },
     render(){
         let containerClassName = classNames('order-item-container', {
-            'item-delete-border': this.state.modalDialogFlag
+            'item-delete-border': this.state.modalDialogFlag,
+            'order-win-hide-detail': _.get(this.state, 'formData.oppo_status') === ORDER_STATUS.WIN && !this.state.isExpandDetail//赢单后隐藏订单详情时的样式
         });
         return (
             <div>

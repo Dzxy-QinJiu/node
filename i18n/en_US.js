@@ -1359,8 +1359,8 @@ var en_US = {
     'crm.order.status.underway': 'Underway',//进行中
     'crm.order.status.win': 'Win',//赢单
     'crm.order.status.lose': 'Lose',//丢单
-    'crm.order.status.won': 'Won',//已赢单
-    'crm.order.status. lost': 'Lost',//已赢单
+    'crm.order.status.won': 'Won',//赢单
+    'crm.order.status. lost': 'Lost',//赢单
     'crm.order.closing': 'Order closing',//订单关闭中
     'crm.order.close.failed': 'Closing the order failure',//关闭订单失败
     'crm.order.no.stage': 'No sales stage',//暂无销售阶段
