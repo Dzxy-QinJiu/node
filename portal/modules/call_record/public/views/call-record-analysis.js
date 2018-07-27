@@ -698,7 +698,7 @@ var CallRecordAnalyis = React.createClass({
         };
         _.each(days, (label, idx) => {
             options.title.push({
-                top: (idx + 0.5) * 114 / 10 + '%'
+                top: (idx + 0.5) * 100 / 10 + '%'
             });
             options.singleAxis.push({
                 axisLabel: {
