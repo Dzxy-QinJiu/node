@@ -441,9 +441,25 @@ var CustomerAnalysis = React.createClass({
         })
         //请求成功
             .done(result => {
+                const data = _.map(result.result, item => {
+                    item.customer_name = item.name;
+                    return item;
+                });
+
+                this.setState({
+                    trialQualifiedResult: {
+                        loading: false,
+                        data: data,
+                    },
+                });
             })
         //请求失败
             .fail(err => {
+                this.setState({
+                    trialQualifiedResult: {
+                        loading: false,
+                    },
+                });
             });
     },
     //试用合格客户数统计数字渲染函数
