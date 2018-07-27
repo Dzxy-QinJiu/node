@@ -867,7 +867,7 @@ var SalesHomePage = React.createClass({
     //获取电话统计图表列表
     getPhoneAnalysisCharts() {
         return [{
-            title: Intl.get('weekly.report.call.statics': '电话统计'),
+            title: Intl.get('weekly.report.call.statics', '电话统计'),
             chartType: 'table',
             height: 'auto',
             layout: {

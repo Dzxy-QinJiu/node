@@ -11,7 +11,7 @@ var userData = require('PUB_DIR/sources/user-data');
 var clueCustomerAction = require('../action/clue-customer-action');
 var clueCustomerStore = require('../store/clue-customer-store');
 import Trace from 'LIB_DIR/trace';
-import {SELECT_TYPE} from '../utils/clue-customer-utils';
+import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from '../utils/clue-customer-utils';
 class ClueCustomerSearchBlock extends React.Component {
     constructor(props) {
         super(props);
@@ -22,10 +22,6 @@ class ClueCustomerSearchBlock extends React.Component {
     }
     componentDidMount(){
         clueCustomerStore.listen(this.onStoreChange);
-    }
-    //是否是运营人员
-    isOperation(){
-        return userData.hasRole('operations');
     }
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
@@ -51,15 +47,15 @@ class ClueCustomerSearchBlock extends React.Component {
     };
     render() {
         let user = userData.getUserData();
-        //是否是运营人员
-        var isOperation = this.isOperation();
-        var defaultValue = user.isCommonSales ? SELECT_TYPE.HAS_DISTRIBUTE : (isOperation ? '' : '0');
+        //是否展示全部
+        var isShowAll = isOperation() || isSalesLeaderOrManager();
+        var defaultValue = isShowAll ? SELECT_TYPE.ALL : SELECT_TYPE.HAS_DISTRIBUTE;
         return (
             <div className="block search-input-select-block" data-tracename="筛选线索客户">
                 <div className="radio-group-wrap">
                     <RadioGroup size="large" onChange={this.onChange} defaultValue={defaultValue}>
-                        {/*运营人员才展示全部这个按钮*/}
-                        {isOperation ? <RadioButton value="">
+                        {/*运营人员，销售领导和管理员展示全部这个按钮*/}
+                        {isShowAll ? <RadioButton value="">
                             {Intl.get('common.all', '全部')}
                         </RadioButton> : null}
                         {user.isCommonSales ? null : <RadioButton value="0" >
