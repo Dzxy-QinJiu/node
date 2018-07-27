@@ -123,6 +123,9 @@ OrderStore.prototype.afterEditOrder = function(order) {
     let editOrder = _.find(this.orderList, item => item.id === order.id);
     if (order.oppo_status) {//订单状态的修改（丢单、赢单）
         editOrder.oppo_status = order.oppo_status;
+        if (_.has(order,'lose_reason')){//丢单原因
+            editOrder.lose_reason = order.lose_reason;
+        }
     } else {
         if (_.has(order,'budget')){
             editOrder.budget = order.budget;

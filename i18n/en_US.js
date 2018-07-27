@@ -1374,6 +1374,15 @@ var en_US = {
     'crm.order.expected.deal.placeholder': 'Please select expected deal time', //请选择预计成交时间
     'crm.order.no.expected.deal.time': 'No expected deal time',//暂无预计成交时间
     'crm.order.add.expected.deal.time': 'Add expected deal time',//添加预计成交时间
+    'crm.order.add.to': 'add to {time}',//添加于{time}
+    'crm.order.close.step': 'Close the order',//关闭订单
+    'crm.order.update.confirm': 'Do you want to modify the order phase?',//确定要修改订单阶段吗？
+    'crm.order.close.win.confirm': 'Do you want to close order as a win status?',//确定将订单的关闭状态设为赢单吗？
+    'crm.order.lose.confirm': 'Confirm lose order',//确认丢单
+    'crm.order.lose.reason.input': 'Please enter the reason for the loss of the order',//请输入丢单原因
+    'crm.order.lose.reason': 'lose Order reason',//丢单原因
+    'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
+    'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
     // 客户管理end
 
     //客户分析 start
