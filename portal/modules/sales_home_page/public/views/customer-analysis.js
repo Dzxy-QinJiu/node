@@ -2,6 +2,7 @@
  * 客户分析
  * Created by wangliping on 2016/11/24.
  */
+import ajax from 'ant-ajax';
 import { AntcAnalysis } from 'antc';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
@@ -414,6 +415,25 @@ var CustomerAnalysis = React.createClass({
     },
     //处理试用合格客户数统计数字点击事件
     handleTrialQualifiedNumClick() {
+        const customerIds = '36mvh13nka_53cd3bdd-a0d3-4299-a3f9-403a7f40e5fc,36mvh13nka_ec89a8ee-2c1f-40e6-b2fc-8bccac5a0b07';
+
+        const pageSize = customerIds.split(',').length;
+
+        ajax.send({
+            url: `/force_use_common_rest/rest/customer/v2/customer/range/${pageSize}/id/ascend`,
+            type: 'post',
+            data: {
+                query: {
+                    id: customerIds,
+                },
+            },
+        })
+            //请求成功
+            .done(result => {
+            })
+            //请求失败
+            .fail(err => {
+            });
     },
     //试用合格客户数统计数字渲染函数
     trialQualifiedNumRender(text, record) {
