@@ -66,13 +66,13 @@ const LAYOUT_HEIGHT = {
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 70,
+    TOP_DISTANCE: 65,
     BOTTOM_DISTANCE: 70
 };
 //图表的高度
 const CHART_LAYOUT_HEIGHT = {
     INITIAL_HEIGHT: 350,
-    LARGER_HEIGHT: 400,
+    LARGER_HEIGHT: 410,
     MAP_HEIGHT: 600
 };
 
@@ -417,13 +417,13 @@ var CallRecordAnalyis = React.createClass({
     getPhoneListColumn: function(isExport) {
         let columns = [{
             title: this.getSalesColumnTitle(),
-            width: 114,
+            width: 90,
             dataIndex: 'name',
             className: 'table-data-align-left',
             key: 'name'
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
-            width: 114,
+            width: 100,
             dataIndex: 'totalTime',
             key: 'total_time',
             sorter: function(a, b) {
@@ -698,7 +698,7 @@ var CallRecordAnalyis = React.createClass({
         };
         _.each(days, (label, idx) => {
             options.title.push({
-                top: (idx + 0.5) * 100 / 10 + '%'
+                top: (idx + 0.5) * 114 / 10 + '%'
             });
             options.singleAxis.push({
                 axisLabel: {
@@ -985,12 +985,13 @@ var CallRecordAnalyis = React.createClass({
             option: {
                 pagination: false,
                 bordered: true,
-                columns: this.getPhoneListColumn()
-            }
+                columns: this.getPhoneListColumn(),
+            },
         }];
         return (
             <AntcAnalysis
                 charts={callInfoCharts}
+                chartHeight='auto'
             />
         );
     },
@@ -998,7 +999,7 @@ var CallRecordAnalyis = React.createClass({
     /* 渲染单次通话时长、总时长、总次数为top10的列表
      * titleObj={title:"通话时长",dataKey:"billsec"}
      */
-    renderCallTopTen(dataObj, titleObj){
+    renderCallTopTen(dataObj, titleObj, chartHeight){
         var callTopTenCharts = [{
             title: titleObj.title + 'TOP10',
             chartType: 'table',
@@ -1018,6 +1019,7 @@ var CallRecordAnalyis = React.createClass({
             <div className="call-top  col-xs-6">
                 <AntcAnalysis
                     charts={callTopTenCharts}
+                    chartHeight={chartHeight}
                 />
             </div>
         );
@@ -1316,7 +1318,7 @@ var CallRecordAnalyis = React.createClass({
         );
     },
     renderCallAnalysisView: function() {
-        const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE;
+        const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height();
         return (<div className="call-table-container" ref="phoneList">
             {/**
              *  通话数量和通话时长的趋势图
@@ -1333,7 +1335,7 @@ var CallRecordAnalyis = React.createClass({
                 </div>
                 {this.renderCallTrendChart()}
             </div>
-            <div style={{height: tableHeight}}>
+            <div style={{height: tableHeight}} className="table-list-containers">
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
                         <div className="call-info col-xs-12">
@@ -1344,20 +1346,20 @@ var CallRecordAnalyis = React.createClass({
                             {this.renderCallTopTen(this.state.callTotalCountObj, {
                                 title: Intl.get('call.analysis.total.count', '通话总次数'),
                                 dataKey: 'count'
-                            })}
+                            },'auto')}
                             {/*根据电话的排序的通话总时长TOP10*/}
                             {this.renderCallTopTen(this.state.callTotalTimeObj, {
                                 title: Intl.get('call.analysis.total.time', '通话总时长'),
                                 dataKey: 'sum'
-                            })}
+                            },'auto')}
                         </div>
                         <div className="call-duration col-xs-12">
                             {/*根据电话的排序的单次通话时长TOP10*/}
                             {this.renderCallTopTen(this.state.callDurList, {
                                 title: Intl.get('sales.home.call.top.ten', '单次通话时长'),
                                 dataKey: 'billsec'
-                            })}
-                            <div className="call-rate-service-rate col-xs-6">
+                            },CHART_LAYOUT_HEIGHT.LARGER_HEIGHT)}
+                            <div className="call-rate-service-rate col-xs-6 padding-both-none">
                                 <div className="call-rate">
                                     {this.renderCallRateChar('114')}
                                 </div>
@@ -1369,7 +1371,7 @@ var CallRecordAnalyis = React.createClass({
                                     {this.renderCallRateChar('service')}
                                 </div>
                             </div>
-                            <div className="call-interval-block col-xs-6">
+                            <div className="call-interval-block col-xs-6 padding-both-none">
                                 {this.renderCallIntervalChart()}
                                 <div className="call-interval-radio clearfix">
                                     <RadioGroup onChange={this.onChangeCallIntervalRadio}
@@ -1391,7 +1393,7 @@ var CallRecordAnalyis = React.createClass({
                                     {this.renderCustomerPhase()}
                                 </div>
                             </div>
-                            <div className="call-stage-distribute col-xs-6">
+                            <div className="call-stage-distribute col-xs-6 padding-both-none">
                                 <div className="call-sale">
                                     {this.renderOrderPhase()}
                                 </div>

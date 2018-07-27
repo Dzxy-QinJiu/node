@@ -28,7 +28,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import { storageUtil } from 'ant-utils';
 import AlertTimer from 'CMP_DIR/alert-timer';
-import {SELECT_TYPE} from './utils/clue-customer-utils';
+import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from './utils/clue-customer-utils';
 import CONSTS from 'LIB_DIR/consts';
 import AutosizeTextarea from 'CMP_DIR/autosize-textarea';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
@@ -77,13 +77,10 @@ const ClueCustomer = React.createClass({
             this.getClueClassify();
         }
         clueCustomerAction.getSalesManList();
-        if (this.isOperation()){
-            //运营人员  运营人员默认展示全部线索客户 status对应""
+        if (isOperation() || isSalesLeaderOrManager()){
+            //运营人员  管理员、销售领导 默认展示全部线索客户 status对应""
             clueCustomerAction.setFilterType(SELECT_TYPE.ALL);
-        } else if (this.isSalesLeaderOrManager()){
-            //管理员、销售领导 默认展示待分配的线索客户 status对应0
-            clueCustomerAction.setFilterType(SELECT_TYPE.WILL_DISTRIBUTE);
-        }else {
+        } else {
             //普通销售 销售默认展示已分配的线索客户 status对应1
             clueCustomerAction.setFilterType(SELECT_TYPE.HAS_DISTRIBUTE);
         }
@@ -328,14 +325,6 @@ const ClueCustomer = React.createClass({
                 {contactWay}
             </div>
         );
-    },
-    //是否是运营人员
-    isOperation(){
-        return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
-    },
-    //是否是销售领导或者管理员
-    isSalesLeaderOrManager(){
-        return !userData.getUserData().isCommonSales || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
     },
     renderSalesBlock() {
         let dataList = [];
