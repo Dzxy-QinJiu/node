@@ -517,6 +517,33 @@ var CustomerAnalysis = React.createClass({
                         '历史最高',
                     ]);
 
+                    const serie = {
+                        type: 'bar',
+                        stack: 'num',
+                    };
+
+                    let serieAssist = _.extend({}, serie, {
+                        data: ['-',3,4,3,3,'-',3,'-'],
+                    });
+
+                    let serieLastMonth = _.extend({}, serie, {
+                        data: [3,'-','-','-','-','-','-','-'],
+                    });
+
+                    let serieThisMonth = _.extend({}, serie, {
+                        data: ['-',1,1,2,1,4,1,'-'],
+                    });
+
+                    let serieHistory = _.extend({}, serie, {
+                        data: ['-','-','-','-','-','-','-',3],
+                    });
+
+                    option.series = [
+                        serieAssist,
+                        serieLastMonth,
+                        serieThisMonth,
+                        serieHistory
+                    ];
                 },
             });
         } else {
