@@ -10,13 +10,10 @@ class SelectAppList extends React.Component {
     constructor(props) {
         super(props);
     }
-    onChange(checkedValues) {
-        console.log('checked = ', checkedValues);
-    }
     appList() {
         return (
             <div className='select-app-content'>
-                <Checkbox.Group onChange={this.onChange}>
+                <Checkbox.Group onChange={this.props.getSelectAppList}>
                     {this.props.appList.map( (appItem) => {
                         return (
                             <Checkbox value={appItem.client_id} key={appItem.client_id}>
@@ -49,11 +46,13 @@ class SelectAppList extends React.Component {
 }
 
 SelectAppList.defaultProps = {
-    appList: []
+    appList: [],
+    getSelectAppList: function() {},
 };
 
 SelectAppList.propTypes = {
     appList: PropTypes.array,
+    getSelectAppList: PropTypes.func,
 };
 
 export default SelectAppList;

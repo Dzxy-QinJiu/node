@@ -19,8 +19,10 @@ const Contract = React.createClass( {
             errorMsg: '',
             visible: false, // 是否显示应用选择项
             isShowSelectAppTable: false, // 是否显示应用表格
+            selectAppList: [], // 选择的应用列表
             contractType: '产品合同', // 合同类型
-            formData: JSON.parse(JSON.stringify(this.props.contract)),
+            formData: JSON.parse(JSON.stringify(this.props.contract)), // 合同信息
+            products: [], // 产品数据
         };
     },
     componentWillReceiveProps(nextProps) {
@@ -43,32 +45,18 @@ const Contract = React.createClass( {
     handleVisibleChange(visible){
         this.setState({ visible });
     },
+    // 获取选中的应用列表
+    getSelectAppList(selectAppList) {
+        this.setState({
+            selectAppList: selectAppList
+        });
+    },
     popContent() {
-        const formData = this.state.formData;
-        //添加时，app的添加，修改时不需要展示
-        let selectedAppList = [];
-        let selectedAppListId = [];
-        const appList = this.props.appList;
-        let apps = [];
-        if (!formData.id) {
-            if (formData.apps && formData.apps.length > 0) {
-                selectedAppList = this.props.appList.filter(app => {
-                    if (formData.apps.indexOf(app.app_id) > -1) {
-                        return true;
-                    }
-                });
-                selectedAppListId = _.map(selectedAppList, 'app_id');
-            }
-            if (appList && appList.length > 0 && formData.apps && formData.apps.length > 0) {
-                apps = _.filter(appList, app => {
-                    if (formData.apps.indexOf(app.app_id) > -1) return true;
-                });
-            }
-        }
         return (
             <div className='app-select-list-popover-confirm'>
                 <SelectAppList
                     appList={this.props.appList}
+                    getSelectAppList={this.getSelectAppList}
                 />
                 <div className='sure-cancel-btn'>
                     <span className='sure-btn' onClick={this.handleSureBtn}>{Intl.get('common.confirm', '确认')}</span>
@@ -99,15 +87,29 @@ const Contract = React.createClass( {
             </span>
         );
     },
+    // 修改产品信息
+    handleUserCount(appId, event) {
+        let userCount = event.target.value;
+        let products = _.cloneDeep(this.state.products);
+        _.find(products, (item) => {
+            if (item.client_id === appId) {
+                item.count = userCount;
+            }
+        });
+        console.log('products:',products);
+        this.setState({
+            products: products
+        });
+    },
     getProductColumns() {
         return [
             {
                 title: Intl.get('common.app', '应用'),
-                dataIndex: 'name',
-                key: 'name',
+                dataIndex: 'client_name',
+                key: 'client_name',
                 width: '40%',
                 render: (text, record, index) => {
-                    return <span className="app-info">{this.renderAppIconName(text, record.id)}</span>;
+                    return <span className="app-info">{this.renderAppIconName(text, record.client_id)}</span>;
                 }
             },
             {
@@ -115,8 +117,8 @@ const Contract = React.createClass( {
                 dataIndex: 'count',
                 width: '20%',
                 key: 'count',
-                render: (text) => {
-                    return <Input defaultValue={text}/>;
+                render: (text, record, index) => {
+                    return <Input defaultValue={text} onChange={this.handleUserCount.bind(this, record.client_id)}/>;
                 }
             },
             {
@@ -133,12 +135,27 @@ const Contract = React.createClass( {
             }
         ];
     },
+    // 获取选中应用列表的数据
+    getSelectAppListData() {
+        let appList = this.props.appList;
+        let selectAppList = this.state.selectAppList;
+        let appArray = [];
+        if (selectAppList.length) {
+            _.forEach(selectAppList, (appId) => {
+                _.forEach(appList, (appItem) => {
+                    if (appItem.client_id === appId) {
+                        appItem.count = 1;
+                        appItem.total_price = 1000;
+                        appArray.push(appItem);
+                    }
+                });
+            });
+        }
+        return appArray;
+    },
     renderProductInfo() {
         let columns = this.getProductColumns();
-        let products = [
-            { count: 1, id: '', name: '鹰眼速读网系统', total_price: 1000},
-            { count: 1, id: '', name: '鹰击早发现系统', total_price: 1000}
-        ];
+        let products = this.getSelectAppListData();
         return (
             <AntcTable
                 dataSource={products}
@@ -272,6 +289,7 @@ const Contract = React.createClass( {
     },
     handleSubmit(event) {
         event.preventDefault();
+        console.log('handleSubmit', this.state.products);
         this.props.form.validateFields((err) => {
             if (err) {
                 return;
@@ -306,6 +324,7 @@ const Contract = React.createClass( {
         ContractAction.hideForm();
     },
     render(){
+        console.log('rendr',this.state.products);
         return (
             <DetailCard
                 content={this.renderContractForm()}
