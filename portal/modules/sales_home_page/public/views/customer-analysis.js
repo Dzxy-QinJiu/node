@@ -442,6 +442,7 @@ var CustomerAnalysis = React.createClass({
         //请求成功
             .done(result => {
                 const data = _.map(result.result, item => {
+                    item.customer_id = item.id;
                     item.customer_name = item.name;
                     return item;
                 });
