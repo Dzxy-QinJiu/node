@@ -9,6 +9,8 @@
 @btn_color: #8ba9c3;
 @title_color: #333333;
 @delete_confirm_color: #ec5f56;
+@lose-order-color: #eea145;
+@win-order-color: #1f94f3;
 //换行的样式控制
 .break_line {
   white-space: normal;
@@ -24,6 +26,12 @@
   //每个订单展示的卡片样式
   .item-delete-border {
     border: 1px solid @delete_confirm_color;
+  }
+  //赢单后隐藏订单详情时的样式
+  .order-win-hide-detail{
+    .detail-card-title{
+      margin-bottom: 0;
+    }
   }
   .order-item-container {
     .detail-card-title, .order-item-title {
@@ -44,24 +52,22 @@
         }
       }
       //订单状态
-      .order-status {
-        margin-right: 4px;
-        padding: 2px 8px;
-        border-radius: 3px;
-        font-size: 12px;
-        color: #ffffff;
-      }
-      .order-status-win.order-status {
-        background-color: #e8f5fd;
-        color: #96aeca;
+      .order-status-win {
+        color: @win-order-color;
       }
       .order-status-lose {
-        background-color: #c2c2c4;
+        color: @lose-order-color;
       }
-
-      //时间
-      .order-time {
-        color: @title_color;
+      .order-status-descr {
+        margin-left: 4px;
+      }
+      //订单关闭后展开收起按钮
+      .order-expand-icon {
+        float: right;
+        font-size: 14px;
+        font-weight: bold;
+        color: @btn_color;
+        cursor: pointer;
       }
       //操作按钮区
       .order-item-buttons {
@@ -128,6 +134,9 @@
           float: left;
           line-height: 24px;
           color: @font_color;
+        }
+        .order-lose-reason {
+          color: @lose-order-color;
         }
         .order-value {
           line-height: 24px;
