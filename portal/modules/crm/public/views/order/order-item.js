@@ -492,7 +492,7 @@ const OrderItem = React.createClass({
                     title: (
                         <Popconfirm title={Intl.get('crm.order.update.confirm', '确定要修改订单阶段？')}
                             onConfirm={this.editOrderStage.bind(this, stage.name)}>
-                            {stageName}
+                            <span className="order-stage-name">{stageName}</span>
                         </Popconfirm>)
                 };
             }
@@ -509,17 +509,22 @@ const OrderItem = React.createClass({
         );
         //关闭订单项
         const closeOrderStep = (
-            <Dropdown overlay={menu}>
+            <Dropdown overlay={menu} trigger={['click']}>
                 {this.state.curOrderCloseStatus === ORDER_STATUS.WIN ? (
                     <Popconfirm placement="topRight" visible={true} onCancel={this.cancelCloseOrder}
                         onConfirm={this.closeOrder.bind(this, ORDER_STATUS.WIN)}
                         title={Intl.get('crm.order.close.win.confirm', '确定将订单的关闭状态设为赢单吗？')}>
                         {Intl.get('crm.order.status.win', '赢单')}
-                    </Popconfirm>) : (<span>{Intl.get('crm.order.close.step', '关闭订单')}</span>)}
+                    </Popconfirm>) : (
+                    <span className="order-stage-name">{Intl.get('crm.order.close.step', '关闭订单')}</span>)}
             </Dropdown>);
         stageStepList.push({title: closeOrderStep});
         return (
-            <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}/>);
+            <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
+                onClickStep={this.onClickStep.bind(this)}/>);
+    },
+    onClickStep(event){
+        $(event.target).parents('.step-item').children('.step-title').children('.order-stage-name').trigger('click');
     },
     //渲染填写丢单原因的表单
     renderLoseOrderForm(order){
