@@ -1,4 +1,4 @@
-import { Form, Input, Select, Icon, DatePicker,Popover} from 'antd';
+import { Form, Input, Select, Icon, DatePicker} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
@@ -34,7 +34,8 @@ const Contract = React.createClass( {
     handleSureBtn() {
         this.setState({
             isShowSelectAppTable: true,
-            visible: false
+            visible: false,
+            products: this.getSelectAppListData()
         });
     },
     handleCancelBtn(){
@@ -42,18 +43,15 @@ const Contract = React.createClass( {
             visible: false
         });
     },
-    handleVisibleChange(visible){
-        this.setState({ visible });
-    },
     // 获取选中的应用列表
     getSelectAppList(selectAppList) {
         this.setState({
             selectAppList: selectAppList
         });
     },
-    popContent() {
+    renderAppSelectPanel() {
         return (
-            <div className='app-select-list-popover-confirm'>
+            <div className='app-select-list-wrap'>
                 <SelectAppList
                     appList={this.props.appList}
                     getSelectAppList={this.getSelectAppList}
@@ -68,7 +66,7 @@ const Contract = React.createClass( {
     renderAppIconName(appName, appId) {
         let appList = this.props.appList;
         let matchAppObj = _.find( appList, (appItem) => {
-            return appItem.client_id === appId;
+            return appItem.id === appId;
         });
         return (
             <span className="app-icon-name">
@@ -88,28 +86,45 @@ const Contract = React.createClass( {
         );
     },
     // 修改产品信息
-    handleUserCount(appId, event) {
+    handleModifyUserCount(appId, event) {
         let userCount = event.target.value;
-        let products = _.cloneDeep(this.state.products);
-        _.find(products, (item) => {
-            if (item.client_id === appId) {
+        _.find(this.state.products, (item) => {
+            if (item.id === appId) {
                 item.count = userCount;
             }
         });
-        console.log('products:',products);
         this.setState({
-            products: products
+            products: this.state.products
+        });
+    },
+    // 修改产品金额
+    handleModifyPrice(appId, event) {
+        let totalPrice = event.target.value;
+        _.find(this.state.products, (item) => {
+            if (item.id === appId) {
+                item.total_price = totalPrice;
+            }
+        });
+        this.setState({
+            products: this.state.products
+        });
+    },
+    // 删除产品信息
+    handleDeleteProductsInfo(appId) {
+        let restProducts = _.filter(this.state.products, item => item.id !== appId);
+        this.setState({
+            products: restProducts
         });
     },
     getProductColumns() {
         return [
             {
                 title: Intl.get('common.app', '应用'),
-                dataIndex: 'client_name',
-                key: 'client_name',
+                dataIndex: 'name',
+                key: 'name',
                 width: '40%',
                 render: (text, record, index) => {
-                    return <span className="app-info">{this.renderAppIconName(text, record.client_id)}</span>;
+                    return <span className="app-info">{this.renderAppIconName(text, record.id)}</span>;
                 }
             },
             {
@@ -118,7 +133,7 @@ const Contract = React.createClass( {
                 width: '20%',
                 key: 'count',
                 render: (text, record, index) => {
-                    return <Input defaultValue={text} onChange={this.handleUserCount.bind(this, record.client_id)}/>;
+                    return <Input defaultValue={text} onChange={this.handleModifyUserCount.bind(this, record.id)}/>;
                 }
             },
             {
@@ -126,10 +141,17 @@ const Contract = React.createClass( {
                 dataIndex: 'total_price',
                 key: 'total_price',
                 width: '40%',
-                render: (text) => {
+                render: (text, record, index) => {
                     return <span className='total-price'>
-                        <Input defaultValue={parseAmount(text.toFixed(2))} />
-                        <i title={Intl.get('common.delete', '删除')} className="iconfont icon-close"></i>
+                        <Input
+                            defaultValue={parseAmount(text)}
+                            onChange={this.handleModifyPrice.bind(this, record.id)}
+                        />
+                        <i
+                            title={Intl.get('common.delete', '删除')}
+                            className="iconfont icon-close" onClick={this.handleDeleteProductsInfo.bind(this, record.id)}
+                        >
+                        </i>
                     </span>;
                 }
             }
@@ -146,6 +168,10 @@ const Contract = React.createClass( {
                     if (appItem.client_id === appId) {
                         appItem.count = 1;
                         appItem.total_price = 1000;
+                        appItem.id = appItem.client_id;
+                        appItem.name = appItem.client_name;
+                        delete appItem.client_id;
+                        delete appItem.client_name;
                         appArray.push(appItem);
                     }
                 });
@@ -155,15 +181,15 @@ const Contract = React.createClass( {
     },
     renderProductInfo() {
         let columns = this.getProductColumns();
-        let products = this.getSelectAppListData();
         return (
             <AntcTable
-                dataSource={products}
+                dataSource={this.state.products}
                 columns={columns}
                 pagination={false}
                 bordered
             />
         );
+
     },
     // 甲方
     handleCustomerName(event) {
@@ -204,6 +230,11 @@ const Contract = React.createClass( {
         let formData = this.state.formData;
         formData.gross_profit = removeCommaFromNum(event.target.value);
         this.setState({formData});
+    },
+    showAppListPanel() {
+        this.setState({
+            visible: true
+        });
     },
     renderContractForm() {
         const formItemLayout = {
@@ -267,20 +298,16 @@ const Contract = React.createClass( {
                             />
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.95', '产品信息')}>
-                            <Popover content={this.popContent()}
-                                trigger='click'
-                                visible={this.state.visible}
-                                onVisibleChange={this.handleVisibleChange}
-                                placement='bottomLeft'
-                            >
-                                {
-                                    this.state.isShowSelectAppTable ? this.renderProductInfo() : null
-                                }
-                                <div className='product-info'>
-                                    <Icon type='plus'/>
-                                    <span className='add-title'>{Intl.get('common.app', '应用')}</span>
-                                </div>
-                            </Popover>
+                            {
+                                this.state.isShowSelectAppTable ? this.renderProductInfo() : null
+                            }
+                            <div className='product-info' onClick={this.showAppListPanel}>
+                                <Icon type='plus'/>
+                                <span className='add-title'>{Intl.get('common.app', '应用')}</span>
+                            </div>
+                            {
+                                this.state.visible ? this.renderAppSelectPanel() : null
+                            }
                         </FormItem>
                     </Form>
                 </div>
@@ -289,7 +316,6 @@ const Contract = React.createClass( {
     },
     handleSubmit(event) {
         event.preventDefault();
-        console.log('handleSubmit', this.state.products);
         this.props.form.validateFields((err) => {
             if (err) {
                 return;
@@ -299,7 +325,11 @@ const Contract = React.createClass( {
                 reqData.category = this.state.contractType; // 合同类型
                 reqData.user_id = UserData.getUserData().user_id || '';
                 reqData.user_name = UserData.getUserData().user_name || '';
-                reqData.products = [{count: '1', total_price: '1000'}]; // 产品信息
+                let products = this.state.products; // 产品信息
+                _.each(products, (item) => {
+                    delete item.client_image;
+                });
+                reqData.products = products; // 产品信息
                 reqData.customers = [{customer_name: reqData.customer_name, customer_id: this.props.customerId}]; // 客户信息
                 this.setState({isLoading: true});
                 ContractAjax.addContract({type: 'sell'}, reqData).then( (resData) => {
