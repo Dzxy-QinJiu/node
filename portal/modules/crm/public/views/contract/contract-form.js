@@ -16,7 +16,7 @@ const Contract = React.createClass( {
     getInitialState() {
         return {
             isLoading: false,
-            errorMsg: '',
+            errMsg: '',
             visible: false, // 是否显示应用选择项
             isShowSelectAppTable: false, // 是否显示应用表格
             appList: this.props.appList, // 应用列表
@@ -24,7 +24,7 @@ const Contract = React.createClass( {
             lastSelectedAppIdArray: [], // 上一次选择的应用id
             contractType: '产品合同', // 合同类型
             formData: JSON.parse(JSON.stringify(this.props.contract)), // 合同信息
-            products: [], // 产品数据
+            products: [] // 产品数据
         };
     },
     componentWillReceiveProps(nextProps) {
@@ -152,6 +152,7 @@ const Contract = React.createClass( {
                         <Input
                             defaultValue={parseAmount(text)}
                             onChange={this.handleModifyPrice.bind(this, record.client_id)}
+                            onFocus={this.handleInputFocus}
                         />
                         <i
                             title={Intl.get('common.delete', '删除')}
@@ -252,6 +253,12 @@ const Contract = React.createClass( {
             appList: unSelectedAppList
         });
     },
+    // 鼠标聚焦到input输入框时
+    handleInputFocus() {
+        this.setState({
+            errMsg: ''
+        });
+    },
     renderContractForm() {
         const formItemLayout = {
             labelCol: { span: 4 },
@@ -305,6 +312,7 @@ const Contract = React.createClass( {
                             <Input
                                 value={parseAmount(formData.contract_amount)}
                                 onChange={this.handleContractAmount}
+                                onFocus={this.handleInputFocus}
                             />
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.109', '毛利')}>
@@ -343,24 +351,33 @@ const Contract = React.createClass( {
                 reqData.user_id = UserData.getUserData().user_id || '';
                 reqData.user_name = UserData.getUserData().user_name || '';
                 let products = _.cloneDeep(this.state.products); // 产品信息
+                let productTotalPrice = 0; // 产品信息中的总额；
                 // 修改产品信息的字段，满足后端需求
                 _.each(products, (item) => {
+                    productTotalPrice += +item.total_price;
                     item.id = item.client_id;
                     item.name = item.client_name;
                     delete item.client_id;
                     delete item.client_name;
                     delete item.client_image;
                 });
+                // 判断产品信息中的总额和合同额是否相同，若相同，则发请求，否则，给出信息提示
+                if (productTotalPrice !== +reqData.contract_amount) {
+                    this.setState({
+                        errMsg: '合同额与产品总额不同，请核对'
+                    });
+                    return;
+                }
                 reqData.products = products; // 产品信息
                 reqData.customers = [{customer_name: reqData.customer_name, customer_id: this.props.customerId}]; // 客户信息
                 this.setState({isLoading: true});
                 ContractAjax.addContract({type: 'sell'}, reqData).then( (resData) => {
                     if (resData && resData.code === 0) {
-                        this.state.errorMsg = '';
+                        this.state.errMsg = '';
                         this.state.isLoading = false;
                         ContractAction.refreshContractList(resData.result);
                     } else {
-                        this.state.errorMsg = Intl.get('crm.154', '添加失败');
+                        this.state.errMsg = Intl.get('crm.154', '添加失败');
                     }
                     this.setState(this.state);
                 }, (errMsg) => {
