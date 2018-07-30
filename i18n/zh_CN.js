@@ -2359,6 +2359,7 @@ var zh_CN = {
     'clue.add.customer.need': '请描述一下客户需求',
     'clue.add.phone.num': '电话号码',
     'clue.add.qq.num': 'QQ号码',
-    'clue.add.email.addr': '邮箱地址'
+    'clue.add.email.addr': '邮箱地址',
+    'clue.fill.clue.contacts': '请填写线索的联系方式'
 };
 export default zh_CN;

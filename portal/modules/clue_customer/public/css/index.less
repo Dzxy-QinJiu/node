@@ -3,6 +3,7 @@
     padding-top: 20px;
     .range-datepicker {
       float: left;
+      margin-left: 5px;
     }
     .consult-time {
       float: left;
@@ -93,6 +94,68 @@
         .submit-btn{
           margin-right:10px;
         }
+      }
+      .contact-containers{
+        .ant-form-item-control-wrapper{
+          .contact-way-container{
+            overflow: hidden;
+            .contact-wrap{
+              overflow: hidden;
+              .ant-select{
+                width: 85px;
+                float: left;
+                //span{
+                //  position: relative;
+                //  top:-3px;
+                //}
+              }
+              i.iconfont{
+                margin-right:10px;
+                color:#999;
+              }
+              .contact-name{
+                width:100px;
+                float: left;
+              }
+              .contact-type-tip, >div.ant-form-item{
+                width: 130px;
+                float: left;
+                margin-bottom: 0;
+                .ant-form-item-control-wrapper{
+                  width: 100%;
+                }
+              }
+
+              .contact-way-buttons{
+                float: left;
+                color:#8EABC6;
+                font-size: 14px;
+                margin-left: 5px;
+                cursor: pointer;
+                .clue-minus-button{
+                  float: left;
+                }
+                .clue-plus-button{
+                  float: left;
+                  margin-left:15px;
+                }
+              }
+            }
+          }
+        }
+      }
+      .contact-err-tip.contact-containers{
+        .contact-name,.ant-form-item-control input{
+          border:1px solid #f04134;
+        }
+      }
+      .clue-contactname-errmsg{
+        color:#f04134;
+        font-size: 13px;
+        margin-left: 100px;
+        line-height: 1.5;
+        position: relative;
+        top:-13px;
       }
     }
 

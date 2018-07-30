@@ -522,19 +522,19 @@ const ClueCustomer = React.createClass({
         this.state.rightPanelIsShow = false;
         rightPanelShow = false;
         this.setState(this.state);
-        if (this.state.keyword){
-            setTimeout(() => {
-                this.getClueCustomerList();
-                if (!flag) {
-                    this.getClueStatusLists();
-                }
-            });
-        }else{
-            clueCustomerAction.getClueFulltext();
+        // if (this.state.keyword){
+        setTimeout(() => {
+            this.getClueCustomerList();
             if (!flag) {
                 this.getClueStatusLists();
             }
-        }
+        });
+        // }else{
+        //     clueCustomerAction.getClueFulltext();
+        //     if (!flag) {
+        //         this.getClueStatusLists();
+        //     }
+        // }
 
 
     },
