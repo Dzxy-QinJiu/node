@@ -494,7 +494,7 @@ var CustomerAnalysis = React.createClass({
             data,
         };
 
-        if (this.state.currShowType !== showTypeConstant.SALESMAN) {
+        if (this.state.currShowType === showTypeConstant.SALESMAN) {
             _.extend(chart, {
                 chartType: 'bar',
                 processOption: (option, chartProps) => {
