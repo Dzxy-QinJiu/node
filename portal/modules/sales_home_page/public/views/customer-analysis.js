@@ -505,7 +505,6 @@ var CustomerAnalysis = React.createClass({
                             '历史最高',
                         ],
                     };
-                    console.log(option);
                     _.set(option, 'xAxis[0].data', [
                         '上月',
                         '本月新增',
