@@ -520,6 +520,14 @@ var CustomerAnalysis = React.createClass({
                     const serie = {
                         type: 'bar',
                         stack: 'num',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    position: 'top',
+                                }
+                            }
+                        }
                     };
 
                     let serieAssist = _.extend({}, serie, {
