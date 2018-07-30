@@ -99,14 +99,17 @@ var UserDetail = React.createClass({
         document.querySelector('.gm-scroll-view').removeEventListener('mousewheel', this.handleWheel, false);
     },
     wheelTimer: null,
+    //滚动监听处理
     handleWheel: function(e) {
         clearTimeout(this.wheelTimer);
         this.wheelTimer = setTimeout(() => {
+            // 向上滚动
             if (e.deltaY < 0) {
                 this.setState({
                     showBasicDetail: true
                 });
             }
+            // 向下滚动
             if (e.deltaY > 0) {
                 this.setState({
                     showBasicDetail: false
@@ -270,24 +273,24 @@ var UserDetail = React.createClass({
         return (
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />
-                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content" ref="wrap">
+                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content">
                     <StatusWrapper
                         loading={userInfo.loading}
-                        size='small'
+                        size='medium'
                     >
                         <div className="basic-info-contianer" data-trace="客户基本信息">
                             <div className="basic-info-title-block clearfix">
                                 <div className="basic-info-name">
-                                    <span className="basic-name-text">{_.get(userInfo, 'data.user_name')}</span>
+                                    <span className="basic-name-text" title={_.get(userInfo, 'data.user_name')}>{_.get(userInfo, 'data.user_name')}</span>
                                 </div>
                                 <div className="basic-info-btns">
                                     <span className="iconfont icon-edit-pw" onClick={() => { this.showEditPw(true); }} />
                                     {
-                                        !userInfo.loading ? this.userDetailRef && this.userDetailRef.renderUserStatus(userInfo.data) : null
+                                        !userInfo.loading ? this.userDetailRef && this.userDetailRef.renderUserStatus(userInfo.data, true) : null
                                     }
                                 </div>
                             </div>
-                            <div className={this.state.showBasicDetail ? 'basic-info-content' : 'hide'}>
+                            <div className={(this.state.showEditPw || this.state.showBasicDetail) ? 'basic-info-content' : 'hide'}>
                                 {
                                     this.state.showEditPw ?
                                         <div className="edit-pw-container">
@@ -333,7 +336,7 @@ var UserDetail = React.createClass({
                             </div>
                         </div>
                     </StatusWrapper>
-                    <div className="full_size app_user_full_size_item wrap_padding">
+                    <div className="full_size app_user_full_size_item wrap_padding" ref="wrap">
                         <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
                             {tabPaneList}
                         </Tabs>

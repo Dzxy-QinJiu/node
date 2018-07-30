@@ -5,13 +5,12 @@ require('./index.less');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/form-basic-es_VE.less');
-}else if (language.lan() === 'zh'){
+} else if (language.lan() === 'zh') {
     require('../css/form-basic-zh_CN.less');
 }
 
 require('../../../public/css/antd-vertical-tabs.css');
-import {Tooltip,Tabs, Alert} from 'antd';
-const TabPane = Tabs.TabPane;
+import { Tooltip, Alert } from 'antd';
 import classNames from 'classnames';
 import GeminiScrollBar from '../../react-gemini-scrollbar';
 import UserTypeRadioField from '../user-type-radiofield';
@@ -22,6 +21,8 @@ import UserOverDraftField from '../user-over-draftfield';
 import UserTwoFactorField from '../user-two-factorfield';
 import UserMultiLoginField from '../user-multilogin-radiofield';
 import AppRolePermission from '../app-role-permission';
+import DetailCard from 'CMP_DIR/detail-card';
+var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 
 const PropTypes = React.PropTypes;
 
@@ -60,7 +61,7 @@ const AppPropertySetting = React.createClass({
             defaultSettings: {},
             selectedApps: [],
             appsSetting: {},
-            onAppPropertyChange: function() {},
+            onAppPropertyChange: function() { },
             height: 'auto',
             isSingleAppEdit: false,
             //显示用户个数
@@ -78,7 +79,7 @@ const AppPropertySetting = React.createClass({
         const props = this.props;
         let currentApp = _.isArray(props.selectedApps) && props.selectedApps[0] ? props.selectedApps[0] : {};
         const appPropSettingsMap = this.createPropertySettingData(this.props);
-        if(!_.isEmpty(appPropSettingsMap)) {
+        if (!_.isEmpty(appPropSettingsMap)) {
             this.props.onAppPropertyChange(appPropSettingsMap);
         }
         return {
@@ -103,67 +104,67 @@ const AppPropertySetting = React.createClass({
         const finalResult = {};
         //根据默认属性生成配置(添加用户，添加应用)
         const createPropertySettingByDefaultSettings = () => {
-            _.each(selectedApps , (currentApp) => {
+            _.each(selectedApps, (currentApp) => {
                 //当前应用的id
                 const appId = currentApp.app_id;
                 //当前应用的设置
                 const originAppSetting = appPropSettingsMap[appId] || {};
                 //检查角色、权限
                 function checkRolePermission() {
-                    if(!originAppSetting.roles) {
+                    if (!originAppSetting.roles) {
                         originAppSetting.roles = [];
                     }
-                    if(!originAppSetting.permissions) {
+                    if (!originAppSetting.permissions) {
                         originAppSetting.permissions = [];
                     }
                     //角色、权限，赋值，不会出现在全局设置里，直接设置
-                    if(defaultSettings.roles && _.isArray(defaultSettings.roles)) {
+                    if (defaultSettings.roles && _.isArray(defaultSettings.roles)) {
                         originAppSetting.roles = defaultSettings.roles;
                     }
-                    if(defaultSettings.permissions && _.isArray(defaultSettings.permissions)) {
+                    if (defaultSettings.permissions && _.isArray(defaultSettings.permissions)) {
                         originAppSetting.permissions = defaultSettings.permissions;
                     }
                 }
                 //检查单个属性，如果没有重新设置值，用defaultSettings里的值，重新生成
                 function checkSingleProp(prop) {
-                    if(!originAppSetting[prop]) {
+                    if (!originAppSetting[prop]) {
                         originAppSetting[prop] = {
                             setted: false
                         };
                     }
-                    if(!originAppSetting[prop].setted) {
+                    if (!originAppSetting[prop].setted) {
                         originAppSetting[prop].value = defaultSettings[prop];
                     }
                 }
                 //检查时间,时间格式比较特殊
                 function checkTime() {
-                    if(!originAppSetting.time) {
+                    if (!originAppSetting.time) {
                         originAppSetting.time = {
                             setted: false
                         };
                     }
-                    if(!originAppSetting.time.setted) {
+                    if (!originAppSetting.time.setted) {
                         originAppSetting.time.start_time = defaultSettings.time.start_time;
                         originAppSetting.time.end_time = defaultSettings.time.end_time;
                         originAppSetting.time.range = defaultSettings.time.range;
                     }
                 }
                 //检查用户类型
-                if(this.props.isSingleAppEdit) {
+                if (this.props.isSingleAppEdit) {
                     checkSingleProp('user_type');
                 }
                 //检查到期停用
                 checkSingleProp('over_draft');
                 //检查二步验证
-                if(this.props.showIsTwoFactor) {
+                if (this.props.showIsTwoFactor) {
                     checkSingleProp('is_two_factor');
                 }
                 //检查用户状态（启用、停用）
-                if(this.props.isSingleAppEdit) {
+                if (this.props.isSingleAppEdit) {
                     checkSingleProp('status');
                 }
                 //检查多人登录
-                if(this.props.showMultiLogin) {
+                if (this.props.showMultiLogin) {
                     checkSingleProp('multilogin');
                 }
                 //检查角色、权限
@@ -176,45 +177,45 @@ const AppPropertySetting = React.createClass({
         };
         //根据传入的配置生成配置(修改单个应用，修改申请单-审批)
         const createPropertySettingByAppsSetting = () => {
-            _.each(selectedApps , (currentApp) => {
+            _.each(selectedApps, (currentApp) => {
 
                 const appSettingConfig = appsSetting[currentApp.app_id];
 
                 //检查角色、权限
                 function checkRolePermission() {
-                    if(!originAppSetting.roles) {
+                    if (!originAppSetting.roles) {
                         originAppSetting.roles = [];
                     }
-                    if(!originAppSetting.permissions) {
+                    if (!originAppSetting.permissions) {
                         originAppSetting.permissions = [];
                     }
                     //角色、权限，赋值，不会出现在全局设置里，直接设置
-                    if(appSettingConfig.roles && _.isArray(appSettingConfig.roles)) {
+                    if (appSettingConfig.roles && _.isArray(appSettingConfig.roles)) {
                         originAppSetting.roles = appSettingConfig.roles;
                     }
-                    if(appSettingConfig.permissions && _.isArray(appSettingConfig.permissions)) {
+                    if (appSettingConfig.permissions && _.isArray(appSettingConfig.permissions)) {
                         originAppSetting.permissions = appSettingConfig.permissions;
                     }
                 }
                 //检查单个属性
                 function checkSingleProp(prop) {
-                    if(!originAppSetting[prop]) {
+                    if (!originAppSetting[prop]) {
                         originAppSetting[prop] = {
                             setted: false
                         };
                     }
-                    if(!originAppSetting[prop].setted) {
+                    if (!originAppSetting[prop].setted) {
                         originAppSetting[prop].value = appSettingConfig[prop];
                     }
                 }
                 //检查时间
                 function checkTime() {
-                    if(!originAppSetting.time) {
+                    if (!originAppSetting.time) {
                         originAppSetting.time = {
                             setted: false
                         };
                     }
-                    if(!originAppSetting.time.setted) {
+                    if (!originAppSetting.time.setted) {
                         originAppSetting.time.start_time = appSettingConfig.time.start_time;
                         originAppSetting.time.end_time = appSettingConfig.time.end_time;
                         originAppSetting.time.range = appSettingConfig.time.range;
@@ -222,20 +223,20 @@ const AppPropertySetting = React.createClass({
                 }
                 const appId = currentApp.app_id;
                 const originAppSetting = appPropSettingsMap[appId] || {};
-                if(this.props.isSingleAppEdit) {
+                if (this.props.isSingleAppEdit) {
                     checkSingleProp('user_type');
                 }
-                if(this.props.showUserNumber) {
+                if (this.props.showUserNumber) {
                     checkSingleProp('number');
                 }
                 checkSingleProp('over_draft');
-                if(this.props.showIsTwoFactor) {
+                if (this.props.showIsTwoFactor) {
                     checkSingleProp('is_two_factor');
                 }
-                if(this.props.isSingleAppEdit) {
+                if (this.props.isSingleAppEdit) {
                     checkSingleProp('status');
                 }
-                if(this.props.showMultiLogin) {
+                if (this.props.showMultiLogin) {
                     checkSingleProp('multilogin');
                 }
                 checkRolePermission();
@@ -245,61 +246,64 @@ const AppPropertySetting = React.createClass({
         };
 
         //如果有默认配置，用默认配置
-        if(!_.isEmpty(defaultSettings)) {
+        if (!_.isEmpty(defaultSettings)) {
             createPropertySettingByDefaultSettings();
             return finalResult;
-        //如果有应用特殊配置，用特殊配置
-        } else if(!_.isEmpty(appsSetting)){
+            //如果有应用特殊配置，用特殊配置
+        } else if (!_.isEmpty(appsSetting)) {
             createPropertySettingByAppsSetting();
             return finalResult;
         } else {
-        //什么都没有，则什么都没有
+            //什么都没有，则什么都没有
             return appPropSettingsMap;
         }
     },
-    compareEquals(json1,json2) {
-        if(JSON.stringify(json1) !== JSON.stringify(json2)) {
+    compareEquals(json1, json2) {
+        if (JSON.stringify(json1) !== JSON.stringify(json2)) {
             return false;
         }
         return true;
     },
     componentWillReceiveProps(nextProps) {
 
-        if(!this.compareEquals(nextProps.selectedApps,this.props.selectedApps)) {
+        if (!this.compareEquals(nextProps.selectedApps, this.props.selectedApps)) {
             const newState = {};
             let currentApp = _.isArray(nextProps.selectedApps) && nextProps.selectedApps[0] ? nextProps.selectedApps[0] : {};
             //新的当前应用的id数组
-            const currentAppIds = _.map(nextProps.selectedApps , 'app_id');
+            const currentAppIds = _.map(nextProps.selectedApps, 'app_id');
             newState.currentApp = currentApp;
             this.setState(newState);
         }
-        if(!this.compareEquals(nextProps.selectedApps,this.props.selectedApps)
-            || !this.compareEquals(nextProps.defaultSettings,this.props.defaultSettings)
-            || !this.compareEquals(nextProps.appsSetting,this.props.appsSetting)
+        if (!this.compareEquals(nextProps.selectedApps, this.props.selectedApps)
+            || !this.compareEquals(nextProps.defaultSettings, this.props.defaultSettings)
+            || !this.compareEquals(nextProps.appsSetting, this.props.appsSetting)
         ) {
             const appPropSettingsMap = this.createPropertySettingData(nextProps);
-            this.setState({appPropSettingsMap});
+            this.setState({ appPropSettingsMap });
         }
     },
-    componentDidUpdate(prevProps , prevState) {
+    componentDidUpdate(prevProps, prevState) {
         if (!this.compareEquals(this.state.appPropSettingsMap, prevState.appPropSettingsMap)) {
             this.props.onAppPropertyChange(this.state.appPropSettingsMap);
         }
-        if(this.state.currentApp.app_id !== prevState.currentApp.app_id) {
-            clearTimeout(this.changeCurrentAppLoadingTimeout);
-            this.setState({
-                changeCurrentAppLoading: true
-            });
-            this.changeCurrentAppLoadingTimeout = setTimeout(() => {
-                this.setState({
-                    changeCurrentAppLoading: false
-                });
-            },100);
+        if (this.state.currentApp.app_id !== prevState.currentApp.app_id) {
+            this.handleChangeCurrentApp();
         }
+    },
+    handleChangeCurrentApp() {
+        clearTimeout(this.changeCurrentAppLoadingTimeout);
+        this.setState({
+            changeCurrentAppLoading: true
+        });
+        this.changeCurrentAppLoadingTimeout = setTimeout(() => {
+            this.setState({
+                changeCurrentAppLoading: false
+            });
+        }, 100);
     },
     changeCurrentApp(appInfo) {
         const appId = appInfo.app_id;
-        if(this.state.currentApp.app_id === appId) {
+        if (this.state.currentApp.app_id === appId) {
             return;
         }
         const newState = {};
@@ -307,7 +311,7 @@ const AppPropertySetting = React.createClass({
         this.setState(newState);
 
     },
-    onRolesPermissionSelect(roles , permissions) {
+    onRolesPermissionSelect(roles, permissions) {
         var state = this.state;
         var app_id = state.currentApp.app_id;
         var app_info = state.appPropSettingsMap[app_id];
@@ -319,7 +323,7 @@ const AppPropertySetting = React.createClass({
     },
     renderTabContent(app_id) {
         const currentApp = this.state.currentApp;
-        if(currentApp.app_id !== app_id) {
+        if (currentApp.app_id !== app_id) {
             return null;
         }
         const defaultSettings = this.props.defaultSettings;
@@ -330,7 +334,7 @@ const AppPropertySetting = React.createClass({
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
                 <div className="app-property-custom-settings">
                     <div className="app-property-content basic-data-form app-property-other-property"
-                        style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block'}}
+                        style={{ display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block' }}
                     >
                         {this.props.showUserNumber ? (
                             <div className="form-item">
@@ -440,7 +444,7 @@ const AppPropertySetting = React.createClass({
                     {
                         this.props.appSelectRoleError && !selectedRoles.length ? (
                             <div className="select-no-role">
-                                <Alert message={this.props.appSelectRoleError} showIcon type="error"/>
+                                <Alert message={this.props.appSelectRoleError} showIcon type="error" />
                             </div>
                         ) : null
                     }
@@ -453,8 +457,8 @@ const AppPropertySetting = React.createClass({
     },
     currentTabChange(app_id) {
         var selectedApps = this.props.selectedApps;
-        var targetApp = _.find(selectedApps , (app) => app.app_id === app_id);
-        if(targetApp) {
+        var targetApp = _.find(selectedApps, (app) => app.app_id === app_id);
+        if (targetApp) {
             this.changeCurrentApp(targetApp);
         }
     },
@@ -467,7 +471,7 @@ const AppPropertySetting = React.createClass({
     },
     render() {
         let height = this.props.height;
-        if(height !== 'auto') {
+        if (height !== 'auto') {
             height -= 20;//减去上面的padding
         }
         //class名字
@@ -476,28 +480,35 @@ const AppPropertySetting = React.createClass({
             //如果是单个应用的编辑，添加这个class
             'single-app-edit': this.props.isSingleAppEdit
         });
-        if(!this.props.selectedApps.length) {
+        if (!this.props.selectedApps.length) {
             return null;
         }
         return (
             <div className={cls}>
                 <div className="app-property-container">
-                    <Tabs
-                        tabPosition="left"
-                        onChange={this.currentTabChange}
-                        style={{height: height}}
-                    >
+                    <GeminiScrollBar style={{ height: height }} ref="gemini" className="app-property-content">
                         {
-                            this.props.selectedApps.map((app) => {
-                                return <TabPane tab={this.renderTabToolTip(app.app_name)} key={app.app_id}>
-                                    <GeminiScrollBar style={{height: height}} ref="gemini" className="app-property-content">
-                                        {this.renderTabContent(app.app_id)}
-                                    </GeminiScrollBar>
-                                </TabPane>;
+                            this.props.selectedApps.map((app, index) => {
+                                return (
+                                    <DetailCard
+                                        key={key}
+                                        title={(
+                                            <div className="title-container">
+                                                <span className="logo-container" title={app.app_name}>
+                                                    <DefaultUserLogoTitle
+                                                        nickName={app.app_name}
+                                                        userLogo={app.app_logo}
+                                                    />
+                                                </span>
+                                                <p title={app.app_name}>{app.app_name}</p>
+                                            </div>
+                                        )}
+                                        content={this.renderTabContent(app.app_id)}
+                                    />
+                                );
                             })
                         }
-                    </Tabs>
-
+                    </GeminiScrollBar>
                 </div>
             </div>
         );

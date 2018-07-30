@@ -363,7 +363,7 @@ var UserDetailBasic = React.createClass({
                                         userLogo={app.app_logo}
                                     />
                                 </span>
-                                <p>{app.app_name}</p>
+                                <p title={app.app_name}>{app.app_name}</p>
                                 <span className="icon-suffix">
                                    
                                 </span>
@@ -515,12 +515,12 @@ var UserDetailBasic = React.createClass({
         }
     },
 
-    renderUserStatus: function(user) {
+    renderUserStatus: function(user, useIcon = false) {
         let userStatus = user.status;
         if (!hasPrivilege('APP_USER_EDIT')) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
-        }       
-        return (<UserStatusSwitch userId={user.user_id} status={userStatus === '1' ? true : false} />);
+        }
+        return (<UserStatusSwitch useIcon={useIcon} userId={user.user_id} status={userStatus === '1' ? true : false} />);
     },
     render: function() {
         var LoadingBlock = this.state.isLoading ? (
@@ -548,7 +548,7 @@ var UserDetailBasic = React.createClass({
         })();
         let userInfo = this.state.initialUser.user;
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
-            <div>                
+            <div>
                 <UserBasicCard
                     customer_id={this.state.customer_id}
                     customer_name={this.state.customer_name}
