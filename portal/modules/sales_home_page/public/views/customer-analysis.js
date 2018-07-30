@@ -523,6 +523,17 @@ var CustomerAnalysis = React.createClass({
                     };
 
                     let serieAssist = _.extend({}, serie, {
+
+                        itemStyle: {
+                            normal: {
+                                barBorderColor: 'rgba(0,0,0,0)',
+                                color: 'rgba(0,0,0,0)'
+                            },
+                            emphasis: {
+                                barBorderColor: 'rgba(0,0,0,0)',
+                                color: 'rgba(0,0,0,0)'
+                            }
+                        },
                         data: ['-',3,4,3,3,'-',3,'-'],
                     });
 
