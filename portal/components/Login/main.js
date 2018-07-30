@@ -23,6 +23,7 @@ const VIEWS = {
 };
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import {storageUtil} from 'ant-utils';
+const logoScr = require('./image/wihte-logo.png');
 
 class LoginMain extends React.Component {
     constructor(props) {
@@ -225,7 +226,7 @@ class LoginMain extends React.Component {
 
             return (
                 <div className="login-wrap">
-                    <Logo />
+                    <Logo logoSrc={logoScr} />
                     {/*{ hasWindow ? (Oplate.hideLangQRcode ? null :*/}
                     {/*(<div>*/}
                     {/*<div className="lang-wrap">*/}
@@ -313,5 +314,9 @@ class LoginMain extends React.Component {
         }
     }
 }
-
+const PropTypes = React.PropTypes;
+LoginMain.propTypes = {
+    loginErrorMsg: PropTypes.string,
+    captchaCode: PropTypes.string
+};
 export default LoginMain;
