@@ -20,7 +20,8 @@ const Contract = React.createClass( {
             visible: false, // 是否显示应用选择项
             isShowSelectAppTable: false, // 是否显示应用表格
             appList: this.props.appList, // 应用列表
-            selectAppList: [], // 选择的应用列表
+            selectedAppIdArray: [], // 选择的应用id
+            lastSelectedAppIdArray: [], // 上一次选择的应用id
             contractType: '产品合同', // 合同类型
             formData: JSON.parse(JSON.stringify(this.props.contract)), // 合同信息
             products: [], // 产品数据
@@ -36,7 +37,8 @@ const Contract = React.createClass( {
         this.setState({
             isShowSelectAppTable: true,
             visible: false,
-            products: this.getSelectAppListData()
+            products: this.getSelectAppListData(),
+            lastSelectedAppIdArray: this.state.selectedAppIdArray
         });
     },
     handleCancelBtn(){
@@ -45,9 +47,9 @@ const Contract = React.createClass( {
         });
     },
     // 获取选中的应用列表
-    getSelectAppList(selectAppList) {
+    getSelectAppList(selectedAppIdArray) {
         this.setState({
-            selectAppList: selectAppList
+            selectedAppIdArray: selectedAppIdArray
         });
     },
     renderAppSelectPanel() {
@@ -113,8 +115,11 @@ const Contract = React.createClass( {
     // 删除产品信息
     handleDeleteProductsInfo(appId) {
         let restProducts = _.filter(this.state.products, item => item.client_id !== appId);
+        let restSelectAppIdArray = _.filter(this.state.selectedAppIdArray, id => id !== appId);
         this.setState({
-            products: restProducts
+            products: restProducts,
+            selectedAppIdArray: restSelectAppIdArray,
+            lastSelectedAppIdArray: restSelectAppIdArray
         });
     },
     getProductColumns() {
@@ -160,11 +165,12 @@ const Contract = React.createClass( {
     },
     // 获取选中应用列表的数据
     getSelectAppListData() {
-        let appList = this.state.appList;
-        let selectAppList = this.state.selectAppList;
+        let appList = this.props.appList;
+        let selectedAppIdArray = this.state.selectedAppIdArray;
+        let allSelectAppIdArray = selectedAppIdArray.concat(this.state.lastSelectedAppIdArray);
         let appArray = [];
-        if (selectAppList.length) {
-            _.forEach(selectAppList, (appId) => {
+        if (allSelectAppIdArray.length) {
+            _.forEach(allSelectAppIdArray, (appId) => {
                 _.forEach(appList, (appItem) => {
                     if (appItem.client_id === appId) {
                         appItem.count = 1;
@@ -228,9 +234,22 @@ const Contract = React.createClass( {
         formData.gross_profit = removeCommaFromNum(event.target.value);
         this.setState({formData});
     },
+    // 未选择的应用列表
+    getUnselectAppList() {
+        let appList = this.state.appList;
+        let selectedAppIdArray = this.state.selectedAppIdArray;
+        let unSelectedAppList = appList;
+        if (selectedAppIdArray.length) {
+            unSelectedAppList = _.chain(appList).filter(appItem => selectedAppIdArray.indexOf(appItem.client_id) === -1).value();
+        }
+        return unSelectedAppList;
+
+    },
     showAppListPanel() {
+        let unSelectedAppList = this.getUnselectAppList();
         this.setState({
-            visible: true
+            visible: true,
+            appList: unSelectedAppList
         });
     },
     renderContractForm() {
@@ -326,8 +345,6 @@ const Contract = React.createClass( {
                 let products = _.cloneDeep(this.state.products); // 产品信息
                 // 修改产品信息的字段，满足后端需求
                 _.each(products, (item) => {
-                    item.count = +item.count;
-                    item.total_price = +item.total_price;
                     item.id = item.client_id;
                     item.name = item.client_name;
                     delete item.client_id;
