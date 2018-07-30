@@ -127,7 +127,7 @@ var Contacts = React.createClass({
                                         id="sales.frontpage.total.list"
                                         defaultMessage={'共{n}条'}
                                         values={{'n': contactListLength + ''}}/>) :
-                                    Intl.get('crm.no.contact.tip', '该客户还没有添加过联系人')}
+                                    Intl.get('crm.no.contact.tip', '该客户还没有联系人')}
                             </span>
                         )}
                         {this.props.isMerge ? null : (
@@ -172,4 +172,4 @@ var Contacts = React.createClass({
     }
 });
 
-module.exports = Contacts;
+module.exports = Contacts;

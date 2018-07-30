@@ -255,7 +255,7 @@ var CrmSchedule = React.createClass({
                                 id="sales.frontpage.total.list"
                                 defaultMessage={'共{n}条'}
                                 values={{'n': this.state.total + ''}}/>) :
-                            Intl.get('crm.detail.no.schedule', '该客户还没有添加过联系计划')}
+                            Intl.get('crm.detail.no.schedule', '该客户还没有联系计划')}
                     </span>
                     {this.props.isMerge ? null : (
                         <Button className='crm-detail-add-btn'
@@ -273,4 +273,4 @@ var CrmSchedule = React.createClass({
     }
 });
 
-module.exports = CrmSchedule;
+module.exports = CrmSchedule;
