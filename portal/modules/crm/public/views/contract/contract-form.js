@@ -19,6 +19,7 @@ const Contract = React.createClass( {
             errorMsg: '',
             visible: false, // 是否显示应用选择项
             isShowSelectAppTable: false, // 是否显示应用表格
+            appList: this.props.appList, // 应用列表
             selectAppList: [], // 选择的应用列表
             contractType: '产品合同', // 合同类型
             formData: JSON.parse(JSON.stringify(this.props.contract)), // 合同信息
@@ -53,7 +54,7 @@ const Contract = React.createClass( {
         return (
             <div className='app-select-list-wrap'>
                 <SelectAppList
-                    appList={this.props.appList}
+                    appList={this.state.appList}
                     getSelectAppList={this.getSelectAppList}
                 />
                 <div className='sure-cancel-btn'>
@@ -64,9 +65,9 @@ const Contract = React.createClass( {
         );
     },
     renderAppIconName(appName, appId) {
-        let appList = this.props.appList;
+        let appList = this.state.appList;
         let matchAppObj = _.find( appList, (appItem) => {
-            return appItem.id === appId;
+            return appItem.client_id === appId;
         });
         return (
             <span className="app-icon-name">
@@ -89,7 +90,7 @@ const Contract = React.createClass( {
     handleModifyUserCount(appId, event) {
         let userCount = event.target.value;
         _.find(this.state.products, (item) => {
-            if (item.id === appId) {
+            if (item.client_id === appId) {
                 item.count = userCount;
             }
         });
@@ -101,7 +102,7 @@ const Contract = React.createClass( {
     handleModifyPrice(appId, event) {
         let totalPrice = event.target.value;
         _.find(this.state.products, (item) => {
-            if (item.id === appId) {
+            if (item.client_id === appId) {
                 item.total_price = totalPrice;
             }
         });
@@ -111,7 +112,7 @@ const Contract = React.createClass( {
     },
     // 删除产品信息
     handleDeleteProductsInfo(appId) {
-        let restProducts = _.filter(this.state.products, item => item.id !== appId);
+        let restProducts = _.filter(this.state.products, item => item.client_id !== appId);
         this.setState({
             products: restProducts
         });
@@ -120,11 +121,11 @@ const Contract = React.createClass( {
         return [
             {
                 title: Intl.get('common.app', '应用'),
-                dataIndex: 'name',
-                key: 'name',
+                dataIndex: 'client_name',
+                key: 'client_name',
                 width: '40%',
                 render: (text, record, index) => {
-                    return <span className="app-info">{this.renderAppIconName(text, record.id)}</span>;
+                    return <span className="app-info">{this.renderAppIconName(text, record.client_id)}</span>;
                 }
             },
             {
@@ -133,7 +134,7 @@ const Contract = React.createClass( {
                 width: '20%',
                 key: 'count',
                 render: (text, record, index) => {
-                    return <Input defaultValue={text} onChange={this.handleModifyUserCount.bind(this, record.id)}/>;
+                    return <Input defaultValue={text} onChange={this.handleModifyUserCount.bind(this, record.client_id)}/>;
                 }
             },
             {
@@ -145,11 +146,11 @@ const Contract = React.createClass( {
                     return <span className='total-price'>
                         <Input
                             defaultValue={parseAmount(text)}
-                            onChange={this.handleModifyPrice.bind(this, record.id)}
+                            onChange={this.handleModifyPrice.bind(this, record.client_id)}
                         />
                         <i
                             title={Intl.get('common.delete', '删除')}
-                            className="iconfont icon-close" onClick={this.handleDeleteProductsInfo.bind(this, record.id)}
+                            className="iconfont icon-close" onClick={this.handleDeleteProductsInfo.bind(this, record.client_id)}
                         >
                         </i>
                     </span>;
@@ -159,7 +160,7 @@ const Contract = React.createClass( {
     },
     // 获取选中应用列表的数据
     getSelectAppListData() {
-        let appList = this.props.appList;
+        let appList = this.state.appList;
         let selectAppList = this.state.selectAppList;
         let appArray = [];
         if (selectAppList.length) {
@@ -168,10 +169,6 @@ const Contract = React.createClass( {
                     if (appItem.client_id === appId) {
                         appItem.count = 1;
                         appItem.total_price = 1000;
-                        appItem.id = appItem.client_id;
-                        appItem.name = appItem.client_name;
-                        delete appItem.client_id;
-                        delete appItem.client_name;
                         appArray.push(appItem);
                     }
                 });
@@ -299,7 +296,8 @@ const Contract = React.createClass( {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.95', '产品信息')}>
                             {
-                                this.state.isShowSelectAppTable ? this.renderProductInfo() : null
+                                this.state.isShowSelectAppTable && _.get(this.state.products, '[0]') ?
+                                    this.renderProductInfo() : null
                             }
                             <div className='product-info' onClick={this.showAppListPanel}>
                                 <Icon type='plus'/>
@@ -325,8 +323,15 @@ const Contract = React.createClass( {
                 reqData.category = this.state.contractType; // 合同类型
                 reqData.user_id = UserData.getUserData().user_id || '';
                 reqData.user_name = UserData.getUserData().user_name || '';
-                let products = this.state.products; // 产品信息
+                let products = _.cloneDeep(this.state.products); // 产品信息
+                // 修改产品信息的字段，满足后端需求
                 _.each(products, (item) => {
+                    item.count = +item.count;
+                    item.total_price = +item.total_price;
+                    item.id = item.client_id;
+                    item.name = item.client_name;
+                    delete item.client_id;
+                    delete item.client_name;
                     delete item.client_image;
                 });
                 reqData.products = products; // 产品信息
@@ -354,7 +359,6 @@ const Contract = React.createClass( {
         ContractAction.hideForm();
     },
     render(){
-        console.log('rendr',this.state.products);
         return (
             <DetailCard
                 content={this.renderContractForm()}
