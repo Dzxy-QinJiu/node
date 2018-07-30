@@ -364,7 +364,7 @@ const Contract = React.createClass( {
                 // 判断产品信息中的总额和合同额是否相同，若相同，则发请求，否则，给出信息提示
                 if (productTotalPrice !== +reqData.contract_amount) {
                     this.setState({
-                        errMsg: '合同额与产品总额不同，请核对'
+                        errMsg: Intl.get('crm.174', '合同额与产品总额不同，请核对')
                     });
                     return;
                 }
