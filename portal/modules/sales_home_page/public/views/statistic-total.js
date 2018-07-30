@@ -68,22 +68,24 @@ let StatisticTotal = React.createClass({
         }
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
         return (<div className="statistic-total-content">
-            <span className="add-data-style phone-total-time phone-total-data">
-                {time.hours > 0 ? <span className='num'>{time.hours}<span
-                    className="total-data-desc">{Intl.get('user.time.hour', '小时')} </span></span> : null}
-                {time.minutes > 0 ?
-                    <span className='num'>{time.minutes}<span
-                        className="total-data-desc">{Intl.get('user.time.minute', '分')} </span></span> : null}
-                {time.second > 0 ? <span className='num'>{time.second}<span
-                    className="total-data-desc">{Intl.get('user.time.second', '秒')} </span></span> : null}
-                {time.timeDescr === 0 ? time.timeDescr : null}
-            </span>
+            {time.timeDescr !== '0' ? (
+                <span className="add-data-style phone-total-time phone-total-data">
+                    {time.hours > 0 ? <span className='num'>{time.hours}<span
+                        className="total-data-desc">{Intl.get('user.time.hour', '小时')} </span></span> : null}
+                    {time.minutes > 0 ?
+                        <span className='num'>{time.minutes}<span
+                            className="total-data-desc">{Intl.get('user.time.minute', '分')} </span></span> : null}
+                    {time.second > 0 ? <span className='num'>{time.second}<span
+                        className="total-data-desc">{Intl.get('user.time.second', '秒')} </span></span> : null}
+                    {time.timeDescr === 0 ? time.timeDescr : null}
+                </span>
+            ) : null}
 
             <span className="phone-total-count total-data-style">
                 <ReactIntl.FormattedMessage
-                    id="sales.home.count"
-                    defaultMessage={'{count}个'}
-                    values={{'count': phoneData.totalCount || 0}}
+                    id='sales.home.total.count'
+                    defaultMessage={'共{template}个'}
+                    values={{'template': <span className='num'>{phoneData.totalCount || '0'}</span>}}
                 />
             </span>
         </div>);
