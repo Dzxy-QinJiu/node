@@ -84,7 +84,7 @@ const Contract = React.createClass({
                     this.state.isAddFormShow || loading ? null : (contractListLength ? <ReactIntl.FormattedMessage
                         id="sales.frontpage.total.list"
                         defaultMessage={'共{n}条'}
-                        values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有添加过合同'))
+                        values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有签订过合同'))
                 }
                 {this.props.isMerge ? null : (
                     <Button className='crm-detail-add-btn'

@@ -1367,7 +1367,7 @@ var en_US = {
     'crm.order.add.stage': 'Add sales stage',//添加销售阶段
     'crm.order.no.budget': 'No budget',//暂无预算
     'crm.order.add.budget': 'Add budget',//添加预算
-    'crm.no.contract.tip': 'The customer has not yet added a contract.', // 该客户还没有添加过合同
+    'crm.no.contract.tip': 'The customer has not yet sign a contract.', // 该客户还没有签订过合同
     'crm.input.new.competing': 'Please input new competitor',//请输入新竞品
     'crm.no.competing': 'No competitor',//暂无竞品
     'crm.order.expected.deal': 'Expected deal',//预计成交

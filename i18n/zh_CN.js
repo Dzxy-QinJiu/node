@@ -1382,7 +1382,7 @@ var zh_CN = {
     'crm.order.add.stage': '添加销售阶段',
     'crm.order.no.budget': '暂无预算',
     'crm.order.add.budget': '添加预算',
-    'crm.no.contract.tip': '该客户还没有添加过合同',
+    'crm.no.contract.tip': '该客户还没有签订过合同',
     'crm.input.new.competing': '请输入新竞品',
     'crm.no.competing': '暂无竞品',
     'crm.order.expected.deal': '预计成交',
