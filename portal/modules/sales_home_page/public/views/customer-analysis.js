@@ -4,6 +4,7 @@
  */
 import ajax from 'ant-ajax';
 import { AntcAnalysis } from 'antc';
+let history = require('PUB_DIR/sources/history');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
@@ -413,55 +414,14 @@ var CustomerAnalysis = React.createClass({
             }
         });
     },
-    //关闭试用合格客户列表面板
-    closeTrialQualifiedTable() {
-        this.setState({isShowTrialQualifiedTable: false});
-    },
     //处理试用合格客户数统计数字点击事件
     handleTrialQualifiedNumClick() {
-        this.setState({
-            isShowTrialQualifiedTable: true,
-            trialQualifiedResult: {
-                loading: true,
-            },
-        });
-
         const customerIds = '36mvh13nka_53cd3bdd-a0d3-4299-a3f9-403a7f40e5fc,36mvh13nka_ec89a8ee-2c1f-40e6-b2fc-8bccac5a0b07';
 
-        const pageSize = customerIds.split(',').length;
-
-        ajax.send({
-            url: `/force_use_common_rest/rest/customer/v2/customer/range/${pageSize}/id/ascend`,
-            type: 'post',
-            data: {
-                query: {
-                    id: customerIds,
-                },
-            },
-        })
-        //请求成功
-            .done(result => {
-                const data = _.map(result.result, item => {
-                    item.customer_id = item.id;
-                    item.customer_name = item.name;
-                    return item;
-                });
-
-                this.setState({
-                    trialQualifiedResult: {
-                        loading: false,
-                        data: data,
-                    },
-                });
-            })
-        //请求失败
-            .fail(err => {
-                this.setState({
-                    trialQualifiedResult: {
-                        loading: false,
-                    },
-                });
-            });
+        history.pushState({
+            from: 'sales_home',
+            trialQualifiedCustomerIds: customerIds
+        }, '/crm', {});
     },
     //试用合格客户数统计数字渲染函数
     trialQualifiedNumRender(text, record) {
@@ -1048,17 +1008,8 @@ var CustomerAnalysis = React.createClass({
                 </div>
                 <RightPanel
                     className="customer-stage-table-wrapper"
-                    showFlag={this.state.isShowCustomerStageTable || this.state.isShowCustomerTable || this.state.isShowTrialQualifiedTable}
+                    showFlag={this.state.isShowCustomerStageTable || this.state.isShowCustomerTable}
                 >
-                    {this.state.isShowTrialQualifiedTable ?
-                        <CustomerStageTable
-                            params={{}}
-                            result={this.state.trialQualifiedResult}
-                            onClose={this.closeTrialQualifiedTable}
-                            handleScrollBottom={() => {}}
-                            showNoMoreData={false}
-                        /> : null}
-
                     {this.state.isShowCustomerStageTable ?
                         <CustomerStageTable
                             params={this.state.selectedCustomerStage}
