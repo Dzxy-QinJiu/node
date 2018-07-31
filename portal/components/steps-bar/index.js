@@ -14,7 +14,7 @@ class StepsBar extends React.Component {
     }
 
     onClickStep(target) {
-        if (_.isFunction(this.props.onClickStep)) this.props.onClickStep(target);
+        this.props.onClickStep(target);
     }
 
     render() {
