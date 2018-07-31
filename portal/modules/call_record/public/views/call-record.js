@@ -603,9 +603,11 @@ const CallRecord = React.createClass({
                     return <div>
                         {CALL_STATUS_MAP[callState]}
                         {
-                            /* 按是否有recording这个字段展示播放图标*/
-                            column.recording && column.billsec !== 0 ? <i className={cls} onClick={this.handleAudioPlay.bind(this, column)}
-                                title={Intl.get('call.record.play', '播放录音')} data-tracename="点击播放录音按钮"></i> : null
+                            /* 按是否有is_record_upload这个字段展示播放图标*/
+                            column.is_record_upload === 'true' && column.recording && column.billsec !== 0 ?
+                                <i className={cls} onClick={this.handleAudioPlay.bind(this, column)}
+                                    title={Intl.get('call.record.play', '播放录音')} data-tracename="点击播放录音按钮"></i> : null
+
                         }
                     </div>;
                 }
