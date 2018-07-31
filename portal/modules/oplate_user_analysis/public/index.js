@@ -800,6 +800,18 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     },
                 },
             },
+            processOption(option, chartProps) {
+                //时间区间
+                const interval = _.get(chartProps, 'cardContainer.selectors[0].activeOption');
+
+                //按小时查看时，横轴显示天和小时
+                if (interval === 'hourly') {
+                    const xAxisData = _.map(chartProps.data, dataItem => {
+                        return moment(dataItem.timestamp).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT);
+                    });
+                    _.set(option, 'xAxis[0].data', xAxisData);
+                }
+            },
             cardContainer: {
                 selectors: [{
                     options: [
