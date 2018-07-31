@@ -109,7 +109,9 @@
               width: 345px;
               .ant-table-thead {
                 background-color: #F5F5F5;
-                line-height: 16px;
+                tr {
+                  line-height: 16px;
+                }
               }
               .ant-table-tbody {
                 tr {
@@ -168,13 +170,12 @@
             .product-info {
               color: @filed-font-color;
               cursor: pointer;
-              margin-left: 60px;
             }
             .app-select-list-wrap {
               box-sizing: border-box;
               position: absolute;
               top: 32px;
-              left: 40px;
+              left: 0;
               z-index: 999;
               background-color: #fff;
               border:1px solid #2196f3;
