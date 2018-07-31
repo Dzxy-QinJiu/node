@@ -341,8 +341,8 @@ module.exports = [{
     }
 },{
     //给成员删除角色
-    'method': 'put',
-    'path': '/rest/base/v1/user/role/updates/remove',
+    'method': 'delete',
+    'path': '/rest/base/v1/user/role/updates',
     'handler': 'delRoleToUsers',
     'passport': {
         'needLogin': true
