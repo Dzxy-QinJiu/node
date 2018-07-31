@@ -99,7 +99,7 @@ const Contract = React.createClass( {
         let userCount = event.target.value;
         _.find(this.state.products, (item) => {
             if (item.client_id === appId) {
-                item.count = userCount;
+                return item.count = userCount;
             }
         });
         this.setState({
@@ -111,7 +111,7 @@ const Contract = React.createClass( {
         let totalPrice = event.target.value;
         _.find(this.state.products, (item) => {
             if (item.client_id === appId) {
-                item.total_price = totalPrice;
+                return item.total_price = totalPrice;
             }
         });
         this.setState({
@@ -175,20 +175,15 @@ const Contract = React.createClass( {
         let appList = this.props.appList;
         let selectedAppIdArray = this.state.selectedAppIdArray;
         let allSelectAppIdArray = selectedAppIdArray.concat(this.state.lastSelectedAppIdArray);
-        let appArray = [];
+        let selectAppList = [];
         if (allSelectAppIdArray.length) {
-            _.forEach(allSelectAppIdArray, (appId) => {
-                _.find(appList, (appItem) => {
-                    if (appItem.client_id === appId) {
-                        appItem.count = APP_DEFAULT_INFO.COUNT;
-                        appItem.total_price = APP_DEFAULT_INFO.PRICE;
-                        appArray.push(appItem);
-                        return;
-                    }
-                });
+            selectAppList = _.filter(appList, appItem => allSelectAppIdArray.indexOf(appItem.client_id) !== -1);
+            _.each(selectAppList, (appItem) => {
+                appItem.count = APP_DEFAULT_INFO.COUNT;
+                appItem.total_price = APP_DEFAULT_INFO.PRICE;
             });
         }
-        return appArray;
+        return selectAppList;
     },
     renderProductInfo() {
         let columns = this.getProductColumns();
@@ -248,7 +243,7 @@ const Contract = React.createClass( {
         let selectedAppIdArray = this.state.selectedAppIdArray;
         let unSelectedAppList = appList;
         if (selectedAppIdArray.length) {
-            unSelectedAppList = _.chain(appList).filter(appItem => selectedAppIdArray.indexOf(appItem.client_id) === -1).value();
+            unSelectedAppList = _.filter(appList, appItem => selectedAppIdArray.indexOf(appItem.client_id) === -1);
         }
         return unSelectedAppList;
 
@@ -269,9 +264,10 @@ const Contract = React.createClass( {
     renderContractForm() {
         const formItemLayout = {
             labelCol: { span: 4 },
-            wrapperCol: { span: 28 }
+            wrapperCol: { span: 20 }
         };
         const formData = this.state.formData;
+        const { getFieldDecorator } = this.props.form;
         return (
             <div className='add-contract-panel'>
                 <div className='contract-title'>{Intl.get('contract.98', '添加合同')}</div>
@@ -283,11 +279,7 @@ const Contract = React.createClass( {
                                 onChange={this.handleCustomerName}
                             />
                         </FormItem>
-                        <FormItem
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 20 }}
-                            label={Intl.get('contract.37', '合同类型')}
-                        >
+                        <FormItem {...formItemLayout} label={Intl.get('contract.37', '合同类型')}>
                             <Select
                                 showSearch
                                 optionFilterProp="children"
@@ -316,17 +308,24 @@ const Contract = React.createClass( {
 
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
-                            <Input
+                            {getFieldDecorator('contract_amount', {
+                                rules: [{ pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')}]
+                            })( <Input
                                 value={parseAmount(formData.contract_amount)}
                                 onChange={this.handleContractAmount}
                                 onFocus={this.handleInputFocus}
-                            />
+                                addonAfter={Intl.get('contract.82', '元')}
+                            />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.109', '毛利')}>
-                            <Input
+                            {getFieldDecorator('gross_profit', {
+                                rules: [{ pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')}]
+                            })(<Input
                                 value={parseAmount(formData.gross_profit)}
                                 onChange={this.handleContractGross}
-                            />
+                                addonAfter={Intl.get('contract.82', '元')}
+                            />)}
+
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.95', '产品信息')}>
                             {
@@ -378,15 +377,10 @@ const Contract = React.createClass( {
                 reqData.user_name = UserData.getUserData().user_name || '';
                 let products = _.cloneDeep(this.state.products); // 产品信息
                 let productTotalPrice = 0; // 产品信息中的总额；
-                // 修改产品信息的字段，满足后端需求
-                _.each(products, (item) => {
+                let processProducts = _.map(products, (item) => {
                     // item.total_price是字符串格式，+是为了将字符串转为数字格式
                     productTotalPrice += +item.total_price;
-                    item.id = item.client_id;
-                    item.name = item.client_name;
-                    delete item.client_id;
-                    delete item.client_name;
-                    delete item.client_image;
+                    return {id: item.client_id, name: item.client_name, count: item.count, total_price: item.total_price};
                 });
                 // 判断产品信息中的总额和合同额是否相同，若相同，则发请求，否则，给出信息提示
                 // reqData.contract_amount是字符串格式，+是为了将字符串转为数字格式
@@ -396,7 +390,7 @@ const Contract = React.createClass( {
                     });
                     return;
                 }
-                reqData.products = products; // 产品信息
+                reqData.products = processProducts; // 产品信息
                 reqData.customers = [{customer_name: reqData.customer_name, customer_id: this.props.customerId}]; // 客户信息
                 this.addContractAjax(reqData);
             }
