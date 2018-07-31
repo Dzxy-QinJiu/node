@@ -606,7 +606,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             width: '10%',
                             align: 'right',
                             render: (text, record) => {
-                                if (moment().diff(record.timestamp, 'day') <= 1) {
+                                if (moment().diff(record.timestamp, 'day') < 1) {
                                     text = '';
                                 } else {
                                     text = isNaN(text) ? '0' : text;
@@ -625,7 +625,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             width: '10%',
                             align: 'right',
                             render: (text, record) => {
-                                if (moment().diff(record.timestamp, 'day') <= index) {
+                                if (moment().diff(record.timestamp, 'day') < index) {
                                     text = '';
                                 } else {
                                     text = isNaN(text) ? '0' : text;
