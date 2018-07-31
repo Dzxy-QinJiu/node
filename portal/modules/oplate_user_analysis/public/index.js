@@ -801,6 +801,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
             },
             processOption(option, chartProps) {
+                //设置y轴名称，用以标识y轴数值的单位
+                _.set(option, 'yAxis[0].name', Intl.get('common.app.minute', '分钟'));
+
                 //时间区间
                 const interval = _.get(chartProps, 'cardContainer.selectors[0].activeOption');
 
