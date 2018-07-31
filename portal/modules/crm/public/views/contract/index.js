@@ -69,8 +69,8 @@ const Contract = React.createClass({
         let loading = this.state.contractList.loading;
         // 添加合同对象的默认值
         let contract = {
-            customer_name: this.props.curCustomer.name,
-            buyer: this.props.curCustomer.name,
+            customer_name: this.state.curCustomer.name,
+            buyer: this.state.curCustomer.name,
             stage: '待审',
             date: moment().valueOf(),
             start_time: moment().valueOf(),
@@ -98,8 +98,8 @@ const Contract = React.createClass({
                             this.state.isAddFormShow ? (
                                 <ContractForm
                                     contract={contract}
-                                    curCustomer={this.props.curCustomer}
-                                    customerId={this.props.curCustomer.id}
+                                    curCustomer={this.state.curCustomer}
+                                    customerId={this.state.curCustomer.id}
                                     appList={this.state.appList}
                                 />
                             ) : null

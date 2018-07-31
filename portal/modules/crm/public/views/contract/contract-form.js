@@ -28,8 +28,8 @@ const Contract = React.createClass( {
         };
     },
     componentWillReceiveProps(nextProps) {
-        if (nextProps.currentId !== this.props.currentId) {
-            this.state.formData.customerName = nextProps.curCustomer.name;
+        if (nextProps.customerId !== this.props.customerId) {
+            this.state.formData = nextProps.contract;
             this.setState({});
         }
     },
