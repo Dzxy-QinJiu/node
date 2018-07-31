@@ -11,6 +11,11 @@ const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 import ContractAction from '../../action/contract-action';
 const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
+// 开通应用，默认的数量和金额
+const APP_DEFAULT_INFO = {
+    COUNT: 1,
+    PRICE: 1000
+};
 
 const Contract = React.createClass( {
     getInitialState() {
@@ -29,8 +34,9 @@ const Contract = React.createClass( {
     },
     componentWillReceiveProps(nextProps) {
         if (nextProps.customerId !== this.props.customerId) {
-            this.state.formData = nextProps.contract;
-            this.setState({});
+            this.setState({
+                formData: nextProps.contract
+            });
         }
     },
     handleSureBtn() {
@@ -174,8 +180,8 @@ const Contract = React.createClass( {
             _.forEach(allSelectAppIdArray, (appId) => {
                 _.forEach(appList, (appItem) => {
                     if (appItem.client_id === appId) {
-                        appItem.count = 1;
-                        appItem.total_price = 1000;
+                        appItem.count = APP_DEFAULT_INFO.COUNT;
+                        appItem.total_price = APP_DEFAULT_INFO.PRICE;
                         appArray.push(appItem);
                     }
                 });
@@ -217,8 +223,8 @@ const Contract = React.createClass( {
     // 有效期
     handleValidityTimeRange(dates) {
         let formData = this.state.formData;
-        let startTime = dates && dates[0] && dates[0].valueOf() || '';
-        let endTime = dates && dates[1] && dates[1].valueOf() || '';
+        let startTime = _.get(dates, '[0]') && _.get(dates, '[0]').valueOf() || '';
+        let endTime = _.get(dates, '[1]') && _.get(dates, '[1]').valueOf() || '';
         formData.start_time = startTime;
         formData.end_time = endTime;
         this.setState({formData});
@@ -298,7 +304,7 @@ const Contract = React.createClass( {
                                 onChange={this.handleSignContractDate}
                             />
                         </FormItem>
-                        <FormItem {...formItemLayout} label='有效期'>
+                        <FormItem {...formItemLayout} label={Intl.get('contract.168', '有效期')}>
                             <RangePicker
                                 className='validity-time'
                                 ranges={{ '有效期一年': [moment(formData.start_time), moment(formData.end_time)] }}
@@ -339,6 +345,25 @@ const Contract = React.createClass( {
             </div>
         );
     },
+    // 添加合同的ajax
+    addContractAjax(reqData) {
+        this.setState({isLoading: true});
+        ContractAjax.addContract({type: 'sell'}, reqData).then( (resData) => {
+            if (resData && resData.code === 0) {
+                this.state.errMsg = '';
+                this.state.isLoading = false;
+                ContractAction.refreshContractList(resData.result);
+            } else {
+                this.state.errMsg = Intl.get('crm.154', '添加失败');
+            }
+            this.setState(this.state);
+        }, (errMsg) => {
+            this.setState({
+                isLoading: false,
+                errMsg: errMsg || Intl.get('crm.154', '添加失败')
+            });
+        });
+    },
     handleSubmit(event) {
         event.preventDefault();
         this.props.form.validateFields((err) => {
@@ -354,6 +379,7 @@ const Contract = React.createClass( {
                 let productTotalPrice = 0; // 产品信息中的总额；
                 // 修改产品信息的字段，满足后端需求
                 _.each(products, (item) => {
+                    // item.total_price是字符串格式，+是为了将字符串转为数字格式
                     productTotalPrice += +item.total_price;
                     item.id = item.client_id;
                     item.name = item.client_name;
@@ -362,30 +388,16 @@ const Contract = React.createClass( {
                     delete item.client_image;
                 });
                 // 判断产品信息中的总额和合同额是否相同，若相同，则发请求，否则，给出信息提示
+                // reqData.contract_amount是字符串格式，+是为了将字符串转为数字格式
                 if (productTotalPrice !== +reqData.contract_amount) {
                     this.setState({
-                        errMsg: Intl.get('crm.174', '合同额与产品总额不同，请核对')
+                        errMsg: Intl.get('contract.174', '合同额与产品总额不相等，请核对')
                     });
                     return;
                 }
                 reqData.products = products; // 产品信息
                 reqData.customers = [{customer_name: reqData.customer_name, customer_id: this.props.customerId}]; // 客户信息
-                this.setState({isLoading: true});
-                ContractAjax.addContract({type: 'sell'}, reqData).then( (resData) => {
-                    if (resData && resData.code === 0) {
-                        this.state.errMsg = '';
-                        this.state.isLoading = false;
-                        ContractAction.refreshContractList(resData.result);
-                    } else {
-                        this.state.errMsg = Intl.get('crm.154', '添加失败');
-                    }
-                    this.setState(this.state);
-                }, (errMsg) => {
-                    this.setState({
-                        isLoading: false,
-                        errMsg: errMsg || Intl.get('crm.154', '添加失败')
-                    });
-                });
+                this.addContractAjax(reqData);
             }
         });
     },
