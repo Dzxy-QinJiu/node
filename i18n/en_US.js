@@ -1351,11 +1351,11 @@ var en_US = {
     'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
     'crm.overview.apply.user.tip': 'The customer has no user yet',//该客户还没有用户
     'crm.no.trace.record': 'The customer has not been followed up', //还没有跟进过该客户
-    'crm.no.contact.tip': 'The customer has not yet added a contact',//该客户还没有添加过联系人
+    'crm.no.contact.tip': 'The customer has not contact yet',//该客户还没有联系人
     'crm.no.contact': 'No contact',//暂无联系人
-    'crm.no.order.tip': 'The customer has not yet added a order',//该客户还没有添加过订单
+    'crm.no.order.tip': 'The customer has no order yet',//该客户还没有订单
     'crm.detail.no.user': 'No users',//暂无用户
-    'crm.detail.no.schedule': 'The customer has not added a schedule',//该客户还没有添加过联系计划
+    'crm.detail.no.schedule': 'The customer has no schedule yet',//该客户还没有联系计划
     'crm.order.status.underway': 'Underway',//进行中
     'crm.order.status.win': 'Win',//赢单
     'crm.order.status.lose': 'Lose',//丢单

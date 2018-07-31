@@ -18,7 +18,7 @@
   word-break: break-all;
 }
 
-.order-top-block,.order-container-scroll  {
+.order-top-block, .order-container-scroll {
   float: left;
   width: 100%;
 }
@@ -39,6 +39,11 @@
     }
   }
   .order-item-container {
+    &:hover {
+      .order-item-title .order-item-buttons .iconfont.icon-delete {
+        display: block;
+      }
+    }
     .detail-card-title, .order-item-title {
       float: left;
       width: 100%;
@@ -84,6 +89,7 @@
           margin-left: 4px;
         }
         .iconfont.icon-delete {
+          display: none;
           width: 20px;
           height: 20px;
           margin-left: 0;
@@ -124,6 +130,9 @@
       font-size: 14px;
       .order-item-content {
         margin-bottom: 4px;
+        .basic-edit-field .basic-info-text{
+          max-width: 360px;
+        }
         //编辑按钮hover时才展示
         .icon-edit-btn {
           display: none;

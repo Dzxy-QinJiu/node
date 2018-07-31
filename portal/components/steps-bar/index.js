@@ -13,6 +13,10 @@ class StepsBar extends React.Component {
         super(props);
     }
 
+    onClickStep(target) {
+        this.props.onClickStep(target);
+    }
+
     render() {
         let currentStep = this.props.currentStepIndex;
         let stepDataList = this.props.stepDataList;
@@ -43,7 +47,7 @@ class StepsBar extends React.Component {
                                         'step-finished-line': index < currentStep || index - 1 < currentStep,//完成的线
                                         'step-waiting-line': index > currentStep//待运行的线
                                     })}/>
-                                    <span className={stepIconClass}/>
+                                    <span className={stepIconClass} onClick={this.onClickStep.bind(this)}/>
                                     <hr className={classNames('step-line', {
                                         'step-line-translate': index === stepLength - 1,//最后一个步骤右侧不展示横线
                                         'step-finished-line': index < currentStep,//完成的线
@@ -59,10 +63,13 @@ class StepsBar extends React.Component {
 const PropTypes = React.PropTypes;
 StepsBar.propTypes = {
     stepDataList: PropTypes.array,
-    currentStepIndex: PropTypes.string
+    currentStepIndex: PropTypes.string,
+    onClickStep: PropTypes.func
 };
 StepsBar.defaultProps = {
     stepDataList: [],//步骤数据列表[{title,description}]
     currentStepIndex: 0,//当前的步骤
+    onClickStep: function() {//点击圆点的触发事件
+    }
 };
 export default StepsBar;
