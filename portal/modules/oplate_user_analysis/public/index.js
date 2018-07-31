@@ -583,6 +583,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             title: Intl.get('common.login.time', '时间'),
                             dataIndex: 'timestamp',
                             width: '10%',
+                            align: 'left',
                             render: text => {
                                 text = moment(text).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
                                 return <b>{text}</b>;
