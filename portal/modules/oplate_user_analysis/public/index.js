@@ -596,6 +596,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             title: Intl.get('oplate.user.analysis.23', '当天'),
                             dataIndex: 'day0',
                             width: '10%',
+                            align: 'right',
                             render: text => {
                                 text = isNaN(text) ? '0' : text;
                                 return <span>{text}</span>;
@@ -604,6 +605,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             title: Intl.get('oplate.user.analysis.24', '次日'),
                             dataIndex: 'day1',
                             width: '10%',
+                            align: 'right',
                             render: (text, record) => {
                                 if (moment().diff(record.timestamp, 'day') <= 1) {
                                     text = '';
@@ -622,6 +624,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             title: Intl.get('oplate.user.analysis.25', '{count}天后', {count: index}),
                             dataIndex: 'day' + index,
                             width: '10%',
+                            align: 'right',
                             render: (text, record) => {
                                 if (moment().diff(record.timestamp, 'day') <= index) {
                                     text = '';
