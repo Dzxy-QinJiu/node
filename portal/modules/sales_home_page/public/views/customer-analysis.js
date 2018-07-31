@@ -2,7 +2,7 @@
  * 客户分析
  * Created by wangliping on 2016/11/24.
  */
-import ajax from 'ant-ajax';
+import mockTeamData from './mock-team-data';
 import { AntcAnalysis } from 'antc';
 let history = require('PUB_DIR/sources/history');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
@@ -434,6 +434,7 @@ var CustomerAnalysis = React.createClass({
     //获取试用合格客户数统计图表
     getTrialQualifiedChart() {
         let resultType = '';
+        console.log(mockTeamData);
 
         let data = [{
             name: '李四',
