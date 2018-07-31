@@ -524,7 +524,7 @@ const OrderItem = React.createClass({
                 onClickStep={this.onClickStep.bind(this)}/>);
     },
     onClickStep(event){
-        $(event.target).parents('.step-item').find('.step-title .order-stage-name').trigger('click');
+        $(event.target).parents('.step-item').find('.order-stage-name').trigger('click');
     },
     //渲染填写丢单原因的表单
     renderLoseOrderForm(order){
