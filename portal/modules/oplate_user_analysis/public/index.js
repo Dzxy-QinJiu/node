@@ -576,7 +576,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
             },
             option: {
-                pagination: false,
                 columns: (() => {
                     let columns = [
                         {
