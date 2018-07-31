@@ -388,22 +388,7 @@ const AppPropertySetting = React.createClass({
                                     })
                                 }
                             </div>
-                        </div>
-                        {
-                            this.props.showIsTwoFactor ? (
-                                !Oplate.hideSomeItem && <div className="form-item">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
-                                    <div className="form-item-content">
-                                        {
-                                            this.renderUserTwoFactorBlock({
-                                                isCustomSetting: true,
-                                                appId: currentApp.app_id,
-                                                globalTwoFactor: defaultSettings.is_two_factor
-                                            })
-                                        }
-                                    </div>
-                                </div>) : null
-                        }
+                        </div>                        
                         {this.props.isSingleAppEdit ? (
                             <div className="form-item">
                                 <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态" /></div>
@@ -418,20 +403,26 @@ const AppPropertySetting = React.createClass({
                                 </div>
                             </div>
                         ) : null}
-                        {
-                            this.props.showMultiLogin ? (
-                                !Oplate.hideSomeItem && <div className="form-item">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
-                                    <div className="form-item-content">
-                                        {
-                                            this.renderMultiLoginRadioBlock({
-                                                isCustomSetting: true,
-                                                appId: currentApp.app_id,
-                                                globalMultiLogin: defaultSettings.multilogin
-                                            })
-                                        }
-                                    </div>
-                                </div>) : null
+                        {                            
+                            !Oplate.hideSomeItem && <div className="form-item">
+                                <div className="form-item-label">{Intl.get('crm.186', '其他')}</div>
+                                <div className="form-item-content">
+                                    {
+                                        this.props.showMultiLogin ? this.renderMultiLoginRadioBlock({
+                                            isCustomSetting: true,
+                                            appId: currentApp.app_id,
+                                            globalMultiLogin: defaultSettings.multilogin
+                                        }) : null
+                                    }
+                                    {
+                                        this.props.showIsTwoFactor ? this.renderUserTwoFactorBlock({
+                                            isCustomSetting: true,
+                                            appId: currentApp.app_id,
+                                            globalTwoFactor: defaultSettings.is_two_factor
+                                        }) : null
+                                    }
+                                </div>
+                            </div>
                         }
                     </div>
                     <AppRolePermission
@@ -491,9 +482,9 @@ const AppPropertySetting = React.createClass({
                             this.props.selectedApps.map((app, index) => {
                                 return (
                                     <DetailCard
-                                        key={key}
+                                        key={index}
                                         title={(
-                                            <div className="title-container">
+                                            <div className="title-container clearfix">
                                                 <span className="logo-container" title={app.app_name}>
                                                     <DefaultUserLogoTitle
                                                         nickName={app.app_name}

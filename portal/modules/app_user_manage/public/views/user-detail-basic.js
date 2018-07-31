@@ -30,6 +30,7 @@ import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_sugge
 import UserBasicCard from './user-basic/user-basic-card';
 import OrgCard from './user-basic/org-card';
 import ContactCard from './user-basic/contact-card';
+import { secondsToHourMinuteSecond } from '../../../../public/sources/utils/time-format-util';
 
 const FORMAT = oplateConsts.DATE_FORMAT;
 
@@ -186,13 +187,16 @@ var UserDetailBasic = React.createClass({
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_FIELD, result);
         AppUserDetailAction.changeAppFieldSuccess(result);
     },
-    renderMultiLogin: function(app) {
+    renderMultiLogin: function(app, readOnly) {
         var multilogin = /^[10]$/.test((app.multilogin + '')) ? app.multilogin + '' : '';
         if (!hasPrivilege('APP_USER_EDIT')) {
             return multilogin ? (multilogin === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : multilogin;
         }
         if (!multilogin) {
             return multilogin;
+        } else if (readOnly) {
+            return multilogin === '1' ?
+                Intl.get('user.open.code', '开') : Intl.get('user.close.code', '关');
         }
         return <UserDetailFieldSwitch
             userId={this.props.userId}
@@ -208,13 +212,15 @@ var UserDetailBasic = React.createClass({
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
     },
-    renderIsTwoFactor: function(app) {
+    renderIsTwoFactor: function(app, readOnly) {
         var is_two_factor = /^[10]$/.test((app.is_two_factor + '')) ? app.is_two_factor + '' : '';
         if (!hasPrivilege('APP_USER_EDIT')) {
             return is_two_factor ? (is_two_factor === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : is_two_factor;
         }
         if (!is_two_factor) {
             return is_two_factor;
+        } else if (readOnly) {
+            return is_two_factor === '1' ? Intl.get('user.open.code', '开') : Intl.get('user.close.code', '关');
         }
         return <UserDetailFieldSwitch
             userId={this.props.userId}
@@ -260,8 +266,8 @@ var UserDetailBasic = React.createClass({
             unCheckedValue="true"
             checkedSubmitValue="1"
             unCheckedSubmitValue="0"
-            checkedChildren={Intl.get('user.open.code', '开')}
-            unCheckedChildren={Intl.get('user.close.code', '关')}
+            checkedChildren={Intl.get('common.enabled', '启用')}
+            unCheckedChildren={Intl.get('user.status.stop', '停用')}
             field="status"
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
@@ -297,20 +303,19 @@ var UserDetailBasic = React.createClass({
                 <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
                     <span><ReactIntl.FormattedMessage id="user.time.start"
                         defaultMessage="开通时间" />：{displayEstablishTime}</span>
-                    <span><ReactIntl.FormattedMessage id="user.start.time"
-                        defaultMessage="启用时间" />：{displayStartTime}</span>
-                    <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间" />：{displayEndTime}</span>
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
                         defaultMessage="用户类型" />：{this.getUserTypeText(app)}</span>}
+                    <span><ReactIntl.FormattedMessage id="user.start.time"
+                        defaultMessage="启用时间" />：{displayStartTime}</span>
                     <span><ReactIntl.FormattedMessage id="user.expire.status"
                         defaultMessage="到期状态" />：{this.renderOverDraft(app)}</span>
+                    <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间" />：{displayEndTime}</span>
+                    {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.multi.login"
+                        defaultMessage="多人登录" />：{this.renderMultiLogin(app, true)}</span>}
                     {/* <span><ReactIntl.FormattedMessage id="common.app.status"
                         defaultMessage="开通状态" />：{this.renderStatus(app)}</span> */}
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.two.step.certification"
-                        defaultMessage="二步认证" />：{this.renderIsTwoFactor(app)}</span>}
-
-                    {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.multi.login"
-                        defaultMessage="多人登录" />：{this.renderMultiLogin(app)}</span>}
+                        defaultMessage="二步认证" />：{this.renderIsTwoFactor(app, true)}</span>}
                 </div>
             </div>
         );
@@ -365,7 +370,7 @@ var UserDetailBasic = React.createClass({
                                 </span>
                                 <p title={app.app_name}>{app.app_name}</p>
                                 <span className="icon-suffix">
-                                   
+
                                 </span>
                                 <span className="btn-bar">
                                     {

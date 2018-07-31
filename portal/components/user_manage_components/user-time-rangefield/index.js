@@ -1,4 +1,5 @@
-import {Form} from 'antd';
+import {Form, Select} from 'antd';
+const Option = Select.Option;
 import DateSelector from '../../date-selector';
 const FormItem = Form.Item;
 
@@ -72,6 +73,15 @@ const UserTimeRangeField = {
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
                 >
+                    {/* <Select>
+                        <Option value="1w">{Intl.get('user.time.one.week','1周')}</Option>
+                        <Option value="0.5m">{Intl.get('user.time.half.month','半个月')}</Option>
+                        <Option value="1m">{Intl.get('user.time.one.month','1个月')}</Option>
+                        <Option value="6m">{Intl.get('user.time.six.month','6个月')}</Option>
+                        <Option value="12m">{Intl.get('user.time.twelve.month','12个月')}</Option>
+                        <Option value="forever">{Intl.get('common.time.forever','永久')}</Option>
+                        <Option value="custom">{Intl.get('user.time.custom','自定义')}</Option>
+                    </Select> */}
                     <DateSelector
                         disableDateBeforeRange={true}
                         disableDateBeforeToday={true}

@@ -104,18 +104,18 @@ var UserDetail = React.createClass({
         clearTimeout(this.wheelTimer);
         this.wheelTimer = setTimeout(() => {
             // 向上滚动
-            if (e.deltaY < 0) {
+            if (e.deltaY < 0 && !this.state.showBasicDetail) {
                 this.setState({
                     showBasicDetail: true
                 });
             }
             // 向下滚动
-            if (e.deltaY > 0) {
+            if (e.deltaY > 0 && this.state.showBasicDetail) {
                 this.setState({
                     showBasicDetail: false
                 });
             }
-        }, 100);
+        }, 50);
     },
 
     closeRightPanel: function() {
