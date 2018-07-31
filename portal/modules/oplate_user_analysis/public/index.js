@@ -811,6 +811,14 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     });
                     _.set(option, 'xAxis[0].data', xAxisData);
                 }
+
+                //系列数据
+                const serieData = _.get(option, 'series[0].data');
+
+                _.each(serieData, dataItem => {
+                    //将通话时间转成分钟
+                    dataItem.value = moment.duration(dataItem.value).asMinutes().toFixed();
+                });
             },
             cardContainer: {
                 selectors: [{
