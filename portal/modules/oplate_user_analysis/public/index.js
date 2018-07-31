@@ -800,6 +800,29 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     },
                 },
             },
+            processOption(option, chartProps) {
+                //设置y轴名称，用以标识y轴数值的单位
+                _.set(option, 'yAxis[0].name', Intl.get('common.app.minute', '分钟'));
+
+                //时间区间
+                const interval = _.get(chartProps, 'cardContainer.selectors[0].activeOption');
+
+                //按小时查看时，横轴显示天和小时
+                if (interval === 'hourly') {
+                    const xAxisData = _.map(chartProps.data, dataItem => {
+                        return moment(dataItem.timestamp).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT);
+                    });
+                    _.set(option, 'xAxis[0].data', xAxisData);
+                }
+
+                //系列数据
+                const serieData = _.get(option, 'series[0].data');
+
+                _.each(serieData, dataItem => {
+                    //将通话时间转成分钟
+                    dataItem.value = moment.duration(dataItem.value).asMinutes().toFixed();
+                });
+            },
             cardContainer: {
                 selectors: [{
                     options: [
