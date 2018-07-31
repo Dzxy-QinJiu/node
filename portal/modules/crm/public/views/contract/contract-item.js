@@ -85,7 +85,7 @@ const ContractItem = React.createClass({
                         </span>
                     )
                 ) : null}
-                <span className='app-name'>{appName}</span>
+                <span className='app-name' title={appName}>{appName}</span>
             </span>
         );
     },

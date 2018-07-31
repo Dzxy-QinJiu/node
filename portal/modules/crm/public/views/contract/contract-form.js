@@ -90,7 +90,7 @@ const Contract = React.createClass( {
                         </span>
                     )
                 ) : null}
-                <span className='app-name'>{appName}</span>
+                <span className='app-name' title={appName}>{appName}</span>
             </span>
         );
     },
@@ -178,11 +178,12 @@ const Contract = React.createClass( {
         let appArray = [];
         if (allSelectAppIdArray.length) {
             _.forEach(allSelectAppIdArray, (appId) => {
-                _.forEach(appList, (appItem) => {
+                _.find(appList, (appItem) => {
                     if (appItem.client_id === appId) {
                         appItem.count = APP_DEFAULT_INFO.COUNT;
                         appItem.total_price = APP_DEFAULT_INFO.PRICE;
                         appArray.push(appItem);
+                        return;
                     }
                 });
             });
