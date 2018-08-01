@@ -3,6 +3,7 @@ import { AntcTable } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import classNames from 'classnames';
+import Trace from 'LIB_DIR/trace';
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -17,9 +18,14 @@ const ContractItem = React.createClass({
             });
         }
     },
-    toggleContractDetail() {
+    toggleContractDetail(event) {
         let formData = this.state.formData;
         formData.isShowAllContractInfo = !formData.isShowAllContractInfo;
+        if (formData.isShowAllContractInfo) {
+            Trace.traceEvent(event, '点击展开详情');
+        } else {
+            Trace.traceEvent(event, '点击收起详情');
+        }
         this.setState({formData});
     },
     renderContractTitle() {

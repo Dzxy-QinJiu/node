@@ -8,6 +8,7 @@ import ContractItem from './contract-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import ContractForm from './contract-form';
+import Trace from 'LIB_DIR/trace';
 
 const Contract = React.createClass({
     getInitialState() {
@@ -62,6 +63,7 @@ const Contract = React.createClass({
         $(window).off('resize', this.onStoreChange);
     },
     showForm() {
+        Trace.traceEvent($(this.getDOMNode()).find('.crm-detail-add-btn'), '添加合同');
         ContractAction.showForm();
     },
     render() {

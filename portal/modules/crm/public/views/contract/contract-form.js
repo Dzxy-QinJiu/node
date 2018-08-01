@@ -12,6 +12,7 @@ import ContractAction from '../../action/contract-action';
 const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
 const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
+import Trace from 'LIB_DIR/trace';
 
 // 开通应用，默认的数量和金额
 const APP_DEFAULT_INFO = {
@@ -41,7 +42,8 @@ const Contract = React.createClass( {
             });
         }
     },
-    handleSureBtn() {
+    handleSureBtn(event) {
+        Trace.traceEvent(event, '点击保存');
         this.setState({
             isShowSelectAppTable: true,
             visible: false,
@@ -49,7 +51,8 @@ const Contract = React.createClass( {
             lastSelectedAppIdArray: this.state.selectedAppIdArray
         });
     },
-    handleCancelBtn(){
+    handleCancelBtn(event){
+        Trace.traceEvent(event, '点击取消');
         this.setState({
             visible: false
         });
@@ -67,7 +70,7 @@ const Contract = React.createClass( {
                     appList={this.state.appList}
                     getSelectAppList={this.getSelectAppList}
                 />
-                <div className='sure-cancel-btn'>
+                <div className='sure-cancel-btn' data-tracename="应用选择面板">
                     <span className='sure-btn' onClick={this.handleSureBtn}>{Intl.get('common.confirm', '确认')}</span>
                     <span className='cancel-btn' onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</span>
                 </div>
@@ -250,7 +253,8 @@ const Contract = React.createClass( {
         return unSelectedAppList;
 
     },
-    showAppListPanel() {
+    showAppListPanel(event) {
+        Trace.traceEvent(event, '点击添加应用');
         let unSelectedAppList = this.getUnselectAppList();
         this.setState({
             visible: true,
@@ -271,7 +275,7 @@ const Contract = React.createClass( {
         const formData = this.state.formData;
         const { getFieldDecorator } = this.props.form;
         return (
-            <div className='add-contract-panel'>
+            <div className='add-contract-panel' data-tracename="添加合同面板">
                 <div className='contract-title'>{Intl.get('contract.98', '添加合同')}</div>
                 <div className='contract-form'>
                     <Form>
@@ -368,6 +372,7 @@ const Contract = React.createClass( {
     },
     handleSubmit(event) {
         event.preventDefault();
+        Trace.traceEvent(event, '点击保存按钮');
         this.props.form.validateFields((err) => {
             if (err) {
                 return;
@@ -398,7 +403,8 @@ const Contract = React.createClass( {
             }
         });
     },
-    handleCancel() {
+    handleCancel(event) {
+        Trace.traceEvent(event, '点击取消按钮');
         ContractAction.hideForm();
     },
     render(){
