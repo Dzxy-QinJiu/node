@@ -31,15 +31,25 @@ const Contract = React.createClass( {
             selectedAppIdArray: [], // 选择的应用id
             lastSelectedAppIdArray: [], // 上一次选择的应用id
             contractType: '产品合同', // 合同类型
-            formData: JSON.parse(JSON.stringify(this.props.contract)), // 合同信息
+            formData: {
+                customer_name: this.props.curCustomer.name,
+                buyer: this.props.curCustomer.name,
+                stage: '待审',
+                date: moment().valueOf(),
+                start_time: moment().valueOf(),
+                end_time: moment().add(1, 'year').valueOf(),
+                contract_amount: 0,
+                gross_profit: 0,
+            }, // 合同信息
             products: [] // 产品数据
         };
     },
     componentWillReceiveProps(nextProps) {
-        if (nextProps.customerId !== this.props.customerId) {
-            this.setState({
-                formData: nextProps.contract
-            });
+        if (nextProps.customerId && nextProps.customerId !== this.props.customerId) {
+            let formData = this.state.formData;
+            formData.customer_name = nextProps.curCustomer.name;
+            formData.buyer = nextProps.curCustomer.name;
+            this.setState({formData});
         }
     },
     handleSureBtn(event) {
@@ -179,8 +189,12 @@ const Contract = React.createClass( {
         if (allSelectAppIdArray.length) {
             selectAppList = _.filter(appList, appItem => allSelectAppIdArray.indexOf(appItem.client_id) !== -1);
             _.each(selectAppList, (appItem) => {
-                appItem.count = APP_DEFAULT_INFO.COUNT;
-                appItem.total_price = APP_DEFAULT_INFO.PRICE;
+                if (!appItem.count) {
+                    appItem.count = APP_DEFAULT_INFO.COUNT;
+                }
+                if (!appItem.total_price) {
+                    appItem.total_price = APP_DEFAULT_INFO.PRICE;
+                }
             });
         }
         return selectAppList;

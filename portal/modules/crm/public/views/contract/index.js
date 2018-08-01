@@ -34,27 +34,28 @@ const Contract = React.createClass({
             this.setState({appList: appList});
         });
     },
+    getContractByCustomerId(customerId) {
+        let params = this.getParams();
+        let reqBody = {query: {'customer_id': customerId}};
+        ContractAction.getContractByCustomerId(params, reqBody);
+    },
     componentDidMount() {
         ContractStore.listen(this.onStoreChange);
         this.getAppList();
-        let params = this.getParams();
-        let reqBody = {query: {'customer_id': this.props.curCustomer.id}};
-        if (this.props.curCustomer) {
-            ContractAction.getContractByCustomerId(params, reqBody);
+        if (this.props.curCustomer && this.props.curCustomer.id) {
+            this.getContractByCustomerId(this.props.curCustomer.id);
         }
         $(window).on('resize', this.onStoreChange);
     },
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
-        if (nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
+        if (nextProps.curCustomer && nextProps.curCustomer.id && nextProps.curCustomer.id !== oldCustomerId) {
             this.setState({
                 curCustomer: nextProps.curCustomer
             });
-            let params = this.getParams();
-            let reqBody = {query: {'customer_id': nextProps.curCustomer.id}};
             setTimeout(() => {
                 ContractAction.resetState();
-                ContractAction.getContractByCustomerId(params, reqBody);
+                this.getContractByCustomerId(nextProps.curCustomer.id);
             });
         }
     },
@@ -69,17 +70,6 @@ const Contract = React.createClass({
     render() {
         let contractListLength = this.state.contractList.data.length || 0;
         let loading = this.state.contractList.loading;
-        // 添加合同对象的默认值
-        let contract = {
-            customer_name: this.state.curCustomer.name,
-            buyer: this.state.curCustomer.name,
-            stage: '待审',
-            date: moment().valueOf(),
-            start_time: moment().valueOf(),
-            end_time: moment().add(1, 'year').valueOf(),
-            contract_amount: 0,
-            gross_profit: 0,
-        };
         return (
             <div className="contract-container" data-tracename="合同页面">
                 {
@@ -99,7 +89,6 @@ const Contract = React.createClass({
                         {
                             this.state.isAddFormShow ? (
                                 <ContractForm
-                                    contract={contract}
                                     curCustomer={this.state.curCustomer}
                                     customerId={this.state.curCustomer.id}
                                     appList={this.state.appList}
