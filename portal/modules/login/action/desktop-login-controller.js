@@ -66,7 +66,7 @@ exports.showLoginPage = function(req, res) {
         var qq = '4006770986';
         let backendIntl = new BackendIntl(req);
         let hideLangQRcode = '';
-        if (global.config.lang && global.config.lang == 'es_VE') {
+        if (global.config.lang && global.config.lang === 'es_VE') {
             hideLangQRcode = 'true';
         }
         res.render('login/tpl/desktop-login', {
@@ -82,7 +82,6 @@ exports.showLoginPage = function(req, res) {
             siteID: global.config.siteID,
             lang: loginLang,
             hideLangQRcode: hideLangQRcode,
-            projectName: global.config.processTitle || 'oplate',
             clientId: global.config.loginParams.clientId,
             stopcheck: stopcheck,
             useSso: global.config.useSso

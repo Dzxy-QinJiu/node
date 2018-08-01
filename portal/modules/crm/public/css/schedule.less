@@ -168,48 +168,49 @@
     }
   }
 }
-
-//添加面板的表单
-form.schedule-form {
-  padding: 10px;
-  border: 1px solid #d3eafc;
-  //自定义提醒时间样式设置
-  .define-timerange-area {
+.right-pannel-default{
+  //添加面板的表单
+  form.schedule-form {
+    padding: 10px;
+    border: 1px solid #d3eafc;
+    //自定义提醒时间样式设置
+    .define-timerange-area {
+      .ant-form-item {
+        .ant-switch {
+          margin-left: 2px;
+        }
+        .begin-date-input {
+          width: auto;
+          border: 1px solid #d9d9d9;
+          margin-right: 10px;
+          padding-left: 8px;
+        }
+      }
+    }
     .ant-form-item {
-      .ant-switch {
-        margin-left: 2px;
-      }
-      .begin-date-input {
-        width: auto;
-        border: 1px solid #d9d9d9;
-        margin-right: 10px;
-        padding-left: 8px;
-      }
-    }
-  }
-  .ant-form-item {
-    width: 100%;
-    .ant-form-item-label {
-      text-align: center;
-    }
-    input, textarea, .ant-select {
       width: 100%;
-    }
-    .ant-radio-wrapper {
-      margin-right: 20px;
-      margin-bottom: 0;
-      font-size: 14px;
-      font-weight: normal;
-      .iconfont {
-        padding-right: 4px;
-        font-size: 16px;
-        color: @other_icon_color;
+      .ant-form-item-label {
+        text-align: center;
       }
-      .iconfont.icon-visit-briefcase {
-        color: @icon_visit_color;
+      input, textarea, .ant-select, .ant-time-picker-input {
+        width: 100%;
       }
-      .icon-phone-call-out {
-        color: @today_color;
+      .ant-radio-wrapper {
+        margin-right: 20px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: normal;
+        .iconfont {
+          padding-right: 4px;
+          font-size: 16px;
+          color: @other_icon_color;
+        }
+        .iconfont.icon-visit-briefcase {
+          color: @icon_visit_color;
+        }
+        .icon-phone-call-out {
+          color: @today_color;
+        }
       }
     }
   }

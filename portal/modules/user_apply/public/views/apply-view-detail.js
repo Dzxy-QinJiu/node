@@ -397,8 +397,8 @@ const ApplyViewDetail = React.createClass({
                                 <div className="reply-icon-block">
                                     <span className="iconfont icon-apply-message-tip"/>
                                 </div>
-                                <div className="reply-info-block">
-                                    <div className="reply-list-container">
+                                <div className="reply-info-block apply-info-block">
+                                    <div className="reply-list-container apply-info-content">
                                         {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
                                         {hasPrivilege('GET_APPLY_COMMENTS') ? this.renderReplyList() : null}
                                         {hasPrivilege('CREATE_APPLY_COMMENT') ? (
@@ -426,28 +426,30 @@ const ApplyViewDetail = React.createClass({
                     <span className="iconfont icon-customer"/>
                 </div>
                 <div className="customer-info-block apply-info-block">
-                    <div className="customer-name">
-                        <a href="javascript:void(0)"
-                            onClick={this.showCustomerDetail.bind(this, detailInfo.customer_id)}
-                            data-tracename="查看客户详情"
-                            title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
-                        >
-                            {detailInfo.customer_name}
-                            <span className="iconfont icon-arrow-right"/>
-                        </a>
-                    </div>
-                    {detailInfo.last_contact_time ? (
+                    <div className="apply-info-content">
+                        <div className="customer-name">
+                            <a href="javascript:void(0)"
+                                onClick={this.showCustomerDetail.bind(this, detailInfo.customer_id)}
+                                data-tracename="查看客户详情"
+                                title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
+                            >
+                                {detailInfo.customer_name}
+                                <span className="iconfont icon-arrow-right"/>
+                            </a>
+                        </div>
+                        {detailInfo.last_contact_time ? (
+                            <div className="apply-info-label">
+                                <span className="user-info-label">
+                                    {Intl.get('user.apply.last.follow.date', '最新跟进日期')}:
+                                </span>
+                                {moment(detailInfo.last_contact_time).format(oplateConsts.DATE_FORMAT)}
+                            </div>) : null}
                         <div className="apply-info-label">
                             <span className="user-info-label">
-                                {Intl.get('user.apply.last.follow.date', '最新跟进日期')}:
+                                {Intl.get('common.belong.sales', '所属销售')}:
                             </span>
-                            {moment(detailInfo.last_contact_time).format(oplateConsts.DATE_FORMAT)}
-                        </div>) : null}
-                    <div className="apply-info-label">
-                        <span className="user-info-label">
-                            {Intl.get('common.belong.sales', '所属销售')}:
-                        </span>
-                        {detailInfo.sales_name || ''} - {detailInfo.sales_team_name || ''}
+                            {detailInfo.sales_name || ''} - {detailInfo.sales_team_name || ''}
+                        </div>
                     </div>
                 </div>
             </div>);
@@ -579,18 +581,18 @@ const ApplyViewDetail = React.createClass({
             } else {
                 if (detailInfo.user_names && detailInfo.user_names.length === 1) {
                     let userNameEle = (
-                        <div className="apply-info-label clearfix">
+                        <div className="apply-info-label">
                             <div className="user-info-label edit-name-label">
                                 {Intl.get('crm.detail.user', '用户')}:
                             </div>
-                            <span className="user-info-text">{this.renderUserNameBlock(detailInfo)}</span>
+                            <span className="user-info-text edit-name-wrap">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
                     let nickNameEle = (
-                        <div className="apply-info-label clearfix">
+                        <div className="apply-info-label">
                             <div className="user-info-label edit-name-label">
                                 {Intl.get('common.nickname', '昵称')}:
                             </div>
-                            <span className="user-info-text">{this.renderNickNameBlock(detailInfo)}</span>
+                            <span className="user-info-text edit-name-wrap">{this.renderNickNameBlock(detailInfo)}</span>
                         </div>);
                     return [userNameEle, nickNameEle];
                 } else {
@@ -745,9 +747,11 @@ const ApplyViewDetail = React.createClass({
         if (detailInfo.comment) {
             return (
                 <div className="common-info-block apply-info-block">
-                    <div className="apply-info-label">
-                        <span className="user-info-label">{Intl.get('common.remark', '备注')}:</span>
-                        <span className="user-info-text">{detailInfo.comment}</span>
+                    <div className="apply-info-content">
+                        <div className="apply-info-label">
+                            <span className="user-info-label">{Intl.get('common.remark', '备注')}:</span>
+                            <span className="user-info-text">{detailInfo.comment}</span>
+                        </div>
                     </div>
                 </div>);
         } else {
@@ -951,27 +955,29 @@ const ApplyViewDetail = React.createClass({
         }
         return (
             <div className="user-info-block apply-user-detail-block apply-info-block">
-                {this.renderApplyDetailUserNames(detailInfo)}
-                <div className="apply-info-label clearfix">
-                    <span className="user-info-label">{Intl.get('common.type', '类型')}:</span>
-                    <span className="user-info-text">
-                        {detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}
-                    </span>
-                </div>
-                <div className="col-12 apply_detail_apps">
-                    <div className="apply_detail_operate clearfix">
-                        {this.renderDetailOperateBtn()}
+                <div className="apply-info-content">
+                    {this.renderApplyDetailUserNames(detailInfo)}
+                    <div className="apply-info-label clearfix">
+                        <span className="user-info-label">{Intl.get('common.type', '类型')}:</span>
+                        <span className="user-info-text">
+                            {detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}
+                        </span>
                     </div>
-                    {/** 不显示角色和权限的情况：
-                     detailInfo.approval_state === '0' &&  !hasPrivilege("GET_APP_EXTRA_GRANTS") 销售人员待审批的情况
-                     detailInfo.approval_state === '2'表示是已驳回的应用，
-                     detailInfo.approval_state === '3'表示是已撤销的应用，
-                     */}
-                    { detailInfo.approval_state === '0' && !hasPrivilege('GET_APP_EXTRA_GRANTS') ||
-                    detailInfo.approval_state === '2' ||
-                    detailInfo.approval_state === '3' ?
-                        this.renderAppTable() : this.renderAppTableRolePermission()
-                    }
+                    <div className="col-12 apply_detail_apps">
+                        <div className="apply_detail_operate clearfix">
+                            {this.renderDetailOperateBtn()}
+                        </div>
+                        {/** 不显示角色和权限的情况：
+                         detailInfo.approval_state === '0' &&  !hasPrivilege("GET_APP_EXTRA_GRANTS") 销售人员待审批的情况
+                         detailInfo.approval_state === '2'表示是已驳回的应用，
+                         detailInfo.approval_state === '3'表示是已撤销的应用，
+                         */}
+                        { detailInfo.approval_state === '0' && !hasPrivilege('GET_APP_EXTRA_GRANTS') ||
+                        detailInfo.approval_state === '2' ||
+                        detailInfo.approval_state === '3' ?
+                            this.renderAppTable() : this.renderAppTableRolePermission()
+                        }
+                    </div>
                 </div>
             </div>);
     },
@@ -979,13 +985,15 @@ const ApplyViewDetail = React.createClass({
     renderDetailChangeStatus: function(detailInfo) {
         return (
             <div className="user-info-block apply-info-block">
-                {this.renderApplyUserNames(detailInfo)}
-                {this.renderApplyAppNames(detailInfo)}
-                <div className="apply-info-label">
-                    <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
-                    <span className="user-info-text">
-                        {detailInfo.status === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}
-                    </span>
+                <div className="apply-info-content">
+                    {this.renderApplyUserNames(detailInfo)}
+                    {this.renderApplyAppNames(detailInfo)}
+                    <div className="apply-info-label">
+                        <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
+                        <span className="user-info-text">
+                            {detailInfo.status === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}
+                        </span>
+                    </div>
                 </div>
             </div>
         );
@@ -995,24 +1003,26 @@ const ApplyViewDetail = React.createClass({
         let selectedDetailItem = this.state.selectedDetailItem;
         return (
             <div className="user-info-block apply-info-block">
-                {this.renderApplyUserNames(detailInfo)}
-                {
-                    selectedDetailItem.isConsumed === 'true' || !this.hasApprovalPrivilege() ? null : (
-                        <Form horizontal>
-                            <Validation ref="validation" onValidate={this.handleValidate}>
-                                <div className="apply-info-label">
-                                    <div className="user-info-label password-label">
-                                        {Intl.get('common.password', '密码')}:
+                <div className="apply-info-content">
+                    {this.renderApplyUserNames(detailInfo)}
+                    {
+                        selectedDetailItem.isConsumed === 'true' || !this.hasApprovalPrivilege() ? null : (
+                            <Form horizontal>
+                                <Validation ref="validation" onValidate={this.handleValidate}>
+                                    <div className="apply-info-label">
+                                        <div className="user-info-label password-label">
+                                            {Intl.get('common.password', '密码')}:
+                                        </div>
+                                        {this.renderPasswordBlock()}
                                     </div>
-                                    {this.renderPasswordBlock()}
-                                </div>
-                                <div className="apply-repassword-container">
-                                    {this.renderConfirmPasswordBlock()}
-                                </div>
-                            </Validation>
-                        </Form>
-                    )
-                }
+                                    <div className="apply-repassword-container">
+                                        {this.renderConfirmPasswordBlock()}
+                                    </div>
+                                </Validation>
+                            </Form>
+                        )
+                    }
+                </div>
             </div>
         );
     },
@@ -1045,7 +1055,9 @@ const ApplyViewDetail = React.createClass({
     renderDetailChangeOther: function(detailInfo) {
         return (
             <div className="user-info-block apply-info-block">
-                {this.renderApplyUserNames(detailInfo)}
+                <div className="apply-info-content">
+                    {this.renderApplyUserNames(detailInfo)}
+                </div>
             </div>
         );
     },
@@ -1065,14 +1077,16 @@ const ApplyViewDetail = React.createClass({
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
         return (
             <div className="user-info-block apply-info-block">
-                {this.renderApplyUserNames(detailInfo)}
-                {this.renderApplyAppNames(detailInfo)}
-                <div className="apply-info-label delay-time-wrap">
-                    <div className="user-info-label">{this.renderApplyDelayName()}:</div>
-                    <span className="user-info-text">
-                        {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
-                        {isRealmAdmin ? this.renderModifyDelayTime() : null}
-                    </span>
+                <div className="apply-info-content">
+                    {this.renderApplyUserNames(detailInfo)}
+                    {this.renderApplyAppNames(detailInfo)}
+                    <div className="apply-info-label delay-time-wrap">
+                        <div className="user-info-label">{this.renderApplyDelayName()}:</div>
+                        <span className="user-info-text">
+                            {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
+                            {isRealmAdmin ? this.renderModifyDelayTime() : null}
+                        </span>
+                    </div>
                 </div>
             </div>
         );

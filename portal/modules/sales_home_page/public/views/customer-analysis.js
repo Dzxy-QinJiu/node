@@ -798,7 +798,7 @@ var CustomerAnalysis = React.createClass({
             <div className="chart_list">
                 <AntcAnalysis
                     charts={this.getCharts()}
-                    emitters={this.props.emitters}
+                    emitterConfigList={this.props.emitterConfigList}
                     conditions={this.props.conditions}
                     isGetDataOnMount={true}
                     style={{marginLeft: -10, marginRight: -5}}

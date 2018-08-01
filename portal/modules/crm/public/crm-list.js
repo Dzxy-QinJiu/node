@@ -453,20 +453,22 @@ var Crm = React.createClass({
     },
     renderCustomerDetail: function() {
         //触发打开带拨打电话状态的客户详情面板
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-            customer_params: {
-                currentId: this.state.currentId,
-                refreshCustomerList: this.refreshCustomerList,
-                curCustomer: this.state.curCustomer,
-                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                updateCustomerDefContact: CrmAction.updateCustomerDefContact,
-                handleFocusCustomer: this.handleFocusCustomer,
-                showRightPanel: this.showRightPanel,
-                hideRightPanel: this.hideRightPanel,
-                callNumber: this.state.callNumber,
-                getCallNumberError: this.state.errMsg
-            }
-        });
+        if (this.state.currentId) {
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                customer_params: {
+                    currentId: this.state.currentId,
+                    refreshCustomerList: this.refreshCustomerList,
+                    curCustomer: this.state.curCustomer,
+                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                    updateCustomerDefContact: CrmAction.updateCustomerDefContact,
+                    handleFocusCustomer: this.handleFocusCustomer,
+                    showRightPanel: this.showRightPanel,
+                    hideRightPanel: this.hideRightPanel,
+                    callNumber: this.state.callNumber,
+                    getCallNumberError: this.state.errMsg
+                }
+            });
+        }
     },
     hideRightPanel: function() {
         this.state.rightPanelIsShow = false;

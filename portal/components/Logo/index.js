@@ -24,16 +24,12 @@ var Logo = React.createClass({
         var textStyle = {
             lineHeight: this.props.size ? this.props.size : '40px',
             fontSize: '14px',
-            color: '#d8eaf4'
+            color: '#ffffff'
         };
-        let projectName = '';
-        if (!(typeof window === 'undefined')) {
-            projectName = Oplate.projectName == 'ketao' ? '客套' : 'OPLATE';
-        }
         return (
             <Link to="/" className="logo" style={aStyle}>
-                <img style={imgStyle} src={LogoSrc}/>
-                <span style={textStyle}>{projectName}</span>
+                <img style={imgStyle} src={this.props.logoSrc || LogoSrc}/>
+                <span style={textStyle}>客套</span>
             </Link>
         );
     }

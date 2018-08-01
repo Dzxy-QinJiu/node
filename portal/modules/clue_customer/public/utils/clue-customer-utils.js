@@ -1,5 +1,6 @@
 //客户名格式验证
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+var userData = require('PUB_DIR/sources/user-data');
 export const checkCustomerName = function(rule, value, callback) {
     value = $.trim(value);
     if (value) {
@@ -33,3 +34,12 @@ export const SELECT_TYPE = {
     HAS_DISTRIBUTE: '1',
     HAS_TRACE: '2'
 };
+//是否是运营人员
+export const isOperation = function(){
+    return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+};
+//是否是销售领导或者管理员
+export const isSalesLeaderOrManager = function(){
+    return !userData.getUserData().isCommonSales || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+};
+

@@ -1351,16 +1351,16 @@ var en_US = {
     'crm.basic.add.administrative': 'Add administrative level',//添加行政级别
     'crm.overview.apply.user.tip': 'The customer has no user yet',//该客户还没有用户
     'crm.no.trace.record': 'The customer has not been followed up', //还没有跟进过该客户
-    'crm.no.contact.tip': 'The customer has not yet added a contact',//该客户还没有添加过联系人
+    'crm.no.contact.tip': 'The customer has not contact yet',//该客户还没有联系人
     'crm.no.contact': 'No contact',//暂无联系人
-    'crm.no.order.tip': 'The customer has not yet added a order',//该客户还没有添加过订单
+    'crm.no.order.tip': 'The customer has no order yet',//该客户还没有订单
     'crm.detail.no.user': 'No users',//暂无用户
-    'crm.detail.no.schedule': 'The customer has not added a schedule',//该客户还没有添加过联系计划
+    'crm.detail.no.schedule': 'The customer has no schedule yet',//该客户还没有联系计划
     'crm.order.status.underway': 'Underway',//进行中
     'crm.order.status.win': 'Win',//赢单
     'crm.order.status.lose': 'Lose',//丢单
-    'crm.order.status.won': 'Won',//已赢单
-    'crm.order.status. lost': 'Lost',//已赢单
+    'crm.order.status.won': 'Won',//赢单
+    'crm.order.status. lost': 'Lost',//赢单
     'crm.order.closing': 'Order closing',//订单关闭中
     'crm.order.close.failed': 'Closing the order failure',//关闭订单失败
     'crm.order.no.stage': 'No sales stage',//暂无销售阶段
@@ -1374,6 +1374,15 @@ var en_US = {
     'crm.order.expected.deal.placeholder': 'Please select expected deal time', //请选择预计成交时间
     'crm.order.no.expected.deal.time': 'No expected deal time',//暂无预计成交时间
     'crm.order.add.expected.deal.time': 'Add expected deal time',//添加预计成交时间
+    'crm.order.add.to': 'add to {time}',//添加于{time}
+    'crm.order.close.step': 'Close the order',//关闭订单
+    'crm.order.update.confirm': 'Do you want to modify the order phase?',//确定要修改订单阶段吗？
+    'crm.order.close.win.confirm': 'Do you want to close order as a win status?',//确定将订单的关闭状态设为赢单吗？
+    'crm.order.lose.confirm': 'Confirm lose order',//确认丢单
+    'crm.order.lose.reason.input': 'Please enter the reason for the loss of the order',//请输入丢单原因
+    'crm.order.lose.reason': 'lose Order reason',//丢单原因
+    'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
+    'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
     // 客户管理end
 
     //客户分析 start

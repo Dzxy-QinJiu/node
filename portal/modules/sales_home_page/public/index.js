@@ -417,10 +417,10 @@ var SalesHomePage = React.createClass({
                 title: this.getCallBackColumnTitle(Intl.get('common.callback.time', '回访时间'), 'call_date'),
                 dataIndex: 'call_date',
                 width: 100,
+                className: 'has-sorter',
                 sorter: function(a, b) {
                     return a.call_date - b.call_date;
                 },
-                className: 'has-sorter table-data-align-right',
                 render: (call_date) => {
                     var displayTime = moment(new Date(+call_date)).format(DATE_TIME_FORMAT);
                     return (
@@ -434,19 +434,16 @@ var SalesHomePage = React.createClass({
                 title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
                 width: 100,
-                className: 'table-data-align-right',
             },
             {
                 title: Intl.get('menu.trace', '跟进记录'),
                 dataIndex: 'remark',
                 width: 100,
-                className: 'table-data-align-right',
             },
             {
                 title: Intl.get('common.callback.person', '回访人'),
                 dataIndex: 'nick_name',
                 width: 100,
-                className: 'table-data-align-right',
             }
         ];
         return columns;
@@ -543,7 +540,7 @@ var SalesHomePage = React.createClass({
                 getSaleIdByName={this.getSaleIdByName}
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
-                emitters={this.getEmitters()}
+                emitterConfigList={this.getEmitters()}
                 conditions={this.getConditions()}
             />);
         } else if (this.state.activeView === viewConstant.USER) {
@@ -556,14 +553,13 @@ var SalesHomePage = React.createClass({
                 getSaleIdByName={this.getSaleIdByName}
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
-                emitters={this.getEmitters()}
+                emitterConfigList={this.getEmitters()}
                 conditions={this.getConditions()}
                 appList={this.state.appList} 
                 selectedAppId={this.state.selectedAppId}                  
             />);
         } else if (this.state.activeView === viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
-                {this.filterCallTypeSelect()}
                 <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
                     <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
                         <AntcAnalysis
@@ -807,7 +803,7 @@ var SalesHomePage = React.createClass({
     getEmitters: function() {
         return [
             {
-                instance: dateSelectorEmitter,
+                emitter: dateSelectorEmitter,
                 event: dateSelectorEmitter.SELECT_DATE,
                 callbackArgs: [{
                     name: 'starttime',
@@ -816,7 +812,7 @@ var SalesHomePage = React.createClass({
                 }],
             },
             {
-                instance: teamTreeEmitter,
+                emitter: teamTreeEmitter,
                 event: teamTreeEmitter.SELECT_TEAM,
                 callbackArgs: [{
                     name: 'team_ids',
@@ -824,7 +820,7 @@ var SalesHomePage = React.createClass({
                 }],
             },
             {
-                instance: teamTreeEmitter,
+                emitter: teamTreeEmitter,
                 event: teamTreeEmitter.SELECT_MEMBER,
                 callbackArgs: [{
                     name: 'member_id',
@@ -871,7 +867,7 @@ var SalesHomePage = React.createClass({
     //获取电话统计图表列表
     getPhoneAnalysisCharts() {
         return [{
-            title: Intl.get('weekly.report.call.statics': '电话统计'),
+            title: Intl.get('weekly.report.call.statics', '电话统计'),
             chartType: 'table',
             height: 'auto',
             layout: {
@@ -883,6 +879,11 @@ var SalesHomePage = React.createClass({
                 columns: this.getPhoneListColumn(),
                 util: {zoomInSortArea: true},
                 onChange: this.onTableChange,
+            },
+            cardContainer: {
+                props: {
+                    subTitle: this.filterCallTypeSelect(),
+                },
             },
         }, {
             title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',

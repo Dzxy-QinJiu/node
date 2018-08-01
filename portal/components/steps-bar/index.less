@@ -1,0 +1,50 @@
+//步骤条的样式
+@waiting-step-color: #c5d4e3;
+@current-step-color: #2698f2;
+@finished-step-color: #8da9c5;
+.step-bar-component {
+  .step-item {
+    float: left;
+    text-align: center;
+    &:hover {
+      color: @current-step-color;
+    }
+    .step-title {
+      cursor: pointer;
+    }
+    .step-dot-line {
+      height: 14px;
+      line-height: 14px;
+      .step-icon {
+        font-size: 10px;
+      }
+      .step-line {
+        display: inline-block;
+        width: calc(50% - 5px);
+        height: 3px;
+        border: none;
+      }
+      .step-line-translate.step-line {
+        border-top: none;
+      }
+      .step-finished-line {
+        border-top: 2px solid @finished-step-color;
+      }
+      .step-waiting-line {
+        border-top: 2px solid @waiting-step-color;
+      }
+    }
+  }
+  //完成的步骤
+  .step-finished-item {
+    color: @finished-step-color;
+  }
+  //当前步骤
+  .step-current-item {
+    color: @current-step-color;
+  }
+  //待运行的步骤
+  .step-waiting-item {
+    color: @waiting-step-color;
+  }
+}

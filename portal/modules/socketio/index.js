@@ -76,6 +76,22 @@ function getPushServerByEureka() {
     pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
     return pushServerUrl;
 }
+
+//找到对应的socket，将接收到的数据推送到浏览器端
+function emitMsgBySocket(user_id, emitUrl, msgData) {
+    if (user_id) {
+        //找到消息接收者对应的socket，将数据推送到浏览器
+        let socketArray = socketStore[user_id] || [];
+        if (_.get(socketArray, '[0]')) {
+            socketArray.forEach(socketObj => {
+                let socket = _.get(ioServer, `sockets.sockets[${socketObj.socketId}]`);
+                if (socket) {
+                    socket.emit(emitUrl, msgData);
+                }
+            });
+        }
+    }
+}
 /**
  * 消息监听器
  * @param data 消息数据
@@ -83,22 +99,12 @@ function getPushServerByEureka() {
 function notifyChannelListener(data) {
     pushLogger.debug('后端推送的消息数据:' + data);
     // 将查询结果返给浏览器
-    var messageObj = JSON.parse(data);
+    let messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
         //遍历消息接收者
         messageObj.consumers.forEach(function(consumer) {
-            if (consumer && consumer.user_id) {
-                //找到消息接收者对应的socket，将数据推送到浏览器
-                var socketArray = socketStore[consumer.user_id] || [];
-                if (socketArray.length > 0) {
-                    socketArray.forEach(function(socketObj) {
-                        var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
-                        if (socket) {
-                            socket.emit('mes', pushDto.applyMessageToFrontend(messageObj));
-                        }
-                    });
-                }
-            }
+            //将数据推送到浏览器
+            emitMsgBySocket(consumer && consumer.user_id, 'mes', pushDto.applyMessageToFrontend(messageObj));
         });
     }
 }
@@ -111,21 +117,8 @@ function phoneEventChannelListener(data) {
     // pushLogger.debug("后端推送的拨打电话的数据:" + JSON.stringify(data));
     // 将查询结果返给浏览器
     var phonemsgObj = JSON.parse(data) || {};
-    if (phonemsgObj.user_id) {
-        //找到该用户对应的socket，将数据推送到浏览器
-        var socketArray = socketStore[phonemsgObj.user_id] || [];
-        if (socketArray.length > 0) {
-            socketArray.forEach(function(socketObj) {
-                var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
-                if (socket) {
-                    socket.emit('phonemsg', phonemsgObj);
-                }
-            });
-        }
-
-    }
-
-
+    //将数据推送到浏览器
+    emitMsgBySocket(phonemsgObj && phonemsgObj.user_id, 'phonemsg', pushDto.phoneMsgToFrontend(phonemsgObj));
 }
 
 /*
@@ -134,26 +127,15 @@ function phoneEventChannelListener(data) {
 function scheduleAlertListener(data) {
     pushLogger.debug('日程管理的消息推送：' + JSON.stringify(data));
     // 将查询结果返给浏览器
-    var scheduleAlertObj = data || {};
-    if (scheduleAlertObj.member_id) {
-        //找到该用户对应的socket，将数据推送到浏览器
-        var socketArray = socketStore[scheduleAlertObj.member_id] || [];
-        if (socketArray.length > 0) {
-            socketArray.forEach(function(socketObj) {
-                var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
-                if (socket) {
-                    socket.emit('scheduleAlertMsg', scheduleAlertObj);
-                }
-            });
-        }
-
-    }
-
+    let scheduleAlertObj = data || {};
+    //将数据推送到浏览器
+    emitMsgBySocket(scheduleAlertObj && scheduleAlertObj.member_id, 'scheduleAlertMsg', pushDto.scheduleMsgToFrontend(scheduleAlertObj));
 }
 
 /**
  * 登录踢出消息监听器
  * @param data 踢出消息
+ * TODO 登录接口改为auth2后，就不再推送登录踢出的消息了，之后业务端修改后推过来的数据由于没有token导致无法使用此方式进行处理，待有解决方案后再处理
  */
 function offlineChannelListener(data) {
     pushLogger.debug('后端推送的登录踢出的数据:' + JSON.stringify(data));
@@ -190,7 +172,7 @@ function offlineChannelListener(data) {
                             newSocketArray.push(socketObj);
                         } else {
                             //推出消息后，设置socket对应的session失效
-                            socket.emit('offline', userObj);
+                            socket.emit('offline', pushDto.offlineMsgToFrontend(userObj));
                             getSessionFromStore(socket, function(err, session) {
                                 if (!err && session) {
                                     session.destroy();
@@ -212,18 +194,8 @@ function offlineChannelListener(data) {
  */
 function systemNoticeListener(notice) {
     pushLogger.debug('后端推送的系统消息数据:' + JSON.stringify(notice));
-    if (notice && notice.member_id) {//消息接收者
-        //找到消息接收者对应的socket，将数据推送到浏览器
-        let socketArray = socketStore[notice.member_id] || [];
-        if (socketArray.length > 0) {
-            socketArray.forEach(function(socketObj) {
-                let socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
-                if (socket) {
-                    socket.emit('system_notice', notice);
-                }
-            });
-        }
-    }
+    //将数据推送到浏览器
+    emitMsgBySocket(notice && notice.member_id, 'system_notice', pushDto.systemMsgToFrontend(notice));
 }
 
 /**
@@ -247,23 +219,11 @@ function applyUnreadReplyListener(unreadList) {
         let memberUnreadObj = _.groupBy(unreadList, 'member_id');
         if (!_.isEmpty(memberUnreadObj)) {
             for (let memberId in memberUnreadObj) {
+                let memberUnreadReplyList = _.map(memberUnreadObj[memberId], unreadReply => {
+                    return pushDto.unreadReplyToFrontend(unreadReply);
+                });
                 //找到消息接收者对应的socket，将数据推送到浏览器
-                let socketArray = socketStore[memberId] || [];
-                if (socketArray.length > 0) {
-                    socketArray.forEach(function(socketObj) {
-                        let socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
-                        if (socket) {
-                            let memberUnreadReplyList = _.map(memberUnreadObj[memberId], unreadReply => {
-                                return {
-                                    member_id: unreadReply.member_id,
-                                    push_type: unreadReply.push_type,
-                                    apply_id: unreadReply.apply_id
-                                };
-                            });
-                            socket.emit('apply_unread_reply', memberUnreadReplyList);
-                        }
-                    });
-                }
+                emitMsgBySocket(memberId, 'apply_unread_reply', memberUnreadReplyList);
             }
         }
     }

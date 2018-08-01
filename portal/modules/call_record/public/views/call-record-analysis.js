@@ -66,13 +66,13 @@ const LAYOUT_HEIGHT = {
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 75,
+    TOP_DISTANCE: 65,
     BOTTOM_DISTANCE: 70
 };
 //图表的高度
 const CHART_LAYOUT_HEIGHT = {
     INITIAL_HEIGHT: 350,
-    LARGER_HEIGHT: 400,
+    LARGER_HEIGHT: 410,
     MAP_HEIGHT: 600
 };
 
@@ -415,15 +415,16 @@ var CallRecordAnalyis = React.createClass({
      * @param isExport 是否是导出时调用的，导出时，时长都展示秒数
      */
     getPhoneListColumn: function(isExport) {
+        let col_width = 95, num_col_width = 80;
         let columns = [{
             title: this.getSalesColumnTitle(),
-            width: 114,
+            width: col_width,
             dataIndex: 'name',
             className: 'table-data-align-left',
             key: 'name'
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'totalTime',
             key: 'total_time',
             sorter: function(a, b) {
@@ -439,7 +440,7 @@ var CallRecordAnalyis = React.createClass({
             }
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'calloutSuccess',
             key: 'callout_success',
             sorter: function(a, b) {
@@ -448,7 +449,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.average.duration', '日均时长'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'averageTime',
             key: 'average_time',
             sorter: function(a, b) {
@@ -464,7 +465,7 @@ var CallRecordAnalyis = React.createClass({
             }
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
-            width: 114,
+            width: col_width,
             dataIndex: 'averageAnswer',
             key: 'average_answer',
             sorter: function(a, b) {
@@ -473,7 +474,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin', '呼入次数'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'callinCount',
             key: 'callin_count',
             sorter: function(a, b) {
@@ -482,7 +483,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin.success', '成功呼入'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'callinSuccess',
             key: 'callin_success',
             sorter: function(a, b) {
@@ -491,7 +492,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
-            width: 114,
+            width: col_width,
             dataIndex: 'callinRate',
             key: 'callin_rate',
             sorter: function(a, b) {
@@ -500,7 +501,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callout', '呼出次数'),
-            width: 114,
+            width: num_col_width,
             dataIndex: 'calloutCount',
             key: 'callout_count',
             sorter: function(a, b) {
@@ -509,7 +510,7 @@ var CallRecordAnalyis = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
-            width: 114,
+            width: col_width,
             dataIndex: 'calloutRate',
             key: 'callout_rate',
             sorter: function(a, b) {
@@ -535,7 +536,7 @@ var CallRecordAnalyis = React.createClass({
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.secondSelectValue === LITERAL_CONSTANT.ALL) {
             columns.splice(3, 0, {
                 title: Intl.get('call.record.average.call.duration', '人均时长'),
-                width: 114,
+                width: col_width,
                 align: 'right',
                 dataIndex: 'personAverageTime',
                 key: 'person_average_time',
@@ -551,7 +552,7 @@ var CallRecordAnalyis = React.createClass({
                 }
             }, {
                 title: Intl.get('call.record.average.connected', '人均接通数'),
-                width: 114,
+                width: col_width,
                 align: 'right',
                 dataIndex: 'personAverageAnswer',
                 key: 'person_average_answer',
@@ -985,12 +986,13 @@ var CallRecordAnalyis = React.createClass({
             option: {
                 pagination: false,
                 bordered: true,
-                columns: this.getPhoneListColumn()
-            }
+                columns: this.getPhoneListColumn(),
+            },
         }];
         return (
             <AntcAnalysis
                 charts={callInfoCharts}
+                chartHeight='auto'
             />
         );
     },
@@ -998,7 +1000,7 @@ var CallRecordAnalyis = React.createClass({
     /* 渲染单次通话时长、总时长、总次数为top10的列表
      * titleObj={title:"通话时长",dataKey:"billsec"}
      */
-    renderCallTopTen(dataObj, titleObj){
+    renderCallTopTen(dataObj, titleObj, chartHeight){
         var callTopTenCharts = [{
             title: titleObj.title + 'TOP10',
             chartType: 'table',
@@ -1018,6 +1020,7 @@ var CallRecordAnalyis = React.createClass({
             <div className="call-top  col-xs-6">
                 <AntcAnalysis
                     charts={callTopTenCharts}
+                    chartHeight={chartHeight}
                 />
             </div>
         );
@@ -1240,7 +1243,7 @@ var CallRecordAnalyis = React.createClass({
             chartType: 'map',
             data: arr,
             layout: {
-                sm: 12,
+                sm: 24,
             },
             option: this.getCustomerZoneOptions(),
             noExportCsv: true,
@@ -1316,7 +1319,7 @@ var CallRecordAnalyis = React.createClass({
         );
     },
     renderCallAnalysisView: function() {
-        const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
+        const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height();
         return (<div className="call-table-container" ref="phoneList">
             {/**
              *  通话数量和通话时长的趋势图
@@ -1333,43 +1336,43 @@ var CallRecordAnalyis = React.createClass({
                 </div>
                 {this.renderCallTrendChart()}
             </div>
-            <div style={{height: tableHeight}}>
+            <div style={{height: tableHeight}} className="table-list-containers">
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
                         <div className="call-info col-xs-12">
                             {this.renderCallInfo()}
                         </div>
-                        <div className="col-xs-12">
+                        <div className="call-range col-xs-12">
                             {/*根据电话的排序的通话次数TOP10*/}
                             {this.renderCallTopTen(this.state.callTotalCountObj, {
                                 title: Intl.get('call.analysis.total.count', '通话总次数'),
                                 dataKey: 'count'
-                            })}
+                            },'auto')}
                             {/*根据电话的排序的通话总时长TOP10*/}
                             {this.renderCallTopTen(this.state.callTotalTimeObj, {
                                 title: Intl.get('call.analysis.total.time', '通话总时长'),
                                 dataKey: 'sum'
-                            })}
+                            },'auto')}
                         </div>
-                        <div className="col-xs-12">
+                        <div className="call-duration col-xs-12">
                             {/*根据电话的排序的单次通话时长TOP10*/}
                             {this.renderCallTopTen(this.state.callDurList, {
                                 title: Intl.get('sales.home.call.top.ten', '单次通话时长'),
                                 dataKey: 'billsec'
-                            })}
-                            <div className="call-service-rate col-xs-6">
+                            },CHART_LAYOUT_HEIGHT.LARGER_HEIGHT)}
+                            <div className="call-rate-service-rate col-xs-6 padding-both-none">
                                 <div className="call-rate">
                                     {this.renderCallRateChar('114')}
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xs-12">
+                        <div className="call-rate col-xs-12">
                             <div className="call-service-rate col-xs-6">
                                 <div className="call-rate">
                                     {this.renderCallRateChar('service')}
                                 </div>
                             </div>
-                            <div className="call-interval-block col-xs-6">
+                            <div className="call-interval-block col-xs-6 padding-both-none">
                                 {this.renderCallIntervalChart()}
                                 <div className="call-interval-radio clearfix">
                                     <RadioGroup onChange={this.onChangeCallIntervalRadio}
@@ -1385,23 +1388,26 @@ var CallRecordAnalyis = React.createClass({
 
                             </div>
                         </div>
-                        <div className="col-xs-12">
-                            <div className="call-stage-distribute col-xs-6">
+                        <div className="call-stage col-xs-12">
+                            <div className="customer-stage-distribute col-xs-6">
                                 <div className="call-stage">
                                     {this.renderCustomerPhase()}
                                 </div>
                             </div>
-                            <div className="call-stage-distribute col-xs-6">
+                            <div className="call-stage-distribute col-xs-6 padding-both-none">
                                 <div className="call-sale">
                                     {this.renderOrderPhase()}
                                 </div>
                             </div>
                         </div>
                         <div className="col-xs-12">
-                            <div className="call-zone-distribute" ref="mapChartWrap">
-                                {this.renderCustomerZoneDistribute()}
+                            <div className="call-zone col-xs-6">
+                                <div className="call-zone-distribute" ref="mapChartWrap">
+                                    {this.renderCustomerZoneDistribute()}
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </GeminiScrollBar>
             </div>

@@ -173,12 +173,18 @@ exports.transTimeFormat = function(time) {
     let timeYear = moment(time).get('year'); // 所传时间当前的年份
     let nowYear = moment().get('year'); // 当前时间当前的年份
     if (timeYear === nowYear) { // 同一年
-        let diffDays = moment().diff(moment(time), 'days'); // 比较当前时间与所传时间差的天数
-        if (diffDays === 0) {
+        // 今天的时间范围
+        let todayRange = {startTime: moment().startOf('day').valueOf(), endTime: moment().endOf('day').valueOf()};
+        // 昨天的时间范围
+        let yesterdayRange = {startTime: moment().subtract(1, 'day').startOf('day').valueOf(), endTime: moment().subtract(1, 'day').endOf('day').valueOf()};
+        // 前天的时间范围
+        let beforeYesRange = {startTime: moment().subtract(2, 'day').startOf('day').valueOf(), endTime: moment().subtract(2, 'day').endOf('day').valueOf()};
+
+        if (time >= todayRange.startTime && time <= todayRange.endTime) {
             formatTime = Intl.get('user.time.today', '今天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
-        } else if (diffDays === 1) {
+        } else if (time >= yesterdayRange.startTime && time <= yesterdayRange.endTime) {
             formatTime = Intl.get('user.time.yesterday', '昨天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
-        } else if (diffDays === 2) {
+        } else if (time >= beforeYesRange.startTime && time <= beforeYesRange.endTime) {
             formatTime = Intl.get('sales.frontpage.before.yesterday', '前天') + ' ' + moment(time).format(oplateConsts.HOUR_MUNITE_FORMAT);
         } else {
             formatTime = moment(time).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT);

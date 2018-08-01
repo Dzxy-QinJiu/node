@@ -1366,16 +1366,16 @@ var zh_CN = {
     'crm.basic.add.administrative': '添加行政级别',
     'crm.overview.apply.user.tip': '该客户还没有用户',
     'crm.no.trace.record': '还没有跟进过该客户',
-    'crm.no.contact.tip': '该客户还没有添加过联系人',
+    'crm.no.contact.tip': '该客户还没有联系人',
     'crm.no.contact': '暂无联系人',
-    'crm.no.order.tip': '该客户还没有添加过订单',
+    'crm.no.order.tip': '该客户还没有订单',
     'crm.detail.no.user': '暂无用户',
-    'crm.detail.no.schedule': '该客户还没有添加过联系计划',
+    'crm.detail.no.schedule': '该客户还没有联系计划',
     'crm.order.status.underway': '进行中',
     'crm.order.status.win': '赢单',
     'crm.order.status.lose': '丢单',
-    'crm.order.status.won': '已赢单',
-    'crm.order.status.lost': '已丢单',
+    'crm.order.status.won': '赢单',
+    'crm.order.status.lost': '丢单',
     'crm.order.closing': '订单关闭中',
     'crm.order.close.failed': '关闭订单失败',
     'crm.order.no.stage': '暂无销售阶段',
@@ -1389,6 +1389,15 @@ var zh_CN = {
     'crm.order.expected.deal.placeholder': '请选择预计成交时间',
     'crm.order.no.expected.deal.time': '暂无预计成交时间',
     'crm.order.add.expected.deal.time': '添加预计成交时间',
+    'crm.order.add.to': '添加于{time}',
+    'crm.order.close.step': '关闭订单',
+    'crm.order.update.confirm': '确定要修改订单阶段吗？',
+    'crm.order.close.win.confirm': '确定将订单的关闭状态设为赢单吗？',
+    'crm.order.lose.confirm': '确认丢单',
+    'crm.order.lose.reason.input': '请输入丢单原因',
+    'crm.order.lose.reason': '丢单原因',
+    'crm.no.order.lose.reason': '暂无丢单原因',
+    'crm.fill.order.lose.reason': '补充丢单原因',
     // 客户管理end
 
     // 客户分析start
@@ -1686,7 +1695,7 @@ var zh_CN = {
     'user.analysis.account.login.statistics': '开通账号登录统计',
     'user.analysis.account.count': '开通账号数',
     'user.analysis.account.login.count': '实际登录数',
-    
+
     //销售首页-新增客户分析
     'customer.analysis': '客户分析',
     'customer.analysis.add.customer': '新增客户',

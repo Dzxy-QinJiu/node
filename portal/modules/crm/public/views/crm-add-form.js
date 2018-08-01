@@ -23,6 +23,7 @@ import crmAjax from '../ajax/index';
 const userData = require('../../../../public/sources/user-data');
 import PhoneInput from 'CMP_DIR/phone-input';
 import Trace from 'LIB_DIR/trace';
+import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
 const PHONE_INPUT_ID = 'phoneInput';
 
 function cx(classNames) {
@@ -35,7 +36,7 @@ function cx(classNames) {
     }
 }
 var CRMAddForm = React.createClass({
-    mixins: [Validation.FieldMixin],
+    mixins: [FieldMixin],
     getInitialState: function() {
         //在线索关联客户，新添加客户时，新添加客户的名字是线索名称，客户联系人是线索联系人
         var propsFormData = this.props.formData;
@@ -89,23 +90,6 @@ var CRMAddForm = React.createClass({
             this.setState({isLoadingIndustry: false, industryList: list});
         });
 
-    },
-    renderValidateStyle: function(item) {
-        var formData = this.state.formData;
-        var status = this.state.status;
-        var arr = item.split('.');
-        if (arr[1]) {
-            status = status.contacts[0];
-            item = arr[1];
-        }
-
-        var classes = cx({
-            'error': status[item].errors,
-            'validating': status[item].isValidating,
-            'success': formData[item] && !status[item].errors && !status[item].isValidating
-        });
-
-        return classes;
     },
 
     //更新地址
@@ -538,7 +522,7 @@ var CRMAddForm = React.createClass({
                                 <FormItem
                                     label={Intl.get('user.apply.detail.table.role', '角色')}
                                     labelCol={{span: 6}}
-                                    id="role"
+                                    id="contacts0_role"
                                     wrapperCol={{span: 18}}
                                     validateStatus={this.renderValidateStyle('contacts0_role')}
                                     help={status.contacts0_role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}

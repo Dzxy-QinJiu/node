@@ -186,7 +186,6 @@
     }
     .table-thead {
       height: 50px;
-      //overflow: hidden;
       .ant-table-placeholder {
         display: none;
       }
@@ -351,8 +350,8 @@
       .date-range-wrap {
         .call-type-select, .range-datepicker, .team-member-select {
           float: left;
-          margin-top: 20px;
-          margin-left: 20px;
+          margin-top: 18px;
+          margin-left: 8px;
         }
         .team-member-select-options {
           .ant-select-selection--multiple {
@@ -376,24 +375,25 @@
           right: 0 !important;
         }
         position: absolute;
-        margin-left: -55px;
+        left:0!important;
+        padding-left: 8px;
         .close-pannel {
-          margin-right: 33px;
-          margin-top: 24px;
+          margin-right: 27px;
+          margin-top: 22px;
         }
       }
 
       .call-data-analysis {
         margin-top: 10px;
-        margin-left: 20px;
-        padding-top: 76px;
+        padding-top: 65px;
+        background: #f3f5f7;
         .call-table-container {
           width: 100%;
           min-height: 150px;
-          padding-right: 50px;
-          padding-left: 20px;
+          padding-right: 10px;
+          padding-left: 10px;
           .analysis-wrapper {
-            min-width: 1300px;
+            width: 100%;
             .call-info {
               padding-left:0;
               padding-right:0;
@@ -407,6 +407,16 @@
                     }
                   }
                 }
+              }
+            }
+            .call-range,.call-duration,.call-rate, .call-stage,.call-zone{
+              padding-left: 0;
+              .analysis-charts{
+                padding: 0;
+              }
+              .call-top:last-child, .padding-both-none{
+                padding-left: 0;
+                padding-right: 0;
               }
             }
           }
@@ -445,11 +455,8 @@
           // 通话分析，趋势图
           .duration-count-chart {
             width: 100%;
-            margin-left: -48px;
-            margin-bottom: 45px;
             .call-trend-container{
               position: relative;
-              padding-left:30px;
               .duration-count-radio {
                 float: right;
                 margin-right: -40px;
@@ -463,16 +470,24 @@
                   }
                 }
               }
+              .antc-analysis .analysis-charts{
+                padding: 0;
+              }
             }
 
             .trend-chart-title {
-              margin-left: 59px;
-              padding-top: 5px;
+              padding-top: 10px;
+              padding-left: 10px;
+              background: #fff;
               font-size:14px;
             }
           }
+          .table-list-containers{
+            clear:both;
+          }
           //地域分布图
           .call-zone-distribute{
+            padding-right: 8px;
             .echarts-tooltip.notshow {
               background:rgba(0,0,0,0) !important;
               border-color:rgba(0,0,0,0) !important;
@@ -480,7 +495,7 @@
               cursor:default !important;
             }
           }
-          .call-info, .call-top, .call-service-rate, .call-stage-distribute{
+          .call-info, .call-top, .call-service-rate, .call-rate-service-rate,.call-stage-distribute,.customer-stage-distribute{
             min-height: 100px;
           }
           .call-top{
@@ -508,6 +523,9 @@
             .call-rate-title {
               margin-top: 20px;
             }
+          }
+          .card-container{
+            min-height: 150px;
           }
 
           //通话时段点图

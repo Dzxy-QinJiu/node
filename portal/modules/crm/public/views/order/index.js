@@ -231,7 +231,7 @@ const OrderIndex = React.createClass({
                                 id="sales.frontpage.total.list"
                                 defaultMessage={'共{n}条'}
                                 values={{'n': orderListLength + ''}}/>) :
-                            Intl.get('crm.no.order.tip', '该客户还没有添加过订单')}
+                            Intl.get('crm.no.order.tip', '该客户还没有订单')}
                     </span>
                     {this.props.isMerge ? null : (
                         <Button className='crm-detail-add-btn'
