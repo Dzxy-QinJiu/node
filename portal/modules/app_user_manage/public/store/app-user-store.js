@@ -1149,21 +1149,20 @@ AppUserStore.prototype.getTeamLists = function(result) {
         filterTeams.teamlists = [];
         filterTeams.teamsResult = 'loading';
         filterTeams.errorMsg = '';
-    }else if (result.error){
+    }else if (result.errorMsg){
         filterTeams.teamlists = [];
         filterTeams.teamsResult = 'error';
         filterTeams.errorMsg = result.errorMsg;
     }else{
         filterTeams.teamsResult = '';
         filterTeams.errorMsg = '';
-        result.teamLists.map((item) => {
+        result.teamTreeList.map((item) => {
             var obj = {};
             obj.group_name = item.group_name;
             obj.group_id = item.group_id;
             filterTeams.teamlists.push(obj);
         });
     }
-
 };
 
 //根据角色过滤用户

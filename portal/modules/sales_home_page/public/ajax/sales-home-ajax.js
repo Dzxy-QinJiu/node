@@ -45,27 +45,7 @@ exports.getCallTotalList = function(authType, reqData) {
     });
     return Deferred.promise();
 };
-//获取销售团队列表
-var salesTeamListAjax;
-exports.getSalesTeamList = function(type) {
-    salesTeamListAjax && salesTeamListAjax.abort();
-    var Deferred = $.Deferred();
-    salesTeamListAjax = $.ajax({
-        url: '/rest/crm/sales_team_tree',
-        dataType: 'json',
-        type: 'get',
-        data: {type: type},
-        success: function(resData) {
-            Deferred.resolve(resData);
-        },
-        error: function(xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
+
 //获取统计团队内成员个数的列表
 let teamMemberCountAjax;
 exports.getTeamMemberCountList = function() {

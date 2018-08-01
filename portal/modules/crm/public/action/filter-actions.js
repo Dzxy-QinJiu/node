@@ -1,5 +1,5 @@
 var FilterAjax = require('../ajax/filter-ajax');
-import { traversingTeamTree } from 'PUB_DIR/sources/utils/common-method-util';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function FilterAction() {
     this.generateActions(
@@ -36,19 +36,11 @@ function FilterAction() {
     };
 
     this.getTeamList = function(cb) {
-        var _this = this;
-        FilterAjax.getTeamList().then(function(treeList) {
-            let list = [];
-            if(_.isArray(treeList) && treeList.length >= 1){
-                //遍历团队树
-                traversingTeamTree(treeList,list);
-            }
+        getMyTeamTreeList(data => {
+            let list = data.teamList || [];
             list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
-            _this.dispatch({list: list, teamTreeList: treeList});
+            this.dispatch({list: list, teamTreeList: data.teamTreeList});
             if (_.isFunction(cb)) cb(list);
-        }, function(errorMsg) {
-            // eslint-disable-next-line no-console
-            console.log(errorMsg);
         });
     };
 

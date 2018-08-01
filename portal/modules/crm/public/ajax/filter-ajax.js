@@ -18,32 +18,6 @@ exports.getAppList = function() {
     });
     return Deferred.promise();
 };
-let salesTeamListAjax;
-exports.getTeamList = function() {
-    let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
-    if (hasPrivilege('GET_TEAM_LIST_ALL')) {
-        type = 'all';
-    }
-    salesTeamListAjax && salesTeamListAjax.abort();
-    let Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/crm/sales_team_tree',
-        dataType: 'json',
-        type: 'get',
-        data: {type: type},
-        success: function(treeList) {
-            Deferred.resolve(treeList);
-        },
-        error: function(xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
-
-
 
 exports.getStageList = function() {
     var Deferred = $.Deferred();

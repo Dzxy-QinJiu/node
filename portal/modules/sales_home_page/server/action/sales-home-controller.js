@@ -6,17 +6,6 @@
 
 //销售主页服务
 var salesHomeService = require('../service/sales-home-service');
-var Resolver = require('fastjson_ref_resolver').Resolver;
-
-//获取当前销售所在销售团队及其子团队树
-exports.getSalesTeamTree = function(req, res) {
-    salesHomeService.getSalesTeamTree(req, res, req.query.type).on('success', function(data) {
-        data = new Resolver(data).resolve();
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 
 //获取销售对应的通话状态
 exports.getSalesCallStatus = function(req, res) {
