@@ -2360,6 +2360,7 @@ var zh_CN = {
     'clue.add.phone.num': '电话号码',
     'clue.add.qq.num': 'QQ号码',
     'clue.add.email.addr': '邮箱地址',
-    'clue.fill.clue.contacts': '请填写线索的联系方式'
+    'clue.fill.clue.contacts': '请填写线索的联系方式',
+    'clue.add.wechat.num': '微信号码'
 };
 export default zh_CN;

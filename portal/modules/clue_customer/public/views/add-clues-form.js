@@ -19,6 +19,7 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 const PHONE_INPUT_ID = 'phoneInput';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 import PhoneInput from 'CMP_DIR/phone-input';
+var uuid = require('uuid/v4');
 
 class ClueAddForm extends React.Component {
     constructor(props) {
@@ -29,7 +30,15 @@ class ClueAddForm extends React.Component {
             formData: {
                 name: '',//客户名称
                 contact_name: '',//联系人
-                contacts: [{'contactWay': 'phone', 'contactName': '', 'contactValue': ''}],
+                contacts: [{
+                    'def_contancts': 'true',
+                    'name': '',
+                    'phone': [],
+                    'qq': [],
+                    'email': [],
+                    'weChat': [],
+                    'show_contact_item': [{type: 'qq', value: '', randomValue: uuid()}]
+                }],
                 phone: '',//联系电话
                 email: '',//邮箱
                 qq: '',//QQ
@@ -38,12 +47,6 @@ class ClueAddForm extends React.Component {
                 access_channel: '',//接入渠道
                 source: '',//线索描述
                 source_time: today,//线索时间，默认：今天
-                province: '',
-                city: '',
-                county: '',
-                location: '',
-                address: '',//详细地址
-                administrative_level: ''//行政区划
             },
             isSaving: false,
             saveMsg: '',
@@ -54,51 +57,76 @@ class ClueAddForm extends React.Component {
             clueCustomerCheckErrMsg: ''//线索名称校验失败
         };
     }
-    componentDidMount(){
+
+    componentDidMount() {
         //todo
         $('.contact-containers .ant-form-item-label label').addClass('ant-form-item-required');
     }
 
+    getPhoneFormValue = (form) => {
+        return new Promise(resolve => {
+            form.validateFields((errs, fields) => {
+                resolve({errs, fields});
+            });
+        });
+    };
+    addClue = () => {
+        var formData = this.state.formData;
+
+
+        console.log('提交睡觉');
+    };
     handleSubmit = (e) => {
         e.preventDefault();
+
+
         this.props.form.validateFieldsAndScroll((err, values) => {
             //如果每个联系方式的联系人和联系方式都没有
             var contacts = this.state.formData.contacts;
             var contactErr = true;
-            _.forEach(contacts, (item) => {
-                if (item.contactName && item.contactValue){
-                    contactErr = false;
-                }
+            _.forEach(contacts, (contactItem) => {
+                _.forEach(contactItem.show_contact_item, (item) => {
+                    if (item.value) {
+                        contactErr = false;
+                    }
+                });
             });
-            if (contactErr){
+
+            if (contactErr) {
                 this.setState({
                     contactErrMsg: Intl.get('clue.fill.clue.contacts', '请填写线索的联系方式')
                 });
                 return;
-            }else {
+            } else {
                 values.contacts = contacts;
             }
 
-            if (!err) {
 
-                // for (var key in this.state.formData) {
-                //     if (!values[key]) {
-                //         values[key] = this.state.formData[key];
-                //     }
-                // }
-                //去除表单数据中值为空的项
-                // commonMethodUtil.removeEmptyItem(values);
-                //验证电话是否通过验证
-                this.phoneInputRef.props.form.validateFields({}, (errors, phoneVal) => {
-                    if (errors) {
+            // for (var key in this.state.formData) {
+            //     if (!values[key]) {
+            //         values[key] = this.state.formData[key];
+            //     }
+            // }
+            //去除表单数据中值为空的项
+            // commonMethodUtil.removeEmptyItem(values);
+            //验证电话是否通过验证
+            if (this.phoneInputRefs.length) {
+                //存在电话输入框时，验证一下填写的电话是否符合要求
+                let phoneFormValArray = [];
+                _.each(this.phoneInputRefs, item => {
+                    phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
+                });
+                Promise.all(phoneFormValArray).then(result => {
+                    let firstErrorItem = _.find(result, item => item.errs);
+                    if (firstErrorItem || err) {
+                        console.log('weitijiao');
                         return;
                     } else {
-                        //验证电话通过后，再把电话的值放在values中
-                        // values.contacts0_phone = $.trim(phoneVal[PHONE_INPUT_ID].replace(/-/g, ''));
-                        this.addCustomer(values);
+                        this.addClue();
                     }
                 });
             }
+
         });
 
 
@@ -210,36 +238,29 @@ class ClueAddForm extends React.Component {
             return '';
         }
     }
-    renderCheckContactMsg(){
-        if (this.state.contactErrMsg){
+
+    renderCheckContactMsg() {
+        if (this.state.contactErrMsg) {
             return (
                 <div className="clue-contactname-errmsg">
                     {this.state.contactErrMsg}
                 </div>
             );
-        }else{
+        } else {
             return '';
         }
     }
 
-    handleContactTypeChange = (index, value) => {
+    handleContactTypeChange = (index, itemIndex, value) => {
         var contacts = this.state.formData.contacts;
-        contacts[index]['contactWay'] = value;
+        contacts[index]['show_contact_item'][itemIndex]['type'] = value;
         this.setState({
             formData: this.state.formData
         });
     };
     handleChangeContactName = (index, e) => {
         var contacts = this.state.formData.contacts;
-        contacts[index]['contactName'] = e.target.value;
-        this.setState({
-            formData: this.state.formData,
-            contactErrMsg: ''
-        });
-    };
-    handleChangeContactValue = (index, e) => {
-        var contacts = this.state.formData.contacts;
-        contacts[index]['contactValue'] = e.target.value;
+        contacts[index]['name'] = e.target.value;
         this.setState({
             formData: this.state.formData,
             contactErrMsg: ''
@@ -267,122 +288,223 @@ class ClueAddForm extends React.Component {
             }
         }];
     };
-    setContactValue = (index, e) => {
-        var formData = this.state.formData;
-        formData.contacts[index].contactValue = e.target.value;
+
+    setContactPhoneValue = () => {
+
+    };
+    handleDelContact = (index, size) => {
+        if (index === 0 && size === 1) {
+            return;
+        }
+        var contacts = this.state.formData.contacts;
+        contacts.splice(index, 1);
         this.setState({
             formData: this.state.formData
         });
     };
+
     renderDiffContacts(item, index, size) {
-        var DIFCONTACTWAY = {
+
+        const DIFCONTACTWAY = {
             PHONE: 'phone',
             EMAIL: 'email',
-            QQ: 'qq'
+            QQ: 'qq',
+            WECHAT: 'weChat'
         };
         var contactWays = [
             {name: DIFCONTACTWAY.PHONE, value: Intl.get('common.phone', '电话')},
             {name: DIFCONTACTWAY.EMAIL, value: Intl.get('common.email', '邮箱')},
-            {name: DIFCONTACTWAY.QQ, value: 'QQ'}];
+            {name: DIFCONTACTWAY.QQ, value: 'QQ'},
+            {name: DIFCONTACTWAY.WECHAT, value: Intl.get('crm.58', '微信')}];
         var desArr = {
             'phone': Intl.get('clue.add.phone.num', '电话号码'),
             'email': Intl.get('clue.add.email.addr', '邮箱地址'),
-            'qq': Intl.get('clue.add.qq.num', 'QQ号码')
+            'qq': Intl.get('clue.add.qq.num', 'QQ号码'),
+            'weChat': Intl.get('clue.add.wechat.num', '微信号码')
         };
 
         function getDiffCls(type) {
             var cls = classNames('iconfont', {
                 'icon-qq': type === 'qq',
                 'icon-email': type === 'email',
-                'icon-phone-call-out': type === 'phone'
+                'icon-phone-call-out': type === 'phone',
+                'icon-weChat': type === 'weChat'
             });
             return cls;
         }
 
+        var iconCls = classNames('iconfont icon-delete', {
+            'disabled': index === 0 && size === 1
+        });
         var contacts = this.state.formData.contacts;
-        var contactWay = contacts[index]['contactWay'];
-        var contactName = contacts[index]['contactName'];
-        var contactValue = contacts[index]['contactValue'];
-        const {getFieldDecorator} = this.props.form;
+        var show_contact_item = contacts[index]['show_contact_item'];
+        const {getFieldDecorator, getFieldValue, setFieldsValue} = this.props.form;
+        var filterObj = {};
+        getFieldDecorator('keys', {initialValue: []});
+        const keys = getFieldValue('keys');
+        // setFieldsValue({
+        //     keys: [show_contact_item[0].randomValue],
+        // });
+        console.log('renderDiffContacts' + keys);
         return (
             <div className="contact-wrap">
-                <Select value={contactWay} onChange={this.handleContactTypeChange.bind(this, index)}>
-                    {contactWays.map((item) => {
-                        return <Option value={item.name} key={item.name} title={item.value}>
-                            <i className={getDiffCls(item.name)}></i>
-                            {item.value}</Option>;
-                    })}
-                </Select>
-                <Input value={contactName} onChange={this.handleChangeContactName.bind(this, index)}
-                    className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
-                {/*不同的联系方式用不同的规则来校验*/}
-                {
-                    contactWay === 'phone' ? <PhoneInput
-                        wrappedComponentRef={(inst) => this.phoneInputRef = inst}
-                        placeholder={desArr[contactWay]}
-                        validateRules={this.getPhoneInputValidateRules()}
-                        initialValue={''}
-                        hideLable={true}
-                        onChange={this.setContactValue.bind(this, index)}
-                        id={PHONE_INPUT_ID + index}
-                    /> : null
-                }
-                {
-                    contactWay === 'email' ?
-                        <FormItem>
-                            {getFieldDecorator(`email-${index}`, {rules: [{required: false}, {validator: checkEmail}]})(
-                                <Input value={contactValue} name={`email-${index}`} onChange={this.setContactValue.bind(this, index)}
-                                    className='contact-type-tip' placeholder={desArr[contactWay]}
-                                />) }
-                        </FormItem>
-                        : null
-                }
-                {
-                    contactWay === 'qq' ?
-                        <FormItem>
-                            { getFieldDecorator(`qq-${index}`, {rules: [{required: false}, {validator: checkQQ}]})(
-                                <Input value={contactValue} name={`qq-${index}`}
-                                    className='contact-type-tip' placeholder={desArr[contactWay]}
-                                    onChange={this.setContactValue.bind(this, index)}
-                                />)}
-                        </FormItem>
-                        : null
-                }
-                {/*{getFieldDecorator(`${contact_way}-${index}`, {rules: [{required: false}]})(*/}
-                {/*<Input value={contactValue} name={`${contact_way}-${index}`} */}
-                {/*className='contact-type-tip' placeholder={desArr[contactWay]}*/}
-                {/*/>)}*/}
-                {/*<Input value={contactValue} onChange={this.handleChangeContactValue.bind(this, index)} className='contact-type-tip' placeholder={desArr[contactWay]}/>*/}
+                <div className="contact-name-item">
+                    <Input onChange={this.handleChangeContactName.bind(this, index)}
+                        className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
+                    <i className={iconCls} onClick={this.handleDelContact.bind(this, index, size)}></i>
 
-                {this.renderContactWayBtns(index, size)}
+                </div>
+                <div className="contact-way-item">
+                    {_.map(show_contact_item, (contactItem, itemIndex) => {
+                        var contactWay = contactItem.type;
+                        var contactValue = contactItem.value;
+                        var randomValue = contactWay + '-' + index + '-' + contactItem.randomValue;
+                        //取每个联系人的联系方式
+                        var itemSize = show_contact_item.length;
+                        return (
+                            <div className="contact-item">
+                                <Select value={contactWay}
+                                    onChange={this.handleContactTypeChange.bind(this, index, itemIndex)}>
+                                    {contactWays.map((item) => {
+                                        return <Option value={item.name} key={item.name} title={item.value}>
+                                            <i className={getDiffCls(item.name)}></i>
+                                            {item.value}</Option>;
+                                    })}
+                                </Select>
+                                {/*不同的联系方式用不同的规则来校验*/}
+                                {/*{*/}
+                                {/*contactWay === 'phone' ? <PhoneInput*/}
+                                {/*wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst)  }*/}
+                                {/*placeholder={desArr[contactWay]}*/}
+                                {/*validateRules={this.getPhoneInputValidateRules()}*/}
+                                {/*initialValue={contactItem.value}*/}
+                                {/*hideLable={true}*/}
+                                {/*onChange={this.setContactValue.bind(this, index, itemIndex)}*/}
+                                {/*id={PHONE_INPUT_ID + uuid()}*/}
+                                {/*/> : null*/}
+                                {/*}*/}
+                                {
+                                    contactWay === 'email' ?
+                                        <FormItem
+                                            // key={randomValue}
+                                        >
+                                            {getFieldDecorator(randomValue, {
+                                                rules: [{required: false},
+                                                    {validator: checkEmail}
+                                                ]
+                                            }
+                                            )(
+                                                <Input
+                                                    onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
+                                                    className='contact-type-tip' placeholder={desArr[contactWay]}
+                                                />
+                                            ) }
+                                        </FormItem>
+                                        : null
+                                }
+                                {
+                                    contactWay === 'qq' ?
+                                        <FormItem
+                                            // key={randomValue}
+                                        >
+                                            {/*{ getFieldDecorator(randomValue, {rules: [{required: false},*/}
+                                            {/*{validator: checkQQ}*/}
+                                            {/*]})(*/}
+                                            <Input className='contact-type-tip' placeholder={desArr[contactWay]}
+                                                onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
+                                            />
+                                            {/* )}*/}
+                                        </FormItem>
+                                        : null
+                                }
+                                {
+                                    contactWay === 'weChat' ?
+                                        <FormItem
+                                            // key={randomValue}
+                                        >
+                                            {getFieldDecorator(randomValue, {rules: [{required: false}]})(
+                                                <Input
+                                                    onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
+                                                    className='contact-type-tip' placeholder={desArr[contactWay]}
+                                                />
+                                            ) }
+                                        </FormItem>
+                                        : null
+                                }
+                                {this.renderContactWayBtns(index, itemIndex, itemSize, randomValue)}
+                            </div>
+                        );
+                    })}
+
+
+                </div>
             </div>
         );
 
     }
 
-    removeContactWay = (index) => {
-        this.state.formData.contacts.splice(index, 1);
+    setContactValue = (index, itemIndex, randomValue, e) => {
+        var formData = this.state.formData;
+        formData.contacts[index]['show_contact_item'][itemIndex]['value'] = e.target.value;
         this.setState({
             formData: this.state.formData
         });
+        var a = {};
+        a[randomValue] = e.target.value;
+        this.props.form.setFieldsValue(a);
     };
-    addContactWay = () => {
-        this.state.formData.contacts.push({'contactWay': 'phone', 'contactName': '', 'contactValue': ''});
+
+    removeContactWay = (index, itemIndex, key) => {
+        this.state.formData.contacts[index]['show_contact_item'].splice(itemIndex, 1);
         this.setState({
             formData: this.state.formData
         });
+        const {form} = this.props;
+        form.resetFields();
+    //    [names: string[]]
+    };
+    addContactWay = (index) => {
+        const {form} = this.props;
+        const keys = form.getFieldValue('keys');
+        console.log('addContactWay' + keys);
+        var contacts = this.state.formData.contacts;
+        let addItem = {type: 'qq', value: '', randomValue: uuid()};
+        contacts[index]['show_contact_item'].push(addItem);
+        this.setState({
+            formData: this.state.formData
+        });
+        const nextKeys = keys.concat(addItem.randomValue);
+        // can use data-binding to set
+        // important! notify form to detect changes
+        // form.setFieldsValue({
+        //     keys: nextKeys,
+        // });
     };
     //添加、删除联系方式的按钮
-    renderContactWayBtns = (index, size) => {
+    renderContactWayBtns = (index, itemIndex, itemSize, key) => {
         return (<div className="contact-way-buttons">
-            {index === 0 && index === size - 1 ? null : <div className="clue-minus-button"
-                onClick={this.removeContactWay.bind(this, index)}>
+            {itemIndex === 0 && itemSize === 1 ? null : <div className="clue-minus-button"
+                onClick={this.removeContactWay.bind(this, index, itemIndex, key)}>
                 <Icon type="minus"/>
             </div>}
-            {index === size - 1 ? ( <div className="clue-plus-button" onClick={this.addContactWay}>
-                <Icon type="plus"/>
-            </div>) : null}
+            {itemIndex === itemSize - 1 ? (
+                <div className="clue-plus-button" onClick={this.addContactWay.bind(this, index)}>
+                    <Icon type="plus"/>
+                </div>) : null}
         </div>);
+    };
+    handleAddContact = () => {
+        this.state.formData.contacts.push({
+            'name': '',
+            'phone': [],
+            'qq': [],
+            'weChat': [],
+            'email': [],
+            'show_contact_item': [{type: 'phone', value: ''}]
+        });
+        this.setState({
+            formData: this.state.formData
+        });
     };
 
 
@@ -399,9 +521,10 @@ class ClueAddForm extends React.Component {
             },
         };
         let formData = this.state.formData;
-        var clsContainer = classNames('form-item-label contact-containers',{
+        var clsContainer = classNames('form-item-label contact-containers', {
             'contact-err-tip': this.state.contactErrMsg
         });
+        this.phoneInputRefs = [];
         return (
             <RightPanel showFlag={true} data-tracename="添加线索" className="sales-clue-add-container">
                 <BasicData
@@ -458,10 +581,11 @@ class ClueAddForm extends React.Component {
                             {...formItemLayout}
                         >
                             <div className="contact-way-container">
-                                {formData.contacts.length ? _.map(formData.contacts, (item, index) => {
+                                {_.map(formData.contacts, (item, index) => {
                                     return this.renderDiffContacts(item, index, formData.contacts.length);
-                                }) : this.renderDiffContacts({'phone': 'rty'}, 0, 1)}
-
+                                })}
+                                <div className="add-contact"
+                                    onClick={this.handleAddContact}>{Intl.get('crm.detail.contact.add', '添加联系人')}</div>
                             </div>
                         </FormItem>
                         {this.renderCheckContactMsg()}

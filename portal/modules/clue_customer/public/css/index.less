@@ -101,30 +101,40 @@
             overflow: hidden;
             .contact-wrap{
               overflow: hidden;
-              .ant-select{
-                width: 85px;
-                float: left;
-                //span{
-                //  position: relative;
-                //  top:-3px;
-                //}
+              .contact-name-item{
+                .contact-name{
+                  float: left;
+                  width: 90%;
+                }
+                .iconfont.icon-delete.disabled{
+                  color: #eeeeee;
+                }
               }
+              .contact-way-item{
+                .contact-item{
+                  overflow: hidden;
+                  .ant-select{
+                    width: 95px;
+                    float: left;
+                  }
+                  .contact-type-tip, .ant-form-item{
+                    width: 180px;
+                    float: left;
+                    margin-bottom: 0;
+                    .ant-form-item-control-wrapper{
+                      width: 100%;
+                    }
+                  }
+                }
+
+              }
+
               i.iconfont{
                 margin-right:10px;
                 color:#999;
               }
-              .contact-name{
-                width:100px;
-                float: left;
-              }
-              .contact-type-tip, >div.ant-form-item{
-                width: 130px;
-                float: left;
-                margin-bottom: 0;
-                .ant-form-item-control-wrapper{
-                  width: 100%;
-                }
-              }
+
+
 
               .contact-way-buttons{
                 float: left;
@@ -140,6 +150,10 @@
                   margin-left:15px;
                 }
               }
+            }
+            .add-contact{
+              color:#8EAAC5;
+              text-align: left;
             }
           }
         }
