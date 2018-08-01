@@ -432,32 +432,53 @@ var CustomerAnalysis = React.createClass({
     },
     //获取试用合格客户数统计图表
     getTrialQualifiedChart() {
-        //统计字段
-        const statisticFields = [{
-            key: 'last_month',
-            name: '上月',
+        //统计列
+        const statisticsColumns = [{
+            dataIndex: 'last_month',
+            title: '上月',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
         }, {
-            key: 'this_month',
-            name: '本月',
+            dataIndex: 'this_month',
+            title: '本月',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
         }, {
-            key: 'this_month_new',
-            name: '本月新增',
+            dataIndex: 'this_month_new',
+            title: '本月新增',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
         }, {
-            key: 'this_month_lose',
-            name: '本月流失',
+            dataIndex: 'this_month_lose',
+            title: '本月流失',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
         }, {
-            key: 'this_month_back',
-            name: '本月回流',
+            dataIndex: 'this_month_back',
+            title: '本月回流',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
         }, {
-            key: 'this_month_add',
-            name: '本月比上月净增',
+            dataIndex: 'this_month_add',
+            title: '本月比上月净增',
+            width: '15%',
         }, {
-            key: 'highest',
-            name: '历史最高',
+            dataIndex: 'highest',
+            title: '历史最高',
+            width: '10%',
         }, {
-            key: 'this_month_add_highest',
-            name: '本比历史最高净增',
+            dataIndex: 'this_month_add_highest',
+            title: '本比历史最高净增',
+            width: '15%',
         }];
+
+        //表格列
+        let columns = _.cloneDeep(statisticsColumns);
+        columns.unshift({
+            title: '团队',
+            width: '10%',
+            dataIndex: 'team_name',
+        });
 
         let chart = {
             title: '试用合格客户数统计',
@@ -465,7 +486,19 @@ var CustomerAnalysis = React.createClass({
             layout: {sm: 24},
             processData: data => {
                 data = data.list || [];
-                console.log(data);
+                _.each(data, dataItem => {
+                    _.each(statisticsColumns, column => {
+                        const key = column.dataIndex;
+                        const customerIds = _.get(dataItem, [key, 'customer_ids']);
+
+                        if (customerIds) {
+                            dataItem[key + '_customer_ids'] = customerIds.join(',');
+                        }
+
+                        dataItem[key] = dataItem[key].total;
+                    });
+                });
+
                 return data;
             },
         };
@@ -544,14 +577,9 @@ var CustomerAnalysis = React.createClass({
             _.extend(chart, {
                 chartType: 'table',
                 option: {
-                    columns: [{
-                        title: '团队',
-                        dataIndex: 'team_name',
-                    }, {
-                        title: '上月',
-                        dataIndex: 'last_month',
-                        render: this.trialQualifiedNumRender,
-                    }],
+                    columns,
+                },
+                processOption: (option, chartProps) => {
                 },
             });
         }
