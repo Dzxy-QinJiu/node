@@ -340,7 +340,7 @@ var SalesTeamCard = React.createClass({
                     <div className="sales-role">
                         <span className="sales-team-label">{Intl.get('crm.detail.sales.role', '销售角色')}:</span>
                         <span className="sales-team-text">
-                            {this.state.salesRole || Intl.get('role.normal.sales', '普通销售')}
+                            {this.state.salesRole || ''}
                         </span>
                     </div>}
             </div>

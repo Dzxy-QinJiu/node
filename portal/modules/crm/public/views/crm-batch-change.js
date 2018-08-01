@@ -555,6 +555,11 @@ var CrmBatchChange = React.createClass({
                         value: salesman.user_info.user_id + '&&' + team.group_id
                     });
                 });
+            }else {
+                dataList.push({
+                    name: `${salesman.user_info.nick_name}`,
+                    value: `${salesman.user_info.user_id}`
+                });
             }
         });
         return (
