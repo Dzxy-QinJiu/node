@@ -534,6 +534,7 @@ var SalesHomePage = React.createClass({
             return (<CustomerAnalysis ref="customerView" startTime={this.state.start_time} endTime={this.state.end_time}
                 timeType={this.state.timeType}
                 scrollbarEnabled={this.state.scrollbarEnabled}
+                currShowType={this.state.currShowType}
                 currShowSalesTeam={this.state.currShowSalesTeam}
                 currShowSalesman={this.state.currShowSalesman}
                 originSalesTeamTree={this.state.originSalesTeamTree}

@@ -221,6 +221,7 @@ var Crm = React.createClass({
         OrderAction.getSysStageList();
         this.getUserPhoneNumber();
         const query = _.clone(this.props.location.query);
+        const locationState = this.props.location.state;
         if (query.analysis_filter_field) {
             var filterField = query.analysis_filter_field;
             var filterValue = query.analysis_filter_value;
@@ -266,6 +267,13 @@ var Crm = React.createClass({
             }
             this.setFilterField({ filterField, filterValue });
 
+        } else if (locationState) {
+            const from = locationState.from;
+
+            if (from === 'sales_home') {
+                const trialQualifiedCustomerIds = locationState.trialQualifiedCustomerIds;
+                CrmAction.queryCustomer({id: trialQualifiedCustomerIds}, {}, this.state.pageSize, this.state.sorter, {});
+            }
         } else {
             this.search();
         }

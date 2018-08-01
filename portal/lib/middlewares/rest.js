@@ -5,7 +5,10 @@ const _ = require('lodash');
 
 module.exports = function(req, res) {
     const queryStr = querystring.stringify(req.query);
-    let url = queryStr ? req.path + '?' + queryStr : req.path;
+    //去掉强制使用通用路由的标识
+    const path = req.path.replace('/force_use_common_rest', '');
+
+    let url = queryStr ? path + '?' + queryStr : path;
 
     if(!_.isEmpty(req.params)) {
         url = url.replace(/\:([a-zA-Z_\-0-9]+)/g,function($0,$1) {

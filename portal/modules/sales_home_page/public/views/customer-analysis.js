@@ -3,6 +3,7 @@
  * Created by wangliping on 2016/11/24.
  */
 import { AntcAnalysis } from 'antc';
+let history = require('PUB_DIR/sources/history');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
@@ -37,6 +38,7 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 const CrmList = require('MOD_DIR/crm/public/crm-list');
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
+const showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;
 
 //客户分析
 var CustomerAnalysis = React.createClass({
@@ -411,7 +413,180 @@ var CustomerAnalysis = React.createClass({
             }
         });
     },
-    //获取图表
+    //处理试用合格客户数统计数字点击事件
+    handleTrialQualifiedNumClick() {
+        const customerIds = '36mvh13nka_53cd3bdd-a0d3-4299-a3f9-403a7f40e5fc,36mvh13nka_ec89a8ee-2c1f-40e6-b2fc-8bccac5a0b07';
+
+        history.pushState({
+            from: 'sales_home',
+            trialQualifiedCustomerIds: customerIds
+        }, '/crm', {});
+    },
+    //试用合格客户数统计数字渲染函数
+    trialQualifiedNumRender(text, record) {
+        return (
+            <span onClick={this.handleTrialQualifiedNumClick} style={{cursor: 'pointer'}}>
+                {text}
+            </span>
+        );
+    },
+    //获取试用合格客户数统计图表
+    getTrialQualifiedChart() {
+        //统计列
+        const statisticsColumns = [{
+            dataIndex: 'last_month',
+            title: '上月',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
+        }, {
+            dataIndex: 'this_month',
+            title: '本月',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
+        }, {
+            dataIndex: 'this_month_new',
+            title: '本月新增',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
+        }, {
+            dataIndex: 'this_month_lose',
+            title: '本月流失',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
+        }, {
+            dataIndex: 'this_month_back',
+            title: '本月回流',
+            width: '10%',
+            render: this.trialQualifiedNumRender,
+        }, {
+            dataIndex: 'this_month_add',
+            title: '本月比上月净增',
+            width: '15%',
+        }, {
+            dataIndex: 'highest',
+            title: '历史最高',
+            width: '10%',
+        }, {
+            dataIndex: 'this_month_add_highest',
+            title: '本比历史最高净增',
+            width: '15%',
+        }];
+
+        //表格列
+        let columns = _.cloneDeep(statisticsColumns);
+        columns.unshift({
+            title: '团队',
+            width: '10%',
+            dataIndex: 'team_name',
+        });
+
+        let chart = {
+            title: '试用合格客户数统计',
+            url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+            layout: {sm: 24},
+            processData: data => {
+                data = data.list || [];
+                _.each(data, dataItem => {
+                    _.each(statisticsColumns, column => {
+                        const key = column.dataIndex;
+                        const customerIds = _.get(dataItem, [key, 'customer_ids']);
+
+                        if (customerIds) {
+                            dataItem[key + '_customer_ids'] = customerIds.join(',');
+                        }
+
+                        dataItem[key] = dataItem[key].total;
+                    });
+                });
+
+                return data;
+            },
+        };
+
+        if (this.props.currShowType === showTypeConstant.SALESMAN) {
+            _.extend(chart, {
+                chartType: 'bar',
+                processOption: (option, chartProps) => {
+                    option.legend = {
+                        data: [
+                            '上月',
+                            '本月',
+                            '历史最高',
+                        ],
+                    };
+                    _.set(option, 'xAxis[0].data', [
+                        '上月',
+                        '本月新增',
+                        '本月回流',
+                        '本月流失',
+                        '本月比上月净增',
+                        '本月',
+                        '本月比历史最高净增',
+                        '历史最高',
+                    ]);
+
+                    const serie = {
+                        type: 'bar',
+                        stack: 'num',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    position: 'top',
+                                }
+                            }
+                        }
+                    };
+
+                    let serieAssist = _.extend({}, serie, {
+
+                        itemStyle: {
+                            normal: {
+                                barBorderColor: 'rgba(0,0,0,0)',
+                                color: 'rgba(0,0,0,0)'
+                            },
+                            emphasis: {
+                                barBorderColor: 'rgba(0,0,0,0)',
+                                color: 'rgba(0,0,0,0)'
+                            }
+                        },
+                        data: ['-',3,4,3,3,'-',3,'-'],
+                    });
+
+                    let serieLastMonth = _.extend({}, serie, {
+                        data: [3,'-','-','-','-','-','-','-'],
+                    });
+
+                    let serieThisMonth = _.extend({}, serie, {
+                        data: ['-',1,1,2,1,4,1,'-'],
+                    });
+
+                    let serieHistory = _.extend({}, serie, {
+                        data: ['-','-','-','-','-','-','-',3],
+                    });
+
+                    option.series = [
+                        serieAssist,
+                        serieLastMonth,
+                        serieThisMonth,
+                        serieHistory
+                    ];
+                },
+            });
+        } else {
+            _.extend(chart, {
+                chartType: 'table',
+                option: {
+                    columns,
+                },
+                processOption: (option, chartProps) => {
+                },
+            });
+        }
+
+        return chart;
+    },
+    //获取图表列表
     getCharts: function() {
         //表格内容高度
         const TABLE_HIGHT = 175;
@@ -424,7 +599,7 @@ var CustomerAnalysis = React.createClass({
         //销售不展示团队的数据统计
         const hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
 
-        return [{
+        let charts = [{
             title: Intl.get('effective.customer.statistics', '有效客户统计'),
             url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
             argCallback: (arg) => {
@@ -792,6 +967,11 @@ var CustomerAnalysis = React.createClass({
                 ],
             },
         }];
+
+        const trialQualifiedChart = this.getTrialQualifiedChart();
+        charts.unshift(trialQualifiedChart);
+
+        return charts;
     },
     renderChartContent: function() {
         return (
