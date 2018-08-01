@@ -108,17 +108,6 @@ let CustomerRepeat = React.createClass({
         }
         CustomerRepeatAction.setRightPanelShow(true);
         CustomerRepeatAction.setCurCustomer(id);
-        //触发打开带拨打电话状态的客户详情面板
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-            customer_params: {
-                isRepeat: true,
-                refreshCustomerList: this.refreshRepeatCustomerList,
-                curCustomer: this.state.curCustomer,
-                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                updateCustomerDefContact: CustomerRepeatAction.updateCustomerDefContact,
-                hideRightPanel: this.hideRightPanel
-            }
-        });
     },
     hideRightPanel: function() {
         CustomerRepeatAction.setRightPanelShow(false);
@@ -284,7 +273,7 @@ let CustomerRepeat = React.createClass({
     },
     renderContactWay: function(customer) {
         if (_.isArray(customer.phones) && customer.phones.length) {
-            return customer.phones.map(phone => (<div>{phone}</div>));
+            return customer.phones.map((phone, index) => (<div key={index}>{phone}</div>));
         } else {
             return null;
         }
@@ -333,10 +322,10 @@ let CustomerRepeat = React.createClass({
                 <Alert type="error" showIcon={true} message={this.state.errorMsg}/>
             </div>);
         } else if (_.isArray(repeatCustomerList) && repeatCustomerList.length) {
-            return repeatCustomerList.map(repeatObj => {
+            return repeatCustomerList.map((repeatObj, key) => {
                 let isPhoneRepeat = repeatObj.repeatList[0] && repeatObj.repeatList[0].repeat_type === 'phone';
                 return (
-                    <Row className="customer-repeat-row">
+                    <Row className="customer-repeat-row" key={key}>
                         {isPhoneRepeat ? <span className="phone-repeat-tag">{Intl.get('crm.repeat.phone','电话重复')}</span> : null}
                         <Col span={23}>
                             {repeatObj.repeatList.map(customer => {
@@ -357,9 +346,27 @@ let CustomerRepeat = React.createClass({
                 </div>);
         }
     },
+    renderCustomerDetail: function() {
+        //触发打开带拨打电话状态的客户详情面板
+        if (this.state.curCustomer) {
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                customer_params: {
+                    isRepeat: true,
+                    refreshCustomerList: this.refreshRepeatCustomerList,
+                    curCustomer: this.state.curCustomer,
+                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                    updateCustomerDefContact: CustomerRepeatAction.updateCustomerDefContact,
+                    hideRightPanel: this.hideRightPanel
+                }
+            });
+        }
+    },
     render: function() {
         let tableData = this.state.repeatCustomerList;
         const total = Intl.get('crm.14', '共{count}条记录', {count: this.state.repeatCustomersSize});
+        if(this.state.rightPanelIsShow){
+            this.renderCustomerDetail();
+        }
         return (<div className="customer-repeat-container" data-tracename="客户查重页面">
             {!this.props.noNeedClose ? <TopNav>
                 <div className="return-btn-container" onClick={(e) => {
