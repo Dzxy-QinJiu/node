@@ -28,7 +28,6 @@ function BatchChangeAction() {
     this.getALLUserList = function(searchObj,callback) {
         batchChangeAjax.getALLUserList(searchObj).then((listObj) => {
             var data = _.filter(listObj.data, sales => sales && sales.user_info && sales.user_info.status === 1);
-
             this.dispatch(data);
             _.isFunction(callback) && callback(data);
         }, function(errorMsg) {
