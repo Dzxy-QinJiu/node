@@ -25,9 +25,7 @@ class ContractStore {
         } else {
             this.contractList.errMsg = '';
             let list = result.resData && result.resData.list || [];
-            if (_.isArray(list) && list.length) {
-                this.contractList.data = list;
-            }
+            this.contractList.data = _.get(list, '[0]') && list || [];
         }
     }
     // 显示添加面板
