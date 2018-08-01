@@ -172,7 +172,7 @@ function AppUserAction() {
             if(data.errorMsg) {
                 this.dispatch({loading: false, errorMsg: data.errorMsg});
             } else {
-                this.dispatch({loading: false, list: data.teamList, teamTreeList: data.teamTreeList});
+                this.dispatch({loading: false, teamList: data.teamList, teamTreeList: data.teamTreeList});
                 if (_.isFunction(cb)) cb(data.teamTreeList);
             }
         });

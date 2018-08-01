@@ -185,22 +185,22 @@ exports.getResultType = function(isLoading, isError) {
     return resultType;
 };
 //获取数据失败及重试方法
-exports.getErrorTipAndRetryFunction = function(errTip,callback) {
+exports.getErrorTipAndRetryFunction = function(errTip, callback) {
     var errMsg = errTip ? errTip : Intl.get('contract.111', '获取数据失败');
-    if (_.isFunction(callback)){
+    if (_.isFunction(callback)) {
         return (
             <span>{errMsg},<a onClick={callback}>{Intl.get('user.info.retry', '请重试')}</a></span>
         );
-    }else{
+    } else {
         return (
             <span>{errMsg}</span>
         );
     }
 };
 //去掉数组中元素的回车和空格,然后对数组进行去重
-exports.removeSpacesAndEnter = function(dataArr){
+exports.removeSpacesAndEnter = function(dataArr) {
     dataArr.forEach((item, index) => {
-        dataArr[index] = $.trim(item.replace(/[\r\n]/g,''));
+        dataArr[index] = $.trim(item.replace(/[\r\n]/g, ''));
     });
     return _.uniq(dataArr);
 };
@@ -210,12 +210,12 @@ exports.removeSpacesAndEnter = function(dataArr){
  * @param treeList 要遍历的团队树，
  * @param list 遍历出的所有团队的列表
  */
-function traversingTeamTree(treeList,list) {
-    if(_.isArray(treeList) && treeList.length){
+function traversingTeamTree(treeList, list) {
+    if (_.isArray(treeList) && treeList.length) {
         _.each(treeList, team => {
-            list.push({group_id: team.group_id,group_name: team.group_name});
-            if(team.child_groups){
-                traversingTeamTree(team.child_groups,list);
+            list.push({group_id: team.group_id, group_name: team.group_name});
+            if (team.child_groups) {
+                traversingTeamTree(team.child_groups, list);
             }
         });
     }
@@ -228,3 +228,40 @@ exports.traversingTeamTree = traversingTeamTree;
 exports.disabledBeforeToday = function(current) {
     return current && current < moment().subtract(1, 'days').endOf('day');
 };
+
+/**
+ * 递归获取要传到后端的所有团队id的数组
+ * @param totalRequestTeams 向后端发请求的所有团队id的数组
+ * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
+ * */
+function getRequestTeamIds(totalRequestTeams, teamTotalArr) {
+    _.each(teamTotalArr, (team) => {
+        if (_.indexOf(totalRequestTeams, team.group_id) === -1) {
+            totalRequestTeams.push(team.group_id);
+        }
+        if (team.child_groups) {
+            getRequestTeamIds(totalRequestTeams, team.child_groups);
+        }
+    });
+}
+exports.getRequestTeamIds = getRequestTeamIds;
+
+/**
+ * 递归遍历取出已选的团队列表(带下级团队)
+ * @param teamTreeList 所有团队的团队树
+ * @param selectedTeams 实际选中的团队的id列表
+ * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队列表
+ * */
+function traversingSelectTeamTree(teamTreeList, selectedTeams, teamTotalArr) {
+    if (_.isArray(teamTreeList) && teamTreeList.length) {
+        _.each(teamTreeList, team => {
+            if (selectedTeams === team.group_id) {
+                teamTotalArr.push(team);
+            }
+            if (team.child_groups) {
+                traversingSelectTeamTree(team.child_groups, selectedTeams, teamTotalArr);
+            }
+        });
+    }
+}
+exports.traversingSelectTeamTree = traversingSelectTeamTree;

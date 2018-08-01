@@ -489,39 +489,6 @@ var Crm = React.createClass({
     , hideAddForm: function() {
         this.state.isAddFlag = false;
         this.setState(this.state);
-    },
-    /**
-     * @param totalRequestTeams 向后端发请求的所有团队id的数组
-     * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
-     * */
-    //获取要传到后端的所有团队id的数组
-    getRequestTeamIds: function(totalRequestTeams, teamTotalArr) {
-        _.each(teamTotalArr, (team) => {
-            if (_.indexOf(totalRequestTeams, team.group_id) === -1) {
-                totalRequestTeams.push(team.group_id);
-            }
-            if (team.child_groups) {
-                this.getRequestTeamIds(totalRequestTeams, team.child_groups);
-            }
-        });
-
-    },
-    /**
-     * @param teamTreeList 所有团队的团队树
-     * @param selectedTeams 实际选中的团队的id列表
-     * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
-     * */
-    traversingTeamTree: function(teamTreeList, selectedTeams, teamTotalArr) {
-        if (_.isArray(teamTreeList) && teamTreeList.length) {
-            _.each(teamTreeList, team => {
-                if (selectedTeams === team.group_id) {
-                    teamTotalArr.push(team);
-                }
-                if (team.child_groups) {
-                    this.traversingTeamTree(team.child_groups, selectedTeams, teamTotalArr);
-                }
-            });
-        }
     }
 
     //查询客户
@@ -668,10 +635,10 @@ var Crm = React.createClass({
         var teamTotalArr = [];
         //跟据实际选中的id，获取包含下级团队的所有团队详情的列表teamTotalArr
         _.each(selectedTeams, (teamId) => {
-            this.traversingTeamTree(teamTreeList, teamId, teamTotalArr);
+            commonMethodUtil.traversingSelectTeamTree(teamTreeList, teamId, teamTotalArr);
         });
         //跟据包含下级团队的所有团队详情的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
-        this.getRequestTeamIds(totalRequestTeams, teamTotalArr);
+        commonMethodUtil.getRequestTeamIds(totalRequestTeams, teamTotalArr);
         if (totalRequestTeams.length) {
             condition.sales_team_id = totalRequestTeams.join(',');
         } else {

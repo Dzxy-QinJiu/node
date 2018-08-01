@@ -41,7 +41,7 @@ var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 50
 };
-import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
+import {removeSpacesAndEnter, traversingSelectTeamTree, getRequestTeamIds} from 'PUB_DIR/sources/utils/common-method-util';
 
 var UserTabContent = React.createClass({
     getInitialState: function() {
@@ -121,7 +121,22 @@ var UserTabContent = React.createClass({
             customer_id: this.state.customer_id || ''
         };
         var filterFieldMap = this.state.filterFieldMap;
-        $.extend(ajaxObj, filterFieldMap);
+        ajaxObj = $.extend(true, ajaxObj, filterFieldMap);
+        //团队筛选的处理
+        if(_.get(ajaxObj.team_ids), '[0]'){
+            //实际选中的团队列表
+            var selectedTeams = ajaxObj.team_ids;
+            //实际要传到后端的团队,默认是选中的团队
+            var totalRequestTeams = selectedTeams;
+            var teamTotalArr = [];
+            //跟据实际选中的id，获取包含下级团队的所有已选团队列表teamTotalArr
+            _.each(selectedTeams, (teamId) => {
+                traversingSelectTeamTree(this.state.teamTreeList, teamId, teamTotalArr);
+            });
+            //跟据包含下级团队的所有团队详细的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+            getRequestTeamIds(totalRequestTeams, teamTotalArr);
+            ajaxObj.team_ids = totalRequestTeams;
+        }
         AppUserAction.getAppUserList(ajaxObj);
     },
     onStoreChange: function() {

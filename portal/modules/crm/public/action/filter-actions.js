@@ -39,7 +39,7 @@ function FilterAction() {
         getMyTeamTreeList(data => {
             let list = data.teamList || [];
             list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
-            this.dispatch({list: list, teamTreeList: data.teamTreeList});
+            this.dispatch({teamList: list, teamTreeList: data.teamTreeList});
             if (_.isFunction(cb)) cb(list);
         });
     };
