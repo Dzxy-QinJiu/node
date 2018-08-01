@@ -56,7 +56,14 @@ exports.getUsers = function(req, res, condition, isGetAllUser) {
                         curUserList[i] = {
                             userId: curUserList[i].user_id,
                             nickName: curUserList[i].nick_name,
-                            userName: curUserList[i].user_name
+                            userName: curUserList[i].user_name,
+                            user_info: {
+                                user_id: curUserList[i].user_id,
+                                user_name: curUserList[i].user_name,
+                                nick_name: curUserList[i].nick_name,
+                                status: curUserList[i].status
+                            }
+
                         };
                     } else {
                         curUserList[i] = User.toFrontObject(curUserList[i]);

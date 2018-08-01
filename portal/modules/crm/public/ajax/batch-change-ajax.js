@@ -12,6 +12,26 @@ exports.getSalesManList = function() {
         });
     return Deferred.promise();
 };
+//获取当前页的用户列表
+exports.getALLUserList = function(searchObj) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/user',
+        dataType: 'json',
+        type: 'get',
+        data: searchObj,
+        success: function(userListObj) {
+            Deferred.resolve(userListObj);
+        },
+        error: function(xhr, textStatus) {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
 //获取某销售团队成员列表
 var salesTeamMembersAjax;
 exports.getSalesTeamMembers = function(teamId) {
