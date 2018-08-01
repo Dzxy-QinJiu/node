@@ -11,6 +11,8 @@ const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 import ContractAction from '../../action/contract-action';
 const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
+const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
+
 // 开通应用，默认的数量和金额
 const APP_DEFAULT_INFO = {
     COUNT: 1,
@@ -309,7 +311,7 @@ const Contract = React.createClass( {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
                             {getFieldDecorator('contract_amount', {
-                                rules: [{ pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')}]
+                                rules: [ValidateRule.getNumberValidateRule()]
                             })( <Input
                                 value={parseAmount(formData.contract_amount)}
                                 onChange={this.handleContractAmount}
@@ -319,7 +321,7 @@ const Contract = React.createClass( {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.109', '毛利')}>
                             {getFieldDecorator('gross_profit', {
-                                rules: [{ pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')}]
+                                rules: [ValidateRule.getNumberValidateRule()]
                             })(<Input
                                 value={parseAmount(formData.gross_profit)}
                                 onChange={this.handleContractGross}

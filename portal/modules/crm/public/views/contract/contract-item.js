@@ -38,7 +38,7 @@ const ContractItem = React.createClass({
             Intl.get('crm.basic.detail.show', '展开详情');
         return (
             <div className='contract-title'>
-                {contract.stage === '待审' && contract.num === undefined || contract.num === '' ? (
+                {contract.stage === '待审' && !contract.num ? (
                     <span className='contract-item-stage'>{Intl.get('contract.170', '合同待审')}</span>
                 ) : (
                     <span className='contract-item-title'>
