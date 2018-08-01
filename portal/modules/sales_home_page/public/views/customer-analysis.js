@@ -434,19 +434,8 @@ var CustomerAnalysis = React.createClass({
     //获取试用合格客户数统计图表
     getTrialQualifiedChart() {
         let resultType = '';
-        console.log(mockTeamData);
 
-        let data = [{
-            name: '李四',
-            last_month: 3,
-            this_month: 4,
-            this_month_add: 1,
-            this_month_back: 1,
-            this_month_lose: 2,
-            this_month_pure_add: 1,
-            history_highest: 3,
-            this_month_than_history_highest: 1,
-        }];
+        let data = mockTeamData;
 
         let chart = {
             title: '试用合格客户数统计',
@@ -458,6 +447,10 @@ var CustomerAnalysis = React.createClass({
         if (this.props.currShowType === showTypeConstant.SALESMAN) {
             _.extend(chart, {
                 chartType: 'bar',
+                processData: data => {
+                    console.log(data);
+                    return data;
+                },
                 processOption: (option, chartProps) => {
                     option.legend = {
                         data: [
