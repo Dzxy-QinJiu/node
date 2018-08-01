@@ -99,29 +99,23 @@ const Contract = React.createClass( {
             </span>
         );
     },
+
     // 修改产品信息
+    modifyProductsInfo(appId, modifyValue, filed) {
+        let modifyAppObj = _.find(this.state.products, item => item.client_id === appId);
+        if (modifyAppObj) {
+            modifyAppObj[filed] = modifyValue;
+        }
+    },
+    // 修改产品数量
     handleModifyUserCount(appId, event) {
         let userCount = event.target.value;
-        _.find(this.state.products, (item) => {
-            if (item.client_id === appId) {
-                return item.count = userCount;
-            }
-        });
-        this.setState({
-            products: this.state.products
-        });
+        this.modifyProductsInfo(appId, userCount, 'count');
     },
     // 修改产品金额
     handleModifyPrice(appId, event) {
         let totalPrice = event.target.value;
-        _.find(this.state.products, (item) => {
-            if (item.client_id === appId) {
-                return item.total_price = totalPrice;
-            }
-        });
-        this.setState({
-            products: this.state.products
-        });
+        this.modifyProductsInfo(appId, totalPrice, 'total_price');
     },
     // 删除产品信息
     handleDeleteProductsInfo(appId) {
