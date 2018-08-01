@@ -6,6 +6,7 @@ var AlertTimer = require('../../../../components/alert-timer');
 var rightPanelUtil = require('../../../../components/rightPanel/index');
 var RightPanel = rightPanelUtil.RightPanel;
 var Contacts = require('./contacts');
+import Contract from './contract';
 var Dynamic = require('./dynamic');
 var CrmSchedule = require('./schedule');
 var Order = require('./order');
@@ -17,6 +18,7 @@ import {tabNameList} from '../utils/crm-util';
 import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 var CrmRightMergePanel = React.createClass({
     getInitialState: function() {
@@ -586,12 +588,26 @@ var CrmRightMergePanel = React.createClass({
                                         />
                                     ) : null}
                                 </TabPane>
+                                {
+                                    hasPrivilege('OPLATE_CONTRACT_QUERY') ? (
+                                        <TabPane
+                                            tab={Intl.get('contract.125', '合同')}
+                                            key='6'
+                                        >
+                                            {this.state.activeKey === 6 ? (
+                                                <Contract
+                                                    isMerge={true}
+                                                    curCustomer={this.state.curCustomer}
+                                                />
+                                            ) : null}
+                                        </TabPane>
+                                    ) : null
+                                }
                                 <TabPane
                                     tab={Intl.get('crm.39', '动态')}
-                                    key="6"
-
+                                    key="7"
                                 >
-                                    {this.state.activeKey === '6' ? (
+                                    {this.state.activeKey === '7' ? (
                                         <Dynamic
                                             isMerge={true}
                                             currentId={this.state.selectedCustomer.id}
