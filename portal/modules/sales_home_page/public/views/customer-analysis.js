@@ -432,19 +432,47 @@ var CustomerAnalysis = React.createClass({
     },
     //获取试用合格客户数统计图表
     getTrialQualifiedChart() {
+        //统计字段
+        const statisticFields = [{
+            key: 'last_month',
+            name: '上月',
+        }, {
+            key: 'this_month',
+            name: '本月',
+        }, {
+            key: 'this_month_new',
+            name: '本月新增',
+        }, {
+            key: 'this_month_lose',
+            name: '本月流失',
+        }, {
+            key: 'this_month_back',
+            name: '本月回流',
+        }, {
+            key: 'this_month_add',
+            name: '本月比上月净增',
+        }, {
+            key: 'highest',
+            name: '历史最高',
+        }, {
+            key: 'this_month_add_highest',
+            name: '本比历史最高净增',
+        }];
+
         let chart = {
             title: '试用合格客户数统计',
             url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
             layout: {sm: 24},
+            processData: data => {
+                data = data.list || [];
+                console.log(data);
+                return data;
+            },
         };
 
         if (this.props.currShowType === showTypeConstant.SALESMAN) {
             _.extend(chart, {
                 chartType: 'bar',
-                processData: data => {
-                    console.log(data);
-                    return data;
-                },
                 processOption: (option, chartProps) => {
                     option.legend = {
                         data: [
@@ -517,8 +545,8 @@ var CustomerAnalysis = React.createClass({
                 chartType: 'table',
                 option: {
                     columns: [{
-                        title: '销售',
-                        dataIndex: 'name',
+                        title: '团队',
+                        dataIndex: 'team_name',
                     }, {
                         title: '上月',
                         dataIndex: 'last_month',
