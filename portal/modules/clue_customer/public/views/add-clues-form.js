@@ -20,29 +20,31 @@ const PHONE_INPUT_ID = 'phoneInput';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 import PhoneInput from 'CMP_DIR/phone-input';
 var uuid = require('uuid/v4');
+import AlertTimer from 'CMP_DIR/alert-timer';
+const DIFCONTACTWAY = {
+    PHONE: 'phone',
+    EMAIL: 'email',
+    QQ: 'qq',
+    WECHAT: 'weChat'
+};
+var initialContact = {
+    'name': '',
+    'phone': [],
+    'qq': [],
+    'weChat': [],
+    'email': [],
+    'show_contact_item': [{type: DIFCONTACTWAY.PHONE, value: '',randomValue: uuid()}]
+};
 
 class ClueAddForm extends React.Component {
     constructor(props) {
         super(props);
         const today = moment().format('YYYY-MM-DD');
-        var defalutData = this.props.defaultClueData ? this.props.defaultClueData : {};
         this.state = {
             formData: {
                 name: '',//客户名称
                 contact_name: '',//联系人
-                contacts: [{
-                    'def_contancts': 'true',
-                    'name': '',
-                    'phone': [],
-                    'qq': [],
-                    'email': [],
-                    'weChat': [],
-                    'show_contact_item': [{type: 'phone', value: '', randomValue: uuid()}]
-                }],
-                phone: '',//联系电话
-                email: '',//邮箱
-                qq: '',//QQ
-                weChat: '',//微信
+                contacts: [_.cloneDeep(initialContact)],
                 clue_source: '',//线索来源
                 access_channel: '',//接入渠道
                 source: '',//线索描述
@@ -51,18 +53,14 @@ class ClueAddForm extends React.Component {
             isSaving: false,
             saveMsg: '',
             saveResult: '',
-            isShowAssignAndRelate: false,//是否展示分配给某个销售或者关联客户的面板
             newAddClue: {},//新增加的线索
             clueNameExist: false,//线索名称是否存在
             clueCustomerCheckErrMsg: ''//线索名称校验失败
         };
     }
-
     componentDidMount() {
-        //todo
         $('.contact-containers .ant-form-item-label label').addClass('ant-form-item-required');
     }
-
     getPhoneFormValue = (form) => {
         return new Promise(resolve => {
             form.validateFields((errs, fields) => {
@@ -70,16 +68,74 @@ class ClueAddForm extends React.Component {
             });
         });
     };
-    addClue = () => {
-        var formData = this.state.formData;
+    //保存结果的处理
+    setResultData(saveMsg, saveResult){
+        this.setState({
+            isSaving: false,
+            saveMsg: saveMsg,
+            saveResult: saveResult
+        });
+    }
+    addClue = (submitObj) => {
+        //去除表单数据中值为空的项
+        var contacts = submitObj.contacts;
+        _.forEach(contacts,(item) => {
+            _.forEach(item.show_contact_item,(contactWayItem) => {
+                _.forEach(DIFCONTACTWAY, (value) => {
+                    if (value === contactWayItem.type && contactWayItem.value){
+                        item[value].push(contactWayItem.value);
+                        item[value] = _.uniq(item[value]);
+                    }
+                });
+            });
+            delete item['show_contact_item'];
+            _.forEach(item, (value, key) => {
+                if (_.isArray(value) && !value.length){
+                    delete item[key];
+                }
+            });
+        });
+        //把订单的第一个设置为默认联系人
+        if (_.isArray(submitObj.contacts) && submitObj.contacts.length){
+            submitObj.contacts[0]['def_contancts'] = 'true';
+        }
+        let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
+        this.setState({isSaving: true, saveMsg: '', saveResult: ''});
+        ajax({
+            url: addRoute.path,
+            type: addRoute.method,
+            data: submitObj
+        }).then(data => {
+            if (_.isObject(data) && data.code === 0) {
+                //添加成功
+                this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                this.setState({
+                    newAddClue: data.result
+                });
+                clueCustomerAction.afterAddSalesClue(data.result);
+                //如果线索来源或者接入渠道,线索类型加入新的类型
+                if (submitObj.clue_source && !_.includes(this.props.clueSourceArray,submitObj.clue_source)){
+                    _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
+                }
+                if (submitObj.access_channel && !_.includes(this.props.accessChannelArray,submitObj.access_channel)){
+                    _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
+                }
+                if (submitObj.clue_classify && !_.includes(this.props.clueClassifyArray,submitObj.clue_classify)){
+                    _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
+                }
+                //线索客户添加成功后的回调
+                _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
+            } else {
+                this.setResultData(Intl.get('crm.154', '添加失败'), 'error');
+            }
+        }, errorMsg => {
+            //添加失败
+            this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
+        });
 
-
-        console.log('提交睡觉');
     };
     handleSubmit = (e) => {
         e.preventDefault();
-
-
         this.props.form.validateFieldsAndScroll((err, values) => {
             //如果每个联系方式的联系人和联系方式都没有
             var contacts = this.state.formData.contacts;
@@ -91,7 +147,6 @@ class ClueAddForm extends React.Component {
                     }
                 });
             });
-
             if (contactErr) {
                 this.setState({
                     contactErrMsg: Intl.get('clue.fill.clue.contacts', '请填写线索的联系方式')
@@ -100,105 +155,39 @@ class ClueAddForm extends React.Component {
             } else {
                 values.contacts = contacts;
             }
-
-
-            // for (var key in this.state.formData) {
-            //     if (!values[key]) {
-            //         values[key] = this.state.formData[key];
-            //     }
-            // }
-            //去除表单数据中值为空的项
-            // commonMethodUtil.removeEmptyItem(values);
+            //去掉values中的key值
+            _.forEach(values, (value, key) => {
+                if (!value){
+                    delete values[key];
+                }
+                if(key === 'source_time'){
+                    values[key] = moment(value).valueOf();
+                }
+            });
             //验证电话是否通过验证
-            if (this.phoneInputRefs.length) {
-                //存在电话输入框时，验证一下填写的电话是否符合要求
-                let phoneFormValArray = [];
-                _.each(this.phoneInputRefs, item => {
-                    phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
-                });
-                Promise.all(phoneFormValArray).then(result => {
-                    let firstErrorItem = _.find(result, item => item.errs);
-                    if (firstErrorItem || err) {
-                        console.log('weitijiao');
-                        return;
-                    } else {
-                        this.addClue();
-                    }
-                });
+            if (!err){
+                if (this.phoneInputRefs.length) {
+                    //存在电话输入框时，验证一下填写的电话是否符合要求
+                    let phoneFormValArray = [];
+                    _.each(this.phoneInputRefs, item => {
+                        phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
+                    });
+                    Promise.all(phoneFormValArray).then(result => {
+                        let firstErrorItem = _.find(result, item => item.errs);
+                        if (firstErrorItem) {
+                            return;
+                        } else {
+                            this.addClue(values);
+                        }
+                    });
+                }else{
+                    this.addClue(values);
+                }
             }
-
         });
-
-
-        // if (this.state.isSaving) {
-        //     return;
-        // }
-        // var validation = this.refs.validation;
-        // validation.validate(valid => {
-        //     //验证电话是否通过验证
-        //     this.phoneInputRef.props.form.validateFields({force: true}, (errors) => {
-        //         if (this.state.clueNameExist || this.state.clueCustomerCheckErrMsg) {
-        //             valid = false;
-        //         }
-        //         if (!valid || errors) {
-        //             return;
-        //         } else {
-        //             let submitObj = this.getSubmitObj();
-        //             let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
-        //             this.setState({isSaving: true, saveMsg: '', saveResult: ''});
-        //             ajax({
-        //                 url: addRoute.path,
-        //                 type: addRoute.method,
-        //                 data: submitObj
-        //             }).then(data => {
-        //                 if (_.isObject(data) && data.code === 0) {
-        //                     //添加成功
-        //                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-        //                     this.setState({
-        //                         newAddClue: data.result
-        //                     });
-        //                     clueCustomerAction.afterAddSalesClue(data.result);
-        //                     //如果线索来源或者接入渠道,线索类型加入新的类型
-        //                     if (submitObj.clue_source && !_.includes(this.props.clueSourceArray, submitObj.clue_source)) {
-        //                         _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
-        //                     }
-        //                     if (submitObj.access_channel && !_.includes(this.props.accessChannelArray, submitObj.access_channel)) {
-        //                         _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
-        //                     }
-        //                     if (submitObj.clue_classify && !_.includes(this.props.clueClassifyArray, submitObj.clue_classify)) {
-        //                         _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
-        //                     }
-        //                     //线索客户添加成功后的回调
-        //                     _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
-        //                 } else {
-        //                     this.setResultData(Intl.get('crm.154', '添加失败'), 'error');
-        //                 }
-        //             }, errorMsg => {
-        //                 //添加失败
-        //                 this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
-        //             });
-        //         }
-        //     });
-        // });
     };
-    //线索名格式验证
-    // checkClueName = (rule, value, callback) => {
-    //     value = $.trim(value);
-    //     if (value) {
-    //         if (nameRegex.test(value)) {
-    //             callback();
-    //         } else {
-    //             // this.setState({clueNameExist: false, checkNameError: true});
-    //             callback(Intl.get('clue.name.rule', '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间'));
-    //         }
-    //     } else {
-    //         // this.setState({clueNameExist: false, checkNameError: true});
-    //         callback(new Error(Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')));
-    //     }
-    // };
     //验证客户名是否重复
     checkOnlyClueCustomerName = () => {
-        // let customerName = $.trim(this.state.formData.name);
         let customerName = $.trim(this.props.form.getFieldValue('name'));
         //满足验证条件后再进行唯一性验证
         if (customerName && nameRegex.test(customerName)) {
@@ -223,7 +212,6 @@ class ClueAddForm extends React.Component {
                         });
                     }
                 }
-
             });
         }
     };
@@ -288,10 +276,6 @@ class ClueAddForm extends React.Component {
             }
         }];
     };
-
-    setContactPhoneValue = () => {
-
-    };
     handleDelContact = (index, size) => {
         if (index === 0 && size === 1) {
             return;
@@ -305,12 +289,6 @@ class ClueAddForm extends React.Component {
 
     renderDiffContacts(item, index, size) {
 
-        const DIFCONTACTWAY = {
-            PHONE: 'phone',
-            EMAIL: 'email',
-            QQ: 'qq',
-            WECHAT: 'weChat'
-        };
         var contactWays = [
             {name: DIFCONTACTWAY.PHONE, value: Intl.get('common.phone', '电话')},
             {name: DIFCONTACTWAY.EMAIL, value: Intl.get('common.email', '邮箱')},
@@ -338,8 +316,7 @@ class ClueAddForm extends React.Component {
         });
         var contacts = this.state.formData.contacts;
         var show_contact_item = contacts[index]['show_contact_item'];
-        const {getFieldDecorator, getFieldValue, setFieldsValue} = this.props.form;
-        var filterObj = {};
+        const {getFieldDecorator} = this.props.form;
         return (
             <div className="contact-wrap">
                 <div className="contact-name-item">
@@ -366,6 +343,7 @@ class ClueAddForm extends React.Component {
                                     })}
                                 </Select>
                                 {/*不同的联系方式用不同的规则来校验*/}
+
                                 {
                                     contactWay === 'phone' ? <PhoneInput
                                         wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst) }
@@ -373,8 +351,8 @@ class ClueAddForm extends React.Component {
                                         validateRules={this.getPhoneInputValidateRules()}
                                         initialValue={contactValue}
                                         hideLable={true}
-                                        onChange={this.setContactValue.bind(this, index, itemIndex)}
-                                        id={PHONE_INPUT_ID + uuid()}
+                                        onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
+                                        id={randomValue}
                                     /> : null
                                 }
                                 {
@@ -429,8 +407,6 @@ class ClueAddForm extends React.Component {
                             </div>
                         );
                     })}
-
-
                 </div>
             </div>
         );
@@ -453,12 +429,8 @@ class ClueAddForm extends React.Component {
         this.setState({
             formData: this.state.formData
         });
-        const {form} = this.props;
-        form.resetFields();
-        //    [names: string[]]
     };
     addContactWay = (index) => {
-        const {form} = this.props;
         var contacts = this.state.formData.contacts;
         let addItem = {type: 'phone', value: '', randomValue: uuid()};
         contacts[index]['show_contact_item'].push(addItem);
@@ -486,14 +458,20 @@ class ClueAddForm extends React.Component {
             'qq': [],
             'weChat': [],
             'email': [],
-            'show_contact_item': [{type: 'phone', value: '',randomValue: uuid()}]
+            'show_contact_item': [{type: DIFCONTACTWAY.PHONE, value: '',randomValue: uuid()}]
         });
         this.setState({
             formData: this.state.formData
         });
     };
-
-
+    //去掉保存后提示信息
+    hideSaveTooltip = () => {
+        this.setState({
+            saveMsg: '',
+            saveResult: ''
+        });
+        this.props.hideAddForm();
+    };
     render = () => {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
@@ -511,6 +489,7 @@ class ClueAddForm extends React.Component {
             'contact-err-tip': this.state.contactErrMsg
         });
         this.phoneInputRefs = [];
+        let saveResult = this.state.saveResult;
         return (
             <RightPanel showFlag={true} data-tracename="添加线索" className="sales-clue-add-container">
                 <BasicData
@@ -654,15 +633,24 @@ class ClueAddForm extends React.Component {
                                     </Select>
                                 )}
                         </FormItem>
-
                         <div className="submit-button-container">
                             <FormItem
                                 wrapperCol={{span: 24}}>
+                                <div className="indicator">
+                                    {saveResult ?
+                                        (
+                                            <AlertTimer time={saveResult === 'error' ? 3000 : 600}
+                                                message={this.state.saveMsg}
+                                                type={saveResult} showIcon
+                                                onHide={this.hideSaveTooltip}/>
+                                        ) : ''
+                                    }
+                                </div>
                                 <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                    disabled={this.state.isLoading} data-tracename="点击保存添加
+                                    disabled={this.state.isSaving} data-tracename="点击保存添加
                                             线索按钮">
                                     {Intl.get('common.save', '保存')}
-                                    {this.state.isLoading ? <Icon type="loading"/> : null}
+                                    {this.state.isSaving ? <Icon type="loading"/> : null}
                                 </Button>
                                 <Button className="cancel-btn" onClick={this.props.hideAddForm}
                                     data-tracename="点击取消添加客户信息按钮">
