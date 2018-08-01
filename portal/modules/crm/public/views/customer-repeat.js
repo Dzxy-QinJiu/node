@@ -322,13 +322,13 @@ let CustomerRepeat = React.createClass({
                 <Alert type="error" showIcon={true} message={this.state.errorMsg}/>
             </div>);
         } else if (_.isArray(repeatCustomerList) && repeatCustomerList.length) {
-            return repeatCustomerList.map((repeatObj, key) => {
+            return repeatCustomerList.map( (repeatObj, index) => {
                 let isPhoneRepeat = repeatObj.repeatList[0] && repeatObj.repeatList[0].repeat_type === 'phone';
                 return (
-                    <Row className="customer-repeat-row" key={key}>
+                    <Row className="customer-repeat-row" key={index}>
                         {isPhoneRepeat ? <span className="phone-repeat-tag">{Intl.get('crm.repeat.phone','电话重复')}</span> : null}
                         <Col span={23}>
-                            {repeatObj.repeatList.map(customer => {
+                            {repeatObj.repeatList.map( (customer) => {
                                 return this.getCustomerRow(customer);
                             })}
                         </Col>
@@ -403,4 +403,4 @@ let CustomerRepeat = React.createClass({
     }
 });
 
-module.exports = CustomerRepeat;
+module.exports = CustomerRepeat;

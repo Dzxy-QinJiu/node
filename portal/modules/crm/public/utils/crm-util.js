@@ -117,12 +117,14 @@ exports.CUSTOMER_TAGS = {
 };
 //tab页上对应的描述
 var tabNameList = {
-    '1': '基本资料',
+    '1': '概览',
     '2': '联系人',
-    '3': '订单',
-    '4': '动态',
-    '5': '联系计划',
-    '6': '跟进记录' ,
+    '3': '跟进记录',
+    '4': '用户',
+    '5': '订单',
+    '6': '合同',
+    '7': '动态',
+    '8': '联系计划'
 };
 exports.tabNameList = tabNameList;
 exports.getMyUserId = function() {

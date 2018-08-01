@@ -5,13 +5,14 @@ class ContractStore {
         this.sortField = 'date'; // 排序字段
         this.order = 'descend'; //排序方向
         this.pageSize = 100;
+        this.isAddFormShow = false; // 是否显示添加合同面板，默认false
         this.resetState();
         this.bindActions(ContractAction);
     }
     resetState(){
         // 合同列表
         this.contractList = {
-            loading: true, // loading
+            loading: false, // loading
             data: [], //数据列表
             errMsg: '' // 获取失败的提示
         };
@@ -24,10 +25,21 @@ class ContractStore {
         } else {
             this.contractList.errMsg = '';
             let list = result.resData && result.resData.list || [];
-            if (_.isArray(list) && list.length) {
-                this.contractList.data = list;
-            }
+            this.contractList.data = _.get(list, '[0]') && list || [];
         }
+    }
+    // 显示添加面板
+    showForm() {
+        this.isAddFormShow = true;
+    }
+    // 隐藏添加面板
+    hideForm() {
+        this.isAddFormShow = false;
+    }
+    // 更新列表信息
+    refreshContractList(contract) {
+        this.isAddFormShow = false;
+        this.contractList.data.unshift(contract);
     }
 }
 

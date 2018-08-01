@@ -3,6 +3,7 @@ import { AntcTable } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import classNames from 'classnames';
+import Trace from 'LIB_DIR/trace';
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -17,9 +18,14 @@ const ContractItem = React.createClass({
             });
         }
     },
-    toggleContractDetail() {
+    toggleContractDetail(event) {
         let formData = this.state.formData;
         formData.isShowAllContractInfo = !formData.isShowAllContractInfo;
+        if (formData.isShowAllContractInfo) {
+            Trace.traceEvent(event, '点击展开详情');
+        } else {
+            Trace.traceEvent(event, '点击收起详情');
+        }
         this.setState({formData});
     },
     renderContractTitle() {
@@ -38,7 +44,7 @@ const ContractItem = React.createClass({
             Intl.get('crm.basic.detail.show', '展开详情');
         return (
             <div className='contract-title'>
-                {contract.stage === '待审' && contract.num === '' ? (
+                {contract.stage === '待审' && !contract.num ? (
                     <span className='contract-item-stage'>{Intl.get('contract.170', '合同待审')}</span>
                 ) : (
                     <span className='contract-item-title'>
@@ -85,7 +91,7 @@ const ContractItem = React.createClass({
                         </span>
                     )
                 ) : null}
-                <span className='app-name'>{appName}</span>
+                <span className='app-name' title={appName}>{appName}</span>
             </span>
         );
     },
@@ -134,6 +140,10 @@ const ContractItem = React.createClass({
         const end_time = contract.end_time ? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : '';
         return (
             <div className="contract-item">
+                <div className="contract-item-content">
+                    <span className="contract-label">{Intl.get('contract.37', '合同类型')}:</span>
+                    <span className="contract-value">{contract.category}</span>
+                </div>
                 <div className="contract-item-content">
                     <span className="contract-label">{Intl.get('contract.4', '甲方')}:</span>
                     <span className="contract-value">{contract.buyer}</span>

@@ -1367,7 +1367,7 @@ var en_US = {
     'crm.order.add.stage': 'Add sales stage',//添加销售阶段
     'crm.order.no.budget': 'No budget',//暂无预算
     'crm.order.add.budget': 'Add budget',//添加预算
-    'crm.no.contract.tip': 'The customer has not yet added a contract.', // 该客户还没有添加过合同
+    'crm.no.contract.tip': 'The customer has not yet sign a contract.', // 该客户还没有签订过合同
     'crm.input.new.competing': 'Please input new competitor',//请输入新竞品
     'crm.no.competing': 'No competitor',//暂无竞品
     'crm.order.expected.deal': 'Expected deal',//预计成交
@@ -1585,6 +1585,7 @@ var en_US = {
     'contract.171': 'Number of users', // 用户个数
     'contract.172': 'Amount (yuan)', // 金额(元)
     'contract.173': 'No product information', // 暂无产品信息
+    'contract.174': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
     //合同管理  end
 
     // 应用的运营报告start
