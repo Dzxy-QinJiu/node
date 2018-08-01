@@ -37,7 +37,7 @@ class ClueAddForm extends React.Component {
                     'qq': [],
                     'email': [],
                     'weChat': [],
-                    'show_contact_item': [{type: 'qq', value: '', randomValue: uuid()}]
+                    'show_contact_item': [{type: 'phone', value: '', randomValue: uuid()}]
                 }],
                 phone: '',//联系电话
                 email: '',//邮箱
@@ -340,16 +340,10 @@ class ClueAddForm extends React.Component {
         var show_contact_item = contacts[index]['show_contact_item'];
         const {getFieldDecorator, getFieldValue, setFieldsValue} = this.props.form;
         var filterObj = {};
-        getFieldDecorator('keys', {initialValue: []});
-        const keys = getFieldValue('keys');
-        // setFieldsValue({
-        //     keys: [show_contact_item[0].randomValue],
-        // });
-        console.log('renderDiffContacts' + keys);
         return (
             <div className="contact-wrap">
                 <div className="contact-name-item">
-                    <Input onChange={this.handleChangeContactName.bind(this, index)}
+                    <Input value={item.name} onChange={this.handleChangeContactName.bind(this, index)}
                         className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
                     <i className={iconCls} onClick={this.handleDelContact.bind(this, index, size)}></i>
 
@@ -358,7 +352,7 @@ class ClueAddForm extends React.Component {
                     {_.map(show_contact_item, (contactItem, itemIndex) => {
                         var contactWay = contactItem.type;
                         var contactValue = contactItem.value;
-                        var randomValue = contactWay + '-' + index + '-' + contactItem.randomValue;
+                        var randomValue = contactItem.randomValue;
                         //取每个联系人的联系方式
                         var itemSize = show_contact_item.length;
                         return (
@@ -372,27 +366,26 @@ class ClueAddForm extends React.Component {
                                     })}
                                 </Select>
                                 {/*不同的联系方式用不同的规则来校验*/}
-                                {/*{*/}
-                                {/*contactWay === 'phone' ? <PhoneInput*/}
-                                {/*wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst)  }*/}
-                                {/*placeholder={desArr[contactWay]}*/}
-                                {/*validateRules={this.getPhoneInputValidateRules()}*/}
-                                {/*initialValue={contactItem.value}*/}
-                                {/*hideLable={true}*/}
-                                {/*onChange={this.setContactValue.bind(this, index, itemIndex)}*/}
-                                {/*id={PHONE_INPUT_ID + uuid()}*/}
-                                {/*/> : null*/}
-                                {/*}*/}
+                                {
+                                    contactWay === 'phone' ? <PhoneInput
+                                        wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst) }
+                                        placeholder={desArr[contactWay]}
+                                        validateRules={this.getPhoneInputValidateRules()}
+                                        initialValue={contactValue}
+                                        hideLable={true}
+                                        onChange={this.setContactValue.bind(this, index, itemIndex)}
+                                        id={PHONE_INPUT_ID + uuid()}
+                                    /> : null
+                                }
                                 {
                                     contactWay === 'email' ?
-                                        <FormItem
-                                            // key={randomValue}
-                                        >
+                                        <FormItem>
                                             {getFieldDecorator(randomValue, {
                                                 rules: [{required: false},
                                                     {validator: checkEmail}
-                                                ]
-                                            }
+                                                ],
+                                                initialValue: contactValue
+                                            },
                                             )(
                                                 <Input
                                                     onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
@@ -404,25 +397,26 @@ class ClueAddForm extends React.Component {
                                 }
                                 {
                                     contactWay === 'qq' ?
-                                        <FormItem
-                                            // key={randomValue}
-                                        >
-                                            {/*{ getFieldDecorator(randomValue, {rules: [{required: false},*/}
-                                            {/*{validator: checkQQ}*/}
-                                            {/*]})(*/}
-                                            <Input className='contact-type-tip' placeholder={desArr[contactWay]}
-                                                onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
-                                            />
-                                            {/* )}*/}
+                                        <FormItem>
+                                            { getFieldDecorator(randomValue, {
+                                                rules: [{required: false},
+                                                    {validator: checkQQ}
+                                                ], initialValue: contactValue
+                                            })(
+                                                <Input className='contact-type-tip' placeholder={desArr[contactWay]}
+                                                    onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
+                                                />
+                                            )}
                                         </FormItem>
                                         : null
                                 }
                                 {
                                     contactWay === 'weChat' ?
-                                        <FormItem
-                                            // key={randomValue}
-                                        >
-                                            {getFieldDecorator(randomValue, {rules: [{required: false}]})(
+                                        <FormItem>
+                                            {getFieldDecorator(randomValue, {
+                                                rules: [{required: false}],
+                                                initialValue: contactValue
+                                            })(
                                                 <Input
                                                     onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
                                                     className='contact-type-tip' placeholder={desArr[contactWay]}
@@ -461,24 +455,16 @@ class ClueAddForm extends React.Component {
         });
         const {form} = this.props;
         form.resetFields();
-    //    [names: string[]]
+        //    [names: string[]]
     };
     addContactWay = (index) => {
         const {form} = this.props;
-        const keys = form.getFieldValue('keys');
-        console.log('addContactWay' + keys);
         var contacts = this.state.formData.contacts;
-        let addItem = {type: 'qq', value: '', randomValue: uuid()};
+        let addItem = {type: 'phone', value: '', randomValue: uuid()};
         contacts[index]['show_contact_item'].push(addItem);
         this.setState({
             formData: this.state.formData
         });
-        const nextKeys = keys.concat(addItem.randomValue);
-        // can use data-binding to set
-        // important! notify form to detect changes
-        // form.setFieldsValue({
-        //     keys: nextKeys,
-        // });
     };
     //添加、删除联系方式的按钮
     renderContactWayBtns = (index, itemIndex, itemSize, key) => {
@@ -500,7 +486,7 @@ class ClueAddForm extends React.Component {
             'qq': [],
             'weChat': [],
             'email': [],
-            'show_contact_item': [{type: 'phone', value: ''}]
+            'show_contact_item': [{type: 'phone', value: '',randomValue: uuid()}]
         });
         this.setState({
             formData: this.state.formData
