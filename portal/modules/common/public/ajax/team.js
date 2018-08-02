@@ -5,6 +5,8 @@ trans.register('teamList', {url: '/rest/team/sales_team_list', type: 'get'});
 trans.register('memberListByTeamId', {url: '/rest/sales_team_member_list/:group_id', type: 'get'});
 //获取统计团队内成员个数的列表
 trans.register('teamMemberCountList', {url: '/rest/team/member/count/list', type: 'get'});
+//获取我能看的团队树列表
+trans.register('myTeamTreeList', {url: '/rest/team/my_team/tree', type: 'get'});
 //暴露方法 获取团队列表
 exports.getTeamListAjax = function() {
     return trans.getAjax('teamList');
@@ -16,4 +18,9 @@ exports.getMemberListByTeamIdAjax = function(params) {
 //获取统计团队内成员个数的列表
 exports.getTeamMemberCountListAjax = function() {
     return trans.getAjax('teamMemberCountList');
+};
+
+//获取我能看的团队树
+exports.getMyTeamTreeListAjax = function() {
+    return trans.getAjax('myTeamTreeList');
 };

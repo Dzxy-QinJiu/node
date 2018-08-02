@@ -3,6 +3,7 @@ var userData = require('../../../../public/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 var _ = require('lodash');
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function SalesHomeActions() {
     this.generateActions(
@@ -54,12 +55,13 @@ function SalesHomeActions() {
     };
     //获取销售团队列表
     this.getSalesTeamList = function(type) {
-        var _this = this;
-        _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getSalesTeamList(type).then(function(resData) {
-            _this.dispatch({loading: false, error: false, resData: resData, type: type});
-        }, function(errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        this.dispatch({loading: true, error: false});
+        getMyTeamTreeList(data => {
+            if(data.errorMsg){
+                this.dispatch({loading: false, error: true, errorMsg: data.errorMsg});
+            }else{
+                this.dispatch({loading: false, error: false, resData: data.teamTreeList, type: type});
+            }
         });
     };
 

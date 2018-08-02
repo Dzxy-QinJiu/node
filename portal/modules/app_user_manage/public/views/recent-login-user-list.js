@@ -28,6 +28,7 @@ const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {storageUtil} from 'ant-utils';
+import {traversingSelectTeamTree, getRequestTeamIds} from 'PUB_DIR/sources/utils/common-method-util';
 //存储个人配置的key
 const WEBSITE_CONFIG = oplateConsts.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG;
 //个人配置中存储的近期登录用户列表选择的应用id
@@ -147,8 +148,16 @@ class RecentLoginUsers extends React.Component {
         if (this.state.user_type) {
             paramObj.user_type = this.state.user_type;
         }
+        //团队筛选的处理
         if (this.state.team_ids) {
-            paramObj.team_ids = this.state.team_ids;
+            let selectTeamId = this.state.team_ids;
+            //实际要传到后端的团队,默认是选中的团队
+            let totalRequestTeams = [selectTeamId];
+            //跟据实际选中的id，获取包含下级团队的已选团队的列表teamTotalArr
+            let teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(this.props.teamTreeList, selectTeamId));
+            //跟据包含下级团队的所有团队详细的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+            totalRequestTeams = _.union(totalRequestTeams, getRequestTeamIds(teamTotalArr));
+            paramObj.team_ids = totalRequestTeams.join(',');
         }
         if (this.state.filter_type) {
             paramObj.outdate = this.state.filter_type;
@@ -183,21 +192,23 @@ class RecentLoginUsers extends React.Component {
     handleRecentLoginUsers(result) {
         let userList = this.state.recentLoginUsers;
         let total = this.state.totalUserSize;
+        let pageNum = this.state.pageNum;
         if (result && _.isArray(result.data)) {
-            if (this.state.pageNum === 1) {
+            if (pageNum === 1) {
                 userList = result.data;
             } else {
                 userList = userList.concat(result.data);
             }
-            this.state.pageNum++;
+            pageNum++;
             total = result.total || 0;
         }
+
         this.setState({
             isLoadingUserList: false,
             getUserListErrorMsg: '',
             recentLoginUsers: userList,
             totalUserSize: total,
-            pageNum: this.state.pageNum,
+            pageNum: pageNum,
             listenScrollBottom: total > userList.length
         });
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -560,4 +571,12 @@ class RecentLoginUsers extends React.Component {
     }
 }
 
+const PropTypes = React.PropTypes;
+RecentLoginUsers.propTypes = {
+    teamlists: PropTypes.array,
+    teamTreeList: PropTypes.array,
+    selectedAppId: PropTypes.string,
+    appList: PropTypes.array,
+    hideRecentLoginPanel: PropTypes.func
+};
 export default RecentLoginUsers;

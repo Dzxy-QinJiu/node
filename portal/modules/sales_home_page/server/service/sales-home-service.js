@@ -10,8 +10,6 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 import querystring from 'querystring';
 var restApis = {
-    //获取销售团队
-    getSalesTeamTree: '/rest/base/v1/group/teams/tree/:type',
     //获取销售-客户列表
     getSalesCustomer: '/rest/base/v1/view/customer',
     //获取销售-电话列表
@@ -60,15 +58,6 @@ function getGrantApplications(req, res, status) {
     });
 
 }
-//获取当前销售所在销售团队的团队树
-exports.getSalesTeamTree = function(req, res, type) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.getSalesTeamTree.replace(':type', type),
-            req: req,
-            res: res
-        }, null);
-};
 //获取各销售对应的通话状态
 exports.getSalesCallStatus = function(req, res, queryObj) {
     return restUtil.authRest.get(

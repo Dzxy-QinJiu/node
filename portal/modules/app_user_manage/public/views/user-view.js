@@ -41,7 +41,11 @@ var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 50
 };
-import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    removeSpacesAndEnter,
+    traversingSelectTeamTree,
+    getRequestTeamIds
+} from 'PUB_DIR/sources/utils/common-method-util';
 
 var UserTabContent = React.createClass({
     getInitialState: function() {
@@ -121,7 +125,22 @@ var UserTabContent = React.createClass({
             customer_id: this.state.customer_id || ''
         };
         var filterFieldMap = this.state.filterFieldMap;
-        $.extend(ajaxObj, filterFieldMap);
+        ajaxObj = $.extend(true, ajaxObj, filterFieldMap);
+        //团队筛选的处理
+        if (_.get(ajaxObj.team_ids, '[0]')) {
+            //实际选中的团队列表
+            let selectedTeams = ajaxObj.team_ids;
+            //实际要传到后端的团队,默认是选中的团队
+            let totalRequestTeams = selectedTeams;
+            let teamTotalArr = [];
+            //跟据实际选中的id，获取包含下级团队的所有已选团队列表teamTotalArr
+            _.each(selectedTeams, (teamId) => {
+                teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(this.state.teamTreeList, teamId));
+            });
+            //跟据包含下级团队的所有团队详细的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+            totalRequestTeams = _.union(totalRequestTeams, getRequestTeamIds(teamTotalArr));
+            ajaxObj.team_ids = totalRequestTeams;
+        }
         AppUserAction.getAppUserList(ajaxObj);
     },
     onStoreChange: function() {
@@ -349,7 +368,7 @@ var UserTabContent = React.createClass({
         $(window).on('resize', this.changeScrollBarHeight);
         this.bindEventEmitter();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')){
+        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
             //获取线索来源
             this.getClueSource();
             //获取线索渠道
@@ -404,7 +423,8 @@ var UserTabContent = React.createClass({
                                 <input type="hidden" className="hidden_user_id" value={user_id}/>
                             </div>
                             <div className="user-list-tags">
-                                {app.create_tag && app.create_tag === 'register' ? <Tag className="user-tag-style">{Intl.get('oplate.user.register.self', '自注册')}</Tag> : null}
+                                {app.create_tag && app.create_tag === 'register' ? <Tag
+                                    className="user-tag-style">{Intl.get('oplate.user.register.self', '自注册')}</Tag> : null}
                                 {contract_tag ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
                             </div>
                         </div>
@@ -784,7 +804,8 @@ var UserTabContent = React.createClass({
                                 <ul>
                                     {EXCEPTION_TYPES.map((exceptionObj, index) => {
                                         return (
-                                            <li key={index} onClick={this.toggleSearchField.bind(this, 'exception_type', exceptionObj.value)}
+                                            <li key={index}
+                                                onClick={this.toggleSearchField.bind(this, 'exception_type', exceptionObj.value)}
                                                 className={this.getFilterFieldClass('exception_type', exceptionObj.value)}>
                                                 {exceptionObj.name}
                                             </li>);
@@ -1122,7 +1143,7 @@ var UserTabContent = React.createClass({
                 {this.renderTableBlock()}
                 {this.state.clueAddFormShow ? (
                     <SalesClueAddForm
-                        appUserId = {appUserId}
+                        appUserId={appUserId}
                         defaultClueData={this.state.defaultClueData}
                         hideAddForm={this.hideClueAddForm}
                         accessChannelArray={this.state.accessChannelArray}

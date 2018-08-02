@@ -79,6 +79,8 @@ AppUserStore.prototype.resetState = function() {
         //错误信息
         errorMsg: ''
     };
+    //我能看的团队树列表
+    this.teamTreeList = [];
     // 选中的用户数
     this.selectUserCount = 0;
     //是否是“从客户页面查看用户”点击跳转过来的，如果是，则customer_id有值
@@ -1149,21 +1151,16 @@ AppUserStore.prototype.getTeamLists = function(result) {
         filterTeams.teamlists = [];
         filterTeams.teamsResult = 'loading';
         filterTeams.errorMsg = '';
-    }else if (result.error){
+    }else if (result.errorMsg){
         filterTeams.teamlists = [];
         filterTeams.teamsResult = 'error';
         filterTeams.errorMsg = result.errorMsg;
     }else{
         filterTeams.teamsResult = '';
         filterTeams.errorMsg = '';
-        result.teamLists.map((item) => {
-            var obj = {};
-            obj.group_name = item.group_name;
-            obj.group_id = item.group_id;
-            filterTeams.teamlists.push(obj);
-        });
+        filterTeams.teamlists = result.teamList;
+        this.teamTreeList = result.teamTreeList;
     }
-
 };
 
 //根据角色过滤用户

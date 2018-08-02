@@ -22,14 +22,6 @@ module.exports = {
             'needLogin': true
         },
         'privileges': ['CRM_USER_PHONE_STATUS']
-    },{
-        'method': 'get',
-        'path': '/rest/crm/sales_team_tree',
-        'handler': 'getSalesTeamTree',
-        'passport': {
-            'needLogin': true
-        },
-        'privileges': []
     }, {
         'method': 'get',
         'path': '/rest/sales/phone/:type',

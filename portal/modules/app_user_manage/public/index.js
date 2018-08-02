@@ -547,6 +547,7 @@ var AppUserManage = React.createClass({
                 >
                     {this.state.isShowRecentLoginPanel ? (<RecentLoginUsersPanel
                         teamlists={this.state.filterTeams.teamlists}
+                        teamTreeList={this.state.teamTreeList}
                         selectedAppId={this.state.selectedAppId}
                         appList={this.state.appList}
                         hideRecentLoginPanel={this.hideRecentLoginPanel}/>) : null}

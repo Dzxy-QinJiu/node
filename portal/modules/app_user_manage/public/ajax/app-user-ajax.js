@@ -2,7 +2,6 @@ var AppUserUtil = require('../util/app-user-util');
 var appAjaxTrans = require('../../../common/public/ajax/app');
 import { storageUtil } from 'ant-utils';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { traversingTeamTree } from 'PUB_DIR/sources/utils/common-method-util';
 
 //获取近期登录的用户列表
 var recentLoginUsersAjax = null;
@@ -216,38 +215,6 @@ exports.getApps = function() {
     return Deferred.promise();
 };
 
-/**
- * 获取所有团队信息（销售：所在团队及下级团队）
- */
-let salesTeamListAjax;
-exports.getTeamLists = function() {
-    let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
-    if (hasPrivilege('GET_TEAM_LIST_ALL')) {
-        type = 'all';
-    }
-    salesTeamListAjax && salesTeamListAjax.abort();
-    let Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/crm/sales_team_tree',
-        dataType: 'json',
-        type: 'get',
-        data: {type: type},
-        success: function(treeList) {
-            let list = [];
-            if(_.isArray(treeList) && treeList.length >= 1){
-                //遍历团队树
-                traversingTeamTree(treeList,list);
-            }
-            Deferred.resolve(list);
-        },
-        error: function(xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get('common.get.team.list.failed', '获取团队列表失败'));
-            }
-        }
-    });
-    return Deferred.promise();
-};
 /**
  * 获取销售人员
  */

@@ -8,6 +8,7 @@ var UserData = require('../../../../public/sources/user-data');
 var ShareObj = require('../util/app-id-share-util');
 var rolesAjax = require('../../../common/public/ajax/role');
 import { packageTry } from 'LIB_DIR/func';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function AppUserAction() {
 
@@ -137,7 +138,7 @@ function AppUserAction() {
 
     //获取App的用户列表
     this.getAppUserList = function(UserItem,callback) {
-       
+
         var _this = this;
         _this.dispatch({
             loading: true,
@@ -166,13 +167,14 @@ function AppUserAction() {
     };
     //获取用于展示的团队列表
     this.getTeamLists = function(cb) {
-        this.dispatch({error: false , loading: true});
-        var _this = this;
-        AppUserAjax.getTeamLists().then(function(teamLists) {
-            _this.dispatch({loading: false,error: false,teamLists: teamLists});
-            if (_.isFunction(cb)) cb(teamLists);
-        } , function(errorMsg) {
-            _this.dispatch({loading: false,error: true,errorMsg: errorMsg});
+        this.dispatch({loading: true});
+        getMyTeamTreeList(data => {
+            if(data.errorMsg) {
+                this.dispatch({loading: false, errorMsg: data.errorMsg});
+            } else {
+                this.dispatch({loading: false, teamList: data.teamList, teamTreeList: data.teamTreeList});
+                if (_.isFunction(cb)) cb(data.teamList);
+            }
         });
     };
 
