@@ -7,6 +7,7 @@ var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 function ClueCustomerActions() {
     this.generateActions(
+        'setClueInitialData',
         'setCurrentCustomer',
         'setPageNum',
         'afterAddSalesClue',
@@ -112,12 +113,15 @@ function ClueCustomerActions() {
     };
     //线索的全文搜索
     this.getClueFulltext = function(queryObj) {
-        this.dispatch({error: false, loading: true});
+        //是否是在全部状态下返回数据
+        var flag = queryObj.analysisFlag ? true : false;
+        this.dispatch({error: false, loading: true, flag: flag});
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result, flag: flag});
         }, (errorMsg) => {
             this.dispatch({
+                flag: flag,
                 error: true,
                 loading: false,
                 errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')

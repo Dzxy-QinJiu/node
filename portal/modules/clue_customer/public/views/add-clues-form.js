@@ -35,6 +35,9 @@ var initialContact = {
     'email': [],
     'show_contact_item': [{type: DIFCONTACTWAY.PHONE, value: '',randomValue: uuid()}]
 };
+const FORMLAYOUT = {
+    PADDINGTOTAL: 70
+};
 
 class ClueAddForm extends React.Component {
     constructor(props) {
@@ -490,6 +493,7 @@ class ClueAddForm extends React.Component {
         });
         this.phoneInputRefs = [];
         let saveResult = this.state.saveResult;
+        var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
         return (
             <RightPanel showFlag={true} data-tracename="添加线索" className="sales-clue-add-container">
                 <BasicData
@@ -497,170 +501,170 @@ class ClueAddForm extends React.Component {
                     clueTypeTitle={Intl.get('crm.sales.add.clue', '添加线索')}
                     showCloseIcon={false}
                 />
-                <div className="add-clue-item">
-                    {/*<GeminiScrollbar>*/}
-                    <Form horizontal className="crm-add-form sales-clue-form" id="sales-clue-form">
-                        <FormItem
-                            className="form-item-label"
-                            label={Intl.get('clue.analysis.consult.time', '咨询时间')}
-                            {...formItemLayout}
-                        >
-                            {getFieldDecorator('source_time', {
-                                rules: [{
-                                    required: true,
-                                }],
-                                initialValue: moment()
-                            })(
-                                <DatePicker
-                                    value={moment(formData.source_time)}
-                                    allowClear={false}
-                                />
-                            )}
-                        </FormItem>
-                        <FormItem
-                            className="form-item-label"
-                            label={Intl.get('clue.customer.clue.name', '线索名称')}
-                            {...formItemLayout}
-                        >
-                            {getFieldDecorator('name', {
-                                rules: [{
-                                    required: true,
-                                    message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')
-                                }, {validator: checkClueName}],
-                                initialValue: formData.name
-                            })(
-                                <Input
-                                    name="name"
-                                    id="name"
-                                    placeholder={Intl.get('clue.suggest.input.customer.name', '建议输入客户名称')}
-                                    onBlur={() => {
-                                        this.checkOnlyClueCustomerName();
-                                    }}
-                                />
-                            )}
-                        </FormItem>
-                        {this.renderCheckClueNameMsg()}
-                        <FormItem
-                            className={clsContainer}
-                            label={Intl.get('crm.5', '联系方式')}
-                            {...formItemLayout}
-                        >
-                            <div className="contact-way-container">
-                                {_.map(formData.contacts, (item, index) => {
-                                    return this.renderDiffContacts(item, index, formData.contacts.length);
-                                })}
-                                <div className="add-contact"
-                                    onClick={this.handleAddContact}>{Intl.get('crm.detail.contact.add', '添加联系人')}</div>
-                            </div>
-                        </FormItem>
-                        {this.renderCheckContactMsg()}
-                        <FormItem
-                            className="form-item-label"
-                            label={Intl.get('crm.sales.clue.descr', '线索描述')}
-                            {...formItemLayout}
-                        >
-                            {getFieldDecorator('source')(
-                                <Input
-                                    placeholder={Intl.get('clue.add.customer.need', '请描述一下客户需求')}
-                                    name="source"
-                                    type="textarea" id="source" rows="3"
-                                />
-                            )}
-                        </FormItem>
-                        <FormItem
-                            label={Intl.get('crm.sales.clue.source', '线索来源')}
-                            id="clue_source"
-                            {...formItemLayout}
-                        >
-                            {
-                                getFieldDecorator('clue_source')(
-                                    <Select
-                                        combobox
-                                        placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
-                                        name="clue_source"
-                                        getPopupContainer={() => document.getElementById('sales-clue-form')}
-                                    >
-                                        {
-                                            _.isArray(this.props.clueSourceArray) ?
-                                                this.props.clueSourceArray.map((source, idx) => {
+                <div className="add-clue-item" style={{'height': divHeight}}>
+                    <GeminiScrollbar>
+                        <Form horizontal className="sales-clue-form" id="sales-clue-form">
+                            <FormItem
+                                className="form-item-label"
+                                label={Intl.get('clue.analysis.consult.time', '咨询时间')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('source_time', {
+                                    rules: [{
+                                        required: true,
+                                    }],
+                                    initialValue: moment()
+                                })(
+                                    <DatePicker
+                                        value={moment(formData.source_time)}
+                                        allowClear={false}
+                                    />
+                                )}
+                            </FormItem>
+                            <FormItem
+                                className="form-item-label"
+                                label={Intl.get('clue.customer.clue.name', '线索名称')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('name', {
+                                    rules: [{
+                                        required: true,
+                                        message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')
+                                    }, {validator: checkClueName}],
+                                    initialValue: formData.name
+                                })(
+                                    <Input
+                                        name="name"
+                                        id="name"
+                                        placeholder={Intl.get('clue.suggest.input.customer.name', '建议输入客户名称')}
+                                        onBlur={() => {
+                                            this.checkOnlyClueCustomerName();
+                                        }}
+                                    />
+                                )}
+                            </FormItem>
+                            {this.renderCheckClueNameMsg()}
+                            <FormItem
+                                className={clsContainer}
+                                label={Intl.get('crm.5', '联系方式')}
+                                {...formItemLayout}
+                            >
+                                <div className="contact-way-container">
+                                    {_.map(formData.contacts, (item, index) => {
+                                        return this.renderDiffContacts(item, index, formData.contacts.length);
+                                    })}
+                                    <div className="add-contact"
+                                        onClick={this.handleAddContact}>{Intl.get('crm.detail.contact.add', '添加联系人')}</div>
+                                </div>
+                            </FormItem>
+                            {this.renderCheckContactMsg()}
+                            <FormItem
+                                className="form-item-label"
+                                label={Intl.get('crm.sales.clue.descr', '线索描述')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('source')(
+                                    <Input
+                                        placeholder={Intl.get('clue.add.customer.need', '请描述一下客户需求')}
+                                        name="source"
+                                        type="textarea" id="source" rows="3"
+                                    />
+                                )}
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get('crm.sales.clue.source', '线索来源')}
+                                id="clue_source"
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('clue_source')(
+                                        <Select
+                                            combobox
+                                            placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
+                                            name="clue_source"
+                                            getPopupContainer={() => document.getElementById('sales-clue-form')}
+                                        >
+                                            {
+                                                _.isArray(this.props.clueSourceArray) ?
+                                                    this.props.clueSourceArray.map((source, idx) => {
+                                                        return (<Option key={idx} value={source}>{source}</Option>);
+                                                    }) : null
+                                            }
+                                        </Select>
+                                    )}
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get('crm.sales.clue.access.channel', '接入渠道')}
+                                id="access_channel"
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('access_channel')(
+                                        <Select
+                                            combobox
+                                            placeholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
+                                            name="access_channel"
+                                            getPopupContainer={() => document.getElementById('sales-clue-form')}
+                                            value={formData.access_channel}
+                                        >
+                                            {_.isArray(this.props.accessChannelArray) ?
+                                                this.props.accessChannelArray.map((source, idx) => {
                                                     return (<Option key={idx} value={source}>{source}</Option>);
                                                 }) : null
-                                        }
-                                    </Select>
-                                )}
-                        </FormItem>
-                        <FormItem
-                            label={Intl.get('crm.sales.clue.access.channel', '接入渠道')}
-                            id="access_channel"
-                            {...formItemLayout}
-                        >
-                            {
-                                getFieldDecorator('access_channel')(
-                                    <Select
-                                        combobox
-                                        placeholder={Intl.get('crm.access.channel.placeholder', '请选择或输入接入渠道')}
-                                        name="access_channel"
-                                        getPopupContainer={() => document.getElementById('sales-clue-form')}
-                                        value={formData.access_channel}
-                                    >
-                                        {_.isArray(this.props.accessChannelArray) ?
-                                            this.props.accessChannelArray.map((source, idx) => {
-                                                return (<Option key={idx} value={source}>{source}</Option>);
-                                            }) : null
-                                        }
-                                    </Select>
-                                )}
-                        </FormItem>
-                        <FormItem
-                            label={Intl.get('clue.customer.classify', '线索分类')}
-                            id="clue_classify"
-                            {...formItemLayout}
-                        >
-                            {
-                                getFieldDecorator('clue_classify')(
-                                    <Select
-                                        combobox
-                                        placeholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
-                                        name="clue_classify"
-                                        value={formData.clue_classify}
-                                        getPopupContainer={() => document.getElementById('sales-clue-form')}
-                                    >
-                                        {_.isArray(this.props.clueClassifyArray) ?
-                                            this.props.clueClassifyArray.map((source, idx) => {
-                                                return (<Option key={idx} value={source}>{source}</Option>);
-                                            }) : null
-                                        }
-                                    </Select>
-                                )}
-                        </FormItem>
-                        <div className="submit-button-container">
-                            <FormItem
-                                wrapperCol={{span: 24}}>
-                                <div className="indicator">
-                                    {saveResult ?
-                                        (
-                                            <AlertTimer time={saveResult === 'error' ? 3000 : 600}
-                                                message={this.state.saveMsg}
-                                                type={saveResult} showIcon
-                                                onHide={this.hideSaveTooltip}/>
-                                        ) : ''
-                                    }
-                                </div>
-                                <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                    disabled={this.state.isSaving} data-tracename="点击保存添加
-                                            线索按钮">
-                                    {Intl.get('common.save', '保存')}
-                                    {this.state.isSaving ? <Icon type="loading"/> : null}
-                                </Button>
-                                <Button className="cancel-btn" onClick={this.props.hideAddForm}
-                                    data-tracename="点击取消添加客户信息按钮">
-                                    {Intl.get('common.cancel', '取消')}
-                                </Button>
+                                            }
+                                        </Select>
+                                    )}
                             </FormItem>
-                        </div>
+                            <FormItem
+                                label={Intl.get('clue.customer.classify', '线索分类')}
+                                id="clue_classify"
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('clue_classify')(
+                                        <Select
+                                            combobox
+                                            placeholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
+                                            name="clue_classify"
+                                            value={formData.clue_classify}
+                                            getPopupContainer={() => document.getElementById('sales-clue-form')}
+                                        >
+                                            {_.isArray(this.props.clueClassifyArray) ?
+                                                this.props.clueClassifyArray.map((source, idx) => {
+                                                    return (<Option key={idx} value={source}>{source}</Option>);
+                                                }) : null
+                                            }
+                                        </Select>
+                                    )}
+                            </FormItem>
+                            <div className="submit-button-container">
+                                <FormItem
+                                    wrapperCol={{span: 24}}>
+                                    <div className="indicator">
+                                        {saveResult ?
+                                            (
+                                                <AlertTimer time={saveResult === 'error' ? 3000 : 600}
+                                                    message={this.state.saveMsg}
+                                                    type={saveResult} showIcon
+                                                    onHide={this.hideSaveTooltip}/>
+                                            ) : ''
+                                        }
+                                    </div>
+                                    <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
+                                        disabled={this.state.isSaving} data-tracename="点击保存添加
+                                            线索按钮">
+                                        {Intl.get('common.save', '保存')}
+                                        {this.state.isSaving ? <Icon type="loading"/> : null}
+                                    </Button>
+                                    <Button className="cancel-btn" onClick={this.props.hideAddForm}
+                                        data-tracename="点击取消添加客户信息按钮">
+                                        {Intl.get('common.cancel', '取消')}
+                                    </Button>
+                                </FormItem>
+                            </div>
 
-                    </Form>
-                    {/*</GeminiScrollbar>*/}
+                        </Form>
+                    </GeminiScrollbar>
                 </div>
             </RightPanel>
         );

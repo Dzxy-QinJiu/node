@@ -17,8 +17,7 @@ let teamAjax = require('../../../common/public/ajax/team');
 var userData = require('PUB_DIR/sources/user-data');
 //查询线索客户
 exports.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
-    pageSize = pageSize || 20;
-    sorter = sorter ? sorter : {field: 'id', order: 'descend'};
+    sorter = sorter ? sorter : {field: 'source_time', order: 'descend'};
     var data = {
         clueCustomerTypeFilter: JSON.stringify(clueCustomerTypeFilter),
         rangParams: JSON.stringify(rangParams),
@@ -251,21 +250,17 @@ exports.updateCluecustomerDetail = function(submitObj) {
 };
 //获取全文搜索的线索
 exports.getClueFulltext = function(queryObj) {
-    var pageSize = queryObj.pageSize || 20;
-    var sorter = queryObj.sorter ? queryObj.sorter : {field: 'id', order: 'descend'};
-    var data = {
-        userId: userData.getUserData().user_id
-    };
+    var pageSize = queryObj.pageSize;
+    delete queryObj.pageSize;
+    var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
+    delete queryObj.sorter;
     var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order;
-    if(queryObj.lastClueId){
-        url += `?id=${queryObj.lastClueId}`;
-    }
     var Deferred = $.Deferred();
     $.ajax({
         url: url ,
         dataType: 'json',
         type: 'post',
-        data: data,
+        data: queryObj,
         success: function(list) {
             Deferred.resolve(list);
         },

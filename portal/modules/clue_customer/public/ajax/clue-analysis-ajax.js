@@ -31,7 +31,7 @@ exports.getClueStatics = function(pathParams, rangParams, queryParams) {
         type = 'all';
     }
     //销售取值时，query参数必须有，管理员可以没有
-    if (type === 'self' && !data.query){
+    if (type === 'self' && !queryParams){
         queryParams = {};
     }
     var data = {

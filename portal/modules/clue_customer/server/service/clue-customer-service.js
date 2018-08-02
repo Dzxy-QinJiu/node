@@ -42,7 +42,7 @@ const restApis = {
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
-    getClueByFullText: '/rest/customer/v2/clue/query/fulltext/:page_size/:sort_field/:order',
+    getClueFulltext: '/rest/customer/v2/clue/query/fulltext/:page_size/:sort_field/:order',
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -224,13 +224,36 @@ exports.getClueTrendStatics = function(req, res) {
 };
 //线索全文搜索
 exports.getClueFulltext = function(req, res) {
-    var url = restApis.getClueByFullText.replace(':page_size',req.params.page_size).replace(':sort_field',req.params.field).replace(':order',req.params.order);
-    if (req.query.keyword){
-        url += `?keyword=${req.query.keyword}`;
+    var reqBody = req.body;
+    var rangeParams = JSON.parse(reqBody.rangeParams);
+    var typeFilter = JSON.parse(reqBody.typeFilter);
+    var url = restApis.getClueFulltext.replace(':page_size',req.params.page_size).replace(':sort_field',req.params.sort_field).replace(':order',req.params.order);
+    if (rangeParams[0].from){
+        url += `?start_time=${rangeParams[0].from}`;
+    }
+    if (rangeParams[0].to){
+        url += `&end_time=${rangeParams[0].to}`;
+    }
+    if (reqBody.keyword){
+        var keyword = encodeURI(reqBody.keyword);
+        url += `&keyword=${keyword}`;
+    }
+    if (reqBody.statistics_fields){
+        url += `&statistics_fields=${reqBody.statistics_fields}`;
+    }
+    if (reqBody.lastClueId){
+        url += `&id=${reqBody.lastClueId}`;
+    }
+    var bodyObj = {
+        status: typeFilter.status
+    };
+    if (reqBody.userId){
+        bodyObj.userId = reqBody.userId;
+
     }
     return restUtil.authRest.post({
         url: url,
         req: req,
         res: res
-    }, req.body);
+    },bodyObj);
 };

@@ -23,7 +23,7 @@ import TopNav from 'CMP_DIR/top-nav';
 import DatePicker from 'CMP_DIR/datepicker';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 require('./css/index.less');
-import {SELECT_TYPE} from './utils/clue-customer-utils';
+import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from './utils/clue-customer-utils';
 import ClueAnalysisAction from './action/clue-analysis-action';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -57,10 +57,8 @@ const ClueCustomer = React.createClass({
             clueImportTemplateFormShow: false,//线索导入面板是否展示
             previewList: [],//预览列表
             clueAnalysisPanelShow: false,//线索分析面板是否展示
-            clueStatusList: clueAnalysisStore.getState().clueStatusList,
-            // selectedValue:this.getDefaultStatus(),//
+            // clueStatusAnalysisList: clueAnalysisStore.getState().clueStatusList,
             clueCustomerTypeFilter: {status: ''},
-
             ...clueCustomerStore.getState()
         };
     },
@@ -95,43 +93,13 @@ const ClueCustomer = React.createClass({
             this.getClueClassify();
         }
         clueCustomerAction.getSalesManList();
-        this.getFilterStatus();
-        // clueCustomerAction.setFilterType(this.getDefaultStatus());
-        // //管理员、销售领导默认展示待分配的线索客户 0
-        // if (userData.isSalesManager()){
-        //     //管理员、销售领导 默认展示待分配的线索客户 status对应0
-        //     clueCustomerAction.setFilterType(SELECT_TYPE.WILL_DISTRIBUTE);
-        // }else if (this.isOperation()){
-        //     //运营人员  运营人员默认展示全部线索客户 status对应""
-        //     clueCustomerAction.setFilterType(SELECT_TYPE.ALL);
-        // } else{
-        //     //普通销售 销售默认展示已分配的线索客户 status对应1
-        //     clueCustomerAction.setFilterType(SELECT_TYPE.HAS_DISTRIBUTE);
-        // }
         //获取线索客户列表
-        this.getClueCustomerList();
-        var _this = this;
-        //点击客户列表某一行时打开对应的详情
-        // $('.clue_customer_content').on('click', '.clue-customer-list div.list-item', (e) => {
-        //     if ($(e.target).hasClass('call-out') || $(e.target).hasClass('ant-btn-primary') || $(e.target).closest('.trace-content-wrap').length) {
-        //         return;
-        //     }
-        //     Trace.traceEvent($(_this.getDOMNode()).find('.ant-table-tbody'), '打开线索客户详情');
-        //     var $div = $(e.target).closest('.list-item');
-        //     var id = $div.find('.record-id')[0].innerText;
-        //     this.showRightPanel(id);
-        // });
+        // this.getClueCustomerList();
+        this.getClueList();
         this.getUserPhoneNumber();
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
         //获取线索状态列表
-        this.getClueStatusLists();
-    },
-    getFilterStatus: function() {
-        var clueCustomerTypeFilter = this.state.clueCustomerTypeFilter;
-        clueCustomerTypeFilter.status = this.getDefaultStatus();
-        this.setState({
-            clueCustomerTypeFilter: clueCustomerTypeFilter
-        });
+        // this.getClueStatusLists();
     },
     //获取线索状态列表
     getClueStatusLists: function() {
@@ -158,7 +126,6 @@ const ClueCustomer = React.createClass({
     onStoreChange: function() {
         this.setState(
             {
-                clueStatusList: clueAnalysisStore.getState().clueStatusList,
                 ...clueCustomerStore.getState()
             }
         );
@@ -243,14 +210,6 @@ const ClueCustomer = React.createClass({
     },
     showClueAddForm: function() {
         Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击添加销售线索按钮');
-        // var pageId = CONSTS.PAGE_ID.CLUE_CUSTOMER;
-        // var clickCount = storageUtil.local.get('click_add_cluecustomer_count', pageId);
-        // if (!clickCount) {
-        //     clickCount = 1;
-        // }
-        // //点击一次页面加一
-        // clickCount++;
-        // storageUtil.local.set('click_add_cluecustomer_count', clickCount, pageId);
         this.setState({
             clueAddFormShow: true
         });
@@ -262,14 +221,6 @@ const ClueCustomer = React.createClass({
         });
     },
     renderHandleBtn: function() {
-        // let isWebMini = $(window).width() < LAYOUT_CONSTANTS.SCREEN_WIDTH;//浏览器是否缩小到按钮展示改成图标展示
-        // let btnClass = 'block ';
-        // btnClass += isWebMini ? 'handle-btn-mini' : 'handle-btn-container';
-        // var pageId = CONSTS.PAGE_ID.CLUE_CUSTOMER;
-        // var clickCount = storageUtil.local.get('click_add_cluecustomer_count', pageId);
-        // var containerCls = classNames('add-clue-customer-container', {
-        //     'hide-des': clickCount > 2
-        // });
         return (
             <div className="add-clue-customer-container pull-right">
                 {hasPrivilege('CUSTOMER_ADD_CLUE') ?
@@ -313,19 +264,57 @@ const ClueCustomer = React.createClass({
     isOperation(){
         return userData.hasRole('operations');
     },
-    //获取线索客户列表
-    getClueCustomerList: function() {
+    // //获取线索客户列表
+    // getClueCustomerList: function() {
+    //     //跟据类型筛选
+    //     const typeFilter = JSON.parse(JSON.stringify(clueCustomerStore.getState().clueCustomerTypeFilter));
+    //     //去除查询条件中值为空的项
+    //     commonMethodUtil.removeEmptyItem(typeFilter);
+    //     const lastCustomerId = clueCustomerStore.getState().lastCustomerId;
+    //     clueCustomerAction.getClueCustomerList(typeFilter, this.state.rangParams, this.state.pageSize, this.state.sorter, lastCustomerId);
+    // },
+    //获取线索列表
+    getClueList: function(flag) {
+        if (flag){
+            clueCustomerAction.setClueInitialData();
+        }
         //跟据类型筛选
-        const typeFilter = JSON.parse(JSON.stringify(clueCustomerStore.getState().clueCustomerTypeFilter));
-        //去除查询条件中值为空的项
-        commonMethodUtil.removeEmptyItem(typeFilter);
-        const lastCustomerId = clueCustomerStore.getState().lastCustomerId;
-        clueCustomerAction.getClueCustomerList(typeFilter, this.state.rangParams, this.state.pageSize, this.state.sorter, lastCustomerId);
+        const queryObj = {
+            lastClueId: clueCustomerStore.getState().lastCustomerId,
+            pageSize: this.state.pageSize,
+            sorter: this.state.sorter,
+            keyword: this.state.keyword,
+            rangeParams: JSON.stringify(this.state.rangParams),
+            statistics_fields: 'status',
+            userId: userData.getUserData().userId,
+            typeFilter: JSON.stringify(this.state.clueCustomerTypeFilter)
+        };
+        // if (flag){
+        //     delete queryObj.statistics_fields;
+        // }
+        //有全文搜索关键字的时候，要再发一遍请求只取统计数据
+        if (this.state.clueCustomerTypeFilter.status !== ''){
+            const keywordObj = {
+                rangeParams: JSON.stringify(this.state.rangParams),
+                pageSize: 0,
+                sorter: this.state.sorter,
+                statistics_fields: 'status',
+                keyword: this.state.keyword,
+                userId: userData.getUserData().userId,
+                typeFilter: JSON.stringify({status: ''}),
+                analysisFlag: true
+            };
+            clueCustomerAction.getClueFulltext(keywordObj);
+        }
+        // this.getClueStatusLists();
+        // }
+        //如果选中的状态不是全部状态，需要单独再发一个
+        clueCustomerAction.getClueFulltext(queryObj);
     },
     errTipBlock: function() {
         //加载完成，出错的情况
         var errMsg = <span>{this.state.clueCustomerErrMsg}
-            <a onClick={this.getClueCustomerList}>
+            <a onClick={this.getClueList}>
                 {Intl.get('user.info.retry', '请重试')}
             </a>
         </span>;
@@ -339,18 +328,15 @@ const ClueCustomer = React.createClass({
             </div>
         );
     },
-
     afterAddClueTrace: function(updateId) {
-        var clueStatusList = this.state.clueStatusList;
-        _.forEach(clueStatusList.list, (item) => {
-            _.forEach(item, (value, key) => {
-                if (key === '1') {
-                    item[key] = value - 1;
-                }
-                if (key === '2') {
-                    item[key] = value + 1;
-                }
-            });
+        var statusStaticis = this.state.statusStaticis;
+        _.forEach(statusStaticis, (value, key) => {
+            if (key === '1') {
+                statusStaticis[key] = value - 1;
+            }
+            if (item.name === '2') {
+                statusStaticis[key] = value + 1;
+            }
         });
         clueCustomerAction.afterAddClueTrace(updateId);
     },
@@ -449,16 +435,16 @@ const ClueCustomer = React.createClass({
 
                     //todo 如果原来选中的是待跟进状态的，分配完后要在列表中删除一个
                     if (this.state.clueCustomerTypeFilter.status === '0') {
-                        var clueStatusList = this.state.clueStatusList;
-                        _.forEach(clueStatusList.list, (item) => {
-                            _.forEach(item, (value, key) => {
-                                if (key === '0') {
-                                    item[key] = value - 1;
-                                }
-                                if (key === '1') {
-                                    item[key] = value + 1;
-                                }
-                            });
+                        var statusStaticis = this.state.statusStaticis;
+                        _.forEach(statusStaticis, (value, key) => {
+                            // _.forEach(item, (value, key) => {
+                            if (key === '0') {
+                                statusStaticis[key] = value - 1;
+                            }
+                            if (key === '1') {
+                                statusStaticis[key] = value + 1;
+                            }
+                            // });
                         });
                         clueCustomerAction.afterAddClueTrace(item.id);
                     } else {
@@ -486,7 +472,7 @@ const ClueCustomer = React.createClass({
         var currListLength = _.isArray(this.state.curCustomers) ? this.state.curCustomers.length : 0;
         // 判断加载的条件
         if (currListLength <= this.state.customersSize) {
-            this.getClueCustomerList();
+            this.getClueList();
         }
     },
     renderClueCustomerBlock: function() {
@@ -524,10 +510,7 @@ const ClueCustomer = React.createClass({
         this.setState(this.state);
         // if (this.state.keyword){
         setTimeout(() => {
-            this.getClueCustomerList();
-            if (!flag) {
-                this.getClueStatusLists();
-            }
+            this.getClueList(flag);
         });
         // }else{
         //     clueCustomerAction.getClueFulltext();
@@ -563,7 +546,7 @@ const ClueCustomer = React.createClass({
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent: function() {
         //加载中的样式
-        if (this.state.isLoading) {
+        if (this.state.isLoading && this.state.curPage === 1) {
             return (
                 <div className="load-content">
                     <Spinner />
@@ -613,8 +596,8 @@ const ClueCustomer = React.createClass({
         );
     },
     refreshClueList: function() {
-        this.getClueCustomerList();
-        this.getClueStatusLists();
+        this.getClueList();
+        // this.getClueStatusLists();
     },
     cancelImport() {
         this.setState({
@@ -647,23 +630,19 @@ const ClueCustomer = React.createClass({
             });
             message.success(Intl.get('clue.customer.import.clue.suceess', '导入线索成功'));
             //todo 刷新线索列表
-            this.getClueCustomerList();
+            this.getClueList();
         });
     },
-    searchFullTextEvent: function() {
-        var keyWord = this.refs.searchInput.state.formData;
+    searchFullTextEvent: function(keyword) {
         //如果keyword存在，就用全文搜索的接口
-
-        clueCustomerAction.setKeyWord(keyWord);
-
+        clueCustomerAction.setKeyWord(keyword);
         //如果keyword不存在，就用获取线索的接口
-        this.onTypeChange();
+        this.onTypeChange(true);
 
     },
     renderImportModalFooter: function() {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
         const loading = this.state.isImporting || false;
-
         return (
             <div>
                 {repeatCustomer ? (
@@ -707,27 +686,11 @@ const ClueCustomer = React.createClass({
     render: function() {
         let user = userData.getUserData();
         //是否是运营人员
-        var isOperation = this.isOperation();
+        // var isOperation = this.isOperation();
         // var defaultValue = user.isCommonSales ? SELECT_TYPE.HAS_DISTRIBUTE : (isOperation ? '' : '0');
         var clueStatusList = this.state.clueStatusList;
-        var statusStaticis = {
-                '': 0,
-                '0': 0,
-                '1': 0,
-                '2': 0
-            }, total = 0;
+        var statusStaticis = this.state.statusStaticis;
 
-        if (!clueStatusList.loading && !clueStatusList.errMsg) {
-            if (!_.isEmpty(clueStatusList.list)) {
-                _.forEach(clueStatusList.list, (item) => {
-                    _.forEach(item, (value, key) => {
-                        statusStaticis['' + key] = value;
-                        total += value;
-                    });
-                });
-                statusStaticis[''] = total;
-            }
-        }
         var _this = this;
         let previewColumns = [
             {
@@ -814,6 +777,9 @@ const ClueCustomer = React.createClass({
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
             });
+        //是否展示全部
+        var isShowAll = isOperation() || isSalesLeaderOrManager();
+        var defaultValue = isShowAll ? SELECT_TYPE.ALL : SELECT_TYPE.HAS_DISTRIBUTE;
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索客户列表">
@@ -842,35 +808,26 @@ const ClueCustomer = React.createClass({
                                 {/*todo 待修改，默认值显示的时候不展示数量*/}
                                 <Select value={this.state.clueCustomerTypeFilter.status} onChange={this.onStatusChange}>
                                     {/*运营人员才展示全部这个按钮*/}
-                                    {isOperation ? <Option value="">
+                                    {isShowAll ? <Option value="">
                                         {Intl.get('common.all', '全部')}
-                                        {/*{`:${statusStaticis['']}`}*/}
                                         {statusStaticis[''] || statusStaticis[''] === 0 ? `:${statusStaticis['']}` : null}
                                     </Option> : null}
                                     {user.isCommonSales ? null : <Option value="0">
                                         {Intl.get('clue.customer.will.distribution', '待分配')}
-                                        {/*{`:${statusStaticis['0']}`}*/}
                                         {statusStaticis['0'] || statusStaticis['0'] === 0 ? `:${statusStaticis['0']}` : null}
                                     </Option>}
                                     <Option value="1">
                                         {Intl.get('sales.home.will.trace', '待跟进')}
-                                        {/*{ `:${statusStaticis['1']}`}*/}
                                         {statusStaticis['1'] || statusStaticis['1'] === 0 ? `:${statusStaticis['1']}` : null}
                                     </Option>
                                     <Option value="2">
                                         {Intl.get('clue.customer.has.follow', '已跟进')}
-                                        {/*{`:${statusStaticis['2']}`}*/}
                                         {statusStaticis['2'] || statusStaticis['2'] === 0 ? `:${statusStaticis['2']}` : null}
                                     </Option>
                                 </Select>
                             </div>
                             <div className="search-container">
-                                {/*<Input addonAfter={<Icon type="search"/>}*/}
-                                {/*placeholder={Intl.get('clue.search.by.name', '按线索名搜索')}*/}
-
-                                {/*/>*/}
                                 <SearchInput
-                                    ref="serachInput"
                                     searchEvent={this.searchFullTextEvent}
                                     searchPlaceholder = {Intl.get('clue.search.full.text','全文搜索')}
                                 />
