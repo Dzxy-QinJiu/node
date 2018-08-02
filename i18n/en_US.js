@@ -1586,6 +1586,8 @@ var en_US = {
     'contract.172': 'Amount (yuan)', // 金额(元)
     'contract.173': 'No product information', // 暂无产品信息
     'contract.174': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
+    'contract.175': 'Product name', // 产品名称
+    'contract.176': 'Number of accounts', // 账号数量
     //合同管理  end
 
     // 应用的运营报告start

@@ -159,7 +159,7 @@ const ContractItem = React.createClass({
     getProductColumns() {
         return [
             {
-                title: Intl.get('common.app', '应用'),
+                title: Intl.get('contract.175', '产品名称'),
                 dataIndex: 'name',
                 key: 'name',
                 width: '50%',
@@ -168,7 +168,7 @@ const ContractItem = React.createClass({
                 }
             },
             {
-                title: Intl.get('contract.171', '用户个数'),
+                title: Intl.get('contract.176', '账号数量'),
                 dataIndex: 'count',
                 width: '20%',
                 key: 'count'
