@@ -12,7 +12,7 @@ exports.getSalesManList = function() {
         });
     return Deferred.promise();
 };
-//获取当前页的用户列表
+//获取当前页的成员列表
 exports.getALLUserList = function(searchObj) {
     var Deferred = $.Deferred();
     $.ajax({
