@@ -231,18 +231,19 @@ exports.disabledBeforeToday = function(current) {
 
 /**
  * 递归获取要传到后端的所有团队id的数组
- * @param totalRequestTeams 向后端发请求的所有团队id的数组
  * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
  * */
-function getRequestTeamIds(totalRequestTeams, teamTotalArr) {
+function getRequestTeamIds(teamTotalArr) {
+    let totalRequestTeams = [];
     _.each(teamTotalArr, (team) => {
         if (_.indexOf(totalRequestTeams, team.group_id) === -1) {
             totalRequestTeams.push(team.group_id);
         }
         if (team.child_groups) {
-            getRequestTeamIds(totalRequestTeams, team.child_groups);
+            totalRequestTeams = _.union(totalRequestTeams, getRequestTeamIds(team.child_groups));
         }
     });
+    return totalRequestTeams;
 }
 exports.getRequestTeamIds = getRequestTeamIds;
 
@@ -250,18 +251,18 @@ exports.getRequestTeamIds = getRequestTeamIds;
  * 递归遍历取出已选的团队列表(带下级团队)
  * @param teamTreeList 所有团队的团队树
  * @param selectedTeams 实际选中的团队的id列表
- * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队列表
  * */
-function traversingSelectTeamTree(teamTreeList, selectedTeams, teamTotalArr) {
+function traversingSelectTeamTree(teamTreeList, selectedTeams) {
+    let teamTotalArr = [];
     if (_.isArray(teamTreeList) && teamTreeList.length) {
         _.each(teamTreeList, team => {
             if (selectedTeams === team.group_id) {
                 teamTotalArr.push(team);
-            }
-            if (team.child_groups) {
-                traversingSelectTeamTree(team.child_groups, selectedTeams, teamTotalArr);
+            }else if (team.child_groups) {
+                teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(team.child_groups, selectedTeams));
             }
         });
     }
+    return teamTotalArr;
 }
 exports.traversingSelectTeamTree = traversingSelectTeamTree;

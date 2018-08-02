@@ -153,11 +153,10 @@ class RecentLoginUsers extends React.Component {
             let selectTeamId = this.state.team_ids;
             //实际要传到后端的团队,默认是选中的团队
             let totalRequestTeams = [selectTeamId];
-            let teamTotalArr = [];
             //跟据实际选中的id，获取包含下级团队的已选团队的列表teamTotalArr
-            traversingSelectTeamTree(this.props.teamTreeList, selectTeamId, teamTotalArr);
+            let teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(this.props.teamTreeList, selectTeamId));
             //跟据包含下级团队的所有团队详细的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
-            getRequestTeamIds(totalRequestTeams, teamTotalArr);
+            totalRequestTeams = _.union(totalRequestTeams, getRequestTeamIds(teamTotalArr));
             paramObj.team_ids = totalRequestTeams.join(',');
         }
         if (this.state.filter_type) {
