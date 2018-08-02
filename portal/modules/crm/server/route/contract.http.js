@@ -22,5 +22,13 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    },{
+        // 删除待审合同
+        'method': 'delete',
+        'path': '/rest/crm/delete/contract/:id',
+        'handler': 'deletePendingContract',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

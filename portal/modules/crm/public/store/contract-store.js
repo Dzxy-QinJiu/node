@@ -41,6 +41,10 @@ class ContractStore {
         this.isAddFormShow = false;
         this.contractList.data.unshift(contract);
     }
+    // 删除合同
+    deleteContact(contract) {
+        this.contractList.data = _.filter(this.contractList.data, item => item.id !== contract.id);
+    }
 }
 
 //使用alt导出store

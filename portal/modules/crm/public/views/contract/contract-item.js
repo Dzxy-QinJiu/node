@@ -4,11 +4,18 @@ import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
+import { Button } from 'antd';
+import ContractAction from '../../action/contract-action';
+const ContractAjax = require('../../ajax/contract-ajax');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 const ContractItem = React.createClass({
     getInitialState() {
         return {
+            isDeleteContractFlag: false, // 是否删除合同，默认false
             formData: JSON.parse(JSON.stringify(this.props.contract)),
+            isLoading: false,
+            errMsg: '', // 删除错误的信息提示
         };
     },
     componentWillReceiveProps(nextProps) {
@@ -27,6 +34,35 @@ const ContractItem = React.createClass({
             Trace.traceEvent(event, '点击收起详情');
         }
         this.setState({formData});
+    },
+    cancelDeleteContract() {
+        this.setState({
+            isDeleteContractFlag: false
+        });
+    },
+    showDeleteContractConfirm(contract, event) {
+        Trace.traceEvent(event, '删除合同');
+        this.setState({isLoading: true});
+        ContractAjax.deletePendingContract(contract.id).then( (resData) => {
+            if (resData && resData.code === 0) {
+                this.state.errMsg = '';
+                this.state.isLoading = false;
+                ContractAction.deleteContact(contract);
+            } else {
+                this.state.errMsg = Intl.get('crm.139', '删除失败');
+            }
+            this.setState(this.state);
+        }, (errMsg) => {
+            this.setState({
+                isLoading: false,
+                errMsg: errMsg || IIntl.get('crm.139', '删除失败')
+            });
+        });
+    },
+    showDeleteContract() {
+        this.setState({
+            isDeleteContractFlag: true
+        });
     },
     renderContractTitle() {
         const contract = this.state.formData;
@@ -54,6 +90,26 @@ const ContractItem = React.createClass({
                         <span className='contract-num'>{contract.num}</span>
                     </span>
                 )}
+                <span className="contract-item-buttons">
+                    {
+                        this.state.isDeleteContractFlag ? (
+                            <span className="item-delete-buttons">
+                                <Button className="item-delete-cancel delete-button-style"
+                                    onClick={this.cancelDeleteContract}>
+                                    {Intl.get('common.cancel', '取消')}
+                                </Button>
+                                <Button className="item-delete-confirm delete-button-style"
+                                    onClick={this.showDeleteContractConfirm.bind(this, contract)}>
+                                    {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                </Button>
+                            </span>) : (
+                            hasPrivilege('OPLATE_CONTRACT_DELETE') && contract.stage === '待审' ? (
+                                <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
+                                    data-tracename="点击删除合同按钮" onClick={this.showDeleteContract}/>
+                            ) : null
+                        )
+                    }
+                </span>
                 <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
             </div>
         );
@@ -208,12 +264,17 @@ const ContractItem = React.createClass({
         );
     },
     render(){
+        let containerClassName = classNames('contract-item-container', {
+            'item-delete-border': this.state.isDeleteContractFlag,
+        });
         return (
             <DetailCard
                 title={this.renderContractTitle()}
                 content={this.renderContractContent()}
                 bottom={this.renderContractBottom()}
-                className="contract-item-container"
+                className={containerClassName}
+                loading={this.state.isLoading}
+                saveErrorMsg={this.state.errMsg}
             />
         );
     }
