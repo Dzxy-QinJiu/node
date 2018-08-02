@@ -4,10 +4,11 @@ import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
-import { Button } from 'antd';
+import { Button, Icon } from 'antd';
 import ContractAction from '../../action/contract-action';
 const ContractAjax = require('../../ajax/contract-ajax');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+const AlertTimer = require('CMP_DIR/alert-timer');
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -37,7 +38,8 @@ const ContractItem = React.createClass({
     },
     cancelDeleteContract() {
         this.setState({
-            isDeleteContractFlag: false
+            isDeleteContractFlag: false,
+            errMsg: ''
         });
     },
     showDeleteContractConfirm(contract, event) {
@@ -92,6 +94,9 @@ const ContractItem = React.createClass({
                 )}
                 <span className="contract-item-buttons">
                     {
+                        this.state.isLoading ? <Icon type="loading" /> : null
+                    }
+                    {
                         this.state.isDeleteContractFlag ? (
                             <span className="item-delete-buttons">
                                 <Button className="item-delete-cancel delete-button-style"
@@ -103,7 +108,7 @@ const ContractItem = React.createClass({
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
-                            hasPrivilege('OPLATE_CONTRACT_DELETE') && contract.stage === '待审' ? (
+                            hasPrivilege('OPLATE_CONTRACT_DELETE_UNCHECK') && contract.stage === '待审' ? (
                                 <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
                                     data-tracename="点击删除合同按钮" onClick={this.showDeleteContract}/>
                             ) : null
@@ -247,11 +252,28 @@ const ContractItem = React.createClass({
             </div>
         );
     },
+    // 隐藏错误信息
+    hideErrorMsg() {
+        this.setState({
+            errMsg: ''
+        });
+    },
     renderContractBottom() {
         const contract = this.state.formData;
         const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : '';
         return (
             <div className="contract-bottom-wrap">
+                {
+                    this.state.errMsg ? (
+                        <AlertTimer
+                            time={30000000}
+                            message={this.state.errMsg}
+                            type="error"
+                            showIcon
+                            onHide={this.hideErrorMsg}
+                        />
+                    ) : null
+                }
                 <ReactIntl.FormattedMessage
                     id="contract.169"
                     defaultMessage={'{uername}签订于{date}'}
@@ -273,8 +295,6 @@ const ContractItem = React.createClass({
                 content={this.renderContractContent()}
                 bottom={this.renderContractBottom()}
                 className={containerClassName}
-                loading={this.state.isLoading}
-                saveErrorMsg={this.state.errMsg}
             />
         );
     }
