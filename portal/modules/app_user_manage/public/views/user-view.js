@@ -123,7 +123,7 @@ var UserTabContent = React.createClass({
         var filterFieldMap = this.state.filterFieldMap;
         ajaxObj = $.extend(true, ajaxObj, filterFieldMap);
         //团队筛选的处理
-        if(_.get(ajaxObj.team_ids), '[0]'){
+        if(_.get(ajaxObj.team_ids, '[0]')){
             //实际选中的团队列表
             var selectedTeams = ajaxObj.team_ids;
             //实际要传到后端的团队,默认是选中的团队

@@ -173,17 +173,9 @@ function AppUserAction() {
                 this.dispatch({loading: false, errorMsg: data.errorMsg});
             } else {
                 this.dispatch({loading: false, teamList: data.teamList, teamTreeList: data.teamTreeList});
-                if (_.isFunction(cb)) cb(data.teamTreeList);
+                if (_.isFunction(cb)) cb(data.teamList);
             }
         });
-
-        // var _this = this;
-        // AppUserAjax.getTeamLists().then(function(teamLists) {
-        //     _this.dispatch({loading: false,error: false,teamLists: teamLists});
-        //     if (_.isFunction(cb)) cb(teamLists);
-        // } , function(errorMsg) {
-        //     _this.dispatch({loading: false,error: true,errorMsg: errorMsg});
-        // });
     };
 
     this.getRealmList = function() {
