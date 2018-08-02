@@ -36,14 +36,16 @@ const ContractItem = React.createClass({
         }
         this.setState({formData});
     },
-    cancelDeleteContract() {
+    cancelDeleteContract(event) {
+        Trace.traceEvent(event, '点击取消删除合同');
         this.setState({
             isDeleteContractFlag: false,
             errMsg: ''
         });
     },
-    showDeleteContractConfirm(contract, event) {
-        Trace.traceEvent(event, '删除合同');
+    // 删除合同
+    showDeleteContract(contract, event) {
+        Trace.traceEvent(event, '点击确认删除合同');
         this.setState({isLoading: true});
         ContractAjax.deletePendingContract(contract.id).then( (resData) => {
             if (resData && resData.code === 0) {
@@ -61,7 +63,8 @@ const ContractItem = React.createClass({
             });
         });
     },
-    showDeleteContract() {
+    showDeleteContractConfirm(event) {
+        Trace.traceEvent(event, '点击删除按钮');
         this.setState({
             isDeleteContractFlag: true
         });
@@ -104,13 +107,13 @@ const ContractItem = React.createClass({
                                     {Intl.get('common.cancel', '取消')}
                                 </Button>
                                 <Button className="item-delete-confirm delete-button-style"
-                                    onClick={this.showDeleteContractConfirm.bind(this, contract)}>
+                                    onClick={this.showDeleteContract.bind(this, contract)}>
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
                             hasPrivilege('OPLATE_CONTRACT_DELETE_UNCHECK') && contract.stage === '待审' ? (
                                 <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
-                                    data-tracename="点击删除合同按钮" onClick={this.showDeleteContract}/>
+                                    onClick={this.showDeleteContractConfirm}/>
                             ) : null
                         )
                     }
@@ -266,7 +269,7 @@ const ContractItem = React.createClass({
                 {
                     this.state.errMsg ? (
                         <AlertTimer
-                            time={30000000}
+                            time={3000}
                             message={this.state.errMsg}
                             type="error"
                             showIcon
