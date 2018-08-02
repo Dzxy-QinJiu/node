@@ -3,6 +3,7 @@ let Option = Select.Option;
 let userData = require('../../../../../public/sources/user-data');
 let CrmBasicAjax = require('../../ajax/index');
 import batchChangeAjax from '../../ajax/batch-change-ajax';
+import batchChangeAction from '../../action/batch-change-actions';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
@@ -48,7 +49,13 @@ var SalesTeamCard = React.createClass({
         //有修改所属销售的权限时
         if (this.state.enableEdit) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
-            this.getSalesManList();
+            if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+                // 管理员角色
+                this.getAllUserList();
+            }else{
+                // 销售角色
+                this.getSalesManList();
+            }
         }
         if (!this.props.hideSalesRole) {
             //获取销售对应的角色
@@ -90,7 +97,7 @@ var SalesTeamCard = React.createClass({
     getSalesTeamList: function(userId, salesManList) {
         let salesTeamList = [];
         _.each(salesManList, (salesMan) => {
-            if (salesMan.user_info && salesMan.user_info.user_id === userId) {
+            if (salesMan.user_info && salesMan.user_info.user_id === userId && _.isArray(salesMan.user_groups)) {
                 salesMan.user_groups.forEach(function(group) {
                     salesTeamList.push({
                         group_id: group.group_id,
@@ -100,6 +107,18 @@ var SalesTeamCard = React.createClass({
             }
         });
         return salesTeamList;
+    },
+    //管理员获取所有成员列表
+    getAllUserList: function() {
+        batchChangeAction.getALLUserList({}, (result) => {
+            if (_.isArray(result) && result.length) {
+                this.setState({salesManList: result, salesTeamList: []});
+            } else {
+                this.setState({
+                    salesManList: []
+                });
+            }
+        });
     },
 
     //获取客户所属销售及其团队下拉列表
@@ -170,8 +189,14 @@ var SalesTeamCard = React.createClass({
         //销售id和所属团队的id
         let idArray = idStr.split('&&');
         if (_.isArray(idArray) && idArray.length) {
-            params.userId = idArray[0];
-            params.salesTeamId = idArray[1];
+            if (idArray.length === 1){
+                params.userId = idArray[0];
+                params.salesTeamId = '';
+            }else{
+                params.userId = idArray[0];
+                params.salesTeamId = idArray[1];
+            }
+
         }
         //销售昵称和所属团队的团队名称
         let salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === params.userId);
@@ -315,7 +340,7 @@ var SalesTeamCard = React.createClass({
                     <div className="sales-role">
                         <span className="sales-team-label">{Intl.get('crm.detail.sales.role', '销售角色')}:</span>
                         <span className="sales-team-text">
-                            {this.state.salesRole || Intl.get('role.normal.sales', '普通销售')}
+                            {this.state.salesRole || ''}
                         </span>
                     </div>}
             </div>
@@ -336,19 +361,30 @@ var SalesTeamCard = React.createClass({
                         value: `${salesman.user_info.user_id}&&${team.group_id}`
                     });
                 });
+            }else{
+                dataList.push({
+                    name: `${salesman.user_info.nick_name}`,
+                    value: `${salesman.user_info.user_id}`
+                });
             }
         });
         //销售人员与销售团队下拉列表的填充内容
         let salesmanOptions = dataList.map(function(item) {
             return (<Option value={item.value} key={item.value}>{item.name}</Option>);
         });
+        var selectValue = '';
+        if (this.state.salesTeamId && !userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+            selectValue = `${this.state.userId}&&${this.state.salesTeamId}`;
+        }else{
+            selectValue = `${this.state.userId}`;
+        }
         return (
             <div className="sales-team-edit-block" id="sales-team-edit-block">
                 <Select
                     placeholder={Intl.get('crm.17', '请选择销售人员')}
                     showSearch
                     onChange={this.handleSalesManChange}
-                    value={`${this.state.userId}&&${this.state.salesTeamId}`}
+                    value={selectValue}
                     optionFilterProp="children"
                     notFoundContent={salesmanOptions.length ? Intl.get('crm.30', '无相关销售') : Intl.get('crm.29', '暂无销售') }
                     getPopupContainer={() => document.getElementById('sales-team-edit-block')}

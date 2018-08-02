@@ -49,7 +49,13 @@ var CrmBatchChange = React.createClass({
     },
     componentDidMount: function() {
         BatchChangeStore.listen(this.onStoreChange);
-        BatchChangeActions.getSalesManList();
+        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+            //如果是管理员要取所有的用户
+            BatchChangeActions.getALLUserList({});
+        } else {
+            //如果是销售，只取销售的列表
+            BatchChangeActions.getSalesManList();
+        }
         BatchChangeActions.getRecommendTags();
         BatchChangeActions.getIndustries();
     },
@@ -454,36 +460,36 @@ var CrmBatchChange = React.createClass({
         Trace.traceEvent(e, '点击变更按钮');
         var currentTab = this.state.currentTab;
         switch (currentTab) {
-        case BATCH_OPERATE_TYPE.CHANGE_SALES:
-            this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get('crm.18', '变更销售人员'));
-            break;
-        case BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER:
-            this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get('crm.customer.transfer', '转出客户'));
-            break;
-        case BATCH_OPERATE_TYPE.CHANGE_TAG:
-            this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get('crm.206', '更新标签'));
-            break;
-        case BATCH_OPERATE_TYPE.ADD_TAG:
-            this.doChangeTag(BATCH_OPERATE_TYPE.ADD_LABEL, Intl.get('crm.205', '添加标签'));
-            break;
-        case BATCH_OPERATE_TYPE.REMOVE_TAG:
-            this.doChangeTag(BATCH_OPERATE_TYPE.REMOVE_LABEL, Intl.get('crm.204', '移除标签'));
-            break;
-        case BATCH_OPERATE_TYPE.CHANGE_INDUSTRY:
-            this.doChangeIndustry();
-            break;
-        case BATCH_OPERATE_TYPE.CHANGE_TERRITORY:
+            case BATCH_OPERATE_TYPE.CHANGE_SALES:
+                this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get('crm.18', '变更销售人员'));
+                break;
+            case BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER:
+                this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get('crm.customer.transfer', '转出客户'));
+                break;
+            case BATCH_OPERATE_TYPE.CHANGE_TAG:
+                this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get('crm.206', '更新标签'));
+                break;
+            case BATCH_OPERATE_TYPE.ADD_TAG:
+                this.doChangeTag(BATCH_OPERATE_TYPE.ADD_LABEL, Intl.get('crm.205', '添加标签'));
+                break;
+            case BATCH_OPERATE_TYPE.REMOVE_TAG:
+                this.doChangeTag(BATCH_OPERATE_TYPE.REMOVE_LABEL, Intl.get('crm.204', '移除标签'));
+                break;
+            case BATCH_OPERATE_TYPE.CHANGE_INDUSTRY:
+                this.doChangeIndustry();
+                break;
+            case BATCH_OPERATE_TYPE.CHANGE_TERRITORY:
             //批量修改地域
-            this.doChangeTerritory();
-            break;
-        case BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL:
+                this.doChangeTerritory();
+                break;
+            case BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL:
             //批量修改行政级别
-            this.doChangeAdministrativeLevel();
-            break;
-        case BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS:
+                this.doChangeAdministrativeLevel();
+                break;
+            case BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS:
             //批量添加联系计划
-            this.doAddScheduleLists();
-            break;
+                this.doAddScheduleLists();
+                break;
         }
     },
     industryChange: function(industry) {
@@ -548,6 +554,11 @@ var CrmBatchChange = React.createClass({
                         name: salesman.user_info.nick_name + '(' + team.group_name + ')',
                         value: salesman.user_info.user_id + '&&' + team.group_id
                     });
+                });
+            }else {
+                dataList.push({
+                    name: `${salesman.user_info.nick_name}`,
+                    value: `${salesman.user_info.user_id}`
                 });
             }
         });
