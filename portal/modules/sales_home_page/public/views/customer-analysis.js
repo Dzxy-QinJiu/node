@@ -598,6 +598,21 @@ var CustomerAnalysis = React.createClass({
                     columns,
                 },
                 processOption: (option, chartProps) => {
+                    //从返回数据里获取一下销售昵称
+                    const nickName = _.get(chartProps, 'data[0].nick_name');
+
+                    //若存在销售昵称，说明返回的是销售列表
+                    if (nickName) {
+                        //找到名称列
+                        let nameColumn = _.find(option.columns, column => column.dataIndex === 'team_name');
+
+                        if (nameColumn) {
+                            //将名称列的数据索引改为指向昵称字段
+                            nameColumn.dataIndex = 'nick_name';
+                            //将名称列的标题改为销售
+                            nameColumn.title = '销售';
+                        }
+                    }
                 },
             });
         }
