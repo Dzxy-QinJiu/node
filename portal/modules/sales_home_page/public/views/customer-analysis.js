@@ -414,21 +414,29 @@ var CustomerAnalysis = React.createClass({
         });
     },
     //处理试用合格客户数统计数字点击事件
-    handleTrialQualifiedNumClick() {
-        const customerIds = '36mvh13nka_53cd3bdd-a0d3-4299-a3f9-403a7f40e5fc,36mvh13nka_ec89a8ee-2c1f-40e6-b2fc-8bccac5a0b07';
-
+    handleTrialQualifiedNumClick(customerIds) {
         history.pushState({
             from: 'sales_home',
             trialQualifiedCustomerIds: customerIds
         }, '/crm', {});
     },
     //试用合格客户数统计数字渲染函数
-    trialQualifiedNumRender(text, record) {
-        return (
-            <span onClick={this.handleTrialQualifiedNumClick} style={{cursor: 'pointer'}}>
-                {text}
-            </span>
-        );
+    trialQualifiedNumRender(customerIdsField, text, record) {
+        const customerIds = record[customerIdsField];
+
+        if (customerIds) {
+            return (
+                <span onClick={this.handleTrialQualifiedNumClick.bind(this, customerIds)} style={{cursor: 'pointer'}}>
+                    {text}
+                </span>
+            );
+        } else {
+            return (
+                <span>
+                    {text}
+                </span>
+            );
+        }
     },
     //获取试用合格客户数统计图表
     getTrialQualifiedChart() {
@@ -437,27 +445,27 @@ var CustomerAnalysis = React.createClass({
             dataIndex: 'last_month',
             title: '上月',
             width: '10%',
-            render: this.trialQualifiedNumRender,
+            render: this.trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
         }, {
             dataIndex: 'this_month',
             title: '本月',
             width: '10%',
-            render: this.trialQualifiedNumRender,
+            render: this.trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
         }, {
             dataIndex: 'this_month_new',
             title: '本月新增',
             width: '10%',
-            render: this.trialQualifiedNumRender,
+            render: this.trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
         }, {
             dataIndex: 'this_month_lose',
             title: '本月流失',
             width: '10%',
-            render: this.trialQualifiedNumRender,
+            render: this.trialQualifiedNumRender.bind(this, 'this_month_lose_customer_ids'),
         }, {
             dataIndex: 'this_month_back',
             title: '本月回流',
             width: '10%',
-            render: this.trialQualifiedNumRender,
+            render: this.trialQualifiedNumRender.bind(this, 'this_month_back_customer_ids'),
         }, {
             dataIndex: 'this_month_add',
             title: '本月比上月净增',
