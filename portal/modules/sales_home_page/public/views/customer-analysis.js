@@ -469,7 +469,7 @@ var CustomerAnalysis = React.createClass({
         }, {
             dataIndex: 'this_month_add_highest',
             title: '本月比历史最高净增',
-            width: '15%',
+            width: '20%',
         }];
 
         //表格列
