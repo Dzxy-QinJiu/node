@@ -483,6 +483,16 @@ var CustomerAnalysis = React.createClass({
         let chart = {
             title: '试用合格客户数统计',
             url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+            argCallback: (arg) => {
+                let query = arg.query;
+
+                if (query && query.starttime && query.endtime) {
+                    query.start_time = query.starttime;
+                    query.end_time = query.endtime;
+                    delete query.starttime;
+                    delete query.endtime;
+                }
+            },
             layout: {sm: 24},
             processData: data => {
                 data = data.list || [];
