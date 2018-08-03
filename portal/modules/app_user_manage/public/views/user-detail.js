@@ -31,6 +31,7 @@ var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
 import { StatusWrapper } from 'antc';
 import { Button } from 'antd';
 var AppUserAjax = require('../ajax/app-user-ajax');
+const WHEEL_DELAY = 20;//滚轮事件延时
 
 var UserDetail = React.createClass({
     getDefaultProps: function() {
@@ -51,7 +52,7 @@ var UserDetail = React.createClass({
                 loading: false,
                 erorMsg: ''
             },
-            showBasicDetail: true,
+            showBasicDetail: true,//是否展示顶部用户信息
             showEditPw: false,
             ...AppUserPanelSwitchStore.getState()
         };
@@ -115,7 +116,7 @@ var UserDetail = React.createClass({
                     showBasicDetail: false
                 });
             }
-        }, 50);
+        }, WHEEL_DELAY);
     },
 
     closeRightPanel: function() {
@@ -207,7 +208,7 @@ var UserDetail = React.createClass({
         var tabPaneList = [
             <TabPane tab={Intl.get('user.basic.info', '基本资料')} key="1">
                 {this.state.activeKey === '1' ? <div className="user_manage_user_detail">
-                    <UserDetailBasic userId={this.props.userId} selectApp={selectApp} getBasicInfo={this.getBasicInfo} ref={ref => this.userDetailRef = ref} />
+                    <UserDetailBasic showBasicDetail={this.state.showBasicDetail} userId={this.props.userId} selectApp={selectApp} getBasicInfo={this.getBasicInfo} ref={ref => this.userDetailRef = ref} />
                 </div> : null}
             </TabPane>
         ];

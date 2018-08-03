@@ -653,8 +653,10 @@ var UserDetailBasic = React.createClass({
             </div>
         ) : null;
 
-        var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
-
+        var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP;
+        if (this.props.showBasicDetail) {
+            fixedHeight -= LAYOUT_CONSTANTS.USER_DETAIL;
+        }
         return (
             <div style={{ height: fixedHeight }}>
                 <GeminiScrollbar>

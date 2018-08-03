@@ -67,13 +67,15 @@ exports.getCurrentView = function() {
 //根据user_id从用户列表中找到一个具体的用户
 exports.getUserByFromUserList = function(userList,userId){
     return _.find(userList , function(item) {
-        return item.user.user_id == userId;
+        return item.user.user_id === userId;
     }) || {};
 };
 //右侧面板固定高度常量
 exports.LAYOUT_CONSTANTS = {
     TOP_DELTA: 69,
-    BOTTOM_DELTA: 26
+    BOTTOM_DELTA: 26,
+    BASIC_TOP: 25,
+    USER_DETAIL: 80
 };
 // 单个用户的日志面板固定高度常量
 exports.USER_LOG_LAYOUT_CONSTANTS = {
@@ -239,7 +241,7 @@ exports.getTimeList = function(field,rowData) {
             if(time === 'Invalid date') {
                 time = Intl.get('common.unknown', '未知');
             }
-            if(app[field] == 0) {
+            if(app[field] === 0) {
                 time = Intl.get('user.nothing', '无');
             }
             return (
