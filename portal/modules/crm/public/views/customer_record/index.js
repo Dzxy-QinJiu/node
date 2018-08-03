@@ -9,7 +9,8 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('../../css/customer-trace-zh_CN.less');
 }
-import {Icon, message, Radio, Input, Menu, Dropdown, Button} from 'antd';
+import {Icon, message, Radio, Input, Menu, Dropdown, Button, Form} from 'antd';
+const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const {TextArea} = Input;
 import CustomerRecordActions from '../../action/customer-record-action';
@@ -26,7 +27,6 @@ import {getInvalidPhone, addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import TimeLine from 'CMP_DIR/time-line-new';
-import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
@@ -264,7 +264,7 @@ const CustomerRecord = React.createClass({
         if (this.state.saveButtonType === 'add') {
             Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确认添加跟进内容');
             //输入框中的内容
-            var addcontent = $.trim(this.state.inputContent);
+            var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
             var queryObj = {
                 customer_id: customerId,
                 type: this.state.selectedtracetype,
@@ -277,7 +277,7 @@ const CustomerRecord = React.createClass({
             // $('.add-content-input').focus();
         } else {
             //补充跟进记录的内容
-            var detail = $.trim(this.state.detailContent);
+            var detail = $.trim(_.get(this.state, 'detailContent.value'));
             var item = this.state.edittingItem;
             Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
             var queryObj = {
@@ -301,7 +301,7 @@ const CustomerRecord = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find('.add-customer-trace .add-foot .cancel-btn'), '关闭添加跟进内容输入区');
         //下拉框的默认选项为拜访
         CustomerRecordActions.setType(this.state.initialType);
-        CustomerRecordActions.setContent(this.state.initialContent);
+        CustomerRecordActions.setContent({value: ''});
         this.toggleAddRecordPanel();
         this.setState({addRecordNullTip: ''});
         // $('.add-content-input').animate({height: '36px'});
@@ -310,16 +310,11 @@ const CustomerRecord = React.createClass({
     //顶部增加客户跟进记录输入时的处理
     handleInputChange: function(e) {
         let value = $.trim(e.target.value);
-        CustomerRecordActions.setContent(value);
         //有输入的内容，则清空必填项验证的提示
-        if(value){
-            this.setState({
-                addRecordNullTip: ''
-            });
+        if (value) {
+            CustomerRecordActions.setContent({value: value, validateStatus: 'success', errorMsg: null});
         } else {
-            this.setState({
-                addRecordNullTip: TRACE_NULL_TIP
-            });
+            CustomerRecordActions.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
         }
     },
     //点击保存按钮，展示模态框
@@ -327,39 +322,40 @@ const CustomerRecord = React.createClass({
         if (item.id) {
             Trace.traceEvent($(this.getDOMNode()).find('.show-customer-trace .add-detail-container .submit-btn'), '添加补充的跟进内容');
             //点击补充客户跟踪记录编辑状态下的保存按钮
-            var detail = $.trim(this.state.detailContent);
+            var detail = $.trim(_.get(this.state, 'detailContent.value'));
             if (detail) {
                 CustomerRecordActions.setModalDialogFlag(true);
                 CustomerRecordActions.changeAddButtonType('update');
                 CustomerRecordActions.updateItem(item);
             } else {
-                this.setState({
-                    editRecordNullTip: TRACE_NULL_TIP,
-                    detailContent: ''
-                });
+                CustomerRecordActions.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
         } else {
             Trace.traceEvent($(this.getDOMNode()).find('.add-customer-trace .add-foot .submit-btn'), '添加跟进内容');
             //点击顶部输入框下的保存按钮
-            var addcontent = $.trim(this.state.inputContent);
+            var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
             if (addcontent) {
                 CustomerRecordActions.setModalDialogFlag(true);
                 CustomerRecordActions.changeAddButtonType('add');
             } else {
-                this.setState({
-                    addRecordNullTip: TRACE_NULL_TIP,
-                    inputContent: ''
-                });
+                CustomerRecordActions.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
         }
     },
     //渲染顶部增加记录的teaxare框
     renderAddRecordPanel: function() {
+        const formItemLayout = {
+            labelCol: {span: 4},
+            wrapperCol: {span: 20},
+            colon: false
+        };
         return (
-            <div className="add-customer-trace">
-                <div className="add-trace-item">
-                    <span
-                        className="add-trace-label visit-label">{Intl.get('sales.frontpage.trace.type', '跟进类型')}</span>
+            <Form className="add-customer-trace">
+                <FormItem
+                    className='add-trace-label visit-label'
+                    label={Intl.get('sales.frontpage.trace.type', '跟进类型')}
+                    {...formItemLayout}
+                >
                     <RadioGroup onChange={this.handleChange} value={this.state.selectedtracetype}>
                         <Radio value="visit">
                             <span className="iconfont icon-visit-briefcase"/>{Intl.get('common.visit', '拜访')}
@@ -368,24 +364,27 @@ const CustomerRecord = React.createClass({
                             <span className="iconfont icon-trace-other"/>{Intl.get('common.others', '其他')}
                         </Radio>
                     </RadioGroup>
-                </div>
-                <div className={classNames('add-trace-item',{'no-record-item': this.state.addRecordNullTip})}>
-                    <span className="add-trace-label">{Intl.get('call.record.follow.content', '跟进内容')}</span>
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get('call.record.follow.content', '跟进内容')}
+                    validateStatus={_.get(this.state, 'inputContent.validateStatus')}
+                    help={_.get(this.state, 'inputContent.errorMsg')}
+                >
                     <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容，保存后不可修改')}
-                        value={this.state.inputContent}
-                        onChange={this.handleInputChange}
-                        autosize={{minRows: 2, maxRows: 6}}
+                        value={_.get(this.state, 'inputContent.value') || ''}
+                        onChange={this.handleInputChange.bind(this)}
                     />
-                    {this.state.addRecordNullTip ? (
-                        <div className="record-null-tip add-record-null-tip">{this.state.addRecordNullTip}</div>) : null}
-                    <SaveCancelButton loading={this.state.addCustomerLoading}
-                        saveErrorMsg={this.state.addCustomerErrMsg}
-                        handleSubmit={this.showModalDialog}
-                        handleCancel={this.handleCancel}
-                    />
-                </div>
-            </div>);
+                </FormItem>
+                <SaveCancelButton loading={this.state.addCustomerLoading}
+                    saveErrorMsg={this.state.addCustomerErrMsg}
+                    handleSubmit={this.showModalDialog}
+                    handleCancel={this.handleCancel}
+                />
+            </Form>
+        );
     },
+
     addDetailContent: function(item) {
         if (this.state.isEdit) {
             message.error(Intl.get('crm.save.customertrace.first', '请先保存或取消保存已编辑的跟进记录内容'));
@@ -396,7 +395,7 @@ const CustomerRecord = React.createClass({
         this.setState({
             customerRecord: this.state.customerRecord,
             isEdit: true,
-            detailContent: '',
+            detailContent: {value: ''},
         });
     },
     handleCancelDetail: function(item) {
@@ -405,7 +404,7 @@ const CustomerRecord = React.createClass({
         item.showAdd = false;
         this.setState({
             customerRecord: this.state.customerRecord,
-            detailContent: this.state.initialDetailContent,
+            detailContent: {value: ''},
             isEdit: false,
             editRecordNullTip: ''
         });
@@ -413,36 +412,35 @@ const CustomerRecord = React.createClass({
     handleAddDetailChange: function(e) {
         //补充客户跟进记录
         let value = $.trim(e.target.value);
-        CustomerRecordActions.setDetailContent(value);
-        if(value){
-            this.setState({
-                editRecordNullTip: ''
-            });
+        if (value) {
+            CustomerRecordActions.setDetailContent({value: value, validateStatus: 'success', errorMsg: null});
         } else {
-            this.setState({
-                editRecordNullTip: TRACE_NULL_TIP
-            });
+            CustomerRecordActions.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
         }
     },
     renderAddDetail: function(item) {
         //补充跟进记录
         return (
-            <div className="add-customer-trace">
-                <div className={classNames('add-trace-item',{'no-record-item': this.state.editRecordNullTip})}>
+            <Form className="add-customer-trace">
+                <FormItem
+                    colon={false}
+                    wrapperCol={{span: 24}}
+                    validateStatus={_.get(this.state, 'detailContent.validateStatus')}
+                    help={_.get(this.state, 'detailContent.errorMsg')}
+                >
                     <TextArea placeholder={Intl.get('add.customer.trace.detail', '请补充跟进记录详情，保存后不可修改')}
-                        value={this.state.detailContent}
-                        onChange={this.handleAddDetailChange}
-                        autosize={{minRows: 2, maxRows: 6}}
+                        value={_.get(this.state, 'detailContent.value') || ''}
+                        onChange={this.handleAddDetailChange.bind(this)}
                     />
-                    {this.state.editRecordNullTip ? (
-                        <div className="record-null-tip">{this.state.editRecordNullTip}</div>) : null}
-                    <SaveCancelButton loading={this.state.addCustomerLoading}
-                        saveErrorMsg={this.state.addCustomerErrMsg}
-                        handleSubmit={this.showModalDialog.bind(this, item)}
-                        handleCancel={this.handleCancelDetail.bind(this, item)}
-                    />
-                </div>
-            </div>);
+                </FormItem>
+                {this.state.editRecordNullTip ? (
+                    <div className="record-null-tip">{this.state.editRecordNullTip}</div>) : null}
+                <SaveCancelButton loading={this.state.addCustomerLoading}
+                    saveErrorMsg={this.state.addCustomerErrMsg}
+                    handleSubmit={this.showModalDialog.bind(this, item)}
+                    handleCancel={this.handleCancelDetail.bind(this, item)}
+                />
+            </Form >);
     },
     //点击播放录音
     handleAudioPlay: function(item) {
@@ -806,7 +804,7 @@ const CustomerRecord = React.createClass({
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get('customer.confirm.trace', '是否添加此跟进内容？');
-        var closedModalTip = $.trim(this.state.detailContent) ? '取消补充跟进内容' : '取消添加跟进内容';
+        var closedModalTip = $.trim(_.get(this.state, 'detailContent.value')) ? '取消补充跟进内容' : '取消添加跟进内容';
         //是否是在跟进记录下没有数据
         let isRecordTabNoData = !_.get(this.state, 'customerRecord[0]') && !this.state.customerRecordLoading && !this.props.isOverViewPanel;
         return (

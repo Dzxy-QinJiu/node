@@ -21,7 +21,7 @@
       &:hover {
         color: @hover_color;
       }
-      i{
+      i {
         padding-left: 2px;
       }
     }
@@ -31,18 +31,14 @@
     background-color: #ffffff;
     padding: 12px;
     border-radius: 4px;
-    .add-trace-item {
-      margin-bottom: 8px;
-      .add-trace-label {
-        display: inline-block;
-        vertical-align: top;
-        margin-right: 10px;
+    .ant-form-item {
+      width: 100%;
+      margin-bottom: 4px;
+      .ant-form-item-label label{
         color: @font_color;
       }
-      .visit-label {
-        padding-top: 3px;
-      }
       .ant-radio-wrapper {
+        margin-top: -3px;
         margin-right: 30px;
         font-size: 14px;
         .iconfont {
@@ -61,16 +57,6 @@
       textarea {
         width: 350px;
       }
-      .record-null-tip{
-        margin-top: 2px;
-        color: @error_color;
-      }
-      .record-null-tip.add-record-null-tip{
-        margin-left: 60px;
-      }
-    }
-    .no-record-item textarea{
-      border-color: @error_color;
     }
   }
   //跟进记录列表（下部时间线）展示面板
@@ -80,10 +66,10 @@
     width: 100%;
     margin-top: 12px;
     border-radius: 4px;
-    .show-customer-trace{
+    .show-customer-trace {
       background-color: #fff;
     }
-    .customer-trace-loading{
+    .customer-trace-loading {
       .load8 {
         transform: scale(0.5, 0.5);
       }
@@ -109,22 +95,22 @@
         overflow: hidden;
       }
       //舆情报送的内容
-      .report-detail-content{
+      .report-detail-content {
         //舆情报送的内容展示样式
-        .report-content-descr{
+        .report-content-descr {
           padding-bottom: 6px;
-          overflow:hidden;
-          text-overflow:ellipsis;
-          display:-webkit-box;
-          -webkit-box-orient:vertical;
-          -webkit-line-clamp:2;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
         }
-        .trace-record-time{
+        .trace-record-time {
           float: right;
         }
-        .item-bottom-content{
-          margin-top:0;
-          .report-app-name{
+        .item-bottom-content {
+          margin-top: 0;
+          .report-app-name {
             font-size: 12px;
           }
         }
