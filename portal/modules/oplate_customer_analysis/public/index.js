@@ -242,6 +242,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             noShowCondition: {
                 tab: ['!', 'total'],
             },
+            height: 'auto',
             option: {
                 columns,
             },
