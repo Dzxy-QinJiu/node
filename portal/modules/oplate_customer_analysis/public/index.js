@@ -239,6 +239,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
         _.extend(chart, {
             chartType: 'table',
+            noShowCondition: {
+                tab: ['!', 'total'],
+            },
             option: {
                 columns,
             },
