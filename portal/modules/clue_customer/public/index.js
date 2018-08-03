@@ -8,7 +8,6 @@ import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/so
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueAnalysisStore = require('./store/clue-analysis-store');
 var clueCustomerAction = require('./action/clue-customer-action');
-import clueCustomerAjax from './ajax/clue-customer-ajax';
 import {clueEmitter} from 'OPLATE_EMITTER';
 var userData = require('../../../public/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
@@ -30,10 +29,8 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import { storageUtil } from 'ant-utils';
 import AlertTimer from 'CMP_DIR/alert-timer';
-import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from './utils/clue-customer-utils';
 import CONSTS from 'LIB_DIR/consts';
 import AutosizeTextarea from 'CMP_DIR/autosize-textarea';
-import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from './ajax/clue-customer-ajax';
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 import SalesClueItem from 'MOD_DIR/common_sales_home_page/public/view/sales-clue-item';
@@ -108,8 +105,6 @@ const ClueCustomer = React.createClass({
             //普通销售 销售默认展示已分配的线索客户 status对应1
             clueCustomerAction.setFilterType(SELECT_TYPE.HAS_DISTRIBUTE);
         }
-        //获取线索客户列表
-        this.getClueCustomerList();
         var _this = this;
         // this.getClueCustomerList();
         this.getClueList();
