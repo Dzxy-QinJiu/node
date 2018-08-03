@@ -272,7 +272,8 @@ var Crm = React.createClass({
 
             if (from === 'sales_home') {
                 const trialQualifiedCustomerIds = locationState.trialQualifiedCustomerIds;
-                CrmAction.queryCustomer({id: trialQualifiedCustomerIds}, {}, this.state.pageSize, this.state.sorter, {});
+                const pageSize = trialQualifiedCustomerIds.split(',').length;
+                CrmAction.queryCustomer({id: trialQualifiedCustomerIds}, {}, pageSize, this.state.sorter, {});
             }
         } else {
             this.search();
