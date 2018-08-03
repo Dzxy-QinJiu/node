@@ -474,6 +474,9 @@ var CustomerAnalysis = React.createClass({
             dataIndex: 'highest',
             title: '历史最高',
             width: '10%',
+            render: (text, record) => {
+                return <span title={record.highest_date}>{text}</span>;
+            },
         }, {
             dataIndex: 'this_month_add_highest',
             title: '本月比历史最高净增',
@@ -518,6 +521,12 @@ var CustomerAnalysis = React.createClass({
 
                         if (customerIds) {
                             dataItem[key + '_customer_ids'] = customerIds.join(',');
+                        }
+
+                        const highestDate = _.get(dataItem, [key, 'highest_date']);
+
+                        if (highestDate) {
+                            dataItem.highest_date = highestDate;
                         }
 
                         dataItem[key] = dataItem[key].total;
