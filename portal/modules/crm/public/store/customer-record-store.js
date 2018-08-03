@@ -20,10 +20,10 @@ CustomerRecordStore.prototype.resetState = function() {
     this.selectedtracetype = 'other';//下拉框选中的类型
     this.initialType = 'other';//下拉框默认选中的类型
     this.total = 0;//共获取的数据总数
-    this.inputContent = '';//输入框中的内容
+    this.inputContent = {value: ''};//输入框中的内容
     this.initialContent = '';
     this.addContentDetailShow = 'false';//增加详情的输入框是否显示
-    this.detailContent = '';//增加详情的输入框中的内容
+    this.detailContent = {value: ''};//增加详情的输入框中的内容
     this.initialDetailContent = '';//增加详情的输入框中的初始化中的内容
     this.addDetailLoading = false;//正在增加详情
     this.addDetailErrMsg = '';//增加详情保存错误
@@ -86,7 +86,7 @@ CustomerRecordStore.prototype.addCustomerTrace = function(result) {
         result.data.customer_trace.showAdd = false;
         this.customerRecord.unshift(result.data.customer_trace);
         this.total += 1;
-        this.inputContent = '';
+        this.inputContent = {value: ''};
         this.selectedtracetype = 'other';
     }
 };
@@ -113,9 +113,9 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
         this.addDetailSuccMsg = result.data.msg;
         this.isEdit = false;
         var customerRecord = this.customerRecord;
-        customerRecord.forEach(function(item) {
-            if (item.id === _this.updateId) {
-                item.remark = _this.detailContent;
+        customerRecord.forEach( item => {
+            if (item.id === this.updateId) {
+                item.remark = this.detailContent.value;
                 item.showAdd = false;
             }
         });
@@ -142,8 +142,8 @@ CustomerRecordStore.prototype.setUpdateId = function(id) {
     this.updateId = id;
 };
 CustomerRecordStore.prototype.setInitial = function() {
-    this.inputContent = '',
-    this.detailContent = '';
+    this.inputContent = {value: ''},
+    this.detailContent = {value: ''};
     this.customerRecord = [];
     this.listenScrollBottom = true;
     this.curPage = 1;
