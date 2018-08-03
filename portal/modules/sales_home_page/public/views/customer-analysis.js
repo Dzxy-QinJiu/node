@@ -594,6 +594,7 @@ var CustomerAnalysis = React.createClass({
         } else {
             _.extend(chart, {
                 chartType: 'table',
+                height: 'auto',
                 option: {
                     columns,
                 },
