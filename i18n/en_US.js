@@ -2338,6 +2338,18 @@ var en_US = {
     'sales.home.i.trace': 'I',//我
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
     'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
-    'analysis.weekly.report': 'Weekly report'//周报分析
+    'analysis.weekly.report': 'Weekly report',//周报分析
+    'clue.search.by.name': 'search by clue name',//按线索名搜索
+    'clue.add.trace.content': 'Add follow-up content',//添加跟进内容
+    'clue.add.trace.follow': 'follow up',//跟进
+    'clue.search.full.text': 'search',//全文搜索
+    'clue.suggest.input.customer.name': 'Recommend to enter the customer name',//建议输入客户名称
+    'clue.name.rule': 'The clue name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'clue.add.customer.need': 'Please describe the customer needs',//请描述一下客户需求
+    'clue.add.phone.num': 'Phone',//电话号码
+    'clue.add.qq.num': 'QQ',//QQ号码
+    'clue.add.email.addr': 'Email address',//邮箱地址
+    'clue.fill.clue.contacts': 'Please fill in the contact information of the clue',//请填写线索的联系方式
+    'clue.add.wechat.num': 'Wechat'//微信号码
 };
 export default en_US;
