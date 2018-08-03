@@ -474,6 +474,9 @@ var CustomerAnalysis = React.createClass({
             dataIndex: 'highest',
             title: '历史最高',
             width: '10%',
+            render: (text, record) => {
+                return <span title={record.highest_date}>{text}</span>;
+            },
         }, {
             dataIndex: 'this_month_add_highest',
             title: '本月比历史最高净增',
@@ -494,11 +497,18 @@ var CustomerAnalysis = React.createClass({
             argCallback: (arg) => {
                 let query = arg.query;
 
-                if (query && query.starttime && query.endtime) {
-                    query.start_time = query.starttime;
-                    query.end_time = query.endtime;
-                    delete query.starttime;
-                    delete query.endtime;
+                if (query) {
+                    if (query.starttime && query.endtime) {
+                        query.start_time = query.starttime;
+                        query.end_time = query.endtime;
+                        delete query.starttime;
+                        delete query.endtime;
+                    }
+
+                    if (query.member_id) {
+                        query.member_ids = query.member_id;
+                        delete query.member_id;
+                    }
                 }
             },
             layout: {sm: 24},
@@ -513,6 +523,12 @@ var CustomerAnalysis = React.createClass({
                             dataItem[key + '_customer_ids'] = customerIds.join(',');
                         }
 
+                        const highestDate = _.get(dataItem, [key, 'highest_date']);
+
+                        if (highestDate) {
+                            dataItem.highest_date = highestDate;
+                        }
+
                         dataItem[key] = dataItem[key].total;
                     });
                 });
@@ -524,6 +540,7 @@ var CustomerAnalysis = React.createClass({
         if (this.props.currShowType === showTypeConstant.SALESMAN) {
             _.extend(chart, {
                 chartType: 'bar',
+                height: 220,
                 processOption: (option, chartProps) => {
                     option.legend = {
                         data: [
@@ -546,15 +563,48 @@ var CustomerAnalysis = React.createClass({
                     const serie = {
                         type: 'bar',
                         stack: 'num',
-                        itemStyle: {
-                            normal: {
-                                label: {
-                                    show: true,
-                                    position: 'top',
-                                }
-                            }
+                        label: {
+                            show: true,
+                            position: 'top',
                         }
                     };
+
+                    let data = _.get(chartProps, 'data[0]');
+                    let lastMonthNum = _.get(data, 'last_month');
+                    let thisMonthNum = _.get(data, 'this_month');
+                    let thisMonthNewNum = _.get(data, 'this_month_new');
+                    let thisMonthLoseNum = _.get(data, 'this_month_lose');
+                    let thisMonthBackNum = _.get(data, 'this_month_back');
+                    let thisMonthAddHighestNum = _.get(data, 'this_month_add_highest');
+                    let thisMonthAddNum = _.get(data, 'this_month_add');
+                    let highestNum = _.get(data, 'highest');
+
+                    const dataArr = [lastMonthNum, thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, highestNum];
+
+                    let thisMonthNewNumAssist = lastMonthNum;
+
+                    if (thisMonthNewNum < 0) {
+                        thisMonthNewNumAssist = lastMonthNum + thisMonthNewNum;
+                        thisMonthNewNum = Math.abs(thisMonthNewNum);
+                    }
+
+                    let thisMonthBackNumAssist = lastMonthNum + thisMonthNewNum;
+
+                    let thisMonthLoseNumAssist = thisMonthLoseNumAssist - thisMonthBackNum;
+
+                    let thisMonthAddNumAssist = lastMonthNum;
+
+                    if (thisMonthAddNum < 0) {
+                        thisMonthAddNumAssist = lastMonthNum + thisMonthAddNum;
+                        thisMonthAddNum = Math.abs(thisMonthAddNum);
+                    }
+
+                    let thisMonthAddHighestNumAssist = highestNum;
+
+                    if (thisMonthAddHighestNum < 0) {
+                        thisMonthAddHighestNumAssist = highestNum + thisMonthAddHighestNum;
+                        thisMonthAddHighestNum = Math.abs(thisMonthAddHighestNum);
+                    }
 
                     let serieAssist = _.extend({}, serie, {
 
@@ -568,19 +618,26 @@ var CustomerAnalysis = React.createClass({
                                 color: 'rgba(0,0,0,0)'
                             }
                         },
-                        data: ['-',3,4,3,3,'-',3,'-'],
+                        data: ['-', thisMonthNewNumAssist, thisMonthBackNumAssist, thisMonthLoseNumAssist, thisMonthAddNumAssist, '-', thisMonthAddHighestNumAssist, '-'],
                     });
 
                     let serieLastMonth = _.extend({}, serie, {
-                        data: [3,'-','-','-','-','-','-','-'],
+                        data: [lastMonthNum, '-', '-', '-', '-', '-', '-', '-'],
                     });
 
                     let serieThisMonth = _.extend({}, serie, {
-                        data: ['-',1,1,2,1,4,1,'-'],
+                        data: ['-', thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, '-'],
+                        label: {
+                            show: true,
+                            position: 'top',
+                            formatter: params => {
+                                return dataArr[params.dataIndex];
+                            },
+                        },
                     });
 
                     let serieHistory = _.extend({}, serie, {
-                        data: ['-','-','-','-','-','-','-',3],
+                        data: ['-', '-', '-', '-', '-', '-', '-', highestNum],
                     });
 
                     option.series = [
@@ -594,6 +651,7 @@ var CustomerAnalysis = React.createClass({
         } else {
             _.extend(chart, {
                 chartType: 'table',
+                height: 'auto',
                 option: {
                     columns,
                 },
