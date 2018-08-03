@@ -22,7 +22,7 @@ var userData = require('PUB_DIR/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
 import Spinner from 'CMP_DIR/spinner';
-import SalesClueItem from './view/salse-clue-item';
+import SalesClueItem from './view/sales-clue-item';
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
@@ -645,6 +645,8 @@ var SalesHomePage = React.createClass({
                                 salesClueItemDetail= {item}
                                 callNumber={this.state.callNumber}
                                 errMsg={this.state.errMsg}
+                                showFrontPageTip={true}
+                                afterRemarkClue={SalesHomeAction.afterRemarkClue}
                             />
                         );
                     })}

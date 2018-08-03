@@ -7,6 +7,7 @@ var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 function ClueCustomerActions() {
     this.generateActions(
+        'setClueInitialData',
         'setCurrentCustomer',
         'setPageNum',
         'afterAddSalesClue',
@@ -26,6 +27,8 @@ function ClueCustomerActions() {
         'updateClueProperty',//修改线索是否有效属性
         'removeClueItem',//删除某条线索
         'afterModifiedAssocaitedCustomer',//修改当前线索的绑定客户后在列表中修改该条线索所绑定的客户
+        'afterAddClueTrace',//添加完线索的跟进记录后
+        'setKeyWord',//设置关键字
     );
     //获取线索客户列表
     this.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
@@ -106,6 +109,23 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback();
         },(errorMsg) => {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
+    };
+    //线索的全文搜索
+    this.getClueFulltext = function(queryObj) {
+        //是否是在全部状态下返回数据
+        var flag = queryObj.analysisFlag ? true : false;
+        this.dispatch({error: false, loading: true, flag: flag});
+        clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({error: false, loading: false, clueCustomerObj: result, flag: flag});
+        }, (errorMsg) => {
+            this.dispatch({
+                flag: flag,
+                error: true,
+                loading: false,
+                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
+            });
         });
     };
 }

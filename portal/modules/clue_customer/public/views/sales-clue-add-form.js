@@ -403,7 +403,7 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Select combobox
                                     searchPlaceholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
-                                    name="access_channel"
+                                    name="clue_classify"
                                     onChange={this.setField.bind(this, 'clue_classify')}
                                     value={formData.clue_classify}
                                     getPopupContainer={() => document.getElementById('sales-clue-form')}

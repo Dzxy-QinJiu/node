@@ -83,6 +83,12 @@ ClueAnalysisStore.prototype.setInitState = function() {
         errMsg: '',
         list: []
     };
+    //线索状态的统计
+    this.clueStatusList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
     //线索分类统计
     this.rangeParams = [{
         from: this.start_time,
@@ -134,6 +140,10 @@ ClueAnalysisStore.prototype.getClueStatics = function(result) {
             break;
         case 'availability':
             this.clueAvailability = dataObj;
+            break;
+        case 'status':
+            this.clueStatusList = dataObj;
+            break;
     }
 };
 ClueAnalysisStore.prototype.getClueTrendStatics = function(result) {

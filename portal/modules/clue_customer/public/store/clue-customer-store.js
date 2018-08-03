@@ -6,12 +6,20 @@
 var ClueCustomerAction = require('../action/clue-customer-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
+import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from '../utils/clue-customer-utils';
 function ClueCustomerStore() {
     //初始化state数据
     this.getState();
     this.bindActions(ClueCustomerAction);
 }
+ClueCustomerStore.prototype.setClueInitialData = function() {
+    this.curCustomers = [];//查询到的线索客户列表
+    this.customersSize = 0;
+    this.curPage = 1;
+};
 ClueCustomerStore.prototype.getState = function() {
+    var isShowAll = isOperation() || isSalesLeaderOrManager();
+    var defaultValue = isShowAll ? SELECT_TYPE.ALL : SELECT_TYPE.HAS_DISTRIBUTE;
     var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     this.salesManList = [];//销售列表
     this.listenScrollBottom = true;//是否监测下拉加载
@@ -20,7 +28,8 @@ ClueCustomerStore.prototype.getState = function() {
     this.isLoading = true;//加载线索客户列表数据中。。。
     this.clueCustomerErrMsg = '';//获取线索客户列表失败
     this.customersSize = 0;//线索客户列表的数量
-    this.clueCustomerTypeFilter = {status: ''};//线索客户的类型  0 待分配 1 已分配 2 已跟进
+    this.curPage = 1;
+    this.clueCustomerTypeFilter = {status: defaultValue};//线索客户的类型  0 待分配 1 已分配 2 已跟进
     this.currentId = '';//当前展示的客户的id
     this.curCustomer = {}; //当前展示的客户详情
     this.rangParams = [{//时间范围参数
@@ -34,7 +43,7 @@ ClueCustomerStore.prototype.getState = function() {
     this.lastCustomerId = '';//用于下拉加载的客户的id
     this.listenScrollBottom = true;//
     this.sorter = {
-        field: 'start_time',
+        field: 'source_time',
         order: 'descend'
     };//客户列表排序
     this.salesMan = '';//普通销售：userId，非普通销售（销售领导及运营人员）：userId&&teamId
@@ -42,6 +51,18 @@ ClueCustomerStore.prototype.getState = function() {
     this.unSelectDataTip = '';//未选择数据就保存的提示信息
     this.distributeLoading = false;//线索客户正在分配给某个销售
     this.distributeErrMsg = '';//线索客户分配失败
+    this.keyword = '';//线索全文搜索的关键字
+    this.clueStatusList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
+    this.statusStaticis = {
+        '': 0,
+        '0': 0,
+        '1': 0,
+        '2': 0
+    };
 };
 //查询线索客户
 ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
@@ -71,6 +92,59 @@ ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
         if (this.currentId) {
             this.setCurrentCustomer(this.currentId);
         }
+    }
+};
+//全文查询线索
+ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
+    if (clueData.loading) {
+        this.isLoading = true;
+        this.clueCustomerErrMsg = '';
+        this.clueStatusList.loading = true;
+        this.clueStatusList.errMsg = '';
+    } else if (clueData.error) {
+        this.isLoading = false;
+        this.clueCustomerErrMsg = clueData.errorMsg;
+        this.clueStatusList.loading = false;
+        this.clueStatusList.errMsg = clueData.errorMsg;
+    } else {
+        let data = clueData.clueCustomerObj;
+        let list = data ? data.result : [];
+        var aggList = data.agg_list ? data.agg_list : [];
+        if (clueData.flag){
+            this.clueStatusList.list = aggList[0]['status'];
+        }else{
+            if (this.lastCustomerId) {
+                this.curCustomers = this.curCustomers.concat(this.processForList(list));
+            } else {
+                this.curCustomers = this.processForList(list);
+            }
+            this.lastCustomerId = this.curCustomers.length ? _.last(this.curCustomers).id : '';
+            this.customersSize = data ? data.total : 0;
+            this.listenScrollBottom = this.customersSize > this.curCustomers.length;
+            this.isLoading = false;
+            this.curPage++;
+            //跟据线索客户不同的状态进行排序
+            this.curCustomers = _.sortBy(this.curCustomers, (item) => {
+                return item.status;
+            });
+            //刷新当前右侧面板中打开的客户的数据
+            if (this.currentId) {
+                this.setCurrentCustomer(this.currentId);
+            }
+            this.clueStatusList.loading = false;
+            this.clueStatusList.errMsg = '';
+            if (this.clueCustomerTypeFilter.status === ''){
+                this.clueStatusList.list = _.isArray(aggList) && aggList[0] && aggList[0]['status'] ? aggList[0]['status'] : {};
+                var total = 0;
+                _.forEach(this.clueStatusList.list, (item) => {
+                    this.statusStaticis['' + item.name] = item.total;
+                    total += item.total;
+                });
+                this.statusStaticis[''] = total;
+            }
+        }
+        //不同状态线索的统计数据
+
     }
 };
 //更新线索客户的一些属性
@@ -222,9 +296,18 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
         }
     }
 };
+ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
+    this.curCustomers = _.filter(this.curCustomers, clue => updateId !== clue.id);
+    this.customersSize--;
+
+};
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];
     //客户所属销售下拉列表，过滤掉停用的成员
     this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status === 1);
 };
+ClueCustomerStore.prototype.setKeyWord = function(keyword) {
+    this.keyword = keyword;
+};
+
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

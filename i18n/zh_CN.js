@@ -2333,7 +2333,7 @@ var zh_CN = {
     'clue.repeat.delete': '存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入',
     'clue.customer.belong.to.other.sales': '该电话属于客户{customer}，所属销售{sales}',
     'phone.alert.select.customer': '请选择要跟进的客户',
-    'clue.analysis.consult.time': '咨询时间：',
+    'clue.analysis.consult.time': '咨询时间',
     'noMoreTip.user': '没有更多用户了',
     'noMoreTip.log': '没有更多日志了',
     'noMoreTip.callRecord': '没有更多通话记录了',
@@ -2360,6 +2360,18 @@ var zh_CN = {
     'sales.home.i.trace': '我',
     'sales.home.fill.in.trace.content': '请输入跟进内容',
     'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示',
-    'analysis.weekly.report': '周报分析'
+    'analysis.weekly.report': '周报分析',
+    'clue.search.by.name': '按线索名搜索',
+    'clue.add.trace.content': '添加跟进内容',
+    'clue.add.trace.follow': '跟进',
+    'clue.search.full.text': '全文搜索',
+    'clue.suggest.input.customer.name': '建议输入客户名称',
+    'clue.name.rule': '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
+    'clue.add.customer.need': '请描述一下客户需求',
+    'clue.add.phone.num': '电话号码',
+    'clue.add.qq.num': 'QQ号码',
+    'clue.add.email.addr': '邮箱地址',
+    'clue.fill.clue.contacts': '请填写线索的联系方式',
+    'clue.add.wechat.num': '微信号码'
 };
 export default zh_CN;
