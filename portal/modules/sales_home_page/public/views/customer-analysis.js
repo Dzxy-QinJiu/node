@@ -554,25 +554,48 @@ var CustomerAnalysis = React.createClass({
                     const serie = {
                         type: 'bar',
                         stack: 'num',
-                        itemStyle: {
-                            normal: {
-                                label: {
-                                    show: true,
-                                    position: 'top',
-                                }
-                            }
+                        label: {
+                            show: true,
+                            position: 'top',
                         }
                     };
 
-                    const data = _.get(chartProps, 'data[0]');
-                    const lastMonthNum = _.get(data, 'last_month');
-                    const thisMonthNum = _.get(data, 'this_month');
-                    const thisMonthNewNum = _.get(data, 'this_month_new');
-                    const thisMonthLoseNum = _.get(data, 'this_month_lose');
-                    const thisMonthBackNum = _.get(data, 'this_month_back');
-                    const thisMonthAddHighestNum = _.get(data, 'this_month_add_highest');
-                    const thisMonthAddNum = _.get(data, 'this_month_add');
-                    const highestNum = _.get(data, 'highest');
+                    let data = _.get(chartProps, 'data[0]');
+                    let lastMonthNum = _.get(data, 'last_month');
+                    let thisMonthNum = _.get(data, 'this_month');
+                    let thisMonthNewNum = _.get(data, 'this_month_new');
+                    let thisMonthLoseNum = _.get(data, 'this_month_lose');
+                    let thisMonthBackNum = _.get(data, 'this_month_back');
+                    let thisMonthAddHighestNum = _.get(data, 'this_month_add_highest');
+                    let thisMonthAddNum = _.get(data, 'this_month_add');
+                    let highestNum = _.get(data, 'highest');
+
+                    const dataArr = [lastMonthNum, thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, highestNum];
+
+                    let thisMonthNewNumAssist = lastMonthNum;
+
+                    if (thisMonthNewNum < 0) {
+                        thisMonthNewNumAssist = lastMonthNum + thisMonthNewNum;
+                        thisMonthNewNum = Math.abs(thisMonthNewNum);
+                    }
+
+                    let thisMonthBackNumAssist = lastMonthNum + thisMonthNewNum;
+
+                    let thisMonthLoseNumAssist = thisMonthLoseNumAssist - thisMonthBackNum;
+
+                    let thisMonthAddNumAssist = lastMonthNum;
+
+                    if (thisMonthAddNum < 0) {
+                        thisMonthAddNumAssist = lastMonthNum + thisMonthAddNum;
+                        thisMonthAddNum = Math.abs(thisMonthAddNum);
+                    }
+
+                    let thisMonthAddHighestNumAssist = highestNum;
+
+                    if (thisMonthAddHighestNum < 0) {
+                        thisMonthAddHighestNumAssist = highestNum + thisMonthAddHighestNum;
+                        thisMonthAddHighestNum = Math.abs(thisMonthAddHighestNum);
+                    }
 
                     let serieAssist = _.extend({}, serie, {
 
@@ -586,7 +609,7 @@ var CustomerAnalysis = React.createClass({
                                 color: 'rgba(0,0,0,0)'
                             }
                         },
-                        data: ['-', lastMonthNum, lastMonthNum + thisMonthNewNum, lastMonthNum, lastMonthNum, '-', highestNum, '-'],
+                        data: ['-', thisMonthNewNumAssist, thisMonthBackNumAssist, thisMonthLoseNumAssist, thisMonthAddNumAssist, '-', thisMonthAddHighestNumAssist, '-'],
                     });
 
                     let serieLastMonth = _.extend({}, serie, {
@@ -594,7 +617,14 @@ var CustomerAnalysis = React.createClass({
                     });
 
                     let serieThisMonth = _.extend({}, serie, {
-                        data: ['-', thisMonthNewNum, thisMonthLoseNum, thisMonthBackNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, '-'],
+                        data: ['-', thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, '-'],
+                        label: {
+                            show: true,
+                            position: 'top',
+                            formatter: params => {
+                                return dataArr[params.dataIndex];
+                            },
+                        },
                     });
 
                     let serieHistory = _.extend({}, serie, {
