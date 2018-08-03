@@ -115,7 +115,7 @@ class ClueAddForm extends React.Component {
                 this.setState({
                     newAddClue: data.result
                 });
-                clueCustomerAction.afterAddSalesClue(data.result);
+                clueCustomerAction.afterAddSalesClue({newCustomer: data.result});
                 //如果线索来源或者接入渠道,线索类型加入新的类型
                 if (submitObj.clue_source && !_.includes(this.props.clueSourceArray,submitObj.clue_source)){
                     _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
@@ -167,6 +167,10 @@ class ClueAddForm extends React.Component {
                     values[key] = moment(value).valueOf();
                 }
             });
+            //生成线索客户的用户的id
+            if (this.props.appUserId){
+                values.app_user_ids = [this.props.appUserId];
+            }
             //验证电话是否通过验证
             if (!err){
                 if (this.phoneInputRefs.length) {
@@ -289,9 +293,7 @@ class ClueAddForm extends React.Component {
             formData: this.state.formData
         });
     };
-
     renderDiffContacts(item, index, size) {
-
         var contactWays = [
             {name: DIFCONTACTWAY.PHONE, value: Intl.get('common.phone', '电话')},
             {name: DIFCONTACTWAY.EMAIL, value: Intl.get('common.email', '邮箱')},
@@ -303,7 +305,6 @@ class ClueAddForm extends React.Component {
             'qq': Intl.get('clue.add.qq.num', 'QQ号码'),
             'weChat': Intl.get('clue.add.wechat.num', '微信号码')
         };
-
         function getDiffCls(type) {
             var cls = classNames('iconfont', {
                 'icon-qq': type === 'qq',
@@ -313,7 +314,6 @@ class ClueAddForm extends React.Component {
             });
             return cls;
         }
-
         var iconCls = classNames('iconfont icon-delete', {
             'disabled': index === 0 && size === 1
         });
@@ -326,7 +326,6 @@ class ClueAddForm extends React.Component {
                     <Input value={item.name} onChange={this.handleChangeContactName.bind(this, index)}
                         className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
                     <i className={iconCls} onClick={this.handleDelContact.bind(this, index, size)}></i>
-
                 </div>
                 <div className="contact-way-item">
                     {_.map(show_contact_item, (contactItem, itemIndex) => {
@@ -473,7 +472,10 @@ class ClueAddForm extends React.Component {
             saveMsg: '',
             saveResult: ''
         });
-        this.props.hideAddForm();
+        setTimeout(() => {
+            this.props.hideAddForm();
+        },1000);
+
     };
     render = () => {
         const {getFieldDecorator} = this.props.form;
@@ -690,7 +692,8 @@ ClueAddForm.defaultProps = {
     form: {},
     hideAddForm: function() {
 
-    }
+    },
+    appUserId: ''
 
 };
 ClueAddForm.propTypes = {
@@ -703,7 +706,8 @@ ClueAddForm.propTypes = {
     updateClueClassify: React.PropTypes.func,
     afterAddSalesClue: React.PropTypes.func,
     form: React.PropTypes.object,
-    hideAddForm: React.PropTypes.func
+    hideAddForm: React.PropTypes.func,
+    appUserId: React.PropTypes.string
 
 };
 export default Form.create()(ClueAddForm);

@@ -20,7 +20,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import AntcDropdown from 'CMP_DIR/antc-dropdown-new';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
 class SalesClueItem extends React.Component {
     constructor(props) {
         super(props);
@@ -244,6 +244,12 @@ class SalesClueItem extends React.Component {
         });
     };
     handleShowClueDetail = (item) => {
+        if (this.props.curClue){
+            this.setState({
+                isAssocaiteItem: this.props.curClue
+            });
+            return;
+        }
         this.setState({
             isShowClueDetail: true,
             isAssocaiteItem: item
@@ -365,6 +371,7 @@ class SalesClueItem extends React.Component {
                     handleSubmit={this.props.handleSubmitAssignSales.bind(this, salesClueItem)}
                     unSelectDataTip={this.state.unSelectDataTip}
                     clearSelectData={this.props.clearSelectSales}
+                    btnAtTop={false}
                 /> : null
         }
         {footText}
@@ -405,11 +412,12 @@ class SalesClueItem extends React.Component {
             'associate-wrap': !this.state.isShowClueDetail
         });
         var itemCls = classNames('sales-clue-item-container customer-detail-item', {
-            'cur-clue': this.state.isShowClueDetail
+            'cur-clue': this.state.isShowClueDetail || (!_.isEmpty(this.props.curClue) && this.props.curClue.id === salesClueItem.id)
         });
         return (
             <div className={itemCls}>
                 <div className="clue-top-title">
+                    <span className="hidden record-id">{salesClueItem.id}</span>
                     {this.renderClueStatus(salesClueItem.status)}
                     <span className="clue-name"
                         onClick={this.handleShowClueDetail.bind(this, salesClueItem)}>{salesClueItem.name}</span>
@@ -454,7 +462,7 @@ class SalesClueItem extends React.Component {
                         />
                     </div>
                     : null}
-                {this.state.isAssocaiteItem ?
+                {this.state.isAssocaiteItem && !this.props.curClue ?
                     <div className={associateCls}>
                         <ClueRightPanel
                             showFlag={true}
@@ -510,7 +518,8 @@ SalesClueItem.defaultProps = {
     },
     clearSelectSales: function() {
 
-    }
+    },
+    curClue: {}
 
 };
 SalesClueItem.propTypes = {
@@ -527,6 +536,7 @@ SalesClueItem.propTypes = {
     renderSalesBlock: React.PropTypes.func,
     handleSubmitAssignSales: React.PropTypes.func,
     clearSelectSales: React.PropTypes.func,
+    curClue: React.PropTypes.object,
 
 };
 export default SalesClueItem;

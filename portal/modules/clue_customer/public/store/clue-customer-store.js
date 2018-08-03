@@ -94,6 +94,38 @@ ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
         }
     }
 };
+ClueCustomerStore.prototype.getStatisticsData = function() {
+    var total = 0;
+    if (this.clueStatusList.list.length){
+        _.forEach(this.statusStaticis, (value, key) => {
+            var targetObj = _.find(this.clueStatusList.list,(item) => {
+                return key === item.name;
+            });
+            if (targetObj){
+                this.statusStaticis[key] = targetObj.total;
+            }else{
+                this.statusStaticis[key] = 0;
+            }
+        });
+        _.forEach(this.clueStatusList.list,(item) => {
+            total += item.total;
+        });
+        this.statusStaticis[''] = total;
+
+    }else{
+        this.statusStaticis = {
+            '': 0,
+            '0': 0,
+            '1': 0,
+            '2': 0
+        };
+    }
+
+
+
+
+    this.statusStaticis[''] = total;
+};
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     if (clueData.loading) {
@@ -112,6 +144,8 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         var aggList = data.agg_list ? data.agg_list : [];
         if (clueData.flag){
             this.clueStatusList.list = aggList[0]['status'];
+            this.getStatisticsData();
+
         }else{
             if (this.lastCustomerId) {
                 this.curCustomers = this.curCustomers.concat(this.processForList(list));
@@ -135,12 +169,7 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
             this.clueStatusList.errMsg = '';
             if (this.clueCustomerTypeFilter.status === ''){
                 this.clueStatusList.list = _.isArray(aggList) && aggList[0] && aggList[0]['status'] ? aggList[0]['status'] : {};
-                var total = 0;
-                _.forEach(this.clueStatusList.list, (item) => {
-                    this.statusStaticis['' + item.name] = item.total;
-                    total += item.total;
-                });
-                this.statusStaticis[''] = total;
+                this.getStatisticsData();
             }
         }
         //不同状态线索的统计数据
@@ -241,7 +270,8 @@ ClueCustomerStore.prototype.setCurrentCustomer = function(id) {
 
 };
 //添加完销售线索后的处理
-ClueCustomerStore.prototype.afterAddSalesClue = function(newCustomer) {
+ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
+    var newCustomer = updateObj.newCustomer;
     var newArr = this.processForList([newCustomer]);
     newCustomer = newArr[0];
     this.curCustomers = _.filter(this.curCustomers, customer => customer.id !== newCustomer.id);
@@ -249,10 +279,16 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(newCustomer) {
     if ((this.clueCustomerTypeFilter.status === '0' || this.clueCustomerTypeFilter.status === '') && this.rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= this.rangParams[0].to){
         this.curCustomers.unshift(newCustomer);
         this.customersSize++;
+        var total = this.statusStaticis[''],willDistributeCount = this.statusStaticis['0'];
+        total++;
+        willDistributeCount++;
     }
-    //新添加的是正在展示的那条日程
-    this.curCustomer = newCustomer;
-    this.currentId = newCustomer.id;
+    if (updateObj.showDetail){
+        //新添加的是正在展示的那条日程
+        this.curCustomer = newCustomer;
+        this.currentId = newCustomer.id;
+    }
+
 };
 //用于设置下拉加载的最后一个客户的id
 ClueCustomerStore.prototype.setLastCustomerId = function(id) {

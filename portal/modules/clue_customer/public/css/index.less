@@ -54,6 +54,18 @@
     .clue-customer-total-tip {
       margin-left: 40px;
     }
+    .content-block{
+      .clue-customer-list{
+        .no-more-data-tip{
+          margin-left: 20px;
+          font-size: 12px;
+          .anticon-info-circle{
+            position: static;
+            margin-right: 5px;
+          }
+        }
+      }
+    }
   }
   //背景模态框
   .right-panel-modal.show-modal {
@@ -104,6 +116,9 @@
             overflow: hidden;
             .contact-wrap{
               overflow: hidden;
+              background: #fff;
+              padding: 10px;
+              margin-bottom: 10px;
               .contact-name-item{
                 .contact-name{
                   float: left;
@@ -174,11 +189,20 @@
         position: relative;
         top:-13px;
       }
+      .indicator{
+        width: 300px;
+        text-align: center;
+        margin: 0 auto;
+        position: absolute;
+        .anticon{
+          position: static;
+          margin-right: 5px;
+        }
+      }
+      }
     }
 
   }
-
-}
 .ant-calendar{
   width: 331px!important;
 }
