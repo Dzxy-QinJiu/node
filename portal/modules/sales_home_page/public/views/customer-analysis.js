@@ -524,6 +524,7 @@ var CustomerAnalysis = React.createClass({
         if (this.props.currShowType === showTypeConstant.SALESMAN) {
             _.extend(chart, {
                 chartType: 'bar',
+                height: 220,
                 processOption: (option, chartProps) => {
                     option.legend = {
                         data: [
@@ -556,6 +557,16 @@ var CustomerAnalysis = React.createClass({
                         }
                     };
 
+                    const data = _.get(chartProps, 'data[0]');
+                    const lastMonthNum = _.get(data, 'last_month');
+                    const thisMonthNum = _.get(data, 'this_month');
+                    const thisMonthNewNum = _.get(data, 'this_month_new');
+                    const thisMonthLoseNum = _.get(data, 'this_month_lose');
+                    const thisMonthBackNum = _.get(data, 'this_month_back');
+                    const thisMonthAddHighestNum = _.get(data, 'this_month_add_highest');
+                    const thisMonthAddNum = _.get(data, 'this_month_add');
+                    const highestNum = _.get(data, 'highest');
+
                     let serieAssist = _.extend({}, serie, {
 
                         itemStyle: {
@@ -568,19 +579,19 @@ var CustomerAnalysis = React.createClass({
                                 color: 'rgba(0,0,0,0)'
                             }
                         },
-                        data: ['-',3,4,3,3,'-',3,'-'],
+                        data: ['-', lastMonthNum, lastMonthNum + thisMonthNewNum, lastMonthNum, lastMonthNum, '-', highestNum, '-'],
                     });
 
                     let serieLastMonth = _.extend({}, serie, {
-                        data: [3,'-','-','-','-','-','-','-'],
+                        data: [lastMonthNum, '-', '-', '-', '-', '-', '-', '-'],
                     });
 
                     let serieThisMonth = _.extend({}, serie, {
-                        data: ['-',1,1,2,1,4,1,'-'],
+                        data: ['-', thisMonthNewNum, thisMonthLoseNum, thisMonthBackNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, '-'],
                     });
 
                     let serieHistory = _.extend({}, serie, {
-                        data: ['-','-','-','-','-','-','-',3],
+                        data: ['-', '-', '-', '-', '-', '-', '-', highestNum],
                     });
 
                     option.series = [
