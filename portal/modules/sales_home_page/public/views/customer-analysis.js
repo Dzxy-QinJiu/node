@@ -494,11 +494,18 @@ var CustomerAnalysis = React.createClass({
             argCallback: (arg) => {
                 let query = arg.query;
 
-                if (query && query.starttime && query.endtime) {
-                    query.start_time = query.starttime;
-                    query.end_time = query.endtime;
-                    delete query.starttime;
-                    delete query.endtime;
+                if (query) {
+                    if (query.starttime && query.endtime) {
+                        query.start_time = query.starttime;
+                        query.end_time = query.endtime;
+                        delete query.starttime;
+                        delete query.endtime;
+                    }
+
+                    if (query.member_id) {
+                        query.member_ids = query.member_id;
+                        delete query.member_id;
+                    }
                 }
             },
             layout: {sm: 24},
