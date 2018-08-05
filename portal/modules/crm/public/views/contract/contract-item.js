@@ -20,7 +20,7 @@ const ContractItem = React.createClass({
         };
     },
     componentWillReceiveProps(nextProps) {
-        if (this.props.customerId !== nextProps.customerId) {
+        if (nextProps.contract && nextProps.contract.id && this.props.contract.id !== nextProps.contract.id) {
             this.setState({
                 formData: JSON.parse(JSON.stringify(nextProps.contract)),
             });
@@ -51,6 +51,7 @@ const ContractItem = React.createClass({
             if (resData && resData.code === 0) {
                 this.state.errMsg = '';
                 this.state.isLoading = false;
+                this.state.isDeleteContractFlag = false;
                 ContractAction.deleteContact(contract);
             } else {
                 this.state.errMsg = Intl.get('crm.139', '删除失败');
