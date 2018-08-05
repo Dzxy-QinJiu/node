@@ -4,7 +4,7 @@ import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
-import { Button, Icon } from 'antd';
+import { Button, Icon, message } from 'antd';
 import ContractAction from '../../action/contract-action';
 const ContractAjax = require('../../ajax/contract-ajax');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -49,6 +49,7 @@ const ContractItem = React.createClass({
         this.setState({isLoading: true});
         ContractAjax.deletePendingContract(contract.id).then( (resData) => {
             if (resData && resData.code === 0) {
+                message.success(Intl.get('crm.138', '删除成功'));
                 this.state.errMsg = '';
                 this.state.isLoading = false;
                 this.state.isDeleteContractFlag = false;
