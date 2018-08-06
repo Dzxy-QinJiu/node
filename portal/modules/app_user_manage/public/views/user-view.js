@@ -1015,7 +1015,7 @@ var UserTabContent = React.createClass({
         AppUserAction.changeTableSort(sortParams);
         AppUserAction.setLastUserId('');
         this.fetchUserList({
-            id: '',
+            lastUserId: '',
             sort_order: sortParams.sort_order,
             sort_field: sortParams.sort_field
         });
