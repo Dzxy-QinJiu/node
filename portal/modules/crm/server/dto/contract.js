@@ -18,7 +18,8 @@ exports.toRestObject = (list) => {
             stage: item.stage || '', // 合同状态（待审、审核、归档、报废）
             remarks: item.remarks || '', // 合同备注
             date: item.date || '', // 合同签订时间
-            user_name: item.user_name || '' // 合同的签订人
+            user_name: item.user_name || '', // 合同的签订人
+            id: item.id // 合同的id
         });
     });
 

@@ -1612,6 +1612,8 @@ var zh_CN = {
     'contract.172': '金额(元)',
     'contract.173': '暂无产品信息',
     'contract.174': '合同额与产品总额不相等，请核对',
+    'contract.175': '产品名称',
+    'contract.176': '账号数量',
 
     // 应用运营报告start
     'app_operation.0': '一、用户总体统计',

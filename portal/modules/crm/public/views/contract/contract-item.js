@@ -4,15 +4,23 @@ import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
+import { Button, Icon, message } from 'antd';
+import ContractAction from '../../action/contract-action';
+const ContractAjax = require('../../ajax/contract-ajax');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+const AlertTimer = require('CMP_DIR/alert-timer');
 
 const ContractItem = React.createClass({
     getInitialState() {
         return {
+            isDeleteContractFlag: false, // 是否删除合同，默认false
             formData: JSON.parse(JSON.stringify(this.props.contract)),
+            isLoading: false,
+            errMsg: '', // 删除错误的信息提示
         };
     },
     componentWillReceiveProps(nextProps) {
-        if (this.props.customerId !== nextProps.customerId) {
+        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
             this.setState({
                 formData: JSON.parse(JSON.stringify(nextProps.contract)),
             });
@@ -27,6 +35,41 @@ const ContractItem = React.createClass({
             Trace.traceEvent(event, '点击收起详情');
         }
         this.setState({formData});
+    },
+    cancelDeleteContract(event) {
+        Trace.traceEvent(event, '点击取消删除合同');
+        this.setState({
+            isDeleteContractFlag: false,
+            errMsg: ''
+        });
+    },
+    // 删除合同
+    deleteContract(contract, event) {
+        Trace.traceEvent(event, '点击确认删除合同');
+        this.setState({isLoading: true});
+        ContractAjax.deletePendingContract(contract.id).then( (resData) => {
+            if (resData && resData.code === 0) {
+                message.success(Intl.get('crm.138', '删除成功'));
+                this.state.errMsg = '';
+                this.state.isLoading = false;
+                this.state.isDeleteContractFlag = false;
+                ContractAction.deleteContact(contract);
+            } else {
+                this.state.errMsg = Intl.get('crm.139', '删除失败');
+            }
+            this.setState(this.state);
+        }, (errMsg) => {
+            this.setState({
+                isLoading: false,
+                errMsg: errMsg || IIntl.get('crm.139', '删除失败')
+            });
+        });
+    },
+    showDeleteContractConfirm(event) {
+        Trace.traceEvent(event, '点击删除按钮');
+        this.setState({
+            isDeleteContractFlag: true
+        });
     },
     renderContractTitle() {
         const contract = this.state.formData;
@@ -54,6 +97,29 @@ const ContractItem = React.createClass({
                         <span className='contract-num'>{contract.num}</span>
                     </span>
                 )}
+                <span className="contract-item-buttons">
+                    {
+                        this.state.isLoading ? <Icon type="loading" /> : null
+                    }
+                    {
+                        this.state.isDeleteContractFlag ? (
+                            <span className="item-delete-buttons">
+                                <Button className="item-delete-cancel delete-button-style"
+                                    onClick={this.cancelDeleteContract}>
+                                    {Intl.get('common.cancel', '取消')}
+                                </Button>
+                                <Button className="item-delete-confirm delete-button-style"
+                                    onClick={this.deleteContract.bind(this, contract)}>
+                                    {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                </Button>
+                            </span>) : (
+                            hasPrivilege('OPLATE_CONTRACT_DELETE_UNCHECK') && contract.stage === '待审' ? (
+                                <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
+                                    onClick={this.showDeleteContractConfirm}/>
+                            ) : null
+                        )
+                    }
+                </span>
                 <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
             </div>
         );
@@ -98,7 +164,7 @@ const ContractItem = React.createClass({
     getProductColumns() {
         return [
             {
-                title: Intl.get('common.app', '应用'),
+                title: Intl.get('contract.175', '产品名称'),
                 dataIndex: 'name',
                 key: 'name',
                 width: '50%',
@@ -107,7 +173,7 @@ const ContractItem = React.createClass({
                 }
             },
             {
-                title: Intl.get('contract.171', '用户个数'),
+                title: Intl.get('contract.176', '账号数量'),
                 dataIndex: 'count',
                 width: '20%',
                 key: 'count'
@@ -141,10 +207,6 @@ const ContractItem = React.createClass({
         return (
             <div className="contract-item">
                 <div className="contract-item-content">
-                    <span className="contract-label">{Intl.get('contract.37', '合同类型')}:</span>
-                    <span className="contract-value">{contract.category}</span>
-                </div>
-                <div className="contract-item-content">
                     <span className="contract-label">{Intl.get('contract.4', '甲方')}:</span>
                     <span className="contract-value">{contract.buyer}</span>
                 </div>
@@ -167,6 +229,10 @@ const ContractItem = React.createClass({
                 <div className="contract-item-content">
                     <span className="contract-label">{Intl.get('contract.109', '毛利')}:</span>
                     <span className="contract-value">{this.formatValues(contract.gross_profit)}</span>
+                </div>
+                <div className="contract-item-content">
+                    <span className="contract-label">{Intl.get('contract.37', '合同类型')}:</span>
+                    <span className="contract-value">{contract.category}</span>
                 </div>
                 {
                     contract.isShowAllContractInfo ? (
@@ -191,11 +257,28 @@ const ContractItem = React.createClass({
             </div>
         );
     },
+    // 隐藏错误信息
+    hideErrorMsg() {
+        this.setState({
+            errMsg: ''
+        });
+    },
     renderContractBottom() {
         const contract = this.state.formData;
         const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : '';
         return (
             <div className="contract-bottom-wrap">
+                {
+                    this.state.errMsg ? (
+                        <AlertTimer
+                            time={3000}
+                            message={this.state.errMsg}
+                            type="error"
+                            showIcon
+                            onHide={this.hideErrorMsg}
+                        />
+                    ) : null
+                }
                 <ReactIntl.FormattedMessage
                     id="contract.169"
                     defaultMessage={'{uername}签订于{date}'}
@@ -208,12 +291,15 @@ const ContractItem = React.createClass({
         );
     },
     render(){
+        let containerClassName = classNames('contract-item-container', {
+            'item-delete-border': this.state.isDeleteContractFlag,
+        });
         return (
             <DetailCard
                 title={this.renderContractTitle()}
                 content={this.renderContractContent()}
                 bottom={this.renderContractBottom()}
-                className="contract-item-container"
+                className={containerClassName}
             />
         );
     }

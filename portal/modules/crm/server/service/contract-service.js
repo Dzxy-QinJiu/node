@@ -7,7 +7,9 @@ const restApis = {
     // 根据客户id获取合同信息
     getContractByCustomerId: '/rest/contract/v2/contract/range/:page_size/:sort_field/:order',
     // 添加/更新 合同的url
-    urlContract: '/rest/contract/v2/contract/:type'
+    urlContract: '/rest/contract/v2/contract/:type',
+    // 删除待审合同
+    deletePendingContract: '/rest/contract/v2/contract/physics/:id'
 };
 
 exports.getContractByCustomerId = (req, res) => {
@@ -45,4 +47,16 @@ exports.addContract = (req, res) => {
             req: req,
             res: res
         }, JSON.parse(req.body.rangParams));
+};
+
+// 删除待审合同
+exports.deletePendingContract = (req, res) => {
+    let url = restApis.deletePendingContract;
+    let params = req.params;
+    return restUtil.authRest.del(
+        {
+            url: url.replace(':id', params.id),
+            req: req,
+            res: res
+        }, null);
 };
