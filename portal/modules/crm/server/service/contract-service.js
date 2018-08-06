@@ -29,7 +29,7 @@ exports.getContractByCustomerId = (req, res) => {
                 if (data && data.list && data.list.length) {
                     list = contractDto.toRestObject(data.list);
                 }
-                eventEmitter.emit('success', {list: list, total: data.total});
+                eventEmitter.emit('success', {list: list, total: list.length});
             },
             error: (eventEmitter, errorObj) => {
                 eventEmitter.emit('error', errorObj.message);
