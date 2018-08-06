@@ -210,7 +210,6 @@ var CrmRightPanel = React.createClass({
                                         {this.state.activeKey === TAB_KEYS.CONTRACT_TAB ? (
                                             <Contract
                                                 curCustomer={this.state.curCustomer}
-                                                refreshCustomerList={this.props.refreshCustomerList}
                                             />
                                         ) : null}
                                     </TabPane>

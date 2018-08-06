@@ -242,11 +242,6 @@ const ContractItem = React.createClass({
         ContractAjax.editPendingContract({type: 'sell'}, contract).then( (resData) => {
             if (resData && resData.code === 0) {
                 if (_.isFunction(successFunc)) successFunc();
-                if (_.has(saveObj, 'customer_name')) {
-                    setTimeout(() => {
-                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(this.props.customerId);
-                    }, 1000);
-                }
             } else {
                 if (_.isFunction(errorFunc)) {
                     errorFunc(Intl.get('common.save.failed', '保存失败'));
