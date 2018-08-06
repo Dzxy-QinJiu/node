@@ -58,7 +58,8 @@ var UserInfoLog = React.createClass({
             listenScrollBottom: this.props.listenScrollBottom,
             handleScrollBottom: this.props.handleScrollBottom,
             loading: isLoading,
-            showNoMoreDataTip: this.isShowNoMoreDataTips()
+            showNoMoreDataTip: this.isShowNoMoreDataTips(),
+            noMoreDataText: Intl.get('noMoreTip.log', '没有更多日志了')
         };
         const tableHeight = this.props.height - tableHeadHeight;
         return (

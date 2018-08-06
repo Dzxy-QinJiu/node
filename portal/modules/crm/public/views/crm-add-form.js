@@ -1,6 +1,6 @@
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
-import { regex } from 'ant-utils';
+import {regex} from 'ant-utils';
 const nameRegex = regex.customerNameRegex;
 import {Icon, Form, Input, Select, message}from 'antd';
 import { AntcAreaSelection } from 'antc';
@@ -45,6 +45,9 @@ var CRMAddForm = React.createClass({
             province: '',
             city: '',
             county: '',
+            province_code: '',
+            city_code: '',
+            county_code: '',
             address: '',//详细地址
             administrative_level: '',//行政区划
             remarks: '',//备注
@@ -106,11 +109,13 @@ var CRMAddForm = React.createClass({
     },
 
     //更新地址
-    updateLocation: function(address) {
-        var location = address.split('/');
-        this.state.formData.province = location[0] || '';
-        this.state.formData.city = location[1] || '';
-        this.state.formData.county = location[2] || '';
+    updateLocation: function(addressObj) {
+        this.state.formData.province = addressObj.provName || '';
+        this.state.formData.city = addressObj.cityName || '';
+        this.state.formData.county = addressObj.countyName || '';
+        this.state.formData.province_code = addressObj.provCode || '';
+        this.state.formData.city_code = addressObj.cityCode || '';
+        this.state.formData.county_code = addressObj.countyCode || '';
         Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item'), '选择地址');
     },
 
@@ -135,9 +140,9 @@ var CRMAddForm = React.createClass({
                     this.state.formData.contacts0_phone = values[PHONE_INPUT_ID].replace(/-/g, '');
                     //导入客户前先校验，是不是超过了本人的客户上限
                     let member_id = userData.getUserData().user_id;
-                    CrmAction.getCustomerLimit({member_id: member_id,num: 1}, (result) => {
-                        if (_.isNumber(result)){
-                            if (result === 0){
+                    CrmAction.getCustomerLimit({member_id: member_id, num: 1}, (result) => {
+                        if (_.isNumber(result)) {
+                            if (result === 0) {
                                 //可以添加
                                 this.addCustomer();
                             }else if(result > 0){
@@ -161,6 +166,19 @@ var CRMAddForm = React.createClass({
         var formData = JSON.parse(JSON.stringify(this.state.formData));
         formData.name = $.trim(formData.name);
         formData.contacts0_phone = $.trim(formData.contacts0_phone);
+        var PropsFormData = this.props.formData;
+        if (this.props.isAssociateClue && PropsFormData){
+            //添加客户时，新创建的客户要关联该线索
+            //线索id
+            formData.customer_clue_id = PropsFormData.id;
+            //线索和客户关联的时间
+            formData.customer_clue_relation_time = moment().valueOf();
+            //线索创建时间
+            formData.customer_clue_start_time = PropsFormData.start_time;
+            //添加客户时，新创建的客户要关联注册的用户
+            formData.app_user_ids = PropsFormData.app_user_ids;
+        }
+
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData);
         CrmAction.addCustomer(formData, result => {
@@ -204,6 +222,9 @@ var CRMAddForm = React.createClass({
             this.state.formData.province = result.pname;
             this.state.formData.city = result.cityname;
             this.state.formData.county = result.adname;
+            this.state.formData.province_code = result.pcode;
+            this.state.formData.city_code = result.citycode;
+            this.state.formData.county_code = result.adcode;
             this.state.formData.contacts0_phone = result.tel;
 
             this.setState(this.state);
@@ -274,7 +295,7 @@ var CRMAddForm = React.createClass({
                             {Intl.get('crm.68', '相似的客户还有')}:
                             {list.map(customer => {
                                 return (
-                                    <div>
+                                    <div key={customer.user_id}>
                                         {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)"
                                                 onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
@@ -373,7 +394,7 @@ var CRMAddForm = React.createClass({
                 <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加客户面板"/>
                 <div className="add-form-wrap">
                     <GeminiScrollbar>
-                        <Form horizontal className="crm-add-form">
+                        <Form horizontal className="crm-add-form" id="crm-add-form">
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 <FormItem
                                     label={Intl.get('crm.4', '客户名称')}
@@ -418,6 +439,8 @@ var CRMAddForm = React.createClass({
                                                 onSelect={(e) => {
                                                     this.handleSelect(e);
                                                 }}
+                                                getPopupContainer={() => document.getElementById('crm-add-form')}
+
                                             >
                                                 {industryOptions}
                                             </Select>
@@ -432,14 +455,16 @@ var CRMAddForm = React.createClass({
                                         name="administrative_level"
                                         onChange={this.setField.bind(this, 'administrative_level')}
                                         value={formData.administrative_level}
+                                        getPopupContainer={() => document.getElementById('crm-add-form')}
                                     >
                                         {this.getAdministrativeLevelOptions()}
                                     </Select>
                                 </FormItem >
-                                <AntcAreaSelection labelCol="6" wrapperCol="18" width="420" label={Intl.get('crm.96', '地域')}
+                                <AntcAreaSelection labelCol="6" wrapperCol="18" width="420"
+                                    label={Intl.get('crm.96', '地域')}
                                     placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                    prov={formData.province} city={formData.city}
-                                    county={formData.county} updateLocation={this.updateLocation}/>
+                                    provName={formData.province} cityName={formData.city}
+                                    countyName={formData.county} updateLocation={this.updateLocation}/>
                                 <FormItem
                                     label={Intl.get('realm.address', '地址')}
                                     labelCol={{span: 6}}
@@ -500,7 +525,8 @@ var CRMAddForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('contacts0_position')}
                                     help={status.contacts0_position.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
                                 >
-                                    <Validator rules={[{required: false, min: 1, message: Intl.get('crm.92', '请输入联系人职位')}]}>
+                                    <Validator
+                                        rules={[{required: false, min: 1, message: Intl.get('crm.92', '请输入联系人职位')}]}>
                                         <Input name="contacts0_position" placeholder={Intl.get('crm.92', '请输入联系人职位')}
                                             value={formData.contacts0_position}
                                             onChange={this.setField.bind(this, 'contacts0_position')}
@@ -516,11 +542,13 @@ var CRMAddForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('contacts0_role')}
                                     help={status.contacts0_role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
                                 >
-                                    <Validator rules={[{required: true, min: 1, message: Intl.get('crm.93', '请输入联系人角色')}]}>
+                                    <Validator
+                                        rules={[{required: true, min: 1, message: Intl.get('crm.93', '请输入联系人角色')}]}>
                                         <Select name="contacts0_role" placeholder={Intl.get('crm.94', '请输入角色')}
                                             value={this.state.formData.contacts0_role}
                                             onChange={this.setField.bind(this, 'contacts0_role')}
                                             onSelect={this.handleRoleSelect}
+                                            getPopupContainer={() => document.getElementById('crm-add-form')}
                                         >
                                             {roleOptions}
                                         </Select>

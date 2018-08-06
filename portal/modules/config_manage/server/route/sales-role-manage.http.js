@@ -50,6 +50,15 @@ module.exports = {
         'privileges': [
             'TEAM_ROLE_MANAGE'
         ]
+    },{
+        'method': 'delete',
+        'path': '/rest/sales/role/reset/:salesUserId',
+        'handler': 'resetSalesRole',
+        'passport': {
+            'needLogin': false
+        }, 'privileges': [
+            'MEMBER_TEAM_ROLE_MANAGE'
+        ]
     },{//修改销售的角色
         'method': 'post',
         'path': '/rest/sales/role/change',

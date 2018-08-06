@@ -183,7 +183,17 @@ CrmStore.prototype.editBasicSuccess = function(newBasic) {
 CrmStore.prototype.updateCustomerDefContact = function(contact) {
     if (contact && contact.customer_id) {
         let updateCustomer = _.find(this.curCustomers, customer => customer.id === contact.customer_id);
-        updateCustomer.contacts = [contact];
+        //删除默认联系人
+        if(contact.isDelDefaultContact){
+            //删掉列表中默认联系人相关的信息
+            delete updateCustomer.contact;//删除列表展示时的默认联系人姓名
+            delete updateCustomer.contact_way;//删除列表展示时的默认联系人的电话
+            delete updateCustomer.contacts;//删除后端返回的联系人列表，只有默认联系人一个
+            delete updateCustomer.contact_name;//删除后端返回的默认联系人姓名
+            delete updateCustomer.phones;//删除后端返回的默认联系人电话
+        }else{
+            updateCustomer.contacts = [contact];
+        }
     }
 };
 //获取过滤条件中的销售阶段
@@ -481,7 +491,10 @@ CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCus
     var {
         province,
         city,
-        county
+        county,
+        province_code,
+        city_code,
+        county_code
     } = taskParams;
     //解析tasks
     var {
@@ -509,6 +522,9 @@ CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCus
         customerInfo.province = province;
         customerInfo.city = city;
         customerInfo.county = county;
+        customerInfo.province_code = province_code;
+        customerInfo.city_code = city_code;
+        customerInfo.county_code = county_code;
     });
 };
 CrmStore.prototype.setPageNum = function(pageNum) {

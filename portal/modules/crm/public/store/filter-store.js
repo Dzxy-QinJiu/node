@@ -158,4 +158,8 @@ FilterStore.prototype.hidePanel = function() {
     this.isPanelShow = false;
 };
 
+FilterStore.prototype.setCondition = function(conditionObj) {
+    this.condition = $.extend({}, this.condition, conditionObj);
+};
+
 module.exports = alt.createStore(FilterStore, 'FilterStore');

@@ -8,7 +8,6 @@ var url = require('url');
 var Popover = require('antd').Popover;
 var classNames = require('classnames');
 var insertStyle = require('../insert-style');
-var Icon = require('antd').Icon;
 var React = require('react');
 var userInfoEmitter = require('../../public/sources/utils/emitters').userInfoEmitter;
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
@@ -16,7 +15,6 @@ var _ = require('lodash');
 var UnreadMixin = require('./mixins/unread');
 var websiteConfig = require('../../lib/utils/websiteConfig');
 var setWebsiteConfigModuleRecord = websiteConfig.setWebsiteConfigModuleRecord;
-var getLocalWebsiteConfigModuleRecord = websiteConfig.getLocalWebsiteConfigModuleRecord;
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let history = require('../../public/sources/history');
 import ModalIntro from '../modal-intro';
@@ -81,6 +79,11 @@ const BackendConfigLinkList = [
         href: '/background_management/sales_team',
         key: 'sales_team',
         privilege: 'BGM_SALES_TEAM_LIST'
+    }, {
+        name: Intl.get('back.openApp', '开通应用'),
+        href: '/background_management/openApp',
+        key: 'open_app',
+        privilege: 'ROLEP_RIVILEGE_ROLE_CLIENT_LIST'
     }, {
         name: Intl.get('menu.config', '配置'),
         href: '/background_management/configaration',
@@ -275,8 +278,6 @@ var NavSidebar = React.createClass({
                 this.selectedIntroElement();
             }
         });
-        //重新渲染一次，需要使用高度
-        this.setState({});
     },
     getHasUnreadReply: function() {
         const APPLY_UNREAD_REPLY = 'apply_unread_reply';
@@ -414,17 +415,18 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
+    toggleNotificationPanel(event) {
+        event.stopPropagation();
+        this.props.toggleNotificationPanel();
+    },
     getNotificationBlock: function() {
         var notificationLinks = this.getLinkListByPrivilege(NotificationLinkList);
         if (!notificationLinks.length) {
             return null;
         }
         return (
-            <div className="notification">
-                <Link to={notificationLinks[0].href} activeClassName="active">
-                    <i className="iconfont icon-tongzhi" title={Intl.get('menu.system.notification', '系统消息')}>
-                    </i>
-                </Link>
+            <div className="notification" onClick={this.toggleNotificationPanel}>
+                <i className="iconfont icon-tongzhi" title={Intl.get('menu.system.notification', '系统消息')}></i>
             </div>
         );
     },
@@ -505,9 +507,9 @@ var NavSidebar = React.createClass({
         //侧边导航高度减少后，出现汉堡包按钮，汉堡包按钮的弹出框
         return (
             <ul className="ul-unstyled">
-                {NavSidebarLists.map(function(obj) {
+                {NavSidebarLists.map(function(obj, index) {
                     return (
-                        <li>
+                        <li key={index}>
                             <Link to={`/${obj.routePath}`} activeClassName="active">
                                 {obj.name}
                             </Link>

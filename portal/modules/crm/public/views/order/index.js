@@ -15,7 +15,7 @@ import ApplyOpenAppPanel from 'MOD_DIR/app_user_manage/public/views/v2/apply-use
 import CrmUserApplyForm from '../users/crm-user-apply-form';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import classNames from 'classnames';
-import NoDataTip from '../components/no-data-tip';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 //高度常量
 const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -141,11 +141,11 @@ const OrderIndex = React.createClass({
         let appList = userObj.apps;
         let userId = userObj.user ? userObj.user.user_id : '';
         if (_.isArray(appList) && appList.length) {
-            return appList.map((app) => {
+            return appList.map((app,index) => {
                 let appName = app ? app.app_name || '' : '';
                 let overDraftCls = classNames('user-app-over-draft', {'user-app-stopped-status': app.is_disabled === 'true'});
                 return (
-                    <Checkbox checked={app.checked} onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
+                    <Checkbox key={index} checked={app.checked} onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
                         {app.app_logo ?
                             (<img className="crm-user-app-logo" src={app.app_logo || ''} alt={appName}/>)
                             : (<span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>)
@@ -227,13 +227,19 @@ const OrderIndex = React.createClass({
         return (
             <div className="order-container" data-tracename="订单页面">
                 {this.state.isAddFormShow ? null : (<div className="order-top-block">
-                    <span className="total-tip">
-                        <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
-                            values={{'n': orderListLength + ''}}/>
+                    <span className="total-tip crm-detail-total-tip">
+                        {this.state.orderListLoading ? null : orderListLength ? (
+                            <ReactIntl.FormattedMessage
+                                id="sales.frontpage.total.list"
+                                defaultMessage={'共{n}条'}
+                                values={{'n': orderListLength + ''}}/>) :
+                            Intl.get('crm.no.order.tip', '该客户还没有添加过订单')}
                     </span>
                     {this.props.isMerge ? null : (
-                        <span className="iconfont icon-add" title={Intl.get('crm.161', '添加订单')}
-                            onClick={this.showForm.bind(this, '')}/>
+                        <Button className='crm-detail-add-btn'
+                            onClick={this.showForm.bind(this, '')}>
+                            {Intl.get('crm.161', '添加订单')}
+                        </Button>
                     )}
                 </div>)
                 }
@@ -248,7 +254,7 @@ const OrderIndex = React.createClass({
                                 refreshCustomerList={_this.props.refreshCustomerList}
                                 updateMergeCustomerOrder={_this.props.updateMergeCustomerOrder}/>) : null}
                         {this.state.orderListLoading ? (
-                            <Spinner />) : _.isArray(this.state.orderList) && this.state.orderList.length ? (this.state.orderList.map(function(order, i) {
+                            <Spinner />) : orderListLength ? (this.state.orderList.map(function(order, i) {
                             return (
                                 order.isEdit ?
                                     (<OrderForm key={i}
@@ -275,7 +281,7 @@ const OrderIndex = React.createClass({
                                         onChange={_this.onChange}
                                         order={order}/>)
                             );
-                        })) : <NoDataTip tipContent={Intl.get('common.no.more.order', '没有更多订单')}/>
+                        })) : <NoDataIconTip tipContent={Intl.get('common.no.more.order', '暂无订单')}/>
                         }
                     </GeminiScrollbar>
                 </div>

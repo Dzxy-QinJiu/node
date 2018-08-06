@@ -4,13 +4,10 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import TagCard from 'CMP_DIR/detail-card/tag-card';
 import SalesTeamCard from './basic_info/sales-team-card';
 import {isClueTag, isTurnOutTag, isHasCallBackTag} from '../utils/crm-util';
-import classNames from 'classnames';
 var basicOverviewStore = require('../store/basic-overview-store');
 var basicOverviewAction = require('../action/basic-overview-actions');
 var SalesTeamStore = require('../../../sales_team/public/store/sales-team-store');
-var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
-var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
-import {Tag, Spin, message} from 'antd';
+import {message, Button} from 'antd';
 var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
@@ -24,26 +21,77 @@ import CustomerRecord from './customer_record';
 import ScheduleItem from './schedule/schedule-item';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import CustomerRecordStore from '../store/customer-record-store';
+import ApplyUserForm from './apply-user-form';
 
 var BasicOverview = React.createClass({
     getInitialState: function() {
+        let customerRecordState = CustomerRecordStore.getState();
         return {
             ...basicOverviewStore.getState(),
             salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
             showDetailFlag: false,//控制客户详情展示隐藏的标识
-            recommendTags: []//推荐标签
+            recommendTags: [],//推荐标签
+            callNumber: this.props.callNumber || '', // 座机号
+            getCallNumberError: '',
+            customerRecordLoading: customerRecordState.customerRecordLoading,
+            customerRecord: customerRecordState.customerRecord,
+            appList: [],
+            applyFormShowFlag: false
         };
     },
     onChange: function() {
         this.setState({...basicOverviewStore.getState()});
     },
+    onRecordStoreChange: function() {
+        let customerRecordState = CustomerRecordStore.getState();
+        this.setState({
+            customerRecordLoading: customerRecordState.customerRecordLoading,
+            customerRecord: customerRecordState.customerRecord
+        });
+    },
+    // 获取拨打电话的座席号
+    getUserPhoneNumber: function() {
+        commonDataUtil.getUserPhoneNumber(callNumberInfo => {
+            if (callNumberInfo) {
+                if (callNumberInfo.callNumber) {
+                    this.setState({
+                        callNumber: callNumberInfo.callNumber,
+                        getCallNumberError: ''
+                    });
+                    //有坐席号，展示未处理的电联的联系计划
+                    this.getNotCompletedScheduleList(this.props.curCustomer);
+                } else if (callNumberInfo.errMsg) {
+                    this.setState({
+                        callNumber: '',
+                        getCallNumberError: callNumberInfo.errMsg
+                    });
+                }
+            } else {
+                this.setState({
+                    callNumber: '',
+                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
+                });
+            }
+        });
+    },
     componentDidMount: function() {
         basicOverviewStore.listen(this.onChange);
+        CustomerRecordStore.listen(this.onRecordStoreChange);
+        //  获取拨打电话的座席号
+        if (this.state.callNumber === '') {
+            this.getUserPhoneNumber();
+        }
         basicOverviewAction.getBasicData(this.props.curCustomer);
         this.getRecommendTags();
         setTimeout(() => {
             this.getCrmUserList(this.props.curCustomer);
-            this.getNotCompletedScheduleList(this.props.curCustomer);
+        });
+    },
+    getAppList: function() {
+        commonDataUtil.getAppList(appList => {
+            this.setState({appList: appList});
         });
     },
     //获取推荐标签列表
@@ -64,11 +112,16 @@ var BasicOverview = React.createClass({
             if (appUserLength) {
                 basicOverviewAction.getCrmUserList({
                     customer_id: curCustomer.id,
-                    page_num: 1,
+                    id: '',
                     page_size: appUserLength
                 });
             } else {
                 basicOverviewAction.setCrmUserList([]);
+                //销售及销售主管才有用户申请
+                if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                    //该客户没有用户时需要引导申请，申请用户时需要应用列表
+                    this.getAppList();
+                }
             }
         }
     },
@@ -91,12 +144,16 @@ var BasicOverview = React.createClass({
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
             setTimeout(() => {
                 this.getCrmUserList(nextProps.curCustomer);
-                this.getNotCompletedScheduleList(nextProps.curCustomer);
+                if (this.state.callNumber) {
+                    //有坐席号，需要展示未处理的电联的联系计划
+                    this.getNotCompletedScheduleList(nextProps.curCustomer);
+                }
             });
         }
     },
     componentWillUnmount: function() {
         basicOverviewStore.unlisten(this.onChange);
+        CustomerRecordStore.unlisten(this.onRecordStoreChange);
     },
 
     //展示按客户搜索到的用户列表
@@ -139,7 +196,7 @@ var BasicOverview = React.createClass({
         }
     },
     getAdministrativeLevel: function(levelId) {
-        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
+        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
     },
     //保存修改后的标签
@@ -214,7 +271,7 @@ var BasicOverview = React.createClass({
             //排序，优先展示短时间到期的
             expireTrialUsers.sort((obj1, obj2) => obj1.overDraftDays - obj2.overDraftDays);
             let tip = (
-                <div className="app-expire-tip">
+                <div className="overview-user-tip">
                     <span className="iconfont icon-warn-icon"/>
                     <span className="expire-tip-content">
                         {Intl.get('crm.overview.expire.tip', '有应用{days}试用到期', {days: expireTrialUsers[0].overDraftTimeStr})}
@@ -227,12 +284,60 @@ var BasicOverview = React.createClass({
             return null;
         }
     },
+    //渲染申请用户的提示\面板
+    renderApplyUserBlock: function() {
+        //只有销售和销售主管才会申请
+        if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+            if (this.state.applyFormShowFlag) {
+                return (
+                    <ApplyUserForm
+                        applyFrom="crmUserList"
+                        apps={[]}
+                        appList={this.state.appList}
+                        users={[]}
+                        customerName={this.props.curCustomer.name}
+                        customerId={this.props.curCustomer.id}
+                        cancelApply={this.toggleApplyForm.bind(this)}
+                    />);
+            } else {
+                let tip = (
+                    <div className="overview-user-tip">
+                        <span className="iconfont icon-warn-icon"/>
+                        <span className="no-user-tip-content">
+                            {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
+                        </span>
+                        <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
+                            {Intl.get('crm.apply.user.new', '申请新用户')}
+                        </Button>
+                    </div>);
+                return (<DetailCard content={tip} className="apply-user-tip-contianer"/>);
+            }
+        }
+        return null;
+    },
+    toggleApplyForm: function() {
+        let applyFormShowFlag = !this.state.applyFormShowFlag;
+        this.setState({applyFormShowFlag: applyFormShowFlag});
+    },
     turnToUserList(){
         if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey('4');
     },
     refreshSrollbar(){
         //渲染完跟进记录列表后需要重新render来刷新滚动条（因为跟进记录渲染完成后不会走概览页的render，所以滚动条的高度计算还是一开始没有跟进记录时的界面高度）
         this.setState(this.state);
+    },
+    renderUserApplyForm() {
+        return (
+            <ApplyUserForm
+                applyFrom="crmUserList"
+                apps={[]}
+                appList={this.state.appList}
+                users={[]}
+                customerName={this.props.curCustomer.name}
+                customerId={this.props.curCustomer.id}
+                cancelApply={this.closeRightPanel.bind(this)}
+            />
+        );
     },
     renderCustomerRcord: function() {
         return <CustomerRecord
@@ -242,10 +347,12 @@ var BasicOverview = React.createClass({
             refreshCustomerList={this.props.refreshCustomerList}
             refreshSrollbar={this.refreshSrollbar}
             changeActiveKey={this.props.changeActiveKey}
+            callNumber={this.state.callNumber}
+            getCallNumberError={this.state.getCallNumberError}
         />;
     },
     toggleScheduleContact(item, flag){
-        let curSchedule = _.find(this.state.scheduleList, schedule => schedule.id == item.id);
+        let curSchedule = _.find(this.state.scheduleList, schedule => schedule.id === item.id);
         curSchedule.isShowContactPhone = flag;
         this.setState({scheduleList: this.state.scheduleList});
     },
@@ -254,14 +361,14 @@ var BasicOverview = React.createClass({
     handleItemStatus: function(item) {
         const user_id = userData.getUserData().user_id;
         //只能修改自己创建的日程的状态
-        if (user_id != item.member_id) {
+        if (user_id !== item.member_id) {
             return;
         }
         const reqData = {
             id: item.id,
-            status: item.status == 'false' ? 'handle' : 'false',
+            status: item.status === 'false' ? 'handle' : 'false',
         };
-        var status = item.status == 'false' ? '完成' : '未完成';
+        var status = item.status === 'false' ? '完成' : '未完成';
         Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
         basicOverviewAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
@@ -276,24 +383,30 @@ var BasicOverview = React.createClass({
         });
     },
     renderScheduleItem: function(item) {
-        return (<ScheduleItem item={item}
-            hideDelete={true}
-            hasSplitLine={false}
-            isMerge={this.props.isMerge}
-            toggleScheduleContact={this.toggleScheduleContact}
-            handleItemStatus={this.handleItemStatus}
-        />);
+        return (
+            <ScheduleItem
+                item={item}
+                hideDelete={true}
+                hasSplitLine={false}
+                isMerge={this.props.isMerge}
+                toggleScheduleContact={this.toggleScheduleContact}
+                handleItemStatus={this.handleItemStatus}
+                callNumber={this.state.callNumber}
+                getCallNumberError={this.state.getCallNumberError}
+            />);
     },
     renderUnComplateScheduleList: function() {
         if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return _.map(this.state.scheduleList, item => {
+                let title = item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : '';
                 return (
-                    <DetailCard title={ item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : ''}
+                    <DetailCard title={title + ' ' + Intl.get('crm.right.schedule', '联系计划')}
                         content={this.renderScheduleItem(item)}/>);
             });
         }
         return null;
     },
+
     render: function() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
@@ -301,10 +414,11 @@ var BasicOverview = React.createClass({
         if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
+        var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {this.renderExpireTip()}
+                    {_.get(basicData, 'app_user_ids[0]') ? this.renderExpireTip() : this.renderApplyUserBlock()}
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
@@ -335,7 +449,10 @@ var BasicOverview = React.createClass({
                         saveTags={this.saveEditTags}
                     />
                     {this.renderUnComplateScheduleList()}
-                    <DetailCard title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
+                    <DetailCard
+                        title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
+                        titleBottomBorderNone={noRecordData}
+                        titleDescr={noRecordData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : ''}
                         content={this.renderCustomerRcord()}
                     />
                 </div>

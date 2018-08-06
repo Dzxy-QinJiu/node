@@ -58,11 +58,11 @@ const ScheduleManagement = React.createClass({
     //根据不同视图对日程数据进行处理
     handleScheduleData: function(events,viewType) {
         var _this = this;
-        if (viewType == 'day'){
+        if (viewType === 'day'){
             this.setState({
                 dayLists: events//日视图的数据
             });
-        }else if (viewType == 'week') {
+        }else if (viewType === 'week') {
             var weekScheduleLists = {
                 'Mon': [],'Tus': [],'Wed': [],'Thur': [],'Fri': [],'Sat': [],'Sun': []
             };
@@ -70,22 +70,22 @@ const ScheduleManagement = React.createClass({
                 //对数据进行处理
                 var Week = moment(even.start_time).format('dddd');
                 switch (Week){
-                case Intl.get('schedule.user.time.monday', '星期一'): weekScheduleLists.Mon.push(even);
-                    break;
-                case Intl.get('schedule.user.time.tuesday', '星期二'): weekScheduleLists.Tus.push(even);
-                    break;
-                case Intl.get('schedule.user.time.wednesday', '星期三'): weekScheduleLists.Wed.push(even);
-                    break;
-                case Intl.get('schedule.user.time.thursday', '星期四'): weekScheduleLists.Thur.push(even);
-                    break;
-                case Intl.get('schedule.user.time.friday', '星期五'): weekScheduleLists.Fri.push(even);
-                    break;
-                case Intl.get('schedule.user.time.saturday', '星期六'): weekScheduleLists.Sat.push(even);
-                    break;
-                case Intl.get('schedule.user.time.sunday', '星期日'): weekScheduleLists.Sun.push(even);
-                    break;
-                default:
-                    break;
+                    case Intl.get('schedule.user.time.monday', '星期一'): weekScheduleLists.Mon.push(even);
+                        break;
+                    case Intl.get('schedule.user.time.tuesday', '星期二'): weekScheduleLists.Tus.push(even);
+                        break;
+                    case Intl.get('schedule.user.time.wednesday', '星期三'): weekScheduleLists.Wed.push(even);
+                        break;
+                    case Intl.get('schedule.user.time.thursday', '星期四'): weekScheduleLists.Thur.push(even);
+                        break;
+                    case Intl.get('schedule.user.time.friday', '星期五'): weekScheduleLists.Fri.push(even);
+                        break;
+                    case Intl.get('schedule.user.time.saturday', '星期六'): weekScheduleLists.Sat.push(even);
+                        break;
+                    case Intl.get('schedule.user.time.sunday', '星期日'): weekScheduleLists.Sun.push(even);
+                        break;
+                    default:
+                        break;
                 }
             });
             this.setState({
@@ -154,7 +154,7 @@ const ScheduleManagement = React.createClass({
             let curSchedule = list[i];
             curSchedule.title = curSchedule.topic;
             //之前新建日程的时候，把全天的结束时间设置为23:59:59,所以比0点少1s
-            if (curSchedule.end_time - curSchedule.start_time == LESSONESECOND) {
+            if (curSchedule.end_time - curSchedule.start_time === LESSONESECOND) {
                 curSchedule.allDay = true;
             }
             //The start date/time of the event. Must resolve to a JavaScript Date object.
@@ -167,11 +167,11 @@ const ScheduleManagement = React.createClass({
         }
         //状态是已完成的日程
         var hasFinishedList = _.filter(list, (item) => {
-            return item.status == 'handle';
+            return item.status === 'handle';
         });
         //未完成的日程
         var notFinishedList = _.filter(list, (item) => {
-            return item.status == 'false';
+            return item.status === 'false';
         });
         //不是全天日程
         var notFulldaylist = _.filter(notFinishedList, (item) => {
@@ -206,7 +206,7 @@ const ScheduleManagement = React.createClass({
     //查看客户的详情
     showCustomerDetail: function(customer_id, event) {
         //如果点击到更改状态的按钮上，就不用展示客户详情了
-        if (event && event.target.className == 'ant-btn ant-btn-primary') {
+        if (event && event.target.className === 'ant-btn ant-btn-primary') {
             return;
         }
         this.setState({
@@ -233,7 +233,7 @@ const ScheduleManagement = React.createClass({
     ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
     },
     closeCustomerUserListPanel() {
@@ -278,18 +278,18 @@ const ScheduleManagement = React.createClass({
             end_time: ''
         };
         switch (view) {
-        case 'day':
-            dateObj.start_time = moment(date).startOf('day').valueOf();
-            dateObj.end_time = moment(date).endOf('day').valueOf();
-            break;
-        case 'week':
-            dateObj.start_time = moment(date).startOf('week').valueOf();
-            dateObj.end_time = moment(date).endOf('week').valueOf();
-            break;
-        case 'month':
-            dateObj.start_time = moment(date).startOf('month').valueOf();
-            dateObj.end_time = moment(date).endOf('month').valueOf();
-            break;
+            case 'day':
+                dateObj.start_time = moment(date).startOf('day').valueOf();
+                dateObj.end_time = moment(date).endOf('day').valueOf();
+                break;
+            case 'week':
+                dateObj.start_time = moment(date).startOf('week').valueOf();
+                dateObj.end_time = moment(date).endOf('week').valueOf();
+                break;
+            case 'month':
+                dateObj.start_time = moment(date).startOf('month').valueOf();
+                dateObj.end_time = moment(date).endOf('month').valueOf();
+                break;
         }
         return dateObj;
     },
@@ -331,6 +331,8 @@ const ScheduleManagement = React.createClass({
             { label: <span><i className="iconfont icon-schedule-visit"></i>{Intl.get('common.visit', '拜访')}</span>, value: 'visit' },
             { label: <span><i className="iconfont icon-schedule-other"></i>{Intl.get('common.others', '其他')}</span>, value: 'other' },
         ];
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div data-tracename="日程管理界面" className="schedule-list-content">
                 <ExpireScheduleLists
@@ -380,9 +382,10 @@ const ScheduleManagement = React.createClass({
                 >
                     {this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            customer_name={customerOfCurUser.name}
+                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>

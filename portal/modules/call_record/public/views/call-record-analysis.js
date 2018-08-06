@@ -14,35 +14,44 @@ var TableUtil = require('CMP_DIR/antd-table-pagination');
 var TopNav = require('CMP_DIR/top-nav');
 import DatePicker from 'CMP_DIR/datepicker';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import TimeSeriesLinechart from './charts/call-analysis-trend';// 通话分析，趋势图
 import CallAnalysisAction from '../action/call-analysis-action';
 import CallAnalysisStore from '../store/call-analysis-store';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanelClose = rightPanelUtil.RightPanelClose;
-import RateBarChart from './charts/team-call-rate'; // 团队，114占比，柱状图
-import PieChart from './charts/saleman-call-rate'; // 个人， 114占比，饼图
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Trace from 'LIB_DIR/trace';
 import ScatterChart from 'CMP_DIR/chart/scatter';
-import { AntcTable, AntcCardContainer } from 'antc';
+import {AntcTable, AntcCardContainer} from 'antc';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {handleTableData} from 'CMP_DIR/analysis/export-data-util';
-const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
-import { MAP_PROVINCE } from 'LIB_DIR/consts';
+import {MAP_PROVINCE} from 'LIB_DIR/consts';
+import {AntcAnalysis} from 'antc';
+var hours = _.range(24);
+var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
+import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
+import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
-    if ( MAP_PROVINCE[obj.name]) {
+    if (MAP_PROVINCE[obj.name]) {
         name = Intl.get('oplate_bd_analysis_realm_zone.1', '省份');
     }
-    return [
-        name + '：' + obj.name,
-        Intl.get('oplate_bd_analysis_realm_industry.6', '个数') + '：' + (isNaN(obj.value) ? 0 : obj.value)
-    ].join('<br/>');
+    //todo 该处待修改
+    if (isNaN(obj.value) || obj.value === 0){
+        return [
+            Intl.get('oplate_bd_analysis_realm_industry.6', '个数') + '：' + 0
+        ].join('<br/>');
+    }else{
+        return [
+            name + '：' + obj.name,
+            Intl.get('oplate_bd_analysis_realm_industry.6', '个数') + '：' + (isNaN(obj.value) ? 0 : obj.value)
+        ].join('<br/>');
+    }
+
 }
 // 用于布局趋势图的宽度
 const LAYOUT_WIDTH = {
@@ -59,6 +68,12 @@ const LAYOUT_HEIGHT = {
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 75,
     BOTTOM_DISTANCE: 70
+};
+//图表的高度
+const CHART_LAYOUT_HEIGHT = {
+    INITIAL_HEIGHT: 350,
+    LARGER_HEIGHT: 400,
+    MAP_HEIGHT: 600
 };
 
 const LITERAL_CONSTANT = {
@@ -185,11 +200,11 @@ var CallRecordAnalyis = React.createClass({
     },
     setChartContainerHeight: function() {
         //如果选择全部团队或者团队选择的个数大于4个时，把容器的高度撑高
-        if ((this.state.secondSelectValue === LITERAL_CONSTANT.ALL && this.state.switchStatus) || (_.isArray(this.state.secondSelectValue) && this.state.secondSelectValue.length > 4)){
+        if ((this.state.secondSelectValue === LITERAL_CONSTANT.ALL && this.state.switchStatus) || (_.isArray(this.state.secondSelectValue) && this.state.secondSelectValue.length > 4)) {
             this.setState({
                 trendHeight: LAYOUT_HEIGHT.RESIZE_HEIGHT
             });
-        }else{
+        } else {
             this.setState({
                 trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT
             });
@@ -199,15 +214,15 @@ var CallRecordAnalyis = React.createClass({
     handleSwitchChange(checked){
         this.setState({
             switchStatus: checked
-        },() => {
-            if (checked){
+        }, () => {
+            if (checked) {
                 this.setChartContainerHeight();
             }
         });
-        if (checked){
+        if (checked) {
             var reqBody = this.getCallAnalysisBodyParamSeparately();
             this.getCallAnalysisTrendDataSeparately(reqBody);
-        }else{
+        } else {
             this.setState({
                 trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT
             });
@@ -224,8 +239,8 @@ var CallRecordAnalyis = React.createClass({
             if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
                 let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
                 params.sales_team_id = secondSelectTeamId.join(',');
-            }else{
-                params.sales_team_id = _.map(teamList,'id').join(',');
+            } else {
+                params.sales_team_id = _.map(teamList, 'id').join(',');
             }
         }
         return params;
@@ -409,12 +424,19 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
             width: 114,
-            dataIndex: isExport ? 'totalTime' : 'totalTimeFormated',
+            dataIndex: 'totalTime',
             key: 'total_time',
             sorter: function(a, b) {
                 return a.totalTime - b.totalTime;
             },
-            className: 'has-filter table-data-align-right'
+            className: 'has-filter table-data-align-right',
+            render: function(text, record, index){
+                return (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
+            }
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             width: 114,
@@ -427,12 +449,19 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get('sales.home.average.duration', '日均时长'),
             width: 114,
-            dataIndex: isExport ? 'averageTime' : 'averageTimeFormated',
+            dataIndex: 'averageTime',
             key: 'average_time',
             sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
             },
-            className: 'has-filter table-data-align-right'
+            className: 'has-filter table-data-align-right',
+            render: function(text, record, index){
+                return (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
+            }
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
             width: 114,
@@ -508,11 +537,18 @@ var CallRecordAnalyis = React.createClass({
                 title: Intl.get('call.record.average.call.duration', '人均时长'),
                 width: 114,
                 align: 'right',
-                dataIndex: isExport ? 'personAverageTime' : 'personAverageTimeFormated',
+                dataIndex: 'personAverageTime',
                 key: 'person_average_time',
                 sorter: function(a, b) {
                     return a.personAverageTime - b.personAverageTime;
                 },
+                render: function(text, record, index){
+                    return (
+                        <span>
+                            {TimeUtil.getFormatTime(text)}
+                        </span>
+                    );
+                }
             }, {
                 title: Intl.get('call.record.average.connected', '人均接通数'),
                 width: 114,
@@ -593,52 +629,35 @@ var CallRecordAnalyis = React.createClass({
 
     // 渲染通话数量和通话时长的趋势图
     renderCallTrendChart() {
-        if (this.state.callList.loading || this.state.eachTeamCallList.loading) {
-            return (
-                <Spinner />
-            );
-        }
-        let data = this.state.callList.count;
-        // 没有数据的提示
-        if (_.isArray(data) && !data.length) {
-            return (
-                <div className="alert-wrap">
-                    <Alert
-                        message={Intl.get('common.no.data', '暂无数据')}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
         return (
-            <div>
+            <div className="call-trend-container">
+                <div className="call-trend-chart">
+                    {this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
+                        <div>
+                            {
+                                this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
+                                    // 通话数量
+                                    this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true, CALL_RADIO_VALUES.COUNT) :
+                                    // 通话时长
+                                    this.renderCallChart(this.state.eachTeamCallList.list, this.durationTooltip, true, CALL_RADIO_VALUES.DURATION)
+                            }
+                        </div>
+                        : (<div>
+                            {
+                                this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
+                                    // 通话数量
+                                    this.renderCallChart(this.state.callList.count, this.countTooltip) :
+                                    // 通话时长
+                                    this.renderCallChart(this.state.callList.count, this.durationTooltip)
+                            }
+                        </div>)}
+                </div>
                 <div className="duration-count-radio clearfix">
                     <RadioGroup onChange={this.handleSelectRadio} value={this.state.selectRadioValue}>
                         <Radio value="count">{Intl.get('sales.home.call.cout', '通话数量')}</Radio>
                         <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
                     </RadioGroup>
                 </div>
-                {this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
-                    <div>
-                        {
-                            this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
-                                // 通话数量
-                                this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true,CALL_RADIO_VALUES.COUNT) :
-                                // 通话时长
-                                this.renderCallChart(this.state.eachTeamCallList.list, this.durationTooltip, true,CALL_RADIO_VALUES.DURATION)
-                        }
-                    </div>
-                    : (<div>
-                        {
-                            this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
-                            // 通话数量
-                                this.renderCallChart(this.state.callList.count, this.countTooltip) :
-                            // 通话时长
-                                this.renderCallChart(this.state.callList.duration, this.durationTooltip)
-                        }
-                    </div>)}
-
             </div>
         );
     },
@@ -657,59 +676,212 @@ var CallRecordAnalyis = React.createClass({
         }
     },
 
-    // 渲染通话时段(时长/数量)的统计
-    renderCallIntervalChart() {
-        if (this.state.callIntervalData.loading) {
-            return (
-                <Spinner />
-            );
-        }
-        let data = this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ? this.state.callIntervalData.countList : this.state.callIntervalData.timeList;
-        if (_.isArray(data) && data.length) {
-            return (this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ?
-                <ScatterChart list={data}
-                    title={Intl.get('call.record.count', '通话数量统计：')}
-                    dataName={Intl.get('sales.home.call.cout', '通话数量')}
-                /> :
-                <ScatterChart list={data}
-                    title={Intl.get('call.record.time', '通话时长统计：')}
-                    dataName={Intl.get('call.record.call.duration', '通话时长')}
-                    dataType="time"
-                />);
-        } else {
-            if (this.state.callIntervalData.errMsg) {//错误提示
-                return (
-                    <div className="alert-wrap">
-                        <Alert
-                            message={this.state.callIntervalData.errMsg}
-                            type="error"
-                            showIcon={true}
-                        />
-                    </div>
-                );
-            } else {
-                // 没有数据的提示
-                return (
-                    <div className="alert-wrap">
-                        <Alert
-                            message={Intl.get('common.no.data', '暂无数据')}
-                            type="info"
-                            showIcon={true}
-                        />
-                    </div>);
-            }
-        }
+    getCallCountAndRecordOptions: function(data, dataName, dataType) {
+        var options = {
+            tooltip: {
+                formatter: function(obj) {
+                    var weekdaysIndex = obj.seriesIndex;
+                    var hour = obj.value[0];
+                    var data = obj.value[1];
+                    if (dataType === 'time') {
+                        //时间格式的需要将秒数转成x小时x分x秒
+                        let timeObj = timeUtil.secondsToHourMinuteSecond(data);
+                        data = timeObj.timeDescr;
+                    }
+                    return `${days[weekdaysIndex]}${hour}${Intl.get('crm.75', '点')}
+                         <br/>
+                         ${dataName}：${data}`;
+                }
+            },
+            singleAxis: [],
+            title: [],
+        };
+        _.each(days, (label, idx) => {
+            options.title.push({
+                top: (idx + 0.5) * 100 / 10 + '%'
+            });
+            options.singleAxis.push({
+                axisLabel: {
+                    show: label === Intl.get('user.time.saturday', '周六') ? true : false,
+                },
+                top: (idx * 100 / 10 + 5) + '%',
+                height: (100 / 10 - 10) + '%'
+            });
+        });
+        return options;
     },
 
-    renderCallChart(data, charTips, isMutileLine, type) {
+    // 渲染通话时段(时长/数量)的统计
+    renderCallIntervalChart() {
+        var isCallCount = this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT;
+        let data = isCallCount ? this.state.callIntervalData.countList : this.state.callIntervalData.timeList;
+        let title = isCallCount ? Intl.get('sales.home.call.cout', '通话数量') : Intl.get('call.record.call.duration', '通话时长');
+        let dataType = isCallCount ? '' : 'time';
+        //todo 把通话时长数据中的time属性改成count，现在组件默认属性值是count还不支持自定义
+        if (!isCallCount) {
+            _.each(data, (item) => {
+                item.count = item.time;
+            });
+        }
+        var recordCharts = [{
+            title: Intl.get('call.record.interval', '通话时段统计'),
+            chartType: 'scatter',
+            data: data,
+            layout: {
+                sm: 24,
+            },
+            option: this.getCallCountAndRecordOptions(data, title, dataType),
+            yAxisLabels: days,
+            xAxisLabels: hours,
+            noExportCsv: true,
+            resultType: getResultType(this.state.callIntervalData.loading, this.state.callIntervalData.errMsg),
+            errMsgRender: () => {
+                return getErrorTipAndRetryFunction(this.state.callIntervalData.errMsg);
+            }
+        }];
         return (
-            <TimeSeriesLinechart
-                isMutileLine={isMutileLine}
-                lineType={type}
-                dataList={data}
-                getToolTip={charTips}
-                width={this.state.trendWidth}
-                height={this.state.trendHeight}
+            <AntcAnalysis
+                charts={recordCharts}
+                chartHeight={CHART_LAYOUT_HEIGHT.INITIAL_HEIGHT}
+            />
+        );
+    },
+    //近一个月的通话趋势的options
+    getCallTrendEchartOptions: function(dataList, charTips, isMutileLine, lineType) {
+        return {
+            tooltip: {
+                trigger: 'axis',
+                // 图表中的提示数据信息
+                formatter: (params) => {
+                    var timeText, count, teamArr;
+                    if (_.isArray(params)) {
+                        if (params.length === 1) {
+                            var params = params[0];
+                            timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
+                            count = params.data;
+                        } else if (params.length > 1) {
+                            timeText = [], count = [], teamArr = [];
+                            _.each(params, (paramsItem) => {
+                                timeText.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
+                                count.push(paramsItem.data || 0);
+                                teamArr.push(paramsItem.seriesName);
+                            });
+                        }
+                        return charTips(timeText, count, teamArr);
+                    }
+                }
+            },
+            legend: {
+                data: this.getCallTrendLegendData(dataList, isMutileLine)
+            },
+            grid: {
+                x: 50,
+                y: 40,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
+            },
+            xAxis: [
+                {
+                    splitLine: false,
+                    splitArea: false,
+                    axisLabel: {
+                        formatter: () => { // 不显示x轴数值
+                            return '';
+                        }
+                    },
+                    axisTick: { // x轴不显示刻度
+                        show: false
+                    },
+                    data: this.getCallTrendCategorys(dataList, isMutileLine, lineType),
+                }
+            ],
+            yAxis: [
+                {
+                    splitLine: false,
+                    splitArea: false,
+                    axisLabel: {
+                        formatter: () => { // 不显示y轴数值
+                            return '';
+                        }
+                    },
+                    axisTick: { // y轴不显示刻度
+                        show: false
+                    }
+                }
+            ],
+            series: this.getCallTrendDataSerise(dataList, isMutileLine, lineType)
+        };
+    },
+    getCallTrendCategorys: function(dataList, isMutileLine, lineType) {
+        var data = [];
+        var dataList = isMutileLine && dataList[0] ? dataList[0][lineType] : dataList;
+        _.each(dataList, (item) => {
+            data.push(new Date(item.timestamp));
+        });
+        return data;
+    },
+    getCallTrendLegendData: function(dataList, isMutileLine) {
+        var data = [];
+        if (isMutileLine) {
+            data = _.map(dataList, 'teamName');
+        }
+        return data;
+    },
+    getCallTrendDataSerise: function(dataList, isMutileLine, lineType) {
+        //共同的属性
+        var commonObj = {
+            data: [],
+            type: 'line',
+            symbolSize: 6
+        };
+        if (isMutileLine) {
+            var serise = [];
+            _.each(dataList, (dataItem) => {
+                var seriseItem = $.extend(true, {}, {name: dataItem.teamName}, commonObj);
+                _.each(dataItem[lineType], (item) => {
+                    seriseItem.data.push(item.count);
+                });
+                serise.push(seriseItem);
+            });
+            return serise;
+        } else {
+            var serise = [$.extend(true, {}, {
+                itemStyle: {
+                    normal: {
+                        color: '#4d96d1'
+                    }
+                }
+            }, commonObj)];
+            dataList.forEach((item) => {
+                serise[0].data.push(item.count);
+            });
+        }
+        return serise;
+    },
+    //近一个月的通话趋势
+    renderCallChart(dataList, charTips, isMutileLine, lineType) {
+        var isLoading = this.state.callList.loading || this.state.eachTeamCallList.loading;
+        var isError = this.state.callList.errMsg || this.state.eachTeamCallList.errMsg;
+        const charts = [{
+            title: Intl.get('call.record.trend.charts', ' 近一个月的通话趋势：'),
+            chartType: 'line',
+            data: dataList,
+            layout: {
+                sm: 24,
+            },
+            option: this.getCallTrendEchartOptions(dataList, charTips, isMutileLine, lineType),
+            noExportCsv: true,
+            resultType: getResultType(isLoading, isError),
+            errMsgRender: () => {
+                return getErrorTipAndRetryFunction(isError);
+            }
+        }];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                chartHeight={this.state.trendHeight}
             />
         );
     },
@@ -719,7 +891,7 @@ var CallRecordAnalyis = React.createClass({
             TOOLTIPDESCRIPTION.TIME + ' : ' + `${item}`,
             TOOLTIPDESCRIPTION.DURATION + ' : ' + `${time}`,
         ];
-        if (team){
+        if (team) {
             descriptionArr.push(TOOLTIPDESCRIPTION.TEAMNAME + ' :' + `${team}`);
         }
         return descriptionArr;
@@ -727,14 +899,14 @@ var CallRecordAnalyis = React.createClass({
 
     // 通话时长统计图的提示信息
     durationTooltip: function(time, sum, teamArr) {
-        if (_.isArray(teamArr)){
+        if (_.isArray(teamArr)) {
             var returnObj = _.map(time, (item, index) => {
                 let timeObj = TimeUtil.secondsToHourMinuteSecond(sum[index] || 0);
                 var desObj = this.getDurationDescription(item, timeObj.timeDescr, teamArr[index]);
                 return desObj.join(',');
             });
             return returnObj.join('<br />');
-        }else{
+        } else {
             let timeObj = TimeUtil.secondsToHourMinuteSecond(sum || 0);
             let desObj = this.getDurationDescription(time, timeObj.timeDescr);
             return desObj.join('<br />');
@@ -746,7 +918,7 @@ var CallRecordAnalyis = React.createClass({
             TOOLTIPDESCRIPTION.TIME + ' : ' + `${item}`,
             TOOLTIPDESCRIPTION.COUNT + ' : ' + `${sum}`,
         ];
-        if (team){
+        if (team) {
             countArr.push(TOOLTIPDESCRIPTION.TEAMNAME + ' : ' + `${team}`);
         }
         return countArr;
@@ -754,13 +926,13 @@ var CallRecordAnalyis = React.createClass({
 
     // 通话数量统计图的提示信息
     countTooltip: function(time, sum, teamArr) {
-        if (_.isArray(teamArr)){
-            var returnObj = _.map(time, (item,index) => {
+        if (_.isArray(teamArr)) {
+            var returnObj = _.map(time, (item, index) => {
                 var desObj = this.getCountDescription(item, sum[index], teamArr[index]);
                 return desObj.join(',');
             });
             return returnObj.join('<br />');
-        }else{
+        } else {
             var desObj = this.getCountDescription(time, sum);
             return desObj.join('<br />');
         }
@@ -802,25 +974,24 @@ var CallRecordAnalyis = React.createClass({
 
     // 通话率列表
     renderCallInfo() {
-        if (this.state.loading) {
-            return (
-                <div>
-                    <Spinner />
-                </div>
-            );
-        }
+        var callInfoCharts = [{
+            title: Intl.get('call.analysis.call.title', '通话信息'),
+            chartType: 'table',
+            layout: {
+                sm: 24,
+            },
+            resultType: this.state.loading ? 'loading' : 'suceess',
+            data: this.state.salesPhoneList,
+            option: {
+                pagination: false,
+                bordered: true,
+                columns: this.getPhoneListColumn()
+            }
+        }];
         return (
-            <AntcCardContainer
-                title={Intl.get('call.analysis.call.title', '通话信息')}
-                exportData={handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true))}
-                csvFileName="sales_phone_table.csv"
-            >
-                <AntcTable dataSource={this.state.salesPhoneList}
-                    columns={this.getPhoneListColumn()}
-                    pagination={false}
-                    bordered
-                />
-            </AntcCardContainer>
+            <AntcAnalysis
+                charts={callInfoCharts}
+            />
         );
     },
 
@@ -828,188 +999,321 @@ var CallRecordAnalyis = React.createClass({
      * titleObj={title:"通话时长",dataKey:"billsec"}
      */
     renderCallTopTen(dataObj, titleObj){
+        var callTopTenCharts = [{
+            title: titleObj.title + 'TOP10',
+            chartType: 'table',
+            resultType: dataObj.loading ? 'loading' : 'suceess',
+            data: dataObj.data,
+            layout: {
+                sm: 24,
+            },
+            noExportCsv: true,
+            option: {
+                pagination: false,
+                bordered: true,
+                columns: this.getCallDurTopColumn(titleObj)
+            }
+        }];
         return (
             <div className="call-top  col-xs-6">
-                <div className="call-duration-top-ten">
-                    <div className="call-duration-title">
-                        {titleObj.title}TOP10:
-                    </div>
-                    {dataObj.loading ? <Spinner /> : dataObj.errMsg ? (
-                        <div className="alert-wrap">
-                            <Alert
-                                message={titleObj.errMsg}
-                                type="error"
-                                showIcon={true}
-                            />
-                        </div>
-                    ) : <AntcTable
-                        dataSource={dataObj.data}
-                        columns={this.getCallDurTopColumn(titleObj)}
-                        pagination={false}
-                        bordered
-                    />}
-                </div>
-            </div>);
+                <AntcAnalysis
+                    charts={callTopTenCharts}
+                />
+            </div>
+        );
     },
+    getOneOneFourAndServiceHasTeamTooltip: function() {
+        return {
+            show: true,
+            formatter: function(obj) {
+                return `<div>
+                           <span>${(obj.data[0])}</span>  
+                           <br/>  
+                           <span>${Intl.get('common.app.count', '数量')}:${(obj.data[1])}</span>  
+                           <br/>  
+                           <span>${Intl.get('oplate_bd_analysis_realm_industry.7', '占比')}:${(obj.value[2]).toFixed(2) + '%'}</span>
+                        </div>`;
+            }
+        };
+    },
+    //渲染有团队时，114和客服电话分析图的options
+    getOneOneFourAndServiceHasTeamOptions: function(dataList) {
+        return {
+            tooltip: this.getOneOneFourAndServiceHasTeamTooltip(),
+            legend: {
+                show: true
+            },
+            color: ['#3398DB'],
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30
+            },
+            xAxis: [
+                {
+                    data: _.map(dataList, 'name'),
+                }
+            ],
+            yAxis: [
+                {
+                    axisLabel: {
+                        show: true,
+                        interval: 'auto',
+                        formatter: '{value}',
+                    }
+                }
+            ],
+            series: [
+                {
+                    data: dataList.map(x => {
+                        return [x.name, x.num, x.rate];
+                    })
+                }
+            ]
+        };
+    },
+    getPieOptions: function(dataList) {
+        return {
+            tooltip: {
+                trigger: 'item',
+                formatter: '<div class=\'echarts-tooltip\'>{b} : {c} ({d}%)</div>'
+            },
+            legend: {
+                orient: 'vertical',
+                right: '2%',
+                top: '2%',
+                data: _.map(dataList, 'name')
+            },
 
-    // 114占比
+            series: [
+                {
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    label: {
+                        normal: {
+                            formatter: '{c}'
+                        }
+                    },
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+    },
+    getPieData: function(dataList) {
+        var list = dataList || [];
+        var legend = _.map(dataList, 'name') || [];
+        return legend.map((legendName, idx) => {
+            return {
+                name: legendName,
+                value: list[idx].num // 注意：饼图中，value是key
+            };
+        });
+    },
+    // 114占比和客服电话统计
     renderCallRateChar(type) {
-        if (this.state.callRateList[type].loading) {
-            return (
-                <div className="call-rate">
-                    <Spinner />
-                </div>
-            );
+        var resultType = getResultType(this.state.callRateList[type].loading, this.state.callRateList[type].errMsg);
+        var data = [];
+        var title = Intl.get('call.record.service.phone.rate', '114占比统计');
+        var callListType = this.state.callRateList[type];
+        var dataList = callListType && _.isArray(callListType.list) ? callListType.list : [];
+        var height = CHART_LAYOUT_HEIGHT.LARGER_HEIGHT;
+        if (type === 'service') {
+            title = Intl.get('call.record.servicecall', '客服电话统计：');
+            height = CHART_LAYOUT_HEIGHT.INITIAL_HEIGHT;
         }
-        else {
-            let rateArray = [];
-            if (this.state.teamList.list.length) {
-                rateArray = _.map(this.state.callRateList[type].list, 'rate');
-            }
-            else { // 普通销售
-                rateArray = _.map(this.state.callRateList[type].list, 'count');
-            }
-            // 没有数据的提示
-            if (!rateArray.length || _.max(rateArray) === 0) {
-                return (
-                    <div className="alert-wrap">
-                        <Alert
-                            message={Intl.get('common.no.call.record', '暂无通话记录')}
-                            type="info"
-                            showIcon={true}
-                        />
-                    </div>
-                );
-            }
-            else if (this.state.callRateList[type].errMsg) {
-                return (
-                    <div className="alert-wrap">
-                        <Alert
-                            message={this.state.callRateList[type].errMsg}
-                            type="error"
-                            showIcon={true}
-                        />
-                    </div>
-                );
-            }
-            else {
-                return (
-                    <div>
-                        {this.state.teamList.list.length ? (
-                            <RateBarChart
-                                dataList={this.state.callRateList[type].list}
-                            />
-                        ) : (
-                            <PieChart
-                                dataList={this.state.callRateList[type].list}
-                            />
-                        )}
-                    </div>
-                );
-            }
+        if (this.state.teamList.list.length) {
+            data = this.state.callRateList[type].list.map(x => {
+                return [x.name, x.num, x.rate];
+            });
+        } else {
+            data = this.getPieData(this.state.callRateList[type].list);
         }
+        //如果是管理员，展示柱状图
+        //如果是普通销售，展示饼状图
+        const barCharts = [{
+            title: title,
+            chartType: 'bar',
+            data: data,
+            layout: {
+                sm: 24,
+            },
+            option: this.getOneOneFourAndServiceHasTeamOptions(dataList),
+            noExportCsv: true,
+            resultType: resultType,
+            errMsgRender: () => {
+                return getErrorTipAndRetryFunction(this.state.callRateList[type].errMsg);
+            }
+        }];
+        const pieCharts = [{
+            title: title,
+            chartType: 'pie',
+            data: data,
+            layout: {
+                sm: 24,
+            },
+            option: this.getPieOptions(dataList),
+            noExportCsv: true,
+            resultType: resultType,
+            errMsgRender: () => {
+                return getErrorTipAndRetryFunction(this.state.callRateList[type].errMsg);
+            }
+        }];
+        return (
+            <div>
+                {this.state.teamList.list.length ? (
+                    <AntcAnalysis
+                        charts={barCharts}
+                        chartHeight={height}
+                    />
+                ) : (
+                    <AntcAnalysis
+                        charts={pieCharts}
+                        chartHeight={height}
+                    />
+                )}
+            </div>
+        );
     },
     getClickMap(zone) {
         CallAnalysisAction.showZoneDistribute(zone);
     },
+    countTotal: function() {
+        var total = 0;
+        _.each(this.state.customerData.zoneList, function(obj) {
+            total += obj.value;
+        });
+        if (isNaN(total)) {
+            total = 0;
+        }
+        return total;
+    },
+    getCustomerZoneOptions: function() {
+        var originFormatter = mapFormatter;
+        var $tooltipDom = null;
+        var _this = this;
+        function getTooltipDom() {
+            if (!$tooltipDom || !$tooltipDom[0]) {
+                $tooltipDom = $(_this.refs.mapChartWrap).find('.echarts-tooltip');
+            }
+        }
+        return {
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: '#0b80e0',
+                textStyle: {
+                    color: '#fff'
+                },
+                formatter: function(obj) {
+                    getTooltipDom();
+                    if (obj.name === Intl.get('china.zone.distribute.south.island', '南海诸岛')) {
+                        $tooltipDom.addClass('notshow');
+                    } else {
+                        $tooltipDom.removeClass('notshow');
+                    }
+                    var newObj = $.extend(true, {}, obj);
+                    newObj.total = _this.countTotal();
+                    var html = originFormatter(newObj);
+                    return html;
+                }
+            }
+        };
+    },
+    provinceName: function(name) {
+        return MAP_PROVINCE[name];
+    },
     renderCustomerZoneDistribute() {
+        var dataList = this.state.customerData.zoneList;
+        var arr = dataList.concat();
+        arr.push({
+            name: Intl.get('china.zone.distribute.south.island', '南海诸岛'),
+            value: 0
+        });
+        const charts = [{
+            title: Intl.get('call.analysis.zone.distrute', '客户的地域分布'),
+            chartType: 'map',
+            data: arr,
+            layout: {
+                sm: 12,
+            },
+            option: this.getCustomerZoneOptions(),
+            noExportCsv: true,
+            resultType: 'success',
+            events: [{
+                name: 'click',
+                func: this.getClickMap
+            }]
+        }];
         return (
             <div className="map-distribute">
-                <ChinaMap
-                    width="900"
-                    height="600"
-                    dataList={this.state.customerData.zoneList}
-                    formatter={mapFormatter}
-                    getClickEvent={this.getClickMap}
+                <AntcAnalysis
+                    charts={charts}
+                    chartHeight={CHART_LAYOUT_HEIGHT.MAP_HEIGHT}
                 />
             </div>
         );
     },
     renderCustomerPhase() {
-        if (this.state.customerData.loading) {
-            return (
-                <div className="call-rate">
-                    <Spinner />
-                </div>
-            );
-        }
-        else {
-            // 没有数据的提示
-            if (!this.state.customerData.customerPhase.length) {
-                return (
-                    <div className="alert-wrap">
-                        <Alert
-                            message={Intl.get('common.no.data', '暂无数据')}
-                            type="info"
-                            showIcon={true}
-                        />
-                    </div>
-                );
+        var dataList = this.state.customerData.customerPhase;
+        var data = this.getPieData(dataList);
+        var charts = [
+            {
+                title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
+                chartType: 'pie',
+                data: data,
+                layout: {
+                    sm: 24,
+                },
+                option: this.getPieOptions(dataList),
+                noExportCsv: true,
+                resultType: getResultType(this.state.customerData.loading, this.state.customerData.errMsg),
+                errMsgRender: () => {
+                    return getErrorTipAndRetryFunction(this.state.customerData.errMsg);
+                }
             }
-            else if (this.state.customerData.errMsg) {
-                return (
-                    <div className="alert-wrap">
-                        <Alert
-                            message={this.state.customerData.errMsg}
-                            type="error"
-                            showIcon={true}
-                        />
-                    </div>
-                );
-            }
-            else {
-                return (
-                    <div>
-                        <PieChart
-                            dataList={this.state.customerData.customerPhase}
-                        />
-                    </div>
-                );
-            }
-        }
+        ];
+        return (
+            <div>
+                <AntcAnalysis
+                    charts={charts}
+                    chartHeight={CHART_LAYOUT_HEIGHT.INITIAL_HEIGHT}
+                />
+            </div>
+        );
     },
     renderOrderPhase() {
-        if (this.state.customerData.loading) {
-            return (
-                <div className="call-rate">
-                    <Spinner />
-                </div>
-            );
-        }
-        else {
-            // 没有数据的提示
-            if (!this.state.customerData.OrderPhase.length) {
-                return (
-                    <div className="alert-wrap">
-                        <Alert
-                            message={Intl.get('common.no.data', '暂无数据')}
-                            type="info"
-                            showIcon={true}
-                        />
-                    </div>
-                );
+        var dataList = this.state.customerData.OrderPhase;
+        var data = this.getPieData(dataList);
+        var charts = [
+            {
+                title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
+                chartType: 'pie',
+                data: data,
+                layout: {
+                    sm: 24,
+                },
+                option: this.getPieOptions(dataList),
+                noExportCsv: true,
+                resultType: getResultType(this.state.customerData.loading, this.state.customerData.errMsg),
+                errMsgRender: () => {
+                    return getErrorTipAndRetryFunction(this.state.customerData.errMsg);
+                }
             }
-            else if (this.state.customerData.errMsg) {
-                return (
-                    <div className="alert-wrap">
-                        <Alert
-                            message={this.state.customerData.errMsg}
-                            type="error"
-                            showIcon={true}
-                        />
-                    </div>
-                );
-            }
-            else {
-                return (
-                    <div>
-                        <PieChart
-                            dataList={this.state.customerData.OrderPhase}
-                        />
-                    </div>
-                );
-            }
-        }
+        ];
+        return (
+            <div>
+                <AntcAnalysis
+                    charts={charts}
+                    chartHeight={CHART_LAYOUT_HEIGHT.INITIAL_HEIGHT}
+                />
+            </div>
+        );
     },
     renderCallAnalysisView: function() {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
@@ -1019,11 +1323,11 @@ var CallRecordAnalyis = React.createClass({
              * */}
             <div className="duration-count-chart col-xs-12">
                 <div className="trend-chart-title">
-                    {Intl.get('call.record.trend.charts', ' 近一个月的通话趋势：')}
                     {this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
                         <div className="each-team-trend">
                             {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
-                            <Switch checked={this.state.switchStatus} onChange={this.handleSwitchChange} checkedChildren={Intl.get('user.yes', '是')}
+                            <Switch checked={this.state.switchStatus} onChange={this.handleSwitchChange}
+                                checkedChildren={Intl.get('user.yes', '是')}
                                 unCheckedChildren={Intl.get('user.no', '否')}/>
                         </div> : null}
                 </div>
@@ -1055,9 +1359,6 @@ var CallRecordAnalyis = React.createClass({
                             })}
                             <div className="call-service-rate col-xs-6">
                                 <div className="call-rate">
-                                    <div className="call-rate-title">
-                                        {Intl.get('call.record.service.phone.rate', '114占比统计')}:
-                                    </div>
                                     {this.renderCallRateChar('114')}
                                 </div>
                             </div>
@@ -1065,16 +1366,11 @@ var CallRecordAnalyis = React.createClass({
                         <div className="col-xs-12">
                             <div className="call-service-rate col-xs-6">
                                 <div className="call-rate">
-                                    <div className="call-rate-title">
-                                        {Intl.get('call.record.servicecall', '客服电话统计：')}
-                                    </div>
                                     {this.renderCallRateChar('service')}
                                 </div>
                             </div>
                             <div className="call-interval-block col-xs-6">
-                                <div className="call-interval-title">
-                                    {Intl.get('call.record.interval', '通话时段统计')}
-                                </div>
+                                {this.renderCallIntervalChart()}
                                 <div className="call-interval-radio clearfix">
                                     <RadioGroup onChange={this.onChangeCallIntervalRadio}
                                         value={this.state.selectedCallInterval}>
@@ -1086,32 +1382,23 @@ var CallRecordAnalyis = React.createClass({
                                         </Radio>
                                     </RadioGroup>
                                 </div>
-                                {this.renderCallIntervalChart()}
+
                             </div>
                         </div>
                         <div className="col-xs-12">
                             <div className="call-stage-distribute col-xs-6">
                                 <div className="call-stage">
-                                    <div className="call-stage-title">
-                                        {Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计')}: 
-                                    </div>
                                     {this.renderCustomerPhase()}
                                 </div>
                             </div>
                             <div className="call-stage-distribute col-xs-6">
                                 <div className="call-sale">
-                                    <div className="call-sale-title">
-                                        {Intl.get('oplate_customer_analysis.11', '订单阶段统计')}:
-                                    </div>
                                     {this.renderOrderPhase()}
                                 </div>
                             </div>
                         </div>
                         <div className="col-xs-12">
-                            <div className="call-zone-distribute">
-                                <div className="call-zone-title">
-                                    {Intl.get('call.analysis.zone.distrute', '客户的地域分布')}:
-                                </div>
+                            <div className="call-zone-distribute" ref="mapChartWrap">
                                 {this.renderCustomerZoneDistribute()}
                             </div>
                         </div>
@@ -1156,24 +1443,24 @@ var CallRecordAnalyis = React.createClass({
         let memberList = this.state.memberList.list; // 成员数据
 
         // 第一个选择框渲染的数据
-        let firstOptions = FIRSR_SELECT_DATA.map((item) => {
-            return <Option value={item}>{item}</Option>;
+        let firstOptions = FIRSR_SELECT_DATA.map((item, index) => {
+            return <Option value={item} key={index}>{item}</Option>;
         });
 
         // 第二个选择框的数据
         let secondOptions = [];
         if (teamList.length === 1) { // 只展示成员选择框时
-            secondOptions = memberList.map((item) => {
-                return <Option value={item.name}>{item.name}</Option>;
+            secondOptions = memberList.map((item, index) => {
+                return <Option value={item.name} key={index}>{item.name}</Option>;
             });
         } else if (teamList.length > 1) { // 展示团队和成员
             if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
-                secondOptions = teamList.map((item) => {
-                    return <Option value={item.name}>{item.name}</Option>;
+                secondOptions = teamList.map((item, index) => {
+                    return <Option value={item.name} key={index}>{item.name}</Option>;
                 });
             } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
-                secondOptions = memberList.map((item) => {
-                    return <Option value={item.name}>{item.name}</Option>;
+                secondOptions = memberList.map((item, index) => {
+                    return <Option value={item.name} key={index}>{item.name}</Option>;
                 });
             }
         }
@@ -1231,7 +1518,7 @@ var CallRecordAnalyis = React.createClass({
         }, () => {
             this.setChartContainerHeight();
             this.refreshCallAnalysisData();
-            if (this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM){
+            if (this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
                 var reqBody = this.getCallAnalysisBodyParamSeparately();
                 this.getCallAnalysisTrendDataSeparately(reqBody);//每个团队分别的趋势图
             }

@@ -5,9 +5,9 @@
  */
 require('./css/main.less');
 var language = require('../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../../components/user_manage_components/css/right-panel-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../../../components/user_manage_components/css/right-panel-zh_CN.less');
 }
 require('../../app_user_manage/public/css/main-zh_CN.less');
@@ -16,13 +16,8 @@ var ApplyView = require('./views/apply-view');
 var UserApply = React.createClass({
     render: function() {
         return(
-            <div data-tracename="用户审批">
-                <div className="user_apply_page">
-                    <div className="user_apply_contentwrap">
-                        <ApplyView applyId={this.props.location.query && this.props.location.query.id}/>
-                    </div>
-                </div>
-
+            <div className="user_apply_page" data-tracename="用户审批">
+                <ApplyView applyId={this.props.location.query && this.props.location.query.id}/>
             </div>
         );
     }

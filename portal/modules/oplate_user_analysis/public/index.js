@@ -18,6 +18,17 @@ const unknownObj = {name: Intl.get('user.unknown', '未知'), key: 'unknown'};
 let unknownDataMap = {};
 unknownDataMap[unknownObj.key] = unknownObj.name;
 
+//tab转换映射，用于建立tab键值和接口需要的参数值的对应
+const tabTransMap = {total: 'all', added: 'add'};
+
+//图表内定义的tab条件
+const chartTabCondition = {
+    name: 'analysis_type',
+    value: 'all',
+    isTabCondition: true,
+    transMap: tabTransMap
+};
+
 //用户类型
 //Todo: 移到公共常量文件中
 const USER_TYPES = [
@@ -320,13 +331,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
                 url: '/rest/analysis/user/v1/:auth_type/apps/:tab/team',
                 useChartFilter: false,
-                option: {
-                    legend: {
-                        data: USER_TYPES,
-                    },
-                },
                 customOption: {
                     stack: true,
+                    legendData: USER_TYPES,
                 },
                 csvOption: {
                     rowNames: USER_TYPES_WITH_TITLE,
@@ -348,13 +355,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
                 url: '/rest/analysis/user/v1/:auth_type/apps/:tab/zone',
                 useChartFilter: false,
-                option: {
-                    legend: {
-                        data: USER_TYPES,
-                    },
-                },
                 customOption: {
                     stack: true,
+                    legendData: USER_TYPES,
                 },
                 csvOption: {
                     rowNames: USER_TYPES_WITH_TITLE,
@@ -376,13 +379,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
                 url: '/rest/analysis/user/v1/:auth_type/apps/:tab/industry',
                 useChartFilter: false,
-                option: {
-                    legend: {
-                        data: USER_TYPES,
-                    },
-                },
                 customOption: {
                     stack: true,
+                    legendData: USER_TYPES,
                 },
                 csvOption: {
                     rowNames: USER_TYPES_WITH_TITLE,
@@ -653,6 +652,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }, {
             title: Intl.get('oplate.user.analysis.device', '设备统计'),
             url: '/rest/analysis/user/v3/:auth_type/device',
+            conditions: [chartTabCondition],
             chartType: 'bar',
             noShowCondition: {
                 app_id: 'all',
@@ -661,6 +661,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }, {
             title: Intl.get('oplate.user.analysis.browser', '浏览器统计'),
             url: '/rest/analysis/user/v3/:auth_type/browser',
+            conditions: [chartTabCondition],
             chartType: 'bar',
             noShowCondition: {
                 app_id: 'all',
@@ -673,7 +674,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             conditions: [{
                 value: loginNumReqData,
                 type: 'data',
-            }],
+            },
+            chartTabCondition
+            ],
             chartType: 'wordcloud',
             unit: Intl.get('common.label.times', '次'),
             noShowCondition: {
@@ -686,11 +689,15 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }, {
             title: Intl.get('user.analysis.active.user.area.statistics', '活跃用户地域统计'),
             url: '/rest/analysis/user/v3/:auth_type/zone/province',
+            conditions: [chartTabCondition],
             chartType: 'map',
             height: 546,
             noShowCondition: {
                 app_id: 'all',
                 tab: ['added_expired'],
+            },
+            csvOption: {
+                reverse: true,
             },
             subChart: {
                 chartType: 'table',
@@ -711,7 +718,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             conditions: [{
                 value: loginDayNumReqData,
                 type: 'data',
-            }],
+            },
+            chartTabCondition
+            ],
             chartType: 'wordcloud',
             unit: Intl.get('common.time.unit.day', '天'),
             noShowCondition: {
@@ -728,7 +737,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             conditions: [{
                 value: onlineTimeReqData,
                 type: 'data',
-            }],
+            },
+            chartTabCondition
+            ],
             chartType: 'wordcloud',
             unit: Intl.get('common.label.hours', '小时'),
             multiple: 60,
@@ -742,6 +753,12 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }, {
             title: Intl.get('oplate.user.analysis.averageLoginTimes', '平均在线时长'),
             url: '/rest/analysis/user/v3/:auth_type/app/avg/online_time/trend',
+            conditions: [{
+                name: 'interval',
+                value: 'hourly',
+            },
+            chartTabCondition
+            ],
             chartType: 'bar',
             option: {
                 tooltip: {
@@ -783,10 +800,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     conditionName: 'interval',
                 }],
             },
-            conditions: [{
-                name: 'interval',
-                value: 'hourly',
-            }],
             noShowCondition: {
                 app_id: 'all',
                 tab: ['added_expired'],

@@ -1,6 +1,5 @@
 import {message, Select, Button, Icon} from 'antd';
 let Option = Select.Option;
-let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
 let userData = require('../../../../../public/sources/user-data');
 let CrmBasicAjax = require('../../ajax/index');
 import batchChangeAjax from '../../ajax/batch-change-ajax';
@@ -57,7 +56,7 @@ var SalesTeamCard = React.createClass({
         }
     },
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.customerId != this.state.customerId) {
+        if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
             this.setState({
                 isMerge: nextProps.isMerge,
@@ -82,7 +81,7 @@ var SalesTeamCard = React.createClass({
             }
         }
         //由于是否能转出客户的标识需要通过接口获取团队数据后来判断重现赋值，所以如果变了需要重新赋值
-        if (this.state.enableTransfer != nextProps.enableTransfer) {
+        if (this.state.enableTransfer !== nextProps.enableTransfer) {
             this.setState({
                 enableTransfer: nextProps.enableTransfer
             });
@@ -108,7 +107,7 @@ var SalesTeamCard = React.createClass({
         batchChangeAjax.getSalesManList().then(list => {
             if (_.isArray(list) && list.length) {
                 //过滤掉停用的成员
-                list = _.filter(list, sales => sales && sales.user_info && sales.user_info.status == 1);
+                list = _.filter(list, sales => sales && sales.user_info && sales.user_info.status === 1);
             } else {
                 list = [];
             }
@@ -145,7 +144,7 @@ var SalesTeamCard = React.createClass({
         batchChangeAjax.getSalesTeamMembers(teamId).then(list => {
             if (_.isArray(list) && list.length) {
                 //过滤掉停用的成员
-                list = _.filter(list, sales => sales && sales.status == 1);
+                list = _.filter(list, sales => sales && sales.status === 1);
             } else {
                 list = [];
             }
@@ -273,7 +272,7 @@ var SalesTeamCard = React.createClass({
     },
     handleSubmit: function() {
         if (this.state.loading) return;
-        if (this.state.userId == this.props.userId) {
+        if (this.state.userId === this.props.userId) {
             //没做修改时，直接回到展示状态
             this.backToDisplay();
             return;
@@ -316,7 +315,7 @@ var SalesTeamCard = React.createClass({
                     <div className="sales-role">
                         <span className="sales-team-label">{Intl.get('crm.detail.sales.role', '销售角色')}:</span>
                         <span className="sales-team-text">
-                            {this.state.salesRole}
+                            {this.state.salesRole || Intl.get('role.normal.sales', '普通销售')}
                         </span>
                     </div>}
             </div>
@@ -344,8 +343,7 @@ var SalesTeamCard = React.createClass({
             return (<Option value={item.value} key={item.value}>{item.name}</Option>);
         });
         return (
-            <div className="sales-team-edit-block">
-                <span className="edit-label">{Intl.get('crm.sales.update', '修改为')}</span>
+            <div className="sales-team-edit-block" id="sales-team-edit-block">
                 <Select
                     placeholder={Intl.get('crm.17', '请选择销售人员')}
                     showSearch
@@ -353,6 +351,8 @@ var SalesTeamCard = React.createClass({
                     value={`${this.state.userId}&&${this.state.salesTeamId}`}
                     optionFilterProp="children"
                     notFoundContent={salesmanOptions.length ? Intl.get('crm.30', '无相关销售') : Intl.get('crm.29', '暂无销售') }
+                    getPopupContainer={() => document.getElementById('sales-team-edit-block')}
+
                 >
                     {salesmanOptions}
                 </Select>

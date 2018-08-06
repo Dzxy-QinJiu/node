@@ -5,19 +5,18 @@ var DynamicStore = require('../../store/dynamic-store');
 var DynamicAction = require('../../action/dynamic-action');
 var TimeLine = require('../../../../../components/time-line');
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import Spinner from 'CMP_DIR/spinner';
 
 var Dynamic = React.createClass({
     getInitialState: function() {
-        return this.getStateFromStore();
-    },
-    getStateFromStore: function() {
         return {
-            dynamicList: DynamicStore.getDynamicListFromView(),
+            ...DynamicStore.getState(),
             windowHeight: $(window).height()
         };
     },
     onStoreChange: function() {
-        this.setState(this.getStateFromStore());
+        this.setState({...DynamicStore.getState()});
     },
     componentDidMount: function() {
         DynamicStore.listen(this.onStoreChange);
@@ -59,14 +58,16 @@ var Dynamic = React.createClass({
     render: function() {
         return (
             <RightPanelScrollBar>
-                <div className="dynamicList">
-                    <TimeLine
-                        list={this.state.dynamicList}
-                        groupByDay={true}
-                        timeField="date"
-                        render={this.timeLineItemRender}
-                    />
-                </div>
+                {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
+                    <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
+                    <div className="dynamicList">
+                        <TimeLine
+                            list={this.state.dynamicList}
+                            groupByDay={true}
+                            timeField="date"
+                            render={this.timeLineItemRender}
+                        />
+                    </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
             </RightPanelScrollBar>
         );
     }

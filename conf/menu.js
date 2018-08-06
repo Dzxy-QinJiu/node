@@ -249,6 +249,15 @@ class LeftMenuClass {
                         ],
                         //有这个权限，才显示入口图标
                         showPrivileges: ['CREATE_CONFIG_INDUSTRY']
+                    }, {
+                        id: 'OPENAPP',
+                        name: backendIntl.get('back.openApp', '开通应用'),
+                        routePath: 'background_management/openApp',
+                        privileges: [
+                          
+                        ],
+                        //有这个权限，才显示入口图标
+                        showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
                     }
                 ]
             },

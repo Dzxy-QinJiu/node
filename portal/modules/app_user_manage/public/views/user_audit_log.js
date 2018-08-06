@@ -542,6 +542,7 @@ var LogView = React.createClass({
             handleScrollBottom: this.handleScrollBottom,
             loading: this.state.appUserListResult === 'loading',
             showNoMoreDataTip: this.showNoMoreDataTip(),
+            noMoreDataText: Intl.get('noMoreTip.log', '没有更多日志了')
         };
         return (
             <div

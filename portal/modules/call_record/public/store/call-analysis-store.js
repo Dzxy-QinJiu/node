@@ -1,6 +1,5 @@
 var CallAnalysisActions = require('../action/call-analysis-action');
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
-import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import userData from 'PUB_DIR/sources/user-data';
 import {formatRoundingPercentData} from 'PUB_DIR/sources/utils/common-method-util';
 function CallAnalysisStore() {
@@ -187,7 +186,7 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function(result) {
                     let durationArray = [];
                     //通话数量
                     let countArray = [];
-                    var teamObj = _.find(this.teamList.list, (team) => team.id == item.teamId);
+                    var teamObj = _.find(this.teamList.list, (team) => team.id === item.teamId);
                     if (teamObj && teamObj.name){
                         item.teamName = teamObj.name;
                     }
@@ -237,11 +236,9 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
             var returnObj = {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
-                averageTimeFormated: TimeUtil.getFormatTime(salesPhone.averageTime),
                 name: salesPhone.name || '',//销售或者团队的名称
                 totalAnswer: getData(salesPhone.totalAnswer),//总接通数
                 totalTime: getData(salesPhone.totalTime),//总时长
-                totalTimeFormated: TimeUtil.getFormatTime(salesPhone.totalTime),
                 callinCount: getData(salesPhone.callinCount),//呼入次数
                 callinSuccess: getData(salesPhone.callinSuccess),//成功呼入
                 callinRate: formatRoundingPercentData(salesPhone.callinRate),//呼入接通率
@@ -253,8 +250,7 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
 
             if (memberTotal){
                 returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess) / memberTotal).toFixed(), //人均接通数
-                returnObj.personAverageTime = (getData(salesPhone.totalTime) / memberTotal).toFixed(),//人均通话时长
-                returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime) / memberTotal).toFixed());//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
+                returnObj.personAverageTime = (getData(salesPhone.totalTime) / memberTotal).toFixed();//人均通话时长
             }
 
             return returnObj;
@@ -284,11 +280,11 @@ CallAnalysisStore.prototype.getCallRate = function(result) {
         this.callRateList[result.type].errMsg = result.errMsg || Intl.get('call.record.service.phone.failed', '获取114占比失败！');
 
     } else if (result.resData) {
-        if (result.resData.code == 0) {
+        if (result.resData.code === 0) {
             this.callRateList[result.type].errMsg = '';
             let resData = result.resData.list;
             if (_.isArray(resData) && resData.length) {
-                if (resData.length == 1 && userData.getUserData().user_id == resData[0].user_id) { // 普通销售
+                if (resData.length === 1 && userData.getUserData().user_id === resData[0].user_id) { // 普通销售
                     const list = [
                         {
                             name: Intl.get('call.record.valid.phone', '有效电话'),
@@ -303,7 +299,7 @@ CallAnalysisStore.prototype.getCallRate = function(result) {
                 }
                 else {
                     // nick_name 成员 sales_team是团队数据
-                    let filterData = _.filter(resData, (item) => item.rate != 0);
+                    let filterData = _.filter(resData, (item) => item.rate !== 0);
                     const list = _.map(filterData, (item) => {
                         return {
                             name: item.nick_name || item.sales_team,
@@ -314,7 +310,7 @@ CallAnalysisStore.prototype.getCallRate = function(result) {
                     this.callRateList[result.type].list = list;
                 }
             }
-        } else if (result.resData.code == 1) {
+        } else if (result.resData.code === 1) {
             this.callRateList[result.type].errMsg = result.resData.msg;
         }
     }
@@ -391,7 +387,7 @@ CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
             let sum = resData.sum || [];
             if (_.isArray(sum) && sum.length) {
                 _.each(sum, (item) => {
-                    zoneList.push({name: item.name, value: item.count});
+                    zoneList.push({name: item.name, value: parseInt(item.count)});
                 });
                 this.customerData.zoneList = zoneList;
             }
@@ -400,7 +396,7 @@ CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
             let customerSum = resData.customer_label_sum || [];
             if (_.isArray(customerSum) && customerSum.length) {
                 _.each(customerSum, (item) => {
-                    customerPhase.push({name: item.name, num: item.count});
+                    customerPhase.push({name: item.name, num: parseInt(item.count)});
                 });
                 this.customerData.customerPhase = customerPhase;
             }
@@ -430,7 +426,7 @@ CallAnalysisStore.prototype.showZoneDistribute = function(zone) {
             let zoneList = [];
             if (zone === '') { // 全国范围
                 _.each(OriginalData.sum, (item) => {
-                    zoneList.push({name: item.name, value: item.count});
+                    zoneList.push({name: item.name, value: parseInt(item.count)});
                 });
                 this.customerData.zoneList = zoneList;
             } else { // 对应的省份
@@ -440,7 +436,7 @@ CallAnalysisStore.prototype.showZoneDistribute = function(zone) {
                     let subRegion = provinceObj.sub_region || [];
                     if (subRegion.length) {
                         _.each(subRegion, (item) => {
-                            zoneList.push({name: item.name, value: item.count});
+                            zoneList.push({name: item.name, value: parseInt(item.count)});
                         });
                         this.customerData.zoneList = zoneList;
                     }

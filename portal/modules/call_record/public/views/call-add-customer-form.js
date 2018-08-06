@@ -30,6 +30,9 @@ var CallAddCustomerForm = React.createClass({
             province: '',
             city: '',
             county: '',
+            province_code: '',
+            city_code: '',
+            county_code: '',
             remarks: '',//备注
             contacts0_name: '',//联系人名称
             contacts0_position: '',//联系人职位
@@ -54,6 +57,9 @@ var CallAddCustomerForm = React.createClass({
         };
     },
     componentDidMount: function() {
+        this.getIndustryList();
+    },
+    getIndustryList: function(){
         //获取后台管理中设置的行业列表
         this.gr();
     },
@@ -90,11 +96,13 @@ var CallAddCustomerForm = React.createClass({
     },
 
     //更新地址
-    updateLocation: function(address) {
-        var location = address.split('/');
-        this.state.formData.province = location[0] || '';
-        this.state.formData.city = location[1] || '';
-        this.state.formData.county = location[2] || '';
+    updateLocation: function(addressObj) {
+        this.state.formData.province = addressObj.provName || '';
+        this.state.formData.city = addressObj.cityName || '';
+        this.state.formData.county = addressObj.countyName || '';
+        this.state.formData.province_code = addressObj.provCode || '';
+        this.state.formData.city_code = addressObj.cityCode || '';
+        this.state.formData.county_code = addressObj.countyCode || '';
     },
 
     //提交修改
@@ -150,6 +158,9 @@ var CallAddCustomerForm = React.createClass({
             this.state.formData.province = result.pname;
             this.state.formData.city = result.cityname;
             this.state.formData.county = result.adname;
+            this.state.formData.province_code = result.pcode;
+            this.state.formData.city_code = result.citycode;
+            this.state.formData.county_code = result.adcode;
             this.state.formData.contacts0_phone = this.transPhoneNumber(this.props.phoneNumber);
             this.setState(this.state);
         });
@@ -207,9 +218,9 @@ var CallAddCustomerForm = React.createClass({
                     {list.length ? (
                         <div>
                             {Intl.get('crm.68', '相似的客户还有')}:
-                            {list.map(customer => {
+                            {list.map((customer, index) => {
                                 return (
-                                    <div>
+                                    <div key={key}>
                                         {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a></div>
                                         ) : (
@@ -338,9 +349,10 @@ var CallAddCustomerForm = React.createClass({
                                     </Select>
                                 </Validator>)}
                         </FormItem >
-                        <AntcAreaSelection labelCol="6" wrapperCol="18" width="420" prov={formData.province}
-                            city={formData.city}
-                            county={formData.county} updateLocation={this.updateLocation}/>
+                        <AntcAreaSelection labelCol="6" wrapperCol="18" width="420"
+                            provName={formData.province} cityName={formData.city}
+                            countyName={formData.county}
+                            updateLocation={this.updateLocation}/>
                         < FormItem
                             label={Intl.get('common.remark', '备注')}
                             id="remarks"
@@ -399,7 +411,7 @@ var CallAddCustomerForm = React.createClass({
                             </Validator>
                         </FormItem>
                         <div className="show-call-phone">
-                                电话 <span className="call-phone">{this.transPhoneNumber(this.props.phoneNumber)}</span>
+                            {Intl.get('common.phone', '电话')} <span className="call-phone">{this.transPhoneNumber(this.props.phoneNumber)}</span>
                         </div>
                         <FormItem
                             wrapperCol={{span: 24}}>

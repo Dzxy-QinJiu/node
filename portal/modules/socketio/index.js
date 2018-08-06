@@ -108,7 +108,7 @@ function notifyChannelListener(data) {
  * 拨打电话消息监听器
  * */
 function phoneEventChannelListener(data) {
-    // pushLogger.debug("后端推送的拨打电话的数据:" + JSON.stringify(data));
+    // pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var phonemsgObj = JSON.parse(data) || {};
     if (phonemsgObj.user_id) {

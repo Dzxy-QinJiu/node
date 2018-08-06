@@ -53,7 +53,7 @@ exports.getCallRate = function(req, res) {
     callAnalysisService.getCallRate(req, res, req.params, req.body).on('success', (data) => {
         res.status(200).json(data);
     }).on('error', (codeMessage) => {
-        res.json(codeMessage && codeMessage.message);
+        res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 

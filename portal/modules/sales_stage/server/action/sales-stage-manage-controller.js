@@ -7,7 +7,7 @@ exports.getSalesStageList = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(codeMessage) {
-            res.json(codeMessage && codeMessage.message);
+            res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 
@@ -17,7 +17,7 @@ exports.addSalesStage = function(req, res) {
         .on('success', function(data) {
             res.json(data);
         }).on('error', function(codeMessage) {
-            res.json(codeMessage && codeMessage.message);
+            res.status(500).json(codeMessage && codeMessage.message);
         }
         );
 };
@@ -28,7 +28,7 @@ exports.editSalesStage = function(req, res) {
         .on('success', function(data) {
             res.json(data);
         }).on('error', function(codeMessage) {
-            res.json(codeMessage && codeMessage.message);
+            res.status(500).json(codeMessage && codeMessage.message);
         }
         );
 };
@@ -38,7 +38,7 @@ exports.deleteSalesStage = function(req, res) {
         .on('success', function(data) {
             res.json(data);
         }).on('error', function(codeMessage) {
-            res.json(codeMessage && codeMessage.message);
+            res.status(500).json(codeMessage && codeMessage.message);
         }
         );
 };

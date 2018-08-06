@@ -11,10 +11,12 @@ function DynamicAction() {
 
     //获取动态列表
     this.getDynamicList = function(customer_id) {
-        var _this = this;
-        crmAjax.getDynamicList(customer_id).then(function(list) {
+        this.dispatch({loading: true});
+        crmAjax.getDynamicList(customer_id).then(list => {
             if (!_.isArray(list)) list = [];
-            _this.dispatch(list);
+            this.dispatch({loading: false, list: list});
+        }, errorMsg => {
+            this.dispatch({loading: false, errorMsg: errorMsg});
         });
     };
 }

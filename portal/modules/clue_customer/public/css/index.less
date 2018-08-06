@@ -86,6 +86,7 @@
       margin: 68px @container_padding auto @container_padding;
       .clue-customer-list{
         cursor:pointer;
+        position: relative;
         //列表样式
         .list-item{
           padding: 6px 0 6px 0;
@@ -93,6 +94,7 @@
           font-size: 14px;
           line-height: 1.5;
           color: #75797c;
+          position: relative;
           .list-item-content{
             padding:5px 0 0 10px;
             .customer-info-wrap{
@@ -107,6 +109,40 @@
                   font-weight: normal;
                   color:#fff;
                   background-color: @qualified-tag-color;
+                }
+                .customer-label {
+                  margin-left: 4px;
+                  margin-right: 0;
+                  padding: 0 5px;
+                  height: 20px;
+                  line-height: 19px;
+                  font-size: 12px;
+                  color: @tag-font-color;
+                  background-color: #b8c4ca;
+                }
+                .customer-label.info-tag-style{
+                  background-color: @info-tag-color;
+                }
+                .customer-label.intent-tag-style{
+                  background-color: @intent-tag-color;
+                }
+                .customer-label.trial-tag-style{
+                  background-color: @trial-tag-color;
+                }
+                .customer-label.sign-tag-style{
+                  background-color: @sign-tag-color;
+                }
+                .customer-label.qualified-tag-style{
+                  background-color: @qualified-tag-color;
+                }
+                .customer-label.history-qualified-tag-style{
+                  background-color: @history-qualified-tag-color;
+                }
+                .customer-label.loss-tag-style{
+                  background-color:@loss-tag-color;
+                }
+                .customer-label.re-contract{
+                  background-color:@re-contract-color;
                 }
               }
             }
@@ -329,10 +365,25 @@
         font-size: 18px;
         margin: 3px 0 0 20px;
         font-weight: 300;
+        span.inline-block{
+          display: inline-block;
+          max-width:300px;
+          span{
+            display: inline-block;
+            max-width:300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
       }
       .clue_detail_content{
         margin:10px 20px 20px 20px;
         background-color: #dde6ed;
+        .iconfont{
+          font-size: 14px;
+        }
+
         form .ant-form-item{
           input,textarea, .ant-select{
             width: 220px;
@@ -348,6 +399,28 @@
             white-space: normal;
             word-break: break-all;
           }
+        }
+        .detail_item.user_detail_item_sourcetime{
+          overflow: hidden;
+           .sourcetime_container{
+             .icon-close{
+               margin-left: 5px;
+             }
+             .ant-calendar-picker{
+               float: left;
+             }
+             .tip-container{
+                float: left;
+                margin-left: 10px;
+             }
+             .icon-update{
+               margin-left: 5px;
+             }
+             .ant-form-explain{
+               color:@error_tips_color;
+               margin-top: 5px;
+             }
+           }
         }
         .user-basic-edit-field-textarea.user-basic-edit-field{
           position: relative;
@@ -408,80 +481,15 @@
   .assign-and-relate-wrap{
     padding-top: 50px;
   }
-  //分配给某个销售的样式
-  .sales-assign-wrap{
-    h5{
-      font-size: 18px;
-      margin: 3px 0 0 20px;
-      font-weight: 300;
-    }
-    //分配给某个销售
-    .sales-assign-content{
-      background-color: #dde6ed;
-      margin: 10px 20px 20px 20px;
-      padding: 10px 0 0 20px;
-      .ant-select{
-        width: 220px;
-        float: left;
-      }
-      .buttons{
-        float: left;
-        margin-left: 10px;
-        i{
-          padding: 5px 5px 2px 5px
-        }
-      }
-    }
-  }
-  //要绑定的客户样式
-  .associate-customer-wrap{
-    position: relative;
-    //关联客户的标题
-    h5{
-      font-size: 18px;
-      margin: 3px 0 0 20px;
-      font-weight: 300;
-    }
-    //关联客户名称样式
-    .customer-text-and-edit{
-      background-color: #dde6ed;
-      margin: 10px 20px 20px 20px;
-      padding: 10px 0 10px 20px;
-      font-size: 13px;
-      overflow: hidden;
-      .icon-choose, .icon-close{
-        font-size: 14px;
-        position: relative;
-        top:5px;
-        margin-left: 5px;
-      }
-      .customer_searchbox_wrap{
-        position: relative;
-      }
-      .customer-name{
-        cursor: pointer;
-      }
-      .recommend-customer-container{
-        margin-top: 10px;
-        .recommend-customer-item{
-          margin-bottom: 5px;
-          .icon-choose, .icon-close{
-            top:0;
-          }
-        }
-      }
-    }
-    .ant-alert.ant-alert-success{
-      position: absolute;
-      top:80px;
-      left:30px;
-    }
-  }
+
 }
 .sales-clue-add-container{
   .add-form-wrap{
     height: 100%;
     padding-top: 40px;
+    #sales-clue-form{
+      position: relative;
+    }
   }
   .input-red-border{
     position:relative;
@@ -518,36 +526,83 @@
   background-color: #fff;
   display: block;
   .clue-analysis-panel{
-    >.topNav{
-      left: 0!important;
+    background: #f3f5f7;
+    position: relative;
+    height: 100%;
+    .analysis-chart-wrap{
+      .ant-tabs-top{
+        width: 100%;
+        .ant-tabs-bar{
+          margin-bottom: 0;
+          .ant-tabs-nav .ant-tabs-tab{
+            padding-left: 25px!important;
+          }
+          .ant-tabs-nav-container{
+            font-size: 16px;
+            line-height: 2.1;
+            height: 64px;
+          }
+        }
+      }
     }
-  }
-  .date-range-wrap {
-     .range-datepicker {
-      float: left;
-      margin-top: 20px;
-      margin-left: 10px;
+    .date-picker-container{
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 10;
+      width: 400px;
+      .date-picker-wrap{
+        position: absolute;
+        right:92px;
+        top:18px;
+        z-index: 10;
+        .range-datepicker{
+          display: inline-block;
+        }
+        .date-picker-tip{
+          position: relative;
+          top:-10px;
+        }
+      }
     }
-    .consult-time{
-      float: left;
-      margin-top: 25px;
-      margin-left: 10px;
+
+     .close-pannel{
+      margin-top:20px;
     }
-  }
-  .analysis-clue-container{
-    margin: 66px 20px 0 20px;
-    .customer-num{
-      cursor: pointer;
-      font-weight: bold;
-    }
-  }
-  .filter-clue-wrap{
-    float: left;
-    margin: 20px 0 0 15px;
-    .clue-select-container{
-      .ant-select{
-        margin-right: 10px;
-        width: auto;
+
+    //图表的样式
+    .analysis-chart-wrap{
+      .ant-tabs-bar{
+        background: #fff;
+      }
+      .clue-analysis-overview-container {
+        padding-top:16px;
+        .clue-trend-analysis, .clue-access-analysis, .clue-source-analysis, .clue-classify-analysis{
+          padding-left: 0;
+          padding-right:0;
+
+        }
+        .clue-access-analysis,.clue-classify-analysis{
+          .antc-analysis .analysis-charts{
+            padding-left: 0px;
+          }
+        }
+
+        .clue-trend-analysis {
+          position: relative;
+          .filter-clue-wrap {
+            position: absolute;
+            z-index: 2;
+            right:30px;
+            top: 16px;
+            .clue-select-container {
+              .ant-select {
+                margin-right: 10px;
+                width: auto;
+              }
+            }
+          }
+        }
       }
     }
   }

@@ -1,7 +1,9 @@
 require('./css/index.less');
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
-import {Table, Icon, Select, message} from 'antd';
+const teamTreeEmitter = Emitters.teamTreeEmitter;
+var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
+import {Select, message, Alert} from 'antd';
 import {AntcTable} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
@@ -520,6 +522,8 @@ var SalesHomePage = React.createClass({
                 getSaleIdByName={this.getSaleIdByName}
                 getChartLayoutParams={this.getChartLayoutParams}
                 updateScrollBar={this.state.updateScrollBar}
+                emitters={this.getEmitters()}
+                conditions={this.getConditions()}
             />);
         } else if (this.state.activeView === viewConstant.USER) {
             return (<UserAnalysis ref="userView" startTime={this.state.start_time} endTime={this.state.end_time}
@@ -586,6 +590,7 @@ var SalesHomePage = React.createClass({
                 listenScrollBottom: this.state.callBackRecord.listenScrollBottom,
                 handleScrollBottom,
                 showNoMoreDataTip: showNoMoreDataTip(),
+                noMoreDataText: Intl.get('noMoreTip.visitBack', '没有更多回访记录了')
             };
             return (
                 <div>
@@ -782,6 +787,69 @@ var SalesHomePage = React.createClass({
             />
         );
     },
+    //获取触发器
+    getEmitters: function() {
+        return [
+            {
+                instance: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: 'starttime',
+                }, {
+                    name: 'endtime',
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: 'team_ids',
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_MEMBER,
+                callbackArgs: [{
+                    name: 'member_id',
+                }],
+            },
+        ];
+    },
+    //获取图表条件
+    getConditions: function() {
+        return [
+            {
+                name: 'starttime',
+                value: this.state.start_time,
+            },
+            {
+                name: 'endtime',
+                value: this.state.end_time,
+            },
+            {
+                name: 'app_id',
+                value: 'all',
+            },
+            {
+                name: 'team_ids',
+                value: '',
+            },
+            {
+                name: 'member_id',
+                value: '',
+            },
+            {
+                name: 'data_type',
+                value: this.getDataType(),
+                type: 'params',
+            },
+            {
+                name: 'auth_type',
+                value: getDataAuthType().toLowerCase(),
+                type: 'params',
+            },
+        ];
+    },
     //渲染客户关系首页
     render: function() {
         var crmSaleList = classNames('sale-list-zone', {
@@ -836,7 +904,7 @@ var SalesHomePage = React.createClass({
                     : <div className="crm-home-container">
                         <div className={crmDataZone}>
                             {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
-                            {this.state.emailShowObj.isShowActiveEmail || !this.state.emailShowObj.email ?
+                            {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
                                 <ActiveEmailTip
                                     isAnimateShow={this.state.isAnimateShow}
                                     isAnimateHide={this.state.isAnimateHide}
@@ -844,7 +912,7 @@ var SalesHomePage = React.createClass({
                                     activeUserEmail={this.activeUserEmail}
                                     setWebConfigStatus={this.state.setWebConfigStatus}
                                     jumpToUserInfo={this.jumpToUserInfo}
-                                    addEmail={!this.state.emailShowObj.email}
+                                    addEmail={this.state.emailShowObj.isShowAddEmail}
                                 /> : null}
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}

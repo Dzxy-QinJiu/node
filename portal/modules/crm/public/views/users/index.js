@@ -16,11 +16,11 @@ import ApplyOpenAppPanel from 'MOD_DIR/app_user_manage/public/views/v2/apply-use
 import ApplyUserForm from '../apply-user-form';
 import CrmUserApplyForm from './crm-user-apply-form';
 import crmAjax from '../../ajax';
-import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import classNames from 'classnames';
-import NoDataTip from '../components/no-data-tip';
 import ErrorDataTip from '../components/error-data-tip';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
     STOP_USE: 'stopUse',//停用
@@ -49,7 +49,7 @@ class CustomerUsers extends React.Component {
         super(props);
         this.state = {
             isLoading: false,//是否正在获取用户列表
-            pageNum: 1,
+            lastUserId: '',//用于下拉加载的最后一个用户id
             crmUserList: [],
             total: 0,
             errorMsg: '',//获取客户开通的用户列表的错误提示
@@ -70,7 +70,7 @@ class CustomerUsers extends React.Component {
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
         if (nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
-            this.setState({curCustomer: nextProps.curCustomer, pageNum: 1});
+            this.setState({curCustomer: nextProps.curCustomer, lastUserId: ''});
             setTimeout(() => {
                 this.getCrmUserList();
             });
@@ -80,12 +80,12 @@ class CustomerUsers extends React.Component {
     //获取客户开通的用户列表
     getCrmUserList() {
         if (!this.state.curCustomer.id) return;
-        if (this.state.pageNum === 1) {
+        if (!this.state.lastUserId) {
             this.setState({isLoading: true});
         }
         crmAjax.getCrmUserList({
             customer_id: this.state.curCustomer.id,
-            page_num: this.state.pageNum,
+            id: this.state.lastUserId,
             page_size: PAGE_SIZE
         }).then((result) => {
             this.setCrmUserData(result);
@@ -101,41 +101,34 @@ class CustomerUsers extends React.Component {
     //获取客户开通的用户列表后的数据设置
     setCrmUserData(result) {
         let crmUserList = this.state.crmUserList;
+        let lastUserId = this.state.lastUserId;
+        let totalSize = this.state.total;
         if (result && _.isArray(result.data)) {
-            if (this.state.pageNum === 1) {
+            if (!lastUserId) {
                 crmUserList = result.data;
             } else {
                 crmUserList = crmUserList.concat(result.data);
             }
-            this.state.pageNum++;
-            this.state.total = result.total || 0;
+            totalSize = result.total || 0;
+            let lastData = crmUserList[crmUserList.length - 1];
+            if (lastData && lastData.user && lastData.user.user_id) {
+                lastUserId = lastData.user.user_id;
+            }
         }
         this.setState({
             isLoading: false,
             errorMsg: '',
-            pageNum: this.state.pageNum,
+            lastUserId: lastUserId,
             crmUserList: crmUserList,
-            total: this.state.total,
-            listenScrollBottom: this.state.total > crmUserList.length
+            total: totalSize,
+            listenScrollBottom: totalSize > crmUserList.length
         });
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
     }
 
     getAppList() {
-        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(result => {
-            let list = [];
-            if (_.isArray(result) && result.length) {
-                list = result.map(function(app) {
-                    return {
-                        client_id: app.app_id,
-                        client_name: app.app_name,
-                        client_image: app.app_logo
-                    };
-                });
-            }
-            this.setState({appList: list});
-        }).error(errorMsg => {
-            this.setState({appList: []});
+        commonDataUtil.getAppList(appList => {
+            this.setState({appList: appList});
         });
     }
 
@@ -232,10 +225,10 @@ class CustomerUsers extends React.Component {
         let appList = userObj.apps;
         let userId = userObj.user ? userObj.user.user_id : '';
         if (_.isArray(appList) && appList.length) {
-            return appList.map((app) => {
+            return appList.map((app, index) => {
                 if (isShowCheckbox) {
                     return (
-                        <Checkbox checked={app.checked}
+                        <Checkbox checked={app.checked} key={index}
                             onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
                             {this.renderUserAppItem(app)}
                         </Checkbox>);
@@ -312,7 +305,7 @@ class CustomerUsers extends React.Component {
         if (!batchApplyFlag && !openAppFlag) {
             //申请新用户
             return (<div className="crm-user-apply-btns">
-                <Button type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
+                <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
                     onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS)}>
                     {Intl.get('crm.apply.user.new', '申请新用户')}
                 </Button>
@@ -320,25 +313,25 @@ class CustomerUsers extends React.Component {
         } else {//其他申请
             return (
                 <div className="crm-user-apply-btns">
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
                         disabled={!batchApplyFlag}>
                         {Intl.get('common.stop', '停用')}
                     </Button>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!batchApplyFlag}>
                         {Intl.get('crm.user.delay', '延期')}
                     </Button>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)}
                         disabled={!batchApplyFlag}>
                         {Intl.get('common.edit.password', '修改密码')}
                     </Button>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!batchApplyFlag}>
                         {Intl.get('crm.186', '其他')}
                     </Button>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
                         {Intl.get('user.app.open', '开通应用')}
                     </Button>
@@ -449,39 +442,42 @@ class CustomerUsers extends React.Component {
         let isShowCheckbox = isApplyButtonShow && !this.props.isMerge;
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
-            return crmUserList.map((userObj) => {
-                let user = _.isObject(userObj) ? userObj.user : {};
-                return (
-                    <div className="crm-user-item">
-                        <div className="crm-user-name">
-                            {isShowCheckbox ? (
-                                <Checkbox checked={user.checked}
-                                    onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                    {user.user_name}({user.nick_name})
-                                </Checkbox>) :
-                                <span className="no-checkbox-text">{user.user_name}({user.nick_name})</span>
-                            }
-                        </div>
-                        <div
-                            className={classNames('crm-user-apps-container', {'no-checkbox-apps-container': !isShowCheckbox})}>
-                            <div className="crm-user-apps">
-                                <div className="apps-top-title">
+            return (
+                <ul className="crm-user-list">
+                    {crmUserList.map((userObj, index) => {
+                        let user = _.isObject(userObj) ? userObj.user : {};
+                        return (
+                            <div className="crm-user-item" key={index}>
+                                <div className="crm-user-name">
                                     {isShowCheckbox ? (
                                         <Checkbox checked={user.checked}
                                             onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                            {this.renderUserAppTitle()}
-                                        </Checkbox>
-                                    ) : (<label>{this.renderUserAppTitle()}</label>)}
+                                            {user.user_name}({user.nick_name})
+                                        </Checkbox>) :
+                                        <span className="no-checkbox-text">{user.user_name}({user.nick_name})</span>
+                                    }
                                 </div>
-                                {this.getUserAppOptions(userObj, isShowCheckbox)}
+                                <div
+                                    className={classNames('crm-user-apps-container', {'no-checkbox-apps-container': !isShowCheckbox})}>
+                                    <div className="crm-user-apps">
+                                        <div className="apps-top-title">
+                                            {isShowCheckbox ? (
+                                                <Checkbox checked={user.checked}
+                                                    onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
+                                                    {this.renderUserAppTitle()}
+                                                </Checkbox>
+                                            ) : (<label>{this.renderUserAppTitle()}</label>)}
+                                        </div>
+                                        {this.getUserAppOptions(userObj, isShowCheckbox)}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                );
-            });
+                        );
+                    })}
+                </ul>);
         } else {
             //加载完成，没有数据的情况
-            return (<NoDataTip tipContent={Intl.get('common.no.more.user', '没有更多用户了')}/>);
+            return (<NoDataIconTip tipContent={Intl.get('crm.detail.no.user', '暂无用户')}/>);
         }
     }
 
@@ -512,13 +508,17 @@ class CustomerUsers extends React.Component {
         let userNumClass = classNames('user-total-tip', {'user-total-active': !this.props.isMerge && userNum});
         return (<div className="crm-user-list-container" data-tracename="通用户页面">
             <div className="user-number">
-                <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
-                    <ReactIntl.FormattedMessage
-                        id="sales.home.total.count"
-                        defaultMessage={'共{count}个'}
-                        values={{'count': userNum || '0'}}
-                    />
-                </span>
+                {this.state.isLoading ? null : userNum ? (
+                    <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
+                        <ReactIntl.FormattedMessage
+                            id="sales.home.total.count"
+                            defaultMessage={'共{count}个'}
+                            values={{'count': userNum || '0'}}
+                        />
+                    </span>) : (
+                    <span className="crm-detail-total-tip">
+                        {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
+                    </span>)}
                 {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
                     : null}
             </div>
@@ -529,9 +529,7 @@ class CustomerUsers extends React.Component {
                         <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
                             closeApplyPanel={this.closeRightPanel.bind(this)}
                             crmUserList={this.state.crmUserList}/>) : null}
-                    <ul className="crm-user-list">
-                        {this.renderCrmUserList(isApplyButtonShow)}
-                    </ul>
+                    {this.renderCrmUserList(isApplyButtonShow)}
                 </GeminiScrollbar>
             </div>
             {/*<RightPanel className="crm_user_apply_panel white-space-nowrap"*/}
@@ -546,5 +544,12 @@ class CustomerUsers extends React.Component {
 CustomerUsers.defaultProps = {
     isMerge: false,
     curCustomer: {}
+};
+
+CustomerUsers.propTypes = {
+    isMerge: React.PropTypes.bool,
+    curCustomer: React.PropTypes.object,
+    closeOpenAppPanel: React.PropTypes.func,
+    ShowCustomerUserListPanel: React.PropTypes.func
 };
 export default CustomerUsers;

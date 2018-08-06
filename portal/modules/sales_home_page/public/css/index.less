@@ -139,7 +139,7 @@
         padding-right: 10px;
         .total-data-item {
           float: left;
-          padding-left: 20px;
+          padding-left: 16px;
           padding-right: 0;
           margin-top: 20px;
           cursor: pointer;
@@ -164,23 +164,26 @@
             .statistic-total-content {
               margin-top: 10px;
               .total-data-style {
-                float: right;
-                margin-top: 13px;
+                display: inline-block;
               }
               .total-data-desc {
                 display: inline-block;
-                margin-top: 10px;
                 margin-left: 1px;
                 vertical-align: top;
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: normal;
               }
-              .add-data-style, .phone-total-data {
-                font-size: 26px;
-                font-weight: bold;
+              .add-data-style {
+                display: inline-block;
+                margin-right: 20px;
+                font-size: 14px;
+                .num {
+                  font-weight: bold;
+                }
               }
-              .phone-total-count {
-                float: right;
+              .phone-total-data {
+                display: inline;
+                margin-right: 10px;
               }
             }
             //等待效果
@@ -223,6 +226,10 @@
               }
             }
           }
+          span.customer-stage-number ,
+          .transfer-customer-cell {
+            cursor: pointer;
+          }
           .analysis_chart {
             overflow: hidden;
             padding-left: 10px;
@@ -232,11 +239,6 @@
                 display: block!important;
               }
             }
-            .stage-change-customer-container {
-              span.customer-stage-number {
-                cursor: pointer;
-              }
-            }            
             .transfer-customer-container,             
             .stage-change-customer-container {
               background-color: white;              
@@ -258,9 +260,6 @@
                 padding: 12px 0 0 16px;
               }
               .ant-table-body {
-                .transfer-customer-cell {
-                  cursor: pointer;
-                }
                 th.customer-name {
                   width: 30%;
                 }

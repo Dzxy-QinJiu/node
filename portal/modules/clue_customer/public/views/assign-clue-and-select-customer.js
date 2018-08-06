@@ -19,6 +19,8 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+let ASSIGNWRAPID = 'assign-clue-select-customer-wrap';
+require('../css/assign-associate-wrap.less');
 class AssignClueAndSelectCustomer extends React.Component {
     constructor(props) {
         super(props);
@@ -29,13 +31,12 @@ class AssignClueAndSelectCustomer extends React.Component {
             isShowCustomerError: false,//是否展示出错
             customer_id: '',//将要关联客户的id
             customer_name: '',//将要关联客户的名字
-            relatedCustomer: {},//已经关联上的客户的详情
-            relatedCustomerName: '',//已经关联上的客户名称
-            relatedCustomerId: '',//已经关联上的客户的id
+            relatedCustomerName: this.props.curClueDetail.customer_name || '',//已经关联上的客户名称
+            relatedCustomerId: this.props.curClueDetail.customer_id || '',//已经关联上的客户的id
             error_message: '',//关联客户失败后的信息
             curShowCustomerId: '',//所查看客户的id
             isShowCustomerUserListPanel: false,
-            CustomerInfoOfCurrUser: {},
+            customerOfCurUser: {},
             //是否显示客户名后面的对号和叉号
             ShowUpdateOrClose: true,
             //关联客户所的推荐的客户列表
@@ -53,36 +54,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         return userData.isSalesManager();
     }
     componentDidMount(){
-        this.queryCustomerByClueId(this.state.curClueDetail.id);
         this.getRecommendAssociatedCustomer();
-    }
-    //根据线索的id查询该线索关联的客户
-    queryCustomerByClueId(currentId) {
-        if (currentId) {
-            crmAjax.queryCustomer({customer_clue_id: currentId}, 1, 1).then((data) => {
-                if (data && _.isArray(data.result)) {
-                    if (data.result.length) {
-                        this.setState({
-                            relatedCustomer: data.result[0],
-                            relatedCustomerName: data.result[0].name,
-                            relatedCustomerId: data.result[0].id
-                        });
-                    } else {
-                        this.setState({
-                            relatedCustomer: {},
-                            relatedCustomerName: '',
-                            relatedCustomerId: ''
-                        });
-                    }
-                }
-            }, () => {
-                this.setState({
-                    relatedCustomer: {},
-                    relatedCustomerName: '',
-                    relatedCustomerId: ''
-                });
-            });
-        }
     }
     getCustomerByPhoneOrName(queryType,condition, rangParams, pageSize, sorter, queryObj){
         crmAjax.queryCustomer(condition, rangParams, pageSize, sorter, queryObj).then((data) => {
@@ -140,9 +112,10 @@ class AssignClueAndSelectCustomer extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.state.curClueDetail.id !== nextProps.curClueDetail.id) {
-            this.queryCustomerByClueId(nextProps.curClueDetail.id);
             this.setState({
                 curClueDetail: nextProps.curClueDetail,
+                relatedCustomerId: nextProps.curClueDetail.customer_id,
+                relatedCustomerName: nextProps.curClueDetail.customer_name,
                 recommendCustomerLists: []
             },() => {
                 this.getRecommendAssociatedCustomer();
@@ -174,12 +147,10 @@ class AssignClueAndSelectCustomer extends React.Component {
     onCustomerChoosen = (info) => {
         var customer_id = info && info.customer && info.customer.id || '';
         var customer_name = info && info.customer && info.customer.name || '';
-        if (customer_id) {
-            this.setState({
-                customer_id: customer_id,
-                customer_name: customer_name,
-            });
-        }
+        this.setState({
+            customer_id: customer_id,
+            customer_name: customer_name,
+        });
     };
     //是否显示对号和叉号
     isShowUpdateOrClose = (flag) => {
@@ -210,6 +181,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                         isShowUpdateOrClose={this.isShowUpdateOrClose}
                         noJumpToCrm={true}
                         addAssignedCustomer={this.addAssignedCustomer}
+                        customerSuggestWrapId={ASSIGNWRAPID}
                     />
                 </div>
             </div>
@@ -234,15 +206,13 @@ class AssignClueAndSelectCustomer extends React.Component {
         //要提交的数据
         var submitObj = {
             //线索的id
-            customer_clue_id: this.state.curClueDetail.id,
-            //将要关联的客户id
-            id: customerId,
-            //线索的创建时间
-            customer_clue_start_time: this.state.curClueDetail.start_time
+            id: this.state.curClueDetail.id,
         };
-        //销售线索关联客户时，将注册用户的id传过去
-        if (this.state.curClueDetail && this.state.curClueDetail.app_user_id){
-            submitObj.app_user_ids = [this.state.curClueDetail.app_user_id];
+        if (customerId){
+            //客户的id
+            submitObj.customer_id = customerId;
+            //客户的名称
+            submitObj.customer_name = customerName;
         }
         this.setState({
             submitType: 'loading'
@@ -258,19 +228,24 @@ class AssignClueAndSelectCustomer extends React.Component {
             type: 'put',
             data: JSON.stringify(submitObj),
             success: () => {
+                var curClueDetail = this.state.curClueDetail;
+                curClueDetail.customer_id = customerId;
+                curClueDetail.customer_name = customerName;
                 this.setState({
+                    curClueDetail: curClueDetail,
                     selectShowAddCustomer: false,
                     error_message: '',
                     submitType: 'success',
                     relatedCustomerName: customerName,
                     relatedCustomerId: customerId
                 });
+                clueCustomerAction.afterModifiedAssocaitedCustomer(curClueDetail);
             },
             error: (xhr) => {
                 this.setState({
                     submitType: 'error',
-                    relatedCustomerName: '',
-                    relatedCustomerId: '',
+                    relatedCustomerName: this.props.curClueDetail.customer_name,
+                    relatedCustomerId: this.props.curClueDetail.customer_id,
                     error_message: xhr.responseJSON || Intl.get('common.edit.failed', '修改失败')
                 });
             }
@@ -368,7 +343,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
     };
     closeCustomerUserListPanel = () => {
@@ -416,9 +391,10 @@ class AssignClueAndSelectCustomer extends React.Component {
         if (_.isArray(newCustomerArr) && newCustomerArr[0]){
             var newCustomer = newCustomerArr[0];
             this.setState({
-                selectShowAddCustomer: true,
-                customer_id: newCustomer.id,
-                customer_name: newCustomer.name,
+                displayType: 'text',
+                selectShowAddCustomer: false,
+                relatedCustomerId: newCustomer.id,
+                relatedCustomerName: newCustomer.name,
             });
         }
     };
@@ -429,6 +405,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
                 formData ={this.state.curClueDetail}
+                isAssociateClue={true}
                 phoneNum= {phoneNum}
                 addOne={this.addOneCustomer}
             />
@@ -473,8 +450,10 @@ class AssignClueAndSelectCustomer extends React.Component {
 
     render() {
         var curClueDetail = this.state.curClueDetail;
+        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
-            <div>
+            <div className="assign-associate-wrap" id={ASSIGNWRAPID}>
                 <div className="sales-assign-wrap">
                     <h5>{Intl.get('cluecustomer.trace.person', '跟进人')}</h5>
                     <div className="sales-assign-content">
@@ -511,9 +490,10 @@ class AssignClueAndSelectCustomer extends React.Component {
                 >
                     { this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            customer_name={customerOfCurUser.name}
+                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>
@@ -524,6 +504,13 @@ class AssignClueAndSelectCustomer extends React.Component {
 }
 
 AssignClueAndSelectCustomer.defaultProps = {
-    curClueDetail: {}
+    curClueDetail: {},
+    customer_id: '',
+    customer_name: ''
+};
+AssignClueAndSelectCustomer.propTypes = {
+    curClueDetail: React.PropTypes.object,
+    customer_id: React.PropTypes.string,
+    customer_name: React.PropTypes.string,
 };
 export default AssignClueAndSelectCustomer;

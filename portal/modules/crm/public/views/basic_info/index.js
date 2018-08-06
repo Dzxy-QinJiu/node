@@ -142,7 +142,7 @@ var BasicData = React.createClass({
     handleFocusCustomer: function(basicData) {
         var initialBasicData = JSON.parse(JSON.stringify(basicData));
         var myUserId = crmUtil.getMyUserId();
-        var hasFocusedCustomer = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids,myUserId) > -1;
+        var hasFocusedCustomer = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids, myUserId) > -1;
         Trace.traceEvent(this.getDOMNode(), hasFocusedCustomer ? '取消关注客户' : '关注客户');
         //请求数据
         let interestObj = {
@@ -177,12 +177,16 @@ var BasicData = React.createClass({
         let industryOptions = this.state.industryList.map((item, i) => {
             return (<Option key={i} value={item}>{item}</Option>);
         });
+        const EDIT_FEILD_WIDTH = 395, EDIT_FEILD_WIDTH_LESS = 370;
         return (
             <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
                     <div className="basic-info-administrative basic-info-item">
-                        <span title={Intl.get('crm.administrative.level', '行政级别')} className="iconfont icon-administrative basic-info-icon"/>
+                        <span className="basic-info-label">
+                            {Intl.get('crm.administrative.level', '行政级别')}:
+                        </span>
                         <BasicEditSelectField
+                            width={EDIT_FEILD_WIDTH_LESS}
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
                             displayText={this.getAdministrativeLevel(level)}
@@ -192,11 +196,16 @@ var BasicData = React.createClass({
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY')}
                             placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, 'administrative_level')}
+                            noDataTip={Intl.get('crm.basic.no.administrative', '暂无行政级别')}
+                            addDataTip={Intl.get('crm.basic.add.administrative', '添加行政级别')}
                         />
                     </div>
                     <div className="basic-info-indestry basic-info-item">
-                        <span title={Intl.get('realm.industry', '行业')} className="iconfont icon-industry basic-info-icon"/>
+                        <span className="basic-info-label">
+                            {Intl.get('realm.industry', '行业')}:
+                        </span>
                         <BasicEditSelectField
+                            width={EDIT_FEILD_WIDTH}
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
                             displayText={basicData.industry}
@@ -207,22 +216,35 @@ var BasicData = React.createClass({
                             placeholder={Intl.get('crm.22', '请选择行业')}
                             editBtnTip={Intl.get('crm.163', '设置行业')}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
+                            noDataTip={Intl.get('crm.basic.no.industry', '暂无行业')}
+                            addDataTip={Intl.get('crm.basic.add.industry', '添加行业')}
                         />
                     </div>
                     <div className="basic-info-address basic-info-item">
-                        <span title={Intl.get('realm.address', '地址')} className="iconfont icon-address basic-info-icon"/>
+                        <span className="basic-info-label">
+                            {Intl.get('crm.96', '地域')}:
+                        </span>
                         <LocationSelectField
+                            width={EDIT_FEILD_WIDTH}
                             id={basicData.id}
                             province={basicData.province}
                             city={basicData.city}
                             county={basicData.county}
+                            province_code={basicData.province_code}
+                            city_code={basicData.city_code}
+                            county_code={basicData.county_code}
                             saveEditLocation={this.saveEditBasicInfo.bind(this, 'address')}
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS')}
+                            noDataTip={Intl.get('crm.basic.no.location', '暂无地域信息')}
+                            addDataTip={Intl.get('crm.basic.add.location', '添加地域信息')}
                         />
                     </div>
                     <div className="basic-info-detail-address basic-info-item">
-                        <span title={Intl.get('realm.full.address', '详细地址')} className="iconfont icon-detail-address basic-info-icon"/>
+                        <span className="basic-info-label">
+                            {Intl.get('realm.full.address', '详细地址')}:
+                        </span>
                         <BasicEditInputField
+                            width={EDIT_FEILD_WIDTH_LESS}
                             id={basicData.id}
                             value={basicData.address}
                             field="address"
@@ -230,11 +252,14 @@ var BasicData = React.createClass({
                             placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS')}
                             saveEditInput={this.saveEditBasicInfo.bind(this, 'detail_address')}
+                            noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
+                            addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
                         />
                     </div>
                     <div className="basic-info-remark basic-info-item">
-                        <span title={Intl.get('common.remark', '备注')} className="iconfont icon-remark basic-info-icon"/>
+                        <span className="basic-info-label">{Intl.get('common.remark', '备注')}:</span>
                         <BasicEditInputField
+                            width={EDIT_FEILD_WIDTH}
                             id={basicData.id}
                             type="textarea"
                             field="remarks"
@@ -243,6 +268,8 @@ var BasicData = React.createClass({
                             placeholder={Intl.get('user.input.remark', '请输入备注')}
                             hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_REMARK')}
                             saveEditInput={this.saveEditBasicInfo.bind(this, 'remarks')}
+                            noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                            addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                         />
                     </div>
                 </div>
