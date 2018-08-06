@@ -549,6 +549,10 @@ var CustomerAnalysis = React.createClass({
                             '历史最高',
                         ],
                     };
+
+                    //瀑布图的tooltip内容有问题，辅助系列的数据也会显示出来，所以先把tooltip禁掉，等找到解决方案再显示出来
+                    _.set(option, 'tooltip.show', false);
+
                     _.set(option, 'xAxis[0].data', [
                         '上月',
                         '本月新增',
