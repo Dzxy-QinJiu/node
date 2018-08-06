@@ -179,3 +179,9 @@ export const CategoryList = [
     {value: '项目合同', name: Intl.get('contract.7', '项目合同')},
     {value: '服务合同', name: Intl.get('contract.8', '服务合同')}
 ];
+
+// 合同签约类型
+export const ContractLabel = [
+    {value: 'new', name: Intl.get('contract.181', '新签')},
+    {value: 'extension', name: Intl.get('contract.163', '续约')},
+];

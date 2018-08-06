@@ -12,7 +12,7 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 const UserData = require('PUB_DIR/sources/user-data');
-const { CategoryList} = require('PUB_DIR/sources/utils/consts');
+const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -234,6 +234,8 @@ const ContractItem = React.createClass({
             contract.contract_amount = saveObj.gross_profit;
         } else if (_.has(saveObj, 'category')) { // 修改合同类型
             contract.category = saveObj.category;
+        } else if (_.has(saveObj, 'label')) { // 修改合同的签约类型
+            contract.label = saveObj.label;
         } else if (_.has(saveObj, 'remarks')) { // 修改备注
             contract.remarks = saveObj.remarks;
         }
@@ -267,6 +269,11 @@ const ContractItem = React.createClass({
         let categoryOptions = _.map(CategoryList, (category, index) => {
             return (<Option value={category.value} key={index}>{category.name}</Option>);
         });
+        let labelOptions = _.map(ContractLabel, (label) => {
+            return <Option key={label.value} value={label.value}>{label.name}</Option>;
+        });
+        // 合同的签约类型
+        const contractLabel = contract.label === 'new' ? Intl.get('contract.181', '新签') : Intl.get('contract.163', '续约');
         return (
             <div className='contract-item'>
                 <div className={itemClassName}>
@@ -360,6 +367,23 @@ const ContractItem = React.createClass({
                         />
                     ) : (
                         <span className='contract-value'>{contract.category}</span>
+                    )}
+                </div>
+                <div className={itemClassName}>
+                    <span className='contract-label'>{Intl.get('contract.164', '签约类型')}:</span>
+                    {contract.stage === '待审' ? (
+                        <BasicEditSelectField
+                            id={contract.id}
+                            displayText={contractLabel}
+                            value={contractLabel}
+                            field="label"
+                            selectOptions={labelOptions}
+                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                            placeholder={Intl.get('contract.182', '请选择签约类型')}
+                            saveEditSelect={this.saveContractBasicInfo}
+                        />
+                    ) : (
+                        <span className='contract-value'>{contractLabel}</span>
                     )}
                 </div>
                 {

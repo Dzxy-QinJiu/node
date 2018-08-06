@@ -1618,7 +1618,8 @@ var zh_CN = {
     'contract.178': '暂无合同额',
     'contract.179': '请输入毛利',
     'contract.180': '暂无毛利额',
-    
+    'contract.181': '新签',
+    'contract.182': '请选择签约类型',
     // 应用运营报告start
     'app_operation.0': '一、用户总体统计',
     'app_operation.1': '用户总数',

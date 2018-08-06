@@ -1592,7 +1592,8 @@ var en_US = {
     'contract.178': 'No contract amount', // 暂无合同额
     'contract.179': 'Please enter the gross profit', // 请输入毛利
     'contract.180': 'No gross profit', // 暂无毛利额
-
+    'contract.181': 'new signing', // 新签
+    'contract.182': 'Please choose a new contract or a contract renewal', // 请选择签约类型
     //合同管理  end
 
     // 应用的运营报告start

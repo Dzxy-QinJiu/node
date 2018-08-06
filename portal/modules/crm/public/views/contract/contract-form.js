@@ -13,7 +13,7 @@ const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
 const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
 import Trace from 'LIB_DIR/trace';
-const { CategoryList} = require('PUB_DIR/sources/utils/consts');
+const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
 
 // 开通应用，默认的数量和金额
 const APP_DEFAULT_INFO = {
@@ -32,6 +32,7 @@ const Contract = React.createClass( {
             selectedAppIdArray: [], // 选择的应用id
             lastSelectedAppIdArray: [], // 上一次选择的应用id
             contractType: '产品合同', // 合同类型
+            contractLabel: 'new', // 合同签约类型
             formData: {
                 customer_name: this.props.curCustomer.name,
                 buyer: this.props.curCustomer.name,
@@ -224,6 +225,12 @@ const Contract = React.createClass( {
             contractType: value
         });
     },
+    // 合同签约类型
+    handleSelectContractLabel(value) {
+        this.setState({
+            contractLabel: value
+        });
+    },
     // 签订时间
     handleSignContractDate(date) {
         let formData = this.state.formData;
@@ -287,6 +294,9 @@ const Contract = React.createClass( {
         let categoryOptions = _.map(CategoryList, (category, index) => {
             return (<Option value={category.value} key={index}>{category.name}</Option>);
         });
+        let labelOptions = _.map(ContractLabel, (label) => {
+            return <Option key={label.value} value={label.value}>{label.name}</Option>;
+        });
         return (
             <div className='add-contract-panel' data-tracename="添加合同面板">
                 <div className='contract-title'>{Intl.get('contract.98', '添加合同')}</div>
@@ -306,6 +316,17 @@ const Contract = React.createClass( {
                                 onChange={this.handleSelectContractType}
                             >
                                 { categoryOptions }
+                            </Select>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label={Intl.get('contract.164', '签约类型')}>
+                            <Select
+                                showSearch
+                                optionFilterProp="children"
+                                value={this.state.contractLabel}
+                                notFoundContent={Intl.get('contract.71', '暂无签约类型')}
+                                onChange={this.handleSelectContractLabel}
+                            >
+                                { labelOptions }
                             </Select>
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.34', '签订时间')}>
@@ -390,6 +411,7 @@ const Contract = React.createClass( {
                 // 添加时的数据
                 let reqData = this.state.formData;
                 reqData.category = this.state.contractType; // 合同类型
+                reqData.label = this.state.contractLabel; // 合同签约类型
                 reqData.user_id = UserData.getUserData().user_id || '';
                 reqData.user_name = UserData.getUserData().user_name || '';
                 let products = _.cloneDeep(this.state.products); // 产品信息
