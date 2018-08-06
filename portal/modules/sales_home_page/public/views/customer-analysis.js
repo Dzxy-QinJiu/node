@@ -443,43 +443,43 @@ var CustomerAnalysis = React.createClass({
         //统计列
         const statisticsColumns = [{
             dataIndex: 'last_month',
-            title: '上月',
+            title: Intl.get('user.time.prev.month', '上月'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
         }, {
             dataIndex: 'this_month',
-            title: '本月',
+            title: Intl.get('common.this.month', '本月'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
         }, {
             dataIndex: 'this_month_new',
-            title: '本月新增',
+            title: Intl.get('common.this.month.new', '本月新增'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
         }, {
             dataIndex: 'this_month_lose',
-            title: '本月流失',
+            title: Intl.get('common.this.month.lose', '本月流失'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_lose_customer_ids'),
         }, {
             dataIndex: 'this_month_back',
-            title: '本月回流',
+            title: Intl.get('common.this.month.back', '本月回流'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_back_customer_ids'),
         }, {
             dataIndex: 'this_month_add',
-            title: '本月比上月净增',
+            title: Intl.get('common.this.month.add', '本月比上月净增'),
             width: '15%',
         }, {
             dataIndex: 'highest',
-            title: '历史最高',
+            title: Intl.get('common.history.highest', '历史最高'),
             width: '10%',
             render: (text, record) => {
                 return <span title={record.highest_date}>{text}</span>;
             },
         }, {
             dataIndex: 'this_month_add_highest',
-            title: '本月比历史最高净增',
+            title: Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
             width: '20%',
         }];
 
@@ -544,20 +544,24 @@ var CustomerAnalysis = React.createClass({
                 processOption: (option, chartProps) => {
                     option.legend = {
                         data: [
-                            '上月',
-                            '本月',
-                            '历史最高',
+                            Intl.get('user.time.prev.month', '上月'),
+                            Intl.get('common.this.month', '本月'),
+                            Intl.get('common.history', '历史'),
                         ],
                     };
+
+                    //瀑布图的tooltip内容有问题，辅助系列的数据也会显示出来，所以先把tooltip禁掉，等找到解决方案再显示出来
+                    _.set(option, 'tooltip.show', false);
+
                     _.set(option, 'xAxis[0].data', [
-                        '上月',
-                        '本月新增',
-                        '本月回流',
-                        '本月流失',
-                        '本月比上月净增',
-                        '本月',
-                        '本月比历史最高净增',
-                        '历史最高',
+                        Intl.get('user.time.prev.month', '上月'),
+                        Intl.get('common.this.month.new', '本月新增'),
+                        Intl.get('common.this.month.back', '本月回流'),
+                        Intl.get('common.this.month.lose', '本月流失'),
+                        Intl.get('common.this.month.add', '本月比上月净增'),
+                        Intl.get('common.this.month', '本月'),
+                        Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
+                        Intl.get('common.history.highest', '历史最高'),
                     ]);
 
                     const serie = {
@@ -569,45 +573,71 @@ var CustomerAnalysis = React.createClass({
                         }
                     };
 
+                    //单个销售的数据
                     let data = _.get(chartProps, 'data[0]');
+                    //上月个数
                     let lastMonthNum = _.get(data, 'last_month');
+                    //本月个数
                     let thisMonthNum = _.get(data, 'this_month');
+                    //本月新增
                     let thisMonthNewNum = _.get(data, 'this_month_new');
+                    //本月流失
                     let thisMonthLoseNum = _.get(data, 'this_month_lose');
+                    //本月回流
                     let thisMonthBackNum = _.get(data, 'this_month_back');
+                    //本月比历史最高净增
                     let thisMonthAddHighestNum = _.get(data, 'this_month_add_highest');
+                    //本月净增
                     let thisMonthAddNum = _.get(data, 'this_month_add');
+                    //历史最高
                     let highestNum = _.get(data, 'highest');
 
+                    //原始数据数组，用于在柱子上显示实际值
                     const dataArr = [lastMonthNum, thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, highestNum];
 
+                    //本月新增数据辅助，用于实现阶梯瀑布效果，默认以上月数据为基准
                     let thisMonthNewNumAssist = lastMonthNum;
 
+                    //如果本月新增数为负值
                     if (thisMonthNewNum < 0) {
+                        //则本月新增数辅助值为上月个数与本月新增之和，也即上月个数减去本月新增的绝对值
                         thisMonthNewNumAssist = lastMonthNum + thisMonthNewNum;
+                        //将本月新增数设为其绝对值，以避免柱子显示在横轴下方
                         thisMonthNewNum = Math.abs(thisMonthNewNum);
                     }
 
+                    //本月回流数辅助值为上月个数与本月新增之和
                     let thisMonthBackNumAssist = lastMonthNum + thisMonthNewNum;
 
-                    let thisMonthLoseNumAssist = thisMonthLoseNumAssist - thisMonthBackNum;
+                    //本月流失数辅助值为本月回流数辅助值与本月回流数之和再减去本月流失数
+                    let thisMonthLoseNumAssist = thisMonthBackNumAssist + thisMonthBackNum - thisMonthLoseNum;
 
+                    //本月净增数辅助值默认为上月个数
                     let thisMonthAddNumAssist = lastMonthNum;
 
+                    //如果本月净增数为负值
                     if (thisMonthAddNum < 0) {
+                        //则本月净增数辅助值为上月个数与本月净增之和，也即上月个数减去本月净增的绝对值
                         thisMonthAddNumAssist = lastMonthNum + thisMonthAddNum;
+                        //将本月净增数设为其绝对值，以避免柱子显示在横轴下方
                         thisMonthAddNum = Math.abs(thisMonthAddNum);
                     }
 
+                    //本月比历史最高净增数辅助值默认为历史最高个数
                     let thisMonthAddHighestNumAssist = highestNum;
 
+                    //如果本月比历史最高净增数为负值
                     if (thisMonthAddHighestNum < 0) {
+                        //则本月比历史最高净增数辅助值为历史最高个数与本月比历史最高净增之和，也即历史最高个数减去本月比历史最高净增的绝对值
                         thisMonthAddHighestNumAssist = highestNum + thisMonthAddHighestNum;
+                        //将本月比历史最高净增数设为其绝对值，以避免柱子显示在横轴下方
                         thisMonthAddHighestNum = Math.abs(thisMonthAddHighestNum);
                     }
 
+                    //辅助系列，会在堆积的柱子中占空间，但不会显示出来，这样就能呈现出阶梯瀑布效果了
                     let serieAssist = _.extend({}, serie, {
 
+                        //通过将系列项的颜色设置为透明来实现系列项的隐藏效果
                         itemStyle: {
                             normal: {
                                 barBorderColor: 'rgba(0,0,0,0)',
@@ -621,22 +651,32 @@ var CustomerAnalysis = React.createClass({
                         data: ['-', thisMonthNewNumAssist, thisMonthBackNumAssist, thisMonthLoseNumAssist, thisMonthAddNumAssist, '-', thisMonthAddHighestNumAssist, '-'],
                     });
 
+                    //上月系列
                     let serieLastMonth = _.extend({}, serie, {
+                        name: Intl.get('user.time.prev.month', '上月'),
+                        //数据中只有上月个数为实际值，其他的均为空值，在堆积时会用到
                         data: [lastMonthNum, '-', '-', '-', '-', '-', '-', '-'],
                     });
 
+                    //本月系列
                     let serieThisMonth = _.extend({}, serie, {
+                        name: Intl.get('common.this.month', '本月'),
+                        //数据中只有本月相关数据为实际值，其他的均为空值，在堆积时会用到
                         data: ['-', thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, '-'],
                         label: {
                             show: true,
                             position: 'top',
+                            //在柱子上显示其原始值
                             formatter: params => {
                                 return dataArr[params.dataIndex];
                             },
                         },
                     });
 
+                    //历史系列
                     let serieHistory = _.extend({}, serie, {
+                        name: Intl.get('common.history', '历史'),
+                        //数据中只有历史最高数为实际值，其他的均为空值，在堆积时会用到
                         data: ['-', '-', '-', '-', '-', '-', '-', highestNum],
                     });
 

@@ -2467,6 +2467,7 @@ var zh_CN = {
     'clue.analysis.inability': '无效',
     'clue.analysis.source.chart': '来源统计',
     'clue.analysis.classify.chart': '分类统计',
+    'clue.analysis.avalibility.chart': '有效性统计',
     'clue.analysis.assigned.chart': '签约统计',
     'sales.home.sales.clue': '待处理的线索',
     'sales.home.will.trace': '待跟进',
@@ -2479,6 +2480,14 @@ var zh_CN = {
     'back.openApp.apply': '申请开通',
     'back.openApp.tip.success': '开通成功',
     'back.openApp.tip.fail': '开通失败',
-    'back.openApp.confirm': '确认要开通{appName}功能吗'
+    'back.openApp.confirm': '确认要开通{appName}功能吗',
+    'common.history': '历史',
+    'common.history.highest': '历史最高',
+    'common.this.month.add.highest': '本月比历史最高净增',
+    'common.this.month.add': '本月比上月净增',
+    'common.this.month.lose': '本月流失',
+    'common.this.month.back': '本月回流',
+    'common.this.month.new': '本月新增',
+    'common.this.month': '本月',
 };
 export default zh_CN;

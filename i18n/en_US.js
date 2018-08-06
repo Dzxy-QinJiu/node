@@ -2458,6 +2458,14 @@ var en_US = {
     'back.openApp.apply': 'apply', //'申请开通',
     'back.openApp.tip.success': 'open successed',//'开通成功',
     'back.openApp.tip.fail': 'open failed',//'开通失败',
-    'back.openApp.confirm': 'Are you sure to open {appName} ?'
+    'back.openApp.confirm': 'Are you sure to open {appName} ?',
+    'common.history': 'history',//历史
+    'common.history.highest': 'history highest',//历史最高
+    'common.this.month.add.highest': 'this month add highest',//本月比历史最高净增
+    'common.this.month.add': 'this month add',//本月比上月净增
+    'common.this.month.lose': 'this month lose',//本月流失
+    'common.this.month.back': 'this month back',//本月回流
+    'common.this.month.new': 'this month new',//本月新增
+    'common.this.month': 'this month',//本月
 };
 export default en_US;
