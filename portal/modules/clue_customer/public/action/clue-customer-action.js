@@ -28,6 +28,7 @@ function ClueCustomerActions() {
         'removeClueItem',//删除某条线索
         'afterModifiedAssocaitedCustomer',//修改当前线索的绑定客户后在列表中修改该条线索所绑定的客户
         'afterAddClueTrace',//添加完线索的跟进记录后
+        'afterAssignSales',//分配销售之后
         'setKeyWord',//设置关键字
     );
     //获取线索客户列表

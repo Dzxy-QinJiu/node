@@ -2372,6 +2372,7 @@ var zh_CN = {
     'clue.add.qq.num': 'QQ号码',
     'clue.add.email.addr': '邮箱地址',
     'clue.fill.clue.contacts': '请填写线索的联系方式',
-    'clue.add.wechat.num': '微信号码'
+    'clue.add.wechat.num': '微信号码',
+    'clue.alanalysis.charts': '线索分析'
 };
 export default zh_CN;

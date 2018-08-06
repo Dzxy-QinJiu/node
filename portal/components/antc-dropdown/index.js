@@ -116,8 +116,8 @@ AntcDropdown.defaultProps = {
     },//保存时的处理
     clearSelectData: function() {
     },//关面板后，清空选择数据的处理
-    btnAtTop: true,
-    stopContentHide: false
+    btnAtTop: true,//是否在顶部展示确定按钮
+    stopContentHide: false//避免选中选项后会关闭content内容区域
 };
 AntcDropdown.propTypes = {
     showMenu: React.PropTypes.bool,

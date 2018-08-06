@@ -5,19 +5,10 @@
  */
 require('./index.less');
 var BasicData = React.createClass({
-    getInitialState: function() {
-        return {
-
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
-
-    },
     render: function() {
         return (
             <div className="basic-info-container">
                 {this.props.showCloseIcon ? <span className="iconfont icon-close" onClick={this.props.closeRightPanel}></span> : null}
-
                 <div className="clue-type-title">
                     {this.props.clueTypeTitle}
                 </div>

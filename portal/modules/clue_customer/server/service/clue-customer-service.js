@@ -189,10 +189,12 @@ exports.getClueAnalysis = function(req, res) {
 exports.getClueStatics = function(req, res) {
     let queryObj = {};
     queryObj.rang_params = JSON.parse(req.body.rangParams);
+    //销售取值时，query参数必须有，管理员可以没有
     if (req.body.query){
         queryObj.query = JSON.parse(req.body.query);
+    }else{
+        queryObj.query = {};
     }
-
     return restUtil.authRest.post({
         url: restApis.getClueStatics.replace(':type',req.params.type).replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
         req: req,

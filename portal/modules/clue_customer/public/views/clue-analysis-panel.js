@@ -21,6 +21,7 @@ const TABS = {
     'OVERVIEW': '1',
     'TREND': '2'
 };
+require('../css/clue_analysis_panel.less');
 class ClueAnalysisPanel extends React.Component {
     constructor(props) {
         super(props);

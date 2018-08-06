@@ -21,6 +21,7 @@ var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 import PhoneInput from 'CMP_DIR/phone-input';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
+require('../css/add-clues-info.less');
 const DIFCONTACTWAY = {
     PHONE: 'phone',
     EMAIL: 'email',
@@ -34,6 +35,12 @@ var initialContact = {
     'weChat': [],
     'email': [],
     'show_contact_item': [{type: DIFCONTACTWAY.PHONE, value: '',randomValue: uuid()}]
+};
+const desArr = {
+    'phone': Intl.get('clue.add.phone.num', '电话号码'),
+    'email': Intl.get('clue.add.email.addr', '邮箱地址'),
+    'qq': Intl.get('clue.add.qq.num', 'QQ号码'),
+    'weChat': Intl.get('clue.add.wechat.num', '微信号码')
 };
 const FORMLAYOUT = {
     PADDINGTOTAL: 70
@@ -79,6 +86,18 @@ class ClueAddForm extends React.Component {
             saveResult: saveResult
         });
     }
+    afterAddClue = (submitObj) => {
+        //如果线索来源或者接入渠道,线索类型加入新的类型
+        if (submitObj.clue_source && !_.includes(this.props.clueSourceArray,submitObj.clue_source)){
+            _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
+        }
+        if (submitObj.access_channel && !_.includes(this.props.accessChannelArray,submitObj.access_channel)){
+            _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
+        }
+        if (submitObj.clue_classify && !_.includes(this.props.clueClassifyArray,submitObj.clue_classify)){
+            _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
+        }
+    };
     addClue = (submitObj) => {
         //去除表单数据中值为空的项
         var contacts = submitObj.contacts;
@@ -116,16 +135,7 @@ class ClueAddForm extends React.Component {
                     newAddClue: data.result
                 });
                 clueCustomerAction.afterAddSalesClue({newCustomer: data.result});
-                //如果线索来源或者接入渠道,线索类型加入新的类型
-                if (submitObj.clue_source && !_.includes(this.props.clueSourceArray,submitObj.clue_source)){
-                    _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
-                }
-                if (submitObj.access_channel && !_.includes(this.props.accessChannelArray,submitObj.access_channel)){
-                    _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
-                }
-                if (submitObj.clue_classify && !_.includes(this.props.clueClassifyArray,submitObj.clue_classify)){
-                    _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
-                }
+                this.afterAddClue(submitObj);
                 //线索客户添加成功后的回调
                 _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
             } else {
@@ -137,40 +147,47 @@ class ClueAddForm extends React.Component {
         });
 
     };
+    handleSubmitValuesBeforeSubmit = (values) => {
+        //如果每个联系方式的联系人和联系方式都没有
+        var contacts = this.state.formData.contacts;
+        var contactErr = true;
+        _.forEach(contacts, (contactItem) => {
+            _.forEach(contactItem.show_contact_item, (item) => {
+                if (item.value) {
+                    contactErr = false;
+                }
+            });
+        });
+        if (contactErr) {
+            this.setState({
+                contactErrMsg: Intl.get('clue.fill.clue.contacts', '请填写线索的联系方式')
+            });
+            return;
+        } else {
+            values.contacts = contacts;
+        }
+        //去掉values中的key值
+        _.forEach(values, (value, key) => {
+            if (!value){
+                delete values[key];
+            }
+            if(key === 'source_time'){
+                values[key] = moment(value).valueOf();
+            }
+        });
+        //生成线索客户的用户的id
+        if (this.props.appUserId){
+            values.app_user_ids = [this.props.appUserId];
+        }
+        return values;
+    };
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-            //如果每个联系方式的联系人和联系方式都没有
-            var contacts = this.state.formData.contacts;
-            var contactErr = true;
-            _.forEach(contacts, (contactItem) => {
-                _.forEach(contactItem.show_contact_item, (item) => {
-                    if (item.value) {
-                        contactErr = false;
-                    }
-                });
-            });
-            if (contactErr) {
-                this.setState({
-                    contactErrMsg: Intl.get('clue.fill.clue.contacts', '请填写线索的联系方式')
-                });
+            if (!this.handleSubmitValuesBeforeSubmit(values)){
                 return;
-            } else {
-                values.contacts = contacts;
             }
-            //去掉values中的key值
-            _.forEach(values, (value, key) => {
-                if (!value){
-                    delete values[key];
-                }
-                if(key === 'source_time'){
-                    values[key] = moment(value).valueOf();
-                }
-            });
-            //生成线索客户的用户的id
-            if (this.props.appUserId){
-                values.app_user_ids = [this.props.appUserId];
-            }
+            values = this.handleSubmitValuesBeforeSubmit(values);
             //验证电话是否通过验证
             if (!err){
                 if (this.phoneInputRefs.length) {
@@ -293,18 +310,14 @@ class ClueAddForm extends React.Component {
             formData: this.state.formData
         });
     };
+
     renderDiffContacts(item, index, size) {
         var contactWays = [
             {name: DIFCONTACTWAY.PHONE, value: Intl.get('common.phone', '电话')},
             {name: DIFCONTACTWAY.EMAIL, value: Intl.get('common.email', '邮箱')},
             {name: DIFCONTACTWAY.QQ, value: 'QQ'},
             {name: DIFCONTACTWAY.WECHAT, value: Intl.get('crm.58', '微信')}];
-        var desArr = {
-            'phone': Intl.get('clue.add.phone.num', '电话号码'),
-            'email': Intl.get('clue.add.email.addr', '邮箱地址'),
-            'qq': Intl.get('clue.add.qq.num', 'QQ号码'),
-            'weChat': Intl.get('clue.add.wechat.num', '微信号码')
-        };
+
         function getDiffCls(type) {
             var cls = classNames('iconfont', {
                 'icon-qq': type === 'qq',
@@ -357,60 +370,35 @@ class ClueAddForm extends React.Component {
                                         id={randomValue}
                                     /> : null
                                 }
-                                {
-                                    contactWay === 'email' ?
-                                        <FormItem>
-                                            {getFieldDecorator(randomValue, {
-                                                rules: [{required: false},
-                                                    {validator: checkEmail}
-                                                ],
-                                                initialValue: contactValue
-                                            },
-                                            )(
-                                                <Input
-                                                    onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
-                                                    className='contact-type-tip' placeholder={desArr[contactWay]}
-                                                />
-                                            ) }
-                                        </FormItem>
-                                        : null
+                                {contactWay === 'email' ? this.renderDiffWays(contactWay,checkEmail,contactValue,index, itemIndex, randomValue) : null}
+                                {contactWay === 'qq' ? this.renderDiffWays(contactWay,checkQQ,contactValue,index, itemIndex, randomValue) : null
                                 }
-                                {
-                                    contactWay === 'qq' ?
-                                        <FormItem>
-                                            { getFieldDecorator(randomValue, {
-                                                rules: [{required: false},
-                                                    {validator: checkQQ}
-                                                ], initialValue: contactValue
-                                            })(
-                                                <Input className='contact-type-tip' placeholder={desArr[contactWay]}
-                                                    onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
-                                                />
-                                            )}
-                                        </FormItem>
-                                        : null
-                                }
-                                {
-                                    contactWay === 'weChat' ?
-                                        <FormItem>
-                                            {getFieldDecorator(randomValue, {
-                                                rules: [{required: false}],
-                                                initialValue: contactValue
-                                            })(
-                                                <Input
-                                                    onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
-                                                    className='contact-type-tip' placeholder={desArr[contactWay]}
-                                                />
-                                            ) }
-                                        </FormItem>
-                                        : null
-                                }
+                                {contactWay === 'weChat' ? this.renderDiffWays(contactWay,function() {},contactValue,index, itemIndex, randomValue) : null}
                                 {this.renderContactWayBtns(index, itemIndex, itemSize, randomValue)}
                             </div>
                         );
                     })}
                 </div>
             </div>
+        );
+    }
+    renderDiffWays(contactWay,validator, contactValue, index, itemIndex, randomValue){
+        const {getFieldDecorator} = this.props.form;
+        return (
+            <FormItem>
+                {getFieldDecorator(randomValue, {
+                    rules: [{required: false},
+                        {validator: validator}
+                    ],
+                    initialValue: contactValue
+                },
+                )(
+                    <Input
+                        onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
+                        className='contact-type-tip' placeholder={desArr[contactWay]}
+                    />
+                ) }
+            </FormItem>
         );
 
     }

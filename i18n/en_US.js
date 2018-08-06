@@ -2311,7 +2311,7 @@ var en_US = {
     'clue.repeat.delete': 'Some repeated clues already in the system, which have been marked in red color, please delete these record fist, then import',//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
-    'clue.analysis.consult.time': 'Consult time:',//咨询时间：
+    'clue.analysis.consult.time': 'Consult time',//咨询时间
     'noMoreTip.user': 'no more users',
     'noMoreTip.log': 'no more logs',
     'noMoreTip.callRecord': 'no more call records',

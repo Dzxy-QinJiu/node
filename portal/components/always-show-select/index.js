@@ -59,7 +59,11 @@ class AlwaysShowSelect extends React.Component {
                 var splitArr = data.name.split('-');
                 var dataDsp = data.name;
                 if (_.isArray(splitArr) && splitArr.length){
-                    dataDsp = <span><span className="sales-name">{splitArr[0]}</span><span>-</span><span className="team-name">{splitArr[1]}</span></span>;
+                    dataDsp = <span>
+                        <span className="sales-name">{splitArr[0]}</span>
+                        <span>-</span>
+                        <span className="team-name">{splitArr[1]}</span>
+                    </span>;
                 }
                 return (<li className={className} key={index}
                     onClick={this.onSelectChange.bind(this, data)}>
@@ -72,7 +76,7 @@ class AlwaysShowSelect extends React.Component {
                 let className = classNames('select-item', {'item-active': !this.state.value});
                 options.unshift(<li className={className}
                     onClick={this.onSelectChange.bind(this, {name: '', value: ''})}>
-                    <Radio value=' '>
+                    <Radio value=''>
                     &nbsp;
                     </Radio>
                 </li>);

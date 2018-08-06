@@ -38,14 +38,16 @@ var RightContent = require('CMP_DIR/privilege/right-content');
 import {AntcTable} from 'antc';
 import classNames from 'classnames';
 import ClueRightPanel from './views/clue-right-panel';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
     BOTTOM_DISTANCE: 40,
 };
-import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+
 
 const ClueCustomer = React.createClass({
+    salesclueitem: {},//
     getInitialState: function() {
         return {
             clueAddFormShow: false,//
@@ -61,22 +63,6 @@ const ClueCustomer = React.createClass({
             clueCustomerTypeFilter: {status: ''},
             ...clueCustomerStore.getState()
         };
-    },
-    //获取不同角色默认展示的线索的类型
-    getDefaultStatus: function() {
-        let user = userData.getUserData();
-        var defaultStatusValue = '';
-        if (userData.isSalesManager()) {
-            //管理员、销售领导 默认展示待分配的线索客户 status对应0
-            defaultStatusValue = SELECT_TYPE.WILL_DISTRIBUTE;
-        } else if (this.isOperation()) {
-            //运营人员  运营人员默认展示全部线索客户 status对应""
-            defaultStatusValue = SELECT_TYPE.ALL;
-        } else if (user.isCommonSales) {
-            //普通销售 销售默认展示已分配的线索客户 status对应1
-            defaultStatusValue = SELECT_TYPE.HAS_DISTRIBUTE;
-        }
-        return defaultStatusValue;
     },
 
     componentDidMount: function() {
@@ -124,16 +110,6 @@ const ClueCustomer = React.createClass({
         this.setState(this.state);
         //关闭右侧面板后，将当前展示线索的id置为空
         clueCustomerAction.setCurrentCustomer('');
-    },
-    //获取线索状态列表
-    getClueStatusLists: function() {
-        let pathParams = {
-            field: 'status',
-            page_size: 10,//获取线索状态每页的数量
-            num: 1,//获取线索状态列表的页码
-        };
-        let rangeParams = _.cloneDeep(this.state.rangParams);
-        ClueAnalysisAction.getClueStatics(pathParams, rangeParams);
     },
     onClueImport: function(list) {
         this.setState({
@@ -295,13 +271,13 @@ const ClueCustomer = React.createClass({
         }
         //跟据类型筛选
         const queryObj = {
-            lastClueId: clueCustomerStore.getState().lastCustomerId,
+            lastClueId: this.state.lastCustomerId,
             pageSize: this.state.pageSize,
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: JSON.stringify(this.state.rangParams),
             statistics_fields: 'status',
-            userId: userData.getUserData().userId,
+            userId: userData.getUserData().userId || '',
             typeFilter: JSON.stringify(this.state.clueCustomerTypeFilter)
         };
         //如果选中的线索状态不是全部的时候，返回的统计数字是不全的，要重新发请求，单独取统计数字
@@ -339,16 +315,23 @@ const ClueCustomer = React.createClass({
         );
     },
     afterAddClueTrace: function(updateId) {
+        this.updateStatusStatistics(SELECT_TYPE.HAS_DISTRIBUTE,SELECT_TYPE.HAS_TRACE);
+        if (this.state.clueCustomerTypeFilter.status === SELECT_TYPE.HAS_DISTRIBUTE){
+            clueCustomerAction.afterAddClueTrace(updateId);
+        }
+    },
+    updateStatusStatistics: function(subtrItem, addItem) {
         var statusStaticis = this.state.statusStaticis;
         _.forEach(statusStaticis, (value, key) => {
-            if (key === '1') {
+            //加完跟进记录后，在待跟进的线索列表中减一
+            if (key === subtrItem) {
                 statusStaticis[key] = value - 1;
             }
-            if (key === '2') {
+            //在已跟进的线索列表中加一
+            if (key === addItem) {
                 statusStaticis[key] = value + 1;
             }
         });
-        clueCustomerAction.afterAddClueTrace(updateId);
     },
     renderClueCustomerList: function() {
         var customerList = this.state.curCustomers;
@@ -364,7 +347,7 @@ const ClueCustomer = React.createClass({
                         errMsg={this.state.errMsg}
                         afterAddClueTrace={this.afterAddClueTrace}
                         salesManList={this.state.salesManList}
-                        getSelectContent={this.getSelectContent}
+                        getSelectContent={this.setSelectContent}
                         onSalesmanChange={this.onSalesmanChange}
                         salesMan={this.state.salesMan}
                         handleSubmitAssignSales={this.handleSubmitAssignSales}
@@ -403,7 +386,7 @@ const ClueCustomer = React.createClass({
                     placeholder={Intl.get('sales.team.search', '搜索')}
                     value={this.state.salesMan}
                     onChange={this.onSalesmanChange}
-                    getSelectContent={this.getSelectContent}
+                    getSelectContent={this.setSelectContent}
                     notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
                     dataList={dataList}
                 />
@@ -443,23 +426,16 @@ const ClueCustomer = React.createClass({
                         //隐藏批量变更销售面板
                         this.refs['salesclueitem' + item.id].refs['changesale' + item.id].handleCancel();
                     }
-                    //如果原来选中的是待跟进状态的，分配完后要在列表中删除一个
+                    this.updateStatusStatistics(SELECT_TYPE.WILL_DISTRIBUTE, SELECT_TYPE.HAS_DISTRIBUTE);
+                    //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
                     if (this.state.clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE) {
-                        var statusStaticis = this.state.statusStaticis;
-                        _.forEach(statusStaticis, (value, key) => {
-                            if (key === SELECT_TYPE.WILL_DISTRIBUTE) {
-                                statusStaticis[key] = value - 1;
-                            }
-                            if (key === SELECT_TYPE.HAS_DISTRIBUTE) {
-                                statusStaticis[key] = value + 1;
-                            }
-                        });
-                        clueCustomerAction.afterAddClueTrace(item.id);
+                        clueCustomerAction.afterAssignSales(item.id);
                     } else {
                         item.user_name = sale_name;
                         item.user_id = sale_id;
                         item.sales_team = team_name;
                         item.sales_team_id = team_id;
+                        item.status = SELECT_TYPE.HAS_DISTRIBUTE;
                         this.setState({
                             curCustomers: this.state.curCustomers
                         });
@@ -472,8 +448,8 @@ const ClueCustomer = React.createClass({
     onSalesmanChange(salesMan){
         clueCustomerAction.setSalesMan({'salesMan': salesMan});
     },
-    //获得已选销售的名字
-    getSelectContent: function(salesManNames) {
+    //设置已选销售的名字
+    setSelectContent: function(salesManNames) {
         clueCustomerAction.setSalesManName({'salesManNames': salesManNames});
     },
     handleScrollBarBottom: function() {
@@ -520,12 +496,11 @@ const ClueCustomer = React.createClass({
         this.state.rightPanelIsShow = false;
         rightPanelShow = false;
         this.setState(this.state);
-        setTimeout(() => {
-            this.getClueList(flag);
-        });
+        this.getClueList(flag);
     },
     onSelectDate: function(start_time, end_time) {
         if (!start_time) {
+            //为了防止开始时间不传，后端默认时间是从1970年开始的问题
             start_time = moment('2010-01-01 00:00:00').valueOf();
         }
         if (!end_time) {
@@ -535,7 +510,7 @@ const ClueCustomer = React.createClass({
         this.onTypeChange();
     },
     onStatusChange: function(value) {
-        // Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.radio-group-wrap'), '点击切换筛选线索客户类型');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.type-container'), '点击切换筛选线索客户类型');
         var clueCustomerTypeFilter = this.state.clueCustomerTypeFilter;
         clueCustomerTypeFilter.status = value;
         this.setState({
@@ -545,7 +520,7 @@ const ClueCustomer = React.createClass({
     },
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent: function() {
-        //加载中的样式
+        //加载中的展示
         if (this.state.isLoading && this.state.curPage === 1) {
             return (
                 <div className="load-content">
@@ -554,7 +529,7 @@ const ClueCustomer = React.createClass({
                 </div>
             );
         } else if (this.state.clueCustomerErrMsg) {
-            //加载完出错的样式
+            //加载完出错的展示
             return (
                 <div className="err-content">
                     <i className="iconfont icon-data-error"></i>
@@ -562,7 +537,7 @@ const ClueCustomer = React.createClass({
                 </div>
             );
         } else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curCustomers.length) {
-            //数据为空的样式
+            //数据为空的展示
             return (
                 <div className="no-data">
                     <i className="iconfont icon-no-data"></i>
@@ -570,6 +545,7 @@ const ClueCustomer = React.createClass({
                 </div>
             );
         } else {
+            //渲染线索列表
             return this.renderClueCustomerBlock();
         }
     },
@@ -588,7 +564,7 @@ const ClueCustomer = React.createClass({
     renderClueAnalysisBtn: function() {
         return (
             <div className="clue-analysis-btn-container pull-right">
-                <Button className="call-analysis-btn" title="线索分析" onClick={this.handleClueAnalysisPanel}
+                <Button className="call-analysis-btn" title={Intl.get('clue.alanalysis.charts','线索分析')} onClick={this.handleClueAnalysisPanel}
                     data-tracename="点击线索分析按钮">
                     {Intl.get('user.detail.analysis', '分析')}
                 </Button>
@@ -769,8 +745,6 @@ const ClueCustomer = React.createClass({
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
             });
-        //是否展示全部
-        var isShowAll = isOperation() || isSalesLeaderOrManager();
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索客户列表">
@@ -798,21 +772,20 @@ const ClueCustomer = React.createClass({
                             <div className="type-container">
                                 <Select value={this.state.clueCustomerTypeFilter.status} onChange={this.onStatusChange}>
                                     {/*运营人员才展示全部这个按钮*/}
-                                    {isShowAll ? <Option value="">
+                                    {user.isCommonSales ? null : <Option value="">
                                         {Intl.get('common.all', '全部')}
-                                        {statusStaticis[''] || statusStaticis[SELECT_TYPE.ALL] === 0 ? `:${statusStaticis[SELECT_TYPE.ALL]}` : null}
-                                    </Option> : null}
+                                        {statusStaticis[SELECT_TYPE.ALL]}                                    </Option>}
                                     {user.isCommonSales ? null : <Option value="0">
                                         {Intl.get('clue.customer.will.distribution', '待分配')}
-                                        {statusStaticis[SELECT_TYPE.WILL_DISTRIBUTE] || statusStaticis[SELECT_TYPE.WILL_DISTRIBUTE] === 0 ? `:${statusStaticis[SELECT_TYPE.WILL_DISTRIBUTE]}` : null}
+                                        {statusStaticis[SELECT_TYPE.WILL_DISTRIBUTE]}
                                     </Option>}
                                     <Option value="1">
                                         {Intl.get('sales.home.will.trace', '待跟进')}
-                                        {statusStaticis[SELECT_TYPE.HAS_DISTRIBUTE] || statusStaticis[SELECT_TYPE.HAS_DISTRIBUTE] === 0 ? `:${statusStaticis[SELECT_TYPE.HAS_DISTRIBUTE]}` : null}
+                                        {statusStaticis[SELECT_TYPE.HAS_DISTRIBUTE]}
                                     </Option>
                                     <Option value="2">
                                         {Intl.get('clue.customer.has.follow', '已跟进')}
-                                        {statusStaticis[SELECT_TYPE.HAS_TRACE] || statusStaticis[SELECT_TYPE.HAS_TRACE] === 0 ? `:${statusStaticis[SELECT_TYPE.HAS_TRACE]}` : null}
+                                        {statusStaticis[SELECT_TYPE.HAS_TRACE]}
                                     </Option>
                                 </Select>
                             </div>
@@ -823,6 +796,10 @@ const ClueCustomer = React.createClass({
                                 />
                             </div>
                             <div className="pull-right add-anlysis-handle-btns">
+                                {/*是否有查看线索分析的权限
+                                 CRM_CLUE_STATISTICAL 查看线索概览的权限
+                                 CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
+                                */}
                                 {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
                                 {this.renderHandleBtn()}
                                 {this.renderImportClue()}

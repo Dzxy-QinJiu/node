@@ -7,6 +7,7 @@ var ClueCustomerAction = require('../action/clue-customer-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from '../utils/clue-customer-utils';
+var user = require('../../../../public/sources/user-data').getUserData();
 function ClueCustomerStore() {
     //初始化state数据
     this.getState();
@@ -18,8 +19,7 @@ ClueCustomerStore.prototype.setClueInitialData = function() {
     this.curPage = 1;
 };
 ClueCustomerStore.prototype.getState = function() {
-    var isShowAll = isOperation() || isSalesLeaderOrManager();
-    var defaultValue = isShowAll ? SELECT_TYPE.ALL : SELECT_TYPE.HAS_DISTRIBUTE;
+    var defaultValue = user.isCommonSales ? SELECT_TYPE.HAS_DISTRIBUTE : SELECT_TYPE.ALL;
     var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     this.salesManList = [];//销售列表
     this.listenScrollBottom = true;//是否监测下拉加载
@@ -52,11 +52,10 @@ ClueCustomerStore.prototype.getState = function() {
     this.distributeLoading = false;//线索客户正在分配给某个销售
     this.distributeErrMsg = '';//线索客户分配失败
     this.keyword = '';//线索全文搜索的关键字
-    this.clueStatusList = {
-        loading: false,
-        errMsg: '',
+    this.clueStatusList = {//后端返回的线索统计的列表
         list: []
     };
+    //几种不同类型的线索统计默认值
     this.statusStaticis = {
         '': 0,
         '0': 0,
@@ -94,11 +93,12 @@ ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
         }
     }
 };
-ClueCustomerStore.prototype.getStatisticsData = function() {
+ClueCustomerStore.prototype.getStatisticsData = function(statisticsArr) {
     var total = 0;
-    if (this.clueStatusList.list.length){
+    if (!_.isEmpty(statisticsArr)){
+        //把后端返回的统计数据进行处理
         _.forEach(this.statusStaticis, (value, key) => {
-            var targetObj = _.find(this.clueStatusList.list,(item) => {
+            var targetObj = _.find(statisticsArr,(item) => {
                 return key === item.name;
             });
             if (targetObj){
@@ -107,11 +107,10 @@ ClueCustomerStore.prototype.getStatisticsData = function() {
                 this.statusStaticis[key] = 0;
             }
         });
-        _.forEach(this.clueStatusList.list,(item) => {
+        _.forEach(statisticsArr,(item) => {
             total += item.total;
         });
         this.statusStaticis[''] = total;
-
     }else{
         this.statusStaticis = {
             '': 0,
@@ -121,38 +120,28 @@ ClueCustomerStore.prototype.getStatisticsData = function() {
         };
     }
 
-
-
-
-    this.statusStaticis[''] = total;
 };
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     if (clueData.loading) {
         this.isLoading = true;
         this.clueCustomerErrMsg = '';
-        this.clueStatusList.loading = true;
-        this.clueStatusList.errMsg = '';
     } else if (clueData.error) {
         this.isLoading = false;
         this.clueCustomerErrMsg = clueData.errorMsg;
-        this.clueStatusList.loading = false;
-        this.clueStatusList.errMsg = clueData.errorMsg;
     } else {
         let data = clueData.clueCustomerObj;
         let list = data ? data.result : [];
-        var aggList = data.agg_list ? data.agg_list : [];
+        var aggList = _.isArray(data.agg_list) ? data.agg_list : [];
         if (clueData.flag){
-            this.clueStatusList.list = aggList[0]['status'];
-            this.getStatisticsData();
-
+            this.getStatisticsData(aggList[0]['status']);
         }else{
             if (this.lastCustomerId) {
                 this.curCustomers = this.curCustomers.concat(this.processForList(list));
             } else {
                 this.curCustomers = this.processForList(list);
             }
-            this.lastCustomerId = this.curCustomers.length ? _.last(this.curCustomers).id : '';
+            this.lastCustomerId = _.last(this.curCustomers) ? _.last(this.curCustomers).id : '';
             this.customersSize = data ? data.total : 0;
             this.listenScrollBottom = this.customersSize > this.curCustomers.length;
             this.isLoading = false;
@@ -165,14 +154,13 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
             if (this.currentId) {
                 this.setCurrentCustomer(this.currentId);
             }
-            this.clueStatusList.loading = false;
-            this.clueStatusList.errMsg = '';
             if (this.clueCustomerTypeFilter.status === ''){
-                this.clueStatusList.list = _.isArray(aggList) && aggList[0] && aggList[0]['status'] ? aggList[0]['status'] : {};
-                this.getStatisticsData();
+                //不同状态线索的统计数据
+                var staticsArr = _.isArray(aggList) && aggList[0] ? _.get(aggList[0],'status') : [];
+                this.getStatisticsData(staticsArr);
             }
         }
-        //不同状态线索的统计数据
+
 
     }
 };
@@ -284,7 +272,7 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
         willDistributeCount++;
     }
     if (updateObj.showDetail){
-        //新添加的是正在展示的那条日程
+        //新添加的是正在展示的那条线索
         this.curCustomer = newCustomer;
         this.currentId = newCustomer.id;
     }
@@ -332,10 +320,16 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
         }
     }
 };
+//如果原来的筛选条件是在待跟进的时候，要添加完跟进记录后，该类型的线索要删除添加跟进记录的这个线索
 ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
     this.curCustomers = _.filter(this.curCustomers, clue => updateId !== clue.id);
     this.customersSize--;
-
+};
+//分配销售之后
+ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
+    //如果是待分配状态，分配完之后要在列表中删除一个
+    this.curCustomers = _.filter(this.curCustomers, clue => updateItemId !== clue.id);
+    this.customersSize--;
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];
