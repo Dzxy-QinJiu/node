@@ -234,6 +234,8 @@ const ContractItem = React.createClass({
             contract.contract_amount = saveObj.gross_profit;
         } else if (_.has(saveObj, 'category')) { // 修改合同类型
             contract.category = saveObj.category;
+        } else if (_.has(saveObj, 'remarks')) { // 修改备注
+            contract.remarks = saveObj.remarks;
         }
         ContractAjax.editPendingContract({type: 'sell'}, contract).then( (resData) => {
             if (resData && resData.code === 0) {
@@ -385,9 +387,19 @@ const ContractItem = React.createClass({
                     contract.isShowAllContractInfo && contract.remarks ? (
                         <div className={itemClassName}>
                             <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
-                            <span className='contract-value contract-remarks'>
-                                {contract.remarks}
-                            </span>
+                            {contract.stage === '待审' ? (
+                                <BasicEditInputField
+                                    width={350}
+                                    id={contract.id}
+                                    type="textarea"
+                                    field='remarks'
+                                    value={contract.remarks}
+                                    hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                                    saveEditInput={this.saveContractBasicInfo}
+                                />
+                            ) : (
+                                <span className='contract-value contract-remarks'>{contract.remarks}</span>
+                            )}
                         </div>
                     ) : null
                 }
