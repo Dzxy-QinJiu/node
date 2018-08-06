@@ -9,6 +9,10 @@ import ContractAction from '../../action/contract-action';
 const ContractAjax = require('../../ajax/contract-ajax');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 const AlertTimer = require('CMP_DIR/alert-timer');
+import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+const UserData = require('PUB_DIR/sources/user-data');
+const { CategoryList} = require('PUB_DIR/sources/utils/consts');
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -85,6 +89,13 @@ const ContractItem = React.createClass({
         });
         let contractTitle = contract.isShowAllContractInfo ? Intl.get('crm.basic.detail.hide', '收起详情') :
             Intl.get('crm.basic.detail.show', '展开详情');
+
+        let pendingContractClass = classNames('iconfont',{
+            'icon-down-twoline': contract.isShowAllContractInfo,
+            'icon-up-twoline': !contract.isShowAllContractInfo
+        });
+        let pendingContractTitle = !contract.isShowAllContractInfo ? Intl.get('crm.basic.detail.hide', '收起详情') :
+            Intl.get('crm.basic.detail.show', '展开详情');
         return (
             <div className='contract-title'>
                 {contract.stage === '待审' && !contract.num ? (
@@ -97,30 +108,37 @@ const ContractItem = React.createClass({
                         <span className='contract-num'>{contract.num}</span>
                     </span>
                 )}
-                <span className="contract-item-buttons">
+                <span className='contract-item-buttons'>
                     {
-                        this.state.isLoading ? <Icon type="loading" /> : null
+                        this.state.isLoading ? <Icon type='loading' /> : null
                     }
                     {
                         this.state.isDeleteContractFlag ? (
-                            <span className="item-delete-buttons">
-                                <Button className="item-delete-cancel delete-button-style"
+                            <span className='item-delete-buttons'>
+                                <Button className='item-delete-cancel delete-button-style'
                                     onClick={this.cancelDeleteContract}>
                                     {Intl.get('common.cancel', '取消')}
                                 </Button>
-                                <Button className="item-delete-confirm delete-button-style"
+                                <Button className='item-delete-confirm delete-button-style'
                                     onClick={this.showDeleteContract.bind(this, contract)}>
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
                             hasPrivilege('OPLATE_CONTRACT_DELETE_UNCHECK') && contract.stage === '待审' ? (
-                                <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
+                                <span className='iconfont icon-delete' title={Intl.get('common.delete', '删除')}
                                     onClick={this.showDeleteContractConfirm}/>
                             ) : null
                         )
                     }
                 </span>
-                <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
+                {
+                    contract.stage === '待审' ? (
+                        <span className={pendingContractClass} title={pendingContractTitle} onClick={this.toggleContractDetail}/>
+                    ) : (
+                        <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
+                    )
+                }
+
             </div>
         );
     },
@@ -145,10 +163,10 @@ const ContractItem = React.createClass({
             return appItem.client_id === appId;
         });
         return (
-            <span className="app-icon-name">
+            <span className='app-icon-name'>
                 {appName ? (
                     matchAppObj && matchAppObj.client_image ? (
-                        <span className="app-self">
+                        <span className='app-self'>
                             <img src={matchAppObj.client_image} />
                         </span>
                     ) : (
@@ -169,7 +187,7 @@ const ContractItem = React.createClass({
                 key: 'name',
                 width: '50%',
                 render: (text, record, index) => {
-                    return <span className="app-info">{this.renderAppIconName(text, record.id)}</span>;
+                    return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
                 }
             },
             {
@@ -200,55 +218,174 @@ const ContractItem = React.createClass({
             />
         );
     },
+    saveContractBasicInfo(saveObj, successFunc, errorFunc) {
+        let contract = this.state.formData;
+        contract.user_id = UserData.getUserData().user_id || '';
+        contract.user_name = UserData.getUserData().user_name || '';
+        // 客户信息
+        contract.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
+        if (_.has(saveObj, 'buyer')) { // 修改甲方
+            contract.buyer = saveObj.buyer;
+        } else if (_.has(saveObj, 'customer_name')) { // 修改客户名
+            contract.customer_name = saveObj.customer_name;
+        } else if (_.has(saveObj, 'contract_amount')) { // 修改合同额
+            contract.contract_amount = saveObj.contract_amount;
+        } else if (_.has(saveObj, 'gross_profit')) { // 修改毛利
+            contract.contract_amount = saveObj.gross_profit;
+        } else if (_.has(saveObj, 'category')) { // 修改合同类型
+            contract.category = saveObj.category;
+        }
+        ContractAjax.editPendingContract({type: 'sell'}, contract).then( (resData) => {
+            if (resData && resData.code === 0) {
+                if (_.isFunction(successFunc)) successFunc();
+                if (_.has(saveObj, 'customer_name')) {
+                    setTimeout(() => {
+                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(this.props.customerId);
+                    }, 1000);
+                }
+            } else {
+                if (_.isFunction(errorFunc)) {
+                    errorFunc(Intl.get('common.save.failed', '保存失败'));
+                }
+            }
+        }, (errMsg) => {
+            if (_.isFunction(errorFunc)) {
+                errorFunc(errMsg || Intl.get('common.save.failed', '保存失败'));
+            }
+        });
+    },
     renderContractContent() {
         const contract = this.state.formData;
         const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : '';
         const end_time = contract.end_time ? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : '';
+        // 管理员，有编辑合同的权限
+        let itemClassName = classNames('contract-item-content', {
+            'item-edit-style': contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE')
+        });
+        let categoryOptions = _.map(CategoryList, (category, index) => {
+            return (<Option value={category.value} key={index}>{category.name}</Option>);
+        });
         return (
-            <div className="contract-item">
-                <div className="contract-item-content">
-                    <span className="contract-label">{Intl.get('contract.4', '甲方')}:</span>
-                    <span className="contract-value">{contract.buyer}</span>
+            <div className='contract-item'>
+                <div className={itemClassName}>
+                    <span className='contract-label'>{Intl.get('contract.4', '甲方')}:</span>
+                    {contract.stage === '待审' ? (
+                        <BasicEditInputField
+                            width={350}
+                            id={contract.id}
+                            field='buyer'
+                            value={contract.buyer}
+                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                            saveEditInput={this.saveContractBasicInfo}
+                        />
+                    ) : (
+                        <span className='contract-value'>{contract.buyer}</span>
+                    )}
                 </div>
-                <div className="contract-item-content">
-                    <span className="contract-label"> {Intl.get('call.record.customer', '客户')}:</span>
-                    <span className="contract-value">{contract.customer_name}</span>
+                <div className={itemClassName}>
+                    <span className='contract-label'> {Intl.get('call.record.customer', '客户')}:</span>
+                    {contract.stage === '待审' ? (
+                        <BasicEditInputField
+                            width={350}
+                            id={contract.id}
+                            field='customer_name'
+                            value={contract.customer_name}
+                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                            saveEditInput={this.saveContractBasicInfo}
+                        />
+                    ) : (
+                        <span className='contract-value'>{contract.customer_name}</span>
+                    )}
                 </div>
-                <div className="contract-item-content">
-                    <span className="contract-label">{Intl.get('contract.168', '有效期')}:</span>
-                    <span className="contract-value">
+                <div className={itemClassName}>
+                    <span className='contract-label'>{Intl.get('contract.168', '有效期')}:</span>
+                    <span className='contract-value'>
                         {start_time}
                         {end_time ? Intl.get('common.time.connector', '至') : ''}
                         {end_time}
                     </span>
                 </div>
-                <div className="contract-item-content">
-                    <span className="contract-label">{Intl.get('contract.25', '合同额')}:</span>
-                    <span className="contract-value">{this.formatValues(contract.contract_amount)}</span>
+                <div className={itemClassName}>
+                    <span className='contract-label'>{Intl.get('contract.25', '合同额')}:</span>
+                    {contract.stage === '待审' ? (
+                        <BasicEditInputField
+                            width={350}
+                            id={contract.id}
+                            type='number'
+                            field='contract_amount'
+                            value={contract.contract_amount}
+                            afterValTip={Intl.get('contract.82', '元')}
+                            placeholder={Intl.get('contract.177', '请输入合同额')}
+                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                            saveEditInput={this.saveContractBasicInfo}
+                            noDataTip={Intl.get('contract.178', '暂无合同额')}
+                        />
+                    ) : (
+                        <span className='contract-value'>{this.formatValues(contract.contract_amount)}</span>
+                    )}
                 </div>
-                <div className="contract-item-content">
-                    <span className="contract-label">{Intl.get('contract.109', '毛利')}:</span>
-                    <span className="contract-value">{this.formatValues(contract.gross_profit)}</span>
+                <div className={itemClassName}>
+                    <span className='contract-label'>{Intl.get('contract.109', '毛利')}:</span>
+                    {contract.stage === '待审' ? (
+                        <BasicEditInputField
+                            width={350}
+                            id={contract.id}
+                            type='number'
+                            field='gross_profit'
+                            value={contract.gross_profit}
+                            afterValTip={Intl.get('contract.82', '元')}
+                            placeholder={Intl.get('contract.179', '请输入毛利')}
+                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                            saveEditInput={this.saveContractBasicInfo}
+                            noDataTip={Intl.get('contract.180', '暂无毛利额')}
+                        />
+                    ) : (
+                        <span className='contract-value'>{this.formatValues(contract.gross_profit)}</span>
+                    )}
                 </div>
-                <div className="contract-item-content">
-                    <span className="contract-label">{Intl.get('contract.37', '合同类型')}:</span>
-                    <span className="contract-value">{contract.category}</span>
+                <div className={itemClassName}>
+                    <span className='contract-label'>{Intl.get('contract.37', '合同类型')}:</span>
+                    {contract.stage === '待审' ? (
+                        <BasicEditSelectField
+                            id={contract.id}
+                            displayText={contract.category}
+                            value={contract.category}
+                            field="category"
+                            selectOptions={categoryOptions}
+                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                            placeholder={Intl.get('contract.72', '请选择合同类型')}
+                            saveEditSelect={this.saveContractBasicInfo}
+                        />
+                    ) : (
+                        <span className='contract-value'>{contract.category}</span>
+                    )}
                 </div>
                 {
-                    contract.isShowAllContractInfo ? (
-                        <div className="contract-item-content">
-                            <span className="contract-label">{Intl.get('contract.95', '产品信息')}:</span>
-                            <span className="contract-value">
-                                {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('contract.173', '暂无产品信息')}
-                            </span>
-                        </div>
-                    ) : null
+                    contract.stage === '待审' ? (
+                        contract.isShowAllContractInfo ? null : (
+                            <div className={itemClassName}>
+                                <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
+                                <span className='contract-value'>
+                                    {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('contract.173', '暂无产品信息')}
+                                </span>
+                            </div>
+                        )
+                    ) : (
+                        contract.isShowAllContractInfo ? (
+                            <div className={itemClassName}>
+                                <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
+                                <span className='contract-value'>
+                                    {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('contract.173', '暂无产品信息')}
+                                </span>
+                            </div>
+                        ) : null
+                    )
                 }
                 {
                     contract.isShowAllContractInfo && contract.remarks ? (
-                        <div className="contract-item-content">
-                            <span className="contract-label">{Intl.get('common.remark', '备注')}:</span>
-                            <span className="contract-value contract-remarks">
+                        <div className={itemClassName}>
+                            <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
+                            <span className='contract-value contract-remarks'>
                                 {contract.remarks}
                             </span>
                         </div>
@@ -267,23 +404,23 @@ const ContractItem = React.createClass({
         const contract = this.state.formData;
         const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : '';
         return (
-            <div className="contract-bottom-wrap">
+            <div className='contract-bottom-wrap'>
                 {
                     this.state.errMsg ? (
                         <AlertTimer
                             time={3000}
                             message={this.state.errMsg}
-                            type="error"
+                            type='error'
                             showIcon
                             onHide={this.hideErrorMsg}
                         />
                     ) : null
                 }
                 <ReactIntl.FormattedMessage
-                    id="contract.169"
+                    id='contract.169'
                     defaultMessage={'{uername}签订于{date}'}
                     values={{
-                        'uername': <span className="signed-username">{contract.user_name}</span>,
+                        'uername': <span className='signed-username'>{contract.user_name}</span>,
                         'date': date
                     }}
                 />

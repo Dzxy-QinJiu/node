@@ -13,6 +13,7 @@ const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
 const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
 import Trace from 'LIB_DIR/trace';
+const { CategoryList} = require('PUB_DIR/sources/utils/consts');
 
 // 开通应用，默认的数量和金额
 const APP_DEFAULT_INFO = {
@@ -283,6 +284,9 @@ const Contract = React.createClass( {
         };
         const formData = this.state.formData;
         const { getFieldDecorator } = this.props.form;
+        let categoryOptions = _.map(CategoryList, (category, index) => {
+            return (<Option value={category.value} key={index}>{category.name}</Option>);
+        });
         return (
             <div className='add-contract-panel' data-tracename="添加合同面板">
                 <div className='contract-title'>{Intl.get('contract.98', '添加合同')}</div>
@@ -301,9 +305,7 @@ const Contract = React.createClass( {
                                 value={this.state.contractType}
                                 onChange={this.handleSelectContractType}
                             >
-                                <Option value="产品合同">{Intl.get('contract.6', '产品合同')}</Option>
-                                <Option value="项目合同">{Intl.get('contract.7', '项目合同')}</Option>
-                                <Option value="服务合同">{Intl.get('contract.8', '服务合同')}</Option>
+                                { categoryOptions }
                             </Select>
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.34', '签订时间')}>
@@ -320,7 +322,6 @@ const Contract = React.createClass( {
                                 onChange={this.handleValidityTimeRange}
                                 allowClear={false}
                             />
-
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
                             {getFieldDecorator('contract_amount', {

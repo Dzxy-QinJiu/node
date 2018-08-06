@@ -178,6 +178,22 @@
             word-break:break-all
           }
         }
+        // 合同待审编辑样式
+        .item-edit-style {
+          .basic-edit-field .basic-info-text{
+            max-width: 360px;
+          }
+          //编辑按钮hover时才展示
+          .icon-edit-btn {
+            display: none;
+          }
+          &:hover {
+            background-color: #f6fbff;
+            .icon-edit-btn {
+              display: block;
+            }
+          }
+        }
       }
       .contract-bottom-wrap {
         float: right;

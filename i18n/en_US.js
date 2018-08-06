@@ -1588,6 +1588,11 @@ var en_US = {
     'contract.174': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
     'contract.175': 'Product name', // 产品名称
     'contract.176': 'Number of accounts', // 账号数量
+    'contract.177': 'Please enter the contract amount', // 请输入合同额
+    'contract.178': 'No contract amount', // 暂无合同额
+    'contract.179': 'Please enter the gross profit', // 请输入毛利
+    'contract.180': 'No gross profit', // 暂无毛利额
+
     //合同管理  end
 
     // 应用的运营报告start

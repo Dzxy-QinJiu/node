@@ -30,5 +30,13 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    },{
+        // 编辑待审合同
+        'method': 'put',
+        'path': '/rest/crm/edit/contract/:type',
+        'handler': 'editPendingContract',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

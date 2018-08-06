@@ -60,3 +60,15 @@ exports.deletePendingContract = (req, res) => {
             res: res
         }, null);
 };
+
+// 编辑待审合同
+exports.editPendingContract = (req, res) => {
+    let url = restApis.urlContract;
+    let params = req.params;
+    return restUtil.authRest.put(
+        {
+            url: url.replace(':type', params.type),
+            req: req,
+            res: res
+        }, JSON.parse(req.body.rangParams));
+};

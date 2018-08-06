@@ -29,3 +29,13 @@ exports.deletePendingContract = (req, res) => {
             res.status(500).json(err && err.message);
         });
 };
+
+// 编辑待审合同
+exports.editPendingContract = (req, res) => {
+    contractService.editPendingContract(req, res)
+        .on('success', (data) => {
+            res.status(200).json(data);
+        }).on('error', (err) => {
+            res.status(500).json(err && err.message);
+        });
+};
