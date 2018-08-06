@@ -47,7 +47,7 @@ const Contract = React.createClass( {
         };
     },
     componentWillReceiveProps(nextProps) {
-        if (nextProps.customerId && nextProps.customerId !== this.props.customerId) {
+        if (_.get(nextProps, 'customerId') && nextProps.customerId !== this.props.customerId) {
             let formData = this.state.formData;
             formData.customer_name = nextProps.curCustomer.name;
             formData.buyer = nextProps.curCustomer.name;
