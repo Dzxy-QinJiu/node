@@ -20,7 +20,7 @@ const ContractItem = React.createClass({
         };
     },
     componentWillReceiveProps(nextProps) {
-        if (nextProps.contract && nextProps.contract.id && this.props.contract.id !== nextProps.contract.id) {
+        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
             this.setState({
                 formData: JSON.parse(JSON.stringify(nextProps.contract)),
             });
@@ -44,7 +44,7 @@ const ContractItem = React.createClass({
         });
     },
     // 删除合同
-    showDeleteContract(contract, event) {
+    deleteContract(contract, event) {
         Trace.traceEvent(event, '点击确认删除合同');
         this.setState({isLoading: true});
         ContractAjax.deletePendingContract(contract.id).then( (resData) => {
@@ -109,7 +109,7 @@ const ContractItem = React.createClass({
                                     {Intl.get('common.cancel', '取消')}
                                 </Button>
                                 <Button className="item-delete-confirm delete-button-style"
-                                    onClick={this.showDeleteContract.bind(this, contract)}>
+                                    onClick={this.deleteContract.bind(this, contract)}>
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
