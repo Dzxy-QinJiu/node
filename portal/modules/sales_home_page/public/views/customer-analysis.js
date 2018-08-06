@@ -77,7 +77,6 @@ var CustomerAnalysis = React.createClass({
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
                     this.getStageChangeCustomers();
-                    this.getCustomerStageAnalysis();
                 });
             }
         });
