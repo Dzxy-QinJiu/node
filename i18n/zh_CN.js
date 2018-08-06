@@ -285,6 +285,7 @@ var zh_CN = {
     'user.time.start': '开通时间',
     'user.time.end': '到期时间',
     'user.login.times': '登录次数',
+    'user.login.score': '分数',
     'user.login.days': '登录天数',
     'user.remark.write.tip': '请填写备注',
     'user.remark.set.tip': '设置备注',
