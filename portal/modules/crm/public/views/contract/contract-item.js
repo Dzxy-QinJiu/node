@@ -384,23 +384,30 @@ const ContractItem = React.createClass({
                     )
                 }
                 {
-                    contract.isShowAllContractInfo && contract.remarks ? (
-                        <div className={itemClassName}>
-                            <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
-                            {contract.stage === '待审' ? (
-                                <BasicEditInputField
-                                    width={350}
-                                    id={contract.id}
-                                    type="textarea"
-                                    field='remarks'
-                                    value={contract.remarks}
-                                    hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
-                                    saveEditInput={this.saveContractBasicInfo}
-                                />
-                            ) : (
-                                <span className='contract-value contract-remarks'>{contract.remarks}</span>
-                            )}
-                        </div>
+                    contract.remarks ? (
+                        contract.stage === '待审' ? (
+                            contract.isShowAllContractInfo ? null : (
+                                <div className={itemClassName}>
+                                    <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
+                                    <BasicEditInputField
+                                        width={350}
+                                        id={contract.id}
+                                        type="textarea"
+                                        field='remarks'
+                                        value={contract.remarks}
+                                        hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                                        saveEditInput={this.saveContractBasicInfo}
+                                    />
+                                </div>
+                            )
+                        ) : (
+                            contract.isShowAllContractInfo ? (
+                                <div className={itemClassName}>
+                                    <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
+                                    <span className='contract-value contract-remarks'>{contract.remarks}</span>
+                                </div>
+                            ) : null
+                        )
                     ) : null
                 }
             </div>
