@@ -77,6 +77,7 @@ var CustomerAnalysis = React.createClass({
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
                     this.getStageChangeCustomers();
+                    this.getCustomerStageAnalysis();
                 });
             }
         });
@@ -415,10 +416,13 @@ var CustomerAnalysis = React.createClass({
     },
     //处理试用合格客户数统计数字点击事件
     handleTrialQualifiedNumClick(customerIds) {
-        history.pushState({
-            from: 'sales_home',
-            trialQualifiedCustomerIds: customerIds
-        }, '/crm', {});
+        this.setState({
+            isShowCustomerTable: true,
+            crmLocationState: {
+                from: 'sales_home',
+                trialQualifiedCustomerIds: customerIds
+            }
+        });
     },
     //试用合格客户数统计数字渲染函数
     trialQualifiedNumRender(customerIdsField, text, record) {
@@ -1133,9 +1137,10 @@ var CustomerAnalysis = React.createClass({
             );
         }
     },
-    showCustomerTable(isShow) {
+    hideCustomerTable() {
         this.setState({
-            isShowCustomerTable: isShow
+            isShowCustomerTable: false,
+            crmLocationState: null,
         });
     },
     //新开客户统计表格数字点击处理函数
@@ -1203,13 +1208,20 @@ var CustomerAnalysis = React.createClass({
                             <div className="customer-table-close topNav">
                                 <RightPanelClose
                                     title={Intl.get('common.app.status.close', '关闭')}
-                                    onClick={this.showCustomerTable.bind(this, false)}
+                                    onClick={this.hideCustomerTable}
                                 />
-                                <CrmList
-                                    location={{ query: '' }}
-                                    fromSalesHome={true}
-                                    params={newAddedCustomerParams}
-                                />
+                                {this.state.crmLocationState ? (
+                                    <CrmList
+                                        location={{ query: '', state: this.state.crmLocationState }}
+                                        fromSalesHome={true}
+                                    />
+                                ) : (
+                                    <CrmList
+                                        location={{ query: '' }}
+                                        fromSalesHome={true}
+                                        params={newAddedCustomerParams}
+                                    />
+                                )}
                             </div> : null
                     }
                 </RightPanel>
