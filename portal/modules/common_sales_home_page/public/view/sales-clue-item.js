@@ -117,6 +117,7 @@ class SalesClueItem extends React.Component {
                     } else {
                         //原来有customer_traces这个属性时，数组中除了remark还有别的属性
                         clueItem.customer_traces[0].remark = textareVal;
+                        clueItem.customer_traces[0].user_id = userData.getUserData().user_id || '';
                     }
                     this.setState({
                         submitTraceLoading: false,
@@ -283,7 +284,7 @@ class SalesClueItem extends React.Component {
     };
     renderHasDistributeFootText = (salesClueItem, isAssignedSale, canEditTrace) => {
         var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');
-        var tracePerson = _.get(salesClueItem, 'customer_traces[0].nick_name');
+        var tracePerson = salesClueItem.user_name;
         return (
             <div>
                 {traceContent ? (<span>{traceContent}
@@ -365,7 +366,7 @@ class SalesClueItem extends React.Component {
                     className="customer-name"
                     onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)}>{associatedCustomer}</b></div> : null}
             {/*有分配权限*/}
-            {hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales) && (status === '0' || status === '1') ?
+            {(hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !user.isCommonSales) && (status === '0' || status === '1') ?
                 <AntcDropdown
                     ref={'changesale' + salesClueItem.id}
                     content={<Button

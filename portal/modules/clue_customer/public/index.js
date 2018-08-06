@@ -426,19 +426,17 @@ const ClueCustomer = React.createClass({
                         //隐藏批量变更销售面板
                         this.refs['salesclueitem' + item.id].refs['changesale' + item.id].handleCancel();
                     }
-                    this.updateStatusStatistics(SELECT_TYPE.WILL_DISTRIBUTE, SELECT_TYPE.HAS_DISTRIBUTE);
+
                     //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
                     if (this.state.clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE) {
                         clueCustomerAction.afterAssignSales(item.id);
+                        this.updateStatusStatistics(SELECT_TYPE.WILL_DISTRIBUTE, SELECT_TYPE.HAS_DISTRIBUTE);
                     } else {
                         item.user_name = sale_name;
                         item.user_id = sale_id;
                         item.sales_team = team_name;
                         item.sales_team_id = team_id;
-                        if (item.status !== SELECT_TYPE.HAS_TRACE){
-                            item.status = SELECT_TYPE.HAS_DISTRIBUTE;
-                        }
-
+                        item.status = SELECT_TYPE.HAS_DISTRIBUTE;
                         this.setState({
                             curCustomers: this.state.curCustomers
                         });
