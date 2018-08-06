@@ -4,7 +4,8 @@ import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
-import { Button, Icon, message } from 'antd';
+import { Button, Icon, message, DatePicker } from 'antd';
+const RangePicker = DatePicker.RangePicker;
 import ContractAction from '../../action/contract-action';
 const ContractAjax = require('../../ajax/contract-ajax');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -13,6 +14,8 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 const UserData = require('PUB_DIR/sources/user-data');
 const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
+import {DetailEditBtn} from 'CMP_DIR/rightPanel';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -21,6 +24,9 @@ const ContractItem = React.createClass({
             formData: JSON.parse(JSON.stringify(this.props.contract)),
             isLoading: false,
             errMsg: '', // 删除错误的信息提示
+            editValidityLoading: false, // 编辑有效期的loading，默认false
+            isShowValidityTimeEdit: false, // 是否显示编辑有效期，默认false
+            editValidityTimeErrMsg: '', // 编辑有效期错误信息提示
         };
     },
     componentWillReceiveProps(nextProps) {
@@ -253,6 +259,48 @@ const ContractItem = React.createClass({
             }
         });
     },
+    showEditValidityTime(event) {
+        Trace.traceEvent(event, '修改合同的有效期');
+        this.setState({
+            isShowValidityTimeEdit: true
+        });
+    },
+    handleValidityTimeRange(dates) {
+        let contract = this.state.formData;
+        let startTime = _.get(dates, '[0]') && _.get(dates, '[0]').valueOf() || '';
+        let endTime = _.get(dates, '[1]') && _.get(dates, '[1]').valueOf() || '';
+        contract.start_time = startTime;
+        contract.end_time = endTime;
+        this.setState({contract});
+    },
+    handleSubmitEditValidityTime() {
+        let contract = this.state.formData;
+        contract.user_id = UserData.getUserData().user_id || '';
+        contract.user_name = UserData.getUserData().user_name || '';
+        // 客户信息
+        contract.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
+        ContractAjax.editPendingContract({type: 'sell'}, contract).then( (resData) => {
+            this.state.editValidityLoading = false;
+            this.state.isShowValidityTimeEdit = false;
+            if (resData && resData.code !== 0) {
+                message.success(Intl.get('user.edit.success', '修改成功'));
+                this.state.editValidityTimeErrMsg = '';
+            } else {
+                this.state.editValidityTimeErrMsg = Intl.get('common.edit.failed', '修改失败');
+            }
+            this.setState(this.state);
+        }, (errMsg) => {
+            this.setState({
+                editValidityLoading: false,
+                editValidityTimeErrMsg: errMsg || IIntl.get('common.edit.failed', '修改失败')
+            });
+        });
+    },
+    handleCancelEditValidityTime() {
+        this.setState({
+            isShowValidityTimeEdit: false
+        });
+    },
     renderContractContent() {
         const contract = this.state.formData;
         const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : '';
@@ -303,11 +351,32 @@ const ContractItem = React.createClass({
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('contract.168', '有效期')}:</span>
-                    <span className='contract-value'>
-                        {start_time}
-                        {end_time ? Intl.get('common.time.connector', '至') : ''}
-                        {end_time}
-                    </span>
+                    {
+                        this.state.isShowValidityTimeEdit ? (
+                            <div className='contract-validity-edit-block'>
+                                <RangePicker
+                                    className='validity-time'
+                                    value={[moment(contract.start_time), moment(contract.end_time)]}
+                                    ranges={{ '有效期一年': [moment(moment().valueOf()), moment(moment().add(1, 'year').valueOf())] }}
+                                    onChange={this.handleValidityTimeRange}
+                                    allowClear={false}
+                                />
+                                <SaveCancelButton
+                                    loading={this.state.editValidityLoading}
+                                    saveErrorMsg={this.state.editValidityTimeErrMsg}
+                                    handleSubmit={this.handleSubmitEditValidityTime}
+                                    handleCancel={this.handleCancelEditValidityTime}
+                                />
+                            </div>
+                        ) : (
+                            <span className='contract-value'>
+                                {start_time}
+                                {end_time ? Intl.get('common.time.connector', '至') : ''}
+                                {end_time}
+                            </span>
+                        )
+                    }
+                    { !this.state.isShowValidityTimeEdit && contract.stage === '待审' ? <DetailEditBtn onClick={this.showEditValidityTime}/> : null}
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('contract.25', '合同额')}:</span>
@@ -469,6 +538,7 @@ const ContractItem = React.createClass({
         let containerClassName = classNames('contract-item-container', {
             'item-delete-border': this.state.isDeleteContractFlag,
         });
+        const contract = this.state.formData;
         return (
             <DetailCard
                 title={this.renderContractTitle()}
