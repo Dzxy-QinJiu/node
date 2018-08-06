@@ -9,7 +9,6 @@ var hasPrivilege = require('../../../../components/privilege/checker').hasPrivil
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
 var OplateCustomerAnalysisAction = require('../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action');
 var OplateCustomerAnalysisStore = require('../../../oplate_customer_analysis/public/store/oplate-customer-analysis.store');
-var CompositeLine = require('../../../oplate_customer_analysis/public/views/composite-line');
 var BarChart = require('../../../oplate_customer_analysis/public/views/bar');
 var ReverseBarChart = require('../../../oplate_customer_analysis/public/views/reverse_bar');
 var SingleLineChart = require('../../../oplate_customer_analysis/public/views/single_line');

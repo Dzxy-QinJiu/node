@@ -6,7 +6,6 @@ import { AntcAnalysis } from 'antc';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateUserAnalysisAction = require('../../../oplate_user_analysis/public/action/oplate-user-analysis.action');
 var OplateUserAnalysisStore = require('../../../oplate_user_analysis/public/store/oplate-user-analysis.store');
-var CompositeLine = require('../../../oplate_user_analysis/public/views/composite-line');
 var BarChart = require('../../../oplate_user_analysis/public/views/bar');
 var ReverseBarChart = require('../../../oplate_user_analysis/public/views/reverse_bar');
 var SingleLineChart = require('../../../oplate_user_analysis/public/views/single_line');
