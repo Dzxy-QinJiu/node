@@ -40,10 +40,12 @@ const AddProduct = React.createClass({
         });
     },
     onAppChoosen: function(index, value) {
-        const appIdName = value.split(' ');
+        const appName = $.trim(value);
+        const selectedApp = _.find(this.props.appList, app => app.app_name === appName);
+        const appId = selectedApp ? selectedApp.app_id : '';
 
-        this.state.products[index].id = appIdName[0];
-        this.state.products[index].name = appIdName[1];
+        this.state.products[index].id = appId;
+        this.state.products[index].name = appName;
         this.setState(this.state);
     },
     setField2: function(field, index, e) {
@@ -57,14 +59,13 @@ const AddProduct = React.createClass({
         const products = this.state.products;
 
         const appOptions = appList.map(app => {
-            let app_id_name = app.app_id + ' ' + app.app_name;
-            return <Option key={app_id_name} value={app_id_name}>{app.app_name}</Option>;
+            return <Option key={app.app_name} value={app.app_name}>{app.app_name}</Option>;
         });
 
         return (
             <Validation ref="validation" onValidate={this.handleValidate}>
                 {products.map((product, index) => {
-                    let value = product.name ? (product.id + ' ' + product.name) : '';
+                    let value = product.name || '';
                     const existInAppList = _.findIndex(appList, app => app.app_name === product.name) > -1;
                     if (!existInAppList) {
                         appOptions.push(<Option key={value} value={value}>{product.name}</Option>);
@@ -76,9 +77,10 @@ const AddProduct = React.createClass({
                                 label={index === 0 ? Intl.get('common.app.name', '应用名称') : ''}
                             >
                                 <Select
-                                    showSearch
+                                    mode="combobox"
                                     placeholder={Intl.get('user.app.select.please', '请选择应用')}
                                     value={value}
+                                    onSearch={this.onAppChoosen.bind(this, index)}
                                     onChange={this.onAppChoosen.bind(this, index)}
                                     notFoundContent={Intl.get('my.app.no.app', '暂无应用')}
                                 >
@@ -95,14 +97,14 @@ const AddProduct = React.createClass({
                             </FormItem>
                             <FormItem 
                                 label={index === 0 ? '数量（个）' : ''}
-                                validateStatus={this.getValidateStatus('num' + index)}
-                                help={this.getHelpMessage('num' + index)}
+                                validateStatus={this.getValidateStatus('count' + index)}
+                                help={this.getHelpMessage('count' + index)}
                             >
                                 <Validator rules={[{required: true, message: Intl.get('contract.89', '请填写数量')}, {pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字')}]}>
                                     <Input
-                                        name={'num' + index}
-                                        value={(isNaN(product.num) ? '' : product.num).toString()}
-                                        onChange={this.setField2.bind(this, 'num', index)}
+                                        name={'count' + index}
+                                        value={(isNaN(product.count) ? '' : product.count).toString()}
+                                        onChange={this.setField2.bind(this, 'count', index)}
                                     />
                                 </Validator>
                             </FormItem>

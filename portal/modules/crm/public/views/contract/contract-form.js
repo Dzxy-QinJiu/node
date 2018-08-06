@@ -141,7 +141,7 @@ const Contract = React.createClass( {
     getProductColumns() {
         return [
             {
-                title: Intl.get('contract.175', '产品名称'),
+                title: Intl.get('crm.contract.175', '产品名称'),
                 dataIndex: 'client_name',
                 key: 'client_name',
                 width: '40%',
@@ -150,7 +150,7 @@ const Contract = React.createClass( {
                 }
             },
             {
-                title: Intl.get('contract.176', '账号数量'),
+                title: Intl.get('crm.contract.176', '账号数量'),
                 dataIndex: 'count',
                 width: '20%',
                 key: 'count',
@@ -159,7 +159,7 @@ const Contract = React.createClass( {
                 }
             },
             {
-                title: Intl.get('contract.172', '金额(元)'),
+                title: Intl.get('crm.contract.172', '金额(元)'),
                 dataIndex: 'total_price',
                 key: 'total_price',
                 width: '40%',
@@ -312,7 +312,7 @@ const Contract = React.createClass( {
                                 onChange={this.handleSignContractDate}
                             />
                         </FormItem>
-                        <FormItem {...formItemLayout} label={Intl.get('contract.168', '有效期')}>
+                        <FormItem {...formItemLayout} label={Intl.get('crm.contract.168', '有效期')}>
                             <RangePicker
                                 className='validity-time'
                                 ranges={{ '有效期一年': [moment(formData.start_time), moment(formData.end_time)] }}
@@ -402,7 +402,7 @@ const Contract = React.createClass( {
                 // reqData.contract_amount是字符串格式，+是为了将字符串转为数字格式
                 if (productTotalPrice !== +reqData.contract_amount) {
                     this.setState({
-                        errMsg: Intl.get('contract.174', '合同额与产品总额不相等，请核对')
+                        errMsg: Intl.get('crm.contract.174', '合同额与产品总额不相等，请核对')
                     });
                     return;
                 }

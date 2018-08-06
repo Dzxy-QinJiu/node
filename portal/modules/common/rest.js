@@ -4,22 +4,22 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 const routes = require('./route');
 const _ = require('lodash');
 
+//正则
+import {pathParamRegex} from '../../../portal/lib/utils/regex-util';
+
 routes.forEach(route => {
     exports[route.handler] = function(req, res, next) {
         const queryStr = querystring.stringify(req.query);
         let url = queryStr ? route.path + '?' + queryStr : route.path;
 
         if (!_.isEmpty(req.params)) {
-            url = url.replace(/\:([a-zA-Z_\-0-9]+)/g, function($0, $1) {
+            url = url.replace(pathParamRegex, function($0, $1) {
                 let param = req.params[$1];
                 if (param.indexOf('=') > -1) param = param.replace(/=/g, '/');
                 if (param.indexOf('_null') > -1) param = '';
                 return param;
             });
-        }
-        if (url.includes('/rest/base/v1')) {
-            url = 'http://172.19.103.102:8391' + url;
-        }
+        }        
         let data = req.body.reqData ? JSON.parse(req.body.reqData) : null;
         let method = route.method;
 

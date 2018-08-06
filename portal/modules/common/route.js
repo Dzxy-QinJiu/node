@@ -2,6 +2,7 @@ const geoUrl = '/rest/geo/service/v1/';
 const customerUrl = '/rest/customer/v2/customer/';
 const userAnalysisUrl = '/rest/analysis/user/v1/';
 const contractAnalysisUrl = '/rest/analysis/contract/contract/';
+const contractV2AnalysisUrl = '/rest/analysis/contract_v2/statistics';
 const teamUrl = '/rest/base/v1/group/';
 const customerCommonAnalysisUrl = '/rest/analysis/customer/v1/common/';
 const customerManagerAnalysisUrl = '/rest/analysis/customer/v1/manager/';
@@ -110,6 +111,15 @@ module.exports = [{
         'MEMBER_WEBSITE_CONFIG'
     ]
 }, {
+    // 合同统计
+    method: 'get',
+    path: contractV2AnalysisUrl,
+    handler: 'getContractStaticAnalysisData',
+    module: 'contract/server/special-case-handler',
+    passport: {
+        'needLogin': true
+    }
+},{
     'method': 'get',//获取设备类型统计manager
     'path': userAnalysisV3Url + '/manager/device',
     'handler': 'getDeviceTypeBymanager',
@@ -335,7 +345,7 @@ module.exports = [{
     //给成员增加角色
     'method': 'put',
     'path': '/rest/base/v1/user/role/updates',
-    'handler': 'addRoleToUsers',
+    'handler': 'addRoleOfUsers',
     'passport': {
         'needLogin': true
     }
@@ -343,15 +353,15 @@ module.exports = [{
     //给成员删除角色
     'method': 'delete',
     'path': '/rest/base/v1/user/role/updates',
-    'handler': 'delRoleToUsers',
+    'handler': 'delRoleOfUsers',
     'passport': {
         'needLogin': true
     }
 }, {
-    //给成员更新角色
+    //给成员更新角色（含增加角色，删除角色）
     'method': 'put',
     'path': '/updateRoleForUsers',
-    'handler': 'editRoleToUsers',
+    'handler': 'editRoleOfUsers',
     module: 'app_open_manage/server/edit-role-user',
     'passport': {
         'needLogin': true

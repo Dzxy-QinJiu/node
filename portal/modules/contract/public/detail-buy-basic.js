@@ -7,7 +7,7 @@ const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import { getTeamName } from './utils';
+import { getTeamName, getPurchaseContractTypeName } from './utils';
 import AddBuyBasic from './add-buy-basic';
 
 const DetailBuyBasic = React.createClass({
@@ -85,9 +85,13 @@ const DetailBuyBasic = React.createClass({
                             {contract.sales_team || getTeamName(this.props.teamList, contract.sales_team_id)}
                         </div>
                         <div className="detail-item">
+                            {Intl.get('contract.purchase.contract.type', '分类')}:
+                            {contract.purchase_contract_type ? getPurchaseContractTypeName(contract.purchase_contract_type) : ''}
+                        </div>
+                        <div className="detail-item">
                             {Intl.get('contract.25', '合同额')}:
                             {contract.contract_amount}
-                            <ReactIntl.FormattedMessage id="contract.159" defaultMessage="元" />
+                            {Intl.get('contract.155', '元')}
                         </div>
                         <div className="detail-item">
                             {Intl.get('contract.34', '签订时间')}:

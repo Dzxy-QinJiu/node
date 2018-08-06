@@ -53,7 +53,7 @@ OpenAppStore.prototype.getAllUsers = resultHandler('userList', function({ data }
     this.userList.data = data;
 });
 
-OpenAppStore.prototype.editRoleToUsers = resultHandler('editRoleResult');
+OpenAppStore.prototype.editRoleOfUsers = resultHandler('editRoleResult');
 
 OpenAppStore.prototype.changeRoleUser = function(params) {
     const roleItem = this.roleList.data.find(x => x.role_id === params.role_id);

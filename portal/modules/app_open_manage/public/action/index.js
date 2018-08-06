@@ -12,7 +12,7 @@ function OpenAppAction() {
     this.getAppList = asyncDispatcher(openAppAjax.getAppList);
     this.getAppRoleList = asyncDispatcher(openAppAjax.getAppRoleList);
     this.getAllUsers = asyncDispatcher(openAppAjax.getAllUsers);
-    this.editRoleToUsers = asyncDispatcher(openAppAjax.editRoleToUsers, true);
+    this.editRoleOfUsers = asyncDispatcher(openAppAjax.editRoleOfUsers, true);
     this.openApp = asyncDispatcher(openAppAjax.openApp, true);
 }
 

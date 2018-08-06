@@ -8,7 +8,7 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 import Spinner from '../../../components/spinner';
 import { Tabs, message, Button } from 'antd';
 const TabPane = Tabs.TabPane;
-import { PRODUCT, PROJECT, SERVICE, PURCHASE, CATEGORY } from '../consts';
+import { PRODUCT, PROJECT, SERVICE, PURCHASE, CATEGORY, VIEW_TYPE } from '../consts';
 import AddBasic from './add-basic';
 import AddProduct from './add-product';
 import AddReport from './add-report';
@@ -22,6 +22,7 @@ import DetailBuyBasic from './detail-buy-basic';
 import DetailBuyPayment from './detail-buy-payment';
 import DetailCost from './detail-cost';
 import Trace from 'LIB_DIR/trace';
+import calc from 'calculatorjs';
 
 let stepMap = {
     '1': '基本信息',
@@ -36,11 +37,19 @@ const ContractRightPanel = React.createClass({
             currentView: this.props.view,
             currentCategory: this.props.view === 'buyForm' ? PURCHASE : PRODUCT,
             currentTabKey: '1',
+            userList: JSON.parse(JSON.stringify(this.props.userList)),
+            teamList: JSON.parse(JSON.stringify(this.props.teamList)),
+            showDiffAmountWarning: false,
         };
     },
     componentDidMount: function() {
         $(window).on('resize', this.setContentHeight);
         this.setContentHeight();
+
+        //补充用户列表
+        this.supplementUserList(this.props);
+        //补充团队列表
+        this.supplementTeamList(this.props);
     },
     componentDidUpdate: function() {
         const scrollBar = this.refs.gemiScrollBar;
@@ -89,6 +98,43 @@ const ContractRightPanel = React.createClass({
         }
 
         this.setState(this.state);
+
+        //补充用户列表
+        this.supplementUserList(nextProps);
+        //补充团队列表
+        this.supplementTeamList(nextProps);
+    },
+    //补充用户列表
+    ///以防止在编辑的时候，已经离职的销售人员无法选中的问题
+    supplementUserList: function(props) {
+        const userId = props.contract.user_id;
+        const userName = props.contract.user_name;
+        const userIndex = _.findIndex(props.userList, user => user.user_id === userId);
+
+        if (userId && userName && userIndex === -1) {
+            this.state.userList.push({
+                user_id: userId,
+                nick_name: userName,
+            });
+    
+            this.setState(this.state);
+        }
+    },
+    //补充团队列表
+    ///以防止在编辑的时候，已经删除的销售团队无法选中的问题
+    supplementTeamList: function(props) {
+        const teamId = props.contract.sales_team_id;
+        const teamName = props.contract.sales_team;
+        const teamIndex = _.findIndex(props.teamList, team => team.groupId === teamId);
+
+        if (teamId && teamName && teamIndex === -1) {
+            this.state.teamList.push({
+                groupId: teamId,
+                groupName: teamName,
+            });
+    
+            this.setState(this.state);
+        }
     },
     changeCurrentTabKey: function(key) {
         this.setState({
@@ -103,11 +149,9 @@ const ContractRightPanel = React.createClass({
         this.setState(this.state);
     },
     goPrev: function() {
-        //当验证通过时，发送点击事件信息
-        if(validation) {
-            Trace.traceEvent(this.getDOMNode(),'添加合同>进入上一步');
-        }
-        if (this.state.currentTabKey == 1) this.state.currentView = 'chooseType';
+        Trace.traceEvent(this.getDOMNode(),'添加合同>进入上一步');
+
+        if (this.state.currentTabKey === 1) this.state.currentView = 'chooseType';
         else {
             let step = parseInt(this.state.currentTabKey);
             step--;
@@ -153,6 +197,19 @@ const ContractRightPanel = React.createClass({
             if (!valid) {
                 return;
             } else {
+                if ([PRODUCT, SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
+                    let totalProductsPrice = this.refs.addProduct.state.products.reduce(
+                        // calc方法需要传入字符串来计算，因此使用模版字符串
+                        (acc, cur) => cur.total_price ? calc(`${acc} + ${cur.total_price}`) : acc,
+                        0
+                    );
+                    if (this.refs.addBasic.state.formData.contract_amount !== totalProductsPrice) {
+                        this.setState({showDiffAmountWarning: true});
+                    } else {
+                        this.setState({showDiffAmountWarning: false}, this.goNext());
+                    }
+                    return;
+                }
                 this.goNext();
             }
         });
@@ -163,7 +220,10 @@ const ContractRightPanel = React.createClass({
     hideLoading: function() {
         this.setState({isLoading: false});
     },
-    handleSubmit: function(cb) {
+    //处理提交
+    //cb：回调函数
+    //refreshWithResult：是否用提交返回的结果来更新当前合同
+    handleSubmit: function(cb, refreshWithResult) {
         Trace.traceEvent(this.getDOMNode(), stepMap[this.state.currentTabKey] + '添加合同>点击完成按钮');
         this.showLoading();
 
@@ -172,7 +232,7 @@ const ContractRightPanel = React.createClass({
         let contractData;
 
         if (currentView === 'sellForm') {
-            type = 'sell';
+            type = VIEW_TYPE.SELL;
             contractData = _.extend({}, this.props.contract, this.refs.addBasic.state.formData);
             contractData.category = this.state.currentCategory;
 
@@ -188,13 +248,13 @@ const ContractRightPanel = React.createClass({
 
             if (this.refs.addRepayment) contractData.repayments = this.refs.addRepayment.state.repayments;
         } else if (currentView === 'buyForm') {
-            type = 'buy';
+            type = VIEW_TYPE.BUY;
             contractData = _.extend({}, this.props.contract, this.refs.addBuyBasic.state.formData);
             contractData.category = this.state.currentCategory;
             if (this.refs.addBuyPayment) contractData.payments = this.refs.addBuyPayment.state.payments;
         } else {
             type = this.props.contract.type;
-            if (type === 'sell') {
+            if (type === VIEW_TYPE.SELL) {
                 contractData = _.extend({}, this.props.contract, this.refs.detailBasic.state.formData);
             } else {
                 contractData = _.extend({}, this.props.contract, this.refs.detailBuyBasic.state.formData);
@@ -235,7 +295,11 @@ const ContractRightPanel = React.createClass({
                     }
                 } else {
                     if (hasResult) {
-                        this.props.refreshCurrentContract(reqData.id);
+                        if (refreshWithResult) {
+                            this.props.refreshCurrentContract(reqData.id, true, result.result);
+                        } else {
+                            this.props.refreshCurrentContract(reqData.id);
+                        }
                     }
                 }
 
@@ -286,6 +350,7 @@ const ContractRightPanel = React.createClass({
                         appList={this.props.appList}
                         updateScrollBar={this.updateScrollBar}
                     />
+                    {this.state.showDiffAmountWarning ? <p className="different-amount-warning">{Intl.get('contract.different.amount.wanring', '合同额与产品总额不同提示信息')}</p> : null}
                 </GeminiScrollBar>
             </TabPane>
         ));
@@ -316,7 +381,7 @@ const ContractRightPanel = React.createClass({
         ));
 
         return (
-            <div>
+            <div id="contractRightPanel">
                 <RightPanelClose 
                     onClick={this.props.hideRightPanel}
                 />
@@ -362,7 +427,7 @@ const ContractRightPanel = React.createClass({
                             >
                                 <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
                             </Button>
-                            {this.state.currentTabKey != endPaneKey ? (
+                            {this.state.currentTabKey !== endPaneKey ? (
                                 <Button
                                     onClick={this.onNextStepBtnClick}
                                 >
@@ -411,7 +476,7 @@ const ContractRightPanel = React.createClass({
                             >
                                 <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
                             </Button>
-                            {this.state.currentTabKey != '2' ? (
+                            {this.state.currentTabKey !== '2' ? (
                                 <Button
                                     onClick={this.onNextStepBtnClick}
                                 >
@@ -453,33 +518,28 @@ const ContractRightPanel = React.createClass({
 
                 {this.state.currentView === 'detail' ? (
                     <div className="detail">
-                        {this.props.contract.type === 'sell' ? (
+                        {this.props.contract.type === VIEW_TYPE.SELL ? (
                             <Tabs activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
                                 <TabPane tab={Intl.get('contract.101', '合同信息')} key="1">
                                     <GeminiScrollBar ref="gemiScrollBar">
                                         <DetailBasic
                                             ref="detailBasic"
                                             contract={this.props.contract}
-                                            teamList={this.props.teamList}
-                                            userList={this.props.userList}
+                                            teamList={this.state.teamList}
+                                            userList={this.state.userList}
                                             getUserList={this.props.getUserList}
                                             isGetUserSuccess={this.props.isGetUserSuccess}
                                             appList={this.props.appList}
                                             handleSubmit={this.handleSubmit}
                                             updateScrollBar={this.updateScrollBar}
+                                            showLoading={this.showLoading}
+                                            hideLoading={this.hideLoading}
+                                            refreshCurrentContract={this.props.refreshCurrentContract}
+                                            viewType={this.props.viewType}
                                         />
                                     </GeminiScrollBar>
                                 </TabPane>
-                                <TabPane tab={Intl.get('contract.102', '合同回款')} key="2">
-                                    <DetailRepayment
-                                        ref="detailRepayment"
-                                        contract={this.props.contract}
-                                        showLoading={this.showLoading}
-                                        hideLoading={this.hideLoading}
-                                        refreshCurrentContract={this.props.refreshCurrentContract}
-                                    />
-                                </TabPane>
-                                <TabPane tab={Intl.get('contract.103', '合同发票')} key="3">
+                                <TabPane tab={Intl.get('contract.103', '合同发票')} key="2">
                                     <GeminiScrollBar ref="gemiScrollBar">
                                         <DetailInvoice
                                             ref="detailInvoice"
@@ -487,6 +547,7 @@ const ContractRightPanel = React.createClass({
                                             showLoading={this.showLoading}
                                             hideLoading={this.hideLoading}
                                             refreshCurrentContract={this.props.refreshCurrentContract}
+                                            refreshCurrentContractNoAjax={this.props.refreshCurrentContractNoAjax}
                                             updateScrollBar={this.updateScrollBar}
                                         />
                                     </GeminiScrollBar>
@@ -495,15 +556,17 @@ const ContractRightPanel = React.createClass({
                         ) : (
                             <Tabs activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
                                 <TabPane tab={Intl.get('contract.101', '合同信息')} key="1">
-                                    <DetailBuyBasic
-                                        ref="detailBuyBasic"
-                                        contract={this.props.contract}
-                                        teamList={this.props.teamList}
-                                        userList={this.props.userList}
-                                        getUserList={this.props.getUserList}
-                                        isGetUserSuccess={this.props.isGetUserSuccess}
-                                        handleSubmit={this.handleSubmit}
-                                    />
+                                    <GeminiScrollBar ref="gemiScrollBar">
+                                        <DetailBuyBasic
+                                            ref="detailBuyBasic"
+                                            contract={this.props.contract}
+                                            teamList={this.state.teamList}
+                                            userList={this.state.userList}
+                                            getUserList={this.props.getUserList}
+                                            isGetUserSuccess={this.props.isGetUserSuccess}
+                                            handleSubmit={this.handleSubmit}
+                                        />
+                                    </GeminiScrollBar>
                                 </TabPane>
                                 <TabPane tab={Intl.get('contract.104', '合同付款')} key="2">
                                     <GeminiScrollBar ref="gemiScrollBar">
@@ -513,6 +576,7 @@ const ContractRightPanel = React.createClass({
                                             showLoading={this.showLoading}
                                             hideLoading={this.hideLoading}
                                             refreshCurrentContract={this.props.refreshCurrentContract}
+                                            refreshCurrentContractNoAjax={this.props.refreshCurrentContractNoAjax}
                                             updateScrollBar={this.updateScrollBar}
                                         />
                                     </GeminiScrollBar>
