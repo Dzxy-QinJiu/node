@@ -546,7 +546,7 @@ var CustomerAnalysis = React.createClass({
                         data: [
                             '上月',
                             '本月',
-                            '历史最高',
+                            '历史',
                         ],
                     };
 
@@ -653,12 +653,14 @@ var CustomerAnalysis = React.createClass({
 
                     //上月系列
                     let serieLastMonth = _.extend({}, serie, {
+                        name: '上月',
                         //数据中只有上月个数为实际值，其他的均为空值，在堆积时会用到
                         data: [lastMonthNum, '-', '-', '-', '-', '-', '-', '-'],
                     });
 
                     //本月系列
                     let serieThisMonth = _.extend({}, serie, {
+                        name: '本月',
                         //数据中只有本月相关数据为实际值，其他的均为空值，在堆积时会用到
                         data: ['-', thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, '-'],
                         label: {
@@ -673,6 +675,7 @@ var CustomerAnalysis = React.createClass({
 
                     //历史系列
                     let serieHistory = _.extend({}, serie, {
+                        name: '历史',
                         //数据中只有历史最高数为实际值，其他的均为空值，在堆积时会用到
                         data: ['-', '-', '-', '-', '-', '-', '-', highestNum],
                     });
