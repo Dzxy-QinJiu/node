@@ -15,8 +15,8 @@ openAppAjax.getAppRoleList = params => {
     return ajaxPro('getAppRoleList', params);      
 };
 
-openAppAjax.editRoleToUsers = params => {
-    return ajaxPro('editRoleToUsers', params);
+openAppAjax.editRoleOfUsers = params => {
+    return ajaxPro('editRoleOfUsers', params);
 };
 
 openAppAjax.openApp = params => ajaxPro('openApp', params);

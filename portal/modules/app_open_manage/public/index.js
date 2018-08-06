@@ -116,7 +116,7 @@ class OpenApp extends React.Component {
         if (delParams.member_ids.length) {
             params.delParams = delParams;
         }
-        OpenAppAction.editRoleToUsers({
+        OpenAppAction.editRoleOfUsers({
             data: params
         }).then(({ data }) => {
             if (data.success) {

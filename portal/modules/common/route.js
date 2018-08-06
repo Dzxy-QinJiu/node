@@ -345,7 +345,7 @@ module.exports = [{
     //给成员增加角色
     'method': 'put',
     'path': '/rest/base/v1/user/role/updates',
-    'handler': 'addRoleToUsers',
+    'handler': 'addRoleOfUsers',
     'passport': {
         'needLogin': true
     }
@@ -353,15 +353,15 @@ module.exports = [{
     //给成员删除角色
     'method': 'delete',
     'path': '/rest/base/v1/user/role/updates',
-    'handler': 'delRoleToUsers',
+    'handler': 'delRoleOfUsers',
     'passport': {
         'needLogin': true
     }
 }, {
-    //给成员更新角色
+    //给成员更新角色（含增加角色，删除角色）
     'method': 'put',
     'path': '/updateRoleForUsers',
-    'handler': 'editRoleToUsers',
+    'handler': 'editRoleOfUsers',
     module: 'app_open_manage/server/edit-role-user',
     'passport': {
         'needLogin': true

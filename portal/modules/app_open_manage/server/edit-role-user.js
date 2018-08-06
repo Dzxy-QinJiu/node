@@ -10,7 +10,7 @@ const ajax = require('../../common/ajax');
 const Promise = require('bluebird');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 
-exports.editRoleToUsers = function(req, res, next) {
+exports.editRoleOfUsers = function(req, res, next) {
     const Intl = new BackendIntl(req);
     const body = JSON.parse(req.body.reqData);
     const addParams = body.addParams;
@@ -19,7 +19,7 @@ exports.editRoleToUsers = function(req, res, next) {
     if (addParams) {
         addPromise = new Promise((resolve, reject) => {
             req.body.reqData = JSON.stringify(addParams);
-            restHandler.addRoleToUsers(req, res, false).on('success', result => {
+            restHandler.addRoleOfUsers(req, res, false).on('success', result => {
                 resolve(result);
             })
                 .on('error', codeMessage => {
@@ -31,7 +31,7 @@ exports.editRoleToUsers = function(req, res, next) {
     if (delParams) {        
         delPromise = new Promise((resolve, reject) => {
             req.body.reqData = JSON.stringify(delParams);
-            restHandler.delRoleToUsers(req, res, false).on('success', result => {
+            restHandler.delRoleOfUsers(req, res, false).on('success', result => {
                 resolve(result);
             })
                 .on('error', codeMessage => {
