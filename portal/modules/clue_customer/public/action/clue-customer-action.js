@@ -30,6 +30,7 @@ function ClueCustomerActions() {
         'afterAddClueTrace',//添加完线索的跟进记录后
         'afterAssignSales',//分配销售之后
         'setKeyWord',//设置关键字
+        'setLastClueId',
     );
     //获取线索客户列表
     this.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {

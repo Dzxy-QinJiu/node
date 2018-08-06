@@ -66,9 +66,8 @@ const ClueCustomer = React.createClass({
     },
 
     componentDidMount: function() {
-        // this.changeTableHeight();
         clueCustomerStore.listen(this.onStoreChange);
-        clueAnalysisStore.listen(this.onStoreChange);
+        // clueAnalysisStore.listen(this.onStoreChange);
         if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
             //获取线索来源
             this.getClueSource();
@@ -119,16 +118,12 @@ const ClueCustomer = React.createClass({
     },
     componentWillUnmount: function() {
         clueCustomerStore.unlisten(this.onStoreChange);
-        clueAnalysisStore.unlisten(this.onStoreChange);
+        // clueAnalysisStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
         clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
     },
     onStoreChange: function() {
-        this.setState(
-            {
-                ...clueCustomerStore.getState()
-            }
-        );
+        this.setState(clueCustomerStore.getState());
     },
     getClueSource: function() {
         clueCustomerAjax.getClueSource().then(data => {
@@ -264,14 +259,18 @@ const ClueCustomer = React.createClass({
     isOperation(){
         return userData.hasRole('operations');
     },
+
+
     //获取线索列表
     getClueList: function(flag) {
         if (flag){
+            clueCustomerAction.setPageNum();
+            clueCustomerAction.setLastClueId('');
             clueCustomerAction.setClueInitialData();
         }
         //跟据类型筛选
         const queryObj = {
-            lastClueId: this.state.lastCustomerId,
+            lastClueId: clueCustomerStore.getState().lastCustomerId,//如果直接用this.state.lastCustomerId 这个id总是没清空之前的那一个
             pageSize: this.state.pageSize,
             sorter: this.state.sorter,
             keyword: this.state.keyword,
@@ -280,6 +279,7 @@ const ClueCustomer = React.createClass({
             userId: userData.getUserData().userId || '',
             typeFilter: JSON.stringify(this.state.clueCustomerTypeFilter)
         };
+
         //如果选中的线索状态不是全部的时候，返回的统计数字是不全的，要重新发请求，单独取统计数字
         if (this.state.clueCustomerTypeFilter.status !== ''){
             const keywordObj = {
@@ -435,7 +435,10 @@ const ClueCustomer = React.createClass({
                         item.user_id = sale_id;
                         item.sales_team = team_name;
                         item.sales_team_id = team_id;
-                        item.status = SELECT_TYPE.HAS_DISTRIBUTE;
+                        if (item.status !== SELECT_TYPE.HAS_TRACE){
+                            item.status = SELECT_TYPE.HAS_DISTRIBUTE;
+                        }
+
                         this.setState({
                             curCustomers: this.state.curCustomers
                         });

@@ -10,15 +10,10 @@ import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from '../utils/clue-cu
 var user = require('../../../../public/sources/user-data').getUserData();
 function ClueCustomerStore() {
     //初始化state数据
-    this.getState();
+    this.resetState();
     this.bindActions(ClueCustomerAction);
 }
-ClueCustomerStore.prototype.setClueInitialData = function() {
-    this.curCustomers = [];//查询到的线索客户列表
-    this.customersSize = 0;
-    this.curPage = 1;
-};
-ClueCustomerStore.prototype.getState = function() {
+ClueCustomerStore.prototype.resetState = function() {
     var defaultValue = user.isCommonSales ? SELECT_TYPE.HAS_DISTRIBUTE : SELECT_TYPE.ALL;
     var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     this.salesManList = [];//销售列表
@@ -62,6 +57,16 @@ ClueCustomerStore.prototype.getState = function() {
         '1': 0,
         '2': 0
     };
+};
+ClueCustomerStore.prototype.setClueInitialData = function() {
+    this.curCustomers = [];//查询到的线索客户列表
+    this.customersSize = 0;
+};
+ClueCustomerStore.prototype.setPageNum = function() {
+    this.curPage = 1;
+};
+ClueCustomerStore.prototype.setLastClueId = function(updateId) {
+    this.lastCustomerId = updateId;
 };
 //查询线索客户
 ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
