@@ -443,43 +443,43 @@ var CustomerAnalysis = React.createClass({
         //统计列
         const statisticsColumns = [{
             dataIndex: 'last_month',
-            title: '上月',
+            title: Intl.get('user.time.prev.month', '上月'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
         }, {
             dataIndex: 'this_month',
-            title: '本月',
+            title: Intl.get('common.this.month', '本月'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
         }, {
             dataIndex: 'this_month_new',
-            title: '本月新增',
+            title: Intl.get('common.this.month.new', '本月新增'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
         }, {
             dataIndex: 'this_month_lose',
-            title: '本月流失',
+            title: Intl.get('common.this.month.lose', '本月流失'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_lose_customer_ids'),
         }, {
             dataIndex: 'this_month_back',
-            title: '本月回流',
+            title: Intl.get('common.this.month.back', '本月回流'),
             width: '10%',
             render: this.trialQualifiedNumRender.bind(this, 'this_month_back_customer_ids'),
         }, {
             dataIndex: 'this_month_add',
-            title: '本月比上月净增',
+            title: Intl.get('common.this.month.add', '本月比上月净增'),
             width: '15%',
         }, {
             dataIndex: 'highest',
-            title: '历史最高',
+            title: Intl.get('common.history.highest', '历史最高'),
             width: '10%',
             render: (text, record) => {
                 return <span title={record.highest_date}>{text}</span>;
             },
         }, {
             dataIndex: 'this_month_add_highest',
-            title: '本月比历史最高净增',
+            title: Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
             width: '20%',
         }];
 
@@ -544,9 +544,9 @@ var CustomerAnalysis = React.createClass({
                 processOption: (option, chartProps) => {
                     option.legend = {
                         data: [
-                            '上月',
-                            '本月',
-                            '历史',
+                            Intl.get('user.time.prev.month', '上月'),
+                            Intl.get('common.this.month', '本月'),
+                            Intl.get('common.history', '历史'),
                         ],
                     };
 
@@ -554,14 +554,14 @@ var CustomerAnalysis = React.createClass({
                     _.set(option, 'tooltip.show', false);
 
                     _.set(option, 'xAxis[0].data', [
-                        '上月',
-                        '本月新增',
-                        '本月回流',
-                        '本月流失',
-                        '本月比上月净增',
-                        '本月',
-                        '本月比历史最高净增',
-                        '历史最高',
+                        Intl.get('user.time.prev.month', '上月'),
+                        Intl.get('common.this.month.new', '本月新增'),
+                        Intl.get('common.this.month.back', '本月回流'),
+                        Intl.get('common.this.month.lose', '本月流失'),
+                        Intl.get('common.this.month.add', '本月比上月净增'),
+                        Intl.get('common.this.month', '本月'),
+                        Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
+                        Intl.get('common.history.highest', '历史最高'),
                     ]);
 
                     const serie = {
@@ -653,14 +653,14 @@ var CustomerAnalysis = React.createClass({
 
                     //上月系列
                     let serieLastMonth = _.extend({}, serie, {
-                        name: '上月',
+                        name: Intl.get('user.time.prev.month', '上月'),
                         //数据中只有上月个数为实际值，其他的均为空值，在堆积时会用到
                         data: [lastMonthNum, '-', '-', '-', '-', '-', '-', '-'],
                     });
 
                     //本月系列
                     let serieThisMonth = _.extend({}, serie, {
-                        name: '本月',
+                        name: Intl.get('common.this.month', '本月'),
                         //数据中只有本月相关数据为实际值，其他的均为空值，在堆积时会用到
                         data: ['-', thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum, thisMonthAddHighestNum, '-'],
                         label: {
@@ -675,7 +675,7 @@ var CustomerAnalysis = React.createClass({
 
                     //历史系列
                     let serieHistory = _.extend({}, serie, {
-                        name: '历史',
+                        name: Intl.get('common.history', '历史'),
                         //数据中只有历史最高数为实际值，其他的均为空值，在堆积时会用到
                         data: ['-', '-', '-', '-', '-', '-', '-', highestNum],
                     });
