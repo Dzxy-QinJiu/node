@@ -2355,13 +2355,18 @@ var zh_CN = {
     'clue.analysis.inability': '无效',
     'clue.analysis.source.chart': '来源统计',
     'clue.analysis.classify.chart': '分类统计',
-    'clue.analysis.avalibility.chart': '有效性统计',
     'clue.analysis.assigned.chart': '签约统计',
     'sales.home.sales.clue': '待处理的线索',
     'sales.home.will.trace': '待跟进',
     'sales.home.i.trace': '我',
     'sales.home.fill.in.trace.content': '请输入跟进内容',
     'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示',
-    'analysis.weekly.report': '周报分析'
+    'analysis.weekly.report': '周报分析',
+    'back.openApp': '开通应用',
+    'back.openApp.range': '开通范围',
+    'back.openApp.apply': '申请开通',
+    'back.openApp.tip.success': '开通成功',
+    'back.openApp.tip.fail': '开通失败',
+    'back.openApp.confirm': '确认要开通{appName}功能吗'
 };
 export default zh_CN;

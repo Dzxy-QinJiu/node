@@ -2340,6 +2340,12 @@ var en_US = {
     'sales.home.i.trace': 'I',//我
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
     'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
-    'analysis.weekly.report': 'Weekly report'//周报分析
+    'analysis.weekly.report': 'Weekly report',//周报分析
+    'back.openApp': 'Open app',//开通应用
+    'back.openApp.range': 'range of open-app',//'开通范围',
+    'back.openApp.apply': 'apply', //'申请开通',
+    'back.openApp.tip.success': 'open successed',//'开通成功',
+    'back.openApp.tip.fail': 'open failed',//'开通失败',
+    'back.openApp.confirm': 'Are you sure to open {appName} ?'
 };
 export default en_US;

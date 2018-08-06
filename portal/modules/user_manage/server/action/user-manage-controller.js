@@ -27,6 +27,7 @@ exports.getCurUserList = function(req, res) {
     var params = {}, isGetAllUser = false;
     var curPage = req.query.cur_page, pageSize = req.query.page_size,
         filterContent = req.query.search_content, roleParam = req.query.role_param;
+    var status = req.query.status;
     if (curPage) {
         params.current_page = curPage;
     }
@@ -43,6 +44,10 @@ exports.getCurUserList = function(req, res) {
     if (roleParam) {
         params.role_param = roleParam;
     }
+    if (status) {
+        params.status = status;
+    }
+
     userManageService.getUsers(req, res, params === {} ? null : params, isGetAllUser).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
@@ -111,7 +116,7 @@ exports.updateUserRoles = function(req, res) {
  * stop/start user handler
  */
 exports.updateUserStatus = function(req, res) {
-    if (req.session.user && req.session.user.userid && req.session.user.userid == req.body.id) {
+    if (req.session.user && req.session.user.userid && req.session.user.userid === req.body.id) {
         res.status(500).json(BackendIntl.get('member.forbidden.self', '禁止禁用自己'));
     } else {
         userManageService.updateUserStatus(req, res, req.body).on('success', function(data) {
