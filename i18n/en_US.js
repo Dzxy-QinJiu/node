@@ -1597,7 +1597,119 @@ var en_US = {
     'contract.165': 'cost structure',//成本构成
     'contract.166': 'Table of signing statistics',//签订情况统计表
     'contract.167': 'first time repayment',//首笔回款
+    'contract.168': 'Table of contract statistics', // 合同分析统计表
+    'contract.169': 'Number of customers', // 客户数
+    'contract.170': 'unit price', // 客单价
+    'contract.171': 'Lost',// 流失
+    'contract.172': 'Churn rate', // 流失率
+    'contract.173': 'Annual loss rate', // 年度流失率
+    'contract.174': 'Failed to get the contract analysis', // 获取合同分析失败
+    'contract.175': 'contract dashboard',//"合同概览",
+    'contract.176': 'please  chose belong customer',//请选择所属客户
+    'contract.177': 'No qualified customer is found, please change the keyword to query.',//没有找到符合条件的客户，请更换关键词查询
+    'contract.178': 'purchased product',//购买产品
+    'contract.179': 'received repayment',//已回款
+    'contract.180': 'balance payment',//尾款
+    'contract.181': 'Commission calculation', // 提成计算
+    'contract.182': 'cost login date', //"费用录入时间",
+    'contract.183': 'cost created date', //"费用产生时间",
+    'contract.184': 'cost amount', //"费用金额",
+    'contract.185': 'type (transport in city)', //"类型（市内交通）",
+    'contract.186': 'first got paid', //"首次回款",
+    'contract.187': 'payment amount', //"回款金额",
+    'contract.188': 'analysis',//"分析",
+    'contract.189': 'Commission payment', // 提成发放
+    'contract.190': 'Sales contract template', // 《销售合同模板》
+    'contract.191': 'Purchase contract template', // 《采购合同模板》
+    'contract.loadMore': 'load more',//"加载更多",
+    'contract.valueTypeConfig': 'value calculate type config',//"值字段设置",
+    'contract.filterCondition': 'filter conditions',//"筛选条件",
+    'contract.analysis.col': 'col',// "列",
+    'contract.analysis.row': 'row',// "行",
+    'contract.analysis.value': 'value',// "值",
+    'contract.fieldChoose': 'choose field',//"字段选择",
+    'contract.chooseCalcType': 'choose calculate type of the field',//"选择用于汇总所选字段数据的计算类型",
+    'contract.rangeTo': 'to',//"至",
+    'contract.noData': 'no data under the selected fields',//"您选择的字段下暂无数据",
+    'contract.choose': 'please choose',//"请选择",
+    'contract.input': 'please input',//"请输入",
+    'contract.chooseField': 'please drag field to the statistic zone',//"请拖动字段到相应统计区域",
+    'contract.name': 'name', //"合同名称",
+    'contract.buyer': 'buyer', //"买方",
+    'contract.totalEarned': 'totalEarned', //"回款总额",
+    'contract.totalPaid': 'totalPaid', //"已付款总额",
+    'contract.totalToEarn': 'totalToEarn', //"待回款总额",
+    'contract.hasInvoice': 'hasInvoice', //"是否开发票",
+    'contract.newEenewal': 'newEenewal', //"新增续约",
+    'contract.num': 'num', //"合同数量",
+    'contract.category': 'category', //"合同种类",
+    'contract.sum': 'sum', //"求和",
+    'contract.count': 'count', //"计数",
+    'contract.avg': 'average', //"平均值",
+    'contract.max': 'max number', //"最大值",
+    'contract.min': 'min number', //"最小值",
+    'contract.status': 'contract status',//""合同状态",
+    'contract.different.amount.wanring': 'The contract amount is different from the total product amount. Please check it.', //"合同额与产品总额不同，请核对"
+    'contract.unverify': 'to be verify', //"待审",
+    'contract.purchase.contract.type': 'Purchase contract type', // 分类,
+    'contract.purchase.contract.type.select.tips': 'Please select the type of purchase contract', // 请选择分类,
+    'contract.purchase.contract.type.select.not.found.content': 'No purchase contract type', // 暂无分类,
+    'contract.purchase.contract.type.fixed.assets': 'Fixed assets', // 固定资产,
+    'contract.purchase.contract.type.technical.service': 'Technical service', // 技术服务,
+    'contract.purchase.contract.type.office.purchase': 'Office purchase', // 办公采购,
+    'contract.purchase.contract.type.cost.purchase': 'Cost purchase', // 成本采购,
+    'contract.purchase.contract.type.intellectual.property': 'Intellectual property', // 知识产权,
+    'contract.purchase.contract.type.market.promotion': 'Market promotion', // 市场推广,
+    'contract.purchase.contract.type.house.rent': 'House rent', // 房租,
+    'contract.purchase.contract.type.optical.fiber': 'Optical fiber', // 光纤,
+    'contract.purchase.contract.type.other': 'Other', // 其他,
+    'contract.start.time.greater.than.end.time.warning': 'The start time cannot be greater than the end time', // 起始时间不能大于结束时间,
+    'contract.end.time.less.than.start.time.warning': 'The end time cannot be less than the start time', // 结束时间不能小于起始时间,
+    'contract.introTip': 'Drag fields to the row,columns and filters\' zone', //"拖动字段到行、列、筛选条件"
+    'contract.analysis.error.tip': 'Please fill in the name of the analysis table', // 请填写分析表名称
+    'contract.analysis.title.placeholder': 'New analysis,enter title again', // 新的分析，请再次输入标题
     //合同管理  end
+    // 销售提成start
+    'sales.commission.sale.name': 'Sale name', // 销售名
+    'sales.commission.standard': 'Standard', // 达标
+    'sales.commission.substandard': 'Substandard', // 不达标
+    'sales.commission.gross.baseline': 'Gross Baseline', // 毛利基线
+    'sales.commission': 'Commission', // 提成
+    'sales.commission.grant': 'Grant', // 已发放
+    'sales.commission.record': '{total} records', // 共{total}条提成记录
+    'sales.commission.sent.commission': 'Sent commission', // 已发提成
+    'sales.commission.this.commission': 'This commission', // 本次提成
+    'sales.commission.detail': 'Details of {username} commission in {time}', // {username}{time}的提成明细
+    'sales.commission.all.record': 'All records', // Ta的所有提成记录
+    'sales.commission.failed.get.list': 'Failed to get sales promotion list.', // 获取销售提成列表失败
+    'sales.commission.failed.update.grant': 'Failed to update the issued status of this sales.', // 更新该销售的已发放状态失败!
+    'sales.commission.failed.get.detail': 'Failed to get sales details.', // 获取销售明细信息失败！
+    'sales.commission.failed.get.contract.detail': 'Failed to get contract details.', // 获取合同详情失败!
+    'sales.commission.recalculate': 'Recalculate the commission', // 重新计算提成
+    'sale.commission.recalculate.submit': 'Request processing', // 请求处理中...
+    'sale.commission.recalculate.tips': 'Recalculate the commission, please check the new calculation result after 5 minutes.', // 重新计算提成，请于5分钟后查看新的计算结果
+    'sale.commission.recalculate.warn': 'Recalculate the request too often. Please recalculate after half an hour', // 重新计算请求太过频繁，请半小时后再重新计算
+    'sales.commission.add.record': 'Add a commission record', // 添加提成发放
+    'sales.commission.role.representative': 'Sales representative', // 销售代表
+    'no.sales.representative': 'No sales representative',//暂无销售代表
+    'choose.sales.representative': 'Please choose sales representative',//请选择销售代表
+    'sales.commission.role.manager': 'Sales manager', // 销售总经理
+    'sales.commission.grant.time': 'Release time', // 发放时间
+    'sales.commission.amount': 'The amount of the commission', // 提成金额
+    'sales.commission.failed.get.sent': 'Failed to get the commissioned list', // 获取提成发放列表失败
+    'sales.commission.success': 'Successful information', // 提成信息成功
+    'sales.commission.failed': 'Failed information', // 提成信息失败
+    'sales.commission.add.role': 'Please add the salesperson’s role', // 请添加销售人员的角色
+    'sales.commission.add.amount': 'Please add the amount of the commission', // 请添加提成金额
+    'sales.commission.add.remark': 'Please enter or select remarks', // 请输入或选择备注信息
+    'sales.commission.add.commission': 'Add commission', // 添加提成
+    'sales.commission.info': 'Commission information', // 提成信息
+    'sales.commission.remark.1': 'Get effective clues', // 获得有效线索
+    'sales.commission.remark.2': 'Confirmed as sales opportunity', // 确认为销售机会
+    'sales.commission.remark.3': 'Return payment', // 成交回款
+    'sales.commission.remark.4': 'Quarterly assessment', // 季度考核合格
+    'sales.commission.remark.5': 'Annual examination pass', // 年度考核合格
+    // 销售提成end
 
     // 应用的运营报告start
     'app_operation.0': 'Ⅰ.Total User Statistics', // 一、用户总体统计
@@ -2349,6 +2461,20 @@ var en_US = {
     'sales.home.i.trace': 'I',//我
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
     'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
-    'analysis.weekly.report': 'Weekly report'//周报分析
+    'analysis.weekly.report': 'Weekly report',//周报分析
+    'back.openApp': 'Open app',//开通应用
+    'back.openApp.range': 'range of open-app',//'开通范围',
+    'back.openApp.apply': 'apply', //'申请开通',
+    'back.openApp.tip.success': 'open successed',//'开通成功',
+    'back.openApp.tip.fail': 'open failed',//'开通失败',
+    'back.openApp.confirm': 'Are you sure to open {appName} ?',
+    'common.history': 'history',//历史
+    'common.history.highest': 'history highest',//历史最高
+    'common.this.month.add.highest': 'this month add highest',//本月比历史最高净增
+    'common.this.month.add': 'this month add',//本月比上月净增
+    'common.this.month.lose': 'this month lose',//本月流失
+    'common.this.month.back': 'this month back',//本月回流
+    'common.this.month.new': 'this month new',//本月新增
+    'common.this.month': 'this month',//本月
 };
-export default en_US;
+export default en_US;

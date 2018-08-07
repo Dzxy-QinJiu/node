@@ -62,6 +62,15 @@ exports.getSalesTeamList = function(req, res) {
         });
 };
 
+//获取我能看的团队树列表
+exports.getMyteamTreeList = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: '/rest/base/v1/group/teams/tree/' + req.query.type,
+            req: req,
+            res: res
+        }, null);
+};
 
 //转换为界面上所需的数据格式
 function turnToFrontMember(data) {

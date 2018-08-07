@@ -193,7 +193,7 @@ function getSubModulesByUser(req) {
             }
             var list = result.get(menuEntry.routePath);
             list.push(to_menu[1]);
-            list = _.uniq(list, 'routePath');
+            list = _.uniqBy(list, 'routePath');
             result.set(menuEntry.routePath, list);
         }
     });

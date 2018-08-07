@@ -1,3 +1,5 @@
+//正则
+import {pathParamRegex} from 'PUB_DIR/sources/utils/consts';
 export default function(arg) {
     let url = arg.url;
     const Deferred = $.Deferred();
@@ -14,7 +16,7 @@ export default function(arg) {
         }
     }
     if(!_.isEmpty(arg.params)) {
-        url = url.replace(/\:([a-zA-Z_\-0-9]+)/g,function($0,$1) {
+        url = url.replace(pathParamRegex,function($0,$1) {
             return arg.params[$1];
         });
     }

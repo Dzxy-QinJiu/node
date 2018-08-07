@@ -54,6 +54,10 @@ BatchChangeStore.prototype.getSalesManList = function(list) {
     this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status === 1);
 };
 
+BatchChangeStore.prototype.getALLUserList = function(result) {
+    this.salesManList = result;
+};
+
 BatchChangeStore.prototype.setSalesMan = function(sales_man) {
     this.sales_man = sales_man;
     //去掉未选销售的提示

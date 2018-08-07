@@ -48,7 +48,7 @@ FilterStore.prototype.getAppList = function(list) {
 
 FilterStore.prototype.getTeamList = function(result) {
     this.teamTreeList = result.teamTreeList;
-    this.teamList = result.list;
+    this.teamList = result.teamList;
 };
 
 FilterStore.prototype.getStageList = function(list) {

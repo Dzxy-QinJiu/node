@@ -1,23 +1,21 @@
-@import '../../../components/antd-table-pagination/index.less';
 @import "../../../public/css/common-variables";
-.contract-list {
-    overflow-x: auto;
-    .topNav {
-        line-height: 76px;
-        min-width: 1170px;
-        .btn {
-            color: #b6c2c9;
-        }
-        .btn:active {
-            box-shadow: none;
-        }
+@import "../../../components/antd-table-pagination/index.less";
+.contract-container{
+    padding:64px 16px 16px 20px;
+    height: 100%;
+    .contract-dashboard {
+        background: #eee;
+        margin-left: -20px;
+        margin-bottom: -10px;
+        padding: 10px 0 0 15px;
     }
-
-    .sub-menu {
-        margin-left: 20px;
-        .current-active {
-            color: #4d96d1;
-        }
+}
+.contract-list {
+    padding: 16px;
+    background: #fff;
+    .top-wrap {
+        height: 30px;
+        line-height: 30px;
     }
 
     .filter {
@@ -34,13 +32,11 @@
 
     .privilege-btns {
         float: right;
+        margin-right: 75px;
         .btn {
-            width: 110px;
-            height: 75px;
-            padding: 0;
+            padding: 0 0 0 16px;
             display: inline-block;
-            line-height: 75px;
-            border-left: 1px solid #edf1f2;
+            line-height: inherit;
             font-size: 14px;
             text-align: center;
             color: #4d96d1;
@@ -80,10 +76,13 @@
         }
     }
 
+    .table-wrap-outer {
+        width: 100%;
+        overflow-x: auto;
+    }
+
     .table-wrap {
-        margin-top: 86px;
-        padding: 0 50px;
-        min-width: 1525px;
+        margin-top: 10px;
         table {
             table-layout: fixed;
         }
@@ -104,9 +103,6 @@
             }
         }
         .custom-tfoot {
-            .info-title {
-                margin-top: -2px!important;
-            }
             line-height: 14px;
             th {
                 border-right: none !important;
@@ -127,6 +123,50 @@
             text-align: right;
             padding-right: 15px;
         }
+    }
+
+    @custom-column-right: 35px;
+    .custom-column-button {
+        position: absolute;
+        top: 18px;
+        right: @custom-column-right;
+    }
+
+    .custom-column-div {
+        box-sizing: border-box;
+        position: absolute;
+        top: 48px;
+        right: @custom-column-right;
+        z-index: 999;
+        background-color: #fff;
+        width: 200px;
+        max-height: 400px;
+        overflow: auto;
+        border:1px solid #BFBFBF;
+        box-shadow:2px 2px 3px #aaaaaa;
+        padding: 5px;
+        border-radius: 4px;
+        .ant-checkbox-group-item {
+            width: 90% !important;
+            padding: 5px;
+        }
+        .custom-column-div-save-button {
+            margin-left: 5px;
+        }
+    }
+
+    .custom-column-div-fullscreen-background {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 90;
+        background: transparent;
+    }
+    
+    .hide-custom-column-div {
+        display: none;
     }
 
     .right-pannel-default {
@@ -181,6 +221,10 @@
                 .ant-calendar-picker{
                     width: @edit_input_width;
                 }
+                .ant-form-text{
+                    padding-left: 5px;
+                    padding-right: 0;
+                }
             }
         }
         .btn-primary-sure {
@@ -230,9 +274,30 @@
                 padding: 0 15px;
             }
         }
+        .belong-customer-form {
+            width: 285px;
+            position: relative;
+            input, .ant-select, .ant-form-explain {
+                width: 260px !important;
+            }
+            .circle-button {
+                position: absolute;
+                top: 3px;
+                right: -10px;
+                margin: 0;
+                z-index: 1;
+                cursor: pointer;
+            }
+        }
         .add-form {
             .ant-tabs-tab {
                 pointer-events: none;
+            }
+            .different-amount-warning {
+                font-size: 12px;
+                margin-top: 3px;
+                text-align: center;
+                color: #f04134;
             }
         }
         .add-basic {
@@ -484,12 +549,34 @@
             }
         }
         .detail-basic {
-            margin: 0 20px 20px;
+            margin-bottom: 20px;
             line-height: 30px;
+            @content-margin: auto 20px;
             .basic-info {
+                position: relative;
+                margin: @content-margin;
                 background: #dde6ed;
                 padding: 20px;
                 margin-bottom: 15px;
+                .edit-zone {
+                    .ant-form-item {
+                        width: 55px;
+                        position: absolute;
+                        top: 0;
+                    }
+                    .ant-form-item:first-child {
+                        right: 100px;
+                    }
+                    .ant-form-item:nth-child(2) {
+                        right: 40px;
+                    }
+                    .ant-form-item-label {
+                        display: none;
+                    }
+                    .ant-form-item-control-wrapper, .ant-select {
+                        width: 100% !important;
+                    }
+                }
                 .detail-item {
                     margin-bottom: 5px;
                     & > span:first-child {
@@ -518,18 +605,46 @@
                     width: 153px;
                     margin-right: 5px;
                 }
+                .belong-customer {
+                    button {
+                        display: inline-block;
+                        float: none;
+                        margin: 0 7px 0 0;
+                    }
+                }
+                .icon-update {
+                    display: none;
+                }
             }
-            th, td {
-                text-align: center;
-                border-right: none;
+            .basic-info:hover {
+                .icon-update {
+                    display: block;
+                }
             }
-            th {
-                background: #d7dee7;
-                border-right: none;
+            @separator: 1px #D1DADE solid;
+            .block-title {
+                position: relative;;
+                border-bottom: @separator;
+                margin-bottom: 15px;
+                padding-bottom: 5px;
+                .icon-close,
+                .icon-update {
+                    top: 0;
+                    right: 0;
+                }
             }
-            td {
-                background: #dde6ed;
-                border-right: none;
+            .block-bottom {
+                border-top: @separator;
+                margin-top: 15px;
+                padding-top: 5px;
+            }
+            .belong-customer-list {
+                .detail-item {
+                    border-bottom: @separator;
+                }
+                .detail-item:last-child {
+                    border-bottom: none;
+                }
             }
             .ant-form-explain {
                 float: none;
@@ -566,7 +681,6 @@
             }
             .value-text {
                 display: inline-block;
-                padding-top: 7px;
             }
         }
     }
@@ -625,36 +739,24 @@
 }
 
 .contract-dashboard {
-    .topNav{
-        &:before{
-            border-bottom: 0 !important;
-        }
-    }
     overflow: hidden;
-    background-color: rgb(243, 245, 245);
-    .analysis-filter {
-        left: 5px;
-    }
-    .main-content {
+    .dashboard-content {
         font-size: 14px;
-        margin: 96px 20px 20px;
+        margin-right: 16px;
         @border: 1px solid #f0f0f0;
-        .main-left {
-            overflow: hidden;
-            width: 80%;
-            float: left;
+        .analysis-filter {
+            left: -15px;
+            top: 0;
+            position: relative;
+            margin-bottom: 16px;
         }
         .main-right {
-            width: 18.5%;
             min-height: 200px;
-            float: right;
             background-color: #fff;
         }
         .chart-wrap {
-            width: 49.4%;
-            float: left;
             background-color: #fff;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             .chart-title {
                 margin-bottom: 8px;
             }
@@ -668,9 +770,10 @@
             .chart-box {
                 padding: 10px 15px;
                 height: 100px;
+                overflow-y: auto;
                 .count-content {
                     display: inline-block;
-                    margin-right: 15px;
+                    margin-right: 8px;
                 }
                 .count-value {
                     font-weight: bold;
@@ -679,6 +782,7 @@
             }
 
             .ant-table {
+                overflow: hidden;
                 tbody tr:nth-child(2n) {
                     background: #fff !important;
                 }
@@ -698,8 +802,17 @@
                 }
             }
         }
-        .chart-wrap:nth-child(odd) {
-            margin-right: 1.2%;
+    }
+}
+
+#app .contract-dashboard {
+    .ant-table {
+        .ant-table-fixed-left {
+            .ant-table-fixed {
+                th, td {
+                    border-right: 1px dashed #edf1f2 !important;
+                }
+            }
         }
     }
 }

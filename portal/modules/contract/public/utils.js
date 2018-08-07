@@ -1,4 +1,4 @@
-import { CONTRACT_LABEL } from '../consts';
+import { CONTRACT_LABEL, PURCHASE_TYPE } from '../consts';
 
 //根据id获取团队名
 export const getTeamName = function(list, id) {
@@ -14,3 +14,9 @@ export const getLabelName = function(value) {
     return labelName;
 };
 
+// 根据dataIndex获取采购合同分类名
+export const getPurchaseContractTypeName = function(dataIndex) {
+    const type = _.find(PURCHASE_TYPE, item => item.dataIndex === dataIndex.toString());
+    const typeName = type ? type.name : '';
+    return typeName;
+};

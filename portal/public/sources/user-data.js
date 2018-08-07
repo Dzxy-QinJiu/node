@@ -45,6 +45,10 @@ exports.updateUserLogo = function(userLogoInfo) {
 exports.getUserData = function() {
     return UserData;
 };
+//设置用户数据
+exports.setUserData = function(key, value) {
+    UserData[key] = value;
+};
 
 //用户是否含有某个角色
 exports.hasRole = function(role) {

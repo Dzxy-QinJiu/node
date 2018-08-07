@@ -218,9 +218,9 @@ var CallAddCustomerForm = React.createClass({
                     {list.length ? (
                         <div>
                             {Intl.get('crm.68', '相似的客户还有')}:
-                            {list.map(customer => {
+                            {list.map((customer, index) => {
                                 return (
-                                    <div>
+                                    <div key={key}>
                                         {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a></div>
                                         ) : (

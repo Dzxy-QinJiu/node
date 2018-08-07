@@ -24,6 +24,7 @@ const noop = function() {
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import routeList from '../../modules/common/route';
 import ajax from '../../modules/common/ajax';
+import { PropTypes } from 'prop-types';
 const PHONE_INPUT_ID = 'phoneInput';
 class AddCustomerForm extends React.Component {
     constructor(props) {
@@ -119,9 +120,10 @@ class AddCustomerForm extends React.Component {
     //根据客户名获取客户的行政级别并填充到对应字段上
     getAdministrativeLevelByName = (customerName) => {
         crmAjax.getAdministrativeLevel({name: customerName}).then(result => {
+            const state = this.state;
             if (_.isEmpty(result)) return;
-            this.state.formData.administrative_level = result.level > 0 ? result.level + '' : '';
-            this.setState({formData: this.state.formData});
+            state.formData.administrative_level = result.level > 0 ? result.level + '' : '';
+            this.setState({formData: state.formData});
         });
     };
     //客户名唯一性验证
@@ -160,16 +162,17 @@ class AddCustomerForm extends React.Component {
         };
         ajax(arg).then(result => {
             if (_.isEmpty(result)) return;
-            this.state.formData.address = result.address;
-            this.state.formData.location = result.location;
-            this.state.formData.province = result.pname;
-            this.state.formData.city = result.cityname;
-            this.state.formData.county = result.adname;
-            this.state.formData.province_code = result.pcode;
-            this.state.formData.city_code = result.citycode;
-            this.state.formData.county_code = result.adcode;
-            this.state.formData.contacts0_phone = result.tel;
-            this.setState({formData: this.state.formData});
+            const state = this.state;
+            state.formData.address = result.address;
+            state.formData.location = result.location;
+            state.formData.province = result.pname;
+            state.formData.city = result.cityname;
+            state.formData.county = result.adname;
+            state.formData.province_code = result.pcode;
+            state.formData.city_code = result.citycode;
+            state.formData.county_code = result.adcode;
+            state.formData.contacts0_phone = result.tel;
+            this.setState({formData: state.formData});
         });
     };
     closeAddPanel = (e) => {
@@ -259,9 +262,9 @@ class AddCustomerForm extends React.Component {
                     {list.length ? (
                         <div>
                             {Intl.get('crm.68', '相似的客户还有')}:
-                            {list.map(customer => {
+                            {list.map((customer, index) => {
                                 return (
-                                    <div>
+                                    <div key={index}>
                                         {customer.user_id === curUserId ? (
                                             <div>
                                                 <a href="javascript:void(0)"
@@ -309,28 +312,34 @@ class AddCustomerForm extends React.Component {
     };
     //更新地址
     updateLocation = (addressObj) => {
-        this.state.formData.province = addressObj.provName || '';
-        this.state.formData.city = addressObj.cityName || '';
-        this.state.formData.county = addressObj.countyName || '';
-        this.state.formData.province_code = addressObj.provCode || '';
-        this.state.formData.city_code = addressObj.cityCode || '';
-        this.state.formData.county_code = addressObj.countyCode || '';
+        const state = this.state;
+        state.formData.province = addressObj.provName || '';
+        state.formData.city = addressObj.cityName || '';
+        state.formData.county = addressObj.countyName || '';
+        state.formData.province_code = addressObj.provCode || '';
+        state.formData.city_code = addressObj.cityCode || '';
+        state.formData.county_code = addressObj.countyCode || '';
+        this.setState({
+            formData: state.formData
+        });
         Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item'), '选择地址');
     };
     //选择不同的级别
     handleChangeAdminLevel = (index) => {
+        const formData = this.state.formData;
         //如果点击原来选中的级别，会取消选中
-        if (index === this.state.formData.administrative_level) {
-            this.state.formData.administrative_level = '';
+        if (index === formData.administrative_level) {
+            formData.administrative_level = '';
         } else {
-            this.state.formData.administrative_level = index;
+            formData.administrative_level = index;
         }
-        this.setState({formData: this.state.formData});
+        this.setState({formData: formData});
     };
     setPhoneValue = (obj) => {
-        this.state.formData.contacts0_phone = obj.target.value;
+        const formData = this.state.formData;
+        formData.contacts0_phone = obj.target.value;
         this.setState({
-            formData: this.state.formData
+            formData
         });
     };
     handleChangeSeletedTag = (tag, isAdd) => {
@@ -647,6 +656,15 @@ AddCustomerForm.defaultProps = {
     hideAddForm: noop,
     updateCustomer: noop,
     showRightPanel: noop,
-    scrollLayOut: ''
+    scrollLayOut: '',
+};
+AddCustomerForm.propTypes = {
+    phoneNum: PropTypes.string,
+    hideAddForm: PropTypes.func,
+    scrollLayOut: PropTypes.string,
+    addOne: PropTypes.func,
+    updateCustomer: PropTypes.func,
+    showRightPanel: PropTypes.func,
+    form: PropTypes.object
 };
 export default Form.create()(AddCustomerForm);

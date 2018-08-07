@@ -29,5 +29,13 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    },{
+        'method': 'get',
+        'path': '/rest/team/my_team/tree',
+        'handler': 'getMyteamTreeList',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
     }]
 };

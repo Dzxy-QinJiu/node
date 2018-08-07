@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * 已回款信息展示及编辑页面
  */
 
-import { Form, Input, Button, DatePicker, Icon, message, Checkbox } from 'antd';
+import {Form, Input, Button, DatePicker, Icon, message, Checkbox} from 'antd';
 const FormItem = Form.Item;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
@@ -13,11 +13,11 @@ const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelDelete = rightPanelUtil.RightPanelDelete;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
-import { DATE_FORMAT, OPERATE } from '../consts';
+import {DATE_FORMAT, OPERATE} from '../consts';
 import routeList from '../common/route';
 import ajax from '../common/ajax';
 import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
-import { numberAddNoMoreThan } from '../../../lib/validator/rules';
+import {numberAddNoMoreThan} from '../../../lib/validator/rules';
 
 const DetailRepayment = React.createClass({
     mixins: [ValidateMixin],
@@ -85,7 +85,7 @@ const DetailRepayment = React.createClass({
             data: data,
         };
         if (params) arg.params = params;
-        
+
         ajax(arg).then(result => {
             this.props.hideLoading();
 
@@ -105,8 +105,11 @@ const DetailRepayment = React.createClass({
         let formData = this.state[key];
 
         if (!formData && !repayment) {
-            formData = this.state[key] = {type: 'repay'};
+            let state = this.state;
+            formData = state[key] = {type: 'repay'};
             formData.date = moment().valueOf();
+            formData.contract_date = this.props.contract.date;
+            this.setState(state);
         }
 
         const disabledDate = function(current) {
@@ -116,7 +119,7 @@ const DetailRepayment = React.createClass({
 
         return (
             <Validation ref={ref} onValidate={this.handleValidate}>
-                <FormItem 
+                <FormItem
                     validateStatus={this.getValidateStatus('date' + index)}
                     help={this.getHelpMessage('date' + index)}
                 >
@@ -127,12 +130,15 @@ const DetailRepayment = React.createClass({
                         disabledDate={disabledDate}
                     />
                 </FormItem>
-                <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
-                <FormItem 
+                <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款"/>
+                <FormItem
                     validateStatus={this.getValidateStatus('amount' + index)}
                     help={this.getHelpMessage('amount' + index)}
                 >
-                    <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]}>
+                    <Validator rules={[{
+                        required: true,
+                        message: Intl.get('contract.44', '不能为空')
+                    }, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]}>
                         <Input
                             name={'amount' + index}
                             value={this.parseAmount(formData.amount)}
@@ -140,13 +146,16 @@ const DetailRepayment = React.createClass({
                         />
                     </Validator>
                 </FormItem>
-                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />,
-                <ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
-                <FormItem 
+                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元"/>,
+                <ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利"/>
+                <FormItem
                     validateStatus={this.getValidateStatus('gross_profit' + index)}
                     help={this.getHelpMessage('gross_profit' + index)}
                 >
-                    <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule()]}>
+                    <Validator rules={[{
+                        required: true,
+                        message: Intl.get('contract.44', '不能为空')
+                    }, this.getNumberValidateRule()]}>
                         <Input
                             name={'gross_profit' + index}
                             value={this.parseAmount(formData.gross_profit)}
@@ -154,8 +163,8 @@ const DetailRepayment = React.createClass({
                         />
                     </Validator>
                 </FormItem>
-                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                <FormItem 
+                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元"/>
+                <FormItem
                 >
                     <Checkbox
                         name="is_first"
@@ -180,7 +189,7 @@ const DetailRepayment = React.createClass({
                             className="btn-primary-sure"
                             onClick={this.handleSubmit.bind(this, 'add')}
                         >
-                            <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
+                            <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>
                         </Button>
                     </div>
                 ) : null}
@@ -200,20 +209,22 @@ const DetailRepayment = React.createClass({
                                         ) : (
                                             <span>
                                                 {repayment.date ? moment(repayment.date).format(DATE_FORMAT) : ''}
-                                        &nbsp;
-                                                <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
+                                                &nbsp;
+                                                <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款"/>
                                                 {repayment.amount || 0}
-                                                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />，<ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
+                                                <ReactIntl.FormattedMessage id="contract.155"
+                                                    defaultMessage="元"/>，<ReactIntl.FormattedMessage
+                                                    id="contract.109" defaultMessage="毛利"/>
                                                 {repayment.gross_profit || 0}
-                                                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
+                                                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元"/>
                                                 {repayment.is_first === 'true' ? (
                                                     <span>
-                                        , <ReactIntl.FormattedMessage id="contract.167" defaultMessage="首笔回款" />
+                                        , <ReactIntl.FormattedMessage id="contract.167" defaultMessage="首笔回款"/>
                                                     </span>
                                                 ) : null}
                                             </span>
                                         )}
-        
+
                                         {hasPrivilege('OPLATE_REPAYMENT_ADD') ? (
                                             <span>
                                                 {isFormShow ? (
@@ -237,10 +248,10 @@ const DetailRepayment = React.createClass({
                                                     </span>
                                                 ) : (
                                                     <span>
-                                                        <RightPanelEdit 
+                                                        <RightPanelEdit
                                                             onClick={this.showForm.bind(this, index, repayment)}
                                                         />
-                                                        <RightPanelDelete 
+                                                        <RightPanelDelete
                                                             title={Intl.get('common.delete', '删除')}
                                                             onClick={this.handleSubmit.bind(this, 'delete', index, repayment.id)}
                                                         />

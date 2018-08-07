@@ -1,6 +1,6 @@
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon } from 'antd';
-import { AntcTable } from 'antc';
+import {Tag, Modal, message, Button, Icon} from 'antd';
+import {AntcTable} from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
@@ -23,8 +23,8 @@ var userData = require('../../../public/sources/user-data');
 let OrderAction = require('./action/order-actions');
 var batchPushEmitter = require('../../../public/sources/utils/emitters').batchPushEmitter;
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
-import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { crmEmitter } from 'OPLATE_EMITTER';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {crmEmitter} from 'OPLATE_EMITTER';
 import routeList from 'MOD_DIR/common/route';
 import ajax from 'MOD_DIR/common/ajax';
 import Trace from 'LIB_DIR/trace';
@@ -34,7 +34,7 @@ import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
 import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
-import { FilterInput } from 'CMP_DIR/filter';
+import {FilterInput} from 'CMP_DIR/filter';
 var classNames = require('classnames');
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
@@ -241,17 +241,17 @@ var Crm = React.createClass({
             }
             //如果是从新增客户跳转过去
             if (saleStage === 'added') {
-                this.setRange({ startTime, endTime });
+                this.setRange({startTime, endTime});
                 //如果是趋势图，则只取当前那一天的数据
                 if (filterField === 'trend') {
                     startTime = currentTime - 8 * 60 * 60 * 1000;
                     endTime = currentTime + 16 * 60 * 60 * 1000 - 1;
-                    this.setRange({ startTime, endTime });
+                    this.setRange({startTime, endTime});
                 }
             } else {
                 //其他三种情况都是累积数据
                 startTime = '';
-                this.setRange({ startTime, endTime });
+                this.setRange({startTime, endTime});
 
                 //根据从客户分析点击跳转带过来的客户类型参数得到对应的销售阶段名
                 const saleStageName = tabSaleStageMap[saleStage];
@@ -265,14 +265,15 @@ var Crm = React.createClass({
                     this.setEndRange(endTime);
                 }
             }
-            this.setFilterField({ filterField, filterValue });
+            this.setFilterField({filterField, filterValue});
 
         } else if (locationState) {
             const from = locationState.from;
 
             if (from === 'sales_home') {
                 const trialQualifiedCustomerIds = locationState.trialQualifiedCustomerIds;
-                CrmAction.queryCustomer({id: trialQualifiedCustomerIds}, {}, this.state.pageSize, this.state.sorter, {});
+                const pageSize = trialQualifiedCustomerIds.split(',').length;
+                CrmAction.queryCustomer({id: trialQualifiedCustomerIds}, {}, pageSize, this.state.sorter, {});
             }
         } else {
             this.search();
@@ -302,7 +303,7 @@ var Crm = React.createClass({
             this.showAddForm();
         }
     },
-    setFilterField: function({ filterField, filterValue }) {
+    setFilterField: function({filterField, filterValue}) {
         //展示的团队列表
         if (filterField === 'team') {
             FilterAction.getTeamList((teams) => {
@@ -326,7 +327,7 @@ var Crm = React.createClass({
             }
             //舆情秘书看到的团队成员列表
             if (filterField === 'team_member') {
-                FilterAction.setInputCondition({ user_name: filterValue });
+                FilterAction.setInputCondition({user_name: filterValue});
                 this.state.crmFilterValue = filterValue;
             }
             this.search();
@@ -379,49 +380,49 @@ var Crm = React.createClass({
     //批量变更销售人员的处理,调用store进行数据更新
     batchChangeSalesman: function(taskInfo, taskParams) {
         var curCustomers = this.state.originCustomerList;
-        CrmStore.batchChangeSalesman({ taskInfo, taskParams, curCustomers });
+        CrmStore.batchChangeSalesman({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
     },
     //批量变更标签的处理,调用store进行数据更新
     batchChangeTags: function(taskInfo, taskParams) {
         var curCustomers = this.state.originCustomerList;
-        CrmStore.batchChangeTags({ taskInfo, taskParams, curCustomers }, 'change');
+        CrmStore.batchChangeTags({taskInfo, taskParams, curCustomers}, 'change');
         this.delayRenderBatchUpdate();
     },
     //批量添加标签的处理,调用store进行数据更新
     batchAddTags: function(taskInfo, taskParams) {
         var curCustomers = this.state.originCustomerList;
-        CrmStore.batchChangeTags({ taskInfo, taskParams, curCustomers }, 'add');
+        CrmStore.batchChangeTags({taskInfo, taskParams, curCustomers}, 'add');
         this.delayRenderBatchUpdate();
     },
     //批量移除标签的处理,调用store进行数据更新
     batchRemoveTags: function(taskInfo, taskParams) {
         var curCustomers = this.state.originCustomerList;
-        CrmStore.batchChangeTags({ taskInfo, taskParams, curCustomers }, 'remove');
+        CrmStore.batchChangeTags({taskInfo, taskParams, curCustomers}, 'remove');
         this.delayRenderBatchUpdate();
     },
     //批量变更行业的处理,调用store进行数据更新
     batchChangeIndustry: function(taskInfo, taskParams) {
         var curCustomers = this.state.originCustomerList;
-        CrmStore.batchChangeIndustry({ taskInfo, taskParams, curCustomers });
+        CrmStore.batchChangeIndustry({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
     },
     //批量变更行政级别的处理,调用store进行数据更新
     batchChangeLevel: function(taskInfo, taskParams) {
         var curCustomers = this.state.originCustomerList;
-        CrmStore.batchChangeLevel({ taskInfo, taskParams, curCustomers });
+        CrmStore.batchChangeLevel({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
     },
     //批量变更地域的处理,调用store进行数据更新
     batchChangeTerritory: function(taskInfo, taskParams) {
         var curCustomers = this.state.originCustomerList;
-        CrmStore.batchChangeTerritory({ taskInfo, taskParams, curCustomers });
+        CrmStore.batchChangeTerritory({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
     },
     changeTableHeight: function(filterPanelHeight = 0) {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         tableHeight -= filterPanelHeight;
-        this.setState({ tableHeight, filterPanelHeight });
+        this.setState({tableHeight, filterPanelHeight});
     },
     confirmDelete: function(cusId, cusName) {
         Trace.traceEvent($(this.getDOMNode()).find('.cus-op'), '删除客户');
@@ -497,39 +498,6 @@ var Crm = React.createClass({
     , hideAddForm: function() {
         this.state.isAddFlag = false;
         this.setState(this.state);
-    },
-    /**
-     * @param totalRequestTeams 向后端发请求的所有团队id的数组
-     * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
-     * */
-    //获取要传到后端的所有团队id的数组
-    getRequestTeamIds: function(totalRequestTeams, teamTotalArr) {
-        _.each(teamTotalArr, (team) => {
-            if (_.indexOf(totalRequestTeams, team.group_id) === -1) {
-                totalRequestTeams.push(team.group_id);
-            }
-            if (team.child_groups) {
-                this.getRequestTeamIds(totalRequestTeams, team.child_groups);
-            }
-        });
-
-    },
-    /**
-     * @param teamTreeList 所有团队的团队树
-     * @param selectedTeams 实际选中的团队的id列表
-     * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表
-     * */
-    traversingTeamTree: function(teamTreeList, selectedTeams, teamTotalArr) {
-        if (_.isArray(teamTreeList) && teamTreeList.length) {
-            _.each(teamTreeList, team => {
-                if (selectedTeams === team.group_id) {
-                    teamTotalArr.push(team);
-                }
-                if (team.child_groups) {
-                    this.traversingTeamTree(team.child_groups, selectedTeams, teamTotalArr);
-                }
-            });
-        }
     }
 
     //查询客户
@@ -555,11 +523,11 @@ var Crm = React.createClass({
         }
         //联系方式(电话、邮箱)搜索的处理
         if (condition.phone) {
-            condition.contacts = [{ phone: [condition.phone] }];
+            condition.contacts = [{phone: [condition.phone]}];
             delete condition.phone;
         }
         if (condition.email) {
-            condition.contacts = [{ email: [condition.email] }];
+            condition.contacts = [{email: [condition.email]}];
             delete condition.email;
         }
         let term_fields = [];//需精确匹配的字段
@@ -665,21 +633,21 @@ var Crm = React.createClass({
         }
         //团队的处理
         // 所有团队的团队树
-        var teamTreeList = FilterStore.getState().teamTreeList;
+        let teamTreeList = FilterStore.getState().teamTreeList;
         //实际选中的团队列表
-        var selectedTeams = [];
+        let selectedTeams = [];
         if (filterStoreCondition && filterStoreCondition.sales_team_id) {
             selectedTeams = filterStoreCondition.sales_team_id.split(',');
         }
         //实际要传到后端的团队,默认是选中的团队
-        var totalRequestTeams = JSON.parse(JSON.stringify(selectedTeams));
-        var teamTotalArr = [];
+        let totalRequestTeams = JSON.parse(JSON.stringify(selectedTeams));
+        let teamTotalArr = [];
         //跟据实际选中的id，获取包含下级团队的所有团队详情的列表teamTotalArr
         _.each(selectedTeams, (teamId) => {
-            this.traversingTeamTree(teamTreeList, teamId, teamTotalArr);
+            teamTotalArr = _.union(teamTotalArr, commonMethodUtil.traversingSelectTeamTree(teamTreeList, teamId));
         });
         //跟据包含下级团队的所有团队详情的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
-        this.getRequestTeamIds(totalRequestTeams, teamTotalArr);
+        totalRequestTeams = _.union(totalRequestTeams, commonMethodUtil.getRequestTeamIds(teamTotalArr));
         if (totalRequestTeams.length) {
             condition.sales_team_id = totalRequestTeams.join(',');
         } else {
@@ -775,7 +743,7 @@ var Crm = React.createClass({
         const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
         const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
         CrmAction.queryCustomer(conditionParams, rangParams, this.state.pageSize, this.state.sorter, queryObjParams);
-        this.setState({ rangeParams: this.state.rangParams });
+        this.setState({rangeParams: this.state.rangParams});
     },
     //清除客户的选择
     clearSelectedCustomer: function() {
@@ -842,20 +810,20 @@ var Crm = React.createClass({
 
     scrollTop: function() {
         $(this.refs.tableWrap.getDOMNode()).find('.ant-table-scroll div.ant-table-body').scrollTop(0);
-        this.setState({ isScrollTop: false });
+        this.setState({isScrollTop: false});
     },
     showMergePanel: function() {
         if (_.isArray(this.state.selectedCustomer) && this.state.selectedCustomer.length > 1) {
-            this.setState({ mergePanelIsShow: true });
+            this.setState({mergePanelIsShow: true});
             Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击合并客户按钮');
         }
     },
     hideMergePanel: function() {
-        this.setState({ mergePanelIsShow: false });
+        this.setState({mergePanelIsShow: false});
     },
     //合并客户后的处理
     afterMergeCustomer: function(mergeObj) {
-        this.setState({ selectedCustomer: [], mergePanelIsShow: false });//清空选择的客户
+        this.setState({selectedCustomer: [], mergePanelIsShow: false});//清空选择的客户
         CrmAction.afterMergeCustomer(mergeObj);
     },
     //渲染操作按钮
@@ -865,14 +833,14 @@ var Crm = React.createClass({
         btnClass += isWebMini ? 'handle-btn-mini' : 'handle-btn-container';
         if (this.state.selectedCustomer.length) {
             //选择客户后，展示合并和批量变更的按钮
-            return (<div className="top-btn-wrapper" >
+            return (<div className="top-btn-wrapper">
                 <PrivilegeChecker
                     check="CUSTOMER_MERGE_CUSTOMER"
                     className={btnClass}
                     title={isWebMini ? Intl.get('crm.0', '合并客户') : ''}
                     onClick={this.showMergePanel}
                 >
-                    {isWebMini ? <i className="iconfont icon-merge-btn" /> : Intl.get('crm.0', '合并客户')}
+                    {isWebMini ? <i className="iconfont icon-merge-btn"/> : Intl.get('crm.0', '合并客户')}
                 </PrivilegeChecker>
                 <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className="batch-btn-wrapper">
                     <CrmBatchChange isWebMini={isWebMini}
@@ -887,14 +855,14 @@ var Crm = React.createClass({
                 </PrivilegeChecker>
             </div>);
         } else {
-            return (<div className="top-btn-wrapper" >
+            return (<div className="top-btn-wrapper">
                 <PrivilegeChecker
                     check="CRM_REPEAT"
                     className={btnClass + ' customer-repeat-btn'}
                     title={isWebMini ? Intl.get('crm.1', '客户查重') : ''}
                     onClick={this.props.showRepeatCustomer}
                 >
-                    {isWebMini ? <i className="iconfont icon-search-repeat" /> : Intl.get('crm.1', '客户查重')}
+                    {isWebMini ? <i className="iconfont icon-search-repeat"/> : Intl.get('crm.1', '客户查重')}
                 </PrivilegeChecker>
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
@@ -902,14 +870,14 @@ var Crm = React.createClass({
                     title={isWebMini ? Intl.get('crm.2', '导入客户') : ''}
                     onClick={this.showCrmTemplateRightPanel}
                 >
-                    {isWebMini ? <i className="iconfont icon-import-btn" /> : Intl.get('crm.2', '导入客户')}
+                    {isWebMini ? <i className="iconfont icon-import-btn"/> : Intl.get('crm.2', '导入客户')}
                 </PrivilegeChecker>
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
                     title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}
                     onClick={this.showAddForm}>
-                    {isWebMini ? <Icon type="plus" /> : Intl.get('crm.3', '添加客户')}
+                    {isWebMini ? <Icon type="plus"/> : Intl.get('crm.3', '添加客户')}
                 </PrivilegeChecker>
             </div>);
         }
@@ -917,7 +885,7 @@ var Crm = React.createClass({
     onCustomerImport(list) {
         let member_id = crmUtil.getMyUserId();
         //导入客户前先校验，是不是超过了本人的客户上限
-        CrmAction.getCustomerLimit({ member_id: member_id, num: list.length }, (result) => {
+        CrmAction.getCustomerLimit({member_id: member_id, num: list.length}, (result) => {
             if (_.isNumber(result)) {
                 if (result === 0) {
                     //可以转入
@@ -927,13 +895,13 @@ var Crm = React.createClass({
                     });
                 } else if (result > 0) {
                     //不可以转入
-                    message.warn(Intl.get('crm.import.over.limit', '导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入', { num: result }));
+                    message.warn(Intl.get('crm.import.over.limit', '导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入', {num: result}));
                 }
             }
         });
     },
     confirmImport(flag, cb) {
-        this.setState({ isImporting: true });
+        this.setState({isImporting: true});
 
         const route = _.find(routeList, route => route.handler === 'uploadCustomerConfirm');
 
@@ -948,11 +916,11 @@ var Crm = React.createClass({
         };
 
         ajax(arg).then(result => {
-            this.setState({ isImporting: false });
+            this.setState({isImporting: false});
 
             if (_.isFunction(cb)) cb();
         }, () => {
-            this.setState({ isImporting: false });
+            this.setState({isImporting: false});
 
             message.error(Intl.get('crm.99', '导入客户失败'));
         });
@@ -1071,7 +1039,7 @@ var Crm = React.createClass({
             //不是全选时，清空翻页前选择的客户
             if (_.isArray(selectedCustomer) && selectedCustomer.length && !this.state.selectAllMatched) {
                 this.state.selectedCustomer = [];
-                this.setState({ selectedCustomer: [] });
+                this.setState({selectedCustomer: []});
             }
             //设置要跳转到的页码数值
             CrmAction.setNextPageNum(page);
@@ -1127,13 +1095,13 @@ var Crm = React.createClass({
             });
         }
         this.setState(
-            { curPageCustomers: curPageCustomers }
+            {curPageCustomers: curPageCustomers}
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
             if (errorMsg) {
                 //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
                 this.setState(
-                    { curPageCustomers: initalCurPageCustomers }
+                    {curPageCustomers: initalCurPageCustomers}
                 );
             }
         });
@@ -1144,18 +1112,18 @@ var Crm = React.createClass({
         if (this.state.selectAllMatched) {
             return (
                 <span>
-                    {Intl.get('crm.8', '已选择全部{count}项', { count: this.state.customersSize })}
+                    {Intl.get('crm.8', '已选择全部{count}项', {count: this.state.customersSize})}
                     <a href="javascript:void(0)"
                         onClick={this.clearSelectAllSearchResult}>{Intl.get('crm.10', '只选当前展示项')}</a>
                 </span>);
         } else {//只选择了当前页时，展示：已选当前页xxx项, <a>选择全部xxx项</a>
             return (
                 <span>
-                    {Intl.get('crm.11', '已选当前页{count}项', { count: this.state.selectedCustomer.length })}
+                    {Intl.get('crm.11', '已选当前页{count}项', {count: this.state.selectedCustomer.length})}
                     {/*在筛选条件下可 全选 ，没有筛选条件时，后端接口不支持选 全选*/}
                     {_.isEmpty(this.state.condition) ? null : (
                         <a href="javascript:void(0)" onClick={this.selectAllSearchResult}>
-                            {Intl.get('crm.12', '选择全部{count}项', { count: this.state.customersSize })}
+                            {Intl.get('crm.12', '选择全部{count}项', {count: this.state.customersSize})}
                         </a>)
                     }
                 </span>);
@@ -1213,7 +1181,7 @@ var Crm = React.createClass({
                 if (_this.state.selectAllMatched && selectedRows.length === 0) {
                     _this.state.selectAllMatched = false;
                 }
-                _this.setState({ selectedCustomer: selectedRows, selectAllMatched: _this.state.selectAllMatched });
+                _this.setState({selectedCustomer: selectedRows, selectAllMatched: _this.state.selectAllMatched});
                 Trace.traceEvent($(_this.getDOMNode()).find('.ant-table-selection-column'), '点击选中/取消选中全部客户');
             }
         } : null;
@@ -1350,7 +1318,7 @@ var Crm = React.createClass({
                             {isDeleteBtnShow ? (
                                 <Button className="order-btn-class" icon="delete"
                                     onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
-                                    title={Intl.get('common.delete', '删除')} />
+                                    title={Intl.get('common.delete', '删除')}/>
                             ) : null}
                         </span>
                     );
@@ -1388,18 +1356,17 @@ var Crm = React.createClass({
             this.renderCustomerDetail();
         }
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         const contentClassName = classNames({
             'content-container': !this.props.fromSalesHome,
             'content-full': !this.state.showFilterList
-        }); 
+        });
         return (<RightContent>
             <div className="crm_content" data-tracename="客户列表">
                 {
                     !this.props.fromSalesHome ?
                         <div className="top-nav-border-fix">
                             <div className="search-input-wrapper">
-                                <FilterInput 
+                                <FilterInput
                                     showSelectChangeTip={_.get(this.state.selectedCustomer, 'length')}
                                     toggleList={this.toggleList.bind(this)}
                                 />
@@ -1407,13 +1374,13 @@ var Crm = React.createClass({
                             <FilterBlock>
                                 {selectCustomerLength ? (
                                     <div className="crm-list-selected-tip">
-                                        <span className="iconfont icon-sys-notice" />
+                                        <span className="iconfont icon-sys-notice"/>
                                         {this.renderSelectCustomerTips()}
                                     </div>
                                 ) : null}
-                                <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
+                                <div style={{display: selectCustomerLength ? 'none' : 'block'}}>
                                     <CrmFilter
-                                        ref="crmFilter"                                        
+                                        ref="crmFilter"
                                         search={this.search.bind(this, true)}
                                         changeTableHeight={this.changeTableHeight}
                                         crmFilterValue={this.state.crmFilterValue}
@@ -1431,26 +1398,27 @@ var Crm = React.createClass({
                         addOne={this.addOne}
                         showRightPanel={this.showRightPanel}
                     />
-                ) : null}                
+                ) : null}
                 <div id="content-block" className="content-block splice-table" ref="crmList"
                 >
                     <div className="tbody"
                         ref="tableWrap"
-                        style={{ height: this.state.tableHeight + '!important' }}
+                        style={{height: this.state.tableHeight + '!important'}}
                     >
                         {
                             !this.props.fromSalesHome ?
-                                <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
+                                <div
+                                    className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
                                     <CrmFilterPanel
                                         search={this.search.bind(this, true)}
                                         showSelectTip={_.get(this.state.selectedCustomer, 'length')}
-                                        style={{ width: 300, height: this.state.tableHeight + 100 }}
+                                        style={{width: 300, height: this.state.tableHeight + 100}}
                                         filterPanelHeight={this.state.filterPanelHeight}
                                         changeTableHeight={this.changeTableHeight}
                                     />
                                 </div> : null
                         }
-                        <div className={contentClassName} style={{ display: shouldTableShow ? 'block' : 'none' }}>
+                        <div className={contentClassName} style={{display: shouldTableShow ? 'block' : 'none'}}>
                             <AntcTable
                                 rowSelection={rowSelection}
                                 rowKey={rowKey}
@@ -1458,16 +1426,16 @@ var Crm = React.createClass({
                                 loading={this.state.isLoading}
                                 rowClassName={this.handleRowClassName}
                                 dataSource={this.state.curPageCustomers}
-                                util={{ zoomInSortArea: true }}
+                                util={{zoomInSortArea: true}}
                                 pagination={{
                                     total: this.state.customersSize,
-                                    showTotal: total => Intl.get('crm.207', '共{count}个客户', { count: total }),
+                                    showTotal: total => Intl.get('crm.207', '共{count}个客户', {count: total}),
                                     pageSize: this.state.pageSize,
                                     onChange: this.onPageChange,
                                     current: this.state.pageNum
                                 }}
                                 onChange={this.onTableChange}
-                                scroll={{ x: tableScrollX, y: this.state.tableHeight }}
+                                scroll={{x: tableScrollX, y: this.state.tableHeight}}
                                 locale={{
                                     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                                 }}
@@ -1505,7 +1473,6 @@ var Crm = React.createClass({
                             customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
                             customer_name={customerOfCurUser.name}
-                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>
@@ -1520,15 +1487,15 @@ var Crm = React.createClass({
                     </BootstrapModal.Header>
                     <BootstrapModal.Body>
                         <p>
-                            {Intl.get('crm.15', '是否删除{cusName}？', { cusName: this.state.deleteCusName })}
+                            {Intl.get('crm.15', '是否删除{cusName}？', {cusName: this.state.deleteCusName})}
                         </p>
                     </BootstrapModal.Body>
                     <BootstrapModal.Footer>
                         <BootstrapButton className="btn-ok" onClick={this.deleteCustomer}><ReactIntl.FormattedMessage
-                            id="common.sure" defaultMessage="确定" /></BootstrapButton>
+                            id="common.sure" defaultMessage="确定"/></BootstrapButton>
                         <BootstrapButton className="btn-cancel"
                             onClick={this.hideDeleteModal}><ReactIntl.FormattedMessage id="common.cancel"
-                                defaultMessage="取消" /></BootstrapButton>
+                                defaultMessage="取消"/></BootstrapButton>
                     </BootstrapModal.Footer>
                 </BootstrapModal>
                 <Modal
@@ -1545,7 +1512,7 @@ var Crm = React.createClass({
                             columns={previewColumns}
                             rowKey={this.getRowKey}
                             pagination={false}
-                            scroll={{ x: tableScrollX, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT }}
+                            scroll={{x: tableScrollX, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT}}
                         />
                     ) : null}
                 </Modal>

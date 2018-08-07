@@ -29,7 +29,7 @@ function CrmActions() {
         this.dispatch({error: false, loading: true});
         crmAjax.queryCustomer(condition, rangParams, pageSize, sorter, queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, result: result});
+            this.dispatch({error: false, loading: false, result: result, pageSize});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,

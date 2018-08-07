@@ -10,6 +10,7 @@ export const userTypeList = [
     {name: Intl.get('user.online.train', '培训用户'), value: 'training'},
     {name: Intl.get('user.online.employee', '员工用户'), value: 'internal'},
 ];
+
 // 用户是否过期的下拉选项
 export const filterTypeList = [
     {name: Intl.get('common.all', '全部'), value: ''},
@@ -36,6 +37,16 @@ export const logTypeList = [
 
 //客户名验证的正则表达式
 export const nameRegex = /^[\sa-zA-Z0-9_\-()（）.\u4e00-\u9fa5]{1,50}$/;
+//邮箱正则表达式
+export const emailRegex = /^(((([a-z]|\d|[!#$%&'*+-/=?^_`{|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#$%&'*+-/=?^_`{|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#$%&'*+-/=?^_`{|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#$%&'*+-/=?^_`{|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i;
+//手机正则表达式
+export const mobileRegex = /^1[34578]\d{9}$/;
+//电话正则表达式
+export const telephoneRegex = /^\d{3,4}-\d{7,8}$/;
+//400电话正则表达式
+export const telephone400Regex = /^400-?\d{3}-?\d{4}$/;
+//路径参数正则
+export const pathParamRegex = /:([a-zA-Z_\-0-9]+)/g;
 //电话号码的校验
 //普通的电话号码
 export const commonPhoneRegex = /^1[34578]\d{9}$/;
@@ -43,7 +54,6 @@ export const commonPhoneRegex = /^1[34578]\d{9}$/;
 export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
 // 400 客服电话
 export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
-
 export const SYSTEM_NOTICE_TYPES = {
     OFFSITE_LOGIN: 'illegalLocation',//异地登录
     DISABLE_CUSTOMER_LOGIN: 'appIllegal',//停用客户登录
@@ -55,8 +65,8 @@ export const SYSTEM_NOTICE_TYPES = {
 export const SYSTEM_NOTICE_TYPE_MAP = {
     'appIllegal': Intl.get('ketao.frontpage.illeagl.login', '停用客户登录'),
     'concerCustomerLogin': Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录'),
-    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录'),
-    'loginFailed': Intl.get('notification.login.failed', '登录失败')
+    'loginFailed': Intl.get('notification.login.failed', '登录失败'),
+    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录')
 };
 
 export const NO_SELECT_FULL_OPTIONS = [
@@ -73,6 +83,26 @@ export const SELECT_FULL_OPTIONS = [
     {value: 'ahead_2day_10', name: Intl.get('crm.n.day.10.clock', '{n}天前上午10点', {'n': 2})},
     {value: 'ahead_3day_10', name: Intl.get('crm.n.day.10.clock', '{n}天前上午10点', {'n': 3})},
 ];
+
+// 用户类型的国际化
+export const USER_TYPE_GLOBAL = {
+    'trial': Intl.get('common.trial', '试用'),
+    'official': Intl.get('common.official', '签约'),
+    'presented': Intl.get('user.type.presented', '赠送'),
+    'train': Intl.get('user.type.train', '培训'),
+    'employee': Intl.get('user.type.employee', '员工')
+
+};
+
+// 时间选择的国际化
+export const TIME_RANGE_GLOBAL = {
+    'week': Intl.get('common.time.unit.week', '周'),
+    'half': Intl.get('user.time.half.month', '半个月'),
+    'one': Intl.get('user.time.one.month', '1个月'),
+    'six': Intl.get('user.time.six.month', '6个月'),
+    'twelve': Intl.get('user.time.twelve.month', '12个月'),
+    'forever': Intl.get('common.time.forever', '永久')
+};
 export const clueSourceArray = [Intl.get('crm.sales.clue.baidu', '百度搜索'), Intl.get('crm.sales.clue.weibo', '微博推广'), Intl.get('crm.sales.clue.customer.recommend', '客户推荐')];//线索来源
 export const accessChannelArray = [Intl.get('crm.sales.clue.phone', '400电话'), Intl.get('crm.sales.clue.qq', '营销QQ')];//接入渠道
 export const clueClassifyArray = [Intl.get('sales.home.customer', '客户'), Intl.get('clue.customer.classify.agend','代理商'),Intl.get('clue.customer.classify.search','学术研究')];//线索分类

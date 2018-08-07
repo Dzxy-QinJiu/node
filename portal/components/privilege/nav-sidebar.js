@@ -79,7 +79,14 @@ const BackendConfigLinkList = [
         href: '/background_management/sales_team',
         key: 'sales_team',
         privilege: 'BGM_SALES_TEAM_LIST'
-    }, {
+    },
+    //  {
+    //     name: Intl.get('back.openApp', '开通应用'),
+    //     href: '/background_management/openApp',
+    //     key: 'open_app',
+    //     privilege: 'ROLEP_RIVILEGE_ROLE_CLIENT_LIST'
+    // }, 
+    {
         name: Intl.get('menu.config', '配置'),
         href: '/background_management/configaration',
         key: 'configaration',
@@ -560,7 +567,7 @@ var NavSidebar = React.createClass({
                                         return false;
                                     }).map(function(menu, i) {
                                         var category = menu.routePath.replace(/\/.*$/, '');
-                                        var extraClass = currentPageCategory === category && pathName !== 'contract/dashboard' ? 'active' : '';
+                                        var extraClass = currentPageCategory === category ? 'active' : '';
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
                                         if (!(_.includes(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);

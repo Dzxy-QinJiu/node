@@ -36,7 +36,6 @@ module.exports = {
             'intl-messageformat', 'react-router', 'bootstrap',
             'react-bootstrap','react-date-picker','antd'],
         echarts: ['echarts'],
-        echartsEefung: ['echarts-eefung'],
         world: [path.join(__dirname, 'portal/map', 'world.js')],
         china: [path.join(__dirname, 'portal/map', 'china.js')],
         province: [path.join(__dirname, 'portal/map', 'province.js')]

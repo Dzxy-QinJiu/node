@@ -7,6 +7,7 @@ const Validator = Validation.Validator;
 import { Form } from 'antd';
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import BasicMixin from './mixin-basic';
+import { VIEW_TYPE } from '../consts';
 
 const AddBuyBasic = React.createClass({
     mixins: [ValidateMixin, BasicMixin],
@@ -19,6 +20,7 @@ const AddBuyBasic = React.createClass({
                     {this.renderNumField()}
                     {this.renderUserField()}
                     {this.renderTeamField()}
+                    {this.renderPurchaseTypeField()}
                     {this.renderDateField()}
                     {this.renderAmountField()}
                     {this.renderStageField()}

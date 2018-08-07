@@ -6,6 +6,7 @@ var userManage = require('../../../modules/user_manage');
 var salesStage = require('../../../modules/sales_stage');
 var salesTeam = require('../../../modules/sales_team');
 var ConfigManage = require('../../../modules/config_manage');
+const appOpenManage = require('MOD_DIR/app_open_manage');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('background_management',
@@ -15,7 +16,8 @@ function getChildRoutes() {
             userManage,
             salesStage,
             salesTeam,
-            ConfigManage
+            ConfigManage,
+            appOpenManage
         ]
     );
     return childRoutes;

@@ -41,7 +41,11 @@ var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 50
 };
-import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    removeSpacesAndEnter,
+    traversingSelectTeamTree,
+    getRequestTeamIds
+} from 'PUB_DIR/sources/utils/common-method-util';
 
 var UserTabContent = React.createClass({
     getInitialState: function() {
@@ -110,18 +114,33 @@ var UserTabContent = React.createClass({
         }
 
         var ajaxObj = {
-            page: obj && 'appUserPage' in obj ? obj.appUserPage : this.state.appUserPage,
-            app_id: obj && 'selectedAppId' in obj ? obj.selectedAppId : this.state.selectedAppId,
-            keyword: obj && 'keyword' in obj ? obj.keyword : this.state.keywordValue,
+            id: _.get(obj, 'lastUserId', this.state.lastUserId),
+            app_id: _.get(obj, 'selectedAppId', this.state.selectedAppId),
+            keyword: _.get(obj, 'keyword', this.state.keywordValue),
             sort_field: sort_field,
             sort_order: sort_order,
             //按照角色过滤
-            role_id: obj && 'role_id' in obj ? obj.role_id : this.state.filterRoles.selectedRole,
+            role_id: _.get(obj, 'role_id', this.state.filterRoles.selectedRole),
             //这种是从客户界面点击申请新应用、或是查看客户的用户
             customer_id: this.state.customer_id || ''
         };
         var filterFieldMap = this.state.filterFieldMap;
-        $.extend(ajaxObj, filterFieldMap);
+        ajaxObj = $.extend(true, ajaxObj, filterFieldMap);
+        //团队筛选的处理
+        if (_.get(ajaxObj.team_ids, '[0]')) {
+            //实际选中的团队列表
+            let selectedTeams = ajaxObj.team_ids;
+            //实际要传到后端的团队,默认是选中的团队
+            let totalRequestTeams = selectedTeams;
+            let teamTotalArr = [];
+            //跟据实际选中的id，获取包含下级团队的所有已选团队列表teamTotalArr
+            _.each(selectedTeams, (teamId) => {
+                teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(this.state.teamTreeList, teamId));
+            });
+            //跟据包含下级团队的所有团队详细的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+            totalRequestTeams = _.union(totalRequestTeams, getRequestTeamIds(teamTotalArr));
+            ajaxObj.team_ids = totalRequestTeams;
+        }
         AppUserAction.getAppUserList(ajaxObj);
     },
     onStoreChange: function() {
@@ -349,7 +368,7 @@ var UserTabContent = React.createClass({
         $(window).on('resize', this.changeScrollBarHeight);
         this.bindEventEmitter();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')){
+        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
             //获取线索来源
             this.getClueSource();
             //获取线索渠道
@@ -404,7 +423,8 @@ var UserTabContent = React.createClass({
                                 <input type="hidden" className="hidden_user_id" value={user_id}/>
                             </div>
                             <div className="user-list-tags">
-                                {app.create_tag && app.create_tag === 'register' ? <Tag className="user-tag-style">{Intl.get('oplate.user.register.self', '自注册')}</Tag> : null}
+                                {app.create_tag && app.create_tag === 'register' ? <Tag
+                                    className="user-tag-style">{Intl.get('oplate.user.register.self', '自注册')}</Tag> : null}
                                 {contract_tag ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
                             </div>
                         </div>
@@ -717,27 +737,27 @@ var UserTabContent = React.createClass({
                     </ul>
                 </dd>
             </dl>
-            <dl>
-                <dt>{Intl.get('oplate.user.label', '用户标签')}：</dt>
-                <dd>
-                    <ul>
-                        <li onClick={this.toggleSearchField.bind(this, 'tag_all', '')}
-                            className={this.getFilterFieldClass('tag_all', '')}><ReactIntl.FormattedMessage
-                                id="common.all" defaultMessage="全部"/></li>
-                        <li onClick={this.toggleSearchField.bind(this, 'create_tag', 'register')}
-                            className={this.getFilterFieldClass('create_tag', 'register')}>{Intl.get('oplate.user.register.self', '自注册')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '1')}
-                            className={this.getFilterFieldClass('qualify_label', '1')}>{Intl.get('common.qualified', '合格')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'new')}
-                            className={this.getFilterFieldClass('contract_tag', 'new')}>{Intl.get('contract.162', '新签约')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'renew')}
-                            className={this.getFilterFieldClass('contract_tag', 'renew')}>{Intl.get('contract.163', '续约')}</li>
-                    </ul>
-                </dd>
-            </dl>
             {/*从客户列表中打开某个客户的用户列表时，不需要下面的筛选项*/}
             {this.props.customer_id ? null : (
                 <div>
+                    <dl>
+                        <dt>{Intl.get('oplate.user.label', '用户标签')}：</dt>
+                        <dd>
+                            <ul>
+                                <li onClick={this.toggleSearchField.bind(this, 'tag_all', '')}
+                                    className={this.getFilterFieldClass('tag_all', '')}><ReactIntl.FormattedMessage
+                                        id="common.all" defaultMessage="全部"/></li>
+                                <li onClick={this.toggleSearchField.bind(this, 'create_tag', 'register')}
+                                    className={this.getFilterFieldClass('create_tag', 'register')}>{Intl.get('oplate.user.register.self', '自注册')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '1')}
+                                    className={this.getFilterFieldClass('qualify_label', '1')}>{Intl.get('common.qualified', '合格')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'new')}
+                                    className={this.getFilterFieldClass('contract_tag', 'new')}>{Intl.get('contract.162', '新签约')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'renew')}
+                                    className={this.getFilterFieldClass('contract_tag', 'renew')}>{Intl.get('contract.163', '续约')}</li>
+                            </ul>
+                        </dd>
+                    </dl>
                     {Oplate.hideSomeItem ? null : (
                         <dl>
                             <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/>：</dt>
@@ -784,7 +804,8 @@ var UserTabContent = React.createClass({
                                 <ul>
                                     {EXCEPTION_TYPES.map((exceptionObj, index) => {
                                         return (
-                                            <li key={index} onClick={this.toggleSearchField.bind(this, 'exception_type', exceptionObj.value)}
+                                            <li key={index}
+                                                onClick={this.toggleSearchField.bind(this, 'exception_type', exceptionObj.value)}
                                                 className={this.getFilterFieldClass('exception_type', exceptionObj.value)}>
                                                 {exceptionObj.name}
                                             </li>);
@@ -948,7 +969,7 @@ var UserTabContent = React.createClass({
         </dl>;
     },
     renderLoadingBlock: function() {
-        if (this.state.appUserListResult !== 'loading' || this.state.appUserPage !== 1) {
+        if (this.state.appUserListResult !== 'loading' || this.state.lastUserId) {
             return null;
         }
         return (
@@ -959,7 +980,7 @@ var UserTabContent = React.createClass({
     },
     handleScrollBottom: function() {
         this.fetchUserList({
-            appUserPage: this.state.appUserPage
+            lastUserId: this.state.lastUserId
         });
     },
     //是否显示没有更多数据了
@@ -977,8 +998,9 @@ var UserTabContent = React.createClass({
             sort_order: sorter.order && sorter.order.replace(/end$/, '') || ''
         };
         AppUserAction.changeTableSort(sortParams);
+        AppUserAction.setLastUserId('');
         this.fetchUserList({
-            appUserPage: 1,
+            id: '',
             sort_order: sortParams.sort_order,
             sort_field: sortParams.sort_field
         });
@@ -997,7 +1019,7 @@ var UserTabContent = React.createClass({
         //这里不能return null了，表格的排序会丢失
         var isLoading = this.state.appUserListResult === 'loading';
         var doNotShow = false;
-        if (isLoading && this.state.appUserPage === 1) {
+        if (isLoading && !this.state.lastUserId) {
             doNotShow = true;
         }
         var columns = Oplate.hideSomeItem ? this.getTableColumnsVe() : this.getTableColumns();
@@ -1047,7 +1069,7 @@ var UserTabContent = React.createClass({
                         }}
                     />
                     {
-                        this.state.appUserPage > 1 && this.state.appUserListResult === 'error' ? (
+                        this.state.lastUserId && this.state.appUserListResult === 'error' ? (
 
                             <div className="scroll-loading-data-error">
                                 {this.state.getAppUserListErrorMsg || Intl.get('user.scroll.down.failed', '下拉加载用户失败')},
@@ -1122,7 +1144,7 @@ var UserTabContent = React.createClass({
                 {this.renderTableBlock()}
                 {this.state.clueAddFormShow ? (
                     <SalesClueAddForm
-                        appUserId = {appUserId}
+                        appUserId={appUserId}
                         defaultClueData={this.state.defaultClueData}
                         hideAddForm={this.hideClueAddForm}
                         accessChannelArray={this.state.accessChannelArray}

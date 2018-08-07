@@ -2,6 +2,7 @@ const geoUrl = '/rest/geo/service/v1/';
 const customerUrl = '/rest/customer/v2/customer/';
 const userAnalysisUrl = '/rest/analysis/user/v1/';
 const contractAnalysisUrl = '/rest/analysis/contract/contract/';
+const contractV2AnalysisUrl = '/rest/analysis/contract_v2/statistics';
 const teamUrl = '/rest/base/v1/group/';
 const customerCommonAnalysisUrl = '/rest/analysis/customer/v1/common/';
 const customerManagerAnalysisUrl = '/rest/analysis/customer/v1/manager/';
@@ -110,6 +111,15 @@ module.exports = [{
         'MEMBER_WEBSITE_CONFIG'
     ]
 }, {
+    // 合同统计
+    method: 'get',
+    path: contractV2AnalysisUrl,
+    handler: 'getContractStaticAnalysisData',
+    module: 'contract/server/special-case-handler',
+    passport: {
+        'needLogin': true
+    }
+},{
     'method': 'get',//获取设备类型统计manager
     'path': userAnalysisV3Url + '/manager/device',
     'handler': 'getDeviceTypeBymanager',
@@ -279,6 +289,80 @@ module.exports = [{
     'method': 'get',
     'path': '/rest/analysis/customer/v2/statistic/:type/customer/user/new',
     'handler': 'getNewCustomerCount',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取所有成员基本信息（仅包含姓名、id，不分页)
+    'method': 'get',
+    'path': '/rest/base/v1/user/list/members',
+    'handler': 'getAllUsers',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取应用下角色{query: tags}
+    'method': 'get',
+    'path': '/rest/base/v1/role/client/roles',
+    'handler': 'getAppRoles',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取角色下成员{query: {page_size, page_num, role_id}}
+    'method': 'get',
+    'path': '/rest/base/v1/user/role/users',
+    'handler': 'getRoleUsers',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取应用下角色(含角色下成员 {query: {tags, page_size, page_num, role_id}, })
+    'method': 'get',
+    'path': '/appInfo/:tagName',
+    'handler': 'getAppRoleList',
+    module: 'app_open_manage/server/get-role-user',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //获取应用信息
+    'method': 'get',
+    'path': '/rest/base/v1/role/client/rolefunctions',
+    'handler': 'getAppList',
+    'passport': {
+        'needLogin': true
+    }
+},{
+    //开通应用
+    'method': 'put',
+    'path': '/rest/base/v1/role/:roleId/visible/true',
+    'handler': 'openApp',
+    'passport': {
+        'needLogin': true
+    }
+},{
+    //给成员增加角色
+    'method': 'put',
+    'path': '/rest/base/v1/user/role/updates',
+    'handler': 'addRoleOfUsers',
+    'passport': {
+        'needLogin': true
+    }
+},{
+    //给成员删除角色
+    'method': 'delete',
+    'path': '/rest/base/v1/user/role/updates',
+    'handler': 'delRoleOfUsers',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    //给成员更新角色（含增加角色，删除角色）
+    'method': 'put',
+    'path': '/updateRoleForUsers',
+    'handler': 'editRoleOfUsers',
+    module: 'app_open_manage/server/edit-role-user',
     'passport': {
         'needLogin': true
     }

@@ -28,6 +28,7 @@ const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {storageUtil} from 'ant-utils';
+import {traversingSelectTeamTree, getRequestTeamIds} from 'PUB_DIR/sources/utils/common-method-util';
 //存储个人配置的key
 const WEBSITE_CONFIG = oplateConsts.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG;
 //个人配置中存储的近期登录用户列表选择的应用id
@@ -54,7 +55,7 @@ class RecentLoginUsers extends React.Component {
             user_type: '',
             recentLoginUsers: [],
             totalUserSize: 0,
-            pageNum: 1,//当前页数（第几页）
+            lastUserId: '',//用于下拉加载的userId
             isLoadingUserList: false,//是否正在获取近期登录用户列表
             getUserListErrorMsg: '',//错误提示内容
             listenScrollBottom: true,//是否监听滚动
@@ -140,15 +141,24 @@ class RecentLoginUsers extends React.Component {
             app_id: this.state.selectedAppId,
             login_begin_date: this.state.start_time,
             login_end_date: this.state.end_time,
-            page_num: this.state.pageNum,
-            page_size: PAGE_SIZE,
-            logins_min: 1
+            page_size: PAGE_SIZE
         };
+        if(this.state.lastUserId){
+            paramObj.id = this.state.lastUserId;
+        }
         if (this.state.user_type) {
             paramObj.user_type = this.state.user_type;
         }
+        //团队筛选的处理
         if (this.state.team_ids) {
-            paramObj.team_ids = this.state.team_ids;
+            let selectTeamId = this.state.team_ids;
+            //实际要传到后端的团队,默认是选中的团队
+            let totalRequestTeams = [selectTeamId];
+            //跟据实际选中的id，获取包含下级团队的已选团队的列表teamTotalArr
+            let teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(this.props.teamTreeList, selectTeamId));
+            //跟据包含下级团队的所有团队详细的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+            totalRequestTeams = _.union(totalRequestTeams, getRequestTeamIds(teamTotalArr));
+            paramObj.team_ids = totalRequestTeams.join(',');
         }
         if (this.state.filter_type) {
             paramObj.outdate = this.state.filter_type;
@@ -163,7 +173,7 @@ class RecentLoginUsers extends React.Component {
 
     getRecentLoginUsers() {
         let params = this.getParamsObj();
-        if (this.state.pageNum === 1) {
+        if (!this.state.lastUserId) {
             // 获取第一页数据时，展示等待效果，下拉加载时，不展示
             this.setState({isLoadingUserList: true});
         }
@@ -183,21 +193,23 @@ class RecentLoginUsers extends React.Component {
     handleRecentLoginUsers(result) {
         let userList = this.state.recentLoginUsers;
         let total = this.state.totalUserSize;
+        let lastUserId = this.state.lastUserId;
         if (result && _.isArray(result.data)) {
-            if (this.state.pageNum === 1) {
+            if (!this.state.lastUserId) {
                 userList = result.data;
             } else {
                 userList = userList.concat(result.data);
             }
-            this.state.pageNum++;
+            lastUserId = _.get(userList, `[${ userList.length - 1 }].user.user_id`, '');
             total = result.total || 0;
         }
+
         this.setState({
             isLoadingUserList: false,
             getUserListErrorMsg: '',
             recentLoginUsers: userList,
             totalUserSize: total,
-            pageNum: this.state.pageNum,
+            lastUserId: lastUserId,
             listenScrollBottom: total > userList.length
         });
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -224,7 +236,7 @@ class RecentLoginUsers extends React.Component {
         //设置当前选中应用
         this.setState({
             selectedAppId: app_id,
-            pageNum: 1,
+            lastUserId: '',
         }, () => {
             setWebsiteConfig(obj);
             this.getRecentLoginUsers();
@@ -412,24 +424,24 @@ class RecentLoginUsers extends React.Component {
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();
         }
-        this.setState({start_time: start_time, end_time: end_time, pageNum: 1});
+        this.setState({start_time: start_time, end_time: end_time, lastUserId: ''});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     onUserTypeChange(type) {
-        this.setState({user_type: type, pageNum: 1});
+        this.setState({user_type: type, lastUserId: ''});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     // 是否过期类型的选择
     onFilterTypeChange(type) {
-        this.setState({filter_type: type, pageNum: 1});
+        this.setState({filter_type: type, lastUserId: ''});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     // 修改所选中的团队
     onTeamChange(team_ids) {
-        this.setState({team_ids: team_ids, pageNum: 1});
+        this.setState({team_ids: team_ids, lastUserId: ''});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
@@ -559,5 +571,12 @@ class RecentLoginUsers extends React.Component {
         );
     }
 }
-
+const PropTypes = React.PropTypes;
+RecentLoginUsers.propTypes = {
+    teamlists: PropTypes.array,
+    teamTreeList: PropTypes.array,
+    selectedAppId: PropTypes.string,
+    appList: PropTypes.array,
+    hideRecentLoginPanel: PropTypes.func
+};
 export default RecentLoginUsers;

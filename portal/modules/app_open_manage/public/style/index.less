@@ -1,0 +1,85 @@
+.open-app-wrapper {
+    padding-top: 65px;
+    .btn-bar {
+        text-align: right;
+        button {
+            margin-left: 10px;
+        }
+    }
+    .right-pannel-default .ant-select {
+        width: 230px;
+    }
+    .role-item-btn-bar {
+        display: inline-block;
+        color: black;
+        margin-left: 5px;
+        i {
+            cursor: pointer;
+            margin-right: 5px;
+            &.anticon-close {
+                color: red;
+            }
+            &.anticon-check {
+                color: green;
+            }
+        }
+    }
+    legend {
+        width: initial;
+        border: initial;
+        font-size: initial;
+        line-height: initial;
+        margin: 0;
+    }
+    fieldset.app-container {
+        &.disabled {
+            background: #f7f7f7;
+        }
+        display: inline-block;
+        border: 1px solid #ccc;
+        margin: 20px;
+        width: 300px;
+        padding: 0;
+        legend {
+            font-size: 17px;
+            padding: 0 5px;
+            color: black;
+            margin-left: 15px;
+        }
+        p {
+            font-size: 13px;
+            margin: 20px;
+        }
+        .btn-bar {
+            text-align: right;
+            button {
+                border-radius: 0;
+            }
+        }
+    }
+    .app-detail-wrapper {
+        .btn-bar {
+            padding-right: 25px;
+        }
+        &.right-pannel-default .close-pannel {
+            position: absolute;
+            float: none;
+            right: 0;
+            top: 0;
+        }
+        .app-detail-container {
+            margin: 20px;
+            .content {
+                h5 {
+                    margin-bottom: 30px;
+                    padding-left: 10px;
+                    font-size: 15px;
+                }
+                margin-top: 30px;
+                .role-from-wrapper {
+                    margin-top: 10px;
+                }
+            }
+        }
+    }
+}
