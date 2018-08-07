@@ -1608,7 +1608,6 @@ var zh_CN = {
     'contract.168': '有效期',
     'contract.169': '{uername} 签订于{date}',
     'contract.170': '合同待审',
-    'contract.171': '用户个数',
     'contract.172': '金额(元)',
     'contract.173': '暂无产品信息',
     'contract.174': '合同额与产品总额不相等，请核对',
