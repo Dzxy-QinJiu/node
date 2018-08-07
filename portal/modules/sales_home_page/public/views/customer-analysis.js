@@ -9,7 +9,6 @@ var hasPrivilege = require('../../../../components/privilege/checker').hasPrivil
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
 var OplateCustomerAnalysisAction = require('../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action');
 var OplateCustomerAnalysisStore = require('../../../oplate_customer_analysis/public/store/oplate-customer-analysis.store');
-var BarChart = require('../../../oplate_customer_analysis/public/views/bar');
 var FunnelChart = require('../../../oplate_customer_analysis/public/views/funnel');
 var emitter = require('../../../oplate_customer_analysis/public/utils/emitter');
 let userData = require('../../../../public/sources/user-data');
@@ -317,26 +316,6 @@ var CustomerAnalysis = React.createClass({
                 analysis_filter_field: analysis_filter_field
             }
         };
-    },
-    //活跃客户数的统计
-    getActiveCustomerChart: function() {
-        var startDate = this.getStartDateText();
-        var endDate = this.getEndDateText();
-        var legend = [{ name: Intl.get('sales.home.new.add', '新增'), key: 'count' }];
-        return (
-            <BarChart
-                width={this.chartWidth}
-                list={this.state.activeCustomerAnalysis.data}
-                title={Intl.get('user.analysis.active.customer', '活跃客户')}
-                legend={legend}
-                startDate={startDate}
-                endDate={endDate}
-                getJumpProps={this.getJumpProps}
-                getSaleIdByName={this.props.getSaleIdByName}
-                showLabel={true}
-                resultType={this.state.activeCustomerAnalysis.resultType}
-            />
-        );
     },
 
     processOrderStageData: function(data) {
