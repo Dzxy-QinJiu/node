@@ -470,7 +470,6 @@ let SystemNotification = React.createClass({
     render: function() {
         let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP;
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div className="notification_system" data-tracename="系统消息列表">
                 <TopNav>
@@ -517,7 +516,6 @@ let SystemNotification = React.createClass({
                             customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
                             customer_name={customerOfCurUser.name}
-                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>

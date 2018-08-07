@@ -834,7 +834,6 @@ var SalesHomePage = React.createClass({
             'has-repeat-customer': this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
         });
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <RightContent>
                 <div className="sales_home_content" data-tracename="销售首页">
@@ -913,7 +912,6 @@ var SalesHomePage = React.createClass({
                                 customer_id={customerOfCurUser.id}
                                 hideCustomerUserList={this.closeCustomerUserListPanel}
                                 customer_name={customerOfCurUser.name}
-                                user_size={customerUserSize}
                             /> : null
                         }
                     </RightPanel>
