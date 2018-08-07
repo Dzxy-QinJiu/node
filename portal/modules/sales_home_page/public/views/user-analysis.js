@@ -7,7 +7,6 @@ var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateUserAnalysisAction = require('../../../oplate_user_analysis/public/action/oplate-user-analysis.action');
 var OplateUserAnalysisStore = require('../../../oplate_user_analysis/public/store/oplate-user-analysis.store');
 var BarChart = require('../../../oplate_user_analysis/public/views/bar');
-var ReverseBarChart = require('../../../oplate_user_analysis/public/views/reverse_bar');
 var SingleLineChart = require('../../../oplate_user_analysis/public/views/single_line');
 var emitter = require('../../../oplate_user_analysis/public/utils/emitter');
 let userData = require('../../../../public/sources/user-data');
