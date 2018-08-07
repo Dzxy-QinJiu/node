@@ -72,7 +72,6 @@ const CallRecordList = React.createClass({
     },
     render: function() {
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div>
                 <div className='call-record-wrap table-btn-fix' data-tracename="通话记录界面">
@@ -90,7 +89,6 @@ const CallRecordList = React.createClass({
                             customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
                             customer_name={customerOfCurUser.name}
-                            user_size={customerUserSize}
                         /> : null
                     }
                 </RightPanel>

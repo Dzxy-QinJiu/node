@@ -114,13 +114,13 @@ var UserTabContent = React.createClass({
         }
 
         var ajaxObj = {
-            page: obj && 'appUserPage' in obj ? obj.appUserPage : this.state.appUserPage,
-            app_id: obj && 'selectedAppId' in obj ? obj.selectedAppId : this.state.selectedAppId,
-            keyword: obj && 'keyword' in obj ? obj.keyword : this.state.keywordValue,
+            id: _.get(obj, 'lastUserId', this.state.lastUserId),
+            app_id: _.get(obj, 'selectedAppId', this.state.selectedAppId),
+            keyword: _.get(obj, 'keyword', this.state.keywordValue),
             sort_field: sort_field,
             sort_order: sort_order,
             //按照角色过滤
-            role_id: obj && 'role_id' in obj ? obj.role_id : this.state.filterRoles.selectedRole,
+            role_id: _.get(obj, 'role_id', this.state.filterRoles.selectedRole),
             //这种是从客户界面点击申请新应用、或是查看客户的用户
             customer_id: this.state.customer_id || ''
         };
@@ -737,27 +737,27 @@ var UserTabContent = React.createClass({
                     </ul>
                 </dd>
             </dl>
-            <dl>
-                <dt>{Intl.get('oplate.user.label', '用户标签')}：</dt>
-                <dd>
-                    <ul>
-                        <li onClick={this.toggleSearchField.bind(this, 'tag_all', '')}
-                            className={this.getFilterFieldClass('tag_all', '')}><ReactIntl.FormattedMessage
-                                id="common.all" defaultMessage="全部"/></li>
-                        <li onClick={this.toggleSearchField.bind(this, 'create_tag', 'register')}
-                            className={this.getFilterFieldClass('create_tag', 'register')}>{Intl.get('oplate.user.register.self', '自注册')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '1')}
-                            className={this.getFilterFieldClass('qualify_label', '1')}>{Intl.get('common.qualified', '合格')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'new')}
-                            className={this.getFilterFieldClass('contract_tag', 'new')}>{Intl.get('contract.162', '新签约')}</li>
-                        <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'renew')}
-                            className={this.getFilterFieldClass('contract_tag', 'renew')}>{Intl.get('contract.163', '续约')}</li>
-                    </ul>
-                </dd>
-            </dl>
             {/*从客户列表中打开某个客户的用户列表时，不需要下面的筛选项*/}
             {this.props.customer_id ? null : (
                 <div>
+                    <dl>
+                        <dt>{Intl.get('oplate.user.label', '用户标签')}：</dt>
+                        <dd>
+                            <ul>
+                                <li onClick={this.toggleSearchField.bind(this, 'tag_all', '')}
+                                    className={this.getFilterFieldClass('tag_all', '')}><ReactIntl.FormattedMessage
+                                        id="common.all" defaultMessage="全部"/></li>
+                                <li onClick={this.toggleSearchField.bind(this, 'create_tag', 'register')}
+                                    className={this.getFilterFieldClass('create_tag', 'register')}>{Intl.get('oplate.user.register.self', '自注册')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '1')}
+                                    className={this.getFilterFieldClass('qualify_label', '1')}>{Intl.get('common.qualified', '合格')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'new')}
+                                    className={this.getFilterFieldClass('contract_tag', 'new')}>{Intl.get('contract.162', '新签约')}</li>
+                                <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'renew')}
+                                    className={this.getFilterFieldClass('contract_tag', 'renew')}>{Intl.get('contract.163', '续约')}</li>
+                            </ul>
+                        </dd>
+                    </dl>
                     {Oplate.hideSomeItem ? null : (
                         <dl>
                             <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/>：</dt>
@@ -969,7 +969,7 @@ var UserTabContent = React.createClass({
         </dl>;
     },
     renderLoadingBlock: function() {
-        if (this.state.appUserListResult !== 'loading' || this.state.appUserPage !== 1) {
+        if (this.state.appUserListResult !== 'loading' || this.state.lastUserId) {
             return null;
         }
         return (
@@ -980,7 +980,7 @@ var UserTabContent = React.createClass({
     },
     handleScrollBottom: function() {
         this.fetchUserList({
-            appUserPage: this.state.appUserPage
+            lastUserId: this.state.lastUserId
         });
     },
     //是否显示没有更多数据了
@@ -998,8 +998,9 @@ var UserTabContent = React.createClass({
             sort_order: sorter.order && sorter.order.replace(/end$/, '') || ''
         };
         AppUserAction.changeTableSort(sortParams);
+        AppUserAction.setLastUserId('');
         this.fetchUserList({
-            appUserPage: 1,
+            id: '',
             sort_order: sortParams.sort_order,
             sort_field: sortParams.sort_field
         });
@@ -1018,7 +1019,7 @@ var UserTabContent = React.createClass({
         //这里不能return null了，表格的排序会丢失
         var isLoading = this.state.appUserListResult === 'loading';
         var doNotShow = false;
-        if (isLoading && this.state.appUserPage === 1) {
+        if (isLoading && !this.state.lastUserId) {
             doNotShow = true;
         }
         var columns = Oplate.hideSomeItem ? this.getTableColumnsVe() : this.getTableColumns();
@@ -1068,7 +1069,7 @@ var UserTabContent = React.createClass({
                         }}
                     />
                     {
-                        this.state.appUserPage > 1 && this.state.appUserListResult === 'error' ? (
+                        this.state.lastUserId && this.state.appUserListResult === 'error' ? (
 
                             <div className="scroll-loading-data-error">
                                 {this.state.getAppUserListErrorMsg || Intl.get('user.scroll.down.failed', '下拉加载用户失败')},
