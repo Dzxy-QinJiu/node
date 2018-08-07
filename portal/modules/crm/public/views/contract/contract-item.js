@@ -300,7 +300,6 @@ const ContractItem = React.createClass({
         const contract = this.state.formData;
         const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : '';
         const end_time = contract.end_time ? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : '';
-        // 管理员，有编辑合同的权限
         let itemClassName = classNames('contract-item-content', {
             'item-edit-style': contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE')
         });
@@ -312,22 +311,19 @@ const ContractItem = React.createClass({
         });
         // 合同的签约类型
         const contractLabel = contract.label === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('contract.163', '续约');
+        let hasEditPrivilege = contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE') || false;
         return (
             <div className='contract-item'>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('contract.4', '甲方')}:</span>
-                    {contract.stage === '待审' ? (
-                        <BasicEditInputField
-                            width={EDIT_WIDTH}
-                            id={contract.id}
-                            field='buyer'
-                            value={contract.buyer}
-                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
-                            saveEditInput={this.saveContractBasicInfo}
-                        />
-                    ) : (
-                        <span className='contract-value'>{contract.buyer}</span>
-                    )}
+                    <BasicEditInputField
+                        width={EDIT_WIDTH}
+                        id={contract.id}
+                        field='buyer'
+                        value={contract.buyer}
+                        hasEditPrivilege={hasEditPrivilege}
+                        saveEditInput={this.saveContractBasicInfo}
+                    />
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
@@ -360,77 +356,61 @@ const ContractItem = React.createClass({
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('contract.25', '合同额')}:</span>
-                    {contract.stage === '待审' ? (
-                        <BasicEditInputField
-                            width={EDIT_WIDTH}
-                            id={contract.id}
-                            type='number'
-                            field='contract_amount'
-                            value={contract.contract_amount}
-                            afterValTip={Intl.get('contract.82', '元')}
-                            placeholder={Intl.get('crm.contract.enter.contract.money', '请输入合同额')}
-                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
-                            saveEditInput={this.saveContractBasicInfo}
-                            noDataTip={Intl.get('crm.contract.no.contract.money', '暂无合同额')}
-                        />
-                    ) : (
-                        <span className='contract-value'>{this.formatValues(contract.contract_amount)}</span>
-                    )}
+                    <BasicEditInputField
+                        width={EDIT_WIDTH}
+                        id={contract.id}
+                        type='number'
+                        field='contract_amount'
+                        value={contract.contract_amount}
+                        afterValTip={Intl.get('contract.82', '元')}
+                        placeholder={Intl.get('crm.contract.enter.contract.money', '请输入合同额')}
+                        hasEditPrivilege={hasEditPrivilege}
+                        saveEditInput={this.saveContractBasicInfo}
+                        noDataTip={Intl.get('crm.contract.no.contract.money', '暂无合同额')}
+                    />
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('contract.109', '毛利')}:</span>
-                    {contract.stage === '待审' ? (
-                        <BasicEditInputField
-                            width={EDIT_WIDTH}
-                            id={contract.id}
-                            type='number'
-                            field='gross_profit'
-                            value={contract.gross_profit}
-                            afterValTip={Intl.get('contract.82', '元')}
-                            placeholder={Intl.get('crm.contract.enter.gross', '请输入毛利')}
-                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
-                            saveEditInput={this.saveContractBasicInfo}
-                            noDataTip={Intl.get('crm.contract.no.gross', '暂无毛利额')}
-                        />
-                    ) : (
-                        <span className='contract-value'>{this.formatValues(contract.gross_profit)}</span>
-                    )}
+                    <BasicEditInputField
+                        width={EDIT_WIDTH}
+                        id={contract.id}
+                        type='number'
+                        field='gross_profit'
+                        value={contract.gross_profit}
+                        afterValTip={Intl.get('contract.82', '元')}
+                        placeholder={Intl.get('crm.contract.enter.gross', '请输入毛利')}
+                        hasEditPrivilege={hasEditPrivilege}
+                        saveEditInput={this.saveContractBasicInfo}
+                        noDataTip={Intl.get('crm.contract.no.gross', '暂无毛利额')}
+                    />
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('contract.37', '合同类型')}:</span>
-                    {contract.stage === '待审' ? (
-                        <BasicEditSelectField
-                            width={EDIT_WIDTH}
-                            id={contract.id}
-                            displayText={contract.category}
-                            value={contract.category}
-                            field="category"
-                            selectOptions={categoryOptions}
-                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
-                            placeholder={Intl.get('contract.72', '请选择合同类型')}
-                            saveEditSelect={this.saveContractBasicInfo}
-                        />
-                    ) : (
-                        <span className='contract-value'>{contract.category}</span>
-                    )}
+                    <BasicEditSelectField
+                        width={EDIT_WIDTH}
+                        id={contract.id}
+                        displayText={contract.category}
+                        value={contract.category}
+                        field="category"
+                        selectOptions={categoryOptions}
+                        hasEditPrivilege={hasEditPrivilege}
+                        placeholder={Intl.get('contract.72', '请选择合同类型')}
+                        saveEditSelect={this.saveContractBasicInfo}
+                    />
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('contract.164', '签约类型')}:</span>
-                    {contract.stage === '待审' ? (
-                        <BasicEditSelectField
-                            width={EDIT_WIDTH}
-                            id={contract.id}
-                            displayText={contractLabel}
-                            value={contractLabel}
-                            field="label"
-                            selectOptions={labelOptions}
-                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
-                            placeholder={Intl.get('crm.contract.select.sign.type', '请选择签约类型')}
-                            saveEditSelect={this.saveContractBasicInfo}
-                        />
-                    ) : (
-                        <span className='contract-value'>{contractLabel}</span>
-                    )}
+                    <BasicEditSelectField
+                        width={EDIT_WIDTH}
+                        id={contract.id}
+                        displayText={contractLabel}
+                        value={contractLabel}
+                        field="label"
+                        selectOptions={labelOptions}
+                        hasEditPrivilege={hasEditPrivilege}
+                        placeholder={Intl.get('crm.contract.select.sign.type', '请选择签约类型')}
+                        saveEditSelect={this.saveContractBasicInfo}
+                    />
                 </div>
                 {
                     contract.stage === '待审' ? (
@@ -455,7 +435,7 @@ const ContractItem = React.createClass({
                                         type="textarea"
                                         field='remarks'
                                         value={contract.remarks}
-                                        hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
+                                        hasEditPrivilege={hasEditPrivilege}
                                         saveEditInput={this.saveContractBasicInfo}
                                     />
                                 </div>
