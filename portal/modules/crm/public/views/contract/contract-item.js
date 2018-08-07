@@ -60,7 +60,7 @@ const ContractItem = React.createClass({
         this.setState({isLoading: true});
         ContractAjax.deletePendingContract(contract.id).then( (resData) => {
             this.state.isLoading = false;
-            if (resData && resData.code !== 0) {
+            if (resData && resData.code === 0) {
                 message.success(Intl.get('crm.138', '删除成功'));
                 this.state.errMsg = '';
                 this.state.isDeleteContractFlag = false;
