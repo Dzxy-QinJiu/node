@@ -12,7 +12,6 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 const AlertTimer = require('CMP_DIR/alert-timer');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
-const UserData = require('PUB_DIR/sources/user-data');
 const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
