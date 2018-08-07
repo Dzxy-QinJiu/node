@@ -16,6 +16,7 @@ const UserData = require('PUB_DIR/sources/user-data');
 const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+const EDIT_WIDTH = 350;
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -232,8 +233,6 @@ const ContractItem = React.createClass({
         contract.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
         if (_.has(saveObj, 'buyer')) { // 修改甲方
             contract.buyer = saveObj.buyer;
-        } else if (_.has(saveObj, 'customer_name')) { // 修改客户名
-            contract.customer_name = saveObj.customer_name;
         } else if (_.has(saveObj, 'contract_amount')) { // 修改合同额
             contract.contract_amount = saveObj.contract_amount;
         } else if (_.has(saveObj, 'gross_profit')) { // 修改毛利
@@ -323,7 +322,7 @@ const ContractItem = React.createClass({
                     <span className='contract-label'>{Intl.get('contract.4', '甲方')}:</span>
                     {contract.stage === '待审' ? (
                         <BasicEditInputField
-                            width={350}
+                            width={EDIT_WIDTH}
                             id={contract.id}
                             field='buyer'
                             value={contract.buyer}
@@ -334,21 +333,14 @@ const ContractItem = React.createClass({
                         <span className='contract-value'>{contract.buyer}</span>
                     )}
                 </div>
-                <div className={itemClassName}>
-                    <span className='contract-label'> {Intl.get('call.record.customer', '客户')}:</span>
-                    {contract.stage === '待审' ? (
-                        <BasicEditInputField
-                            width={350}
-                            id={contract.id}
-                            field='customer_name'
-                            value={contract.customer_name}
-                            hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
-                            saveEditInput={this.saveContractBasicInfo}
-                        />
-                    ) : (
-                        <span className='contract-value'>{contract.customer_name}</span>
-                    )}
-                </div>
+                {
+                    contract.stage === '待审' ? null : (
+                        <div className={itemClassName}>
+                            <span className='contract-label'> {Intl.get('call.record.customer', '客户')}:</span>
+                            <span className='contract-value'>{contract.customer_name}</span>
+                        </div>
+                    )
+                }
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
                     {
@@ -382,7 +374,7 @@ const ContractItem = React.createClass({
                     <span className='contract-label'>{Intl.get('contract.25', '合同额')}:</span>
                     {contract.stage === '待审' ? (
                         <BasicEditInputField
-                            width={350}
+                            width={EDIT_WIDTH}
                             id={contract.id}
                             type='number'
                             field='contract_amount'
@@ -401,7 +393,7 @@ const ContractItem = React.createClass({
                     <span className='contract-label'>{Intl.get('contract.109', '毛利')}:</span>
                     {contract.stage === '待审' ? (
                         <BasicEditInputField
-                            width={350}
+                            width={EDIT_WIDTH}
                             id={contract.id}
                             type='number'
                             field='gross_profit'
@@ -420,6 +412,7 @@ const ContractItem = React.createClass({
                     <span className='contract-label'>{Intl.get('contract.37', '合同类型')}:</span>
                     {contract.stage === '待审' ? (
                         <BasicEditSelectField
+                            width={EDIT_WIDTH}
                             id={contract.id}
                             displayText={contract.category}
                             value={contract.category}
@@ -437,6 +430,7 @@ const ContractItem = React.createClass({
                     <span className='contract-label'>{Intl.get('contract.164', '签约类型')}:</span>
                     {contract.stage === '待审' ? (
                         <BasicEditSelectField
+                            width={EDIT_WIDTH}
                             id={contract.id}
                             displayText={contractLabel}
                             value={contractLabel}
@@ -478,7 +472,7 @@ const ContractItem = React.createClass({
                                 <div className={itemClassName}>
                                     <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
                                     <BasicEditInputField
-                                        width={350}
+                                        width={EDIT_WIDTH}
                                         id={contract.id}
                                         type="textarea"
                                         field='remarks'
