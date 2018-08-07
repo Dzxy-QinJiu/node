@@ -90,10 +90,11 @@ const ContractItem = React.createClass({
             'contract-filed': contract.stage === '归档'
         });
         let contractClass = classNames('iconfont',{
-            'icon-down-twoline': contract.stage !== '待审',
-            'icon-up-twoline': contract.stage === '待审'
+            'icon-down-twoline': !contract.isShowAllContractInfo,
+            'icon-up-twoline': contract.isShowAllContractInfo
+
         });
-        let contractTitle = contract.stage === '待审' ? Intl.get('crm.basic.detail.hide', '收起详情') :
+        let contractTitle = contract.isShowAllContractInfo ? Intl.get('crm.basic.detail.hide', '收起详情') :
             Intl.get('crm.basic.detail.show', '展开详情');
 
         return (
@@ -398,41 +399,24 @@ const ContractItem = React.createClass({
                     />
                 </div>
                 {
-                    contract.stage === '待审' ? (
-                        contract.isShowAllContractInfo ? null : (
-                            this.showProductInfo(itemClassName, contract.products)
-                        )
-                    ) : (
-                        contract.isShowAllContractInfo ? (
-                            this.showProductInfo(itemClassName, contract.products)
-                        ) : null
-                    )
+                    contract.isShowAllContractInfo ? (
+                        this.showProductInfo(itemClassName, contract.products)
+                    ) : null
                 }
                 {
-                    contract.remarks ? (
-                        contract.stage === '待审' ? (
-                            contract.isShowAllContractInfo ? null : (
-                                <div className={itemClassName}>
-                                    <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
-                                    <BasicEditInputField
-                                        width={EDIT_WIDTH}
-                                        id={contract.id}
-                                        type="textarea"
-                                        field='remarks'
-                                        value={contract.remarks}
-                                        hasEditPrivilege={hasEditPrivilege}
-                                        saveEditInput={this.saveContractBasicInfo}
-                                    />
-                                </div>
-                            )
-                        ) : (
-                            contract.isShowAllContractInfo ? (
-                                <div className={itemClassName}>
-                                    <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
-                                    <span className='contract-value contract-remarks'>{contract.remarks}</span>
-                                </div>
-                            ) : null
-                        )
+                    contract.isShowAllContractInfo ? (
+                        <div className={itemClassName}>
+                            <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_WIDTH}
+                                id={contract.id}
+                                type="textarea"
+                                field='remarks'
+                                value={contract.remarks}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditInput={this.saveContractBasicInfo}
+                            />
+                        </div>
                     ) : null
                 }
             </div>
