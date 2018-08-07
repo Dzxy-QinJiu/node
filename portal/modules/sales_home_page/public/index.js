@@ -307,12 +307,13 @@ var SalesHomePage = React.createClass({
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.total.duration', '总时长'), 'totalTimeDescr'),
             csvTitle: Intl.get('sales.home.total.duration', '总时长'),
+            align: 'right',
             dataIndex: 'totalTimeDescr',
             key: 'total_time',
             sorter: function(a, b) {
                 return a.totalTime - b.totalTime;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(num_col_width, 'totalTimeDescr')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.total.connected', '总接通数'), 'calloutSuccess'),
@@ -322,17 +323,18 @@ var SalesHomePage = React.createClass({
             sorter: function(a, b) {
                 return a.calloutSuccess - b.calloutSuccess;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(num_col_width, 'calloutSuccess')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.average.duration', '日均时长'), 'averageTimeDescr'),
             csvTitle: Intl.get('sales.home.average.duration', '日均时长'),
+            align: 'right',
             dataIndex: 'averageTimeDescr',
             key: 'average_time',
             sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(num_col_width, 'averageTimeDescr')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.average.connected', '日均接通数'), 'averageAnswer'),
@@ -342,7 +344,7 @@ var SalesHomePage = React.createClass({
             sorter: function(a, b) {
                 return a.averageAnswer - b.averageAnswer;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(col_width, 'averageAnswer')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin', '呼入次数'), 'callinCount'),
@@ -352,7 +354,7 @@ var SalesHomePage = React.createClass({
             sorter: function(a, b) {
                 return a.callinCount - b.callinCount;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(num_col_width, 'callinCount')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin.success', '成功呼入'), 'callinSuccess'),
@@ -362,17 +364,18 @@ var SalesHomePage = React.createClass({
             sorter: function(a, b) {
                 return a.callinSuccess - b.callinSuccess;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(num_col_width, 'callinSuccess')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callin.rate', '呼入接通率'), 'callinRate'),
             csvTitle: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
+            align: 'right',
             dataIndex: 'callinRate',
             key: 'callin_rate',
             sorter: function(a, b) {
                 return a.callinRate - b.callinRate;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(col_width, 'callinRate')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callout', '呼出次数'), 'calloutCount'),
@@ -382,17 +385,18 @@ var SalesHomePage = React.createClass({
             sorter: function(a, b) {
                 return a.calloutCount - b.calloutCount;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(num_col_width, 'calloutCount')
         }, {
             title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.callout.rate', '呼出接通率'), 'calloutRate'),
             csvTitle: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
+            align: 'right',
             dataIndex: 'calloutRate',
             key: 'callout_rate',
             sorter: function(a, b) {
                 return a.calloutRate - b.calloutRate;
             },
-            className: 'has-filter table-data-align-right',
+            className: 'has-filter',
             width: this.getColumnMinWidth(col_width, 'calloutRate')
         }];
         //当前展示的是客套类型的通话记录时，展示计费时长
@@ -405,7 +409,7 @@ var SalesHomePage = React.createClass({
                 sorter: function(a, b) {
                     return a.billingTime - b.billingTime;
                 },
-                className: 'has-filter table-data-align-right',
+                className: 'has-filter',
                 width: this.getColumnMinWidth(120, 'billingTime')
             });
         }
@@ -661,14 +665,13 @@ var SalesHomePage = React.createClass({
                 title: Intl.get('common.phone', '电话'),
                 dataIndex: 'dst',
                 width: '120',
-                className: 'table-data-align-right',
                 key: 'call_number'
             }, {
                 title: titleObj.title,
                 dataIndex: titleObj.dataKey,
                 width: '100',
-                className: 'table-data-align-right',
                 key: 'holding_time',
+                align: 'right',
                 render: function(data) {
                     return <div>{titleObj.dataKey === 'count' ? data : TimeUtil.getFormatTime(data)}</div>;
                 }
@@ -676,13 +679,11 @@ var SalesHomePage = React.createClass({
                 title: Intl.get('call.record.customer', '客户'),
                 dataIndex: 'customer_name',
                 width: '250',
-                className: 'table-data-align-left',
                 key: 'customer_name'
             }, {
                 title: Intl.get('call.record.caller', '呼叫者'),
                 dataIndex: 'nick_name',
                 width: '70',
-                className: 'table-data-align-left',
                 key: 'nick_name'
             }
         ];
