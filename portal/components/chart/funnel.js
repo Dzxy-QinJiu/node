@@ -1,7 +1,7 @@
 /**
  * 漏斗图
  */
-var echarts = require('echarts-eefung');
+var echarts = require('echarts');
 require('./style.less');
 var macronsTheme = require('./theme-macrons');
 var immutable = require('immutable');

@@ -14,7 +14,7 @@
         return 'some html here';
     }
  */
-var echarts = require('echarts-eefung');
+var echarts = require('echarts');
 import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 var TimeSeriesBarchart = React.createClass({
     getDefaultProps: function() {
@@ -142,8 +142,8 @@ var TimeSeriesBarchart = React.createClass({
                             }
 
                             if(series.length > 5) {
-                                if(d == series[0] && series[0][0] && series[0][0].getTime && series[0][0].getTime() ||
-                                    d == series[series.length - 1] && series[series.length - 1][0] && series[series.length - 1][0].getTime && series[series.length - 1][0].getTime()) {
+                                if(d === series[0] && series[0][0] && series[0][0].getTime && series[0][0].getTime() ||
+                                    d === series[series.length - 1] && series[series.length - 1][0] && series[series.length - 1][0].getTime && series[series.length - 1][0].getTime()) {
                                     return '';
                                 }
                             }
