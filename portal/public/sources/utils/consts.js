@@ -65,6 +65,7 @@ export const SYSTEM_NOTICE_TYPES = {
 export const SYSTEM_NOTICE_TYPE_MAP = {
     'appIllegal': Intl.get('ketao.frontpage.illeagl.login', '停用客户登录'),
     'concerCustomerLogin': Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录'),
+    'loginFailed': Intl.get('notification.login.failed', '登录失败'),
     'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录')
 };
 
