@@ -404,19 +404,21 @@ const ContractItem = React.createClass({
                     ) : null
                 }
                 {
-                    contract.isShowAllContractInfo ? (
-                        <div className={itemClassName}>
-                            <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
-                            <BasicEditInputField
-                                width={EDIT_WIDTH}
-                                id={contract.id}
-                                type="textarea"
-                                field='remarks'
-                                value={contract.remarks}
-                                hasEditPrivilege={hasEditPrivilege}
-                                saveEditInput={this.saveContractBasicInfo}
-                            />
-                        </div>
+                    contract.remarks ? (
+                        contract.isShowAllContractInfo ? (
+                            <div className={itemClassName}>
+                                <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
+                                <BasicEditInputField
+                                    width={EDIT_WIDTH}
+                                    id={contract.id}
+                                    type="textarea"
+                                    field='remarks'
+                                    value={contract.remarks}
+                                    hasEditPrivilege={hasEditPrivilege}
+                                    saveEditInput={this.saveContractBasicInfo}
+                                />
+                            </div>
+                        ) : null
                     ) : null
                 }
             </div>
