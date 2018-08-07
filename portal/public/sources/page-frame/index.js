@@ -7,12 +7,16 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('./index-zh_CN.less');
 }
 require('./oplate');
+const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
 var LeftMenu = require('../../../components/privilege/nav-sidebar');
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 import PhonePanel from 'MOD_DIR/phone_panel/public';
 import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
+//窗口改变的事件emitter
+var resizeEmitter = require('../../../public/sources/utils/emitters').resizeEmitter;
+
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
     call_params: null//后端推送过来的通话状态相关的参数
@@ -24,10 +28,12 @@ var PageFrame = React.createClass({
             paramObj: $.extend(true, {}, emptyParamObj),
             audioPanelShow: false,//是否展示播放录音面板
             audioParamObj: {},
-            isShowNotificationPanel: false // 是否展示系统通知面板
+            isShowNotificationPanel: false, // 是否展示系统通知面板
+            rightContentHeight: 0,
         };
     },
     componentDidMount: function() {
+        this.setContentHeight();
         Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
@@ -35,12 +41,35 @@ var PageFrame = React.createClass({
         audioMsgEmitter.on(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         //隐藏上报客服电话的按钮
         audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
+        $(window).on('resize', this.resizeHandler);
+    },
+    resizeEmitter() {
+        resizeEmitter.emit(resizeEmitter.WINDOW_SIZE_CHANGE, {
+            width: $('#app .col-xs-10').width(),
+            height: this.state.rightContentHeight
+        });
+    },
+    resizeHandler() {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(() => {
+            this.setContentHeight();
+        }, 100);
+    },
+    componentDidUpdate: function() {
+        this.resizeEmitter();
+    },
+    setContentHeight() {
+        const height = $(window).height() - LAYOUT_CONSTS.TOP_NAV - LAYOUT_CONSTS.PADDING_BOTTOM;
+        this.setState({
+            rightContentHeight: height
+        });
     },
     componentWillUnmount: function() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
+        $(window).off('resize', this.resizeHandler);
     },
     openAudioPanel: function(audioParamObj) {
         this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj)});

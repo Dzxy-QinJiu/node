@@ -142,7 +142,7 @@ class OpenApp extends React.Component {
     //此处为防止event充当参数，所以把参数放到对象中
     changeItemEdit(params) {
         OpenAppAction.changeRoleItemEdit(params);
-    }
+    }    
     render() {
         const renderRoleFormItem = (role, index) => (
             <FormItem {...itemLayout} key={index} label={role.role_name}>
@@ -152,6 +152,9 @@ class OpenApp extends React.Component {
                     onChange={this.handleSelectChange.bind(this, role)}
                     showSearch={true}
                     disabled={!role.showEdit || this.state.editRoleResult.loading}
+                    filterOption={(inputValue, option) => {
+                        return option.props.children.includes(inputValue);
+                    }}
                 >
                     {
                         this.state.userList.data.map((user, index) => (
