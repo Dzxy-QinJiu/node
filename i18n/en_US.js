@@ -1383,6 +1383,23 @@ var en_US = {
     'crm.order.lose.reason': 'lose Order reason',//丢单原因
     'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
     'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
+
+    // 客户详情中，合同项
+    'crm.contract.validity.time': 'Validity period', // 有效期
+    'crm.contract.sign.time': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
+    'crm.contract.pending.contract': 'Contract pending', // 合同待审
+    'crm.contract.money': 'Amount (yuan)', // 金额(元)
+    'crm.contract.no.product.info': 'No product information', // 暂无产品信息
+    'crm.contract.check.tips': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
+    'crm.contract.product.name': 'Product name', // 产品名称
+    'crm.contract.account.count': 'Number of accounts', // 账号数量
+    'crm.contract.enter.contract.money': 'Please enter the contract amount', // 请输入合同额
+    'crm.contract.no.contract.money': 'No contract amount', // 暂无合同额
+    'crm.contract.enter.gross': 'Please enter the gross profit', // 请输入毛利
+    'crm.contract.no.gross': 'No gross profit', // 暂无毛利额
+    'crm.contract.new.sign': 'new signing', // 新签
+    'crm.contract.select.sign.type': 'Please choose a new contract or a contract renewal', // 请选择签约类型
+    
     // 客户管理end
 
     //客户分析 start
@@ -1579,20 +1596,6 @@ var en_US = {
     'contract.165': 'cost structure',//成本构成
     'contract.166': 'Table of signing statistics',//签订情况统计表
     'contract.167': 'first time repayment',//首笔回款
-    'contract.168': 'Validity period', // 有效期
-    'contract.169': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
-    'contract.170': 'Contract pending', // 合同待审
-    'contract.172': 'Amount (yuan)', // 金额(元)
-    'contract.173': 'No product information', // 暂无产品信息
-    'contract.174': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
-    'contract.175': 'Product name', // 产品名称
-    'contract.176': 'Number of accounts', // 账号数量
-    'contract.177': 'Please enter the contract amount', // 请输入合同额
-    'contract.178': 'No contract amount', // 暂无合同额
-    'contract.179': 'Please enter the gross profit', // 请输入毛利
-    'contract.180': 'No gross profit', // 暂无毛利额
-    'contract.181': 'new signing', // 新签
-    'contract.182': 'Please choose a new contract or a contract renewal', // 请选择签约类型
     //合同管理  end
 
     // 应用的运营报告start

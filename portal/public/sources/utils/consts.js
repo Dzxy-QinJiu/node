@@ -182,6 +182,6 @@ export const CategoryList = [
 
 // 合同签约类型
 export const ContractLabel = [
-    {value: 'new', name: Intl.get('contract.181', '新签')},
+    {value: 'new', name: Intl.get('crm.contract.new.sign', '新签')},
     {value: 'extension', name: Intl.get('contract.163', '续约')},
 ];

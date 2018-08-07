@@ -105,7 +105,7 @@ const ContractItem = React.createClass({
         return (
             <div className='contract-title'>
                 {contract.stage === '待审' && !contract.num ? (
-                    <span className='contract-item-stage'>{Intl.get('contract.170', '合同待审')}</span>
+                    <span className='contract-item-stage'>{Intl.get('crm.contract.pending.contract', '合同待审')}</span>
                 ) : (
                     <span className='contract-item-title'>
                         <span className={contractStageClass}>
@@ -188,7 +188,7 @@ const ContractItem = React.createClass({
     getProductColumns() {
         return [
             {
-                title: Intl.get('contract.175', '产品名称'),
+                title: Intl.get('crm.contract.product.name', '产品名称'),
                 dataIndex: 'name',
                 key: 'name',
                 width: '50%',
@@ -197,13 +197,13 @@ const ContractItem = React.createClass({
                 }
             },
             {
-                title: Intl.get('contract.176', '账号数量'),
+                title: Intl.get('crm.contract.account.count', '账号数量'),
                 dataIndex: 'count',
                 width: '20%',
                 key: 'count'
             },
             {
-                title: Intl.get('contract.172', '金额(元)'),
+                title: Intl.get('crm.contract.money', '金额(元)'),
                 dataIndex: 'total_price',
                 key: 'total_price',
                 width: '30%',
@@ -316,7 +316,7 @@ const ContractItem = React.createClass({
             return <Option key={label.value} value={label.value}>{label.name}</Option>;
         });
         // 合同的签约类型
-        const contractLabel = contract.label === 'new' ? Intl.get('contract.181', '新签') : Intl.get('contract.163', '续约');
+        const contractLabel = contract.label === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('contract.163', '续约');
         return (
             <div className='contract-item'>
                 <div className={itemClassName}>
@@ -350,7 +350,7 @@ const ContractItem = React.createClass({
                     )}
                 </div>
                 <div className={itemClassName}>
-                    <span className='contract-label'>{Intl.get('contract.168', '有效期')}:</span>
+                    <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
                     {
                         this.state.isShowValidityTimeEdit ? (
                             <div className='contract-validity-edit-block'>
@@ -388,10 +388,10 @@ const ContractItem = React.createClass({
                             field='contract_amount'
                             value={contract.contract_amount}
                             afterValTip={Intl.get('contract.82', '元')}
-                            placeholder={Intl.get('contract.177', '请输入合同额')}
+                            placeholder={Intl.get('crm.contract.enter.contract.money', '请输入合同额')}
                             hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
                             saveEditInput={this.saveContractBasicInfo}
-                            noDataTip={Intl.get('contract.178', '暂无合同额')}
+                            noDataTip={Intl.get('crm.contract.no.contract.money', '暂无合同额')}
                         />
                     ) : (
                         <span className='contract-value'>{this.formatValues(contract.contract_amount)}</span>
@@ -407,10 +407,10 @@ const ContractItem = React.createClass({
                             field='gross_profit'
                             value={contract.gross_profit}
                             afterValTip={Intl.get('contract.82', '元')}
-                            placeholder={Intl.get('contract.179', '请输入毛利')}
+                            placeholder={Intl.get('crm.contract.enter.gross', '请输入毛利')}
                             hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
                             saveEditInput={this.saveContractBasicInfo}
-                            noDataTip={Intl.get('contract.180', '暂无毛利额')}
+                            noDataTip={Intl.get('crm.contract.no.gross', '暂无毛利额')}
                         />
                     ) : (
                         <span className='contract-value'>{this.formatValues(contract.gross_profit)}</span>
@@ -443,7 +443,7 @@ const ContractItem = React.createClass({
                             field="label"
                             selectOptions={labelOptions}
                             hasEditPrivilege={hasPrivilege('OPLATE_CONTRACT_UPDATE') ? true : false}
-                            placeholder={Intl.get('contract.182', '请选择签约类型')}
+                            placeholder={Intl.get('crm.contract.select.sign.type', '请选择签约类型')}
                             saveEditSelect={this.saveContractBasicInfo}
                         />
                     ) : (
@@ -456,7 +456,7 @@ const ContractItem = React.createClass({
                             <div className={itemClassName}>
                                 <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
                                 <span className='contract-value'>
-                                    {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('contract.173', '暂无产品信息')}
+                                    {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
                                 </span>
                             </div>
                         )
@@ -465,7 +465,7 @@ const ContractItem = React.createClass({
                             <div className={itemClassName}>
                                 <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
                                 <span className='contract-value'>
-                                    {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('contract.173', '暂无产品信息')}
+                                    {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
                                 </span>
                             </div>
                         ) : null
@@ -524,7 +524,7 @@ const ContractItem = React.createClass({
                     ) : null
                 }
                 <ReactIntl.FormattedMessage
-                    id='contract.169'
+                    id='crm.contract.sign.time'
                     defaultMessage={'{uername}签订于{date}'}
                     values={{
                         'uername': <span className='signed-username'>{contract.user_name}</span>,
