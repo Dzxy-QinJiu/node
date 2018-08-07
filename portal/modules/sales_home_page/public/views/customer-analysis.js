@@ -10,7 +10,6 @@ var getDataAuthType = require('../../../../components/privilege/checker').getDat
 var OplateCustomerAnalysisAction = require('../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action');
 var OplateCustomerAnalysisStore = require('../../../oplate_customer_analysis/public/store/oplate-customer-analysis.store');
 var BarChart = require('../../../oplate_customer_analysis/public/views/bar');
-var SingleLineChart = require('../../../oplate_customer_analysis/public/views/single_line');
 var FunnelChart = require('../../../oplate_customer_analysis/public/views/funnel');
 var emitter = require('../../../oplate_customer_analysis/public/utils/emitter');
 let userData = require('../../../../public/sources/user-data');
