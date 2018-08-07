@@ -217,30 +217,19 @@ const ContractItem = React.createClass({
         contract.user_name = UserData.getUserData().user_name || '';
         // 客户信息
         contract.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
-        if (_.has(saveObj, 'buyer')) { // 修改甲方
-            contract.buyer = saveObj.buyer;
-        } else if (_.has(saveObj, 'contract_amount')) { // 修改合同额
-            contract.contract_amount = saveObj.contract_amount;
-        } else if (_.has(saveObj, 'gross_profit')) { // 修改毛利
-            contract.contract_amount = saveObj.gross_profit;
-        } else if (_.has(saveObj, 'category')) { // 修改合同类型
-            contract.category = saveObj.category;
-        } else if (_.has(saveObj, 'label')) { // 修改合同的签约类型
-            contract.label = saveObj.label;
-        } else if (_.has(saveObj, 'remarks')) { // 修改备注
-            contract.remarks = saveObj.remarks;
-        }
+        _.extend(contract, saveObj);
         ContractAjax.editPendingContract({type: 'sell'}, contract).then( (resData) => {
             if (resData && resData.code === 0) {
+                message.success(Intl.get('user.edit.success', '修改成功'));
                 if (_.isFunction(successFunc)) successFunc();
             } else {
                 if (_.isFunction(errorFunc)) {
-                    errorFunc(Intl.get('common.save.failed', '保存失败'));
+                    errorFunc(Intl.get('common.edit.failed', '修改失败'));
                 }
             }
         }, (errMsg) => {
             if (_.isFunction(errorFunc)) {
-                errorFunc(errMsg || Intl.get('common.save.failed', '保存失败'));
+                errorFunc(errMsg || Intl.get('common.edit.failed', '修改失败'));
             }
         });
     },
@@ -259,27 +248,21 @@ const ContractItem = React.createClass({
         this.setState({contract});
     },
     handleSubmitEditValidityTime() {
-        let contract = this.state.formData;
-        contract.user_id = UserData.getUserData().user_id || '';
-        contract.user_name = UserData.getUserData().user_name || '';
-        // 客户信息
-        contract.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
-        ContractAjax.editPendingContract({type: 'sell'}, contract).then( (resData) => {
-            this.state.editValidityLoading = false;
-            this.state.isShowValidityTimeEdit = false;
-            if (resData && resData.code !== 0) {
-                message.success(Intl.get('user.edit.success', '修改成功'));
-                this.state.editValidityTimeErrMsg = '';
-            } else {
-                this.state.editValidityTimeErrMsg = Intl.get('common.edit.failed', '修改失败');
-            }
-            this.setState(this.state);
-        }, (errMsg) => {
+        let saveObj = {start_time: this.state.contract.start_time, end_time: this.state.contract.end_time};
+        let successFunc = () => {
             this.setState({
                 editValidityLoading: false,
-                editValidityTimeErrMsg: errMsg || IIntl.get('common.edit.failed', '修改失败')
+                isShowValidityTimeEdit: false,
+                editValidityTimeErrMsg: ''
             });
-        });
+        };
+        let errorFunc = () => {
+            this.setState({
+                editValidityLoading: false,
+                editValidityTimeErrMsg: Intl.get('common.edit.failed', '修改失败')
+            });
+        };
+        this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
     },
     handleCancelEditValidityTime() {
         this.setState({
