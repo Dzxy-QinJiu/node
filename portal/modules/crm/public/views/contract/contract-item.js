@@ -213,12 +213,9 @@ const ContractItem = React.createClass({
     },
     saveContractBasicInfo(saveObj, successFunc, errorFunc) {
         let contract = this.state.formData;
-        contract.user_id = UserData.getUserData().user_id || '';
-        contract.user_name = UserData.getUserData().user_name || '';
         // 客户信息
-        contract.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
-        _.extend(contract, saveObj);
-        ContractAjax.editPendingContract({type: 'sell'}, contract).then( (resData) => {
+        saveObj.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
+        ContractAjax.editPendingContract({type: 'sell'}, saveObj).then( (resData) => {
             if (resData && resData.code === 0) {
                 message.success(Intl.get('user.edit.success', '修改成功'));
                 if (_.isFunction(successFunc)) successFunc();
@@ -248,7 +245,11 @@ const ContractItem = React.createClass({
         this.setState({contract});
     },
     handleSubmitEditValidityTime() {
-        let saveObj = {start_time: this.state.contract.start_time, end_time: this.state.contract.end_time};
+        let saveObj = {
+            start_time: this.state.contract.start_time,
+            end_time: this.state.contract.end_time,
+            id: this.state.contract.id
+        };
         let successFunc = () => {
             this.setState({
                 editValidityLoading: false,
