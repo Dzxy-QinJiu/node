@@ -573,12 +573,6 @@ class RecentLoginUsers extends React.Component {
 }
 const PropTypes = React.PropTypes;
 RecentLoginUsers.propTypes = {
-    appList: PropTypes.array,
-    teamlists: PropTypes.array,
-    hideRecentLoginPanel: PropTypes.func
-};
-const PropTypes = React.PropTypes;
-RecentLoginUsers.propTypes = {
     teamlists: PropTypes.array,
     teamTreeList: PropTypes.array,
     selectedAppId: PropTypes.string,
