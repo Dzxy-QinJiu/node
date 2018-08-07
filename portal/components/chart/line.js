@@ -1,7 +1,7 @@
 /**
  * 线图
  */
-var echarts = require('echarts-eefung');
+var echarts = require('echarts');
 require('./style.less');
 var macronsTheme = require('./theme-macrons');
 var echartsTooltipCssText = require('../../lib/utils/echarts-tooltip-csstext');
