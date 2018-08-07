@@ -60,3 +60,26 @@ exports.deletePendingContract = function(id) {
     });
     return Deferred.promise();
 };
+
+// 编辑待审合同
+let editPendingContractAjax = null;
+exports.editPendingContract = function(reqData, reqBody) {
+    editPendingContractAjax && editPendingContractAjax.abort();
+    let url = '/rest/crm/edit/contract/' + reqData.type;
+    const Deferred = $.Deferred();
+    editPendingContractAjax = $.ajax({
+        url: url,
+        dataType: 'json',
+        type: 'put',
+        data: {rangParams: JSON.stringify(reqBody)},
+        success: (data) => {
+            Deferred.resolve(data);
+        },
+        error: (xhr, textStatus) => {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

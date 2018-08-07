@@ -13,6 +13,7 @@ const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
 const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
 import Trace from 'LIB_DIR/trace';
+const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
 
 // 开通应用，默认的数量和金额
 const APP_DEFAULT_INFO = {
@@ -31,6 +32,7 @@ const Contract = React.createClass( {
             selectedAppIdArray: [], // 选择的应用id
             lastSelectedAppIdArray: [], // 上一次选择的应用id
             contractType: '产品合同', // 合同类型
+            contractLabel: 'new', // 合同签约类型
             formData: {
                 customer_name: this.props.curCustomer.name,
                 buyer: this.props.curCustomer.name,
@@ -45,7 +47,7 @@ const Contract = React.createClass( {
         };
     },
     componentWillReceiveProps(nextProps) {
-        if (nextProps.customerId && nextProps.customerId !== this.props.customerId) {
+        if (_.get(nextProps, 'customerId') && nextProps.customerId !== this.props.customerId) {
             let formData = this.state.formData;
             formData.customer_name = nextProps.curCustomer.name;
             formData.buyer = nextProps.curCustomer.name;
@@ -141,7 +143,7 @@ const Contract = React.createClass( {
     getProductColumns() {
         return [
             {
-                title: Intl.get('crm.contract.175', '产品名称'),
+                title: Intl.get('crm.contract.product.name', '产品名称'),
                 dataIndex: 'client_name',
                 key: 'client_name',
                 width: '40%',
@@ -150,7 +152,7 @@ const Contract = React.createClass( {
                 }
             },
             {
-                title: Intl.get('crm.contract.176', '账号数量'),
+                title: Intl.get('crm.contract.account.count', '账号数量'),
                 dataIndex: 'count',
                 width: '20%',
                 key: 'count',
@@ -159,7 +161,7 @@ const Contract = React.createClass( {
                 }
             },
             {
-                title: Intl.get('crm.contract.172', '金额(元)'),
+                title: Intl.get('crm.contract.money', '金额(元)'),
                 dataIndex: 'total_price',
                 key: 'total_price',
                 width: '40%',
@@ -223,6 +225,12 @@ const Contract = React.createClass( {
             contractType: value
         });
     },
+    // 合同签约类型
+    handleSelectContractLabel(value) {
+        this.setState({
+            contractLabel: value
+        });
+    },
     // 签订时间
     handleSignContractDate(date) {
         let formData = this.state.formData;
@@ -283,6 +291,13 @@ const Contract = React.createClass( {
         };
         const formData = this.state.formData;
         const { getFieldDecorator } = this.props.form;
+        let categoryOptions = _.map(CategoryList, (category, index) => {
+            return (<Option value={category.value} key={index}>{category.name}</Option>);
+        });
+        let labelOptions = _.map(ContractLabel, (label) => {
+            return <Option key={label.value} value={label.value}>{label.name}</Option>;
+        });
+        let validityTime = Intl.get('crm.contract.validity.one.year', '有效期一年');
         return (
             <div className='add-contract-panel' data-tracename="添加合同面板">
                 <div className='contract-title'>{Intl.get('contract.98', '添加合同')}</div>
@@ -301,9 +316,18 @@ const Contract = React.createClass( {
                                 value={this.state.contractType}
                                 onChange={this.handleSelectContractType}
                             >
-                                <Option value="产品合同">{Intl.get('contract.6', '产品合同')}</Option>
-                                <Option value="项目合同">{Intl.get('contract.7', '项目合同')}</Option>
-                                <Option value="服务合同">{Intl.get('contract.8', '服务合同')}</Option>
+                                { categoryOptions }
+                            </Select>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label={Intl.get('contract.164', '签约类型')}>
+                            <Select
+                                showSearch
+                                optionFilterProp="children"
+                                value={this.state.contractLabel}
+                                notFoundContent={Intl.get('contract.71', '暂无签约类型')}
+                                onChange={this.handleSelectContractLabel}
+                            >
+                                { labelOptions }
                             </Select>
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.34', '签订时间')}>
@@ -312,15 +336,14 @@ const Contract = React.createClass( {
                                 onChange={this.handleSignContractDate}
                             />
                         </FormItem>
-                        <FormItem {...formItemLayout} label={Intl.get('crm.contract.168', '有效期')}>
+                        <FormItem {...formItemLayout} label={Intl.get('crm.contract.validity.time', '有效期')}>
                             <RangePicker
                                 className='validity-time'
-                                ranges={{ '有效期一年': [moment(formData.start_time), moment(formData.end_time)] }}
-                                placeholder={['开始时间', '结束时间']}
+                                ranges={{ [validityTime]: [moment(formData.start_time), moment(formData.end_time)] }}
+                                placeholder={[Intl.get('contract.120', '开始时间'), Intl.get('contract.105', '结束时间')]}
                                 onChange={this.handleValidityTimeRange}
                                 allowClear={false}
                             />
-
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
                             {getFieldDecorator('contract_amount', {
@@ -389,6 +412,7 @@ const Contract = React.createClass( {
                 // 添加时的数据
                 let reqData = this.state.formData;
                 reqData.category = this.state.contractType; // 合同类型
+                reqData.label = this.state.contractLabel; // 合同签约类型
                 reqData.user_id = UserData.getUserData().user_id || '';
                 reqData.user_name = UserData.getUserData().user_name || '';
                 let products = _.cloneDeep(this.state.products); // 产品信息
@@ -402,7 +426,7 @@ const Contract = React.createClass( {
                 // reqData.contract_amount是字符串格式，+是为了将字符串转为数字格式
                 if (productTotalPrice !== +reqData.contract_amount) {
                     this.setState({
-                        errMsg: Intl.get('crm.contract.174', '合同额与产品总额不相等，请核对')
+                        errMsg: Intl.get('crm.contract.check.tips', '合同额与产品总额不相等，请核对')
                     });
                     return;
                 }

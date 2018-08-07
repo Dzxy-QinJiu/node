@@ -192,7 +192,6 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
         name: Intl.get('sales.home.sales.clue', '待处理的线索')
 
     }
-
 ];
 
 //处理 或者未处理
@@ -203,3 +202,16 @@ export const CALL_TYPE_OPTION = {
     PHONE: 'phone',
     APP: 'app'
 };
+
+// 合同类型
+export const CategoryList = [
+    {value: '产品合同', name: Intl.get('contract.6', '产品合同')},
+    {value: '项目合同', name: Intl.get('contract.7', '项目合同')},
+    {value: '服务合同', name: Intl.get('contract.8', '服务合同')}
+];
+
+// 合同签约类型
+export const ContractLabel = [
+    {value: 'new', name: Intl.get('crm.contract.new.sign', '新签')},
+    {value: 'extension', name: Intl.get('contract.163', '续约')},
+];

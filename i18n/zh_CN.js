@@ -1398,15 +1398,24 @@ var zh_CN = {
     'crm.order.lose.reason': '丢单原因',
     'crm.no.order.lose.reason': '暂无丢单原因',
     'crm.fill.order.lose.reason': '补充丢单原因',
-    'crm.contract.168': '有效期',
-    'crm.contract.169': '{uername} 签订于{date}',
-    'crm.contract.170': '合同待审',
-    'crm.contract.171': '用户个数',
-    'crm.contract.172': '金额(元)',
-    'crm.contract.173': '暂无产品信息',
-    'crm.contract.174': '合同额与产品总额不相等，请核对',
-    'crm.contract.175': '产品名称',
-    'crm.contract.176': '账号数量',
+
+    // 客户详情中，合同项
+    'crm.contract.validity.time': '有效期',
+    'crm.contract.validity.one.year': '有效期一年',
+    'crm.contract.sign.time': '{uername} 签订于{date}',
+    'crm.contract.pending.contract': '合同待审',
+    'crm.contract.money': '金额(元)',
+    'crm.contract.no.product.info': '暂无产品信息',
+    'crm.contract.check.tips': '合同额与产品总额不相等，请核对',
+    'crm.contract.product.name': '产品名称',
+    'crm.contract.account.count': '账号数量',
+    'crm.contract.enter.contract.money': '请输入合同额',
+    'crm.contract.no.contract.money': '暂无合同额',
+    'crm.contract.enter.gross': '请输入毛利',
+    'crm.contract.no.gross': '暂无毛利额',
+    'crm.contract.new.sign': '新签',
+    'crm.contract.select.sign.type': '请选择签约类型',
+    
     // 客户管理end
 
     // 客户分析start

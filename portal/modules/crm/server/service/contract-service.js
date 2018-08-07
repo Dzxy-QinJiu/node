@@ -29,7 +29,7 @@ exports.getContractByCustomerId = (req, res) => {
                 if (data && data.list && data.list.length) {
                     list = contractDto.toRestObject(data.list);
                 }
-                eventEmitter.emit('success', {list: list, total: data.total});
+                eventEmitter.emit('success', {list: list, total: list.length});
             },
             error: (eventEmitter, errorObj) => {
                 eventEmitter.emit('error', errorObj.message);
@@ -59,4 +59,16 @@ exports.deletePendingContract = (req, res) => {
             req: req,
             res: res
         }, null);
+};
+
+// 编辑待审合同
+exports.editPendingContract = (req, res) => {
+    let url = restApis.urlContract;
+    let params = req.params;
+    return restUtil.authRest.put(
+        {
+            url: url.replace(':type', params.type),
+            req: req,
+            res: res
+        }, JSON.parse(req.body.rangParams));
 };

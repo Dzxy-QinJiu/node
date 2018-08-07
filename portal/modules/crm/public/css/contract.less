@@ -32,17 +32,17 @@
   // 合同展示样式
   .contract-container-scroll {
     .contract-item-container {
-      .contract-title {
-        // 删除按钮，默认隐藏
+      // 删除按钮，默认隐藏
+      .contract-item-buttons .icon-delete {
+        display: none;
+      }
+      // 删除按钮，鼠标移入显示
+      &:hover {
         .contract-item-buttons .icon-delete {
-          display: none;
+          display: block;
         }
-        // 删除按钮，鼠标移入显示
-        &:hover {
-          .contract-item-buttons .icon-delete {
-            display: block;
-          }
-        }
+      }
+      .contract-title {
         .contract-item-stage {
           color: @pending-font-color;
           padding-bottom: 12px;
@@ -176,6 +176,33 @@
             white-space: normal;
             word-wrap:break-word;
             word-break:break-all
+          }
+          // 编辑有效期样式
+          .contract-validity-edit-block {
+            .validity-time {
+              width: 355px;
+              padding-left: 6px;
+              input {
+                width: 170px;
+                padding-bottom: 14px;
+              }
+            }
+          }
+        }
+        // 合同待审编辑样式
+        .item-edit-style {
+          .basic-edit-field .basic-info-text{
+            max-width: 360px;
+          }
+          //编辑按钮hover时才展示
+          .icon-edit-btn {
+            display: none;
+          }
+          &:hover {
+            background-color: #f6fbff;
+            .icon-edit-btn {
+              display: block;
+            }
           }
         }
       }

@@ -1383,15 +1383,24 @@ var en_US = {
     'crm.order.lose.reason': 'lose Order reason',//丢单原因
     'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
     'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
-    'crm.contract.168': 'Validity period', // 有效期
-    'crm.contract.169': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
-    'crm.contract.170': 'Contract pending', // 合同待审
-    'crm.contract.171': 'Number of users', // 用户个数
-    'crm.contract.172': 'Amount (yuan)', // 金额(元)
-    'crm.contract.173': 'No product information', // 暂无产品信息
-    'crm.contract.174': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
-    'crm.contract.175': 'Product name', // 产品名称
-    'crm.contract.176': 'Number of accounts', // 账号数量
+
+    // 客户详情中，合同项
+    'crm.contract.validity.time': 'Validity period', // 有效期
+    'crm.contract.validity.one.year': 'Valid for one year', // 有效期一年
+    'crm.contract.sign.time': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
+    'crm.contract.pending.contract': 'Contract pending', // 合同待审
+    'crm.contract.money': 'Amount (yuan)', // 金额(元)
+    'crm.contract.no.product.info': 'No product information', // 暂无产品信息
+    'crm.contract.check.tips': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
+    'crm.contract.product.name': 'Product name', // 产品名称
+    'crm.contract.account.count': 'Number of accounts', // 账号数量
+    'crm.contract.enter.contract.money': 'Please enter the contract amount', // 请输入合同额
+    'crm.contract.no.contract.money': 'No contract amount', // 暂无合同额
+    'crm.contract.enter.gross': 'Please enter the gross profit', // 请输入毛利
+    'crm.contract.no.gross': 'No gross profit', // 暂无毛利额
+    'crm.contract.new.sign': 'new signing', // 新签
+    'crm.contract.select.sign.type': 'Please choose a new contract or a contract renewal', // 请选择签约类型
+    
     // 客户管理end
 
     //客户分析 start
@@ -2468,4 +2477,4 @@ var en_US = {
     'common.this.month.new': 'this month new',//本月新增
     'common.this.month': 'this month',//本月
 };
-export default en_US;
+export default en_US;
