@@ -21,8 +21,7 @@ exports.toRestObject = (list) => {
                 date: item.date || '', // 合同签订时间
                 user_name: item.user_name || '', // 合同的签订人
                 id: item.id, // 合同的id
-                label: item.label, // 合同的签约类型
-                isShowAllContractInfo: item.stage === '待审' ? true : false // 是否展示全部信息
+                label: item.label // 合同的签约类型
             });
         }
     });

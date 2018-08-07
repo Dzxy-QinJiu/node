@@ -25,6 +25,13 @@ class ContractStore {
         } else {
             this.contractList.errMsg = '';
             let list = result.resData && result.resData.list || [];
+            _.map(list, item => {
+                if (item.stage === '待审') {
+                    item.isShowAllContractInfo = true;
+                } else {
+                    item.isShowAllContractInfo = false;
+                }
+            });
             this.contractList.data = _.get(list, '[0]') && list || [];
         }
     }
@@ -38,6 +45,7 @@ class ContractStore {
     }
     // 更新列表信息
     refreshContractList(contract) {
+        contract.isShowAllContractInfo = true;
         this.isAddFormShow = false;
         this.contractList.data.unshift(contract);
     }
