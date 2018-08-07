@@ -25,7 +25,7 @@ class ContractStore {
         } else {
             this.contractList.errMsg = '';
             let list = result.resData && result.resData.list || [];
-            _.map(list, item => {
+            _.each(list, item => {
                 if (item.stage === '待审') {
                     item.isShowAllContractInfo = true;
                 } else {
