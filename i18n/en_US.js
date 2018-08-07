@@ -1386,6 +1386,7 @@ var en_US = {
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
+    'crm.contract.validity.one.year': 'Valid for one year', // 有效期一年
     'crm.contract.sign.time': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
     'crm.contract.pending.contract': 'Contract pending', // 合同待审
     'crm.contract.money': 'Amount (yuan)', // 金额(元)

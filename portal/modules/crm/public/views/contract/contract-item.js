@@ -312,6 +312,7 @@ const ContractItem = React.createClass({
         // 合同的签约类型
         const contractLabel = contract.label === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('contract.163', '续约');
         let hasEditPrivilege = contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE') || false;
+        let validityTime = Intl.get('crm.contract.validity.one.year', '有效期一年');
         return (
             <div className='contract-item'>
                 <div className={itemClassName}>
@@ -333,7 +334,7 @@ const ContractItem = React.createClass({
                                 <RangePicker
                                     className='validity-time'
                                     value={[moment(contract.start_time), moment(contract.end_time)]}
-                                    ranges={{ '有效期一年': [moment(moment().valueOf()), moment(moment().add(1, 'year').valueOf())] }}
+                                    ranges={{ [validityTime]: [moment(moment().valueOf()), moment(moment().add(1, 'year').valueOf())] }}
                                     onChange={this.handleValidityTimeRange}
                                     allowClear={false}
                                 />

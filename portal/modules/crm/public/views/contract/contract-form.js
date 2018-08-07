@@ -297,6 +297,7 @@ const Contract = React.createClass( {
         let labelOptions = _.map(ContractLabel, (label) => {
             return <Option key={label.value} value={label.value}>{label.name}</Option>;
         });
+        let validityTime = Intl.get('crm.contract.validity.one.year', '有效期一年');
         return (
             <div className='add-contract-panel' data-tracename="添加合同面板">
                 <div className='contract-title'>{Intl.get('contract.98', '添加合同')}</div>
@@ -338,8 +339,8 @@ const Contract = React.createClass( {
                         <FormItem {...formItemLayout} label={Intl.get('crm.contract.validity.time', '有效期')}>
                             <RangePicker
                                 className='validity-time'
-                                ranges={{ '有效期一年': [moment(formData.start_time), moment(formData.end_time)] }}
-                                placeholder={['开始时间', '结束时间']}
+                                ranges={{ [validityTime]: [moment(formData.start_time), moment(formData.end_time)] }}
+                                placeholder={[Intl.get('contract.120', '开始时间'), Intl.get('contract.105', '结束时间')]}
                                 onChange={this.handleValidityTimeRange}
                                 allowClear={false}
                             />
