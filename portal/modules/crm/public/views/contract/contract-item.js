@@ -87,22 +87,15 @@ const ContractItem = React.createClass({
         let contractStageClass = classNames('contract-stage', {
             'contract-pending': contract.stage === '待审',
             'contract-review': contract.stage === '审核',
-            'contract-filed': contract.stage === '归档',
-            'contract-scrapped': contract.stage === '报废'
+            'contract-filed': contract.stage === '归档'
         });
         let contractClass = classNames('iconfont',{
-            'icon-down-twoline': !contract.isShowAllContractInfo,
-            'icon-up-twoline': contract.isShowAllContractInfo
+            'icon-down-twoline': contract.stage !== '待审',
+            'icon-up-twoline': contract.stage === '待审'
         });
-        let contractTitle = contract.isShowAllContractInfo ? Intl.get('crm.basic.detail.hide', '收起详情') :
+        let contractTitle = contract.stage === '待审' ? Intl.get('crm.basic.detail.hide', '收起详情') :
             Intl.get('crm.basic.detail.show', '展开详情');
 
-        let pendingContractClass = classNames('iconfont',{
-            'icon-down-twoline': contract.isShowAllContractInfo,
-            'icon-up-twoline': !contract.isShowAllContractInfo
-        });
-        let pendingContractTitle = !contract.isShowAllContractInfo ? Intl.get('crm.basic.detail.hide', '收起详情') :
-            Intl.get('crm.basic.detail.show', '展开详情');
         return (
             <div className='contract-title'>
                 {contract.stage === '待审' && !contract.num ? (
@@ -138,14 +131,7 @@ const ContractItem = React.createClass({
                         )
                     }
                 </span>
-                {
-                    contract.stage === '待审' ? (
-                        <span className={pendingContractClass} title={pendingContractTitle} onClick={this.toggleContractDetail}/>
-                    ) : (
-                        <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
-                    )
-                }
-
+                <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
             </div>
         );
     },
@@ -300,6 +286,16 @@ const ContractItem = React.createClass({
             isShowValidityTimeEdit: false
         });
     },
+    showProductInfo(itemClassName, products) {
+        return (
+            <div className={itemClassName}>
+                <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
+                <span className='contract-value'>
+                    {_.get(products, '[0]') ? this.renderProductInfo(products) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
+                </span>
+            </div>
+        );
+    },
     renderContractContent() {
         const contract = this.state.formData;
         const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : '';
@@ -333,14 +329,6 @@ const ContractItem = React.createClass({
                         <span className='contract-value'>{contract.buyer}</span>
                     )}
                 </div>
-                {
-                    contract.stage === '待审' ? null : (
-                        <div className={itemClassName}>
-                            <span className='contract-label'> {Intl.get('call.record.customer', '客户')}:</span>
-                            <span className='contract-value'>{contract.customer_name}</span>
-                        </div>
-                    )
-                }
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
                     {
@@ -447,21 +435,11 @@ const ContractItem = React.createClass({
                 {
                     contract.stage === '待审' ? (
                         contract.isShowAllContractInfo ? null : (
-                            <div className={itemClassName}>
-                                <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
-                                <span className='contract-value'>
-                                    {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
-                                </span>
-                            </div>
+                            this.showProductInfo(itemClassName, contract.products)
                         )
                     ) : (
                         contract.isShowAllContractInfo ? (
-                            <div className={itemClassName}>
-                                <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
-                                <span className='contract-value'>
-                                    {_.get(contract.products, '[0]') ? this.renderProductInfo(contract.products) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
-                                </span>
-                            </div>
+                            this.showProductInfo(itemClassName, contract.products)
                         ) : null
                     )
                 }
