@@ -54,5 +54,10 @@ module.exports = {
         '宁夏': 'ningxia', '青海': 'qinghai', '山东': 'shandong', '上海': 'shanghai', '陕西': 'shanxi1',
         '山西': 'shanxi', '四川': 'sichuan', '台湾': 'taiwan', '天津': 'tianjin', '香港': 'xianggang',
         '新疆': 'xinjiang', '西藏': 'xizang', '云南': 'yunnan', '浙江': 'zhejiang'
+    },
+    //页面布局常量
+    LAYOUT: {
+        TOP_NAV: 64,
+        PADDING_BOTTOM: 20
     }
 };
