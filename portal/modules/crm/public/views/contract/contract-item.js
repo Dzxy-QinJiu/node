@@ -308,6 +308,7 @@ const ContractItem = React.createClass({
                         value={contract.buyer}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
+                        placeholder={Intl.get('crm.contract.party.name', '请输入甲方名称')}
                     />
                 </div>
                 <div className={itemClassName}>

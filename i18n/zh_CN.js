@@ -1415,7 +1415,7 @@ var zh_CN = {
     'crm.contract.no.gross': '暂无毛利额',
     'crm.contract.new.sign': '新签',
     'crm.contract.select.sign.type': '请选择签约类型',
-    
+    'crm.contract.party.name': '请输入甲方名称',
     // 客户管理end
 
     // 客户分析start

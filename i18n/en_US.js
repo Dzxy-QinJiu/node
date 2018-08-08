@@ -1400,7 +1400,7 @@ var en_US = {
     'crm.contract.no.gross': 'No gross profit', // 暂无毛利额
     'crm.contract.new.sign': 'new signing', // 新签
     'crm.contract.select.sign.type': 'Please choose a new contract or a contract renewal', // 请选择签约类型
-    
+    'crm.contract.party.name': 'Please enter the name of Party A', // 请输入甲方名称
     // 客户管理end
 
     //客户分析 start
@@ -2477,4 +2477,4 @@ var en_US = {
     'common.this.month.new': 'this month new',//本月新增
     'common.this.month': 'this month',//本月
 };
-export default en_US;
+export default en_US;
