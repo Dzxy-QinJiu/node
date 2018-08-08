@@ -118,6 +118,15 @@ let StatisticTotal = React.createClass({
     },
     //设置当前要展示的视图
     setActiveView: function(view) {
+        if(view === 'customer'){
+            Trace.traceEvent('销售首页', '查看客户统计');
+        }else if(view === 'user'){
+            Trace.traceEvent('销售首页', '查看用户统计');
+        }else if(view === 'phone'){
+            Trace.traceEvent('销售首页', '查看电话统计');
+        }else if(view === 'call_back'){
+            Trace.traceEvent('销售首页', '查看回访统计');
+        }
         SalesHomeAction.setActiveView(view);
     },
 
@@ -129,7 +138,7 @@ let StatisticTotal = React.createClass({
             <div className="statistic-total-data">
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.CUSTOMER)}
-                        data-tracename="查看客户统计"
+                        //data-tracename="查看客户统计"
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.CUSTOMER})}>
                         <p>{Intl.get('sales.home.customer', '客户')}</p>
                         {this.renderCustomerContent()}
@@ -137,7 +146,7 @@ let StatisticTotal = React.createClass({
                 </div>
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.USER)}
-                        data-tracename="查看用户统计"
+                        //data-tracename="查看用户统计"
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.USER})}>
                         <p>{Intl.get('sales.home.user', '用户')}</p>
                         {this.renderUserContent()}
@@ -145,7 +154,7 @@ let StatisticTotal = React.createClass({
                 </div>
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.PHONE)}
-                        data-tracename="查看电话统计"
+                        // data-tracename="查看电话统计"
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.PHONE})}>
                         <p>{Intl.get('common.phone', '电话')}</p>
                         {this.renderPhoneContent()}
@@ -153,7 +162,7 @@ let StatisticTotal = React.createClass({
                 </div>  
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.CALL_BACK)}
-                        data-tracename='查看回访统计'
+                        //data-tracename='查看回访统计'
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.CALL_BACK})}>
                         <p>{Intl.get('common.callback', '回访')}</p>
                         {this.renderCallBackContent()}

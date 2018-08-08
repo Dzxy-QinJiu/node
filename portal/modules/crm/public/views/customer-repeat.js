@@ -55,10 +55,10 @@ let CustomerRepeat = React.createClass({
         });
         let _this = this;
         //点击客户列表某一行时打开对应的详情
-        $(this.refs.crmList).on('click', 'tbody .has-filter', function() {
+        $(this.refs.crmList).on('click', 'tbody .has-filter', function(event) {
             var $tr = $(this).closest('tr');
             $tr.addClass('current-row').siblings().removeClass('current-row');
-            Trace.traceEvent($(_this.getDOMNode()).find('.current-row'), '点击查看客户详情');
+            Trace.traceEvent(event, '点击查看客户详情');
             var id = $tr.find('.record-id').text();
             _this.showRightPanel(id);
         });
@@ -106,6 +106,7 @@ let CustomerRepeat = React.createClass({
         if (userData.hasRole(userData.ROLE_CONSTANS.SECRETARY)) {
             return;
         }
+        Trace.traceEvent(this.getDOMNode(), '点击查看客户详情');
         CustomerRepeatAction.setRightPanelShow(true);
         CustomerRepeatAction.setCurCustomer(id);
     },
@@ -367,7 +368,7 @@ let CustomerRepeat = React.createClass({
         if(this.state.rightPanelIsShow){
             this.renderCustomerDetail();
         }
-        return (<div className="customer-repeat-container" data-tracename="客户查重页面">
+        return (<div className="customer-repeat-container" data-tracename="重复客户列表">
             {!this.props.noNeedClose ? <TopNav>
                 <div className="return-btn-container" onClick={(e) => {
                     this.returnCustomerList(e);
@@ -403,4 +404,4 @@ let CustomerRepeat = React.createClass({
     }
 });
 
-module.exports = CustomerRepeat;
+module.exports = CustomerRepeat;

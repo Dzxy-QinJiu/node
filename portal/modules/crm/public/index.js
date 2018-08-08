@@ -31,7 +31,7 @@ var CrmIndex = React.createClass({
     render: function() {
         if (this.state.isRepeatCustomerShow) {
             return (
-                <div data-tracename="客户管理">
+                <div data-tracename="重复客户列表">
                     <CustomerRepeat closeRepeatCustomer={this.closeRepeatCustomer}/>
                 </div> );
         } else {

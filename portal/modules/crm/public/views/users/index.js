@@ -304,12 +304,13 @@ class CustomerUsers extends React.Component {
         }
         if (!batchApplyFlag && !openAppFlag) {
             //申请新用户
-            return (<div className="crm-user-apply-btns">
-                <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS)}>
-                    {Intl.get('crm.apply.user.new', '申请新用户')}
-                </Button>
-            </div>);
+            return (
+                <div className="crm-user-apply-btns" data-tracename="申请新用户">
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
+                        {Intl.get('crm.apply.user.new', '申请新用户')}
+                    </Button>
+                </div>);
         } else {//其他申请
             return (
                 <div className="crm-user-apply-btns">
@@ -506,7 +507,7 @@ class CustomerUsers extends React.Component {
             divHeight -= $('.phone-alert-modal-title').outerHeight(true);
         }
         let userNumClass = classNames('user-total-tip', {'user-total-active': !this.props.isMerge && userNum});
-        return (<div className="crm-user-list-container" data-tracename="通用户页面">
+        return (<div className="crm-user-list-container" data-tracename="用户页面">
             <div className="user-number">
                 {this.state.isLoading ? null : userNum ? (
                     <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>

@@ -744,6 +744,8 @@ const CustomerRecord = React.createClass({
     //添加跟进记录面板的展示与隐藏
     toggleAddRecordPanel: function() {
         this.setState({addRecordPanelShow: !this.state.addRecordPanelShow});
+        Trace.traceEvent('客户详情', '添加跟进记录');
+
     },
     onSelectFilterType({item, key, selectedKeys}){
         this.setState({filterType: key});
@@ -820,7 +822,7 @@ const CustomerRecord = React.createClass({
                             <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
                                 title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>) : (
                             <Button className='crm-detail-add-btn'
-                                onClick={this.toggleAddRecordPanel.bind(this, '')}>
+                                onClick={this.toggleAddRecordPanel.bind(this, '')} >
                                 {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
                             </Button>)
                         }

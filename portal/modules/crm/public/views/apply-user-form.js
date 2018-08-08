@@ -211,7 +211,6 @@ const ApplyUserForm = React.createClass({
         _.each(this.state.formData.products, appFormData => {
             //用户名是邮箱格式时，只能申请1个用户
             if (isEmail && appFormData.number > 1) {
-                appFormData.onlyOneUserTip = true;
             } else {
                 appFormData.onlyOneUserTip = false;
             }
@@ -254,6 +253,8 @@ const ApplyUserForm = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
+        Trace.traceEvent('申请新用户', '点击确定按钮');
+
         if (this.state.isLoading) {
             //正在申请，不可重复申请
             return;
@@ -344,6 +345,7 @@ const ApplyUserForm = React.createClass({
     },
 
     handleCancel: function() {
+        Trace.traceEvent('申请新用户', '取消');
         this.props.cancelApply();
     },
 

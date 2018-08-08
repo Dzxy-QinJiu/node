@@ -947,17 +947,17 @@ var Crm = React.createClass({
         const loading = this.state.isImporting || false;
 
         return (
-            <div>
+            <div data-tracename="导入预览">
                 {repeatCustomer ? (
                     <span className="import-warning">
                         {Intl.get('crm.210', '存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入')}
                     </span>
                 ) : null}
-                <Button type="ghost" onClick={this.cancelImport}>
+                <Button type="ghost" onClick={this.cancelImport} data-tracename="点击取消导入按钮">
                     {Intl.get('common.cancel', '取消')}
                 </Button>
                 {!repeatCustomer ? (
-                    <Button type="primary" onClick={this.doImport} loading={loading}>
+                    <Button type="primary" onClick={this.doImport} loading={loading} data-tracename="点击确定导入按钮">
                         {Intl.get('common.sure', '确定') + Intl.get('common.import', '导入')}
                     </Button>
                 ) : null}
@@ -1145,6 +1145,7 @@ var Crm = React.createClass({
         };
 
         ajax(arg).then(result => {
+            Trace.traceEvent('导入预览', '点击删除重复客户按钮');
             if (result && result.result === 'success') {
                 this.state.previewList.splice(index, 1);
                 this.setState(this.state);

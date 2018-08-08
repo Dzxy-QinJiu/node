@@ -56,7 +56,7 @@ var PageFrame = React.createClass({
             if (paramObj.call_params) {
                 Trace.traceEvent('电话弹屏', '弹出拨打电话的面板');
             } else {
-                Trace.traceEvent('客户详情', '查看客户详情');
+                Trace.traceEvent(this.getDOMNode(), '查看客户详情');
             }
         }
         this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});
