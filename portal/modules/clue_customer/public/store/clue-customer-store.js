@@ -23,7 +23,6 @@ ClueCustomerStore.prototype.resetState = function() {
     this.isLoading = true;//加载线索客户列表数据中。。。
     this.clueCustomerErrMsg = '';//获取线索客户列表失败
     this.customersSize = 0;//线索客户列表的数量
-    this.curPage = 1;
     this.clueCustomerTypeFilter = {status: defaultValue};//线索客户的类型  0 待分配 1 已分配 2 已跟进
     this.currentId = '';//当前展示的客户的id
     this.curCustomer = {}; //当前展示的客户详情
@@ -61,42 +60,10 @@ ClueCustomerStore.prototype.resetState = function() {
 ClueCustomerStore.prototype.setClueInitialData = function() {
     this.curCustomers = [];//查询到的线索客户列表
     this.customersSize = 0;
-};
-ClueCustomerStore.prototype.setPageNum = function() {
-    this.curPage = 1;
+    this.lastCustomerId = '';
 };
 ClueCustomerStore.prototype.setLastClueId = function(updateId) {
     this.lastCustomerId = updateId;
-};
-//查询线索客户
-ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
-    if (clueCustomers.loading) {
-        this.isLoading = true;
-        this.clueCustomerErrMsg = '';
-    } else if (clueCustomers.error) {
-        this.isLoading = false;
-        this.clueCustomerErrMsg = clueCustomers.errorMsg;
-    } else {
-        let data = clueCustomers.clueCustomerObj;
-        let list = data ? data.result : [];
-        if (this.lastCustomerId) {
-            this.curCustomers = this.curCustomers.concat(this.processForList(list));
-        } else {
-            this.curCustomers = this.processForList(list);
-        }
-        this.lastCustomerId = this.curCustomers.length ? _.last(this.curCustomers).id : '';
-        this.customersSize = data ? data.total : 0;
-        this.listenScrollBottom = this.customersSize > this.curCustomers.length;
-        this.isLoading = false;
-        //跟据线索客户不同的状态进行排序
-        this.curCustomers = _.sortBy(this.curCustomers, (item) => {
-            return item.status;
-        });
-        //刷新当前右侧面板中打开的客户的数据
-        if (this.currentId) {
-            this.setCurrentCustomer(this.currentId);
-        }
-    }
 };
 ClueCustomerStore.prototype.getStatisticsData = function(statisticsArr) {
     var total = 0;
@@ -108,12 +75,10 @@ ClueCustomerStore.prototype.getStatisticsData = function(statisticsArr) {
             });
             if (targetObj){
                 this.statusStaticis[key] = targetObj.total;
+                total += targetObj.total;
             }else{
                 this.statusStaticis[key] = 0;
             }
-        });
-        _.forEach(statisticsArr,(item) => {
-            total += item.total;
         });
         this.statusStaticis[''] = total;
     }else{
@@ -138,7 +103,7 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         let data = clueData.clueCustomerObj;
         let list = data ? data.result : [];
         var aggList = _.isArray(data.agg_list) ? data.agg_list : [];
-        if (clueData.flag){
+        if (clueData.getOnlyAnalysisData){
             this.getStatisticsData(aggList[0]['status']);
         }else{
             if (this.lastCustomerId) {
@@ -150,15 +115,11 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
             this.customersSize = data ? data.total : 0;
             this.listenScrollBottom = this.customersSize > this.curCustomers.length;
             this.isLoading = false;
-            this.curPage++;
             //跟据线索客户不同的状态进行排序
             this.curCustomers = _.sortBy(this.curCustomers, (item) => {
                 return item.status;
             });
-            //刷新当前右侧面板中打开的客户的数据
-            if (this.currentId) {
-                this.setCurrentCustomer(this.currentId);
-            }
+            //只有在获取线索的状态是全部的时候，才用返回的统计值
             if (this.clueCustomerTypeFilter.status === ''){
                 //不同状态线索的统计数据
                 var staticsArr = _.isArray(aggList) && aggList[0] ? _.get(aggList[0],'status') : [];
@@ -282,10 +243,6 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
         this.currentId = newCustomer.id;
     }
 
-};
-//用于设置下拉加载的最后一个客户的id
-ClueCustomerStore.prototype.setLastCustomerId = function(id) {
-    this.lastCustomerId = id;
 };
 
 ClueCustomerStore.prototype.setSalesMan = function(salesObj) {

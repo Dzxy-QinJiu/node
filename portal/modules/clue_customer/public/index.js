@@ -44,10 +44,7 @@ var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
     BOTTOM_DISTANCE: 40,
 };
-
-
 const ClueCustomer = React.createClass({
-    salesclueitem: {},//
     getInitialState: function() {
         return {
             clueAddFormShow: false,//
@@ -67,7 +64,6 @@ const ClueCustomer = React.createClass({
 
     componentDidMount: function() {
         clueCustomerStore.listen(this.onStoreChange);
-        // clueAnalysisStore.listen(this.onStoreChange);
         if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
             //获取线索来源
             this.getClueSource();
@@ -84,29 +80,24 @@ const ClueCustomer = React.createClass({
             //普通销售 销售默认展示已分配的线索客户 status对应1
             clueCustomerAction.setFilterType(SELECT_TYPE.HAS_DISTRIBUTE);
         }
-        var _this = this;
         this.getClueList();
         this.getUserPhoneNumber();
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
-        //点击客户列表某一行时打开对应的详情
-        $('.clue_customer_content').on('click', '.sales-clue-item-container .clue-name', (e) => {
-            Trace.traceEvent($(_this.getDOMNode()).find('.ant-table-tbody'), '打开线索客户详情');
-            var $div = $(e.target).closest('.clue-top-title');
-            var id = $div.find('.record-id')[0].innerText;
-            this.showRightPanel(id);
-        });
+    },
+    showClueDetailOut: function(item) {
+        rightPanelShow = true;
+        this.setState({rightPanelIsShow: true});
+        clueCustomerAction.setCurrentCustomer(item.id);
     },
     //展示右侧面板
     showRightPanel: function(id) {
-        this.state.rightPanelIsShow = true;
         rightPanelShow = true;
-        this.setState(this.state);
+        this.setState({rightPanelIsShow: true});
         clueCustomerAction.setCurrentCustomer(id);
     },
     hideRightPanel: function() {
-        this.state.rightPanelIsShow = false;
         rightPanelShow = false;
-        this.setState(this.state);
+        this.setState({rightPanelIsShow: false});
         //关闭右侧面板后，将当前展示线索的id置为空
         clueCustomerAction.setCurrentCustomer('');
     },
@@ -260,17 +251,14 @@ const ClueCustomer = React.createClass({
         return userData.hasRole('operations');
     },
 
-
+    setInitialData: function() {
+        clueCustomerAction.setClueInitialData();
+    },
     //获取线索列表
-    getClueList: function(flag) {
-        if (flag){
-            clueCustomerAction.setPageNum();
-            clueCustomerAction.setLastClueId('');
-            clueCustomerAction.setClueInitialData();
-        }
+    getClueList: function() {
         //跟据类型筛选
         const queryObj = {
-            lastClueId: clueCustomerStore.getState().lastCustomerId,//如果直接用this.state.lastCustomerId 这个id总是没清空之前的那一个
+            lastClueId: this.state.lastCustomerId,
             pageSize: this.state.pageSize,
             sorter: this.state.sorter,
             keyword: this.state.keyword,
@@ -290,7 +278,7 @@ const ClueCustomer = React.createClass({
                 keyword: this.state.keyword,
                 userId: userData.getUserData().userId,
                 typeFilter: JSON.stringify({status: ''}),
-                analysisFlag: true//取统计数字的标识
+                getOnlyAnalysisData: true//取统计数字的标识
             };
             clueCustomerAction.getClueFulltext(keywordObj);
         }
@@ -339,7 +327,8 @@ const ClueCustomer = React.createClass({
             _.map(customerList, (item) => {
                 return (
                     <SalesClueItem
-                        curClue={this.state.curCustomer}
+                        showClueDetailOut={this.showClueDetailOut}
+                        currentId = {this.state.currentId}
                         showDetailWrap={true}
                         ref={'salesclueitem' + item.id}
                         salesClueItemDetail={item}
@@ -492,12 +481,14 @@ const ClueCustomer = React.createClass({
         return !this.state.isLoading &&
             this.state.curCustomers.length >= 20 && !this.state.listenScrollBottom;
     },
-    onTypeChange: function(flag) {
-        clueCustomerAction.setLastCustomerId('');
-        this.state.rightPanelIsShow = false;
+    onTypeChange: function() {
+        clueCustomerAction.setClueInitialData();
         rightPanelShow = false;
-        this.setState(this.state);
-        this.getClueList(flag);
+        this.setState({rightPanelIsShow: false});
+        setTimeout(() => {
+            this.getClueList();
+        });
+
     },
     onSelectDate: function(start_time, end_time) {
         if (!start_time) {
@@ -517,12 +508,12 @@ const ClueCustomer = React.createClass({
         this.setState({
             clueCustomerTypeFilter: clueCustomerTypeFilter
         });
-        this.onTypeChange(true);
+        this.onTypeChange();
     },
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent: function() {
         //加载中的展示
-        if (this.state.isLoading && this.state.curPage === 1) {
+        if (this.state.isLoading && !this.state.lastCustomerId) {
             return (
                 <div className="load-content">
                     <Spinner />
@@ -611,7 +602,7 @@ const ClueCustomer = React.createClass({
         //如果keyword存在，就用全文搜索的接口
         clueCustomerAction.setKeyWord(keyword);
         //如果keyword不存在，就用获取线索的接口
-        this.onTypeChange(true);
+        this.onTypeChange();
 
     },
     renderImportModalFooter: function() {
@@ -793,7 +784,7 @@ const ClueCustomer = React.createClass({
                             <div className="search-container">
                                 <SearchInput
                                     searchEvent={this.searchFullTextEvent}
-                                    searchPlaceholder = {Intl.get('clue.search.full.text','全文搜索')}
+                                    searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}
                                 />
                             </div>
                             <div className="pull-right add-anlysis-handle-btns">

@@ -30,10 +30,6 @@ const DIFCONTACTWAY = {
 };
 var initialContact = {
     'name': '',
-    'phone': [],
-    'qq': [],
-    'weChat': [],
-    'email': [],
     'show_contact_item': [{type: DIFCONTACTWAY.PHONE, value: '',randomValue: uuid()}]
 };
 const desArr = {
@@ -103,19 +99,14 @@ class ClueAddForm extends React.Component {
         var contacts = submitObj.contacts;
         _.forEach(contacts,(item) => {
             _.forEach(item.show_contact_item,(contactWayItem) => {
-                _.forEach(DIFCONTACTWAY, (value) => {
-                    if (value === contactWayItem.type && contactWayItem.value){
-                        item[value].push(contactWayItem.value);
-                        item[value] = _.uniq(item[value]);
-                    }
-                });
+                if(item[contactWayItem.type]){
+                    item[contactWayItem.type].push(contactWayItem.value);
+                }else{
+                    item[contactWayItem.type] = [contactWayItem.value];
+                }
+                item[contactWayItem.type] = _.uniq(item[contactWayItem.type]);
             });
             delete item['show_contact_item'];
-            _.forEach(item, (value, key) => {
-                if (_.isArray(value) && !value.length){
-                    delete item[key];
-                }
-            });
         });
         //把订单的第一个设置为默认联系人
         if (_.isArray(submitObj.contacts) && submitObj.contacts.length){
@@ -444,10 +435,6 @@ class ClueAddForm extends React.Component {
     handleAddContact = () => {
         this.state.formData.contacts.push({
             'name': '',
-            'phone': [],
-            'qq': [],
-            'weChat': [],
-            'email': [],
             'show_contact_item': [{type: DIFCONTACTWAY.PHONE, value: '',randomValue: uuid()}]
         });
         this.setState({

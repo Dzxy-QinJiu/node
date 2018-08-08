@@ -9,13 +9,10 @@ function ClueCustomerActions() {
     this.generateActions(
         'setClueInitialData',
         'setCurrentCustomer',
-        'setPageNum',
         'afterAddSalesClue',
-        'getClueCustomerList',//获取线索客户列表
         'getSalesManList',//获取销售团队列表
         'addCluecustomerTrace',//添加或者更新跟进内容
         'distributeCluecustomerToSale',//分配线索客户给某个销售
-        'setLastCustomerId',//用于设置下拉加载的最后一个客户的id
         'setTimeRange',//设置开始和结束时间
         'setFilterType',//设置筛选线索客户的类型
         'setStatusLoading',
@@ -30,24 +27,8 @@ function ClueCustomerActions() {
         'afterAddClueTrace',//添加完线索的跟进记录后
         'afterAssignSales',//分配销售之后
         'setKeyWord',//设置关键字
-        'setLastClueId',
+        'setLastClueId',//用于设置下拉加载的最后一个线索的id
     );
-    //获取线索客户列表
-    this.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
-        if (!lastCustomerId){
-            this.dispatch({error: false, loading: true});
-        }
-        clueCustomerAjax.getClueCustomerList(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId).then((result) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result});
-        }, (errorMsg) => {
-            this.dispatch({
-                error: true,
-                loading: false,
-                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
-            });
-        });
-    };
     //联系人电话唯一性的验证
     this.checkOnlyContactPhone = function(phone, callback) {
         clueCustomerAjax.checkOnlyCustomer({phone: phone}).then(function(data) {
@@ -116,11 +97,11 @@ function ClueCustomerActions() {
     //线索的全文搜索
     this.getClueFulltext = function(queryObj) {
         //是否是在全部状态下返回数据
-        var flag = queryObj.analysisFlag ? true : false;
-        this.dispatch({error: false, loading: true, flag: flag});
+        var getOnlyAnalysisData = queryObj.getOnlyAnalysisData ? true : false;
+        this.dispatch({error: false, loading: true, getOnlyAnalysisData: getOnlyAnalysisData});
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result, flag: flag});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result, getOnlyAnalysisData: getOnlyAnalysisData});
         }, (errorMsg) => {
             this.dispatch({
                 flag: flag,

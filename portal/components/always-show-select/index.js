@@ -61,8 +61,11 @@ class AlwaysShowSelect extends React.Component {
                 if (_.isArray(splitArr) && splitArr.length){
                     dataDsp = <span>
                         <span className="sales-name">{splitArr[0]}</span>
-                        <span>-</span>
-                        <span className="team-name">{splitArr[1]}</span>
+                        {splitArr[1] ?
+                            <span>
+                                <span>-</span>
+                                <span className="team-name">{splitArr[1]}</span>
+                            </span> : null}
                     </span>;
                 }
                 return (<li className={className} key={index}

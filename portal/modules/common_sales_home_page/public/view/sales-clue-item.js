@@ -236,9 +236,10 @@ class SalesClueItem extends React.Component {
         });
     };
     handleShowClueDetail = (item) => {
-        if (this.props.curClue) {
+        if (_.isFunction(this.props.showClueDetailOut)){
+            this.props.showClueDetailOut(item);
             this.setState({
-                isAssocaiteItem: this.props.curClue
+                isAssocaiteItem: item
             });
             return;
         }
@@ -420,7 +421,7 @@ class SalesClueItem extends React.Component {
             'associate-wrap': !this.state.isShowClueDetail
         });
         var itemCls = classNames('sales-clue-item-container customer-detail-item', {
-            'cur-clue': this.state.isShowClueDetail || (!_.isEmpty(this.props.curClue) && this.props.curClue.id === salesClueItem.id)
+            'cur-clue': this.state.isShowClueDetail || this.props.currentId === this.state.isAssocaiteItem.id
         });
         return (
             <div className={itemCls}>
@@ -470,7 +471,7 @@ class SalesClueItem extends React.Component {
                         />
                     </div>
                     : null}
-                {this.state.isAssocaiteItem && !this.props.curClue ?
+                {this.state.isAssocaiteItem && !this.props.showClueDetailOut ?
                     <div className={associateCls}>
                         <ClueRightPanel
                             showFlag={true}
@@ -527,7 +528,10 @@ SalesClueItem.defaultProps = {
     clearSelectSales: function() {
 
     },
-    curClue: {}
+    showClueDetailOut: function() {
+
+    },
+    currentId: ''
 
 };
 SalesClueItem.propTypes = {
@@ -544,7 +548,8 @@ SalesClueItem.propTypes = {
     renderSalesBlock: React.PropTypes.func,
     handleSubmitAssignSales: React.PropTypes.func,
     clearSelectSales: React.PropTypes.func,
-    curClue: React.PropTypes.object,
+    currentId: React.PropTypes.string,
+    showClueDetailOut: React.PropTypes.func,
 
 };
 export default SalesClueItem;
