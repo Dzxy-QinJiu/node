@@ -568,10 +568,7 @@ var UserTabContent = React.createClass({
                 className: numClass,
                 sorter: sortable,
                 render: (text, rowData, idx) => {
-                    let score = 0;
-                    if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
-                        score = Math.round((rowData.apps[0].score || 0) * 100);
-                    }
+                    let score = Math.round((_.get(rowData.apps[0], 'score') || 0) * 100);
                     return (
                         <div className="num-float-right" title={score}>{score} </div>
                     );
