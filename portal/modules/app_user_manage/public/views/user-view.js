@@ -18,7 +18,7 @@ var batchPushEmitter = require('../../../../public/sources/utils/emitters').batc
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import language from 'PUB_DIR/language/getLanguage';
-import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/sales-clue-add-form';
+import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/consts';

@@ -2434,7 +2434,7 @@ var en_US = {
     'clue.repeat.delete': 'Some repeated clues already in the system, which have been marked in red color, please delete these record fist, then import',//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
-    'clue.analysis.consult.time': 'Consult time:',//咨询时间：
+    'clue.analysis.consult.time': 'Consult time',//咨询时间
     'noMoreTip.user': 'no more users',
     'noMoreTip.log': 'no more logs',
     'noMoreTip.callRecord': 'no more call records',
@@ -2476,5 +2476,17 @@ var en_US = {
     'common.this.month.back': 'this month back',//本月回流
     'common.this.month.new': 'this month new',//本月新增
     'common.this.month': 'this month',//本月
+    'clue.search.by.name': 'search by clue name',//按线索名搜索
+    'clue.add.trace.content': 'Add follow-up content',//添加跟进内容
+    'clue.add.trace.follow': 'follow up',//跟进
+    'clue.search.full.text': 'search',//全文搜索
+    'clue.suggest.input.customer.name': 'Recommend to enter the customer name',//建议输入客户名称
+    'clue.name.rule': 'The clue name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'clue.add.customer.need': 'Please describe the customer needs',//请描述一下客户需求
+    'clue.add.phone.num': 'Phone',//电话号码
+    'clue.add.qq.num': 'QQ',//QQ号码
+    'clue.add.email.addr': 'Email address',//邮箱地址
+    'clue.fill.clue.contacts': 'Please fill in the contact information of the clue',//请填写线索的联系方式
+    'clue.add.wechat.num': 'Wechat'//微信号码
 };
 export default en_US;

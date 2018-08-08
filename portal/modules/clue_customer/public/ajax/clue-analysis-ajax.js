@@ -26,13 +26,21 @@ exports.getCustomerById = function(data) {
 };
 //获取线索统计列表
 exports.getClueStatics = function(pathParams, rangParams, queryParams) {
+    var type = 'self';
+    if (hasPrivilege('CRM_CLUE_STATISTICAL_ALL')){
+        type = 'all';
+    }
+    //销售取值时，query参数必须有，管理员可以没有
+    if (type === 'self' && !queryParams){
+        queryParams = {};
+    }
     var data = {
         rangParams: JSON.stringify(rangParams),
         query: JSON.stringify(queryParams)
     };
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/clue/statics/' + pathParams.field + '/' + pathParams.page_size + '/' + pathParams.num,
+        url: '/rest/clue/statics/' + type + '/' + pathParams.field + '/' + pathParams.page_size + '/' + pathParams.num,
         dataType: 'json',
         type: 'post',
         data: data,

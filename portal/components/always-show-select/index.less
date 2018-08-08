@@ -21,7 +21,7 @@
     .select-item-no-content {
       position: relative;
       display: block;
-      padding: 7px 8px;
+      //padding: 7px 8px;
       font-weight: normal;
       color: rgba(0, 0, 0, 0.65);
       white-space: nowrap;
@@ -31,12 +31,26 @@
     .select-item {
       &:extend(.always-show-select-container .select-options .select-item-no-content);
       cursor: pointer;
+      .ant-radio-wrapper{
+        width: 100%;
+        margin:7px 8px;
+      }
+      .sales-name{
+        font-weight: bold;
+        color:#72767A;
+      }
+      .team-name{
+        color:#999;
+      }
       &:hover {
         background-color: #ecf6fd;
       }
     }
     .item-active {
       background-color: #f7f7f7;
+      .sales-name{
+        color:#6CBAF7;
+      }
     }
   }
 }

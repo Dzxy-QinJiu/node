@@ -26,7 +26,11 @@ const TAB_KEYS = {
     ORDER_TAB: '5',//订单
     CONTRACT_TAB: '6', // 合同
     DYNAMIC_TAB: '7',//动态
-    SCHEDULE_TAB: '8'//日程（联系计划）
+    SCHEDULE_TAB: '8'//日程
+
+
+
+    // （联系计划）
 };
 var CrmRightPanel = React.createClass({
     getInitialState: function() {
