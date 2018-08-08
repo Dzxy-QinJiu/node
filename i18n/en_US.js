@@ -286,6 +286,7 @@ var en_US = {
     'user.time.start': 'Open time',//开通时间
     'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
+    'user.login.score': 'Score', // 分数
     'user.login.days': 'Login Days', // 登录天数
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
