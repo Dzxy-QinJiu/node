@@ -11,8 +11,7 @@ import AlertTimer from '../../../../../components/alert-timer';
 import { RightPanelClose, RightPanelReturn } from '../../../../../components/rightPanel';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
-
-const TabPane = Tabs.TabPane;
+var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 //记录上下留白布局
 const LAYOUT = {
@@ -170,9 +169,9 @@ const UserDetailEditApp = React.createClass({
         return null;
     },
     render() {
-        const height = $(window).height() - LAYOUT.TAB_TOP_HEIGHT - LAYOUT.TAB_BOTTOM_PADDING;
+        const height = this.props.height + LAYOUT_CONSTANTS.BTN_PADDING;//减去底部按钮的padding;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{ height: '100%' }}>
+            <div className="user-manage-v2 user-detail-edit-app-v2" style={{ height }}>
                 <h4 onClick={this.cancel}>
                     <Icon type="left" />{Intl.get('user.user.app.set', '应用设置')}
                 </h4>

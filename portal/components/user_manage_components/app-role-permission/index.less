@@ -1,5 +1,48 @@
+@bd-lightgrey: #EBEBEB;
+@bd-blue: #2497F4;
+@bg-lightblue: #EDF7FF;
+@color:#4c8ec4;
+@font-lightblue: #9FB4CF;
+@bd-grey: #EBEBEB;
+@item-height: 40px;
+@icon-grey: #8DA8C6;
 .app-role-permission {
+  padding-left: 20px;
   color:#666;
+  .ant-alert {
+    padding: 8px 18px 8px 38px;
+  }
+  ul.permission-group-item-wrapper {
+    margin-top: -10px;
+    .permission-group-item-container {
+      border-bottom: 1px solid @bd-grey;
+      .ant-checkbox-group {
+        padding-left: 22px;
+        margin-top: 7px;
+        label.ant-checkbox-wrapper {
+          margin-left: 0;
+          display: block;
+          line-height: 25px;
+          font-weight: initial;
+        }
+      }    
+      h4 {
+        margin-bottom: 0;
+        i {
+          color: @icon-grey;
+        }
+      }
+      .show-detail {
+        padding-top: 15px;
+      }
+      .hide-detail {
+        padding-top: 3px;
+        h4 {
+          line-height: 40px;
+        }
+      }
+    }
+  }
   .load8 {
     transform:scale(0.5,0.5);
     .loader8 {
@@ -16,10 +59,8 @@
   @bgcolor:#DEE7ED;
   .no-data {
     padding:2px 6px 2px 12px;
-    background:@bgcolor;
   }
   .app-property-content {
-    background:@bgcolor;
     padding:0;
   }
   .app-property-roles {
@@ -63,7 +104,7 @@
     display:inline-block;
     vertical-align:top;
     height:22px;
-    border:1px solid #5C5D5D;
+    border:1px solid @bd-lightgrey;
     border-radius:4px;
     color:#777;
     line-height:19px;
@@ -71,11 +112,10 @@
     margin-bottom:10px;
     padding:0 9px;
 
-    @color:#4c8ec4;
     &.selected {
-      border-color:@color;
-      background-color:@color;
-      color:#fff;
+      border-color:@bd-blue;      
+      background-color:@bg-lightblue;
+      color:@bd-blue;
     }
     &.unselectable-item {
       border-color:lighten(@color , 30%);

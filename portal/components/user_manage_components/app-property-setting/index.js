@@ -23,6 +23,8 @@ import UserMultiLoginField from '../user-multilogin-radiofield';
 import AppRolePermission from '../app-role-permission';
 import DetailCard from 'CMP_DIR/detail-card';
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
+import AppUserUtil from 'MOD_DIR/app_user_manage/public/util/app-user-util.js';
+var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 const PropTypes = React.PropTypes;
 
@@ -336,6 +338,11 @@ const AppPropertySetting = React.createClass({
                     <div className="app-property-content basic-data-form app-property-other-property"
                         style={{ display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block' }}
                     >
+                        <div className="form-item">
+                            <div className="form-item-label font-bold">
+                                {Intl.get('appEdit.basicConig', '基本配置')}
+                            </div>                       
+                        </div>
                         {this.props.showUserNumber ? (
                             <div className="form-item">
                                 <div className="form-item-label"><ReactIntl.FormattedMessage id="user.batch.open.count" defaultMessage="开通个数" /></div>
@@ -423,7 +430,7 @@ const AppPropertySetting = React.createClass({
                                     }
                                 </div>
                             </div>
-                        }
+                        }                       
                     </div>
                     <AppRolePermission
                         app_id={currentApp.app_id}
@@ -463,7 +470,7 @@ const AppPropertySetting = React.createClass({
     render() {
         let height = this.props.height;
         if (height !== 'auto') {
-            height -= 20;//减去上面的padding
+            height = height - LAYOUT_CONSTANTS.BTN_PADDING - LAYOUT_CONSTANTS.BOTTOM_PADDING;//减去底部按钮的padding
         }
         //class名字
         const cls = classNames({

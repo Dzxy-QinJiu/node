@@ -552,6 +552,8 @@ var en_US = {
     'user.position.select.user': 'Please select user', // 请选择用户
     'user.third.thirdapp.consts.sina': 'Sina Weibo',//新浪微博',
     'user.third.thirdapp.consts.tencent': 'Tencent Weibo',//腾讯微博',
+    'user.permission.show': 'spread particular permission', //'展开具体权限',
+    'user.permission.hide': 'collapse particular permission', //'收起具体权限',
     /*用户管理模块-end*/
 
     /*角色管理模块-start*/
@@ -2327,6 +2329,7 @@ var en_US = {
     'sales.home.i.trace': 'I',//我
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
     'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
-    'analysis.weekly.report': 'Weekly report'//周报分析
+    'analysis.weekly.report': 'Weekly report',//周报分析
+    'appEdit.basicConig': 'basic config',//'基本配置',
 };
 export default en_US;

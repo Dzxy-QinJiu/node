@@ -30,6 +30,10 @@
 @font-lightblue: #9FB5CC;
 @app-title-width: 150px;
 @user-name-width: 185px;
+@bd-lightgrey: #EBEBEB;
+@bd-blue: #2497F4;
+@color:#4c8ec4;
+
 .titlecut() {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -48,7 +52,10 @@
 
 .user_manage_user_detail_wrap {
     .user-detail-edit-app-v2 {
-        background-color: @right_panel_bgcolor  !important
+        background-color: @right_panel_bgcolor  !important;
+        h4 {
+            margin-bottom: 10px;
+        }
     }
 }
 
@@ -57,10 +64,24 @@
         transform: translateX(-500px) !important;
     }
 }
-
 //新版客户详情的样式
 //TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
-.right-panel {
+.right-panel {    
+    .user-opening-daterange {
+        .anticon-calendar {
+            margin-left: 3px;
+        }
+        .anticon-question-circle-o {
+            margin: 0 5px 0 4px;
+            font-size: 13px;
+        }
+        .range_wrap {
+            min-width: 84px;
+        }
+        .date_text_wrap {
+            padding: 0 0 0 3px;
+        }           
+    }
     .full_siz.app_user_full_size_item.wrap_padding {
         padding-left: 10px;
         padding-right: 10px;
@@ -76,12 +97,25 @@
         }
         .basic-data-form {
             background: white;
+            .font-bold {
+                font-weight: 600;
+            }
+            &.app-property-content {
+                .ant-select {
+                    width: 308px !important;
+                }
+                .ant-radio-group {
+                    label {
+                        margin-bottom: 0;
+                    }
+                }
+            }
             .form-item-label {
-                width: 56px;
-                padding: 14px 0 0 0;
+                width: 85px;
+                padding: 11px 0 0 0;
             }
             .form-item-content {
-                padding: 5px 0 5px 20px;
+                padding: 5px 0 5px 13px;
             }
         }
         h4 {

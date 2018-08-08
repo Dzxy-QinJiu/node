@@ -31,6 +31,7 @@ var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
 import { StatusWrapper } from 'antc';
 import { Button } from 'antd';
 var AppUserAjax = require('../ajax/app-user-ajax');
+var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 const WHEEL_DELAY = 20;//滚轮事件延时
 
 var UserDetail = React.createClass({
@@ -177,7 +178,12 @@ var UserDetail = React.createClass({
         }
     },
     render: function() {
-        var moveView = null;
+        //内容区高度
+        let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP;
+        if (this.state.showBasicDetail) {
+            contentHeight -= LAYOUT_CONSTANTS.USER_DETAIL;
+        }
+        var moveView = null;        
         if (this.state.panel_switch_currentView) {
             let { thirdApp } = this.state;
             switch (this.state.panel_switch_currentView) {
@@ -190,6 +196,7 @@ var UserDetail = React.createClass({
                     var appInfo = this.state.panel_switch_appToEdit;
                     moveView = (
                         <UserDetailEditApp
+                            height={contentHeight}
                             initialUser={initialUser}
                             appInfo={appInfo} />
                     );
@@ -205,10 +212,11 @@ var UserDetail = React.createClass({
         if (this.props.selectedAppId) {
             selectApp = _.find(this.props.appLists, app => app.app_id === this.props.selectedAppId);
         }
+        
         var tabPaneList = [
             <TabPane tab={Intl.get('user.basic.info', '基本资料')} key="1">
                 {this.state.activeKey === '1' ? <div className="user_manage_user_detail">
-                    <UserDetailBasic showBasicDetail={this.state.showBasicDetail} userId={this.props.userId} selectApp={selectApp} getBasicInfo={this.getBasicInfo} ref={ref => this.userDetailRef = ref} />
+                    <UserDetailBasic height={contentHeight} userId={this.props.userId} selectApp={selectApp} getBasicInfo={this.getBasicInfo} ref={ref => this.userDetailRef = ref} />
                 </div> : null}
             </TabPane>
         ];
@@ -216,7 +224,7 @@ var UserDetail = React.createClass({
             tabPaneList.push(
                 <TabPane tab="用户分析" key="2">
                     {this.state.activeKey === '2' ? <div className="user-analysis">
-                        <UserLoginAnalysis userId={this.props.userId} selectedAppId={this.props.selectedAppId} />
+                        <UserLoginAnalysis height={contentHeight} userId={this.props.userId} selectedAppId={this.props.selectedAppId} />
                     </div> : null}
                 </TabPane>
             );

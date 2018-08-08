@@ -614,18 +614,6 @@ var UserDetailBasic = React.createClass({
                         </div>)}
                         content={this.getAppsBlock()}
                     />
-                    {/* <dl className="dl-horizontal user_detail_item detail_item clearfix">
-                        <dt><ReactIntl.FormattedMessage id="user.batch.app.open" defaultMessage="开通产品" /></dt>
-                        <dd className="operate_app_btns">
-                            <div className="add_app_btns">
-                                {this.renderAddAppBtn()}
-                            </div>
-                            <div className="all_apps_stop_btns">
-                                {this.getDisableAllAppsBlock()}
-                            </div>
-                        </dd>
-                    </dl>
-                    {this.getAppsBlock()} */}
                 </div>
                 <BootstrapModal
                     show={this.state.modalStatus.disable_all.showModal}
@@ -653,12 +641,9 @@ var UserDetailBasic = React.createClass({
             </div>
         ) : null;
 
-        var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP;
-        if (this.props.showBasicDetail) {
-            fixedHeight -= LAYOUT_CONSTANTS.USER_DETAIL;
-        }
+       
         return (
-            <div style={{ height: fixedHeight }}>
+            <div style={{ height: this.props.height }}>
                 <GeminiScrollbar>
                     {LoadingBlock}
                     {ErrorBlock}

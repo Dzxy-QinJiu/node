@@ -60,7 +60,7 @@ const UserTypeRadioField = {
         }
         return (
             <div className="user-multilogin-radiofield-block">
-                <Checkbox checked={currentValue === '1'} onChange={callback}>{Intl.get('user.two.step.certification', '二步认证')}</Checkbox>
+                <Checkbox checked={currentValue === '1'} onChange={callback}>{Intl.get('user.multi.login', '多人登录')}</Checkbox>
                 {/* <FormItem
                     label=""
                     labelCol={{span: 0}}

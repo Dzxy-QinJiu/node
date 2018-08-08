@@ -510,7 +510,8 @@ var zh_CN = {
     'user.no.login.system': '该用户还没有登录过系统',
     'user.disable.logon': '停用登录',
     'user.frequent.logon': '频繁登录',
-
+    'user.permission.show': '展开具体权限',
+    'user.permission.hide': '收起具体权限',
     // 第三方应用配置
     'third.party.app': '开放应用平台',
     'third.party.app.add': '添加开放平台应用',
@@ -2349,6 +2350,7 @@ var zh_CN = {
     'sales.home.i.trace': '我',
     'sales.home.fill.in.trace.content': '请输入跟进内容',
     'sales.home.no.show.frontpage': '本条线索处理完毕后，将不在首页展示',
-    'analysis.weekly.report': '周报分析'
+    'analysis.weekly.report': '周报分析',
+    'appEdit.basicConig': '基本配置',
 };
 export default zh_CN;
