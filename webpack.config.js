@@ -180,10 +180,6 @@ function addDllPlugins() {
         }),
         new webpack.DllReferencePlugin({
             context: path.join(__dirname),
-            manifest: require('./dll/echartsEefung-manifest.json')
-        }),
-        new webpack.DllReferencePlugin({
-            context: path.join(__dirname),
             manifest: require('./dll/world-manifest.json')
         }),
         new webpack.DllReferencePlugin({
