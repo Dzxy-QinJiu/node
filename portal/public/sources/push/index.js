@@ -19,8 +19,8 @@ import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
 const session = storageUtil.session;
-import {message} from 'antd';
 var NotificationType = {};
 var approveTipCount = 0;
 const TIMEOUTDELAY = {
@@ -66,39 +66,39 @@ function updateUnreadByPushMessage(type, isAdd) {
 function listenOnMessage(data) {
     if (_.isObject(data)) {
         switch (data.message_type) {
-        case 'apply':
-            //有新的未处理的申请消息时,只修改待审批数，不用展示
-            //申请审批列表弹出，有新数据，是否刷新数据的提示
-            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-            //将待审批数加一（true）
-            updateUnreadByPushMessage('approve', true);
-            break;
-        case 'reply':
-            //批复类型
-            if (!userData.hasRole('realm_manager')) {
-                //批复类型的通知，不通知管理员
-                notifyReplyInfo(data);
-            }
-            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-            //将审批后的申请消息未读数加一（true）
-            updateUnreadByPushMessage('apply', true);
-            //待审批数减一
-            updateUnreadByPushMessage('approve', false);
-            break;
-        case 'repay':
-            //回款类型
-            //notifyRepayInfo(data);
-            break;
-        case 'customer':
-            //客户提醒(包含用户过期提醒)
-            notifyCustomerInfo(data);
-            //将客户提醒的未读数加一
-            updateUnreadByPushMessage('customer', true);
-            break;
-        case 'system':
-            //系统通知
-            //notifySystemInfo(data);
-            break;
+            case 'apply':
+                //有新的未处理的申请消息时,只修改待审批数，不用展示
+                //申请审批列表弹出，有新数据，是否刷新数据的提示
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+                //将待审批数加一（true）
+                updateUnreadByPushMessage('approve', true);
+                break;
+            case 'reply':
+                //批复类型
+                if (!userData.hasRole('realm_manager')) {
+                    //批复类型的通知，不通知管理员
+                    notifyReplyInfo(data);
+                }
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+                //将审批后的申请消息未读数加一（true）
+                updateUnreadByPushMessage('apply', true);
+                //待审批数减一
+                updateUnreadByPushMessage('approve', false);
+                break;
+            case 'repay':
+                //回款类型
+                //notifyRepayInfo(data);
+                break;
+            case 'customer':
+                //客户提醒(包含用户过期提醒)
+                notifyCustomerInfo(data);
+                //将客户提醒的未读数加一
+                updateUnreadByPushMessage('customer', true);
+                break;
+            case 'system':
+                //系统通知
+                //notifySystemInfo(data);
+                break;
         }
     }
 }
@@ -202,39 +202,39 @@ function getReplyTipContent(data) {
     let userType = data.message.tag || '';//申请用户的类型：正式、试用用户
     let userNames = getUserNames(data.message);//申请用户的名称
     switch (data.approval_state) {
-    case 'pass'://审批通过
-        // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-        tipContent = Intl.get('reply.pass.tip.content',
-            '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
-                approvalPerson: approvalPerson,
-                salesName: salesName,
-                customerName: customerName,
-                userType: userType,
-                userNames: userNames
-            });
-        break;
-    case 'reject'://审批驳回
-        //xxx 驳回了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-        tipContent = Intl.get('reply.reject.tip.content',
-            '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
-                approvalPerson: approvalPerson,
-                salesName: salesName,
-                customerName: customerName,
-                userType: userType,
-                userNames: userNames
-            });
-        break;
-    case 'cancel'://撤销申请
-        //xxx撤销了 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-        //只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
-        tipContent = Intl.get('reply.cancel.tip.content',
-            '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
-                approvalPerson: approvalPerson,
-                customerName: customerName,
-                userType: userType,
-                userNames: userNames
-            });
-        break;
+        case 'pass'://审批通过
+            // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            tipContent = Intl.get('reply.pass.tip.content',
+                '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
+                    approvalPerson: approvalPerson,
+                    salesName: salesName,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
+        case 'reject'://审批驳回
+            //xxx 驳回了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            tipContent = Intl.get('reply.reject.tip.content',
+                '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
+                    approvalPerson: approvalPerson,
+                    salesName: salesName,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
+        case 'cancel'://撤销申请
+            //xxx撤销了 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            //只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
+            tipContent = Intl.get('reply.cancel.tip.content',
+                '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
+                    approvalPerson: approvalPerson,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
     }
     return tipContent;
 }
@@ -258,6 +258,18 @@ function phoneEventListener(phonemsgObj) {
         if (!phonemsgObj.customers) {
             phonemsgObj.customers = [];
         }
+        //清空存储的联系人信息
+        if (contactNameObj && contactNameObj.contact) {
+            if (phonemsgObj.dst || phonemsgObj.to) {
+                let phone = phonemsgObj.to || phonemsgObj.dist;
+                //当前状态的电话跟存储的联系电话不相等时，
+                if (phone !== contactNameObj.phone) {
+                    setInitialPhoneObj();
+                }
+            } else {//dst和to都不存在时，说明不是从客套里打的电话
+                setInitialPhoneObj();
+            }
+        }
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj}
         });
@@ -278,32 +290,13 @@ window.handleClickPhone = function(phoneObj) {
     }
     var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName, customerId = phoneObj.customerId;
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .phone-item .icon-phone-call-out'), '拨打电话');
-    if (getCallNumErrMsg) {
-        message.error(getCallNumErrMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
-    } else {
-        if (callNumber) {
-            phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                {
-                    phoneNum: phoneNumber,
-                    contact: contactName,
-                    customerId: customerId,//客户基本信息
-                }
-            );
-            let reqData = {
-                from: callNumber,
-                to: phoneNumber.replace('-', '')
-            };
-            crmAjax.callOut(reqData).then((result) => {
-                if (result.code === 0) {
-                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                }
-            }, (errMsg) => {
-                message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-            });
-        } else {
-            message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-        }
-    }
+    handleCallOutResult({
+        errorMsg: getCallNumErrMsg,//获取坐席号失败的错误提示
+        callNumber: callNumber,//坐席号
+        contactName: contactName,//联系人姓名
+        phoneNumber: phoneNumber,//拨打的电话
+        customerId: customerId
+    });
 };
 
 // 获取拨打电话的座机号

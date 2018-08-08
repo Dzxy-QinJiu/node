@@ -20,7 +20,7 @@ var curWeek = '';//今天所在的周
 var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').scheduleManagementEmitter;
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
-var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {isEqualArray} from 'LIB_DIR/func';
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
@@ -124,31 +124,12 @@ class DayAgendaScheduleLists extends React.Component {
 
     handleClickCallOut = (phoneNumber, contactName, item) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        if (this.state.errMsg) {
-            message.error(this.state.errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
-        } else {
-            if (this.state.callNumber) {
-                //把所拨打的联系人的姓名emitter出去
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        contact: contactName,
-                    }
-                );
-                let reqData = {
-                    from: this.state.callNumber,
-                    to: phoneNumber.replace('-', '')
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code == 0) {
-                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                    }
-                }, (errMsg) => {
-                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                });
-            } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-            }
-        }
+        handleCallOutResult({
+            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
+            callNumber: this.state.callNumber,//坐席号
+            contactName: contactName,//联系人姓名
+            phoneNumber: phoneNumber,//拨打的电话
+        });
     };
     //联系人和联系电话
     renderPopoverContent(item){
@@ -186,16 +167,16 @@ class DayAgendaScheduleLists extends React.Component {
         return (
             _.map(this.state.scheduleList, (item, index) => {
                 var listCls = classNames('list-item', {
-                    'has-handled': item.status == 'handle',
-                    'selected-customer': item.customer_id == this.state.curCustomerId
+                    'has-handled': item.status === 'handle',
+                    'selected-customer': item.customer_id === this.state.curCustomerId
                 });
                 var itemCls = classNames('list-item-content', {});
                 var iconFontCls = classNames('iconfont', {
-                    'icon-phone-busy': item.type == 'calls',
-                    'icon-schedule-visit': item.type == 'visit',
-                    'icon-schedule-other': item.type == 'other',
+                    'icon-phone-busy': item.type === 'calls',
+                    'icon-schedule-visit': item.type === 'visit',
+                    'icon-schedule-other': item.type === 'other',
                 });
-                var content = item.status == 'handle' ? Intl.get('schedule.has.finished', '已完成') : (
+                var content = item.status === 'handle' ? Intl.get('schedule.has.finished', '已完成') : (
                     item.allDay ? Intl.get('crm.alert.full.day', '全天') : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + '-' + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
                 var customerContent = this.renderPopoverContent(item);
@@ -223,13 +204,13 @@ class DayAgendaScheduleLists extends React.Component {
                                 </Col>
                                 <Col sm={10}>
                                     <div className="schedule-content-wrap">
-                                        {user_id == item.member_id && item.status !== 'handle' ?
+                                        {user_id === item.member_id && item.status !== 'handle' ?
                                             <Button
                                                 type="primary"
                                                 onClick={this.props.handleScheduleItemStatus.bind(this, item)}
                                                 data-tracename="点击标记完成按钮"
                                             >{Intl.get('schedule.list.mark.finish', '标记为完成')}
-                                                {this.state.handleStatusLoading && item.id == this.state.isEdittingItemId ?
+                                                {this.state.handleStatusLoading && item.id === this.state.isEdittingItemId ?
                                                     <Icon type="loading"/> : null}</Button> : null}
                                         <p className="schedule-content">{item.content}</p>
                                         <span className="hidden record-id">{item.id}</span>
@@ -279,13 +260,13 @@ class DayAgendaScheduleLists extends React.Component {
 DayAgendaScheduleLists.navigate = (date, action) => {
     //
     switch (action){
-    case BigCalendar.Navigate.PREVIOUS:
-        return dates.add(date, -1, 'day');
+        case BigCalendar.Navigate.PREVIOUS:
+            return dates.add(date, -1, 'day');
 
-    case BigCalendar.Navigate.NEXT:
-        return dates.add(date, 1, 'day');
-    default:
-        return date;
+        case BigCalendar.Navigate.NEXT:
+            return dates.add(date, 1, 'day');
+        default:
+            return date;
 
     }
 };
@@ -300,6 +281,15 @@ DayAgendaScheduleLists.defaultProps = {
     updateScrollBar: false,
     handleScheduleItemStatus: function() {},
     showCustomerDetail: function() {}
+
+};
+const PropTypes = React.PropTypes;
+DayAgendaScheduleLists.propTypes = {
+    curCustomerId: PropTypes.string,
+    updateScrollBar: PropTypes.boolean,
+    scheduleList: PropTypes.array,
+    handleScheduleItemStatus: PropTypes.func,
+    showCustomerDetail: PropTypes.func
 
 };
 export default DayAgendaScheduleLists;

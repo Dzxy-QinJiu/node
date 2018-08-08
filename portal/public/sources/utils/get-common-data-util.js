@@ -1,10 +1,12 @@
-import { getUserData, setUserData } from '../user-data';
+import {getUserData, setUserData} from '../user-data';
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import {storageUtil} from 'ant-utils';
 import {traversingTeamTree} from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {message} from 'antd';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 const session = storageUtil.session;
 // 缓存在sessionStorage中的座席号的key
 const sessionCallNumberKey = 'callNumber';
@@ -91,5 +93,45 @@ exports.getMyTeamTreeList = function(cb) {
             //保存到userData中
             setUserData(MY_TEAM_TREE_KEY, teamTreeList);
         });
+    }
+};
+
+/* 拨号是否成功的处理
+ * paramObj:{
+ * errorMsg:获取座机号时的错误提示，
+ * callNumber: 座席号，
+ * contactName: 电话联系人名称，
+ * phoneNumber: 拨打的电话号码，
+ * customerId: 客户的id
+ * }
+ */
+exports.handleCallOutResult = function(paramObj) {
+    if (paramObj.errorMsg) {
+        message.error(paramObj.errorMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
+    } else {
+        if (paramObj.callNumber) {
+            let phoneNumber = paramObj.phoneNumber ? paramObj.phoneNumber.replace('-', '') : '';
+            if (phoneNumber) {
+                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                    {
+                        contact: paramObj.contactName,
+                        phone: phoneNumber
+                    }
+                );
+                let reqData = {
+                    from: paramObj.callNumber,
+                    to: phoneNumber
+                };
+                crmAjax.callOut(reqData).then((result) => {
+                    if (result.code === 0) {
+                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
+                    }
+                }, (errMsg) => {
+                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
+                });
+            }
+        } else {
+            message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
+        }
     }
 };

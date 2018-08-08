@@ -92,6 +92,10 @@ var PageFrame = React.createClass({
     },
 
     closePhonePanel: function() {
+        //关闭电话弹屏面板时，将系统内拨打电话时，记录的电话联系人信息清掉
+        if(this.state.paramObj.call_params && _.isFunction(this.state.paramObj.call_params.setInitialPhoneObj)) {
+            this.state.paramObj.call_params.setInitialPhoneObj();
+        }
         this.setState({phonePanelShow: false, paramObj: $.extend(true, {}, emptyParamObj)});
     },
     closeAudioPanel: function() {
