@@ -514,6 +514,15 @@ var en_US = {
     'user.no.login.system': 'This user has never log in to the system', // 该用户还没有登录过系统
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
+
+    // 用户分析
+    'user.login.total.score': 'Total score', // 总分
+    'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
+    'user.login.latest.immersion.score': 'Latest immersion score', // 最新沉浸度分数
+    'user.login.freshness.score': 'Freshness score', // 新鲜度分数
+    'user.login.history.activity.score': 'Historical activity score', // 历史活跃度分数
+    'user.login.history.immersion.score': 'Historical immersion score', // 历史沉浸度分数
+
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',
     'third.party.app.add': 'Add application of the open plateform',//添加应用

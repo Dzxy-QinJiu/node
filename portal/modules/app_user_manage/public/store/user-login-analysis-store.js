@@ -26,6 +26,11 @@ UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
         loginCount: '', // 登录次数统计
         errorMsg: '' //错误信息
     };
+    // 用户登录分数
+    this.loginScore = {
+        data: {},
+        errorMsg: '', //错误信息
+    };
 };
 //恢复默认状态
 UserLoginAnalysisStore.prototype.resetState = function() {
@@ -61,12 +66,12 @@ UserLoginAnalysisStore.prototype.getUserLoginInfo = function(result){
                 this.loginInfo.count = loginInfo.count && loginInfo.count.logins || 0;
                 // 首次登录
                 this.loginInfo.first = -1;
-                if (loginInfo.first != -1) {
+                if (loginInfo.first !== -1) {
                     this.loginInfo.first = moment(loginInfo.first).format(oplateConsts.DATE_TIME_FORMAT);
                 }
                 // 最后一次登录
                 this.loginInfo.last = -1;
-                if (loginInfo.last != -1) {
+                if (loginInfo.last !== -1) {
                     this.loginInfo.last = moment(loginInfo.last).format(oplateConsts.DATE_TIME_FORMAT);
                 }
             }
@@ -128,6 +133,20 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                 }
                 this.loginChartInfo.loginCount = frequencyArray;
             }
+        }
+    }
+};
+
+// 获取用户的分数
+UserLoginAnalysisStore.prototype.getLoginUserScore = function(result) {
+    this.isLoading = result.loading;
+    if (result.loading) {
+        this.loginScore.errorMsg = '';
+    } else {
+        if (result.error) {
+            this.loginScore.errorMsg = result.errorMsg;
+        } else {
+            this.loginScore.data = result.data;
         }
     }
 };
