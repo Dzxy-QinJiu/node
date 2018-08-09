@@ -146,6 +146,7 @@ UserLoginAnalysisStore.prototype.getLoginUserScore = function(result) {
         if (result.error) {
             this.loginScore.errorMsg = result.errorMsg;
         } else {
+            this.loginScore.errorMsg = '';
             this.loginScore.data = result.data;
         }
     }
