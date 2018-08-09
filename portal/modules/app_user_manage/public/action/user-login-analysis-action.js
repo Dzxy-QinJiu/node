@@ -49,10 +49,6 @@ function UserLoginAnalysisAction() {
                 starttime: +create_time,
                 endtime: new Date().getTime()
             };
-            // 用户登录信息（时长、次数、首次和最后一次登录时间）
-            this.actions.getUserLoginInfo(loginParam);
-            // 用户登录统计图中登录时长、登录频次
-            this.actions.getUserLoginChartInfo(loginParam);
             // 用户登录分数
             let reqData = {
                 app_id: selectedLogAppId,
@@ -63,6 +59,13 @@ function UserLoginAnalysisAction() {
                 type = 'all';
             }
             this.actions.getLoginUserScore(reqData, type);
+
+            // 用户登录信息（时长、次数、首次和最后一次登录时间）
+            this.actions.getUserLoginInfo(loginParam);
+
+            // 用户登录统计图中登录时长、登录频次
+            this.actions.getUserLoginChartInfo(loginParam);
+
             this.dispatch(
                 {
                     appId: selectedLogAppId,
@@ -78,6 +81,16 @@ function UserLoginAnalysisAction() {
                     appList: []
                 }
             );
+        });
+    };
+
+    // 获取用户的分数
+    this.getLoginUserScore = function(reqData, type) {
+        this.dispatch({loading: true, error: false});
+        userAuditLogAjax.getLoginUserScore(reqData, type).then((data) => {
+            this.dispatch({loading: false, error: false, data: data});
+        },(errorMsg) => {
+            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
@@ -107,16 +120,6 @@ function UserLoginAnalysisAction() {
         } else {
             this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
         }
-    };
-
-    // 获取用户的分数
-    this.getLoginUserScore = function(reqData, type) {
-        this.dispatch({loading: true, error: false});
-        userAuditLogAjax.getLoginUserScore(reqData, type).then((data) => {
-            this.dispatch({loading: false, error: false, data: data});
-        },(errorMsg) => {
-            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
-        });
     };
 }
 
