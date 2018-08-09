@@ -115,12 +115,12 @@ const UserLoginAnalysis = React.createClass({
                 <div>
                     { loginFirst !== -1 ? (
                         <div>
-                            {Intl.get('user.first.login', '首次登录')}：<span className="login-stress">{loginFirst}</span>
+                            {Intl.get('user.first.login', '首次登录')}:<span className="login-stress">{loginFirst}</span>
                         </div>
                     ) : null}
                     { loginLast !== -1 ? (
                         <div>
-                            {Intl.get('user.last.login', '最近登录')}：<span className="login-stress">{loginLast}</span>
+                            {Intl.get('user.last.login', '最近登录')}:<span className="login-stress">{loginLast}</span>
                         </div>
                     ) : null
                     }
@@ -233,11 +233,11 @@ const UserLoginAnalysis = React.createClass({
             return (
                 <div className="login-info">
                     <div>
-                        {Intl.get('user.login.times', '登录次数')}：<span className="login-stress">{count}</span>
+                        {Intl.get('user.login.times', '登录次数')}:<span className="login-stress">{count}</span>
                     </div>
                     { Oplate.hideSomeItem ? null : (
                         <div>
-                            {Intl.get('user.login.duration', '在线时长')}：<span className="login-stress">{timeObj.timeDescr}</span>
+                            {Intl.get('user.login.duration', '在线时长')}:<span className="login-stress">{timeObj.timeDescr}</span>
                         </div>
                     )}
                     { this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
