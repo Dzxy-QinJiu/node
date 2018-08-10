@@ -4,9 +4,9 @@
  */
 var path = require('path');
 //是否是线上环境  isProduction=true表示是线上环境
-var webpackMode = 'dev', isProduction = true;
+var webpackMode = 'dev', isProduction = false;
 //是否正式环境
-var isFormal = process.env.FORMALENV || 'true';
+var isFormal = process.env.FORMALENV || 'false';
 
 //node环境设置
 if (process.argv.indexOf('p') >= 0
