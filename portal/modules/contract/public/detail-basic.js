@@ -362,7 +362,7 @@ const DetailBasic = React.createClass({
                                 {contract.sales_team || getTeamName(this.props.teamList, contract.sales_team_id)}
                             </div>
                             <div className="detail-item">
-                                {Intl.get('sales.commission.role.representative': '销售代表')}:
+                                {Intl.get('sales.commission.role.representative', '销售代表')}:
                                 {contract.sales_rep}
                             &nbsp;-
                                 {contract.sales_rep_team || getTeamName(this.props.teamList, contract.sales_rep_team_id)}

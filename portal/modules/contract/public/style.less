@@ -10,6 +10,80 @@
         padding: 10px 0 0 15px;
     }
 }
+#app {
+    .splice-table {
+        .ant-spin-container {
+            .ant-table-empty {
+                margin: 0;
+            }
+            .ant-table-body {
+                height: auto;
+                border-bottom: none;
+            }
+            .ant-table-placeholder {
+                display: none;
+            }
+        }
+        @thead-height: 52px;
+        .hide-tbody {
+            height: @thead-height !important;
+            overflow: hidden;
+            th {
+                height: @thead-height;
+            }
+            .ant-table-tbody {
+                display: table-row-group !important;
+            }
+        }
+        .custom-thead {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+            table {
+                overflow: hidden;
+            }
+        }
+        .custom-thead-filter {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+        }
+        .custom-tfoot {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+            border-top: 2px solid #eef0ef;
+            position: relative;
+            .ant-table-wrapper th {
+                height: 40px;
+            }
+            .info-title {
+                position: absolute;
+                font-size: 14px;
+                font-weight: bold;
+                top: 50%;
+                margin-top: -15px;
+                padding: 8px;
+            }
+        }
+        .custom-tbody {
+            background: #fff;
+            .ant-table-wrapper,
+            .ant-spin-nested-loading {
+                height: 100%;
+            }
+            table {
+                margin-top: -@thead-height;
+            }
+            .ant-table-header {
+                display: none;
+            }
+            .ant-table-thead {
+                th {
+                    height: @thead-height;
+                }
+                display: table-header-group !important;
+            }
+        }
+    }
+}
 .contract-list {
     padding: 16px;
     background: #fff;
