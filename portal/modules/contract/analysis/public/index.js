@@ -307,7 +307,7 @@ class ContractAnalysis extends React.Component {
                         <Col className="gutter-row" span={7}>
                             <FilterPanel
                                 ref={ref => this.filterPanelRef = ref}
-                                style={{height: this.state.contentHeight}}
+                                style={{height: this.state.contentHeight - LAYOUT_CONSTANTS.NAV_TOP}}
                                 height={this.state.contentHeight}
                                 disableSave={
                                     this.state.loading ||
