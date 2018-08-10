@@ -4,6 +4,7 @@
 
 import { AntcTable } from 'antc';
 import { parseAmount, exportToCsv } from 'LIB_DIR/func';
+import { PropTypes } from 'prop-types';
 const querystring = require('querystring');
 
 //团队分组列列宽
@@ -165,7 +166,6 @@ class SigningStatistics extends React.Component {
 
         return (
             <div style={wrapStyle}>
-                <span onClick={this.exportFile.bind(this)} style={exportBtnStyle}>{Intl.get('common.export', '导出')}</span>
                 <AntcTable
                     columns={this.state.columns}
                     dataSource={this.state.data}
@@ -177,6 +177,8 @@ class SigningStatistics extends React.Component {
         );
     }
 }
-
+SigningStatistics.propTypes = {
+    chartData: PropTypes.array
+};
 export default SigningStatistics;
 
