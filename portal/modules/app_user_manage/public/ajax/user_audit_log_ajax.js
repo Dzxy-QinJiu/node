@@ -130,3 +130,25 @@ exports.getUserLoginChartInfo = function(queryobj){
     });
     return Deferred.promise();
 };
+
+// 获取用户的分数
+let loginUserScoreAjax = null;
+exports.getLoginUserScore = function(reqData, type){
+    let Deferred = $.Deferred();
+    loginUserScoreAjax && loginUserScoreAjax.abort();
+    loginUserScoreAjax = $.ajax({
+        url: '/rest/login/user/score/' + type,
+        type: 'get',
+        data: reqData,
+        dateType: 'json',
+        success: (data) => {
+            Deferred.resolve(data);
+        },
+        error: (xhr,status) => {
+            if(status !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

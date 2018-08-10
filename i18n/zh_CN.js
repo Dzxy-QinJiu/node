@@ -512,6 +512,14 @@ var zh_CN = {
     'user.disable.logon': '停用登录',
     'user.frequent.logon': '频繁登录',
 
+    // 用户分析
+    'user.login.total.score': '总分',
+    'user.login.latest.activity.score': '最新活跃度分数',
+    'user.login.latest.immersion.score': '最新沉浸度分数',
+    'user.login.freshness.score': '新鲜度分数',
+    'user.login.history.activity.score': '历史活跃度分数',
+    'user.login.history.immersion.score': '历史沉浸度分数',
+
     // 第三方应用配置
     'third.party.app': '开放应用平台',
     'third.party.app.add': '添加开放平台应用',
