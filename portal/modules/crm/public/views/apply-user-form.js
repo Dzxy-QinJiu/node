@@ -251,9 +251,9 @@ const ApplyUserForm = React.createClass({
         this.setState(this.state);
     },
 
-    handleSubmit: function(e) {
+    handleSubmit: function() {
         e.preventDefault();
-        Trace.traceEvent('申请新用户', '点击确定按钮');
+        Trace.traceEvent(this.getDOMNode(), '点击确定按钮');
 
         if (this.state.isLoading) {
             //正在申请，不可重复申请
@@ -345,7 +345,7 @@ const ApplyUserForm = React.createClass({
     },
 
     handleCancel: function() {
-        Trace.traceEvent('申请新用户', '取消');
+        Trace.traceEvent(this.getDOMNode(), '点击取消按钮');
         this.props.cancelApply();
     },
 

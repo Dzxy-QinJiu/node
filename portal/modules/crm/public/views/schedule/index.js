@@ -104,7 +104,7 @@ var CrmSchedule = React.createClass({
         ScheduleAction.showAddForm(newSchedule);
         //滚动条滚动到顶端以显示添加表单
         GeminiScrollbar.scrollTo(this.refs.alertWrap, 0);
-        Trace.traceEvent('查看联系计划', '添加联系计划');
+        Trace.traceEvent(this.getDOMNode(), '添加联系计划');
     },
     editSchedule: function(alert) {
         Trace.traceEvent(this.getDOMNode(), '编辑联系计划');

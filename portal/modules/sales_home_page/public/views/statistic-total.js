@@ -117,15 +117,15 @@ let StatisticTotal = React.createClass({
         );
     },
     //设置当前要展示的视图
-    setActiveView: function(view) {
+    setActiveView: function(view, e) {
         if(view === 'customer'){
-            Trace.traceEvent('销售首页', '查看客户统计');
+            Trace.traceEvent(e, '查看客户统计');
         }else if(view === 'user'){
-            Trace.traceEvent('销售首页', '查看用户统计');
+            Trace.traceEvent(e, '查看用户统计');
         }else if(view === 'phone'){
-            Trace.traceEvent('销售首页', '查看电话统计');
+            Trace.traceEvent(e, '查看电话统计');
         }else if(view === 'call_back'){
-            Trace.traceEvent('销售首页', '查看回访统计');
+            Trace.traceEvent(e, '查看回访统计');
         }
         SalesHomeAction.setActiveView(view);
     },
@@ -135,7 +135,7 @@ let StatisticTotal = React.createClass({
         const autoResizeCls = 'total-data-item col-xs-12 col-sm-6 col-md-6 col-lg-3';
         let activeView = this.props.activeView;
         return (
-            <div className="statistic-total-data">
+            <div className="statistic-total-data" data-tracename="销售首页">
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.CUSTOMER)}
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.CUSTOMER})}>
