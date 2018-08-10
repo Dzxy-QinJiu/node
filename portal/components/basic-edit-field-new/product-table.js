@@ -13,7 +13,7 @@
  *   editable - 控制该列是否可编辑，若设置为true，则在表格的isEdit属性为true的情况下，该列会显示成输入框的形式，里面的值可以被编辑
  */
 
-import { AntcEditableTable } from 'antd';
+import { AntcEditableTable } from 'antc';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
 import SelectAppList from '../select-app-list';
@@ -24,7 +24,6 @@ class ProductTable extends React.Component {
 
     constructor(props) {
         super(props);
-        this.columns = this.getColumns();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -39,6 +38,12 @@ class ProductTable extends React.Component {
     render() {
         return (
             <div>
+                <DetailEditBtn
+                /> 
+                <AntcEditableTable
+                /> 
+                <SelectAppList
+                /> 
                 <SaveCancelButton
                 /> 
             </div>
