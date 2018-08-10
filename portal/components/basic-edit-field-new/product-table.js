@@ -13,7 +13,10 @@
  *   editable - 控制该列是否可编辑，若设置为true，则在表格的isEdit属性为true的情况下，该列会显示成输入框的形式，里面的值可以被编辑
  */
 
-import { Table, Input, Icon } from 'antd';
+import { AntcEditableTable } from 'antd';
+import {DetailEditBtn} from '../rightPanel';
+import SaveCancelButton from '../detail-card/save-cancel-button';
+import SelectAppList from '../select-app-list';
 
 class ProductTable extends React.Component {
     static defaultProps = {
@@ -27,30 +30,6 @@ class ProductTable extends React.Component {
     componentWillReceiveProps(nextProps) {
     }
 
-    getColumns(props = this.props) {
-        if (props.isEdit) {
-            let columns = _.cloneDeep(props.columns);
-    
-            _.each(columns, column => {
-                if (column.editable) {
-                    column.render = (text, record, index) => {
-                        return <Input value={text} onChange={e => this.handleChange(e.target.value, index, column.dataIndex)} />;
-                    };
-                }
-            });
-    
-            columns.push({
-                render: (text, record, index) => {
-                    return <Icon type='close' style={{fontSize: 18, cursor: 'pointer'}} onClick={this.handleDelete.bind(this, index)} />;
-                }
-            });
-
-            return columns;
-        } else {
-            return props.columns;
-        }
-    }
-
     handleChange(value, recordIndex, column) {
     }
 
@@ -58,13 +37,10 @@ class ProductTable extends React.Component {
     }
 
     render() {
-        let props = _.clone(this.props);
-
-        delete props.columns;
-        delete props.isEdit;
-        delete props.onEdit;
-
-        return <Table columns={this.columns} {...props} />;
+        return (
+            <div>
+            </div>
+        );
     }
 }
 
