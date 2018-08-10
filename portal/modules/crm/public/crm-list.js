@@ -1201,7 +1201,7 @@ var Crm = React.createClass({
             return record.id;
         }
 
-        const column_width = '90px';
+        const column_width = '80px';
         var columns = [
             {
                 title: Intl.get('crm.4', '客户名称'),
@@ -1277,6 +1277,13 @@ var Crm = React.createClass({
                 title: Intl.get('crm.6', '负责人'),
                 width: column_width,
                 dataIndex: 'user_name',
+                sorter: this.getSorter(),
+                className: 'has-filter'
+            },
+            {
+                title: Intl.get('user.login.score', '分数'),
+                width: 60,
+                dataIndex: 'score',
                 sorter: this.getSorter(),
                 className: 'has-filter'
             },
