@@ -12,7 +12,7 @@
  * 列定义中增加了一个属性：
  *   editable - 控制该列是否可编辑，若设置为true，则在表格的isEdit属性为true的情况下，该列会显示成输入框的形式，里面的值可以被编辑
  */
-
+import PropTypes from 'prop-types'; 
 import { AntcEditableTable } from 'antc';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
