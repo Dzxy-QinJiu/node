@@ -32,7 +32,7 @@ import { StatusWrapper } from 'antc';
 import { Button } from 'antd';
 var AppUserAjax = require('../ajax/app-user-ajax');
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
-const WHEEL_DELAY = 20;//滚轮事件延时
+const WHEEL_DELAY = 10;//滚轮事件延时
 
 var UserDetail = React.createClass({
     getDefaultProps: function() {
@@ -69,9 +69,11 @@ var UserDetail = React.createClass({
         clearTimeout(this.panelSwitchTimeout);
         if (!timeout) {
             $(this.refs.wrap).addClass('move_left');
+            $(this.refs.topWrap).addClass('move-left-wrapper');
         } else {
             this.panelSwitchTimeout = setTimeout(() => {
                 $(this.refs.wrap).addClass('move_left');
+                $(this.refs.topWrap).addClass('move-left-wrapper');
             }, timeout);
         }
     },
@@ -80,9 +82,11 @@ var UserDetail = React.createClass({
         clearTimeout(this.panelSwitchTimeout);
         if (!timeout) {
             $(this.refs.wrap).removeClass('move_left');
+            $(this.refs.topWrap).removeClass('move-left-wrapper');
         } else {
             this.panelSwitchTimeout = setTimeout(() => {
                 $(this.refs.wrap).removeClass('move_left');
+                $(this.refs.topWrap).removeClass('move-left-wrapper');
             }, timeout);
         }
     },
@@ -232,6 +236,7 @@ var UserDetail = React.createClass({
                 <TabPane tab="审计日志" key="3">
                     {this.state.activeKey === '3' ? <div className="user-log">
                         <SingleUserLog
+                            height={contentHeight}
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
                             appLists={this.props.appLists}
@@ -245,6 +250,7 @@ var UserDetail = React.createClass({
                 <TabPane tab={Intl.get('user.change.record', '变更记录')} key="4">
                     {this.state.activeKey === '4' ? <div className="user_manage_user_record">
                         <UserDetailChangeRecord
+                            height={contentHeight}
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
                         />
@@ -258,6 +264,7 @@ var UserDetail = React.createClass({
                 <TabPane tab={Intl.get('user.login.abnormal', '异常登录')} key="5">
                     {this.state.activeKey === '5' ? <div className="user_manage_login_abnormal">
                         <UserAbnormalLogin
+                            height={contentHeight}
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
                         />
@@ -282,7 +289,7 @@ var UserDetail = React.createClass({
         return (
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />
-                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content">
+                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container" ref='topWrap'>
                     <StatusWrapper
                         loading={userInfo.loading}
                         size='medium'
