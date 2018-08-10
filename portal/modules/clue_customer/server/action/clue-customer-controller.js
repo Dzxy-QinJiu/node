@@ -161,3 +161,12 @@ exports.getClueFulltext = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+//获取线索动态
+exports.getDynamicList = function(req, res) {
+    clueCustomerService.getDynamicList(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data.result);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};

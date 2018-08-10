@@ -22,10 +22,8 @@ import DatePicker from 'CMP_DIR/datepicker';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 require('./css/index.less');
 import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from './utils/clue-customer-utils';
-import ClueAnalysisAction from './action/clue-analysis-action';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import AlertTimer from 'CMP_DIR/alert-timer';
 import clueCustomerAjax from './ajax/clue-customer-ajax';
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 import SalesClueItem from 'MOD_DIR/common_sales_home_page/public/view/sales-clue-item';
@@ -37,7 +35,7 @@ const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
 import {AntcTable} from 'antc';
 import classNames from 'classnames';
-import ClueRightPanel from './views/clue-right-panel';
+import ClueRightPanel from './views/clue-right-detail';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -648,6 +646,28 @@ const ClueCustomer = React.createClass({
             }
         });
     },
+    //更新线索来源列表
+    updateClueSource: function(newSource) {
+        this.state.clueSourceArray.push(newSource);
+        this.setState({
+            clueSourceArray: this.state.clueSourceArray
+        });
+    },
+    //更新线索渠道列表
+    updateClueChannel: function(newChannel) {
+        this.state.accessChannelArray.push(newChannel);
+        this.setState({
+            accessChannelArray: this.state.accessChannelArray
+        });
+    },
+    //更新线索分类
+    updateClueClassify: function(newClue) {
+        this.state.clueClassifyArray.push(newClue);
+        this.setState({
+            clueClassifyArray: this.state.clueClassifyArray
+        });
+    },
+
     render: function() {
         let user = userData.getUserData();
         var statusStaticis = this.state.statusStaticis;
@@ -838,21 +858,22 @@ const ClueCustomer = React.createClass({
                             />
                         ) : null}
                     </Modal>
-                    {this.state.rightPanelIsShow ? (
+                    <RightPanel
+                        className="clue_customer_rightpanel white-space-nowrap"
+                        showFlag={this.state.rightPanelIsShow} data-tracename="展示销售线索客户">
+                        <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel}></span>
                         <ClueRightPanel
-                            showFlag={this.state.rightPanelIsShow}
                             currentId={this.state.currentId}
-                            hideRightPanel={this.hideRightPanel}
-                            curCustomer={this.state.curCustomer}
+                            curClue={this.state.curCustomer}
                             accessChannelArray={this.state.accessChannelArray}
                             clueSourceArray={this.state.clueSourceArray}
                             clueClassifyArray={this.state.clueClassifyArray}
                             updateClueSource={this.updateClueSource}
                             updateClueChannel={this.updateClueChannel}
                             updateClueClassify={this.updateClueClassify}
+                            salesManList={this.state.salesManList}
                         />
-                    ) : null}
-
+                    </RightPanel>
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}

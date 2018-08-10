@@ -43,6 +43,8 @@ const restApis = {
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
     getClueFulltext: '/rest/customer/v2/clue/query/fulltext/:page_size/:sort_field/:order',
+    //获取线索的动态
+    getClueDynamic: '/rest/customer/v2/customerdynamic/clue/:clue_id/:page_size',
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -251,11 +253,27 @@ exports.getClueFulltext = function(req, res) {
     };
     if (reqBody.userId){
         bodyObj.userId = reqBody.userId;
-
+    }
+    if (reqBody.id){
+        bodyObj.id = reqBody.id;
     }
     return restUtil.authRest.post({
         url: url,
         req: req,
         res: res
     },bodyObj);
+};
+//获取动态列表
+exports.getDynamicList = function(req, res) {
+    var url = restApis.getClueDynamic.replace(':clue_id',req.params.clue_id).replace(':page_size',req.params.page_size);
+    //todo 现在后端接口的下拉加载有问题
+    // if (req.query.id){
+    //     url += `?id=${req.query.id}`
+    // }
+    return restUtil.authRest.get(
+        {
+            url: url,
+            req: req,
+            res: res
+        }, null);
 };

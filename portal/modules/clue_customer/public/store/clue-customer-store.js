@@ -281,6 +281,8 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
             }
         }
     }
+    //修改完相关属性后，把列表中的数据也改掉
+
 };
 //如果原来的筛选条件是在待跟进的时候，要添加完跟进记录后，该类型的线索要删除添加跟进记录的这个线索
 ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {

@@ -1,3 +1,4 @@
+@import "../../../../../public/css/common-variables";
 .basic-info-container{
   width: 100%;
   background-color: #ffffff;
@@ -7,14 +8,21 @@
     font-size: 16px;
     font-weight: bold;
   }
-  .iconfont.icon-close{
-    color: #fff;
-    background-color: #8ea9c4;
-    border-radius: 0 !important;
-    width: 24px;
-    height: 24px;
-    float: left;
-    font-size: 14px;
-    z-index: 1010;
+  .clue-stage{
+    font-size: 13px;
+    margin-right:5px;
   }
+  .clue-stage.will-distribute {
+    background: @will-distribute-background;
+    color: @will-distribute-color;
+  }
+  .clue-stage.has-distribute {
+    background: @has-distribute-background;
+    color: @has-distribute-color;
+  }
+  .clue-stage.has-follow {
+    color: @has-follow-color;
+    background: @has-follow-background;
+  }
+
 }

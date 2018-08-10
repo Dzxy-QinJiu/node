@@ -2510,6 +2510,23 @@ var zh_CN = {
     'clue.add.email.addr': '邮箱地址',
     'clue.fill.clue.contacts': '请填写线索的联系方式',
     'clue.add.wechat.num': '微信号码',
-    'clue.alanalysis.charts': '线索分析'
+    'clue.alanalysis.charts': '线索分析',
+    'clue.detail.info': '线索信息',
+    'clue.add.clue.source': '添加线索来源',
+    'clue.add.access.channel': '添加接入渠道',
+    'clue.add.clue.classfify': '添加线索分类',
+    'clue.add.clue.describe': '添加线索描述',
+    'clue.add.clue.placeholder': '请填写线索描述',
+    'clue.unknown.access.channel': '未知接入渠道',
+    'clue.add.clue.time': '添加于',
+    'clue.no.trace.content': '暂无跟进',
+    'clue.associate.user': '关联账号',
+    'clue.handle.clue.person': '处理人',
+    'clue.handle.no.distribute.clue': '未分配',
+    'clue.has.no.data': '暂无',
+    'clue.handle.clue': '线索处理',
+    'clue.has.no.handle': '暂未处理',
+    'clue.set.invalid': '判定无效',
+    'clue.cancel.set.invalid': '取消无效'
 };
 export default zh_CN;

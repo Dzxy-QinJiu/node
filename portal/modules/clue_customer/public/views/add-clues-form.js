@@ -15,8 +15,6 @@ var clueCustomerAction = require('../action/clue-customer-action');
 import {checkClueName, checkEmail, checkQQ} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-const PHONE_INPUT_ID = 'phoneInput';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 import PhoneInput from 'CMP_DIR/phone-input';
 var uuid = require('uuid/v4');
@@ -41,7 +39,6 @@ const desArr = {
 const FORMLAYOUT = {
     PADDINGTOTAL: 70
 };
-
 class ClueAddForm extends React.Component {
     constructor(props) {
         super(props);
@@ -166,9 +163,14 @@ class ClueAddForm extends React.Component {
                 values[key] = moment(value).valueOf();
             }
         });
+        //todo app_user_name 要加这个字段，加个字符串就可以
         //生成线索客户的用户的id
         if (this.props.appUserId){
             values.app_user_ids = [this.props.appUserId];
+            values.app_user_info = [{
+                id: this.props.appUserId,
+                name: this.props.appUserName
+            }];
         }
         return values;
     };
@@ -668,7 +670,8 @@ ClueAddForm.defaultProps = {
     hideAddForm: function() {
 
     },
-    appUserId: ''
+    appUserId: '',
+    appUserName: ''
 
 };
 ClueAddForm.propTypes = {
@@ -682,7 +685,7 @@ ClueAddForm.propTypes = {
     afterAddSalesClue: React.PropTypes.func,
     form: React.PropTypes.object,
     hideAddForm: React.PropTypes.func,
-    appUserId: React.PropTypes.string
-
+    appUserId: React.PropTypes.string,
+    appUserName: React.PropTypes.string,
 };
 export default Form.create()(ClueAddForm);

@@ -142,6 +142,16 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
-        }
+        }, {
+            method: 'get',
+            path: '/rest/clue_dynamic/:clue_id/:page_size',
+            handler: 'getDynamicList',
+            passport: {
+                needLogin: true
+            },
+            privileges: [
+                'CUSTOMERCLUE_DYNAMIC_QUERY'
+            ]
+        },
     ]
 };

@@ -1,0 +1,104 @@
+@FONT_COLOR:#C9C9C9;
+.clue-detail-container{
+
+  font-size: 14px;
+  .clue-info-wrap{
+    //线索添加人信息
+    .add-person-info{
+      border-top: 1px solid @FONT_COLOR;
+      margin: 0 20px;
+      overflow: hidden;
+      padding-top:10px;
+      .add-clue-info{
+        color:@FONT_COLOR;
+        float: right;
+        .source-name{
+          margin-right:10px;
+        }
+      }
+    }
+
+  }
+  .clue-detail-block{
+    padding:10px;
+    margin-bottom: 20px;
+    background: #fff;
+    .clue-info-item{
+      overflow: hidden;
+      margin-bottom:8px;
+      .clue-info-label{
+        float: left;
+        width: 60px;
+        text-align: right;
+        color: @FONT_COLOR;
+        margin-right:10px;
+        position: relative;
+        top: 2px;
+      }
+      .clue-info-detail{
+        float: left;
+        width: 337px;
+      }
+    }
+    .clue-info-item.no-margin-bottom{
+       margin-bottom: 0;
+    }
+    .contact-item{
+      overflow: hidden;
+       .contact-name{
+         float: left;
+         margin-right:10px;
+       }
+       .contact-way{
+         margin-left: 100px;
+         display: block;
+         .iconfont{
+           margin:0 5px;
+         }
+       }
+    }
+    .add-person-info{
+      border-top: 1px solid @FONT_COLOR;
+      margin: 0 20px;
+      overflow: hidden;
+      padding-top:10px;
+      .add-clue-info{
+        color:@FONT_COLOR;
+        float: right;
+        .source-name{
+          margin-right:10px;
+        }
+      }
+    }
+  }
+  .associate-customer-detail.clue-detail-block{
+    .clue-info-item{
+      .invalid-person{
+        margin:0 10px;
+        font-weight: bold;
+      }
+      .invalid-des{
+        color: #EFAA5C;
+        font-weight: bold;
+      }
+      .cancel-invalid{
+        cursor: pointer;
+        float: right;
+        color: #8da8c5;
+      }
+    }
+    .btn-container{
+      position: absolute;
+      right: 0;
+      .ant-btn{
+        margin-right:5px;
+      }
+    }
+  }
+  .associate-user-detail.clue-detail-block{
+    .associate-user{
+      cursor: pointer;
+      color: #8da8c5;
+    }
+  }
+}

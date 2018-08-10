@@ -122,8 +122,13 @@ let BasicEditSelectField = React.createClass({
             };
             if (value !== this.state.value) {
                 this.props.saveEditSelect(saveObj, () => {
+                    //如果select是combox格式的这样写就不对
                     let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === value);
                     let displayText = _.get(curOptions,'props') ? curOptions.props.children : '';
+                    //如果是可以手动输入内容的情况,就用后端提交的
+                    if (this.props.combobox){
+                        displayText = value;
+                    }
                     setDisplayState(displayText);
                 }, (errorMsg) => {
                     this.setState({

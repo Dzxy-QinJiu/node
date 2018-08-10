@@ -574,7 +574,7 @@ var UserTabContent = React.createClass({
                     return user ? (
                         <div title={user.description}>
                             {user.description}
-                            {isShowTransClueButton ?
+                            {isShowTransClueButton || true ?
                                 <div className="trans-clue-customer">
                                     <Button type="primary"
                                         onClick={_this.transformClueCustomer.bind(this, rowData)}>{Intl.get('app.user.trans.clue.customer', '生成线索')}</Button>
@@ -1137,6 +1137,7 @@ var UserTabContent = React.createClass({
     },
     render: function() {
         var appUserId = this.state.producingClueCustomerItem.user ? this.state.producingClueCustomerItem.user.user_id : '';
+        var appUserName = _.get(this.state.producingClueCustomerItem, 'user.user_name');
         return (
             <div ref="userListTable">
                 {this.renderFilterBlock()}
@@ -1145,6 +1146,7 @@ var UserTabContent = React.createClass({
                 {this.state.clueAddFormShow ? (
                     <SalesClueAddForm
                         appUserId={appUserId}
+                        appUserName={appUserName}
                         defaultClueData={this.state.defaultClueData}
                         hideAddForm={this.hideClueAddForm}
                         accessChannelArray={this.state.accessChannelArray}

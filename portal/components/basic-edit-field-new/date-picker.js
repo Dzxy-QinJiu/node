@@ -6,14 +6,13 @@
 /**
  * 修改日期的组件
  */
-require('./css/basic-edit-field.less');
+require('./css/basic-date-picker.less');
 import {Form, DatePicker} from 'antd';
 const FormItem = Form.Item;
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
-
 class DatePickerEditField extends React.Component {
     constructor(props) {
         super(props);

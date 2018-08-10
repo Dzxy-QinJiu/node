@@ -72,7 +72,7 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback({error: false});
         },(errorMsg) => {
             this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get('failed.submit.trace.content','添加跟进内容失败')});
-            _.isFunction(callback) && callback({error: true});
+            _.isFunction(callback) && callback({error: true, errorMsg: errorMsg || Intl.get('failed.submit.trace.content','添加跟进内容失败')});
         });
     };
     //把线索客户分配给对应的销售
@@ -94,6 +94,15 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     };
+    //线索关联某个客户
+    this.setClueAssociatedCustomer = function(submitObj,callback) {
+        clueCustomerAjax.setClueAssociatedCustomer(submitObj).then((result) => {
+            _.isFunction(callback) && callback();
+        },(errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
+    };
+
     //线索的全文搜索
     this.getClueFulltext = function(queryObj) {
         //是否是在全部状态下返回数据
@@ -104,7 +113,7 @@ function ClueCustomerActions() {
             this.dispatch({error: false, loading: false, clueCustomerObj: result, getOnlyAnalysisData: getOnlyAnalysisData});
         }, (errorMsg) => {
             this.dispatch({
-                flag: flag,
+                flag: getOnlyAnalysisData,
                 error: true,
                 loading: false,
                 errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')

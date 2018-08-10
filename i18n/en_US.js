@@ -2487,6 +2487,24 @@ var en_US = {
     'clue.add.qq.num': 'QQ',//QQ号码
     'clue.add.email.addr': 'Email address',//邮箱地址
     'clue.fill.clue.contacts': 'Please fill in the contact information of the clue',//请填写线索的联系方式
-    'clue.add.wechat.num': 'Wechat'//微信号码
+    'clue.add.wechat.num': 'Wechat',//微信号码
+    'clue.alanalysis.charts': 'clue analysis',//线索分析
+    'clue.detail.info': 'clue info',//线索信息
+    'clue.add.clue.source': 'Add clue source',//添加线索来源
+    'clue.add.access.channel': 'Add access channel',//添加接入渠道
+    'clue.add.clue.classfify': 'Add clue classify',//添加线索分类
+    'clue.add.clue.describe': 'Add clue description',//添加线索描述
+    'clue.add.clue.placeholder': 'Please fill in clue description',//请填写线索描述
+    'clue.unknown.access.channel': 'unknown access channel',//未知接入渠道
+    'clue.add.clue.time': 'Added to',//添加于
+    'clue.no.trace.content': 'no trace content',//暂无跟进
+    'clue.associate.user': 'Associated account',//关联账号
+    'clue.handle.clue.person': 'Handler',//处理人
+    'clue.handle.no.distribute.clue': '未分配',//
+    'clue.has.no.data': 'No',//暂无
+    'clue.handle.clue': 'Clue handle',//线索处理
+    'clue.has.no.handle': 'Not processed yet',//暂未处理
+    'clue.set.invalid': 'Invalid judgment',//判定无效
+    'clue.cancel.set.invalid': 'Cancel invalid'//取消无效
 };
 export default en_US;

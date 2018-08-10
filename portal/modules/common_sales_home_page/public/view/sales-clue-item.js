@@ -49,12 +49,12 @@ class SalesClueItem extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps, 'salesClueItemDetail.id', '') !== this.state.salesClueItemDetail.id) {
-            this.setState({
-                salesClueItemDetail: nextProps.salesClueItemDetail,
-                submitContent: this.getSubmitContent(nextProps.salesClueItemDetail),
-            });
-        }
+        //如果只改了某些属性，也要把state上的状态更新掉
+        this.setState({
+            salesClueItemDetail: nextProps.salesClueItemDetail,
+            submitContent: this.getSubmitContent(nextProps.salesClueItemDetail),
+        });
+
         if (this.state.distributeLoading !== nextProps.distributeLoading) {
             this.setState({
                 distributeLoading: nextProps.distributeLoading
@@ -435,8 +435,7 @@ class SalesClueItem extends React.Component {
                 <div className="clue-content">
                     <div className="clue-trace-content">
                         <span>{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}</span>
-                        {salesClueItem.access_channel ?
-                            <span className="clue-access-channel">{salesClueItem.access_channel}:</span> : null}
+                        <span className="clue-access-channel">{salesClueItem.access_channel || Intl.get('clue.unknown.access.channel','未知接入渠道')}:</span>
                         <span>{salesClueItem.source}</span>
                     </div>
                     {_.isArray(contacts) && contacts.length ? <ContactItem

@@ -4,12 +4,13 @@
  * Created by zhangshujuan on 2018/7/26.
  */
 require('./index.less');
+import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 var BasicData = React.createClass({
     render: function() {
         return (
             <div className="basic-info-container">
-                {this.props.showCloseIcon ? <span className="iconfont icon-close" onClick={this.props.closeRightPanel}></span> : null}
                 <div className="clue-type-title">
+                    {renderClueStatus(this.props.clueStatus)}
                     {this.props.clueTypeTitle}
                 </div>
             </div>
