@@ -52,8 +52,8 @@ exports.getAppUserList = function(obj) {
     }else{
         obj.team_ids = '';
     }
-    //当前页
-    obj.page_num = obj.page || 1,
+    //用于下拉加载的id
+    obj.id = obj.id || '',
     //一页多少条
     obj.page_size = obj.page_size || 20,
     //应用id
@@ -104,6 +104,7 @@ exports.getAppUserList = function(obj) {
             }
         }
     }
+    delete queryObj.outdate;
     var requestObj = {};
     for(var key in queryObj) {
         if(queryObj[key] !== '' && key !== 'tag_all') {

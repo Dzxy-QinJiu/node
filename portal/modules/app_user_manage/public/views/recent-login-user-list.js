@@ -55,7 +55,7 @@ class RecentLoginUsers extends React.Component {
             user_type: '',
             recentLoginUsers: [],
             totalUserSize: 0,
-            pageNum: 1,//当前页数（第几页）
+            lastUserId: '',//用于下拉加载的userId
             isLoadingUserList: false,//是否正在获取近期登录用户列表
             getUserListErrorMsg: '',//错误提示内容
             listenScrollBottom: true,//是否监听滚动
@@ -141,10 +141,11 @@ class RecentLoginUsers extends React.Component {
             app_id: this.state.selectedAppId,
             login_begin_date: this.state.start_time,
             login_end_date: this.state.end_time,
-            page_num: this.state.pageNum,
-            page_size: PAGE_SIZE,
-            logins_min: 1
+            page_size: PAGE_SIZE
         };
+        if(this.state.lastUserId){
+            paramObj.id = this.state.lastUserId;
+        }
         if (this.state.user_type) {
             paramObj.user_type = this.state.user_type;
         }
@@ -172,7 +173,7 @@ class RecentLoginUsers extends React.Component {
 
     getRecentLoginUsers() {
         let params = this.getParamsObj();
-        if (this.state.pageNum === 1) {
+        if (!this.state.lastUserId) {
             // 获取第一页数据时，展示等待效果，下拉加载时，不展示
             this.setState({isLoadingUserList: true});
         }
@@ -192,14 +193,14 @@ class RecentLoginUsers extends React.Component {
     handleRecentLoginUsers(result) {
         let userList = this.state.recentLoginUsers;
         let total = this.state.totalUserSize;
-        let pageNum = this.state.pageNum;
+        let lastUserId = this.state.lastUserId;
         if (result && _.isArray(result.data)) {
-            if (pageNum === 1) {
+            if (!this.state.lastUserId) {
                 userList = result.data;
             } else {
                 userList = userList.concat(result.data);
             }
-            pageNum++;
+            lastUserId = _.get(userList, `[${ userList.length - 1 }].user.user_id`, '');
             total = result.total || 0;
         }
 
@@ -208,7 +209,7 @@ class RecentLoginUsers extends React.Component {
             getUserListErrorMsg: '',
             recentLoginUsers: userList,
             totalUserSize: total,
-            pageNum: pageNum,
+            lastUserId: lastUserId,
             listenScrollBottom: total > userList.length
         });
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -235,7 +236,7 @@ class RecentLoginUsers extends React.Component {
         //设置当前选中应用
         this.setState({
             selectedAppId: app_id,
-            pageNum: 1,
+            lastUserId: '',
         }, () => {
             setWebsiteConfig(obj);
             this.getRecentLoginUsers();
@@ -423,24 +424,24 @@ class RecentLoginUsers extends React.Component {
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();
         }
-        this.setState({start_time: start_time, end_time: end_time, pageNum: 1});
+        this.setState({start_time: start_time, end_time: end_time, lastUserId: ''});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     onUserTypeChange(type) {
-        this.setState({user_type: type, pageNum: 1});
+        this.setState({user_type: type, lastUserId: ''});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     // 是否过期类型的选择
     onFilterTypeChange(type) {
-        this.setState({filter_type: type, pageNum: 1});
+        this.setState({filter_type: type, lastUserId: ''});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     // 修改所选中的团队
     onTeamChange(team_ids) {
-        this.setState({team_ids: team_ids, pageNum: 1});
+        this.setState({team_ids: team_ids, lastUserId: ''});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
@@ -570,7 +571,6 @@ class RecentLoginUsers extends React.Component {
         );
     }
 }
-
 const PropTypes = React.PropTypes;
 RecentLoginUsers.propTypes = {
     teamlists: PropTypes.array,

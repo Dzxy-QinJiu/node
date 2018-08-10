@@ -286,6 +286,7 @@ var en_US = {
     'user.time.start': 'Open time',//开通时间
     'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
+    'user.login.score': 'Score', // 分数
     'user.login.days': 'Login Days', // 登录天数
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
@@ -513,6 +514,15 @@ var en_US = {
     'user.no.login.system': 'This user has never log in to the system', // 该用户还没有登录过系统
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
+
+    // 用户分析
+    'user.login.total.score': 'Total score', // 总分
+    'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
+    'user.login.latest.immersion.score': 'Latest immersion score', // 最新沉浸度分数
+    'user.login.freshness.score': 'Freshness score', // 新鲜度分数
+    'user.login.history.activity.score': 'Historical activity score', // 历史活跃度分数
+    'user.login.history.immersion.score': 'Historical immersion score', // 历史沉浸度分数
+
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',
     'third.party.app.add': 'Add application of the open plateform',//添加应用
@@ -1383,15 +1393,24 @@ var en_US = {
     'crm.order.lose.reason': 'lose Order reason',//丢单原因
     'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
     'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
-    'crm.contract.168': 'Validity period', // 有效期
-    'crm.contract.169': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
-    'crm.contract.170': 'Contract pending', // 合同待审
-    'crm.contract.171': 'Number of users', // 用户个数
-    'crm.contract.172': 'Amount (yuan)', // 金额(元)
-    'crm.contract.173': 'No product information', // 暂无产品信息
-    'crm.contract.174': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
-    'crm.contract.175': 'Product name', // 产品名称
-    'crm.contract.176': 'Number of accounts', // 账号数量
+
+    // 客户详情中，合同项
+    'crm.contract.validity.time': 'Validity period', // 有效期
+    'crm.contract.validity.one.year': 'Valid for one year', // 有效期一年
+    'crm.contract.sign.time': 'The contract was signed at {date} by {username}.', // {uername}签订于{date}
+    'crm.contract.pending.contract': 'Contract pending', // 合同待审
+    'crm.contract.money': 'Amount (yuan)', // 金额(元)
+    'crm.contract.no.product.info': 'No product information', // 暂无产品信息
+    'crm.contract.check.tips': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
+    'crm.contract.product.name': 'Product name', // 产品名称
+    'crm.contract.account.count': 'Number of accounts', // 账号数量
+    'crm.contract.enter.contract.money': 'Please enter the contract amount', // 请输入合同额
+    'crm.contract.no.contract.money': 'No contract amount', // 暂无合同额
+    'crm.contract.enter.gross': 'Please enter the gross profit', // 请输入毛利
+    'crm.contract.no.gross': 'No gross profit', // 暂无毛利额
+    'crm.contract.new.sign': 'new signing', // 新签
+    'crm.contract.select.sign.type': 'Please choose a new contract or a contract renewal', // 请选择签约类型
+    'crm.contract.party.name': 'Please enter the name of Party A', // 请输入甲方名称
     // 客户管理end
 
     //客户分析 start
@@ -2458,6 +2477,14 @@ var en_US = {
     'back.openApp.apply': 'apply', //'申请开通',
     'back.openApp.tip.success': 'open successed',//'开通成功',
     'back.openApp.tip.fail': 'open failed',//'开通失败',
-    'back.openApp.confirm': 'Are you sure to open {appName} ?'
+    'back.openApp.confirm': 'Are you sure to open {appName} ?',
+    'common.history': 'history',//历史
+    'common.history.highest': 'history highest',//历史最高
+    'common.this.month.add.highest': 'this month add highest',//本月比历史最高净增
+    'common.this.month.add': 'this month add',//本月比上月净增
+    'common.this.month.lose': 'this month lose',//本月流失
+    'common.this.month.back': 'this month back',//本月回流
+    'common.this.month.new': 'this month new',//本月新增
+    'common.this.month': 'this month',//本月
 };
 export default en_US;

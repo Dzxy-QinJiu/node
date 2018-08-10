@@ -285,6 +285,7 @@ var zh_CN = {
     'user.time.start': '开通时间',
     'user.time.end': '到期时间',
     'user.login.times': '登录次数',
+    'user.login.score': '分数',
     'user.login.days': '登录天数',
     'user.remark.write.tip': '请填写备注',
     'user.remark.set.tip': '设置备注',
@@ -510,6 +511,14 @@ var zh_CN = {
     'user.no.login.system': '该用户还没有登录过系统',
     'user.disable.logon': '停用登录',
     'user.frequent.logon': '频繁登录',
+
+    // 用户分析
+    'user.login.total.score': '总分',
+    'user.login.latest.activity.score': '最新活跃度分数',
+    'user.login.latest.immersion.score': '最新沉浸度分数',
+    'user.login.freshness.score': '新鲜度分数',
+    'user.login.history.activity.score': '历史活跃度分数',
+    'user.login.history.immersion.score': '历史沉浸度分数',
 
     // 第三方应用配置
     'third.party.app': '开放应用平台',
@@ -1398,15 +1407,24 @@ var zh_CN = {
     'crm.order.lose.reason': '丢单原因',
     'crm.no.order.lose.reason': '暂无丢单原因',
     'crm.fill.order.lose.reason': '补充丢单原因',
-    'crm.contract.168': '有效期',
-    'crm.contract.169': '{uername} 签订于{date}',
-    'crm.contract.170': '合同待审',
-    'crm.contract.171': '用户个数',
-    'crm.contract.172': '金额(元)',
-    'crm.contract.173': '暂无产品信息',
-    'crm.contract.174': '合同额与产品总额不相等，请核对',
-    'crm.contract.175': '产品名称',
-    'crm.contract.176': '账号数量',
+
+    // 客户详情中，合同项
+    'crm.contract.validity.time': '有效期',
+    'crm.contract.validity.one.year': '有效期一年',
+    'crm.contract.sign.time': '{uername} 签订于{date}',
+    'crm.contract.pending.contract': '合同待审',
+    'crm.contract.money': '金额(元)',
+    'crm.contract.no.product.info': '暂无产品信息',
+    'crm.contract.check.tips': '合同额与产品总额不相等，请核对',
+    'crm.contract.product.name': '产品名称',
+    'crm.contract.account.count': '账号数量',
+    'crm.contract.enter.contract.money': '请输入合同额',
+    'crm.contract.no.contract.money': '暂无合同额',
+    'crm.contract.enter.gross': '请输入毛利',
+    'crm.contract.no.gross': '暂无毛利额',
+    'crm.contract.new.sign': '新签',
+    'crm.contract.select.sign.type': '请选择签约类型',
+    'crm.contract.party.name': '请输入甲方名称',
     // 客户管理end
 
     // 客户分析start
@@ -2467,6 +2485,7 @@ var zh_CN = {
     'clue.analysis.inability': '无效',
     'clue.analysis.source.chart': '来源统计',
     'clue.analysis.classify.chart': '分类统计',
+    'clue.analysis.avalibility.chart': '有效性统计',
     'clue.analysis.assigned.chart': '签约统计',
     'sales.home.sales.clue': '待处理的线索',
     'sales.home.will.trace': '待跟进',
@@ -2479,6 +2498,14 @@ var zh_CN = {
     'back.openApp.apply': '申请开通',
     'back.openApp.tip.success': '开通成功',
     'back.openApp.tip.fail': '开通失败',
-    'back.openApp.confirm': '确认要开通{appName}功能吗'    
+    'back.openApp.confirm': '确认要开通{appName}功能吗',
+    'common.history': '历史',
+    'common.history.highest': '历史最高',
+    'common.this.month.add.highest': '本月比历史最高净增',
+    'common.this.month.add': '本月比上月净增',
+    'common.this.month.lose': '本月流失',
+    'common.this.month.back': '本月回流',
+    'common.this.month.new': '本月新增',
+    'common.this.month': '本月',
 };
 export default zh_CN;

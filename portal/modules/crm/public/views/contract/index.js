@@ -49,7 +49,7 @@ const Contract = React.createClass({
     },
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
-        if (nextProps.curCustomer && nextProps.curCustomer.id && nextProps.curCustomer.id !== oldCustomerId) {
+        if (_.get(nextProps.curCustomer , 'id') && nextProps.curCustomer.id !== oldCustomerId) {
             this.setState({
                 curCustomer: nextProps.curCustomer
             });

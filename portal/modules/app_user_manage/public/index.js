@@ -135,7 +135,6 @@ var AppUserManage = React.createClass({
             AppUserAction.getAppUserList({
                 //传递客户id
                 customer_id: customer_id,
-                page_size: this.props.user_size
             });
         }
         //记住上一次路由
@@ -234,11 +233,11 @@ var AppUserManage = React.createClass({
             //搜索参数
             var queryObj = {
                 //从第一页开始查
-                appUserPage: 1,
+                id: '',
                 keyword: obj.keyword || ''
             };
-            //分页插件展示第一页
-            AppUserAction.setAppUserPage(1);
+            //清空下拉加载的用户id
+            AppUserAction.setLastUserId('');
             //滚动条置顶
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.CHANGE_USER_LIST_SCROLL_TOP, 0);
             //查询列表

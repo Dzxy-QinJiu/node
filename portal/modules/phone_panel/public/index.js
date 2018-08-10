@@ -552,7 +552,6 @@ class PhonePanel extends React.Component {
             'initial-height': this.state.isInitialHeight
         });
         let customerOfCurUser = this.state.customerOfCurUser;
-        let customerUserSize = customerOfCurUser && _.isArray(customerOfCurUser.app_user_ids) ? customerOfCurUser.app_user_ids.length : 0;
         return (
             <div data-tracename="电话弹屏" id="phone-status-content">
                 <div className={AddMoreInfoCls} id="phone-alert-modal-inner">
@@ -576,10 +575,9 @@ class PhonePanel extends React.Component {
                 >
                     { this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
-                            customer_id={this.state.customerOfCurUser.id}
+                            customer_id={customerOfCurUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.customerOfCurUser.name}
-                            user_size={customerUserSize}
+                            customer_name={customerOfCurUser.name}
                         /> : null
                     }
                 </RightPanel> : null}

@@ -1,6 +1,29 @@
 /**
- *
  * 配置信息
+ * oplate 安全域ID、应用ID、应用密钥（正式、测试环境的配置相同）
+     LOGIN_REALM：3722pgujaa
+     LOGIN_CLIENT_ID：3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9
+     LOGIN_CLIENT_SECRET：477qpz3uC5fZcaz0w1YloKWA
+ * caster、网关（区分正式和测试环境）
+ * 正式环境的配置
+     CASTER_IP："172.19.141.4,172.19.141.5,172.19.141.6"
+     CASTER_PORT："5762,5762,5762"
+     CASTER_USERNAME：caster-eefung
+     CASTER_PASSWORD：caster-eefung
+     GATEWAY：http://gateway-ketao.antfact.com
+     PUSH_SERVER_ADDRESS：http://notify-ketao.antfact.com:80
+ * 测试环境的配置
+     CASTER_IP：172.19.106.110
+     CASTER_PORT：5766
+     CASTER_USERNAME：oplate-test-session
+     CASTER_PASSWORD：plate-test-session
+     GATEWAY：http://172.19.103.21:9090
+     PUSH_SERVER_ADDRESS：http://172.19.103.102:8382
+ * zipkin、调用链跟踪记录（只有线上的正式环境有的配置）
+     ZIPKINURL：http://172.19.103.39:9002
+     METRIC_ADDRESS：http://172.19.103.123:8086/oplate_web
+ *
+ *
  */
 var path = require('path');
 //是否是线上环境  isProduction=true表示是线上环境
@@ -168,12 +191,12 @@ var config = {
         clientSecret: process.env.LOGIN_CLIENT_SECRET || '477qpz3uC5fZcaz0w1YloKWA',//应用密钥
         grantType: process.env.LOGIN_GRANT_TYPE || 'client_credentials'//授权类型
     },
-    gateway: getGateway() || 'http://gateway-ketao.antfact.com',//服务网关,测试环境：http://172.19.103.57:9090,公网'https://gtoplate.antfact.com',
+    gateway: getGateway() || 'http://172.19.103.21:9090',//服务网关,测试环境：http://172.19.103.21:9090,正式：'http://gateway-ketao.antfact.com',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
-    loggerTag: process.env.LOGGER_TAG || 'oplate-web',//日志标签,用来区分是oplate的还是ketao的
+    loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的
     errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用
     siteID: process.env.SITE_ID || '1',//piwik需配置site_id,1:oplate,4:ketao
-    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://notify-ketao.antfact.com:80',//推送的服务地址（客套需要配置:http://notify-ketao.antfact.com:80）
+    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://172.19.103.102:8382',//推送的服务地址（测试： http://172.19.103.102:8382，正式:http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG, //语言环境(优先)
     useSso: process.env.USESSO,//是否使用sso
     storageKey: process.env.storageKey || 'ketao-storage'//在localstorage中存储的key

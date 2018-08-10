@@ -19,8 +19,8 @@ function AppUserAction() {
         'getCustomers',
         //获取App的用户列表
         'getAppUserList',
-        //设置App的用户页数
-        'setAppUserPage',
+        //设置用于下拉加载的userId
+        'setLastUserId',
         //更改每页显示多少条
         'setAppPageSize',
         //设置选中的appid
