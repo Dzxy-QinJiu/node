@@ -41,12 +41,22 @@ const UserDetailEditApp = React.createClass({
         if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
         }
+        Trace.traceEvent('变更应用','点击取消按钮');
         AppUserPanelSwitchAction.resetState();
         //面板向右滑
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
         UserDetailEditAppActions.resetState();
     },
-    closeRightPanel() {
+    return() {
+        if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
+            return;
+        }
+        AppUserPanelSwitchAction.resetState();
+        //面板向右滑
+        AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
+        UserDetailEditAppActions.resetState();
+    },
+    closeRightPanel(e) {
         AppUserPanelSwitchAction.resetState();
         //面板向右滑
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
@@ -65,7 +75,7 @@ const UserDetailEditApp = React.createClass({
         changeAppInfo.app_name = this.props.appInfo.app_name;
         changeAppInfo.start_time = changeAppInfo.begin_date;
         changeAppInfo.end_time = changeAppInfo.end_date;
-        changeAppInfo.is_disabled = changeAppInfo.status == '1' ? 'false' : 'true';
+        changeAppInfo.is_disabled = changeAppInfo.status === '1' ? 'false' : 'true';
         changeAppInfo.create_time = this.props.appInfo.create_time;
         changeAppInfo.multilogin = +changeAppInfo.mutilogin;
         changeAppInfo.is_two_factor = +changeAppInfo.is_two_factor;
@@ -80,6 +90,7 @@ const UserDetailEditApp = React.createClass({
     },
     //提交时会触发
     onFinish() {
+        Trace.traceEvent('变更应用','点击确定按钮');
         if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
         }
@@ -172,9 +183,9 @@ const UserDetailEditApp = React.createClass({
     render() {
         const height = $(window).height() - LAYOUT.TAB_TOP_HEIGHT - LAYOUT.TAB_BOTTOM_PADDING;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height: '100%'}}>
-                <RightPanelReturn onClick={this.cancel}/>
-                <RightPanelClose onClick={this.closeRightPanel}/>
+            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height: '100%'}} data-tracename="变更应用">
+                <RightPanelReturn onClick={this.return} data-tracename="点击返回按钮"/>
+                <RightPanelClose onClick={this.closeRightPanel} data-tracename="点击关闭变更应用与用户详情按钮"/>
                 <Tabs defaultActiveKey="editapp">
                     <TabPane tab={this.props.appInfo.app_name} key="editapp">
                         <AppPropertySetting

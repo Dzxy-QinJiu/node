@@ -180,14 +180,17 @@ const AddOrEditUser = React.createClass({
                         } else {
                             //检验通过了，切换到下一步
                             AppUserFormActions.turnStep(direction);
+                            Trace.traceEvent('已有用户-添加用户','点击了下一步的按钮');
                         }
                     }, () => {
                         AppUserFormActions.turnStep(direction);
+                        Trace.traceEvent('已有用户-添加用户','点击了下一步的按钮');
                     });
                 }
             } else { // 添加多个用户时
                 //检验通过了，切换到下一步
                 AppUserFormActions.turnStep(direction);
+                Trace.traceEvent('已有用户-添加用户','点击了下一步的按钮');
             }
         });
     },
@@ -212,14 +215,17 @@ const AddOrEditUser = React.createClass({
                 } else {
                     //检验通过了，切换到下一步
                     AppUserFormActions.turnStep(direction);
+                    Trace.traceEvent('已有用户-添加用户','点击了下一步的按钮');
                 }
             } else if (step === 2) {
                 //检验通过了，切换到下一步
                 AppUserFormActions.turnStep(direction);
+                Trace.traceEvent('已有用户-添加用户','点击了下一步的按钮');
             }
         } else {
             //上一步的时候直接切换
             AppUserFormActions.turnStep(direction);
+            Trace.traceEvent('已有用户-添加用户','点击了上一步的按钮');
         }
     },
     //获取批量更新使用的额外数据

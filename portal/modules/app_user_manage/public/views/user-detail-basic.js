@@ -80,12 +80,15 @@ var UserDetailBasic = React.createClass({
         }
     },
     showDisableAllAppsModal: function() {
+        Trace.traceEvent('用户详情','全部停用');
         AppUserDetailAction.showDisableAllAppsModal();
     },
     cancelAllAppsModal: function() {
+        Trace.traceEvent('用户详情','点击取消全部停用的按钮');
         AppUserDetailAction.cancelAllAppsModal();
     },
     submitDisableAllApps: function() {
+        Trace.traceEvent('用户详情','点击确定全部停用的按钮');
         AppUserDetailAction.cancelAllAppsModal();
         AppUserDetailAction.submitDisableAllApps({
             user_id: this.props.userId,
@@ -143,11 +146,13 @@ var UserDetailBasic = React.createClass({
     },
     //显示app的面板
     showAddAppPanel: function() {
+        Trace.traceEvent('用户详情','添加应用');
         AppUserPanelSwitchActions.switchToAddAppPanel();
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
     },
     editSingleApp: function(app) {
+        Trace.traceEvent('用户详情','变更应用');
         AppUserPanelSwitchActions.switchToEditAppPanel(app);
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
