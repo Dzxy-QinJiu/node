@@ -56,7 +56,7 @@ const UserDetailEditApp = React.createClass({
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
         UserDetailEditAppActions.resetState();
     },
-    closeRightPanel(e) {
+    closeRightPanel() {
         AppUserPanelSwitchAction.resetState();
         //面板向右滑
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);

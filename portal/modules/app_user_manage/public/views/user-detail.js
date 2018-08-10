@@ -206,7 +206,7 @@ var UserDetail = React.createClass({
         return (
             <div className="full_size app_user_full_size user_manage_user_detail_wrap" ref="wrap" data-tracename="用户详情">
                 <RightPanelClose onClick={this.closeRightPanel} data-tracename="关闭用户详情"/>
-                <div className="full_size app_user_full_size_item wrap_padding" data-tracename="用户详情">
+                <div className="full_size app_user_full_size_item wrap_padding">
                     <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
                         {tabPaneList}
                     </Tabs>

@@ -79,16 +79,18 @@ var UserDetailBasic = React.createClass({
             callback(new Error(Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
         }
     },
-    showDisableAllAppsModal: function() {
-        Trace.traceEvent('用户详情','全部停用');
+    showDisableAllAppsModal: function(e) {
+        Trace.traceEvent(e,'全部停用');
         AppUserDetailAction.showDisableAllAppsModal();
+        return e.stopPropagation();
     },
-    cancelAllAppsModal: function() {
-        Trace.traceEvent('用户详情','点击取消全部停用的按钮');
+    cancelAllAppsModal: function(e) {
+        Trace.traceEvent(e,'点击取消全部停用的按钮');
         AppUserDetailAction.cancelAllAppsModal();
+        return e.stopPropagation();
     },
-    submitDisableAllApps: function() {
-        Trace.traceEvent('用户详情','点击确定全部停用的按钮');
+    submitDisableAllApps: function(e) {
+        Trace.traceEvent(e,'点击确定全部停用的按钮');
         AppUserDetailAction.cancelAllAppsModal();
         AppUserDetailAction.submitDisableAllApps({
             user_id: this.props.userId,
@@ -98,6 +100,7 @@ var UserDetailBasic = React.createClass({
                 user_id: user_id
             });
         });
+        return e.stopPropagation();
     },
     getDisableAllAppsBlock: function() {
         if (this.state.modalStatus.disable_all.loading) {
@@ -145,14 +148,14 @@ var UserDetailBasic = React.createClass({
         );
     },
     //显示app的面板
-    showAddAppPanel: function() {
-        Trace.traceEvent('用户详情','添加应用');
+    showAddAppPanel: function(e) {
+        Trace.traceEvent(e,'添加应用');
         AppUserPanelSwitchActions.switchToAddAppPanel();
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
     },
-    editSingleApp: function(app) {
-        Trace.traceEvent('用户详情','变更应用');
+    editSingleApp: function(app, e) {
+        Trace.traceEvent(e,'变更应用');
         AppUserPanelSwitchActions.switchToEditAppPanel(app);
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
