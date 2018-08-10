@@ -20,6 +20,11 @@ import SelectAppList from '../select-app-list';
 
 class ProductTable extends React.Component {
     static defaultProps = {
+        appList: [],
+    };
+
+    static propTypes = {
+        appList: PropTypes.array,
     };
 
     constructor(props) {
@@ -43,6 +48,7 @@ class ProductTable extends React.Component {
                 <AntcEditableTable
                 /> 
                 <SelectAppList
+                    appList={this.props.appList}
                 /> 
                 <SaveCancelButton
                 /> 
