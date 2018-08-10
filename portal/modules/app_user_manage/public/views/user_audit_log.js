@@ -81,7 +81,6 @@ var LogView = React.createClass({
 
     // 根据选择条件获取对应的数据
     getAuditLog: function(queryParams) {
-        Trace.traceEvent('用户管理 ','获取用户审计日志');
         var searchObj = {
             load_size: this.state.loadSize, // 每次加载的条数
             appid: queryParams && 'appid' in queryParams ? queryParams.appid : this.state.selectAppId,
