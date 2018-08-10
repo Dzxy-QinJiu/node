@@ -1318,7 +1318,7 @@ var Crm = React.createClass({
             },
             {
                 title: Intl.get('common.operate', '操作'),
-                width: '60px',
+                width: 50,
                 render: (text, record, index) => {
                     //是否是重复的客户
                     const isRepeat = record.name_repeat || record.phone_repeat;
