@@ -147,6 +147,7 @@ var UserTabContent = React.createClass({
         this.setState(AppUserStore.getState());
     },
     onRowClick: function(event) {
+
         var target = event.target;
         //如果点击到生成线索按钮，不展示客户详情
         if ($(target).closest('.trans-clue-customer').length) {
@@ -188,6 +189,8 @@ var UserTabContent = React.createClass({
             //如果点击除了所属客户列之外的列，要关闭已经打开的客户详情 打开对应的用户详情
             this.hideRightPanel();
             AppUserAction.showUserDetail(userObj);
+            Trace.traceEvent('已有用户','打开用户详情');
+
         }
     },
     hideRightPanel: function() {

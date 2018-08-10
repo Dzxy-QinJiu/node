@@ -181,8 +181,8 @@ var AppUserManage = React.createClass({
         ShareObj.app_id = '';
         ShareObj.share_app_list = [];
     },
-    addAppUser: function(e) {
-        Trace.traceEvent(e,'已有用户-添加用户');
+    addAppUser: function() {
+        Trace.traceEvent('用户管理','已有用户-添加用户');
         AppUserAction.showAppUserForm();
     },
     //显示用户表单
@@ -461,7 +461,7 @@ var AppUserManage = React.createClass({
         var showFilterBtn = this.state.selectedAppId;
         return (
             <div>
-                <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
+                <div className="app_user_manage_page table-btn-fix">
                     <TopNav>
                         <TopNav.MenuList />
                         {/*如果是从客户页面跳转过来的，增加一个返回按钮*/}
