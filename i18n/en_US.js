@@ -2487,5 +2487,8 @@ var en_US = {
     'common.this.month.back': 'this month back',//本月回流
     'common.this.month.new': 'this month new',//本月新增
     'common.this.month': 'this month',//本月
+    'annalysis.sales.weekly.report': 'Sales weekly report',//销售周报
+    'common.font.the': 'The',//第
+    'common.weeks': 'Weeks',//周
 };
 export default en_US;
