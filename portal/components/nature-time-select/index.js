@@ -10,6 +10,7 @@ var TimeSelect = React.createClass({
     getDefaultProps: function() {
         return {
             showTimeTypeSelect: false,//是否展示年、月、周的类型选择
+            hideYearSelect: false,//是否展示年选择框
             timeType: 'week',//时间类型的选择（年：year，月：month，周：week）
             yearTime: '',//xxxx年
             monthTime: '',//xx月
@@ -36,7 +37,7 @@ var TimeSelect = React.createClass({
         //第一天是第几周
         let firstDayWeek = moment(firstDay).week();
         let firstWeekFirstDay = '';//该年第一周的第一天
-        if (firstDayWeek == 1) {
+        if (firstDayWeek === 1) {
             //该年的第一天就是该年第一周的第一天
             firstWeekFirstDay = moment(firstDay).format(DATE_FORMAT);
         } else {
@@ -80,16 +81,16 @@ var TimeSelect = React.createClass({
                     </RadioGroup>
                 </div>) : null}
                 <div className="time-select-div">
-                    <div className="year-select-div">
+                    {this.props.hideYearSelect ? null : (<div className="year-select-div">
                         <Select value={this.props.yearTime} onChange={this.props.onChangeYear}>
                             {this.renderYearOptions()}
                         </Select>
-                    </div>
-                    {this.props.timeType == 'month' ? (<div className="month-select-div">
+                    </div>)}
+                    {this.props.timeType === 'month' ? (<div className="month-select-div">
                         <Select value={this.props.monthTime} onChange={this.props.onChangeMonth}>
                             {this.renderMonthOptions()}
                         </Select>
-                    </div>) : this.props.timeType == 'week' ? (<div className="week-select-div">
+                    </div>) : this.props.timeType === 'week' ? (<div className="week-select-div">
                         <div className="week-time-label">第</div>
                         <InputNumber min={1} max={60} value={this.props.weekTime} onChange={this.props.onChangeWeek}/>
                         <div className="week-time-label week-time-content">

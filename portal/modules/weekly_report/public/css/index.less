@@ -1,11 +1,25 @@
 @borderColor:#f3f5f7;
 @background:#eff4f9;
+@bg-color: #f3f5f5;
 .weekly-report-container{
+  .report-team-select-container{
+    float: right;
+    margin-top: 18px;
+  }
+  .report-time-container{
+    float: right;
+    margin-top: 18px;
+    margin-right: 20px;
+    .nature-time-select-container .time-select-div .week-select-div .ant-input-number .ant-input-number-input{
+      height: 26px;
+    }
+  }
   .weekly-report-wrap{
-    padding: 84px 20px 25px 20px;
+    height: 100vh;
+    padding: 84px 16px 16px;
+    background-color: @bg-color;
     .weekly-report-content{
       padding: 0;
-      margin: 0 0 21px 17px;
       min-width: 370px;
       border: 1px solid @borderColor;
       //左侧标题列表区域
@@ -59,7 +73,7 @@
         margin-left: -1px;
         color: #5d5d5d;
         position: relative;
-        padding-left: 15px;
+        padding-left: 0;
         padding-right: 0;
 
         .weekly-report-detail-container{
@@ -77,6 +91,10 @@
             .loader8 {
               border-left-color:#394144;
             }
+          }
+          .tables-wrap .card-container{
+            padding:12px;
+            margin-bottom:16px;
           }
           .call-info-wrap{
             .call-info-table-container{

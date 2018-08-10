@@ -2507,5 +2507,6 @@ var zh_CN = {
     'common.this.month.back': '本月回流',
     'common.this.month.new': '本月新增',
     'common.this.month': '本月',
+    'analysis.sales.weekly.report': '销售周报',
 };
 export default zh_CN;
