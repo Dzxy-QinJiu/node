@@ -29,7 +29,9 @@ class AppUserFormActions {
             //设置选中的组织
             'setSelectedOrganization',
             //将应用的特殊配置同步到全局配置
-            'syncCustomAppSettingToGlobalSetting'
+            'syncCustomAppSettingToGlobalSetting',
+            // 开通时间的错误提示
+            'showOpenTimeErrorTips'
         );
     }
     getCurrentRealmApps() {
