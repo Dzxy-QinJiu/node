@@ -39,6 +39,8 @@ class ProductTable extends React.Component {
     render() {
         return (
             <div>
+                <SaveCancelButton
+                /> 
             </div>
         );
     }
