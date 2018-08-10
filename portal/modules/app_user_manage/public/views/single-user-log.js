@@ -144,28 +144,6 @@ var SingleUserLog = React.createClass({
         let showAppSelect = this.props.selectedAppId;
         return (
             <div className="log-info-header clearfix">
-                <div className="select-time">
-                    <DatePicker
-                        disableDateAfterToday={true}
-                        dateSelectRange={THREE_MONTH_TIME_RANGE}
-                        range={this.state.defaultRange}
-                        onSelect={this.onSelectDate}
-                        start_time={this.state.startTime}
-                        end_time ={this.state.endTime}
-                    >
-                        <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                        <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                        <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                        <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                    </DatePicker>
-                </div>
-                <div className="search-content">
-                    <SearchInput
-                        searchPlaceHolder={Intl.get('user.search.placeholder', '请输入关键词搜索')}
-                        searchEvent={this.handleSearchEvent}
-                        ref="search"
-                    />
-                </div>
                 { showAppSelect ? null : <div className="select-app">
                     <SelectFullWidth
                         showSearch
@@ -189,6 +167,28 @@ var SingleUserLog = React.createClass({
                         }) : null}
                     </SelectFullWidth>
                 </div>}
+                <div className="select-time">
+                    <DatePicker
+                        disableDateAfterToday={true}
+                        dateSelectRange={THREE_MONTH_TIME_RANGE}
+                        range={this.state.defaultRange}
+                        onSelect={this.onSelectDate}
+                        start_time={this.state.startTime}
+                        end_time ={this.state.endTime}
+                    >
+                        <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                        <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                        <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                        <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
+                    </DatePicker>
+                </div>
+                <div className="search-content">
+                    <SearchInput
+                        searchPlaceHolder={Intl.get('user.search.placeholder', '请输入关键词搜索')}
+                        searchEvent={this.handleSearchEvent}
+                        ref="search"
+                    />
+                </div>                
             </div>
         );
     },

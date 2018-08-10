@@ -74,6 +74,36 @@
     // .full-size-container.move-left-wrrapper{
     //     position: relative!important;
     // }
+    .user-log {
+        padding-top: 10px;
+        .user-log-panel {
+            .log-info-header {
+                .select-time{
+                    float: left;
+                    width: 50%;
+                    margin-right: 0;
+                    margin-left: 0;
+                }
+            }
+        }
+        .select-app {
+            width: 100%;
+            margin-bottom: 10px;
+            .log_select_app {
+                width: 100%!important;
+            }
+        }
+        .range-datepicker {
+            .date_text_wrap {
+                display: table-cell;
+                position: relative;
+                padding: 6px 4px;
+            }
+            .anticon-calendar {
+                margin-left: 5px;
+            }
+        }
+    }
     .detail-card-container {
         .info-item-container {
             float: left;
@@ -86,14 +116,18 @@
                 font-weight: initial;
             }
         }
-        .title-container {
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            overflow: hidden;
-            &.no-border {
-                border-bottom: none;
-                padding-bottom: 0;
+        .user-analysis {
+            .title-container {
+                border-bottom: 1px solid #eee;
+                &.no-border {
+                    border-bottom: none;
+                    padding-bottom: 0;
+                }
             }
+        }
+        .title-container {
+            // padding-bottom: 10px;
+            overflow: hidden;            
             .logo-container {
                 float: left;
                 vertical-align: middle;
