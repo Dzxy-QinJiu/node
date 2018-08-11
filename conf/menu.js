@@ -227,7 +227,7 @@ class LeftMenuClass {
             //周报统计
             {
                 id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('analysis.sales.weekly.report', '销售周报'),
+                name: backendIntl.get('menu.user.analysis', '运营分析'),
                 routePath: 'analysis/weekly_report',
                 privileges: [
                     'CALLRECORD_ASKFORLEAVE_ADD',
