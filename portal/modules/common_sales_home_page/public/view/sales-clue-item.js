@@ -11,7 +11,7 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 var clueCustomerAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
 var SalesHomeAction = require('../action/sales-home-actions');
 var Spinner = require('CMP_DIR/spinner');
-import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-panel';
+import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 const DELAY_TIME = 3000;
 var classNames = require('classnames');
@@ -476,7 +476,6 @@ class SalesClueItem extends React.Component {
                             showFlag={true}
                             currentId={this.state.isAssocaiteItem.id}
                             hideRightPanel={this.hideRightPanel}
-                            afterModifiedAssocaitedCustomer={this.afterModifiedAssocaitedCustomer}
                             curCustomer={this.state.isAssocaiteItem}
                         />
                     </div>

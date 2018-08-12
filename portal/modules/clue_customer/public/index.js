@@ -865,13 +865,6 @@ const ClueCustomer = React.createClass({
                         <ClueRightPanel
                             currentId={this.state.currentId}
                             curClue={this.state.curCustomer}
-                            accessChannelArray={this.state.accessChannelArray}
-                            clueSourceArray={this.state.clueSourceArray}
-                            clueClassifyArray={this.state.clueClassifyArray}
-                            updateClueSource={this.updateClueSource}
-                            updateClueChannel={this.updateClueChannel}
-                            updateClueClassify={this.updateClueClassify}
-                            salesManList={this.state.salesManList}
                         />
                     </RightPanel>
                     {this.state.clueAnalysisPanelShow ? <RightPanel

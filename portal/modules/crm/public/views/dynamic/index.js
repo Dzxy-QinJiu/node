@@ -8,13 +8,10 @@ import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
-import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
+import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 var Dynamic = React.createClass({
     getInitialState: function() {
         return {
-            accessChannelArray: accessChannelArray,//线索渠道
-            clueSourceArray: clueSourceArray,//线索来源
-            clueClassifyArray: clueClassifyArray,//线索分类
             ...DynamicStore.getState(),
             windowHeight: $(window).height()
         };
@@ -72,63 +69,6 @@ var Dynamic = React.createClass({
             clueId: ''
         });
     },
-    getClueSource: function() {
-        clueCustomerAjax.getClueSource().then(data => {
-            if (data && _.isArray(data.result) && data.result.length) {
-                this.setState({
-                    clueSourceArray: _.union(this.state.clueSourceArray, removeSpacesAndEnter(data.result))
-                });
-            }
-        }, errorMsg => {
-            // eslint-disable-next-line no-console
-            console.log('获取线索来源出错了 ' + errorMsg);
-        });
-    },
-    getClueChannel: function() {
-        clueCustomerAjax.getClueChannel().then(data => {
-            if (data && _.isArray(data.result) && data.result.length) {
-                this.setState({
-                    accessChannelArray: _.union(this.state.accessChannelArray, removeSpacesAndEnter(data.result))
-                });
-            }
-        }, errorMsg => {
-            // eslint-disable-next-line no-console
-            console.log('获取线索渠道出错了 ' + errorMsg);
-        });
-    },
-    getClueClassify: function() {
-        clueCustomerAjax.getClueClassify().then(data => {
-            if (data && _.isArray(data.result) && data.result.length) {
-                this.setState({
-                    clueClassifyArray: _.union(this.state.clueClassifyArray, removeSpacesAndEnter(data.result))
-                });
-            }
-        }, errorMsg => {
-            // eslint-disable-next-line no-console
-            console.log('获取线索分类出错了 ' + errorMsg);
-        });
-    },
-    //更新线索来源列表
-    updateClueSource: function(newSource) {
-        this.state.clueSourceArray.push(newSource);
-        this.setState({
-            clueSourceArray: this.state.clueSourceArray
-        });
-    },
-    //更新线索渠道列表
-    updateClueChannel: function(newChannel) {
-        this.state.accessChannelArray.push(newChannel);
-        this.setState({
-            accessChannelArray: this.state.accessChannelArray
-        });
-    },
-    //更新线索分类
-    updateClueClassify: function(newClue) {
-        this.state.clueClassifyArray.push(newClue);
-        this.setState({
-            clueClassifyArray: this.state.clueClassifyArray
-        });
-    },
     render: function() {
         return (
             <RightPanelScrollBar>
@@ -146,13 +86,6 @@ var Dynamic = React.createClass({
                     showFlag={true}
                     currentId={this.state.clueId}
                     hideRightPanel={this.hideRightPanel}
-                    accessChannelArray={this.state.accessChannelArray}
-                    clueSourceArray={this.state.clueSourceArray}
-                    clueClassifyArray={this.state.clueClassifyArray}
-                    updateClueSource={this.updateClueSource}
-                    updateClueChannel={this.updateClueChannel}
-                    updateClueClassify={this.updateClueClassify}
-                    salesManList={this.state.salesManList}
                 /> : null}
             </RightPanelScrollBar>
         );
