@@ -5,7 +5,7 @@
  */
 //左侧周报题目列表滚动条参数
 exports.REPORT_TITLE_LIST_LAYOUT_CONSTANTS = {
-    TOP_DELTA: 60,
+    TOP_DELTA: 45,
     BOTTOM_DELTA: 39,
     TOP_NAV_HEIGHT: 84
 };

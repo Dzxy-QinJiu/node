@@ -4,7 +4,9 @@ function weeklyReportActions() {
         'setInitState',//初始化数据的设置
         'clearData',//清空数据
         'setSelectedWeeklyReportItem',//设置选中项
-        'changeSearchInputValue'//修改搜索框的值
+        'changeSearchInputValue',//修改搜索框的值
+        'setSelectedTeamId',//设置选中的团队id
+        'setSelectedWeek'//设置选择的第几周
     );
     // 团队信息
     this.getSaleGroupTeams = function(reqData) {

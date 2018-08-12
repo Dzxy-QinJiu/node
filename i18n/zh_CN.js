@@ -285,6 +285,7 @@ var zh_CN = {
     'user.time.start': '开通时间',
     'user.time.end': '到期时间',
     'user.login.times': '登录次数',
+    'user.login.score': '分数',
     'user.login.days': '登录天数',
     'user.remark.write.tip': '请填写备注',
     'user.remark.set.tip': '设置备注',
@@ -319,6 +320,7 @@ var zh_CN = {
     'user.no.organization': '暂无组织',
     'user.no.related.organization': '无相关组织',
     'user.open.cycle': '开通周期',
+    'user.open.cycle.tips': '开通周期的起始时间不能小于今天',
     'user.open.cycle.date.tip': '将在{date}的0点过期',
     'user.time.hour': '小时',
     'user.time.minute': '分',
@@ -510,6 +512,14 @@ var zh_CN = {
     'user.no.login.system': '该用户还没有登录过系统',
     'user.disable.logon': '停用登录',
     'user.frequent.logon': '频繁登录',
+
+    // 用户分析
+    'user.login.total.score': '总分',
+    'user.login.latest.activity.score': '最新活跃度分数',
+    'user.login.latest.immersion.score': '最新沉浸度分数',
+    'user.login.freshness.score': '新鲜度分数',
+    'user.login.history.activity.score': '历史活跃度分数',
+    'user.login.history.immersion.score': '历史沉浸度分数',
 
     // 第三方应用配置
     'third.party.app': '开放应用平台',
@@ -2527,6 +2537,9 @@ var zh_CN = {
     'clue.handle.clue': '线索处理',
     'clue.has.no.handle': '暂未处理',
     'clue.set.invalid': '判定无效',
-    'clue.cancel.set.invalid': '取消无效'
+    'clue.cancel.set.invalid': '取消无效',
+    'analysis.sales.weekly.report': '销售周报',
+    'common.font.di': '第',
+    'common.weeks': '周',
 };
 export default zh_CN;

@@ -286,6 +286,7 @@ var en_US = {
     'user.time.start': 'Open time',//开通时间
     'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
+    'user.login.score': 'Score', // 分数
     'user.login.days': 'Login Days', // 登录天数
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
@@ -320,6 +321,7 @@ var en_US = {
     'user.no.organization': 'No organization',//暂无组织
     'user.no.related.organization': 'No relevant organization',//无相关组织
     'user.open.cycle': 'Open cycle',//开通周期
+    'user.open.cycle.tips': 'The start time of the opening period cannot be less than today', // 开通周期的起始时间不能小于今天
     'user.open.cycle.date.tip': 'Will expire in {date} 0 o\'clock',//将在{date}的0点过期
     'user.time.hour': 'Hours',//小时
     'user.time.minute': 'Minutes',//分
@@ -513,6 +515,15 @@ var en_US = {
     'user.no.login.system': 'This user has never log in to the system', // 该用户还没有登录过系统
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
+
+    // 用户分析
+    'user.login.total.score': 'Total score', // 总分
+    'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
+    'user.login.latest.immersion.score': 'Latest immersion score', // 最新沉浸度分数
+    'user.login.freshness.score': 'Freshness score', // 新鲜度分数
+    'user.login.history.activity.score': 'Historical activity score', // 历史活跃度分数
+    'user.login.history.immersion.score': 'Historical immersion score', // 历史沉浸度分数
+
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',
     'third.party.app.add': 'Add application of the open plateform',//添加应用
@@ -2505,6 +2516,9 @@ var en_US = {
     'clue.handle.clue': 'Clue handle',//线索处理
     'clue.has.no.handle': 'Not processed yet',//暂未处理
     'clue.set.invalid': 'Invalid judgment',//判定无效
-    'clue.cancel.set.invalid': 'Cancel invalid'//取消无效
+    'clue.cancel.set.invalid': 'Cancel invalid',//取消无效
+    'annalysis.sales.weekly.report': 'Sales weekly report',//销售周报
+    'common.font.the': 'The',//第
+    'common.weeks': 'Weeks',//周
 };
 export default en_US;

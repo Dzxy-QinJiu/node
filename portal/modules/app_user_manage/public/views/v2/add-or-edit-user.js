@@ -152,6 +152,11 @@ const AddOrEditUser = React.createClass({
             if (!valid || this.isAddOnlyOneUser()) {
                 hasError = true;
             }
+            // 检查开通时间
+            if (formData.start_time < moment().startOf('day').valueOf()) {
+                AppUserFormActions.showOpenTimeErrorTips(true);
+                hasError = true;
+            }
             //检查用户属于
             if (this.state.formData.user_type === AppUserUtil.USER_TYPE_VALUE_MAP.SIGN_USER) {
                 //如果客户输入框有值，但是没有选中的客户，提示客户问题
@@ -291,8 +296,8 @@ const AddOrEditUser = React.createClass({
             customAppSetting.status = status;
             //到期停用
             customAppSetting.over_draft = savedAppSetting.over_draft.value;
-            //开始时间
-            customAppSetting.begin_date = savedAppSetting.time.start_time;
+            //开始时间(为了避免，放置超过一晚，直接输入密码，请求时间，还是以前的时间)
+            customAppSetting.begin_date = _.max([savedAppSetting.time.start_time, moment().startOf('day').valueOf()]);
             //结束时间
             customAppSetting.end_date = savedAppSetting.time.end_time;
             //两步验证
@@ -832,6 +837,9 @@ const AddOrEditUser = React.createClass({
         AppUserActions.closeRightPanel();
         AppUserFormActions.resetState();
     },
+    hideOpenTimeErrorTips() {
+        AppUserFormActions.showOpenTimeErrorTips(false);
+    },
     renderIndicator() {
         if (this.state.submitResult === 'loading') {
             return (
@@ -841,6 +849,19 @@ const AddOrEditUser = React.createClass({
         var hide = function() {
             AppUserFormActions.hideSubmitTip();
         };
+        if (this.state.isShowOpenTimeErrorTips) {
+            return (
+                <div className="open-period-time">
+                    <AlertTimer
+                        time={3000}
+                        message={Intl.get('user.open.cycle.tips', '开通周期的起始时间不能小于今天')}
+                        type="error"
+                        showIcon
+                        onHide={this.hideOpenTimeErrorTips}
+                    />
+                </div>
+            );
+        }
         if (this.state.submitResult === 'success') {
             return (
                 <AlertTimer time={3000} message={Intl.get('user.user.add.success', '添加成功')} type="success" showIcon

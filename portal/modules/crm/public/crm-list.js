@@ -1160,6 +1160,17 @@ var Crm = React.createClass({
             showFilterList: !this.state.showFilterList
         });
     },
+    //获取排序
+    getSorter() {
+        let sorter = true;
+
+        //从销售首页跳转过来的不显示排序
+        if (this.props.fromSalesHome) {
+            sorter = false;
+        }
+
+        return sorter;
+    },
     render: function() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1190,14 +1201,14 @@ var Crm = React.createClass({
             return record.id;
         }
 
-        const column_width = '90px';
+        const column_width = '80px';
         var columns = [
             {
                 title: Intl.get('crm.4', '客户名称'),
                 width: '240px',
                 dataIndex: 'name',
                 className: 'has-filter',
-                sorter: true,
+                sorter: this.getSorter(),
                 render: function(text, record, index) {
                     var tagsArray = _.isArray(record.labels) ? record.labels : [];
                     //线索、转出标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
@@ -1266,14 +1277,14 @@ var Crm = React.createClass({
                 title: Intl.get('crm.6', '负责人'),
                 width: column_width,
                 dataIndex: 'user_name',
-                sorter: true,
+                sorter: this.getSorter(),
                 className: 'has-filter'
             },
             {
                 title: Intl.get('crm.last.contact', '最后联系'),
                 width: hasSecretaryAuth ? '150px' : '240px',
                 dataIndex: 'last_contact_time',
-                sorter: true,
+                sorter: this.getSorter(),
                 className: 'has-filter',
                 render: function(text, record, index) {
                     //最后联系时间和跟进记录的合并
@@ -1292,15 +1303,23 @@ var Crm = React.createClass({
                 }
             },
             {
+                title: Intl.get('user.login.score', '分数'),
+                width: 60,
+                dataIndex: 'score',
+                align: 'right',
+                sorter: this.getSorter(),
+                className: 'has-filter'
+            },
+            {
                 title: Intl.get('member.create.time', '创建时间'),
                 width: '100px',
                 dataIndex: 'start_time',
-                sorter: true,
+                sorter: this.getSorter(),
                 className: 'has-filter table-data-align-right'
             },
             {
                 title: Intl.get('common.operate', '操作'),
-                width: '60px',
+                width: 50,
                 render: (text, record, index) => {
                     //是否是重复的客户
                     const isRepeat = record.name_repeat || record.phone_repeat;

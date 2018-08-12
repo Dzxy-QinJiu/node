@@ -40,6 +40,14 @@ module.exports = {
         'privileges': [
             'USER_AUDIT_LOG_LIST'
         ]
+    }, { // 获取用户的分数
+        'method': 'get',
+        'path': '/rest/login/user/score/:type',
+        'handler': 'getLoginUserScore',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
     }
     ]
 };
