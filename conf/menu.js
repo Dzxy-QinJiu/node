@@ -125,31 +125,32 @@ class LeftMenuClass {
                         //有这个权限，才显示入口图标
                         showPrivileges: ['USER_MANAGE_LIST_USERS']
                     },
+                    // {
+                    //     id: 'ROLE',
+                    //     name: backendIntl.get('menu.role', '角色管理'),
+                    //     routePath: 'background_management/role',
+                    //     privileges: [
+                    //         'ROLEP_RIVILEGE_ROLE_ADD',//添加角色
+                    //         'ROLEP_RIVILEGE_ROLE_DELETE',//删除角色
+                    //         'ROLEP_RIVILEGE_ROLE_EDIT',//修改角色
+                    //         'ROLEP_RIVILEGE_ROLE_LIST'//查看角色
+                    //     ],
+                    //     //有这个权限，才显示入口图标
+                    //     showPrivileges: ['ROLEP_RIVILEGE_ROLE_LIST']
+                    // }, {
+                    //     id: 'AUTHORITY',
+                    //     name: backendIntl.get('menu.auth', '权限管理'),
+                    //     routePath: 'background_management/authority',
+                    //     privileges: [
+                    //         'ROLEP_RIVILEGE_AUTHORITY_ADD',//添加权限
+                    //         'ROLEP_RIVILEGE_AUTHORITY_DELETE',//删除权限
+                    //         'ROLEP_RIVILEGE_AUTHORITY_EDIT',//修改权限
+                    //         'ROLEP_RIVILEGE_AUTHORITY_LIST'//查看权限
+                    //     ],
+                    //     //有这个权限，才显示入口图标
+                    //     showPrivileges: ['ROLEP_RIVILEGE_AUTHORITY_LIST']
+                    // },
                     {
-                        id: 'ROLE',
-                        name: backendIntl.get('menu.role', '角色管理'),
-                        routePath: 'background_management/role',
-                        privileges: [
-                            'ROLEP_RIVILEGE_ROLE_ADD',//添加角色
-                            'ROLEP_RIVILEGE_ROLE_DELETE',//删除角色
-                            'ROLEP_RIVILEGE_ROLE_EDIT',//修改角色
-                            'ROLEP_RIVILEGE_ROLE_LIST'//查看角色
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: ['ROLEP_RIVILEGE_ROLE_LIST']
-                    }, {
-                        id: 'AUTHORITY',
-                        name: backendIntl.get('menu.auth', '权限管理'),
-                        routePath: 'background_management/authority',
-                        privileges: [
-                            'ROLEP_RIVILEGE_AUTHORITY_ADD',//添加权限
-                            'ROLEP_RIVILEGE_AUTHORITY_DELETE',//删除权限
-                            'ROLEP_RIVILEGE_AUTHORITY_EDIT',//修改权限
-                            'ROLEP_RIVILEGE_AUTHORITY_LIST'//查看权限
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: ['ROLEP_RIVILEGE_AUTHORITY_LIST']
-                    }, {
                         id: 'SALESSTAGE',
                         name: backendIntl.get('menu.salesstage', '销售阶段管理'),
                         routePath: 'background_management/sales_stage',
