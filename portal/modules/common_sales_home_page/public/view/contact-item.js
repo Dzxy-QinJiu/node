@@ -126,6 +126,18 @@ class ContactItem extends React.Component {
                                     })}
                                 </span>
                                 : null}
+                            {_.isArray(contactItem.weChat) && contactItem.weChat.length ?
+                                <span className="weChat-container">
+                                    {_.map(contactItem.weChat,(weChatItem) => {
+                                        return (
+                                            <span className="contact-item">
+                                                <i className="iconfont icon-weChat"></i>
+                                                {weChatItem}
+                                            </span>
+                                        );
+                                    })}
+                                </span>
+                                : null}
                         </div>
                     );
                 })}
@@ -137,9 +149,10 @@ class ContactItem extends React.Component {
     render() {
         var contactDetail = this.state.contacts;
         return (
-            <div className="recent-contacter-detail">
-                {_.isArray(contactDetail) && contactDetail.length ? this.renderContactsContent(contactDetail) : null}
-            </div>
+            _.isArray(contactDetail) && contactDetail.length ?
+                <div className="recent-contacter-detail">
+                    {this.renderContactsContent(contactDetail)}
+                </div> : null
         );
     }
 

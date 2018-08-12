@@ -266,3 +266,39 @@ function traversingSelectTeamTree(teamTreeList, selectedTeams) {
     return teamTotalArr;
 }
 exports.traversingSelectTeamTree = traversingSelectTeamTree;
+
+
+//不同状态的线索描述
+exports.getClueStatus = function(status) {
+    var statusDes = '';
+    switch (status) {
+        case '0':
+            statusDes = Intl.get('clue.customer.will.distribution', '待分配');
+            break;
+        case '1':
+            statusDes = Intl.get('sales.home.will.trace', '待跟进');
+            break;
+        case '2':
+            statusDes = Intl.get('clue.customer.has.follow', '已跟进');
+            break;
+    }
+    return statusDes;
+};
+exports.renderClueStatus = function(status) {
+    var statusDes = '';
+    switch (status) {
+        case '0':
+            statusDes = <span
+                className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
+            break;
+        case '1':
+            statusDes =
+                <span className="clue-stage has-distribute">{Intl.get('sales.home.will.trace', '待跟进')}</span>;
+            break;
+        case '2':
+            statusDes =
+                <span className="clue-stage has-follow">{Intl.get('clue.customer.has.follow', '已跟进')}</span>;
+            break;
+    }
+    return statusDes;
+};

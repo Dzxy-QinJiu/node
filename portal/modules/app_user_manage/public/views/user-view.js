@@ -18,7 +18,7 @@ var batchPushEmitter = require('../../../../public/sources/utils/emitters').batc
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import language from 'PUB_DIR/language/getLanguage';
-import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/sales-clue-add-form';
+import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/consts';
@@ -586,7 +586,7 @@ var UserTabContent = React.createClass({
                     return user ? (
                         <div title={user.description}>
                             {user.description}
-                            {isShowTransClueButton ?
+                            {isShowTransClueButton || true ?
                                 <div className="trans-clue-customer">
                                     <Button type="primary"
                                         onClick={_this.transformClueCustomer.bind(this, rowData)}>{Intl.get('app.user.trans.clue.customer', '生成线索')}</Button>
@@ -1149,6 +1149,7 @@ var UserTabContent = React.createClass({
     },
     render: function() {
         var appUserId = this.state.producingClueCustomerItem.user ? this.state.producingClueCustomerItem.user.user_id : '';
+        var appUserName = _.get(this.state.producingClueCustomerItem, 'user.user_name');
         return (
             <div ref="userListTable">
                 {this.renderFilterBlock()}
@@ -1157,6 +1158,7 @@ var UserTabContent = React.createClass({
                 {this.state.clueAddFormShow ? (
                     <SalesClueAddForm
                         appUserId={appUserId}
+                        appUserName={appUserName}
                         defaultClueData={this.state.defaultClueData}
                         hideAddForm={this.hideClueAddForm}
                         accessChannelArray={this.state.accessChannelArray}

@@ -8,6 +8,7 @@ var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 import ClueImport from './clue-import';
+require('../css/clue_import.less');
 class ClueImportTemplate extends React.Component {
     constructor(props){
         super(props);
@@ -55,4 +56,15 @@ class ClueImportTemplate extends React.Component {
         );
     }
 }
+
+ClueImportTemplate.defaultProps = {
+    refreshClueList: function() {},
+    showFlag: false,
+    closeClueTemplatePanel: function() {}
+};
+ClueImportTemplate.propTypes = {
+    refreshClueList: React.PropTypes.func,
+    showFlag: React.PropTypes.bool,
+    closeClueTemplatePanel: React.PropTypes.func,
+};
 export default ClueImportTemplate;
