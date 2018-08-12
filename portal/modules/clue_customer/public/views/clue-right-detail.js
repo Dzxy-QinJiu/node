@@ -22,18 +22,93 @@ var noop = function() {
 import ClueDynamic from '../views/dynamic';
 import ClueBasicInfo from '../views/clue_detail_overview';
 import Trace from 'LIB_DIR/trace';
-import clueAjax from '../ajax/clue-customer-ajax';
+import clueCustomerAjax from '../ajax/clue-customer-ajax';
+import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
+import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
+
 class ClueRightPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            accessChannelArray: accessChannelArray,//线索渠道
+            clueSourceArray: clueSourceArray,//线索来源
+            clueClassifyArray: clueClassifyArray,//线索分类
+            salesManList: [],//销售列表
             activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
             curClue: $.extend(true, {}, this.props.curClue),
             relatedCustomer: {},//与线索相关联的客户
         };
     }
-
-
+    componentDidMount = () => {
+        this.getClueSource();
+        this.getClueChannel();
+        this.getClueClassify();
+        this.getSaleTeamList();
+    };
+    getSaleTeamList = () => {
+        clueCustomerAjax.getSalesManList().then(data => {
+            this.setState({
+                salesManList: data
+            });
+        });
+    };
+    getClueSource = () => {
+        clueCustomerAjax.getClueSource().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    clueSourceArray: _.union(this.state.clueSourceArray, removeSpacesAndEnter(data.result))
+                });
+            }
+        }, errorMsg => {
+            // eslint-disable-next-line no-console
+            console.log('获取线索来源出错了 ' + errorMsg);
+        });
+    };
+    getClueChannel = () => {
+        clueCustomerAjax.getClueChannel().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    accessChannelArray: _.union(this.state.accessChannelArray, removeSpacesAndEnter(data.result))
+                });
+            }
+        }, errorMsg => {
+            // eslint-disable-next-line no-console
+            console.log('获取线索渠道出错了 ' + errorMsg);
+        });
+    };
+    getClueClassify = () => {
+        clueCustomerAjax.getClueClassify().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    clueClassifyArray: _.union(this.state.clueClassifyArray, removeSpacesAndEnter(data.result))
+                });
+            }
+        }, errorMsg => {
+            // eslint-disable-next-line no-console
+            console.log('获取线索分类出错了 ' + errorMsg);
+        });
+    };
+    //更新线索来源列表
+    updateClueSource = (newSource) => {
+        this.state.clueSourceArray.push(newSource);
+        this.setState({
+            clueSourceArray: this.state.clueSourceArray
+        });
+    };
+    //更新线索渠道列表
+    updateClueChannel = (newChannel) => {
+        this.state.accessChannelArray.push(newChannel);
+        this.setState({
+            accessChannelArray: this.state.accessChannelArray
+        });
+    };
+    //更新线索分类
+    updateClueClassify = (newClue) => {
+        this.state.clueClassifyArray.push(newClue);
+        this.setState({
+            clueClassifyArray: this.state.clueClassifyArray
+        });
+    };
     componentWillReceiveProps(nextProps) {
         //如果有更改后，id不变，但是属性有变化  && nextProps.curClue.id !== this.props.curClue.id
         if (nextProps.curClue) {
@@ -78,13 +153,13 @@ class ClueRightPanel extends React.Component {
                             {this.state.activeKey === TAB_KEYS.OVERVIEW_TAB ? (
                                 <ClueBasicInfo
                                     curClue={this.state.curClue}
-                                    accessChannelArray={this.props.accessChannelArray}
-                                    clueSourceArray={this.props.clueSourceArray}
-                                    clueClassifyArray={this.props.clueClassifyArray}
-                                    updateClueSource={this.props.updateClueSource}
-                                    updateClueChannel={this.props.updateClueChannel}
-                                    updateClueClassify={this.props.updateClueClassify}
-                                    salesManList={this.props.salesManList}
+                                    accessChannelArray={this.state.accessChannelArray}
+                                    clueSourceArray={this.state.clueSourceArray}
+                                    clueClassifyArray={this.state.clueClassifyArray}
+                                    updateClueSource={this.updateClueSource}
+                                    updateClueChannel={this.updateClueChannel}
+                                    updateClueClassify={this.updateClueClassify}
+                                    salesManList={this.state.salesManList}
                                 />
                             ) : null}
                         </TabPane>
@@ -108,24 +183,12 @@ class ClueRightPanel extends React.Component {
 }
 ClueRightPanel.defaultProps = {
     curClue: {},
-    clueSourceArray: [],
-    accessChannelArray: [],
-    clueClassifyArray: [],
     hideRightPanel: noop,
-    updateClueSource: noop,
-    updateClueChannel: noop,
-    updateClueClassify: noop,
     salesManList: [],
 };
 ClueRightPanel.propTypes = {
     curClue: React.PropTypes.object,
     hideRightPanel: React.PropTypes.func,
-    clueSourceArray: React.PropTypes.object,
-    accessChannelArray: React.PropTypes.object,
-    clueClassifyArray: React.PropTypes.object,
-    updateClueSource: React.PropTypes.func,
-    updateClueChannel: React.PropTypes.func,
-    updateClueClassify: React.PropTypes.func,
     salesManList: React.PropTypes.object,
 
 };

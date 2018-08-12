@@ -586,7 +586,7 @@ var UserTabContent = React.createClass({
                     return user ? (
                         <div title={user.description}>
                             {user.description}
-                            {isShowTransClueButton || true ?
+                            {isShowTransClueButton ?
                                 <div className="trans-clue-customer">
                                     <Button type="primary"
                                         onClick={_this.transformClueCustomer.bind(this, rowData)}>{Intl.get('app.user.trans.clue.customer', '生成线索')}</Button>
