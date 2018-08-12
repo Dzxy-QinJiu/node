@@ -46,7 +46,7 @@
                 width: 90%;
               }
               .iconfont.icon-delete.disabled{
-                color: #eeeeee;
+                color: transparent;
               }
             }
             .contact-way-item{
@@ -56,16 +56,18 @@
                   width: 95px;
                   float: left;
                 }
-                .contact-type-tip, .ant-form-item{
-                  width: 180px;
+                .ant-form-item{
+                  width: 300px;
                   float: left;
-                  margin-bottom: 0;
-                  .ant-form-item-control-wrapper{
-                    width: 100%;
+                  margin-bottom: 8px;
+                  .ant-form-item-required:before {
+                    content: ""
+                  }
+                  .ant-form-item-label {
+                    text-align: left;
                   }
                 }
               }
-
             }
 
             i.iconfont{
@@ -83,13 +85,15 @@
               }
               .clue-plus-button{
                 float: left;
-                margin-left:15px;
+                margin-left:6px;
               }
             }
           }
           .add-contact{
-            color:#8EAAC5;
+            float: left;
             text-align: left;
+            color:#8EAAC5;
+            cursor: pointer;
           }
         }
       }

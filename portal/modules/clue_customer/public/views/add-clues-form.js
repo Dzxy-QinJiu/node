@@ -15,6 +15,8 @@ var clueCustomerAction = require('../action/clue-customer-action');
 import {checkClueName, checkEmail, checkQQ} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+const PHONE_INPUT_ID = 'phoneInput';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 import PhoneInput from 'CMP_DIR/phone-input';
 var uuid = require('uuid/v4');
@@ -30,15 +32,23 @@ var initialContact = {
     'name': '',
     'show_contact_item': [{type: DIFCONTACTWAY.PHONE, value: '',randomValue: uuid()}]
 };
-const desArr = {
+const CONTACT_WAY_PLACEHOLDER = {
     'phone': Intl.get('clue.add.phone.num', '电话号码'),
     'email': Intl.get('clue.add.email.addr', '邮箱地址'),
     'qq': Intl.get('clue.add.qq.num', 'QQ号码'),
     'weChat': Intl.get('clue.add.wechat.num', '微信号码')
 };
+// 联系方式的label
+const CONTACT_WAY_LABEL = {
+    phone: Intl.get('common.phone', '电话'),
+    qq: 'Q Q',
+    email: Intl.get('common.email', '邮箱'),
+    weChat: Intl.get('crm.58', '微信')
+};
 const FORMLAYOUT = {
     PADDINGTOTAL: 70
 };
+
 class ClueAddForm extends React.Component {
     constructor(props) {
         super(props);
@@ -91,116 +101,105 @@ class ClueAddForm extends React.Component {
             _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
         }
     };
-    addClue = (submitObj) => {
-        //去除表单数据中值为空的项
-        var contacts = submitObj.contacts;
-        _.forEach(contacts,(item) => {
-            _.forEach(item.show_contact_item,(contactWayItem) => {
-                if(item[contactWayItem.type]){
-                    item[contactWayItem.type].push(contactWayItem.value);
-                }else{
-                    item[contactWayItem.type] = [contactWayItem.value];
-                }
-                item[contactWayItem.type] = _.uniq(item[contactWayItem.type]);
-            });
-            delete item['show_contact_item'];
-        });
-        //把订单的第一个设置为默认联系人
-        if (_.isArray(submitObj.contacts) && submitObj.contacts.length){
-            submitObj.contacts[0]['def_contancts'] = 'true';
-        }
-        let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
-        this.setState({isSaving: true, saveMsg: '', saveResult: ''});
-        ajax({
-            url: addRoute.path,
-            type: addRoute.method,
-            data: submitObj
-        }).then(data => {
-            if (_.isObject(data) && data.code === 0) {
-                //添加成功
-                this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                this.setState({
-                    newAddClue: data.result
-                });
-                clueCustomerAction.afterAddSalesClue({newCustomer: data.result});
-                this.afterAddClue(submitObj);
-                //线索客户添加成功后的回调
-                _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
-            } else {
-                this.setResultData(Intl.get('crm.154', '添加失败'), 'error');
-            }
-        }, errorMsg => {
-            //添加失败
-            this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
-        });
 
-    };
-    handleSubmitValuesBeforeSubmit = (values) => {
-        //如果每个联系方式的联系人和联系方式都没有
-        var contacts = this.state.formData.contacts;
-        var contactErr = true;
-        _.forEach(contacts, (contactItem) => {
-            _.forEach(contactItem.show_contact_item, (item) => {
-                if (item.value) {
-                    contactErr = false;
-                }
-            });
+    hasContactWay(contactWayArray) {
+        return _.find(contactWayArray, item => item);
+    }
+
+    // 是否有联系方式的验证
+    validateContactIsEmpty(contacts){
+        let contactIsEmpty = true;
+        _.each(contacts, (contactItem) => {
+            if( this.hasContactWay(contactItem.phone) ||
+                this.hasContactWay(contactItem.qq) ||
+                this.hasContactWay(contactItem.email) ||
+                this.hasContactWay(contactItem.weChat)) {
+                contactIsEmpty = false;
+                return false;
+            }
         });
-        if (contactErr) {
+        if (contactIsEmpty) {
             this.setState({
                 contactErrMsg: Intl.get('clue.fill.clue.contacts', '请填写线索的联系方式')
             });
-            return;
-        } else {
-            values.contacts = contacts;
         }
+        return contactIsEmpty;
+    }
+
+    getSubmitObj(values){
+        let submitObj = {};
         //去掉values中的key值
         _.forEach(values, (value, key) => {
-            if (!value){
-                delete values[key];
-            }
-            if(key === 'source_time'){
-                values[key] = moment(value).valueOf();
+            if(value){
+                if(key === 'source_time'){
+                    submitObj[key] = moment(value).valueOf();
+                } else if (key === 'contacts'){//联系人的处理
+                    let contacts = [];
+                    _.each(value, contact => {
+                        let submitContact = _.cloneDeep(contact);
+                        if(submitContact.name){
+                            // 过滤掉空的联系方式
+                            submitContact.phone = _ .filter(submitContact.phone, phone => phone);
+                            submitContact.qq = _.filter(submitContact.qq, qq => qq);
+                            submitContact.email = _.filter(submitContact.email, email => email);
+                            submitContact.weChat = _.filter(submitContact.weChat, weChat => weChat);
+                            contacts.push(submitContact);
+                        }
+                    });
+                    submitObj[key] = contacts;
+                } else if(key !== 'contact_keys'){//去掉用于动态增删联系方式的属性
+                    submitObj[key] = value;
+                }
             }
         });
-        //todo app_user_name 要加这个字段，加个字符串就可以
         //生成线索客户的用户的id
         if (this.props.appUserId){
-            values.app_user_ids = [this.props.appUserId];
-            values.app_user_info = [{
+            submitObj.app_user_ids = [this.props.appUserId];
+            submitObj.app_user_info = [{
                 id: this.props.appUserId,
                 name: this.props.appUserName
             }];
         }
-        return values;
-    };
+        //把订单的第一个设置为默认联系人
+        if (_.isArray(submitObj.contacts) && submitObj.contacts.length){
+            submitObj.contacts[0]['def_contancts'] = 'true';
+        }
+        return submitObj;
+    }
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!this.handleSubmitValuesBeforeSubmit(values)){
+            if (err) return;
+            //是否有联系方式的验证
+            if (this.validateContactIsEmpty(values.contacts)){
                 return;
             }
-            values = this.handleSubmitValuesBeforeSubmit(values);
-            //验证电话是否通过验证
-            if (!err){
-                if (this.phoneInputRefs.length) {
-                    //存在电话输入框时，验证一下填写的电话是否符合要求
-                    let phoneFormValArray = [];
-                    _.each(this.phoneInputRefs, item => {
-                        phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
+            let submitObj = this.getSubmitObj(values);
+            let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
+            this.setState({isSaving: true, saveMsg: '', saveResult: ''});
+            ajax({
+                url: addRoute.path,
+                type: addRoute.method,
+                data: submitObj
+            }).then(data => {
+                if (_.isObject(data) && data.code === 0) {
+                    //添加成功
+                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                    this.setState({
+                        newAddClue: data.result
                     });
-                    Promise.all(phoneFormValArray).then(result => {
-                        let firstErrorItem = _.find(result, item => item.errs);
-                        if (firstErrorItem) {
-                            return;
-                        } else {
-                            this.addClue(values);
-                        }
-                    });
-                }else{
-                    this.addClue(values);
+                    clueCustomerAction.afterAddSalesClue({newCustomer: data.result});
+                    this.afterAddClue(submitObj);
+                    //线索客户添加成功后的回调
+                    _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
+                } else {
+                    this.setResultData(Intl.get('crm.154', '添加失败'), 'error');
                 }
-            }
+            }, errorMsg => {
+                //添加失败
+                this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
+            });
+    
         });
     };
     //验证客户名是否重复
@@ -293,108 +292,23 @@ class ClueAddForm extends React.Component {
             }
         }];
     };
-    handleDelContact = (index, size) => {
-        if (index === 0 && size === 1) {
-            return;
-        }
-        var contacts = this.state.formData.contacts;
-        contacts.splice(index, 1);
-        this.setState({
-            formData: this.state.formData
-        });
+    // 删除联系人
+    handleDelContact = (contactKey, index, size) => {
+        if(index === 0 && size === 1) retrun;
+        const { form } = this.props;
+        // contact_keys：记录所有联系人所有联系方式的key数组对象
+        // [{ key: 0,
+        //    phone:[{key:0}],
+        //    qq:[{key:0}],
+        //    weChat:[{key:0}],
+        //    email:[{key:0}]
+        // },...] 
+        let contact_keys = form.getFieldValue('contact_keys');
+        // 过滤调要删除的联系人的key
+        contact_keys = _.filter(contact_keys, (item,index) => item.key !== contactKey);
+        form.setFieldsValue({contact_keys});
+
     };
-
-    renderDiffContacts(item, index, size) {
-        var contactWays = [
-            {name: DIFCONTACTWAY.PHONE, value: Intl.get('common.phone', '电话')},
-            {name: DIFCONTACTWAY.EMAIL, value: Intl.get('common.email', '邮箱')},
-            {name: DIFCONTACTWAY.QQ, value: 'QQ'},
-            {name: DIFCONTACTWAY.WECHAT, value: Intl.get('crm.58', '微信')}];
-
-        function getDiffCls(type) {
-            var cls = classNames('iconfont', {
-                'icon-qq': type === 'qq',
-                'icon-email': type === 'email',
-                'icon-phone-call-out': type === 'phone',
-                'icon-weChat': type === 'weChat'
-            });
-            return cls;
-        }
-        var iconCls = classNames('iconfont icon-delete', {
-            'disabled': index === 0 && size === 1
-        });
-        var contacts = this.state.formData.contacts;
-        var show_contact_item = contacts[index]['show_contact_item'];
-        const {getFieldDecorator} = this.props.form;
-        return (
-            <div className="contact-wrap">
-                <div className="contact-name-item">
-                    <Input value={item.name} onChange={this.handleChangeContactName.bind(this, index)}
-                        className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
-                    <i className={iconCls} onClick={this.handleDelContact.bind(this, index, size)}></i>
-                </div>
-                <div className="contact-way-item">
-                    {_.map(show_contact_item, (contactItem, itemIndex) => {
-                        var contactWay = contactItem.type;
-                        var contactValue = contactItem.value;
-                        var randomValue = contactItem.randomValue;
-                        //取每个联系人的联系方式
-                        var itemSize = show_contact_item.length;
-                        return (
-                            <div className="contact-item">
-                                <Select value={contactWay}
-                                    onChange={this.handleContactTypeChange.bind(this, index, itemIndex)}>
-                                    {contactWays.map((item) => {
-                                        return <Option value={item.name} key={item.name} title={item.value}>
-                                            <i className={getDiffCls(item.name)}></i>
-                                            {item.value}</Option>;
-                                    })}
-                                </Select>
-                                {/*不同的联系方式用不同的规则来校验*/}
-
-                                {
-                                    contactWay === 'phone' ? <PhoneInput
-                                        wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst) }
-                                        placeholder={desArr[contactWay]}
-                                        validateRules={this.getPhoneInputValidateRules()}
-                                        initialValue={contactValue}
-                                        hideLable={true}
-                                        onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
-                                        id={randomValue}
-                                    /> : null
-                                }
-                                {contactWay === 'email' ? this.renderDiffWays(contactWay,checkEmail,contactValue,index, itemIndex, randomValue) : null}
-                                {contactWay === 'qq' ? this.renderDiffWays(contactWay,checkQQ,contactValue,index, itemIndex, randomValue) : null
-                                }
-                                {contactWay === 'weChat' ? this.renderDiffWays(contactWay,function() {},contactValue,index, itemIndex, randomValue) : null}
-                                {this.renderContactWayBtns(index, itemIndex, itemSize, randomValue)}
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        );
-    }
-    renderDiffWays(contactWay,validator, contactValue, index, itemIndex, randomValue){
-        const {getFieldDecorator} = this.props.form;
-        return (
-            <FormItem>
-                {getFieldDecorator(randomValue, {
-                    rules: [{required: false},
-                        {validator: validator}
-                    ],
-                    initialValue: contactValue
-                },
-                )(
-                    <Input
-                        onChange={this.setContactValue.bind(this, index, itemIndex, randomValue)}
-                        className='contact-type-tip' placeholder={desArr[contactWay]}
-                    />
-                ) }
-            </FormItem>
-        );
-
-    }
 
     setContactValue = (index, itemIndex, randomValue, e) => {
         var formData = this.state.formData;
@@ -406,42 +320,29 @@ class ClueAddForm extends React.Component {
         a[randomValue] = e.target.value;
         this.props.form.setFieldsValue(a);
     };
-
-    removeContactWay = (index, itemIndex, key) => {
-        this.state.formData.contacts[index]['show_contact_item'].splice(itemIndex, 1);
-        this.setState({
-            formData: this.state.formData
-        });
-    };
-    addContactWay = (index) => {
-        var contacts = this.state.formData.contacts;
-        let addItem = {type: 'phone', value: '', randomValue: uuid()};
-        contacts[index]['show_contact_item'].push(addItem);
-        this.setState({
-            formData: this.state.formData
-        });
-    };
-    //添加、删除联系方式的按钮
-    renderContactWayBtns = (index, itemIndex, itemSize, key) => {
-        return (<div className="contact-way-buttons">
-            {itemIndex === 0 && itemSize === 1 ? null : <div className="clue-minus-button"
-                onClick={this.removeContactWay.bind(this, index, itemIndex, key)}>
-                <Icon type="minus"/>
-            </div>}
-            {itemIndex === itemSize - 1 ? (
-                <div className="clue-plus-button" onClick={this.addContactWay.bind(this, index)}>
-                    <Icon type="plus"/>
-                </div>) : null}
-        </div>);
-    };
+    // 添加联系人
     handleAddContact = () => {
-        this.state.formData.contacts.push({
-            'name': '',
-            'show_contact_item': [{type: DIFCONTACTWAY.PHONE, value: '',randomValue: uuid()}]
+        const { form } = this.props;
+        // contact_keys：记录所有联系人所有联系方式的key数组对象
+        // [{ key: 0,
+        //    phone:[{key:0}],
+        //    qq:[{key:0}],
+        //    weChat:[{key:0}],
+        //    email:[{key:0}]
+        // },...] 
+        let contact_keys = form.getFieldValue('contact_keys');
+        // 联系人key数组中最后一个联系人的key
+        let lastContactKey = _.get(contact_keys,`[${contact_keys.length - 1}].key`) || 0;
+        // 新加联系人的key
+        let addContactKey = lastContactKey + 1;
+        contact_keys.push({ 
+            key: addContactKey,
+            phone: [{key: 0}],
+            qq: [{key: 0}],
+            weChat: [{key: 0}],
+            email: [{key: 0}]
         });
-        this.setState({
-            formData: this.state.formData
-        });
+        form.setFieldsValue({contact_keys});
     };
     //去掉保存后提示信息
     hideSaveTooltip = () => {
@@ -454,8 +355,177 @@ class ClueAddForm extends React.Component {
         },1000);
 
     };
-    render = () => {
+    /**
+     * 删除联系方式
+     * contactIndex:删除第几个联系人的联系方式
+     * contactWay: 删除的哪种联系方式
+     * contactWayKey: 删除该key的联系方式
+     */
+    removeContactWay = (contactIndex, contactWay, contactWayKey) => {
+        const { form } = this.props;
+        // contact_keys：记录所有联系人所有联系方式的key数组对象
+        // [{ key: 0,
+        //    phone:[{key:0}],
+        //    qq:[{key:0}],
+        //    weChat:[{key:0}],
+        //    email:[{key:0}]
+        // },...] 
+        let contact_keys = form.getFieldValue('contact_keys');
+        //contactWayArray: 某个联系人某种联系方式的key数组
+        let contactWayArray = contact_keys[contactIndex][contactWay];
+        // 过滤调要删除的联系方式的key
+        contact_keys[contactIndex][contactWay] = _.filter(contactWayArray, (item,index) => item.key !== contactWayKey);
+        form.setFieldsValue({contact_keys});
+
+    };
+    /**
+     * 添加联系方式
+     * contactIndex:给第几个联系人添加联系方式
+     * contactWay: 添加的哪种联系方式
+     */
+    addContactWay = (contactIndex, contactWay) => {
+        const { form } = this.props;
+        // contact_keys：记录所有联系人所有联系方式的key数组对象
+        // [{ key: 0,
+        //    phone:[{key:0}],
+        //    qq:[{key:0}],
+        //    weChat:[{key:0}],
+        //    email:[{key:0}]
+        // },...] 
+        let contact_keys = form.getFieldValue('contact_keys');
+        //contactWayArray: 某个联系人某种联系方式的key数组
+        let contactWayArray = contact_keys[contactIndex][contactWay];
+        // 当前联系方式key数组中获取最后一个联系方式的key
+        let lastContactWayKey = _.get(contactWayArray,`[${contactWayArray.length - 1}].key`) || 0;
+        // 新加联系方式的key
+        let addContactWayKey = lastContactWayKey + 1;
+        contactWayArray.push({ key: addContactWayKey});
+        form.setFieldsValue({contact_keys});
+    };
+
+    renderDiffContacts(item, index, contact_keys) {
+        const size = contact_keys.length;
+        const {getFieldDecorator, getFieldValue, getFieldsValue} = this.props.form;
+        // contact_keys：记录所有联系人所有联系方式的key数组对象
+        // [{ key: 0,
+        //    phone:[{key:0}],
+        //    qq:[{key:0}],
+        //    weChat:[{key:0}],
+        //    email:[{key:0}]
+        // },...] 
+        const phoneArray = contact_keys[index].phone;
+        const qqArray = contact_keys[index].qq;
+        const emailArray = contact_keys[index].email;
+        const weChatArray = contact_keys[index].weChat;
+        const contactKey = item.key;//当前联系人的key
+        const delContactCls = classNames('iconfont icon-delete', {
+            'disabled': index === 0 && size === 1
+        });
+        return (
+            <div className="contact-wrap" key={`contacts[${contactKey}]`}>
+                <FormItem className="contact-name-item">
+                    {getFieldDecorator(`contacts[${contactKey}].name`, {
+                        rules: [{
+                            required: true,
+                            message: Intl.get('crm.90', '请输入姓名')
+                        }]
+                    })(
+                        <Input className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
+                    )}
+                    <i className={delContactCls} onClick={this.handleDelContact.bind(this, contactKey, index, size)}/>
+                </FormItem>
+                <div className="contact-way-item">
+                    {_.map(phoneArray, (phone, phoneIndex) => {
+                        const phoneKey = `contacts[${contactKey}].phone[${phone.key}]`;
+                        return (
+                            <div className="contact-item" key={phoneKey}>
+                                <PhoneInput
+                                    wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst) }
+                                    placeholder={Intl.get('clue.add.phone.num', '电话号码')}
+                                    validateRules={this.getPhoneInputValidateRules()}
+                                    // onChange={this.setContactValue.bind(this, index, phoneKey)}
+                                    id={phoneKey}
+                                    labelCol={{span: 4}}
+                                    wrapperCol={{span: 20}}
+                                    colon={false}
+                                    form={this.props.form}
+                                    label={phoneIndex === 0 ? Intl.get('common.phone', '电话') : ' '}
+                                />
+                                {this.renderContactWayBtns(index, phoneIndex, phoneArray.length, 'phone', phone.key)}
+                            </div>);
+                    })}
+                    {_.map(qqArray, (qq, qqIndex) => {
+                        return this.renderContacWayFormItem(index, contactKey, 'qq', qq.key, qqIndex, qqArray.length, checkQQ);
+                    })}
+                    {_.map(emailArray, (email, emailIndex) => {
+                        return this.renderContacWayFormItem(index, contactKey, 'email', email.key, emailIndex, emailArray.length, checkEmail);
+                    })}
+                    {_.map(weChatArray, (weChat, weChatIndex) => {
+                        return this.renderContacWayFormItem(index, contactKey, 'weChat', weChat.key, weChatIndex, weChatArray.length);
+                    })}
+                </div>
+            </div>
+        );
+    }
+    /**
+     *  渲染某一个联系方式
+     * contactIndex: 联系人的index
+     * contactKey: 联系人的key
+     * contactWay: 联系方式
+     * contactWayKey: 联系人某联系方式的key
+     * contactWayIndex: 联系人某联系方式的index
+     * constactWaySize: 联系人某种联系方式的个数
+     * validator:验证方法
+     * */
+    renderContacWayFormItem(contactIndex, contactKey, contactWay, contactWayKey, contactWayIndex, contactWaySize, validator){
         const {getFieldDecorator} = this.props.form;
+        // 某个联系人下某个联系方式的ID(例如：contacts[0].qq[0],第一个联系人下的第一个电话)
+        const contactWayID = `contacts[${contactKey}].${contactWay}[${contactWayKey}]`;
+        let rules = [{required: false}];
+        if(validator){
+            rules.push({validator: validator});
+        }
+        return (
+            <div className="contact-item" key={contactWayID}>
+                <FormItem 
+                    label={contactWayIndex === 0 ? CONTACT_WAY_LABEL[contactWay] : ' '}
+                    labelCol={{span: 4}}
+                    wrapperCol={{span: 20}}
+                    colon={false}
+                >
+                    {getFieldDecorator(contactWayID, {
+                        rules: rules,
+                    })(
+                        <Input className='contact-type-tip' placeholder={CONTACT_WAY_PLACEHOLDER[contactWay]}
+                        />
+                    ) }
+                </FormItem>
+                {this.renderContactWayBtns(contactIndex, contactWayIndex, contactWaySize, contactWay, contactWayKey)}
+            </div>
+        );
+    }
+    /**
+     * 添加、删除联系方式的按钮 
+     * contactIndex: 联系人的index
+     * contactWayIndex: 联系人某联系方式的index
+     * contactWaySize: 联系人某种联系方式的个数
+     * contactWay: 联系方式
+     * contactWayKey: 联系方式的key
+     * */
+    renderContactWayBtns = (contactIndex, contactWayIndex, contactWaySize, contactWay, contactWayKey) => {
+        return (<div className="contact-way-buttons">
+            {contactWayIndex === 0 && contactWaySize === 1 ? null : <div className="clue-minus-button"
+                onClick={this.removeContactWay.bind(this, contactIndex, contactWay, contactWayKey)}>
+                <Icon type="minus"/>
+            </div>}
+            {contactWayIndex === contactWaySize - 1 ? (
+                <div className="clue-plus-button" onClick={this.addContactWay.bind(this, contactIndex, contactWay)}>
+                    <Icon type="plus"/>
+                </div>) : null}
+        </div>);
+    };
+    render(){
+        const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
             labelCol: {
                 xs: {span: 24},
@@ -473,6 +543,16 @@ class ClueAddForm extends React.Component {
         this.phoneInputRefs = [];
         let saveResult = this.state.saveResult;
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
+        // 控制联系方式增减的key
+        getFieldDecorator('contact_keys', { initialValue: [{
+            key: 0,
+            phone: [{key: 0}],
+            qq: [{key: 0}],
+            weChat: [{key: 0}],
+            email: [{key: 0}]
+        }] 
+        });
+        const contact_keys = getFieldValue('contact_keys');
         return (
             <RightPanel showFlag={true} data-tracename="添加线索" className="sales-clue-add-container">
                 <BasicData
@@ -495,7 +575,6 @@ class ClueAddForm extends React.Component {
                                     initialValue: moment()
                                 })(
                                     <DatePicker
-                                        value={moment(formData.source_time)}
                                         allowClear={false}
                                     />
                                 )}
@@ -509,8 +588,7 @@ class ClueAddForm extends React.Component {
                                     rules: [{
                                         required: true,
                                         message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')
-                                    }, {validator: checkClueName}],
-                                    initialValue: formData.name
+                                    }, {validator: checkClueName}]
                                 })(
                                     <Input
                                         name="name"
@@ -529,8 +607,8 @@ class ClueAddForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 <div className="contact-way-container">
-                                    {_.map(formData.contacts, (item, index) => {
-                                        return this.renderDiffContacts(item, index, formData.contacts.length);
+                                    {_.map(contact_keys, (item, index) => {
+                                        return this.renderDiffContacts(item, index, contact_keys);
                                     })}
                                     <div className="add-contact"
                                         onClick={this.handleAddContact}>{Intl.get('crm.detail.contact.add', '添加联系人')}</div>
@@ -686,6 +764,6 @@ ClueAddForm.propTypes = {
     form: React.PropTypes.object,
     hideAddForm: React.PropTypes.func,
     appUserId: React.PropTypes.string,
-    appUserName: React.PropTypes.string,
+    appUserName: React.PropTypes.string
 };
 export default Form.create()(ClueAddForm);
