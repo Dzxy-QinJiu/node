@@ -201,7 +201,7 @@ class OpenApp extends React.Component {
                                     <div className="btn-bar">
                                         {app.status === APP_STATUS.ENABLED ?
                                             <Button onClick={this.handleCheckDetail.bind(this, app)}>
-                                                {Intl.get('call.record.show.customer.detail', '查看详情')}
+                                                {Intl.get('user.apply.detail.table.no.role.title', '配置应用')}
                                             </Button> :
                                             <Button onClick={this.handleApplyOpen.bind(this, app)}>
                                                 {Intl.get('back.openApp.apply', '申请开通')}

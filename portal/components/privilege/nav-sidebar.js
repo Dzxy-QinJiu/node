@@ -81,7 +81,7 @@ const BackendConfigLinkList = [
         privilege: 'BGM_SALES_TEAM_LIST'
     },
     {
-        name: Intl.get('back.openApp', '开通应用'),
+        name: Intl.get('app.title', '应用管理'),
         href: '/background_management/openApp',
         key: 'open_app',
         privilege: 'ROLEP_RIVILEGE_ROLE_CLIENT_LIST'
