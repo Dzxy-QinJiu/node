@@ -1,6 +1,6 @@
-require('./index.less');
+require('./css/customer-suggest.less');
 var Link = require('react-router').Link;
-import {Select, Icon} from 'antd';
+import {Select, Tag} from 'antd';
 var customerAjax = require('MOD_DIR/common/public/ajax/customer');
 var userData = require('PUB_DIR/sources/user-data');
 var classNames = require('classnames');
@@ -10,6 +10,7 @@ import Trace from 'LIB_DIR/trace';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 var CustomerSuggest = React.createClass({
     suggestTimer: null,
     getDefaultProps: function() {
@@ -47,6 +48,8 @@ var CustomerSuggest = React.createClass({
             addDataTip: '',
             //是否有修改权限
             hasEditPrivilege: false,
+            hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
+            customerLable: '',//客户标签
         };
     },
     getInitialState: function() {
@@ -295,6 +298,7 @@ var CustomerSuggest = React.createClass({
             displayType: 'text',
             suggest_error_msg: ''
         });
+        _.isFunction(this.props.handleCancel()) && this.props.handleCancel();
     },
     handleSubmit: function() {
         var customer = this.state.customer;
@@ -400,12 +404,17 @@ var CustomerSuggest = React.createClass({
         var textBlock = null;
         var wrapSelectId = this.state.customerSuggestWrapId;
         var customerId = this.state.displayCustomerId;
+        var cls = classNames('edit-container',{
+            'hover-show-edit': this.props.hoverShowEdit && this.props.hasEditPrivilege
+        });
         if (this.state.displayType === 'text') {
             if (this.state.displayText) {
                 textBlock = (
-                    <div>
+                    <div className={cls}>
                         <span className="inline-block basic-info-text customer-name" onClick={this.showCustomerDetail.bind(this, customerId)}>
+                            {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
                             {this.state.displayText}
+                            <span>&gt;</span>
                         </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}
@@ -426,7 +435,7 @@ var CustomerSuggest = React.createClass({
             <div ref="customer_searchbox" className="associate-customer-wrap">
                 <Select
                     combobox
-                    searchPlaceholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
+                    placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                     filterOption={false}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}

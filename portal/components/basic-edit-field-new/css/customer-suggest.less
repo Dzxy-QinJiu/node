@@ -1,4 +1,4 @@
-@import '../../public/css/common-variables';
+@import '../../../public/css/common-variables';
 .customer_search_wrap {
   position: relative;
   //颜色是666
@@ -59,6 +59,39 @@
     .ant-select-selection--single {
       border:1px solid @error_tips_color;
     }
+  }
+  .edit-container.hover-show-edit{
+    padding:3px 0;
+    .icon-edit-btn{
+      display: none;
+    }
+    &:hover{
+      background: #E8F5FE;
+      .icon-edit-btn{
+        display: inline-block;
+      }
+    }
+  }
+  .customer-label.info-tag-style {
+    background-color: @info-tag-color;
+  }
+  .customer-label.intent-tag-style {
+    background-color: @intent-tag-color;
+  }
+  .customer-label.trial-tag-style {
+    background-color: @trial-tag-color;
+  }
+  .customer-label.sign-tag-style {
+    background-color: @sign-tag-color;
+  }
+  .customer-label.qualified-tag-style {
+    background-color: @qualified-tag-color;
+  }
+  .customer-label.history-qualified-tag-style {
+    background-color: @history-qualified-tag-color;
+  }
+  .customer-label.loss-tag-style {
+    background-color: @loss-tag-color;
   }
 
 

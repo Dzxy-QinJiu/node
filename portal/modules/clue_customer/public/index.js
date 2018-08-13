@@ -13,7 +13,7 @@ var userData = require('../../../public/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-var SearchInput = require('CMP_DIR/searchInputNew');
+var SearchInput = require('CMP_DIR/searchInput');
 import {message, Icon, Row, Col, Button, Alert, Input, Tag, Modal, Select} from 'antd';
 const Option = Select.Option;
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
@@ -737,6 +737,9 @@ const ClueCustomer = React.createClass({
                 title: Intl.get('crm.sales.clue.descr', '线索描述'),
                 dataIndex: 'source',
             }, {
+                title: 'IP',
+                dataIndex: 'source_ip',
+            }, {
                 title: Intl.get('common.operate', '操作'),
                 width: '60px',
                 render: (text, record, index) => {
@@ -757,6 +760,9 @@ const ClueCustomer = React.createClass({
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
             });
+        var isSalesRole = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
+            userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) ||
+            userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索客户列表">
@@ -785,18 +791,18 @@ const ClueCustomer = React.createClass({
                                 <Select value={this.state.clueCustomerTypeFilter.status} onChange={this.onStatusChange}>
                                     {/*运营人员才展示全部这个按钮*/}
                                     {user.isCommonSales ? null : <Option value="">
-                                        {Intl.get('common.all', '全部')}
+                                        {Intl.get('common.all', '全部')}：
                                         {statusStaticis[SELECT_TYPE.ALL]}                                    </Option>}
-                                    {user.isCommonSales ? null : <Option value="0">
-                                        {Intl.get('clue.customer.will.distribution', '待分配')}
+                                    {isSalesRole ? null : <Option value="0">
+                                        {Intl.get('clue.customer.will.distribution', '待分配')}：
                                         {statusStaticis[SELECT_TYPE.WILL_DISTRIBUTE]}
                                     </Option>}
                                     <Option value="1">
-                                        {Intl.get('sales.home.will.trace', '待跟进')}
+                                        {Intl.get('sales.home.will.trace', '待跟进')}：
                                         {statusStaticis[SELECT_TYPE.HAS_DISTRIBUTE]}
                                     </Option>
                                     <Option value="2">
-                                        {Intl.get('clue.customer.has.follow', '已跟进')}
+                                        {Intl.get('clue.customer.has.follow', '已跟进')}：
                                         {statusStaticis[SELECT_TYPE.HAS_TRACE]}
                                     </Option>
                                 </Select>

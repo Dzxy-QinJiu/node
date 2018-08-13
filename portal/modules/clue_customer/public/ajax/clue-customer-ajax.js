@@ -268,7 +268,11 @@ exports.getClueFulltext = function(queryObj) {
     delete queryObj.pageSize;
     var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
-    var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order;
+    var type = 'user';
+    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+        type = 'manager';
+    }
+    var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order + '/' + type;
     var Deferred = $.Deferred();
     $.ajax({
         url: url ,

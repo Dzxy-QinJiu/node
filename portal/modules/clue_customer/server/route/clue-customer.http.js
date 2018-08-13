@@ -137,7 +137,7 @@ module.exports = {
             }
         },{
             method: 'post',
-            path: '/rest/get/clue/fulltext/:page_size/:sort_field/:order',
+            path: '/rest/get/clue/fulltext/:page_size/:sort_field/:order/:type',
             handler: 'getClueFulltext',
             passport: {
                 'needLogin': true

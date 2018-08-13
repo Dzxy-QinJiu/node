@@ -62,7 +62,8 @@ const BasicEditField = React.createClass({
             //保存按钮的文字展示
             okBtnText: '',
             //取消按钮的文字展示
-            cancelBtnText: ''
+            cancelBtnText: '',
+            hoverShowEdit: true,
         };
     },
     getInitialState: function() {
@@ -231,9 +232,12 @@ const BasicEditField = React.createClass({
             if (this.props.type === 'number' && displayText) {
                 displayText = parseAmount(displayText);
             }
+            var cls = classNames('edit-container',{
+                'hover-show-edit': this.props.hoverShowEdit && this.props.hasEditPrivilege
+            });
             if (displayText) {
                 textBlock = (
-                    <div>
+                    <div className={cls}>
                         <span className="inline-block basic-info-text">
                             {displayText}{this.props.afterValTip || ''}
                         </span>
