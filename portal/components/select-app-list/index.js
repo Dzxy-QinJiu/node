@@ -9,6 +9,9 @@ const PropTypes = React.PropTypes;
 class SelectAppList extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isAppListShow: false
+        };
     }
     appList() {
         return (
@@ -34,6 +37,14 @@ class SelectAppList extends React.Component {
             </div>
         );
     }
+    showAppListPanel = (event) => {
+        //        Trace.traceEvent(event, '点击添加应用');
+        //        let unSelectedAppList = this.getUnselectAppList();
+        this.setState({
+            isAppListShow: true,
+            //            appList: unSelectedAppList
+        });
+    }
     render() {
         return (
             <div className='app-select-list'>
@@ -41,17 +52,19 @@ class SelectAppList extends React.Component {
                     <Icon type='plus'/>
                     <span className='add-title'>{Intl.get('common.app', '应用')}</span>
                 </div>
-                <div className='app-select-list-wrap'>
-                    <div className='select-app-wrap'>
-                        <GeminiScrollbar>
-                            {this.appList()}
-                        </GeminiScrollbar>
+                {this.state.isAppListShow ? (
+                    <div className='app-select-list-wrap'>
+                        <div className='select-app-wrap'>
+                            <GeminiScrollbar>
+                                {this.appList()}
+                            </GeminiScrollbar>
+                        </div>
+                        <div className='sure-cancel-btn' data-tracename="应用选择面板">
+                            <span className='sure-btn' onClick={this.handleSureBtn}>{Intl.get('common.confirm', '确认')}</span>
+                            <span className='cancel-btn' onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</span>
+                        </div>
                     </div>
-                    <div className='sure-cancel-btn' data-tracename="应用选择面板">
-                        <span className='sure-btn' onClick={this.handleSureBtn}>{Intl.get('common.confirm', '确认')}</span>
-                        <span className='cancel-btn' onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</span>
-                    </div>
-                </div>
+                ) : null}
             </div>
         );
     }
