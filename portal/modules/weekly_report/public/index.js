@@ -142,6 +142,7 @@ const WeeklyReport = React.createClass({
                         <div className="col-md-12 weekly-report-detail-wrap">
                             <WeeklyReportDetail
                                 selectedItem={{ teamId: this.state.selectedTeamId, nWeek: this.state.nWeek }}
+                                selectedTeamName={this.state.selectedTeamName}
                                 memberList={this.state.memberList}
                             />
                         </div>

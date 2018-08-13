@@ -30,6 +30,7 @@ const WeeklyReportDetail = React.createClass({
     getInitialState() {
         return {
             selectedItem: this.props.selectedItem,
+            selectedTeamName: this.props.selectedTeamName,
             isAddingLeaveUserId: '',//正在添加请假信息的销售
             formType: 'add',//是添加请假信息还是修改请假信息
             isEdittingItem: {},//正在编辑的请假信息
@@ -48,6 +49,7 @@ const WeeklyReportDetail = React.createClass({
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.selectedItem.teamId !== this.state.selectedItem.teamId || nextProps.selectedItem.nWeek !== this.state.selectedItem.nWeek) {
             this.setState({
+                selectedTeamName: nextProps.selectedTeamName,
                 selectedItem: nextProps.selectedItem,
                 isAddingLeaveUserId: ''
             }, () => {
@@ -664,10 +666,7 @@ const WeeklyReportDetail = React.createClass({
         return (
             <div className="weekly-report-detail-container">
                 <h4 className="total-title">
-                    {Intl.get('weekly.report.statics.duration', '统计周报内容，统计时间{startTime}至{endTime}', {
-                        startTime: this.getStartAndEndTime().startTime,
-                        endTime: this.getStartAndEndTime().endTime
-                    })}
+                    {this.state.selectedTeamName}{Intl.get('analysis.sales.weekly.report', '销售周报')}({this.getStartAndEndTime().startTime}{Intl.get('common.time.connector', '至')}{this.getStartAndEndTime().endTime})
                 </h4>
                 <div className="tables-wrap" style={{height: divHeight}}>
                     <GeminiScrollbar>
