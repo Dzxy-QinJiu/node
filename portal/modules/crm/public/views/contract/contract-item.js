@@ -179,7 +179,6 @@ const ContractItem = React.createClass({
                 title: Intl.get('crm.contract.product.name', '产品名称'),
                 dataIndex: 'name',
                 key: 'name',
-                width: '50%',
                 render: (text, record, index) => {
                     return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
                 }
@@ -187,7 +186,6 @@ const ContractItem = React.createClass({
             {
                 title: Intl.get('crm.contract.account.count', '账号数量'),
                 dataIndex: 'count',
-                width: '20%',
                 editable: true,
                 key: 'count'
             },
@@ -196,7 +194,6 @@ const ContractItem = React.createClass({
                 dataIndex: 'total_price',
                 editable: true,
                 key: 'total_price',
-                width: '30%',
                 render: (text) => {
                     return <span>{parseAmount(text.toFixed(2))}</span>;
                 }
