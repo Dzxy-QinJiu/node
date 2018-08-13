@@ -21,6 +21,7 @@ import SelectAppList from '../select-app-list';
 class ProductTable extends React.Component {
     static defaultProps = {
         appList: [],
+        bordered: true,
     };
 
     static propTypes = {
@@ -29,6 +30,9 @@ class ProductTable extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            isEdit: false,
+        };
     }
 
     componentWillReceiveProps(nextProps) {
@@ -40,12 +44,22 @@ class ProductTable extends React.Component {
     handleDelete(recordIndex) {
     }
 
+    showEdit = () => {
+        this.setState({
+            isEdit: true
+        });
+    }
+
     render() {
         return (
-            <div>
-                <DetailEditBtn
-                /> 
+            <div className="product-table">
+                {this.state.isEdit ? null : (
+                    <DetailEditBtn
+                        onClick={this.showEdit}
+                    /> 
+                )}
                 <AntcEditableTable
+                    isEdit={this.state.isEdit}
                     {...this.props}
                 /> 
                 <SelectAppList
