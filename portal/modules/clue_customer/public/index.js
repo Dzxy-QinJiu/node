@@ -668,7 +668,7 @@ const ClueCustomer = React.createClass({
         return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     },
     //是否是管理员
-    isReamlManager(){
+    isRealmManager(){
         return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
     },
 
@@ -764,11 +764,8 @@ const ClueCustomer = React.createClass({
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
             });
-        var isSalesRole = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
-            userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) ||
-            userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
         //是运营人员或者是域管理员
-        var isOperationOrManager = this.isOperation() || this.isReamlManager();
+        var isOperationOrManager = this.isOperation() || this.isRealmManager();
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索客户列表">
