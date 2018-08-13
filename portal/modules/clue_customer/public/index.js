@@ -244,10 +244,6 @@ const ClueCustomer = React.createClass({
             }
         }
     },
-    //是否是运营人员
-    isOperation(){
-        return userData.hasRole('operations');
-    },
 
     setInitialData: function() {
         clueCustomerAction.setClueInitialData();
@@ -667,6 +663,14 @@ const ClueCustomer = React.createClass({
             clueClassifyArray: this.state.clueClassifyArray
         });
     },
+    //是否是运营人员
+    isOperation(){
+        return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    },
+    //是否是管理员
+    isReamlManager(){
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+    },
 
     render: function() {
         let user = userData.getUserData();
@@ -763,6 +767,8 @@ const ClueCustomer = React.createClass({
         var isSalesRole = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
             userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) ||
             userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
+        //是运营人员或者是域管理员
+        var isOperationOrManager = this.isOperation() || this.isReamlManager();
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索客户列表">
@@ -789,14 +795,14 @@ const ClueCustomer = React.createClass({
                             </DatePicker>
                             <div className="type-container">
                                 <Select value={this.state.clueCustomerTypeFilter.status} onChange={this.onStatusChange}>
-                                    {/*运营人员才展示全部这个按钮*/}
+                                    {/*除普通销售外都展示全部这个按钮*/}
                                     {user.isCommonSales ? null : <Option value="">
                                         {Intl.get('common.all', '全部')}：
                                         {statusStaticis[SELECT_TYPE.ALL]}                                    </Option>}
-                                    {isSalesRole ? null : <Option value="0">
+                                    {isOperationOrManager ? <Option value="0">
                                         {Intl.get('clue.customer.will.distribution', '待分配')}：
                                         {statusStaticis[SELECT_TYPE.WILL_DISTRIBUTE]}
-                                    </Option>}
+                                    </Option> : null}
                                     <Option value="1">
                                         {Intl.get('sales.home.will.trace', '待跟进')}：
                                         {statusStaticis[SELECT_TYPE.HAS_DISTRIBUTE]}
