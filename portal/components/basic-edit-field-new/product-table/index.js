@@ -12,11 +12,12 @@
  * 列定义中增加了一个属性：
  *   editable - 控制该列是否可编辑，若设置为true，则在表格的isEdit属性为true的情况下，该列会显示成输入框的形式，里面的值可以被编辑
  */
+require('./style.less');
 import PropTypes from 'prop-types'; 
 import { AntcEditableTable } from 'antc';
-import {DetailEditBtn} from '../rightPanel';
-import SaveCancelButton from '../detail-card/save-cancel-button';
-import SelectAppList from '../select-app-list';
+import {DetailEditBtn} from '../../rightPanel';
+import SaveCancelButton from '../../detail-card/save-cancel-button';
+import SelectAppList from '../../select-app-list';
 
 class ProductTable extends React.Component {
     static defaultProps = {
