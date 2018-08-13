@@ -46,6 +46,7 @@ class ProductTable extends React.Component {
                 <DetailEditBtn
                 /> 
                 <AntcEditableTable
+                    {...this.props}
                 /> 
                 <SelectAppList
                     appList={this.props.appList}
