@@ -2,7 +2,7 @@
  * 选择应用组件
  */
 require('./index.less');
-import { Checkbox } from 'antd';
+import { Checkbox, Icon } from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const PropTypes = React.PropTypes;
 
@@ -36,10 +36,22 @@ class SelectAppList extends React.Component {
     }
     render() {
         return (
-            <div className='select-app-wrap'>
-                <GeminiScrollbar>
-                    {this.appList()}
-                </GeminiScrollbar>
+            <div className='app-select-list'>
+                <div className='product-info' onClick={this.showAppListPanel}>
+                    <Icon type='plus'/>
+                    <span className='add-title'>{Intl.get('common.app', '应用')}</span>
+                </div>
+                <div className='app-select-list-wrap'>
+                    <div className='select-app-wrap'>
+                        <GeminiScrollbar>
+                            {this.appList()}
+                        </GeminiScrollbar>
+                    </div>
+                    <div className='sure-cancel-btn' data-tracename="应用选择面板">
+                        <span className='sure-btn' onClick={this.handleSureBtn}>{Intl.get('common.confirm', '确认')}</span>
+                        <span className='cancel-btn' onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</span>
+                    </div>
+                </div>
             </div>
         );
     }

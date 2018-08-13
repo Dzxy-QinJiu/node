@@ -75,20 +75,6 @@ const Contract = React.createClass( {
             selectedAppIdArray: selectedAppIdArray
         });
     },
-    renderAppSelectPanel() {
-        return (
-            <div className='app-select-list-wrap'>
-                <SelectAppList
-                    appList={this.state.appList}
-                    getSelectAppList={this.getSelectAppList}
-                />
-                <div className='sure-cancel-btn' data-tracename="应用选择面板">
-                    <span className='sure-btn' onClick={this.handleSureBtn}>{Intl.get('common.confirm', '确认')}</span>
-                    <span className='cancel-btn' onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</span>
-                </div>
-            </div>
-        );
-    },
     renderAppIconName(appName, appId) {
         let appList = this.state.appList;
         let matchAppObj = _.find( appList, (appItem) => {
@@ -370,13 +356,10 @@ const Contract = React.createClass( {
                                 this.state.isShowSelectAppTable && _.get(this.state.products, '[0]') ?
                                     this.renderProductInfo() : null
                             }
-                            <div className='product-info' onClick={this.showAppListPanel}>
-                                <Icon type='plus'/>
-                                <span className='add-title'>{Intl.get('common.app', '应用')}</span>
-                            </div>
-                            {
-                                this.state.visible ? this.renderAppSelectPanel() : null
-                            }
+                            <SelectAppList
+                                appList={this.state.appList}
+                                getSelectAppList={this.getSelectAppList}
+                            />
                         </FormItem>
                     </Form>
                 </div>
