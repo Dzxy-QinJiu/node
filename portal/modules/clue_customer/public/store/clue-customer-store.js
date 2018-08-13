@@ -135,6 +135,8 @@ ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
     var updateClue = _.find(this.curCustomers, clue => updateObj.id === clue.id);
     if (updateClue){
         updateClue.availability = updateObj.availability;
+        updateClue.status = updateObj.status;
+
     }
 };
 //标记线索为无效线索后，线索状态变成已跟进，在页面上不展示该条数据

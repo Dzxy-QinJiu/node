@@ -42,7 +42,7 @@ const restApis = {
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
-    getClueFulltext: '/rest/customer/v2/clue/query/fulltext/:page_size/:sort_field/:order',
+    getClueFulltext: '/rest/customer/v2/clue/query/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: '/rest/customer/v2/customerdynamic/clue/:clue_id/:page_size',
 };
@@ -231,7 +231,7 @@ exports.getClueFulltext = function(req, res) {
     var reqBody = req.body;
     var rangeParams = JSON.parse(reqBody.rangeParams);
     var typeFilter = JSON.parse(reqBody.typeFilter);
-    var url = restApis.getClueFulltext.replace(':page_size',req.params.page_size).replace(':sort_field',req.params.sort_field).replace(':order',req.params.order);
+    var url = restApis.getClueFulltext.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':sort_field',req.params.sort_field).replace(':order',req.params.order);
     if (rangeParams[0].from){
         url += `?start_time=${rangeParams[0].from}`;
     }

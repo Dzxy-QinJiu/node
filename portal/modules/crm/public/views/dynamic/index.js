@@ -36,9 +36,9 @@ var Dynamic = React.createClass({
         $(window).off('resize', this.onStoreChange);
     },
     showClueDetailOut: function(clueId) {
-        this.setState({
-            clueId: clueId
-        });
+        // this.setState({
+        //     clueId: clueId
+        // });
     },
     timeLineItemRender: function(item) {
         const call_time = Intl.get('crm.199',

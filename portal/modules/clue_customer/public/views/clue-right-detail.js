@@ -3,9 +3,10 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/8.
  */
-import BasicData from './basic_info';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/clue-right-detail.less');
+import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
 const TAB_KEYS = {
@@ -19,12 +20,14 @@ var tabNameList = {
 var noop = function() {
 
 };
+import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import ClueDynamic from '../views/dynamic';
 import ClueBasicInfo from '../views/clue_detail_overview';
 import Trace from 'LIB_DIR/trace';
 import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
+var clueCustomerAction = require('../action/clue-customer-action');
 
 class ClueRightPanel extends React.Component {
     constructor(props) {
@@ -132,14 +135,40 @@ class ClueRightPanel extends React.Component {
             activeKey: key
         });
     };
+    //保存修改的基本信息
+    saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clue-basic-info-container'), `保存线索${type}的修改`);
+        clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                clueCustomerAction.afterEditCustomerDetail(saveObj);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+    };
     render(){
+        var curClue = this.state.curClue;
+        //是否没有权限修改线索详情
+        var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
         return (
             <div className="clue-detail-wrap">
-                <BasicData
-                    clueStatus={this.state.curClue.status}
-                    clueTypeTitle={this.state.curClue.name}
-                    data-tracename="点击关闭展示线索客户面板"
-                />
+                <div className="clue-basic-info-container">
+                    <div className="clue-name-wrap">
+                        {renderClueStatus(curClue.status)}
+                        <div className="clue-name-title">
+                            <BasicEditInputField
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                id={curClue.id}
+                                saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
+                                value={curClue.name}
+                                field='name'
+                            />
+                        </div>
+                    </div>
+                </div>
                 <div className="clue-detail-content" >
                     <Tabs
                         defaultActiveKey={TAB_KEYS.OVERVIEW_TAB}
@@ -152,7 +181,7 @@ class ClueRightPanel extends React.Component {
                         >
                             {this.state.activeKey === TAB_KEYS.OVERVIEW_TAB ? (
                                 <ClueBasicInfo
-                                    curClue={this.state.curClue}
+                                    curClue={curClue}
                                     accessChannelArray={this.state.accessChannelArray}
                                     clueSourceArray={this.state.clueSourceArray}
                                     clueClassifyArray={this.state.clueClassifyArray}
@@ -169,7 +198,7 @@ class ClueRightPanel extends React.Component {
                         >
                             {this.state.activeKey === TAB_KEYS.DYNAMIC_TAB ? (
                                 <ClueDynamic
-                                    currentId={this.state.curClue.id}
+                                    currentId={curClue.id}
                                 />
                             ) : null}
                         </TabPane>

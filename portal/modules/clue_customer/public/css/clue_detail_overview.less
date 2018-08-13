@@ -74,8 +74,10 @@
   .associate-customer-detail.clue-detail-block{
     padding: 0;
     .clue-info-item{
+      position: relative;
       padding: 10px;
       background: #fff;
+      margin-bottom: 0;
       .invalid-person{
         margin:0 10px;
         font-weight: bold;
@@ -90,19 +92,22 @@
         color: #8da8c5;
       }
       .clue-info-label{
-        top:1px;
+        top:3px;
+      }
+      .btn-container{
+        position: absolute;
+        right: 0;
+        top:6px;
+        .ant-btn{
+          margin-right:5px;
+        }
       }
     }
-    .btn-container{
-      position: absolute;
-      right: 0;
-      .ant-btn{
-        margin-right:5px;
-      }
-    }
+
   }
   .associate-user-detail.clue-detail-block{
     .clue-info-item{
+      margin-bottom: 0;
       .clue-info-label{
         top:1px;
       }
@@ -113,10 +118,24 @@
     }
   }
   .assign-sales-warp.clue-detail-block{
+    padding: 0;
     .clue-info-item{
+      position: relative;
+      padding: 10px;
+      background: #fff;
+      margin-bottom: 0;
       .clue-info-label{
-        top:3px;
+        top:1px;
+      }
+      .btn-container{
+        position: absolute;
+        right: 0;
+        top:6px;
+        .ant-btn{
+          margin-right:5px;
+        }
       }
     }
+
   }
 }
