@@ -689,25 +689,25 @@ var UserTabContent = React.createClass({
     //渲染过滤字段筛选条件列表
     renderFilterFields: function() {
         //当按照角色筛选的时候，不能再按照其他条件筛选
-        return <div style={{display: this.state.filterRoles.selectedRole ? 'none' : 'block'}}>
+        return <div style={{display: this.state.filterRoles.selectedRole ? 'none' : 'block'}} data-tracename="应用筛选">
             <dl>
-                <dt><ReactIntl.FormattedMessage id="user.overdue.whether" defaultMessage="是否过期"/>：</dt>
+                <dt><ReactIntl.FormattedMessage id="user.overdue.whether" defaultMessage="是否过期" />：</dt>
                 <dd>
-                    <ul>
+                    <ul data-tracename="是否过期筛选">
                         <li onClick={this.toggleSearchField.bind(this, 'outdate', '')}
-                            className={this.getFilterFieldClass('outdate', '')}><ReactIntl.FormattedMessage
+                            className={this.getFilterFieldClass('outdate', '')} data-tracename="全部"><ReactIntl.FormattedMessage
                                 id="common.all" defaultMessage="全部"/></li>
                         <li onClick={this.toggleSearchField.bind(this, 'outdate', '1')}
-                            className={this.getFilterFieldClass('outdate', '1')}><ReactIntl.FormattedMessage
+                            className={this.getFilterFieldClass('outdate', '1')} data-tracename="过期" ><ReactIntl.FormattedMessage
                                 id="user.overdue" defaultMessage="过期"/></li>
                         <li onClick={this.toggleSearchField.bind(this, 'outdate', '0')}
-                            className={this.getFilterFieldClass('outdate', '0')}><ReactIntl.FormattedMessage
+                            className={this.getFilterFieldClass('outdate', '0')} data-tracename="未过期"><ReactIntl.FormattedMessage
                                 id="user.overdue.not" defaultMessage="未过期"/></li>
                         <li onClick={this.toggleSearchField.bind(this, 'outdate', '1w')}
-                            className={this.getFilterFieldClass('outdate', '1w')}><ReactIntl.FormattedMessage
+                            className={this.getFilterFieldClass('outdate', '1w')} data-tracename="一周内过期"><ReactIntl.FormattedMessage
                                 id="user.overdue.one.week" defaultMessage="一周内过期"/></li>
                         <li onClick={this.toggleSearchField.bind(this, 'outdate', 'is_filter_forever')}
-                            className={this.getFilterFieldClass('outdate', 'is_filter_forever')}>
+                            className={this.getFilterFieldClass('outdate', 'is_filter_forever')} data-tracename="永不过期">
                             <ReactIntl.FormattedMessage id="user.overdue.not.forever" defaultMessage="永不过期"/></li>
                     </ul>
                 </dd>
@@ -716,9 +716,9 @@ var UserTabContent = React.createClass({
                 <dl>
                     <dt><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型"/>：</dt>
                     <dd>
-                        <ul>
+                        <ul data-tracename="用户类型筛选">
                             <li onClick={this.toggleSearchField.bind(this, 'user_type', '')}
-                                className={this.getFilterFieldClass('user_type', '')}><ReactIntl.FormattedMessage
+                                className={this.getFilterFieldClass('user_type', '')} data-tracename="全部"><ReactIntl.FormattedMessage
                                     id="common.all" defaultMessage="全部"/></li>
                             {
                                 _.map(AppUserUtil.USER_TYPE_VALUE_MAP, (value, KEY) => {
@@ -739,15 +739,15 @@ var UserTabContent = React.createClass({
             <dl>
                 <dt><ReactIntl.FormattedMessage id="user.user.status" defaultMessage="用户状态"/>：</dt>
                 <dd>
-                    <ul>
+                    <ul data-tracename="用户状态筛选">
                         <li onClick={this.toggleSearchField.bind(this, 'user_status', '')}
-                            className={this.getFilterFieldClass('user_status', '')}><ReactIntl.FormattedMessage
+                            className={this.getFilterFieldClass('user_status', '')} data-tracename="全部"><ReactIntl.FormattedMessage
                                 id="common.all" defaultMessage="全部"/></li>
                         <li onClick={this.toggleSearchField.bind(this, 'user_status', '1')}
-                            className={this.getFilterFieldClass('user_status', '1')}><ReactIntl.FormattedMessage
+                            className={this.getFilterFieldClass('user_status', '1')} data-tracename="启用"><ReactIntl.FormattedMessage
                                 id="common.enabled" defaultMessage="启用"/></li>
                         <li onClick={this.toggleSearchField.bind(this, 'user_status', '0')}
-                            className={this.getFilterFieldClass('user_status', '0')}><ReactIntl.FormattedMessage
+                            className={this.getFilterFieldClass('user_status', '0')} data-tracename="停用"><ReactIntl.FormattedMessage
                                 id="common.stop" defaultMessage="停用"/></li>
                     </ul>
                 </dd>
@@ -758,18 +758,18 @@ var UserTabContent = React.createClass({
                     <dl>
                         <dt>{Intl.get('oplate.user.label', '用户标签')}：</dt>
                         <dd>
-                            <ul>
+                            <ul data-tracename="用户标签筛选">
                                 <li onClick={this.toggleSearchField.bind(this, 'tag_all', '')}
-                                    className={this.getFilterFieldClass('tag_all', '')}><ReactIntl.FormattedMessage
+                                    className={this.getFilterFieldClass('tag_all', '')} data-tracename="全部"><ReactIntl.FormattedMessage
                                         id="common.all" defaultMessage="全部"/></li>
                                 <li onClick={this.toggleSearchField.bind(this, 'create_tag', 'register')}
-                                    className={this.getFilterFieldClass('create_tag', 'register')}>{Intl.get('oplate.user.register.self', '自注册')}</li>
+                                    className={this.getFilterFieldClass('create_tag', 'register')} data-tracename="自注册">{Intl.get('oplate.user.register.self', '自注册')}</li>
                                 <li onClick={this.toggleSearchField.bind(this, 'qualify_label', '1')}
-                                    className={this.getFilterFieldClass('qualify_label', '1')}>{Intl.get('common.qualified', '合格')}</li>
+                                    className={this.getFilterFieldClass('qualify_label', '1')} data-tracename="合格">{Intl.get('common.qualified', '合格')}</li>
                                 <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'new')}
-                                    className={this.getFilterFieldClass('contract_tag', 'new')}>{Intl.get('contract.162', '新签约')}</li>
+                                    className={this.getFilterFieldClass('contract_tag', 'new')} data-tracename="新签约">{Intl.get('contract.162', '新签约')}</li>
                                 <li onClick={this.toggleSearchField.bind(this, 'contract_tag', 'renew')}
-                                    className={this.getFilterFieldClass('contract_tag', 'renew')}>{Intl.get('contract.163', '续约')}</li>
+                                    className={this.getFilterFieldClass('contract_tag', 'renew')} data-tracename="缴约">{Intl.get('contract.163', '续约')}</li>
                             </ul>
                         </dd>
                     </dl>
@@ -777,16 +777,18 @@ var UserTabContent = React.createClass({
                         <dl>
                             <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/>：</dt>
                             <dd>
-                                <ul>
+                                <ul data-tracename="所属客户筛选">
                                     <li
                                         onClick={this.toggleSearchField.bind(this, 'customer_unknown', '')}
                                         className={this.getFilterFieldClass('customer_unknown', '')}
+                                        data-tracename="全部"
                                     >
                                         <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/>
                                     </li>
                                     <li
                                         onClick={this.toggleSearchField.bind(this, 'customer_unknown', 'true')}
                                         className={this.getFilterFieldClass('customer_unknown', 'true')}
+                                        data-tracename="未知"
                                     >
                                         <ReactIntl.FormattedMessage id="common.unknown" defaultMessage="未知"/>
                                     </li>
@@ -798,15 +800,15 @@ var UserTabContent = React.createClass({
                     <dl >
                         <dt><ReactIntl.FormattedMessage id="user.expire.stop" defaultMessage="到期停用"/>：</dt>
                         <dd>
-                            <ul>
+                            <ul data-tracename="到期停用筛选">
                                 <li onClick={this.toggleSearchField.bind(this, 'over_draft', '')}
-                                    className={this.getFilterFieldClass('over_draft', '')}><ReactIntl.FormattedMessage
+                                    className={this.getFilterFieldClass('over_draft', '')} data-tracename="全部"><ReactIntl.FormattedMessage
                                         id="common.all" defaultMessage="全部"/></li>
                                 <li onClick={this.toggleSearchField.bind(this, 'over_draft', 'true')}
-                                    className={this.getFilterFieldClass('over_draft', 'true')}>
+                                    className={this.getFilterFieldClass('over_draft', 'true')} data-tracename="是">
                                     <ReactIntl.FormattedMessage id="user.yes" defaultMessage="是"/></li>
                                 <li onClick={this.toggleSearchField.bind(this, 'over_draft', 'false')}
-                                    className={this.getFilterFieldClass('over_draft', 'false')}>
+                                    className={this.getFilterFieldClass('over_draft', 'false')} data-tracename="否">
                                     <ReactIntl.FormattedMessage id="user.no" defaultMessage="否"/></li>
                             </ul>
                         </dd>
@@ -816,12 +818,13 @@ var UserTabContent = React.createClass({
                         (<dl>
                             <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录"/>：</dt>
                             <dd>
-                                <ul>
+                                <ul data-tracename="异常登陆筛选">
                                     {EXCEPTION_TYPES.map((exceptionObj, index) => {
                                         return (
                                             <li key={index}
                                                 onClick={this.toggleSearchField.bind(this, 'exception_type', exceptionObj.value)}
-                                                className={this.getFilterFieldClass('exception_type', exceptionObj.value)}>
+                                                className={this.getFilterFieldClass('exception_type', exceptionObj.value)}
+                                                data-tracename={exceptionObj.name}>
                                                 {exceptionObj.name}
                                             </li>);
                                     })}
@@ -897,8 +900,8 @@ var UserTabContent = React.createClass({
                 <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>：
             </dt>
             <dd>
-                <ul>
-                    <li className={totolClass} onClick={this.filterUserByRole.bind(this, '')}>
+                <ul data-tracename="角色筛选">
+                    <li className={totolClass} onClick={this.filterUserByRole.bind(this, '')} data-tracename="全部角色">
                         <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/></li>
                     {
                         filterRoles.roles.map((role, index) => {
@@ -906,7 +909,7 @@ var UserTabContent = React.createClass({
                                 selected: role.role_id === selectedRole
                             });
                             return <li className={cls} key={role.role_id}
-                                onClick={this.filterUserByRole.bind(this, role.role_id)}>{role.role_name}</li>;
+                                onClick={this.filterUserByRole.bind(this, role.role_id)} data-tracename="单个角色">{role.role_name}</li>;
                         })
                     }
                 </ul>
@@ -967,8 +970,8 @@ var UserTabContent = React.createClass({
                 ：
             </dt>
             <dd>
-                <ul>
-                    <li className={totolClass} onClick={this.toggleSearchField.bind(this, 'team_ids', '')}>
+                <ul data-tracename="团队筛选">
+                    <li className={totolClass} onClick={this.toggleSearchField.bind(this, 'team_ids', '')} data-tracename="全部">
                         <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/></li>
                     {
                         filterTeams.teamlists.map((team, index) => {
@@ -976,7 +979,7 @@ var UserTabContent = React.createClass({
                                 selected: team_ids.indexOf(team.group_id) >= 0
                             });
                             return <li className={cls} key={team.group_id}
-                                onClick={this.toggleSearchField.bind(this, 'team_ids', team.group_id)}>{team.group_name}</li>;
+                                onClick={this.toggleSearchField.bind(this, 'team_ids', team.group_id)} data-tracename="单个团队">{team.group_name}</li>;
                         })
                     }
                 </ul>

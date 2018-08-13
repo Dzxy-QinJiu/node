@@ -39,8 +39,9 @@ module.exports = {
             target = $(target).parent();
             tracename = target.attr('data-tracename');
         }
-        if (tracename && typeof _paq == 'object') {
+        if (tracename && typeof _paq === 'object') {
             var traceObj = getTraceLines(target);
+            console.log(traceObj);
             _paq.push(['trackEvent', traceObj.root || tracename, 'clicked', traceObj.traceLine || tracename]);
         }
     }
@@ -91,6 +92,7 @@ module.exports = {
             traceLine: parentNames.join('>')
         };
         if (typeof _paq == 'object') {
+            console.log(traceObj);
             _paq.push(['trackEvent', traceObj.root || traceName, 'clicked', traceObj.traceLine || traceName]);
         }
     }
