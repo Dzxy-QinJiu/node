@@ -42,6 +42,15 @@ class ProductTable extends React.Component {
     handleChange(value, recordIndex, column) {
     }
 
+    handleCancel = () => {
+        this.setState({
+            isEdit: false
+        });
+    }
+
+    handleSubmit = () => {
+    }
+
     handleDelete(recordIndex) {
     }
 
@@ -66,8 +75,12 @@ class ProductTable extends React.Component {
                 <SelectAppList
                     appList={this.props.appList}
                 /> 
-                <SaveCancelButton
-                /> 
+                {this.state.isEdit ? null : (
+                    <SaveCancelButton
+                        handleSubmit={this.handleSubmit}
+                        handleCancel={this.handleCancel}
+                    /> 
+                )}
             </div>
         );
     }
