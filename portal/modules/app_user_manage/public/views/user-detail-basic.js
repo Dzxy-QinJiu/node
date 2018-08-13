@@ -155,7 +155,7 @@ var UserDetailBasic = React.createClass({
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
     },
     editSingleApp: function(app, e) {
-        Trace.traceEvent(e,'变更应用');
+        Trace.traceEvent(e,'修改应用的配置信息');
         AppUserPanelSwitchActions.switchToEditAppPanel(app);
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
