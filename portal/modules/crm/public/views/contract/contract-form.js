@@ -1,4 +1,4 @@
-import { Form, Input, Select, Icon, DatePicker} from 'antd';
+import { Form, Input, Select, Icon, DatePicker } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
@@ -13,7 +13,7 @@ const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
 const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
 import Trace from 'LIB_DIR/trace';
-const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
+const { CategoryList, ContractLabel } = require('PUB_DIR/sources/utils/consts');
 
 // 开通应用，默认的数量和金额
 const APP_DEFAULT_INFO = {
@@ -21,7 +21,7 @@ const APP_DEFAULT_INFO = {
     PRICE: 1000
 };
 
-const Contract = React.createClass( {
+const Contract = React.createClass({
     getInitialState() {
         return {
             isLoading: false,
@@ -51,7 +51,7 @@ const Contract = React.createClass( {
             let formData = this.state.formData;
             formData.customer_name = nextProps.curCustomer.name;
             formData.buyer = nextProps.curCustomer.name;
-            this.setState({formData});
+            this.setState({ formData });
         }
     },
     handleSureBtn(event) {
@@ -63,7 +63,7 @@ const Contract = React.createClass( {
             lastSelectedAppIdArray: this.state.selectedAppIdArray
         });
     },
-    handleCancelBtn(event){
+    handleCancelBtn(event) {
         Trace.traceEvent(event, '点击取消');
         this.setState({
             visible: false
@@ -79,7 +79,7 @@ const Contract = React.createClass( {
         return (
             <div className='app-select-list-wrap'>
                 <SelectAppList
-                    appList={this.state.appList}
+                    appList={this.props.appList}
                     getSelectAppList={this.getSelectAppList}
                 />
                 <div className='sure-cancel-btn' data-tracename="应用选择面板">
@@ -90,8 +90,8 @@ const Contract = React.createClass( {
         );
     },
     renderAppIconName(appName, appId) {
-        let appList = this.state.appList;
-        let matchAppObj = _.find( appList, (appItem) => {
+        let appList = this.props.appList;
+        let matchAppObj = _.find(appList, (appItem) => {
             return appItem.client_id === appId;
         });
         return (
@@ -131,7 +131,7 @@ const Contract = React.createClass( {
     },
     // 删除产品信息
     handleDeleteProductsInfo(appId) {
-        Trace.traceEvent($(this.getDOMNode()).find('.total-price'),'点击删除产品信息');
+        Trace.traceEvent($(this.getDOMNode()).find('.total-price'), '点击删除产品信息');
         let restProducts = _.filter(this.state.products, item => item.client_id !== appId);
         let restSelectAppIdArray = _.filter(this.state.selectedAppIdArray, id => id !== appId);
         this.setState({
@@ -157,7 +157,7 @@ const Contract = React.createClass( {
                 width: '20%',
                 key: 'count',
                 render: (text, record, index) => {
-                    return <Input defaultValue={text} onChange={this.handleModifyUserCount.bind(this, record.client_id)}/>;
+                    return <Input defaultValue={text} onChange={this.handleModifyUserCount.bind(this, record.client_id)} />;
                 }
             },
             {
@@ -217,7 +217,7 @@ const Contract = React.createClass( {
     handleCustomerName(event) {
         let formData = this.state.formData;
         formData.buyer = event.target.value;
-        this.setState({formData});
+        this.setState({ formData });
     },
     // 合同类型
     handleSelectContractType(value) {
@@ -236,7 +236,7 @@ const Contract = React.createClass( {
         let formData = this.state.formData;
         let timestamp = date && date.valueOf() || '';
         formData.date = timestamp;
-        this.setState({formData});
+        this.setState({ formData });
     },
     // 有效期
     handleValidityTimeRange(dates) {
@@ -245,23 +245,23 @@ const Contract = React.createClass( {
         let endTime = _.get(dates, '[1]') && _.get(dates, '[1]').valueOf() || '';
         formData.start_time = startTime;
         formData.end_time = endTime;
-        this.setState({formData});
+        this.setState({ formData });
     },
     // 合同额
     handleContractAmount(event) {
         let formData = this.state.formData;
         formData.contract_amount = removeCommaFromNum(event.target.value);
-        this.setState({formData});
+        this.setState({ formData });
     },
     // 毛利
     handleContractGross(event) {
         let formData = this.state.formData;
         formData.gross_profit = removeCommaFromNum(event.target.value);
-        this.setState({formData});
+        this.setState({ formData });
     },
     // 未选择的应用列表
     getUnselectAppList() {
-        let appList = this.state.appList;
+        let appList = this.props.appList;
         let selectedAppIdArray = this.state.selectedAppIdArray;
         let unSelectedAppList = appList;
         if (selectedAppIdArray.length) {
@@ -316,7 +316,7 @@ const Contract = React.createClass( {
                                 value={this.state.contractType}
                                 onChange={this.handleSelectContractType}
                             >
-                                { categoryOptions }
+                                {categoryOptions}
                             </Select>
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.164', '签约类型')}>
@@ -327,7 +327,7 @@ const Contract = React.createClass( {
                                 notFoundContent={Intl.get('contract.71', '暂无签约类型')}
                                 onChange={this.handleSelectContractLabel}
                             >
-                                { labelOptions }
+                                {labelOptions}
                             </Select>
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.34', '签订时间')}>
@@ -347,8 +347,12 @@ const Contract = React.createClass( {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
                             {getFieldDecorator('contract_amount', {
-                                rules: [ValidateRule.getNumberValidateRule()]
-                            })( <Input
+                                rules: [ValidateRule.getNumberValidateRule()],
+                                getValueFromEvent: (event) => {
+                                    // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
+                                    return parseAmount(removeCommaFromNum(event.target.value));
+                                }
+                            })(<Input
                                 value={parseAmount(formData.contract_amount)}
                                 onChange={this.handleContractAmount}
                                 onFocus={this.handleInputFocus}
@@ -357,7 +361,11 @@ const Contract = React.createClass( {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.109', '毛利')}>
                             {getFieldDecorator('gross_profit', {
-                                rules: [ValidateRule.getNumberValidateRule()]
+                                rules: [ValidateRule.getNumberValidateRule()],
+                                getValueFromEvent: (event) => {
+                                    // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
+                                    return parseAmount(removeCommaFromNum(event.target.value));
+                                }
                             })(<Input
                                 value={parseAmount(formData.gross_profit)}
                                 onChange={this.handleContractGross}
@@ -371,7 +379,7 @@ const Contract = React.createClass( {
                                     this.renderProductInfo() : null
                             }
                             <div className='product-info' onClick={this.showAppListPanel}>
-                                <Icon type='plus'/>
+                                <Icon type='plus' />
                                 <span className='add-title'>{Intl.get('common.app', '应用')}</span>
                             </div>
                             {
@@ -385,8 +393,8 @@ const Contract = React.createClass( {
     },
     // 添加合同的ajax
     addContractAjax(reqData) {
-        this.setState({isLoading: true});
-        ContractAjax.addContract({type: 'sell'}, reqData).then( (resData) => {
+        this.setState({ isLoading: true });
+        ContractAjax.addContract({ type: 'sell' }, reqData).then((resData) => {
             if (resData && resData.code === 0) {
                 this.state.errMsg = '';
                 this.state.isLoading = false;
@@ -410,7 +418,7 @@ const Contract = React.createClass( {
                 return;
             } else {
                 // 添加时的数据
-                let reqData = this.state.formData;
+                let reqData = _.cloneDeep(this.state.formData);
                 reqData.category = this.state.contractType; // 合同类型
                 reqData.label = this.state.contractLabel; // 合同签约类型
                 reqData.user_id = UserData.getUserData().user_id || '';
@@ -419,19 +427,22 @@ const Contract = React.createClass( {
                 let productTotalPrice = 0; // 产品信息中的总额；
                 let processProducts = _.map(products, (item) => {
                     // item.total_price是字符串格式，+是为了将字符串转为数字格式
-                    productTotalPrice += +item.total_price;
-                    return {id: item.client_id, name: item.client_name, count: item.count, total_price: item.total_price};
+                    productTotalPrice += +removeCommaFromNum(item.total_price);
+                    return { id: item.client_id, name: item.client_name, count: item.count, total_price: +removeCommaFromNum(item.total_price) };
                 });
                 // 判断产品信息中的总额和合同额是否相同，若相同，则发请求，否则，给出信息提示
                 // reqData.contract_amount是字符串格式，+是为了将字符串转为数字格式
-                if (productTotalPrice !== +reqData.contract_amount) {
+                reqData.contract_amount = +reqData.contract_amount;
+                if (productTotalPrice !== reqData.contract_amount) {
                     this.setState({
                         errMsg: Intl.get('crm.contract.check.tips', '合同额与产品总额不相等，请核对')
                     });
                     return;
                 }
+                // 毛利
+                reqData.gross_profit = +reqData.gross_profit;
                 reqData.products = processProducts; // 产品信息
-                reqData.customers = [{customer_name: reqData.customer_name, customer_id: this.props.customerId}]; // 客户信息
+                reqData.customers = [{ customer_name: reqData.customer_name, customer_id: this.props.customerId }]; // 客户信息
                 this.addContractAjax(reqData);
             }
         });
@@ -440,7 +451,7 @@ const Contract = React.createClass( {
         Trace.traceEvent(event, '点击取消按钮');
         ContractAction.hideForm();
     },
-    render(){
+    render() {
         return (
             <DetailCard
                 content={this.renderContractForm()}
