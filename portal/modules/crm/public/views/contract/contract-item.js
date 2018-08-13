@@ -188,11 +188,13 @@ const ContractItem = React.createClass({
                 title: Intl.get('crm.contract.account.count', '账号数量'),
                 dataIndex: 'count',
                 width: '20%',
+                editable: true,
                 key: 'count'
             },
             {
                 title: Intl.get('crm.contract.money', '金额(元)'),
                 dataIndex: 'total_price',
+                editable: true,
                 key: 'total_price',
                 width: '30%',
                 render: (text) => {
