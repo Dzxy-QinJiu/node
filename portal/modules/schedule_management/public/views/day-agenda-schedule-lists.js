@@ -122,8 +122,7 @@ class DayAgendaScheduleLists extends React.Component {
         });
     }
 
-    handleClickCallOut = (phoneNumber, contactName, item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
+    handleClickCallOut = (phoneNumber, contactName, item, e) => {
         if (this.state.errMsg) {
             message.error(this.state.errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
         } else {
@@ -139,7 +138,7 @@ class DayAgendaScheduleLists extends React.Component {
                     to: phoneNumber.replace('-', '')
                 };
                 crmAjax.callOut(reqData).then((result) => {
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                     }
                 }, (errMsg) => {
@@ -163,12 +162,12 @@ class DayAgendaScheduleLists extends React.Component {
                                 <i className="iconfont icon-contact"></i>
                                 {contact.name}
                             </div>
-                            <div className="contacts-phone-content">
+                            <div className="contacts-phone-content" data-tracename="联系人电话列表">
                                 {_.map(contact.phone, (phone) => {
                                     return (
                                         <div className="phone-item">
                                             {phone}
-                                            <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)}>
+                                            <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)} data-tracename="拨打电话">
                                                 {Intl.get('schedule.call.out','拨打')}
                                             </Button>
                                         </div>
@@ -186,16 +185,16 @@ class DayAgendaScheduleLists extends React.Component {
         return (
             _.map(this.state.scheduleList, (item, index) => {
                 var listCls = classNames('list-item', {
-                    'has-handled': item.status == 'handle',
-                    'selected-customer': item.customer_id == this.state.curCustomerId
+                    'has-handled': item.status === 'handle',
+                    'selected-customer': item.customer_id === this.state.curCustomerId
                 });
                 var itemCls = classNames('list-item-content', {});
                 var iconFontCls = classNames('iconfont', {
-                    'icon-phone-busy': item.type == 'calls',
-                    'icon-schedule-visit': item.type == 'visit',
-                    'icon-schedule-other': item.type == 'other',
+                    'icon-phone-busy': item.type === 'calls',
+                    'icon-schedule-visit': item.type === 'visit',
+                    'icon-schedule-other': item.type === 'other',
                 });
-                var content = item.status == 'handle' ? Intl.get('schedule.has.finished', '已完成') : (
+                var content = item.status === 'handle' ? Intl.get('schedule.has.finished', '已完成') : (
                     item.allDay ? Intl.get('crm.alert.full.day', '全天') : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + '-' + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
                 var customerContent = this.renderPopoverContent(item);
@@ -223,13 +222,13 @@ class DayAgendaScheduleLists extends React.Component {
                                 </Col>
                                 <Col sm={10}>
                                     <div className="schedule-content-wrap">
-                                        {user_id == item.member_id && item.status !== 'handle' ?
+                                        {user_id === item.member_id && item.status !== 'handle' ?
                                             <Button
                                                 type="primary"
                                                 onClick={this.props.handleScheduleItemStatus.bind(this, item)}
                                                 data-tracename="点击标记完成按钮"
                                             >{Intl.get('schedule.list.mark.finish', '标记为完成')}
-                                                {this.state.handleStatusLoading && item.id == this.state.isEdittingItemId ?
+                                                {this.state.handleStatusLoading && item.id === this.state.isEdittingItemId ?
                                                     <Icon type="loading"/> : null}</Button> : null}
                                         <p className="schedule-content">{item.content}</p>
                                         <span className="hidden record-id">{item.id}</span>
@@ -279,13 +278,13 @@ class DayAgendaScheduleLists extends React.Component {
 DayAgendaScheduleLists.navigate = (date, action) => {
     //
     switch (action){
-    case BigCalendar.Navigate.PREVIOUS:
-        return dates.add(date, -1, 'day');
+        case BigCalendar.Navigate.PREVIOUS:
+            return dates.add(date, -1, 'day');
 
-    case BigCalendar.Navigate.NEXT:
-        return dates.add(date, 1, 'day');
-    default:
-        return date;
+        case BigCalendar.Navigate.NEXT:
+            return dates.add(date, 1, 'day');
+        default:
+            return date;
 
     }
 };
@@ -302,4 +301,12 @@ DayAgendaScheduleLists.defaultProps = {
     showCustomerDetail: function() {}
 
 };
+
+DayAgendaScheduleLists.propTypes = {
+    curCustomerId: React.PropTypes.string,
+    scheduleList: React.PropTypes.object,
+    showCustomerDetail: React.PropTypes.func,
+    handleScheduleItemStatus: React.PropTypes.func,
+};
+
 export default DayAgendaScheduleLists;
