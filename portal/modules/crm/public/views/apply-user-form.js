@@ -211,6 +211,7 @@ const ApplyUserForm = React.createClass({
         _.each(this.state.formData.products, appFormData => {
             //用户名是邮箱格式时，只能申请1个用户
             if (isEmail && appFormData.number > 1) {
+                appFormData.onlyOneUserTip = true;
             } else {
                 appFormData.onlyOneUserTip = false;
             }
