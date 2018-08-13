@@ -26,7 +26,6 @@ const Contract = React.createClass( {
         return {
             isLoading: false,
             errMsg: '',
-            visible: false, // 是否显示应用选择项
             isShowSelectAppTable: false, // 是否显示应用表格
             appList: this.props.appList, // 应用列表
             selectedAppIdArray: [], // 选择的应用id
@@ -53,21 +52,6 @@ const Contract = React.createClass( {
             formData.buyer = nextProps.curCustomer.name;
             this.setState({formData});
         }
-    },
-    handleSureBtn(event) {
-        Trace.traceEvent(event, '点击保存');
-        this.setState({
-            isShowSelectAppTable: true,
-            visible: false,
-            products: this.getSelectAppListData(),
-            lastSelectedAppIdArray: this.state.selectedAppIdArray
-        });
-    },
-    handleCancelBtn(event){
-        Trace.traceEvent(event, '点击取消');
-        this.setState({
-            visible: false
-        });
     },
     // 获取选中的应用列表
     getSelectAppList(selectedAppIdArray) {
@@ -255,14 +239,6 @@ const Contract = React.createClass( {
         }
         return unSelectedAppList;
 
-    },
-    showAppListPanel(event) {
-        Trace.traceEvent(event, '点击添加应用');
-        let unSelectedAppList = this.getUnselectAppList();
-        this.setState({
-            visible: true,
-            appList: unSelectedAppList
-        });
     },
     // 鼠标聚焦到input输入框时
     handleInputFocus() {

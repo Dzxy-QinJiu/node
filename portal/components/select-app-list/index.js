@@ -45,6 +45,18 @@ class SelectAppList extends React.Component {
             //            appList: unSelectedAppList
         });
     }
+    handleSureBtn = (event) => {
+        //        Trace.traceEvent(event, '点击保存');
+        this.setState({
+            isAppListShow: false,
+        });
+    }
+    handleCancelBtn = (event) => {
+        //        Trace.traceEvent(event, '点击取消');
+        this.setState({
+            isAppListShow: false
+        });
+    }
     render() {
         return (
             <div className='app-select-list'>
