@@ -195,7 +195,7 @@ class LeftMenuClass {
                     }, 
                     {
                         id: 'OPENAPP',
-                        name: backendIntl.get('back.openApp', '开通应用'),
+                        name: backendIntl.get('app.title', '应用管理'),
                         routePath: 'background_management/openApp',
                         privileges: [
                           
