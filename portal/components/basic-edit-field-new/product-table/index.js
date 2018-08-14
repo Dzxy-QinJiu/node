@@ -27,7 +27,8 @@ class ProductTable extends React.Component {
         columns: [],
         dataSource: [],
         bordered: true,
-        isEdit: true,
+        isAdd: false,
+        isEdit: false,
     };
 
     static propTypes = {
@@ -35,13 +36,14 @@ class ProductTable extends React.Component {
         columns: PropTypes.array,
         dataSource: PropTypes.array,
         bordered: PropTypes.bool,
+        isAdd: PropTypes.bool,
         isEdit: PropTypes.bool,
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            isEdit: this.props.isEdit,
+            isEdit: this.props.isEdit || this.props.isAdd,
             columns: this.getColumns(),
             data: this.props.dataSource,
         };
