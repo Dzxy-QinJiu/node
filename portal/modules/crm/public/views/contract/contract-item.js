@@ -151,62 +151,11 @@ const ContractItem = React.createClass({
         }
         return showUnit ? value + Intl.get('contract.155', '元') : value;
     },
-    renderAppIconName(appName, appId) {
-        let appList = this.props.appList;
-        let matchAppObj = _.find( appList, (appItem) => {
-            return appItem.client_id === appId;
-        });
-        return (
-            <span className='app-icon-name'>
-                {appName ? (
-                    matchAppObj && matchAppObj.client_image ? (
-                        <span className='app-self'>
-                            <img src={matchAppObj.client_image} />
-                        </span>
-                    ) : (
-                        <span className='app-default'>
-                            <i className='iconfont icon-app-default'></i>
-                        </span>
-                    )
-                ) : null}
-                <span className='app-name' title={appName}>{appName}</span>
-            </span>
-        );
-    },
-    getProductColumns() {
-        return [
-            {
-                title: Intl.get('crm.contract.product.name', '产品名称'),
-                dataIndex: 'name',
-                key: 'name',
-                render: (text, record, index) => {
-                    return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
-                }
-            },
-            {
-                title: Intl.get('crm.contract.account.count', '账号数量'),
-                dataIndex: 'count',
-                editable: true,
-                key: 'count'
-            },
-            {
-                title: Intl.get('crm.contract.money', '金额(元)'),
-                dataIndex: 'total_price',
-                editable: true,
-                key: 'total_price',
-                render: (text) => {
-                    return <span>{parseAmount(text.toFixed(2))}</span>;
-                }
-            }
-        ];
-    },
     renderProductInfo(products) {
-        let columns = this.getProductColumns(products);
         return (
             <ProductTable
                 appList={this.state.appList}
                 dataSource={products}
-                columns={columns}
             />
         );
     },

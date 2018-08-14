@@ -3,8 +3,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
 import DetailCard from 'CMP_DIR/detail-card';
-import SelectAppList from 'CMP_DIR/select-app-list';
-import { AntcTable } from 'antc';
+import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
@@ -59,28 +58,6 @@ const Contract = React.createClass( {
             selectedAppIdArray: selectedAppIdArray
         });
     },
-    renderAppIconName(appName, appId) {
-        let appList = this.state.appList;
-        let matchAppObj = _.find( appList, (appItem) => {
-            return appItem.client_id === appId;
-        });
-        return (
-            <span className="app-icon-name">
-                {appName ? (
-                    matchAppObj && matchAppObj.client_image ? (
-                        <span className="app-self">
-                            <img src={matchAppObj.client_image} />
-                        </span>
-                    ) : (
-                        <span className='app-default'>
-                            <i className='iconfont icon-app-default'></i>
-                        </span>
-                    )
-                ) : null}
-                <span className='app-name' title={appName}>{appName}</span>
-            </span>
-        );
-    },
 
     // 修改产品信息
     modifyProductsInfo(appId, modifyValue, filed) {
@@ -110,48 +87,6 @@ const Contract = React.createClass( {
             lastSelectedAppIdArray: restSelectAppIdArray
         });
     },
-    getProductColumns() {
-        return [
-            {
-                title: Intl.get('crm.contract.product.name', '产品名称'),
-                dataIndex: 'client_name',
-                key: 'client_name',
-                width: '40%',
-                render: (text, record, index) => {
-                    return <span className="app-info">{this.renderAppIconName(text, record.client_id)}</span>;
-                }
-            },
-            {
-                title: Intl.get('crm.contract.account.count', '账号数量'),
-                dataIndex: 'count',
-                width: '20%',
-                key: 'count',
-                render: (text, record, index) => {
-                    return <Input defaultValue={text} onChange={this.handleModifyUserCount.bind(this, record.client_id)}/>;
-                }
-            },
-            {
-                title: Intl.get('crm.contract.money', '金额(元)'),
-                dataIndex: 'total_price',
-                key: 'total_price',
-                width: '40%',
-                render: (text, record, index) => {
-                    return <span className='total-price'>
-                        <Input
-                            defaultValue={parseAmount(text)}
-                            onChange={this.handleModifyPrice.bind(this, record.client_id)}
-                            onFocus={this.handleInputFocus}
-                        />
-                        <i
-                            title={Intl.get('common.delete', '删除')}
-                            className="iconfont icon-close" onClick={this.handleDeleteProductsInfo.bind(this, record.client_id)}
-                        >
-                        </i>
-                    </span>;
-                }
-            }
-        ];
-    },
     // 获取选中应用列表的数据
     getSelectAppListData() {
         let appList = this.props.appList;
@@ -170,18 +105,6 @@ const Contract = React.createClass( {
             });
         }
         return selectAppList;
-    },
-    renderProductInfo() {
-        let columns = this.getProductColumns();
-        return (
-            <AntcTable
-                dataSource={this.state.products}
-                columns={columns}
-                pagination={false}
-                bordered
-            />
-        );
-
     },
     // 甲方
     handleCustomerName(event) {
@@ -328,13 +251,9 @@ const Contract = React.createClass( {
 
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.95', '产品信息')}>
-                            {
-                                this.state.isShowSelectAppTable && _.get(this.state.products, '[0]') ?
-                                    this.renderProductInfo() : null
-                            }
-                            <SelectAppList
-                                appList={this.state.appList}
-                                getSelectAppList={this.getSelectAppList}
+                            <ProductTable
+                                appList={this.props.appList}
+                                isEdit={true}
                             />
                         </FormItem>
                     </Form>

@@ -18,22 +18,67 @@ import { AntcEditableTable } from 'antc';
 import {DetailEditBtn} from '../../rightPanel';
 import SaveCancelButton from '../../detail-card/save-cancel-button';
 import SelectAppList from '../../select-app-list';
+import { num as antUtilsNum } from 'ant-utils';
+const parseAmount = antUtilsNum.parseAmount;
 
 class ProductTable extends React.Component {
     static defaultProps = {
         appList: [],
+        columns: [],
+        dataSource: [],
         bordered: true,
+        isEdit: true,
     };
 
     static propTypes = {
         appList: PropTypes.array,
+        columns: PropTypes.array,
+        dataSource: PropTypes.array,
+        bordered: PropTypes.bool,
+        isEdit: PropTypes.bool,
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            isEdit: false,
+            isEdit: this.props.isEdit,
+            columns: this.getColumns(),
+            data: this.props.dataSource,
         };
+    }
+
+    getColumns() {
+        let columns = this.props.columns;
+
+        if (_.isEmpty(columns)) {
+            columns = [
+                {
+                    title: Intl.get('crm.contract.product.name', '产品名称'),
+                    dataIndex: 'name',
+                    key: 'name',
+                    render: (text, record, index) => {
+                        return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
+                    }
+                },
+                {
+                    title: Intl.get('crm.contract.account.count', '账号数量'),
+                    dataIndex: 'count',
+                    editable: true,
+                    key: 'count'
+                },
+                {
+                    title: Intl.get('crm.contract.money', '金额(元)'),
+                    dataIndex: 'total_price',
+                    editable: true,
+                    key: 'total_price',
+                    render: (text) => {
+                        return <span>{parseAmount(text.toFixed(2))}</span>;
+                    }
+                }
+            ];
+        }
+
+        return columns;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -60,6 +105,28 @@ class ProductTable extends React.Component {
         });
     }
 
+    renderAppIconName(appName, appId) {
+        let appList = this.props.appList;
+        let matchAppObj = _.find( appList, (appItem) => {
+            return appItem.client_id === appId;
+        });
+        return (
+            <span className='app-icon-name'>
+                {appName ? (
+                    matchAppObj && matchAppObj.client_image ? (
+                        <span className='app-self'>
+                            <img src={matchAppObj.client_image} />
+                        </span>
+                    ) : (
+                        <span className='app-default'>
+                            <i className='iconfont icon-app-default'></i>
+                        </span>
+                    )
+                ) : null}
+                <span className='app-name' title={appName}>{appName}</span>
+            </span>
+        );
+    }
     render() {
         return (
             <div className="product-table">
@@ -70,7 +137,8 @@ class ProductTable extends React.Component {
                 )}
                 <AntcEditableTable
                     isEdit={this.state.isEdit}
-                    {...this.props}
+                    columns={this.state.columns}
+                    dataSource={this.state.data}
                 /> 
                 {this.state.isEdit ? (
                     <div>
