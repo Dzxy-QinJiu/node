@@ -258,7 +258,7 @@ function phoneEventListener(phonemsgObj) {
         if (!phonemsgObj.customers) {
             phonemsgObj.customers = [];
         }
-        //清空存储的联系人信息
+        //是否清空存储的联系人的处理
         if (contactNameObj && contactNameObj.contact) {
             //ALERT、ANSERED状态下电话在to上，phone、BYE状态下电话在dst上
             if (phonemsgObj.dst || phonemsgObj.to) {
