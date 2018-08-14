@@ -278,7 +278,7 @@ class PhonePanel extends React.Component {
             <div className="customer-name">
                 <h3>
                     <i className="iconfont icon-interested"/>
-                    <span>{customer.name}</span>
+                    <span title={customer.name}>{customer.name}</span>
                 </h3>
                 <dl className="customer-info">
                     <dt>

@@ -261,12 +261,14 @@ function phoneEventListener(phonemsgObj) {
         //清空存储的联系人信息
         if (contactNameObj && contactNameObj.contact) {
             if (phonemsgObj.dst || phonemsgObj.to) {
-                let phone = phonemsgObj.to || phonemsgObj.dist;
-                //当前状态的电话跟存储的联系电话不相等时，
-                if (phone !== contactNameObj.phone) {
+                let phone = phonemsgObj.to || phonemsgObj.dst;
+                //当前状态的电话跟存储的联系电话不是同一个电话时，
+                if (!phone.includes(contactNameObj.phone) && !contactNameObj.phone.includes(phone)) {
+                    // 清空存储的联系人、电话信息
                     setInitialPhoneObj();
                 }
             } else {//dst和to都不存在时，说明不是从客套里打的电话
+                // 清空存储的联系人电话信息
                 setInitialPhoneObj();
             }
         }
@@ -288,14 +290,13 @@ window.handleClickPhone = function(phoneObj) {
     if ($modal && $modal.length > 0) {
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_MODAL);
     }
-    var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName, customerId = phoneObj.customerId;
+    var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName;
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .phone-item .icon-phone-call-out'), '拨打电话');
     handleCallOutResult({
         errorMsg: getCallNumErrMsg,//获取坐席号失败的错误提示
         callNumber: callNumber,//坐席号
         contactName: contactName,//联系人姓名
-        phoneNumber: phoneNumber,//拨打的电话
-        customerId: customerId
+        phoneNumber: phoneNumber//拨打的电话
     });
 };
 
