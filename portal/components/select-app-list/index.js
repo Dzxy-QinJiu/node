@@ -1,12 +1,22 @@
 /**
  * 选择应用组件
  */
-require('./index.less');
+require('./style.less');
 import { Checkbox, Icon } from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const PropTypes = React.PropTypes;
 
 class SelectAppList extends React.Component {
+    static defaultProps = {
+        appList: [],
+        getSelectAppList: function() {},
+    };
+
+    static propTypes = {
+        appList: PropTypes.array,
+        getSelectAppList: PropTypes.func,
+    };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -81,15 +91,5 @@ class SelectAppList extends React.Component {
         );
     }
 }
-
-SelectAppList.defaultProps = {
-    appList: [],
-    getSelectAppList: function() {},
-};
-
-SelectAppList.propTypes = {
-    appList: PropTypes.array,
-    getSelectAppList: PropTypes.func,
-};
 
 export default SelectAppList;
