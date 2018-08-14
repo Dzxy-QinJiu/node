@@ -7,6 +7,7 @@ var UserLoginAnalysisStore = require('../store/user-login-analysis-store');
 import TimeUtil from '../../../../public/sources/utils/time-format-util';
 import CardContainer from 'CMP_DIR/card-container'; // 容器
 import DetailCard from 'CMP_DIR/detail-card';
+import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 
@@ -276,9 +277,6 @@ const UserLoginAnalysis = React.createClass({
     },
     render: function() {
         let appList = this.renderUserAppsList();
-        let LoadingBlock = this.state.isLoading ? (
-            <Spinner />
-        ) : null;
         // let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 ? <div className="user-no-login">
         //     {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
         // </div> : <div className="user-login-info">
@@ -322,13 +320,16 @@ const UserLoginAnalysis = React.createClass({
             </ul>
         );
         return (
-            <div className="user-analysis-panel" style={{height: this.props.height}}>
-                {/* {appList} */}
-                <GeminiScrollbar>
-                    {LoadingBlock}
-                    {userLoginBlock}
-                </GeminiScrollbar>
-            </div>
+            <StatusWrapper
+                loading={this.state.isLoading}
+            >            
+                <div className="user-analysis-panel" style={{height: this.props.height}}>
+                    {/* {appList} */}
+                    <GeminiScrollbar>
+                        {userLoginBlock}
+                    </GeminiScrollbar>
+                </div>
+            </StatusWrapper>
         );
     }
 });

@@ -43,9 +43,10 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.setInitState();
         let stateData = SalesHomeStore.getState();
         var isSaleTeamShow = true;
-        var flag = storageUtil.local.get(key, pageId);
+        var flag = storageUtil.local[key];
         if (flag === null) {
-            storageUtil.local.set(key, true, pageId);
+            // storageUtil.local[key] = true;
+            storageUtil.local.set(key, true);
             isSaleTeamShow = true;
         } else {
             isSaleTeamShow = flag;
@@ -778,7 +779,8 @@ var SalesHomePage = React.createClass({
             updateScrollBar: true
         }, () => {
             var flag = this.state.isSaleTeamShow;
-            storageUtil.local.set(key, flag, pageId);
+            // storageUtil.local.set(key, flag);
+            storageUtil.local[key] = flag;
             //展开、关闭团队列表的时间未1s,所以需要加1s的延时后更新滚动条才起作用
             setTimeout(() => {
                 this.refs.phoneScrollbar && this.refs.phoneScrollbar.update();
@@ -871,7 +873,7 @@ var SalesHomePage = React.createClass({
     //获取电话统计图表列表
     getPhoneAnalysisCharts() {
         return [{
-            title: Intl.get('weekly.report.call.statics': '电话统计'),
+            title: Intl.get('weekly.report.call.statics', '电话统计'),
             chartType: 'table',
             height: 'auto',
             layout: {
