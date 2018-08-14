@@ -102,6 +102,15 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     };
+    //删除某条线索
+    this.deleteClueById = function(data,callback) {
+        clueCustomerAjax.deleteClueById(data).then((result) => {
+            this.dispatch(data);
+            _.isFunction(callback) && callback();
+        },(errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('crm.139', '删除失败'));
+        });
+    };
 
     //线索的全文搜索
     this.getClueFulltext = function(queryObj) {

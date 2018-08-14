@@ -6,7 +6,6 @@
 var rightPanelShow = false;
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
-var clueAnalysisStore = require('./store/clue-analysis-store');
 var clueCustomerAction = require('./action/clue-customer-action');
 import {clueEmitter} from 'OPLATE_EMITTER';
 var userData = require('../../../public/sources/user-data');
@@ -107,7 +106,6 @@ const ClueCustomer = React.createClass({
     },
     componentWillUnmount: function() {
         clueCustomerStore.unlisten(this.onStoreChange);
-        // clueAnalysisStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
         clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
     },
@@ -316,7 +314,7 @@ const ClueCustomer = React.createClass({
         });
     },
     renderClueCustomerList: function() {
-        var customerList = this.state.curCustomers;
+        var customerList = this.state.curClueLists;
         return (
             _.map(customerList, (item) => {
                 return (
@@ -421,7 +419,7 @@ const ClueCustomer = React.createClass({
                         item.sales_team_id = team_id;
                         item.status = SELECT_TYPE.HAS_DISTRIBUTE;
                         this.setState({
-                            curCustomers: this.state.curCustomers
+                            curClueLists: this.state.curClueLists
                         });
                     }
                 }
@@ -437,7 +435,7 @@ const ClueCustomer = React.createClass({
         clueCustomerAction.setSalesManName({'salesManNames': salesManNames});
     },
     handleScrollBarBottom: function() {
-        var currListLength = _.isArray(this.state.curCustomers) ? this.state.curCustomers.length : 0;
+        var currListLength = _.isArray(this.state.curClueLists) ? this.state.curClueLists.length : 0;
         // 判断加载的条件
         if (currListLength <= this.state.customersSize) {
             this.getClueList();
@@ -445,7 +443,7 @@ const ClueCustomer = React.createClass({
     },
     renderClueCustomerBlock: function() {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
-        if (this.state.curCustomers.length) {
+        if (this.state.curClueLists.length) {
             return (
                 <div id="content-block" className="content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
@@ -473,7 +471,7 @@ const ClueCustomer = React.createClass({
     },
     showNoMoreDataTip: function() {
         return !this.state.isLoading &&
-            this.state.curCustomers.length >= 20 && !this.state.listenScrollBottom;
+            this.state.curClueLists.length >= 20 && !this.state.listenScrollBottom;
     },
     onTypeChange: function() {
         clueCustomerAction.setClueInitialData();
@@ -522,7 +520,7 @@ const ClueCustomer = React.createClass({
                     <p className="abnornal-status-tip">{this.state.clueCustomerErrMsg}</p>
                 </div>
             );
-        } else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curCustomers.length) {
+        } else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
             //数据为空的展示
             return (
                 <div className="no-data">
@@ -867,15 +865,23 @@ const ClueCustomer = React.createClass({
                             />
                         ) : null}
                     </Modal>
-                    <RightPanel
-                        className="clue_customer_rightpanel white-space-nowrap"
-                        showFlag={this.state.rightPanelIsShow} data-tracename="展示销售线索客户">
-                        <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel}></span>
-                        <ClueRightPanel
-                            currentId={this.state.currentId}
-                            curClue={this.state.curCustomer}
-                        />
-                    </RightPanel>
+                    <ClueRightPanel
+                        showFlag={this.state.rightPanelIsShow}
+                        currentId={this.state.currentId}
+                        curClue={this.state.curClue}
+                        afterDeleteClue={this.hideRightPanel}
+                        hideRightPanel={this.hideRightPanel}
+                    />
+                    {/*<RightPanel*/}
+                    {/*className="clue_customer_rightpanel white-space-nowrap"*/}
+                    {/*showFlag={this.state.rightPanelIsShow} data-tracename="展示销售线索客户">*/}
+                    {/*<span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel}></span>*/}
+                    {/*<ClueRightPanel*/}
+                    {/*currentId={this.state.currentId}*/}
+                    {/*curClue={this.state.curClue}*/}
+                    {/*afterDeleteClue={this.hideRightPanel}*/}
+                    {/*/>*/}
+                    {/*</RightPanel>*/}
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}

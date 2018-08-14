@@ -1,61 +1,112 @@
 @import "../../../../public/css/common-variables";
-//点击展开某个线索客户的详情
-.clue-detail-wrap{
-  float: left;
-  height: 100%;
-  width: 480px !important;
-  box-shadow: -4px 0 20px #cac8c8;
-  background-color: #f5f5f5 !important;
-  .clue-detail-content{
-     padding: 0px 20px;
+.clue_customer_rightpanel.right-pannel-default{
+  width: 504px!important;
+  background-color:transparent!important;
+  transform: translateX(504px);
+  overflow: visible;
+  .iconfont.icon-close.clue-right-btn{
+    color: #fff;
+    background-color: #8ea9c4;
+    border-radius: 0 !important;
+    width: 24px;
+    height: 24px;
+    float: left;
+    font-size: 14px;
   }
-  .clue-basic-info-container{
-    width: 100%;
-    background-color: #ffffff;
-    height: 80px;
-    overflow: hidden;
+  //点击展开某个线索客户的详情
+  .clue-detail-wrap{
+    float: left;
+    height: 100%;
+    width: 480px !important;
+    box-shadow: -4px 0 20px #cac8c8;
+    background-color: #f5f5f5 !important;
     position: relative;
-    .clue-name-title{
-      .basic-edit-field-input.basic-edit-field{
-        font-size: 16px;
-        font-weight: bold;
-        position: absolute;
-        top:26px;
-        left:75px;
-        width: 370px;
-      }
-      .basic-edit-field-input.basic-edit-field.editing{
-        top:8px;
-      }
+    .clue-detail-content{
+      padding: 0px 20px;
     }
-    .clue-stage{
-      font-size: 13px;
-      margin-right:5px;
+    .delete-modal{
       position: absolute;
-      top:30px;
-      left:30px;
-    }
-    .clue-stage.will-distribute {
-      background: @will-distribute-background;
-      color: @will-distribute-color;
-    }
-    .clue-stage.has-distribute {
-      background: @has-distribute-background;
-      color: @has-distribute-color;
-    }
-    .clue-stage.has-follow {
-      color: @has-follow-color;
-      background: @has-follow-background;
-    }
-
-  }
-  .ant-tabs{
-    .ant-tabs-nav{
-      .ant-tabs-tab{
-        padding-top:10px!important;
-        padding-bottom: 5px!important;
+      top:0;
+      left:0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.5);
+      .handle-btn{
+        position: absolute;
+        top:24px;
+        right:23px;
+        .ant-btn-primary{
+          margin-right: 10px;
+          border-color: @error_tips_color;
+          background-color: @error_tips_color;
+          &:hover, &:active, &:focus{
+            border-color: @error_tips_color;
+            background-color: @error_tips_color;
+          }
+        }
       }
     }
+    .clue-basic-info-container{
+      width: 100%;
+      background-color: #ffffff;
+      height: 80px;
+      overflow: hidden;
+      position: relative;
+      .clue-name-title{
+        .basic-edit-field-input.basic-edit-field{
+          font-size: 16px;
+          font-weight: bold;
+          position: absolute;
+          top:26px;
+          left:75px;
+          width: 330px;
+        }
+        .basic-edit-field-input.basic-edit-field.editing{
+          top:8px;
+        }
+      }
+      .remove-clue{
+        position: absolute;
+        right: 0;
+        top:0;
+        width: 60px;
+        height: 100%;
+        border-left:1px solid #e2e2e2;
+        .iconfont{
+          display: block;
+          margin: 30px auto;
+        }
+      }
+      .clue-stage{
+        font-size: 13px;
+        margin-right:5px;
+        position: absolute;
+        top:30px;
+        left:30px;
+      }
+      .clue-stage.will-distribute {
+        background: @will-distribute-background;
+        color: @will-distribute-color;
+      }
+      .clue-stage.has-distribute {
+        background: @has-distribute-background;
+        color: @has-distribute-color;
+      }
+      .clue-stage.has-follow {
+        color: @has-follow-color;
+        background: @has-follow-background;
+      }
 
+    }
+    .ant-tabs{
+      .ant-tabs-nav{
+        .ant-tabs-tab{
+          padding-top:10px!important;
+          padding-bottom: 5px!important;
+        }
+      }
+
+    }
   }
 }
+

@@ -7,14 +7,14 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/clue-right-detail.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-var Tabs = require('antd').Tabs;
+import {Button, Tabs, message, Icon} from 'antd';
 var TabPane = Tabs.TabPane;
 const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
     DYNAMIC_TAB: '2',//动态
 };
 var tabNameList = {
-    '1': Intl.get('clue.detail.info','线索信息'),
+    '1': Intl.get('clue.detail.info', '线索信息'),
     '2': Intl.get('user.change.record', '变更记录'),
 };
 var noop = function() {
@@ -39,14 +39,52 @@ class ClueRightPanel extends React.Component {
             salesManList: [],//销售列表
             activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
             curClue: $.extend(true, {}, this.props.curClue),
+            isRemoveClueId: '',//正在删除的线索的id
             relatedCustomer: {},//与线索相关联的客户
+            isDeletingClue: false//正在删除线索
         };
     }
+
+    componentWillMount() {
+        if (_.isEmpty(this.state.curClue) && this.props.currentId) {
+            this.getCurClue(this.props.currentId);
+        }
+    }
+
     componentDidMount = () => {
         this.getClueSource();
         this.getClueChannel();
         this.getClueClassify();
         this.getSaleTeamList();
+    };
+
+    componentWillReceiveProps(nextProps) {
+        //如果有更改后，id不变，但是属性有变化  && nextProps.curClue.id !== this.props.curClue.id
+        if (nextProps.curClue && !_.isEmpty(nextProps.curClue)) {
+            this.setState({
+                curClue: $.extend(true, {}, nextProps.curClue)
+            });
+        } else if (nextProps.currentId !== this.props.currentId && nextProps.currentId) {
+            this.getCurClue(nextProps.currentId);
+        }
+    }
+
+    getCurClue = (id) => {
+        clueCustomerAjax.getClueDetailById(id).then(resData => {
+            if (_.isObject(resData)) {
+                this.setState({
+                    curClue: resData
+                });
+            }else{
+                this.setState({
+                    getClueDetailErrMsg: Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
+                });
+            }
+        }, () => {
+            this.setState({
+                getClueDetailErrMsg: Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
+            });
+        });
     };
     getSaleTeamList = () => {
         clueCustomerAjax.getSalesManList().then(data => {
@@ -112,14 +150,7 @@ class ClueRightPanel extends React.Component {
             clueClassifyArray: this.state.clueClassifyArray
         });
     };
-    componentWillReceiveProps(nextProps) {
-        //如果有更改后，id不变，但是属性有变化  && nextProps.curClue.id !== this.props.curClue.id
-        if (nextProps.curClue) {
-            this.setState({
-                curClue: $.extend(true, {}, nextProps.curClue)
-            });
-        }
-    }
+
     hideRightPanel = () => {
         this.setState({
             relatedCustomer: {},
@@ -149,64 +180,125 @@ class ClueRightPanel extends React.Component {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg);
         });
     };
-    render(){
+    //删除某条线索
+    handleRemoveClue = (curClue) => {
+        this.setState({
+            isRemoveClueId: curClue.id
+        });
+    };
+    //确认删除某条线索
+    handleConfirmDeleteClue = () => {
+        this.setState({
+            isDeletingClue: true
+        });
+        clueCustomerAction.deleteClueById({customer_clue_ids: this.state.isRemoveClueId}, (errorMsg) => {
+            this.setState({
+                isDeletingClue: false,
+            });
+            if (errorMsg) {
+                message.error(errorMsg);
+            } else {
+                this.setState({
+                    isRemoveClueId: '',
+                });
+                _.isFunction(this.props.afterDeleteClue) && this.props.afterDeleteClue();
+            }
+        });
+    };
+    //取消删除某条线索
+    cancelDeleteClue = () => {
+        this.setState({
+            isRemoveClueId: ''
+        });
+    };
+    hideRightPanel = () => {
+        _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
+        this.setState({
+            getClueDetailErrMsg: '',
+            isRemoveClueId: '',
+        });
+    };
+    render() {
         var curClue = this.state.curClue;
         //是否没有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
         return (
-            <div className="clue-detail-wrap">
-                <div className="clue-basic-info-container">
-                    <div className="clue-name-wrap">
-                        {renderClueStatus(curClue.status)}
-                        <div className="clue-name-title">
-                            <BasicEditInputField
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                id={curClue.id}
-                                saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
-                                value={curClue.name}
-                                field='name'
-                            />
+            <RightPanel
+                className="clue_customer_rightpanel white-space-nowrap"
+                showFlag={this.props.showFlag} data-tracename="展示销售线索客户">
+                <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel}></span>
+                {this.state.getClueDetailErrMsg ? <div className="no-data-tip">{this.state.getClueDetailErrMsg}</div> :
+                    <div className="clue-detail-wrap">
+                        <div className="clue-basic-info-container">
+                            <div className="clue-name-wrap">
+                                {renderClueStatus(curClue.status)}
+                                <div className="clue-name-title">
+                                    <BasicEditInputField
+                                        hasEditPrivilege={hasPrivilegeEdit}
+                                        id={curClue.id}
+                                        saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
+                                        value={curClue.name}
+                                        field='name'
+                                    />
+                                </div>
+                                {hasPrivilege('CLUECUSTOMER_DELETE') ?
+                                    <div className="remove-clue">
+                                        <i className="iconfont icon-delete"
+                                            onClick={this.handleRemoveClue.bind(this, curClue)}></i>
+                                    </div> : null}
+
+                            </div>
                         </div>
+                        <div className="clue-detail-content">
+                            <Tabs
+                                defaultActiveKey={TAB_KEYS.OVERVIEW_TAB}
+                                activeKey={this.state.activeKey}
+                                onChange={this.changeActiveKey}
+                            >
+                                <TabPane
+                                    tab={tabNameList[TAB_KEYS.OVERVIEW_TAB]}
+                                    key={TAB_KEYS.OVERVIEW_TAB}
+                                >
+                                    {this.state.activeKey === TAB_KEYS.OVERVIEW_TAB ? (
+                                        <ClueBasicInfo
+                                            curClue={curClue}
+                                            accessChannelArray={this.state.accessChannelArray}
+                                            clueSourceArray={this.state.clueSourceArray}
+                                            clueClassifyArray={this.state.clueClassifyArray}
+                                            updateClueSource={this.updateClueSource}
+                                            updateClueChannel={this.updateClueChannel}
+                                            updateClueClassify={this.updateClueClassify}
+                                            salesManList={this.state.salesManList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={tabNameList[TAB_KEYS.DYNAMIC_TAB]}
+                                    key={TAB_KEYS.DYNAMIC_TAB}
+                                >
+                                    {this.state.activeKey === TAB_KEYS.DYNAMIC_TAB ? (
+                                        <ClueDynamic
+                                            currentId={curClue.id}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                            </Tabs>
+                        </div>
+                        {this.state.isRemoveClueId ?
+                            <div className="delete-modal">
+                                <div className="handle-btn">
+                                    <Button type='primary' onClick={this.handleConfirmDeleteClue}>
+                                        {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                        {this.state.isDeletingClue ? <Icon type="loading"/> : null}
+                                    </Button>
+                                    <Button onClick={this.cancelDeleteClue}>{Intl.get('common.cancel', '取消')}</Button>
+                                </div>
+                            </div>
+                            : null}
                     </div>
-                </div>
-                <div className="clue-detail-content" >
-                    <Tabs
-                        defaultActiveKey={TAB_KEYS.OVERVIEW_TAB}
-                        activeKey={this.state.activeKey}
-                        onChange={this.changeActiveKey}
-                    >
-                        <TabPane
-                            tab={tabNameList[TAB_KEYS.OVERVIEW_TAB]}
-                            key={TAB_KEYS.OVERVIEW_TAB}
-                        >
-                            {this.state.activeKey === TAB_KEYS.OVERVIEW_TAB ? (
-                                <ClueBasicInfo
-                                    curClue={curClue}
-                                    accessChannelArray={this.state.accessChannelArray}
-                                    clueSourceArray={this.state.clueSourceArray}
-                                    clueClassifyArray={this.state.clueClassifyArray}
-                                    updateClueSource={this.updateClueSource}
-                                    updateClueChannel={this.updateClueChannel}
-                                    updateClueClassify={this.updateClueClassify}
-                                    salesManList={this.state.salesManList}
-                                />
-                            ) : null}
-                        </TabPane>
-                        <TabPane
-                            tab={tabNameList[TAB_KEYS.DYNAMIC_TAB]}
-                            key={TAB_KEYS.DYNAMIC_TAB}
-                        >
-                            {this.state.activeKey === TAB_KEYS.DYNAMIC_TAB ? (
-                                <ClueDynamic
-                                    currentId={curClue.id}
-                                />
-                            ) : null}
-                        </TabPane>
-                    </Tabs>
-                </div>
-            </div>
+                }
 
-
+            </RightPanel>
         );
     }
 }
@@ -214,11 +306,17 @@ ClueRightPanel.defaultProps = {
     curClue: {},
     hideRightPanel: noop,
     salesManList: [],
+    showFlag: false,
+    afterDeleteClue: noop,
+    currentId: ''
 };
 ClueRightPanel.propTypes = {
     curClue: React.PropTypes.object,
     hideRightPanel: React.PropTypes.func,
     salesManList: React.PropTypes.object,
+    showFlag: React.PropTypes.bool,
+    afterDeleteClue: React.PropTypes.func,
+    currentId: React.PropTypes.string
 
 };
 export default ClueRightPanel;
