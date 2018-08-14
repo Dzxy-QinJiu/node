@@ -5,6 +5,7 @@
  */
 var language = require('../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
+    require('../css/user-detail-change-record-zh_CN.less');
     require('../css/user-detail-change-record-es_VE.less');
 }else if (language.lan() === 'zh'){
     require('../css/user-detail-change-record-zh_CN.less');
@@ -270,10 +271,12 @@ var UserDetailChangeRecord = React.createClass({
                             {this.getSelectOptions()}
                         </Select>
                         <TimeLine
+                            className="icon-blue"
                             list={this.state.changeRecord}
                             groupByDay={true}
                             timeField="record_time"
                             render={this.renderTimeLineItem}
+                            dot={<span className="iconfont icon-change"></span>}
                         />
                     </div>
                 </GeminiScrollbar>

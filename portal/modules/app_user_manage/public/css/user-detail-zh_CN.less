@@ -74,15 +74,58 @@
     // .full-size-container.move-left-wrrapper{
     //     position: relative!important;
     // }
+    //时间线样式
+    .time-line.group-by-day {
+        & .icon-blue {
+            .iconfont {
+                color: @btn_color;
+            }
+        }
+        ul {
+            .ant-timeline-item-head-blue {
+                color: initial;
+                border-color: initial;
+            }
+            li {
+                padding-top: 5px;
+                dl {
+                    dt {
+                        color: #aaafb3;
+                        margin-top: 10px;
+                        font-weight: normal;
+                    }
+                    dd {
+                        color: #464b4e;
+                        white-space: normal;
+                        p {
+                            .iconfont {
+                                float: right;
+                                font-size: 15px;
+                                color: @btn_color;
+                            }
+                        } 
+                        &.hightlight {
+                            color: @font-lightblue;
+                            margin-bottom: -10px;
+                            margin-top: 3px;
+                        }
+                    }
+                }
+            }
+        }
+    }
     .user-log {
         padding-top: 10px;
         .user-log-panel {
             .log-info-header {
-                .select-time{
+                .select-time {
                     float: left;
                     width: 50%;
                     margin-right: 0;
                     margin-left: 0;
+                    .range-datepicker {
+                        width: 100%;
+                    }
                 }
             }
         }
@@ -90,7 +133,7 @@
             width: 100%;
             margin-bottom: 10px;
             .log_select_app {
-                width: 100%!important;
+                width: 100% !important;
             }
         }
         .range-datepicker {
@@ -112,7 +155,7 @@
             padding-top: 5px;
             border-bottom: 1px solid #eee;
             .login-stress {
-                display: block; 
+                display: block;
                 font-weight: initial;
             }
         }
@@ -127,7 +170,7 @@
         }
         .title-container {
             // padding-bottom: 10px;
-            overflow: hidden;            
+            overflow: hidden;
             .logo-container {
                 float: left;
                 vertical-align: middle;
