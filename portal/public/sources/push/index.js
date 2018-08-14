@@ -260,6 +260,7 @@ function phoneEventListener(phonemsgObj) {
         }
         //清空存储的联系人信息
         if (contactNameObj && contactNameObj.contact) {
+            //ALERT、ANSERED状态下电话在to上，phone、BYE状态下电话在dst上
             if (phonemsgObj.dst || phonemsgObj.to) {
                 let phone = phonemsgObj.to || phonemsgObj.dst;
                 //当前状态的电话跟存储的联系电话不是同一个电话时，
