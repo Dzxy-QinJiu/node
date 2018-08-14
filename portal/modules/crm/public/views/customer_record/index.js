@@ -824,14 +824,14 @@ const CustomerRecord = React.createClass({
                                 {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
                             </Button>)
                         }
-                        {_.get(this.state, 'customerRecord[0]') ? (
+                        {_.get(this.state, 'customerRecord[0]') || this.state.filterStatus ? (
                             <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
                                 <a className="ant-dropdown-link trace-filter-item">
                                     {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
                                     <Icon type="down"/>
                                 </a>
                             </Dropdown>) : null}
-                        {_.get(this.state, 'customerRecord[0]') ? (
+                        {_.get(this.state, 'customerRecord[0]') || this.state.filterType ? (
                             <Dropdown overlay={this.getTypeMenu()} trigger={['click']}>
                                 <a className="ant-dropdown-link trace-filter-item">
                                     {this.state.filterType ? CALL_TYPE_MAP[this.state.filterType] : Intl.get('sales.frontpage.trace.type', '跟进类型')}
