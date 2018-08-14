@@ -139,6 +139,7 @@ class ProductTable extends React.Component {
                     isEdit={this.state.isEdit}
                     columns={this.state.columns}
                     dataSource={this.state.data}
+                    bordered={this.props.bordered}
                 /> 
                 {this.state.isEdit ? (
                     <div>
