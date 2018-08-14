@@ -148,10 +148,12 @@ class ProductTable extends React.Component {
                         <SelectAppList
                             appList={this.props.appList}
                         /> 
-                        <SaveCancelButton
-                            handleSubmit={this.handleSubmit}
-                            handleCancel={this.handleCancel}
-                        /> 
+                        {this.props.isAdd ? null : (
+                            <SaveCancelButton
+                                handleSubmit={this.handleSubmit}
+                                handleCancel={this.handleCancel}
+                            /> 
+                        )}
                     </div>
                 ) : null}
             </div>
