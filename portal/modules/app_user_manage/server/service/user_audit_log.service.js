@@ -22,7 +22,9 @@ var AppUserRestApis = {
     // 获取用户登录时长统计
     getLoginDurationGraph: '/rest/analysis/auditlog/v1/:app_id/loginlong/:user_id/daily',
     // 获取用户登录频次
-    getLoginFrequency: '/rest/analysis/auditlog/v1/:app_id/logins/:user_id/daily'
+    getLoginFrequency: '/rest/analysis/auditlog/v1/:app_id/logins/:user_id/daily',
+    // 获取用户的分数
+    getLoginUserScore: '/rest/analysis/user/v1/search/:type/user/score'
 };
 
 exports.urls = AppUserRestApis;
@@ -129,3 +131,13 @@ function handleLoginInfo(req, res, obj, url, param){
         });
     } );
 }
+
+// 获取用户的分数
+exports.getLoginUserScore = function(req, res){
+    let params = req.params;
+    return restUtil.authRest.get({
+        url: AppUserRestApis.getLoginUserScore.replace(':type', params.type),
+        req: req,
+        res: res
+    }, req.query);
+};

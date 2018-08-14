@@ -19,7 +19,8 @@ export const CONTRACT_VIEW_AUTH = {
 };
 export const LAYOUT_CONSTANTS = {
     TOP: 80,
-    BTNBAR: 30
+    BTNBAR: 30,
+    NAV_TOP: 50
 };
 export const CONTRACT_TYPES_LIST = [{
     value: 'contract',

@@ -6,6 +6,7 @@ var UserLoginAnalysisAction = require('../action/user-login-analysis-action');
 var UserLoginAnalysisStore = require('../store/user-login-analysis-store');
 import TimeUtil from '../../../../public/sources/utils/time-format-util';
 import CardContainer from 'CMP_DIR/card-container'; // 容器
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 const UserLoginAnalysis = React.createClass({
     getDefaultProps: function() {
@@ -39,7 +40,7 @@ const UserLoginAnalysis = React.createClass({
     },
     componentWillReceiveProps: function(nextProps) {
         var newUserId = nextProps.userId;
-        if (this.props.userId != newUserId) {
+        if (this.props.userId !== newUserId) {
             setTimeout(() => {
                 UserLoginAnalysisAction.resetState();
                 this.getUserAnalysisInfo(newUserId, nextProps.selectedAppId);
@@ -52,7 +53,7 @@ const UserLoginAnalysis = React.createClass({
     getQueryParams(queryParams) {
         let app_id = queryParams && queryParams.appid || this.state.selectedLogAppId;
         const appsArray = this.state.userOwnAppArray;
-        const matchAppInfo = _.find(appsArray, appItem => appItem.app_id == app_id);
+        const matchAppInfo = _.find(appsArray, appItem => appItem.app_id === app_id);
         let create_time = matchAppInfo && matchAppInfo.create_time || '';
         return {
             user_id: this.props.userId,
@@ -64,8 +65,11 @@ const UserLoginAnalysis = React.createClass({
     // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
     getUserAnalysisData(queryParams) {
         let queryObj = this.getQueryParams(queryParams);
+        let reqData = this.getUserLoginScoreParams(queryParams);
+        let type = this.getUserLoginType();
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
         UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
+        UserLoginAnalysisAction.getLoginUserScore(reqData, type);
     },
     // 选择应用
     onSelectedAppChange: function(appid) {
@@ -106,26 +110,98 @@ const UserLoginAnalysis = React.createClass({
     renderLoginFirstLastTime(loginLast, loginFirst) {
         if (!loginLast && !loginFirst) {
             return null;
-        } else if (loginLast != -1 || loginFirst != -1) {
+        } else if (loginLast !== -1 || loginFirst !== -1) {
             return (
                 <div>
-                    { loginFirst != -1 ? (
+                    { loginFirst !== -1 ? (
                         <div>
-                            {Intl.get('user.first.login', '首次登录')}：<span className="login-stress">{loginFirst}</span>
+                            {Intl.get('user.first.login', '首次登录')}:<span className="login-stress">{loginFirst}</span>
                         </div>
                     ) : null}
-                    { loginLast != -1 ? (
+                    { loginLast !== -1 ? (
                         <div>
-                            {Intl.get('user.last.login', '最近登录')}：<span className="login-stress">{loginLast}</span>
+                            {Intl.get('user.last.login', '最近登录')}:<span className="login-stress">{loginLast}</span>
                         </div>
                     ) : null
                     }
                 </div>
             );
-        } else if (loginLast == -1 && loginFirst == -1) {
+        } else if (loginLast === -1 && loginFirst === -1) {
             return (
                 <div>
                     {Intl.get('user.no.login', '用户暂无登录')}!
+                </div>
+            );
+        }
+    },
+    // 登录用户分数的参数
+    getUserLoginScoreParams(queryParams) {
+        let queryObj = this.getQueryParams(queryParams);
+        return {
+            app_id: queryObj.appid,
+            account_id: queryObj.user_id
+        };
+    },
+    // 获取登录用户的类型
+    getUserLoginType() {
+        let type = 'self';
+        if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+            type = 'all';
+        }
+        return type;
+    },
+    // 将小数转化为整数显示
+    transScoreInteger(data) {
+        return Math.round(data * 100);
+    },
+    // 重新用户登录分数
+    retryGetUserLoginScore() {
+        let reqData = this.getUserLoginScoreParams();
+        let type = this.getUserLoginType();
+        UserLoginAnalysisAction.getLoginUserScore(reqData, type);
+    },
+    // 用户分数
+    renderUserLoginScore() {
+        let loginScore = this.state.loginScore;
+        if (loginScore.errorMsg) {
+            return (
+                <div className="login-info">
+                    <div className="alert-tip">
+                        {loginScore.errorMsg}，
+                        <a href="javascript:void(0)" onClick={this.retryGetUserLoginScore}>{Intl.get('common.retry', '重试')}</a>
+                    </div>
+                </div>
+            );
+        }
+        if (_.get(loginScore.data, 'score') === undefined) {
+            return null;
+        } else {
+            return (
+                <div className='login-score'>
+                    <div>
+                        {Intl.get('user.login.total.score', '总分')}:
+                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}</span>
+                    </div>
+                    <div>
+                        {Intl.get('user.login.latest.activity.score', '最新活跃度分数')}:
+                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}</span>
+                    </div>
+                    <div>
+                        {Intl.get('user.login.latest.immersion.score', '最新沉浸度分数')}:
+                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}</span>
+                    </div>
+                    <div>
+                        {Intl.get('user.login.freshness.score', '新鲜度分数')}:
+                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}</span>
+                    </div>
+                    <div>
+                        {Intl.get('user.login.history.activity.score', '历史活跃度分数')}:
+                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}</span>
+                    </div>
+                    <div>
+                        {Intl.get('user.login.history.immersion.score', '历史沉浸度分数')}:
+                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}</span>
+                    </div>
                 </div>
             );
         }
@@ -157,11 +233,11 @@ const UserLoginAnalysis = React.createClass({
             return (
                 <div className="login-info">
                     <div>
-                        {Intl.get('user.login.times', '登录次数')}：<span className="login-stress">{count}</span>
+                        {Intl.get('user.login.times', '登录次数')}:<span className="login-stress">{count}</span>
                     </div>
                     { Oplate.hideSomeItem ? null : (
                         <div>
-                            {Intl.get('user.login.duration', '在线时长')}：<span className="login-stress">{timeObj.timeDescr}</span>
+                            {Intl.get('user.login.duration', '在线时长')}:<span className="login-stress">{timeObj.timeDescr}</span>
                         </div>
                     )}
                     { this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
@@ -196,7 +272,7 @@ const UserLoginAnalysis = React.createClass({
                             {this.state.loginChartInfo.count ? (
                                 <div className="v8-chart-title"> {Intl.get('user.login.times', '登录次数')}</div>
                             ) : null}
-                            {this.renderFrequencyChart()}
+                            {this.renderChart(this.state.loginChartInfo.loginCount, this.chartFrequencyTooltip)}
                         </div>
                     ) : (
                         <CardContainer
@@ -268,12 +344,18 @@ const UserLoginAnalysis = React.createClass({
         let LoadingBlock = this.state.isLoading ? (
             <Spinner />
         ) : null;
-        let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 ? <div className="user-no-login">
-            {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
-        </div> : <div className="user-login-info">
-            {this.renderUserLoginInfo()}
-            {this.renderLoginChart()}
-        </div>;
+        let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 && _.get(this.state.loginScore.data, 'score') === 0 ?
+            (
+                <div className="user-no-login">
+                    {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
+                </div>
+            ) : (
+                <div className="user-login-info">
+                    {this.renderUserLoginScore()}
+                    {this.renderUserLoginInfo()}
+                    {this.renderLoginChart()}
+                </div>
+            );
         return (
             <div className="user-analysis-panel">
                 {appList}

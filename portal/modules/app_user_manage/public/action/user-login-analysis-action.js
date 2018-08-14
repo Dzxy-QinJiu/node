@@ -5,7 +5,8 @@ var AppUserStore = require('../store/app-user-store');
 var UserAuditLogStore = require('../store/user_audit_log_store');
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var ShareObj = require('../util/app-id-share-util');
-const AppUserDetailStore = require('../store/app-user-detail-store');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+
 function UserLoginAnalysisAction() {
     this.generateActions(
         'resetState', // 切换用户时，恢复到默认状态
@@ -48,10 +49,23 @@ function UserLoginAnalysisAction() {
                 starttime: +create_time,
                 endtime: new Date().getTime()
             };
+            // 用户登录分数
+            let reqData = {
+                app_id: selectedLogAppId,
+                account_id: searchObj.user_id
+            };
+            let type = 'self';
+            if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+                type = 'all';
+            }
+            this.actions.getLoginUserScore(reqData, type);
+
             // 用户登录信息（时长、次数、首次和最后一次登录时间）
             this.actions.getUserLoginInfo(loginParam);
+
             // 用户登录统计图中登录时长、登录频次
             this.actions.getUserLoginChartInfo(loginParam);
+
             this.dispatch(
                 {
                     appId: selectedLogAppId,
@@ -67,6 +81,16 @@ function UserLoginAnalysisAction() {
                     appList: []
                 }
             );
+        });
+    };
+
+    // 获取用户的分数
+    this.getLoginUserScore = function(reqData, type) {
+        this.dispatch({loading: true, error: false});
+        userAuditLogAjax.getLoginUserScore(reqData, type).then((data) => {
+            this.dispatch({loading: false, error: false, data: data});
+        },(errorMsg) => {
+            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 

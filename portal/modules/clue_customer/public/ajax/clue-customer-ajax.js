@@ -12,12 +12,16 @@ const DISTRIBUTEAUTHS = {
     'DISTRIBUTEALL': 'CLUECUSTOMER_DISTRIBUTE_MANAGER',
     'DISTRIBUTESELF': 'CLUECUSTOMER_DISTRIBUTE_USER'
 };
+const RELATEAUTHS = {
+    'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
+    'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
+};
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
+var userData = require('PUB_DIR/sources/user-data');
 //查询线索客户
 exports.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
-    pageSize = pageSize || 20;
-    sorter = sorter ? sorter : {field: 'id', order: 'descend'};
+    sorter = sorter ? sorter : {field: 'source_time', order: 'descend'};
     var data = {
         clueCustomerTypeFilter: JSON.stringify(clueCustomerTypeFilter),
         rangParams: JSON.stringify(rangParams),
@@ -254,6 +258,70 @@ exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
         },
         error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取全文搜索的线索
+exports.getClueFulltext = function(queryObj) {
+    var pageSize = queryObj.pageSize;
+    delete queryObj.pageSize;
+    var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
+    delete queryObj.sorter;
+    var type = 'user';
+    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+        type = 'manager';
+    }
+    var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order + '/' + type;
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: url ,
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//线索关联
+exports.setClueAssociatedCustomer = function(submitObj) {
+    var Deferred = $.Deferred();
+    var type = 'self';
+    if (hasPrivilege(RELATEAUTHS.RELATEALL)) {
+        type = 'all';
+    }
+    $.ajax({
+        url: '/rest/relate_clue_and_customer/' + type,
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'put',
+        data: JSON.stringify(submitObj),
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取当前页要展示的动态列表
+exports.getDynamicList = function(clue_id, page_size) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue_dynamic/' + clue_id + '/' + page_size,
+        dataType: 'json',
+        type: 'get',
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();

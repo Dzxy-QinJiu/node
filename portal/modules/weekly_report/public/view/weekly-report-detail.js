@@ -7,7 +7,7 @@ import WeeklyReportDetailAction from '../action/weekly-report-detail-actions';
 import WeeklyReportDetailStore from '../store/weekly-report-detail-store';
 import Spinner from 'CMP_DIR/spinner';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import {AntcTable} from 'antc';
+import {AntcTable, AntcCardContainer} from 'antc';
 import {Alert, Button, Popconfirm, message} from 'antd';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import AskForLeaveForm from '../view/ask-for-leave-form';
@@ -30,6 +30,7 @@ const WeeklyReportDetail = React.createClass({
     getInitialState() {
         return {
             selectedItem: this.props.selectedItem,
+            selectedTeamName: this.props.selectedTeamName,
             isAddingLeaveUserId: '',//正在添加请假信息的销售
             formType: 'add',//是添加请假信息还是修改请假信息
             isEdittingItem: {},//正在编辑的请假信息
@@ -48,6 +49,7 @@ const WeeklyReportDetail = React.createClass({
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.selectedItem.teamId !== this.state.selectedItem.teamId || nextProps.selectedItem.nWeek !== this.state.selectedItem.nWeek) {
             this.setState({
+                selectedTeamName: nextProps.selectedTeamName,
                 selectedItem: nextProps.selectedItem,
                 isAddingLeaveUserId: ''
             }, () => {
@@ -386,7 +388,7 @@ const WeeklyReportDetail = React.createClass({
                 var userObj = _.find(_this.props.memberList.list, (item) => {
                     return item.name === record.name;
                 });
-                var userId = userObj.id ? userObj.id : '';
+                var userId = _.get(userObj,'id','');
                 //正在添加请假信息
                 var isAdding = _this.state.isAddingLeaveUserId === userId ? true : false;
                 //没有请假信息的时候,是全勤的
@@ -656,7 +658,7 @@ const WeeklyReportDetail = React.createClass({
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
+        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
         return height;
     },
     render: function() {
@@ -664,50 +666,34 @@ const WeeklyReportDetail = React.createClass({
         return (
             <div className="weekly-report-detail-container">
                 <h4 className="total-title">
-                    {Intl.get('weekly.report.statics.duration', '统计周报内容，统计时间{startTime}至{endTime}', {
-                        startTime: this.getStartAndEndTime().startTime,
-                        endTime: this.getStartAndEndTime().endTime
-                    })}
+                    {this.state.selectedTeamName}{Intl.get('analysis.sales.weekly.report', '销售周报')}({this.getStartAndEndTime().startTime}{Intl.get('common.time.connector', '至')}{this.getStartAndEndTime().endTime})
                 </h4>
                 <div className="tables-wrap" style={{height: divHeight}}>
                     <GeminiScrollbar>
                         <div className="call-info-wrap">
-                            <h4 className="item-title">{Intl.get('weekly.report.call.statics', '电话统计')}</h4>
-                            <div className="call-info-table-container">
+                            <AntcCardContainer title={Intl.get('weekly.report.call.statics', '电话统计')}>
                                 {this.renderDiffTypeTable('callInfo')}
-                            </div>
+                            </AntcCardContainer>
                         </div>
                         <div className="customer-stage-info-wrap">
-                            <h4 className="item-title">
-                                {Intl.get('weekly.report.customer.stage', '客户阶段')}
-                            </h4>
-                            <div className="customer-stage-info-table-container">
+                            <AntcCardContainer title={Intl.get('weekly.report.customer.stage', '客户阶段')}>
                                 {this.renderDiffTypeTable('customerStageInfo')}
-                            </div>
+                            </AntcCardContainer>
                         </div>
                         <div className="region-overlay-info-wrap">
-                            <h4 className="item-title">
-                                {Intl.get('weekly.report.region.overlay', '区域覆盖情况')}
-                            </h4>
-                            <div className="region-overlay-info-table-container">
+                            <AntcCardContainer title={Intl.get('weekly.report.region.overlay', '区域覆盖情况')}>
                                 {this.renderDiffTypeTable('regionOverlay')}
-                            </div>
+                            </AntcCardContainer>
                         </div>
                         <div className="contract-info-wrap">
-                            <h4 className="item-title">
-                                {Intl.get('weekly.report.contract', '合同情况')}
-                            </h4>
-                            <div className="contract-info-table-container">
+                            <AntcCardContainer title={Intl.get('weekly.report.contract', '合同情况')}>
                                 {this.renderDiffTypeTable('contactInfo')}
-                            </div>
+                            </AntcCardContainer>
                         </div>
                         <div className="repayment-info-wrap">
-                            <h4 className="item-title">
-                                {Intl.get('weekly.report.repayment', '回款情况')}
-                            </h4>
-                            <div className="repayment-info-table-container">
+                            <AntcCardContainer title={Intl.get('weekly.report.repayment', '回款情况')}>
                                 {this.renderDiffTypeTable('repaymentInfo')}
-                            </div>
+                            </AntcCardContainer>
                         </div>
                     </GeminiScrollbar>
                 </div>

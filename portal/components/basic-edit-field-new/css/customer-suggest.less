@@ -1,0 +1,98 @@
+@import '../../../public/css/common-variables';
+.customer_search_wrap {
+  position: relative;
+  //颜色是666
+  color:#666;
+  //提示样式
+  .customer_suggest_tip {
+    color:#666;
+    padding-top:7px;
+  }
+  //错误样式
+  .customer_suggest_error_tip {
+    color:@error_tips_color;
+  }
+  //已经选中了客户的样式
+  .customer_choosen {
+    display:inline-block;
+    margin-top:4px;
+    cursor:pointer;
+    background-color: #f3f3f3;
+    &:hover {
+      background-color: darken(#f3f3f3,5%);
+    }
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 3px 10px 3px 10px !important;
+    &>span {
+      vertical-align:middle;
+    }
+    .iconfont {
+      display:inline-block;
+      vertical-align:middle;
+      font-family:anticon !important;
+      &:before {
+        content:"\E62D";
+      }
+      transform:scale(.66666667) rotate(0deg);
+      text-transform: none;
+      text-rendering: auto;
+      zoom:1;
+      filter:none;
+    }
+  }
+  .ant-select-search__field__placeholder {
+    top:3px;
+    color:#cdcdcd;
+  }
+  .associate-customer-wrap {
+    .ant-select{
+      width: 100%;
+    }
+  }
+  .customer-name{
+    cursor: pointer;
+    color:#8da8c5;
+  }
+
+  &.customer_searchbox_error {
+    .ant-select-selection--single {
+      border:1px solid @error_tips_color;
+    }
+  }
+  .edit-container.hover-show-edit{
+    padding:3px 0;
+    .icon-edit-btn{
+      display: none;
+    }
+    &:hover{
+      background: #E8F5FE;
+      .icon-edit-btn{
+        display: inline-block;
+      }
+    }
+  }
+  .customer-label.info-tag-style {
+    background-color: @info-tag-color;
+  }
+  .customer-label.intent-tag-style {
+    background-color: @intent-tag-color;
+  }
+  .customer-label.trial-tag-style {
+    background-color: @trial-tag-color;
+  }
+  .customer-label.sign-tag-style {
+    background-color: @sign-tag-color;
+  }
+  .customer-label.qualified-tag-style {
+    background-color: @qualified-tag-color;
+  }
+  .customer-label.history-qualified-tag-style {
+    background-color: @history-qualified-tag-color;
+  }
+  .customer-label.loss-tag-style {
+    background-color: @loss-tag-color;
+  }
+
+
+}
