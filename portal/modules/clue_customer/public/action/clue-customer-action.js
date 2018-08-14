@@ -104,7 +104,10 @@ function ClueCustomerActions() {
     };
     //删除某条线索
     this.deleteClueById = function(data,callback) {
-        clueCustomerAjax.deleteClueById(data).then((result) => {
+        var submitData = {
+            customer_clue_ids: data.customer_clue_ids
+        };
+        clueCustomerAjax.deleteClueById(submitData).then((result) => {
             this.dispatch(data);
             _.isFunction(callback) && callback();
         },(errorMsg) => {

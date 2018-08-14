@@ -39,7 +39,7 @@ class ClueRightPanel extends React.Component {
             salesManList: [],//销售列表
             activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
             curClue: $.extend(true, {}, this.props.curClue),
-            isRemoveClueId: '',//正在删除的线索的id
+            isRemoveClue: {},//正在删除的那条线索
             relatedCustomer: {},//与线索相关联的客户
             isDeletingClue: false//正在删除线索
         };
@@ -80,9 +80,9 @@ class ClueRightPanel extends React.Component {
                     getClueDetailErrMsg: Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
                 });
             }
-        }, () => {
+        }, (errMsg) => {
             this.setState({
-                getClueDetailErrMsg: Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
+                getClueDetailErrMsg: errMsg || Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
             });
         });
     };
@@ -183,7 +183,7 @@ class ClueRightPanel extends React.Component {
     //删除某条线索
     handleRemoveClue = (curClue) => {
         this.setState({
-            isRemoveClueId: curClue.id
+            isRemoveClue: curClue
         });
     };
     //确认删除某条线索
@@ -191,7 +191,9 @@ class ClueRightPanel extends React.Component {
         this.setState({
             isDeletingClue: true
         });
-        clueCustomerAction.deleteClueById({customer_clue_ids: this.state.isRemoveClueId}, (errorMsg) => {
+        var clueId = this.state.isRemoveClue.id;
+        var clueStatus = this.state.isRemoveClue.status;
+        clueCustomerAction.deleteClueById({customer_clue_ids: clueId, clueStatus: clueStatus}, (errorMsg) => {
             this.setState({
                 isDeletingClue: false,
             });
@@ -199,7 +201,7 @@ class ClueRightPanel extends React.Component {
                 message.error(errorMsg);
             } else {
                 this.setState({
-                    isRemoveClueId: '',
+                    isRemoveClue: {},
                 });
                 _.isFunction(this.props.afterDeleteClue) && this.props.afterDeleteClue();
             }
@@ -208,14 +210,14 @@ class ClueRightPanel extends React.Component {
     //取消删除某条线索
     cancelDeleteClue = () => {
         this.setState({
-            isRemoveClueId: ''
+            isRemoveClue: {}
         });
     };
     hideRightPanel = () => {
         _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
         this.setState({
             getClueDetailErrMsg: '',
-            isRemoveClueId: '',
+            isRemoveClue: {},
         });
     };
     render() {
@@ -284,7 +286,7 @@ class ClueRightPanel extends React.Component {
                                 </TabPane>
                             </Tabs>
                         </div>
-                        {this.state.isRemoveClueId ?
+                        {!_.isEmpty(this.state.isRemoveClue) ?
                             <div className="delete-modal">
                                 <div className="handle-btn">
                                     <Button type='primary' onClick={this.handleConfirmDeleteClue}>

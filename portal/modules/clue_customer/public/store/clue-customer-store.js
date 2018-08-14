@@ -304,9 +304,11 @@ ClueCustomerStore.prototype.setKeyWord = function(keyword) {
 //删除某个线索
 ClueCustomerStore.prototype.deleteClueById = function(data) {
     var clueId = data.customer_clue_ids;
+    var clueStatus = data.clueStatus;
     this.curClueLists = _.filter(this.curClueLists, clue => clueId !== clue.id);
     this.customersSize--;
     this.statusStaticis[''] = this.statusStaticis[''] - 1;
+    this.statusStaticis[clueStatus] = this.statusStaticis[clueStatus] - 1;
 };
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');
