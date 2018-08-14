@@ -72,15 +72,17 @@ class ProductTable extends React.Component {
                     isEdit={this.state.isEdit}
                     {...this.props}
                 /> 
-                <SelectAppList
-                    appList={this.props.appList}
-                /> 
-                {this.state.isEdit ? null : (
-                    <SaveCancelButton
-                        handleSubmit={this.handleSubmit}
-                        handleCancel={this.handleCancel}
-                    /> 
-                )}
+                {this.state.isEdit ? (
+                    <div>
+                        <SelectAppList
+                            appList={this.props.appList}
+                        /> 
+                        <SaveCancelButton
+                            handleSubmit={this.handleSubmit}
+                            handleCancel={this.handleCancel}
+                        /> 
+                    </div>
+                ) : null}
             </div>
         );
     }
