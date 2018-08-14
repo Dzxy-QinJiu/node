@@ -155,16 +155,7 @@ class PhonePanel extends React.Component {
         } else {
             phoneNum = phonemsgObj.to || phonemsgObj.dst;
         }
-        //清空联系人名称的信息
-        let paramObj = this.state.paramObj;
-        if (paramObj.call_params && _.isFunction(paramObj.call_params.setInitialPhoneObj)) {
-            paramObj.call_params.setInitialPhoneObj();
-        }
-        if (_.get(paramObj, 'call_params.contactNameObj')) {
-            paramObj.call_params.contactNameObj = {};
-        }
         this.setState({
-            paramObj: paramObj,
             phoneNum: phoneNum,
             isAddFlag: false,
             applyUserShowFlag: false,
