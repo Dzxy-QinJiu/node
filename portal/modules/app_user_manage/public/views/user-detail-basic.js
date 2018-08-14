@@ -31,7 +31,7 @@ import UserBasicCard from './user-basic/user-basic-card';
 import OrgCard from './user-basic/org-card';
 import ContactCard from './user-basic/contact-card';
 import { secondsToHourMinuteSecond } from '../../../../public/sources/utils/time-format-util';
-
+import StatusWrapper from 'CMP_DIR/status-wrapper';
 const FORMAT = oplateConsts.DATE_FORMAT;
 
 var UserDetailBasic = React.createClass({
@@ -643,13 +643,16 @@ var UserDetailBasic = React.createClass({
 
        
         return (
-            <div style={{ height: this.props.height }}>
-                <GeminiScrollbar>
-                    {LoadingBlock}
-                    {ErrorBlock}
-                    {DetailBlock}
-                </GeminiScrollbar>
-            </div>
+            <StatusWrapper
+                loading={this.state.isLoading}
+            >
+                <div style={{ height: this.props.height }}>                
+                    <GeminiScrollbar>
+                        {ErrorBlock}
+                        {DetailBlock}
+                    </GeminiScrollbar>
+                </div>
+            </StatusWrapper>
         );
     }
 });
