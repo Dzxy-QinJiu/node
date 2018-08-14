@@ -2541,5 +2541,6 @@ var zh_CN = {
     'analysis.sales.weekly.report': '销售周报',
     'common.font.di': '第',
     'common.weeks': '周',
+    'clue.failed.get.clue.detail': '获取线索详情失败'
 };
 export default zh_CN;

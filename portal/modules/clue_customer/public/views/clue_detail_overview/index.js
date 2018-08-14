@@ -104,7 +104,7 @@ var ClueDetailOverview = React.createClass({
         var curClue = this.state.curClue;
         curClue.access_channel = this.props.curClue.access_channel;
         this.setState({
-            curCustomer: curClue
+            curClue: curClue
         });
     },
     cancelEditClueClassify: function() {

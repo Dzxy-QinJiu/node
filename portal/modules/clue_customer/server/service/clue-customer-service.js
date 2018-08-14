@@ -45,6 +45,10 @@ const restApis = {
     getClueFulltext: '/rest/customer/v2/clue/query/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: '/rest/customer/v2/customerdynamic/clue/:clue_id/:page_size',
+    //根据线索的id查询线索的详情
+    getClueDetailById: '/rest/customer/v2/clue/query/clue/:clueId',
+    //删除某个线索
+    deleteClueById: '/rest/customer/v2/clue/delete',
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -273,6 +277,24 @@ exports.getDynamicList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: url,
+            req: req,
+            res: res
+        }, null);
+};
+//删除某条线索
+exports.deleteClue = function(req, res) {
+    return restUtil.authRest.del(
+        {
+            url: restApis.deleteClueById,
+            req: req,
+            res: res
+        }, req.body);
+};
+//根据线索的id获取线索的详情
+exports.getClueDetailById = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getClueDetailById.replace(':clueId', req.params.clueId),
             req: req,
             res: res
         }, null);

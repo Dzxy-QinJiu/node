@@ -326,3 +326,36 @@ exports.getDynamicList = function(clue_id, page_size) {
     });
     return Deferred.promise();
 };
+//根据线索的id获取线索详情
+exports.getClueDetailById = function(clue_id) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/detail/' + clue_id,
+        dataType: 'json',
+        type: 'get',
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//根据线索的id删除某条线索
+exports.deleteClueById = function(data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/delete',
+        dataType: 'json',
+        type: 'delete',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

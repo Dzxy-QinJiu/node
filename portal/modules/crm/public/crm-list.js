@@ -36,6 +36,7 @@ const extend = require('extend');
 import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import {FilterInput} from 'CMP_DIR/filter';
 var classNames = require('classnames');
+import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -139,6 +140,7 @@ var Crm = React.createClass({
             currentId: CrmStore.getState().currentId,
             curCustomer: CrmStore.getState().curCustomer,
             customerId: CrmStore.getState().customerId,
+            clueId: CrmStore.getState().clueId,//展示线索详情的id
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -1153,6 +1155,13 @@ var Crm = React.createClass({
 
         return sorter;
     },
+    hideClueRightPanel: function(){
+        CrmAction.showClueDetail('');
+    },
+    //删除线索之后
+    afterDeleteClue: function() {
+        CrmAction.showClueDetail('');
+    },
     render: function() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1464,6 +1473,13 @@ var Crm = React.createClass({
                     afterMergeCustomer={this.afterMergeCustomer}
                     refreshCustomerList={this.refreshCustomerList}
                 />) : null}
+                {this.state.clueId ? <ClueRightPanel
+                    showFlag={true}
+                    currentId={this.state.clueId}
+                    hideRightPanel={this.hideClueRightPanel}
+                    afterDeleteClue={this.afterDeleteClue}
+                /> : null}
+
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"
