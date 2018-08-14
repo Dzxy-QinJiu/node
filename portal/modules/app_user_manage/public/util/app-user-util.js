@@ -75,7 +75,7 @@ exports.LAYOUT_CONSTANTS = {
     TOP_DELTA: 69,
     BOTTOM_DELTA: 26,
     BASIC_TOP: 25,
-    USER_DETAIL: 80,
+    USER_DETAIL: 33,
     BTN_PADDING: 50,//确定取消按钮区域的高度
     BOTTOM_PADDING: 60
 };

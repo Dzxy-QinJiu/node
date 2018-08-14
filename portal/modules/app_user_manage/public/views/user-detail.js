@@ -183,9 +183,13 @@ var UserDetail = React.createClass({
     },
     render: function() {
         //内容区高度
-        let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP;
+        const remarkDOM = $('#app #top-remark');
+        const remarkHeight = remarkDOM ? remarkDOM.height() : 0;
+        let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP - LAYOUT_CONSTANTS.USER_DETAIL;
         if (this.state.showBasicDetail) {
-            contentHeight -= LAYOUT_CONSTANTS.USER_DETAIL;
+            contentHeight -= remarkHeight;
+        } else {
+            contentHeight += LAYOUT_CONSTANTS.USER_DETAIL;
         }
         var moveView = null;        
         if (this.state.panel_switch_currentView) {
@@ -346,7 +350,7 @@ var UserDetail = React.createClass({
                                         </div> :
                                         <div>
                                             <p>{Intl.get('common.nickname', '昵称')}: {_.get(userInfo, 'data.nick_name')}</p>
-                                            <p>{Intl.get('common.remark', '备注')}: {_.get(userInfo, 'data.description')}</p>
+                                            <p id='top-remark'>{Intl.get('common.remark', '备注')}: {_.get(userInfo, 'data.description')}</p>
                                         </div>
                                 }
                             </div>
