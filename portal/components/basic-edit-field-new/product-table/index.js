@@ -130,6 +130,10 @@ class ProductTable extends React.Component {
         );
     }
     render() {
+        const appNames = _.map(this.state.data, 'name');
+
+        const appList = _.filter(this.props.appList, app => appNames.indexOf(app.client_name) === -1);
+
         return (
             <div className="product-table">
                 {this.state.isEdit ? null : (
@@ -148,7 +152,7 @@ class ProductTable extends React.Component {
                 {this.state.isEdit ? (
                     <div>
                         <SelectAppList
-                            appList={this.props.appList}
+                            appList={appList}
                         /> 
                         {this.props.isAdd ? null : (
                             <SaveCancelButton
