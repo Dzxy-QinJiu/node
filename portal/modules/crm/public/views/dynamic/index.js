@@ -7,7 +7,8 @@ var TimeLine = require('../../../../../components/time-line');
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
-
+import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
+import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 var Dynamic = React.createClass({
     getInitialState: function() {
         return {
@@ -34,6 +35,11 @@ var Dynamic = React.createClass({
         DynamicStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
     },
+    showClueDetailOut: function(clueId) {
+        // this.setState({
+        //     clueId: clueId
+        // });
+    },
     timeLineItemRender: function(item) {
         const call_time = Intl.get('crm.199',
             '在{time}拨打了号码{phone} ，通话时长{duration} 秒',
@@ -47,6 +53,9 @@ var Dynamic = React.createClass({
             <dl>
                 <dd>
                     {item.message}
+                    {item.relate_id && item.relate_name ?
+                        <span className="relate-name" onClick={this.showClueDetailOut.bind(this, item.relate_id)}>{item.relate_name}</span>
+                        : null}
                     {item.call_date ?
                         <p>{call_time}</p>
                         : null}
@@ -54,6 +63,11 @@ var Dynamic = React.createClass({
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
+    },
+    hideRightPanel: function() {
+        this.setState({
+            clueId: ''
+        });
     },
     render: function() {
         return (
@@ -68,9 +82,14 @@ var Dynamic = React.createClass({
                             render={this.timeLineItemRender}
                         />
                     </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
+                {this.state.clueId ? <ClueRightPanel
+                    showFlag={true}
+                    currentId={this.state.clueId}
+                    hideRightPanel={this.hideRightPanel}
+                /> : null}
             </RightPanelScrollBar>
         );
     }
 });
 
-module.exports = Dynamic;
+module.exports = Dynamic;

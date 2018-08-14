@@ -61,7 +61,7 @@ class PhoneInput extends React.Component {
 
         return (
             <FormItem
-                label={this.props.label ? this.props.label : Intl.get('common.phone', '电话')}
+                label={this.props.hideLable ? '' : (this.props.label ? this.props.label : Intl.get('common.phone', '电话'))}
                 colon={this.props.colon}
                 key={this.props.id}
                 labelCol={this.props.labelCol}
@@ -94,6 +94,23 @@ PhoneInput.defaultProps = {
     suffix: null,
     onChange: noop,
     validateRules: [],
+    hideLable: false,
+    id: '',
+    form: {}
+};
+PhoneInput.propTypes = {
+    label: React.PropTypes.string,
+    labelCol: React.PropTypes.object,
+    wrapperCol: React.PropTypes.object,
+    placeholder: React.PropTypes.string,
+    initialValue: React.PropTypes.string,
+    colon: React.PropTypes.bool,
+    suffix: React.PropTypes.object,
+    onChange: React.PropTypes.func,
+    validateRules: React.PropTypes.object,
+    hideLable: React.PropTypes.bool,
+    id: React.PropTypes.string,
+    form: React.PropTypes.object,
 };
 
 const options = {

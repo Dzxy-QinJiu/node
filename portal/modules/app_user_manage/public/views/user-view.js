@@ -18,7 +18,7 @@ var batchPushEmitter = require('../../../../public/sources/utils/emitters').batc
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import language from 'PUB_DIR/language/getLanguage';
-import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/sales-clue-add-form';
+import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/consts';
@@ -560,8 +560,20 @@ var UserTabContent = React.createClass({
                         <div className="num-float-right" title={loginDays}>{loginDays}</div>
                     );
                 }
-            },
-            {
+            }, {
+                title: Intl.get('user.login.score', '分数'),
+                dataIndex: 'score',
+                key: 'score',
+                width: fourWordWidth,
+                className: numClass,
+                sorter: sortable,
+                render: (text, rowData, idx) => {
+                    let score = Math.round((_.get(rowData.apps[0], 'score') || 0) * 100);
+                    return (
+                        <div className="num-float-right" title={score}>{score} </div>
+                    );
+                }
+            }, {
                 title: Intl.get('common.remark', '备注'),
                 dataIndex: 'user',
                 key: 'description',
@@ -1000,7 +1012,7 @@ var UserTabContent = React.createClass({
         AppUserAction.changeTableSort(sortParams);
         AppUserAction.setLastUserId('');
         this.fetchUserList({
-            id: '',
+            lastUserId: '',
             sort_order: sortParams.sort_order,
             sort_field: sortParams.sort_field
         });
@@ -1025,7 +1037,7 @@ var UserTabContent = React.createClass({
         var columns = Oplate.hideSomeItem ? this.getTableColumnsVe() : this.getTableColumns();
         if (this.state.selectedAppId === '') {
             columns = _.filter(columns, item => {
-                return item.key !== 'logins' && item.key !== 'login_day_count';
+                return item.key !== 'logins' && item.key !== 'login_day_count' && item.key !== 'score';
             });
         }
         //管理员可以批量操作
@@ -1137,6 +1149,7 @@ var UserTabContent = React.createClass({
     },
     render: function() {
         var appUserId = this.state.producingClueCustomerItem.user ? this.state.producingClueCustomerItem.user.user_id : '';
+        var appUserName = _.get(this.state.producingClueCustomerItem, 'user.user_name');
         return (
             <div ref="userListTable">
                 {this.renderFilterBlock()}
@@ -1145,6 +1158,7 @@ var UserTabContent = React.createClass({
                 {this.state.clueAddFormShow ? (
                     <SalesClueAddForm
                         appUserId={appUserId}
+                        appUserName={appUserName}
                         defaultClueData={this.state.defaultClueData}
                         hideAddForm={this.hideClueAddForm}
                         accessChannelArray={this.state.accessChannelArray}

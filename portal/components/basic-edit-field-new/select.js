@@ -50,7 +50,8 @@ let BasicEditSelectField = React.createClass({
             },
             saveEditSelect: function() {
             },
-            hideButtonBlock: false
+            hideButtonBlock: false,
+            hoverShowEdit: true
         };
     },
 
@@ -122,8 +123,13 @@ let BasicEditSelectField = React.createClass({
             };
             if (value !== this.state.value) {
                 this.props.saveEditSelect(saveObj, () => {
+                    //如果select是combox格式的这样写就不对
                     let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === value);
                     let displayText = _.get(curOptions,'props') ? curOptions.props.children : '';
+                    //如果是可以手动输入内容的情况,就用后端提交的
+                    if (this.props.combobox){
+                        displayText = value;
+                    }
                     setDisplayState(displayText);
                 }, (errorMsg) => {
                     this.setState({
@@ -148,6 +154,7 @@ let BasicEditSelectField = React.createClass({
             displayType: 'text',
             submitErrorMsg: ''
         });
+        _.isFunction(this.props.cancelEditField) && this.props.cancelEditField();
     },
     onSelectChange: function(selectVal) {
         var formData = this.state.formData;
@@ -166,9 +173,12 @@ let BasicEditSelectField = React.createClass({
 
         var textBlock = null;
         if (this.state.displayType === 'text') {
+            var cls = classNames('edit-container',{
+                'hover-show-edit': this.props.hoverShowEdit && this.props.hasEditPrivilege
+            });
             if (this.state.displayText) {
                 textBlock = (
-                    <div>
+                    <div className={cls}>
                         <span className="inline-block basic-info-text">
                             {this.state.displayText}
                         </span>

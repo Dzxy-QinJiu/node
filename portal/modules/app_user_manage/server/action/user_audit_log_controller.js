@@ -43,3 +43,12 @@ exports.getUserLoginChartInfo = function(req, res){
     });
 };
 
+// 获取用户的分数
+exports.getLoginUserScore = (req, res) => {
+    userAuditLog.getLoginUserScore(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+

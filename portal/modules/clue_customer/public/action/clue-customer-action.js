@@ -7,14 +7,12 @@ var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 function ClueCustomerActions() {
     this.generateActions(
+        'setClueInitialData',
         'setCurrentCustomer',
-        'setPageNum',
         'afterAddSalesClue',
-        'getClueCustomerList',//获取线索客户列表
         'getSalesManList',//获取销售团队列表
         'addCluecustomerTrace',//添加或者更新跟进内容
         'distributeCluecustomerToSale',//分配线索客户给某个销售
-        'setLastCustomerId',//用于设置下拉加载的最后一个客户的id
         'setTimeRange',//设置开始和结束时间
         'setFilterType',//设置筛选线索客户的类型
         'setStatusLoading',
@@ -26,23 +24,11 @@ function ClueCustomerActions() {
         'updateClueProperty',//修改线索是否有效属性
         'removeClueItem',//删除某条线索
         'afterModifiedAssocaitedCustomer',//修改当前线索的绑定客户后在列表中修改该条线索所绑定的客户
+        'afterAddClueTrace',//添加完线索的跟进记录后
+        'afterAssignSales',//分配销售之后
+        'setKeyWord',//设置关键字
+        'setLastClueId',//用于设置下拉加载的最后一个线索的id
     );
-    //获取线索客户列表
-    this.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
-        if (!lastCustomerId){
-            this.dispatch({error: false, loading: true});
-        }
-        clueCustomerAjax.getClueCustomerList(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId).then((result) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result});
-        }, (errorMsg) => {
-            this.dispatch({
-                error: true,
-                loading: false,
-                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
-            });
-        });
-    };
     //联系人电话唯一性的验证
     this.checkOnlyContactPhone = function(phone, callback) {
         clueCustomerAjax.checkOnlyCustomer({phone: phone}).then(function(data) {
@@ -86,7 +72,7 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback({error: false});
         },(errorMsg) => {
             this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get('failed.submit.trace.content','添加跟进内容失败')});
-            _.isFunction(callback) && callback({error: true});
+            _.isFunction(callback) && callback({error: true, errorMsg: errorMsg || Intl.get('failed.submit.trace.content','添加跟进内容失败')});
         });
     };
     //把线索客户分配给对应的销售
@@ -106,6 +92,32 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback();
         },(errorMsg) => {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
+    };
+    //线索关联某个客户
+    this.setClueAssociatedCustomer = function(submitObj,callback) {
+        clueCustomerAjax.setClueAssociatedCustomer(submitObj).then((result) => {
+            _.isFunction(callback) && callback();
+        },(errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
+    };
+
+    //线索的全文搜索
+    this.getClueFulltext = function(queryObj) {
+        //是否是在全部状态下返回数据
+        var getOnlyAnalysisData = queryObj.getOnlyAnalysisData ? true : false;
+        this.dispatch({error: false, loading: true, getOnlyAnalysisData: getOnlyAnalysisData});
+        clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({error: false, loading: false, clueCustomerObj: result, getOnlyAnalysisData: getOnlyAnalysisData});
+        }, (errorMsg) => {
+            this.dispatch({
+                flag: getOnlyAnalysisData,
+                error: true,
+                loading: false,
+                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
+            });
         });
     };
 }

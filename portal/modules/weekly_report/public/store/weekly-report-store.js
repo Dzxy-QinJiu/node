@@ -23,6 +23,11 @@ weeklyReportStore.prototype.setInitState = function() {
     this.selectedReportItem = {};//选中的团队周报
     this.selectedReportItemIdx = -1;//选中的团队周报下标
     this.searchKeyword = '';//搜索的关键词
+    this.selectedTeamId = '';//选中的团队id
+    this.selectedTeamName = '';//选中的团队名称
+    let time = moment();
+    this.nWeek = time.week();//当前时间是今年的第几周
+    this.yearDescr = time.year() + Intl.get('common.time.unit.year', '年');
 };
 
 // 获取团队信息
@@ -33,18 +38,20 @@ weeklyReportStore.prototype.getSaleGroupTeams = function(result) {
         this.teamList.errMsg = result.errMsg;
     } else if (result.resData) {
         this.teamList.errMsg = '';
-        let resData = _.filter(result.resData,(item) => {
+        let resData = _.filter(result.resData, (item) => {
             return item.manager_ids;
         });
         if (_.isArray(resData) && resData.length) {
+            this.teamList.list = resData;
+            this.selectedTeamId = _.get(resData, '[0].group_id', '');
+            this.selectedTeamName = _.get(resData, '[0].group_name');
             //获取团队信息成功后，再计算今天是第几周
             var nWeek = moment(new Date()).week();
             for (var i = nWeek - 1; i > 0; i--) {
-                this.teamList.list = resData;
                 _.map(resData, (item, index) => {
                     //得到团队描述的列表
                     this.teamDescArr.push({
-                        teamDsc: item.group_name + Intl.get('weekly.report.statics.report', '第{n}周统计周报', {n: i}),
+                        teamDsc: item.group_name + Intl.get('weekly.report.statics.report', '第{n}周统计周报', { n: i }),
                         teamId: item.group_id,
                         nWeek: i
                     });
@@ -70,15 +77,28 @@ weeklyReportStore.prototype.getSaleMemberList = function(result) {
         if (_.isArray(resData) && resData.length) {
             _.each(resData, (item) => {
                 if (item.status) {
-                    memberList.push({name: item.nick_name, id: item.user_id, user_name: item.user_name});
+                    memberList.push({ name: item.nick_name, id: item.user_id, user_name: item.user_name });
                 }
             });
         }
         this.memberList.list = memberList;
     }
 };
+// 设置选择的团队id
+weeklyReportStore.prototype.setSelectedTeamId = function(teamId) {
+    this.selectedTeamId = teamId;
+    _.each(this.teamList.list, team => {
+        if(team.group_id === teamId){
+            this.selectedTeamName = team.group_name;
+            return false;
+        }
+    });
+};
 
-
+// 设置选择的第几周
+weeklyReportStore.prototype.setSelectedWeek = function(nWeek) {
+    this.nWeek = nWeek;
+};
 //清空数据
 weeklyReportStore.prototype.clearData = function() {
     this.applyListObj.list = [];
@@ -86,13 +106,13 @@ weeklyReportStore.prototype.clearData = function() {
     this.selectedReportItemIdx = -1;
 };
 //设置当前要查看详情的申请
-weeklyReportStore.prototype.setSelectedWeeklyReportItem = function({obj, idx}) {
+weeklyReportStore.prototype.setSelectedWeeklyReportItem = function({ obj, idx }) {
     this.selectedReportItem = obj;
     this.selectedReportItemIdx = idx;
 };
 //去除数组中为空的
-function removeEmptyArrayEle(arr){
-    _.filter(arr,(item) => {
+function removeEmptyArrayEle(arr) {
+    _.filter(arr, (item) => {
         return !item;
     });
 }
@@ -108,7 +128,7 @@ weeklyReportStore.prototype.changeSearchInputValue = function(value) {
         //如果搜索的关键词是用空格隔开，把每个关键词都检查一遍
         for (var i = 0; i < keyWordArr.length; i++) {
             var keyword = keyWordArr[i];
-            if (teamItem.teamDsc.indexOf(keyword) > -1){
+            if (teamItem.teamDsc.indexOf(keyword) > -1) {
                 isFilterDes++;
             }
         }

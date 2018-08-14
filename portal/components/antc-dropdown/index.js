@@ -16,7 +16,7 @@
  *      />
  */
 require('./index.less');
-import {Icon, Menu, Dropdown} from 'antd';
+import {Icon, Menu, Dropdown, Button} from 'antd';
 class AntcDropdown extends React.Component {
     constructor(props) {
         super(props);
@@ -64,16 +64,31 @@ class AntcDropdown extends React.Component {
                                 * {this.props.unSelectDataTip}
                             </span>) : null}
                         {this.props.isSaving ? <Icon type="loading"/> : null}
-                        <span title={this.props.okTitle} className="inline-block iconfont icon-choose"
-                            onClick={this.props.handleSubmit.bind(this)} data-tracename="点击保存按钮"/>
-                        <span title={this.props.cancelTitle} className="inline-block iconfont icon-close"
-                            onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮"/>
+                        {this.props.btnAtTop ?
+                            <span>
+                                <span title={this.props.okTitle} className="inline-block iconfont icon-choose"
+                                    onClick={this.props.handleSubmit.bind(this)} data-tracename="点击保存按钮"/>
+                                <span title={this.props.cancelTitle} className="inline-block iconfont icon-close"
+                                    onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮"/>
+                            </span>
+                            : null}
+
                     </div>
                 </div>
                 <Menu.Divider />
                 <div className="custom-dropdown-content-container dropdown-li">
                     {this.props.overlayContent}
                 </div>
+                {!this.props.btnAtTop ? <div className="btn-container">
+                    <Button className="inline-block icon-close"
+                        onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮">{this.props.cancelTitle}
+
+                    </Button>
+                    <Button type='primary' className="inline-block icon-choose" disabled={this.props.isSaving}
+                        onClick={this.props.handleSubmit.bind(this)} data-tracename="点击保存按钮">{this.props.okTitle}
+                        {this.props.isSaving ? <Icon type="loading"/> : null}</Button>
+                </div> : null}
+
             </Menu>
         );
 
@@ -100,6 +115,22 @@ AntcDropdown.defaultProps = {
     handleSubmit: function() {
     },//保存时的处理
     clearSelectData: function() {
-    }//关面板后，清空选择数据的处理
+    },//关面板后，清空选择数据的处理
+    btnAtTop: true,//是否在顶部展示确定按钮
+    stopContentHide: false//避免选中选项后会关闭content内容区域
+};
+AntcDropdown.propTypes = {
+    showMenu: React.PropTypes.bool,
+    content: React.PropTypes.string,
+    overlayTitle: React.PropTypes.string,
+    overlayContent: React.PropTypes.string,
+    okTitle: React.PropTypes.string,
+    cancelTitle: React.PropTypes.string ,
+    unSelectDataTip: React.PropTypes.string,
+    isSaving: React.PropTypes.bool,
+    handleSubmit: React.PropTypes.func,
+    clearSelectData: React.PropTypes.func,
+    btnAtTop: React.PropTypes.bool,
+    stopContentHide: React.PropTypes.bool,
 };
 export default AntcDropdown;
