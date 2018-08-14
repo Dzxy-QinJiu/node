@@ -17,6 +17,7 @@ var TimeLine = require('../../../../components/time-line');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
 import {Select,Alert} from 'antd';
+import StatusWrapper from 'CMP_DIR/status-wrapper';
 var Option = Select.Option;
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -209,9 +210,9 @@ var UserDetailChangeRecord = React.createClass({
         });
 
     },
-    renderTraceRecord: function() {
+    renderTraceRecord: function(height) {
         if (this.state.getAppLoading){
-            return (<Spinner />);
+            return (<StatusWrapper loading={true} height={height}/>);
         }else if (this.state.getAppErrorMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.getAppErrorMsg}
@@ -229,10 +230,10 @@ var UserDetailChangeRecord = React.createClass({
                 </div>
             );
         }else{
-            return this.renderRecordBlock();
+            return this.renderRecordBlock(height);
         }
     },
-    renderRecordBlock: function() {
+    renderRecordBlock: function(height) {
         var recordLength = this.state.changeRecord.length;
         var width = 120;
         if (this.state.changeRecordLoading && this.state.app) {
@@ -243,7 +244,7 @@ var UserDetailChangeRecord = React.createClass({
                         onChange={this.handleChange}>
                         {this.getSelectOptions()}
                     </Select>
-                    <Spinner />
+                    <StatusWrapper loading={true} height={height}/>
                 </div>
             );
         }else if(recordLength === 0 && !this.state.changeRecordLoading){
@@ -310,7 +311,7 @@ var UserDetailChangeRecord = React.createClass({
             ;
         return (
             <div style={{height: divHeight}} className="recordList">
-                {this.renderTraceRecord()}
+                {this.renderTraceRecord(divHeight)}
             </div>
         );
 

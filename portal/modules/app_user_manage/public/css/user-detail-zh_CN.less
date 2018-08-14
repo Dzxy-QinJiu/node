@@ -42,7 +42,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+.alert-container {
+    text-align: center;
+    .ant-alert {
+        width: initial;
+        display: inline-block;
+    }
+}
 //换行
 .overflow-break {
     white-space: normal;
@@ -205,6 +211,12 @@
     .detail-card-title {
         span.btn-bar {
             float: right;
+            .ant-switch:after {
+                width: 15px;
+                height: 15px;
+                left: 1px;
+                top: 3px;
+            }
             .collapse-btn {
                 span {
                     color: @font-lightblue;

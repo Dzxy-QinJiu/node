@@ -271,7 +271,7 @@ var SingleUserLog = React.createClass({
                 </div>
             );
         } else {
-            return <div className="alert-wrap">
+            return <div className="alert-container">
                 <Alert
                     message={Intl.get('common.no.audit', '暂无审计日志')}
                     type="info"
