@@ -105,16 +105,18 @@ class PhonePanel extends React.Component {
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
         }
     }
-    setStatePhoneNumb(phoneNum){
+
+    setStatePhoneNumb(phoneNum) {
         this.setState({
             phoneNum: phoneNum
         });
     }
+
     componentWillReceiveProps(nextProps) {
         //获取客户详情
         //只把客户详情赋值
         let paramObj = this.state.paramObj;
-        paramObj.customer_params = _.cloneDeep(_.get(nextProps, 'paramObj.customer_params',null));
+        paramObj.customer_params = _.cloneDeep(_.get(nextProps, 'paramObj.customer_params', null));
         if (nextProps.paramObj.call_params) {
             var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
             if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
@@ -138,7 +140,7 @@ class PhonePanel extends React.Component {
                 if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
                     this.setInitialData(phonemsgObj);
                 }
-                paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params',null));
+                paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
             }
         }
         this.setState({
@@ -153,13 +155,24 @@ class PhonePanel extends React.Component {
         } else {
             phoneNum = phonemsgObj.to || phonemsgObj.dst;
         }
-        this.setState({phoneNum: phoneNum, isAddFlag: false, applyUserShowFlag: false, openAppShowFlag: false});
+        //清空联系人名称的信息
+        let paramObj = this.state.paramObj;
+        if (paramObj.call_params && _.isFunction(paramObj.call_params.setInitialPhoneObj)) {
+            paramObj.call_params.setInitialPhoneObj();
+        }
+        if (_.get(paramObj, 'call_params.contactNameObj')) {
+            paramObj.call_params.contactNameObj = {};
+        }
+        this.setState({
+            paramObj: paramObj,
+            phoneNum: phoneNum,
+            isAddFlag: false,
+            applyUserShowFlag: false,
+            openAppShowFlag: false
+        });
         //恢复初始数据
         phoneAlertAction.setInitialState();
         sendMessage && sendMessage('座机拨打电话，之前弹屏已打开' + phoneNum);
-        if (this.props.paramObj.call_params && _.isFunction(this.props.paramObj.call_params.setInitialPhoneObj)) {
-            this.props.paramObj.call_params.setInitialPhoneObj();
-        }
     }
 
     componentWillUnmount() {
@@ -177,9 +190,17 @@ class PhonePanel extends React.Component {
             //在最后阶段，将数据清除掉
             if (this.state.phonemsgObj && (this.state.phonemsgObj.type === PHONERINGSTATUS.phone || this.state.phonemsgObj.type === PHONERINGSTATUS.call_back)) {
                 //恢复初始数据
-                this.props.setInitialPhoneObj();
                 phoneAlertAction.setInitialState();
+                //清空联系人名称的信息
+                let paramObj = this.state.paramObj;
+                if (paramObj.call_params && _.isFunction(paramObj.call_params.setInitialPhoneObj)) {
+                    paramObj.call_params.setInitialPhoneObj();
+                }
+                if (_.get(paramObj, 'call_params.contactNameObj')) {
+                    paramObj.call_params.contactNameObj = {};
+                }
                 this.setState({
+                    paramObj: paramObj,
                     phoneNum: '',
                     rightPanelIsShow: false,
                     isInitialHeight: true,
@@ -257,7 +278,7 @@ class PhonePanel extends React.Component {
             <div className="customer-name">
                 <h3>
                     <i className="iconfont icon-interested"/>
-                    <span>{customer.name}</span>
+                    <span title={customer.name}>{customer.name}</span>
                 </h3>
                 <dl className="customer-info">
                     <dt>
