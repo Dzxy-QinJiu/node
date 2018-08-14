@@ -20,14 +20,22 @@ class SelectAppList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isAppListShow: false
+            isAppListShow: false,
+            appList: _.cloneDeep(this.props.appList),
+            selectedAppIds: [],
         };
     }
-    appList() {
+    componentWillReceiveProps(nexProps) {
+        this.setState({appList: nexProps.appList});
+    }
+    handleChange = selectedAppIds => {
+        this.setState({selectedAppIds});
+    }
+    renderAppList() {
         return (
             <div className='select-app-content'>
-                <Checkbox.Group onChange={this.props.getSelectAppList}>
-                    {this.props.appList.map( (appItem) => {
+                <Checkbox.Group onChange={this.handleChange}>
+                    {this.state.appList.map( (appItem) => {
                         return (
                             <Checkbox value={appItem.client_id} key={appItem.client_id}>
                                 {
@@ -49,21 +57,30 @@ class SelectAppList extends React.Component {
     }
     showAppListPanel = (event) => {
         //        Trace.traceEvent(event, '点击添加应用');
-        //        let unSelectedAppList = this.getUnselectAppList();
         this.setState({
             isAppListShow: true,
-            //            appList: unSelectedAppList
         });
     }
     handleSureBtn = (event) => {
         //        Trace.traceEvent(event, '点击保存');
+        let appList = _.cloneDeep(this.state.appList);
+
+        const selectedAppIds = _.clone(this.state.selectedAppIds);
+
+        appList = _.filter(appList, app => selectedAppIds.indexOf(app.client_id) === -1);
+
         this.setState({
+            appList,
+            selectedAppIds: [],
             isAppListShow: false,
+        }, () => {
+            this.props.getSelectAppList(selectedAppIds);
         });
     }
     handleCancelBtn = (event) => {
         //        Trace.traceEvent(event, '点击取消');
         this.setState({
+            selectedAppIds: [],
             isAppListShow: false
         });
     }
@@ -78,7 +95,7 @@ class SelectAppList extends React.Component {
                     <div className='app-select-list-wrap'>
                         <div className='select-app-wrap'>
                             <GeminiScrollbar>
-                                {this.appList()}
+                                {this.renderAppList()}
                             </GeminiScrollbar>
                         </div>
                         <div className='sure-cancel-btn' data-tracename="应用选择面板">
