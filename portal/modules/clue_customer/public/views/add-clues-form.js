@@ -22,6 +22,7 @@ import PhoneInput from 'CMP_DIR/phone-input';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
 require('../css/add-clues-info.less');
+import Trace from 'LIB_DIR/trace';
 const DIFCONTACTWAY = {
     PHONE: 'phone',
     EMAIL: 'email',
@@ -307,7 +308,7 @@ class ClueAddForm extends React.Component {
         // 过滤调要删除的联系人的key
         contact_keys = _.filter(contact_keys, (item,index) => item.key !== contactKey);
         form.setFieldsValue({contact_keys});
-
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.iconfont.icon-delete'), '删除联系人');
     };
 
     setContactValue = (index, itemIndex, randomValue, e) => {
@@ -422,7 +423,7 @@ class ClueAddForm extends React.Component {
             'disabled': index === 0 && size === 1
         });
         return (
-            <div className="contact-wrap" key={`contacts[${contactKey}]`}>
+            <div className="contact-wrap" key={`contacts[${contactKey}]`} >
                 <FormItem className="contact-name-item">
                     {getFieldDecorator(`contacts[${contactKey}].name`, {
                         rules: [{
@@ -554,7 +555,7 @@ class ClueAddForm extends React.Component {
         });
         const contact_keys = getFieldValue('contact_keys');
         return (
-            <RightPanel showFlag={true} data-tracename="添加线索" className="sales-clue-add-container">
+            <RightPanel showFlag={true} data-tracename="添加线索面板" className="sales-clue-add-container">
                 <BasicData
                     closeRightPanel={this.closeAddPanel}
                     clueTypeTitle={Intl.get('crm.sales.add.clue', '添加线索')}
@@ -611,7 +612,9 @@ class ClueAddForm extends React.Component {
                                         return this.renderDiffContacts(item, index, contact_keys);
                                     })}
                                     <div className="add-contact"
-                                        onClick={this.handleAddContact}>{Intl.get('crm.detail.contact.add', '添加联系人')}</div>
+                                        onClick={this.handleAddContact}
+                                        data-tracename="添加联系人"
+                                    >{Intl.get('crm.detail.contact.add', '添加联系人')}</div>
                                 </div>
                             </FormItem>
                             {this.renderCheckContactMsg()}
@@ -714,12 +717,11 @@ class ClueAddForm extends React.Component {
                                         {this.state.isSaving ? <Icon type="loading"/> : null}
                                     </Button>
                                     <Button className="cancel-btn" onClick={this.props.hideAddForm}
-                                        data-tracename="点击取消添加客户信息按钮">
+                                        data-tracename="点击取消添加线索按钮">
                                         {Intl.get('common.cancel', '取消')}
                                     </Button>
                                 </FormItem>
                             </div>
-
                         </Form>
                     </GeminiScrollbar>
                 </div>

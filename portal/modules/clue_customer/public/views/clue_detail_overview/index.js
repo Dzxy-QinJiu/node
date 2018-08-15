@@ -220,6 +220,7 @@ var ClueDetailOverview = React.createClass({
     },
     //点击关联客户按钮
     handleClickAssociatedBtn: function() {
+        Trace.traceEvent($(this.getDOMNode()).find('.clue-info-item'), '点击关联客户按钮');
         this.setState({
             clickAssociatedBtn: true
         });
@@ -331,7 +332,7 @@ var ClueDetailOverview = React.createClass({
                     {Intl.get('clue.has.no.handle','暂未处理')}
                 </div>
                 <div className="btn-container">
-                    <Button type="primary" data-tracename="点击分配线索客户按钮" onClick={this.handleClickAssignedBtn}>{Intl.get('clue.customer.distribute','分配')}</Button>
+                    <Button type="primary" data-tracename="点击分配线索按钮" onClick={this.handleClickAssignedBtn}>{Intl.get('clue.customer.distribute','分配')}</Button>
                 </div>
             </div>
         );
@@ -384,9 +385,9 @@ var ClueDetailOverview = React.createClass({
                     {Intl.get('clue.has.no.handle','暂未处理')}
                 </div>
                 <div className="btn-container">
-                    {associatedPrivilege ? <Button type="primary" data-tracename="点击关联客户按钮" onClick={this.handleClickAssociatedBtn.bind(this, curClue)}>{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
+                    {associatedPrivilege ? <Button type="primary" onClick={this.handleClickAssociatedBtn.bind(this, curClue)}>{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
 
-                    {avalibility ? <Button data-tracename="点击线索无效按钮" disabled={this.state.isInvalidClue} onClick={this.handleClickInvalidBtn.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
+                    {avalibility ? <Button data-tracename="判定线索无效按钮" disabled={this.state.isInvalidClue} onClick={this.handleClickInvalidBtn.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
                         {this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button> : null}
 
                 </div>
@@ -416,6 +417,7 @@ var ClueDetailOverview = React.createClass({
                     </div>
                     <div className="clue-info-detail">
                         <CustomerSuggest
+                            field='customer_id'
                             hasEditPrivilege={associatedPrivilege}
                             displayText={associatedCustomer}
                             displayType={associatedDisplyType}
@@ -447,7 +449,7 @@ var ClueDetailOverview = React.createClass({
                     <span className="invalid-des">
                         {Intl.get('clue.set.invalid','判定无效')}
                     </span>
-                    {avalibility ? <span className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this,curClue)}>
+                    {avalibility ? <span className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this,curClue)} data-tracename="取消判断线索无效">
                         {Intl.get('clue.cancel.set.invalid','取消无效')}
                     </span> : null}
 
@@ -496,7 +498,7 @@ var ClueDetailOverview = React.createClass({
         var appUserInfo = _.isArray(curClue.app_user_info) && curClue.app_user_info.length ? curClue.app_user_info[0] : {};
 
         return (
-            <div className="clue-detail-container">
+            <div className="clue-detail-container" data-tracename="线索基本信息">
                 <div className="clue-info-wrap clue-detail-block">
                     <div className="clue-basic-info">
                         <div className="clue-info-item">
@@ -706,7 +708,7 @@ var ClueDetailOverview = React.createClass({
                                 {Intl.get('clue.associate.user', '关联账号')}
                             </div>
                             <div className="clue-info-detail ">
-                                <span className="associate-user" onClick={this.handleShowAppUser.bind(this,appUserInfo.id)}>{appUserInfo.name}</span>
+                                <span className="associate-user" onClick={this.handleShowAppUser.bind(this,appUserInfo.id)} data-tracename="查看关联账号详情">{appUserInfo.name}</span>
                             </div>
                         </div>
                     </div> : null}

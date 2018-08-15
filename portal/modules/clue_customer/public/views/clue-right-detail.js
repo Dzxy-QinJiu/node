@@ -198,6 +198,7 @@ class ClueRightPanel extends React.Component {
     };
     //确认删除某条线索
     handleConfirmDeleteClue = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.delete-modal'), '确认删除线索');
         this.setState({
             isDeletingClue: true
         });
@@ -219,6 +220,7 @@ class ClueRightPanel extends React.Component {
     };
     //取消删除某条线索
     cancelDeleteClue = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.delete-modal'), '取消删除线索');
         this.setState({
             isRemoveClue: {}
         });
@@ -237,11 +239,11 @@ class ClueRightPanel extends React.Component {
         return (
             <RightPanel
                 className="clue_customer_rightpanel white-space-nowrap"
-                showFlag={this.props.showFlag} data-tracename="展示销售线索客户">
-                <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel}></span>
+                showFlag={this.props.showFlag} data-tracename="线索详情面板">
+                <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel} data-tracename="关闭线索详情面板"></span>
                 {this.state.getClueDetailErrMsg ? <div className="no-data-tip">{this.state.getClueDetailErrMsg}</div> :
-                    <div className="clue-detail-wrap">
-                        <div className="clue-basic-info-container" >
+                    <div className="clue-detail-wrap" data-tracename="线索详情">
+                        <div className="clue-basic-info-container">
                             <div className="clue-name-wrap">
                                 {renderClueStatus(curClue.status)}
                                 <div className="clue-name-title">
@@ -254,6 +256,12 @@ class ClueRightPanel extends React.Component {
                                         placeholder={Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')}
                                     />
                                 </div>
+                                {hasPrivilege('CLUECUSTOMER_DELETE') ?
+                                    <div className="remove-clue">
+                                        <i className="iconfont icon-delete"
+                                            onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
+                                    </div> : null}
+
                             </div>
                             {hasPrivilege('CLUECUSTOMER_DELETE') ?
                                 <div className="remove-clue">
