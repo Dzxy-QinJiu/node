@@ -14,12 +14,6 @@ const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
 import Trace from 'LIB_DIR/trace';
 const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
 
-// 开通应用，默认的数量和金额
-const APP_DEFAULT_INFO = {
-    COUNT: 1,
-    PRICE: 1000
-};
-
 const Contract = React.createClass( {
     getInitialState() {
         return {
@@ -52,12 +46,6 @@ const Contract = React.createClass( {
             this.setState({formData});
         }
     },
-    // 获取选中的应用列表
-    getSelectAppList(selectedAppIdArray) {
-        this.setState({
-            selectedAppIdArray: selectedAppIdArray
-        });
-    },
 
     // 修改产品信息
     modifyProductsInfo(appId, modifyValue, filed) {
@@ -86,25 +74,6 @@ const Contract = React.createClass( {
             selectedAppIdArray: restSelectAppIdArray,
             lastSelectedAppIdArray: restSelectAppIdArray
         });
-    },
-    // 获取选中应用列表的数据
-    getSelectAppListData() {
-        let appList = this.props.appList;
-        let selectedAppIdArray = this.state.selectedAppIdArray;
-        let allSelectAppIdArray = selectedAppIdArray.concat(this.state.lastSelectedAppIdArray);
-        let selectAppList = [];
-        if (allSelectAppIdArray.length) {
-            selectAppList = _.filter(appList, appItem => allSelectAppIdArray.indexOf(appItem.client_id) !== -1);
-            _.each(selectAppList, (appItem) => {
-                if (!appItem.count) {
-                    appItem.count = APP_DEFAULT_INFO.COUNT;
-                }
-                if (!appItem.total_price) {
-                    appItem.total_price = APP_DEFAULT_INFO.PRICE;
-                }
-            });
-        }
-        return selectAppList;
     },
     // 甲方
     handleCustomerName(event) {

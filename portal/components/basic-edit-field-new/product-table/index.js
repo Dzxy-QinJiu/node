@@ -20,6 +20,11 @@ import SaveCancelButton from '../../detail-card/save-cancel-button';
 import SelectAppList from '../../select-app-list';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
+// 开通应用，默认的数量和金额
+const APP_DEFAULT_INFO = {
+    COUNT: 1,
+    PRICE: 1000
+};
 
 class ProductTable extends React.Component {
     static defaultProps = {
@@ -137,6 +142,8 @@ class ProductTable extends React.Component {
 
             data.push({
                 name: selectedApp.client_name,
+                count: APP_DEFAULT_INFO.COUNT,
+                total_price: APP_DEFAULT_INFO.PRICE,
             });
         });
 
