@@ -499,13 +499,13 @@ var SalesHomePage = React.createClass({
         });
         this.getChangeCallTypeData();
         //发送点击事件
-        Trace.traceEvent('销售首页', '选择' + value + '类型');
+        Trace.traceEvent($(this.getDOMNode()).find('.call-type-select'), '电话统计>选择' + value + '类型');
     },
 
     // 通话类型的筛选框
     filterCallTypeSelect(){
         return (
-            <div className="call-type-select">
+            <div className="call-type-select" data-tracename="电话统计">
                 <Select
                     showSearch
                     value={this.state.callType}
@@ -769,7 +769,7 @@ var SalesHomePage = React.createClass({
             }
         });
     },
-    handleCrmTeamListShow: function() {
+    handleCrmTeamListShow: function(e) {
         this.setState({
             isSaleTeamShow: !this.state.isSaleTeamShow,
             notfirstLogin: true,
@@ -782,6 +782,12 @@ var SalesHomePage = React.createClass({
                 this.refs.phoneScrollbar && this.refs.phoneScrollbar.update();
             }, 1000);
         });
+        if(this.state.isSaleTeamShow === true){
+            Trace.traceEvent(e, '隐藏团队列表');
+        }else{
+            Trace.traceEvent(e, '展示团队列表');
+        }
+        return e.stopPropagation();
     },
     //跳转到个人信息页面
     jumpToUserInfo: function() {
@@ -937,7 +943,7 @@ var SalesHomePage = React.createClass({
         var title = (this.state.isSaleTeamShow ? Intl.get('sales.homepage.hide.teamlist', '隐藏团队列表') :
             Intl.get('sales.homepage.show.teamlist', '展开团队列表'));
         return (<RightContent>
-            <div className="sales_home_content" data-tracename="销售首页">
+            <div className="sales_home_content">
                 <TopNav>
                     <div className="date-range-wrap">
                         <DatePicker
@@ -956,7 +962,7 @@ var SalesHomePage = React.createClass({
                         </DatePicker>
                     </div>
                     {(this.state.currShowType === showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? null :
-                        <div className="crm-home-teamlist-show-flag">
+                        <div className="crm-home-teamlist-show-flag" data-tracename="销售首页">
                             <span className={hamburgerCls} onClick={this.handleCrmTeamListShow} title={title}>
                             </span>
                         </div>}

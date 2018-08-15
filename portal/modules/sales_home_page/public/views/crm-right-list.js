@@ -99,7 +99,7 @@ let CrmRightList = React.createClass({
             this.props.refreshDataByChangeSales();
         });
         this.hideSearchInput();
-        Trace.traceEvent(e, '点击查看\'' + team.group_name + '\'团队的数据');
+        Trace.traceEvent(e, '点击查看团队的数据');
     },
     //点击查看当前成员的数据
     selectSalesman: function(e, user) {
@@ -109,7 +109,7 @@ let CrmRightList = React.createClass({
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
-        Trace.traceEvent(e, '点击查看\'' + user.nickName + '销售人员的数据');
+        Trace.traceEvent(e, '点击查看销售人员的数据');
     },
     //通过面包屑返回到销售团队列表
     returnSalesTeamList: function(e, team) {
@@ -118,7 +118,7 @@ let CrmRightList = React.createClass({
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
-        Trace.traceEvent(e, '返回\'' + team.group_name + '\'团队的数据');
+        Trace.traceEvent(e, '返回团队的数据');
 
         let team_id = team.group_id;
         if (team_id === 'sales-team-list-parent-group-id') {
@@ -232,6 +232,8 @@ let CrmRightList = React.createClass({
 
     //如果销售角色id为“normal”，则选择清空销售角色的函数,反之则选择改变销售角色的函数
     changeAllSalesRole(sales, options){
+        Trace.traceEvent($(this.getDOMNode()).find(`#sales-member-li${sales.userId} .icon-role-auth-config`), '设置销售角色');
+
         if(options.key === 'normal'){
             this.resetSalesRole(sales, options);
 
@@ -474,7 +476,7 @@ let CrmRightList = React.createClass({
     render: function() {
         let resultType = this.props.salesTeamListObj.resultType, errorMsg = this.props.salesTeamListObj.errorMsg;
         return (
-            <div className="crm-sales-team-zone">
+            <div className="crm-sales-team-zone" data-tracename="销售（团队）列表">
                 <div className="crm-sales-team-container">
                     {resultType ? (this.renderTooltip(resultType, errorMsg)) : this.renderListContent()}
                 </div>
