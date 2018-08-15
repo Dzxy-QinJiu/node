@@ -57,6 +57,7 @@ class ProductTable extends React.Component {
             isEdit: this.props.isEdit || this.props.isAdd,
             columns: this.getColumns(),
             data: this.props.dataSource,
+            loading: false,
         };
     }
 
@@ -112,10 +113,18 @@ class ProductTable extends React.Component {
     }
 
     handleSubmit = () => {
+        this.setState({loading: true});
+
         const data = _.cloneDeep(this.state.data);
 
+        const successFunc = () => {
+            this.setState({
+                loading: false,
+                isEdit: false,
+            });
+        };
 
-        this.props.onSave(data);
+        this.props.onSave(data, successFunc);
     }
 
     showEdit = () => {
@@ -197,6 +206,7 @@ class ProductTable extends React.Component {
                             <SaveCancelButton
                                 handleSubmit={this.handleSubmit}
                                 handleCancel={this.handleCancel}
+                                loading={this.state.loading}
                             /> 
                         )}
                     </div>

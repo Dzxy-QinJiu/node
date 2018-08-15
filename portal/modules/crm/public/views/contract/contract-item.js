@@ -205,12 +205,13 @@ const ContractItem = React.createClass({
         };
         this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
     },
-    handleProductSave(data) {
+    handleProductSave(data, successFunc) {
         let saveObj = {
             products: data,
             id: this.state.formData.id
         };
-        this.saveContractBasicInfo(saveObj);
+
+        this.saveContractBasicInfo(saveObj, successFunc);
     },
     handleCancelEditValidityTime() {
         this.setState({
