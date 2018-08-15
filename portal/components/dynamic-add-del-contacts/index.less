@@ -1,0 +1,64 @@
+//动态添加、删除联系人及联系方式的组件样式
+.contact-way-container{
+  overflow: hidden;
+  .contact-wrap{
+    overflow: hidden;
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    .contact-name-item{
+      .contact-name{
+        float: left;
+        width: 90%;
+      }
+      .iconfont.icon-delete.disabled{
+        color: transparent;
+      }
+    }
+    .contact-way-item{
+      .contact-item{
+        overflow: hidden;
+        .ant-select{
+          width: 95px;
+          float: left;
+        }
+        .ant-form-item{
+          width: 300px;
+          float: left;
+          margin-bottom: 8px;
+          .ant-form-item-required:before {
+            content: ""
+          }
+          .ant-form-item-label {
+            text-align: left;
+          }
+        }
+      }
+    }
+
+    i.iconfont{
+      margin-right:10px;
+      color:#999;
+    }
+    .contact-way-buttons{
+      float: left;
+      color:#8EABC6;
+      font-size: 14px;
+      margin-left: 5px;
+      cursor: pointer;
+      .clue-minus-button{
+        float: left;
+      }
+      .clue-plus-button{
+        float: left;
+        margin-left:6px;
+      }
+    }
+  }
+  .add-contact{
+    float: left;
+    text-align: left;
+    color:#8EAAC5;
+    cursor: pointer;
+  }
+}
