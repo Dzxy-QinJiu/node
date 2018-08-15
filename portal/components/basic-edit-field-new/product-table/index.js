@@ -58,6 +58,7 @@ class ProductTable extends React.Component {
             columns: this.getColumns(),
             data: this.props.dataSource,
             loading: false,
+            saveErrMsg: '',
         };
     }
 
@@ -120,11 +121,19 @@ class ProductTable extends React.Component {
         const successFunc = () => {
             this.setState({
                 loading: false,
+                saveErrMsg: '',
                 isEdit: false,
             });
         };
 
-        this.props.onSave(data, successFunc);
+        const errorFunc = () => {
+            this.setState({
+                loading: false,
+                saveErrMsg: Intl.get('common.edit.failed', '修改失败'),
+            });
+        };
+
+        this.props.onSave(data, successFunc, errorFunc);
     }
 
     showEdit = () => {
@@ -207,6 +216,7 @@ class ProductTable extends React.Component {
                                 handleSubmit={this.handleSubmit}
                                 handleCancel={this.handleCancel}
                                 loading={this.state.loading}
+                                saveErrorMsg={this.state.saveErrMsg}
                             /> 
                         )}
                     </div>
