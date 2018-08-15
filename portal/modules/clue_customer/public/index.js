@@ -310,7 +310,6 @@ const ClueCustomer = React.createClass({
                         callNumber={this.state.callNumber}
                         errMsg={this.state.errMsg}
                         afterAddClueTrace={this.afterAddClueTrace}
-                        salesManList={this.state.salesManList}
                         getSelectContent={this.setSelectContent}
                         onSalesmanChange={this.onSalesmanChange}
                         salesMan={this.state.salesMan}

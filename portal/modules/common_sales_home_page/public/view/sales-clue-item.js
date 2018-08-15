@@ -312,7 +312,7 @@ class SalesClueItem extends React.Component {
             {/*是有效线索并且有关联客户*/}
             {availability && associatedCustomer ?
                 <div className="associate-customer">
-                    {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
+                    {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_label)}>{salesClueItem.customer_label}</Tag> : null}
                     <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)}>{associatedCustomer}</b></div> : null}
             {/*是无效线索且有判定无效的相关信息*/}
             {inValidClue ?
@@ -479,7 +479,6 @@ SalesClueItem.defaultProps = {
     afterAddClueTrace: function() {
 
     },
-    salesManList: [],
     unSelectDataTip: '',
     distributeLoading: false,
     clueCustomerTypeFilter: {},
@@ -507,7 +506,6 @@ SalesClueItem.propTypes = {
     errMsg: React.PropTypes.string,
     showFrontPageTip: React.PropTypes.bool,
     afterAddClueTrace: React.PropTypes.func,
-    salesManList: React.PropTypes.object,
     unSelectDataTip: React.PropTypes.string,
     distributeLoading: React.PropTypes.bool,
     clueCustomerTypeFilter: React.PropTypes.object,
