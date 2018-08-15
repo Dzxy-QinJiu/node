@@ -17,6 +17,7 @@ var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
 import classNames from 'classnames';
+import StatusWrapper from 'CMP_DIR/status-wrapper';
 var TimeLine = require('CMP_DIR/time-line');
 const TOP_PADDING = 80;//top padding for inputs
 var SingleUserLog = React.createClass({
@@ -238,9 +239,9 @@ var SingleUserLog = React.createClass({
         );
     },
     // 日志列表信息
-    userLogInformationBlock: function() {
+    userLogInformationBlock: function(height) {
         if (this.state.logListLoading === 'loading' && this.state.curPage === 1) {
-            return <Spinner />;
+            return <StatusWrapper loading={true} height={height}/>;
         }
         if (this.state.getUserLogErrorMsg) {
             return (
@@ -302,7 +303,7 @@ var SingleUserLog = React.createClass({
                     listenScrollBottom={this.state.listenScrollBottom}
                     itemCssSelector=".single-user-log-information"
                 >
-                    {this.userLogInformationBlock()}
+                    {this.userLogInformationBlock(scrollBarHeight)}
                     <NoMoreDataTip
                         fontSize="12"
                         show={this.showNoMoreDataTip}

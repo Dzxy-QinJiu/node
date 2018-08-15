@@ -82,9 +82,19 @@
     // }
     //时间线样式
     .time-line.group-by-day {
-        & .icon-blue {
-            .iconfont {
-                color: @btn_color;
+        .ant-timeline .ant-timeline-item .ant-timeline-item-tail {
+            border-left: 2px solid #eee;
+        }
+        & {
+            .icon-blue {
+                .iconfont {
+                    color: @btn_color;
+                }
+            }
+            .icon-yellow {
+                .iconfont {
+                    color: @interested_color;
+                }
             }
         }
         ul {

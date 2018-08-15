@@ -244,7 +244,7 @@ var UserDetailChangeRecord = React.createClass({
                         onChange={this.handleChange}>
                         {this.getSelectOptions()}
                     </Select>
-                    <StatusWrapper loading={true} height={height}/>
+                    <StatusWrapper loading={true} height={height - 100}/>
                 </div>
             );
         }else if(recordLength === 0 && !this.state.changeRecordLoading){

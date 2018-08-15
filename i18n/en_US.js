@@ -2016,11 +2016,13 @@ var en_US = {
     'user.login.abnormal': 'Abnormal login',//异常登录
     'user.retry.login': 'Login after disabling. The user\'s {appName} account has been disabled and still trying to login.',//停用后登录。该用户的{appName}账号已经停用，仍尝试登录。
     'user.exception.login': 'Login exception. The user\'s {client_name} account is not logged in the usual location.',//登录地异常。该用户的{client_name}账号，不在常用登录地登录。
+    'user.exception.login.location': 'Abnormal login location', //'登录地异常',
     'user.usual.location': 'The common login is {usuallocation}.',//常用登录地为{usuallocation}。
     'user.current.location': 'The current login is {currentlocation}，',//该次登录地为{currentlocation}。
     'user.current.ip': 'the login IP is {currentip}.', // IP为{currentip}
     'user.failed.frequent.login': 'Login frequency exception. The user\'s {appName} account logins more than 50 times for 1 consecutive hour and each time is a successful login.',//登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。
     'user.success.frequent.login': 'Login frequency exception. The user\'s {appName} account logins more than 50 times for 1 consecutive hour and each time is a successful login.',//登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。
+    'user.success.frequent.login.short': 'Login frequency exception',//'登录频率异常',
     'user.login.abnormal.ignore': 'Ignore', // 忽略
     'user.login.abnormal.success': 'This remote information has been ignored.', // 该条异地信息已忽略!
     'user.login.abnormal.failed': 'Failed to Ignored Exception login', // 忽略异常登录地失败！
