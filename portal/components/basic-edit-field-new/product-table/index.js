@@ -79,12 +79,14 @@ class ProductTable extends React.Component {
                     title: Intl.get('crm.contract.account.count', '账号数量'),
                     dataIndex: 'count',
                     editable: true,
+                    componentType: 'inputNumber',
                     key: 'count'
                 },
                 {
                     title: Intl.get('crm.contract.money', '金额(元)'),
                     dataIndex: 'total_price',
                     editable: true,
+                    componentType: 'inputNumber',
                     key: 'total_price',
                     render: (text) => {
                         return <span>{parseAmount(text.toFixed(2))}</span>;
