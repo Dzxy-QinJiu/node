@@ -1,7 +1,6 @@
 const Validation = require('rc-form-validation');
-const Validator = Validation.Validator;
 import {Button, Form, Input, Icon, message} from 'antd';
-var FormItem = Form.Item;
+const FormItem = Form.Item;
 var HeadIcon = require('../../../../components/headIcon');
 var AlertTimer = require('../../../../components/alert-timer');
 var defaultPhoneIcon = require('../../../common/public/image/user-info-phone-icon.png');
@@ -10,24 +9,9 @@ var Alert = require('antd').Alert;
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Spinner = require('../../../../components/spinner');
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
-import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
-import reactIntlMixin from '../../../../components/react-intl-mixin';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
-
-const messages = defineMessages({
-    common_email: {id: 'common.email'},//邮箱
-    common_is_validiting: {id: 'common.is.validiting'},//正在校验中..
-    common_correct_email: {id: 'common.correct.email'},//请输入正确的邮箱
-    common_required_tip: {id: 'common.required.tip'},//必填项*
-    common_phone: {id: 'common.phone'}, //电话
-    user_info_input_phone: {id: 'user.info.input.phone'},//请输入电话
-    common_input_correct_phone: {id: 'common.input.correct.phone'},//请输入正确的电话号码
-    common_nickname: {id: 'common.nickname'},//昵称
-    user_info_nickname_required: {id: 'user.info.nickname.required'},//昵称不能为空
-
-});
 
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
@@ -43,80 +27,47 @@ function cx(classNames) {
         return Array.prototype.join.call(arguments, ' ');
     }
 }
-var UserInfo = React.createClass({
-    mixins: [Validation.FieldMixin, reactIntlMixin],
-    getDefaultProps: function() {
-        return {
-            editUserInfo: noop,
-            userInfoFormShow: false,
-            userInfo: {
-                userId: '',
-                userName: '',
-                nickName: '',
-                password: '',
-                rePasswd: '',
-                newPasswd: '',
-                phone: '',
-                email: '',
-                rolesName: '',
-                roles: '',
-                reject: '',
-            }
-        };
-    },
-    getInitialState: function() {
-        return {
-            status: {
-                userId: '',
-                userName: '',
-                nickName: '',
-                password: '',
-                rePasswd: '',
-                newPasswd: '',
-                phone: '',
-                email: '',
-                rolesName: '',
-                roles: '',
-                reject: '',
-
-            },
+class UserInfo extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
             formData: $.extend(true, {}, this.props.userInfo),
             userInfoFormShow: this.props.userInfoFormShow,
             isSaving: false,
             saveErrorMsg: '',
             lang: Oplate.lang || 'zh_CN'
         };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        this.refs.validation.reset();
+        this.activeUserEmail = this.activeUserEmail.bind(this);
+        this.cancelEditLang = this.cancelEditLang.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.hideSaveTooltip = this.hideSaveTooltip.bind(this);
+        this.handleSubscribe = this.handleSubscribe.bind(this);
+        this.onSelectLang = this.onSelectLang.bind(this);
+    }
+    componentWillReceiveProps(nextProps) {
         this.setState({
             formData: $.extend(true, {}, nextProps.userInfo),
             userInfoFormShow: nextProps.userInfoFormShow
         });
-    },
-    componentDidUpdate: function() {
-        if (this.state.formData.id) {
-            this.refs.validation.validate(noop);
-        }
-    },
+    }
+
     //编辑用户信息
-    showUserInfoForm: function() {
+    showUserInfoForm() {
         UserInfoAction.showUserInfoForm();
-    },
+    }
 
     //取消编辑用户信息
-    handleCancel: function(e) {
+    handleCancel(e) {
         e.preventDefault();
         UserInfoAction.hideUserInfoForm();
-    },
+    }
 
     //保存用户信息
-    handleSubmit: function(e) {
+    handleSubmit(e) {
         e.preventDefault();
-        var validation = this.refs.validation;
         var _this = this;
-        validation.validate(valid => {
-            if (!valid) {
+        this.props.form.validateFields((err, ) => {
+            if (err) {
                 return;
             } else {
                 this.setState({isSaving: true});
@@ -134,25 +85,25 @@ var UserInfo = React.createClass({
                 });
             }
         });
-    },
-    hideSaveTooltip: function() {
+    }
+    hideSaveTooltip() {
         this.setState({saveErrorMsg: ''});
-    },
-    renderValidateStyle: function(item) {
+    }
+    renderValidateStyle(item){
         var formData = this.state.formData;
         var status = this.state.status;
 
-        var classes = cx({
+        const classes = cx({
             'error': status[item].errors,
             'validating': status[item].isValidating,
             'success': formData[item] && !status[item].errors && !status[item].isValidating
         });
 
         return classes;
-    },
+    }
 
     //校验手机号码
-    checkPhone: function(rule, value, callback) {
+    checkPhone(rule, value, callback) {
         var _this = this;
         value = $.trim(value);
         if (value) {
@@ -161,20 +112,20 @@ var UserInfo = React.createClass({
                 (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
                 callback();
             } else {
-                callback(new Error(_this.formatMessage(messages.common_input_correct_phone)));
+                callback(new Error(Intl.get('common.input.correct.phone','请输入正确的电话号码')));
             }
         } else {
             callback();
         }
-    },
+    }
 
-    uploadImg: function(src) {
+    uploadImg(src) {
         var formData = this.state.formData;
         formData.userLogo = src;
         this.setState({formData: formData});
-    },
+    }
     //激活邮箱
-    activeUserEmail: function() {
+    activeUserEmail() {
         var _this = this;
         if (this.state.formData.emailEnable) {
             return;
@@ -188,14 +139,14 @@ var UserInfo = React.createClass({
                 );
             }
         });
-    },
-    handleSubscribeCallback: function(resultObj) {
+    }
+    handleSubscribeCallback(resultObj) {
         if (resultObj.error) {
             message.error(resultObj.errorMsg);
         } else {
             message.success(resultObj.data);
             var formData = $.extend(true, {}, this.state.formData);
-            if (this.state.formData.reject == 0) {
+            if (this.state.formData.reject === 0) {
                 formData.reject = 1;
             } else {
                 formData.reject = 0;
@@ -205,9 +156,9 @@ var UserInfo = React.createClass({
             });
         }
 
-    },
+    }
     //设置邮箱订阅功能
-    handleSubscribe: function() {
+    handleSubscribe() {
         var formData = this.state.formData;
         var configObj = {'config': true};
         if (formData.reject < 1) {
@@ -216,11 +167,11 @@ var UserInfo = React.createClass({
             configObj.config = false;
             UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
         }
-    },
-    retryRealm: function() {
+    }
+    retryRealm() {
         UserInfoAction.getManagedRealm();
-    },
-    renderRealm: function() {
+    }
+    renderRealm() {
 
         if (this.props.realmLoading) {
             return (<Icon type="loading"/>);
@@ -240,11 +191,11 @@ var UserInfo = React.createClass({
         } else {
             return (<span>{this.props.managedRealm.realm_name}</span>);
         }
-    },
-    retryUserInfo: function() {
+    }
+    retryUserInfo() {
         UserInfoAction.getUserInfo();
-    },
-    renderReceiveEmail: function() {
+    }
+    renderReceiveEmail() {
         var formData = this.state.formData;
         if (formData.reject !== '' && formData.reject < 1) {
             return (
@@ -276,8 +227,8 @@ var UserInfo = React.createClass({
                 </div>
             );
         }
-    },
-    getLangOptions: function() {
+    }
+    getLangOptions() {
         return langArray.map(lang => {
             return (
                 <Option key={lang.key} value={lang.key}>
@@ -285,27 +236,27 @@ var UserInfo = React.createClass({
                 </Option>
             );
         });
-    },
-    onSelectLang: function(lang) {
+    }
+    onSelectLang(lang) {
         this.setState({lang: lang});
-    },
-    cancelEditLang: function() {
+    }
+    cancelEditLang() {
         this.setState({lang: Oplate.lang || 'zh_CN'});
-    },
-    afterEditLangSuccess: function(user) {
+    }
+    afterEditLangSuccess(user) {
         storageUtil.local.set('userLang',user['language']);
         //刷新界面，浏览器重新从服务器请求资源,在http请求头中不会包含缓存标记
         location.reload(true);
-    },
-    getLangDisplayText: function() {
-        let lang = _.find(langArray, langObj => langObj.key == this.state.lang);
+    }
+    getLangDisplayText() {
+        let lang = _.find(langArray, langObj => langObj.key === this.state.lang);
         if (lang && lang.val) {
             return lang.val;
         } else {
             return '';
         }
-    },
-    renderUserInfo: function() {
+    }
+    renderUserInfo() {
         var _this = this;
         var formData = this.state.formData;
         if (this.props.userInfoErrorMsg) {
@@ -404,17 +355,16 @@ var UserInfo = React.createClass({
                 </div>
             );
         }
-    },
-    render: function() {
+    }
+    render() {
+        const {getFieldDecorator} = this.props.form;
         var _this = this;
         var formData = this.state.formData;
-        var status = this.state.status;
         return (
             <div className="user-info-container-div col-md-4">
                 <div className="user-logo-div">
                     <Button className="user-info-btn-class icon-update iconfont"
                         onClick={_this.showUserInfoForm}
-                        style={{display: this.props.userInfoFormShow ? 'none' : 'block'}}
                         data-tracename="编辑个人资料"/>
                     <div className="user-info-logo">
                         {
@@ -432,84 +382,76 @@ var UserInfo = React.createClass({
                         }
                     </div>
                 </div>
-                <div className="edit-form-div" style={{display: this.props.userInfoFormShow ? 'block' : 'none'}}>
+
+                {this.props.userInfoFormShow ? <div className="edit-form-div">
                     <Form horizontal className="user-info-form">
-                        <Validation ref="validation" onValidate={this.handleValidate}>
-                            <FormItem
-                                label={this.formatMessage(messages.common_email)}
-                                id="email"
-                                labelCol={{span: 4}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('email')}
-                                hasFeedback
-                                help={status.email.isValidating ? this.formatMessage(messages.common_is_validiting) : (status.email.errors && status.email.errors.join(','))}
-                            >
-                                <Validator rules={[{
-                                    required: true,
-                                    type: 'email',
-                                    message: this.formatMessage(messages.common_correct_email)
-                                }]}>
-                                    <Input name="email" id="email" type="text" value={formData.email}
-                                        placeholder={this.formatMessage(messages.common_required_tip)}
-                                        onChange={this.setField.bind(this, 'email')}/>
-                                </Validator>
-                            </FormItem>
-                            <FormItem
-                                label={this.formatMessage(messages.common_phone)}
-                                id="phone"
-                                labelCol={{span: 4}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('phone')}
-                                hasFeedback
-                                help={status.phone.isValidating ? (this.formatMessage(messages.common_is_validiting)) : (status.phone.errors && status.phone.errors.join(','))}
-                            >
-                                <Validator rules={[{validator: this.checkPhone}]}>
-                                    <Input name="phone" id="phone" value={formData.phone}
-                                        placeholder={this.formatMessage(messages.user_info_input_phone)}
-                                        onChange={this.setField.bind(this, 'phone')}/>
-                                </Validator>
-                            </FormItem>
-                            <FormItem
-                                label={this.formatMessage(messages.common_nickname)}
-                                id="nickName"
-                                labelCol={{span: 4}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('nickName')}
-                                hasFeedback
-                                help={status.nickName.isValidating ? (this.formatMessage(messages.common_is_validiting)) : (status.nickName.errors && status.nickName.errors.join(','))}
-                            >
-                                <Validator rules={[{
-                                    required: true,
-                                    message: this.formatMessage(messages.user_info_nickname_required)
-                                }]}>
-                                    <Input name="nickName" id="nickName" value={formData.nickName}
-                                        placeholder={this.formatMessage(messages.common_required_tip)}
-                                        onChange={this.setField.bind(this, 'nickName')}/>
-                                </Validator>
-                            </FormItem>
-                            <FormItem
-                                wrapperCol={{span: 22}}>
-                                <Button type="ghost" className="user-info-edit-cancel-btn btn-primary-cancel"
-                                    onClick={this.handleCancel} data-tracename="取消编辑个人资料">
-                                    <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                                </Button>
-                                <Button type="primary" className="user-info-edit-submit-btn btn-primary-sure"
-                                    onClick={this.handleSubmit} data-tracename="保存个人资料">
-                                    <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                                </Button>
-                                {this.state.isSaving ? (<Icon type="loading"/>) : (
-                                    this.state.saveErrorMsg ? (<div className="indicator">
-                                        <AlertTimer time={3000}
-                                            message={this.state.saveErrorMsg}
-                                            type={'error'} showIcon
-                                            onHide={this.hideSaveTooltip}/>
-                                    </div>) : null)
-                                }
-                            </FormItem>
-                        </Validation>
+                        <FormItem
+                            label={Intl.get('common.email', '邮箱')}
+                            id="email"
+                            labelCol={{span: 4}}
+                            wrapperCol={{span: 18}}
+                        >
+                            {getFieldDecorator('email',{
+                                initialValue: formData.email,
+                                rules: [{
+                                    type: 'email', required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
+                                }]
+                            })(
+                                <Input type="text" placeholder={Intl.get('member.input.email', '请输入邮箱')}/>
+                            )}
+                        </FormItem>
+                        <FormItem
+                            label={Intl.get('common.phone','电话')}
+                            id="phone"
+                            labelCol={{span: 4}}
+                            wrapperCol={{span: 18}}
+                        >
+                            {getFieldDecorator('phone',{
+                                initialValue: formData.phone,
+                                rules: [{
+                                    validator: this.checkPhone
+                                }]
+                            })(
+                                <Input placeholder={Intl.get('user.info.input.phone','请输入电话')}/>
+                            )}
+                        </FormItem>
+                        <FormItem
+                            label={Intl.get('common.nickname','昵称')}
+                            id="nickName"
+                            labelCol={{span: 4}}
+                            wrapperCol={{span: 18}}
+                        >
+                            {getFieldDecorator('nickname',{
+                                initialValue: formData.nickName,
+                                rules: [{
+                                    required: true, message: Intl.get('user.info.nickname.required','昵称不能为空')
+                                }]
+                            })(
+                                <Input type="text" placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}/>
+                            )}
+                        </FormItem>
+                        <FormItem
+                            wrapperCol={{span: 22}}>
+                            <Button type="ghost" className="user-info-edit-cancel-btn btn-primary-cancel"
+                                onClick={this.handleCancel} data-tracename="取消编辑个人资料">
+                                <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
+                            </Button>
+                            <Button type="primary" className="user-info-edit-submit-btn btn-primary-sure"
+                                onClick={this.handleSubmit} data-tracename="保存个人资料">
+                                <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
+                            </Button>
+                            {this.state.isSaving ? (<Icon type="loading"/>) : (
+                                this.state.saveErrorMsg ? (<div className="indicator">
+                                    <AlertTimer time={3000}
+                                        message={this.state.saveErrorMsg}
+                                        type={'error'} showIcon
+                                        onHide={this.hideSaveTooltip}/>
+                                </div>) : null)
+                            }
+                        </FormItem>
                     </Form>
-                </div>
-                <div className="user-info-bottom" style={{display: this.props.userInfoFormShow ? 'none' : 'block'}}>
+                </div> : null}
+                {!this.props.userInfoFormShow ? <div className="user-info-bottom">
                     {this.props.userInfoLoading ? ( <div className="user-info-tip">
                         <Spinner />
                     </div> ) : (
@@ -524,10 +466,22 @@ var UserInfo = React.createClass({
                             </div>
                         </div>
                     </PrivilegeChecker>
-                </div>
+                </div> : null}
             </div>
         );
     }
-});
+}
 
-module.exports = injectIntl(UserInfo);
+UserInfo.propTypes = {
+    userInfo: React.PropTypes.object,
+    userInfoFormShow: React.PropTypes.bool,
+    form: React.PropTypes.object,
+    realmLoading: React.PropTypes.bool,
+    realmErrorMsg: React.PropTypes.string,
+    managedRealm: React.PropTypes.object,
+    userInfoErrorMsg: React.PropTypes.string,
+    userInfoLoading: React.PropTypes.bool,
+};
+
+const UserInfoForm = Form.create()(UserInfo);
+module.exports = UserInfoForm;

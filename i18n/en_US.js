@@ -817,7 +817,9 @@ var en_US = {
     'user.info.active': 'active',//激活
     'user.info.realm': 'Security Domain',//安全域
     'user.info.input.phone': 'Please enter the phone number',//请输入电话
+    'user.info.input.nickname': 'Please enter the nickname',//请输入昵称
     'user.info.nickname.required': 'Nickname is required',//昵称不能为空
+    'user.info.email.required': 'Email is required',//邮箱不能为空
     'user.info.consult.phone': 'Service Hotline',//客服咨询电话
     'user.info.get.user.info.failed': 'Failed to get user information',//获取用户信息失败
     'user.info.get.managed.realm.failed': 'Failed to get security domain information',//获取安全域信息失败
