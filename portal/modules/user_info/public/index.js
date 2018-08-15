@@ -5,9 +5,9 @@
 var TopNav = require('../../../components/top-nav');
 require('./css/user-info-zh_CN.less');
 var language = require('../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/user-info-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('./css/user-info-zh_CN.less');
 }
 var UserInfoStore = require('./store/user-info-store');
@@ -114,7 +114,7 @@ var UserInfoPage = React.createClass({
                                         defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
                                         values={{
                                             editpassword: <span className="update-pwd">
-                                                <Link to="/user_info_manage/user_pwd" activeClassName="active">
+                                                <Link to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
                                                     <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
                                                 </Link>
                                             </span>
