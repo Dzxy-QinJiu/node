@@ -154,7 +154,7 @@ const ContractItem = React.createClass({
     renderProductInfo(products) {
         return (
             <ProductTable
-                appList={this.state.appList}
+                appList={this.props.appList}
                 dataSource={products}
             />
         );
