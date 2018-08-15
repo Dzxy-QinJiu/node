@@ -129,6 +129,19 @@ class ProductTable extends React.Component {
             </span>
         );
     }
+    getSelectAppList = selectedAppIds => {
+        let data = _.cloneDeep(this.state.data);
+
+        _.each(selectedAppIds, appId => {
+            const selectedApp = _.find(this.props.appList, app => app.client_id === appId);
+
+            data.push({
+                name: selectedApp.client_name,
+            });
+        });
+
+        this.setState({data});
+    }
     render() {
         const appNames = _.map(this.state.data, 'name');
 
@@ -153,6 +166,7 @@ class ProductTable extends React.Component {
                     <div>
                         <SelectAppList
                             appList={appList}
+                            getSelectAppList={this.getSelectAppList}
                         /> 
                         {this.props.isAdd ? null : (
                             <SaveCancelButton
