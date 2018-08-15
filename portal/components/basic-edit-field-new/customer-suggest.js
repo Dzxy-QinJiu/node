@@ -268,7 +268,7 @@ var CustomerSuggest = React.createClass({
                 return (
                     <div className="customer_suggest_tip">
                         {this.state.suggest_error_msg}，{Intl.get('common.yesno', '是否')}<a href="javascript:void(0)"
-                            onClick={this.retrySuggest}><ReactIntl.FormattedMessage
+                            onClick={this.retrySuggest} data-tracename="重新搜索客户"><ReactIntl.FormattedMessage
                                 id="common.retry" defaultMessage="重试"/></a>
                     </div>
                 );
@@ -281,7 +281,7 @@ var CustomerSuggest = React.createClass({
                         {canCreateCustomer ?
                             <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}，{Intl.get('common.yesno', '是否')}
                                 {noJumpToAddCrmPanel ?
-                                    <a onClick={this.props.addAssignedCustomer}>{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
+                                    <a onClick={this.props.addAssignedCustomer} data-tracename="点击创建客户按钮">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
                                     <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
                             </span> : <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}</span>}
                     </div>
@@ -300,7 +300,8 @@ var CustomerSuggest = React.createClass({
         });
         _.isFunction(this.props.handleCancel()) && this.props.handleCancel();
     },
-    handleSubmit: function() {
+    handleSubmit: function(e) {
+        Trace.traceEvent(e, '保存对' + this.props.field + '修改');
         var customer = this.state.customer;
         var customerName = customer.name;
         var saveObj = {
@@ -411,21 +412,23 @@ var CustomerSuggest = React.createClass({
             if (this.state.displayText) {
                 textBlock = (
                     <div className={cls}>
-                        <span className="inline-block basic-info-text customer-name" onClick={this.showCustomerDetail.bind(this, customerId)}>
+                        <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
                             {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
                             {this.state.displayText}
                             <span>&gt;</span>
                         </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}
-                                onClick={this.setEditable.bind(this)}/>) : null
+                                onClick={this.setEditable.bind(this)}
+                                data-tracaname="点击编辑客户按钮"
+                            />) : null
                         }
                     </div>);
             } else {
                 textBlock = (
                     <span className="inline-block basic-info-text no-data-descr">
                         {this.props.hasEditPrivilege ? (
-                            <a onClick={this.setEditable.bind(this)}>{this.props.addDataTip}</a>) : this.props.noDataTip}
+                            <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮">{this.props.addDataTip}</a>) : this.props.noDataTip}
 
                     </span>
                 );
@@ -467,7 +470,7 @@ var CustomerSuggest = React.createClass({
             </div>
         ) : null;
         return (
-            <div className={displayCls}>
+            <div className={displayCls} data-tracename="搜索客户">
                 {textBlock}
                 {selectBlock}
                 {/*该客户下的用户列表*/}

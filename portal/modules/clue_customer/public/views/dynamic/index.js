@@ -90,7 +90,7 @@ var Dynamic = React.createClass({
             <dl>
                 <dd>
                     {item.message}
-                    {item.relate_name && item.relate_id ? <span className="relete-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)}>{item.relate_name}</span> : null}
+                    {item.relate_name && item.relate_id ? <span className="relete-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)} data-tracename="查看客户详情">{item.relate_name}</span> : null}
                 </dd>
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
@@ -106,7 +106,7 @@ var Dynamic = React.createClass({
         var divHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
-            <div className="clue-customer-dynamic" style={{height: divHeight}} >
+            <div className="clue-customer-dynamic" style={{height: divHeight}} data-tracename="线索变更记录">
                 <GeminiScrollbar
                     // handleScrollBottom={this.handleScrollBarBottom}
                     // listenScrollBottom={this.state.listenScrollBottom}
