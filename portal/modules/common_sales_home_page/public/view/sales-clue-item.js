@@ -484,7 +484,6 @@ SalesClueItem.defaultProps = {
     afterAddClueTrace: function() {
 
     },
-    salesManList: [],
     unSelectDataTip: '',
     distributeLoading: false,
     clueCustomerTypeFilter: {},
@@ -512,7 +511,6 @@ SalesClueItem.propTypes = {
     errMsg: React.PropTypes.string,
     showFrontPageTip: React.PropTypes.bool,
     afterAddClueTrace: React.PropTypes.func,
-    salesManList: React.PropTypes.object,
     unSelectDataTip: React.PropTypes.string,
     distributeLoading: React.PropTypes.bool,
     clueCustomerTypeFilter: React.PropTypes.object,
