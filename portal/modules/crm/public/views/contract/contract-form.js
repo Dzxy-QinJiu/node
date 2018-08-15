@@ -223,6 +223,7 @@ const Contract = React.createClass( {
                             <ProductTable
                                 appList={this.props.appList}
                                 isAdd={true}
+                                onChange={this.handleProductChange}
                             />
                         </FormItem>
                     </Form>
@@ -286,6 +287,9 @@ const Contract = React.createClass( {
     handleCancel(event) {
         Trace.traceEvent(event, '点击取消按钮');
         ContractAction.hideForm();
+    },
+    handleProductChange(data) {
+        this.setState({products: data});
     },
     render(){
         return (

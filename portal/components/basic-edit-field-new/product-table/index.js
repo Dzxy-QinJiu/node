@@ -34,6 +34,7 @@ class ProductTable extends React.Component {
         bordered: true,
         isAdd: false,
         isEdit: false,
+        onChange: function() {},
     };
 
     static propTypes = {
@@ -43,6 +44,7 @@ class ProductTable extends React.Component {
         bordered: PropTypes.bool,
         isAdd: PropTypes.bool,
         isEdit: PropTypes.bool,
+        onChange: PropTypes.func,
     };
 
     constructor(props) {
@@ -92,7 +94,11 @@ class ProductTable extends React.Component {
     }
 
     handleChange = data => {
-        this.setState({data});
+        this.setState({data}, () => {
+            if (this.props.isAdd) {
+                this.props.onChange(data);
+            }
+        });
     }
 
     handleCancel = () => {
@@ -148,7 +154,11 @@ class ProductTable extends React.Component {
             });
         });
 
-        this.setState({data});
+        this.setState({data}, () => {
+            if (this.props.isAdd) {
+                this.props.onChange(data);
+            }
+        });
     }
     render() {
         const appNames = _.map(this.state.data, 'name');
