@@ -87,7 +87,7 @@ class SelectAppList extends React.Component {
     render() {
         return (
             <div className='app-select-list'>
-                <div className='product-info' onClick={this.showAppListPanel}>
+                <div className='add-btn' onClick={this.showAppListPanel}>
                     <Icon type='plus'/>
                     <span className='add-title'>{Intl.get('common.app', '应用')}</span>
                 </div>
