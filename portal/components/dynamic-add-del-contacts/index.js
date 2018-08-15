@@ -35,7 +35,7 @@ class DynamicAddDelContacts extends React.Component {
     checkQQ = (rule, value, callback) => {
         value = $.trim(value);
         if (value) {
-            if (emailRegex.test(value)) {
+            if (qqRegex.test(value)) {
                 callback();
             } else {
                 callback(new Error(Intl.get('common.correct.qq', '请输入正确的QQ号')));
