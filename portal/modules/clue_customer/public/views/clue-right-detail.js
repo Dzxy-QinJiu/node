@@ -41,7 +41,8 @@ class ClueRightPanel extends React.Component {
             curClue: $.extend(true, {}, this.props.curClue),
             isRemoveClue: {},//正在删除的那条线索
             relatedCustomer: {},//与线索相关联的客户
-            isDeletingClue: false//正在删除线索
+            isDeletingClue: false,//正在删除线索
+            tabsContainerHeight: 'auto'
         };
     }
 
@@ -56,8 +57,16 @@ class ClueRightPanel extends React.Component {
         this.getClueChannel();
         this.getClueClassify();
         this.getSaleTeamList();
+        this.setTabsContainerHeight();
+        $(window).resize(e => {
+            e.stopPropagation();
+            this.setTabsContainerHeight();
+        });
     };
-
+    setTabsContainerHeight = () => {
+        let tabsContainerHeight = $('body').height() - $('.clue-detail-content').outerHeight(true);
+        this.setState({tabsContainerHeight: tabsContainerHeight});
+    };
     componentWillReceiveProps(nextProps) {
         //如果有更改后，id不变，但是属性有变化  && nextProps.curClue.id !== this.props.curClue.id
         if (nextProps.curClue && !_.isEmpty(nextProps.curClue)) {
@@ -67,6 +76,7 @@ class ClueRightPanel extends React.Component {
         } else if (nextProps.currentId !== this.props.currentId && nextProps.currentId) {
             this.getCurClue(nextProps.currentId);
         }
+        this.setTabsContainerHeight();
     }
 
     getCurClue = (id) => {
@@ -89,7 +99,7 @@ class ClueRightPanel extends React.Component {
     getSaleTeamList = () => {
         clueCustomerAjax.getSalesManList().then(data => {
             this.setState({
-                salesManList: data
+                salesManList: _.filter(data, sales => sales && sales.user_info && sales.user_info.status === 1)
             });
         });
     };
@@ -231,7 +241,7 @@ class ClueRightPanel extends React.Component {
                 <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel}></span>
                 {this.state.getClueDetailErrMsg ? <div className="no-data-tip">{this.state.getClueDetailErrMsg}</div> :
                     <div className="clue-detail-wrap">
-                        <div className="clue-basic-info-container">
+                        <div className="clue-basic-info-container" >
                             <div className="clue-name-wrap">
                                 {renderClueStatus(curClue.status)}
                                 <div className="clue-name-title">
@@ -241,17 +251,17 @@ class ClueRightPanel extends React.Component {
                                         saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
                                         value={curClue.name}
                                         field='name'
+                                        placeholder={Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')}
                                     />
                                 </div>
-                                {hasPrivilege('CLUECUSTOMER_DELETE') ?
-                                    <div className="remove-clue">
-                                        <i className="iconfont icon-delete"
-                                            onClick={this.handleRemoveClue.bind(this, curClue)}></i>
-                                    </div> : null}
-
                             </div>
+                            {hasPrivilege('CLUECUSTOMER_DELETE') ?
+                                <div className="remove-clue">
+                                    <i className="iconfont icon-delete"
+                                        onClick={this.handleRemoveClue.bind(this, curClue)}></i>
+                                </div> : null}
                         </div>
-                        <div className="clue-detail-content">
+                        <div className="clue-detail-content" >
                             <Tabs
                                 defaultActiveKey={TAB_KEYS.OVERVIEW_TAB}
                                 activeKey={this.state.activeKey}

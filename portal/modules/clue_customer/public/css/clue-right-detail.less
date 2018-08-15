@@ -46,56 +46,57 @@
         }
       }
     }
+    //线索详情中线索名称样式
     .clue-basic-info-container{
       width: 100%;
       background-color: #ffffff;
-      height: 80px;
+      padding: 24px 16px 12px 24px;
       overflow: hidden;
-      position: relative;
-      .clue-name-title{
-        .basic-edit-field-input.basic-edit-field{
-          font-size: 16px;
-          font-weight: bold;
-          position: absolute;
-          top:26px;
-          left:75px;
-          width: 330px;
+      .clue-name-wrap{
+        float: left;
+        //线索的阶段
+        .clue-stage{
+          float: left;
+          font-size: 13px;
+          margin-right:5px;
+          margin-top:3px;
         }
-        .basic-edit-field-input.basic-edit-field.editing{
-          top:8px;
+        .clue-stage.will-distribute {
+          background: @will-distribute-background;
+          color: @will-distribute-color;
+        }
+        .clue-stage.has-distribute {
+          background: @has-distribute-background;
+          color: @has-distribute-color;
+        }
+        .clue-stage.has-follow {
+          color: @has-follow-color;
+          background: @has-follow-background;
+        }
+        .clue-name-title{
+          float: left;
+          width: 360px;
+          .basic-edit-field-input.basic-edit-field{
+            font-size: 14px;
+            font-weight: bold;
+            border-right:1px solid #e2e2e2;
+            .basic-info-text{
+              width:325px;
+            }
+          }
+          .basic-edit-field-input.basic-edit-field.editing{
+            top:8px;
+          }
         }
       }
+
       .remove-clue{
-        position: absolute;
-        right: 0;
-        top:0;
-        width: 60px;
-        height: 100%;
-        border-left:1px solid #e2e2e2;
-        .iconfont{
-          display: block;
-          margin: 30px auto;
+        float: left;
+        .iconfont.icon-delete{
+          margin-left: 15px;
         }
       }
-      .clue-stage{
-        font-size: 13px;
-        margin-right:5px;
-        position: absolute;
-        top:30px;
-        left:30px;
-      }
-      .clue-stage.will-distribute {
-        background: @will-distribute-background;
-        color: @will-distribute-color;
-      }
-      .clue-stage.has-distribute {
-        background: @has-distribute-background;
-        color: @has-distribute-color;
-      }
-      .clue-stage.has-follow {
-        color: @has-follow-color;
-        background: @has-follow-background;
-      }
+
 
     }
     .ant-tabs{

@@ -317,7 +317,6 @@ var CustomerSuggest = React.createClass({
                 displayType: 'text',
                 displayText: displayText || '',
                 displayCustomerId: displayCustomerId || ''
-
             });
         };
         if (customerName !== this.state.value) {
