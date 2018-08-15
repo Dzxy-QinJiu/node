@@ -20,7 +20,7 @@ var curWeek = '';//今天所在的周
 var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').scheduleManagementEmitter;
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
-var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {isEqualArray} from 'LIB_DIR/func';
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
@@ -122,32 +122,14 @@ class DayAgendaScheduleLists extends React.Component {
         });
     }
 
-    handleClickCallOut = (phoneNumber, contactName, item, e) => {
-        if (this.state.errMsg) {
-            message.error(this.state.errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
-        } else {
-            if (this.state.callNumber) {
-                //把所拨打的联系人的姓名emitter出去
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        contact: contactName,
-                    }
-                );
-                let reqData = {
-                    from: this.state.callNumber,
-                    to: phoneNumber.replace('-', '')
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                    }
-                }, (errMsg) => {
-                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                });
-            } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-            }
-        }
+    handleClickCallOut = (phoneNumber, contactName, item) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
+        handleCallOutResult({
+            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
+            callNumber: this.state.callNumber,//坐席号
+            contactName: contactName,//联系人姓名
+            phoneNumber: phoneNumber,//拨打的电话
+        });
     };
     //联系人和联系电话
     renderPopoverContent(item){
@@ -301,12 +283,13 @@ DayAgendaScheduleLists.defaultProps = {
     showCustomerDetail: function() {}
 
 };
-
+const PropTypes = React.PropTypes;
 DayAgendaScheduleLists.propTypes = {
-    curCustomerId: React.PropTypes.string,
-    scheduleList: React.PropTypes.object,
-    showCustomerDetail: React.PropTypes.func,
-    handleScheduleItemStatus: React.PropTypes.func,
-};
+    curCustomerId: PropTypes.string,
+    updateScrollBar: PropTypes.boolean,
+    scheduleList: PropTypes.array,
+    handleScheduleItemStatus: PropTypes.func,
+    showCustomerDetail: PropTypes.func
 
+};
 export default DayAgendaScheduleLists;

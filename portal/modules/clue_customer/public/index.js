@@ -6,14 +6,13 @@
 var rightPanelShow = false;
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
-var clueAnalysisStore = require('./store/clue-analysis-store');
 var clueCustomerAction = require('./action/clue-customer-action');
 import {clueEmitter} from 'OPLATE_EMITTER';
 var userData = require('../../../public/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-var SearchInput = require('CMP_DIR/searchInputNew');
+var SearchInput = require('CMP_DIR/searchInput');
 import {message, Icon, Row, Col, Button, Alert, Input, Tag, Modal, Select} from 'antd';
 const Option = Select.Option;
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
@@ -37,6 +36,7 @@ import {AntcTable} from 'antc';
 import classNames from 'classnames';
 import ClueRightPanel from './views/clue-right-detail';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -107,7 +107,6 @@ const ClueCustomer = React.createClass({
     },
     componentWillUnmount: function() {
         clueCustomerStore.unlisten(this.onStoreChange);
-        // clueAnalysisStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
         clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
     },
@@ -193,7 +192,7 @@ const ClueCustomer = React.createClass({
         });
     },
     showClueAddForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击添加销售线索按钮');
+        Trace.traceEvent($(this.getDOMNode()).find('.add-clue-customer-container'), '点击添加销售线索按钮');
         this.setState({
             clueAddFormShow: true
         });
@@ -219,34 +218,12 @@ const ClueCustomer = React.createClass({
     },
     handleClickCallOut(phoneNumber, record) {
         Trace.traceEvent($(this.getDOMNode()).find('.column-contact-way'), '拨打电话');
-        if (this.state.errMsg) {
-            message.error(this.state.errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
-        } else {
-            if (this.state.callNumber) {
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        contact: record.contact,
-                    }
-                );
-                let reqData = {
-                    from: this.state.callNumber,
-                    to: phoneNumber.replace('-', '')
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                    }
-                }, (errMsg) => {
-                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                });
-            } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-            }
-        }
-    },
-    //是否是运营人员
-    isOperation(){
-        return userData.hasRole('operations');
+        handleCallOutResult({
+            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
+            callNumber: this.state.callNumber,//坐席号
+            contactName: record.contact,//联系人姓名
+            phoneNumber: phoneNumber,//拨打的电话
+        });
     },
 
     setInitialData: function() {
@@ -320,7 +297,7 @@ const ClueCustomer = React.createClass({
         });
     },
     renderClueCustomerList: function() {
-        var customerList = this.state.curCustomers;
+        var customerList = this.state.curClueLists;
         return (
             _.map(customerList, (item) => {
                 return (
@@ -333,7 +310,6 @@ const ClueCustomer = React.createClass({
                         callNumber={this.state.callNumber}
                         errMsg={this.state.errMsg}
                         afterAddClueTrace={this.afterAddClueTrace}
-                        salesManList={this.state.salesManList}
                         getSelectContent={this.setSelectContent}
                         onSalesmanChange={this.onSalesmanChange}
                         salesMan={this.state.salesMan}
@@ -425,7 +401,7 @@ const ClueCustomer = React.createClass({
                         item.sales_team_id = team_id;
                         item.status = SELECT_TYPE.HAS_DISTRIBUTE;
                         this.setState({
-                            curCustomers: this.state.curCustomers
+                            curClueLists: this.state.curClueLists
                         });
                     }
                 }
@@ -441,7 +417,7 @@ const ClueCustomer = React.createClass({
         clueCustomerAction.setSalesManName({'salesManNames': salesManNames});
     },
     handleScrollBarBottom: function() {
-        var currListLength = _.isArray(this.state.curCustomers) ? this.state.curCustomers.length : 0;
+        var currListLength = _.isArray(this.state.curClueLists) ? this.state.curClueLists.length : 0;
         // 判断加载的条件
         if (currListLength <= this.state.customersSize) {
             this.getClueList();
@@ -449,7 +425,7 @@ const ClueCustomer = React.createClass({
     },
     renderClueCustomerBlock: function() {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
-        if (this.state.curCustomers.length) {
+        if (this.state.curClueLists.length) {
             return (
                 <div id="content-block" className="content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
@@ -477,7 +453,7 @@ const ClueCustomer = React.createClass({
     },
     showNoMoreDataTip: function() {
         return !this.state.isLoading &&
-            this.state.curCustomers.length >= 20 && !this.state.listenScrollBottom;
+            this.state.curClueLists.length >= 20 && !this.state.listenScrollBottom;
     },
     onTypeChange: function() {
         clueCustomerAction.setClueInitialData();
@@ -500,6 +476,7 @@ const ClueCustomer = React.createClass({
         this.onTypeChange();
     },
     onStatusChange: function(value) {
+
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.type-container'), '点击切换筛选线索客户类型');
         var clueCustomerTypeFilter = this.state.clueCustomerTypeFilter;
         clueCustomerTypeFilter.status = value;
@@ -526,7 +503,7 @@ const ClueCustomer = React.createClass({
                     <p className="abnornal-status-tip">{this.state.clueCustomerErrMsg}</p>
                 </div>
             );
-        } else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curCustomers.length) {
+        } else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
             //数据为空的展示
             return (
                 <div className="no-data">
@@ -597,11 +574,11 @@ const ClueCustomer = React.createClass({
         });
     },
     searchFullTextEvent: function(keyword) {
+        Trace.traceEvent($(this.getDOMNode()).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
         clueCustomerAction.setKeyWord(keyword);
         //如果keyword不存在，就用获取线索的接口
         this.onTypeChange();
-
     },
     renderImportModalFooter: function() {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
@@ -666,6 +643,14 @@ const ClueCustomer = React.createClass({
         this.setState({
             clueClassifyArray: this.state.clueClassifyArray
         });
+    },
+    //是否是运营人员
+    isOperation(){
+        return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    },
+    //是否是管理员
+    isRealmManager(){
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
     },
 
     render: function() {
@@ -737,6 +722,9 @@ const ClueCustomer = React.createClass({
                 title: Intl.get('crm.sales.clue.descr', '线索描述'),
                 dataIndex: 'source',
             }, {
+                title: 'IP',
+                dataIndex: 'source_ip',
+            }, {
                 title: Intl.get('common.operate', '操作'),
                 width: '60px',
                 render: (text, record, index) => {
@@ -757,9 +745,11 @@ const ClueCustomer = React.createClass({
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
             });
+        //是运营人员或者是域管理员
+        var isOperationOrManager = this.isOperation() || this.isRealmManager();
         return (
             <RightContent>
-                <div className="clue_customer_content" data-tracename="线索客户列表">
+                <div className="clue_customer_content" data-tracename="线索列表">
                     <TopNav>
                         <div className="date-picker-wrap">
                             <span className="consult-time">{Intl.get('clue.analysis.consult.time', '咨询时间')}</span>
@@ -783,20 +773,20 @@ const ClueCustomer = React.createClass({
                             </DatePicker>
                             <div className="type-container">
                                 <Select value={this.state.clueCustomerTypeFilter.status} onChange={this.onStatusChange}>
-                                    {/*运营人员才展示全部这个按钮*/}
+                                    {/*除普通销售外都展示全部这个按钮*/}
                                     {user.isCommonSales ? null : <Option value="">
-                                        {Intl.get('common.all', '全部')}
+                                        {Intl.get('common.all', '全部')}：
                                         {statusStaticis[SELECT_TYPE.ALL]}                                    </Option>}
-                                    {user.isCommonSales ? null : <Option value="0">
-                                        {Intl.get('clue.customer.will.distribution', '待分配')}
+                                    {isOperationOrManager ? <Option value="0">
+                                        {Intl.get('clue.customer.will.distribution', '待分配')}：
                                         {statusStaticis[SELECT_TYPE.WILL_DISTRIBUTE]}
-                                    </Option>}
+                                    </Option> : null}
                                     <Option value="1">
-                                        {Intl.get('sales.home.will.trace', '待跟进')}
+                                        {Intl.get('sales.home.will.trace', '待跟进')}：
                                         {statusStaticis[SELECT_TYPE.HAS_DISTRIBUTE]}
                                     </Option>
                                     <Option value="2">
-                                        {Intl.get('clue.customer.has.follow', '已跟进')}
+                                        {Intl.get('clue.customer.has.follow', '已跟进')}：
                                         {statusStaticis[SELECT_TYPE.HAS_TRACE]}
                                     </Option>
                                 </Select>
@@ -858,15 +848,13 @@ const ClueCustomer = React.createClass({
                             />
                         ) : null}
                     </Modal>
-                    <RightPanel
-                        className="clue_customer_rightpanel white-space-nowrap"
-                        showFlag={this.state.rightPanelIsShow} data-tracename="展示销售线索客户">
-                        <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel}></span>
-                        <ClueRightPanel
-                            currentId={this.state.currentId}
-                            curClue={this.state.curCustomer}
-                        />
-                    </RightPanel>
+                    <ClueRightPanel
+                        showFlag={this.state.rightPanelIsShow}
+                        currentId={this.state.currentId}
+                        curClue={this.state.curClue}
+                        afterDeleteClue={this.hideRightPanel}
+                        hideRightPanel={this.hideRightPanel}
+                    />
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}

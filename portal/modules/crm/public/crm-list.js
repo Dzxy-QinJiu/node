@@ -36,6 +36,7 @@ const extend = require('extend');
 import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import {FilterInput} from 'CMP_DIR/filter';
 var classNames = require('classnames');
+import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -139,6 +140,7 @@ var Crm = React.createClass({
             currentId: CrmStore.getState().currentId,
             curCustomer: CrmStore.getState().curCustomer,
             customerId: CrmStore.getState().customerId,
+            clueId: CrmStore.getState().clueId,//展示线索详情的id
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -968,30 +970,12 @@ var Crm = React.createClass({
     // 自动拨号
     handleClickCallOut(phoneNumber, record) {
         Trace.traceEvent($(this.getDOMNode()).find('.column-contact-way'), '拨打电话');
-        if (this.state.errMsg) {
-            message.error(this.state.errMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
-        } else {
-            if (this.state.callNumber) {
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        contact: record.contact,
-                    }
-                );
-                let reqData = {
-                    from: this.state.callNumber,
-                    to: phoneNumber.replace('-', '')
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                    }
-                }, (errMsg) => {
-                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                });
-            } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-            }
-        }
+        CallNumberUtil.handleCallOutResult({
+            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
+            callNumber: this.state.callNumber,//坐席号
+            contactName: record.contact,//联系人姓名
+            phoneNumber: phoneNumber,//拨打的电话
+        });
     },
 
     // 联系方式的列表
@@ -1170,6 +1154,13 @@ var Crm = React.createClass({
         }
 
         return sorter;
+    },
+    hideClueRightPanel: function(){
+        CrmAction.showClueDetail('');
+    },
+    //删除线索之后
+    afterDeleteClue: function() {
+        CrmAction.showClueDetail('');
     },
     render: function() {
         var _this = this;
@@ -1482,6 +1473,13 @@ var Crm = React.createClass({
                     afterMergeCustomer={this.afterMergeCustomer}
                     refreshCustomerList={this.refreshCustomerList}
                 />) : null}
+                {this.state.clueId ? <ClueRightPanel
+                    showFlag={true}
+                    currentId={this.state.clueId}
+                    hideRightPanel={this.hideClueRightPanel}
+                    afterDeleteClue={this.afterDeleteClue}
+                /> : null}
+
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"

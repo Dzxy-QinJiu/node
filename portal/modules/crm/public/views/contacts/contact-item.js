@@ -6,12 +6,10 @@ var Modal = require('react-bootstrap').Modal;
 var Spinner = require('../../../../../components/spinner');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import Trace from 'LIB_DIR/trace';
-import crmAjax from '../../ajax/index';
-import CrmAction from '../../action/crm-actions';
-var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import classNames from 'classnames';
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
 var ContactItem = React.createClass({
     getInitialState: function() {
         return {
@@ -81,34 +79,12 @@ var ContactItem = React.createClass({
     // 自动拨号
     handleClickCallOut(phone) {
         Trace.traceEvent(this.getDOMNode(), '拨打电话');
-        if (this.props.getCallNumberError) {
-            message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
-        } else {
-            if (this.props.callNumber) {
-                var contact = '';
-                if (this.props.contact && this.props.contact.contact) {
-                    contact = this.props.contact.contact.name;
-                }
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        contact: contact,
-                    }
-                );
-                let reqData = {
-                    from: this.props.callNumber,
-                    to: phone
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success('拨打成功！');
-                    }
-                }, (errMsg) => {
-                    message.error(errMsg || '拨打失败！');
-                });
-            } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-            }
-        }
+        handleCallOutResult({
+            errorMsg: this.props.getCallNumberError,//获取坐席号失败的错误提示
+            callNumber: this.props.callNumber,//坐席号
+            contactName: _.get(this.props,'contact.contact.name') || '',//联系人姓名
+            phoneNumber: phone,//拨打的电话
+        });
     },
 
     //展开、收起联系方式的处理

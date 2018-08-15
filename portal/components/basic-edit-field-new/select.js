@@ -50,7 +50,8 @@ let BasicEditSelectField = React.createClass({
             },
             saveEditSelect: function() {
             },
-            hideButtonBlock: false
+            hideButtonBlock: false,
+            hoverShowEdit: true
         };
     },
 
@@ -153,6 +154,7 @@ let BasicEditSelectField = React.createClass({
             displayType: 'text',
             submitErrorMsg: ''
         });
+        _.isFunction(this.props.cancelEditField) && this.props.cancelEditField();
     },
     onSelectChange: function(selectVal) {
         var formData = this.state.formData;
@@ -171,9 +173,12 @@ let BasicEditSelectField = React.createClass({
 
         var textBlock = null;
         if (this.state.displayType === 'text') {
+            var cls = classNames('edit-container',{
+                'hover-show-edit': this.props.hoverShowEdit && this.props.hasEditPrivilege
+            });
             if (this.state.displayText) {
                 textBlock = (
-                    <div>
+                    <div className={cls}>
                         <span className="inline-block basic-info-text">
                             {this.state.displayText}
                         </span>

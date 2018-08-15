@@ -244,7 +244,7 @@ function createBackendClient() {
     //创建接收消息的通道
     client.on(notifyChannel, notifyChannelListener);
     //创建登录踢出的通道
-    client.on(offlineChannel, offlineChannelListener);
+    // client.on(offlineChannel, offlineChannelListener);
     //创建用户批量操作的通道
     client.on(userBatchChannel, userBatch.listener.bind(userBatch));
     //创建电话拨号通道

@@ -54,6 +54,8 @@ CrmStore.prototype.setInitialState = function() {
     this.customerId = '';
     //下次点击的页数
     this.nextPageNum = 0;
+    //展示的线索详情的id
+    this.clueId = '';
 };
 CrmStore.prototype.updateCurrentCustomerRemark = function(submitObj) {
     let customer = _.find(this.curCustomers, (customer) => {
@@ -533,6 +535,9 @@ CrmStore.prototype.setPageNum = function(pageNum) {
 };
 CrmStore.prototype.setNextPageNum = function(pageNum) {
     this.nextPageNum = pageNum;
+};
+CrmStore.prototype.showClueDetail = function(clueId) {
+    this.clueId = clueId;
 };
 
 module.exports = alt.createStore(CrmStore, 'CrmStore');

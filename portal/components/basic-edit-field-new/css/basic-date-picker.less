@@ -1,14 +1,13 @@
-.user-basic-edit-field{
-  .date-wrap{
-    overflow: hidden;
-    .ant-calendar-picker{
-      float:left;
-      .ant-input{
-        width: auto;
+.basic-edit-field{
+  .edit-container.hover-show-edit{
+    .icon-edit-btn{
+      display: none;
+    }
+    &:hover{
+      background: #E8F5FE;
+      .icon-edit-btn{
+        display: inline-block;
       }
     }
-  }
-  .has-error{
-    margin-top:5px;
   }
 }

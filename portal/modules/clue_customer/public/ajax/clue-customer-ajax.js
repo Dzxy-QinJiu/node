@@ -268,7 +268,11 @@ exports.getClueFulltext = function(queryObj) {
     delete queryObj.pageSize;
     var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
-    var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order;
+    var type = 'user';
+    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+        type = 'manager';
+    }
+    var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order + '/' + type;
     var Deferred = $.Deferred();
     $.ajax({
         url: url ,
@@ -313,6 +317,39 @@ exports.getDynamicList = function(clue_id, page_size) {
         url: '/rest/clue_dynamic/' + clue_id + '/' + page_size,
         dataType: 'json',
         type: 'get',
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//根据线索的id获取线索详情
+exports.getClueDetailById = function(clue_id) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/detail/' + clue_id,
+        dataType: 'json',
+        type: 'get',
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//根据线索的id删除某条线索
+exports.deleteClueById = function(data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/delete',
+        dataType: 'json',
+        type: 'delete',
+        data: data,
         success: function(list) {
             Deferred.resolve(list);
         },

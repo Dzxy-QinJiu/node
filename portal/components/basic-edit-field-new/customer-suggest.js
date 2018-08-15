@@ -1,6 +1,6 @@
-require('./index.less');
+require('./css/customer-suggest.less');
 var Link = require('react-router').Link;
-import {Select, Icon} from 'antd';
+import {Select, Tag} from 'antd';
 var customerAjax = require('MOD_DIR/common/public/ajax/customer');
 var userData = require('PUB_DIR/sources/user-data');
 var classNames = require('classnames');
@@ -10,6 +10,7 @@ import Trace from 'LIB_DIR/trace';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 var CustomerSuggest = React.createClass({
     suggestTimer: null,
     getDefaultProps: function() {
@@ -47,6 +48,8 @@ var CustomerSuggest = React.createClass({
             addDataTip: '',
             //是否有修改权限
             hasEditPrivilege: false,
+            hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
+            customerLable: '',//客户标签
         };
     },
     getInitialState: function() {
@@ -265,7 +268,7 @@ var CustomerSuggest = React.createClass({
                 return (
                     <div className="customer_suggest_tip">
                         {this.state.suggest_error_msg}，{Intl.get('common.yesno', '是否')}<a href="javascript:void(0)"
-                            onClick={this.retrySuggest}><ReactIntl.FormattedMessage
+                            onClick={this.retrySuggest} data-tracename="重新搜索客户"><ReactIntl.FormattedMessage
                                 id="common.retry" defaultMessage="重试"/></a>
                     </div>
                 );
@@ -278,7 +281,7 @@ var CustomerSuggest = React.createClass({
                         {canCreateCustomer ?
                             <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}，{Intl.get('common.yesno', '是否')}
                                 {noJumpToAddCrmPanel ?
-                                    <a onClick={this.props.addAssignedCustomer}>{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
+                                    <a onClick={this.props.addAssignedCustomer} data-tracename="点击创建客户按钮">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
                                     <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
                             </span> : <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}</span>}
                     </div>
@@ -295,8 +298,10 @@ var CustomerSuggest = React.createClass({
             displayType: 'text',
             suggest_error_msg: ''
         });
+        _.isFunction(this.props.handleCancel()) && this.props.handleCancel();
     },
-    handleSubmit: function() {
+    handleSubmit: function(e) {
+        Trace.traceEvent(e, '保存对' + this.props.field + '修改');
         var customer = this.state.customer;
         var customerName = customer.name;
         var saveObj = {
@@ -313,7 +318,6 @@ var CustomerSuggest = React.createClass({
                 displayType: 'text',
                 displayText: displayText || '',
                 displayCustomerId: displayCustomerId || ''
-
             });
         };
         if (customerName !== this.state.value) {
@@ -400,23 +404,30 @@ var CustomerSuggest = React.createClass({
         var textBlock = null;
         var wrapSelectId = this.state.customerSuggestWrapId;
         var customerId = this.state.displayCustomerId;
+        var cls = classNames('edit-container',{
+            'hover-show-edit': this.props.hoverShowEdit && this.props.hasEditPrivilege
+        });
         if (this.state.displayType === 'text') {
             if (this.state.displayText) {
                 textBlock = (
-                    <div>
-                        <span className="inline-block basic-info-text customer-name" onClick={this.showCustomerDetail.bind(this, customerId)}>
+                    <div className={cls}>
+                        <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
+                            {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
                             {this.state.displayText}
+                            <span>&gt;</span>
                         </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}
-                                onClick={this.setEditable.bind(this)}/>) : null
+                                onClick={this.setEditable.bind(this)}
+                                data-tracaname="点击编辑客户按钮"
+                            />) : null
                         }
                     </div>);
             } else {
                 textBlock = (
                     <span className="inline-block basic-info-text no-data-descr">
                         {this.props.hasEditPrivilege ? (
-                            <a onClick={this.setEditable.bind(this)}>{this.props.addDataTip}</a>) : this.props.noDataTip}
+                            <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮">{this.props.addDataTip}</a>) : this.props.noDataTip}
 
                     </span>
                 );
@@ -426,7 +437,7 @@ var CustomerSuggest = React.createClass({
             <div ref="customer_searchbox" className="associate-customer-wrap">
                 <Select
                     combobox
-                    searchPlaceholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
+                    placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                     filterOption={false}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}
@@ -458,7 +469,7 @@ var CustomerSuggest = React.createClass({
             </div>
         ) : null;
         return (
-            <div className={displayCls}>
+            <div className={displayCls} data-tracename="搜索客户">
                 {textBlock}
                 {selectBlock}
                 {/*该客户下的用户列表*/}

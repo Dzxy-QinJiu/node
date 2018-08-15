@@ -22,7 +22,9 @@ function CrmActions() {
         //拨打电话完增加跟进记录成功后更新列表的跟进内容
         'updateCurrentCustomerRemark',
         //修改默认联系人后，更新客户列表中该客户的默认联系人
-        'updateCustomerDefContact'
+        'updateCustomerDefContact',
+        //展示线索详情
+        'showClueDetail'
     );
 
     this.queryCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {

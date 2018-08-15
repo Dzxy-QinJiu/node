@@ -21,6 +21,7 @@ class DatePickerEditField extends React.Component {
             displayType: this.props.displayType || 'text',
             value: this.props.value,
             submitErrorMsg: '',
+            hoverShowEdit: true,
         };
     }
 
@@ -103,10 +104,13 @@ class DatePickerEditField extends React.Component {
 
         var displayText = this.state.value;
         let textBlock = null;
+        var cls = classNames('edit-container',{
+            'hover-show-edit': this.state.hoverShowEdit && this.props.hasEditPrivilege
+        });
         if (this.state.displayType === 'text') {
             if (displayText) {
                 textBlock = (
-                    <div>
+                    <div className={cls}>
                         <span
                             className="inline-block basic-info-text">{moment(displayText).format(oplateConsts.DATE_FORMAT)}</span>
                         {this.props.hasEditPrivilege ? (

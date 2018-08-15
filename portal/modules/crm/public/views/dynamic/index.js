@@ -3,11 +3,11 @@ require('../../css/dynamic.less');
 var DynamicStore = require('../../store/dynamic-store');
 //动态action
 var DynamicAction = require('../../action/dynamic-action');
+var crmAction = require('../../action/crm-actions');
 var TimeLine = require('../../../../../components/time-line');
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
-import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 var Dynamic = React.createClass({
     getInitialState: function() {
@@ -36,9 +36,7 @@ var Dynamic = React.createClass({
         $(window).off('resize', this.onStoreChange);
     },
     showClueDetailOut: function(clueId) {
-        this.setState({
-            clueId: clueId
-        });
+        crmAction.showClueDetail(clueId);
     },
     timeLineItemRender: function(item) {
         const call_time = Intl.get('crm.199',
@@ -64,11 +62,6 @@ var Dynamic = React.createClass({
             </dl>
         );
     },
-    hideRightPanel: function() {
-        this.setState({
-            clueId: ''
-        });
-    },
     render: function() {
         return (
             <RightPanelScrollBar>
@@ -82,11 +75,6 @@ var Dynamic = React.createClass({
                             render={this.timeLineItemRender}
                         />
                     </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
-                {this.state.clueId ? <ClueRightPanel
-                    showFlag={true}
-                    currentId={this.state.clueId}
-                    hideRightPanel={this.hideRightPanel}
-                /> : null}
             </RightPanelScrollBar>
         );
     }
