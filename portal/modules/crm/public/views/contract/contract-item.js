@@ -205,6 +205,13 @@ const ContractItem = React.createClass({
         };
         this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
     },
+    handleProductSave(data) {
+        let saveObj = {
+            products: data,
+            id: this.state.formData.id
+        };
+        this.saveContractBasicInfo(saveObj);
+    },
     handleCancelEditValidityTime() {
         this.setState({
             isShowValidityTimeEdit: false
@@ -337,8 +344,8 @@ const ContractItem = React.createClass({
                                     <ProductTable
                                         appList={this.props.appList}
                                         dataSource={contract.products}
-                                        hasEditPrivilege={hasEditPrivilege}
-                                        saveEditInput={this.saveContractBasicInfo}
+                                        isEditBtnShow={hasEditPrivilege}
+                                        onSave={this.handleProductSave}
                                     />
                                 ) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
                             </span>

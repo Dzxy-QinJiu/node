@@ -34,8 +34,9 @@ class ProductTable extends React.Component {
         bordered: true,
         isAdd: false,
         isEdit: false,
-        hasEditPrivilege: false,
+        isEditBtnShow: false,
         onChange: function() {},
+        onSave: function() {},
     };
 
     static propTypes = {
@@ -45,8 +46,9 @@ class ProductTable extends React.Component {
         bordered: PropTypes.bool,
         isAdd: PropTypes.bool,
         isEdit: PropTypes.bool,
-        hasEditPrivilege: PropTypes.bool,
+        isEditBtnShow: PropTypes.bool,
         onChange: PropTypes.func,
+        onSave: PropTypes.func,
     };
 
     constructor(props) {
@@ -110,9 +112,10 @@ class ProductTable extends React.Component {
     }
 
     handleSubmit = () => {
-    }
+        const data = _.cloneDeep(this.state.data);
 
-    handleDelete(recordIndex) {
+
+        this.props.onSave(data);
     }
 
     showEdit = () => {
@@ -170,7 +173,7 @@ class ProductTable extends React.Component {
 
         return (
             <div className="product-table">
-                {this.state.isEdit || !this.props.hasEditPrivilege ? null : (
+                {this.state.isEdit || !this.props.isEditBtnShow ? null : (
                     <DetailEditBtn
                         onClick={this.showEdit}
                     /> 
