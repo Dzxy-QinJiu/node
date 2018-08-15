@@ -632,11 +632,11 @@ var ClueDetailOverview = React.createClass({
                                                     </span>
                                                 );
                                             }) : null}
-                                            {contactItem.wechat ? _.map( contactItem.wechat,(wechat) => {
+                                            {contactItem.weChat ? _.map(contactItem.weChat,(weChat) => {
                                                 return (
                                                     <span className="phone-item contact-way">
                                                         <i className="iconfont icon-wechat"></i>
-                                                        {wechat}
+                                                        {weChat}
                                                     </span>
                                                 );
                                             }) : null}
