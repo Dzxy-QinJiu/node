@@ -148,6 +148,7 @@ class ProductTable extends React.Component {
             const selectedApp = _.find(this.props.appList, app => app.client_id === appId);
 
             data.push({
+                id: selectedApp.client_id,
                 name: selectedApp.client_name,
                 count: APP_DEFAULT_INFO.COUNT,
                 total_price: APP_DEFAULT_INFO.PRICE,

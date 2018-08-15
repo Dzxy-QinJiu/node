@@ -250,10 +250,9 @@ const Contract = React.createClass( {
                 reqData.user_name = UserData.getUserData().user_name || '';
                 let products = _.cloneDeep(this.state.products); // 产品信息
                 let productTotalPrice = 0; // 产品信息中的总额；
-                let processProducts = _.map(products, (item) => {
+                _.each(products, (item) => {
                     // item.total_price是字符串格式，+是为了将字符串转为数字格式
                     productTotalPrice += +item.total_price;
-                    return {id: item.client_id, name: item.name, count: item.count, total_price: item.total_price};
                 });
                 // 判断产品信息中的总额和合同额是否相同，若相同，则发请求，否则，给出信息提示
                 // reqData.contract_amount是字符串格式，+是为了将字符串转为数字格式
@@ -263,7 +262,7 @@ const Contract = React.createClass( {
                     });
                     return;
                 }
-                reqData.products = processProducts; // 产品信息
+                reqData.products = products; // 产品信息
                 reqData.customers = [{customer_name: reqData.customer_name, customer_id: this.props.customerId}]; // 客户信息
                 this.addContractAjax(reqData);
             }
