@@ -91,7 +91,8 @@ class ProductTable extends React.Component {
     componentWillReceiveProps(nextProps) {
     }
 
-    handleChange(value, recordIndex, column) {
+    handleChange = data => {
+        this.setState({data});
     }
 
     handleCancel = () => {
@@ -164,6 +165,7 @@ class ProductTable extends React.Component {
                 {this.props.isAdd && _.isEmpty(this.state.data) ? null : (
                     <AntcEditableTable
                         isEdit={this.state.isEdit}
+                        onEdit={this.handleChange}
                         columns={this.state.columns}
                         dataSource={this.state.data}
                         bordered={this.props.bordered}
