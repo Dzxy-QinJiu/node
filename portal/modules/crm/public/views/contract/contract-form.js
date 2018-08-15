@@ -19,10 +19,6 @@ const Contract = React.createClass( {
         return {
             isLoading: false,
             errMsg: '',
-            isShowSelectAppTable: false, // 是否显示应用表格
-            appList: this.props.appList, // 应用列表
-            selectedAppIdArray: [], // 选择的应用id
-            lastSelectedAppIdArray: [], // 上一次选择的应用id
             contractType: '产品合同', // 合同类型
             contractLabel: 'new', // 合同签约类型
             formData: {
@@ -120,17 +116,6 @@ const Contract = React.createClass( {
         let formData = this.state.formData;
         formData.gross_profit = removeCommaFromNum(event.target.value);
         this.setState({formData});
-    },
-    // 未选择的应用列表
-    getUnselectAppList() {
-        let appList = this.state.appList;
-        let selectedAppIdArray = this.state.selectedAppIdArray;
-        let unSelectedAppList = appList;
-        if (selectedAppIdArray.length) {
-            unSelectedAppList = _.filter(appList, appItem => selectedAppIdArray.indexOf(appItem.client_id) === -1);
-        }
-        return unSelectedAppList;
-
     },
     // 鼠标聚焦到input输入框时
     handleInputFocus() {
