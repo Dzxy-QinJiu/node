@@ -34,6 +34,7 @@ class ProductTable extends React.Component {
         bordered: true,
         isAdd: false,
         isEdit: false,
+        hasEditPrivilege: false,
         onChange: function() {},
     };
 
@@ -44,6 +45,7 @@ class ProductTable extends React.Component {
         bordered: PropTypes.bool,
         isAdd: PropTypes.bool,
         isEdit: PropTypes.bool,
+        hasEditPrivilege: PropTypes.bool,
         onChange: PropTypes.func,
     };
 
@@ -168,7 +170,7 @@ class ProductTable extends React.Component {
 
         return (
             <div className="product-table">
-                {this.state.isEdit ? null : (
+                {this.state.isEdit || !this.props.hasEditPrivilege ? null : (
                     <DetailEditBtn
                         onClick={this.showEdit}
                     /> 

@@ -151,14 +151,6 @@ const ContractItem = React.createClass({
         }
         return showUnit ? value + Intl.get('contract.155', '元') : value;
     },
-    renderProductInfo(products) {
-        return (
-            <ProductTable
-                appList={this.props.appList}
-                dataSource={products}
-            />
-        );
-    },
     saveContractBasicInfo(saveObj, successFunc, errorFunc) {
         let contract = this.state.formData;
         // 客户信息
@@ -217,16 +209,6 @@ const ContractItem = React.createClass({
         this.setState({
             isShowValidityTimeEdit: false
         });
-    },
-    showProductInfo(itemClassName, products) {
-        return (
-            <div className={itemClassName}>
-                <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
-                <span className='contract-value'>
-                    {_.get(products, '[0]') ? this.renderProductInfo(products) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
-                </span>
-            </div>
-        );
     },
     renderContractContent() {
         const contract = this.state.formData;
@@ -348,7 +330,19 @@ const ContractItem = React.createClass({
                 </div>
                 {
                     contract.isShowAllContractInfo ? (
-                        this.showProductInfo(itemClassName, contract.products)
+                        <div className={itemClassName}>
+                            <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
+                            <span className='contract-value'>
+                                {_.get(contract.products, '[0]') ? (
+                                    <ProductTable
+                                        appList={this.props.appList}
+                                        dataSource={contract.products}
+                                        hasEditPrivilege={hasEditPrivilege}
+                                        saveEditInput={this.saveContractBasicInfo}
+                                    />
+                                ) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
+                            </span>
+                        </div>
                     ) : null
                 }
                 {
