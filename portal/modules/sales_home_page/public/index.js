@@ -996,10 +996,12 @@ var SalesHomePage = React.createClass({
                                 callBackRecord={this.state.callBackRecord}
                                 activeView={this.state.activeView}
                             />
-                            {/*即将过期的用户列表，所有角色都会展示*/}
-                            <div className="will-expire-user-container">
-                                {this.renderWillExpireUser()}
-                            </div>
+                            {/*即将过期的用户列表*/}
+                            {hasPrivilege('GET_EXPIRE_USER_STATISTIC') ? (
+                                <div className="will-expire-user-container">
+                                    {this.renderWillExpireUser()}
+                                </div>
+                            ) : null}
                             <div className="statistic-data-analysis">
                                 {this.renderAnalysisView()}
                             </div>
