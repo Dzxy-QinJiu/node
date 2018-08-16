@@ -66,24 +66,21 @@ class ContactItem extends React.Component {
                     });
                     return (
                         <div className="contact-container" key={idx}>
+                            <span className={cls}>{contactName}</span>
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
                                         return (
-                                            <span>
-                                                {index === 0 && contactName ?
-                                                    <span className={cls}>{contactName}</span> :
-                                                    null}
-                                                <span className="contact-item"
-                                                    onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
-                                                    data-tracename="拨打电话">
+                                            <span className="contact-item"
+                                                onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
+                                                data-tracename="拨打电话">
 
-                                                    <i className="iconfont icon-phone-call-out"></i>
-                                                    <span className="phone-num">
-                                                        {phoneItem}
-                                                    </span>
+                                                <i className="iconfont icon-phone-call-out"></i>
+                                                <span className="phone-num">
+                                                    {phoneItem}
                                                 </span>
                                             </span>
+
                                         );
                                     })}
                                 </span> : null}
@@ -91,14 +88,9 @@ class ContactItem extends React.Component {
                                 <span className="email-container">
                                     {_.map(contactItem.email, (emailItem, index) => {
                                         return (
-                                            <span>
-                                                {index === 0 && contactName && _.isArray(contactItem.phone) && !contactItem.phone.length ?
-                                                    <span className={cls}>{contactName}</span> :
-                                                    null}
-                                                <span className="contact-item">
-                                                    <i className="iconfont icon-email"></i>
-                                                    {emailItem}
-                                                </span>
+                                            <span className="contact-item">
+                                                <i className="iconfont icon-email"></i>
+                                                {emailItem}
                                             </span>
                                         );
                                     })}
@@ -108,16 +100,10 @@ class ContactItem extends React.Component {
                                 <span className="qq-container">
                                     {_.map(contactItem.QQ || contactItem.qq , (qqItem,index) => {
                                         return (
-                                            <span>
-                                                {index === 0 && contactName && _.isArray(contactItem.phone) && !contactItem.phone.length && _.isArray(contactItem.email) && !contactItem.email.length ?
-                                                    <span className={cls}>{contactName}</span> :
-                                                    null}
-                                                <span className="contact-item">
-                                                    <i className="iconfont icon-qq"></i>
-                                                    {qqItem}
-                                                </span>
+                                            <span className="contact-item">
+                                                <i className="iconfont icon-qq"></i>
+                                                {qqItem}
                                             </span>
-
                                         );
                                     })}
                                 </span>
@@ -126,15 +112,9 @@ class ContactItem extends React.Component {
                                 <span className="weChat-container">
                                     {_.map(contactItem.weChat,(weChatItem, index) => {
                                         return (
-                                            <span>
-                                                {index === 0 && contactName && _.get(contactItem, 'phone[0]') &&
-                                                _.get(contactItem, 'email[0]') && (_.get(contactItem, 'qq[0]') || _.get(contactItem, 'QQ[0]') ) ?
-                                                    <span className={cls}>{contactName}</span> :
-                                                    null}
-                                                <span className="contact-item">
-                                                    <i className="iconfont icon-weChat"></i>
-                                                    {weChatItem}
-                                                </span>
+                                            <span className="contact-item">
+                                                <i className="iconfont icon-weChat"></i>
+                                                {weChatItem}
                                             </span>
                                         );
                                     })}
