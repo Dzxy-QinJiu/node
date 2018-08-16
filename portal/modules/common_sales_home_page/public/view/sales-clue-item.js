@@ -420,7 +420,7 @@ class SalesClueItem extends React.Component {
                         errMsg={this.props.errMsg}
                     /> : null}
                 </div>
-                <div className="clue-foot" id="clue-foot" data-tracename="">
+                <div className="clue-foot" id="clue-foot">
                     {_.isEmpty(this.state.isEdittingItem) ? this.renderClueFoot(salesClueItem) :
                         this.renderEditTraceContent(salesClueItem)}
                 </div>

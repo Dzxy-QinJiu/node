@@ -1,9 +1,26 @@
 @import "../../../../public/css/common-variables";
+@FONT-COLOR:#999;
+@tab_active_color: #2196f3;
+.ant-tabs-bar {
+  margin-bottom: 8px;
+  .ant-tabs-nav {
+    color: @FONT-COLOR;
+    .ant-tabs-tab {
+      margin-right: 9px;
+      font-size: 14px;
+      padding: 8px 4px !important;
+    }
+    .ant-tabs-tab-active {
+      color: @tab_active_color;
+    }
+  }
+}
 .clue_customer_rightpanel.right-pannel-default{
   width: 504px!important;
   background-color:transparent!important;
   transform: translateX(504px);
   overflow: visible;
+  @extend .ant-tabs-bar;
   .iconfont.icon-close.clue-right-btn{
     color: #fff;
     background-color: #8ea9c4;
