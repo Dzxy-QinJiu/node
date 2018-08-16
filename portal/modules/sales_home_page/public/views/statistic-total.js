@@ -7,6 +7,7 @@ let classNames = require('classnames');
 let SalesHomeAction = require('../action/sales-home-actions');
 let viewConstant = require('../util/constant').VIEW_CONSTANT;//视图常量
 let TimeUtil = require('../../../../public/sources/utils/time-format-util');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let StatisticTotal = React.createClass({
     //渲染等待效果、暂无数据的提示
     renderTooltip: function(totalObj) {
@@ -143,13 +144,15 @@ let StatisticTotal = React.createClass({
                         {this.renderCustomerContent()}
                     </div>
                 </div>
-                <div className={autoResizeCls}>
-                    <div onClick={this.setActiveView.bind(this,viewConstant.USER)}
-                        className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.USER})}>
-                        <p>{Intl.get('sales.home.user', '用户')}</p>
-                        {this.renderUserContent()}
+                {hasPrivilege('USER_ANALYSIS_MANAGER') || hasPrivilege('USER_ANALYSIS_COMMON') ? (
+                    <div className={autoResizeCls}>
+                        <div onClick={this.setActiveView.bind(this,viewConstant.USER)}
+                            className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.USER})}>
+                            <p>{Intl.get('sales.home.user', '用户')}</p>
+                            {this.renderUserContent()}
+                        </div>
                     </div>
-                </div>
+                ) : null}
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.PHONE)}
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.PHONE})}>
