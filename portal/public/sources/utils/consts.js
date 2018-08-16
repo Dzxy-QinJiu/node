@@ -54,6 +54,9 @@ export const commonPhoneRegex = /^1[34578]\d{9}$/;
 export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
 // 400 客服电话
 export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
+//QQ号码的正则表达式
+export const qqRegex = /^[1-9][0-9]{4,}$/;
+
 export const SYSTEM_NOTICE_TYPES = {
     OFFSITE_LOGIN: 'illegalLocation',//异地登录
     DISABLE_CUSTOMER_LOGIN: 'appIllegal',//停用客户登录

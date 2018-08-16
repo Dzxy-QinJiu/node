@@ -9,6 +9,7 @@ import {Button, Icon} from 'antd';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DatePickerField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
+import MultiContactInputs from 'CMP_DIR/basic-edit-field-new/multi-contact-inputs';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerAjax = require('../../ajax/clue-customer-ajax');
@@ -605,48 +606,15 @@ var ClueDetailOverview = React.createClass({
                             <div className="clue-info-label">
                                 {Intl.get('crm.5', '联系方式')}
                             </div>
-                            <div className="clue-info-detail">
-                                {_.map(curClue.contacts,(contactItem) => {
-                                    return (
-                                        <div className="contact-item">
-                                            <div className="contact-name">{contactItem.name}</div>
-                                            {contactItem.phone ? _.map( contactItem.phone,(phone) => {
-                                                return (
-                                                    <span className="phone-item contact-way">
-                                                        <i className="iconfont icon-phone-call-out"></i>
-                                                        {phone}
-                                                    </span>
-                                                );
-                                            }) : null}
-                                            {contactItem.qq ? _.map( contactItem.qq,(qq) => {
-                                                return (
-                                                    <span className="phone-item contact-way">
-                                                        <i className="iconfont icon-qq"></i>
-                                                        {qq}
-                                                    </span>
-                                                );
-                                            }) : null}
-                                            {contactItem.email ? _.map( contactItem.email,(email) => {
-                                                return (
-                                                    <span className="phone-item contact-way">
-                                                        <i className="iconfont icon-email"></i>
-                                                        {email}
-                                                    </span>
-                                                );
-                                            }) : null}
-                                            {contactItem.weChat ? _.map(contactItem.weChat,(weChat) => {
-                                                return (
-                                                    <span className="phone-item contact-way">
-                                                        <i className="iconfont icon-wechat"></i>
-                                                        {weChat}
-                                                    </span>
-                                                );
-                                            }) : null}
-                                        </div>
-                                    );
-
-                                })}
-                            </div>
+                            <MultiContactInputs
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                id={curClue.id}
+                                saveEditInput={this.saveEditBasicInfo.bind(this, 'contacts')}
+                                contacts={curClue.contacts}
+                                field='contacts'
+                                noDataTip={Intl.get('common.unknown', '未知')}
+                                addDataTip={Intl.get('clue.add.contacts.tip','添加联系方式')}
+                            />
                         </div>
                     </div>
                     <div className="add-person-info">

@@ -2520,6 +2520,7 @@ var en_US = {
     'annalysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
-    'clue.failed.get.clue.detail': 'Failed to get clue detail'//获取线索详情失败
+    'clue.failed.get.clue.detail': 'Failed to get clue detail',//获取线索详情失败
+    'clue.add.contacts.tip': 'Add contact way',//添加联系方式
 };
 export default en_US;
