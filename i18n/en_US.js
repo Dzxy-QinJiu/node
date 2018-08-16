@@ -2479,6 +2479,7 @@ var en_US = {
     'back.openApp.tip.success': 'open successed',//'开通成功',
     'back.openApp.tip.fail': 'open failed',//'开通失败',
     'back.openApp.confirm': 'Are you sure to open {appName} ?',
+    'back.closeApp.apply': 'Apply close',//申请停用
     'common.history': 'history',//历史
     'common.history.highest': 'history highest',//历史最高
     'common.this.month.add.highest': 'this month add highest',//本月比历史最高净增
