@@ -127,7 +127,8 @@ class ContactItem extends React.Component {
                                     {_.map(contactItem.weChat,(weChatItem, index) => {
                                         return (
                                             <span>
-                                                {index === 0 && contactName && _.isArray(contactItem.phone) && !contactItem.phone.length && _.isArray(contactItem.email) && !contactItem.email.length && (_.isArray(contactItem.qq) && !contactItem.qq.length || _.isArray(contactItem.QQ) && !contactItem.QQ.length) ?
+                                                {index === 0 && contactName && _.get(contactItem, 'phone[0]') &&
+                                                _.get(contactItem, 'email[0]') && (_.get(contactItem, 'qq[0]') || _.get(contactItem, 'QQ[0]') ) ?
                                                     <span className={cls}>{contactName}</span> :
                                                     null}
                                                 <span className="contact-item">
