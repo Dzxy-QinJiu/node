@@ -364,21 +364,19 @@ var UserForm = React.createClass({
                     <RightPanelReturn onClick={this.returnInfoPanel} data-tracename="返回详细信息展示页"/>)}
                 <Form horizontal className="form" autoComplete="off" >
                     <FormItem id="image">
-                        <HeadIcon
-                            headIcon={values.image }
-                            iconDescr={values.name || headDescr}
-                            upLoadDescr={headDescr}
-                            isEdit={true}
-                            onChange={this.uploadImg}
-                            userName={values.userName}
-                            isUserHeadIcon={true}
-                        />
-                        {getFieldDecorator('image',{
-                            rules: [{
-                            }]
-                        })(
-                            <div style={{display: 'none'}}
-                            > <Input/></div>
+                        {getFieldDecorator('image')(
+                            <div>
+                                <HeadIcon
+                                    headIcon={values.image }
+                                    iconDescr={values.name || headDescr}
+                                    upLoadDescr={headDescr}
+                                    isEdit={true}
+                                    onChange={this.uploadImg}
+                                    userName={values.userName}
+                                    isUserHeadIcon={true}
+                                />
+                                <Input style={{display: 'none'}}/>
+                            </div>
                         )}
                     </FormItem>
                     <div className="user-form-scroll" style={{width: '420px'}}>
@@ -476,10 +474,7 @@ var UserForm = React.createClass({
                                             id="member.is.get.group.lists" defaultMessage="正在获取团队列表"/><Icon
                                             type="loading"/></div>) : (
 
-                                        <div> {getFieldDecorator('team',{
-                                            rules: [{
-                                            }]
-                                        })(
+                                        <div> {getFieldDecorator('team')(
                                             <Select name="team" id="team"
                                                 placeholder={Intl.get('member.select.group', '请选择团队')}
                                                 notFoundContent={Intl.get('member.no.group', '暂无此团队')}
