@@ -61,23 +61,27 @@ class ContactItem extends React.Component {
                     <div className="pull-left contact-label">{Intl.get('call.record.contacts', '联系人')}:</div> : null}
                 {_.map(contactDetail, (contactItem, idx) => {
                     var contactName = $.trim(contactItem.name) || '';
+                    var cls = classNames({
+                        'contact-name': contactName
+                    });
                     return (
                         <div className="contact-container" key={idx}>
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
-                                        var cls = classNames({
-                                            'contact-name': contactItem.name
-                                        });
                                         return (
-                                            <span className="contact-item"
-                                                onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
-                                                data-tracename="拨打电话">
-                                                {index === 0 && contactName ? <span className={cls}>
-                                                    <i className="iconfont icon-phone-call-out"></i>{contactName}</span> :
-                                                    <i className="iconfont icon-phone-call-out"></i>}
-                                                <span className="phone-num">
-                                                    {phoneItem}
+                                            <span>
+                                                {index === 0 && contactName ?
+                                                    <span className={cls}>{contactName}</span> :
+                                                    null}
+                                                <span className="contact-item"
+                                                    onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
+                                                    data-tracename="拨打电话">
+
+                                                    <i className="iconfont icon-phone-call-out"></i>
+                                                    <span className="phone-num">
+                                                        {phoneItem}
+                                                    </span>
                                                 </span>
                                             </span>
                                         );
@@ -85,35 +89,51 @@ class ContactItem extends React.Component {
                                 </span> : null}
                             {_.isArray(contactItem.email) && contactItem.email.length ?
                                 <span className="email-container">
-                                    {_.map(contactItem.email, (emailItem) => {
+                                    {_.map(contactItem.email, (emailItem, index) => {
                                         return (
-                                            <span className="contact-item">
-                                                <i className="iconfont icon-email"></i>
-                                                {emailItem}
+                                            <span>
+                                                {index === 0 && contactName && _.isArray(contactItem.phone) && !contactItem.phone.length ?
+                                                    <span className={cls}>{contactName}</span> :
+                                                    null}
+                                                <span className="contact-item">
+                                                    <i className="iconfont icon-email"></i>
+                                                    {emailItem}
+                                                </span>
                                             </span>
                                         );
                                     })}
                                 </span>
                                 : null}
-                            {_.isArray(contactItem.QQ) && contactItem.QQ.length ?
+                            {_.isArray(contactItem.QQ) && contactItem.QQ.length || _.isArray(contactItem.qq) && contactItem.qq.length ?
                                 <span className="qq-container">
-                                    {_.map(contactItem.QQ, (qqItem) => {
+                                    {_.map(contactItem.QQ || contactItem.qq , (qqItem,index) => {
                                         return (
-                                            <span className="contact-item">
-                                                <i className="iconfont icon-qq"></i>
-                                                {qqItem}
+                                            <span>
+                                                {index === 0 && contactName && _.isArray(contactItem.phone) && !contactItem.phone.length && _.isArray(contactItem.email) && !contactItem.email.length ?
+                                                    <span className={cls}>{contactName}</span> :
+                                                    null}
+                                                <span className="contact-item">
+                                                    <i className="iconfont icon-qq"></i>
+                                                    {qqItem}
+                                                </span>
                                             </span>
+
                                         );
                                     })}
                                 </span>
                                 : null}
                             {_.isArray(contactItem.weChat) && contactItem.weChat.length ?
                                 <span className="weChat-container">
-                                    {_.map(contactItem.weChat,(weChatItem) => {
+                                    {_.map(contactItem.weChat,(weChatItem, index) => {
                                         return (
-                                            <span className="contact-item">
-                                                <i className="iconfont icon-weChat"></i>
-                                                {weChatItem}
+                                            <span>
+                                                {index === 0 && contactName && _.isArray(contactItem.phone) && !contactItem.phone.length && _.isArray(contactItem.email) && !contactItem.email.length && (_.isArray(contactItem.qq) && !contactItem.qq.length || _.isArray(contactItem.QQ) && !contactItem.QQ.length) ?
+                                                    <span className={cls}>{contactName}</span> :
+                                                    null}
+                                                <span className="contact-item">
+                                                    <i className="iconfont icon-weChat"></i>
+                                                    {weChatItem}
+                                                </span>
                                             </span>
                                         );
                                     })}

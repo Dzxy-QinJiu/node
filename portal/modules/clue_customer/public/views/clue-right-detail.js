@@ -20,6 +20,9 @@ var tabNameList = {
 var noop = function() {
 
 };
+const DYNAMICHEIGHT = {
+    LAYOUT: 130
+};
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import ClueDynamic from '../views/dynamic';
 import ClueBasicInfo from '../views/clue_detail_overview';
@@ -236,6 +239,7 @@ class ClueRightPanel extends React.Component {
         var curClue = this.state.curClue;
         //是否没有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
+        var divHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
         return (
             <RightPanel
                 className="clue_customer_rightpanel white-space-nowrap"
@@ -256,17 +260,11 @@ class ClueRightPanel extends React.Component {
                                         placeholder={Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')}
                                     />
                                 </div>
-                                {hasPrivilege('CLUECUSTOMER_DELETE') ?
-                                    <div className="remove-clue">
-                                        <i className="iconfont icon-delete"
-                                            onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
-                                    </div> : null}
-
                             </div>
                             {hasPrivilege('CLUECUSTOMER_DELETE') ?
                                 <div className="remove-clue">
                                     <i className="iconfont icon-delete"
-                                        onClick={this.handleRemoveClue.bind(this, curClue)}></i>
+                                        onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
                                 </div> : null}
                         </div>
                         <div className="clue-detail-content" >
@@ -289,6 +287,8 @@ class ClueRightPanel extends React.Component {
                                             updateClueChannel={this.updateClueChannel}
                                             updateClueClassify={this.updateClueClassify}
                                             salesManList={this.state.salesManList}
+                                            divHeight={divHeight}
+
                                         />
                                     ) : null}
                                 </TabPane>
@@ -299,6 +299,7 @@ class ClueRightPanel extends React.Component {
                                     {this.state.activeKey === TAB_KEYS.DYNAMIC_TAB ? (
                                         <ClueDynamic
                                             currentId={curClue.id}
+                                            divHeight={divHeight}
                                         />
                                     ) : null}
                                 </TabPane>
