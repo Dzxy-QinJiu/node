@@ -100,7 +100,8 @@ class ProductTable extends React.Component {
 
     handleCancel = () => {
         this.setState({
-            isEdit: false
+            isEdit: false,
+            data: this.props.dataSource,
         });
     }
 
