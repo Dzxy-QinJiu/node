@@ -5,22 +5,17 @@
  * 可展示可编辑的多个联系人及联系方式组件
  * */
 
-require('./css/multi-contact-inputs.less');
-import {Form} from 'antd';
-const FormItem = Form.Item;
+require('../css/multi-contact-inputs.less');
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
-import {DetailEditBtn} from '../rightPanel';
-import SaveCancelButton from '../detail-card/save-cancel-button';
-import DynamicAddDelContacts from '../dynamic-add-del-contacts';
-class MultiContactInputs extends React.Component {
+import {DetailEditBtn} from '../../rightPanel/index';
+import MultiContactEditForm from './multi-contact-edit-form';
+class MultiContactField extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false,
             displayType: this.props.displayType || 'text',
             contacts: this.props.contacts,
-            submitErrorMsg: '',
             hoverShowEdit: true,
         };
     }
@@ -29,9 +24,7 @@ class MultiContactInputs extends React.Component {
         if (nextProps.id !== this.props.id) {
             this.setState({
                 contacts: nextProps.contacts,
-                loading: false,
                 displayType: nextProps.displayType || 'text',
-                submitErrorMsg: '',
             });
         }
     }
@@ -44,56 +37,26 @@ class MultiContactInputs extends React.Component {
         Trace.traceEvent(e, '点击编辑' + this.props.field);
     }
 
-    handleSubmit(e) {
+    handleSubmit(contacts, successFunc, errorFunc, e) {
         Trace.traceEvent(e, '保存对' + this.props.field + '的修改');
-        var contacts = this.state.contacts;
-        var saveObj = {
-            id: this.props.id
+        const saveObj = {
+            id: this.props.id,
+            contacts
         };
-        saveObj[this.props.field] = contacts;
-        this.setState({
-            loading: true
+        this.props.saveEditInput(saveObj, () => {
+            this.setState({contacts, displayType: 'text'});
+            if (_.isFunction(successFunc)) successFunc();
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc();
         });
-
-        const setDisplayState = () => {
-            this.setState({
-                loading: false,
-                submitErrorMsg: '',
-                contacts: contacts,
-                displayType: 'text'
-            });
-        };
-
-        if ((contacts !== this.props.contacts)) {
-            this.props.saveEditDateInput(saveObj, () => {
-                setDisplayState();
-            }, (errorMsg) => {
-                this.setState({
-                    loading: false,
-                    submitErrorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
-                });
-            });
-
-        } else {
-            setDisplayState();
-        }
     }
 
     handleCancel(e) {
         this.setState({
             contacts: this.props.contacts,
             displayType: 'text',
-            submitErrorMsg: ''
         });
         Trace.traceEvent(e, '取消对' + this.props.field + '的修改');
-    }
-
-    changeSourceTime(value) {
-        let timestamp = value && value.valueOf() || '';
-        this.setState({
-            value: timestamp
-        });
-
     }
 
     render() {
@@ -104,7 +67,7 @@ class MultiContactInputs extends React.Component {
 
         var displayText = this.state.contacts;
         let textBlock = null;
-        var cls = classNames('edit-container', {
+        var cls = classNames('show-contact-container', {
             'hover-show-edit': this.state.hoverShowEdit && this.props.hasEditPrivilege
         });
         let contacts = this.state.contacts;
@@ -170,19 +133,12 @@ class MultiContactInputs extends React.Component {
             }
         }
         var inputBlock = this.state.displayType === 'edit' ? (
-            <Form horizontal autoComplete="off" style={{width: this.props.width || '100%'}}>
-                <DynamicAddDelContacts form={this.props.form}
-                    contacts={contacts}
-                    phoneValidateRules={this.props.phoneValidateRules}/>
-                <div className="buttons">
-                    {this.props.hideButtonBlock ? null :
-                        <SaveCancelButton loading={this.state.loading}
-                            saveErrorMsg={this.state.submitErrorMsg}
-                            handleSubmit={this.handleSubmit.bind(this)}
-                            handleCancel={this.handleCancel.bind(this)}
-                        />}
-                </div>
-            </Form>
+            <MultiContactEditForm
+                width={this.props.width}
+                contacts={contacts}
+                handleCancel={this.handleCancel.bind(this)}
+                handleSubmit={this.handleSubmit.bind(this)}
+                phoneOnlyOneRules={this.props.phoneOnlyOneRules}/>
         ) : null;
         return (
             <div className={displayCls}>
@@ -192,12 +148,10 @@ class MultiContactInputs extends React.Component {
         );
     }
 }
-MultiContactInputs.defaultProps = {
+MultiContactField.defaultProps = {
     id: '1',
     //字段
     field: 'contacts',
-    //展示类型，text:文本展示状态，edit:编辑状态
-    displayType: 'text',
     //是否有修改权限
     hasEditPrivilege: false,
     //联系人列表
@@ -214,12 +168,12 @@ MultiContactInputs.defaultProps = {
     addDataTip: '',
     //是否隐藏保存取消按钮
     hideButtonBlock: false,
-    //保存时间框的修改方法
-    saveEditDateInput: function() {
+    //保存联系人修改方法
+    saveEditInput: function() {
     }
 };
 const PropTypes = React.PropTypes;
-MultiContactInputs.propTypes = {
+MultiContactField.propTypes = {
     id: PropTypes.string,
     field: PropTypes.string,
     displayType: PropTypes.string,
@@ -231,8 +185,7 @@ MultiContactInputs.propTypes = {
     noDataTip: PropTypes.string,
     addDataTip: PropTypes.string,
     hideButtonBlock: PropTypes.bool,
-    saveEditDateInput: PropTypes.func,
-    form: PropTypes.object,
-    phoneValidateRules: PropTypes.array
+    saveEditInput: PropTypes.func,
+    phoneOnlyOneRules: PropTypes.array
 };
-export default Form.create()(MultiContactInputs);
+export default MultiContactField;

@@ -10,12 +10,6 @@ import PhoneInput from 'CMP_DIR/phone-input';
 import classNames from 'classnames';
 import {Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-const DIFCONTACTWAY = {
-    PHONE: 'phone',
-    EMAIL: 'email',
-    QQ: 'qq',
-    WECHAT: 'weChat'
-};
 const CONTACT_WAY_PLACEHOLDER = {
     'phone': Intl.get('clue.add.phone.num', '电话号码'),
     'email': Intl.get('clue.add.email.addr', '邮箱地址'),
@@ -171,6 +165,7 @@ class DynamicAddDelContacts extends React.Component {
             <div className="contact-wrap" key={`contacts[${contactKey}]`}>
                 <FormItem className="contact-name-item">
                     {getFieldDecorator(`contacts[${contactKey}].name`, {
+                        initialValue: item.name,
                         rules: [{
                             required: true,
                             message: Intl.get('crm.90', '请输入姓名')
@@ -186,6 +181,7 @@ class DynamicAddDelContacts extends React.Component {
                         return (
                             <div className="contact-item" key={phoneKey}>
                                 <PhoneInput
+                                    initialValue={phone.value}
                                     placeholder={Intl.get('clue.add.phone.num', '电话号码')}
                                     validateRules={this.props.phoneOnlyOneRules}
                                     id={phoneKey}
@@ -199,13 +195,13 @@ class DynamicAddDelContacts extends React.Component {
                             </div>);
                     })}
                     {_.map(qqArray, (qq, qqIndex) => {
-                        return this.renderContacWayFormItem(index, contactKey, 'qq', qq.key, qqIndex, qqArray.length, this.checkQQ);
+                        return this.renderContacWayFormItem(index, contactKey, 'qq', qq.key, qq.value, qqIndex, qqArray.length, this.checkQQ);
                     })}
                     {_.map(emailArray, (email, emailIndex) => {
-                        return this.renderContacWayFormItem(index, contactKey, 'email', email.key, emailIndex, emailArray.length, this.checkEmail);
+                        return this.renderContacWayFormItem(index, contactKey, 'email', email.key, email.value, emailIndex, emailArray.length, this.checkEmail);
                     })}
                     {_.map(weChatArray, (weChat, weChatIndex) => {
-                        return this.renderContacWayFormItem(index, contactKey, 'weChat', weChat.key, weChatIndex, weChatArray.length);
+                        return this.renderContacWayFormItem(index, contactKey, 'weChat', weChat.key, weChat.value, weChatIndex, weChatArray.length);
                     })}
                 </div>
             </div>
@@ -218,11 +214,12 @@ class DynamicAddDelContacts extends React.Component {
      * contactKey: 联系人的key
      * contactWay: 联系方式
      * contactWayKey: 联系人某联系方式的key
+     * contactWayValue: 某联系方式的初始值
      * contactWayIndex: 联系人某联系方式的index
      * constactWaySize: 联系人某种联系方式的个数
      * validator:验证方法
      * */
-    renderContacWayFormItem(contactIndex, contactKey, contactWay, contactWayKey, contactWayIndex, contactWaySize, validator) {
+    renderContacWayFormItem(contactIndex, contactKey, contactWay, contactWayKey, contactWayValue, contactWayIndex, contactWaySize, validator) {
         const {getFieldDecorator} = this.props.form;
         // 某个联系人下某个联系方式的ID(例如：contacts[0].qq[0],第一个联系人下的第一个电话)
         const contactWayID = `contacts[${contactKey}].${contactWay}[${contactWayKey}]`;
@@ -239,6 +236,7 @@ class DynamicAddDelContacts extends React.Component {
                     colon={false}
                 >
                     {getFieldDecorator(contactWayID, {
+                        initialValue: contactWayValue,
                         rules: rules,
                     })(
                         <Input className='contact-type-tip' placeholder={CONTACT_WAY_PLACEHOLDER[contactWay]}
@@ -271,18 +269,57 @@ class DynamicAddDelContacts extends React.Component {
                 </div>) : null}
         </div>);
     };
+    //获取初始化的数据
+    getInitalContacts() {
+        // 添加时，默认只展示一个空联系人
+        let initialContacts = [{
+            key: 0,
+            phone: [{key: 0}],
+            qq: [{key: 0}],
+            weChat: [{key: 0}],
+            email: [{key: 0}]
+        }];
+        if (this.props.contacts) {//编辑时，传入的已有contacts
+            initialContacts = _.map(this.props.contacts, (contact, index) => {
+                let initContact = {
+                    key: index,
+                    name: contact.name,
+                    phone: [{key: 0}],
+                    qq: [{key: 0}],
+                    weChat: [{key: 0}],
+                    email: [{key: 0}]
+                };
+                if (_.get(contact, 'phone[0]')) {
+                    initContact.phone = _.map(contact.phone, (phone, phoneIndex) => {
+                        return {key: phoneIndex, value: phone};
+                    });
+                }
+                if (_.get(contact, 'qq[0]')) {
+                    initContact.qq = _.map(contact.qq, (qq, qqIndex) => {
+                        return {key: qqIndex, value: qq};
+                    });
+                }
+                if (_.get(contact, 'weChat[0]')) {
+                    initContact.weChat = _.map(contact.weChat, (weChat, weChatIndex) => {
+                        return {key: weChatIndex, value: weChat};
+                    });
+                }
+                if (_.get(contact, 'email[0]')) {
+                    initContact.email = _.map(contact.email, (email, emailIndex) => {
+                        return {key: emailIndex, value: email};
+                    });
+                }
+                return initContact;
+            });
+        }
+        return initialContacts;
+    }
 
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         // 控制联系方式增减的key
         getFieldDecorator('contact_keys', {
-            initialValue: [{
-                key: 0,
-                phone: [{key: 0}],
-                qq: [{key: 0}],
-                weChat: [{key: 0}],
-                email: [{key: 0}]
-            }]
+            initialValue: this.getInitalContacts()
         });
         const contact_keys = getFieldValue('contact_keys');
         return (
@@ -298,7 +335,8 @@ class DynamicAddDelContacts extends React.Component {
 const PropTypes = React.PropTypes;
 DynamicAddDelContacts.propTypes = {
     form: PropTypes.object,
-    phoneOnlyOneRules: PropTypes.array
+    phoneOnlyOneRules: PropTypes.array,
+    contacts: PropTypes.array//编辑时，传入的已有联系人列表
 };
 DynamicAddDelContacts.defaultProps = {
     form: {},

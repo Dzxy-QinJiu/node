@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName} from '../utils/clue-customer-utils';
+import {checkClueName, getPhoneInputValidateRules} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
@@ -246,29 +246,6 @@ class ClueAddForm extends React.Component {
         }
     }
 
-    checkOnlyContactPhone = (rule, value, callback) => {
-        CrmAction.checkOnlyContactPhone(value, data => {
-            if (_.isString(data)) {
-                //唯一性验证出错了
-                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-            } else {
-                if (_.isObject(data) && data.result === 'true') {
-                    callback();
-                } else {
-                    //已存在
-                    callback(Intl.get('crm.83', '该电话已存在'));
-                }
-            }
-        });
-    };
-    getPhoneInputValidateRules = () => {
-        return [{
-            validator: (rule, value, callback) => {
-                this.checkOnlyContactPhone(rule, value, callback);
-            }
-        }];
-    };
-
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.setState({
@@ -365,7 +342,7 @@ class ClueAddForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 <DynamicAddDelContact form={this.props.form}
-                                    phoneValidateRules={this.getPhoneInputValidateRules()}/>
+                                    phoneOnlyOneRules={getPhoneInputValidateRules()}/>
                             </FormItem>
                             {this.renderCheckContactMsg()}
                             <FormItem

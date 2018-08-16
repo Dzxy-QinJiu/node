@@ -1,20 +1,43 @@
 //可编辑联系人及联系方式组件的样式
-.contacts-info-container{
+//展示
+.show-contact-container{
   float: left;
-  width: 300px;
-
-  .contact-item{
-    overflow: hidden;
-    .contact-name{
-      float: left;
-      margin-right:10px;
-    }
-    .contact-way{
-      float: left;
-      display: block;
-      .iconfont{
-        margin:0 5px;
+  .contacts-info-container{
+    float: left;
+    width: 270px;
+    .contact-item{
+      overflow: hidden;
+      .contact-name{
+        float: left;
+        margin-right:10px;
       }
+      .contact-way{
+        float: left;
+        display: block;
+        .iconfont{
+          margin:0 5px;
+        }
+      }
+    }
+  }
+}
+.show-contact-container.hover-show-edit{
+  .icon-edit-btn{
+    display: none;
+  }
+  &:hover{
+    background: #E8F5FE;
+    .icon-edit-btn{
+      display: inline-block;
+    }
+  }
+}
+//编辑
+.eidt-contact-form{
+  .contact-way-container .contact-wrap {
+    padding: 0;
+    .contact-way-item .contact-item .ant-form-item {
+      width: 260px !important;
     }
   }
 }
