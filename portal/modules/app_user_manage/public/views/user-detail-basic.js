@@ -521,11 +521,11 @@ var UserDetailBasic = React.createClass({
     },
 
     renderUserStatus: function(user, useIcon = false) {
-        let userStatus = user.status;
+        let userStatus = user && user.status;
         if (!hasPrivilege('APP_USER_EDIT')) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
-        return (<UserStatusSwitch useIcon={useIcon} userId={user.user_id} status={userStatus === '1' ? true : false} />);
+        return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
     },
     render: function() {
         var LoadingBlock = this.state.isLoading ? (

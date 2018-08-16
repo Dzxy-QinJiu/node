@@ -3,11 +3,11 @@ const Validator = Validation.Validator;
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-import {RightPanelClose,RightPanelReturn} from '../../../../../components/rightPanel';
-import {Form,Icon,Alert} from 'antd';
+import { RightPanelClose, RightPanelReturn } from '../../../../../components/rightPanel';
+import { Form, Icon, Alert, Checkbox, Input, Button } from 'antd';
 import Spinner from '../../../../../components/spinner';
 import AlertTimer from '../../../../../components/alert-timer';
-import {Carousel,CarouselItem} from 'react-bootstrap';
+import { Carousel, CarouselItem } from 'react-bootstrap';
 import FieldMixin from '../../../../../components/antd-form-fieldmixin';
 
 import UserDetailAddAppActions from '../../action/v2/user-detail-add-app-actions';
@@ -30,6 +30,9 @@ import UserTwoFactorField from '../../../../../components/user_manage_components
 import UserMultiLoginField from '../../../../../components/user_manage_components/user-multilogin-radiofield';
 import insertStyle from '../../../../../components/insert-style';
 import UserData from '../../../../../public/sources/user-data';
+const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
+const DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
+const CheckboxGroup = Checkbox.Group;
 
 //动态添加的样式
 var dynamicStyle;
@@ -50,7 +53,11 @@ const UserDetailAddApp = React.createClass({
         UserMultiLoginField
     ],
     getInitialState() {
-        return UserDetailAddAppStore.getState();
+        return {
+            ...UserDetailAddAppStore.getState(),
+            showAppSelector: true,
+            selectedAppIds: []
+        };
     },
     onStateChange() {
         this.setState(UserDetailAddAppStore.getState());
@@ -58,7 +65,7 @@ const UserDetailAddApp = React.createClass({
     componentDidMount() {
         UserDetailAddAppStore.listen(this.onStateChange);
         UserDetailAddAppActions.getCurrentRealmApps();
-        $(window).on('resize' , this.onStateChange);
+        $(window).on('resize', this.onStateChange);
     },
     componentWillUnmount() {
         UserDetailAddAppStore.unlisten(this.onStateChange);
@@ -81,12 +88,25 @@ const UserDetailAddApp = React.createClass({
         AppUserAction.closeRightPanel();
         UserDetailAddAppActions.resetState();
     },
+    handleRemoveApp(app) {
+        const removeAppId = app.app_id;
+        let selectedAppIds = this.state.selectedAppIds;
+        selectedAppIds = selectedAppIds.filter(x => x.app_id !== removeAppId);
+        this.setState({
+            selectedAppIds
+        });
+    },
     //选中的应用发生变化的时候
-    onSelectedAppsChange(apps) {
-        UserDetailAddAppActions.setSelectedApps(apps);
+    onSelectedAppsChange(appIds) {        
+        this.setState({
+            selectedAppIds: appIds
+        }, () => {
+            const apps = this.state.selectedAppIds.map(id => this.state.currentRealmApps.find(x => x.app_id === id));
+            UserDetailAddAppActions.setSelectedApps(apps);
+        });
         //当只有一个应用的时候，需要把特殊设置的应用属性隐藏掉，
         // 这个时候，要把第三步的应用属性同步到通用配置属性上
-        if(apps.length === 1) {
+        if (appIds.length === 1) {
             //渲染是异步的，加setTimeout能够获取到最新的配置信息
             setTimeout(() => {
                 //将应用的特殊设置同步到全局设置
@@ -101,23 +121,24 @@ const UserDetailAddApp = React.createClass({
         const appsListError = this.state.currentRealmAppsResult === 'error';
         const appsListLoading = this.state.currentRealmAppsResult === 'loading';
 
-        if(appsListLoading) {
+        if (appsListLoading) {
             return (
                 <div className="user-manage-v2-load8">
                     <Spinner />
                 </div>
             );
         }
-        if(appsListError) {
+        if (appsListError) {
             return (
                 <Alert type="error" showIcon message={<span>
                     <ReactIntl.FormattedMessage
                         id="user.app.list.error.tip"
                         defaultMessage={'应用列表获取失败，{retry}'}
                         values={{
-                            'retry': <a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
+                            'retry': <a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>
+                        }}
                     />
-                </span>}/>
+                </span>} />
             );
         }
         //高度限制，让页面出现滚动条
@@ -128,10 +149,21 @@ const UserDetailAddApp = React.createClass({
         dynamicStyle = insertStyle(`.user-detail-add-app-v2 .search-icon-list-content{max-height:${height}px;overflow-y:auto;overflow-x:hidden;`);
         return (
             <div>
-                <SearchIconList
+                {/* <SearchIconList
                     totalList={this.state.currentRealmApps}
                     onItemsChange={this.onSelectedAppsChange}
-                />
+                /> */}
+                <div className="left-nav-container">
+                    {
+                        Intl.get('user.user.app.select', '选择应用')
+                    }:
+                </div>
+                <div className="add-app-content">
+                    {
+                        this.state.showAppSelector ?
+                            this.renderAppSelector() : this.renderAppConfig()
+                    }
+                </div>
                 {
                     isSubmitError ? (
                         <div className="has-error">
@@ -142,17 +174,82 @@ const UserDetailAddApp = React.createClass({
             </div>
         );
     },
+    searchTimer: null,
+    handleInputChange(e) {
+        const keyWords = e.target.value;
+        clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(() => {
+            UserDetailAddAppActions.filterApps(keyWords);
+        }, 100);
+    },
+    showAppSelector(isShow) {
+        this.setState({
+            showAppSelector: isShow
+        });
+    },
+    renderAppSelector() {
+        return (
+            <div className="app-selector-container">
+                <div className="input-container">
+                    <Input onChange={this.handleInputChange}/>
+                </div>
+                <div className="app-list-container" style={{height: 180}}>
+                    <GeminiScrollbar>
+                        <CheckboxGroup
+                            defaultValue={this.state.selectedAppIds}
+                            options={this.state.currentRealmApps.map(x => ({
+                                value: x.app_id,
+                                label: x.app_name
+                            }))}
+                            onChange={this.onSelectedAppsChange}
+                        />
+                    </GeminiScrollbar>                    
+                </div>
+                <div className="btn-bar">
+                    <Button onClick={this.showAppSelector.bind(this, true)}>{Intl.get('common.cancel', '取消')}</Button>
+                    <Button onClick={this.showAppSelector.bind(this, false)} type="primary">{Intl.get('common.sure', '确定')}</Button>
+                </div>
+            </div>
+        );
+    },
+    renderAppConfig() {
+        return (
+            <div className="selected-app-container">
+                <ul>
+                    {
+                        this.state.selectedApps.map(app => (
+                            <li key={app.app_id}>
+                                <div className="title-container">
+                                    <span className="logo-container" title={app.app_name}>
+                                        <DefaultUserLogoTitle
+                                            nickName={app.app_name}
+                                            userLogo={app.app_logo}
+                                        />
+                                    </span>
+                                    <p title={app.app_name}>{app.app_name}</p>
+                                    <Icon onClick={this.handleRemoveApp.bind(this, app)} type="close" />
+                                </div>
+                            </li>
+                        ))
+                    }
+                </ul>
+                <p className="btn-text" onClick={this.showAppSelector.bind(this, true)}>
+                    {Intl.get('common.add.app', '添加应用')}
+                </p>
+            </div>
+        );
+    },
     //渲染“开通信息”步骤
     renderBasicCarousel() {
         return (
             <OperationScrollBar className="basic-data-form-wrap">
                 <div className="basic-data-form">
-                    { !Oplate.hideSomeItem && <div className="form-item">
+                    {!Oplate.hideSomeItem && <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="common.type" defaultMessage="类型" /></div>
                         <div className="form-item-content">
                             {this.renderUserTypeRadioBlock()}
                         </div>
-                    </div> }
+                    </div>}
                     <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
                         <div className="form-item-content">
@@ -165,18 +262,18 @@ const UserDetailAddApp = React.createClass({
                             {this.renderUserOverDraftBlock()}
                         </div>
                     </div>
-                    { !Oplate.hideSomeItem && <div className="form-item">
+                    {!Oplate.hideSomeItem && <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
                         <div className="form-item-content">
                             {this.renderUserTwoFactorBlock()}
                         </div>
-                    </div> }
-                    { !Oplate.hideSomeItem && <div className="form-item">
+                    </div>}
+                    {!Oplate.hideSomeItem && <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
                         <div className="form-item-content">
                             {this.renderMultiLoginRadioBlock()}
                         </div>
-                    </div> }
+                    </div>}
                 </div>
             </OperationScrollBar>
         );
@@ -212,7 +309,7 @@ const UserDetailAddApp = React.createClass({
     },
     //渲染loading，错误，成功提示
     renderIndicator() {
-        if(this.state.submitResult === 'loading') {
+        if (this.state.submitResult === 'loading') {
             return (
                 <Icon type="loading" />
             );
@@ -220,40 +317,40 @@ const UserDetailAddApp = React.createClass({
         var hide = function() {
             UserDetailAddAppActions.hideSubmitTip();
         };
-        if(this.state.submitResult === 'success') {
+        if (this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get('user.app.add.success', '添加应用成功')} type="success" showIcon onHide={hide}/>
+                <AlertTimer time={3000} message={Intl.get('user.app.add.success', '添加应用成功')} type="success" showIcon onHide={hide} />
             );
         }
-        if(this.state.submitResult === 'error') {
+        if (this.state.submitResult === 'error') {
             return (
-                <AlertTimer time={3000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide}/>
+                <AlertTimer time={3000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide} />
             );
         }
         // 添加应用时，没有选择角色的错误提示
-        if(this.state.submitResult === 'selectRoleError') {
+        if (this.state.submitResult === 'selectRoleError') {
             return (
                 <div className="apps-no-select-role">
-                    <AlertTimer time={6000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide}/>
+                    <AlertTimer time={6000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide} />
                 </div>
             );
         }
         return null;
     },
     turnStep(direction) {
-        if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
+        if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
         }
         //获取到当前是第几步
         let step = this.state.step;
-        if(direction === 'next') {
-            if(step === 0) {
+        if (direction === 'next') {
+            if (step === 0) {
                 //第一部“选择应用”检查选中应用个数
-                if(!this.state.selectedApps.length) {
+                if (!this.state.selectedApps.length) {
                     UserDetailAddAppActions.showSelectedAppsError();
                     return;
                 } else {
-                    //检验通过了，切换到下一步
+                    //检验通过了，切换到下一步                   
                     UserDetailAddAppActions.turnStep(direction);
                 }
             } else {
@@ -280,7 +377,7 @@ const UserDetailAddApp = React.createClass({
         //各个应用的配置
         const products = [];
         //遍历应用列表，添加应用配置
-        _.each(selectedApps , (appInfo) => {
+        _.each(selectedApps, (appInfo) => {
             const customAppSetting = {};
             //应用id
             const app_id = appInfo.app_id;
@@ -315,7 +412,7 @@ const UserDetailAddApp = React.createClass({
     },
     //完成
     onStepFinish() {
-        if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
+        if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
         }
         //获取提交数据
@@ -324,16 +421,16 @@ const UserDetailAddApp = React.createClass({
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(submitData, selectedApps);
         if (noSelectRoleApps.length) {
-            UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get('user.add.apps.role.select.tip', '{appName}未设置角色', {appName: noSelectRoleApps.join('、') }));
+            UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get('user.add.apps.role.select.tip', '{appName}未设置角色', { appName: noSelectRoleApps.join('、') }));
             return;
         } else {
             UserDetailAddAppActions.noSelectRoleError('');
         }
         //添加应用
-        UserDetailAddAppActions.addUserApps(submitData,(apps) => {
-            if(apps && _.isArray(apps)) {
+        UserDetailAddAppActions.addUserApps(submitData, (apps) => {
+            if (apps && _.isArray(apps)) {
                 //添加一个应用之后，更新应用列表
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_ADD_APP_INFO , {
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_ADD_APP_INFO, {
                     user_id: this.props.initialUser.user.user_id,
                     app_info_array: apps
                 });
@@ -352,48 +449,54 @@ const UserDetailAddApp = React.createClass({
     render() {
         return (
             <div className="user-manage-v2 user-detail-add-app-v2">
-                <RightPanelReturn onClick={this.cancel}/>
-                <RightPanelClose onClick={this.closeRightPanel}/>
+                <RightPanelReturn onClick={this.cancel} />
+                <RightPanelClose onClick={this.closeRightPanel} />
                 <Form horizontal>
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        <OperationSteps
-                            title={Intl.get('user.user.add', '添加用户')}
-                            current={this.state.step}
-                        >
-                            <OperationSteps.Step action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
-                            <OperationSteps.Step action={Intl.get('user.user.info', '开通信息')}></OperationSteps.Step>
-                            <OperationSteps.Step action={Intl.get('user.user.app.set', '应用设置')}></OperationSteps.Step>
-                        </OperationSteps>
-                        <Carousel
-                            interval={0}
-                            indicators={false}
-                            controls={false}
-                            activeIndex={this.state.step}
-                            direction={this.state.stepDirection}
-                            slide={false}
-                        >
-                            <CarouselItem>
-                                <div className="user-detail-add-app-v2-apps apps-carousel">
-                                    {this.renderAppsCarousel()}
-                                </div>
-                            </CarouselItem>
-                            <CarouselItem>
-                                {this.renderBasicCarousel()}
-                            </CarouselItem>
-                            <CarouselItem>
-                                {this.renderRolesCarousel()}
-                            </CarouselItem>
-                        </Carousel>
-                        <OperationStepsFooter
-                            currentStep={this.state.step}
-                            totalStep={3}
-                            onStepChange={this.turnStep}
-                            onFinish={this.onStepFinish}
-                        >
-                            <span className="operator_person">{Intl.get('user.operator','操作人')}:{this.state.operator}</span>
-                            {this.renderIndicator()}
-                        </OperationStepsFooter>
-                    </Validation>
+                    <div className="add-app-container" style={{ height: this.props.height }}>
+                        <Validation ref="validation" onValidate={this.handleValidate}>
+                            <OperationSteps
+                                title={Intl.get('user.user.add', '添加用户')}
+                                current={this.state.step}
+                            >
+                                <OperationSteps.Step action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
+                                <OperationSteps.Step action={Intl.get('user.user.info', '开通信息')}></OperationSteps.Step>
+                                <OperationSteps.Step action={Intl.get('user.user.app.set', '应用设置')}></OperationSteps.Step>
+                            </OperationSteps>
+                            {/* <div style={{ height: this.props.height - 100}}>     
+                            <GeminiScrollbar> */}
+                            <Carousel
+                                interval={0}
+                                indicators={false}
+                                controls={false}
+                                activeIndex={this.state.step}
+                                direction={this.state.stepDirection}
+                                slide={false}
+                            >
+                                <CarouselItem>
+                                    <div className="user-detail-add-app-v2-apps apps-carousel">
+                                        {this.renderAppsCarousel()}
+                                    </div>
+                                </CarouselItem>
+                                <CarouselItem>
+                                    {this.renderBasicCarousel()}
+                                </CarouselItem>
+                                <CarouselItem>
+                                    {this.renderRolesCarousel()}
+                                </CarouselItem>
+                            </Carousel>
+                            {/* </GeminiScrollbar>
+                        </div> */}
+                            <OperationStepsFooter
+                                currentStep={this.state.step}
+                                totalStep={3}
+                                onStepChange={this.turnStep}
+                                onFinish={this.onStepFinish}
+                            >
+                                <span className="operator_person">{Intl.get('user.operator', '操作人')}:{this.state.operator}</span>
+                                {this.renderIndicator()}
+                            </OperationStepsFooter>
+                        </Validation>
+                    </div>
                 </Form>
             </div>
         );

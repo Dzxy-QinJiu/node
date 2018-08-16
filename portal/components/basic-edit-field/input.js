@@ -284,7 +284,7 @@ var UserBasicEditField = React.createClass({
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label=""
-                            labelCol={{ span: 0 }}
+                            labelCol={{ span: 0 }} 
                             wrapperCol={{ span: 24 }}
                             validateStatus={this.renderValidateStyle('input')}
                             help={status.input.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.input.errors && status.input.errors.join(','))}
