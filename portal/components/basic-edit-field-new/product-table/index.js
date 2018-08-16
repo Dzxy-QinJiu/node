@@ -27,6 +27,7 @@ class ProductTable extends React.Component {
         isEditBtnShow: false,
         onChange: function() {},
         onSave: function() {},
+        totalAmount: 0,
     };
 
     static propTypes = {
@@ -39,6 +40,7 @@ class ProductTable extends React.Component {
         isEditBtnShow: PropTypes.bool,
         onChange: PropTypes.func,
         onSave: PropTypes.func,
+        totalAmount: PropTypes.number,
     };
 
     constructor(props) {
@@ -92,7 +94,10 @@ class ProductTable extends React.Component {
     }
 
     handleChange = data => {
-        this.setState({data}, () => {
+        this.setState({
+            data,
+            saveErrMsg: '',
+        }, () => {
             if (this.props.isAdd) {
                 this.props.onChange(data);
             }
@@ -103,10 +108,25 @@ class ProductTable extends React.Component {
         this.setState({
             isEdit: false,
             data: this.props.dataSource,
+            saveErrMsg: '',
         });
     }
 
     handleSubmit = () => {
+        const totalAmount = this.props.totalAmount;
+
+        const sumAmount = _.reduce(this.state.data, (sum, item) => {
+            const amount = +item.total_price;
+            return sum + amount;
+        }, 0);
+
+        if (totalAmount !== sumAmount) {
+            this.setState({
+                saveErrMsg: Intl.get('crm.contract.check.tips', '合同额与产品总额不相等，请核对')
+            });
+            return;
+        }
+
         this.setState({loading: true});
 
         const data = _.cloneDeep(this.state.data);

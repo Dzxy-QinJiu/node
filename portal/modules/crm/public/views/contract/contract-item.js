@@ -345,6 +345,7 @@ const ContractItem = React.createClass({
                                     <ProductTable
                                         appList={this.props.appList}
                                         dataSource={contract.products}
+                                        totalAmount={contract.contract_amount}
                                         isEditBtnShow={hasEditPrivilege}
                                         onSave={this.handleProductSave}
                                     />
