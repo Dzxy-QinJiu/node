@@ -132,8 +132,15 @@ ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
     var updateClue = _.find(this.curClueLists, clue => updateObj.id === clue.id);
     if (updateClue){
         updateClue.availability = updateObj.availability;
-        updateClue.status = updateObj.status;
-
+        if (updateObj.availability){
+            updateClue.availability = updateObj.availability;
+        }
+        if (updateObj.status){
+            updateClue.status = updateObj.status;
+        }
+        if (updateObj.customer_traces){
+            updateClue.customer_traces = updateObj.customer_traces;
+        }
     }
 };
 //标记线索为无效线索后，线索状态变成已跟进，在页面上不展示该条数据
@@ -173,13 +180,13 @@ function getContactWay(contactPhone) {
 ClueCustomerStore.prototype.processForList = function(curClueLists) {
     if (!_.isArray(curClueLists)) return [];
     var list = _.clone(curClueLists);
-    _.map(list, (curCustomer) => {
-        if (_.isArray(curCustomer.contacts)) {
-            for (var j = 0; j < curCustomer.contacts.length; j++) {
-                var contact = curCustomer.contacts[j];
+    _.map(list, (curClue) => {
+        if (_.isArray(curClue.contacts)) {
+            for (var j = 0; j < curClue.contacts.length; j++) {
+                var contact = curClue.contacts[j];
                 if (contact.def_contancts === 'true') {
-                    curCustomer.contact = contact.name;
-                    curCustomer.contact_way = getContactWay(contact.phone);
+                    curClue.contact = contact.name;
+                    curClue.contact_way = getContactWay(contact.phone);
                 }
             }
         }
@@ -237,7 +244,7 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
     }
     if (updateObj.showDetail){
         //新添加的是正在展示的那条线索
-        this.curCustomer = newCustomer;
+        this.curClue = newCustomer;
         this.currentId = newCustomer.id;
     }
 
@@ -265,16 +272,16 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性
-            this.curCustomer[key] = newCustomerDetail[key];
+            this.curClue[key] = newCustomerDetail[key];
         } else {
             //修改联系人的相关属性
             if (key === 'contact_name') {
-                this.curCustomer.contacts[0].name = newCustomerDetail[key];
-                this.curCustomer.contact = newCustomerDetail[key];
+                this.curClue.contacts[0].name = newCustomerDetail[key];
+                this.curClue.contact = newCustomerDetail[key];
             } else {
-                this.curCustomer.contacts[0][key][0] = newCustomerDetail[key];
+                this.curClue.contacts[0][key][0] = newCustomerDetail[key];
                 if (key === 'phone'){
-                    this.curCustomer.contact_way = newCustomerDetail[key];
+                    this.curClue.contact_way = newCustomerDetail[key];
                 }
             }
         }

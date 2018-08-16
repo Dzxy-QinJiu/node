@@ -36,7 +36,9 @@ import {AntcTable} from 'antc';
 import classNames from 'classnames';
 import ClueRightPanel from './views/clue-right-detail';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-
+var timeoutFunc;//定时方法
+var timeout = 1000;//1秒后刷新未读数
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -358,6 +360,7 @@ const ClueCustomer = React.createClass({
         );
     },
     handleSubmitAssignSales: function(item) {
+        var user_id = _.get(item, 'user_id');
         if (!this.state.salesMan) {
             clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
             return;
@@ -386,6 +389,18 @@ const ClueCustomer = React.createClass({
                 if (feedbackObj && feedbackObj.errorMsg) {
                     message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
                 } else {
+                    //如果该账号是管理员角色，分配完毕后要把全局未处理的线索数减一
+                    if (Oplate && Oplate.unread && !user_id && userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+                        Oplate.unread['unhandleClue'] -= 1;
+                        if (timeoutFunc) {
+                            clearTimeout(timeoutFunc);
+                        }
+                        timeoutFunc = setTimeout(function() {
+                            //触发展示的组件待审批数的刷新
+                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+                        }, timeout);
+                    }
+
                     if (this.refs['salesclueitem' + item.id] && this.refs['salesclueitem' + item.id].refs['changesale' + item.id]) {
                         //隐藏批量变更销售面板
                         this.refs['salesclueitem' + item.id].refs['changesale' + item.id].handleCancel();

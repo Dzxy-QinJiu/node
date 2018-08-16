@@ -37,6 +37,9 @@ var contactNameObj = {};
 var socketIo;
 //推送过来新的消息后，将未读数加/减一
 function updateUnreadByPushMessage(type, isAdd) {
+    if(type === 'unhandleClue'){
+        console.log(isAdd);
+    }
     //将未读数加一
     if (Oplate && Oplate.unread) {
         if (Oplate.unread[type]) {
@@ -99,6 +102,16 @@ function listenOnMessage(data) {
             case 'system':
                 //系统通知
                 //notifySystemInfo(data);
+                break;
+            case 'unhandleClue':
+                //如果是管理员，管理员的数量要减一
+                if (userData.hasRole('realm_manager')){
+                    updateUnreadByPushMessage('unhandleClue', true);
+                }else if(userData.hasRole(userData.ROLE_CONSTANS.SALES)){
+                    //如果是销售,数量要加一
+                    updateUnreadByPushMessage('unhandleClue', true);
+                }
+
                 break;
         }
     }
@@ -582,6 +595,8 @@ function unreadListener() {
         socketIo.on('mes', listenOnMessage);
         //监听系统消息
         socketIo.on('system_notice', listenSystemNotice);
+        //监听未处理线索的动态
+        socketIo.on('cluemsg', listenOnMessage);
     }
 }
 //申请审批未读回复的监听
@@ -665,27 +680,43 @@ function getNotificationUnread(queryObj, callback) {
 }
 //获取未处理的线索数量
 function getClueUnreadNum(data, callback){
-    var Deferred = $.Deferred();
     //pageSize设置为0，只取到数据就行
     $.ajax({
         url: '/rest/customer/v2/customer/range/clue/0/start_time/descend',
         dataType: 'json',
         type: 'post',
         data: data,
-        success: function(list) {
-            Deferred.resolve(list);
+        success: data => {
+            var messages = {
+                'unhandleClue': 0
+            };
+            var value = data.total;
+            if (typeof value === 'number' && value > 0) {
+                messages['unhandleClue'] = value;
+            } else if (typeof value === 'string') {
+                var num = parseInt(value);
+                if (!isNaN(num) && num > 0) {
+                    messages['unhandleClue'] = num;
+                }
+            }
+            //更新全局中存的未处理的线索数
+            updateGlobalUnreadStorage(messages);
+            if (typeof callback === 'function') {
+                callback();
+            }
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
         }
     });
-    return Deferred.promise();
 }
 //更新全局变量里存储的未读数，以便在业务逻辑里使用
 function updateGlobalUnreadStorage(unreadObj) {
     if (Oplate && Oplate.unread && unreadObj) {
-        for (var key in Oplate.unread) {
-            Oplate.unread[key] = unreadObj[key] || 0;
+        for (var key in unreadObj){
+            Oplate.unread[key] = unreadObj[key];
         }
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
@@ -696,6 +727,8 @@ function updateGlobalUnreadStorage(unreadObj) {
             notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //待审批数的刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
+            //未处理的线索数量刷新展示
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
         }, timeout);
     }
 }

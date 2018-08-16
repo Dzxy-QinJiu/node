@@ -25,6 +25,9 @@ const RELATEAUTHS = {
 };
 import {SELECT_TYPE, AVALIBILITYSTATUS} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
+var timeoutFunc;//定时方法
+var timeout = 1000;//1秒后刷新未读数
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var ClueDetailOverview = React.createClass({
     getInitialState() {
         return {
@@ -39,12 +42,7 @@ var ClueDetailOverview = React.createClass({
     componentWillReceiveProps(nextProps) {
         //todo 修改某些 && nextProps.curClue.id !== this.props.curClue.id
 
-        if (nextProps.curClue && nextProps.curClue.id !== this.props.curClue.id) {
-            this.setState({
-                curClue: $.extend(true, {}, nextProps.curClue)
-            });
-        }
-        if (nextProps.curClue.id === this.props.curClue.id && nextProps.curClue.status !== this.props.curClue.status){
+        if (nextProps.curClue) {
             this.setState({
                 curClue: $.extend(true, {}, nextProps.curClue)
             });
@@ -166,19 +164,55 @@ var ClueDetailOverview = React.createClass({
         });
     },
     //保存跟进记录内容
-    saveTraceContentInfo: function(saveObj, successFunc, errorFunc) {
+    saveTraceContentInfo: function(remarkContent, saveObj, successFunc, errorFunc) {
+        if (Oplate && Oplate.unread && !remarkContent && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
+            Oplate.unread['unhandleClue'] -= 1;
+            if (timeoutFunc) {
+                clearTimeout(timeoutFunc);
+            }
+            timeoutFunc = setTimeout(function() {
+                //触发展示的组件待审批数的刷新
+                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+            }, timeout);
+        }
         saveObj.customer_id = saveObj.id;
         delete saveObj.id;
         clueCustomerAction.addCluecustomerTrace(saveObj, (result) => {
             if (result && result.error) {
                 if (_.isFunction(errorFunc)) errorFunc(result.errorMsg);
             } else {
+                var curClue = this.state.curClue;
+                curClue.status = SELECT_TYPE.HAS_TRACE;
+                var userId = userData.getUserData().user_id || '';
+                var userName = userData.getUserData().nick_name;
+                var addTime = moment().valueOf();
+                if (!curClue.customer_traces) {
+                    curClue.customer_traces = [
+                        {
+                            remark: saveObj.remark,
+                            user_id: userId,
+                            nick_name: userName,
+                            add_time: addTime
+                        }];
+                } else {
+                    //原来有customer_traces这个属性时，数组中除了remark还有别的属性
+                    curClue.customer_traces[0].remark = saveObj.remark;
+                    curClue.customer_traces[0].user_id = userId;
+                    curClue.customer_traces[0].nick_name = userName;
+                    curClue.customer_traces[0].add_time = addTime;
+                }
+                clueCustomerAction.updateClueProperty({id: saveObj.customer_id,status: SELECT_TYPE.HAS_TRACE,customer_traces: curClue.customer_traces});
+                this.setState({
+                    curClue: curClue
+                });
+
                 if (_.isFunction(successFunc)) successFunc();
             }
         });
     },
     //分配线索给某个销售
     handleChangeAssignedSales: function(submitObj, successFunc, errorFunc) {
+        var user_id = _.get(this.state.curClue,'user_id');
         var targetObj = _.find(this.props.salesManList, (item) => {
             var userId = _.get(item, 'user_info.user_id');
             return userId === submitObj.user_id;
@@ -199,6 +233,17 @@ var ClueDetailOverview = React.createClass({
                     if (_.isFunction(errorFunc)) errorFunc(result.errorMsg);
                 } else {
                     if (_.isFunction(successFunc)) successFunc();
+                    //如果该账号是管理员角色,并且原来该线索没有分配给别人，分配完毕后要把全局未处理的线索数减一
+                    if (Oplate && Oplate.unread && !user_id && userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+                        Oplate.unread['unhandleClue'] -= 1;
+                        if (timeoutFunc) {
+                            clearTimeout(timeoutFunc);
+                        }
+                        timeoutFunc = setTimeout(function() {
+                            //触发展示的组件待审批数的刷新
+                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+                        }, timeout);
+                    }
                     this.setState({
                         clickAssigenedBtn: false
                     });
@@ -206,7 +251,8 @@ var ClueDetailOverview = React.createClass({
                         'user_name': userName,
                         'user_id': submitObj.user_id,
                         'sales_team': teamName,
-                        'sales_team_id': teamId
+                        'sales_team_id': teamId,
+                        'status': SELECT_TYPE.WILL_TRACE
                     });
                 }
             });
@@ -671,7 +717,7 @@ var ClueDetailOverview = React.createClass({
                             <BasicEditInputField
                                 hasEditPrivilege={hasPrivilegeAddEditTrace}
                                 id={curClue.id}
-                                saveEditInput={this.saveTraceContentInfo}
+                                saveEditInput={this.saveTraceContentInfo.bind(this, remarkContent)}
                                 value={remarkContent}
                                 field='remark'
                                 type='textarea'

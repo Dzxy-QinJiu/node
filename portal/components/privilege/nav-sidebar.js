@@ -164,7 +164,8 @@ var NavSidebar = React.createClass({
             messages: {
                 customer: 0,
                 apply: 0,
-                system: 0
+                system: 0,
+                unhandleClue: 0
             },
             //需要加引导功能的某个元素
             $introElement: '',
@@ -260,6 +261,9 @@ var NavSidebar = React.createClass({
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         //待审批数变化后触发
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.refreshNotificationUnread);
+        //todo 待测试
+        //待处理的线索数量变化后触发
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.refreshNotificationUnread);
         this.getHasUnreadReply();
         $(window).on('resize', this.resizeFunction);
         var notificationPrivileges = this.getLinkListByPrivilege(NotificationLinkList);
@@ -356,33 +360,33 @@ var NavSidebar = React.createClass({
             }
         });
     },
-    getNotificationLinks: function(notifications) {
-        var _this = this;
-        var pathname = url.parse(window.location.href).pathname;
-        return (
-            <ul className="ul-unstyled">
-                {
-                    notifications.map(function(obj) {
-                        var cls = classNames({
-                            pad: _this.state.messages[obj.key] > 99
-                        });
-                        var extraClass = classNames({
-                            active: obj.href === pathname
-                        });
-                        return (
-                            <li className={cls} key={obj.key}>
-                                <Link to={obj.href} activeClassName="active">
-                                    {obj.name}
-                                    {_this.state.messages[obj.key] > 0 ? (
-                                        <em>{_this.state.messages[obj.key] > 99 ? '99+' : _this.state.messages[obj.key]}</em>) : null}
-                                </Link>
-                            </li>
-                        );
-                    })
-                }
-            </ul>
-        );
-    },
+    // getNotificationLinks: function(notifications) {
+    //     var _this = this;
+    //     var pathname = url.parse(window.location.href).pathname;
+    //     return (
+    //         <ul className="ul-unstyled">
+    //             {
+    //                 notifications.map(function(obj) {
+    //                     var cls = classNames({
+    //                         pad: _this.state.messages[obj.key] > 99
+    //                     });
+    //                     var extraClass = classNames({
+    //                         active: obj.href === pathname
+    //                     });
+    //                     return (
+    //                         <li className={cls} key={obj.key}>
+    //                             <Link to={obj.href} activeClassName="active">
+    //                                 {obj.name}
+    //                                 {_this.state.messages[obj.key] > 0 ? (
+    //                                     <em>{_this.state.messages[obj.key] > 99 ? '99+' : _this.state.messages[obj.key]}</em>) : null}
+    //                             </Link>
+    //                         </li>
+    //                     );
+    //                 })
+    //             }
+    //         </ul>
+    //     );
+    // },
     //个人信息部分右侧弹框
     getUserInfoLinks: function() {
         //个人资料部分

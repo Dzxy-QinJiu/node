@@ -12,5 +12,7 @@ Oplate.unread = {
     //系统公告未读数
     system: 0,
     //待审批数
-    approve: 0
+    approve: 0,
+    //线索中未处理的线索数量 管理员角色：待分配  销售： 待跟进  运营人员不展示
+    unhandleClue: 0
 };
