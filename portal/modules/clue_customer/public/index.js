@@ -75,8 +75,8 @@ const ClueCustomer = React.createClass({
             //运营人员  管理员、销售领导 默认展示全部线索客户 status对应""
             clueCustomerAction.setFilterType(SELECT_TYPE.ALL);
         } else {
-            //普通销售 销售默认展示已分配的线索客户 status对应1
-            clueCustomerAction.setFilterType(SELECT_TYPE.HAS_DISTRIBUTE);
+            //普通销售 销售默认展示待跟进的线索客户 status对应1
+            clueCustomerAction.setFilterType(SELECT_TYPE.WILL_TRACE);
         }
         this.getClueList();
         this.getUserPhoneNumber();
@@ -278,8 +278,8 @@ const ClueCustomer = React.createClass({
         );
     },
     afterAddClueTrace: function(updateId) {
-        this.updateStatusStatistics(SELECT_TYPE.HAS_DISTRIBUTE,SELECT_TYPE.HAS_TRACE);
-        if (this.state.clueCustomerTypeFilter.status === SELECT_TYPE.HAS_DISTRIBUTE){
+        this.updateStatusStatistics(SELECT_TYPE.WILL_TRACE,SELECT_TYPE.HAS_TRACE);
+        if (this.state.clueCustomerTypeFilter.status === SELECT_TYPE.WILL_TRACE){
             clueCustomerAction.afterAddClueTrace(updateId);
         }
     },
@@ -394,13 +394,13 @@ const ClueCustomer = React.createClass({
                     //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
                     if (this.state.clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE) {
                         clueCustomerAction.afterAssignSales(item.id);
-                        this.updateStatusStatistics(SELECT_TYPE.WILL_DISTRIBUTE, SELECT_TYPE.HAS_DISTRIBUTE);
+                        this.updateStatusStatistics(SELECT_TYPE.WILL_DISTRIBUTE, SELECT_TYPE.WILL_TRACE);
                     } else {
                         item.user_name = sale_name;
                         item.user_id = sale_id;
                         item.sales_team = team_name;
                         item.sales_team_id = team_id;
-                        item.status = SELECT_TYPE.HAS_DISTRIBUTE;
+                        item.status = SELECT_TYPE.WILL_TRACE;
                         this.setState({
                             curClueLists: this.state.curClueLists
                         });
@@ -783,7 +783,7 @@ const ClueCustomer = React.createClass({
                                     </Option> : null}
                                     <Option value="1">
                                         {Intl.get('sales.home.will.trace', '待跟进')}：
-                                        {statusStaticis[SELECT_TYPE.HAS_DISTRIBUTE]}
+                                        {statusStaticis[SELECT_TYPE.WILL_TRACE]}
                                     </Option>
                                     <Option value="2">
                                         {Intl.get('clue.customer.has.follow', '已跟进')}：

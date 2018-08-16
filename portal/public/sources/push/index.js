@@ -20,6 +20,7 @@ import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 const session = storageUtil.session;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -548,8 +549,32 @@ function getMessageCount(callback) {
     } else {
         typeof callback === 'function' && callback();
     }
-
+    //获取线索未处理数的权限（除运营人员外展示）
+    if (hasPrivilege('CLUECUSTOMER_QUERY_MANAGER') || hasPrivilege('CLUECUSTOMER_QUERY_USER') && !userData.hasOnlyRole(userData.ROLE_CONSTANS.OPERATION_PERSON)){
+        let status = '';
+        //如果是域管理员，展示待分配的线索数量
+        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+            status = SELECT_TYPE.WILL_DISTRIBUTE;
+        }else{
+            //销售展示待跟进的线索数量
+            status = SELECT_TYPE.WILL_TRACE;
+        }
+        var data = {
+            clueCustomerTypeFilter: JSON.stringify({status: status}),
+            rangParams: JSON.stringify([{//时间范围参数
+                from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
+                to: moment().valueOf(),
+                type: 'time',
+                name: 'source_time'
+            }]),
+        };
+        if (hasPrivilege('CLUECUSTOMER_QUERY_MANAGER')) {
+            data.hasManageAuth = true;
+        }
+        getClueUnreadNum(data, callback);
+    }
 }
+
 //添加未读数的监听，包括申请审批，系统消息等
 function unreadListener() {
     if (socketIo) {
@@ -637,6 +662,24 @@ function getNotificationUnread(queryObj, callback) {
             }
         }
     });
+}
+//获取未处理的线索数量
+function getClueUnreadNum(data, callback){
+    var Deferred = $.Deferred();
+    //pageSize设置为0，只取到数据就行
+    $.ajax({
+        url: '/rest/customer/v2/customer/range/clue/0/start_time/descend',
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
 }
 //更新全局变量里存储的未读数，以便在业务逻辑里使用
 function updateGlobalUnreadStorage(unreadObj) {

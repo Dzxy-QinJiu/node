@@ -49,7 +49,7 @@ class ClueCustomerSearchBlock extends React.Component {
         let user = userData.getUserData();
         //是否展示全部
         var isShowAll = isOperation() || isSalesLeaderOrManager();
-        var defaultValue = isShowAll ? SELECT_TYPE.ALL : SELECT_TYPE.HAS_DISTRIBUTE;
+        var defaultValue = isShowAll ? SELECT_TYPE.ALL : SELECT_TYPE.WILL_TRACE;
         return (
             <div className="block search-input-select-block" data-tracename="筛选线索客户">
                 <div className="radio-group-wrap">

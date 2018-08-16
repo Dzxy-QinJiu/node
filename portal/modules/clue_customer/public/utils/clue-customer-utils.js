@@ -40,11 +40,11 @@ export const checkEmail = function(rule, value, callback) {
     }
 };
 
-// 全部 "" 待分配 0 已分配 1 已跟进 2
+// 全部 "" 待分配 0 待跟进 1 已跟进 2
 export const SELECT_TYPE = {
     ALL: '',
     WILL_DISTRIBUTE: '0',
-    HAS_DISTRIBUTE: '1',
+    WILL_TRACE: '1',
     HAS_TRACE: '2'
 };
 //线索的有效还是无效状态

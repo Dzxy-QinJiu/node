@@ -14,7 +14,7 @@ function ClueCustomerStore() {
     this.bindActions(ClueCustomerAction);
 }
 ClueCustomerStore.prototype.resetState = function() {
-    var defaultValue = user.isCommonSales ? SELECT_TYPE.HAS_DISTRIBUTE : SELECT_TYPE.ALL;
+    var defaultValue = user.isCommonSales ? SELECT_TYPE.WILL_TRACE : SELECT_TYPE.ALL;
     var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     this.salesManList = [];//销售列表
     this.listenScrollBottom = true;//是否监测下拉加载
