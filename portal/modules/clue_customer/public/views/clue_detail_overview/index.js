@@ -41,7 +41,6 @@ var ClueDetailOverview = React.createClass({
     },
     componentWillReceiveProps(nextProps) {
         //todo 修改某些 && nextProps.curClue.id !== this.props.curClue.id
-
         if (nextProps.curClue) {
             this.setState({
                 curClue: $.extend(true, {}, nextProps.curClue)
