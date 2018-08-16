@@ -3,6 +3,7 @@
  */
 require('./style.less');
 import PropTypes from 'prop-types'; 
+import classNames from 'classnames';
 import { AntcEditableTable } from 'antc';
 import {DetailEditBtn} from '../../rightPanel';
 import SaveCancelButton from '../../detail-card/save-cancel-button';
@@ -181,8 +182,12 @@ class ProductTable extends React.Component {
 
         const appList = _.filter(this.props.appList, app => appNames.indexOf(app.client_name) === -1);
 
+        const className = classNames('product-table', {
+            'is-edit': this.state.isEdit,
+        });
+
         return (
-            <div className="product-table">
+            <div className={className}>
                 {this.state.isEdit || !this.props.isEditBtnShow ? null : (
                     <DetailEditBtn
                         onClick={this.showEdit}
