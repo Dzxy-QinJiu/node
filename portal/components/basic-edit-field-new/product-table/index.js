@@ -216,7 +216,7 @@ class ProductTable extends React.Component {
                 {this.props.isAdd && _.isEmpty(this.state.data) ? null : (
                     <AntcEditableTable
                         isEdit={this.state.isEdit}
-                        onEdit={this.handleChange}
+                        onChange={this.handleChange}
                         columns={this.state.columns}
                         dataSource={this.state.data}
                         bordered={this.props.bordered}
