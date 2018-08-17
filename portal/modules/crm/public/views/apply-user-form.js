@@ -252,7 +252,7 @@ const ApplyUserForm = React.createClass({
         this.setState(this.state);
     },
 
-    handleSubmit: function() {
+    handleSubmit: function(e) {
         e.preventDefault();
         Trace.traceEvent(this.getDOMNode(), '点击确定按钮');
 
