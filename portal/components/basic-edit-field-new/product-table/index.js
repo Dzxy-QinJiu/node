@@ -18,15 +18,26 @@ const APP_DEFAULT_INFO = {
 
 class ProductTable extends React.Component {
     static defaultProps = {
+        //应用列表
         appList: [],
+        //表格列定义
         columns: [],
+        //表格数据
         dataSource: [],
+        //表格是否显示边框
         bordered: true,
-        isAdd: false,
+        //是否显示保存取消按钮
+        isSaveCancelBtnShow: true,
+        //在没有数据时是否显示表格
+        //表格是否处于编辑状态
         isEdit: false,
+        //编辑按钮是否显示
         isEditBtnShow: false,
+        //变更事件，在表格内容变化后会被触发，其回调参数为变化后的表格数据
         onChange: function() {},
+        //保存事件，在点击保存按钮后会被触发，其回调参数为变化后的表格数据
         onSave: function() {},
+        //预设总金额，用于验证所有产品的金额之和是否正确
         totalAmount: 0,
     };
 
@@ -35,7 +46,7 @@ class ProductTable extends React.Component {
         columns: PropTypes.array,
         dataSource: PropTypes.array,
         bordered: PropTypes.bool,
-        isAdd: PropTypes.bool,
+        isSaveCancelBtnShow: PropTypes.bool,
         isEdit: PropTypes.bool,
         isEditBtnShow: PropTypes.bool,
         onChange: PropTypes.func,
@@ -46,7 +57,7 @@ class ProductTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isEdit: this.props.isEdit || this.props.isAdd,
+            isEdit: this.props.isEdit,
             columns: this.getColumns(),
             data: this.props.dataSource,
             loading: false,
@@ -91,6 +102,11 @@ class ProductTable extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (!_.isEqual(this.props.dataSource, nextProps.dataSource)) {
+            this.setState({
+                data: nextProps.dataSource,
+            });
+        }
     }
 
     handleChange = data => {
@@ -98,7 +114,7 @@ class ProductTable extends React.Component {
             data,
             saveErrMsg: '',
         }, () => {
-            if (this.props.isAdd) {
+            if (this.props.onChange) {
                 this.props.onChange(data);
             }
         });
@@ -192,7 +208,7 @@ class ProductTable extends React.Component {
         });
 
         this.setState({data}, () => {
-            if (this.props.isAdd) {
+            if (this.props.onChange) {
                 this.props.onChange(data);
             }
         });
@@ -213,7 +229,7 @@ class ProductTable extends React.Component {
                         onClick={this.showEdit}
                     /> 
                 )}
-                {this.props.isAdd && _.isEmpty(this.state.data) ? null : (
+                {_.isEmpty(this.state.data) ? null : (
                     <AntcEditableTable
                         isEdit={this.state.isEdit}
                         onChange={this.handleChange}
@@ -228,14 +244,14 @@ class ProductTable extends React.Component {
                             appList={appList}
                             getSelectAppList={this.getSelectAppList}
                         /> 
-                        {this.props.isAdd ? null : (
+                        {this.props.isSaveCancelBtnShow ? (
                             <SaveCancelButton
                                 handleSubmit={this.handleSubmit}
                                 handleCancel={this.handleCancel}
                                 loading={this.state.loading}
                                 saveErrorMsg={this.state.saveErrMsg}
                             /> 
-                        )}
+                        ) : null}
                     </div>
                 ) : null}
             </div>

@@ -207,7 +207,8 @@ const Contract = React.createClass( {
                         <FormItem {...formItemLayout} label={Intl.get('contract.95', '产品信息')}>
                             <ProductTable
                                 appList={this.props.appList}
-                                isAdd={true}
+                                isEdit={true}
+                                isSaveCancelBtnShow={false}
                                 onChange={this.handleProductChange}
                             />
                         </FormItem>
