@@ -37,16 +37,15 @@ var contactNameObj = {};
 var socketIo;
 //推送过来新的消息后，将未读数加/减一
 function updateUnreadByPushMessage(type, isAdd) {
-    if(type === 'unhandleClue'){
-        console.log(isAdd);
-    }
     //将未读数加一
     if (Oplate && Oplate.unread) {
         if (Oplate.unread[type]) {
+            //分配线索这里，会有批量分配的情况
+            var count = _.isNumber(isAdd) ? isAdd : 1;
             if (isAdd) {
-                Oplate.unread[type] += 1;
+                Oplate.unread[type] += count;
             } else {
-                Oplate.unread[type] -= 1;
+                Oplate.unread[type] -= count;
             }
         } else {
             Oplate.unread[type] = isAdd ? 1 : 0;
@@ -60,6 +59,8 @@ function updateUnreadByPushMessage(type, isAdd) {
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //刷新未读消息数
             notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
+            //刷新线索未处理的数量
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
         }, timeout);
     }
 }
@@ -103,16 +104,33 @@ function listenOnMessage(data) {
                 //系统通知
                 //notifySystemInfo(data);
                 break;
-            case 'unhandleClue':
-                //如果是管理员，管理员的数量要减一
-                if (userData.hasRole('realm_manager')){
-                    updateUnreadByPushMessage('unhandleClue', true);
-                }else if(userData.hasRole(userData.ROLE_CONSTANS.SALES)){
-                    //如果是销售,数量要加一
-                    updateUnreadByPushMessage('unhandleClue', true);
-                }
-
-                break;
+        }
+    }
+}
+//处理线索的数据
+function clueUnhandledListener(data) {
+    //只有管理员或者运营人员才处理
+    if (_.isObject(data) && getClueUnhandledPrivilege()) {
+        updateUnreadByPushMessage('unhandleClue', data.clue_list.length);
+        var clueArr = _.get(data, 'clue_list');
+        var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
+        if (canPopDesktop()) {
+            _.each(clueArr, (clueItem) => {
+                tipContent += clueItem.name + '\n';
+            });
+            //桌面通知的展示
+            showDesktopNotification(title, tipContent, true);
+        } else {//系统弹出通知
+            var clueHtml = '';
+            _.each(clueArr, (clueItem) => {
+                clueHtml += '<p class=\'clue-item\'>' + '<span class=\'clue-name\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(' + JSON.stringify(clueItem.id) + ')\'>' + clueItem.name + '</span>' + '</p>';
+            });
+            tipContent = `<div>${clueHtml}</div>`;
+            notificationUtil.showNotification({
+                title: title,
+                content: tipContent,
+                closeWith: ['button']
+            });
         }
     }
 }
@@ -314,6 +332,12 @@ window.handleClickPhone = function(phoneObj) {
         phoneNumber: phoneNumber//拨打的电话
     });
 };
+//点击展开线索详情
+window.handleClickClueName = function(clueId) {
+    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .clue-item .clue-name'), '打开线索详情');
+    //展示线索详情
+    notificationEmitter.emit(notificationEmitter.SHOW_CLUE_DETAIL,{clueId: clueId});
+};
 
 // 获取拨打电话的座机号
 function getUserPhoneNumber() {
@@ -497,6 +521,7 @@ function disconnectListener() {
         socketIo.off('scheduleAlertMsg', scheduleAlertListener);
         socketIo.off('system_notice', listenSystemNotice);
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
+        socketIo.off('cluemsg', clueUnhandledListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -525,6 +550,7 @@ function startSocketIo() {
         socketIo.on('scheduleAlertMsg', scheduleAlertListener);
         //申请审批未读回复的监听
         socketIo.on('apply_unread_reply', applyUnreadReplyListener);
+        socketIo.on('cluemsg', clueUnhandledListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
@@ -533,7 +559,10 @@ function startSocketIo() {
         notificationCheckPermission();
     });
 }
-
+//获取线索未处理的权限
+function getClueUnhandledPrivilege(){
+    return hasPrivilege('CLUECUSTOMER_QUERY_MANAGER') || hasPrivilege('CLUECUSTOMER_QUERY_USER') && !userData.hasOnlyRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+}
 /**
  * 获取消息数
  * @param callback 获取消息数后的回调函数
@@ -563,7 +592,7 @@ function getMessageCount(callback) {
         typeof callback === 'function' && callback();
     }
     //获取线索未处理数的权限（除运营人员外展示）
-    if (hasPrivilege('CLUECUSTOMER_QUERY_MANAGER') || hasPrivilege('CLUECUSTOMER_QUERY_USER') && !userData.hasOnlyRole(userData.ROLE_CONSTANS.OPERATION_PERSON)){
+    if (getClueUnhandledPrivilege()){
         let status = '';
         //如果是域管理员，展示待分配的线索数量
         if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
@@ -595,8 +624,6 @@ function unreadListener() {
         socketIo.on('mes', listenOnMessage);
         //监听系统消息
         socketIo.on('system_notice', listenSystemNotice);
-        //监听未处理线索的动态
-        socketIo.on('cluemsg', listenOnMessage);
     }
 }
 //申请审批未读回复的监听

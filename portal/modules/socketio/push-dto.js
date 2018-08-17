@@ -78,7 +78,6 @@ exports.clueMsgToFrontend = function(clueMsg) {
     return {
         message_type: 'unhandleClue',//线索的类型
         member_id: clueMsg.user_id,//分配给谁的线索
-        clue_id: clueMsg.clue_id, //线索的id
-        clue_name: clueMsg.clue_name,//线索的名称
+        clue_list: _.get(clueMsg,'clue_list',[]),//线索id和name的列表
     };
 };
