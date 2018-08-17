@@ -60,7 +60,7 @@ class ClueRightPanel extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         //如果有更改后，id不变，但是属性有变化  && nextProps.curClue.id !== this.props.curClue.id
-        if (nextProps.curClue && !_.isEmpty(nextProps.curClue)) {
+        if (_.get(nextProps.curClue,'id')) {
             this.setState({
                 curClue: $.extend(true, {}, nextProps.curClue)
             });

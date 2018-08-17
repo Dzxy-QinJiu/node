@@ -41,7 +41,7 @@ var ClueDetailOverview = React.createClass({
     },
     componentWillReceiveProps(nextProps) {
         //修改某些属性时，线索的id不变，但是需要更新一下curClue所以不加 nextProps.curClue.id !== this.props.curClue.id 这个判断了
-        if (nextProps.curClue) {
+        if (_.get(nextProps.curClue,'id')) {
             this.setState({
                 curClue: $.extend(true, {}, nextProps.curClue)
             });
