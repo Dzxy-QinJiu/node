@@ -20,6 +20,9 @@ var tabNameList = {
 var noop = function() {
 
 };
+const DYNAMICHEIGHT = {
+    LAYOUT: 130
+};
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import ClueDynamic from '../views/dynamic';
 import ClueBasicInfo from '../views/clue_detail_overview';
@@ -41,7 +44,8 @@ class ClueRightPanel extends React.Component {
             curClue: $.extend(true, {}, this.props.curClue),
             isRemoveClue: {},//正在删除的那条线索
             relatedCustomer: {},//与线索相关联的客户
-            isDeletingClue: false//正在删除线索
+            isDeletingClue: false,//正在删除线索
+            tabsContainerHeight: 'auto'
         };
     }
 
@@ -56,8 +60,16 @@ class ClueRightPanel extends React.Component {
         this.getClueChannel();
         this.getClueClassify();
         this.getSaleTeamList();
+        this.setTabsContainerHeight();
+        $(window).resize(e => {
+            e.stopPropagation();
+            this.setTabsContainerHeight();
+        });
     };
-
+    setTabsContainerHeight = () => {
+        let tabsContainerHeight = $('body').height() - $('.clue-detail-content').outerHeight(true);
+        this.setState({tabsContainerHeight: tabsContainerHeight});
+    };
     componentWillReceiveProps(nextProps) {
         //如果有更改后，id不变，但是属性有变化  && nextProps.curClue.id !== this.props.curClue.id
         if (_.get(nextProps.curClue,'id')) {
@@ -67,6 +79,7 @@ class ClueRightPanel extends React.Component {
         } else if (nextProps.currentId !== this.props.currentId && nextProps.currentId) {
             this.getCurClue(nextProps.currentId);
         }
+        this.setTabsContainerHeight();
     }
 
     getCurClue = (id) => {
@@ -89,7 +102,7 @@ class ClueRightPanel extends React.Component {
     getSaleTeamList = () => {
         clueCustomerAjax.getSalesManList().then(data => {
             this.setState({
-                salesManList: data
+                salesManList: _.filter(data, sales => sales && sales.user_info && sales.user_info.status === 1)
             });
         });
     };
@@ -188,6 +201,7 @@ class ClueRightPanel extends React.Component {
     };
     //确认删除某条线索
     handleConfirmDeleteClue = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.delete-modal'), '确认删除线索');
         this.setState({
             isDeletingClue: true
         });
@@ -209,6 +223,7 @@ class ClueRightPanel extends React.Component {
     };
     //取消删除某条线索
     cancelDeleteClue = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.delete-modal'), '取消删除线索');
         this.setState({
             isRemoveClue: {}
         });
@@ -224,13 +239,14 @@ class ClueRightPanel extends React.Component {
         var curClue = this.state.curClue;
         //是否没有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
+        var divHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
         return (
             <RightPanel
                 className="clue_customer_rightpanel white-space-nowrap"
-                showFlag={this.props.showFlag} data-tracename="展示销售线索客户">
-                <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel}></span>
+                showFlag={this.props.showFlag} data-tracename="线索详情面板">
+                <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel} data-tracename="关闭线索详情面板"></span>
                 {this.state.getClueDetailErrMsg ? <div className="no-data-tip">{this.state.getClueDetailErrMsg}</div> :
-                    <div className="clue-detail-wrap">
+                    <div className="clue-detail-wrap" data-tracename="线索详情">
                         <div className="clue-basic-info-container">
                             <div className="clue-name-wrap">
                                 {renderClueStatus(curClue.status)}
@@ -241,17 +257,17 @@ class ClueRightPanel extends React.Component {
                                         saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
                                         value={curClue.name}
                                         field='name'
+                                        placeholder={Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')}
                                     />
                                 </div>
-                                {hasPrivilege('CLUECUSTOMER_DELETE') ?
-                                    <div className="remove-clue">
-                                        <i className="iconfont icon-delete"
-                                            onClick={this.handleRemoveClue.bind(this, curClue)}></i>
-                                    </div> : null}
-
                             </div>
+                            {hasPrivilege('CLUECUSTOMER_DELETE') ?
+                                <div className="remove-clue">
+                                    <i className="iconfont icon-delete"
+                                        onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
+                                </div> : null}
                         </div>
-                        <div className="clue-detail-content">
+                        <div className="clue-detail-content" >
                             <Tabs
                                 defaultActiveKey={TAB_KEYS.OVERVIEW_TAB}
                                 activeKey={this.state.activeKey}
@@ -271,6 +287,8 @@ class ClueRightPanel extends React.Component {
                                             updateClueChannel={this.updateClueChannel}
                                             updateClueClassify={this.updateClueClassify}
                                             salesManList={this.state.salesManList}
+                                            divHeight={divHeight}
+
                                         />
                                     ) : null}
                                 </TabPane>
@@ -281,6 +299,7 @@ class ClueRightPanel extends React.Component {
                                     {this.state.activeKey === TAB_KEYS.DYNAMIC_TAB ? (
                                         <ClueDynamic
                                             currentId={curClue.id}
+                                            divHeight={divHeight}
                                         />
                                     ) : null}
                                 </TabPane>

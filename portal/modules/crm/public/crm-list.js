@@ -949,17 +949,17 @@ var Crm = React.createClass({
         const loading = this.state.isImporting || false;
 
         return (
-            <div>
+            <div data-tracename="导入预览">
                 {repeatCustomer ? (
                     <span className="import-warning">
                         {Intl.get('crm.210', '存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入')}
                     </span>
                 ) : null}
-                <Button type="ghost" onClick={this.cancelImport}>
+                <Button type="ghost" onClick={this.cancelImport} data-tracename="点击取消导入按钮">
                     {Intl.get('common.cancel', '取消')}
                 </Button>
                 {!repeatCustomer ? (
-                    <Button type="primary" onClick={this.doImport} loading={loading}>
+                    <Button type="primary" onClick={this.doImport} loading={loading} data-tracename="点击确定导入按钮">
                         {Intl.get('common.sure', '确定') + Intl.get('common.import', '导入')}
                     </Button>
                 ) : null}
@@ -1115,7 +1115,7 @@ var Crm = React.createClass({
     },
 
     //删除导入预览中的重复客户
-    deleteDuplicatImportCustomer(index) {
+    deleteDuplicatImportCustomer(index, e) {
         const route = _.find(routeList, route => route.handler === 'deleteDuplicatImportCustomer');
 
         const params = {
@@ -1127,8 +1127,9 @@ var Crm = React.createClass({
             type: route.method,
             params: params
         };
-
+        Trace.traceEvent(e, '点击删除重复客户按钮');
         ajax(arg).then(result => {
+        //    Trace.traceEvent('导入预览', '点击删除重复客户按钮');
             if (result && result.result === 'success') {
                 this.state.previewList.splice(index, 1);
                 this.setState(this.state);
@@ -1138,6 +1139,7 @@ var Crm = React.createClass({
         }, () => {
             message.error(Intl.get('crm.delete.duplicate.customer.failed', '删除重复客户失败'));
         });
+        return e.stopPropagation();
     },
     toggleList() {
         this.setState({
@@ -1324,7 +1326,7 @@ var Crm = React.createClass({
                     const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
 
                     return (
-                        <span className="cus-op">
+                        <span className="cus-op" data-tracename="导入预览">
                             {isDeleteBtnShow ? (
                                 <Button className="order-btn-class" icon="delete"
                                     onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
@@ -1371,7 +1373,7 @@ var Crm = React.createClass({
             'content-full': !this.state.showFilterList
         });
         return (<RightContent>
-            <div className="crm_content" data-tracename="客户列表">
+            <div className="crm_content">
                 {
                     !this.props.fromSalesHome ?
                         <div className="top-nav-border-fix">

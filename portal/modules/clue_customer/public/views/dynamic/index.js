@@ -12,13 +12,10 @@ var TimeLine = require('CMP_DIR/time-line');
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import CustomerDetail from 'MOD_DIR/crm/public/views/customer-detail';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-const DYNAMICHEIGHT = {
-    LAYOUT: 130
-};
+
 
 var Dynamic = React.createClass({
     getInitialState: function() {
@@ -27,7 +24,7 @@ var Dynamic = React.createClass({
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             ...DynamicStore.getState(),
-            windowHeight: $(window).height()
+            divHeight: this.props.divHeight
         };
     },
     onStoreChange: function() {
@@ -43,6 +40,11 @@ var Dynamic = React.createClass({
             DynamicAction.setInitialData();
             setTimeout(() => {
                 DynamicAction.getDynamicList(nextProps.currentId,this.state.pageSize);
+            });
+        }
+        if (nextProps.divHeight !== this.props.divHeight){
+            this.setState({
+                divHeight: nextProps.divHeight
             });
         }
     },
@@ -90,7 +92,7 @@ var Dynamic = React.createClass({
             <dl>
                 <dd>
                     {item.message}
-                    {item.relate_name && item.relate_id ? <span className="relete-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)}>{item.relate_name}</span> : null}
+                    {item.relate_name && item.relate_id ? <span className="relete-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)} data-tracename="查看客户详情">{item.relate_name}</span> : null}
                 </dd>
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
@@ -103,10 +105,10 @@ var Dynamic = React.createClass({
         });
     },
     render: function() {
-        var divHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
-            <div className="clue-customer-dynamic" style={{height: divHeight}} >
+            <div className="clue-customer-dynamic" style={{height: this.state.divHeight}} data-tracename="线索变更记录">
                 <GeminiScrollbar
                     // handleScrollBottom={this.handleScrollBarBottom}
                     // listenScrollBottom={this.state.listenScrollBottom}

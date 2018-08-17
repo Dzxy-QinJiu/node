@@ -202,8 +202,8 @@ var AppUserCustomerSwitch = React.createClass({
     },
     componentWillUpdate: function(nextProps, nextState) {
         if (
-            (this.state.customerUserPage != nextState.customerUserPage) ||
-            (this.state.searchKeyword != nextState.searchKeyword)
+            (this.state.customerUserPage !== nextState.customerUserPage) ||
+            (this.state.searchKeyword !== nextState.searchKeyword)
         ) {
             this.fetchCustomerUserList(nextState);
         }
@@ -284,11 +284,11 @@ var AppUserCustomerSwitch = React.createClass({
                                     searchEvent={this.searchInputEvent}
                                 />
                             </div>
-                            <div className="inline-block add-btn" onClick={this.showApplyForm}>
+                            <div className="inline-block add-btn" onClick={this.showApplyForm} data-tracename="用户详情">
                                 <ReactIntl.FormattedMessage id="user.user.applies" defaultMessage="用户申请" />
                                 
                             </div>
-                            <div className="inline-block add-btn" onClick={this.back}>
+                            <div className="inline-block add-btn" onClick={this.back} data-tracename="点击返回按钮">
                                 <ReactIntl.FormattedMessage id="crm.52" defaultMessage="返回" />
                             </div>
                         </div>

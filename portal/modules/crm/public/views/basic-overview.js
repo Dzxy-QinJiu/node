@@ -25,7 +25,9 @@ import RightPanelScrollBar from './components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
-
+const PRIVILEGE_MAP = {
+    USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS'//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
+};
 var BasicOverview = React.createClass({
     getInitialState: function() {
         let customerRecordState = CustomerRecordStore.getState();
@@ -92,7 +94,9 @@ var BasicOverview = React.createClass({
         this.getRecommendTags();
         this.getCompetitorList();
         setTimeout(() => {
-            this.getCrmUserList(this.props.curCustomer);
+            if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
+                this.getCrmUserList(this.props.curCustomer);
+            }
         });
     },
     getAppList: function() {
@@ -157,7 +161,9 @@ var BasicOverview = React.createClass({
         basicOverviewAction.getBasicData(nextProps.curCustomer);
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
             setTimeout(() => {
-                this.getCrmUserList(nextProps.curCustomer);
+                if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
+                    this.getCrmUserList(nextProps.curCustomer);
+                }
                 if (this.state.callNumber) {
                     //有坐席号，需要展示未处理的电联的联系计划
                     this.getNotCompletedScheduleList(nextProps.curCustomer);
@@ -465,7 +471,8 @@ var BasicOverview = React.createClass({
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {_.get(basicData, 'app_user_ids[0]') ? this.renderExpireTip() : this.renderApplyUserBlock()}
+                    {hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
+                        this.renderExpireTip() : this.renderApplyUserBlock()}
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}

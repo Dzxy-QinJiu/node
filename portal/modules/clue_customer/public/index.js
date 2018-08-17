@@ -203,7 +203,7 @@ const ClueCustomer = React.createClass({
         });
     },
     showClueAddForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击添加销售线索按钮');
+        Trace.traceEvent($(this.getDOMNode()).find('.add-clue-customer-container'), '点击添加销售线索按钮');
         this.setState({
             clueAddFormShow: true
         });
@@ -321,7 +321,6 @@ const ClueCustomer = React.createClass({
                         callNumber={this.state.callNumber}
                         errMsg={this.state.errMsg}
                         afterAddClueTrace={this.afterAddClueTrace}
-                        salesManList={this.state.salesManList}
                         getSelectContent={this.setSelectContent}
                         onSalesmanChange={this.onSalesmanChange}
                         salesMan={this.state.salesMan}
@@ -501,6 +500,7 @@ const ClueCustomer = React.createClass({
         this.onTypeChange();
     },
     onStatusChange: function(value) {
+
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.type-container'), '点击切换筛选线索客户类型');
         var clueCustomerTypeFilter = this.state.clueCustomerTypeFilter;
         clueCustomerTypeFilter.status = value;
@@ -598,11 +598,11 @@ const ClueCustomer = React.createClass({
         });
     },
     searchFullTextEvent: function(keyword) {
+        Trace.traceEvent($(this.getDOMNode()).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
         clueCustomerAction.setKeyWord(keyword);
         //如果keyword不存在，就用获取线索的接口
         this.onTypeChange();
-
     },
     renderImportModalFooter: function() {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
@@ -773,7 +773,7 @@ const ClueCustomer = React.createClass({
         var isOperationOrManager = this.isOperation() || this.isRealmManager();
         return (
             <RightContent>
-                <div className="clue_customer_content" data-tracename="线索客户列表">
+                <div className="clue_customer_content" data-tracename="线索列表">
                     <TopNav>
                         <div className="date-picker-wrap">
                             <span className="consult-time">{Intl.get('clue.analysis.consult.time', '咨询时间')}</span>

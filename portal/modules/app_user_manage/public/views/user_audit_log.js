@@ -133,6 +133,7 @@ var LogView = React.createClass({
     // 选择应用
     selectApp: function(app_id) {
         UserAuditLogAction.setUserLogSelectedAppId(app_id);
+        Trace.traceEvent('用户审计日志','点击筛选菜单中的应用');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         this.getAuditLog({
             appid: app_id,
@@ -142,6 +143,7 @@ var LogView = React.createClass({
 
     // 搜索框
     handleSearchEvent: function(inputContent) {
+        Trace.traceEvent('用户审计日志','搜索框输入');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         inputContent = inputContent ? inputContent : '';
         if (inputContent.trim() !== this.state.searchName.trim()) {
@@ -398,6 +400,7 @@ var LogView = React.createClass({
                 user_type: this.state.userType
             });
         });
+        Trace.traceEvent('用户审计日志', '用户筛选');
 
     },
 
@@ -424,7 +427,7 @@ var LogView = React.createClass({
                 <TopNav>
                     <TopNav.MenuList />
                     <div className="user_audit_log_header">
-                        <div className="user_audit_log_select_time">
+                        <div className="user_audit_log_select_time" data-tracename="时间筛选">
                             <DatePicker
                                 disableDateAfterToday={true}
                                 dateSelectRange={THREE_MONTH_TIME_RANGE}

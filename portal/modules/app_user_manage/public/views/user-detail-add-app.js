@@ -1192,11 +1192,11 @@ var UserDetailAddApp = React.createClass({
                                         this.renderIndicator()
                                     }
                                 </div>
-                                <div className="pull-right">
-                                    <RightPanelCancel onClick={this.cancel}>
+                                <div className="pull-right" data-tracename="批量变更">
+                                    <RightPanelCancel onClick={this.cancel} data-tracename="点击取消按钮">
                                         <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
                                     </RightPanelCancel>
-                                    <RightPanelSubmit onClick={this.handleSubmit}>
+                                    <RightPanelSubmit onClick={this.handleSubmit} data-tracename="点击确定按钮">
                                         <ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" />
                                     </RightPanelSubmit>
                                 </div>

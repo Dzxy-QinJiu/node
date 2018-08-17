@@ -78,7 +78,7 @@ OpenAppStore.prototype.changeRoleItemEdit = function({ index, isShow, isCancel, 
 OpenAppStore.prototype.openApp = resultHandler('openAppResult');
 
 OpenAppStore.prototype.changeAppStatus = function(app) {
-    this.appList.data.find(x => x.id === app.id).visible = true;
+    this.appList.data.find(x => x.role_id === app.role_id).status = true;
 };
 
 module.exports = alt.createStore(OpenAppStore, 'OpenAppStore');

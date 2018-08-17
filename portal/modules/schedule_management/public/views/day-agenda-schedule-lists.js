@@ -144,12 +144,12 @@ class DayAgendaScheduleLists extends React.Component {
                                 <i className="iconfont icon-contact"></i>
                                 {contact.name}
                             </div>
-                            <div className="contacts-phone-content">
+                            <div className="contacts-phone-content" data-tracename="联系人电话列表">
                                 {_.map(contact.phone, (phone) => {
                                     return (
                                         <div className="phone-item">
                                             {phone}
-                                            <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)}>
+                                            <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)} data-tracename="拨打电话">
                                                 {Intl.get('schedule.call.out','拨打')}
                                             </Button>
                                         </div>

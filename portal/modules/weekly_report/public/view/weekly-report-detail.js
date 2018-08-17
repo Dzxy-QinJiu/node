@@ -20,6 +20,10 @@ var CLASSNAMES = {
     ALIGNLEFT: 'table-data-align-left',
     ALIGNRIGHT: 'table-data-align-right'
 };
+//权限常量
+const PRIVILEGE_MAP = {
+    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
+};
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
 const WeeklyReportDetail = React.createClass({
     getDefaultProps() {
@@ -99,8 +103,10 @@ const WeeklyReportDetail = React.createClass({
         //不加延时会报错
         setTimeout(() => {
             this.getCallInfoData();// 接通率
-            this.getContractData();//获取合同信息
-            this.getRepaymentData();//获取回款信息
+            if (hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE)) {
+                this.getContractData();//获取合同信息
+                this.getRepaymentData();//获取回款信息
+            }
             this.getRegionOverlayData();//获取区域分布信息
             this.getCustomerStageData();//获取客户阶段信息
         });
@@ -131,7 +137,7 @@ const WeeklyReportDetail = React.createClass({
             //更新考核天数
             item.real_work_day = item.real_work_day - addLeaveItem.leave_days;
             //日接通数保留整数
-            item.average_num = formatRoundingData(item.total_callout_success / item.real_work_day,0);
+            item.average_num = formatRoundingData(item.total_callout_success / item.real_work_day, 0);
             //日均时长保留一位小数
             item.average_time = formatRoundingData(item.total_time / item.real_work_day, 1);
             this.setState({
@@ -164,7 +170,7 @@ const WeeklyReportDetail = React.createClass({
                         if (updateObj.leave_days) {
                             obj.real_work_day = obj.real_work_day + (initailObj.leave_days - updateObj.leave_days);
                             //日接通数保留整数
-                            obj.average_num = formatRoundingData(obj.total_callout_success / obj.real_work_day,0);
+                            obj.average_num = formatRoundingData(obj.total_callout_success / obj.real_work_day, 0);
                             //日均时长保留一位小数
                             obj.average_time = formatRoundingData(obj.total_time / obj.real_work_day, 1);
                             initailObj.leave_days = updateObj.leave_days;
@@ -204,7 +210,7 @@ const WeeklyReportDetail = React.createClass({
                         if (item.id === removedId) {
                             Obj.real_work_day = Obj.real_work_day + deleteItem.leave_days;
                             //日接通数保留整数
-                            Obj.average_num = formatRoundingData(Obj.total_callout_success / Obj.real_work_day,0);
+                            Obj.average_num = formatRoundingData(Obj.total_callout_success / Obj.real_work_day, 0);
                             //日均时长保留一位小数
                             Obj.average_time = formatRoundingData(Obj.total_time / Obj.real_work_day, 1);
                             Obj.leave_info_list.splice(index, 1);
@@ -388,7 +394,7 @@ const WeeklyReportDetail = React.createClass({
                 var userObj = _.find(_this.props.memberList.list, (item) => {
                     return item.name === record.name;
                 });
-                var userId = _.get(userObj,'id','');
+                var userId = _.get(userObj, 'id', '');
                 //正在添加请假信息
                 var isAdding = _this.state.isAddingLeaveUserId === userId ? true : false;
                 //没有请假信息的时候,是全勤的
@@ -685,16 +691,18 @@ const WeeklyReportDetail = React.createClass({
                                 {this.renderDiffTypeTable('regionOverlay')}
                             </AntcCardContainer>
                         </div>
-                        <div className="contract-info-wrap">
-                            <AntcCardContainer title={Intl.get('weekly.report.contract', '合同情况')}>
-                                {this.renderDiffTypeTable('contactInfo')}
-                            </AntcCardContainer>
-                        </div>
-                        <div className="repayment-info-wrap">
-                            <AntcCardContainer title={Intl.get('weekly.report.repayment', '回款情况')}>
-                                {this.renderDiffTypeTable('repaymentInfo')}
-                            </AntcCardContainer>
-                        </div>
+                        {hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) ? (
+                            <div className="contract-info-wrap">
+                                <AntcCardContainer title={Intl.get('weekly.report.contract', '合同情况')}>
+                                    {this.renderDiffTypeTable('contactInfo')}
+                                </AntcCardContainer>
+                            </div>) : null}
+                        {hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) ? (
+                            <div className="repayment-info-wrap">
+                                <AntcCardContainer title={Intl.get('weekly.report.repayment', '回款情况')}>
+                                    {this.renderDiffTypeTable('repaymentInfo')}
+                                </AntcCardContainer>
+                            </div>) : null}
                     </GeminiScrollbar>
                 </div>
             </div>

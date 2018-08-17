@@ -181,8 +181,10 @@ var AppUserManage = React.createClass({
         ShareObj.app_id = '';
         ShareObj.share_app_list = [];
     },
-    addAppUser: function() {
+    addAppUser: function(e) {
+        Trace.traceEvent(e,'添加用户');
         AppUserAction.showAppUserForm();
+        return e.stopPropagation();
     },
     //显示用户表单
     showAddUserForm: function() {
@@ -254,7 +256,8 @@ var AppUserManage = React.createClass({
         }
     },
     //切换筛选状态
-    toggleFilterArea: function() {
+    toggleFilterArea: function(e) {
+        Trace.traceEvent(e,'点击筛选按钮');
         AppUserAction.toggleFilterExpanded();
     },
     //是否有添加用户按钮
@@ -287,7 +290,8 @@ var AppUserManage = React.createClass({
             email_user_names: email_user_names.join('、')
         };
     },
-    showBatchOperate: function() {
+    showBatchOperate: function(e) {
+        Trace.traceEvent(e,'已有用户-批量变更');
         AppUserAction.showBatchOperate();
     },
     //获取缩放时候的批量操作按钮
@@ -371,10 +375,12 @@ var AppUserManage = React.createClass({
     appsSelectorLayout: function() {
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     },
-    showRecentLoginPanel: function() {
+    showRecentLoginPanel: function(e) {
+        Trace.traceEvent(e,'打开查看近期登陆用户列表');
         AppUserAction.setRecentLoginPanelFlag(true);
     },
-    hideRecentLoginPanel: function() {
+    hideRecentLoginPanel: function(e) {
+        Trace.traceEvent(e,'关闭查看近期登录用户列表');
         AppUserAction.setRecentLoginPanelFlag(false);
     },
     //关闭属于某个客户的用户列表
@@ -456,7 +462,7 @@ var AppUserManage = React.createClass({
         var showFilterBtn = this.state.selectedAppId;
         return (
             <div>
-                <div className="app_user_manage_page table-btn-fix">
+                <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
                     <TopNav>
                         <TopNav.MenuList />
                         {/*如果是从客户页面跳转过来的，增加一个返回按钮*/}
@@ -468,7 +474,7 @@ var AppUserManage = React.createClass({
                                 </div>
                             </div>
                             : null}
-                        <div className={topNavRightClass}>
+                        <div className={topNavRightClass} data-tracename="已有用户">
                             {
                                 showFilterBtn ? <FilterBtn
                                     expanded={this.state.filterAreaExpanded}
@@ -543,6 +549,7 @@ var AppUserManage = React.createClass({
                 <RightPanel
                     className="recent_login_users_panel"
                     showFlag={this.state.isShowRecentLoginPanel}
+                    data-tracename="查看近期登录用户列表"
                 >
                     {this.state.isShowRecentLoginPanel ? (<RecentLoginUsersPanel
                         teamlists={this.state.filterTeams.teamlists}

@@ -1,8 +1,8 @@
 //用户详情添加switch切换逻辑
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-detail-field-switch-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../css/user-detail-field-switch-zh_CN.less');
 }
 
@@ -48,7 +48,7 @@ var UserDetailFieldSwitch = React.createClass({
         };
     },
     componentWillReceiveProps: function(nextProps) {
-        if(nextProps.originValue != this.props.originValue) {
+        if(nextProps.originValue !== this.props.originValue) {
             this.setState({
                 value: nextProps.originValue
             });
@@ -70,7 +70,7 @@ var UserDetailFieldSwitch = React.createClass({
             client_id: this.props.appId
         };
         //当前是否选中
-        var checked = this.state.value == this.props.checkedValue;
+        var checked = this.state.value === this.props.checkedValue;
         //添加提交字段
         submitObj[this.props.field] = checked ? this.props.checkedSubmitValue : this.props.unCheckedSubmitValue;
         return submitObj;
@@ -90,7 +90,7 @@ var UserDetailFieldSwitch = React.createClass({
                 resultType: '',
                 errorMsg: ''
             });
-            //multilogin这个字段太各应了！覃璐和郑鹏飞都写的是错的
+            //multilogin这个字段太膈应了！覃璐和郑鹏飞都写的是错的
             var successObj = {
                 user_id: submitObj.user_id,
                 client_id: submitObj.client_id
@@ -117,6 +117,11 @@ var UserDetailFieldSwitch = React.createClass({
         });
         clearTimeout(this.state.timeout);
         this.state.timeout = setTimeout(this.sendAjax , 500);
+        if(checked){
+            Trace.traceEvent('用户详情','开通产品-点击开启switch');
+        }else{
+            Trace.traceEvent('用户详情','开通产品-点击关闭switch');
+        }
     },
     onHideAlert: function() {
         this.setState({
@@ -134,7 +139,7 @@ var UserDetailFieldSwitch = React.createClass({
         return (
             <div className={CLS}>
                 <Switch
-                    checked={this.state.value == this.props.checkedValue}
+                    checked={this.state.value === this.props.checkedValue}
                     checkedChildren={this.props.checkedChildren}
                     unCheckedChildren={this.props.unCheckedChildren}
                     onChange={this.onSwitchChange}

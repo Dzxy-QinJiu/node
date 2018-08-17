@@ -73,11 +73,13 @@ class SalesClueItem extends React.Component {
     }
 
     handleEditTrace = (updateItem) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
         this.setState({
             isEdittingItem: updateItem
         });
     };
     handleCancelBtn = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '取消保存跟进内容');
         this.setState({
             submitTraceErrMsg: '',
             isEdittingItem: {},
@@ -183,7 +185,8 @@ class SalesClueItem extends React.Component {
                     onChange={this.handleInputChange}/>
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleSubmitContent.bind(this, salesClueItem)}
-                        disabled={this.state.submitTraceLoading}>{Intl.get('common.save', '保存')}
+                        disabled={this.state.submitTraceLoading} data-tracename="保存跟进内容">
+                        {Intl.get('common.save', '保存')}
                         {this.state.submitTraceLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className='cancel-btn'
@@ -305,7 +308,7 @@ class SalesClueItem extends React.Component {
         var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability !== '1';
-        return <div className={cls}>
+        return <div className={cls} data-tracename="线索详情操作区域">
             {/*有跟进记录*/}
             {traceContent ?
                 <div className="record-trace-container">
@@ -319,7 +322,8 @@ class SalesClueItem extends React.Component {
                         </span>
                         {traceContent}
                         {canEditTrace ? <i className="iconfont icon-edit-btn"
-                            onClick={this.handleEditTrace.bind(this, salesClueItem)}></i> : null}
+                            onClick={this.handleEditTrace.bind(this, salesClueItem)}
+                        ></i> : null}
                     </span> : null }</div>
                 : null}
 
@@ -327,7 +331,7 @@ class SalesClueItem extends React.Component {
             {availability && associatedCustomer ?
                 <div className="associate-customer">
                     {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
-                    <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)}>{associatedCustomer}</b></div> : null}
+                    <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}</b></div> : null}
             {/*是无效线索且有判定无效的相关信息*/}
             {inValidClue ?
                 <div className="clue-info-item">
@@ -362,10 +366,10 @@ class SalesClueItem extends React.Component {
                     /> : null
                 }
                 {!traceContent && hasPrivilege('CLUECUSTOMER_ADD_TRACE') && !isWillDistributeClue ?
-                    <Button
+                    <Button className='add-trace-content'
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
-                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleAssociateCustomer.bind(this, salesClueItem)}>{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
+                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleAssociateCustomer.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
             </div>
         </div>;
     }
@@ -407,11 +411,11 @@ class SalesClueItem extends React.Component {
             'cur-clue': this.state.isShowClueDetail || this.props.currentId === this.state.isAssocaiteItem.id
         });
         return (
-            <div className={itemCls}>
+            <div className={itemCls} data-tracename="线索概览信息">
                 <div className="clue-top-title">
                     <span className="hidden record-id">{salesClueItem.id}</span>
                     {this.renderClueStatus(salesClueItem.status)}
-                    <span className="clue-name"
+                    <span className="clue-name" data-tracename="查看线索详情"
                         onClick={this.handleShowClueDetail.bind(this, salesClueItem)}>{salesClueItem.name}</span>
                     {salesClueItem.availability === '1' ? <Tag>{Intl.get('sales.clue.is.enable', '无效')}</Tag> : null}
                 </div>
@@ -493,7 +497,6 @@ SalesClueItem.defaultProps = {
     afterAddClueTrace: function() {
 
     },
-    salesManList: [],
     unSelectDataTip: '',
     distributeLoading: false,
     clueCustomerTypeFilter: {},
@@ -521,7 +524,6 @@ SalesClueItem.propTypes = {
     errMsg: React.PropTypes.string,
     showFrontPageTip: React.PropTypes.bool,
     afterAddClueTrace: React.PropTypes.func,
-    salesManList: React.PropTypes.object,
     unSelectDataTip: React.PropTypes.string,
     distributeLoading: React.PropTypes.bool,
     clueCustomerTypeFilter: React.PropTypes.object,
