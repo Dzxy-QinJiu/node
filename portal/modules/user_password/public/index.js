@@ -1,5 +1,3 @@
-const Validation = require('rc-form-validation');
-const Validator = Validation.Validator;
 /**
  * Created by xiaojinfeng on  2016/1/14 10:25 .
  */
@@ -9,14 +7,9 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('./css/user-password-zh_CN.less');
 }
-
-var Button = require('antd').Button;
-var Form = require('antd').Form;
-var Input = require('antd').Input;
-var FormItem = Form.Item;
-var Col = require('antd').Col;
-var Icon = require('antd').Icon;
-var crypto = require('crypto');//用于密码md5
+import { Form, Icon, Input, Button, Col } from 'antd';
+const FormItem = Form.Item;
+var crypto = require('crypto');//用于密码md5SSSS
 var AlertTimer = require('../../../components/alert-timer');
 
 //顶部导航
@@ -27,8 +20,6 @@ var userInfoAjax = require('../../user_info/public/ajax/user-info-ajax');
 var passwdStrengthFile = require('../../../components/password-strength-bar');
 var PasswdStrengthBar = passwdStrengthFile.PassStrengthBar;
 
-import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
-import reactIntlMixin from '../../../components/react-intl-mixin';
 
 
 function cx(classNames) {
@@ -39,9 +30,6 @@ function cx(classNames) {
     } else {
         return Array.prototype.join.call(arguments, ' ');
     }
-}
-
-function noop() {
 }
 
 function getStateFromStore() {
@@ -55,7 +43,6 @@ function getStateFromStore() {
 }
 
 var UserPwdPage = React.createClass({
-    mixins: [Validation.FieldMixin, reactIntlMixin],
     getInitialState: function() {
         var datas = getStateFromStore();
         datas.status = {
@@ -73,11 +60,12 @@ var UserPwdPage = React.createClass({
         return datas;
     },
     onChange: function() {
-        var datas = getStateFromStore();
+        let values = this.props.form.getFieldsValue();
+        let datas = getStateFromStore();
         this.setState(datas);
         this.setState({
             status: this.state.status,
-            formData: this.state.formData
+            formData: values
         });
         if (this.state.userInfoFormPwdShow) {
             this.handleReset();
@@ -94,20 +82,6 @@ var UserPwdPage = React.createClass({
         $('body').css('overflow', 'auto');
     },
 
-
-    renderValidateStyle: function(item) {
-        var formData = this.state.formData;
-        var status = this.state.status;
-
-        var classes = cx({
-            'error': status[item].errors,
-            'validating': status[item].isValidating,
-            'success': formData[item] && !status[item].errors && !status[item].isValidating
-        });
-
-        return classes;
-    },
-
     checkPass(rule, value, callback) {
         if(!value){//rules中有require：true的验证，所以此处不要验证输入内容为空的情况（避免与reuqire:true重复）
             callback();
@@ -118,8 +92,8 @@ var UserPwdPage = React.createClass({
                 passBarShow: passStrengthObj.passBarShow,
                 passStrength: passStrengthObj.passStrength
             });
-
-            if (this.state.formData.newPasswd) {
+            let values = this.props.form.getFieldsValue();
+            if (values.newPasswd) {
                 this.props.form.validateFields(['rePasswd'],{force: true});
             }
             callback();
@@ -132,7 +106,7 @@ var UserPwdPage = React.createClass({
         }
     },
     checkPass2(rule, value, callback) {
-        if (value && value !== this.props.form.getFieldValue('password')) {
+        if (value && value !== this.props.form.getFieldValue('newPasswd')) {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致'));
         } else {
             callback();
@@ -140,12 +114,13 @@ var UserPwdPage = React.createClass({
     },
 
     checkUserInfoPwd(rule, value, callback) {
+        let valuesObj = this.props.form.getFieldsValue();
         if (!value) {
             callback();
         } else {
             setTimeout(function() {
 
-                userInfoAjax.checkUserInfoPwd({passwd: value}).then(function(checkPwdFlag) {
+                userInfoAjax.checkUserInfoPwd({passwd: valuesObj.passwd}).then(function(checkPwdFlag) {
                     if (!checkPwdFlag) {
                         callback(Intl.get('user.password.input.again','原密码不正确，请重新输入。'));
                     } else {
@@ -163,20 +138,16 @@ var UserPwdPage = React.createClass({
     events: {
         submitUserInfoForm: function(e) {
             e.preventDefault();
-            var _this = this;
             this.props.form.validateFields((err, values) => {
-                if (err) {
-                    return;
-                } else {
-                    var user = {
+                if (!err) {
+                    let user = {
                         userId: '',
                         passwd: '',
                         newPasswd: ''
                     };
-                    var userInfo = _this.state.formData;
-                    user.newPasswd = _this.md5Hash(userInfo.newPasswd);
-                    user.passwd = _this.md5Hash(userInfo.passwd);
-                    user.userId = _this.state.userId;
+                    user.newPasswd = values.newPasswd;
+                    user.passwd = values.passwd;
+                    user.userId = values.userId;
                     UserInfoAction.editUserInfoPwd(user);
                 }
             });
@@ -213,9 +184,6 @@ var UserPwdPage = React.createClass({
     },
 
     render: function() {
-        var _this = this;
-        var formData = this.state.formData;
-        var status = this.state.status;
         const {getFieldDecorator} = this.props.form;
 
         return (
@@ -228,12 +196,12 @@ var UserPwdPage = React.createClass({
                         <Form horizontal className="user-info-edit-pwd-form" autoComplete="off">
                             <FormItem
                                 id="passwd"
-                                label={Intl.get('user.password.initial.password','输入原密码')}
+                                label={Intl.get('user.password.initial.password','原始密码')}
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
                                 hasFeedback
                             >
-                                {getFieldDecorator('old_password',{
+                                {getFieldDecorator('passwd',{
                                     rules: [{
                                         required: true, message: Intl.get('user.password.input.initial.password','输入原密码')
                                     }]
@@ -243,12 +211,12 @@ var UserPwdPage = React.createClass({
                             </FormItem>
                             <FormItem
                                 label={Intl.get('user.password.new.password','新密码')}
-                                id="password1"
+                                id="newPasswd"
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
                                 hasFeedback
                             >
-                                {getFieldDecorator('password',{
+                                {getFieldDecorator('newPasswd',{
                                     rules: [{
                                         required: true, message: Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码')
                                     },{
@@ -264,13 +232,13 @@ var UserPwdPage = React.createClass({
                             </Col>
                             <FormItem
                                 label={Intl.get('common.confirm.password','确认密码')}
-                                id="password2"
+                                id="rePasswd"
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
                                 hasFeedback
                             >
 
-                                {getFieldDecorator('confirm',{
+                                {getFieldDecorator('rePasswd',{
                                     rules: [{
                                         required: true, message: Intl.get('common.password.unequal','两次输入密码不一致')
                                     },{
@@ -285,7 +253,7 @@ var UserPwdPage = React.createClass({
                                     this.renderIndicator()
                                 }
                                 <Button type="primary" className="user-info-edit-pwd-submit-btn btn-primary-sure"
-                                    onClick={this.events.submitUserInfoForm.bind(_this)}
+                                    onClick={this.events.submitUserInfoForm.bind(this)}
                                     data-tracename="保存密码"
                                 >
 

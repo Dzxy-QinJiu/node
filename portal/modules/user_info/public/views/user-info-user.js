@@ -28,6 +28,24 @@ function cx(classNames) {
     }
 }
 class UserInfo extends React.Component{
+
+    static defaultProps = {
+        editUserInfo: noop,
+        userInfoFormShow: false,
+        userInfo: {
+            userId: '',
+            userName: '',
+            nickName: '',
+            password: '',
+            rePasswd: '',
+            newPasswd: '',
+            phone: '',
+            email: '',
+            rolesName: '',
+            roles: '',
+            reject: '',
+        }
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -37,12 +55,6 @@ class UserInfo extends React.Component{
             saveErrorMsg: '',
             lang: Oplate.lang || 'zh_CN'
         };
-        this.activeUserEmail = this.activeUserEmail.bind(this);
-        this.cancelEditLang = this.cancelEditLang.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.hideSaveTooltip = this.hideSaveTooltip.bind(this);
-        this.handleSubscribe = this.handleSubscribe.bind(this);
-        this.onSelectLang = this.onSelectLang.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         this.setState({
@@ -65,19 +77,21 @@ class UserInfo extends React.Component{
     //保存用户信息
     handleSubmit(e) {
         e.preventDefault();
-        var _this = this;
-        this.props.form.validateFields((err, ) => {
+        this.props.form.validateFields((err, values ) => {
             if (err) {
                 return;
             } else {
                 this.setState({isSaving: true});
-                var userInfo = _this.state.formData;
+                let userInfo = _.extend({}, values);
                 if (userInfo.phone) {
                     userInfo.phone = $.trim(userInfo.phone);
                 }
-                if (userInfo.email !== _this.props.userInfo.email) {
+                if (userInfo.email !== this.props.userInfo.email) {
                     //修改邮箱后，邮箱的激活状态改为未激活
                     userInfo.emailEnable = false;
+                }
+                if (userInfo.nickName) {
+                    userInfo.nickName = $.trim(userInfo.nickName);
                 }
                 UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
                     //保存后的处理
@@ -89,22 +103,9 @@ class UserInfo extends React.Component{
     hideSaveTooltip() {
         this.setState({saveErrorMsg: ''});
     }
-    renderValidateStyle(item){
-        var formData = this.state.formData;
-        var status = this.state.status;
-
-        const classes = cx({
-            'error': status[item].errors,
-            'validating': status[item].isValidating,
-            'success': formData[item] && !status[item].errors && !status[item].isValidating
-        });
-
-        return classes;
-    }
 
     //校验手机号码
     checkPhone(rule, value, callback) {
-        var _this = this;
         value = $.trim(value);
         if (value) {
             if ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) ||
@@ -120,14 +121,14 @@ class UserInfo extends React.Component{
     }
 
     uploadImg(src) {
-        var formData = this.state.formData;
+        let formData = this.state.formData;
         formData.userLogo = src;
         this.setState({formData: formData});
     }
     //激活邮箱
     activeUserEmail() {
-        var _this = this;
-        if (this.state.formData.emailEnable) {
+        let values = this.props.form.getFieldsValue();
+        if (values.emailEnable) {
             return;
         }
         UserInfoAction.activeUserEmail((resultObj) => {
@@ -135,7 +136,7 @@ class UserInfo extends React.Component{
                 message.error(resultObj.errorMsg);
             } else {
                 message.success(
-                    Intl.get('user.info.active.email', '激活邮件已发送至{email}',{'email': _this.state.formData.email})
+                    Intl.get('user.info.active.email', '激活邮件已发送至{email}',{'email': values.email})
                 );
             }
         });
@@ -162,10 +163,10 @@ class UserInfo extends React.Component{
         var formData = this.state.formData;
         var configObj = {'config': true};
         if (formData.reject < 1) {
-            UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
+            UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback.bind(this));
         } else {
             configObj.config = false;
-            UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
+            UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback.bind(this));
         }
     }
     retryRealm() {
@@ -176,7 +177,7 @@ class UserInfo extends React.Component{
         if (this.props.realmLoading) {
             return (<Icon type="loading"/>);
         } else if (this.props.realmErrorMsg) {
-            var errMsg = <span>{this.props.realmErrorMsg}<a onClick={this.retryRealm}
+            var errMsg = <span>{this.props.realmErrorMsg}<a onClick={this.retryRealm.bind(this)}
                 style={{marginLeft: '20px', marginTop: '20px'}}>
                 <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
             </a></span>;
@@ -218,7 +219,7 @@ class UserInfo extends React.Component{
                         id="user.info.receive.email"
                         defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
                         values={{
-                            'receive': <a onClick={this.handleSubscribe}>
+                            'receive': <a onClick={this.handleSubscribe.bind(this)}>
                                 <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
                             </a>
                         }}
@@ -260,7 +261,7 @@ class UserInfo extends React.Component{
         var _this = this;
         var formData = this.state.formData;
         if (this.props.userInfoErrorMsg) {
-            var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo}
+            var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo.bind(this)}
                 style={{marginLeft: '20px', marginTop: '20px'}}>
                 <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
             </a></span>;
@@ -294,7 +295,7 @@ class UserInfo extends React.Component{
                                         id="user.info.no.email"
                                         defaultMessage={'该用户没有任何邮箱信息，{add-email}'}
                                         values={{
-                                            'add-email': <a data-tracename="点击添加邮箱" onClick={_this.showUserInfoForm}>{Intl.get('user.info.add.email','添加邮箱')}</a>,}}/>
+                                            'add-email': <a data-tracename="点击添加邮箱" onClick={this.showUserInfoForm.bind(this)}>{Intl.get('user.info.add.email','添加邮箱')}</a>,}}/>
                                 </span>}
                         </span>
                         {formData.email ? (formData.emailEnable ? <span>（
@@ -306,7 +307,7 @@ class UserInfo extends React.Component{
                                     id="user.info.no.active"
                                     defaultMessage={'未激活，请{active}'}
                                     values={{
-                                        'active': <a onClick={_this.activeUserEmail} data-tracename="激活">
+                                        'active': <a onClick={this.activeUserEmail.bind(this)} data-tracename="激活">
                                             <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
                                         </a>
                                     }}
@@ -333,15 +334,15 @@ class UserInfo extends React.Component{
                         <dd>
                             <BasicEditSelectField
                                 id={formData.id}
-                                displayText={this.getLangDisplayText()}
+                                displayText={this.getLangDisplayText.bind(this)}
                                 value={this.state.lang}
                                 field="language"
-                                selectOptions={this.getLangOptions()}
+                                selectOptions={this.getLangOptions.bind(this)}
                                 disabled={hasPrivilege('MEMBER_LANGUAGE_SETTING') ? false : true}
-                                onSelectChange={this.onSelectLang}
-                                cancelEditField={this.cancelEditLang}
+                                onSelectChange={this.onSelectLang.bind(this)}
+                                cancelEditField={this.cancelEditLang.bind(this)}
                                 saveEditSelect={UserInfoAjax.setUserLanguage}
-                                modifySuccess={this.afterEditLangSuccess}
+                                modifySuccess={this.afterEditLangSuccess.bind(this)}
                             />
                         </dd>
                     </dl>}
@@ -349,7 +350,7 @@ class UserInfo extends React.Component{
                         <div className="user-info-item">
                             <span>
                                 <ReactIntl.FormattedMessage id="user.info.realm" defaultMessage="安全域"/>：</span>
-                            {this.renderRealm()}
+                            {this.renderRealm.bind(this)}
                         </div>
                     </PrivilegeChecker>
                 </div>
@@ -360,6 +361,7 @@ class UserInfo extends React.Component{
         const {getFieldDecorator} = this.props.form;
         var _this = this;
         var formData = this.state.formData;
+        let values = this.props.form.getFieldsValue();
         return (
             <div className="user-info-container-div col-md-4">
                 <div className="user-logo-div">
@@ -371,7 +373,7 @@ class UserInfo extends React.Component{
                             this.props.userInfoFormShow ?
                                 (<HeadIcon headIcon={formData.userLogo} iconDescr={formData.nickName} isEdit={true}
                                     isNotShowUserName={true}
-                                    onChange={this.uploadImg}
+                                    onChange={this.uploadImg.bind(this)}
                                     userName={formData.userName}
                                     nickName={formData.nickName}
                                     isUserHeadIcon={true}/>) :
@@ -394,7 +396,9 @@ class UserInfo extends React.Component{
                             {getFieldDecorator('email',{
                                 initialValue: formData.email,
                                 rules: [{
-                                    type: 'email', required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
+                                    required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
+                                },{
+                                    type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
                                 }]
                             })(
                                 <Input type="text" placeholder={Intl.get('member.input.email', '请输入邮箱')}/>
@@ -409,7 +413,7 @@ class UserInfo extends React.Component{
                             {getFieldDecorator('phone',{
                                 initialValue: formData.phone,
                                 rules: [{
-                                    validator: this.checkPhone
+                                    validator: this.checkPhone.bind(this)
                                 }]
                             })(
                                 <Input placeholder={Intl.get('user.info.input.phone','请输入电话')}/>
@@ -421,7 +425,7 @@ class UserInfo extends React.Component{
                             labelCol={{span: 4}}
                             wrapperCol={{span: 18}}
                         >
-                            {getFieldDecorator('nickname',{
+                            {getFieldDecorator('nickName',{
                                 initialValue: formData.nickName,
                                 rules: [{
                                     required: true, message: Intl.get('user.info.nickname.required','昵称不能为空')
@@ -433,11 +437,11 @@ class UserInfo extends React.Component{
                         <FormItem
                             wrapperCol={{span: 22}}>
                             <Button type="ghost" className="user-info-edit-cancel-btn btn-primary-cancel"
-                                onClick={this.handleCancel} data-tracename="取消编辑个人资料">
+                                onClick={this.handleCancel.bind(this)} data-tracename="取消编辑个人资料">
                                 <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                             </Button>
                             <Button type="primary" className="user-info-edit-submit-btn btn-primary-sure"
-                                onClick={this.handleSubmit} data-tracename="保存个人资料">
+                                onClick={this.handleSubmit.bind(this)} data-tracename="保存个人资料">
                                 <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
                             </Button>
                             {this.state.isSaving ? (<Icon type="loading"/>) : (
@@ -445,7 +449,7 @@ class UserInfo extends React.Component{
                                     <AlertTimer time={3000}
                                         message={this.state.saveErrorMsg}
                                         type={'error'} showIcon
-                                        onHide={this.hideSaveTooltip}/>
+                                        onHide={this.hideSaveTooltip.bind(this)}/>
                                 </div>) : null)
                             }
                         </FormItem>
