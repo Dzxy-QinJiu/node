@@ -5,6 +5,7 @@ require('./style.less');
 import { Checkbox, Icon } from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const PropTypes = React.PropTypes;
+import Trace from 'LIB_DIR/trace';
 
 class SelectAppList extends React.Component {
     static defaultProps = {
@@ -56,13 +57,13 @@ class SelectAppList extends React.Component {
         );
     }
     showAppListPanel = (event) => {
-        //        Trace.traceEvent(event, '点击添加应用');
+        Trace.traceEvent(event, '点击添加应用');
         this.setState({
             isAppListShow: true,
         });
     }
     handleSureBtn = (event) => {
-        //        Trace.traceEvent(event, '点击保存');
+        Trace.traceEvent(event, '点击保存');
         let appList = _.cloneDeep(this.state.appList);
 
         const selectedAppIds = _.clone(this.state.selectedAppIds);
@@ -78,7 +79,7 @@ class SelectAppList extends React.Component {
         });
     }
     handleCancelBtn = (event) => {
-        //        Trace.traceEvent(event, '点击取消');
+        Trace.traceEvent(event, '点击取消');
         this.setState({
             selectedAppIds: [],
             isAppListShow: false
