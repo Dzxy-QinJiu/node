@@ -2500,6 +2500,7 @@ var zh_CN = {
     'back.openApp.tip.success': '开通成功',
     'back.openApp.tip.fail': '开通失败',
     'back.openApp.confirm': '确认要开通{appName}功能吗',
+    'back.closeApp.apply': '申请停用',
     'common.history': '历史',
     'common.history.highest': '历史最高',
     'common.this.month.add.highest': '本月比历史最高净增',
