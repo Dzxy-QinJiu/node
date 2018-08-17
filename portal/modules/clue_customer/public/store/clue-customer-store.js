@@ -14,7 +14,7 @@ function ClueCustomerStore() {
     this.bindActions(ClueCustomerAction);
 }
 ClueCustomerStore.prototype.resetState = function() {
-    var defaultValue = user.isCommonSales ? SELECT_TYPE.HAS_DISTRIBUTE : SELECT_TYPE.ALL;
+    var defaultValue = user.isCommonSales ? SELECT_TYPE.WILL_TRACE : SELECT_TYPE.ALL;
     var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     this.salesManList = [];//销售列表
     this.listenScrollBottom = true;//是否监测下拉加载
@@ -132,8 +132,15 @@ ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
     var updateClue = _.find(this.curClueLists, clue => updateObj.id === clue.id);
     if (updateClue){
         updateClue.availability = updateObj.availability;
-        updateClue.status = updateObj.status;
-
+        if (updateObj.availability){
+            updateClue.availability = updateObj.availability;
+        }
+        if (updateObj.status){
+            updateClue.status = updateObj.status;
+        }
+        if (updateObj.customer_traces){
+            updateClue.customer_traces = updateObj.customer_traces;
+        }
     }
 };
 //标记线索为无效线索后，线索状态变成已跟进，在页面上不展示该条数据
@@ -145,6 +152,9 @@ ClueCustomerStore.prototype.removeClueItem = function(updateObj) {
 ClueCustomerStore.prototype.afterModifiedAssocaitedCustomer = function(updateClue) {
     var targetIndex = _.findIndex(this.curClueLists, clue => updateClue.id === clue.id);
     this.curClueLists[targetIndex] = updateClue;
+    if (this.curClue.id === updateClue.id){
+        this.curClue = updateClue;
+    }
 };
 //添加或更新跟进内容
 ClueCustomerStore.prototype.addCluecustomerTrace = function(result) {
@@ -261,7 +271,7 @@ ClueCustomerStore.prototype.setUnSelectDataTip = function(tip) {
 ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail) {
     //修改客户相关的属性，直接传属性和客户的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
-    var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability','source_time'];
+    var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability','source_time','status'];
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性

@@ -2521,6 +2521,8 @@ var en_US = {
     'annalysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
-    'clue.failed.get.clue.detail': 'Failed to get clue detail'//获取线索详情失败
+    'clue.failed.get.clue.detail': 'Failed to get clue detail',//获取线索详情失败
+    'clue.has.distribute.clue': 'You have new clues',//您有新的线索
+    'clue.click.show.clue.detail': 'Click to show clue details'//点击查看线索详情
 };
 export default en_US;

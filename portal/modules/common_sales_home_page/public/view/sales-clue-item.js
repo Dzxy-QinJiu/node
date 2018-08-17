@@ -22,7 +22,9 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {SELECT_TYPE, AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
-import Trace from 'LIB_DIR/trace';
+var timeoutFunc;//定时方法
+var timeout = 1000;//1秒后刷新未读数
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 
 class SalesClueItem extends React.Component {
     constructor(props) {
@@ -92,6 +94,17 @@ class SalesClueItem extends React.Component {
     handleSubmitContent = (item) => {
         if (this.state.submitTraceLoading) {
             return;
+        }
+        var value = _.get(item, 'customer_traces[0].remark', '');
+        if (Oplate && Oplate.unread && !value && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
+            Oplate.unread['unhandleClue'] -= 1;
+            if (timeoutFunc) {
+                clearTimeout(timeoutFunc);
+            }
+            timeoutFunc = setTimeout(function() {
+                //触发展示的组件待审批数的刷新
+                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+            }, timeout);
         }
         //获取填写的保存跟进记录的内容
         var textareVal = $.trim(this.state.submitContent);
