@@ -28,7 +28,6 @@ class ProductTable extends React.Component {
         bordered: true,
         //是否显示保存取消按钮
         isSaveCancelBtnShow: true,
-        //在没有数据时是否显示表格
         //表格是否处于编辑状态
         isEdit: false,
         //编辑按钮是否显示
