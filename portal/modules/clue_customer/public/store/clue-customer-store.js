@@ -152,6 +152,9 @@ ClueCustomerStore.prototype.removeClueItem = function(updateObj) {
 ClueCustomerStore.prototype.afterModifiedAssocaitedCustomer = function(updateClue) {
     var targetIndex = _.findIndex(this.curClueLists, clue => updateClue.id === clue.id);
     this.curClueLists[targetIndex] = updateClue;
+    if (this.curClue.id === updateClue.id){
+        this.curClue = updateClue;
+    }
 };
 //添加或更新跟进内容
 ClueCustomerStore.prototype.addCluecustomerTrace = function(result) {
