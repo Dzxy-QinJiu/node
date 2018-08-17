@@ -553,6 +553,21 @@ var ClueDetailOverview = React.createClass({
                             </div>
                             <div className="clue-info-item">
                                 <div className="clue-info-label">
+                                    IP：
+                                </div>
+                                <div className="clue-info-detail">
+                                    <BasicEditInputField
+                                        hasEditPrivilege={false}
+                                        id={curClue.id}
+                                        saveEditInput={this.saveEditBasicInfo.bind(this, 'source_ip')}
+                                        value={curClue.source_ip}
+                                        field='source_ip'
+                                        noDataTip={Intl.get('common.unknown', '未知')}
+                                    />
+                                </div>
+                            </div>
+                            <div className="clue-info-item">
+                                <div className="clue-info-label">
                                     {Intl.get('call.record.customer.source', '来源')}：
                                 </div>
                                 <div className="clue-info-detail">

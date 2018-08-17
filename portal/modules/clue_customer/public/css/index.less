@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 .clue_customer_content {
   //线索顶部筛选区域
   .date-picker-wrap {
@@ -79,12 +80,16 @@
     z-index: 12;
     background: rgba(0, 0, 0, 0.5);
   }
-
-
   }
 .ant-calendar{
   width: 331px!important;
 }
+.clue-import-modal.ant-modal-body{
+  .repeat-clue-name{
+    color:@error_tips_color;
+  }
+}
+
 
 #app .customer-stage-table-wrapper.right-pannel-default {
   width: auto;
