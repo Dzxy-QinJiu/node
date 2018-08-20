@@ -314,7 +314,7 @@ class ExpireScheduleLists extends React.Component {
                 </div>
                 {/*添加日程*/}
                 <div className="add-schedule-btn">
-                    <Button type="primary" onClick={this.handleAddTodo}>+ {Intl.get('shedule.list.add.todo', '待办')}</Button>
+                    <Button type="primary" onClick={this.handleAddTodo} data-tracename="待办">+ {Intl.get('shedule.list.add.todo', '待办')}</Button>
                 </div>
             </div>
         );

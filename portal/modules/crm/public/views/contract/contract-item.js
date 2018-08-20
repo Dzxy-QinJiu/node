@@ -17,6 +17,10 @@ const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 const EDIT_WIDTH = 350;
+//权限常量
+const PRIVILEGE_MAP = {
+    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
+};
 
 const ContractItem = React.createClass({
     getInitialState() {
@@ -125,7 +129,7 @@ const ContractItem = React.createClass({
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
-                            hasPrivilege('OPLATE_CONTRACT_DELETE_UNCHECK') && contract.stage === '待审' ? (
+                            hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && contract.stage === '待审' ? (
                                 <span className='iconfont icon-delete' title={Intl.get('common.delete', '删除')}
                                     onClick={this.showDeleteContractConfirm}/>
                             ) : null
@@ -223,7 +227,7 @@ const ContractItem = React.createClass({
         const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : '';
         const end_time = contract.end_time ? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : '';
         let itemClassName = classNames('contract-item-content', {
-            'item-edit-style': contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE')
+            'item-edit-style': contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE)
         });
         let categoryOptions = _.map(CategoryList, (category, index) => {
             return (<Option value={category.value} key={index}>{category.name}</Option>);
@@ -233,7 +237,7 @@ const ContractItem = React.createClass({
         });
         // 合同的签约类型
         const contractLabel = contract.label === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('contract.163', '续约');
-        let hasEditPrivilege = contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE') || false;
+        let hasEditPrivilege = contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) || false;
         let validityTime = Intl.get('crm.contract.validity.one.year', '有效期一年');
         return (
             <div className='contract-item'>

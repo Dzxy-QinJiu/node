@@ -39,7 +39,7 @@ module.exports = {
             target = $(target).parent();
             tracename = target.attr('data-tracename');
         }
-        if (tracename && typeof _paq == 'object') {
+        if (tracename && typeof _paq === 'object') {
             var traceObj = getTraceLines(target);
             _paq.push(['trackEvent', traceObj.root || tracename, 'clicked', traceObj.traceLine || tracename]);
         }
@@ -71,7 +71,7 @@ module.exports = {
             return;
         var parentNames = [];
         //如果是字符串描述
-        if (typeof element == 'string') {
+        if (typeof element === 'string') {
             parentNames.push(element);
         } else {
             let dom;
@@ -90,7 +90,7 @@ module.exports = {
             root: parentNames[0] || '',
             traceLine: parentNames.join('>')
         };
-        if (typeof _paq == 'object') {
+        if (typeof _paq === 'object') {
             _paq.push(['trackEvent', traceObj.root || traceName, 'clicked', traceObj.traceLine || traceName]);
         }
     }

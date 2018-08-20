@@ -151,3 +151,41 @@ exports.getClueTrendStatics = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+//全文搜索线索
+exports.getClueFulltext = function(req, res) {
+    clueCustomerService.getClueFulltext(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        })
+        .on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};
+//获取线索动态
+exports.getDynamicList = function(req, res) {
+    clueCustomerService.getDynamicList(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data.result);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+//删除线索
+exports.deleteClue = function(req, res) {
+    clueCustomerService.deleteClue(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        })
+        .on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};
+//根据线索的id获取线索的详情
+exports.getClueDetailById = function(req, res) {
+    clueCustomerService.getClueDetailById(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data.result);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};

@@ -38,10 +38,17 @@ const restApis = {
     //获取线索分析
     getClueAnalysis: '/rest/analysis/customer/v2/clue/customer/label',
     //获取线索统计
-    getClueStatics: '/rest/customer/v2/clue/statistical/:field/:page_size/:num',
+    getClueStatics: '/rest/customer/v2/clue/:type/statistical/:field/:page_size/:num',
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
-
+    //线索的全文搜索
+    getClueFulltext: '/rest/customer/v2/clue/query/fulltext/:type/:page_size/:sort_field/:order',
+    //获取线索的动态
+    getClueDynamic: '/rest/customer/v2/customerdynamic/clue/:clue_id/:page_size',
+    //根据线索的id查询线索的详情
+    getClueDetailById: '/rest/customer/v2/clue/query/clue/:clueId',
+    //删除某个线索
+    deleteClueById: '/rest/customer/v2/clue/delete',
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -118,6 +125,7 @@ exports.distributeCluecustomerToSale = function(req, res) {
 //对线索客户的详情进行更新
 exports.updateCluecustomerDetail = function(req, res) {
     var updateItem = req.body.updateItem;
+    //添加的时候的字段是weChat，更新该字段的时候是wechat
     if (updateItem === 'weChat'){
         updateItem = 'wechat';
     }
@@ -188,11 +196,14 @@ exports.getClueAnalysis = function(req, res) {
 exports.getClueStatics = function(req, res) {
     let queryObj = {};
     queryObj.rang_params = JSON.parse(req.body.rangParams);
+    //销售取值时，query参数必须有，管理员可以没有
     if (req.body.query){
         queryObj.query = JSON.parse(req.body.query);
+    }else{
+        queryObj.query = {};
     }
     return restUtil.authRest.post({
-        url: restApis.getClueStatics.replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
+        url: restApis.getClueStatics.replace(':type',req.params.type).replace(':field',req.params.field).replace(':page_size',req.params.page_size).replace(':num',req.params.num),
         req: req,
         res: res
     }, queryObj);
@@ -216,6 +227,75 @@ exports.getClueTrendStatics = function(req, res) {
     return restUtil.authRest.get(
         {
             url: url,
+            req: req,
+            res: res
+        }, null);
+};
+//线索全文搜索
+exports.getClueFulltext = function(req, res) {
+    var reqBody = req.body;
+    var rangeParams = JSON.parse(reqBody.rangeParams);
+    var typeFilter = JSON.parse(reqBody.typeFilter);
+    var url = restApis.getClueFulltext.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':sort_field',req.params.sort_field).replace(':order',req.params.order);
+    if (rangeParams[0].from){
+        url += `?start_time=${rangeParams[0].from}`;
+    }
+    if (rangeParams[0].to){
+        url += `&end_time=${rangeParams[0].to}`;
+    }
+    if (reqBody.keyword){
+        var keyword = encodeURI(reqBody.keyword);
+        url += `&keyword=${keyword}`;
+    }
+    if (reqBody.statistics_fields){
+        url += `&statistics_fields=${reqBody.statistics_fields}`;
+    }
+    if (reqBody.lastClueId){
+        url += `&id=${reqBody.lastClueId}`;
+    }
+    var bodyObj = {
+        status: typeFilter.status
+    };
+    if (reqBody.userId){
+        bodyObj.userId = reqBody.userId;
+    }
+    if (reqBody.id){
+        bodyObj.id = reqBody.id;
+    }
+    return restUtil.authRest.post({
+        url: url,
+        req: req,
+        res: res
+    },bodyObj);
+};
+//获取动态列表
+exports.getDynamicList = function(req, res) {
+    var url = restApis.getClueDynamic.replace(':clue_id',req.params.clue_id).replace(':page_size',req.params.page_size);
+    //todo 现在后端接口的下拉加载有问题
+    // if (req.query.id){
+    //     url += `?id=${req.query.id}`
+    // }
+    return restUtil.authRest.get(
+        {
+            url: url,
+            req: req,
+            res: res
+        }, null);
+};
+//删除某条线索
+exports.deleteClue = function(req, res) {
+    return restUtil.authRest.del(
+        {
+            url: restApis.deleteClueById,
+            req: req,
+            res: res
+        }, req.body);
+};
+//根据线索的id获取线索的详情
+exports.getClueDetailById = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getClueDetailById.replace(':clueId', req.params.clueId),
             req: req,
             res: res
         }, null);

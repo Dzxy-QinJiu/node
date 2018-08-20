@@ -937,18 +937,22 @@ var MemberList = React.createClass({
         this.setState({
             isShowBatchChangeTeamGoal: flag
         });
+        Trace.traceEvent($(this.getDOMNode()).find('.sales-team-goals-container'), '设置团队销售目标');
+
     },
     toggleBatchChangeSelfGoalBtn: function(flag) {
         this.setState({
             isShowBatchChangeSelfGoal: flag
         });
+        Trace.traceEvent($(this.getDOMNode()).find('.sales-team-goals-container'), '批量设置个人销售目标');
+
     },
     //渲染团队目标
     renderSalesGoals: function() {
         return (
-            <div className="sales-team-goals-container">
-                <span className="iconfont icon-sales-goals" title={Intl.get('sales.team.sales.goal', '销售目标')}/>
-                {this.state.isShowBatchChangeTeamGoal ? <Button className="team-sales-goal" onClick={this.toggleBatchChangeTeamGoalBtn.bind(this, false)} data-tracename="设置团队销售目标">{Intl.get('common.batch.sales.target', '设置团队销售目标')}</Button> : <div className="sales-goals-item">
+            <div className="sales-team-goals-container" data-tracename="团队管理">
+                <span className="iconfont icon-sales-goals" title={Intl.get('sales.team.sales.goal', '销售目标')} data-tracename="团队管理"/>
+                {this.state.isShowBatchChangeTeamGoal ? <Button className="team-sales-goal" onClick={this.toggleBatchChangeTeamGoalBtn.bind(this, false)}>{Intl.get('common.batch.sales.target', '设置团队销售目标')}</Button> : <div className="sales-goals-item">
                     <span className="sales-goals-label">{Intl.get('user.user.team', '团队')}：</span>
                     <InputNumber className="team-goals-input"
                         value={this.turnGoalToShowData(this.state.salesGoals.goal)}
@@ -962,7 +966,7 @@ var MemberList = React.createClass({
 
                     <span className="sales-goals-label">{Intl.get('contract.139', '万')}，</span>
                 </div>}
-                {this.state.isShowBatchChangeSelfGoal ? <Button className="self-sales-goal" onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)} data-tracename="批量设置个人销售目标">{Intl.get('common.batch.self.sales.target', '批量设置个人销售目标')}</Button> : <div className="sales-goals-item">
+                {this.state.isShowBatchChangeSelfGoal ? <Button className="self-sales-goal" onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)}>{Intl.get('common.batch.self.sales.target', '批量设置个人销售目标')}</Button> : <div className="sales-goals-item">
                     <span className="sales-goals-label">{Intl.get('sales.team.personal', '个人')}：</span>
                     <InputNumber className="member-goals-input"
                         value={this.turnGoalToShowData(this.state.salesGoals.member_goal)}

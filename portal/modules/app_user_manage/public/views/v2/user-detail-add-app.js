@@ -255,13 +255,16 @@ const UserDetailAddApp = React.createClass({
                 } else {
                     //检验通过了，切换到下一步
                     UserDetailAddAppActions.turnStep(direction);
+                    Trace.traceEvent('用户详情','添加应用-点击了下一步的按钮');
                 }
             } else {
                 UserDetailAddAppActions.turnStep(direction);
+                Trace.traceEvent('用户详情','添加应用-点击了下一步的按钮');
             }
         } else {
             //上一步直接切换
             UserDetailAddAppActions.turnStep(direction);
+            Trace.traceEvent('用户详情','添加应用-点击了上一步的按钮');
         }
     },
     //获取提交的数据
@@ -351,9 +354,9 @@ const UserDetailAddApp = React.createClass({
     //render函数
     render() {
         return (
-            <div className="user-manage-v2 user-detail-add-app-v2">
-                <RightPanelReturn onClick={this.cancel}/>
-                <RightPanelClose onClick={this.closeRightPanel}/>
+            <div className="user-manage-v2 user-detail-add-app-v2" data-tracename="用户详情">
+                <RightPanelReturn onClick={this.cancel} data-tracename ='点击返回按钮'/>
+                <RightPanelClose onClick={this.closeRightPanel} data-tracename ='点击关闭添加应用按钮'/>
                 <Form horizontal>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <OperationSteps

@@ -26,6 +26,8 @@ const systemNoticeChannel = 'com.antfact.ketao.notice';
 const scheduleNoticeChannel = 'com.antfact.ketao.schedule';
 //申请审批未读回复的推送通道
 const applyUnreadReplyChannel = 'com.antfact.ketao.apply.comment';
+//线索添加或分配后推送频道
+const clueUnhandledNum = 'com.antfact.ketao.clue.notice';
 //批量操作处理文件
 var userBatch = require('./batch');
 var _ = require('lodash');
@@ -120,6 +122,17 @@ function phoneEventChannelListener(data) {
     //将数据推送到浏览器
     emitMsgBySocket(phonemsgObj && phonemsgObj.user_id, 'phonemsg', pushDto.phoneMsgToFrontend(phonemsgObj));
 }
+/*
+*
+* 处理线索后消息监听器*/
+function clueUnhandledNumListener(data) {
+    // pushLogger.debug('后端推送的分配日程的数据:' + JSON.stringify(data));
+    //将查询结果返给浏览器
+    var cluemsgObj = JSON.parse(data) || {};
+    //将数据推送到浏览器
+    emitMsgBySocket(cluemsgObj && cluemsgObj.user_id, 'cluemsg', pushDto.clueMsgToFrontend(cluemsgObj));
+}
+
 
 /*
  *
@@ -244,7 +257,7 @@ function createBackendClient() {
     //创建接收消息的通道
     client.on(notifyChannel, notifyChannelListener);
     //创建登录踢出的通道
-    client.on(offlineChannel, offlineChannelListener);
+    // client.on(offlineChannel, offlineChannelListener);
     //创建用户批量操作的通道
     client.on(userBatchChannel, userBatch.listener.bind(userBatch));
     //创建电话拨号通道
@@ -255,6 +268,8 @@ function createBackendClient() {
     client.on(scheduleNoticeChannel, scheduleAlertListener);
     //创建申请审批未读回复的通道
     client.on(applyUnreadReplyChannel, applyUnreadReplyListener);
+    //创建线索未处理数量变化通道
+    client.on(clueUnhandledNum, clueUnhandledNumListener);
     //监听 disconnect
     client.on('disconnect', function() {
         pushLogger.info('断开后台连接');

@@ -123,7 +123,7 @@ module.exports = {
             }
         },{
             method: 'post',
-            path: '/rest/clue/statics/:field/:page_size/:num',
+            path: '/rest/clue/statics/:type/:field/:page_size/:num',
             handler: 'getClueStatics',
             passport: {
                 'needLogin': true
@@ -132,6 +132,41 @@ module.exports = {
             method: 'post',
             path: '/rest/clue/trend/statics/:type',
             handler: 'getClueTrendStatics',
+            passport: {
+                'needLogin': true
+            }
+        },{
+            method: 'post',
+            path: '/rest/get/clue/fulltext/:page_size/:sort_field/:order/:type',
+            handler: 'getClueFulltext',
+            passport: {
+                'needLogin': true
+            }
+        }, {
+            method: 'get',
+            path: '/rest/clue_dynamic/:clue_id/:page_size',
+            handler: 'getDynamicList',
+            passport: {
+                needLogin: true
+            },
+            privileges: [
+                'CUSTOMERCLUE_DYNAMIC_QUERY'
+            ]
+        },
+        {
+            method: 'delete',
+            path: '/rest/clue/delete',
+            handler: 'deleteClue',
+            passport: {
+                needLogin: true
+            },
+            privileges: [
+                'CLUECUSTOMER_DELETE'
+            ]
+        },{
+            method: 'get',
+            path: '/rest/clue/detail/:clueId',
+            handler: 'getClueDetailById',
             passport: {
                 'needLogin': true
             }

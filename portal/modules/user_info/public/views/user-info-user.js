@@ -195,7 +195,7 @@ var UserInfo = React.createClass({
         } else {
             message.success(resultObj.data);
             var formData = $.extend(true, {}, this.state.formData);
-            if (this.state.formData.reject == 0) {
+            if (this.state.formData.reject === 0) {
                 formData.reject = 1;
             } else {
                 formData.reject = 0;
@@ -207,14 +207,18 @@ var UserInfo = React.createClass({
 
     },
     //设置邮箱订阅功能
-    handleSubscribe: function() {
+    handleSubscribe: function(e) {
         var formData = this.state.formData;
         var configObj = {'config': true};
         if (formData.reject < 1) {
             UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
+            Trace.traceEvent(e, '取消订阅');
+
         } else {
             configObj.config = false;
             UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
+            Trace.traceEvent(e, '重新订阅');
+
         }
     },
     retryRealm: function() {
@@ -298,7 +302,7 @@ var UserInfo = React.createClass({
         location.reload(true);
     },
     getLangDisplayText: function() {
-        let lang = _.find(langArray, langObj => langObj.key == this.state.lang);
+        let lang = _.find(langArray, langObj => langObj.key === this.state.lang);
         if (lang && lang.val) {
             return lang.val;
         } else {

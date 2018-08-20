@@ -125,31 +125,32 @@ class LeftMenuClass {
                         //有这个权限，才显示入口图标
                         showPrivileges: ['USER_MANAGE_LIST_USERS']
                     },
+                    // {
+                    //     id: 'ROLE',
+                    //     name: backendIntl.get('menu.role', '角色管理'),
+                    //     routePath: 'background_management/role',
+                    //     privileges: [
+                    //         'ROLEP_RIVILEGE_ROLE_ADD',//添加角色
+                    //         'ROLEP_RIVILEGE_ROLE_DELETE',//删除角色
+                    //         'ROLEP_RIVILEGE_ROLE_EDIT',//修改角色
+                    //         'ROLEP_RIVILEGE_ROLE_LIST'//查看角色
+                    //     ],
+                    //     //有这个权限，才显示入口图标
+                    //     showPrivileges: ['ROLEP_RIVILEGE_ROLE_LIST']
+                    // }, {
+                    //     id: 'AUTHORITY',
+                    //     name: backendIntl.get('menu.auth', '权限管理'),
+                    //     routePath: 'background_management/authority',
+                    //     privileges: [
+                    //         'ROLEP_RIVILEGE_AUTHORITY_ADD',//添加权限
+                    //         'ROLEP_RIVILEGE_AUTHORITY_DELETE',//删除权限
+                    //         'ROLEP_RIVILEGE_AUTHORITY_EDIT',//修改权限
+                    //         'ROLEP_RIVILEGE_AUTHORITY_LIST'//查看权限
+                    //     ],
+                    //     //有这个权限，才显示入口图标
+                    //     showPrivileges: ['ROLEP_RIVILEGE_AUTHORITY_LIST']
+                    // },
                     {
-                        id: 'ROLE',
-                        name: backendIntl.get('menu.role', '角色管理'),
-                        routePath: 'background_management/role',
-                        privileges: [
-                            'ROLEP_RIVILEGE_ROLE_ADD',//添加角色
-                            'ROLEP_RIVILEGE_ROLE_DELETE',//删除角色
-                            'ROLEP_RIVILEGE_ROLE_EDIT',//修改角色
-                            'ROLEP_RIVILEGE_ROLE_LIST'//查看角色
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: ['ROLEP_RIVILEGE_ROLE_LIST']
-                    }, {
-                        id: 'AUTHORITY',
-                        name: backendIntl.get('menu.auth', '权限管理'),
-                        routePath: 'background_management/authority',
-                        privileges: [
-                            'ROLEP_RIVILEGE_AUTHORITY_ADD',//添加权限
-                            'ROLEP_RIVILEGE_AUTHORITY_DELETE',//删除权限
-                            'ROLEP_RIVILEGE_AUTHORITY_EDIT',//修改权限
-                            'ROLEP_RIVILEGE_AUTHORITY_LIST'//查看权限
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: ['ROLEP_RIVILEGE_AUTHORITY_LIST']
-                    }, {
                         id: 'SALESSTAGE',
                         name: backendIntl.get('menu.salesstage', '销售阶段管理'),
                         routePath: 'background_management/sales_stage',
@@ -192,16 +193,16 @@ class LeftMenuClass {
                         //有这个权限，才显示入口图标
                         showPrivileges: ['CREATE_CONFIG_INDUSTRY']
                     }, 
-                    // {
-                    //     id: 'OPENAPP',
-                    //     name: backendIntl.get('back.openApp', '开通应用'),
-                    //     routePath: 'background_management/openApp',
-                    //     privileges: [
+                    {
+                        id: 'OPENAPP',
+                        name: backendIntl.get('app.title', '应用管理'),
+                        routePath: 'background_management/openApp',
+                        privileges: [
                           
-                    //     ],
-                    //     //有这个权限，才显示入口图标
-                    //     showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
-                    // }
+                        ],
+                        //有这个权限，才显示入口图标
+                        showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
+                    }
                 ]
             },
             {
@@ -224,17 +225,17 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['OPLATE_USER_ANALYSIS_SUMMARY']
             },
-            // //周报统计
-            // {
-            //     id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
-            //     name: backendIntl.get('analysis.weekly.report', '周报分析'),
-            //     routePath: 'analysis/weekly_report',
-            //     privileges: [
-            //         'CALLRECORD_ASKFORLEAVE_ADD',
-            //     ],
-            //     //有这个权限，才显示入口图标
-            //     showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
-            // },
+            //周报统计
+            {
+                id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
+                name: backendIntl.get('menu.user.analysis', '运营分析'),
+                routePath: 'analysis/weekly_report',
+                privileges: [
+                    'CALLRECORD_ASKFORLEAVE_ADD',
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
+            },
             {
                 id: 'SALES_HOME_PAGE', //唯一标识，销售首页
                 name: backendIntl.get('menu.sales.homepage', '销售主页'),
@@ -246,65 +247,65 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['GET_MY_CALL_RECORD', 'GET_ALL_CALL_RECORD']// 获取我的电话统计记录
             },
-            // {
-            //     id: 'CONTRACT',
-            //     name: backendIntl.get('menu.contract', '合同管理'),
-            //     routePath: 'contract',
-            //     privileges: [
-            //         'OPLATE_CONTRACT_QUERY',
-            //     ],
-            //     //有这个权限，才显示入口图标
-            //     showPrivileges: ['OPLATE_CONTRACT_QUERY'],
-            //     subMenu: [{
-            //         id: 'CONTRACT_DASHBOARD',
-            //         name: backendIntl.get('contract.175', '合同概览'),
-            //         routePath: 'contract/dashboard',
-            //         privileges: ['OPLATE_SALES_COST_QUERY'],
-            //         showPrivileges: ['OPLATE_SALES_COST_QUERY']
-            //     }, {
-            //         id: 'CONTRACT_SALES_LIST',
-            //         name: backendIntl.get('contract.112', '销售合同'),
-            //         routePath: 'contract/sell',
-            //         privileges: ['OPLATE_CONTRACT_UPLOAD'],
-            //         showPrivileges: ['OPLATE_CONTRACT_UPLOAD']
-            //     }, {
-            //         id: 'CONTRACT_BUY_LIST',
-            //         name: backendIntl.get('contract.9', '采购合同'),
-            //         routePath: 'contract/buy',
-            //         privileges: ['OPLATE_CONTRACT_QUERY'],
-            //         showPrivileges: ['OPLATE_CONTRACT_QUERY']
-            //     }, {
-            //         id: 'CONTRACT_REPAYMENT_LIST',
-            //         name: backendIntl.get('contract.102', '合同回款'),
-            //         routePath: 'contract/repayment',
-            //         privileges: ['OPLATE_REPAYMENT_ADD'],
-            //         showPrivileges: ['OPLATE_REPAYMENT_ADD']
-            //     }, {
-            //         id: 'CONTRACT_COST_LIST',
-            //         name: backendIntl.get('contract.133', '费用'),
-            //         routePath: 'contract/cost',
-            //         privileges: ['OPLATE_PAYMENT_ADD'],
-            //         showPrivileges: ['OPLATE_PAYMENT_ADD']
-            //     }, {
-            //         id: 'CONTRACT_ANALYSIS',
-            //         name: backendIntl.get('contract.188', '分析'),
-            //         routePath: 'contract/analysis',
-            //         privileges: ['OPLATE_CONTRACT_ANALYSIS'],
-            //         showPrivileges: ['OPLATE_CONTRACT_ANALYSIS']
-            //     }, {
-            //         id: 'CONTRACT_SALES_COMMISSION',
-            //         name: backendIntl.get('contract.181', '提成计算'),
-            //         routePath: 'contract/sales_commission',
-            //         privileges: ['OPLATE_CONTRACT_SALERS_COMMISSION'],
-            //         showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION']
-            //     }, {
-            //         id: 'CONTRACT_COMMISSION_PAYMENT',
-            //         name: backendIntl.get('contract.189', '提成发放'),
-            //         routePath: 'contract/commission_payment',
-            //         privileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD'],
-            //         showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD']
-            //     }]
-            // },
+            {
+                id: 'CONTRACT',
+                name: backendIntl.get('menu.contract', '合同管理'),
+                routePath: 'contract',
+                privileges: [
+                    'OPLATE_CONTRACT_QUERY',
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ['OPLATE_CONTRACT_QUERY'],
+                subMenu: [{
+                    id: 'CONTRACT_DASHBOARD',
+                    name: backendIntl.get('contract.175', '合同概览'),
+                    routePath: 'contract/dashboard',
+                    privileges: ['OPLATE_SALES_COST_QUERY'],
+                    showPrivileges: ['OPLATE_SALES_COST_QUERY']
+                }, {
+                    id: 'CONTRACT_SALES_LIST',
+                    name: backendIntl.get('contract.112', '销售合同'),
+                    routePath: 'contract/sell',
+                    privileges: ['OPLATE_CONTRACT_UPLOAD'],
+                    showPrivileges: ['OPLATE_CONTRACT_UPLOAD']
+                }, {
+                    id: 'CONTRACT_BUY_LIST',
+                    name: backendIntl.get('contract.9', '采购合同'),
+                    routePath: 'contract/buy',
+                    privileges: ['OPLATE_CONTRACT_QUERY'],
+                    showPrivileges: ['OPLATE_CONTRACT_QUERY']
+                }, {
+                    id: 'CONTRACT_REPAYMENT_LIST',
+                    name: backendIntl.get('contract.102', '合同回款'),
+                    routePath: 'contract/repayment',
+                    privileges: ['OPLATE_REPAYMENT_ADD'],
+                    showPrivileges: ['OPLATE_REPAYMENT_ADD']
+                }, {
+                    id: 'CONTRACT_COST_LIST',
+                    name: backendIntl.get('contract.133', '费用'),
+                    routePath: 'contract/cost',
+                    privileges: ['OPLATE_PAYMENT_ADD'],
+                    showPrivileges: ['OPLATE_PAYMENT_ADD']
+                }, {
+                    id: 'CONTRACT_ANALYSIS',
+                    name: backendIntl.get('contract.188', '分析'),
+                    routePath: 'contract/analysis',
+                    privileges: ['OPLATE_CONTRACT_ANALYSIS'],
+                    showPrivileges: ['OPLATE_CONTRACT_ANALYSIS']
+                }, {
+                    id: 'CONTRACT_SALES_COMMISSION',
+                    name: backendIntl.get('contract.181', '提成计算'),
+                    routePath: 'contract/sales_commission',
+                    privileges: ['OPLATE_CONTRACT_SALERS_COMMISSION'],
+                    showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION']
+                }, {
+                    id: 'CONTRACT_COMMISSION_PAYMENT',
+                    name: backendIntl.get('contract.189', '提成发放'),
+                    routePath: 'contract/commission_payment',
+                    privileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD'],
+                    showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD']
+                }]
+            },
             {
                 id: 'USER_INFO_MANAGE',//唯一标识
                 name: backendIntl.get('menu.userinfo.manage', '个人信息管理'),

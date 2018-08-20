@@ -80,6 +80,8 @@ class AppUserFormStore {
         };
         //是否需要显示客户的错误提示
         this.isShowCustomerError = false;
+        // 是否显示开通时间的错误提示， 默认为false
+        this.isShowOpenTimeErrorTips = false;
         //选中的应用列表的数组
         this.selectedApps = [];
         //是否显示至少选择一个应用
@@ -214,6 +216,10 @@ class AppUserFormStore {
     someAppsNoSelectRoleError(error) {
         this.submitResult = 'selectRoleError';
         this.submitErrorMsg = error;
+    }
+    // 开通时间的错误提示
+    showOpenTimeErrorTips(flag) {
+        this.isShowOpenTimeErrorTips = flag;
     }
 }
 

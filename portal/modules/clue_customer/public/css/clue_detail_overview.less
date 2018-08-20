@@ -1,0 +1,145 @@
+@FONT_COLOR:#999;
+.clue-detail-container{
+  font-size: 14px;
+  .clue-info-wrap{
+    //线索添加人信息
+    .add-person-info{
+      border-top: 1px solid @FONT_COLOR;
+      margin: 0 20px;
+      overflow: hidden;
+      padding-top:10px;
+      .add-clue-info{
+        color:@FONT_COLOR;
+        float: right;
+        .source-name{
+          margin-right:10px;
+        }
+      }
+    }
+
+  }
+  .clue-detail-block{
+    padding:10px;
+    margin-bottom: 20px;
+    background: #fff;
+    .clue-info-item{
+      overflow: hidden;
+      margin-bottom:4px;
+      .clue-info-label{
+        float: left;
+        width: 60px;
+        color: @FONT_COLOR;
+        margin-right:10px;
+        position: relative;
+        top: 2px;
+      }
+      .clue-info-detail{
+        float: left;
+        width: 300px;
+      }
+    }
+    .clue-info-item.no-margin-bottom{
+       margin-bottom: 0;
+    }
+    .contact-item{
+      overflow: hidden;
+      margin-left:6px;
+       .contact-name{
+         float: left;
+         margin-right:10px;
+       }
+       .contact-way{
+         margin-left: 100px;
+         display: block;
+         .iconfont{
+           margin:0 5px;
+         }
+       }
+    }
+    .add-person-info{
+      border-top: 1px solid @FONT_COLOR;
+      margin: 0 20px;
+      overflow: hidden;
+      padding-top:10px;
+      .add-clue-info{
+        color:@FONT_COLOR;
+        float: right;
+        .source-name{
+          margin-right:10px;
+        }
+      }
+    }
+  }
+  .associate-customer-detail.clue-detail-block{
+    padding: 0;
+    .clue-info-item{
+      position: relative;
+      padding: 10px;
+      background: #fff;
+      margin-bottom: 0;
+      .invalid-person{
+        margin:0 10px;
+        font-weight: bold;
+      }
+      .invalid-des{
+        color: #EFAA5C;
+        font-weight: bold;
+      }
+      .cancel-invalid{
+        cursor: pointer;
+        float: right;
+        color: #8da8c5;
+      }
+      .clue-info-label{
+        top:0;
+      }
+      .btn-container{
+        position: absolute;
+        right: 0;
+        top:6px;
+        .ant-btn{
+          margin-right:5px;
+        }
+      }
+      .clue-info-detail{
+        .customer_search_wrap{
+          top: -3px;
+        }
+      }
+    }
+
+  }
+  .associate-user-detail.clue-detail-block{
+    .clue-info-item{
+      margin-bottom: 0;
+      .clue-info-label{
+        top:1px;
+      }
+    }
+    .associate-user{
+      cursor: pointer;
+      color: #8da8c5;
+    }
+  }
+  .assign-sales-warp.clue-detail-block{
+    padding: 0;
+    .clue-info-item{
+      position: relative;
+      padding: 10px;
+      background: #fff;
+      margin-bottom: 0;
+      .clue-info-label{
+        top:1px;
+      }
+      .btn-container{
+        position: absolute;
+        right: 0;
+        top:6px;
+        .ant-btn{
+          margin-right:5px;
+        }
+      }
+    }
+
+  }
+}

@@ -80,7 +80,7 @@ class OpenApp extends React.Component {
                     message.error((err && err.message) || Intl.get('back.openApp.tip.fail', '开通失败'));
                 });
             }
-        });        
+        });
     }
     handleCloseDetail() {
         this.setState({
@@ -142,7 +142,7 @@ class OpenApp extends React.Component {
     //此处为防止event充当参数，所以把参数放到对象中
     changeItemEdit(params) {
         OpenAppAction.changeRoleItemEdit(params);
-    }    
+    }
     render() {
         const renderRoleFormItem = (role, index) => (
             <FormItem {...itemLayout} key={index} label={role.role_name}>
@@ -198,15 +198,14 @@ class OpenApp extends React.Component {
                                 <fieldset key={index} className={app.status === APP_STATUS.ENABLED ? 'app-container' : 'app-container disabled'}>
                                     <legend>{app.tags_name}</legend>
                                     <p>{app.tags_description}</p>
-                                    <div className="btn-bar">
-                                        {app.status === APP_STATUS.ENABLED ?
-                                            <Button onClick={this.handleCheckDetail.bind(this, app)}>
-                                                {Intl.get('call.record.show.customer.detail', '查看详情')}
-                                            </Button> :
+                                    {app.status === APP_STATUS.ENABLED ? null : (
+                                        <div className="btn-bar">
                                             <Button onClick={this.handleApplyOpen.bind(this, app)}>
                                                 {Intl.get('back.openApp.apply', '申请开通')}
-                                            </Button>}
-                                    </div>
+                                            </Button>
+                                        </div>
+                                    )
+                                    }
                                 </fieldset>
                             ))
                         }
@@ -242,7 +241,7 @@ class OpenApp extends React.Component {
                                                 }
                                             </div>
                                         </StatusWrapper>
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div> : null
                     }

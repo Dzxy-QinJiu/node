@@ -92,7 +92,7 @@ exports.getCrmLabelCls = function(customer_label) {
             'qualified-tag-style': customer_label === 1,//合格
             'history-qualified-tag-style': customer_label === 2,//曾经合格
             'loss-tag-style': customer_label === LABEL_TYPES.LOSS_TAG,
-            're-contract': customer_label === LABEL_TYPES.RE_CONTRACT,
+            're-contract-tag-style': customer_label === LABEL_TYPES.RE_CONTRACT,
         });
     }
     return customerLabelCls;
