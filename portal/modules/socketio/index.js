@@ -88,6 +88,7 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
             socketArray.forEach(socketObj => {
                 let socket = _.get(ioServer, `sockets.sockets[${socketObj.socketId}]`);
                 if (socket) {
+                    pushLogger.info('申请的推送：' + emitUrl);
                     socket.emit(emitUrl, msgData);
                 }
             });
@@ -99,7 +100,7 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
  * @param data 消息数据
  */
 function notifyChannelListener(data) {
-    pushLogger.debug('后端推送的消息数据:' + data);
+    // pushLogger.debug('后端推送的消息数据:' + data);
     // 将查询结果返给浏览器
     let messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
@@ -138,7 +139,7 @@ function clueUnhandledNumListener(data) {
  *
  * 日程管理提醒的消息监听器*/
 function scheduleAlertListener(data) {
-    pushLogger.debug('日程管理的消息推送：' + JSON.stringify(data));
+    // pushLogger.debug('日程管理的消息推送：' + JSON.stringify(data));
     // 将查询结果返给浏览器
     let scheduleAlertObj = data || {};
     //将数据推送到浏览器
@@ -151,7 +152,7 @@ function scheduleAlertListener(data) {
  * TODO 登录接口改为auth2后，就不再推送登录踢出的消息了，之后业务端修改后推过来的数据由于没有token导致无法使用此方式进行处理，待有解决方案后再处理
  */
 function offlineChannelListener(data) {
-    pushLogger.debug('后端推送的登录踢出的数据:' + JSON.stringify(data));
+    // pushLogger.debug('后端推送的登录踢出的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var userObj = data || {};
     if (userObj.user_id) {
@@ -206,7 +207,7 @@ function offlineChannelListener(data) {
  * @param data 系统消息
  */
 function systemNoticeListener(notice) {
-    pushLogger.debug('后端推送的系统消息数据:' + JSON.stringify(notice));
+    // pushLogger.debug('后端推送的系统消息数据:' + JSON.stringify(notice));
     //将数据推送到浏览器
     emitMsgBySocket(notice && notice.member_id, 'system_notice', pushDto.systemMsgToFrontend(notice));
 }
@@ -226,7 +227,7 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
-    pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
+    // pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.isArray(unreadList) && unreadList.length) {
         //所有未读回复的列表按接收者分组{userId1:[{member_id,update_time...},{}],userId2:[{...},{...}]}
         let memberUnreadObj = _.groupBy(unreadList, 'member_id');
@@ -318,7 +319,7 @@ module.exports.startSocketio = function(nodeServer) {
                 });
                 //将当前用户应用的socket、token保存到内存中
                 socketStore[session.user.userid] = socketArray;
-                pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+                // pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
             } else {
                 var sid = socket.request && socket.request.sessionId;
                 if (err) {
@@ -367,7 +368,7 @@ function sessionExpired(expiredObj) {
     let expiredUser = expiredObj && expiredObj.user;
     let expiredSessionId = expiredObj && expiredObj.sessionId;
     if (expiredUser && expiredSessionId) {
-        pushLogger.debug('session过期,过期用户:' + (expiredUser && expiredUser.nickname));
+        // pushLogger.debug('session过期,过期用户:' + (expiredUser && expiredUser.nickname));
         var userId = expiredUser ? expiredUser.userid : '';
         if (userId) {
             //找到消息接收者对应的socket，将数据推送到浏览器

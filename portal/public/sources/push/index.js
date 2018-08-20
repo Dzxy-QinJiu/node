@@ -620,6 +620,7 @@ function getMessageCount(callback) {
 //添加未读数的监听，包括申请审批，系统消息等
 function unreadListener() {
     if (socketIo) {
+        console.log('111111');
         //获取完未读数后，监听node端推送的弹窗消息
         socketIo.on('mes', listenOnMessage);
         //监听系统消息
@@ -654,7 +655,7 @@ function applyUnreadReplyListener(applyUnreadReplyList) {
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
     }
     session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
-    notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyObj[userId]);
+    // notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyObj[userId]);
 }
 // 判断是否已启用桌面通知
 function notificationCheckPermission() {
