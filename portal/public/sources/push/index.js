@@ -550,7 +550,6 @@ function startSocketIo() {
         socketIo.on('scheduleAlertMsg', scheduleAlertListener);
         //申请审批未读回复的监听
         socketIo.on('apply_unread_reply', applyUnreadReplyListener);
-        socketIo.on('cluemsg', clueUnhandledListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
@@ -618,12 +617,18 @@ function getMessageCount(callback) {
 }
 
 //添加未读数的监听，包括申请审批，系统消息等
-function unreadListener() {
+function unreadListener(type) {
     if (socketIo) {
-        //获取完未读数后，监听node端推送的弹窗消息
-        socketIo.on('mes', listenOnMessage);
-        //监听系统消息
-        socketIo.on('system_notice', listenSystemNotice);
+        //如果是未处理的线索，要和审批的区分开，避免会加上两个监听的情况，未读数要在发ajax请求后再进行监听，避免出现监听数据比获取的数据早的情况
+        if (type === 'unhandleClue'){
+            //监听未处理的线索
+            socketIo.on('cluemsg', clueUnhandledListener);
+        }else{
+            //获取完未读数后，监听node端推送的弹窗消息
+            socketIo.on('mes', listenOnMessage);
+            //监听系统消息
+            socketIo.on('system_notice', listenSystemNotice);
+        }
     }
 }
 //申请审批未读回复的监听
@@ -729,12 +734,12 @@ function getClueUnreadNum(data, callback){
             //更新全局中存的未处理的线索数
             updateGlobalUnreadStorage(messages);
             if (typeof callback === 'function') {
-                callback();
+                callback('unhandleClue');
             }
         },
         error: () => {
             if (typeof callback === 'function') {
-                callback();
+                callback('unhandleClue');
             }
         }
     });
