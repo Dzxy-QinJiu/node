@@ -95,7 +95,8 @@ var ClueDetailOverview = React.createClass({
     getSalesOptions: function() {
         return this.props.salesManList.map((sales, idx) => {
             return (<Option key={idx}
-                value={_.get(sales, 'user_info.user_id')}>{_.get(sales, 'user_info.nick_name')}</Option>);
+                value={_.get(sales, 'user_info.user_id')}>
+                {_.get(sales, 'user_info.nick_name')} - {_.get(sales, 'user_groups[0].group_name')}</Option>);
         });
     },
     cancelEditClueSource: function() {
@@ -399,7 +400,7 @@ var ClueDetailOverview = React.createClass({
                     {Intl.get('clue.handle.clue', '线索处理')}：
                 </div>
                 <div className="clue-info-detail">
-                    {Intl.get('clue.has.no.handle', '暂未处理')}
+                    {Intl.get('clue.has.not.distribute', '该线索还没有分配')}
                 </div>
                 <div className="btn-container">
                     <Button type="primary" data-tracename="点击分配线索按钮"
@@ -417,6 +418,12 @@ var ClueDetailOverview = React.createClass({
         var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
+        //所分配的销售所属的团队
+        var assignedTeam = _.get(curClue, 'sales_team');
+        var displayText = assignedSales;
+        if (assignedTeam){
+            displayText += ' - ' + assignedTeam;
+        }
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
@@ -429,9 +436,9 @@ var ClueDetailOverview = React.createClass({
                         id={curClue.id}
                         saveEditSelect={this.handleChangeAssignedSales}
                         cancelEditField={this.cancelEditSales}
-                        value={assignedSales}
+                        value={displayText}
                         field="user_id"
-                        displayText={assignedSales}
+                        displayText={displayText}
                         selectOptions={this.getSalesOptions()}
                         onSelectChange={this.onSelectClueSales}
                         noDataTip={Intl.get('clue.handle.no.distribute.clue', '未分配')}
