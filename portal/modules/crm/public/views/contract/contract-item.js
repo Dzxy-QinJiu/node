@@ -12,6 +12,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 const AlertTimer = require('CMP_DIR/alert-timer');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -154,67 +155,6 @@ const ContractItem = React.createClass({
         }
         return showUnit ? value + Intl.get('contract.155', '元') : value;
     },
-    renderAppIconName(appName, appId) {
-        let appList = this.props.appList;
-        let matchAppObj = _.find( appList, (appItem) => {
-            return appItem.client_id === appId;
-        });
-        return (
-            <span className='app-icon-name'>
-                {appName ? (
-                    matchAppObj && matchAppObj.client_image ? (
-                        <span className='app-self'>
-                            <img src={matchAppObj.client_image} />
-                        </span>
-                    ) : (
-                        <span className='app-default'>
-                            <i className='iconfont icon-app-default'></i>
-                        </span>
-                    )
-                ) : null}
-                <span className='app-name' title={appName}>{appName}</span>
-            </span>
-        );
-    },
-    getProductColumns() {
-        return [
-            {
-                title: Intl.get('crm.contract.product.name', '产品名称'),
-                dataIndex: 'name',
-                key: 'name',
-                width: '50%',
-                render: (text, record, index) => {
-                    return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
-                }
-            },
-            {
-                title: Intl.get('crm.contract.account.count', '账号数量'),
-                dataIndex: 'count',
-                width: '20%',
-                key: 'count'
-            },
-            {
-                title: Intl.get('crm.contract.money', '金额(元)'),
-                dataIndex: 'total_price',
-                key: 'total_price',
-                width: '30%',
-                render: (text) => {
-                    return <span>{parseAmount(text.toFixed(2))}</span>;
-                }
-            }
-        ];
-    },
-    renderProductInfo(products) {
-        let columns = this.getProductColumns(products);
-        return (
-            <AntcTable
-                dataSource={products}
-                columns={columns}
-                pagination={false}
-                bordered
-            />
-        );
-    },
     saveContractBasicInfo(saveObj, successFunc, errorFunc) {
         let contract = this.state.formData;
         // 客户信息
@@ -269,20 +209,18 @@ const ContractItem = React.createClass({
         };
         this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
     },
+    handleProductSave(data, successFunc, errorFunc) {
+        let saveObj = {
+            products: data,
+            id: this.state.formData.id
+        };
+
+        this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
+    },
     handleCancelEditValidityTime() {
         this.setState({
             isShowValidityTimeEdit: false
         });
-    },
-    showProductInfo(itemClassName, products) {
-        return (
-            <div className={itemClassName}>
-                <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
-                <span className='contract-value'>
-                    {_.get(products, '[0]') ? this.renderProductInfo(products) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
-                </span>
-            </div>
-        );
     },
     renderContractContent() {
         const contract = this.state.formData;
@@ -404,7 +342,20 @@ const ContractItem = React.createClass({
                 </div>
                 {
                     contract.isShowAllContractInfo ? (
-                        this.showProductInfo(itemClassName, contract.products)
+                        <div className={itemClassName}>
+                            <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
+                            <span className='contract-value'>
+                                {_.get(contract.products, '[0]') ? (
+                                    <ProductTable
+                                        appList={this.props.appList}
+                                        dataSource={contract.products}
+                                        totalAmount={contract.contract_amount}
+                                        isEditBtnShow={hasEditPrivilege}
+                                        onSave={this.handleProductSave}
+                                    />
+                                ) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
+                            </span>
+                        </div>
                     ) : null
                 }
                 {

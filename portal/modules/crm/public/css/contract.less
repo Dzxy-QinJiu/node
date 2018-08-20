@@ -127,6 +127,8 @@
             line-height: 24px;
             padding-left: 8px;
             color: @font_color;
+            width: 350px;
+            display: inline-block;
             .app-info {
               .app-icon-name {
                 .app-self {
@@ -151,7 +153,6 @@
             }
             .antc-table {
               display: inline-block;
-              width: 345px;
               .ant-table-thead {
                 background-color: #F5F5F5;
                 tr {
@@ -245,41 +246,14 @@
                 padding-bottom: 14px;
               }
             }
-            .product-info {
-              color: @filed-font-color;
-              cursor: pointer;
-            }
-            .app-select-list-wrap {
-              box-sizing: border-box;
-              position: absolute;
-              top: 32px;
-              left: 0;
-              z-index: 999;
-              background-color: #fff;
-              border:1px solid #2196f3;
-              box-shadow:2px 2px 3px #aaaaaa;
-              padding: 5px;
-              border-radius: 4px;
-              .sure-cancel-btn {
-                padding-right: 6px;
-                text-align: right;
-                color: #2196f3;
-                font-size: 14px;
-                cursor: pointer;
-                .sure-btn {
-                  padding-right: 12px;
-                }
-              }
-            }
           }
         }
       }
       // 产品信息表格展示
       .antc-table {
-        display: inline-block;
         width: 345px;
         td input, .ant-input-number-input-wrap {
-          width: 100% !important;
+          height: 26px;
         }
         tbody {
           tr {
