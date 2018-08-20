@@ -188,10 +188,11 @@ class LeftMenuClass {
                             'DELETE_CONFIG_INDUSTRY', // 删除行业管理配置
                             'GET_CONFIG_IP', // 查看IP配置
                             'CREATE_CONFIG_IP', // 添加IP配置
-                            'DELETE_CONFIG_IP' // 删除IP配置
+                            'DELETE_CONFIG_IP', // 删除IP配置
+                            'CRM_COMPETING_PRODUCT'//竞品管理
                         ],
                         //有这个权限，才显示入口图标
-                        showPrivileges: ['CREATE_CONFIG_INDUSTRY']
+                        showPrivileges: ['CRM_COMPETING_PRODUCT']
                     }, 
                     {
                         id: 'OPENAPP',
