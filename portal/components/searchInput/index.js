@@ -57,7 +57,7 @@
  */
 
 require('./searchInput.less');
-import { Select, Icon } from 'antd';
+import { Select, Icon ,Input} from 'antd';
 import Trace from 'LIB_DIR/trace';
 
 let inputTimeOut = null;
@@ -219,7 +219,7 @@ const SearchInput = React.createClass({
         return (
             <div className="search-input-container">
                 {this.props.type === 'input' ? (
-                    <input type="text" placeholder={this.props.searchPlaceHolder} ref="searchInput"
+                    <Input type="text" placeholder={this.props.searchPlaceHolder} ref="searchInput"
                         onKeyUp={this.searchEvent}
                         className="search-input"/>
                 ) : (

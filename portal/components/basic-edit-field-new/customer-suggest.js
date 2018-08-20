@@ -437,6 +437,7 @@ var CustomerSuggest = React.createClass({
             <div ref="customer_searchbox" className="associate-customer-wrap">
                 <Select
                     combobox
+                    autoFocus = {true}
                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                     filterOption={false}
                     onSearch={this.suggestChange}

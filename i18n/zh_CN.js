@@ -2544,6 +2544,7 @@ var zh_CN = {
     'common.weeks': '周',
     'clue.failed.get.clue.detail': '获取线索详情失败',
     'clue.has.distribute.clue': '您有新的线索',
-    'clue.click.show.clue.detail': '点击查看线索详情'
+    'clue.click.show.clue.detail': '点击查看线索详情',
+    'clue.has.not.distribute': '该线索还没有分配'
 };
 export default zh_CN;

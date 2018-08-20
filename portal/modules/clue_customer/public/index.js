@@ -15,7 +15,6 @@ var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var SearchInput = require('CMP_DIR/searchInput');
 import {message, Icon, Row, Col, Button, Alert, Input, Tag, Modal, Select} from 'antd';
 const Option = Select.Option;
-var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 import TopNav from 'CMP_DIR/top-nav';
 import DatePicker from 'CMP_DIR/datepicker';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
