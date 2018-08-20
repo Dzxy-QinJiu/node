@@ -22,7 +22,6 @@ import OperationStepsFooter from '../../../../../components/user_manage_componen
 import OperationScrollBar from '../../../../../components/user_manage_components/operation-scrollbar';
 import SearchIconList from '../../../../../components/search-icon-list';
 
-import AppPropertySetting from '../../../../../components/user_manage_components/app-property-setting';
 import UserTypeRadioField from '../../../../../components/user_manage_components/user-type-radiofield';
 import UserTimeRangeField from '../../../../../components/user_manage_components/user-time-rangefield';
 import UserOverDraftField from '../../../../../components/user_manage_components/user-over-draftfield';
@@ -33,7 +32,14 @@ import UserData from '../../../../../public/sources/user-data';
 const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 const DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 const CheckboxGroup = Checkbox.Group;
+import ApplyUserAppConfig from '../v3/AppPropertySetting';
+import AppRolePermission from 'CMP_DIR/user_manage_components/app-role-permission';
+import AppConfigForm from '../apply-user-app-config/app-config-form';
 
+const CONFIG_TYPE = {
+    UNIFIED_CONFIG: 'unified_config',//统一配置
+    SEPARATE_CONFIG: 'separate_config'//分别配置
+};
 //动态添加的样式
 var dynamicStyle;
 //布局常量
@@ -56,7 +62,8 @@ const UserDetailAddApp = React.createClass({
         return {
             ...UserDetailAddAppStore.getState(),
             showAppSelector: true,
-            selectedAppIds: []
+            selectedAppIds: [],
+            configType: CONFIG_TYPE.UNIFIED_CONFIG,//配置类型：统一配置、分别配置
         };
     },
     onStateChange() {
@@ -91,28 +98,55 @@ const UserDetailAddApp = React.createClass({
     handleRemoveApp(app) {
         const removeAppId = app.app_id;
         let selectedAppIds = this.state.selectedAppIds;
-        selectedAppIds = selectedAppIds.filter(x => x.app_id !== removeAppId);
+        selectedAppIds = selectedAppIds.filter(x => x !== removeAppId);
         this.setState({
             selectedAppIds
+        }, () => {
+            this.handleSetSelectedApps(this.state.selectedAppIds);
         });
     },
+    changeConfigType(configType) {
+        this.setState({
+            configType: configType
+        });
+    },
+    onOverDraftChange: function(app, e) {
+        // let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        // if (appFormData) {
+        //     appFormData.over_draft = parseInt(e.target.value);
+        // }
+        // this.setState(this.state);
+        console.log(app, e.target.value);
+    },
+    onCountChange: function(app, v) {
+        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        if (appFormData) {
+            appFormData.number = v;
+            let userName = this.state.formData.user_name;
+            if (userName && userName.indexOf('@') !== -1 && v > 1) {
+                //用户名是邮箱格式时，只能申请1个用户
+                appFormData.onlyOneUserTip = true;
+            } else {
+                appFormData.onlyOneUserTip = false;
+            }
+        }
+        this.setState(this.state);
+    },
+    renderAppConfigForm: function(appFormData) {
+        console.log(appFormData);
+        const timePickerConfig = {
+            isCustomSetting: true,
+            appId: 'applyUser'
+        };
+        return (<div>
+            123123
+        </div>);
+    },
     //选中的应用发生变化的时候
-    onSelectedAppsChange(appIds) {        
+    onSelectedAppsChange(appIds) {
         this.setState({
             selectedAppIds: appIds
-        }, () => {
-            const apps = this.state.selectedAppIds.map(id => this.state.currentRealmApps.find(x => x.app_id === id));
-            UserDetailAddAppActions.setSelectedApps(apps);
         });
-        //当只有一个应用的时候，需要把特殊设置的应用属性隐藏掉，
-        // 这个时候，要把第三步的应用属性同步到通用配置属性上
-        if (appIds.length === 1) {
-            //渲染是异步的，加setTimeout能够获取到最新的配置信息
-            setTimeout(() => {
-                //将应用的特殊设置同步到全局设置
-                UserDetailAddAppActions.syncCustomAppSettingToGlobalSetting();
-            });
-        }
     },
     //渲染“选择应用”步骤
     renderAppsCarousel() {
@@ -156,7 +190,7 @@ const UserDetailAddApp = React.createClass({
                 <div className="left-nav-container">
                     {
                         Intl.get('user.user.app.select', '选择应用')
-                    }:
+                    }：
                 </div>
                 <div className="add-app-content">
                     {
@@ -187,13 +221,32 @@ const UserDetailAddApp = React.createClass({
             showAppSelector: isShow
         });
     },
+    //根据选中app的ids，设置已选中app
+    handleSetSelectedApps(selectedAppIds) {
+        //检验通过了，切换到下一步
+        const apps = selectedAppIds.map(id => this.state.rawApps.find(x => x.app_id === id));
+        UserDetailAddAppActions.setSelectedApps(apps);
+        //当只有一个应用的时候，需要把特殊设置的应用属性隐藏掉，
+        // 这个时候，要把第三步的应用属性同步到通用配置属性上
+        if (apps.length === 1) {
+            //渲染是异步的，加setTimeout能够获取到最新的配置信息
+            setTimeout(() => {
+                //将应用的特殊设置同步到全局设置
+                UserDetailAddAppActions.syncCustomAppSettingToGlobalSetting();
+            });
+        }
+    },
+    handleFinishSelectApp() {
+        this.handleSetSelectedApps(this.state.selectedAppIds);
+        this.showAppSelector(false);
+    },
     renderAppSelector() {
         return (
             <div className="app-selector-container">
                 <div className="input-container">
-                    <Input onChange={this.handleInputChange}/>
+                    <Input onChange={this.handleInputChange} />
                 </div>
-                <div className="app-list-container" style={{height: 180}}>
+                <div className="app-list-container" style={{ height: 180 }}>
                     <GeminiScrollbar>
                         <CheckboxGroup
                             defaultValue={this.state.selectedAppIds}
@@ -203,11 +256,11 @@ const UserDetailAddApp = React.createClass({
                             }))}
                             onChange={this.onSelectedAppsChange}
                         />
-                    </GeminiScrollbar>                    
+                    </GeminiScrollbar>
                 </div>
                 <div className="btn-bar">
                     <Button onClick={this.showAppSelector.bind(this, true)}>{Intl.get('common.cancel', '取消')}</Button>
-                    <Button onClick={this.showAppSelector.bind(this, false)} type="primary">{Intl.get('common.sure', '确定')}</Button>
+                    <Button onClick={this.handleFinishSelectApp} type="primary">{Intl.get('common.sure', '确定')}</Button>
                 </div>
             </div>
         );
@@ -227,7 +280,7 @@ const UserDetailAddApp = React.createClass({
                                         />
                                     </span>
                                     <p title={app.app_name}>{app.app_name}</p>
-                                    <Icon onClick={this.handleRemoveApp.bind(this, app)} type="close" />
+                                    <span className="icon-bar"> <Icon onClick={this.handleRemoveApp.bind(this, app)} type="close" /></span>
                                 </div>
                             </li>
                         ))
@@ -236,6 +289,12 @@ const UserDetailAddApp = React.createClass({
                 <p className="btn-text" onClick={this.showAppSelector.bind(this, true)}>
                     {Intl.get('common.add.app', '添加应用')}
                 </p>
+                <ApplyUserAppConfig
+                    apps={this.state.selectedApps}
+                    configType={this.state.configType}
+                    changeConfigType={this.changeConfigType}
+                    renderAppConfigForm={this.renderBasicCarousel.bind(this)}
+                />
             </div>
         );
     },
@@ -292,15 +351,18 @@ const UserDetailAddApp = React.createClass({
                 range: formData.range
             }
         };
-        const height = $(window).height() - OperationSteps.height - OperationStepsFooter.height;
+        const height = this.props.height - OperationSteps.height - OperationStepsFooter.height;
         return (
-            <AppPropertySetting
-                defaultSettings={defaultSettings}
-                selectedApps={this.state.selectedApps}
-                onAppPropertyChange={this.onAppPropertyChange}
-                height={height}
-                hideSingleApp={true}
-            />
+            <div className="app-role-config-container">
+                <ApplyUserAppConfig
+                    defaultSettings={defaultSettings}
+                    selectedApps={this.state.selectedApps}
+                    onAppPropertyChange={this.onAppPropertyChange}
+                    height={height}
+                    hideSingleApp={true}
+                />
+            </div>
+
         );
     },
     //当应用的个性设置改变的时候触发
@@ -350,7 +412,6 @@ const UserDetailAddApp = React.createClass({
                     UserDetailAddAppActions.showSelectedAppsError();
                     return;
                 } else {
-                    //检验通过了，切换到下一步                   
                     UserDetailAddAppActions.turnStep(direction);
                 }
             } else {
@@ -449,20 +510,25 @@ const UserDetailAddApp = React.createClass({
     render() {
         return (
             <div className="user-manage-v2 user-detail-add-app-v2">
-                <RightPanelReturn onClick={this.cancel} />
-                <RightPanelClose onClick={this.closeRightPanel} />
+                <span className="return-btn btn-text" onClick={this.cancel}>{Intl.get('user.detail.return', '返回基本信息')}</span>
                 <Form horizontal>
                     <div className="add-app-container" style={{ height: this.props.height }}>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <OperationSteps
-                                title={Intl.get('user.user.add', '添加用户')}
+                                title={Intl.get('common.add.app', '添加应用')}
                                 current={this.state.step}
                             >
-                                <OperationSteps.Step action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
-                                <OperationSteps.Step action={Intl.get('user.user.info', '开通信息')}></OperationSteps.Step>
-                                <OperationSteps.Step action={Intl.get('user.user.app.set', '应用设置')}></OperationSteps.Step>
+                                <OperationSteps.Step
+                                    action={<span className={this.state.step === 0 ? 'active' : ''}>
+                                        {Intl.get('user.detail.addApp.selectAndConfig', '选择应用并配置')}....</span>}
+                                >
+                                </OperationSteps.Step>
+                                <OperationSteps.Step
+                                    action={<span className={this.state.step === 1 ? 'active' : ''}>
+                                        {Intl.get('user.detail.addApp.setRolePermissions', '设置角色权限')}</span>}
+                                ></OperationSteps.Step>
                             </OperationSteps>
-                            {/* <div style={{ height: this.props.height - 100}}>     
+                            {/* <div style={{ height: this.props.height - 100}}>
                             <GeminiScrollbar> */}
                             <Carousel
                                 interval={0}
@@ -477,9 +543,9 @@ const UserDetailAddApp = React.createClass({
                                         {this.renderAppsCarousel()}
                                     </div>
                                 </CarouselItem>
-                                <CarouselItem>
+                                {/* <CarouselItem>
                                     {this.renderBasicCarousel()}
-                                </CarouselItem>
+                                </CarouselItem> */}
                                 <CarouselItem>
                                     {this.renderRolesCarousel()}
                                 </CarouselItem>
@@ -488,7 +554,7 @@ const UserDetailAddApp = React.createClass({
                         </div> */}
                             <OperationStepsFooter
                                 currentStep={this.state.step}
-                                totalStep={3}
+                                totalStep={2}
                                 onStepChange={this.turnStep}
                                 onFinish={this.onStepFinish}
                             >

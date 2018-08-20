@@ -76,7 +76,7 @@
 //新版客户详情的样式
 .right-panel {
     .btn-text {
-        color: @font-grey;
+        color: @font-lightblue;
         cursor: pointer;
     }
     .title-container {
@@ -105,20 +105,73 @@
             }
         }
         p {
-            width: @app-title-width;
+            max-width: @app-title-width;
             margin-right: 8px;
             float: left;
             font-size: 15px;
             text-align: left;
             .titlecut();
         }
+        .icon-bar {
+            cursor: pointer;
+            float: right;
+            margin-right: 10px;
+            font-size: 15px;
+        }
     }
-    .add-app-container .carousel>.carousel-inner>.item {
-        height: 100vh;
-        padding: 110px 0 54px 0;
+    .user-detail-add-app-v2 {
+        .btn-return.btn-text {
+            float: right;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            z-index: 9;
+        }
     }
     .add-app-container {
-        background: white;
+        background: white; //布局样式
+        .app-property-setting {
+            padding-left: 3px;
+            padding-top: 0;
+        }
+        .operation-steps {
+            background: @right_panel_bgcolor;
+            height: 38px;
+            border: none;
+            .operation-steps-title {
+                margin-top: 6px;
+                color: black;
+                border: none;
+            }
+        }
+        .carousel>.carousel-inner>.item {
+            height: 100vh;
+            padding: 95px 0 54px 0;
+        }
+        ul.list-unstyled {
+            margin: 0;
+            margin-top: 10px;
+            padding-left: 6px;
+            width: 100%;
+            border-bottom: 1px solid #eee;
+            li.operation-steps-action {
+                padding: 8px;
+                font-size: 14px;
+                color: #5a5e5f;
+                line-height: 22px;
+                position: relative;
+                width: initial;
+                &:after{
+                    content: none;
+                }
+                .active-dot {
+                    display: none;
+                }
+                span.active {
+                    font-weight: bold;
+                }
+            }
+        }
         .btn-bar {
             text-align: right;
             button {
@@ -130,10 +183,23 @@
             display: inline-block;
             vertical-align: top;
         }
+        .left-nav-container {
+            font-size: 14px;
+            color: @font-grey;
+        }
         .add-app-content {
             width: 340px;
         }
         .selected-app-container {
+            border: 1px solid @bd-lightgrey;
+            border-radius: 4px;
+            padding: 5px 0;
+            p.btn-text {
+                text-align: left;
+                font-size: 14px;
+                padding-left: 11px;
+                margin-top: 5px;
+            }
             ul {
                 li {
                     padding: 2px 0 2px 11px;
@@ -339,7 +405,7 @@
         float: left;
     }
     .user-detail-edit-app-v2 {
-        padding-top: 18px;
+        padding-top: 18px;        
         .user-multilogin-radiofield-block {
             display: inline-block;
             margin-top: 6px;

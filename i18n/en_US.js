@@ -278,6 +278,8 @@ var en_US = {
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
     'user.user.app.select': 'Select applications',//选择应用
+    'user.detail.addApp.selectAndConfig': 'Select and config apps',//'选择应用并配置',
+    'user.detail.addApp.setRolePermissions': 'Config role and permissions',//'设置角色权限',
     'user.user.app.set': 'Application Configuration',//应用设置
     'user.batch.operation': 'Batch operations',//批量操作
     'user.operator': 'Operator',//操作人
@@ -287,6 +289,7 @@ var en_US = {
     'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
     'user.login.days': 'Login Days', // 登录天数
+    'user.detail.return': 'return to basic info', //'返回基本信息',
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
     'user.user.list.click': 'Please click at user list',//请在用户列表中点击

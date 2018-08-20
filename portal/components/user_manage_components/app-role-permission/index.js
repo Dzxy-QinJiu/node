@@ -431,7 +431,15 @@ var AppRolePermission = React.createClass({
                             </h4>
                             <div className="ant-checkbox-group">
                                 {group.permission_list.map((x, idx) => (
-                                    <Checkbox key={idx} checked={this.state.selectedPermissionList.includes(x.permission_id)} onChange={this.toggleSelectedPermission.bind(this, x)}>{x.permission_name}</Checkbox>
+                                    <Checkbox
+                                        key={idx}
+                                        disabled={this.state.selectedRolesAlreadyContainedPermissionIds.includes(x.permission_id)}
+                                        checked={
+                                            this.state.selectedPermissionList.includes(x.permission_id) || 
+                                            this.state.selectedRolesAlreadyContainedPermissionIds.includes(x.permission_id)
+                                        }
+                                        onChange={this.toggleSelectedPermission.bind(this, x)}
+                                    >{x.permission_name}</Checkbox>
                                 ))}
                             </div>
                         </div> :
@@ -454,7 +462,7 @@ var AppRolePermission = React.createClass({
                             <li className="permission-group-item-container" key={i}>
                                 {renderItem(permissionGroup)}
                             </li>
-                        );                        
+                        );
                     })
                 }
             </ul>
