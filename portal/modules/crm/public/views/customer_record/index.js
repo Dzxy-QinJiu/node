@@ -509,6 +509,10 @@ const CustomerRecord = React.createClass({
         }
         return '';
     },
+    //在新标签页中打开原文的链接
+    openSourceUrl: function(url) {
+        window.open(url);
+    },
     renderReportContent: function(item) {
         let reportObj = item.remark ? JSON.parse(item.remark) : {};
         if (!_.isObject(reportObj)) return null;
@@ -534,7 +538,7 @@ const CustomerRecord = React.createClass({
                         {decodeHTML(reportContent)}
                     </div>
                     <div>
-                        <a href={reportDoc.url || ''}>{Intl.get('crm.trace.report.source', '原文')}</a>
+                        <a onClick={this.openSourceUrl.bind(this, reportDoc.url)}>{Intl.get('crm.trace.report.source', '原文')}</a>
                         {reportDoc.dataTime ? <span className="trace-record-time">
                             {moment(reportDoc.dataTime).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}
                         </span> : null}
