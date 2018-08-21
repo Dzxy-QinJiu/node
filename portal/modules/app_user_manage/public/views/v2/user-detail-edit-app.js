@@ -29,15 +29,15 @@ const UserDetailEditApp = React.createClass({
     },
     componentDidMount() {
         UserDetailEditAppStore.listen(this.onStoreChange);
-        $(window).on('resize' , this.onStoreChange);
+        $(window).on('resize', this.onStoreChange);
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
     },
     componentWillUnmount() {
         UserDetailEditAppStore.unlisten(this.onStoreChange);
-        $(window).off('resize' , this.onStoreChange);
+        $(window).off('resize', this.onStoreChange);
     },
     cancel() {
-        if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
+        if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
         }
         Trace.traceEvent('变更应用','点击取消按钮');
@@ -84,7 +84,7 @@ const UserDetailEditApp = React.createClass({
         delete changeAppInfo.end_date;
         delete changeAppInfo.status;
         delete changeAppInfo.mutilogin;
-        
+
         return changeAppInfo;
     },
     //提交时会触发

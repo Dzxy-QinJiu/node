@@ -11,6 +11,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
+import { AntcChart } from 'antc';
 
 const UserLoginAnalysis = React.createClass({
     getDefaultProps: function() {
@@ -306,12 +307,31 @@ const UserLoginAnalysis = React.createClass({
     },
 
     renderChart(data, charTips) {
+        const calendarHeatMapOption = {
+            tooltip: {
+                formatter: (params) => {
+                    const data = params.data;
+                    const date = _.first(data);
+                    const value = _.last(data);
+                    const content = `${date}<br>在线 ${value}`;
+                    return content;
+                },
+            },
+        };
+        
         if (_.isArray(data) && data.length) {
-            return (
-                <TimeSeriesBarChart
-                    dataList={data}
-                    tooltip={charTips}
+            return (  
+                // <TimeSeriesBarChart
+                //     dataList={data}
+                //     tooltip={charTips}
+                // />
+                <AntcChart
+                    resultType=""
+                    data={data.map(x => ([moment(x.date).format('YYYY-MM-DD'), x.sum]))}
+                    chartType="calendar_heatmap"
+                    option={calendarHeatMapOption}
                 />
+
             );
         } else {
             return (
