@@ -42,53 +42,73 @@
     }
     .import-detail-container{
       height: 100%;
-      background: #fff;
+
       margin:0 20px;
       .first-step-content{
+        height: 100%;
+        background: #fff;
+        padding:100px;
+        text-align: center;
+        .down-load-template{
+          margin-top:10px;
+        }
 
       }
       .second-step-content{
           .import-warning{
-            color:@error_tips_color;
+            background: #fff;
+            .ant-alert.ant-alert-warning{
+              border: 1px solid #fff;
+              background-color: #fff;
+              .ant-alert-icon{
+                color:@error_tips_color;
+              }
+              .ant-alert-message{
+                font-size: 13px;
+                color:@error_tips_color;
+              }
+            }
+
           }
-      }
-
-
-    }
-
-    .import-tips {
-      margin-top: 60px;
-      margin-left: 20px;
-      a {
-        text-decoration: none;
-      }
-      p {
-        padding-bottom: 20px;
-      }
-    }
-    .import-file {
-      float: right;
-      margin-right: 20px;
-      .ant-btn {
-        margin-bottom: 3px;
-      }
-      .import-clue, .ant-btn .ant-btn-ghost {
-        border: 1px solid #4d96d1;
-        border-radius: 5px;
-        padding: 4px 11px;
-        font-size: 12px;
-        cursor: pointer;
-      }
-      .import-clue {
-        margin-right: 12px;
-        color: #fff;
-        background-color: #4d96d1;
-        border-color: #4d96d1;
-        .icon-loading {
-          margin-left: 8px;
+        .ant-table-body{
+          background: #fff;
+          tr td{
+            white-space: normal;
+            .repeat-clue-name{
+              color:@error_tips_color;
+            }
+          }
+        }
+        .prev-foot{
+          text-align: right;
+          margin-top:10px;
+          .ant-btn{
+            margin-left:10px;
+          }
+          .ant-btn[disabled]{
+            color: #fff;
+            background-color: #CBE4F8;
+            border-color: #CBE4F8;
+          }
+          .is-importing{
+            position: absolute;
+            top: 150px;
+            left: 700px;
+            .load8 {
+              transform: scale(0.8, 0.8);
+            }
+          }
         }
       }
     }
   }
 
+}
+//导入线索成功后的提示
+.ant-message{
+  top:400px;
+  .ant-message-notice-content{
+    background: rgba(0, 0, 0, 0.5);
+    color:#fff;
+  }
 }

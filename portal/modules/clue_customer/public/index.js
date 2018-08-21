@@ -13,9 +13,8 @@ import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var SearchInput = require('CMP_DIR/searchInput');
-import {message, Icon, Row, Col, Button, Alert, Input, Tag, Modal, Select} from 'antd';
+import {message, Icon, Row, Col, Button, Alert, Select} from 'antd';
 const Option = Select.Option;
-var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 import TopNav from 'CMP_DIR/top-nav';
 import DatePicker from 'CMP_DIR/datepicker';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
@@ -28,12 +27,10 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 import SalesClueItem from 'MOD_DIR/common_sales_home_page/public/view/sales-clue-item';
 import ClueAnalysisPanel from './views/clue-analysis-panel';
 import SalesClueAddForm from './views/add-clues-form';
-// import ClueImportTemplate from './views/clue-import-template';
 import ClueImportRightDetail from './views/import_clue/clue_import_right_detail';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
-import {AntcTable} from 'antc';
 import classNames from 'classnames';
 import ClueRightPanel from './views/clue-right-detail';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -560,38 +557,7 @@ const ClueCustomer = React.createClass({
     refreshClueList: function() {
         this.getClueList();
     },
-    cancelImport() {
-        this.setState({
-            isPreviewShow: false,
-        });
-        this.confirmImport(false);
-    },
-    confirmImport(flag, cb) {
-        this.setState({isImporting: true});
-        $.ajax({
-            url: '/rest/clue/confirm/upload/' + flag,
-            dataType: 'json',
-            type: 'get',
-            async: false,
-            success: (data) => {
-                this.setState({isImporting: false});
-                if (_.isFunction(cb)) cb();
-            },
-            error: (errorMsg) => {
-                this.setState({isImporting: false});
-                message.error(Intl.get('clue.customer.import.clue.failed', '导入线索失败'));
-            }
-        });
-    },
-    doImport(){
-        this.confirmImport(true, () => {
-            this.setState({
-                isPreviewShow: false,
-            });
-            message.success(Intl.get('clue.customer.import.clue.suceess', '导入线索成功'));
-            this.getClueList();
-        });
-    },
+
     searchFullTextEvent: function(keyword) {
         Trace.traceEvent($(this.getDOMNode()).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
@@ -724,6 +690,7 @@ const ClueCustomer = React.createClass({
                             showFlag={this.state.clueImportTemplateFormShow}
                             closeClueTemplatePanel={this.closeClueTemplatePanel}
                             refreshClueList={this.refreshClueList}
+                            getClueList={this.getClueList}
                         />
                     </div>
                     <ClueRightPanel

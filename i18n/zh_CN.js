@@ -2545,6 +2545,7 @@ var zh_CN = {
     'clue.failed.get.clue.detail': '获取线索详情失败',
     'clue.has.distribute.clue': '您有新的线索',
     'clue.click.show.clue.detail': '点击查看线索详情',
-    'clue.import.csv': '上传表格'
+    'clue.import.csv': '上传表格',
+    'clue.download.clue.csv': '下载导入线索表格'
 };
 export default zh_CN;

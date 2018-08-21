@@ -3,17 +3,19 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/20.
  */
-import {Button, Steps, Icon, Upload, message, Modal} from 'antd';
+import {Button, Steps, message, Modal, Alert} from 'antd';
 var rightPanelUtil = require('CMP_DIR/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
-var RightPanelClose = rightPanelUtil.RightPanelClose;
-import ClueImport from './clue-import';
+import ClueUpload from './clue_upload';
 import {clueEmitter} from 'OPLATE_EMITTER';
-import Trace from 'LIB_DIR/trace';
-import BasicData from '../right_panel_top';
 require('../../css/clue_import.less');
 const Step = Steps.Step;
 import {AntcTable} from 'antc';
+import Spinner from 'CMP_DIR/spinner';
+const SET_TIME_OUT = {
+    TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
+    LOADING_TIME: 1500//避免在第三步时关闭太快，加上延时展示loading效果
+};
 
 
 const steps = [{
@@ -33,9 +35,9 @@ class ClueImportTemplate extends React.Component {
             current: 1,//进度条的步骤
             isLoading: false,//正在上传
             previewList: [],//预览列表
+            isImporting: false//正在导入
         };
     }
-
     componentDidMount = () => {
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
     };
@@ -50,52 +52,71 @@ class ClueImportTemplate extends React.Component {
         });
     };
     handleCancel = (e) => {
-        e.preventDefault();
         this.props.closeClueTemplatePanel();
-    };
-    handleChange = (info) => {
-        this.setState({isLoading: true});
-        if (info.file.status === 'done') {
-            const response = info.file.response;
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue'), '点击导入按钮');
-            if (_.isArray(response) && response.length) {
-                clueEmitter.emit(clueEmitter.IMPORT_CLUE, response);
-                // this.props.closeClueTemplatePanel();
-            } else {
-                message.error(Intl.get('clue.manage.failed.import.clue', '导入线索失败，请重试!'));
-            }
+        setTimeout(() => {
             this.setState({
+                current: 1,
                 isLoading: false,
-                current: 2
+                previewList: [],
+                isPreviewShow: false,
+                isImporting: false,
             });
-        }
+            e && e.preventDefault();
+        },SET_TIME_OUT.TRANSITION_TIME);
+    };
+    afterUpload = () => {
+        this.setState({
+            isLoading: false,
+            current: 2
+        });
     };
     renderFirstStepContent = () => {
-        var props = {
-            name: 'clues',
-            action: '/rest/clue/upload',
-            showUploadList: false,
-            onChange: this.handleChange
-        };
         return (
             <div className="first-step-content">
-                <Upload {...props} className="import-clue">
-                    <Button type='primary'>{Intl.get('clue.import.csv', '上传表格')}{this.state.isLoading ?
-                        <Icon type="loading" className="icon-loading"/> : null}</Button>
-                </Upload>
+                <ClueUpload
+                    isLoading={this.state.isLoading}
+                    afterUpload={this.afterUpload}
+                />
+                <div className="down-load-template">
+                    <a data-tracename="点击下载线索模板" href="/rest/clue/download_template">{Intl.get('clue.download.clue.csv', '下载导入线索表格')}</a>
+                </div>
             </div>
         );
     };
-    renderImportModalFooter = () => {
+    doImport =() => {
+        this.setState({
+            current: 3,
+            isImporting: true
+        });
+        $.ajax({
+            url: '/rest/clue/confirm/upload/' + true,
+            dataType: 'json',
+            type: 'get',
+            async: false,
+            success: (data) => {
+                setTimeout(() => {
+                    message.success(Intl.get('clue.customer.import.clue.suceess', '导入线索成功'));
+                    this.handleCancel();
+                    this.props.getClueList();
+                },SET_TIME_OUT.LOADING_TIME);
+            },
+            error: (errorMsg) => {
+                this.setState({isImporting: false});
+                message.error(Intl.get('clue.customer.import.clue.failed', '导入线索失败'));
+            }
+        });
+    };
+    renderImportFooter = () => {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
-        const loading = this.state.isImporting || false;
         return (
-            <div>
-                <Button type="ghost" onClick={this.cancelImport}>
-                    {Intl.get('common.cancel', '取消')}
-                </Button>
-                <Button type="primary" onClick={this.doImport} loading={loading} disabled={repeatCustomer}>
+            <div className="prev-foot">
+                {this.state.isImporting ? <div className="is-importing">
+                    <Spinner/>
+                </div> : <Button type="primary" onClick={this.doImport} disabled={repeatCustomer} data-tracename="点击导入按钮">
                     {Intl.get('common.import', '导入')}
+                </Button>}
+                <Button type="ghost" onClick={this.handleCancel} data-tracename="取消导入线索">
+                    {Intl.get('common.cancel', '取消')}
                 </Button>
             </div>
         );
@@ -198,8 +219,9 @@ class ClueImportTemplate extends React.Component {
                     return (
                         <span className="cus-op">
                             {isDeleteBtnShow ? (
-                                <Button className="order-btn-class" icon="delete"
+                                <i className="order-btn-class iconfont icon-delete "
                                     onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
+                                    data-tracename="删除重复线索"
                                     title={Intl.get('common.delete', '删除')}/>
                             ) : null}
                         </span>
@@ -212,16 +234,18 @@ class ClueImportTemplate extends React.Component {
     renderSecondStepContent = () => {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
         return (
-            <div className="clue-prev-list">
+            <div className="second-step-content">
                 {repeatCustomer ? <div
-                    className="import-warning">{Intl.get('clue.repeat.delete', '存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入')}</div> : null}
+                    className="import-warning">
+                    <Alert type="warning" message={Intl.get('clue.repeat.delete', '存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入')} showIcon/>
+                </div> : null}
                 <AntcTable
                     dataSource={this.state.previewList}
                     columns={this.getCluePrevList()}
                     rowKey={this.getRowKey}
                     pagination={false}
                 />
-                {this.renderImportModalFooter()}
+                {this.renderImportFooter()}
             </div>
         );
 
@@ -235,10 +259,13 @@ class ClueImportTemplate extends React.Component {
                 break;
             case 2:
                 stepContent = this.renderSecondStepContent();
+                break;
+            case 3:
+                stepContent = this.renderSecondStepContent();
+                break;
         }
         return stepContent;
     };
-
     render() {
         var current = this.state.current;
         var width = '504';
@@ -250,7 +277,7 @@ class ClueImportTemplate extends React.Component {
                 showFlag={this.props.showFlag} data-tracename="导入线索模板"
                 style={{width: width}}
             >
-                <span className="iconfont icon-close clue-import-btn" onClick={this.props.closeClueTemplatePanel}
+                <span className="iconfont icon-close clue-import-btn" onClick={this.handleCancel}
                     data-tracename="点击关闭导入线索面板"></span>
                 <div className="clue-import-detail-wrap" style={{width: width - 24}}>
                     <div className="clue-top-title">
@@ -275,11 +302,15 @@ ClueImportTemplate.defaultProps = {
     },
     showFlag: false,
     closeClueTemplatePanel: function() {
+    },
+    getClueList: function() {
+
     }
 };
 ClueImportTemplate.propTypes = {
     refreshClueList: React.PropTypes.func,
     showFlag: React.PropTypes.bool,
     closeClueTemplatePanel: React.PropTypes.func,
+    getClueList: React.PropTypes.func
 };
 export default ClueImportTemplate;
