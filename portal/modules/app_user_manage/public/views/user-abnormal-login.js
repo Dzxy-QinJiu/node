@@ -268,7 +268,6 @@ var UserAbnormalLogin = React.createClass({
             return (<Option value={item['app_id']} key={item['app_id']} >{item['app_name']}</Option>);
         });
         list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage id="user.app.all" defaultMessage="全部应用" /></Option>);
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
         if (this.state.abnormalLoginLoading && !this.state.abnormalLoginList.length) {
             //加载中的情况
             return (
@@ -301,33 +300,25 @@ var UserAbnormalLogin = React.createClass({
         } else if (this.state.abnormalLoginList.length) {
             return (
                 <div>
-
-                    <div style={{ height: divHeight, marginBottom: 40 }}>
-                        <GeminiScrollbar
-                            handleScrollBottom={this.handleScrollBarBottom}
-                            listenScrollBottom={this.state.listenScrollBottom}
-                        >
-                            <Select style={{ width: 120 }}
-                                onChange={this.handleChange}
-                                value={this.state.appId}
-                            >
-                                {list}
-                            </Select>
-                            <TimeLine
-                                className="icon-yellow"
-                                list={this.state.abnormalLoginList}
-                                groupByDay={true}
-                                timeField="timeStamp"
-                                render={this.renderTimeLineItem}
-                                dot={<span className="iconfont icon-deactivate-customer-login"></span>}
-                            />
-                            <NoMoreDataTip
-                                fontSize="12"
-                                show={this.showNoMoreDataTip}
-                                message={Intl.get('common.no.more.abnormal.login', '没有更多异常登录了')}
-                            />
-                        </GeminiScrollbar>
-                    </div>
+                    <Select style={{ width: 120 }}
+                        onChange={this.handleChange}
+                        value={this.state.appId}
+                    >
+                        {list}
+                    </Select>
+                    <TimeLine
+                        className="icon-yellow"
+                        list={this.state.abnormalLoginList}
+                        groupByDay={true}
+                        timeField="timeStamp"
+                        render={this.renderTimeLineItem}
+                        dot={<span className="iconfont icon-deactivate-customer-login"></span>}
+                    />
+                    <NoMoreDataTip
+                        fontSize="12"
+                        show={this.showNoMoreDataTip}
+                        message={Intl.get('common.no.more.abnormal.login', '没有更多异常登录了')}
+                    />
                 </div>
             );
         } else {
@@ -358,7 +349,14 @@ var UserAbnormalLogin = React.createClass({
             ;
         return (
             <div className="abnormalLoginList">
-                {this.renderAbnormalLogin(divHeight)}
+                <div style={{ height: this.props.height, marginBottom: 40 }}>
+                    <GeminiScrollbar
+                        handleScrollBottom={this.handleScrollBarBottom}
+                        listenScrollBottom={this.state.listenScrollBottom}
+                    >
+                        {this.renderAbnormalLogin(divHeight)}
+                    </GeminiScrollbar>
+                </div>
             </div>
         );
     }

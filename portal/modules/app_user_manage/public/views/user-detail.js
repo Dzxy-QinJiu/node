@@ -137,9 +137,11 @@ var UserDetail = React.createClass({
         emitter.emit('user_detail_close_right_panel');
     },
 
-    changeTab: function(key) {
+    changeTab: function(key) {        
         this.setState({
             activeKey: key
+        }, () => {
+            document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
         });
     },
 
@@ -301,10 +303,7 @@ var UserDetail = React.createClass({
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />
                 <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container" ref='topWrap'>
-                    <StatusWrapper
-                        loading={userInfo.loading}
-                        errorMsg={userInfo.errorMsg}
-                        size='medium'
+                    <StatusWrapper                       
                     >
                         <div className="basic-info-contianer" data-trace="客户基本信息">
                             <div className="basic-info-title-block clearfix">
