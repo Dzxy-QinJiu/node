@@ -18,9 +18,9 @@ import contactAjax from '../ajax/contact-ajax';
 
 import DetailCard from 'CMP_DIR/detail-card';
 import DateSelectorPicker from 'CMP_DIR/date-selector/utils';
-import SquareLogoTag from './components/square-logo-tag';
-import ApplyUserAppConfig from './components/apply-user-app-config';
-import AppConfigForm from './components/apply-user-app-config/app-config-form';
+import SquareLogoTag from '../../../../components/square-logo-tag';
+import ApplyUserAppConfig from '../../../../components/apply-user-app-config';
+import AppConfigForm from '../../../../components/apply-user-app-config/app-config-form';
 const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-apply-actions');
 
 //顶部tab标题的高度
