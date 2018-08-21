@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { AntcEditableTable } from 'antc';
 import {DetailEditBtn} from '../../rightPanel';
 import SaveCancelButton from '../../detail-card/save-cancel-button';
-import SelectAppList from '../../select-app-list';
+import { AntcAppSelector } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 // 开通应用，默认的数量和金额
@@ -192,7 +192,7 @@ class ProductTable extends React.Component {
             </span>
         );
     }
-    getSelectAppList = selectedAppIds => {
+    handleAppSelect = selectedAppIds => {
         let data = _.cloneDeep(this.state.data);
 
         _.each(selectedAppIds, appId => {
@@ -239,9 +239,9 @@ class ProductTable extends React.Component {
                 )}
                 {this.state.isEdit ? (
                     <div>
-                        <SelectAppList
+                        <AntcAppSelector
                             appList={appList}
-                            getSelectAppList={this.getSelectAppList}
+                            onConfirm={this.handleAppSelect}
                         /> 
                         {this.props.isSaveCancelBtnShow ? (
                             <SaveCancelButton
