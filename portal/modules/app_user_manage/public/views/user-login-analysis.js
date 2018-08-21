@@ -210,6 +210,7 @@ const UserLoginAnalysis = React.createClass({
                             radioValue={radioValue}
                             dateRange={this.state.selectValue}
                             onDateRangeChange={this.handleSelectRadio}
+                            title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
                         >
                             <div className="duration-chart">
                                 {
@@ -232,7 +233,10 @@ const UserLoginAnalysis = React.createClass({
 
     renderChart(data, charTips) {
         const calendarHeatMapOption = {
-            tooltip: {
+            calendar: [{
+                cellSize: [7, 7]                
+            }],
+            tooltip: {               
                 formatter: (params) => {
                     const data = params.data;
                     const date = _.first(data);
