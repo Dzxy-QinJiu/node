@@ -302,7 +302,7 @@ var UserDetail = React.createClass({
         return (
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />
-                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container" ref='topWrap'>
+                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container user-detail-v3" ref='topWrap'>
                     <StatusWrapper                       
                     >
                         <div className="basic-info-contianer" data-trace="客户基本信息">
@@ -381,7 +381,7 @@ var UserDetail = React.createClass({
                             }
                         </div>
                     </StatusWrapper>
-                    <div className="full_size app_user_full_size_item wrap_padding" ref="wrap">
+                    <div className="full_size app_user_full_size_item wrap_padding user-detail-v3" ref="wrap">
                         <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
                             {tabPaneList}
                         </Tabs>
