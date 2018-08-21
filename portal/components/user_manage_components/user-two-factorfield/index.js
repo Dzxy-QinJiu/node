@@ -1,9 +1,7 @@
 /**
  * 二步认证选择
  */
-import {Form,Radio} from 'antd';
-const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
+import {Form,Radio,Checkbox} from 'antd';
 
 
 const UserTwoFactorField = {
@@ -28,11 +26,11 @@ const UserTwoFactorField = {
         }
 
         const onChange = !config.isCustomSetting ? this.setField.bind(this , 'is_two_factor') : (event) => {
-            const value = event.target.value;
+            const value = event.target.checked ? '1' : '0';
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
             formData.is_two_factor.value = value;
-            if(value != config.globalTwoFactor) {
+            if(value !== config.globalTwoFactor) {
                 formData.is_two_factor.setted = true;
             }
             this.setState({appPropSettingsMap});
@@ -40,17 +38,19 @@ const UserTwoFactorField = {
 
         const formData = this.state.formData;
         return (
-            <FormItem
-                label=""
-                labelCol={{span: 0}}
-                wrapperCol={{span: 24}}
-            >
-                <RadioGroup onChange={onChange}
-                    value={currentValue}>
-                    <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
-                    <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
-                </RadioGroup>
-            </FormItem>
+            <Checkbox checked={currentValue === '1'} onChange={onChange}>{Intl.get('user.two.step.certification', '二步认证')}</Checkbox>
+            // <FormItem
+            //     label=""
+            //     labelCol={{span: 0}}
+            //     wrapperCol={{span: 24}}
+            // >
+
+            //     <RadioGroup onChange={onChange}
+            //         value={currentValue}>
+            //         <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
+            //         <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
+            //     </RadioGroup>
+            // </FormItem>
         );
     }
 };

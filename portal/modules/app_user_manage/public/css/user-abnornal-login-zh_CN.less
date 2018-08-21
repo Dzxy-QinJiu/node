@@ -1,10 +1,36 @@
 
+@font-lightblue: #9FB5CC;
 //异常登录样式调整
 .user_manage_login_abnormal{
   .abnormalLoginList{
     position: relative;
     word-wrap: break-word;
     min-height: 300px;
+    .time-line.group-by-day {
+      background: white;
+      padding-top: 10px;
+      li.ant-timeline-item {
+        padding: 0;
+        .title-btn {
+          float: right;
+          color: @font-lightblue;
+          cursor: pointer;
+        }
+        dt {
+          margin-top: 5px;
+          margin-bottom: -5px;
+        }
+      }
+    }
+    .ant-select{
+      float: right;
+      margin: 3px 0 10px 0;
+      width: 100%!important;
+    }
+    .group-by-day{
+      padding: 0 20px 0 10px;
+      clear: both;
+    }
     //loading效果的样式
     .load8{
       position: absolute;
@@ -34,12 +60,6 @@
       width: 350px;
       text-align: center;
       margin: 90px auto;
-    }
-    //右侧下拉框样式
-    .ant-select{
-      float: right;
-      margin:0 20px 30px 0;
-      width: 160px !important;
     }
     .group-by-day{
       padding: 0 20px 0 10px;

@@ -1,6 +1,4 @@
-import {Form,Radio} from 'antd';
-const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
+import {Form,Radio,Checkbox} from 'antd';
 const UserTypeRadioField = {
     showMultiLoginError() {
         this.setState({
@@ -35,11 +33,11 @@ const UserTypeRadioField = {
         }
 
         const callback = config.isCustomSetting ? (event) => {
-            const value = event.target.value;
+            const value = event.target.checked ? '1' : '0';
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
             formData.multilogin.value = value;
-            if(value != config.globalUserType) {
+            if(value !== config.globalUserType) {
                 formData.multilogin.setted = true;
             }
             this.setState({appPropSettingsMap});
@@ -47,7 +45,7 @@ const UserTypeRadioField = {
                 this.hideMultiLoginError();
             }
         } : (event) => {
-            const value = event.target.value;
+            const value = event.target.checked ? '1' : '0';
             const formData = this.state.formData;
             formData.multilogin = value;
             this.setState({formData});
@@ -62,7 +60,8 @@ const UserTypeRadioField = {
         }
         return (
             <div className="user-multilogin-radiofield-block">
-                <FormItem
+                <Checkbox checked={currentValue === '1'} onChange={callback}>{Intl.get('user.multi.login', '多人登录')}</Checkbox>
+                {/* <FormItem
                     label=""
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
@@ -74,7 +73,7 @@ const UserTypeRadioField = {
                         <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
                         <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
                     </RadioGroup>
-                </FormItem>
+                </FormItem> */}
                 {this.state.show_multilogin_error ? (<div className="error_form_tip"><ReactIntl.FormattedMessage id="user.multi.login.type.tip" defaultMessage="请选择多人登录类型" /></div>) : null}
             </div>
         );

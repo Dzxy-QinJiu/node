@@ -8,6 +8,7 @@
 require('./style.less');
 
 import { Timeline } from 'antd';
+const classNames = require('classNames');
 const PropTypes = React.PropTypes;
 
 const TimeLine = React.createClass({
@@ -78,9 +79,11 @@ const TimeLine = React.createClass({
                                 //将当前项保存下来，以备下次循环中使用
                                 prevItemDay = curItemDay;
                             }
-
+                            const cls = classNames(this.props.className, {
+                                'day-first-item': dayJsx
+                            });
                             return (
-                                <Timeline.Item key={index} className={dayJsx ? 'day-first-item' : ''}>
+                                <Timeline.Item key={index} dot={this.props.dot} className={cls}>
                                     {dayJsx}
                                     {this.props.render(item)}
                                 </Timeline.Item>

@@ -31,7 +31,8 @@ function AppUserDetailAction() {
         //修改用户组织
         'changeUserOrganization',
         //修改应用单个字段成功
-        'changeAppFieldSuccess'
+        'changeAppFieldSuccess',
+        'showAppDetail'
     );
 
     //获取用户详情

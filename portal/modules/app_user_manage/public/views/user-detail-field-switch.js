@@ -135,7 +135,7 @@ var UserDetailFieldSwitch = React.createClass({
         }
         if(this.state.resultType === 'error') {
             return <div className={CLS}><AlertTimer time={2000} message={this.state.errorMsg} type="error" onHide={this.onHideAlert} showIcon/></div>;
-        }
+        }        
         return (
             <div className={CLS}>
                 <Switch

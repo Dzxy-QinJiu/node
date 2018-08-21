@@ -21,6 +21,7 @@ class UserDetailAddAppStore {
         this.currentRealmAppsResult = 'loading';
         //当前安全域下的应用列表
         this.currentRealmApps = [];
+        this.rawApps = [];
         //第三步应用的特殊配置，保存在这个map里
         this.appsSetting = {};
         //时间
@@ -88,6 +89,7 @@ class UserDetailAddAppStore {
                     return true;
                 }
             });
+            this.rawApps = this.currentRealmApps;
         }
     }
     //选中的应用列表发生变化
@@ -173,6 +175,13 @@ class UserDetailAddAppStore {
     someAppsNoSelectRoleError(error) {
         this.submitResult = 'selectRoleError';
         this.submitErrorMsg = error;
+    }
+    //根据关键字过滤已有应用列表
+    filterApps(keyWords) {
+        if (!keyWords) {
+            this.currentRealmApps = this.rawApps;
+        }
+        this.currentRealmApps = this.rawApps.filter(x => x.app_name.includes(keyWords));
     }
 }
 
