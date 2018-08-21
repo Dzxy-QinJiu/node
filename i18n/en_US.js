@@ -291,6 +291,7 @@ var en_US = {
     'user.login.score': 'Score', // 分数
     'user.login.days': 'Login Days', // 登录天数
     'user.detail.return': 'return to basic info', //'返回基本信息',
+    'user.detail.loginAnalysis.title': 'Statistic of login times in a year',//'近一年的活跃统计',
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
     'user.user.list.click': 'Please click at user list',//请在用户列表中点击

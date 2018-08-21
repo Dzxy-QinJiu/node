@@ -286,6 +286,7 @@ const UserLoginAnalysis = React.createClass({
                             radioValue={radioValue}
                             dateRange={this.state.selectValue}
                             onDateRangeChange={this.handleSelectRadio}
+                            title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
                         >
                             <div className="duration-chart">
                                 {
@@ -308,14 +309,11 @@ const UserLoginAnalysis = React.createClass({
 
     renderChart(data, charTips) {
         const calendarHeatMapOption = {
-            tooltip: {
-                formatter: (params) => {
-                    const data = params.data;
-                    const date = _.first(data);
-                    const value = _.last(data);
-                    const content = `${date}<br>在线 ${value}`;
-                    return content;
-                },
+            calendar: [{
+                cellSize: [7, 7]                
+            }],
+            tooltip: {               
+                formatter: charTips
             },
         };
         
@@ -343,19 +341,25 @@ const UserLoginAnalysis = React.createClass({
     },
 
     // 用户登录时长的统计图的提示信息
-    durationTooltip: function(time, sum) {
-        let timeObj = TimeUtil.secondsToHourMinuteSecond(sum || 0);
+    durationTooltip: function(params) {
+        const data = params.data;
+        const date = _.first(data);
+        const value = _.last(data);
+        let timeObj = TimeUtil.secondsToHourMinuteSecond(value || 0);
         return [
-            Intl.get('common.login.time', '时间') + ' : ' + `${time}`,
+            Intl.get('common.login.time', '时间') + ' : ' + `${date}`,
             Intl.get('user.duration', '时长') + ' : ' + `${timeObj.timeDescr}`
         ].join('<br />');
     },
 
     // 用户登录次数的统计图的提示信息
-    chartFrequencyTooltip: function(time, sum) {
+    chartFrequencyTooltip: function(params) {
+        const data = params.data;
+        const date = _.first(data);
+        const value = _.last(data);
         return [
-            Intl.get('common.login.time', '时间') + ' : ' + `${time}`,
-            Intl.get('user.login.time', '次数') + ' : ' + `${sum}`
+            Intl.get('common.login.time', '时间') + ' : ' + `${date}`,
+            Intl.get('user.login.time', '次数') + ' : ' + `${value}`
         ].join('<br />');
     },
 

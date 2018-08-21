@@ -139,6 +139,7 @@ var zh_CN = {
     'common.operate.record': '操作记录',
     'common.add.app': '添加应用',
     'user.detail.return': '返回基本信息',
+    'user.detail.loginAnalysis.title': '近一年的活跃统计',
     'common.app': '应用',
     'common.sure': '确定',
     'common.is.existed': '用户名已存在！',
