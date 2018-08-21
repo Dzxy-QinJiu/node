@@ -6,13 +6,12 @@ import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions'
 import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
 import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
 import AppPropertySetting from '../../../../../components/user_manage_components/app-property-setting';
-import {Tabs,Icon,Alert} from 'antd';
+import { Tabs, Icon, Alert } from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
-import {RightPanelClose,RightPanelReturn} from '../../../../../components/rightPanel';
+import { RightPanelClose, RightPanelReturn } from '../../../../../components/rightPanel';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
-
-const TabPane = Tabs.TabPane;
+var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 //记录上下留白布局
 const LAYOUT = {
@@ -100,12 +99,12 @@ const UserDetailEditApp = React.createClass({
         //如果没有选中类型，报错
         var USER_TYPE_VALUE_MAP = AppUserUtil.USER_TYPE_VALUE_MAP;
         var hasValue = false;
-        _.some(USER_TYPE_VALUE_MAP , function(value) {
-            if(savedAppSetting.user_type.value === value) {
+        _.some(USER_TYPE_VALUE_MAP, function(value) {
+            if (savedAppSetting.user_type.value === value) {
                 hasValue = true;
             }
         });
-        if(!hasValue) {
+        if (!hasValue) {
             emitter.emit('app_user_manage.edit_app.show_user_type_error');//user-type-radiofield/index.js
             return;
         }
@@ -144,7 +143,7 @@ const UserDetailEditApp = React.createClass({
         UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (flag) => {
             //发出更新用户列表事件
             if (flag) {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO , {
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO, {
                     user_id: submitData.user_id,
                     app_info: changeAppInfo
                 });
@@ -158,7 +157,7 @@ const UserDetailEditApp = React.createClass({
     },
     //渲染loading，错误，成功提示
     renderIndicator() {
-        if(this.state.submitResult === 'loading') {
+        if (this.state.submitResult === 'loading') {
             return (
                 <Icon type="loading" />
             );
@@ -166,12 +165,12 @@ const UserDetailEditApp = React.createClass({
         var hide = function() {
             UserDetailEditAppActions.hideSubmitTip();
         };
-        if(this.state.submitResult === 'success') {
+        if (this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get('user.app.edit.success', '修改应用成功')} type="success" showIcon onHide={hide}/>
+                <AlertTimer time={3000} message={Intl.get('user.app.edit.success', '修改应用成功')} type="success" showIcon onHide={hide} />
             );
         }
-        if(this.state.submitResult === 'error') {
+        if (this.state.submitResult === 'error') {
             return (
                 <div className="alert-timer">
                     <Alert message={this.state.submitErrorMsg} type="error" showIcon />
@@ -181,23 +180,20 @@ const UserDetailEditApp = React.createClass({
         return null;
     },
     render() {
-        const height = $(window).height() - LAYOUT.TAB_TOP_HEIGHT - LAYOUT.TAB_BOTTOM_PADDING;
+        const height = this.props.height + LAYOUT_CONSTANTS.BTN_PADDING;//减去底部按钮的padding;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height: '100%'}} data-tracename="变更应用">
-                <RightPanelReturn onClick={this.return} data-tracename="点击返回按钮"/>
-                <RightPanelClose onClick={this.closeRightPanel} data-tracename="点击关闭变更应用与用户详情按钮"/>
-                <Tabs defaultActiveKey="editapp">
-                    <TabPane tab={this.props.appInfo.app_name} key="editapp">
-                        <AppPropertySetting
-                            appsSetting={this.state.appSettingConfig}
-                            selectedApps={this.state.selectedApps}
-                            onAppPropertyChange={this.onAppPropertyChange}
-                            height={height}
-                            isSingleAppEdit={true}
-                            appSelectRoleError={this.state.appSelectRoleError}
-                        />
-                    </TabPane>
-                </Tabs>
+            <div className="user-manage-v2 user-detail-edit-app-v2" style={{ height }}>
+                <h4 onClick={this.cancel}>
+                    <Icon type="left" />{Intl.get('user.user.app.set', '应用设置')}
+                </h4>
+                <AppPropertySetting
+                    appsSetting={this.state.appSettingConfig}
+                    selectedApps={this.state.selectedApps}
+                    onAppPropertyChange={this.onAppPropertyChange}
+                    height={height}
+                    isSingleAppEdit={true}
+                    appSelectRoleError={this.state.appSelectRoleError}
+                />
                 <OperationStepsFooter
                     currentStep={2}
                     prevText={Intl.get('common.cancel', '取消')}

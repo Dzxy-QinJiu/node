@@ -7,6 +7,10 @@ var UserLoginAnalysisStore = require('../store/user-login-analysis-store');
 import TimeUtil from '../../../../public/sources/utils/time-format-util';
 import CardContainer from 'CMP_DIR/card-container'; // 容器
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import DetailCard from 'CMP_DIR/detail-card';
+import StatusWrapper from 'CMP_DIR/status-wrapper';
+var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
+var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 
 const UserLoginAnalysis = React.createClass({
     getDefaultProps: function() {
@@ -17,6 +21,7 @@ const UserLoginAnalysis = React.createClass({
     getInitialState: function() {
         return {
             selectValue: 'LoginFrequency',
+            showDetailMap: {},//是否展示app详情的map
             ...this.getStateData()
         };
     },
@@ -114,13 +119,13 @@ const UserLoginAnalysis = React.createClass({
             return (
                 <div>
                     { loginFirst !== -1 ? (
-                        <div>
-                            {Intl.get('user.first.login', '首次登录')}:<span className="login-stress">{loginFirst}</span>
+                        <div className="info-item-container">
+                            {Intl.get('user.first.login', '首次登录')}：<span className="login-stress">{loginFirst}</span>
                         </div>
                     ) : null}
                     { loginLast !== -1 ? (
-                        <div>
-                            {Intl.get('user.last.login', '最近登录')}:<span className="login-stress">{loginLast}</span>
+                        <div className="info-item-container">
+                            {Intl.get('user.last.login', '最近登录')}：<span className="login-stress">{loginLast}</span>
                         </div>
                     ) : null
                     }
@@ -231,15 +236,16 @@ const UserLoginAnalysis = React.createClass({
         }
         if (count || millisecond) {
             return (
-                <div className="login-info">
-                    <div>
-                        {Intl.get('user.login.times', '登录次数')}:<span className="login-stress">{count}</span>
-                    </div>
+                <div className="login-info clearfix">
                     { Oplate.hideSomeItem ? null : (
-                        <div>
-                            {Intl.get('user.login.duration', '在线时长')}:<span className="login-stress">{timeObj.timeDescr}</span>
+                        <div className="info-item-container">
+                            {Intl.get('user.login.duration', '在线时长')}：<span className="login-stress">{timeObj.timeDescr}</span>
                         </div>
                     )}
+                    <div className="info-item-container">
+                        {Intl.get('user.login.times', '登录次数')}：<span className="login-stress">{count}</span>
+                    </div>
+                    
                     { this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
                 </div>
             );
@@ -338,30 +344,68 @@ const UserLoginAnalysis = React.createClass({
             selectValue: dataRange
         });
     },
-
+    showAppDetail: function(appName, isShow) {
+        const showDetailMap = this.state.showDetailMap;
+        showDetailMap[appName] = isShow;
+        this.setState({
+            showDetailMap
+        });
+    },
     render: function() {
         let appList = this.renderUserAppsList();
-        let LoadingBlock = this.state.isLoading ? (
-            <Spinner />
-        ) : null;
-        let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 && _.get(this.state.loginScore.data, 'score') === 0 ?
-            (
-                <div className="user-no-login">
-                    {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
-                </div>
-            ) : (
-                <div className="user-login-info">
-                    {this.renderUserLoginScore()}
-                    {this.renderUserLoginInfo()}
-                    {this.renderLoginChart()}
-                </div>
-            );
+        // let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 ? <div className="user-no-login">
+        //     {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
+        // </div> : <div className="user-login-info">
+        //     {this.renderUserLoginInfo()}
+        //     {this.renderLoginChart()}
+        // </div>;
+        const userLoginBlock = (
+            <ul>
+                {
+                    this.state.userOwnAppArray.map((app, index) => (
+                        <DetailCard
+                            key={index}
+                            title={(
+                                <div className={this.state.showDetailMap[app.app_name] ? 'title-container' : 'title-container no-border'}>
+                                    <span className="logo-container" title={app.app_name}>
+                                        <DefaultUserLogoTitle
+                                            nickName={app.app_name}
+                                            userLogo={app.app_logo}
+                                        />
+                                    </span>
+                                    <p title={app.app_name}>{app.app_name}</p>
+                                    <span className="btn-bar">
+                                        {
+                                            this.state.showDetailMap[app.app_name] ?
+                                                <span className="iconfont icon-up-twoline" onClick={this.showAppDetail.bind(this, app.app_name, false)}></span> :
+                                                <span className="iconfont icon-down-twoline" onClick={this.showAppDetail.bind(this, app.app_name, true)}></span>
+                                        }
+                                    </span>
+                                </div>
+                            )}
+                            content={
+                                this.state.showDetailMap[app.app_name] ?
+                                    (<div className="user-login-info">
+                                        {this.renderUserLoginInfo()}
+                                        {this.renderLoginChart()}                             
+                                    </div>) : null
+                            }
+                        />
+                    ))
+                }
+            </ul>
+        );
         return (
-            <div className="user-analysis-panel">
-                {appList}
-                {LoadingBlock}
-                {UserLoginBlock}
-            </div>
+            <StatusWrapper
+                loading={this.state.isLoading}
+            >            
+                <div className="user-analysis-panel" style={{height: this.props.height}}>
+                    {/* {appList} */}
+                    <GeminiScrollbar>
+                        {userLoginBlock}
+                    </GeminiScrollbar>
+                </div>
+            </StatusWrapper>
         );
     }
 });
