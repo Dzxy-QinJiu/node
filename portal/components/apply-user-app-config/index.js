@@ -5,7 +5,7 @@
  * 申请用户时，各应用的配置
  */
 require('./css/index.less');
-import SquareLogoTag from '../square-logo-tag/index';
+import SquareLogoTag from '../square-logo-tag';
 import {Tabs, Col} from 'antd';
 const TabPane = Tabs.TabPane;
 const CONFIG_TYPE = {

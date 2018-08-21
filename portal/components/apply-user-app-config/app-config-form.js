@@ -30,8 +30,8 @@ class AppConfigForm extends React.Component {
                     >
                         <Radio.Group value={appFormData.user_type}
                             onChange={this.props.onChangeUserType.bind(this, appFormData)}>
-                            {_.map(USER_TYPE_VALUE_MAP, (value, KEY) => {
-                                return (<Radio.Button value={value}>{USER_TYPE_TEXT_MAP[KEY]}</Radio.Button>);
+                            {_.map(USER_TYPE_VALUE_MAP, (value, key) => {
+                                return (<Radio.Button value={value}>{USER_TYPE_TEXT_MAP[key]}</Radio.Button>);
                             })
                             }
                         </Radio.Group>
