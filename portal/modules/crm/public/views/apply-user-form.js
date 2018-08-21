@@ -11,16 +11,16 @@ import UserTimeRangeField from '../../../../components/user_manage_components/us
 import ValidateMixin from '../../../../mixins/ValidateMixin';
 const history = require('../../../../public/sources/history');
 const OrderAction = require('../action/order-actions');
-import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
+import UserNameTextfieldUtil from 'CMP_DIR/user_manage_components/user-name-textfield/util';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
 import contactAjax from '../ajax/contact-ajax';
 
 import DetailCard from 'CMP_DIR/detail-card';
 import DateSelectorPicker from 'CMP_DIR/date-selector/utils';
-import SquareLogoTag from '../../../../components/square-logo-tag';
-import ApplyUserAppConfig from '../../../../components/apply-user-app-config';
-import AppConfigForm from '../../../../components/apply-user-app-config/app-config-form';
+import SquareLogoTag from 'CMP_DIR/square-logo-tag';
+import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
+import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-apply-actions');
 
 //顶部tab标题的高度
