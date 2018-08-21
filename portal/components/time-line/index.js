@@ -8,7 +8,7 @@
 require('./style.less');
 
 import { Timeline } from 'antd';
-const classNames = require('classNames');
+const classNames = require('classnames');
 const PropTypes = React.PropTypes;
 
 const TimeLine = React.createClass({
