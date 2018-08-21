@@ -654,7 +654,7 @@ function applyUnreadReplyListener(applyUnreadReplyList) {
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
     }
     session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
-    // notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyObj[userId]);
+    notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyObj[userId]);
 }
 // 判断是否已启用桌面通知
 function notificationCheckPermission() {
