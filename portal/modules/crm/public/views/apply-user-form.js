@@ -668,7 +668,7 @@ const ApplyUserForm = React.createClass({
         }
         return (
             <DetailCard title={title}
-                className="apply-user-form-container"
+                className="crm-apply-user-form-container"
                 content={this.renderApplyUserForm()}
                 isEdit={true}
                 loading={this.state.loading}

@@ -407,7 +407,7 @@ class CrmUserApplyForm extends React.Component {
 
     render() {
         return (
-            <DetailCard className="user-apply-form-container"
+            <DetailCard className="crm-user-apply-form-container"
                 content={this.renderApplyForm()}
                 isEdit={true}
                 loading={this.state.isApplying}
