@@ -430,10 +430,6 @@ class PhonePanel extends React.Component {
             }
         });
     }
-    //提交保存联系计划
-    handleScheduleSubmit =() => {
-
-    };
     //取消保存联系计划
     handleScheduleCancel = () => {
         this.setState({
