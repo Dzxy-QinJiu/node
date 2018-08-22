@@ -40,7 +40,7 @@ function AppUserDetailAction() {
         AppUserAjax.getUserDetail(userId).then(function(userDetail) {
             _this.dispatch({loading: false,error: false,userDetail: userDetail});
         },function(errorMsg) {
-            _this.dispatch({loading: false,error: true , userDetailErrorMsg: errorMsg || Intl.get('user.get.user.detail.failed', '获取用户详情失败')});
+            _this.dispatch({loading: false,error: true , userDetailErrorMsg: errorMsg});
         });
     };
 

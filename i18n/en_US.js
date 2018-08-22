@@ -2524,6 +2524,7 @@ var en_US = {
     'clue.failed.get.clue.detail': 'Failed to get clue detail',//获取线索详情失败
     'clue.has.distribute.clue': 'You have new clues',//您有新的线索
     'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
-    'clue.has.not.distribute': 'The clue has not been assigned yet'//该线索还没有分配
+    'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
+    'user.get.suggest.name.error': 'Failed to get suggest username',//获取建议用户名失败
 };
 export default en_US;
