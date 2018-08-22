@@ -303,4 +303,56 @@ exports.loginByQRCode = function(req, res) {
 
 };
 
+/*
+ * 微信登录逻辑
+ */
+exports.wechatLogin = function(req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    var captcha = req.body.retcode;
+    //记录上一次登录用户名，到session中
+    username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+    req.session.last_login_user = username;
+    DesktopLoginService.login(req, res, username, password, captcha)
+        .on('success', wechatLoginSuccess(req, res))
+        .on('error', wechatLoginError(req, res));
+};
+
+//修改session数据
+function modifySessionData(req, data) {
+    var userData = UserDto.toSessionData(req, data);
+    req.session['_USER_TOKEN_'] = userData['_USER_TOKEN_'];
+    req.session.clientInfo = userData.clientInfo;
+    req.session.user = userData.user;
+}
+
+//登录成功处理
+function wechatLoginSuccess(req, res) {
+    return function(data) {
+        //修改session数据
+        modifySessionData(req, data);
+        //设置sessionStore，如果是内存session时，需要从req中获取
+        global.config.sessionStore = global.config.sessionStore || req.sessionStore;
+        req.session.save(function() {
+            //session失效时，登录成功后的处理
+            res.status(200).json('success');
+        });
+    };
+}
+
+//登录失败处理
+function wechatLoginError(req, res) {
+    return function(data) {
+        let backendIntl = new BackendIntl(req);
+        if (data && data.message) {
+            req.session.loginErrorMsg = data.message;
+        } else {
+            req.session.loginErrorMsg = backendIntl.get('login.username.password.error', '用户名或密码错误');
+        }
+        req.session.save(function() {
+            //session失效时，登录失败后的处理
+            res.status(500).json(data && data.message || backendIntl.get('login.password.error', '密码错误'));
+        });
+    };
+}
 

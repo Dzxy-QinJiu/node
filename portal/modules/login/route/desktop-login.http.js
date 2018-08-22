@@ -60,5 +60,12 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    }, {
+        'method': 'post',
+        'path': '/wechatLogin',
+        'handler': 'wechatLogin',
+        'passport': {
+            'needLogin': false
+        }
     }]
 };
