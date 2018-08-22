@@ -5,7 +5,6 @@
  */
 import {Button, Tag, Select} from 'antd';
 const Option = Select.Option;
-const TAG_COLOR = '#2196f3';
 import Trace from 'LIB_DIR/trace';
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
@@ -25,8 +24,9 @@ class phoneStatusTop extends React.Component {
             isEdittingTrace: phoneAlertStore.getState().isEdittingTrace,
             submittingTraceMsg: phoneAlertStore.getState().submittingTraceMsg,
             inputContent: phoneAlertStore.getState().inputContent,
-            showAddFeedback: false,//是否展示反馈
-            isAddingMoreProdctInfo: this.props.isAddingMoreProdctInfo
+            showAddFeedbackOrAddPlan: false,//要在打完电话后才展示反馈，是否展示反馈
+            isAddingMoreProdctInfo: this.props.isAddingMoreProdctInfo,
+            isAddingPlanInfo: this.props.isAddingPlanInfo//正在添加联系计划
         };
     }
 
@@ -48,7 +48,8 @@ class phoneStatusTop extends React.Component {
         this.setState({
             detailCustomerId: nextProps.detailCustomerId,
             phonemsgObj: phonemsgObj,
-            isAddingMoreProdctInfo: nextProps.isAddingMoreProdctInfo
+            isAddingMoreProdctInfo: nextProps.isAddingMoreProdctInfo,
+            isAddingPlanInfo: nextProps.isAddingPlanInfo
         });
         //如果接听后，把状态isConnected 改为true
         if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
@@ -67,7 +68,7 @@ class phoneStatusTop extends React.Component {
             isConnected: false,
             // addTraceItemId: "",
             selectedCustomerId: '',
-            showAddFeedback: false,//是否展示反馈
+            showAddFeedbackOrAddPlan: false,//是否展示反馈
         });
     }
 
@@ -115,7 +116,7 @@ class phoneStatusTop extends React.Component {
             this.setState({
                 selectedCustomerId: '',
                 isConnected: false,
-                showAddFeedback: true
+                showAddFeedbackOrAddPlan: true
             });
         });
     };
@@ -139,7 +140,7 @@ class phoneStatusTop extends React.Component {
         //通话记录的编辑状态
         if (this.state.isEdittingTrace) {
             return (
-                <div>
+                <div className="trace-content edit-trace">
                     <div className="input-item">
                         <Select combobox
                             searchPlaceholder={Intl.get('phone.status.record.content', '请填写本次跟进内容')}
@@ -192,6 +193,9 @@ class phoneStatusTop extends React.Component {
         } else {
             return (
                 <div className="trace-content">
+                    <span className="trace-content-label">
+                        {Intl.get('call.record.follow.content', '跟进内容')}:
+                    </span>
                     <span>{this.state.inputContent}</span>
                     <i className="iconfont icon-update" onClick={this.handleEditContent}></i>
                 </div>
@@ -234,10 +238,14 @@ class phoneStatusTop extends React.Component {
     handleAddProductFeedback = () => {
         this.props.handleAddProductFeedback();
     };
-
+    //点击添加联系计划
+    handleAddPlan = () => {
+        this.props.handleAddPlan();
+    };
     render() {
         var iconFontCls = 'modal-icon iconfont';
         var phonemsgObj = this.state.phonemsgObj;
+        var phoneStatusContainer = 'contact-info-detail';
         if (phonemsgObj.type === PHONERINGSTATUS.ALERT) {
             if (phonemsgObj.call_type === 'OU') {
                 iconFontCls += ' icon-callrecord-out';
@@ -248,33 +256,44 @@ class phoneStatusTop extends React.Component {
             iconFontCls += ' icon-phone-answering';
         } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
             iconFontCls += ' icon-phone-bye';
+            phoneStatusContainer += ' finish-phone-call';
         }
         //获取页面描述
         var phoneDes = this.getPhoneTipMsg(phonemsgObj);
         return (
             <div className={this.props.phoneAlertModalTitleCls}>
-                <div id="iconfont-tip">
-                    <i className={iconFontCls}></i>
-                </div>
-                <div className="phone-status-tip">
-                    <div className="contact-phone-title">
-                        {phoneDes.phoneNum}
+                <div className={phoneStatusContainer}>
+                    <div id="iconfont-tip">
+                        <i className={iconFontCls}></i>
                     </div>
-                    <div className="status-tip-title">
-                        {phoneDes.tip}
+                    <div className="phone-status-tip">
+                        <div className="contact-phone-title">
+                            {phoneDes.phoneNum}
+                        </div>
+                        <div className="status-tip-title">
+                            {phoneDes.tip}
+                        </div>
                     </div>
                 </div>
-                <div className="trace-content-container">
-                    { //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
-                        (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem(phonemsgObj) : null
-                    }
-                </div>
-                {!this.state.isAddingMoreProdctInfo && this.state.showAddFeedback ? (
-                    <div className="add-more-info-container">
-                        <Tag color={TAG_COLOR} onClick={this.handleAddProductFeedback}>
-                            + {Intl.get('call.record.product.feedback', '产品反馈')}</Tag>
+                <div className="trace-and-handle-btn">
+                    <div className="trace-content-container">
+                        { //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
+                            (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem(phonemsgObj) : null
+                        }
                     </div>
-                ) : null}
+                    {this.state.showAddFeedbackOrAddPlan && (!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo) ?
+                        <div className="add-trace-and-plan">
+                            <div className="add-more-info-container">
+                                <Button size="small"
+                                    onClick={this.handleAddProductFeedback}>{Intl.get('call.record.add.product.feedback', '添加产品反馈')}</Button>
+                            </div>
+                            <div className="add-plan-info-container">
+                                <Button size="small"
+                                    onClick={this.handleAddPlan}>{Intl.get('crm.214', '添加联系计划')}</Button>
+                            </div>
+                        </div>
+                        : null}
+                </div>
             </div>
         );
     }
@@ -287,7 +306,11 @@ phoneStatusTop.defaultProps = {
     detailCustomerId: '',
     isAddingMoreProdctInfo: false,
     contactNameObj: {},
-    handleAddProductFeedback: function() {}
+    handleAddProductFeedback: function() {},
+    isAddingPlanInfo: false,
+    handleAddPlan: function() {
+
+    }
 };
 phoneStatusTop.propTypes = {
     addMoreInfoCls: React.PropTypes.string,
@@ -298,5 +321,7 @@ phoneStatusTop.propTypes = {
     isAddingMoreProdctInfo: React.PropTypes.boolean,
     contactNameObj: React.PropTypes.object,
     handleAddProductFeedback: React.PropTypes.func,
+    isAddingPlanInfo: React.PropTypes.boolean,
+    handleAddPlan: React.PropTypes.boolean,
 };
 export default phoneStatusTop;

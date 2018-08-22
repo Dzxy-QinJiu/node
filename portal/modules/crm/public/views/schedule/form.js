@@ -3,12 +3,13 @@ const Validator = Validation.Validator;
 require('../../css/schedule.less');
 var ScheduleAction = require('../../action/schedule-action');
 var BatchChangeActions = require('../../action/batch-change-actions');
+var basicOverviewAction = require('../../action/basic-overview-actions');
 import {Form, Input, message, Select, Radio, Switch, TimePicker} from 'antd';
+const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const FormItem = Form.Item;
 import 'react-date-picker/index.css';
-import {DateFormatSpinnerInput} from 'react-date-picker';
 import BootstrapDatepicker from '../../../../../components/bootstrap-datepicker';
 import ValidateMixin from '../../../../../mixins/ValidateMixin';
 import Trace from 'LIB_DIR/trace';
@@ -219,7 +220,13 @@ var CrmAlertForm = React.createClass({
             ScheduleAction.addSchedule(submitObj, (resData) => {
                 if (resData.id) {
                     this.showMessage(Intl.get('user.user.add.success', '添加成功'));
+                    _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
                     ScheduleAction.afterAddSchedule(resData);
+                    var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
+                    //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
+                    if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
+                        basicOverviewAction.afterAddSchedule(resData);
+                    }
                 } else {
                     this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
                 }
@@ -342,6 +349,7 @@ var CrmAlertForm = React.createClass({
     },
     handleCancel: function() {
         Trace.traceEvent($(this.getDOMNode()).find('.alert-btn-block .btn-primary-cancel'), '取消添加联系计划');
+        _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
         //如果是批量添加联系计划,关闭后应该清空数据
         if (_.isArray(this.props.selectedCustomer)) {
             this.setState({
@@ -450,6 +458,19 @@ var CrmAlertForm = React.createClass({
         }
 
     },
+    //修改联系计划的主题
+    handleTopicChange: function(customerId) {
+        var targetObj = _.find(this.props.customerArr, (item) => {
+            return item.id === customerId;
+        });
+        var formData = this.state.formData;
+        formData.customer_id = targetObj.id;
+        formData.customer_name = targetObj.name;
+        formData.topic = targetObj.name;
+        this.setState({
+            formData: formData
+        });
+    },
     //是否选中全天
     onChangeSelectFullday: function(checked) {
         this.setState({
@@ -477,7 +498,8 @@ var CrmAlertForm = React.createClass({
             wrapperCol: {span: 21},
         };
         var formData = this.state.formData;
-
+        //如果一个电话对应多个联系人的时候，要可以选择标题
+        let hasOverOneCustomer = _.isArray(this.props.customerArr) && this.props.customerArr.length > 1;
         return (
             <Form horizontal data-tracename="添加联系计划表单" className="schedule-form" id="schedule-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
@@ -488,26 +510,38 @@ var CrmAlertForm = React.createClass({
                                 label={Intl.get('crm.alert.topic', '标题')}
                             >
                                 <Validator rules={[{required: true}]}>
-                                    <Input name="topic" value={formData.topic} disabled/>
+                                    {hasOverOneCustomer ?
+                                        <Select onChange={this.handleTopicChange} value={formData.customer_id} >
+                                            {_.map(this.props.customerArr, (customerItem) => {
+                                                return (
+                                                    <Option value={customerItem.id}>{customerItem.name}</Option>
+                                                );
+                                            })}
+                                        </Select>
+
+                                        : <Input name="topic" value={formData.topic} disabled/>}
+
                                 </Validator>
                             </FormItem>)
                     }
                     <FormItem
                         {...formItemLayout}
+                        required
                         label={Intl.get('common.type', '类型')}
                     >
                         <RadioGroup onChange={this.handleTypeChange} value={formData.scheduleType}>
                             {_.map(SCHEDULE_TYPES, item => {
                                 return (
-                                    <Radio value={item.value}>
+                                    <RadioButton value={item.value}>
                                         <span className={`iconfont ${item.iconCls}`}/>{item.name}
-                                    </Radio>);
+                                    </RadioButton>);
                             })}
                         </RadioGroup>
                     </FormItem>
                     <FormItem
                         label={Intl.get('crm.177', '内容')}
                         {...formItemLayout}
+                        required
                         validateStatus={this.getValidateStatus('content')}
                         help={this.getHelpMessage('content')}
                     >

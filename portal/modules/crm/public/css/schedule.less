@@ -122,7 +122,7 @@
   }
   .iconfont {
     padding-right: @padding;
-    font-size: 16px;
+    font-size: 12px;
     color: @other_icon_color;
     &:hover {
       color: @hover_color;
@@ -195,22 +195,33 @@
       input, textarea, .ant-select, .ant-time-picker-input {
         width: 100%;
       }
-      .ant-radio-wrapper {
+      .ant-radio-group {
         margin-right: 20px;
         margin-bottom: 0;
         font-size: 14px;
         font-weight: normal;
         .iconfont {
-          padding-right: 4px;
+          margin-right: 8px;
           font-size: 16px;
-          color: @other_icon_color;
+
         }
-        .iconfont.icon-visit-briefcase {
-          color: @icon_visit_color;
+        .ant-radio-button-wrapper{
+         color:#ddd;
         }
-        .icon-phone-call-out {
-          color: @today_color;
+        .ant-radio-button-wrapper-checked{
+          color:#999;
+          .iconfont{
+            color: @other_icon_color;
+          }
+          .iconfont.icon-visit-briefcase {
+            color: @icon_visit_color;
+          }
+          .icon-phone-call-out {
+            color: @today_color;
+          }
+
         }
+
       }
     }
   }
