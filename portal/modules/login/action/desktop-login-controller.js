@@ -334,8 +334,19 @@ function wechatLoginSuccess(req, res) {
         //设置sessionStore，如果是内存session时，需要从req中获取
         global.config.sessionStore = global.config.sessionStore || req.sessionStore;
         req.session.save(function() {
-            //session失效时，登录成功后的处理
-            res.status(200).json('success');
+            if (data) {
+                var result = {
+                    'nick_name': data.nick_name,
+                    'privileges': data.privileges,
+                    'user_id': data.user_id,
+                    'user_name': data.user_name
+                };
+                //登录成功后的处理
+                res.status(200).json(result);
+            }
+            else {
+                res.status(500);
+            }
         });
     };
 }
