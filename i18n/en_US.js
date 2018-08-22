@@ -515,6 +515,7 @@ var en_US = {
     'user.no.login.system': 'This user has never log in to the system', // 该用户还没有登录过系统
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
+    'user.get.score.failed': 'Failed to get user score',//获取用户分数失败
 
     // 用户分析
     'user.login.total.score': 'Total score', // 总分
@@ -730,6 +731,7 @@ var en_US = {
     'user.log.select.time.range.tips': 'View data for nearly three months', // 只能查看近三个月的数据
     'user.log.select.time.tips': 'Please choose less than a month', // 请选择小于1个月的时间
     'user.log.single.record': 'View the operation records for nearly three months', // 只能查看近三个月的操作记录
+    'user.log.single.get.error': 'Failed to get single audit log',//获取单个审计日志失败
     //用户管理---用户审计日志end
     //我的应用start
     'my.app.role.auth.config.title': 'configuration role and permission', // 设置角色、权限
@@ -2167,6 +2169,7 @@ var en_US = {
     'user.login.abnormal.ignore': 'Ignore', // 忽略
     'user.login.abnormal.success': 'This remote information has been ignored.', // 该条异地信息已忽略!
     'user.login.abnormal.failed': 'Failed to Ignored Exception login', // 忽略异常登录地失败！
+    'user.login.abnormal.get.failed': 'Failed to get Exception login',//获取异常登录信息失败
     'crm.customer.interested': 'Add attention',//添加关注
     'crm.customer.uninterested': 'Unsubscribe',//取消关注
     'crm.customer.failed.interested': 'Failed to update the information!',//修改失败

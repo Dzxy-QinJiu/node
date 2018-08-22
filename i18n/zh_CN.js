@@ -512,6 +512,7 @@ var zh_CN = {
     'user.no.login.system': '该用户还没有登录过系统',
     'user.disable.logon': '停用登录',
     'user.frequent.logon': '频繁登录',
+    'user.get.score.failed': '获取用户分数失败',
 
     // 用户分析
     'user.login.total.score': '总分',
@@ -733,6 +734,7 @@ var zh_CN = {
     'user.log.select.time.range.tips': '只能查看近三个月的数据',
     'user.log.select.time.tips': '请选择小于1个月的时间',
     'user.log.single.record': '只能查看近三个月的操作记录',
+    'user.log.single.get.error': '获取单个审计日志失败',
     //用户管理---用户审计日志end
     //我的应用start
     'my.app.role.auth.config.title': '设置角色、权限',
@@ -2206,6 +2208,7 @@ var zh_CN = {
     'user.login.abnormal.ignore': '忽略',
     'user.login.abnormal.success': '该条异地信息已忽略!',
     'user.login.abnormal.failed': '忽略异常登录地失败！',
+    'user.login.abnormal.get.failed': '获取异常登录信息失败',
 
     'call.record.play': '播放录音',
     'call.record.pick.phone': '请拿起话机',
@@ -2547,6 +2550,5 @@ var zh_CN = {
     'clue.click.show.clue.detail': '点击查看线索详情',
     'clue.has.not.distribute': '该线索还没有分配',
     'user.get.suggest.name.error': '获取建议用户名失败',
-
 };
 export default zh_CN;
