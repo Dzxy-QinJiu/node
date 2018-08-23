@@ -32,14 +32,24 @@ import UserData from '../../../../../public/sources/user-data';
 const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 const DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 const CheckboxGroup = Checkbox.Group;
-import ApplyUserAppConfig from '../v3/AppPropertySetting';
+import UserAppConfig from '../v3/AppPropertySetting';
 import AppRolePermission from 'CMP_DIR/user_manage_components/app-role-permission';
-import AppConfigForm from '../apply-user-app-config/app-config-form';
+import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
+import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 
 const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
 };
+function merge(obj1,obj2) {
+    obj1 = obj1 || {};
+    obj2 = obj2 || {};
+    for(var key in obj2) {
+        obj1[key] = obj2[key];
+    }
+}
+
+
 //动态添加的样式
 var dynamicStyle;
 //布局常量
@@ -59,8 +69,14 @@ const UserDetailAddApp = React.createClass({
         UserMultiLoginField
     ],
     getInitialState() {
+        const storeObj = UserDetailAddAppStore.getState();
+        const appPropSettingsMap = this.createPropertySettingData(storeObj);
+        if (!_.isEmpty(appPropSettingsMap)) {
+            this.onAppPropertyChange(appPropSettingsMap);
+        }
         return {
-            ...UserDetailAddAppStore.getState(),
+            ...storeObj,
+            appPropSettingsMap,
             showAppSelector: true,
             selectedAppIds: [],
             configType: CONFIG_TYPE.UNIFIED_CONFIG,//配置类型：统一配置、分别配置
@@ -73,11 +89,170 @@ const UserDetailAddApp = React.createClass({
         UserDetailAddAppStore.listen(this.onStateChange);
         UserDetailAddAppActions.getCurrentRealmApps();
         $(window).on('resize', this.onStateChange);
-    },
+    },   
     componentWillUnmount() {
         UserDetailAddAppStore.unlisten(this.onStateChange);
         dynamicStyle && dynamicStyle.destroy();
         dynamicStyle = null;
+    }, 
+    createPropertySettingData(state) {
+        //选中的应用
+        const selectedApps = state.selectedApps;
+        //默认配置，添加的情况下会传
+        const defaultSettings = state.defaultSettings;
+        //修改的情况下会传appsSetting
+        const appsSetting = state.appsSetting;
+        //当前的各个应用的设置
+        const appPropSettingsMap = state && state.appPropSettingsMap || {};
+        //最终生成的数据
+        const finalResult = {};
+        //根据默认属性生成配置(添加用户，添加应用)
+        const createPropertySettingByDefaultSettings = () => {
+            _.each(selectedApps, (currentApp) => {
+                //当前应用的id
+                const appId = currentApp.app_id;
+                //当前应用的设置
+                const originAppSetting = appPropSettingsMap[appId] || {};
+                //检查角色、权限
+                function checkRolePermission() {
+                    if (!originAppSetting.roles) {
+                        originAppSetting.roles = [];
+                    }
+                    if (!originAppSetting.permissions) {
+                        originAppSetting.permissions = [];
+                    }
+                    //角色、权限，赋值，不会出现在全局设置里，直接设置
+                    if (defaultSettings.roles && _.isArray(defaultSettings.roles)) {
+                        originAppSetting.roles = defaultSettings.roles;
+                    }
+                    if (defaultSettings.permissions && _.isArray(defaultSettings.permissions)) {
+                        originAppSetting.permissions = defaultSettings.permissions;
+                    }
+                }
+                //检查单个属性，如果没有重新设置值，用defaultSettings里的值，重新生成
+                function checkSingleProp(prop) {
+                    if (!originAppSetting[prop]) {
+                        originAppSetting[prop] = {
+                            setted: false
+                        };
+                    }
+                    if (!originAppSetting[prop].setted) {
+                        originAppSetting[prop].value = defaultSettings[prop];
+                    }
+                }
+                //检查时间,时间格式比较特殊
+                function checkTime() {
+                    if (!originAppSetting.time) {
+                        originAppSetting.time = {
+                            setted: false
+                        };
+                    }
+                    if (!originAppSetting.time.setted) {
+                        originAppSetting.time.start_time = defaultSettings.time.start_time;
+                        originAppSetting.time.end_time = defaultSettings.time.end_time;
+                        originAppSetting.time.range = defaultSettings.time.range;
+                    }
+                }
+                //检查用户类型
+                checkSingleProp('user_type');
+                //检查到期停用
+                checkSingleProp('over_draft');
+                //检查二步验证
+                checkSingleProp('is_two_factor');
+                //检查用户状态（启用、停用）
+                checkSingleProp('status');
+                //检查多人登录
+                checkSingleProp('multilogin');
+                //检查角色、权限
+                checkRolePermission();
+                //检查时间
+                checkTime();
+                //添加到map中
+                finalResult[appId] = originAppSetting;
+            });
+        };
+        //根据传入的配置生成配置(修改单个应用，修改申请单-审批)
+        const createPropertySettingByAppsSetting = () => {
+            _.each(selectedApps, (currentApp) => {
+
+                const appSettingConfig = appsSetting[currentApp.app_id];
+
+                //检查角色、权限
+                function checkRolePermission() {
+                    if (!originAppSetting.roles) {
+                        originAppSetting.roles = [];
+                    }
+                    if (!originAppSetting.permissions) {
+                        originAppSetting.permissions = [];
+                    }
+                    //角色、权限，赋值，不会出现在全局设置里，直接设置
+                    if (appSettingConfig.roles && _.isArray(appSettingConfig.roles)) {
+                        originAppSetting.roles = appSettingConfig.roles;
+                    }
+                    if (appSettingConfig.permissions && _.isArray(appSettingConfig.permissions)) {
+                        originAppSetting.permissions = appSettingConfig.permissions;
+                    }
+                }
+                //检查单个属性
+                function checkSingleProp(prop) {
+                    if (!originAppSetting[prop]) {
+                        originAppSetting[prop] = {
+                            setted: false
+                        };
+                    }
+                    if (!originAppSetting[prop].setted) {
+                        originAppSetting[prop].value = appSettingConfig[prop];
+                    }
+                }
+                //检查时间
+                function checkTime() {
+                    if (!originAppSetting.time) {
+                        originAppSetting.time = {
+                            setted: false
+                        };
+                    }
+                    if (!originAppSetting.time.setted) {
+                        originAppSetting.time.start_time = appSettingConfig.time.start_time;
+                        originAppSetting.time.end_time = appSettingConfig.time.end_time;
+                        originAppSetting.time.range = appSettingConfig.time.range;
+                    }
+                }
+                const appId = currentApp.app_id;
+                const originAppSetting = appPropSettingsMap[appId] || {};
+                if (this.props.isSingleAppEdit) {
+                    checkSingleProp('user_type');
+                }
+                if (this.props.showUserNumber) {
+                    checkSingleProp('number');
+                }
+                checkSingleProp('over_draft');
+                if (this.props.showIsTwoFactor) {
+                    checkSingleProp('is_two_factor');
+                }
+                if (this.props.isSingleAppEdit) {
+                    checkSingleProp('status');
+                }
+                if (this.props.showMultiLogin) {
+                    checkSingleProp('multilogin');
+                }
+                checkRolePermission();
+                checkTime();
+                finalResult[appId] = originAppSetting;
+            });
+        };
+
+        //如果有默认配置，用默认配置
+        if (!_.isEmpty(defaultSettings)) {
+            createPropertySettingByDefaultSettings();
+            return finalResult;
+            //如果有应用特殊配置，用特殊配置
+        } else if (!_.isEmpty(appsSetting)) {
+            createPropertySettingByAppsSetting();
+            return finalResult;
+        } else {
+            //什么都没有，则什么都没有
+            return appPropSettingsMap;
+        }
     },
     //取消添加单个应用
     cancel() {
@@ -100,47 +275,51 @@ const UserDetailAddApp = React.createClass({
         let selectedAppIds = this.state.selectedAppIds;
         selectedAppIds = selectedAppIds.filter(x => x !== removeAppId);
         this.setState({
-            selectedAppIds
+            selectedAppIds,
+            //删除后只剩一个时，改成统一配置
+            configType: selectedAppIds.length === 1 ? CONFIG_TYPE.UNIFIED_CONFIG : this.state.configType,
         }, () => {
             this.handleSetSelectedApps(this.state.selectedAppIds);
         });
+
     },
     changeConfigType(configType) {
         this.setState({
             configType: configType
         });
     },
-    onOverDraftChange: function(app, e) {
-        // let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
-        // if (appFormData) {
-        //     appFormData.over_draft = parseInt(e.target.value);
-        // }
-        // this.setState(this.state);
-        console.log(app, e.target.value);
-    },
-    onCountChange: function(app, v) {
-        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
-        if (appFormData) {
-            appFormData.number = v;
-            let userName = this.state.formData.user_name;
-            if (userName && userName.indexOf('@') !== -1 && v > 1) {
-                //用户名是邮箱格式时，只能申请1个用户
-                appFormData.onlyOneUserTip = true;
-            } else {
-                appFormData.onlyOneUserTip = false;
-            }
+    handleFormItemEdit(field, app, appFormData, e) {
+        let value = null;
+        if (e.target.type === 'checkbox') {
+            value = e.target.checked ? '1' : '0';
+        } else {
+            value = e.target.value;
         }
-        this.setState(this.state);
+        if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
+            if (['is_two_factor', 'multilogin'].includes(field)) {              
+                const newFormData = {};
+                newFormData[field] = value;
+                merge(this.state.formData, newFormData);
+                return this.setState({
+                    formData: this.state.formData,
+                });
+            }
+            return this.setField.call(this, field, e);
+        } else {
+            const appPropSettingsMap = this.state.appPropSettingsMap;
+            const formData = appPropSettingsMap[app.app_id] || {};
+            formData[field].value = value;
+            // if (value != config.globalOverDraft) {
+            //     formData.over_draft.setted = true;
+            // }
+            this.setState({ appPropSettingsMap });            
+        }
     },
-    renderAppConfigForm: function(appFormData) {
-        console.log(appFormData);
-        const timePickerConfig = {
-            isCustomSetting: true,
-            appId: 'applyUser'
-        };
-        return (<div>
-            123123
-        </div>);
+    onOverDraftChange: function(app, e) {
+
+    },
+    onChangeUserType() {
+        console.log(arguments);
     },
     //选中的应用发生变化的时候
     onSelectedAppsChange(appIds) {
@@ -226,13 +405,18 @@ const UserDetailAddApp = React.createClass({
         //检验通过了，切换到下一步
         const apps = selectedAppIds.map(id => this.state.rawApps.find(x => x.app_id === id));
         UserDetailAddAppActions.setSelectedApps(apps);
+        setTimeout(() => {
+            this.setState({
+                appPropSettingsMap: this.createPropertySettingData(this.state)
+            });
+        });
         //当只有一个应用的时候，需要把特殊设置的应用属性隐藏掉，
         // 这个时候，要把第三步的应用属性同步到通用配置属性上
         if (apps.length === 1) {
             //渲染是异步的，加setTimeout能够获取到最新的配置信息
             setTimeout(() => {
-                //将应用的特殊设置同步到全局设置
-                UserDetailAddAppActions.syncCustomAppSettingToGlobalSetting();
+                //todo将应用的特殊设置同步到全局设置
+                // UserDetailAddAppActions.syncCustomAppSettingToGlobalSetting();
             });
         }
     },
@@ -290,79 +474,85 @@ const UserDetailAddApp = React.createClass({
                     {Intl.get('common.add.app', '添加应用')}
                 </p>
                 <ApplyUserAppConfig
-                    apps={this.state.selectedApps}
+                    apps={this.state.selectedApps.map(x => ({
+                        client_name: x.app_name,
+                        client_logo: x.app_logo,
+                        ...x
+                    }))}
+                    // todo defaultAppSettings
+                    appsFormData={this.state.selectedApps.map(x => ({
+                        begin_date: moment(),
+                        client_id: x.app_id,
+                        end_date: moment().add(0.5, 'm'),
+                        number: 1,
+                        over_draft: 1,
+                        range: '0.5m',
+                    }))}
                     configType={this.state.configType}
                     changeConfigType={this.changeConfigType}
-                    renderAppConfigForm={this.renderBasicCarousel.bind(this)}
+                    renderAppConfigForm={this.renderAppConfigForm.bind(this)}
                 />
             </div>
         );
     },
+    formatAppFormMapItem(mapItem) {
+        let item = mapItem;
+        if (!mapItem) {
+            item = this.state.defaultSettings;
+        }
+        return {
+            ...item.time,
+            user_type: item.user_type.value,
+            over_draft: item.over_draft.value,
+            //二步认证
+            is_two_factor: item.is_two_factor.value,
+            //多人登录
+            multilogin: item.multilogin.value,
+        };
+    },
     //渲染“开通信息”步骤
-    renderBasicCarousel() {
+    renderAppConfigForm(appFormData, app) {
+        let formData = this.state.formData;
+        const isSeparate = this.state.configType === CONFIG_TYPE.SEPARATE_CONFIG;
+        if (isSeparate) {
+            formData = app ?
+                this.formatAppFormMapItem(this.state.appPropSettingsMap[app.app_id]) :
+                appFormData;
+        }
+        const timePickerConfig = {
+            isCustomSetting: isSeparate ? true : false,
+            appId: isSeparate ? app.app_id : ''
+        };
         return (
-            <OperationScrollBar className="basic-data-form-wrap">
-                <div className="basic-data-form">
-                    {!Oplate.hideSomeItem && <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="common.type" defaultMessage="类型" /></div>
-                        <div className="form-item-content">
-                            {this.renderUserTypeRadioBlock()}
-                        </div>
-                    </div>}
-                    <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
-                        <div className="form-item-content">
-                            {this.renderUserTimeRangeBlock()}
-                        </div>
-                    </div>
-                    <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
-                        <div className="form-item-content">
-                            {this.renderUserOverDraftBlock()}
-                        </div>
-                    </div>
-                    {!Oplate.hideSomeItem && <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
-                        <div className="form-item-content">
-                            {this.renderUserTwoFactorBlock()}
-                        </div>
-                    </div>}
-                    {!Oplate.hideSomeItem && <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
-                        <div className="form-item-content">
-                            {this.renderMultiLoginRadioBlock()}
-                        </div>
-                    </div>}
-                </div>
-            </OperationScrollBar>
-        );
+            <AppConfigForm
+                appFormData={formData}
+                needApplyNum={false}
+                needUserType={true}
+                timePickerConfig={timePickerConfig}
+                renderUserTimeRangeBlock={this.renderUserTimeRangeBlock}
+                onOverDraftChange={this.handleFormItemEdit.bind(this, 'over_draft', app)}
+                onChangeUserType={this.handleFormItemEdit.bind(this, 'user_type', app)}
+                onCheckTwoFactor={this.handleFormItemEdit.bind(this, 'is_two_factor', app)}
+                onCheckMultiLogin={this.handleFormItemEdit.bind(this, 'multilogin', app)}
+                needTwoFactorMultiLogin={true}
+            />
+        );        
     },
     //渲染“应用设置”步骤
     renderRolesCarousel() {
         const formData = this.state.formData;
-        const defaultSettings = {
-            user_type: formData.user_type,
-            over_draft: formData.over_draft,
-            is_two_factor: formData.is_two_factor,
-            multilogin: formData.multilogin,
-            time: {
-                start_time: formData.start_time,
-                end_time: formData.end_time,
-                range: formData.range
-            }
-        };
+
         const height = this.props.height - OperationSteps.height - OperationStepsFooter.height;
         return (
             <div className="app-role-config-container">
-                <ApplyUserAppConfig
-                    defaultSettings={defaultSettings}
+                <UserAppConfig
+                    defaultSettings={this.state.defaultSettings}
                     selectedApps={this.state.selectedApps}
                     onAppPropertyChange={this.onAppPropertyChange}
                     height={height}
                     hideSingleApp={true}
                 />
             </div>
-
         );
     },
     //当应用的个性设置改变的时候触发
@@ -413,6 +603,7 @@ const UserDetailAddApp = React.createClass({
                     return;
                 } else {
                     UserDetailAddAppActions.turnStep(direction);
+                    UserDetailAddAppActions.saveAppsSetting(this.state.appPropSettingsMap);
                 }
             } else {
                 UserDetailAddAppActions.turnStep(direction);
@@ -510,7 +701,7 @@ const UserDetailAddApp = React.createClass({
     render() {
         return (
             <div className="user-manage-v2 user-detail-add-app-v2">
-                <span className="return-btn btn-text" onClick={this.cancel}>{Intl.get('user.detail.return', '返回基本信息')}</span>
+                <span className="btn-return btn-text" onClick={this.cancel}>{Intl.get('user.detail.return', '返回基本信息')}</span>
                 <Form horizontal>
                     <div className="add-app-container" style={{ height: this.props.height }}>
                         <Validation ref="validation" onValidate={this.handleValidate}>
@@ -542,10 +733,7 @@ const UserDetailAddApp = React.createClass({
                                     <div className="user-detail-add-app-v2-apps apps-carousel">
                                         {this.renderAppsCarousel()}
                                     </div>
-                                </CarouselItem>
-                                {/* <CarouselItem>
-                                    {this.renderBasicCarousel()}
-                                </CarouselItem> */}
+                                </CarouselItem>                              
                                 <CarouselItem>
                                     {this.renderRolesCarousel()}
                                 </CarouselItem>
@@ -557,8 +745,7 @@ const UserDetailAddApp = React.createClass({
                                 totalStep={2}
                                 onStepChange={this.turnStep}
                                 onFinish={this.onStepFinish}
-                            >
-                                <span className="operator_person">{Intl.get('user.operator', '操作人')}:{this.state.operator}</span>
+                            >                               
                                 {this.renderIndicator()}
                             </OperationStepsFooter>
                         </Validation>

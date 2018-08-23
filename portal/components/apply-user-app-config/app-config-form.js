@@ -80,13 +80,13 @@ class AppConfigForm extends React.Component {
                     >
                         <Checkbox
                             onChange={this.props.onCheckTwoFactor.bind(this, appFormData)}
-                            checked={appFormData.is_two_factor}
+                            checked={appFormData.is_two_factor === '1'}
                         >
                             {Intl.get('user.two.step.certification', '二步认证')}
                         </Checkbox>
                         <Checkbox
                             onChange={this.props.onCheckMultiLogin.bind(this, appFormData)}
-                            checked={appFormData.multilogin}
+                            checked={appFormData.multilogin === '1'}
                         >
                             {Intl.get('user.multi.login', '多人登录')}
                         </Checkbox>

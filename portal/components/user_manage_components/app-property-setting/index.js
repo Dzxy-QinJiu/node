@@ -418,14 +418,16 @@ const AppPropertySetting = React.createClass({
                                         this.props.showMultiLogin ? this.renderMultiLoginRadioBlock({
                                             isCustomSetting: true,
                                             appId: currentApp.app_id,
-                                            globalMultiLogin: defaultSettings.multilogin
+                                            globalMultiLogin: defaultSettings.multilogin,
+                                            showCheckbox: true
                                         }) : null
                                     }
                                     {
                                         this.props.showIsTwoFactor ? this.renderUserTwoFactorBlock({
                                             isCustomSetting: true,
                                             appId: currentApp.app_id,
-                                            globalTwoFactor: defaultSettings.is_two_factor
+                                            globalTwoFactor: defaultSettings.is_two_factor,
+                                            showCheckbox: true
                                         }) : null
                                     }
                                 </div>
@@ -500,7 +502,7 @@ const AppPropertySetting = React.createClass({
                                                 </span>
                                                 <p title={app.app_name}>{app.app_name}</p>
                                             </div>
-                                        )}
+                                        )} 
                                         content={this.renderTabContent(app.app_id)}
                                     />
                                 );

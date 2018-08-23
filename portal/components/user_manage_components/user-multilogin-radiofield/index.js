@@ -1,4 +1,7 @@
 import {Form,Radio,Checkbox} from 'antd';
+const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
+
 const UserTypeRadioField = {
     showMultiLoginError() {
         this.setState({
@@ -21,7 +24,6 @@ const UserTypeRadioField = {
         }
     },
     renderMultiLoginRadioBlock(config) {
-
         config = $.extend({
             isCustomSetting: false,
             appId: '',
@@ -58,10 +60,17 @@ const UserTypeRadioField = {
         } else {
             currentValue = this.state.formData.multilogin;
         }
+        if (config.showCheckbox) {
+            return (
+                <div className="user-multilogin-radiofield-block">
+                    <Checkbox checked={currentValue === '1'} onChange={callback}>{Intl.get('user.multi.login', '多人登录')}</Checkbox>
+                    {this.state.show_multilogin_error ? (<div className="error_form_tip"><ReactIntl.FormattedMessage id="user.multi.login.type.tip" defaultMessage="请选择多人登录类型" /></div>) : null}
+                </div>
+            );
+        }
         return (
             <div className="user-multilogin-radiofield-block">
-                <Checkbox checked={currentValue === '1'} onChange={callback}>{Intl.get('user.multi.login', '多人登录')}</Checkbox>
-                {/* <FormItem
+                <FormItem
                     label=""
                     labelCol={{span: 0}}
                     wrapperCol={{span: 24}}
@@ -73,7 +82,7 @@ const UserTypeRadioField = {
                         <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
                         <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
                     </RadioGroup>
-                </FormItem> */}
+                </FormItem>
                 {this.state.show_multilogin_error ? (<div className="error_form_tip"><ReactIntl.FormattedMessage id="user.multi.login.type.tip" defaultMessage="请选择多人登录类型" /></div>) : null}
             </div>
         );

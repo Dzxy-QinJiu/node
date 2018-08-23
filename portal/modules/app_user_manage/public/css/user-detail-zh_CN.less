@@ -34,6 +34,8 @@
 @bd-lightgrey: #EBEBEB;
 @bd-blue: #2497F4;
 @color: #4c8ec4;
+@btn-blue: #108ee9;
+
 .titlecut() {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -161,6 +163,39 @@
     }
     .add-app-container {
         background: white; //布局样式
+        .operation-steps-footer {
+            background: @right_panel_bgcolor;
+            border: none;
+            .btns {
+                .ant-btn {
+                    background: @btn-blue;
+                    border-color: @btn-blue;
+                }
+            }
+        }
+        .apply-app-user-config .app-config-wrap .user-type-radio-form-item.ant-form-item .ant-radio-group label {
+            padding: 0;
+        }
+        .app-config-wrap {
+            .user-time-rangefield-block {
+                .ant-col-24 {
+                    width: 62.5%;
+                }
+            }
+            .ant-col-19 {
+                width: 62.5%;
+                input {
+                    width: 100%;
+                }
+            }
+        }
+        .apply-app-user-config {
+            float: none;
+            .app-config-wrap {
+                float: none;
+                width: 100%;
+            }
+        }
         .app-property-setting {
             padding-left: 3px;
             padding-top: 0;
@@ -173,6 +208,7 @@
                 margin-top: 6px;
                 color: black;
                 border: none;
+                padding: 0;
             }
         }
         .carousel>.carousel-inner>.item {
@@ -793,8 +829,16 @@
     width: @right_panel_width  !important;
     transform: translate(@right_panel_width, 0);
     background-color: transparent !important;
+    .user-detail-v3 {
+        .user-manage-v2 {
+            background: @right_panel_bgcolor;
+        }
+    }
     .full_size.wrap_padding, .user-manage-v2 {
         background: #e6edef;
+        &.move_left {
+            background: transparent!important;
+        }
     }
     .full_size.wrap_padding.user-detail-v3 {
         background: @right_panel_bgcolor;
