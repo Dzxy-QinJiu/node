@@ -52,6 +52,15 @@ function CrmActions() {
             cb(errorMsg || Intl.get('crm.192', '添加客户失败!'));
         });
     };
+    //通过线索添加客户
+    this.addCustomerByClue = function(newCus, cb) {
+        crmAjax.addCustomerByClue(newCus).then((data) => {
+            cb(data);
+        }, (errorMsg) => {
+            cb(errorMsg || Intl.get('crm.192', '添加客户失败!'));
+        });
+    };
+
 
     this.deleteCustomer = function(ids) {
         crmAjax.deleteCustomer(ids).then((data) => {

@@ -23,6 +23,25 @@ exports.addCustomer = function(newCus) {
     });
     return Deferred.promise();
 };
+//通过线索添加客户
+let addCustomerByClueAjax = null;
+exports.addCustomerByClue = function(newCus) {
+    var Deferred = $.Deferred();
+    addCustomerByClueAjax && addCustomerByClueAjax.abort();
+    addCustomerByClueAjax = $.ajax({
+        url: '/rest/crm/add_customer_by_clue',
+        dataType: 'json',
+        type: 'post',
+        data: newCus,
+        success: function(added) {
+            Deferred.resolve(added);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 
 //删除客户
 exports.deleteCustomer = function(ids) {
