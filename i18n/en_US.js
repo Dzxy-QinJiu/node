@@ -2188,6 +2188,7 @@ var en_US = {
     'app.get.app.key.failed': 'Failed to get piwik information',//获取piwik信息失败
     'app.insert.code': 'We recommend that you insert the following code into the <head> tag.',//我们建议您将下面的代码插入到<head>标签中。
     'call.record.product.feedback': 'Product feedback',//产品反馈
+    'call.record.add.product.feedback': 'Add product feedback',//添加产品反馈
     'call.record.app.lists': 'Is getting application lists',//正在获取应用列表
     'call.record.feedback.prodcut': 'Please select the application you want to send feedback',//请选择需要反馈的应用产品
     'call.record.application.product': 'Application Product',//应用产品
@@ -2524,6 +2525,7 @@ var en_US = {
     'clue.failed.get.clue.detail': 'Failed to get clue detail',//获取线索详情失败
     'clue.has.distribute.clue': 'You have new clues',//您有新的线索
     'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
-    'clue.has.not.distribute': 'The clue has not been assigned yet'//该线索还没有分配
+    'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
+    'clue.not.complete.schedule': 'The schedule of today'//今天的联系计划
 };
 export default en_US;
