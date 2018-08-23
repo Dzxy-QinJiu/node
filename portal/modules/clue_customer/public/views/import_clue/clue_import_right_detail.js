@@ -12,9 +12,15 @@ require('../../css/clue_import.less');
 const Step = Steps.Step;
 import {AntcTable} from 'antc';
 import Spinner from 'CMP_DIR/spinner';
+import Trace from 'LIB_DIR/trace';
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
     LOADING_TIME: 1500//避免在第三步时关闭太快，加上延时展示loading效果
+};
+const LAYOUT = {
+    INITIALWIDTH: 504,
+    SMALLWIDTH: 24,
+    LARGEWIDTH: 75
 };
 
 
@@ -83,7 +89,8 @@ class ClueImportTemplate extends React.Component {
             </div>
         );
     };
-    doImport =() => {
+    doImport =(e) => {
+        Trace.traceEvent(e, '确定导入线索');
         this.setState({
             current: 3,
             isImporting: true
@@ -112,7 +119,7 @@ class ClueImportTemplate extends React.Component {
             <div className="prev-foot">
                 {this.state.isImporting ? <div className="is-importing">
                     <Spinner/>
-                </div> : <Button type="primary" onClick={this.doImport} disabled={repeatCustomer} data-tracename="点击导入按钮">
+                </div> : <Button type="primary" onClick={this.doImport} disabled={repeatCustomer}>
                     {Intl.get('common.import', '导入')}
                 </Button>}
                 <Button type="ghost" onClick={this.handleCancel} data-tracename="取消导入线索">
@@ -268,9 +275,9 @@ class ClueImportTemplate extends React.Component {
     };
     render() {
         var current = this.state.current;
-        var width = '504';
+        var width = LAYOUT.INITIALWIDTH;
         if (current !== 1) {
-            width = $(window).width() - 75;
+            width = $(window).width() - LAYOUT.LARGEWIDTH;
         }
         return (
             <RightPanel className="import-clue-template-panel white-space-nowrap"
@@ -279,7 +286,7 @@ class ClueImportTemplate extends React.Component {
             >
                 <span className="iconfont icon-close clue-import-btn" onClick={this.handleCancel}
                     data-tracename="点击关闭导入线索面板"></span>
-                <div className="clue-import-detail-wrap" style={{width: width - 24}}>
+                <div className="clue-import-detail-wrap" style={{width: width - LAYOUT.SMALLWIDTH}}>
                     <div className="clue-top-title">
                         {Intl.get('clue.manage.import.clue', '导入线索')}
                     </div>

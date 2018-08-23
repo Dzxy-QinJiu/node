@@ -26,7 +26,7 @@ class ClueUpload extends React.Component {
         this.setState({isLoading: true});
         if (info.file.status === 'done') {
             const response = info.file.response;
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue'), '点击上传表格');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue'), '上传表格');
             if (_.isArray(response) && response.length) {
                 clueEmitter.emit(clueEmitter.IMPORT_CLUE, response);
             } else {
@@ -44,7 +44,7 @@ class ClueUpload extends React.Component {
             onChange: this.handleChange
         };
         return (
-            <Upload {...props} className="import-clue">
+            <Upload {...props} className="import-clue" data-tracename="上传表格">
                 <Button type='primary'>{Intl.get('clue.import.csv', '上传表格')}{this.state.isLoading ?
                     <Icon type="loading" className="icon-loading"/> : null}</Button>
             </Upload>
