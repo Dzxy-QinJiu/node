@@ -213,6 +213,15 @@ exports.addCustomer = function(req, res) {
         });
 };
 
+exports.addCustomerByClue = function(req, res) {
+    crmService.addCustomerByClue(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+
 exports.deleteCustomer = function(req, res) {
     var ids = JSON.parse(req.body.ids);
     crmService.deleteCustomer(req, res, ids)

@@ -11,8 +11,8 @@ import {Form, Select, Icon, Input} from 'antd';
 const Option = Select.Option;
 var FormItem = Form.Item;
 const LAYOUT_CONST = {
-    LABELSM: 4,//lable所占的宽度
-    WRAPPERSM: 20,//输入框所占的宽度
+    LABELSM: 5,//lable所占的宽度
+    WRAPPERSM: 19,//输入框所占的宽度
     LABELXS: 24
 };
 class AddMoreInfo extends React.Component {
@@ -44,7 +44,8 @@ class AddMoreInfo extends React.Component {
     }
 
     //点击提交按钮
-    handleSubmit = () => {
+    handleSubmit = (e) => {
+        Trace.traceEvent(e, '保存反馈');
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 this.props.handleSubmit(values);
@@ -52,7 +53,8 @@ class AddMoreInfo extends React.Component {
         });
     };
     //点击取消按钮
-    handleCancel = () => {
+    handleCancel = (e) => {
+        Trace.traceEvent(e, '取消保存反馈');
         this.props.handleCancel();
     };
 
@@ -158,5 +160,19 @@ class AddMoreInfo extends React.Component {
 AddMoreInfo.defaultProps = {
     isAddingAppFeedback: '',
     addAppFeedbackErrMsg: '',
+    handleSubmit: function() {
+
+    },
+    handleCancel: function() {
+
+    },
+    form: {}
+};
+AddMoreInfo.propTypes = {
+    isAddingAppFeedback: React.PropTypes.string,
+    addAppFeedbackErrMsg: React.PropTypes.string,
+    handleSubmit: React.PropTypes.func,
+    handleCancel: React.PropTypes.func,
+    form: React.PropTypes.object
 };
 export default Form.create()(AddMoreInfo);

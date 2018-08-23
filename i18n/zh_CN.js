@@ -2226,6 +2226,7 @@ var zh_CN = {
     'app.get.app.key.failed': '获取piwik信息失败',
     'app.insert.code': '我们建议您将下面的代码插入到<head>标签中。',
     'call.record.product.feedback': '产品反馈',
+    'call.record.add.product.feedback': '添加产品反馈',
     'call.record.app.lists': '正在获取应用列表',
     'call.record.feedback.prodcut': '请选择需要反馈的应用产品',
     'call.record.application.product': '应用产品',
@@ -2532,7 +2533,7 @@ var zh_CN = {
     'clue.add.clue.time': '添加于',
     'clue.no.trace.content': '暂无跟进',
     'clue.associate.user': '关联账号',
-    'clue.handle.clue.person': '处理人',
+    'clue.handle.clue.person': '当前跟进人',
     'clue.handle.no.distribute.clue': '未分配',
     'clue.has.no.data': '暂无',
     'clue.handle.clue': '线索处理',
@@ -2546,6 +2547,8 @@ var zh_CN = {
     'clue.has.distribute.clue': '您有新的线索',
     'clue.click.show.clue.detail': '点击查看线索详情',
     'clue.import.csv': '上传表格',
-    'clue.download.clue.csv': '下载导入线索表格'
+    'clue.download.clue.csv': '下载导入线索表格',
+    'clue.has.not.distribute': '该线索还没有分配',
+    'clue.not.complete.schedule': '今天的联系计划'
 };
 export default zh_CN;

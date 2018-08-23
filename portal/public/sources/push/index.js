@@ -21,6 +21,7 @@ import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 const session = storageUtil.session;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -121,13 +122,15 @@ function clueUnhandledListener(data) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true);
         } else {//系统弹出通知
-            var clueHtml = '';
+            var clueHtml = '',titleHtml = '';
+            titleHtml += '<p class=\'clue-title\'>' + '<i class=\'iconfont icon-clue\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
+
             _.each(clueArr, (clueItem) => {
-                clueHtml += '<p class=\'clue-item\'>' + '<span class=\'clue-name\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(' + JSON.stringify(clueItem.id) + ')\'>' + clueItem.name + '</span>' + '</p>';
+                clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(' + JSON.stringify(clueItem.id) + ')\'>' + '<span class=\'clue-item-name\'>' + clueItem.name + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
             });
             tipContent = `<div>${clueHtml}</div>`;
             notificationUtil.showNotification({
-                title: title,
+                title: titleHtml,
                 content: tipContent,
                 closeWith: ['button']
             });
@@ -550,7 +553,6 @@ function startSocketIo() {
         socketIo.on('scheduleAlertMsg', scheduleAlertListener);
         //申请审批未读回复的监听
         socketIo.on('apply_unread_reply', applyUnreadReplyListener);
-        socketIo.on('cluemsg', clueUnhandledListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
@@ -558,10 +560,6 @@ function startSocketIo() {
         // 判断是否已启用桌面通知
         notificationCheckPermission();
     });
-}
-//获取线索未处理的权限
-function getClueUnhandledPrivilege(){
-    return hasPrivilege('CLUECUSTOMER_QUERY_MANAGER') || hasPrivilege('CLUECUSTOMER_QUERY_USER') && !userData.hasOnlyRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 }
 /**
  * 获取消息数
@@ -618,12 +616,18 @@ function getMessageCount(callback) {
 }
 
 //添加未读数的监听，包括申请审批，系统消息等
-function unreadListener() {
+function unreadListener(type) {
     if (socketIo) {
-        //获取完未读数后，监听node端推送的弹窗消息
-        socketIo.on('mes', listenOnMessage);
-        //监听系统消息
-        socketIo.on('system_notice', listenSystemNotice);
+        //如果是未处理的线索，要和审批的区分开，避免会加上两个监听的情况，未读数要在发ajax请求后再进行监听，避免出现监听数据比获取的数据早的情况
+        if (type === 'unhandleClue'){
+            //监听未处理的线索
+            socketIo.on('cluemsg', clueUnhandledListener);
+        }else{
+            //获取完未读数后，监听node端推送的弹窗消息
+            socketIo.on('mes', listenOnMessage);
+            //监听系统消息
+            socketIo.on('system_notice', listenSystemNotice);
+        }
     }
 }
 //申请审批未读回复的监听
@@ -729,12 +733,12 @@ function getClueUnreadNum(data, callback){
             //更新全局中存的未处理的线索数
             updateGlobalUnreadStorage(messages);
             if (typeof callback === 'function') {
-                callback();
+                callback('unhandleClue');
             }
         },
         error: () => {
             if (typeof callback === 'function') {
-                callback();
+                callback('unhandleClue');
             }
         }
     });

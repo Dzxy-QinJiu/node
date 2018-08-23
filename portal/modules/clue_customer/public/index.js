@@ -80,8 +80,7 @@ const ClueCustomer = React.createClass({
         }
         this.getClueList();
         this.getUserPhoneNumber();
-        //系统内有弹窗时，点击弹框中的线索名称可以查看线索详情
-        notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
+        clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
     },
     showClueDetailOut: function(item) {
         rightPanelShow = true;
@@ -100,18 +99,16 @@ const ClueCustomer = React.createClass({
         //关闭右侧面板后，将当前展示线索的id置为空
         clueCustomerAction.setCurrentCustomer('');
     },
-
-    showClueDetailFromNotification: function(clueObj) {
-        var clueId = clueObj.clueId;
-        rightPanelShow = true;
-        this.setState({rightPanelIsShow: true});
-        clueCustomerAction.setCurrentCustomer(clueId);
+    onClueImport: function(list) {
+        this.setState({
+            isPreviewShow: true,
+            previewList: list,
+        });
     },
     componentWillUnmount: function() {
         clueCustomerStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
-
-        notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
+        clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
     },
     onStoreChange: function() {
         this.setState(clueCustomerStore.getState());
@@ -697,7 +694,6 @@ const ClueCustomer = React.createClass({
                         showFlag={this.state.rightPanelIsShow}
                         currentId={this.state.currentId}
                         curClue={this.state.curClue}
-                        afterDeleteClue={this.hideRightPanel}
                         hideRightPanel={this.hideRightPanel}
                     />
                     {this.state.clueAnalysisPanelShow ? <RightPanel
@@ -715,4 +711,4 @@ const ClueCustomer = React.createClass({
         );
     }
 });
-module.exports = ClueCustomer;
+module.exports = ClueCustomer;

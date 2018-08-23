@@ -13,14 +13,14 @@ class SaveCancelButton extends React.Component {
     render() {
         return (
             <div className="button-container">
+                <Button className="button-cancel" onClick={this.props.handleCancel.bind(this)}>
+                    {this.props.cancelBtnText || Intl.get('common.cancel', '取消')}
+                </Button>
                 <Button className="button-save" type="primary"
                     onClick={this.props.handleSubmit.bind(this)}
                     disabled={this.props.loading}
                 >
                     {this.props.okBtnText || Intl.get('common.save', '保存')}
-                </Button>
-                <Button className="button-cancel" onClick={this.props.handleCancel.bind(this)}>
-                    {this.props.cancelBtnText || Intl.get('common.cancel', '取消')}
                 </Button>
                 {this.props.loading ? (
                     <Icon type="loading" className="save-loading"/>) : this.props.saveErrorMsg ? (

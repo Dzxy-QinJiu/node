@@ -1,3 +1,4 @@
+@import '../../../public/css/common-variables';
 //登录踢出提示框样式的设置
 .ant-modal-container.offline-modal-container .ant-confirm {
   .ant-confirm-body {
@@ -18,29 +19,81 @@
     width: 80px;
   }
 }
-.noty-container .noty-content{
-  -webkit-line-clamp: initial!important;
-  .phone-item{
-    cursor: pointer;
-    margin-bottom: 6px;
-    font-size: 13px;
-    .customer-name{
-      max-width: 130px;
-      display: inline-block;
-      overflow: hidden;
-      text-overflow:ellipsis;
-      white-space: nowrap;
-      position: relative;
-      top: 5px;
-    }
-    .icon-phone-call-out{
-      color: #8CA9C5;
-      margin-right: 6px;
-  }
-  }
-  .clue-item{
-    cursor: pointer;
-  }
+#noty_topRight_layout_container {
+  width: 360px!important;
+  li{
+    border:1px solid @BORDER-BLUE !important;
+    width: 360px!important;
+    .noty_message{
+      padding:0!important;
+      .noty-container{
+        padding:0;
+        //线索相关样式调整
+        .noty-title{
+          padding:12px;
+          margin-bottom:0;
+          .iconfont.icon-clue{
+            display: inline-block;
+            width: 24px;
+            background: @ICON-BACKGROUND;
+            color:@BORDER-BLUE;
+            border-radius: 4px!important;
+            text-align: center;
+          }
+          .title-tip{
+            font-size: 16px;
+            color:#333;
+            margin-left:8px;
+          }
+        }
+        .noty-content{
+          -webkit-line-clamp: initial!important;
+          font-size: 14px;
+          background:@NOTICE-BACKGROUND;
+          color:#333;
+          cursor: pointer;
+          padding:12px;
+          .phone-item{
+            cursor: pointer;
+            margin-bottom: 6px;
+            font-size: 13px;
+            .customer-name{
+              max-width: 130px;
+              display: inline-block;
+              overflow: hidden;
+              text-overflow:ellipsis;
+              white-space: nowrap;
+              position: relative;
+              top: 5px;
+            }
+            .icon-phone-call-out{
+              color: #8CA9C5;
+              margin-right: 6px;
+            }
+          }
+          .clue-item{
+            .clue-item-name{
+              float: left;
+              max-width:252px;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis
+            }
+            .clue-detail{
+              margin-left: 8px;
+              color:@CLICK-BLUE;
+              .great-than{
+                margin-left:4px;
+              }
+            }
 
+          }
+        }
+      }
+    }
+  }
 }
+
+
+
 

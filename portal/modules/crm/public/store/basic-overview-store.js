@@ -56,6 +56,10 @@ CRMStore.prototype.afterHandleStatus = function(newStatusObj) {
     var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id === newStatusObj.id;});
     curSchedule[0].status = newStatusObj.status;
 };
+//成功添加日程后，如果该日程类型为今天的电联日程，就在列表中加上该日程
+CRMStore.prototype.afterAddSchedule = function(newScheduleObj) {
+    this.scheduleList.push(newScheduleObj);
+};
 
 CRMStore.prototype.getEditShowFlag = function() {
     return this.getState().editShowFlag;

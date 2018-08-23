@@ -57,7 +57,7 @@
  */
 
 require('./searchInput.less');
-import { Select, Icon } from 'antd';
+import { Select, Icon ,Input} from 'antd';
 import Trace from 'LIB_DIR/trace';
 
 let inputTimeOut = null;
@@ -152,13 +152,13 @@ const SearchInput = React.createClass({
         //执行搜索
         this.props.searchEvent(keyword, selectedField);
     },
-    searchEvent: function() {
+    searchEvent: function(e) {
         var _this = this;
         if (inputTimeOut) {
             clearTimeout(inputTimeOut);
         }
         inputTimeOut = setTimeout(function() {
-            var searchContent = _this.refs.searchInput.value;
+            var searchContent = e.target.value;
             _this.props.searchEvent(searchContent);
         }, delayTime);
     },
@@ -219,8 +219,8 @@ const SearchInput = React.createClass({
         return (
             <div className="search-input-container">
                 {this.props.type === 'input' ? (
-                    <input type="text" placeholder={this.props.searchPlaceHolder} ref="searchInput"
-                        onKeyUp={this.searchEvent}
+                    <Input type="text" placeholder={this.props.searchPlaceHolder} ref="searchInput"
+                        onChange={this.searchEvent}
                         className="search-input"/>
                 ) : (
                     <Select

@@ -301,6 +301,7 @@ class SalesClueItem extends React.Component {
         var traceAddTime = _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
         var tracePersonId = _.get(salesClueItem, 'customer_traces[0].user_id', '');//跟进人的id
         var tracePersonName = _.get(salesClueItem, 'customer_traces[0].nick_name', '');//跟进人的名字
+        var handlePersonName = _.get(salesClueItem,'user_name');//当前跟进人
         var cls = 'foot-text-content';
         //是否有标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
@@ -347,24 +348,27 @@ class SalesClueItem extends React.Component {
                 </div>
                 : null}
             <div className="handle-clue">
-                {/*有分配权限*/}
-                {hasAssignedPrivilege ?
-                    <AntcDropdown
-                        ref={'changesale' + salesClueItem.id}
-                        content={<Button
-                            data-tracename="点击分配线索客户按钮"
-                            className='assign-btn'>{Intl.get('clue.customer.distribute', '分配')}</Button>}
-                        overlayTitle={Intl.get('user.salesman', '销售人员')}
-                        okTitle={Intl.get('common.confirm', '确认')}
-                        cancelTitle={Intl.get('common.cancel', '取消')}
-                        isSaving={this.state.distributeLoading}
-                        overlayContent={this.props.renderSalesBlock()}
-                        handleSubmit={this.props.handleSubmitAssignSales.bind(this, salesClueItem)}
-                        unSelectDataTip={this.state.unSelectDataTip}
-                        clearSelectData={this.props.clearSelectSales}
-                        btnAtTop={false}
-                    /> : null
-                }
+                <div className="handle-and-trace">
+                    {handlePersonName ? <span className="current-trace-person">{Intl.get('clue.handle.clue.person', '当前跟进人')}: {handlePersonName}</span> : null}
+                    {/*有分配权限*/}
+                    {hasAssignedPrivilege ?
+                        <AntcDropdown
+                            ref={'changesale' + salesClueItem.id}
+                            content={<span
+                                data-tracename="点击分配线索客户按钮"
+                                className='assign-btn'>{Intl.get('clue.customer.distribute', '分配')}</span>}
+                            overlayTitle={Intl.get('user.salesman', '销售人员')}
+                            okTitle={Intl.get('common.confirm', '确认')}
+                            cancelTitle={Intl.get('common.cancel', '取消')}
+                            isSaving={this.state.distributeLoading}
+                            overlayContent={this.props.renderSalesBlock()}
+                            handleSubmit={this.props.handleSubmitAssignSales.bind(this, salesClueItem)}
+                            unSelectDataTip={this.state.unSelectDataTip}
+                            clearSelectData={this.props.clearSelectSales}
+                            btnAtTop={false}
+                        /> : null
+                    }
+                </div>
                 {!traceContent && hasPrivilege('CLUECUSTOMER_ADD_TRACE') && !isWillDistributeClue ?
                     <Button className='add-trace-content'
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>

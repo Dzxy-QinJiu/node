@@ -401,7 +401,7 @@ var UserInfo = React.createClass({
                     <PrivilegeChecker check="GET_MANAGED_REALM">
                         <div className="user-info-item">
                             <span>
-                                <ReactIntl.FormattedMessage id="user.info.realm" defaultMessage="安全域"/>：</span>
+                                <ReactIntl.FormattedMessage id="realm.company" defaultMessage="公司"/>：</span>
                             {this.renderRealm()}
                         </div>
                     </PrivilegeChecker>

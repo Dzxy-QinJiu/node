@@ -2188,6 +2188,7 @@ var en_US = {
     'app.get.app.key.failed': 'Failed to get piwik information',//获取piwik信息失败
     'app.insert.code': 'We recommend that you insert the following code into the <head> tag.',//我们建议您将下面的代码插入到<head>标签中。
     'call.record.product.feedback': 'Product feedback',//产品反馈
+    'call.record.add.product.feedback': 'Add product feedback',//添加产品反馈
     'call.record.app.lists': 'Is getting application lists',//正在获取应用列表
     'call.record.feedback.prodcut': 'Please select the application you want to send feedback',//请选择需要反馈的应用产品
     'call.record.application.product': 'Application Product',//应用产品
@@ -2511,7 +2512,7 @@ var en_US = {
     'clue.add.clue.time': 'Added to',//添加于
     'clue.no.trace.content': 'no trace content',//暂无跟进
     'clue.associate.user': 'Associated account',//关联账号
-    'clue.handle.clue.person': 'Handler',//处理人
+    'clue.handle.clue.person': 'Handler',//当前跟进人
     'clue.handle.no.distribute.clue': '未分配',//
     'clue.has.no.data': 'No',//暂无
     'clue.handle.clue': 'Clue handle',//线索处理
@@ -2525,6 +2526,9 @@ var en_US = {
     'clue.has.distribute.clue': 'You have new clues',//您有新的线索
     'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
     'clue.import.csv': 'Upload form',//上传表格
-    'clue.download.clue.csv': 'Download the import clue form'//下载导入线索表格
+    'clue.download.clue.csv': 'Download the import clue form',//下载导入线索表格
+    'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
+    'clue.not.complete.schedule': 'The schedule of today'//今天的联系计划
+
 };
 export default en_US;

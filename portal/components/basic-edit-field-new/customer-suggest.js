@@ -1,7 +1,7 @@
 require('./css/customer-suggest.less');
 var Link = require('react-router').Link;
 import {Select, Tag} from 'antd';
-var customerAjax = require('MOD_DIR/common/public/ajax/customer');
+var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('PUB_DIR/sources/user-data');
 var classNames = require('classnames');
 import {DetailEditBtn} from '../rightPanel';
@@ -90,6 +90,7 @@ var CustomerSuggest = React.createClass({
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.id !== this.props.id) {
             this.setState({
+                displayType: nextProps.displayType,
                 displayText: nextProps.displayText,
                 displayCustomerId: nextProps.customer_id,
                 value: nextProps.customer_name,
@@ -100,7 +101,18 @@ var CustomerSuggest = React.createClass({
                 },
             });
         }
-
+        if (this.props.displayType !== nextProps.displayType || this.props.customer_id !== nextProps.customer_id){
+            this.setState({
+                displayType: nextProps.displayType,
+                displayText: nextProps.displayText,
+                displayCustomerId: nextProps.customer_id,
+                value: nextProps.customer_name,
+                customer: {
+                    id: nextProps.customer_id,
+                    name: nextProps.customer_name
+                },
+            });
+        }
         if (this.props.keyword !== nextProps.keyword) {
             this.setState({
                 keyword: nextProps.keyword
@@ -117,26 +129,6 @@ var CustomerSuggest = React.createClass({
             });
         }
     },
-
-    customerAjaxReq: null,
-    getCustomerList: function(suggestWord) {
-        var Deferred = $.Deferred();
-        if (this.customerAjaxReq) {
-            this.customerAjaxReq.abort();
-        }
-        this.customerAjaxReq = customerAjax.getCustomerSuggestListAjax().sendRequest({
-            q: suggestWord
-        }).success(function(list) {
-            Deferred.resolve(list);
-        }).error(function(xhr, statusText) {
-            if (statusText !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get('errorcode.61', '获取客户列表失败'));
-            }
-        }).timeout(function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('errorcode.61', '获取客户列表失败'));
-        });
-        return Deferred.promise();
-    },
     //调整右侧面板客户联想宽度
     adjustDropDownRightPos: function() {
         var $dropDown = $('.customer_combobox_search.ant-select-dropdown');
@@ -152,8 +144,6 @@ var CustomerSuggest = React.createClass({
     suggestChange: function(value) {
         clearTimeout(this.suggestTimer);
         var _this = this;
-        //是否展示客户名后的对号或者叉号
-        _.isFunction(this.props.isShowUpdateOrClose) && this.props.isShowUpdateOrClose(false);
         this.setState({
             result_type: 'loading',
             suggest_error_msg: '',
@@ -166,7 +156,28 @@ var CustomerSuggest = React.createClass({
             this.props.hideCustomerError();
         }
         this.suggestTimer = setTimeout(() => {
-            this.getCustomerList(value).then((list) => {
+            let condition = {name: value};
+            let rangeParams = [{
+                from: '',
+                to: '',
+                type: 'time',
+                name: 'start_time'
+            }];
+            let queryObj = {
+                total_size: 0,
+                cursor: true,
+                id: ''
+            };
+            let sorter = {
+                field: 'start_time',
+                order: 'descend'
+            };
+            crmCustomerAjax.queryCustomer(condition,rangeParams,10,sorter,queryObj).then((data) => {
+                var list = data.result;
+                _.forEach(list, (customerItem) => {
+                    customerItem.customer_name = customerItem.name;
+                    customerItem.customer_id = customerItem.id;
+                });
                 this.setState({
                     result_type: '',
                     suggest_error_msg: '',
@@ -174,17 +185,15 @@ var CustomerSuggest = React.createClass({
                     show_tip: list.length <= 0
                 }, () => {
                     this.adjustDropDownRightPos();
-                    _.isFunction(this.props.isShowUpdateOrClose) && this.props.isShowUpdateOrClose(true);
                 });
             }, (errorMsg) => {
                 this.setState({
                     result_type: 'error',
-                    suggest_error_msg: errorMsg,
+                    suggest_error_msg: errorMsg || Intl.get('errorcode.61', '获取客户列表失败'),
                     show_tip: true,
                     list: []
                 }, () => {
                     this.adjustDropDownRightPos();
-                    _.isFunction(this.props.isShowUpdateOrClose) && this.props.isShowUpdateOrClose(true);
                 });
             });
         }, 300);
@@ -437,6 +446,7 @@ var CustomerSuggest = React.createClass({
             <div ref="customer_searchbox" className="associate-customer-wrap">
                 <Select
                     combobox
+                    autoFocus = {true}
                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                     filterOption={false}
                     onSearch={this.suggestChange}

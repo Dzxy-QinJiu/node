@@ -27,4 +27,9 @@ SquareLogo.defaultProps = {
     logo: '',
     name: ''
 };
+const PropTypes = React.PropTypes;
+SquareLogo.propTypes = {
+    logo: PropTypes.string,
+    name: PropTypes.string
+};
 export default SquareLogo;
