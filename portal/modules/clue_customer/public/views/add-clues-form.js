@@ -5,7 +5,7 @@
  */
 import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import BasicData from './basic_info';
+import BasicData from './right_panel_top';
 import {Form, Input, Select, DatePicker, Button, Icon} from 'antd';
 var Option = Select.Option;
 const FormItem = Form.Item;
@@ -557,9 +557,7 @@ class ClueAddForm extends React.Component {
         return (
             <RightPanel showFlag={true} data-tracename="添加线索面板" className="sales-clue-add-container">
                 <BasicData
-                    closeRightPanel={this.closeAddPanel}
                     clueTypeTitle={Intl.get('crm.sales.add.clue', '添加线索')}
-                    showCloseIcon={false}
                 />
                 <div className="add-clue-item" style={{'height': divHeight}}>
                     <GeminiScrollbar>

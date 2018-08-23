@@ -2525,7 +2525,10 @@ var en_US = {
     'clue.failed.get.clue.detail': 'Failed to get clue detail',//获取线索详情失败
     'clue.has.distribute.clue': 'You have new clues',//您有新的线索
     'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
+    'clue.import.csv': 'Upload form',//上传表格
+    'clue.download.clue.csv': 'Download the import clue form',//下载导入线索表格
     'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
     'clue.not.complete.schedule': 'The schedule of today'//今天的联系计划
+
 };
 export default en_US;
