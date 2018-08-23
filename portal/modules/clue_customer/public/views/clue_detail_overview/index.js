@@ -427,7 +427,7 @@ var ClueDetailOverview = React.createClass({
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
-                    {Intl.get('clue.handle.clue.person', '处理人')}：
+                    {Intl.get('clue.handle.clue.person', '当前跟进人')}：
                 </div>
                 <div className="clue-info-detail">
                     <BasicEditSelectField
