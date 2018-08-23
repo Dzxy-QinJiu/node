@@ -23,15 +23,15 @@ class BottomSaveCancel extends React.Component{
     render(){
         return (
             <div className="bottom-save-cancel-container">
-                <Button type="primary" onClick={this.props.handleSubmit} disabled={this.state.submitResult == 'loading'} data-tracename="点击保存按钮">
-                    <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                    {this.state.submitResult == 'loading' ? <Icon type="loading"/> : null}
-                </Button>
                 <Button onClick={this.props.handleCancel} data-tracename="点击取消按钮">
                     <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                 </Button>
-                {this.state.submitResult == 'success' ? (<AlertTimer time={2000} message={Intl.get('common.save.success', '保存成功')} type="success" showIcon onHide={this.props.handleCancel}/>) : null}
-                {this.state.submitResult == 'error' ? (<div className="alert-timer">
+                <Button type="primary" onClick={this.props.handleSubmit} disabled={this.state.submitResult === 'loading'} data-tracename="点击保存按钮">
+                    <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
+                    {this.state.submitResult === 'loading' ? <Icon type="loading"/> : null}
+                </Button>
+                {this.state.submitResult === 'success' ? (<AlertTimer time={2000} message={Intl.get('common.save.success', '保存成功')} type="success" showIcon onHide={this.props.handleCancel}/>) : null}
+                {this.state.submitResult === 'error' ? (<div className="alert-timer">
                     <Alert message={this.state.saveErrMsg} type="error" showIcon />
                 </div>) : null}
             </div>
@@ -43,5 +43,13 @@ BottomSaveCancel.defaultProps = {
     handleSubmit: function() {},
     handleCancel: function() {},
     isAddingAppFeedback: '',
+    addAppFeedbackErrMsg: ''
+};
+BottomSaveCancel.propTypes = {
+    isAddingAppFeedback: React.PropTypes.string,
+    addAppFeedbackErrMsg: React.PropTypes.string,
+    handleSubmit: React.PropTypes.func,
+    handleCancel: React.PropTypes.func,
+
 };
 export default BottomSaveCancel;

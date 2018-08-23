@@ -26,7 +26,8 @@ class phoneStatusTop extends React.Component {
             inputContent: phoneAlertStore.getState().inputContent,
             showAddFeedbackOrAddPlan: false,//要在打完电话后才展示反馈，是否展示反馈
             isAddingMoreProdctInfo: this.props.isAddingMoreProdctInfo,
-            isAddingPlanInfo: this.props.isAddingPlanInfo//正在添加联系计划
+            isAddingPlanInfo: this.props.isAddingPlanInfo,//正在添加联系计划
+            showCancelBtn: false//是否展示取消保存跟进记录的按钮
         };
     }
 
@@ -75,6 +76,9 @@ class phoneStatusTop extends React.Component {
     handleEditContent = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-update'), '点击编辑跟进记录按钮');
         phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ''});
+        this.setState({
+            showCancelBtn: true,
+        });
     };
     //获取添加跟进记录的客户id
     getSaveTraceCustomerId() {
@@ -89,7 +93,14 @@ class phoneStatusTop extends React.Component {
         }
         return customer_id;
     }
-
+    //取消保存跟进记录
+    handleTraceCancel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.trace-content-container'), '取消保存跟进记录');
+        phoneAlertAction.setEditStatus({isEdittingTrace: false, submittingTraceMsg: ''});
+        this.setState({
+            showCancelBtn: false
+        });
+    };
     //提交跟进记录
     handleTraceSubmit = () => {
         let customer_id = this.getSaveTraceCustomerId();
@@ -116,7 +127,8 @@ class phoneStatusTop extends React.Component {
             this.setState({
                 selectedCustomerId: '',
                 isConnected: false,
-                showAddFeedbackOrAddPlan: true
+                showAddFeedbackOrAddPlan: true,
+                showCancelBtn: false
             });
         });
     };
@@ -183,10 +195,13 @@ class phoneStatusTop extends React.Component {
                                 </Select>
 
                             </div> : null}
-                        <Button className="modal-submit-btn" onClick={this.handleTraceSubmit}
+                        <Button type='primary' className="modal-submit-btn" onClick={this.handleTraceSubmit}
                             data-tracename="保存跟进记录">
                             {this.state.submittingTrace ? (Intl.get('retry.is.submitting', '提交中...')) : (Intl.get('common.save', '保存'))}
                         </Button>
+                        {this.state.showCancelBtn ?
+                            <Button onClick={this.handleTraceCancel} data-tracename="取消保存跟进记录">{Intl.get('common.cancel', '取消')}</Button>
+                            : null}
                     </div>
                 </div>
             );

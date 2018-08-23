@@ -391,7 +391,7 @@ class PhonePanel extends React.Component {
     };
     //添加联系计划
     handleAddPlan = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-plan-info-container'), '点击添加反馈按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-plan-info-container'), '点击添加联系计划按钮');
         this.setState({
             isAddingPlanInfo: true,
         });

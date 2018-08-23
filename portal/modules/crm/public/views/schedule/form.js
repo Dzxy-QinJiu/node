@@ -317,7 +317,7 @@ var CrmAlertForm = React.createClass({
         }
         this.handleSubmit(submitObj);
     },
-    handleSave: function() {
+    handleSave: function(e) {
         var formData = this.state.formData;
         if (this.state.selectedTimeRange !== 'custom') {
             switch (this.state.selectedTimeRange) {
@@ -345,10 +345,10 @@ var CrmAlertForm = React.createClass({
             }
         }
         this.switchDiffSelectOptions(this.state.formData);
-        Trace.traceEvent($(this.getDOMNode()).find('.alert-btn-block .btn-primary-sure'), '保存联系计划');
+        Trace.traceEvent(e, '保存联系计划');
     },
-    handleCancel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.alert-btn-block .btn-primary-cancel'), '取消添加联系计划');
+    handleCancel: function(e) {
+        Trace.traceEvent(e, '取消添加联系计划');
         _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
         //如果是批量添加联系计划,关闭后应该清空数据
         if (_.isArray(this.props.selectedCustomer)) {
