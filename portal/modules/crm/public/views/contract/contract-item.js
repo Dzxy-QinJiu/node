@@ -232,6 +232,7 @@ const ContractItem = React.createClass({
                     <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
                     <div className='contract-validity-edit-block'>
                         <AntcValidity
+                            mode={contract.stage === '待审' ? 'infoEdit' : 'info'}
                             className='validity-time'
                             startTime={contract.start_time}
                             endTime={contract.end_time}
