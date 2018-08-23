@@ -1,5 +1,6 @@
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import { Alert, Icon, Popover, message } from 'antd';
+import { Alert, Icon, Popover, message, Select} from 'antd';
+const Option = Select.Option;
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
@@ -353,11 +354,11 @@ class FilterList extends React.Component {
         }
     }
 
-    handleAdvanedItemClick(groupItem, item, outIndex, innerIdx) {
+    handleAdvanedItemClick(groupItem, item) {
         const { groupName, singleSelect = false } = groupItem;
         const advancedData = $.extend(true, [], this.state.advancedData);
         const selectedCommonItem = this.state.commonData[this.state.selectedCommonIndex];
-        const selectedGroupItem = advancedData.find((group, index) => index === outIndex);
+        const selectedGroupItem = advancedData.find(group => group.groupId === groupItem.groupId);
         let selectedItem = null;
         let hasAdvanceGroup = false;
         if (selectedCommonItem && _.get(selectedCommonItem, 'data.length')) {
@@ -375,10 +376,10 @@ class FilterList extends React.Component {
                 }
             });
         }
-       
+
         if (selectedGroupItem.data && selectedGroupItem.data.length) {
             let selectOnlyItem = selectedGroupItem.data.find(x => x.selectOnly);
-            selectedItem = selectedGroupItem.data.find((x, idx) => idx === innerIdx);
+            selectedItem = selectedGroupItem.data.find(x => x.value === item.value);
             //单选或不能与其它选项同时选中时，清空本组其他选中状态
             if (singleSelect || item.selectOnly) {
                 selectedGroupItem.data = selectedGroupItem.data.map(x => {
@@ -431,6 +432,38 @@ class FilterList extends React.Component {
             showClickPop
         });
     }
+    handleSelectChange(groupItem, values){
+        //找到此次选择的筛选项
+        let curSelectedItem = _.find(groupItem.data, item => !item.selected && values.indexOf(item.value) !== -1);
+        if (curSelectedItem) {
+            this.handleAdvanedItemClick(groupItem, curSelectedItem);
+        } else {
+            // 找到此次取消选择的筛选项
+            let curDeSelectedItem = _.find(groupItem.data, item => item.selected && values.indexOf(item.value) === -1);
+            this.handleAdvanedItemClick(groupItem, curDeSelectedItem);
+        }
+    }
+    //筛选项超8条后，用可搜索的下拉框展示
+    renderGroupItemSelect(groupItem){
+        let selectItems = _.filter(groupItem.data, item => item.selected);
+        let selectValues = _.map(selectItems, item => item.value);
+        return (
+            <Select
+                className="filter-select"
+                mode="multiple"
+                style={{ width: '100%' }}
+                placeholder={groupItem.groupName}
+                value={selectValues}
+                onChange={this.handleSelectChange.bind(this, groupItem)}
+                optionFilterProp="children"
+            >
+                {_.map(groupItem.data, (item, index) => {
+                    return (<Option key={index} value={item.value}>{item.name}</Option>);
+                })}
+            </Select>
+        );
+    }
+
     render() {
         const { commonLoading, advancedLoading, commonData, advancedData } = this.props;
         const isGroupSelected = groupItem => {
@@ -585,14 +618,14 @@ class FilterList extends React.Component {
                                                                         }
                                                                     </h4>
                                                                     <ul className="item-container">
-                                                                        {
+                                                                        { _.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) :
                                                                             groupItem.data.map((x, idx) => {
                                                                                 return (
                                                                                     <li
                                                                                         className={x.selected ? 'active titlecut' : 'titlecut'}
                                                                                         key={idx}
                                                                                         data-tracename={`选择"${groupItem.groupName}"筛选条件`}
-                                                                                        onClick={this.handleAdvanedItemClick.bind(this, groupItem, x, index, idx)}
+                                                                                        onClick={this.handleAdvanedItemClick.bind(this, groupItem, x)}
                                                                                     >
                                                                                         {x.name}
                                                                                     </li>
