@@ -75,7 +75,7 @@
     }
 }
 
-//新版客户详情的样式
+//新版用户详情的样式
 .right-panel {
     .btn-text {
         color: @font-lightblue;
@@ -83,10 +83,31 @@
     }
     .user-analysis-panel  {
         .user-login-info {
+            .login-score {
+                text-align: center;
+                .score-container {
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-right: 40px;
+                    text-align: left;
+                    li {
+                        span:first-child {
+                            width: 70px;
+                            display: inline-block;
+                        }
+                    }
+                }
+            }
+            .login-info .login-stress {
+                padding-left: 0; 
+            }
             .login-chart {
                 margin-top: 19px;
                 margin-left: -4px;
                 padding-top: 10px;
+                .box-container {
+                    background: white;
+                }
                 .box-title {
                     background: white;
                     font-weight: initial;

@@ -6,12 +6,13 @@ var UserLoginAnalysisAction = require('../action/user-login-analysis-action');
 var UserLoginAnalysisStore = require('../store/user-login-analysis-store');
 import TimeUtil from '../../../../public/sources/utils/time-format-util';
 import CardContainer from 'CMP_DIR/card-container'; // 容器
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import DetailCard from 'CMP_DIR/detail-card';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
+import { Progress } from 'antd';
 
 const UserLoginAnalysis = React.createClass({
     getDefaultProps: function() {
@@ -33,8 +34,8 @@ const UserLoginAnalysis = React.createClass({
         return UserLoginAnalysisStore.getState();
     },
     getUserAnalysisInfo(userId, selectedAppId) {
-        UserLoginAnalysisAction.getSingleUserAppList({user_id: userId}, selectedAppId);
-        if(selectedAppId){
+        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId }, selectedAppId);
+        if (selectedAppId) {
             UserLoginAnalysisAction.setSelectedAppId(selectedAppId);
         }
     },
@@ -82,14 +83,14 @@ const UserLoginAnalysis = React.createClass({
         UserLoginAnalysisAction.resetState();
         UserLoginAnalysisAction.setSelectedAppId(appid);
         // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
-        this.getUserAnalysisData({appid: appid});
+        this.getUserAnalysisData({ appid: appid });
     },
     // 应用选择框
-    renderUserAppsList(){
+    renderUserAppsList() {
         let showAppSelect = this.props.selectedAppId;
         return (
             <div className="user-analysis-header clearfix">
-                { showAppSelect ? null : <div className="select-app">
+                {showAppSelect ? null : <div className="select-app">
                     <SelectFullWidth
                         showSearch
                         optionFilterProp="children"
@@ -100,7 +101,7 @@ const UserLoginAnalysis = React.createClass({
                         maxWidth={270}
                         notFoundContent={Intl.get('common.not.found', '无法找到')}
                     >
-                        { _.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
+                        {_.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
                             return (
                                 <Option value={item.app_id} key={item.app_id}>
                                     {item.app_name}
@@ -119,12 +120,12 @@ const UserLoginAnalysis = React.createClass({
         } else if (loginLast !== -1 || loginFirst !== -1) {
             return (
                 <div>
-                    { loginFirst !== -1 ? (
+                    {loginFirst !== -1 ? (
                         <div className="info-item-container">
                             {Intl.get('user.first.login', '首次登录')}：<span className="login-stress">{loginFirst}</span>
                         </div>
                     ) : null}
-                    { loginLast !== -1 ? (
+                    {loginLast !== -1 ? (
                         <div className="info-item-container">
                             {Intl.get('user.last.login', '最近登录')}：<span className="login-stress">{loginLast}</span>
                         </div>
@@ -184,30 +185,36 @@ const UserLoginAnalysis = React.createClass({
         } else {
             return (
                 <div className='login-score'>
-                    <div>
-                        {Intl.get('user.login.total.score', '总分')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}</span>
+                    <div className="score-container total-score">
+                        <Progress
+                            type="circle"
+                            width={100}
+                            percent={this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}
+                            format={percent => `${percent}${Intl.get('user.login.total.score', '总分')}`}
+                        />
                     </div>
-                    <div>
-                        {Intl.get('user.login.latest.activity.score', '最新活跃度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}</span>
-                    </div>
-                    <div>
-                        {Intl.get('user.login.latest.immersion.score', '最新沉浸度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}</span>
-                    </div>
-                    <div>
-                        {Intl.get('user.login.freshness.score', '新鲜度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}</span>
-                    </div>
-                    <div>
-                        {Intl.get('user.login.history.activity.score', '历史活跃度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}</span>
-                    </div>
-                    <div>
-                        {Intl.get('user.login.history.immersion.score', '历史沉浸度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}</span>
-                    </div>
+                    <ul className="score-container">
+                        <li>
+                            {Intl.get('user.login.latest.activity.score', '最新活跃度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}</span>
+                        </li>
+                        <li>
+                            {Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}</span>
+                        </li>
+                        <li>
+                            {Intl.get('user.login.freshness.score', '新鲜度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}</span>
+                        </li>
+                        <li>
+                            {Intl.get('user.login.history.activity.score', '历史活跃度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}</span>
+                        </li>
+                        <li>
+                            {Intl.get('user.login.history.immersion.score', '历史沉浸度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}</span>
+                        </li>
+                    </ul>
                 </div>
             );
         }
@@ -220,7 +227,7 @@ const UserLoginAnalysis = React.createClass({
     // 用户登录信息
     renderUserLoginInfo() {
         let millisecond = this.state.loginInfo.duration;
-        let timeObj = {timeDescr: ' '};
+        let timeObj = { timeDescr: ' ' };
         if (millisecond !== '') {
             timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(millisecond / 1000));
         }
@@ -238,7 +245,7 @@ const UserLoginAnalysis = React.createClass({
         if (count || millisecond) {
             return (
                 <div className="login-info clearfix">
-                    { Oplate.hideSomeItem ? null : (
+                    {Oplate.hideSomeItem ? null : (
                         <div className="info-item-container">
                             {Intl.get('user.login.duration', '在线时长')}：<span className="login-stress">{timeObj.timeDescr}</span>
                         </div>
@@ -246,8 +253,8 @@ const UserLoginAnalysis = React.createClass({
                     <div className="info-item-container">
                         {Intl.get('user.login.times', '登录次数')}：<span className="login-stress">{count}</span>
                     </div>
-                    
-                    { this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
+
+                    {this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
                 </div>
             );
         } else {
@@ -259,7 +266,7 @@ const UserLoginAnalysis = React.createClass({
         let queryObj = this.getQueryParams();
         UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
     },
-    renderLoginChart(){
+    renderLoginChart() {
         if (this.state.loginChartInfo.errorMsg) {
             return (
                 <div className="login-info">
@@ -270,8 +277,8 @@ const UserLoginAnalysis = React.createClass({
                 </div>
             );
         }
-        const radioValue = [{value: 'LoginFrequency', name: '次数'}, {value: 'loginDuration', name: '时长'}];
-        if(_.isArray(this.state.loginChartInfo.loginDuration) || _.isArray(this.state.loginChartInfo.loginCount)) {
+        const radioValue = [{ value: 'LoginFrequency', name: '次数' }, { value: 'loginDuration', name: '时长' }];
+        if (_.isArray(this.state.loginChartInfo.loginDuration) || _.isArray(this.state.loginChartInfo.loginCount)) {
             return (
                 <div className="login-chart">
                     {Oplate.hideSomeItem ? (
@@ -291,9 +298,9 @@ const UserLoginAnalysis = React.createClass({
                             <div className="duration-chart">
                                 {
                                     this.state.selectValue === 'loginDuration' ?
-                                        // 时长
+                                    // 时长
                                         this.renderChart(this.state.loginChartInfo.loginDuration, this.durationTooltip) :
-                                        // 次数
+                                    // 次数
                                         this.renderChart(this.state.loginChartInfo.loginCount, this.chartFrequencyTooltip)
                                 }
                             </div>
@@ -310,15 +317,15 @@ const UserLoginAnalysis = React.createClass({
     renderChart(data, charTips) {
         const calendarHeatMapOption = {
             calendar: [{
-                cellSize: [7, 7]                
+                cellSize: [7, 7]
             }],
-            tooltip: {               
+            tooltip: {
                 formatter: charTips
             },
         };
-        
+
         if (_.isArray(data) && data.length) {
-            return (  
+            return (
                 // <TimeSeriesBarChart
                 //     dataList={data}
                 //     tooltip={charTips}
@@ -410,8 +417,9 @@ const UserLoginAnalysis = React.createClass({
                             content={
                                 this.state.showDetailMap[app.app_name] ?
                                     (<div className="user-login-info">
+                                        {this.renderUserLoginScore()}
                                         {this.renderUserLoginInfo()}
-                                        {this.renderLoginChart()}                             
+                                        {this.renderLoginChart()}
                                     </div>) : null
                             }
                         />
@@ -422,8 +430,8 @@ const UserLoginAnalysis = React.createClass({
         return (
             <StatusWrapper
                 loading={this.state.isLoading}
-            >            
-                <div className="user-analysis-panel" style={{height: this.props.height}}>
+            >
+                <div className="user-analysis-panel" style={{ height: this.props.height }}>
                     {/* {appList} */}
                     <GeminiScrollbar>
                         {userLoginBlock}
