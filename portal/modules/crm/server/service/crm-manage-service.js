@@ -346,12 +346,9 @@ exports.addCustomer = function(req, res, newCustomer) {
 };
 //由线索生成客户
 exports.addCustomerByClue = function(req, res) {
-    var reqBody = _.cloneDeep(req.body);
-    var clueId = reqBody.clue_id;
-    delete reqBody.clue_id;
     return restUtil.authRest.post(
         {
-            url: crmRestApis.addCustomerByClue + `?clue_id=${clueId}`,
+            url: crmRestApis.addCustomerByClue + `?clue_id=${req.query.clueId}`,
             req: req,
             res: res
         }, req.body);

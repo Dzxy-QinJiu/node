@@ -214,18 +214,7 @@ exports.addCustomer = function(req, res) {
 };
 
 exports.addCustomerByClue = function(req, res) {
-    var newCus = req.body;
-    newCus.contacts0_phone = [newCus.contacts0_phone];
-    newCus.contacts = [{}];
-    for (var p in newCus) {
-        if (p.indexOf('contacts0') > -1) {
-            var arr = p.split('_');
-            newCus.contacts[0][arr[1]] = newCus[p];
-            delete newCus[p];
-        }
-    }
-    newCus.contacts[0].def_contancts = 'true';
-    crmService.addCustomerByClue(req, res, newCus)
+    crmService.addCustomerByClue(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(codeMessage) {

@@ -26,13 +26,16 @@ exports.addCustomer = function(newCus) {
 //通过线索添加客户
 let addCustomerByClueAjax = null;
 exports.addCustomerByClue = function(newCus) {
+    var reqBody = _.cloneDeep(newCus);
+    var clueId = newCus.clue_id;
+    delete reqBody.clue_id;
     var Deferred = $.Deferred();
     addCustomerByClueAjax && addCustomerByClueAjax.abort();
     addCustomerByClueAjax = $.ajax({
-        url: '/rest/crm/add_customer_by_clue',
+        url: '/rest/crm/add_customer_by_clue' + `?clueId=${clueId}`,
         dataType: 'json',
         type: 'post',
-        data: newCus,
+        data: reqBody,
         success: function(added) {
             Deferred.resolve(added);
         },

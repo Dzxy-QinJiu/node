@@ -182,7 +182,7 @@ var CustomerSuggest = React.createClass({
             } , function(errorMsg) {
                 _this.setState({
                     result_type: 'error',
-                    suggest_error_msg: errorMsg,
+                    suggest_error_msg: errorMsg || Intl.get('errorcode.61', '获取客户列表失败'),
                     show_tip: true,
                     list: []
                 },() => {
