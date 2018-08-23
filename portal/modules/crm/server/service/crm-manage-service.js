@@ -66,6 +66,8 @@ var crmRestApis = {
     getUserPhoneNumber: '/rest/base/v1/user/member/phoneorder',
     //获取客户是否还能继续添加客户 返回0是可以继续添加，返回大于0的值，表示超出几个客户
     getCustomerLimit: '/rest/customer/v2/customer/limit/flag',
+    //线索生成客户
+    addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
 };
 exports.urls = crmRestApis;
 
@@ -341,6 +343,15 @@ exports.addCustomer = function(req, res, newCustomer) {
             req: req,
             res: res
         }, newCustomer);
+};
+//由线索生成客户
+exports.addCustomerByClue = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: crmRestApis.addCustomerByClue + `?clue_id=${req.query.clueId}`,
+            req: req,
+            res: res
+        }, req.body);
 };
 
 //删除客户

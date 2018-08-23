@@ -21,6 +21,7 @@ import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 const session = storageUtil.session;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -557,10 +558,6 @@ function startSocketIo() {
         // 判断是否已启用桌面通知
         notificationCheckPermission();
     });
-}
-//获取线索未处理的权限
-function getClueUnhandledPrivilege(){
-    return hasPrivilege('CLUECUSTOMER_QUERY_MANAGER') || hasPrivilege('CLUECUSTOMER_QUERY_USER') && !userData.hasOnlyRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 }
 /**
  * 获取消息数

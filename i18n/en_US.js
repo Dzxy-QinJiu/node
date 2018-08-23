@@ -2521,7 +2521,7 @@ var en_US = {
     'clue.add.clue.time': 'Added to',//添加于
     'clue.no.trace.content': 'no trace content',//暂无跟进
     'clue.associate.user': 'Associated account',//关联账号
-    'clue.handle.clue.person': 'Handler',//处理人
+    'clue.handle.clue.person': 'Handler',//当前跟进人
     'clue.handle.no.distribute.clue': '未分配',//
     'clue.has.no.data': 'No',//暂无
     'clue.handle.clue': 'Clue handle',//线索处理

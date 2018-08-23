@@ -314,15 +314,17 @@ var ClueDetailOverview = React.createClass({
         this.setState({
             isShowAddCustomer: false
         });
-        //todo 待修改
         if (_.isArray(newCustomerArr) && newCustomerArr[0]) {
             var newCustomer = newCustomerArr[0];
+            var curClue = this.state.curClue;
+            curClue.customer_name = newCustomer.name;
+            curClue.customer_id = newCustomer.id;
+            curClue.customer_label = newCustomer.customer_label;
             this.setState({
-                displayType: 'text',
-                selectShowAddCustomer: false,
-                relatedCustomerId: newCustomer.id,
-                relatedCustomerName: newCustomer.name,
+                curClue: curClue,
+                clickAssociatedBtn: false
             });
+            clueCustomerAction.afterModifiedAssocaitedCustomer(curClue);
         }
     },
     //渲染添加客户内容
@@ -427,7 +429,7 @@ var ClueDetailOverview = React.createClass({
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
-                    {Intl.get('clue.handle.clue.person', '处理人')}：
+                    {Intl.get('clue.handle.clue.person', '当前跟进人')}：
                 </div>
                 <div className="clue-info-detail">
                     <BasicEditSelectField
@@ -503,7 +505,6 @@ var ClueDetailOverview = React.createClass({
                             displayType={associatedDisplyType}
                             id={curClue.id}
                             show_error={this.state.isShowCustomerError}
-                            isShowUpdateOrClose={this.isShowUpdateOrClose}
                             noJumpToCrm={true}
                             saveEditSelectCustomer={this.handleAssociatedCustomer}
                             customer_name={associatedCustomer}

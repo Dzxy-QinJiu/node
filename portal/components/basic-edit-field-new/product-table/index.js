@@ -192,15 +192,13 @@ class ProductTable extends React.Component {
             </span>
         );
     }
-    handleAppSelect = selectedAppIds => {
+    handleAppSelect = selectedAppList => {
         let data = _.cloneDeep(this.state.data);
 
-        _.each(selectedAppIds, appId => {
-            const selectedApp = _.find(this.props.appList, app => app.client_id === appId);
-
+        _.each(selectedAppList, app => {
             data.push({
-                id: selectedApp.client_id,
-                name: selectedApp.client_name,
+                id: app.client_id,
+                name: app.client_name,
                 count: APP_DEFAULT_INFO.COUNT,
                 total_price: APP_DEFAULT_INFO.PRICE,
             });
