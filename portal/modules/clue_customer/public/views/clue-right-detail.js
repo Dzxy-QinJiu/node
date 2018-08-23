@@ -217,7 +217,7 @@ class ClueRightPanel extends React.Component {
                 this.setState({
                     isRemoveClue: {},
                 });
-                _.isFunction(this.props.afterDeleteClue) && this.props.afterDeleteClue();
+                _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
             }
         });
     };
@@ -240,9 +240,13 @@ class ClueRightPanel extends React.Component {
         //是否没有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
         var divHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        var cls = 'clue_customer_rightpanel white-space-nowrap';
+        if (this.props.className){
+            cls += ` ${this.props.className}`;
+        }
         return (
             <RightPanel
-                className="clue_customer_rightpanel white-space-nowrap"
+                className={cls}
                 showFlag={this.props.showFlag} data-tracename="线索详情面板">
                 <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel} data-tracename="关闭线索详情面板"></span>
                 {this.state.getClueDetailErrMsg ? <div className="no-data-tip">{this.state.getClueDetailErrMsg}</div> :
@@ -328,16 +332,16 @@ ClueRightPanel.defaultProps = {
     hideRightPanel: noop,
     salesManList: [],
     showFlag: false,
-    afterDeleteClue: noop,
-    currentId: ''
+    currentId: '',
+    className: ''
 };
 ClueRightPanel.propTypes = {
     curClue: React.PropTypes.object,
     hideRightPanel: React.PropTypes.func,
     salesManList: React.PropTypes.object,
     showFlag: React.PropTypes.bool,
-    afterDeleteClue: React.PropTypes.func,
-    currentId: React.PropTypes.string
+    currentId: React.PropTypes.string,
+    className: React.PropTypes.string,
 
 };
 export default ClueRightPanel;

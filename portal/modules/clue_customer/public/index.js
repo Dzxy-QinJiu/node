@@ -83,7 +83,7 @@ const ClueCustomer = React.createClass({
         this.getUserPhoneNumber();
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
         //系统内有弹窗时，点击弹框中的线索名称可以查看线索详情
-        notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
+        // notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
     },
     showClueDetailOut: function(item) {
         rightPanelShow = true;
@@ -108,17 +108,17 @@ const ClueCustomer = React.createClass({
             previewList: list,
         });
     },
-    showClueDetailFromNotification: function(clueObj) {
-        var clueId = clueObj.clueId;
-        rightPanelShow = true;
-        this.setState({rightPanelIsShow: true});
-        clueCustomerAction.setCurrentCustomer(clueId);
-    },
+    // showClueDetailFromNotification: function(clueObj) {
+    //     var clueId = clueObj.clueId;
+    //     rightPanelShow = true;
+    //     this.setState({rightPanelIsShow: true});
+    //     clueCustomerAction.setCurrentCustomer(clueId);
+    // },
     componentWillUnmount: function() {
         clueCustomerStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
         clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
-        notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
+        // notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
     },
     onStoreChange: function() {
         this.setState(clueCustomerStore.getState());
@@ -875,7 +875,6 @@ const ClueCustomer = React.createClass({
                         showFlag={this.state.rightPanelIsShow}
                         currentId={this.state.currentId}
                         curClue={this.state.curClue}
-                        afterDeleteClue={this.hideRightPanel}
                         hideRightPanel={this.hideRightPanel}
                     />
                     {this.state.clueAnalysisPanelShow ? <RightPanel
