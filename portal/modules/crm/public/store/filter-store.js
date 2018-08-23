@@ -123,8 +123,13 @@ FilterStore.prototype.setProvince = function(value) {
 FilterStore.prototype.setContact = function(value) {
     this.condition.contact = value;
 };
-FilterStore.prototype.setInputCondition = function(value) {
-    this.inputCondition = value;
+FilterStore.prototype.setInputCondition = function(searchObj) {
+    if(_.has(searchObj,'contact_name')){
+        //联系人的搜索
+        this.inputCondition = {contacts: [{name: searchObj.contact_name}]};
+    } else {
+        this.inputCondition = value;
+    }
 };
 FilterStore.prototype.setClue = function(value) {
     this.condition.clue = value;
