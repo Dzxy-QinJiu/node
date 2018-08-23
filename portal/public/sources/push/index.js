@@ -122,13 +122,15 @@ function clueUnhandledListener(data) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true);
         } else {//系统弹出通知
-            var clueHtml = '';
+            var clueHtml = '',titleHtml = '';
+            titleHtml += '<p class=\'clue-title\'>' + '<i class=\'iconfont icon-clue\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
+
             _.each(clueArr, (clueItem) => {
-                clueHtml += '<p class=\'clue-item\'>' + '<span class=\'clue-name\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(' + JSON.stringify(clueItem.id) + ')\'>' + clueItem.name + '</span>' + '</p>';
+                clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(' + JSON.stringify(clueItem.id) + ')\'>' + '<span class=\'clue-item-name\'>' + clueItem.name + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
             });
             tipContent = `<div>${clueHtml}</div>`;
             notificationUtil.showNotification({
-                title: title,
+                title: titleHtml,
                 content: tipContent,
                 closeWith: ['button']
             });
