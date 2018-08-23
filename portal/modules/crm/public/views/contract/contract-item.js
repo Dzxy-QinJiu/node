@@ -1,5 +1,5 @@
 import DetailCard from 'CMP_DIR/detail-card';
-import { AntcTable } from 'antc';
+import { AntcTable, AntcValidity } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 import classNames from 'classnames';
@@ -29,9 +29,6 @@ const ContractItem = React.createClass({
             formData: JSON.parse(JSON.stringify(this.props.contract)),
             isLoading: false,
             errMsg: '', // 删除错误的信息提示
-            editValidityLoading: false, // 编辑有效期的loading，默认false
-            isShowValidityTimeEdit: false, // 是否显示编辑有效期，默认false
-            editValidityTimeErrMsg: '', // 编辑有效期错误信息提示
         };
     },
     componentWillReceiveProps(nextProps) {
@@ -174,40 +171,14 @@ const ContractItem = React.createClass({
             }
         });
     },
-    showEditValidityTime(event) {
-        Trace.traceEvent(event, '修改合同的有效期');
-        this.setState({
-            isShowValidityTimeEdit: true
-        });
-    },
-    handleValidityTimeRange(dates) {
-        let contract = this.state.formData;
-        let startTime = _.get(dates, '[0]') && _.get(dates, '[0]').valueOf() || '';
-        let endTime = _.get(dates, '[1]') && _.get(dates, '[1]').valueOf() || '';
-        contract.start_time = startTime;
-        contract.end_time = endTime;
-        this.setState({contract});
-    },
-    handleSubmitEditValidityTime() {
-        let saveObj = {
-            start_time: this.state.contract.start_time,
-            end_time: this.state.contract.end_time,
-            id: this.state.contract.id
+    handleSubmitEditValidityTime(startTime, endTime, successCallback, errorCallback) {
+        const saveObj = {
+            start_time: startTime,
+            end_time: endTime,
+            id: this.state.formData.id
         };
-        let successFunc = () => {
-            this.setState({
-                editValidityLoading: false,
-                isShowValidityTimeEdit: false,
-                editValidityTimeErrMsg: ''
-            });
-        };
-        let errorFunc = () => {
-            this.setState({
-                editValidityLoading: false,
-                editValidityTimeErrMsg: Intl.get('common.edit.failed', '修改失败')
-            });
-        };
-        this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
+
+        this.saveContractBasicInfo(saveObj, successCallback, errorCallback);
     },
     handleProductSave(data, successFunc, errorFunc) {
         let saveObj = {
@@ -216,11 +187,6 @@ const ContractItem = React.createClass({
         };
 
         this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
-    },
-    handleCancelEditValidityTime() {
-        this.setState({
-            isShowValidityTimeEdit: false
-        });
     },
     renderContractContent() {
         const contract = this.state.formData;
@@ -255,32 +221,14 @@ const ContractItem = React.createClass({
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
-                    {
-                        this.state.isShowValidityTimeEdit ? (
-                            <div className='contract-validity-edit-block'>
-                                <RangePicker
-                                    className='validity-time'
-                                    value={[moment(contract.start_time), moment(contract.end_time)]}
-                                    ranges={{ [validityTime]: [moment(moment().valueOf()), moment(moment().add(1, 'year').valueOf())] }}
-                                    onChange={this.handleValidityTimeRange}
-                                    allowClear={false}
-                                />
-                                <SaveCancelButton
-                                    loading={this.state.editValidityLoading}
-                                    saveErrorMsg={this.state.editValidityTimeErrMsg}
-                                    handleSubmit={this.handleSubmitEditValidityTime}
-                                    handleCancel={this.handleCancelEditValidityTime}
-                                />
-                            </div>
-                        ) : (
-                            <span className='contract-value'>
-                                {start_time}
-                                {end_time ? Intl.get('common.time.connector', '至') : ''}
-                                {end_time}
-                            </span>
-                        )
-                    }
-                    { !this.state.isShowValidityTimeEdit && contract.stage === '待审' ? <DetailEditBtn onClick={this.showEditValidityTime}/> : null}
+                    <div className='contract-validity-edit-block'>
+                        <AntcValidity
+                            className='validity-time'
+                            startTime={contract.start_time}
+                            endTime={contract.end_time}
+                            onChange={this.handleSubmitEditValidityTime.bind(this)}
+                        />
+                    </div>
                 </div>
                 <div className={itemClassName}>
                     <span className='contract-label'>{Intl.get('contract.25', '合同额')}:</span>
