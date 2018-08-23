@@ -43,7 +43,8 @@ const LAYOUT_CONSTANTS = {
     TOP_TOTAL_HEIGHT: 30,//共xxx条的高度
     OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度
 };
-
+//textarea自适应高度
+const AUTO_SIZE_MAP = {minRows: 2, maxRows: 6};
 // 通话状态
 const CALL_STATUS_MAP = {
     'ALL': Intl.get('common.all', '全部'),
@@ -309,7 +310,7 @@ const CustomerRecord = React.createClass({
 
     //顶部增加客户跟进记录输入时的处理
     handleInputChange: function(e) {
-        let value = $.trim(e.target.value);
+        let value = e.target.value;
         //有输入的内容，则清空必填项验证的提示
         if (value) {
             CustomerRecordActions.setContent({value: value, validateStatus: 'success', errorMsg: null});
@@ -374,6 +375,7 @@ const CustomerRecord = React.createClass({
                     <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容，保存后不可修改')}
                         value={_.get(this.state, 'inputContent.value') || ''}
                         onChange={this.handleInputChange.bind(this)}
+                        autosize={AUTO_SIZE_MAP}
                     />
                 </FormItem>
                 <SaveCancelButton loading={this.state.addCustomerLoading}
@@ -411,7 +413,7 @@ const CustomerRecord = React.createClass({
     },
     handleAddDetailChange: function(e) {
         //补充客户跟进记录
-        let value = $.trim(e.target.value);
+        let value = e.target.value;
         if (value) {
             CustomerRecordActions.setDetailContent({value: value, validateStatus: 'success', errorMsg: null});
         } else {
@@ -431,6 +433,7 @@ const CustomerRecord = React.createClass({
                     <TextArea placeholder={Intl.get('add.customer.trace.detail', '请补充跟进记录详情，保存后不可修改')}
                         value={_.get(this.state, 'detailContent.value') || ''}
                         onChange={this.handleAddDetailChange.bind(this)}
+                        autosize={AUTO_SIZE_MAP}
                     />
                 </FormItem>
                 {this.state.editRecordNullTip ? (
