@@ -2532,7 +2532,7 @@ var zh_CN = {
     'clue.add.clue.time': '添加于',
     'clue.no.trace.content': '暂无跟进',
     'clue.associate.user': '关联账号',
-    'clue.handle.clue.person': '处理人',
+    'clue.handle.clue.person': '当前跟进人',
     'clue.handle.no.distribute.clue': '未分配',
     'clue.has.no.data': '暂无',
     'clue.handle.clue': '线索处理',

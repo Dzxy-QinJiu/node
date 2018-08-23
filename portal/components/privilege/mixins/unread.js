@@ -1,13 +1,17 @@
 var insertStyle = require('../../insert-style');
 var UserData = require('../../../public/sources/user-data');
 var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
+import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 var UnreadMixin = {
     dynamicStyle: null,
     clueUnhandledStyle: null,
     //菜单切换时，重新获取未处理申请数
     componentWillReceiveProps: function(nextProps) {
         this.showUnhandledApplyCount();
-        this.showUnhandledClueCount();
+        if (getClueUnhandledPrivilege()){
+            this.showUnhandledClueCount();
+        }
+
     },
     /*
      *  待审批数的展示
