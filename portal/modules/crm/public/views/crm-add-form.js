@@ -154,34 +154,39 @@ var CRMAddForm = React.createClass({
         if (this.props.isAssociateClue && PropsFormData) {
             //添加客户时，新创建的客户要关联该线索
             //线索id
-            formData.customer_clue_id = PropsFormData.id;
-            //线索和客户关联的时间
-            formData.customer_clue_relation_time = moment().valueOf();
-            //线索创建时间
-            formData.customer_clue_start_time = PropsFormData.start_time;
+            formData.clue_id = PropsFormData.id;
             //添加客户时，新创建的客户要关联注册的用户
             formData.app_user_ids = PropsFormData.app_user_ids;
         }
-
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData);
-        CrmAction.addCustomer(formData, result => {
+        function afterAddCustomer(result, _this) {
             if (result.code === 0) {
                 message.success(Intl.get('user.user.add.success', '添加成功'));
-                if (_.isFunction(this.props.addOne)) {
-                    this.props.addOne(result.result);
+                if (_.isFunction(_this.props.addOne)) {
+                    _this.props.addOne(result.result);
                 }
                 //拨打电话时，若客户列表中没有此号码，需添加客户
-                if (_.isFunction(this.props.updateCustomer)) {
-                    this.props.updateCustomer(result.result);
+                if (_.isFunction(_this.props.updateCustomer)) {
+                    _this.props.updateCustomer(result.result);
                 }
-                this.setState(this.getInitialState());
+                _this.setState(_this.getInitialState());
             } else {
-                this.state.isLoading = false;
+                _this.state.isLoading = false;
                 message.error(result);
-                this.setState(this.state);
+                _this.setState(_this.state);
             }
-        });
+        }
+        //由线索创建的客户和普通的添加客户不是一个接口
+        if(this.props.isAssociateClue && PropsFormData){
+            CrmAction.addCustomerByClue(formData, result => {
+                afterAddCustomer(result, this);
+            });
+        }else{
+            CrmAction.addCustomer(formData, result => {
+                afterAddCustomer(result, this);
+            });
+        }
     },
 
     closeAddPanel: function() {

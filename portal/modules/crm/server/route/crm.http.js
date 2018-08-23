@@ -104,6 +104,14 @@ module.exports = {
             ]
         },
         {
+            method: 'post',
+            path: '/rest/crm/add_customer_by_clue',
+            handler: 'addCustomerByClue',
+            passport: {
+                needLogin: true
+            }
+        },
+        {
             method: 'delete',
             path: '/rest/crm/delete_customer',
             handler: 'deleteCustomer',
