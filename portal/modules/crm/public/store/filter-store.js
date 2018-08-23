@@ -18,6 +18,7 @@ function FilterStore() {
         app_ids: [''],
         labels: [''],//标签的筛选
         customer_label: '',//阶段标签
+        qualify_label: '',//合格标签（合格、曾经合格）
         member_role: '',//销售角色的筛选
         competing_products: [''],//竞品的筛选
         sales_opportunities: [{
@@ -63,20 +64,6 @@ FilterStore.prototype.getStageTagList = function(data) {
         });
         stageTagList = stageTagList.concat(list);
     }
-    //试用合格、签约合格、曾经合格 标签的添加
-    stageTagList = stageTagList.concat([{
-        name: CUSTOMER_TAGS.QUALIFIED,
-        show_name: CUSTOMER_TAGS.QUALIFIED
-    },{
-        name: CUSTOMER_TAGS.TRIAL_QUALIFIED,
-        show_name: CUSTOMER_TAGS.TRIAL_QUALIFIED
-    }, {
-        name: CUSTOMER_TAGS.SIGN_QUALIFIED,
-        show_name: CUSTOMER_TAGS.SIGN_QUALIFIED
-    }, {
-        name: CUSTOMER_TAGS.HISTORY_QUALIFIED,
-        show_name: CUSTOMER_TAGS.HISTORY_QUALIFIED
-    }]);
     this.stageTagList = stageTagList;
 };
 
