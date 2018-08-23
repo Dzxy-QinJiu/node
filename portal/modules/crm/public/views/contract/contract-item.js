@@ -178,7 +178,16 @@ const ContractItem = React.createClass({
             id: this.state.formData.id
         };
 
-        this.saveContractBasicInfo(saveObj, successCallback, errorCallback);
+        const successFunc = () => {
+            let contract = this.state.formData;
+            contract.start_time = startTime;
+            contract.end_time = endTime;
+            this.setState({contract}, () => {
+                successCallback();
+            });
+        };
+
+        this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
     },
     handleProductSave(data, successFunc, errorFunc) {
         let saveObj = {
