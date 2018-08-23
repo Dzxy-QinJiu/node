@@ -236,7 +236,7 @@ const ContractItem = React.createClass({
                             className='validity-time'
                             startTime={contract.start_time}
                             endTime={contract.end_time}
-                            onChange={this.handleSubmitEditValidityTime.bind(this)}
+                            onChange={this.handleSubmitEditValidityTime}
                         />
                     </div>
                 </div>
