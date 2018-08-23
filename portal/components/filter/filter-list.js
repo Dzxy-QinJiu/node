@@ -448,19 +448,21 @@ class FilterList extends React.Component {
         let selectItems = _.filter(groupItem.data, item => item.selected);
         let selectValues = _.map(selectItems, item => item.value);
         return (
-            <Select
-                className="filter-select"
-                mode="multiple"
-                style={{ width: '100%' }}
-                placeholder={groupItem.groupName}
-                value={selectValues}
-                onChange={this.handleSelectChange.bind(this, groupItem)}
-                optionFilterProp="children"
-            >
-                {_.map(groupItem.data, (item, index) => {
-                    return (<Option key={index} value={item.value}>{item.name}</Option>);
-                })}
-            </Select>
+            <div className="filter-select-container" id={`${groupItem.groupId}_select_container`}>
+                <Select
+                    className="filter-select"
+                    mode="multiple"
+                    placeholder={groupItem.groupName}
+                    value={selectValues}
+                    onChange={this.handleSelectChange.bind(this, groupItem)}
+                    optionFilterProp="children"
+                    getPopupContainer={() => document.getElementById(`${groupItem.groupId}_select_container`)}
+                >
+                    {_.map(groupItem.data, (item, index) => {
+                        return (<Option key={index} value={item.value}>{item.name}</Option>);
+                    })}
+                </Select>
+            </div>
         );
     }
 
@@ -617,9 +619,9 @@ class FilterList extends React.Component {
                                                                                 </span> : null
                                                                         }
                                                                     </h4>
-                                                                    <ul className="item-container">
-                                                                        { _.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) :
-                                                                            groupItem.data.map((x, idx) => {
+                                                                    { _.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) : (
+                                                                        <ul className="item-container">
+                                                                            {_.map(groupItem.data, (x, idx) => {
                                                                                 return (
                                                                                     <li
                                                                                         className={x.selected ? 'active titlecut' : 'titlecut'}
@@ -628,11 +630,11 @@ class FilterList extends React.Component {
                                                                                         onClick={this.handleAdvanedItemClick.bind(this, groupItem, x)}
                                                                                     >
                                                                                         {x.name}
-                                                                                    </li>
-                                                                                );
+                                                                                    </li>);
                                                                             })
-                                                                        }
-                                                                    </ul>
+                                                                            }
+                                                                        </ul>)
+                                                                    }
                                                                 </div>
                                                             );
                                                         }
@@ -701,6 +703,6 @@ FilterList.propTypes = {
     onFilterChange: PropTypes.func,
     style: PropTypes.object,
     className: PropTypes.string,
-    showSelectTip: PropTypes.bool
+    showSelectTip: PropTypes.bool,
 };
 export default FilterList;
