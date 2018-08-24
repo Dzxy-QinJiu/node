@@ -60,7 +60,7 @@ const UserStatusFieldSwitch = React.createClass({
         //提交数据
         AppUserAjax.editAppUser(submitObj).then((result) => {
             if (result) {
-                this.setState({ resultType: '', errorMsg: '', status: submitObj.status});
+                this.setState({ resultType: '', errorMsg: '', status: submitObj.status === '1'});
             } else {
                 this.setState({
                     resultType: 'error',
