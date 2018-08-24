@@ -5,15 +5,14 @@
 .search-input-container {
   width: 100%;
   position: relative;
-
   .search-input {
     width: 100%;
     height: @input_height;
-    padding: 6px 25px 6px 5px;
+    padding: 8px 25px 8px 8px;
     line-height: @input_height;
-    border: 1pt solid #cdd5d9;
+    border: 1pt solid @SEARCH-INPUT-BORDER;
     border-radius: @border-radius;
-    font-size: @form_font_size;
+    font-size: @SEARCH-INPUT-PLACEHOLDER;
     &:hover {
       border-color: #57c5f7;
     }

@@ -2545,13 +2545,13 @@ var zh_CN = {
     'analysis.sales.weekly.report': '销售周报',
     'common.font.di': '第',
     'common.weeks': '周',
-    'clue.add.contacts.tip': '添加联系方式',
     'clue.failed.get.clue.detail': '获取线索详情失败',
     'clue.has.distribute.clue': '您有新的线索',
     'clue.click.show.clue.detail': '点击查看线索详情',
     'clue.import.csv': '上传表格',
     'clue.download.clue.csv': '下载导入线索表格',
     'clue.has.not.distribute': '该线索还没有分配',
-    'clue.not.complete.schedule': '今天的联系计划'
+    'clue.not.complete.schedule': '今天的联系计划',
+    'clue.no.data.during.range.and.status': '当前筛选时间段及状态没有相关线索信息'
 };
 export default zh_CN;

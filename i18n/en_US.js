@@ -2531,7 +2531,8 @@ var en_US = {
     'clue.import.csv': 'Upload form',//上传表格
     'clue.download.clue.csv': 'Download the import clue form',//下载导入线索表格
     'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
-    'clue.not.complete.schedule': 'The schedule of today'//今天的联系计划
+    'clue.not.complete.schedule': 'The schedule of today',//今天的联系计划
+    'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.'//当前筛选时间段及状态没有相关线索信息
 
 };
 export default en_US;
