@@ -1,5 +1,4 @@
 var FilterAjax = require('../ajax/filter-ajax');
-import batchChangeAjax from '../ajax/batch-change-ajax';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function FilterAction() {
