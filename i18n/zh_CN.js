@@ -2552,6 +2552,7 @@ var zh_CN = {
     'clue.import.csv': '上传表格',
     'clue.download.clue.csv': '下载导入线索表格',
     'clue.has.not.distribute': '该线索还没有分配',
-    'clue.not.complete.schedule': '今天的联系计划'
+    'clue.not.complete.schedule': '今天的联系计划',
+    'clue.no.data.during.range.and.status': '当前筛选时间段及状态没有相关线索信息'
 };
 export default zh_CN;

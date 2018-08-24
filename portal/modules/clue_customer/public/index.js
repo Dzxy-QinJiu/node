@@ -456,10 +456,6 @@ const ClueCustomer = React.createClass({
                             />
                         </GeminiScrollbar>
                     </div>
-                    {this.state.customersSize ?
-                        <div className="clue-customer-total-tip">
-                            {Intl.get('crm.215', '共{count}个线索', {'count': this.state.customersSize})}
-                        </div> : null}
                 </div>
             );
         }
@@ -521,7 +517,7 @@ const ClueCustomer = React.createClass({
             return (
                 <div className="no-data">
                     <i className="iconfont icon-no-data"></i>
-                    <p className="abnornal-status-tip">{Intl.get('common.sales.data.no.data', '暂无此类信息')}</p>
+                    <p className="abnornal-status-tip">{Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}</p>
                 </div>
             );
         } else {
@@ -711,4 +707,4 @@ const ClueCustomer = React.createClass({
         );
     }
 });
-module.exports = ClueCustomer;
+module.exports = ClueCustomer;
