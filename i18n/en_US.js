@@ -1395,6 +1395,7 @@ var en_US = {
     'crm.order.lose.reason': 'lose Order reason',//丢单原因
     'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
     'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
+    'crm.filter.select.placeholder': 'Plaase select the {groupName} you want to filter',//请选择要筛选的${groupName}
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
