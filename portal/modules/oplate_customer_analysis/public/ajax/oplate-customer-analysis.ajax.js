@@ -85,10 +85,9 @@ exports.getSalesStageList = function() {
 //查询迁出客户
 exports.getTransferCustomers = function(paramObj) {
     const handler = 'getTransferCustomers';
-    const route = routes.find(x => x.handler == handler);
+    const route = routes.find(x => x.handler === handler);
     const { page_size, sort_field, order } = paramObj;
     let queryObj = $.extend(true, {}, paramObj.query);
-    paramObj.query = {};
     return ajax({
         url: route.path,
         type: route.method,
@@ -105,7 +104,7 @@ exports.getTransferCustomers = function(paramObj) {
 //获取客户阶段变更数据
 exports.getStageChangeCustomers = function(paramObj) {
     const handler = 'getStageChangeCustomers';
-    const route = routes.find(x => x.handler == handler);
+    const route = routes.find(x => x.handler === handler);
     //普通销售权限
     let type = 'self';
     if (hasPrivilege(AUTHS.GETALL)) {
@@ -125,7 +124,7 @@ exports.getStageChangeCustomers = function(paramObj) {
 //获取客户阶段变动的客户列表
 exports.getStageChangeCustomerList = function(paramObj) {
     const handler = 'getStageChangeCustomerList';
-    const route = routes.find(x => x.handler == handler);
+    const route = routes.find(x => x.handler === handler);
     //普通销售权限
     let type = 'self';
     if (hasPrivilege(AUTHS.GETALL)) {
@@ -148,7 +147,7 @@ exports.getStageChangeCustomerList = function(paramObj) {
 //获取客户阶段变动的客户列表
 exports.getIndustryCustomerOverlay = function(paramObj) {
     const handler = 'getIndustryCustomerOverlay';
-    const route = routes.find(x => x.handler == handler);
+    const route = routes.find(x => x.handler === handler);
     //普通销售权限
     let type = 'self';
     if (hasPrivilege(AUTHS.GETALL)) {
@@ -170,7 +169,7 @@ exports.getIndustryCustomerOverlay = function(paramObj) {
 //获取销售新开客户数
 exports.getNewCustomerCount = function(paramObj) {
     const handler = 'getNewCustomerCount';
-    const route = routes.find(x => x.handler == handler);
+    const route = routes.find(x => x.handler === handler);
     //普通销售权限
     let type = 'common';
     if (hasPrivilege(AUTHS.GETALL)) {
@@ -192,7 +191,7 @@ exports.getNewCustomerCount = function(paramObj) {
 //获取不同阶段客户数
 exports.getCustomerStageAnalysis = paramObj => {
     const handler = 'getCustomerStageAnalysis';
-    const route = routes.find(x => x.handler == handler);
+    const route = routes.find(x => x.handler === handler);
     //普通销售权限
     let type = 'common';
     if (hasPrivilege(AUTHS.GETALL)) {
