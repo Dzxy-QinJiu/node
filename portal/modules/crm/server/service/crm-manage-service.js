@@ -218,10 +218,10 @@ exports.queryCustomer = function(req, res, condition) {
     //可以通过线索的id查询客户
     let customer_clue_id = condition && condition.customer_clue_id;
     delete condition.call_phone;
-    let queryObj = {};
+    let bodyData = {};
     if (call_phone) { // 通话记录，查看客户详情
         url = crmRestApis.getCustomerByPhone + '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder;
-        queryObj = _.clone(condition);
+        bodyData = _.clone(condition);
     } else if (id || customer_clue_id) { // 根据客户的id,或者线索的id查询客户详情
         url = crmRestApis.query;
         if (req.body.hasManageAuth) {
@@ -229,9 +229,9 @@ exports.queryCustomer = function(req, res, condition) {
         }
         url += '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder;
         if (id){
-            queryObj.query = {'id': id};
+            bodyData.query = {'id': id};
         }else if (customer_clue_id){
-            queryObj.query = {'customer_clue_id': customer_clue_id};
+            bodyData.query = {'customer_clue_id': customer_clue_id};
         }
     } else { // 客户列表
         let baseUrl = '';
@@ -250,29 +250,29 @@ exports.queryCustomer = function(req, res, condition) {
             url += '&total_size=' + query.total_size;
         }
         if (condition.exist_fields) {
-            queryObj.exist_fields = condition.exist_fields;
+            bodyData.exist_fields = condition.exist_fields;
             delete condition.exist_fields;
         }
         if (condition.unexist_fields) {
-            queryObj.unexist_fields = condition.unexist_fields;
+            bodyData.unexist_fields = condition.unexist_fields;
             delete condition.unexist_fields;
         }
         if (condition.term_fields) {//精确匹配项：标签的筛选
-            queryObj.term_fields = condition.term_fields;
+            bodyData.term_fields = condition.term_fields;
             delete condition.term_fields;
         }
-        queryObj.query = condition;
+        bodyData.query = condition;
         if (query && query.user_id) {
-            queryObj.query.user_id = query.user_id;
+            bodyData.query.user_id = query.user_id;
         }
-        queryObj.rang_params = JSON.parse(req.body.rangParams);
+        bodyData.rang_params = JSON.parse(req.body.rangParams);
     }
     return restUtil.authRest.post(
         {
             url: url,
             req: req,
             res: res
-        }, queryObj);
+        }, bodyData);
 };
 
 //修改客户
