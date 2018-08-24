@@ -191,37 +191,41 @@ class UserBasicCard extends React.Component {
                                 <span className="sales-team-text">
                                     {this.props.customer_name}
                                 </span>
-                                <div className="sales-role">
-                                    <span className="sales-team-label">归属:</span>
-                                    <span className="sales-team-text">
-                                        {this.props.sales_name} - {this.props.sales_team_name}
-                                    </span>
-                                    <DetailEditBtn
-                                        title={Intl.get('common.edit', '编辑')}
-                                        onClick={this.toggleEdit}
-                                    />
-                                </div>
+                                <DetailEditBtn
+                                    title={Intl.get('common.edit', '编辑')}
+                                    onClick={this.toggleEdit}
+                                />
                             </div>
                         </div>
                     )
                 }
                 content={
-                    this.state.showEdit ?
-                        <div className="select_text_wrap" ref="wrap" style={{ display: 'block' }} id={USER_CUSTOMER_SUGGEST_ID}>
-                            <CustomerSuggest
-                                required={true}
-                                customer_id={this.props.customer_id}
-                                customer_name={this.props.customer_name}
-                                keyword={this.state.customer_name}
-                                onCustomerChoosen={this.onCustomerChoosen.bind(this)}
-                                show_error={this.state.show_customer_error}
-                                hideCustomerError={this.hideCustomerError.bind(this)}
-                                customerSuggestWrapId={USER_CUSTOMER_SUGGEST_ID}
-                            />
-                            <StatusWrapper
-                                errorMsg={this.state.error_message}
-                            />
-                        </div> : null
+                    <div className="sales-team-show-block">
+                        {
+                            this.state.showEdit ?
+                                <div className="select_text_wrap" ref="wrap" style={{ display: 'block' }} id={USER_CUSTOMER_SUGGEST_ID}>
+                                    <CustomerSuggest
+                                        required={true}
+                                        customer_id={this.props.customer_id}
+                                        customer_name={this.props.customer_name}
+                                        keyword={this.state.customer_name}
+                                        onCustomerChoosen={this.onCustomerChoosen.bind(this)}
+                                        show_error={this.state.show_customer_error}
+                                        hideCustomerError={this.hideCustomerError.bind(this)}
+                                        customerSuggestWrapId={USER_CUSTOMER_SUGGEST_ID}
+                                    />
+                                    <StatusWrapper
+                                        errorMsg={this.state.error_message}
+                                    />
+                                </div> : <div className="sales-role">
+                                    <span className="sales-team-label">{Intl.get('user.detail.belongTo', '归属')}:</span>
+                                    <span className="sales-team-text">
+                                        {this.props.sales_name} - {this.props.sales_team_name}
+                                    </span>
+                                </div>
+                        }
+
+                    </div>
                 }
             />
 

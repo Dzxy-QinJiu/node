@@ -5,7 +5,7 @@ import AppUserAction from '../../action/app-user-actions';
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
 import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
 import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
-import AppPropertySetting from '../../../../../components/user_manage_components/app-property-setting';
+import AppPropertySetting from '../v3/app-property-setting';
 import { Tabs, Icon, Alert } from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
 import { RightPanelClose, RightPanelReturn } from '../../../../../components/rightPanel';

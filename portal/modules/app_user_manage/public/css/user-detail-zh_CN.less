@@ -35,7 +35,6 @@
 @bd-blue: #2497F4;
 @color: #4c8ec4;
 @btn-blue: #108ee9;
-
 .titlecut() {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -80,8 +79,28 @@
     .btn-text {
         color: @font-lightblue;
         cursor: pointer;
+    } //基本信息样式
+    .user-detail-baisc-v3 {
+        .ant-select,
+        .inputWrap form .ant-form-item input,
+        .inputWrap form>div {
+            width: 100% !important;
+        }
+        .detail-card-content {
+            .card-content-edit-status {
+                margin-top: 3px;
+            }
+            .sales-team-show-block .user-organization {
+                width: 100%;
+                .ant-select {
+                    width: 100% !important;
+                    margin-top: 10px;
+                    margin-bottom: -10px;
+                }
+            }
+        }
     }
-    .user-analysis-panel  {
+    .user-analysis-panel {
         .user-login-info {
             .login-score {
                 text-align: center;
@@ -99,7 +118,7 @@
                 }
             }
             .login-info .login-stress {
-                padding-left: 0; 
+                padding-left: 0;
             }
             .login-chart {
                 margin-top: 19px;
@@ -129,7 +148,6 @@
                         background: white;
                     }
                 }
-                
             }
         }
     }
@@ -249,7 +267,7 @@
                 line-height: 22px;
                 position: relative;
                 width: initial;
-                &:after{
+                &:after {
                     content: none;
                 }
                 .active-dot {
@@ -493,7 +511,7 @@
         float: left;
     }
     .user-detail-edit-app-v2 {
-        padding-top: 18px;        
+        padding-top: 18px;
         .user-multilogin-radiofield-block {
             display: inline-block;
             margin-top: 6px;
@@ -504,6 +522,7 @@
                 font-weight: 600;
             }
             &.app-property-content {
+                background: white;
                 .ant-select {
                     width: 308px !important;
                 }
@@ -615,6 +634,7 @@
     .contact-card-container {
         .user-basic-edit-field-input.user-basic-edit-field.editing {
             padding: 10px 0;
+            padding-top: 0;
         }
         .detail-card-content {
             position: relative;
@@ -847,23 +867,25 @@
 }
 
 .app_user_manage_rightpanel.right-pannel-default.right-panel {
-    width: @right_panel_width  !important;
-    transform: translate(@right_panel_width, 0);
-    background-color: transparent !important;
+    &.detail-v3-panel {
+        width: @right_panel_width  !important;
+        transform: translate(@right_panel_width, 0);
+        background-color: transparent !important;
+    }
     .user-detail-v3 {
         .user-manage-v2 {
             background: @right_panel_bgcolor;
         }
     }
-    .full_size.wrap_padding, .user-manage-v2 {
+    .full_size.wrap_padding,
+    .user-manage-v2 {
         background: #e6edef;
         &.move_left {
-            background: transparent!important;
+            background: transparent !important;
         }
     }
     .full_size.wrap_padding.user-detail-v3 {
         background: @right_panel_bgcolor;
-        
     }
     .right-panel-content {
         width: @right_panel_content_width  !important;

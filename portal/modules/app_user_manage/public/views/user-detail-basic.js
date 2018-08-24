@@ -386,8 +386,8 @@ var UserDetailBasic = React.createClass({
                                             <span className="collapse-btn">
                                                 {
                                                     app.showDetail ?
-                                                        <span onClick={() => this.showAppDetail({ app, isShow: false })}>收起停用前设置</span> :
-                                                        <span onClick={() => this.showAppDetail({ app, isShow: true })}>展开停用前设置</span>
+                                                        <span onClick={() => this.showAppDetail({ app, isShow: false })}>{Intl.get('user.detail.tip.collapse', '收起停用前设置')}</span> :
+                                                        <span onClick={() => this.showAppDetail({ app, isShow: true })}>{Intl.get('user.detail.tip.expand', '展开停用前设置')}</span>
                                                 }
                                             </span> :
                                             null
@@ -561,7 +561,7 @@ var UserDetailBasic = React.createClass({
         })();
         let userInfo = this.state.initialUser.user;
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
-            <div>
+            <div className='user-detail-baisc-v3'>
                 <UserBasicCard
                     customer_id={this.state.customer_id}
                     customer_name={this.state.customer_name}

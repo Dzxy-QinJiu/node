@@ -292,6 +292,9 @@ var en_US = {
     'user.login.days': 'Login Days', // 登录天数
     'user.detail.return': 'return to basic info', //'返回基本信息',
     'user.detail.loginAnalysis.title': 'Statistic of login times in a year',//'近一年的活跃统计',
+    'user.detail.tip.collapse': 'Collapse config', //'收起停用前设置',
+    'user.detail.tip.expand': 'Expand config', //'展开停用前设置',
+    'user.detail.belongTo': 'Belong to', //'归属',
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
     'user.user.list.click': 'Please click at user list',//请在用户列表中点击
@@ -2482,7 +2485,6 @@ var en_US = {
     'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
     'analysis.weekly.report': 'Weekly report',//周报分析
     'appEdit.basicConig': 'basic config',//'基本配置',
-    'analysis.weekly.report': 'Weekly report',//周报分析
     'back.openApp': 'Open app',//开通应用
     'back.openApp.range': 'range of open-app',//'开通范围',
     'back.openApp.apply': 'apply', //'申请开通',

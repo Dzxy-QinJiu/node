@@ -190,6 +190,7 @@ var UserDetail = React.createClass({
         AppUserAjax.editAppUser(params).then(onSuccess, onError);
     },
     render: function() {
+        const { userInfo } = this.state;
         //内容区高度
         const remarkDOM = $('#app #top-remark');
         const remarkHeight = remarkDOM ? remarkDOM.height() : 0;
@@ -198,6 +199,9 @@ var UserDetail = React.createClass({
             contentHeight -= remarkHeight;
         } else {
             contentHeight += LAYOUT_CONSTANTS.USER_DETAIL;
+        }
+        if (userInfo.loading) {
+            contentHeight += 100;
         }
         var moveView = null;
         if (this.state.panel_switch_currentView) {
@@ -297,7 +301,7 @@ var UserDetail = React.createClass({
                 </TabPane>
             );
         }
-        const { userInfo } = this.state;
+       
         const EDIT_FEILD_WIDTH = 395;
         return (
             <div className="right-panel-wrapper">
@@ -311,7 +315,9 @@ var UserDetail = React.createClass({
                                     <span className="basic-name-text" title={_.get(userInfo, 'data.user_name')}>{_.get(userInfo, 'data.user_name')}</span>
                                 </div>
                                 <div className="basic-info-btns">
-                                    <span className="iconfont icon-edit-pw" onClick={() => { this.showEditPw(true); }} />
+                                    {
+                                        !userInfo.loading ? <span className="iconfont icon-edit-pw" onClick={() => { this.showEditPw(true); }} /> : null
+                                    }
                                     {
                                         !userInfo.loading ? this.userDetailRef && this.userDetailRef.renderUserStatus(userInfo.data, true) : null
                                     }

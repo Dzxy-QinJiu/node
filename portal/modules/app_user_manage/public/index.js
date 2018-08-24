@@ -460,6 +460,9 @@ var AppUserManage = React.createClass({
         }
         //是否显示“过滤”按钮
         var showFilterBtn = this.state.selectedAppId;
+        const cls = classNames('app_user_manage_rightpanel white-space-nowrap right-panel', {
+            'detail-v3-panel': this.state.rightPanelType === 'detail'
+        });
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
@@ -540,7 +543,7 @@ var AppUserManage = React.createClass({
                     </div>
 
                 </div>
-                <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-panel"
+                <RightPanel className={cls}
                     showFlag={this.state.isShowRightPanel}>
                     {
                         rightPanelView

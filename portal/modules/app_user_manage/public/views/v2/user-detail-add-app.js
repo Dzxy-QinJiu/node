@@ -33,7 +33,7 @@ const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 const DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 const CheckboxGroup = Checkbox.Group;
 import UserAppConfig from '../v3/AppPropertySetting';
-import AppRolePermission from 'CMP_DIR/user_manage_components/app-role-permission';
+import AppRolePermission from '../v3/app-role-permission';
 import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 

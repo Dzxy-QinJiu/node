@@ -2,7 +2,15 @@
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
 require('./index.less');
-import { Tooltip, Alert, Tabs } from 'antd';
+var language = require('PUB_DIR/language/getLanguage');
+if (language.lan() === 'es' || language.lan() === 'en') {
+    require('../css/form-basic-es_VE.less');
+} else if (language.lan() === 'zh') {
+    require('../css/form-basic-zh_CN.less');
+}
+
+require('PUB_DIR/css/antd-vertical-tabs.css');
+import { Tooltip, Alert } from 'antd';
 import classNames from 'classnames';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import UserTypeRadioField from 'CMP_DIR/user_manage_components/user-type-radiofield';
@@ -17,8 +25,8 @@ import DetailCard from 'CMP_DIR/detail-card';
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import AppUserUtil from 'MOD_DIR/app_user_manage/public/util/app-user-util.js';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
-const TabPane = Tabs.TabPane;
-import { PropTypes } from 'prop-types';
+
+const PropTypes = React.PropTypes;
 
 const AppPropertySetting = React.createClass({
     mixins: [
@@ -82,8 +90,7 @@ const AppPropertySetting = React.createClass({
             //不显示用户类型错误
             show_user_type_error: false,
             //切换当前应用的loading
-            changeCurrentAppLoading: false,
-            activeKey: ''
+            changeCurrentAppLoading: false
         };
     },
     createPropertySettingData(props) {
@@ -274,7 +281,7 @@ const AppPropertySetting = React.createClass({
             || !this.compareEquals(nextProps.appsSetting, this.props.appsSetting)
         ) {
             const appPropSettingsMap = this.createPropertySettingData(nextProps);
-            this.setState({ appPropSettingsMap, activeKey: '' });
+            this.setState({ appPropSettingsMap });
         }
     },
     componentDidUpdate(prevProps, prevState) {
@@ -318,27 +325,122 @@ const AppPropertySetting = React.createClass({
     },
     renderTabContent(app_id) {
         const currentApp = this.state.currentApp;
-        // if (currentApp.app_id !== app_id) {
-        //     return null;
-        // }
+        if (currentApp.app_id !== app_id) {
+            return null;
+        }
         const defaultSettings = this.props.defaultSettings;
-        var currentAppInfo = this.state.appPropSettingsMap[app_id] || {};
+        var currentAppInfo = this.state.appPropSettingsMap[currentApp.app_id] || {};
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
         return (
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
-                <div className="app-property-custom-settings">                   
-                    {
-                        this.state.activeKey === app_id || !this.state.activeKey ?
-                            <AppRolePermission
-                                app_id={app_id}
-                                selectedRoles={selectedRoles}
-                                selectedPermissions={selectedPermissions}
-                                onRolesPermissionSelect={this.onRolesPermissionSelect}
-                                updateScrollBar={this.updateScrollBar}
-                            /> : null
-                    }
+                <div className="app-property-custom-settings">
+                    <div className="app-property-content basic-data-form app-property-other-property"
+                        style={{ display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block' }}
+                    >
+                        <div className="form-item">
+                            <div className="form-item-label font-bold">
+                                {Intl.get('appEdit.basicConig', '基本配置')}
+                            </div>                       
+                        </div>
+                        {this.props.showUserNumber ? (
+                            <div className="form-item">
+                                <div className="form-item-label"><ReactIntl.FormattedMessage id="user.batch.open.count" defaultMessage="开通个数" /></div>
+                                <div className="form-item-content">
+                                    {
+                                        this.renderUserCountNumberField({
+                                            isCustomSetting: true,
+                                            appId: currentApp.app_id,
+                                            globalNumber: defaultSettings.number
+                                        })
+                                    }
 
+                                </div>
+                            </div>
+                        ) : null}
+                        {this.props.isSingleAppEdit ? (
+                            !Oplate.hideSomeItem && <div className="form-item">
+                                <div className="form-item-label"><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" /></div>
+                                <div className="form-item-content">
+                                    {
+                                        this.renderUserTypeRadioBlock({
+                                            isCustomSetting: true,
+                                            appId: currentApp.app_id,
+                                            globalUserType: defaultSettings.user_type
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        ) : null}
+                        <div className="form-item">
+                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
+                            <div className="form-item-content">
+                                {this.renderUserTimeRangeBlock({
+                                    isCustomSetting: true,
+                                    appId: currentApp.app_id,
+                                    globalTime: defaultSettings.time,
+                                    //过期重新计算（开始时间变为从当前时间起算）
+                                    expiredRecalculate: true,
+                                })}
+                            </div>
+                        </div>
+                        <div className="form-item">
+                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
+                            <div className="form-item-content">
+                                {
+                                    this.renderUserOverDraftBlock({
+                                        isCustomSetting: true,
+                                        appId: currentApp.app_id,
+                                        globalOverDraft: defaultSettings.over_draft
+                                    })
+                                }
+                            </div>
+                        </div>                        
+                        {this.props.isSingleAppEdit ? (
+                            <div className="form-item">
+                                <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态" /></div>
+                                <div className="form-item-content">
+                                    {
+                                        this.renderUserStatusRadioBlock({
+                                            isCustomSetting: true,
+                                            appId: currentApp.app_id,
+                                            globalStatus: defaultSettings.status
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        ) : null}
+                        {                            
+                            !Oplate.hideSomeItem && <div className="form-item">
+                                <div className="form-item-label">{Intl.get('crm.186', '其他')}</div>
+                                <div className="form-item-content">
+                                    {
+                                        this.props.showMultiLogin ? this.renderMultiLoginRadioBlock({
+                                            isCustomSetting: true,
+                                            appId: currentApp.app_id,
+                                            globalMultiLogin: defaultSettings.multilogin,
+                                            showCheckbox: true
+                                        }) : null
+                                    }
+                                    {
+                                        this.props.showIsTwoFactor ? this.renderUserTwoFactorBlock({
+                                            isCustomSetting: true,
+                                            appId: currentApp.app_id,
+                                            globalTwoFactor: defaultSettings.is_two_factor,
+                                            showCheckbox: true
+                                        }) : null
+                                    }
+                                </div>
+                            </div>
+                        }                       
+                    </div>
+                    <AppRolePermission
+                        app_id={currentApp.app_id}
+                        selectedRoles={selectedRoles}
+                        selectedPermissions={selectedPermissions}
+                        onRolesPermissionSelect={this.onRolesPermissionSelect}
+                        updateScrollBar={this.updateScrollBar}
+                    />
                     {
                         this.props.appSelectRoleError && !selectedRoles.length ? (
                             <div className="select-no-role">
@@ -367,11 +469,6 @@ const AppPropertySetting = React.createClass({
             </Tooltip>
         );
     },
-    handleTabChange(activeKey) {
-        this.setState({
-            activeKey
-        });
-    },
     render() {
         let height = this.props.height;
         if (height !== 'auto') {
@@ -385,36 +482,33 @@ const AppPropertySetting = React.createClass({
         });
         if (!this.props.selectedApps.length) {
             return null;
-        }
+        } 
         return (
             <div className={cls}>
-                <div className="app-property-container-v3">
-                    <Tabs
-                        tabPosition='left'
-                        onChange={this.handleTabChange}
-                    >
+                <div className="app-property-container">
+                    <GeminiScrollBar style={{ height: height }} ref="gemini" className="app-property-content">
                         {
-                            this.props.selectedApps.map((app, index) => (
-                                <TabPane tab={
-                                    <div className="title-container clearfix">
-                                        <span className="logo-container" title={app.app_name}>
-                                            <DefaultUserLogoTitle
-                                                nickName={app.app_name}
-                                                userLogo={app.app_logo}
-                                            />
-                                        </span>
-                                        <p title={app.app_name}>{app.app_name}</p>
-                                    </div>
-                                }
-                                key={app.app_id}
-                                >
-                                    <GeminiScrollBar style={{ height: height }} ref="gemini" className="app-property-content">
-                                        {this.renderTabContent(app.app_id)}
-                                    </GeminiScrollBar>
-                                </TabPane>
-                            ))
+                            this.props.selectedApps.map((app, index) => {
+                                return (
+                                    <DetailCard
+                                        key={index}
+                                        title={(
+                                            <div className="title-container clearfix">
+                                                <span className="logo-container" title={app.app_name}>
+                                                    <DefaultUserLogoTitle
+                                                        nickName={app.app_name}
+                                                        userLogo={app.app_logo}
+                                                    />
+                                                </span>
+                                                <p title={app.app_name}>{app.app_name}</p>
+                                            </div>
+                                        )} 
+                                        content={this.renderTabContent(app.app_id)}
+                                    />
+                                );
+                            })
                         }
-                    </Tabs>
+                    </GeminiScrollBar>
                 </div>
             </div>
         );
