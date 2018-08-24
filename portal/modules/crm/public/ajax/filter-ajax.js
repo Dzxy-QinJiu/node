@@ -83,8 +83,8 @@ exports.getSalesRoleList = function() {
 };
 //获取负责人名称列表
 exports.getOwnerNameList = function() {
-    let type = 'user';//CRM_USER_GET_CUSTOMER_USER_NAME
-    if(hasPrivilege('CRM_MANAGER_GET_CUSTOMER_USER_NAME')){
+    let type = 'user';//CUSTOMER_USER_GET_USER_NAME
+    if(hasPrivilege('CUSTOMER_MANAGER_GET_USER_NAME')){
         type = 'manager';
     }
     let Deferred = $.Deferred();
