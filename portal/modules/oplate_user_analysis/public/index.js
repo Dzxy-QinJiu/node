@@ -436,6 +436,16 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 needSummaryRow: true,
                 summaryRowTitle: Intl.get('sales.home.total.compute', '总计'),
             },
+            //不让表格显示纵向滚动条
+            height: 'auto',
+            processOption: option => {
+                _.each(option.columns, (column, index) => {
+                    //设置列宽
+                    column.width = 100;
+                    //统计数据右对齐
+                    if (index > 1) column.align = 'right';
+                });
+            },
         }, {
             title: Intl.get('operation.report.activity', '活跃度'),
             url: '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:interval',
