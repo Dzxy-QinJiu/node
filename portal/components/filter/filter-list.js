@@ -452,7 +452,7 @@ class FilterList extends React.Component {
                 <Select
                     className="filter-select"
                     mode="multiple"
-                    placeholder={groupItem.groupName}
+                    placeholder={Intl.get('crm.filter.select.placeholder', '请选择要筛选的{groupName}', {groupName: groupItem.groupName})}
                     value={selectValues}
                     onChange={this.handleSelectChange.bind(this, groupItem)}
                     optionFilterProp="children"

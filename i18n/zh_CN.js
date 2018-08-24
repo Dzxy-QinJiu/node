@@ -1409,6 +1409,7 @@ var zh_CN = {
     'crm.order.lose.reason': '丢单原因',
     'crm.no.order.lose.reason': '暂无丢单原因',
     'crm.fill.order.lose.reason': '补充丢单原因',
+    'crm.filter.select.placeholder': '请选择要筛选的{groupName}',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
