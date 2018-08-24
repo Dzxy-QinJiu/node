@@ -85,7 +85,7 @@ const UserStatusFieldSwitch = React.createClass({
                         size='small'
                     >
                         {
-                            this.state.status === '1' ?
+                            this.state.status ?
                                 <span title={Intl.get('common.stop', '停用')} className="iconfont icon-disable" onClick={() => this.changeUserStatus(false)}>
                                 </span> :
                                 <span title={Intl.get('common.enabled', '启用')} className="iconfont icon-enable" onClick={() => this.changeUserStatus(true)}>
