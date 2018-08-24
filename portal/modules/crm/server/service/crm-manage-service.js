@@ -25,7 +25,7 @@ var crmRestApis = {
     checkCustomerRepeat: '/rest/customer/v2/customer/repeat/search',
     getFilterIndustries: '/rest/customer/v2/customer/industries',
     //获取筛选面板负责人名称列表
-    getOwnerNameList: '/customer/username/:type/500/1',
+    getOwnerNameList: '/rest/customer/v2/customer/username/:type/500/1',
     //获取阶段标签列表
     getStageTagList: '/rest/customer/v2/customer/customer_label/:type/50/1',
     //获取竞品列表

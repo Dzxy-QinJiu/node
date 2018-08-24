@@ -93,7 +93,7 @@ exports.getOwnerNameList = function() {
         dataType: 'json',
         type: 'get',
         success: function(data) {
-            Deferred.resolve(data.result);
+            Deferred.resolve(data);
         },
         error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
