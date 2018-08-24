@@ -435,7 +435,9 @@ const UserLoginAnalysis = React.createClass({
                 <div className="user-analysis-panel" style={{ height: this.props.height }}>
                     {/* {appList} */}
                     <GeminiScrollbar>
-                        {userLoginBlock}
+                        {!this.state.loginInfo.count && !this.state.loginInfo.duration ? <div className="user-no-login">
+                            {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
+                        </div> : userLoginBlock}
                     </GeminiScrollbar>
                 </div>
             </StatusWrapper>

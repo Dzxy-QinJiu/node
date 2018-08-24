@@ -203,6 +203,9 @@ var UserDetail = React.createClass({
         if (userInfo.loading) {
             contentHeight += 100;
         }
+        if (userInfo.errorMsg) {
+            contentHeight += 70;
+        }
         var moveView = null;
         if (this.state.panel_switch_currentView) {
             let { thirdApp } = this.state;
@@ -307,85 +310,87 @@ var UserDetail = React.createClass({
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />
                 <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container user-detail-v3" ref='topWrap'>
-                    <StatusWrapper                       
+                    <StatusWrapper
                     >
-                        <div className="basic-info-contianer" data-trace="客户基本信息">
-                            <div className="basic-info-title-block clearfix">
-                                <div className="basic-info-name">
-                                    <span className="basic-name-text" title={_.get(userInfo, 'data.user_name')}>{_.get(userInfo, 'data.user_name')}</span>
-                                </div>
-                                <div className="basic-info-btns">
-                                    {
-                                        !userInfo.loading ? <span className="iconfont icon-edit-pw" onClick={() => { this.showEditPw(true); }} /> : null
-                                    }
-                                    {
-                                        !userInfo.loading ? this.userDetailRef && this.userDetailRef.renderUserStatus(userInfo.data, true) : null
-                                    }
-                                </div>
-                            </div>
-                            {
-                                !userInfo.loading ?
-                                    <div className={(this.state.showEditPw || this.state.showBasicDetail) ? 'basic-info-content' : 'hide'}>
+                        {
+                            !userInfo.errorMsg ? <div className="basic-info-contianer" data-trace="客户基本信息">
+                                <div className="basic-info-title-block clearfix">
+                                    <div className="basic-info-name">
+                                        <span className="basic-name-text" title={_.get(userInfo, 'data.user_name')}>{_.get(userInfo, 'data.user_name')}</span>
+                                    </div>
+                                    <div className="basic-info-btns">
                                         {
-                                            this.state.showEditPw ?
-                                                <div className="edit-pw-container">
-                                                    <UserDetailEditField
-                                                        ref={ref => this.passwordRef = ref}
-                                                        displayType="edit"
-                                                        user_id={_.get(userInfo, 'data.user_id')}
-                                                        value={Intl.get('user.password.tip', '保密中')}
-                                                        field="password"
-                                                        type="password"
-                                                        hideButtonBlock={true}
-                                                        showPasswordStrength={true}
-                                                        disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
-                                                        validators={[{ validator: this.userDetailRef.checkPass }]}
-                                                        placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
-                                                        title={Intl.get('user.batch.password.reset', '重置密码')}
-                                                        onDisplayTypeChange={this.userDetailRef.onPasswordDisplayTypeChange}
-                                                        onValueChange={this.onPasswordValueChange}
-                                                    />
-                                                    <UserDetailEditField
-                                                        hideButtonBlock={true}
-                                                        ref={ref => this.confirmPasswordRef = ref}
-                                                        user_id={_.get(userInfo, 'data.user_id')}
-                                                        displayType="edit"
-                                                        field="password"
-                                                        type="password"
-                                                        placeholder={Intl.get('member.type.password.again', '请再次输入密码')}
-                                                        validators={[{ validator: this.checkRePass }]}
-                                                        onDisplayTypeChange={this.userDetailRef.onConfirmPasswordDisplayTypeChange}
-                                                        modifySuccess={this.userDetailRef.onConfirmPasswordDisplayTypeChange}
-                                                        saveEditInput={AppUserAjax.editAppUser}
-                                                    />
-                                                    <div className="btn-bar">
-                                                        <Button type='primary' onClick={() => { if (this.confirmPasswordRef) this.confirmPasswordRef.handleSubmit(); }}>{Intl.get('common.confirm', '确认')}</Button>
-                                                        <Button onClick={() => { this.showEditPw(false); }}>{Intl.get('common.cancel', '取消')}</Button>
-                                                    </div>
-                                                </div> :
-                                                <div>
-                                                    <p>{Intl.get('common.nickname', '昵称')}: {_.get(userInfo, 'data.nick_name')}</p>
-                                                    <div className="basic-info-remark basic-info-item">
-                                                        <span className="basic-info-label">{Intl.get('common.remark', '备注')}:</span>
-                                                        <BasicEditInputField
-                                                            width={EDIT_FEILD_WIDTH}
-                                                            user_id={_.get(userInfo, 'data.user_id')}
-                                                            value={_.get(userInfo, 'data.description')}
-                                                            type="textarea"
-                                                            field="remarks"                                                    
-                                                            editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
-                                                            placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                                            hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
-                                                            saveEditInput={this.handleRemarkEdit}
-                                                            noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
-                                                            addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
-                                                        />
-                                                    </div>        
-                                                </div>
+                                            !userInfo.loading ? <span className="iconfont icon-edit-pw" onClick={() => { this.showEditPw(true); }} /> : null
                                         }
-                                    </div> : null
-                            }
-                        </div>
+                                        {
+                                            !userInfo.loading ? this.userDetailRef && this.userDetailRef.renderUserStatus(userInfo.data, true) : null
+                                        }
+                                    </div>
+                                </div>
+                                {
+                                    !userInfo.loading ?
+                                        <div className={(this.state.showEditPw || this.state.showBasicDetail) ? 'basic-info-content' : 'hide'}>
+                                            {
+                                                this.state.showEditPw ?
+                                                    <div className="edit-pw-container">
+                                                        <UserDetailEditField
+                                                            ref={ref => this.passwordRef = ref}
+                                                            displayType="edit"
+                                                            user_id={_.get(userInfo, 'data.user_id')}
+                                                            value={Intl.get('user.password.tip', '保密中')}
+                                                            field="password"
+                                                            type="password"
+                                                            hideButtonBlock={true}
+                                                            showPasswordStrength={true}
+                                                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
+                                                            validators={[{ validator: this.userDetailRef.checkPass }]}
+                                                            placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
+                                                            title={Intl.get('user.batch.password.reset', '重置密码')}
+                                                            onDisplayTypeChange={this.userDetailRef.onPasswordDisplayTypeChange}
+                                                            onValueChange={this.onPasswordValueChange}
+                                                        />
+                                                        <UserDetailEditField
+                                                            hideButtonBlock={true}
+                                                            ref={ref => this.confirmPasswordRef = ref}
+                                                            user_id={_.get(userInfo, 'data.user_id')}
+                                                            displayType="edit"
+                                                            field="password"
+                                                            type="password"
+                                                            placeholder={Intl.get('member.type.password.again', '请再次输入密码')}
+                                                            validators={[{ validator: this.checkRePass }]}
+                                                            onDisplayTypeChange={this.userDetailRef.onConfirmPasswordDisplayTypeChange}
+                                                            modifySuccess={this.userDetailRef.onConfirmPasswordDisplayTypeChange}
+                                                            saveEditInput={AppUserAjax.editAppUser}
+                                                        />
+                                                        <div className="btn-bar">
+                                                            <Button type='primary' onClick={() => { if (this.confirmPasswordRef) this.confirmPasswordRef.handleSubmit(); }}>{Intl.get('common.confirm', '确认')}</Button>
+                                                            <Button onClick={() => { this.showEditPw(false); }}>{Intl.get('common.cancel', '取消')}</Button>
+                                                        </div>
+                                                    </div> :
+                                                    <div>
+                                                        <p>{Intl.get('common.nickname', '昵称')}: {_.get(userInfo, 'data.nick_name')}</p>
+                                                        <div className="basic-info-remark basic-info-item">
+                                                            <span className="basic-info-label">{Intl.get('common.remark', '备注')}:</span>
+                                                            <BasicEditInputField
+                                                                width={EDIT_FEILD_WIDTH}
+                                                                user_id={_.get(userInfo, 'data.user_id')}
+                                                                value={_.get(userInfo, 'data.description')}
+                                                                type="textarea"
+                                                                field="remarks"                                                    
+                                                                editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
+                                                                placeholder={Intl.get('user.input.remark', '请输入备注')}
+                                                                hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
+                                                                saveEditInput={this.handleRemarkEdit}
+                                                                noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                                                                addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
+                                                            />
+                                                        </div>        
+                                                    </div>
+                                            }
+                                        </div> : null
+                                }
+                            </div> : null
+                        }
                     </StatusWrapper>
                     <div className="full_size app_user_full_size_item wrap_padding user-detail-v3" ref="wrap">
                         <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
