@@ -186,11 +186,12 @@ const UserLoginAnalysis = React.createClass({
             return (
                 <div className='login-score'>
                     <div className="score-container total-score">
+                        <span className="over-icon">{Intl.get('user.login.total.score', '总分')}</span>
                         <Progress
                             type="circle"
                             width={100}
                             percent={this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}
-                            format={percent => `${percent}${Intl.get('user.login.total.score', '总分')}`}
+                            format={percent => `${percent}`}
                         />
                     </div>
                     <ul className="score-container">
