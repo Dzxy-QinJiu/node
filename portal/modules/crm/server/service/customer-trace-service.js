@@ -12,6 +12,8 @@ var restApis = {
     addCustomerTraceList: '/rest/callrecord/v2/callrecord/trace',
     // 更新客户跟踪记录
     updateCustomerTraceList: '/rest/callrecord/v2/callrecord/trace',
+    //微信小程序签到
+    visitCustomer: '/rest/callrecord/v2/callrecord/visit'
 };
 exports.restUrls = restApis;
 // 获取客户跟踪记录列表
@@ -66,4 +68,15 @@ exports.getPhoneRecordAudio = function(req, res) {
             res: res,
             'pipe-download-file': true
         }, null);
+};
+//签到
+exports.visitCustomer = function(req,res) {
+    var data = req.body;
+    return restUtil.authRest.post(
+        {
+            url: restApis.visitCustomer,
+            req: req,
+            res: res
+        },
+        data);
 };

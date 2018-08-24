@@ -40,3 +40,13 @@ exports.updateCustomerTraceList = function(req, res) {
 exports.getPhoneRecordAudio = function(req, res) {
     customerTraceService.getPhoneRecordAudio(req, res);
 };
+
+//微信小程序签到
+exports.visitCustomer = function(req,res) {
+    customerTraceService.visitCustomer(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};

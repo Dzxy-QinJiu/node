@@ -33,6 +33,13 @@ module.exports = {
             handler: 'getPhoneRecordAudio',
             passport: {
                 needLogin: true
+            }
+        },{
+            method: 'post',
+            path: '/wechat/customer/visit',
+            handler: 'visitCustomer',
+            passport: {
+                needLogin: true
             },
         }]
 };
