@@ -1,8 +1,8 @@
 var FilterActions = require('../action/filter-actions');
-import {CUSTOMER_TAGS} from '../utils/crm-util';
 function FilterStore() {
     this.appList = [];
     this.teamList = [];
+    this.ownerNameList = [];//有客户的负责人名称列表
     this.stageList = [];
     this.tagList = [];
     this.stageTagList = [];//阶段标签
@@ -13,6 +13,7 @@ function FilterStore() {
     this.inputCondition = {};
     this.condition = {
         sales_team_id: '',
+        user_name: '',//负责人
         industry: '',
         province: '',
         app_ids: [''],
@@ -50,6 +51,10 @@ FilterStore.prototype.getAppList = function(list) {
 FilterStore.prototype.getTeamList = function(result) {
     this.teamTreeList = result.teamTreeList;
     this.teamList = result.teamList;
+};
+
+FilterStore.prototype.getOwnerNameList = function(list) {
+    this.ownerNameList = _.get(list, '[0]') ? list : [];
 };
 
 FilterStore.prototype.getStageList = function(list) {

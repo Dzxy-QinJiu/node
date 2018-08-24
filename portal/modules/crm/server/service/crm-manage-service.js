@@ -24,6 +24,8 @@ var crmRestApis = {
     mergeRepeatCustomer: '/rest/customer/v2/customer/merge/customer',
     checkCustomerRepeat: '/rest/customer/v2/customer/repeat/search',
     getFilterIndustries: '/rest/customer/v2/customer/industries',
+    //获取筛选面板负责人名称列表
+    getOwnerNameList: '/rest/customer/v2/customer/:type/owner_name',
     //获取阶段标签列表
     getStageTagList: '/rest/customer/v2/customer/customer_label/:type/50/1',
     //获取竞品列表
@@ -121,6 +123,16 @@ exports.getCompetitorList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getCompetitorList.replace(':type', req.params.type),
+            req: req,
+            res: res
+        }, null);
+};
+
+//获取筛选面板的负责人名称列表
+exports.getOwnerNameList = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getOwnerNameList.replace(':type', req.params.type),
             req: req,
             res: res
         }, null);

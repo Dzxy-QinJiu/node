@@ -1,4 +1,5 @@
 var FilterAjax = require('../ajax/filter-ajax');
+import batchChangeAjax from '../ajax/batch-change-ajax';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function FilterAction() {
@@ -41,6 +42,14 @@ function FilterAction() {
             list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
             this.dispatch({teamList: list, teamTreeList: data.teamTreeList});
             if (_.isFunction(cb)) cb(list);
+        });
+    };
+    //获取负责人名称列表
+    this.getOwnerNameList = function() {
+        FilterAjax.getOwnerNameList().then(list => {
+            this.dispatch(list);
+        }, function(errorMsg) {
+            console.log(errorMsg);
         });
     };
 

@@ -81,6 +81,27 @@ exports.getSalesRoleList = function() {
     });
     return Deferred.promise();
 };
+//获取负责人名称列表
+exports.getOwnerNameList = function() {
+    let type = 'user';//CRM_USER_GET_CUSTOMER_USER_NAME
+    if(hasPrivilege('CRM_MANAGER_GET_CUSTOMER_USER_NAME')){
+        type = 'manager';
+    }
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/crm/owner_name/' + type,
+        dataType: 'json',
+        type: 'get',
+        success: function(data) {
+            Deferred.resolve(data.result);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 exports.getStageTagList = function() {
     let type = 'user';//CRM_USER_GET_CUSTOMER_CUSTOMER_LABEL
     if(hasPrivilege('CRM_MANAGER_GET_CUSTOMER_CUSTOMER_LABEL')){
