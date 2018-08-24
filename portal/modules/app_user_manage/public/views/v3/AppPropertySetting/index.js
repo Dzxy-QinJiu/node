@@ -314,6 +314,8 @@ const AppPropertySetting = React.createClass({
         app_info.permissions = permissions.slice();
         this.setState({
             appPropSettingsMap: state.appPropSettingsMap
+        }, () => {
+            this.props.onAppPropertyChange(this.state.appPropSettingsMap);
         });
     },
     renderTabContent(app_id) {

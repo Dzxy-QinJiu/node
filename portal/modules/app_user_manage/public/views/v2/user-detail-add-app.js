@@ -603,9 +603,10 @@ const UserDetailAddApp = React.createClass({
                     return;
                 } else {
                     UserDetailAddAppActions.turnStep(direction);
+                    //点击下一步时存储应用设置map
                     UserDetailAddAppActions.saveAppsSetting(this.state.appPropSettingsMap);
                 }
-            } else {
+            } else {               
                 UserDetailAddAppActions.turnStep(direction);
             }
         } else {
@@ -666,7 +667,7 @@ const UserDetailAddApp = React.createClass({
     onStepFinish() {
         if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
-        }
+        }        
         //获取提交数据
         const submitData = this.getSubmitData();
         //选中的应用列表
