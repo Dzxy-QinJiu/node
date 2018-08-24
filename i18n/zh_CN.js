@@ -284,6 +284,7 @@ var zh_CN = {
     'user.detail.addApp.selectAndConfig': '选择应用并配置',
     'user.detail.addApp.setRolePermissions': '设置角色权限',
     'user.detail.belongTo': '归属',
+    'user.detail.belongToOrg': '所属组织',
     'user.user.app.set': '应用设置',
     'user.batch.operation': '批量操作',
     'user.operator': '操作人',

@@ -140,13 +140,13 @@ class OrgCard extends React.Component {
                     <div className="sales-team-show-block">
                         <div className="sales-team">
                             <span className="sales-team-label">
-                                所属组织
+                                {Intl.get('user.detail.belongToOrg', '所属组织')}
                             </span>
                             <span className="sales-team-text">
                                 {userInfo.group_name}
                             </span>
                             {
-                                !hasEditAuth ?
+                                hasEditAuth ?
                                     <DetailEditBtn
                                         title={Intl.get('common.edit', '编辑')}
                                         onClick={this.toggleEdit}
@@ -157,15 +157,7 @@ class OrgCard extends React.Component {
                     </div>
                 )}
                 content={(
-                    <div className="sales-team-show-block">
-                        {/* <div className="sales-team">
-                                <span className="sales-team-label">
-                                    {Intl.get('crm.113', '部门')}
-                                </span>
-                                <span className="sales-team-text">
-                                    {userInfo.email}
-                                </span>
-                            </div> */}
+                    <div className="sales-team-show-block">                       
                         {
                             this.state.showEdit ?
                                 <div className={CLASS_PREFIX} ref="wrap" id="organization-select-wrap">
