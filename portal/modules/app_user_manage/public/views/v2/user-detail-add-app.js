@@ -329,7 +329,6 @@ const UserDetailAddApp = React.createClass({
     },
     //渲染“选择应用”步骤
     renderAppsCarousel() {
-
         const isSubmitError = this.state.isSelectedAppsError;
         const appsListError = this.state.currentRealmAppsResult === 'error';
         const appsListLoading = this.state.currentRealmAppsResult === 'loading';
@@ -557,7 +556,12 @@ const UserDetailAddApp = React.createClass({
     },
     //当应用的个性设置改变的时候触发
     onAppPropertyChange(appsSetting) {
-        UserDetailAddAppActions.saveAppsSetting(appsSetting);
+        let newAppsSetting = this.state.appsSetting;
+        _.each(newAppsSetting, (value, appId) => {
+            value.roles = appsSetting[appId].roles;
+            value.permissions = appsSetting[appId].permissions;
+        });
+        UserDetailAddAppActions.saveAppsSetting(newAppsSetting);
     },
     //渲染loading，错误，成功提示
     renderIndicator() {

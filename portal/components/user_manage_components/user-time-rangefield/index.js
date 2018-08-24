@@ -22,10 +22,18 @@ const UserTimeRangeField = {
 
         const onSelectDate = !config.isCustomSetting ? (start_time,end_time,range) => {
             const formData = this.state.formData;
+            const appPropSettingsMap = this.state.appPropSettingsMap;
+            let mapItem = null;
+            _.each(appPropSettingsMap, value => {
+                mapItem = value;
+            });
             formData.start_time = start_time;
             formData.end_time = end_time;
             formData.range = range;
-            this.setState({formData});
+            mapItem.time.start_time = start_time;
+            mapItem.time.end_time = end_time;
+            mapItem.time.range = range;
+            this.setState({formData, appPropSettingsMap});
         } : (start_time,end_time,range) => {
             if (config.appId === 'applyUser') {
                 this.onTimeChange(start_time, end_time, range, app);
