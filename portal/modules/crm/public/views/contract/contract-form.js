@@ -1,8 +1,8 @@
 import { Form, Input, Select, Icon, DatePicker } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-const RangePicker = DatePicker.RangePicker;
 import DetailCard from 'CMP_DIR/detail-card';
+import { AntcValidity } from 'antc';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
@@ -97,10 +97,8 @@ const Contract = React.createClass( {
         this.setState({ formData });
     },
     // 有效期
-    handleValidityTimeRange(dates) {
+    handleValidityTimeRange(startTime, endTime) {
         let formData = this.state.formData;
-        let startTime = _.get(dates, '[0]') && _.get(dates, '[0]').valueOf() || '';
-        let endTime = _.get(dates, '[1]') && _.get(dates, '[1]').valueOf() || '';
         formData.start_time = startTime;
         formData.end_time = endTime;
         this.setState({ formData });
@@ -176,12 +174,10 @@ const Contract = React.createClass( {
                             />
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('crm.contract.validity.time', '有效期')}>
-                            <RangePicker
+                            <AntcValidity
                                 className='validity-time'
-                                ranges={{ [validityTime]: [moment(formData.start_time), moment(formData.end_time)] }}
-                                placeholder={[Intl.get('contract.120', '开始时间'), Intl.get('contract.105', '结束时间')]}
+                                mode="add"
                                 onChange={this.handleValidityTimeRange}
-                                allowClear={false}
                             />
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
