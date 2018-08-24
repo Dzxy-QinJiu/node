@@ -67,12 +67,31 @@ var CustomerAnalysis = React.createClass({
             originSalesTeamTree: nextProps.originSalesTeamTree
         };
         const timeChanged = (this.props.startTime !== nextProps.startTime) || (this.props.endTime !== nextProps.endTime);
+        const thisPropsTeamId = _.get(this.props, 'currShowSalesTeam.group_id');
+        const nextPropsTeamId = _.get(nextProps, 'currShowSalesTeam.group_id');
+        const thisPropsMemberId = _.get(this.props, 'currShowSalesman.userId');
+        const nextPropsMemberId = _.get(nextProps, 'currShowSalesman.userId');
+        const teamChanged = thisPropsTeamId !== nextPropsTeamId;
+        const memberChanged = thisPropsMemberId !== nextPropsMemberId;
+
         this.setState(timeObj, () => {
             if (timeChanged) {
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
                     this.getStageChangeCustomers();
                     this.getCustomerStageAnalysis();
+                });
+            }
+
+            if (teamChanged) {
+                setTimeout(() => {
+                    this.getTransferCustomers({ isFirst: true }, nextPropsTeamId);
+                });
+            }
+
+            if (memberChanged) {
+                setTimeout(() => {
+                    this.getTransferCustomers({ isFirst: true }, null, nextPropsMemberId);
                 });
             }
         });
@@ -249,7 +268,7 @@ var CustomerAnalysis = React.createClass({
 
     },
     //获取转出客户统计数据
-    getTransferCustomers: function({ isFirst = false }) {
+    getTransferCustomers: function({ isFirst = false }, teamId, memberId) {
         let params = {
             isFirst,
             sort_field: this.state.transferCustomers.sorter.field,
@@ -265,6 +284,11 @@ var CustomerAnalysis = React.createClass({
                 }
             ],
         };
+
+        if (teamId) params.query.sales_team_id = teamId;
+
+        if (memberId) params.query.new_member_id = memberId;
+
         const lastId = this.state.transferCustomers.lastId;
         if (lastId && !isFirst) {
             params.query.id = lastId;
