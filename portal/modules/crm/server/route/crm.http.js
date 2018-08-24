@@ -40,6 +40,14 @@ module.exports = {
         },
         {
             method: 'get',
+            path: '/rest/crm/owner_name/:type',
+            handler: 'getOwnerNameList',
+            passport: {
+                needLogin: true
+            }
+        },
+        {
+            method: 'get',
             path: '/rest/crm/stage_tag/:type',
             handler: 'getStageTagList',
             passport: {

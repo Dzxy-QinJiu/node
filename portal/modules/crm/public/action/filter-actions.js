@@ -43,6 +43,14 @@ function FilterAction() {
             if (_.isFunction(cb)) cb(list);
         });
     };
+    //获取负责人名称列表
+    this.getOwnerNameList = function() {
+        FilterAjax.getOwnerNameList().then(list => {
+            this.dispatch(list);
+        }, function(errorMsg) {
+            console.log(errorMsg);
+        });
+    };
 
     this.getStageList = function() {
         var _this = this;

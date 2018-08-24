@@ -82,6 +82,8 @@ const CrmFilterPanel = React.createClass({
         //获取竞品的列表
         FilterAction.getCompetitorList();
         FilterAction.getIndustries();
+        //负责任人名称列表
+        FilterAction.getOwnerNameList();
         //地域列表的获取
         let type = 'user';
         //管理员获取地域列表的权限
@@ -478,6 +480,15 @@ const CrmFilterPanel = React.createClass({
                 data: _.drop(this.state.teamList).map(x => ({
                     name: x.group_name,
                     value: x.group_id
+                }))
+            },
+            {
+                groupName: Intl.get('crm.6', '负责人'),
+                groupId: 'user_name',
+                singleSelect: true,
+                data: _.drop(this.state.ownerNameList).map(x => ({
+                    name: x,
+                    value: x
                 }))
             });
         }
