@@ -446,7 +446,7 @@ class FilterList extends React.Component {
     //筛选项超8条后，用可搜索的下拉框展示
     renderGroupItemSelect(groupItem){
         let selectItems = _.filter(groupItem.data, item => item.selected);
-        let selectValues = _.map(selectItems, item => item.value);
+        let selectValues = _.map(selectItems, 'value');
         return (
             <div className="filter-select-container" id={`${groupItem.groupId}_select_container`}>
                 <Select
