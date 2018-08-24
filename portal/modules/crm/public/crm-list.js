@@ -565,27 +565,18 @@ var Crm = React.createClass({
         }
         //阶段标签的处理
         if (condition.customer_label) {
-            if (condition.customer_label === crmUtil.CUSTOMER_TAGS.QUALIFIED ||
-                condition.customer_label === crmUtil.CUSTOMER_TAGS.TRIAL_QUALIFIED ||
-                condition.customer_label === crmUtil.CUSTOMER_TAGS.SIGN_QUALIFIED) {
-                //合格标签的筛选
-                condition.qualify_label = '1';
-                if (condition.customer_label === crmUtil.CUSTOMER_TAGS.QUALIFIED) {//只筛选”合格“时
-                    delete condition.customer_label;
-                } else {//试用合格、签约合格的筛选时，是试用、签约标签与合格标签的组合筛选
-                    //试用、签约的处理(精确匹配)
-                    condition.customer_label = condition.customer_label.split(crmUtil.CUSTOMER_TAGS.QUALIFIED)[0];
-                    term_fields.push('customer_label');
-                }
-            } else if (condition.customer_label === crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED) {
-                //曾经合格的处理
-                condition.qualify_label = '2';
-                delete condition.customer_label;
-            } else {//信息、意向、试用、签约、流失
-                term_fields.push('customer_label');
+            //信息、意向、试用、签约、流失
+            term_fields.push('customer_label');
+        }
+        //合格标签的处理
+        if (condition.qualify_label) {
+            //从未合格标签
+            if(condition.qualify_label === '3'){
+                unexist.push('qualify_label');
+                delete condition.qualify_label;
+            } else {//合格标签、从未合格标签
+                term_fields.push('qualify_label');
             }
-        } else {//删除上次筛选时的数据
-            delete condition.qualify_label;
         }
         //销售角色的处理
         if (condition.member_role) {

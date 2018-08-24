@@ -190,6 +190,7 @@ var en_US = {
     'common.trial.qualified': 'Trial and qualified',//试用合格
     'common.trial.unqualified': 'Trial and unqualified',// '试用不合格',
     'common.history.qualified': 'Once qualified',//曾经合格
+    'common.never.qualified': 'Never qualified',//从未合格
     'common.delay.time': 'Delay-time',//延期时间
     'common.time.unit.day': 'Day',//天
     'common.time.unit.week': 'Week',//周

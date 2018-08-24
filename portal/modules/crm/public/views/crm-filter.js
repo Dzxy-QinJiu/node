@@ -45,8 +45,8 @@ var CrmFilter = React.createClass({
                 field: 'name'
             },
             {
-                name: Intl.get('crm.6', '负责人'),
-                field: 'user_name'
+                name: Intl.get('call.record.contacts', '联系人'),
+                field: 'contact_name'
             },
             {
                 name: Intl.get('common.phone', '电话'),
