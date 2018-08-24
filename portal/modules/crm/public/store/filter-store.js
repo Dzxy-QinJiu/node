@@ -128,7 +128,7 @@ FilterStore.prototype.setInputCondition = function(searchObj) {
         //联系人的搜索
         this.inputCondition = {contacts: [{name: searchObj.contact_name}]};
     } else {
-        this.inputCondition = value;
+        this.inputCondition = searchObj;
     }
 };
 FilterStore.prototype.setClue = function(value) {
