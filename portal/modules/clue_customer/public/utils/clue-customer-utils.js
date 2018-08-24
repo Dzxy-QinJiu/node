@@ -1,5 +1,6 @@
 //客户名格式验证
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 var userData = require('PUB_DIR/sources/user-data');
 export const checkClueName = function(rule, value, callback) {
     value = $.trim(value);
@@ -62,3 +63,26 @@ export const isSalesLeaderOrManager = function(){
     return !userData.getUserData().isCommonSales || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
 };
 
+function checkOnlyContactPhone(rule, value, callback) {
+    CrmAction.checkOnlyContactPhone(value, data => {
+        if (_.isString(data)) {
+            //唯一性验证出错了
+            callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+        } else {
+            if (_.isObject(data) && data.result === 'true') {
+                callback();
+            } else {
+                //已存在
+                callback(Intl.get('crm.83', '该电话已存在'));
+            }
+        }
+    });
+}
+//获取线索联系电话唯一性的验证规则
+export const getPhoneInputValidateRules = () => {
+    return [{
+        validator: (rule, value, callback) => {
+            checkOnlyContactPhone(rule, value, callback);
+        }
+    }];
+};
