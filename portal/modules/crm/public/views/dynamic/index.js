@@ -4,7 +4,7 @@ var DynamicStore = require('../../store/dynamic-store');
 //动态action
 var DynamicAction = require('../../action/dynamic-action');
 var crmAction = require('../../action/crm-actions');
-var TimeLine = require('../../../../../components/time-line');
+import {AntcTimeLine} from 'antc';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
@@ -68,11 +68,11 @@ var Dynamic = React.createClass({
                 {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
                     <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
                     <div className="dynamicList">
-                        <TimeLine
-                            list={this.state.dynamicList}
+                        <AntcTimeLine
+                            data={this.state.dynamicList}
                             groupByDay={true}
                             timeField="date"
-                            render={this.timeLineItemRender}
+                            contentRender={this.timeLineItemRender}
                         />
                     </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
             </RightPanelScrollBar>
