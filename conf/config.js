@@ -144,7 +144,7 @@ var config = {
     //进程名
     processTitle: process.env.PROCESS_TITLE || 'ketao',
     //web服务端口
-    port: process.env.OPLATE_PORT || 80,
+    port: process.env.OPLATE_PORT || 9191,
     //是否是线上环境
     isProduction: isProduction,
     //是否提供nock数据
