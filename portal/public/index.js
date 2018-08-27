@@ -1,6 +1,4 @@
-require.ensure(['./sources/dependence'], function(require) {
-    require('./sources/dependence');
-});
+require('./sources/dependence');
 var userData = require('./sources/user-data');
 var AppStarter = require('./sources/app-starter');
 var PrivilegeGet = require('./sources/privilege-get');
@@ -8,7 +6,7 @@ var PrivilegeGetReact = null;
 var appDom = $('#app')[0];
 var websiteConfig = require('../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
-import { storageUtil } from 'ant-utils';
+import {storageUtil} from 'ant-utils';
 
 function hideLoading(errorTip) {
     if (PrivilegeGetReact) {
