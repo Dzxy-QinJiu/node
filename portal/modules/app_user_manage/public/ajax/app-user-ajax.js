@@ -149,7 +149,7 @@ exports.getUserDetail = function(userId) {
         },
         error: function(xhr,status) {
             if(status !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
+                Deferred.reject(xhr.responseJSON || Intl.get('user.get.user.detail.failed', '获取用户详情失败'));
             }
         }
     });
@@ -194,7 +194,7 @@ exports.editAppUser = function(user) {
             Deferred.resolve(newUser);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+            Deferred.reject(xhr.responseJSON || Intl.get('errorcode.17','修改用户失败'));
         }
     });
     return Deferred.promise();
@@ -209,9 +209,9 @@ exports.getApps = function() {
         success(function(list) {
             Deferred.resolve(list);
         }).error(function(xhr, code , errText) {
-            Deferred.reject();
+            Deferred.reject(Intl.get('errorcode.53', '获取应用列表失败'));
         }).timeout(function() {
-            Deferred.reject();
+            Deferred.reject(Intl.get('errorcode.53', '获取应用列表失败'));
         });
     return Deferred.promise();
 };
@@ -252,7 +252,7 @@ exports.disableAllAppsByUser = function(user_id) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || '全部停用失败');
+            Deferred.reject(xhr.responseJSON || Intl.get('user.all.stop.failed', '全部停用失败'));
         }
     });
     return Deferred.promise();
@@ -263,7 +263,7 @@ exports.disableAllAppsByUser = function(user_id) {
  */
 exports.addApp = function(appList) {
     var Deferred = $.Deferred();
-    var DEFAULT_ERROR_MSG = '添加应用失败';
+    var DEFAULT_ERROR_MSG = Intl.get('errorcode.54', '添加应用失败');
     $.ajax({
         url: '/rest/appuser/addapp',
         type: 'post',
@@ -303,7 +303,7 @@ exports.batchUpdate = function(field, submitData,selectedAppId) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            var errorMsg = xhr.responseJSON || '批量操作失败';
+            var errorMsg = xhr.responseJSON || Intl.get('errorcode.20', '批量操作失败');
             Deferred.reject(errorMsg);
         }
     });
@@ -525,7 +525,7 @@ exports.addOneUserSuggestName = function(data) {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+            Deferred.reject(xhr.responseJSON || Intl.get('user.get.suggest.name.error', '获取建议用户名失败'));
         }
     });
     return Deferred.promise();
@@ -541,7 +541,7 @@ exports.getRealmList = function() {
             Deferred.resolve(result);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+            Deferred.reject(xhr.responseJSON || Intl.get('user.info.get.managed.realm.failed', '获取安全域信息失败'));
         }
     });
     return Deferred.promise();

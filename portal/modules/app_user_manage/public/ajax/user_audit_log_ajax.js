@@ -7,7 +7,7 @@ exports.getUserApp = function(){
         success(function(data) {
             Deferred.resolve(data);
         }).error(function(xhr, code , errText) {
-            Deferred.resolve(xhr.responseJSON);
+            Deferred.resolve(xhr.responseJSON || Intl.get('errorcode.53', '获取应用列表失败'));
         }).timeout(function() {
             Deferred.resolve();
         });
@@ -29,7 +29,7 @@ exports.getAuditLogList = function(searchObj){
         },
         error: function(xhr,status) {
             if(status !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
+                Deferred.reject(xhr.responseJSON || Intl.get('errorcode.7', '获取审计日志失败'));
             }
         }
     });
@@ -53,7 +53,7 @@ exports.getSingleAuditLogList = function(searchObj){
         },
         error: function(xhr,status) {
             if(status !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
+                Deferred.reject(xhr.responseJSON || Intl.get('user.log.single.get.error', '获取单个审计日志失败'));
             }
         }
     });
@@ -146,7 +146,7 @@ exports.getLoginUserScore = function(reqData, type){
         },
         error: (xhr,status) => {
             if(status !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
+                Deferred.reject(xhr.responseJSON || Intl.get('user.get.score.failed', '获取用户分数失败') );
             }
         }
     });
