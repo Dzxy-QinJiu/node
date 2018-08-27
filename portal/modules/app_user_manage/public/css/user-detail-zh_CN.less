@@ -6,6 +6,7 @@
 @box_shadow_color: #cac8c8;
 @tab_active_color: #2196f3;
 @font-color: #5D5D5D;
+@font-black: #53575a;
 @right_panel_padding: 24px;
 @white_color: #ffffff;
 @split_line_color: #e2e2e2;
@@ -75,12 +76,30 @@
 }
 
 //新版用户详情的样式
-.right-panel {
+.detail-v3-panel {
+    .icon-ellipsis {
+        color: @font-grey;
+        font-size: 20px;
+        position: relative;
+        top: -4px;
+        letter-spacing: 2px;
+        margin-left: 7px;
+    }
     .btn-text {
         color: @font-lightblue;
         cursor: pointer;
     } //基本信息样式
     .user-detail-baisc-v3 {
+        .sales-editor {
+            .anticon-loading {
+                right: 10px;
+            }
+        }
+        .select_text_wrap {
+            .status-wrapper {
+                min-height: initial;
+            }
+        }
         .ant-select,
         .inputWrap form .ant-form-item input,
         .inputWrap form>div {
@@ -231,13 +250,21 @@
             padding: 0;
         }
         .app-config-wrap {
+            .ant-radio-group label {
+                text-align: center;
+            }
             .user-time-rangefield-block {
                 .ant-col-24 {
-                    width: 62.5%;
+                    width: 62%;
                 }
             }
+            .ant-col-5 {
+                width: 18%;
+                margin-top: -1px;
+            }
             .ant-col-19 {
-                width: 62.5%;
+                width: 62%;
+                text-align: left;
                 input {
                     width: 100%;
                 }
@@ -311,10 +338,16 @@
         .add-app-content {
             width: 340px;
         }
+        .app-config-container {
+            overflow-x: hidden;
+            .ant-form-item {
+                margin-bottom: 3px;
+            }
+        }
         .selected-app-container {
             border: 1px solid @bd-lightgrey;
             border-radius: 4px;
-            padding: 5px 0;
+            padding: 5px 0;            
             p.btn-text {
                 text-align: left;
                 font-size: 14px;
@@ -551,6 +584,7 @@
             }
             &.app-property-content {
                 background: white;
+                padding: 0;
                 .ant-select {
                     width: 308px !important;
                 }
@@ -562,10 +596,15 @@
             }
             .form-item-label {
                 width: 85px;
-                padding: 11px 0 0 0;
+                padding: 0;
+                color: @font-grey;
+                vertical-align: middle;
+                &.form-title {
+                    color: @font-black;
+                }
             }
             .form-item-content {
-                padding: 5px 0 5px 13px;
+                padding: 3px 0 3px 10px;
             }
         }
         h4 {
@@ -692,6 +731,9 @@
                 width: 100%;
                 padding: 5px 0;
                 padding-left: 50px;
+                form.ant-form.ant-form-horizontal {
+                    width: 100%;
+                }
             }
             i.iconfont {
                 display: none;
@@ -777,9 +819,7 @@
         }
     } //所属销售的样式
     .detail-card-title {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
+        padding-bottom: 6px;
     }
     .sales-team-show-block {
         font-size: 14px;
@@ -900,7 +940,10 @@
         transform: translate(@right_panel_width, 0);
         background-color: transparent !important;
     }
-    .user-detail-v3 {
+    .user-detail-v3-content {
+        &.wrap_padding {
+            padding: 11px 12px 0 20px;
+        }
         .user-manage-v2 {
             background: @right_panel_bgcolor;
         }
@@ -912,7 +955,7 @@
             background: transparent !important;
         }
     }
-    .full_size.wrap_padding.user-detail-v3 {
+    .full_size.wrap_padding.user-detail-v3-content {
         background: @right_panel_bgcolor;
     }
     .right-panel-content {

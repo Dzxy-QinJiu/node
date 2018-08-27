@@ -51,7 +51,7 @@ class ContactCard extends React.Component {
                     <div className="sales-team-show-block">
                         <div className="sales-team clearfix">
                             <span className="sales-team-label">
-                                {Intl.get('common.email', '邮箱')}
+                                {Intl.get('common.email', '邮箱')}:
                             </span>
                             <span className="sales-team-text">
                                 {/* {userInfo.email} */}
@@ -65,7 +65,7 @@ class ContactCard extends React.Component {
                         </div>
                         <div className="sales-team clearfix">
                             <span className="sales-team-label">
-                                {Intl.get('user.phone', '手机号')}
+                                {Intl.get('user.phone', '手机号')}:
                             </span>
                             <span className="sales-team-text">
                                 <UserDetailEditField

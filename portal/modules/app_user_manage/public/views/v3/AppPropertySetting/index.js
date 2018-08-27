@@ -306,9 +306,8 @@ const AppPropertySetting = React.createClass({
         this.setState(newState);
 
     },
-    onRolesPermissionSelect(roles, permissions) {
-        var state = this.state;
-        var app_id = state.currentApp.app_id;
+    onRolesPermissionSelect(app_id, roles, permissions) {
+        var state = this.state;       
         var app_info = state.appPropSettingsMap[app_id];
         app_info.roles = roles.slice();
         app_info.permissions = permissions.slice();
@@ -336,7 +335,7 @@ const AppPropertySetting = React.createClass({
                                 app_id={app_id}
                                 selectedRoles={selectedRoles}
                                 selectedPermissions={selectedPermissions}
-                                onRolesPermissionSelect={this.onRolesPermissionSelect}
+                                onRolesPermissionSelect={this.onRolesPermissionSelect.bind(this, app_id)}
                                 updateScrollBar={this.updateScrollBar}
                             /> : null
                     }

@@ -296,6 +296,7 @@ var en_US = {
     'user.detail.tip.expand': 'Expand config', //'展开停用前设置',
     'user.detail.belongTo': 'Belong to', //'归属',
     'user.detail.belongToOrg': 'Belong to organazation', //'所属组织',
+    'user.detail.tip.searchApp': 'Input keywords to search apps', //'输入关键字自动搜索',
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
     'user.user.list.click': 'Please click at user list',//请在用户列表中点击

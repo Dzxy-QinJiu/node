@@ -41,10 +41,10 @@ const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
 };
-function merge(obj1,obj2) {
+function merge(obj1, obj2) {
     obj1 = obj1 || {};
     obj2 = obj2 || {};
-    for(var key in obj2) {
+    for (var key in obj2) {
         obj1[key] = obj2[key];
     }
 }
@@ -89,12 +89,12 @@ const UserDetailAddApp = React.createClass({
         UserDetailAddAppStore.listen(this.onStateChange);
         UserDetailAddAppActions.getCurrentRealmApps();
         $(window).on('resize', this.onStateChange);
-    },   
+    },
     componentWillUnmount() {
         UserDetailAddAppStore.unlisten(this.onStateChange);
         dynamicStyle && dynamicStyle.destroy();
         dynamicStyle = null;
-    }, 
+    },
     createPropertySettingData(state) {
         //选中的应用
         const selectedApps = state.selectedApps;
@@ -295,32 +295,22 @@ const UserDetailAddApp = React.createClass({
         } else {
             value = e.target.value;
         }
-        if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
-            if (['is_two_factor', 'multilogin'].includes(field)) {              
-                const newFormData = {};
-                newFormData[field] = value;
-                merge(this.state.formData, newFormData);
-                return this.setState({
-                    formData: this.state.formData,
-                });
-            }
+        if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {            
+            const appPropSettingsMap = this.state.appPropSettingsMap;
+            _.each(appPropSettingsMap, item => {
+                const formData = item || {};
+                formData[field].value = value;            
+            });
+            this.setState({ appPropSettingsMap });
             return this.setField.call(this, field, e);
         } else {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[app.app_id] || {};
-            formData[field].value = value;
-            // if (value != config.globalOverDraft) {
-            //     formData.over_draft.setted = true;
-            // }
-            this.setState({ appPropSettingsMap });            
+            formData[field].value = value;           
+            this.setState({ appPropSettingsMap });
         }
-    },
-    onOverDraftChange: function(app, e) {
-
-    },
-    onChangeUserType() {
-        console.log(arguments);
-    },
+    },    
+  
     //选中的应用发生变化的时候
     onSelectedAppsChange(appIds) {
         this.setState({
@@ -360,11 +350,7 @@ const UserDetailAddApp = React.createClass({
             LAYOUT_CONSTANTS.APPS_CHOOSEN_TOPBAR;
         dynamicStyle = insertStyle(`.user-detail-add-app-v2 .search-icon-list-content{max-height:${height}px;overflow-y:auto;overflow-x:hidden;`);
         return (
-            <div>
-                {/* <SearchIconList
-                    totalList={this.state.currentRealmApps}
-                    onItemsChange={this.onSelectedAppsChange}
-                /> */}
+            <div>               
                 <div className="left-nav-container">
                     {
                         Intl.get('user.user.app.select', '选择应用')
@@ -427,7 +413,7 @@ const UserDetailAddApp = React.createClass({
         return (
             <div className="app-selector-container">
                 <div className="input-container">
-                    <Input onChange={this.handleInputChange} />
+                    <Input onChange={this.handleInputChange} placeHolder={Intl.get('user.detail.tip.searchApp', '输入关键字自动搜索')} />
                 </div>
                 <div className="app-list-container" style={{ height: 180 }}>
                     <GeminiScrollbar>
@@ -450,47 +436,53 @@ const UserDetailAddApp = React.createClass({
     },
     renderAppConfig() {
         return (
-            <div className="selected-app-container">
-                <ul>
-                    {
-                        this.state.selectedApps.map(app => (
-                            <li key={app.app_id}>
-                                <div className="title-container">
-                                    <span className="logo-container" title={app.app_name}>
-                                        <DefaultUserLogoTitle
-                                            nickName={app.app_name}
-                                            userLogo={app.app_logo}
-                                        />
-                                    </span>
-                                    <p title={app.app_name}>{app.app_name}</p>
-                                    <span className="icon-bar"> <Icon onClick={this.handleRemoveApp.bind(this, app)} type="close" /></span>
-                                </div>
-                            </li>
-                        ))
-                    }
-                </ul>
-                <p className="btn-text" onClick={this.showAppSelector.bind(this, true)}>
-                    {Intl.get('common.add.app', '添加应用')}
-                </p>
-                <ApplyUserAppConfig
-                    apps={this.state.selectedApps.map(x => ({
-                        client_name: x.app_name,
-                        client_logo: x.app_logo,
-                        ...x
-                    }))}
-                    // todo defaultAppSettings
-                    appsFormData={this.state.selectedApps.map(x => ({
-                        begin_date: moment(),
-                        client_id: x.app_id,
-                        end_date: moment().add(0.5, 'm'),
-                        number: 1,
-                        over_draft: 1,
-                        range: '0.5m',
-                    }))}
-                    configType={this.state.configType}
-                    changeConfigType={this.changeConfigType}
-                    renderAppConfigForm={this.renderAppConfigForm.bind(this)}
-                />
+            <div style={{ height: this.props.height - 130 }}>
+                <GeminiScrollbar>
+                    <div className="app-config-container">
+                        <div className="selected-app-container">
+                            <ul>
+                                {
+                                    this.state.selectedApps.map(app => (
+                                        <li key={app.app_id}>
+                                            <div className="title-container">
+                                                <span className="logo-container" title={app.app_name}>
+                                                    <DefaultUserLogoTitle
+                                                        nickName={app.app_name}
+                                                        userLogo={app.app_logo}
+                                                    />
+                                                </span>
+                                                <p title={app.app_name}>{app.app_name}</p>
+                                                <span className="icon-bar"> <Icon onClick={this.handleRemoveApp.bind(this, app)} type="close" /></span>
+                                            </div>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                            <p className="btn-text" onClick={this.showAppSelector.bind(this, true)}>
+                                {Intl.get('common.add.app', '添加应用')}
+                            </p>
+                        </div>
+                        <ApplyUserAppConfig
+                            apps={this.state.selectedApps.map(x => ({
+                                client_name: x.app_name,
+                                client_logo: x.app_logo,
+                                ...x
+                            }))}
+                            // todo defaultAppSettings
+                            appsFormData={this.state.selectedApps.map(x => ({
+                                begin_date: moment(),
+                                client_id: x.app_id,
+                                end_date: moment().add(0.5, 'm'),
+                                number: 1,
+                                over_draft: 1,
+                                range: '0.5m',
+                            }))}
+                            configType={this.state.configType}
+                            changeConfigType={this.changeConfigType}
+                            renderAppConfigForm={this.renderAppConfigForm.bind(this)}
+                        />
+                    </div>
+                </GeminiScrollbar>
             </div>
         );
     },
@@ -517,6 +509,11 @@ const UserDetailAddApp = React.createClass({
             formData = app ?
                 this.formatAppFormMapItem(this.state.appPropSettingsMap[app.app_id]) :
                 appFormData;
+        } else {
+            //统一配置时，取第一个应用的配置传入appConfigForm组件（之前统一配置修改时会同步修改appSettingMap中所有应用的配置）
+            if (_.get(this.state.selectedAppIds, 'length')) {
+                formData = this.formatAppFormMapItem(this.state.appPropSettingsMap[this.state.selectedAppIds[0]]);
+            }
         }
         const timePickerConfig = {
             isCustomSetting: isSeparate ? true : false,
@@ -535,7 +532,7 @@ const UserDetailAddApp = React.createClass({
                 onCheckMultiLogin={this.handleFormItemEdit.bind(this, 'multilogin', app)}
                 needTwoFactorMultiLogin={true}
             />
-        );        
+        );
     },
     //渲染“应用设置”步骤
     renderRolesCarousel() {
@@ -607,10 +604,26 @@ const UserDetailAddApp = React.createClass({
                     return;
                 } else {
                     UserDetailAddAppActions.turnStep(direction);
-                    //点击下一步时存储应用设置map
-                    UserDetailAddAppActions.saveAppsSetting(this.state.appPropSettingsMap);
+                    const { appPropSettingsMap } = this.state;
+                    //统一配置时将formData数据同步到appSettingMap中
+                    if (this.state.configType === CONFIG_TYPE.UNIFIED_CONFIG) {
+                        const { range, end_time, start_time } = this.state.formData;
+                        _.each(appPropSettingsMap, item => {
+                            item.time = {
+                                range,
+                                end_time,
+                                start_time
+                            };
+                        });
+                    }
+                    this.setState({
+                        appPropSettingsMap
+                    }, () => {
+                        //点击下一步时存储应用设置map
+                        UserDetailAddAppActions.saveAppsSetting(this.state.appPropSettingsMap);
+                    });
                 }
-            } else {               
+            } else {
                 UserDetailAddAppActions.turnStep(direction);
             }
         } else {
@@ -659,7 +672,7 @@ const UserDetailAddApp = React.createClass({
             //多人登录
             customAppSetting.mutilogin = savedAppSetting.multilogin.value;
             //正式、试用
-            customAppSetting.user_type = user_type;
+            customAppSetting.user_type = savedAppSetting.user_type.value;
             //设置user_id
             customAppSetting.user_id = this.props.initialUser.user.user_id;
             //添加到列表中
@@ -671,7 +684,7 @@ const UserDetailAddApp = React.createClass({
     onStepFinish() {
         if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
-        }        
+        }
         //获取提交数据
         const submitData = this.getSubmitData();
         //选中的应用列表
@@ -716,7 +729,7 @@ const UserDetailAddApp = React.createClass({
                             >
                                 <OperationSteps.Step
                                     action={<span className={this.state.step === 0 ? 'active' : ''}>
-                                        {Intl.get('user.detail.addApp.selectAndConfig', '选择应用并配置')}....</span>}
+                                        {Intl.get('user.detail.addApp.selectAndConfig', '选择应用并配置')}<span className="icon-ellipsis">....</span></span>}
                                 >
                                 </OperationSteps.Step>
                                 <OperationSteps.Step
@@ -738,7 +751,7 @@ const UserDetailAddApp = React.createClass({
                                     <div className="user-detail-add-app-v2-apps apps-carousel">
                                         {this.renderAppsCarousel()}
                                     </div>
-                                </CarouselItem>                              
+                                </CarouselItem>
                                 <CarouselItem>
                                     {this.renderRolesCarousel()}
                                 </CarouselItem>
@@ -750,7 +763,7 @@ const UserDetailAddApp = React.createClass({
                                 totalStep={2}
                                 onStepChange={this.turnStep}
                                 onFinish={this.onStepFinish}
-                            >                               
+                            >
                                 {this.renderIndicator()}
                             </OperationStepsFooter>
                         </Validation>

@@ -142,6 +142,7 @@ var zh_CN = {
     'user.detail.loginAnalysis.title': '近一年的活跃统计',
     'user.detail.tip.collapse': '收起停用前设置',
     'user.detail.tip.expand': '展开停用前设置',
+    'user.detail.tip.searchApp': '输入关键字自动搜索',
     'common.app': '应用',
     'common.sure': '确定',
     'common.is.existed': '用户名已存在！',

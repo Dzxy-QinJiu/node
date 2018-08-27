@@ -339,7 +339,7 @@ const AppPropertySetting = React.createClass({
                         style={{ display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block' }}
                     >
                         <div className="form-item">
-                            <div className="form-item-label font-bold">
+                            <div className="form-item-label form-title">
                                 {Intl.get('appEdit.basicConig', '基本配置')}
                             </div>                       
                         </div>
@@ -434,13 +434,6 @@ const AppPropertySetting = React.createClass({
                             </div>
                         }                       
                     </div>
-                    <AppRolePermission
-                        app_id={currentApp.app_id}
-                        selectedRoles={selectedRoles}
-                        selectedPermissions={selectedPermissions}
-                        onRolesPermissionSelect={this.onRolesPermissionSelect}
-                        updateScrollBar={this.updateScrollBar}
-                    />
                     {
                         this.props.appSelectRoleError && !selectedRoles.length ? (
                             <div className="select-no-role">
@@ -448,6 +441,13 @@ const AppPropertySetting = React.createClass({
                             </div>
                         ) : null
                     }
+                    <AppRolePermission
+                        app_id={currentApp.app_id}
+                        selectedRoles={selectedRoles}
+                        selectedPermissions={selectedPermissions}
+                        onRolesPermissionSelect={this.onRolesPermissionSelect}
+                        updateScrollBar={this.updateScrollBar}
+                    />                    
                 </div>
             </div>
         );

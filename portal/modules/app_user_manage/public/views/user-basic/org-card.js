@@ -177,7 +177,7 @@ class OrgCard extends React.Component {
                                 </div> :
                                 <div className="sales-team">
                                     <span className="sales-team-label">
-                                        {Intl.get('user.user.team', '团队')}
+                                        {Intl.get('user.user.team', '团队')}:
                                     </span>
                                     <span className="sales-team-text">
                                         {sales_team.sales_team_name}

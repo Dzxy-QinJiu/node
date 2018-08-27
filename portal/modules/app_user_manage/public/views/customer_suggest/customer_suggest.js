@@ -256,7 +256,7 @@ var CustomerSuggest = React.createClass({
         this.suggestChange(search_input_val);
     },
     getCustomerLoadingBlock: function() {
-        if(this.state.result_type === 'loading') {
+        if(1) {
             return (
                 <Icon type="loading"/>
             );

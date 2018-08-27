@@ -195,14 +195,17 @@ var UserDetail = React.createClass({
         const remarkDOM = $('#app #top-remark');
         const remarkHeight = remarkDOM ? remarkDOM.height() : 0;
         let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP - LAYOUT_CONSTANTS.USER_DETAIL;
+        //用户详细信息高度
         if (this.state.showBasicDetail) {
-            contentHeight -= remarkHeight;
+            contentHeight = contentHeight - remarkHeight - LAYOUT_CONSTANTS.TITLE_PADDING;
         } else {
             contentHeight += LAYOUT_CONSTANTS.USER_DETAIL;
         }
+        //加载时增加padding
         if (userInfo.loading) {
             contentHeight += 100;
         }
+        //错误信息padding
         if (userInfo.errorMsg) {
             contentHeight += 70;
         }
@@ -212,7 +215,7 @@ var UserDetail = React.createClass({
             switch (this.state.panel_switch_currentView) {
                 case 'app':
                     var initialUser = AppUserDetailStore.getState().initialUser;
-                    moveView = (<UserDetailAddApp height={contentHeight} initialUser={initialUser} />);
+                    moveView = (<UserDetailAddApp height={contentHeight + LAYOUT_CONSTANTS.TITLE_PADDING} initialUser={initialUser} />);
                     break;
                 case 'editapp':
                     var initialUser = AppUserDetailStore.getState().initialUser;
@@ -309,7 +312,7 @@ var UserDetail = React.createClass({
         return (
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />
-                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container user-detail-v3" ref='topWrap'>
+                <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container user-detail-v3-content" ref='topWrap'>
                     <StatusWrapper
                     >
                         {
@@ -392,7 +395,7 @@ var UserDetail = React.createClass({
                             </div> : null
                         }
                     </StatusWrapper>
-                    <div className="full_size app_user_full_size_item wrap_padding user-detail-v3" ref="wrap">
+                    <div className="full_size app_user_full_size_item wrap_padding user-detail-v3-content" ref="wrap">
                         <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
                             {tabPaneList}
                         </Tabs>

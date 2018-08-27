@@ -77,7 +77,8 @@ exports.LAYOUT_CONSTANTS = {
     BASIC_TOP: 25,
     USER_DETAIL: 33,
     BTN_PADDING: 50,//确定取消按钮区域的高度
-    BOTTOM_PADDING: 60
+    BOTTOM_PADDING: 60,
+    TITLE_PADDING: 30
 };
 // 单个用户的日志面板固定高度常量
 exports.USER_LOG_LAYOUT_CONSTANTS = {

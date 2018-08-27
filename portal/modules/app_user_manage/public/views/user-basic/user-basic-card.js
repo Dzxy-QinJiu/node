@@ -179,7 +179,7 @@ class UserBasicCard extends React.Component {
         return (
             <DetailCard
                 isEdit={this.state.showEdit}
-                className="sales-team-container"
+                className="sales-team-container sales-editor"
                 handleCancel={this.toggleEdit}
                 handleSubmit={this.submit.bind(this)}
                 loading={this.state.submitType === 'loading'}
