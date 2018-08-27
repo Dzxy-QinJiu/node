@@ -35,6 +35,7 @@ var AppUserAjax = require('../ajax/app-user-ajax');
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 const WHEEL_DELAY = 10;//滚轮事件延时
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+import UserStatusSwitch from './user-status-switch';
 
 var UserDetail = React.createClass({
     getDefaultProps: function() {
@@ -189,6 +190,13 @@ var UserDetail = React.createClass({
     handleRemarkEdit(params, onSuccess, onError) {
         AppUserAjax.editAppUser(params).then(onSuccess, onError);
     },
+    renderUserStatus: function(user, useIcon = false) {
+        let userStatus = user && user.status;
+        if (!hasPrivilege('APP_USER_EDIT')) {
+            return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
+        }
+        return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
+    },
     render: function() {
         const { userInfo } = this.state;
         //内容区高度
@@ -326,7 +334,7 @@ var UserDetail = React.createClass({
                                             !userInfo.loading ? <span className="iconfont icon-edit-pw" onClick={() => { this.showEditPw(true); }} /> : null
                                         }
                                         {
-                                            !userInfo.loading ? this.userDetailRef && this.userDetailRef.renderUserStatus(userInfo.data, true) : null
+                                            !userInfo.loading ? this.renderUserStatus(userInfo.data, true) : null
                                         }
                                     </div>
                                 </div>

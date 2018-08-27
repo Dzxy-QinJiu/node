@@ -397,8 +397,9 @@ const UserLoginAnalysis = React.createClass({
                     this.state.userOwnAppArray.map((app, index) => (
                         <DetailCard
                             key={index}
+                            titleBottomBorderNone={!this.state.showDetailMap[app.app_name]}
                             title={(
-                                <div className={this.state.showDetailMap[app.app_name] ? 'title-container' : 'title-container no-border'}>
+                                <div className='title-container'>
                                     <span className="logo-container" title={app.app_name}>
                                         <DefaultUserLogoTitle
                                             nickName={app.app_name}
