@@ -46,9 +46,7 @@ const WeeklyReportDetail = React.createClass({
     },
     componentDidMount() {
         WeeklyReportDetailStore.listen(this.onStoreChange);
-        if (this.state.selectedItem.teamId && this.state.selectedItem.nWeek) {
-            this.getWeeklyReportData(); // 获取电话统计、、、 数据
-        }
+        this.getWeeklyReportData(); // 获取电话统计、、、 数据
     },
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.selectedItem.teamId !== this.state.selectedItem.teamId || nextProps.selectedItem.nWeek !== this.state.selectedItem.nWeek) {
@@ -244,8 +242,9 @@ const WeeklyReportDetail = React.createClass({
                     <span className="text-wrap">
                         {Intl.get('weekly.report.full.work.day', '全勤')}
                     </span>
-                    <i className="iconfont icon-update"
-                        onClick={this.handleAddAskForLeave.bind(this, userId)}></i>
+                    {hasPrivilege('CALLRECORD_ASKFORLEAVE_UPDATE') ? <i className="iconfont icon-update"
+                        onClick={this.handleAddAskForLeave.bind(this, userId)}></i> : null}
+
                 </div>}
             </div>
         );
@@ -394,7 +393,7 @@ const WeeklyReportDetail = React.createClass({
                 var userObj = _.find(_this.props.memberList.list, (item) => {
                     return item.name === record.name;
                 });
-                var userId = _.get(userObj, 'id', '');
+                var userId = _.get(userObj, 'id', '') || userData.getUserData().user_id;
                 //正在添加请假信息
                 var isAdding = _this.state.isAddingLeaveUserId === userId ? true : false;
                 //没有请假信息的时候,是全勤的
@@ -551,44 +550,63 @@ const WeeklyReportDetail = React.createClass({
         let queryParams = {
             start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
             end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
-            team_ids: this.state.selectedItem.teamId,
         };
+        if (this.state.selectedItem.teamId){
+            queryParams.team_id = this.state.selectedItem.teamId;
+        }
+        return queryParams;
+    },
+    //合同和回款的query参数
+    getContractAndRepayParams(){
+        let queryParams = {
+            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
+            end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
+        };
+        if (this.state.selectedItem.teamId){
+            queryParams.sale_team_ids = this.state.selectedItem.teamId;
+        }
+        return queryParams;
+    },
+    //获取通话的queryparams参数
+    getCallInfoParams(){
+        let queryParams = {
+            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
+            end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
+        };
+        if (this.state.selectedItem.teamId){
+            queryParams.team_ids = this.state.selectedItem.teamId;
+        }
         return queryParams;
     },
     // 通话的接通率
     getCallInfoData(){
-        var queryObj = _.clone(this.getQueryParams());
+        var queryObj = _.clone(this.getCallInfoParams());
         queryObj.deviceType = this.state.call_type;
         let type = this.getCallInfoAuth();
         WeeklyReportDetailAction.getCallInfo(queryObj, type);
     },
     //获取合同情况
     getContractData(){
-        var queryObj = _.clone(this.getQueryParams());
-        queryObj.sale_team_ids = queryObj.team_ids;
-        delete queryObj.team_ids;
+        var queryObj = _.clone(this.getContractAndRepayParams());
         let type = this.getContractType();
         WeeklyReportDetailAction.getContractInfo(queryObj, type);
 
     },
     //获取回款情况
     getRepaymentData(){
+        var queryObj = _.clone(this.getContractAndRepayParams());
         let type = this.getContractType();
-        WeeklyReportDetailAction.getRepaymentInfo(this.getQueryParams(), type);
+        WeeklyReportDetailAction.getRepaymentInfo(queryObj, type);
     },
     //获取区域覆盖情况
     getRegionOverlayData(){
         var queryObj = _.clone(this.getQueryParams());
-        queryObj.team_id = queryObj.team_ids;
-        delete queryObj.team_ids;
         let type = this.getOverlayType();
         WeeklyReportDetailAction.getRegionOverlayInfo(queryObj, type);
     },
     //获取客户阶段情况
     getCustomerStageData(){
         var queryObj = _.clone(this.getQueryParams());
-        queryObj.team_id = queryObj.team_ids;
-        delete queryObj.team_ids;
         let type = this.getOverlayType();
         WeeklyReportDetailAction.getCustomerStageInfo(queryObj, type);
     },
