@@ -18,15 +18,7 @@ const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'es_VE', val: 'Español'}];
 function noop() {
 }
-function cx(classNames) {
-    if (typeof classNames === 'object') {
-        return Object.keys(classNames).filter(function(className) {
-            return classNames[className];
-        }).join(' ');
-    } else {
-        return Array.prototype.join.call(arguments, ' ');
-    }
-}
+
 class UserInfo extends React.Component{
 
     static defaultProps = {
@@ -57,10 +49,12 @@ class UserInfo extends React.Component{
         };
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            formData: $.extend(true, {}, nextProps.userInfo),
-            userInfoFormShow: nextProps.userInfoFormShow
-        });
+        if(_.get(this.state, 'formData.userId') !== _.get(nextProps, 'userInfo.userId') || this.state.userInfoFormShow !== nextProps.userInfoFormShow){
+            this.setState({
+                formData: $.extend(true, {}, nextProps.userInfo),
+                userInfoFormShow: nextProps.userInfoFormShow
+            });
+        }
     }
 
     //编辑用户信息
@@ -82,7 +76,7 @@ class UserInfo extends React.Component{
                 return;
             } else {
                 this.setState({isSaving: true});
-                let userInfo = _.extend({}, values);
+                let userInfo = _.extend(this.state.formData, values);
                 if (userInfo.phone) {
                     userInfo.phone = $.trim(userInfo.phone);
                 }
@@ -127,8 +121,7 @@ class UserInfo extends React.Component{
     }
     //激活邮箱
     activeUserEmail() {
-        let values = this.props.form.getFieldsValue();
-        if (values.emailEnable) {
+        if (this.state.formData.emailEnable) {
             return;
         }
         UserInfoAction.activeUserEmail((resultObj) => {
@@ -334,10 +327,10 @@ class UserInfo extends React.Component{
                         <dd>
                             <BasicEditSelectField
                                 id={formData.id}
-                                displayText={this.getLangDisplayText.bind(this)}
+                                displayText={this.getLangDisplayText()}
                                 value={this.state.lang}
                                 field="language"
-                                selectOptions={this.getLangOptions.bind(this)}
+                                selectOptions={this.getLangOptions()}
                                 disabled={hasPrivilege('MEMBER_LANGUAGE_SETTING') ? false : true}
                                 onSelectChange={this.onSelectLang.bind(this)}
                                 cancelEditField={this.cancelEditLang.bind(this)}
@@ -350,7 +343,7 @@ class UserInfo extends React.Component{
                         <div className="user-info-item">
                             <span>
                                 <ReactIntl.FormattedMessage id="user.info.realm" defaultMessage="安全域"/>：</span>
-                            {this.renderRealm.bind(this)}
+                            {this.renderRealm()}
                         </div>
                     </PrivilegeChecker>
                 </div>
@@ -367,6 +360,7 @@ class UserInfo extends React.Component{
                 <div className="user-logo-div">
                     <Button className="user-info-btn-class icon-update iconfont"
                         onClick={_this.showUserInfoForm}
+                        style={{display: this.props.userInfoFormShow ? 'none' : 'block'}}
                         data-tracename="编辑个人资料"/>
                     <div className="user-info-logo">
                         {
@@ -389,7 +383,6 @@ class UserInfo extends React.Component{
                     <Form horizontal className="user-info-form">
                         <FormItem
                             label={Intl.get('common.email', '邮箱')}
-                            id="email"
                             labelCol={{span: 4}}
                             wrapperCol={{span: 18}}
                         >
@@ -406,7 +399,6 @@ class UserInfo extends React.Component{
                         </FormItem>
                         <FormItem
                             label={Intl.get('common.phone','电话')}
-                            id="phone"
                             labelCol={{span: 4}}
                             wrapperCol={{span: 18}}
                         >
