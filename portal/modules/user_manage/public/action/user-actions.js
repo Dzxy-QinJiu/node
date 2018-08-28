@@ -59,7 +59,7 @@ function UserActions() {
                 _this.dispatch(user);
             }
         }, function(errorMsg) {
-            _this.dispatch(errorMsg);
+            _this.dispatch(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     };
 

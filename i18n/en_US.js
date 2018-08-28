@@ -516,6 +516,7 @@ var en_US = {
     'user.no.login.system': 'This user has never log in to the system', // 该用户还没有登录过系统
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
+    'user.get.score.failed': 'Failed to get user score',//获取用户分数失败
 
     // 用户分析
     'user.login.total.score': 'Total score', // 总分
@@ -731,6 +732,7 @@ var en_US = {
     'user.log.select.time.range.tips': 'View data for nearly three months', // 只能查看近三个月的数据
     'user.log.select.time.tips': 'Please choose less than a month', // 请选择小于1个月的时间
     'user.log.single.record': 'View the operation records for nearly three months', // 只能查看近三个月的操作记录
+    'user.log.single.get.error': 'Failed to get single audit log',//获取单个审计日志失败
     //用户管理---用户审计日志end
     //我的应用start
     'my.app.role.auth.config.title': 'configuration role and permission', // 设置角色、权限
@@ -1683,6 +1685,10 @@ var en_US = {
     'contract.introTip': 'Drag fields to the row,columns and filters\' zone', //"拖动字段到行、列、筛选条件"
     'contract.analysis.error.tip': 'Please fill in the name of the analysis table', // 请填写分析表名称
     'contract.analysis.title.placeholder': 'New analysis,enter title again', // 新的分析，请再次输入标题
+    'contract.get.error': 'Failed to get contract list',//获取合同列表失败
+    'contract.edit.error': 'Failed to edit contract',//修改合同失败
+    'contract.delete.error': 'Failed to delete contract',//删除合同失败
+    'contract.add.error': 'Failed to add contract',//添加合同失败
     //合同管理  end
     // 销售提成start
     'sales.commission.sale.name': 'Sale name', // 销售名
@@ -2171,6 +2177,7 @@ var en_US = {
     'user.login.abnormal.ignore': 'Ignore', // 忽略
     'user.login.abnormal.success': 'This remote information has been ignored.', // 该条异地信息已忽略!
     'user.login.abnormal.failed': 'Failed to Ignored Exception login', // 忽略异常登录地失败！
+    'user.login.abnormal.get.failed': 'Failed to get Exception login',//获取异常登录信息失败
     'crm.customer.interested': 'Add attention',//添加关注
     'crm.customer.uninterested': 'Unsubscribe',//取消关注
     'crm.customer.failed.interested': 'Failed to update the information!',//修改失败
@@ -2530,11 +2537,13 @@ var en_US = {
     'clue.failed.get.clue.detail': 'Failed to get clue detail',//获取线索详情失败
     'clue.has.distribute.clue': 'You have new clues',//您有新的线索
     'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
+    'user.get.suggest.name.error': 'Failed to get suggest username',//获取建议用户名失败
     'clue.import.csv': 'Upload form',//上传表格
     'clue.download.clue.csv': 'Download the import clue form',//下载导入线索表格
     'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
     'clue.not.complete.schedule': 'The schedule of today',//今天的联系计划
-    'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.'//当前筛选时间段及状态没有相关线索信息
-
+    'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.',//当前筛选时间段及状态没有相关线索信息
+    'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
+    'user.email.only.error': 'Failed to verify email',//邮箱唯一性验证失败
 };
 export default en_US;

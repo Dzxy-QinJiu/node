@@ -14,7 +14,7 @@ exports.getContractByCustomerId = function(reqData, reqBody) {
         },
         error: (xhr, textStatus) => {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
+                Deferred.reject(xhr.responseJSON || Intl.get('contract.get.error', '获取合同列表失败'));
             }
         }
     });
@@ -37,7 +37,7 @@ exports.addContract = function(reqData, reqBody) {
         },
         error: (xhr, textStatus) => {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
+                Deferred.reject(xhr.responseJSON || Intl.get('contract.add.error', '添加合同失败'));
             }
         }
     });
@@ -55,7 +55,7 @@ exports.deletePendingContract = function(id) {
             Deferred.resolve(data);
         },
         error: (errorMsg) => {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseJSON || Intl.get('contract.delete.error', '删除合同失败'));
         }
     });
     return Deferred.promise();
@@ -77,7 +77,7 @@ exports.editPendingContract = function(reqData, reqBody) {
         },
         error: (xhr, textStatus) => {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
+                Deferred.reject(xhr.responseJSON || Intl.get('contract.edit.error', '修改合同失败'));
             }
         }
     });

@@ -18,7 +18,7 @@ exports.getUserAbnormalLogin = function(data){
         },
         error: function(xhr,status) {
             if(status !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
+                Deferred.reject(xhr.responseJSON || Intl.get('user.login.abnormal.get.failed', '获取异常登录信息失败'));
             }
         }
     });

@@ -3,6 +3,10 @@ require('babel-core/register');
 var BackendIntl = require('../../portal/lib/utils/backend_intl');
 function getConfigJson(req) {
     var backendIntl = new BackendIntl(req);
+    const ERROR_TIP = {
+        ILLEGAL_REQUEST: '',//非法请求
+        PARMAM_ERROR: '',//参数错误
+    };
     return {
         // es查询类异常
         '00001': {'httpCode': 500, 'message': backendIntl.get('errorcode.35', '很抱歉，服务器出现了异常状况')},
@@ -11,7 +15,7 @@ function getConfigJson(req) {
         // es服务器崩溃异常
         '00003': {'httpCode': 500, 'message': backendIntl.get('errorcode.35', '很抱歉，服务器出现了异常状况')},
         //操作参数错误
-        '10001': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '10001': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         /****************  成员 *******************/
         '10102': {'httpCode': 500, 'message': backendIntl.get('errorcode.1', '获取成员列表失败')},
         '10103': {'httpCode': 500, 'message': backendIntl.get('errorcode.2', '添加成员失败')},
@@ -80,7 +84,7 @@ function getConfigJson(req) {
         '12004': {'httpCode': 500, 'message': backendIntl.get('errorcode.47', '删除安全域失败')},
         '12005': {'httpCode': 500, 'message': backendIntl.get('errorcode.48', '获取安全域失败')},
         //缺少必要参数
-        '12006': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '12006': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         '12007': {'httpCode': 500, 'message': backendIntl.get('errorcode.49', '添加安全域信息异常')},
         '12008': {'httpCode': 500, 'message': backendIntl.get('errorcode.46', '修改安全域失败')},
         //安全域名或域名已经存在
@@ -117,7 +121,7 @@ function getConfigJson(req) {
         '14010': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '联系方式已存在')},
         '14011': {'httpCode': 500, 'message': backendIntl.get('errorcode.72', '提醒时间必须大于当前时间')},
         //更新内容是空不做处理
-        '14012': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '14012': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         //团队管理员才有权限处理
         '14013': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
         '14101': {'httpCode': 500, 'message': backendIntl.get('errorcode.73', '添加联系人失败')},
@@ -158,13 +162,13 @@ function getConfigJson(req) {
         '15104': {'httpCode': 500, 'message': backendIntl.get('role.del.role.failed', '删除角色失败')},
         '15106': {'httpCode': 500, 'message': backendIntl.get('errorcode.87', '删除角色失败，存在拥有该角色的用户')},
         //角色操作参数错误
-        '15105': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '15105': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         '15201': {'httpCode': 500, 'message': backendIntl.get('errorcode.89', '添加权限失败')},
         '15202': {'httpCode': 500, 'message': backendIntl.get('errorcode.90', '修改权限失败')},
         '15203': {'httpCode': 500, 'message': backendIntl.get('errorcode.91', '修改权限名称失败')},
         '15204': {'httpCode': 500, 'message': backendIntl.get('errorcode.92', '获取权限列表失败')},
         //权限操作参数错误
-        '15205': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '15205': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         '15206': {'httpCode': 500, 'message': backendIntl.get('errorcode.93', '删除权限失败，存在拥有该权限的用户')},
 
         /***************************销售阶段、团队&组织 *****************************/
@@ -184,7 +188,7 @@ function getConfigJson(req) {
         '16208': {'httpCode': 500, 'message': backendIntl.get('errorcode.107', '获取成员所在用户组信息失败')},
         '16209': {'httpCode': 500, 'message': backendIntl.get('errorcode.108', '判断成员是否为用户组owner失败')},
         //用户组操作参数错误
-        '16210': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '16210': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         '16211': {'httpCode': 500, 'message': backendIntl.get('errorcode.110', '获取团队失败')},
         '16212': {'httpCode': 500, 'message': backendIntl.get('errorcode.111', '团队名已存在')},
         '16213': {'httpCode': 500, 'message': backendIntl.get('errorcode.112', '不能删除，当前团队存在下级团队')},
@@ -250,9 +254,9 @@ function getConfigJson(req) {
         '17126': {'httpCode': 500, 'message': backendIntl.get('errorcode.120', '获取用户列表失败')},
         //根据用户列表查询用户信息失败
         '17127': {'httpCode': 500, 'message': backendIntl.get('errorcode.121', '获取用户失败')},
-        '17197': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '17197': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         //缺少必要的参数
-        '17198': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '17198': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         //该用户角色无分析权限
         '17199': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
         /**客户**/
@@ -333,17 +337,17 @@ function getConfigJson(req) {
         '19101': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
         '19102': {'httpCode': 500, 'message': backendIntl.get('errorcode.41', '用户被禁用，请联系管理员')},
         //请求缺少token
-        '19200': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '19200': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         //请求缺少userId
-        '19201': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '19201': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误，界面上不提示此类错误，展示具体的错误描述
         //请求缺少realm
-        '19202': {'httpCode': 500, 'message': backendIntl.get('errorcode.0', '参数错误')},
+        '19202': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
         '19300': {'httpCode': 500, 'message': backendIntl.get('errorcode.38', 'Token过期')},
         '19301': {'httpCode': 500, 'message': backendIntl.get('errorcode.129', '账户在其他地方登录')},
         '19302': {'httpCode': 500, 'message': backendIntl.get('errorcode.37', 'Token不存在')},
         '19400': {'httpCode': 500, 'message': backendIntl.get('errorcode.130', '没有操作权限')},
         '20001': {'httpCode': 500, 'message': backendIntl.get('errorcode.122', '网络请求异常')},
-        '20002': {'httpCode': 500, 'message': backendIntl.get('errorcode.131', '非法请求')},
+        '20002': {'httpCode': 500, 'message': ERROR_TIP.ILLEGAL_REQUEST},//非法请求，界面上不提示此类错误，展示具体的错误描述
         /*扫码登录*/
         '11058': {'httpCode': 500, 'message': ''},//请用APP扫描二维码的错误码，界面上不需要提示此错误
         '11059': {'httpCode': 500, 'message': backendIntl.get('errorcode.147', '二维码已失效')},
