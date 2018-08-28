@@ -1683,6 +1683,10 @@ var en_US = {
     'contract.introTip': 'Drag fields to the row,columns and filters\' zone', //"拖动字段到行、列、筛选条件"
     'contract.analysis.error.tip': 'Please fill in the name of the analysis table', // 请填写分析表名称
     'contract.analysis.title.placeholder': 'New analysis,enter title again', // 新的分析，请再次输入标题
+    'contract.get.error': 'Failed to get contract list',//获取合同列表失败
+    'contract.edit.error': 'Failed to edit contract',//修改合同失败
+    'contract.delete.error': 'Failed to delete contract',//删除合同失败
+    'contract.add.error': 'Failed to add contract',//添加合同失败
     //合同管理  end
     // 销售提成start
     'sales.commission.sale.name': 'Sale name', // 销售名
@@ -2536,7 +2540,8 @@ var en_US = {
     'clue.download.clue.csv': 'Download the import clue form',//下载导入线索表格
     'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
     'clue.not.complete.schedule': 'The schedule of today',//今天的联系计划
-    'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.'//当前筛选时间段及状态没有相关线索信息
-
+    'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.',//当前筛选时间段及状态没有相关线索信息
+    'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
+    'user.email.only.error': 'Failed to verify email',//邮箱唯一性验证失败
 };
 export default en_US;

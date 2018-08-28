@@ -64,7 +64,7 @@ exports.doBatch = function(type, condition) {
             Deferred.resolve(taskId);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+            Deferred.reject(xhr.responseJSON || Intl.get('errorcode.20', '批量操作失败'));
         }
     });
     return Deferred.promise();

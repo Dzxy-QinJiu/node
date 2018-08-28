@@ -131,7 +131,7 @@ function UserFormActions() {
                 _this.actions.checkOnlyUserName(email);
             }
         }, function(errorMsg) {
-            _this.dispatch(errorMsg);
+            _this.dispatch(errorMsg || Intl.get('user.email.only.error', '邮箱唯一性验证失败'));
         });
     };
 }

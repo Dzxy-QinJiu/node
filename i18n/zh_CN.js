@@ -1708,6 +1708,10 @@ var zh_CN = {
     'contract.introTip': '拖动字段到行、列、筛选条件',
     'contract.analysis.error.tip': '请填写分析表名称',
     'contract.analysis.title.placeholder': '新的分析，请再次输入标题',
+    'contract.get.error': '获取合同列表失败',
+    'contract.edit.error': '修改合同失败',
+    'contract.delete.error': '删除合同失败',
+    'contract.add.error': '添加合同失败',
     // 销售提成start
     'sales.commission.sale.name': '销售名',
     'sales.commission.standard': '达标',
@@ -2557,6 +2561,8 @@ var zh_CN = {
     'clue.download.clue.csv': '下载导入线索表格',
     'clue.has.not.distribute': '该线索还没有分配',
     'clue.not.complete.schedule': '今天的联系计划',
-    'clue.no.data.during.range.and.status': '当前筛选时间段及状态没有相关线索信息'
+    'clue.no.data.during.range.and.status': '当前筛选时间段及状态没有相关线索信息',
+    'clue.statistic.get.error': '获取线索统计数据失败',
+    'user.email.only.error': '邮箱唯一性验证失败',
 };
 export default zh_CN;

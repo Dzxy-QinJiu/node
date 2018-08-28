@@ -18,7 +18,7 @@ exports.getCustomerById = function(data) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseText);
+                Deferred.reject(xhr.responseText || Intl.get('crm.detail.get.error', '获取客户详情失败'));
             }
         }
     });
@@ -48,7 +48,7 @@ exports.getClueStatics = function(pathParams, rangParams, queryParams) {
             Deferred.resolve(list);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+            Deferred.reject(xhr.responseJSON || Intl.get('clue.statistic.get.error', '获取线索统计数据失败'));
         }
     });
     return Deferred.promise();
@@ -69,7 +69,7 @@ exports.getClueTrendStatics = function(data) {
             Deferred.resolve(list);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
+            Deferred.reject(xhr.responseJSON || Intl.get('clue.statistic.get.error', '获取线索统计数据失败'));
         }
     });
     return Deferred.promise();

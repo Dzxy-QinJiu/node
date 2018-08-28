@@ -100,7 +100,7 @@ function UserInfoActions() {
         userInfoAjax.editUserInfoPwd(userInfo).then(function(editFlag) {
             _this.dispatch({error: false, editFlag: editFlag});
         }, function(errorMsg) {
-            _this.dispatch({error: true, errorMsg: errorMsg});
+            _this.dispatch({error: true, errorMsg: errorMsg || Intl.get('common.edit.failed','修改失败')});
         });
     };
     
