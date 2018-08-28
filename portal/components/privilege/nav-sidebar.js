@@ -58,8 +58,7 @@ var ExcludeLinkList = [
     {'name': Intl.get('common.my.app', '我的应用'), path: 'my_app'},
     {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
     {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
-    {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
-    {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'}
+    {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'}
 ];
 
 //后台管理配置
@@ -533,18 +532,17 @@ var NavSidebar = React.createClass({
                                         return false;
                                     }).map(function(menu, i) {
                                         var category = menu.routePath.replace(/\/.*$/, '');
-                                        var extraClass = currentPageCategory === category ? 'active' : '';
+                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}`;
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
                                         if (!(_.includes(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);
                                         }
                                         return (
-                                            <li key={i} className={`ico ${menu.routePath.replace(/\//g, '_')}_ico`}>
+                                            <li key={i} title={menu.name}>
                                                 <Link to={`/${menu.routePath}`}
-                                                    activeClassName={extraClass}
+                                                    activeClassName='active'
                                                     className={extraClass}
-                                                >
-                                                    <i title={menu.name}></i>
+                                                >                                                    
                                                     <span>{menu.name}</span>
                                                 </Link>
                                             </li>
