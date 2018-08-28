@@ -498,7 +498,7 @@ var UserDetailBasic = React.createClass({
             confirmPassword.refs.validation.forceValidate();
         }
     },
-    onConfirmPasswordDisplayTypeChange: function() {
+    onConfirmPasswordDisplayTypeChange: () => {
         this.setState({ isConfirmPasswordShow: false });
         this.refs.password.setState({ displayType: 'text' });
     },
@@ -608,7 +608,7 @@ var UserDetailBasic = React.createClass({
                     userInfo={this.state.initialUser.user}
                     sales_team={this.state.initialUser.sales_team}
                 />
-                <div className="app_wrap" ref="app_wrap">
+                <div className="app_wrap" ref="app_wrap"> 
                     <DetailCard
                         title={(<div className="sales-team-show-block">
                             <div className="sales-team">

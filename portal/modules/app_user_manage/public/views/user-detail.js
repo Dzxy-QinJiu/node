@@ -38,6 +38,7 @@ var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 const WHEEL_DELAY = 10;//滚轮事件延时
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import UserStatusSwitch from './user-status-switch';
+import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
 
 var UserDetail = React.createClass({
     getDefaultProps: function() {
@@ -158,6 +159,16 @@ var UserDetail = React.createClass({
         this.setState({
             showEditPw: isShow
         });
+    },
+    onPasswordDisplayTypeChange: function(type) {
+        if (type === 'edit') {
+            this.setState({ isConfirmPasswordShow: true });
+        } else {
+            this.setState({ isConfirmPasswordShow: false });
+        }
+    },
+    onConfirmPasswordDisplayTypeChange: function() {
+        this.setState({ isConfirmPasswordShow: false, showEditPw: false });       
     },
     onPasswordValueChange: function() {
         if (this.confirmPasswordRef && this.confirmPasswordRef.state.formData.input) {
@@ -358,10 +369,10 @@ var UserDetail = React.createClass({
                                                             hideButtonBlock={true}
                                                             showPasswordStrength={true}
                                                             disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
-                                                            validators={[{ validator: this.userDetailRef.checkPass }]}
+                                                            validators={[{ validator: this.checkPass }]}
                                                             placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
                                                             title={Intl.get('user.batch.password.reset', '重置密码')}
-                                                            onDisplayTypeChange={this.userDetailRef.onPasswordDisplayTypeChange}
+                                                            onDisplayTypeChange={this.onPasswordDisplayTypeChange}
                                                             onValueChange={this.onPasswordValueChange}
                                                         />
                                                         <UserDetailEditField
@@ -373,8 +384,8 @@ var UserDetail = React.createClass({
                                                             type="password"
                                                             placeholder={Intl.get('member.type.password.again', '请再次输入密码')}
                                                             validators={[{ validator: this.checkRePass }]}
-                                                            onDisplayTypeChange={this.userDetailRef.onConfirmPasswordDisplayTypeChange}
-                                                            modifySuccess={this.userDetailRef.onConfirmPasswordDisplayTypeChange}
+                                                            onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
+                                                            modifySuccess={this.onConfirmPasswordDisplayTypeChange}
                                                             saveEditInput={AppUserAjax.editAppUser}
                                                         />
                                                         <div className="btn-bar">
