@@ -10,6 +10,23 @@ export const userTypeList = [
     {name: Intl.get('user.online.train', '培训用户'), value: 'training'},
     {name: Intl.get('user.online.employee', '员工用户'), value: 'internal'},
 ];
+//用户类型常量(数据库中的值)
+export const USER_TYPE_VALUE_MAP = {
+    TRIAL_USER: '试用用户', //试用
+    SIGN_USER: '正式用户', //签约
+    PRESENT_USER: 'special', //赠送
+    TRAINING_USER: 'training',//培训
+    EMPLOYEE_USER: 'internal'//员工
+};
+
+//用户类型文本的map
+export const USER_TYPE_TEXT_MAP = {
+    TRIAL_USER: Intl.get('common.trial', '试用'),
+    SIGN_USER: Intl.get('common.official', '签约'),
+    PRESENT_USER: Intl.get('user.type.presented', '赠送'),
+    TRAINING_USER: Intl.get('user.type.train', '培训'),
+    EMPLOYEE_USER: Intl.get('user.type.employee', '员工')
+};
 
 // 用户是否过期的下拉选项
 export const filterTypeList = [
@@ -54,6 +71,9 @@ export const commonPhoneRegex = /^1[34578]\d{9}$/;
 export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
 // 400 客服电话
 export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
+//QQ号码的正则表达式
+export const qqRegex = /^[1-9][0-9]{4,}$/;
+
 export const SYSTEM_NOTICE_TYPES = {
     OFFSITE_LOGIN: 'illegalLocation',//异地登录
     DISABLE_CUSTOMER_LOGIN: 'appIllegal',//停用客户登录

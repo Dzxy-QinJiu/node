@@ -190,6 +190,7 @@ var en_US = {
     'common.trial.qualified': 'Trial and qualified',//试用合格
     'common.trial.unqualified': 'Trial and unqualified',// '试用不合格',
     'common.history.qualified': 'Once qualified',//曾经合格
+    'common.never.qualified': 'Never qualified',//从未合格
     'common.delay.time': 'Delay-time',//延期时间
     'common.time.unit.day': 'Day',//天
     'common.time.unit.week': 'Week',//周
@@ -1396,6 +1397,7 @@ var en_US = {
     'crm.order.lose.reason': 'lose Order reason',//丢单原因
     'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
     'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
+    'crm.filter.select.placeholder': 'Plaase select the {groupName} you want to filter',//请选择要筛选的${groupName}
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -2190,6 +2192,7 @@ var en_US = {
     'app.get.app.key.failed': 'Failed to get piwik information',//获取piwik信息失败
     'app.insert.code': 'We recommend that you insert the following code into the <head> tag.',//我们建议您将下面的代码插入到<head>标签中。
     'call.record.product.feedback': 'Product feedback',//产品反馈
+    'call.record.add.product.feedback': 'Add product feedback',//添加产品反馈
     'call.record.app.lists': 'Is getting application lists',//正在获取应用列表
     'call.record.feedback.prodcut': 'Please select the application you want to send feedback',//请选择需要反馈的应用产品
     'call.record.application.product': 'Application Product',//应用产品
@@ -2481,6 +2484,7 @@ var en_US = {
     'back.openApp.tip.success': 'open successed',//'开通成功',
     'back.openApp.tip.fail': 'open failed',//'开通失败',
     'back.openApp.confirm': 'Are you sure to open {appName} ?',
+    'back.closeApp.apply': 'Apply close',//申请停用
     'common.history': 'history',//历史
     'common.history.highest': 'history highest',//历史最高
     'common.this.month.add.highest': 'this month add highest',//本月比历史最高净增
@@ -2512,7 +2516,7 @@ var en_US = {
     'clue.add.clue.time': 'Added to',//添加于
     'clue.no.trace.content': 'no trace content',//暂无跟进
     'clue.associate.user': 'Associated account',//关联账号
-    'clue.handle.clue.person': 'Handler',//处理人
+    'clue.handle.clue.person': 'Handler',//当前跟进人
     'clue.handle.no.distribute.clue': '未分配',//
     'clue.has.no.data': 'No',//暂无
     'clue.handle.clue': 'Clue handle',//线索处理
@@ -2522,5 +2526,15 @@ var en_US = {
     'annalysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
+    'clue.add.contacts.tip': 'Add contact way',//添加联系方式
+    'clue.failed.get.clue.detail': 'Failed to get clue detail',//获取线索详情失败
+    'clue.has.distribute.clue': 'You have new clues',//您有新的线索
+    'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
+    'clue.import.csv': 'Upload form',//上传表格
+    'clue.download.clue.csv': 'Download the import clue form',//下载导入线索表格
+    'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
+    'clue.not.complete.schedule': 'The schedule of today',//今天的联系计划
+    'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.'//当前筛选时间段及状态没有相关线索信息
+
 };
 export default en_US;

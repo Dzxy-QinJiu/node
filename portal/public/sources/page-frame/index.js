@@ -16,6 +16,8 @@ import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
 //窗口改变的事件emitter
 var resizeEmitter = require('../../../public/sources/utils/emitters').resizeEmitter;
+import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
@@ -30,6 +32,8 @@ var PageFrame = React.createClass({
             audioParamObj: {},
             isShowNotificationPanel: false, // 是否展示系统通知面板
             rightContentHeight: 0,
+            showCluePanel: false,
+            clueId: ''//展示线索的id
         };
     },
     componentDidMount: function() {
@@ -41,6 +45,8 @@ var PageFrame = React.createClass({
         audioMsgEmitter.on(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         //隐藏上报客服电话的按钮
         audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
+        //系统内有弹窗时，点击弹框中的线索名称可以查看线索详情
+        notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         $(window).on('resize', this.resizeHandler);
     },
     resizeEmitter() {
@@ -69,7 +75,20 @@ var PageFrame = React.createClass({
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
+        notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         $(window).off('resize', this.resizeHandler);
+    },
+    showClueDetailFromNotification: function(clueObj) {
+        this.setState({
+            showCluePanel: true,
+            clueId: clueObj.clueId
+        });
+    },
+    hideClueRightPanel: function() {
+        this.setState({
+            showCluePanel: false,
+            clueId: ''
+        });
     },
     openAudioPanel: function(audioParamObj) {
         this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj)});
@@ -85,13 +104,17 @@ var PageFrame = React.createClass({
             if (paramObj.call_params) {
                 Trace.traceEvent('电话弹屏', '弹出拨打电话的面板');
             } else {
-                Trace.traceEvent('客户详情', '查看客户详情');
+                Trace.traceEvent(this.getDOMNode(), '查看客户详情');
             }
         }
         this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});
     },
 
     closePhonePanel: function() {
+        //关闭电话弹屏面板时，将系统内拨打电话时，记录的电话联系人信息清掉
+        if(this.state.paramObj.call_params && _.isFunction(this.state.paramObj.call_params.setInitialPhoneObj)) {
+            this.state.paramObj.call_params.setInitialPhoneObj();
+        }
         this.setState({phonePanelShow: false, paramObj: $.extend(true, {}, emptyParamObj)});
     },
     closeAudioPanel: function() {
@@ -153,6 +176,13 @@ var PageFrame = React.createClass({
                         hideErrTooltip={audioParamObj.hideErrTooltip}
                     />
                 ) : null}
+                {this.state.showCluePanel ?
+                    <ClueRightPanel
+                        className="page-frame-clue-detail"
+                        showFlag={this.state.showCluePanel}
+                        currentId={this.state.clueId}
+                        hideRightPanel={this.hideClueRightPanel}
+                    /> : null}
             </div>
         );
     }

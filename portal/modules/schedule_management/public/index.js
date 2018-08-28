@@ -270,6 +270,13 @@ const ScheduleManagement = React.createClass({
         var dateObj = this.getDifTypeStartAndEnd(scheduleManagementStore.getViewDate(), viewName);
         //获取日程数据
         this.getAgendaData(dateObj, viewName);
+        if(viewName === 'day'){
+            Trace.traceEvent('日程界面管理', '点击day的日程筛选');
+        }else if(viewName === 'week'){
+            Trace.traceEvent('日程界面管理', '点击week的日程筛选');
+        }else if(viewName === 'month'){
+            Trace.traceEvent('日程界面管理', '点击month的日程筛选');
+        }
     },
     //获取不同视图的开始和结束时间
     getDifTypeStartAndEnd: function(date, view) {
@@ -300,6 +307,7 @@ const ScheduleManagement = React.createClass({
         scheduleManagementStore.setViewDate(moment(date).valueOf());
         var dateObj = this.getDifTypeStartAndEnd(date, view);
         this.getAgendaData(dateObj, view);
+        Trace.traceEvent('日程管理界面', '点击 前，后翻页图,或者返回今天的按钮');
     },
     onCheckChange: function(checkedValue) {
         var filterScheduleType = checkedValue.join(',');
@@ -310,6 +318,7 @@ const ScheduleManagement = React.createClass({
             var dateObj = this.getDifTypeStartAndEnd(scheduleManagementStore.getViewDate(), viewName);
             //重新获取数据
             this.getAgendaData(dateObj,viewName);
+            Trace.traceEvent($(this.getDOMNode()).find('.check-group-container'), '点击日程联系类型按钮');
         });
     },
     render: function() {
@@ -342,7 +351,7 @@ const ScheduleManagement = React.createClass({
                 />
                 <div id="calendar-wrap" className={calendarCls} data-tracename="日程列表界面">
                     <div id="calendar" style={{height: height}}>
-                        <div className="check-group-container">
+                        <div className="check-group-container" data-tracename="日程列表界面右侧按钮">
                             <CheckboxGroup options={options} defaultValue={['calls','visit','other']} onChange={this.onCheckChange} />
                         </div>
                         <BigCalendar

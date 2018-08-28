@@ -7,6 +7,7 @@ let classNames = require('classnames');
 let SalesHomeAction = require('../action/sales-home-actions');
 let viewConstant = require('../util/constant').VIEW_CONSTANT;//视图常量
 let TimeUtil = require('../../../../public/sources/utils/time-format-util');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let StatisticTotal = React.createClass({
     //渲染等待效果、暂无数据的提示
     renderTooltip: function(totalObj) {
@@ -117,7 +118,16 @@ let StatisticTotal = React.createClass({
         );
     },
     //设置当前要展示的视图
-    setActiveView: function(view) {
+    setActiveView: function(view, e) {
+        if(view === 'customer'){
+            Trace.traceEvent(e, '查看客户统计');
+        }else if(view === 'user'){
+            Trace.traceEvent(e, '查看用户统计');
+        }else if(view === 'phone'){
+            Trace.traceEvent(e, '查看电话统计');
+        }else if(view === 'call_back'){
+            Trace.traceEvent(e, '查看回访统计');
+        }
         SalesHomeAction.setActiveView(view);
     },
 
@@ -126,26 +136,25 @@ let StatisticTotal = React.createClass({
         const autoResizeCls = 'total-data-item col-xs-12 col-sm-6 col-md-6 col-lg-3';
         let activeView = this.props.activeView;
         return (
-            <div className="statistic-total-data">
+            <div className="statistic-total-data" data-tracename="销售首页">
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.CUSTOMER)}
-                        data-tracename="查看客户统计"
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.CUSTOMER})}>
                         <p>{Intl.get('sales.home.customer', '客户')}</p>
                         {this.renderCustomerContent()}
                     </div>
                 </div>
-                <div className={autoResizeCls}>
-                    <div onClick={this.setActiveView.bind(this,viewConstant.USER)}
-                        data-tracename="查看用户统计"
-                        className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.USER})}>
-                        <p>{Intl.get('sales.home.user', '用户')}</p>
-                        {this.renderUserContent()}
+                {hasPrivilege('USER_ANALYSIS_MANAGER') || hasPrivilege('USER_ANALYSIS_COMMON') ? (
+                    <div className={autoResizeCls}>
+                        <div onClick={this.setActiveView.bind(this,viewConstant.USER)}
+                            className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.USER})}>
+                            <p>{Intl.get('sales.home.user', '用户')}</p>
+                            {this.renderUserContent()}
+                        </div>
                     </div>
-                </div>
+                ) : null}
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.PHONE)}
-                        data-tracename="查看电话统计"
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.PHONE})}>
                         <p>{Intl.get('common.phone', '电话')}</p>
                         {this.renderPhoneContent()}
@@ -153,7 +162,6 @@ let StatisticTotal = React.createClass({
                 </div>  
                 <div className={autoResizeCls}>
                     <div onClick={this.setActiveView.bind(this,viewConstant.CALL_BACK)}
-                        data-tracename='查看回访统计'
                         className={classNames('total-data-container', {'total-data-item-active': activeView === viewConstant.CALL_BACK})}>
                         <p>{Intl.get('common.callback', '回访')}</p>
                         {this.renderCallBackContent()}

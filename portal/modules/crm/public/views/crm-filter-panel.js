@@ -2,7 +2,7 @@ import { getSelected } from '../../../../lib/utils/filter-utils';
 var FilterStore = require('../store/filter-store');
 var FilterAction = require('../action/filter-actions');
 import Trace from 'LIB_DIR/trace';
-import { administrativeLevels } from '../utils/crm-util';
+import { administrativeLevels, CUSTOMER_TAGS } from '../utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import userData from 'PUB_DIR/sources/user-data';
 import { FilterList } from 'CMP_DIR/filter';
@@ -57,6 +57,14 @@ if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
         value: 'undistributed'
     });
 }
+//合格标签的筛选
+const qualifiedTagList = [{
+    name: CUSTOMER_TAGS.QUALIFIED, value: '1'
+}, {
+    name: CUSTOMER_TAGS.HISTORY_QUALIFIED, value: '2'
+}, {
+    name: CUSTOMER_TAGS.NEVER_QUALIFIED, value: '3'
+}];
 const CrmFilterPanel = React.createClass({
     getInitialState: function() {
         return FilterStore.getState();
@@ -74,6 +82,8 @@ const CrmFilterPanel = React.createClass({
         //获取竞品的列表
         FilterAction.getCompetitorList();
         FilterAction.getIndustries();
+        //负责任人名称列表
+        FilterAction.getOwnerNameList();
         //地域列表的获取
         let type = 'user';
         //管理员获取地域列表的权限
@@ -392,11 +402,16 @@ const CrmFilterPanel = React.createClass({
             {
                 groupName: Intl.get('weekly.report.customer.stage', '客户阶段'),
                 groupId: 'customer_label',
-                singleSelect: true,
                 data: _.drop(this.state.stageTagList).map(x => ({
                     name: x.show_name,
                     value: x.name
                 }))
+            },
+            {
+                groupName: Intl.get('common.qualified', '合格'),
+                groupId: 'qualify_label',
+                singleSelect: true,
+                data: qualifiedTagList
             },
             {
                 groupName: Intl.get('common.tag', '标签'),
@@ -465,6 +480,15 @@ const CrmFilterPanel = React.createClass({
                 data: _.drop(this.state.teamList).map(x => ({
                     name: x.group_name,
                     value: x.group_id
+                }))
+            },
+            {
+                groupName: Intl.get('crm.6', '负责人'),
+                groupId: 'user_name',
+                singleSelect: true,
+                data: _.drop(this.state.ownerNameList).map(x => ({
+                    name: x,
+                    value: x
                 }))
             });
         }

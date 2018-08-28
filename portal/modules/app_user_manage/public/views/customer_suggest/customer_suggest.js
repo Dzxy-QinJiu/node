@@ -8,7 +8,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 var Select = require('antd').Select;
 var Icon = require('antd').Icon;
 var Link = require('react-router').Link;
-var customerAjax = require('../../../../common/public/ajax/customer');
+var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('../../../../../public/sources/user-data');
 var classNames = require('classnames');
 var CustomerSuggest = React.createClass({
@@ -145,7 +145,31 @@ var CustomerSuggest = React.createClass({
             this.props.hideCustomerError();
         }
         this.suggestTimer = setTimeout(function() {
-            _this.getCustomerList(value).then(function(list) {
+            let condition = {name: value};
+            let rangeParams = [{
+                from: '',
+                to: '',
+                type: 'time',
+                name: 'start_time'
+            }];
+            let queryObj = {
+                total_size: 0,
+                cursor: true,
+                id: ''
+            };
+            let sorter = {
+                field: 'start_time',
+                order: 'descend'
+            };
+            crmCustomerAjax.queryCustomer(condition,rangeParams,10,sorter,queryObj).then(function(data) {
+                var list = data.result;
+                _.forEach(list, (customerItem) => {
+                    customerItem.customer_name = customerItem.name;
+                    customerItem.customer_id = customerItem.id;
+                    customerItem.sales_name = customerItem.user_name;
+                    customerItem.sales_id = customerItem.user_id;
+                    customerItem.sales_team_name = customerItem.sales_team;
+                });
                 _this.setState({
                     result_type: '',
                     suggest_error_msg: '',
@@ -158,7 +182,7 @@ var CustomerSuggest = React.createClass({
             } , function(errorMsg) {
                 _this.setState({
                     result_type: 'error',
-                    suggest_error_msg: errorMsg,
+                    suggest_error_msg: errorMsg || Intl.get('errorcode.61', '获取客户列表失败'),
                     show_tip: true,
                     list: []
                 },() => {

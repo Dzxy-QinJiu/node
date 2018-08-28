@@ -18,7 +18,7 @@ const UserStatusFieldSwitch = React.createClass({
         };
     },
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.status != this.props.status) {
+        if (nextProps.status !== this.props.status) {
             this.setState({
                 status: nextProps.status
             });
@@ -44,6 +44,11 @@ const UserStatusFieldSwitch = React.createClass({
         this.setState({status: checked}, () => {
             this.saveUserStatus();
         });
+        if(checked){
+            Trace.traceEvent('用户详情','点击开启用户状态switch');
+        }else{
+            Trace.traceEvent('用户详情','点击停用用户状态switch');
+        }
     },
     saveUserStatus: function() {
         let submitObj = {
@@ -72,7 +77,7 @@ const UserStatusFieldSwitch = React.createClass({
     render: function() {
         return (
             <div>
-                {language.lan() == 'es' ? (
+                {language.lan() === 'es' ? (
                     <Switch checked={this.state.status} onChange={this.changeUserStatus}
                         checkedChildren={<Icon type="check" />}
                         unCheckedChildren={<Icon type="cross" />} />

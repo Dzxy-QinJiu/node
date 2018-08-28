@@ -262,11 +262,11 @@ var SalesTeamCard = React.createClass({
             sales_team_id: this.state.salesTeamId,
             sales_team: this.state.salesTeam
         };
-        Trace.traceEvent(this.getDOMNode(), '保存对销售人员/团队的修改');
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
         } else if (this.state.displayType === DISPLAY_TYPES.EDIT) {
+            Trace.traceEvent(this.getDOMNode(), '重新分配客户的所属销售');
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.backToDisplay();
@@ -280,6 +280,7 @@ var SalesTeamCard = React.createClass({
                 });
             });
         } else if (this.state.displayType === DISPLAY_TYPES.TRANSFER) {
+            Trace.traceEvent(this.getDOMNode(), '确认转出客户');
             submitData.member_role = this.state.salesRole;
             CrmBasicAjax.transferCustomer(submitData).then(result => {
                 if (result) {
@@ -396,6 +397,7 @@ var SalesTeamCard = React.createClass({
         );
     },
     transferSales: function() {
+        Trace.traceEvent(this.getDOMNode(), '转出客户');
         this.setState({displayType: DISPLAY_TYPES.TRANSFER});
     },
     renderHandleSaveBtns: function() {

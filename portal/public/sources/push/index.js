@@ -19,8 +19,10 @@ import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 const session = storageUtil.session;
-import {message} from 'antd';
 var NotificationType = {};
 var approveTipCount = 0;
 const TIMEOUTDELAY = {
@@ -39,10 +41,12 @@ function updateUnreadByPushMessage(type, isAdd) {
     //将未读数加一
     if (Oplate && Oplate.unread) {
         if (Oplate.unread[type]) {
+            //分配线索这里，会有批量分配的情况
+            var count = _.isNumber(isAdd) ? isAdd : 1;
             if (isAdd) {
-                Oplate.unread[type] += 1;
+                Oplate.unread[type] += count;
             } else {
-                Oplate.unread[type] -= 1;
+                Oplate.unread[type] -= count;
             }
         } else {
             Oplate.unread[type] = isAdd ? 1 : 0;
@@ -56,6 +60,8 @@ function updateUnreadByPushMessage(type, isAdd) {
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //刷新未读消息数
             notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
+            //刷新线索未处理的数量
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
         }, timeout);
     }
 }
@@ -66,39 +72,68 @@ function updateUnreadByPushMessage(type, isAdd) {
 function listenOnMessage(data) {
     if (_.isObject(data)) {
         switch (data.message_type) {
-        case 'apply':
-            //有新的未处理的申请消息时,只修改待审批数，不用展示
-            //申请审批列表弹出，有新数据，是否刷新数据的提示
-            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-            //将待审批数加一（true）
-            updateUnreadByPushMessage('approve', true);
-            break;
-        case 'reply':
-            //批复类型
-            if (!userData.hasRole('realm_manager')) {
-                //批复类型的通知，不通知管理员
-                notifyReplyInfo(data);
-            }
-            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-            //将审批后的申请消息未读数加一（true）
-            updateUnreadByPushMessage('apply', true);
-            //待审批数减一
-            updateUnreadByPushMessage('approve', false);
-            break;
-        case 'repay':
-            //回款类型
-            //notifyRepayInfo(data);
-            break;
-        case 'customer':
-            //客户提醒(包含用户过期提醒)
-            notifyCustomerInfo(data);
-            //将客户提醒的未读数加一
-            updateUnreadByPushMessage('customer', true);
-            break;
-        case 'system':
-            //系统通知
-            //notifySystemInfo(data);
-            break;
+            case 'apply':
+                //有新的未处理的申请消息时,只修改待审批数，不用展示
+                //申请审批列表弹出，有新数据，是否刷新数据的提示
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+                //将待审批数加一（true）
+                updateUnreadByPushMessage('approve', true);
+                break;
+            case 'reply':
+                //批复类型
+                if (!userData.hasRole('realm_manager')) {
+                    //批复类型的通知，不通知管理员
+                    notifyReplyInfo(data);
+                }
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+                //将审批后的申请消息未读数加一（true）
+                updateUnreadByPushMessage('apply', true);
+                //待审批数减一
+                updateUnreadByPushMessage('approve', false);
+                break;
+            case 'repay':
+                //回款类型
+                //notifyRepayInfo(data);
+                break;
+            case 'customer':
+                //客户提醒(包含用户过期提醒)
+                notifyCustomerInfo(data);
+                //将客户提醒的未读数加一
+                updateUnreadByPushMessage('customer', true);
+                break;
+            case 'system':
+                //系统通知
+                //notifySystemInfo(data);
+                break;
+        }
+    }
+}
+//处理线索的数据
+function clueUnhandledListener(data) {
+    //只有管理员或者运营人员才处理
+    if (_.isObject(data) && getClueUnhandledPrivilege()) {
+        updateUnreadByPushMessage('unhandleClue', data.clue_list.length);
+        var clueArr = _.get(data, 'clue_list');
+        var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
+        if (canPopDesktop()) {
+            _.each(clueArr, (clueItem) => {
+                tipContent += clueItem.name + '\n';
+            });
+            //桌面通知的展示
+            showDesktopNotification(title, tipContent, true);
+        } else {//系统弹出通知
+            var clueHtml = '',titleHtml = '';
+            titleHtml += '<p class=\'clue-title\'>' + '<i class=\'iconfont icon-clue\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
+
+            _.each(clueArr, (clueItem) => {
+                clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(' + JSON.stringify(clueItem.id) + ')\'>' + '<span class=\'clue-item-name\'>' + clueItem.name + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
+            });
+            tipContent = `<div>${clueHtml}</div>`;
+            notificationUtil.showNotification({
+                title: titleHtml,
+                content: tipContent,
+                closeWith: ['button']
+            });
         }
     }
 }
@@ -202,39 +237,39 @@ function getReplyTipContent(data) {
     let userType = data.message.tag || '';//申请用户的类型：正式、试用用户
     let userNames = getUserNames(data.message);//申请用户的名称
     switch (data.approval_state) {
-    case 'pass'://审批通过
-        // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-        tipContent = Intl.get('reply.pass.tip.content',
-            '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
-                approvalPerson: approvalPerson,
-                salesName: salesName,
-                customerName: customerName,
-                userType: userType,
-                userNames: userNames
-            });
-        break;
-    case 'reject'://审批驳回
-        //xxx 驳回了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-        tipContent = Intl.get('reply.reject.tip.content',
-            '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
-                approvalPerson: approvalPerson,
-                salesName: salesName,
-                customerName: customerName,
-                userType: userType,
-                userNames: userNames
-            });
-        break;
-    case 'cancel'://撤销申请
-        //xxx撤销了 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-        //只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
-        tipContent = Intl.get('reply.cancel.tip.content',
-            '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
-                approvalPerson: approvalPerson,
-                customerName: customerName,
-                userType: userType,
-                userNames: userNames
-            });
-        break;
+        case 'pass'://审批通过
+            // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            tipContent = Intl.get('reply.pass.tip.content',
+                '{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
+                    approvalPerson: approvalPerson,
+                    salesName: salesName,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
+        case 'reject'://审批驳回
+            //xxx 驳回了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            tipContent = Intl.get('reply.reject.tip.content',
+                '{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
+                    approvalPerson: approvalPerson,
+                    salesName: salesName,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
+        case 'cancel'://撤销申请
+            //xxx撤销了 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            //只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
+            tipContent = Intl.get('reply.cancel.tip.content',
+                '{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}', {
+                    approvalPerson: approvalPerson,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
     }
     return tipContent;
 }
@@ -258,6 +293,21 @@ function phoneEventListener(phonemsgObj) {
         if (!phonemsgObj.customers) {
             phonemsgObj.customers = [];
         }
+        //是否清空存储的联系人的处理
+        if (contactNameObj && contactNameObj.contact) {
+            //ALERT、ANSERED状态下电话在to上，phone、BYE状态下电话在dst上
+            if (phonemsgObj.dst || phonemsgObj.to) {
+                let phone = phonemsgObj.to || phonemsgObj.dst;
+                //当前状态的电话跟存储的联系电话不是同一个电话时，
+                if (!phone.includes(contactNameObj.phone) && !contactNameObj.phone.includes(phone)) {
+                    // 清空存储的联系人、电话信息
+                    setInitialPhoneObj();
+                }
+            } else {//dst和to都不存在时，说明不是从客套里打的电话
+                // 清空存储的联系人电话信息
+                setInitialPhoneObj();
+            }
+        }
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj}
         });
@@ -276,34 +326,20 @@ window.handleClickPhone = function(phoneObj) {
     if ($modal && $modal.length > 0) {
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_MODAL);
     }
-    var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName, customerId = phoneObj.customerId;
+    var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName;
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .phone-item .icon-phone-call-out'), '拨打电话');
-    if (getCallNumErrMsg) {
-        message.error(getCallNumErrMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
-    } else {
-        if (callNumber) {
-            phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                {
-                    phoneNum: phoneNumber,
-                    contact: contactName,
-                    customerId: customerId,//客户基本信息
-                }
-            );
-            let reqData = {
-                from: callNumber,
-                to: phoneNumber.replace('-', '')
-            };
-            crmAjax.callOut(reqData).then((result) => {
-                if (result.code === 0) {
-                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                }
-            }, (errMsg) => {
-                message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-            });
-        } else {
-            message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-        }
-    }
+    handleCallOutResult({
+        errorMsg: getCallNumErrMsg,//获取坐席号失败的错误提示
+        callNumber: callNumber,//坐席号
+        contactName: contactName,//联系人姓名
+        phoneNumber: phoneNumber//拨打的电话
+    });
+};
+//点击展开线索详情
+window.handleClickClueName = function(clueId) {
+    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .clue-item .clue-name'), '打开线索详情');
+    //展示线索详情
+    notificationEmitter.emit(notificationEmitter.SHOW_CLUE_DETAIL,{clueId: clueId});
 };
 
 // 获取拨打电话的座机号
@@ -488,6 +524,7 @@ function disconnectListener() {
         socketIo.off('scheduleAlertMsg', scheduleAlertListener);
         socketIo.off('system_notice', listenSystemNotice);
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
+        socketIo.off('cluemsg', clueUnhandledListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -524,7 +561,6 @@ function startSocketIo() {
         notificationCheckPermission();
     });
 }
-
 /**
  * 获取消息数
  * @param callback 获取消息数后的回调函数
@@ -553,15 +589,45 @@ function getMessageCount(callback) {
     } else {
         typeof callback === 'function' && callback();
     }
-
+    //获取线索未处理数的权限（除运营人员外展示）
+    if (getClueUnhandledPrivilege()){
+        let status = '';
+        //如果是域管理员，展示待分配的线索数量
+        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+            status = SELECT_TYPE.WILL_DISTRIBUTE;
+        }else{
+            //销售展示待跟进的线索数量
+            status = SELECT_TYPE.WILL_TRACE;
+        }
+        var data = {
+            clueCustomerTypeFilter: JSON.stringify({status: status}),
+            rangParams: JSON.stringify([{//时间范围参数
+                from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
+                to: moment().valueOf(),
+                type: 'time',
+                name: 'source_time'
+            }]),
+        };
+        if (hasPrivilege('CLUECUSTOMER_QUERY_MANAGER')) {
+            data.hasManageAuth = true;
+        }
+        getClueUnreadNum(data, callback);
+    }
 }
+
 //添加未读数的监听，包括申请审批，系统消息等
-function unreadListener() {
+function unreadListener(type) {
     if (socketIo) {
-        //获取完未读数后，监听node端推送的弹窗消息
-        socketIo.on('mes', listenOnMessage);
-        //监听系统消息
-        socketIo.on('system_notice', listenSystemNotice);
+        //如果是未处理的线索，要和审批的区分开，避免会加上两个监听的情况，未读数要在发ajax请求后再进行监听，避免出现监听数据比获取的数据早的情况
+        if (type === 'unhandleClue'){
+            //监听未处理的线索
+            socketIo.on('cluemsg', clueUnhandledListener);
+        }else{
+            //获取完未读数后，监听node端推送的弹窗消息
+            socketIo.on('mes', listenOnMessage);
+            //监听系统消息
+            socketIo.on('system_notice', listenSystemNotice);
+        }
     }
 }
 //申请审批未读回复的监听
@@ -643,11 +709,45 @@ function getNotificationUnread(queryObj, callback) {
         }
     });
 }
+//获取未处理的线索数量
+function getClueUnreadNum(data, callback){
+    //pageSize设置为0，只取到数据就行
+    $.ajax({
+        url: '/rest/customer/v2/customer/range/clue/0/start_time/descend',
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: data => {
+            var messages = {
+                'unhandleClue': 0
+            };
+            var value = data.total;
+            if (typeof value === 'number' && value > 0) {
+                messages['unhandleClue'] = value;
+            } else if (typeof value === 'string') {
+                var num = parseInt(value);
+                if (!isNaN(num) && num > 0) {
+                    messages['unhandleClue'] = num;
+                }
+            }
+            //更新全局中存的未处理的线索数
+            updateGlobalUnreadStorage(messages);
+            if (typeof callback === 'function') {
+                callback('unhandleClue');
+            }
+        },
+        error: () => {
+            if (typeof callback === 'function') {
+                callback('unhandleClue');
+            }
+        }
+    });
+}
 //更新全局变量里存储的未读数，以便在业务逻辑里使用
 function updateGlobalUnreadStorage(unreadObj) {
     if (Oplate && Oplate.unread && unreadObj) {
-        for (var key in Oplate.unread) {
-            Oplate.unread[key] = unreadObj[key] || 0;
+        for (var key in unreadObj){
+            Oplate.unread[key] = unreadObj[key];
         }
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
@@ -658,6 +758,8 @@ function updateGlobalUnreadStorage(unreadObj) {
             notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //待审批数的刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
+            //未处理的线索数量刷新展示
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
         }, timeout);
     }
 }

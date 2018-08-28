@@ -73,3 +73,11 @@ exports.unreadReplyToFrontend = function(unreadReply) {
         apply_id: unreadReply.apply_id//有未读回复的申请id
     };
 };
+//线索数量变化后的数据
+exports.clueMsgToFrontend = function(clueMsg) {
+    return {
+        message_type: 'unhandleClue',//线索的类型
+        member_id: clueMsg.user_id,//分配给谁的线索
+        clue_list: _.get(clueMsg,'clue_list',[]),//线索id和name的列表
+    };
+};

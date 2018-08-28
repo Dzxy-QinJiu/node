@@ -20,6 +20,10 @@ var CLASSNAMES = {
     ALIGNLEFT: 'table-data-align-left',
     ALIGNRIGHT: 'table-data-align-right'
 };
+//权限常量
+const PRIVILEGE_MAP = {
+    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
+};
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
 const WeeklyReportDetail = React.createClass({
     getDefaultProps() {
@@ -42,9 +46,7 @@ const WeeklyReportDetail = React.createClass({
     },
     componentDidMount() {
         WeeklyReportDetailStore.listen(this.onStoreChange);
-        if (this.state.selectedItem.teamId && this.state.selectedItem.nWeek) {
-            this.getWeeklyReportData(); // 获取电话统计、、、 数据
-        }
+        this.getWeeklyReportData(); // 获取电话统计、、、 数据
     },
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.selectedItem.teamId !== this.state.selectedItem.teamId || nextProps.selectedItem.nWeek !== this.state.selectedItem.nWeek) {
@@ -99,8 +101,10 @@ const WeeklyReportDetail = React.createClass({
         //不加延时会报错
         setTimeout(() => {
             this.getCallInfoData();// 接通率
-            this.getContractData();//获取合同信息
-            this.getRepaymentData();//获取回款信息
+            if (hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE)) {
+                this.getContractData();//获取合同信息
+                this.getRepaymentData();//获取回款信息
+            }
             this.getRegionOverlayData();//获取区域分布信息
             this.getCustomerStageData();//获取客户阶段信息
         });
@@ -131,7 +135,7 @@ const WeeklyReportDetail = React.createClass({
             //更新考核天数
             item.real_work_day = item.real_work_day - addLeaveItem.leave_days;
             //日接通数保留整数
-            item.average_num = formatRoundingData(item.total_callout_success / item.real_work_day,0);
+            item.average_num = formatRoundingData(item.total_callout_success / item.real_work_day, 0);
             //日均时长保留一位小数
             item.average_time = formatRoundingData(item.total_time / item.real_work_day, 1);
             this.setState({
@@ -164,7 +168,7 @@ const WeeklyReportDetail = React.createClass({
                         if (updateObj.leave_days) {
                             obj.real_work_day = obj.real_work_day + (initailObj.leave_days - updateObj.leave_days);
                             //日接通数保留整数
-                            obj.average_num = formatRoundingData(obj.total_callout_success / obj.real_work_day,0);
+                            obj.average_num = formatRoundingData(obj.total_callout_success / obj.real_work_day, 0);
                             //日均时长保留一位小数
                             obj.average_time = formatRoundingData(obj.total_time / obj.real_work_day, 1);
                             initailObj.leave_days = updateObj.leave_days;
@@ -204,7 +208,7 @@ const WeeklyReportDetail = React.createClass({
                         if (item.id === removedId) {
                             Obj.real_work_day = Obj.real_work_day + deleteItem.leave_days;
                             //日接通数保留整数
-                            Obj.average_num = formatRoundingData(Obj.total_callout_success / Obj.real_work_day,0);
+                            Obj.average_num = formatRoundingData(Obj.total_callout_success / Obj.real_work_day, 0);
                             //日均时长保留一位小数
                             Obj.average_time = formatRoundingData(Obj.total_time / Obj.real_work_day, 1);
                             Obj.leave_info_list.splice(index, 1);
@@ -238,8 +242,9 @@ const WeeklyReportDetail = React.createClass({
                     <span className="text-wrap">
                         {Intl.get('weekly.report.full.work.day', '全勤')}
                     </span>
-                    <i className="iconfont icon-update"
-                        onClick={this.handleAddAskForLeave.bind(this, userId)}></i>
+                    {hasPrivilege('CALLRECORD_ASKFORLEAVE_UPDATE') ? <i className="iconfont icon-update"
+                        onClick={this.handleAddAskForLeave.bind(this, userId)}></i> : null}
+
                 </div>}
             </div>
         );
@@ -388,7 +393,7 @@ const WeeklyReportDetail = React.createClass({
                 var userObj = _.find(_this.props.memberList.list, (item) => {
                     return item.name === record.name;
                 });
-                var userId = _.get(userObj,'id','');
+                var userId = _.get(userObj, 'id', '') || userData.getUserData().user_id;
                 //正在添加请假信息
                 var isAdding = _this.state.isAddingLeaveUserId === userId ? true : false;
                 //没有请假信息的时候,是全勤的
@@ -545,44 +550,63 @@ const WeeklyReportDetail = React.createClass({
         let queryParams = {
             start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
             end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
-            team_ids: this.state.selectedItem.teamId,
         };
+        if (this.state.selectedItem.teamId){
+            queryParams.team_id = this.state.selectedItem.teamId;
+        }
+        return queryParams;
+    },
+    //合同和回款的query参数
+    getContractAndRepayParams(){
+        let queryParams = {
+            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
+            end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
+        };
+        if (this.state.selectedItem.teamId){
+            queryParams.sale_team_ids = this.state.selectedItem.teamId;
+        }
+        return queryParams;
+    },
+    //获取通话的queryparams参数
+    getCallInfoParams(){
+        let queryParams = {
+            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
+            end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
+        };
+        if (this.state.selectedItem.teamId){
+            queryParams.team_ids = this.state.selectedItem.teamId;
+        }
         return queryParams;
     },
     // 通话的接通率
     getCallInfoData(){
-        var queryObj = _.clone(this.getQueryParams());
+        var queryObj = _.clone(this.getCallInfoParams());
         queryObj.deviceType = this.state.call_type;
         let type = this.getCallInfoAuth();
         WeeklyReportDetailAction.getCallInfo(queryObj, type);
     },
     //获取合同情况
     getContractData(){
-        var queryObj = _.clone(this.getQueryParams());
-        queryObj.sale_team_ids = queryObj.team_ids;
-        delete queryObj.team_ids;
+        var queryObj = _.clone(this.getContractAndRepayParams());
         let type = this.getContractType();
         WeeklyReportDetailAction.getContractInfo(queryObj, type);
 
     },
     //获取回款情况
     getRepaymentData(){
+        var queryObj = _.clone(this.getContractAndRepayParams());
         let type = this.getContractType();
-        WeeklyReportDetailAction.getRepaymentInfo(this.getQueryParams(), type);
+        WeeklyReportDetailAction.getRepaymentInfo(queryObj, type);
     },
     //获取区域覆盖情况
     getRegionOverlayData(){
         var queryObj = _.clone(this.getQueryParams());
-        queryObj.team_id = queryObj.team_ids;
-        delete queryObj.team_ids;
         let type = this.getOverlayType();
         WeeklyReportDetailAction.getRegionOverlayInfo(queryObj, type);
     },
     //获取客户阶段情况
     getCustomerStageData(){
         var queryObj = _.clone(this.getQueryParams());
-        queryObj.team_id = queryObj.team_ids;
-        delete queryObj.team_ids;
         let type = this.getOverlayType();
         WeeklyReportDetailAction.getCustomerStageInfo(queryObj, type);
     },
@@ -685,16 +709,18 @@ const WeeklyReportDetail = React.createClass({
                                 {this.renderDiffTypeTable('regionOverlay')}
                             </AntcCardContainer>
                         </div>
-                        <div className="contract-info-wrap">
-                            <AntcCardContainer title={Intl.get('weekly.report.contract', '合同情况')}>
-                                {this.renderDiffTypeTable('contactInfo')}
-                            </AntcCardContainer>
-                        </div>
-                        <div className="repayment-info-wrap">
-                            <AntcCardContainer title={Intl.get('weekly.report.repayment', '回款情况')}>
-                                {this.renderDiffTypeTable('repaymentInfo')}
-                            </AntcCardContainer>
-                        </div>
+                        {hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) ? (
+                            <div className="contract-info-wrap">
+                                <AntcCardContainer title={Intl.get('weekly.report.contract', '合同情况')}>
+                                    {this.renderDiffTypeTable('contactInfo')}
+                                </AntcCardContainer>
+                            </div>) : null}
+                        {hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) ? (
+                            <div className="repayment-info-wrap">
+                                <AntcCardContainer title={Intl.get('weekly.report.repayment', '回款情况')}>
+                                    {this.renderDiffTypeTable('repaymentInfo')}
+                                </AntcCardContainer>
+                            </div>) : null}
                     </GeminiScrollbar>
                 </div>
             </div>

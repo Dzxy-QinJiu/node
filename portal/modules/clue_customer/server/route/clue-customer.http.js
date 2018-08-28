@@ -153,5 +153,23 @@ module.exports = {
                 'CUSTOMERCLUE_DYNAMIC_QUERY'
             ]
         },
+        {
+            method: 'delete',
+            path: '/rest/clue/delete',
+            handler: 'deleteClue',
+            passport: {
+                needLogin: true
+            },
+            privileges: [
+                'CLUECUSTOMER_DELETE'
+            ]
+        },{
+            method: 'get',
+            path: '/rest/clue/detail/:clueId',
+            handler: 'getClueDetailById',
+            passport: {
+                'needLogin': true
+            }
+        }
     ]
 };

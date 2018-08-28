@@ -133,6 +133,16 @@ exports.getCompetitorList = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
+//获取筛选面板的负责人名称列表
+exports.getOwnerNameList = function(req, res) {
+    crmService.getOwnerNameList(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+
 //客户名、联系人电话唯一性的验证
 exports.checkOnlyCustomer = function(req, res) {
     crmService.checkOnlyCustomer(req, res)
@@ -206,6 +216,15 @@ exports.addCustomer = function(req, res) {
     }
     newCus.contacts[0].def_contancts = 'true';
     crmService.addCustomer(req, res, newCus)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+
+exports.addCustomerByClue = function(req, res) {
+    crmService.addCustomerByClue(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(codeMessage) {

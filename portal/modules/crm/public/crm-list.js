@@ -36,6 +36,7 @@ const extend = require('extend');
 import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import {FilterInput} from 'CMP_DIR/filter';
 var classNames = require('classnames');
+import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -139,6 +140,7 @@ var Crm = React.createClass({
             currentId: CrmStore.getState().currentId,
             curCustomer: CrmStore.getState().curCustomer,
             customerId: CrmStore.getState().customerId,
+            clueId: CrmStore.getState().clueId,//展示线索详情的id
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -563,27 +565,18 @@ var Crm = React.createClass({
         }
         //阶段标签的处理
         if (condition.customer_label) {
-            if (condition.customer_label === crmUtil.CUSTOMER_TAGS.QUALIFIED ||
-                condition.customer_label === crmUtil.CUSTOMER_TAGS.TRIAL_QUALIFIED ||
-                condition.customer_label === crmUtil.CUSTOMER_TAGS.SIGN_QUALIFIED) {
-                //合格标签的筛选
-                condition.qualify_label = '1';
-                if (condition.customer_label === crmUtil.CUSTOMER_TAGS.QUALIFIED) {//只筛选”合格“时
-                    delete condition.customer_label;
-                } else {//试用合格、签约合格的筛选时，是试用、签约标签与合格标签的组合筛选
-                    //试用、签约的处理(精确匹配)
-                    condition.customer_label = condition.customer_label.split(crmUtil.CUSTOMER_TAGS.QUALIFIED)[0];
-                    term_fields.push('customer_label');
-                }
-            } else if (condition.customer_label === crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED) {
-                //曾经合格的处理
-                condition.qualify_label = '2';
-                delete condition.customer_label;
-            } else {//信息、意向、试用、签约、流失
-                term_fields.push('customer_label');
+            //信息、意向、试用、签约、流失
+            term_fields.push('customer_label');
+        }
+        //合格标签的处理
+        if (condition.qualify_label) {
+            //从未合格标签
+            if(condition.qualify_label === '3'){
+                unexist.push('qualify_label');
+                delete condition.qualify_label;
+            } else {//合格标签、从未合格标签
+                term_fields.push('qualify_label');
             }
-        } else {//删除上次筛选时的数据
-            delete condition.qualify_label;
         }
         //销售角色的处理
         if (condition.member_role) {
@@ -947,17 +940,17 @@ var Crm = React.createClass({
         const loading = this.state.isImporting || false;
 
         return (
-            <div>
+            <div data-tracename="导入预览">
                 {repeatCustomer ? (
                     <span className="import-warning">
                         {Intl.get('crm.210', '存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入')}
                     </span>
                 ) : null}
-                <Button type="ghost" onClick={this.cancelImport}>
+                <Button type="ghost" onClick={this.cancelImport} data-tracename="点击取消导入按钮">
                     {Intl.get('common.cancel', '取消')}
                 </Button>
                 {!repeatCustomer ? (
-                    <Button type="primary" onClick={this.doImport} loading={loading}>
+                    <Button type="primary" onClick={this.doImport} loading={loading} data-tracename="点击确定导入按钮">
                         {Intl.get('common.sure', '确定') + Intl.get('common.import', '导入')}
                     </Button>
                 ) : null}
@@ -968,30 +961,12 @@ var Crm = React.createClass({
     // 自动拨号
     handleClickCallOut(phoneNumber, record) {
         Trace.traceEvent($(this.getDOMNode()).find('.column-contact-way'), '拨打电话');
-        if (this.state.errMsg) {
-            message.error(this.state.errMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
-        } else {
-            if (this.state.callNumber) {
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        contact: record.contact,
-                    }
-                );
-                let reqData = {
-                    from: this.state.callNumber,
-                    to: phoneNumber.replace('-', '')
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                    }
-                }, (errMsg) => {
-                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                });
-            } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-            }
-        }
+        CallNumberUtil.handleCallOutResult({
+            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
+            callNumber: this.state.callNumber,//坐席号
+            contactName: record.contact,//联系人姓名
+            phoneNumber: phoneNumber,//拨打的电话
+        });
     },
 
     // 联系方式的列表
@@ -1131,7 +1106,7 @@ var Crm = React.createClass({
     },
 
     //删除导入预览中的重复客户
-    deleteDuplicatImportCustomer(index) {
+    deleteDuplicatImportCustomer(index, e) {
         const route = _.find(routeList, route => route.handler === 'deleteDuplicatImportCustomer');
 
         const params = {
@@ -1143,8 +1118,9 @@ var Crm = React.createClass({
             type: route.method,
             params: params
         };
-
+        Trace.traceEvent(e, '点击删除重复客户按钮');
         ajax(arg).then(result => {
+        //    Trace.traceEvent('导入预览', '点击删除重复客户按钮');
             if (result && result.result === 'success') {
                 this.state.previewList.splice(index, 1);
                 this.setState(this.state);
@@ -1154,6 +1130,7 @@ var Crm = React.createClass({
         }, () => {
             message.error(Intl.get('crm.delete.duplicate.customer.failed', '删除重复客户失败'));
         });
+        return e.stopPropagation();
     },
     toggleList() {
         this.setState({
@@ -1170,6 +1147,13 @@ var Crm = React.createClass({
         }
 
         return sorter;
+    },
+    hideClueRightPanel: function(){
+        CrmAction.showClueDetail('');
+    },
+    //删除线索之后
+    afterDeleteClue: function() {
+        CrmAction.showClueDetail('');
     },
     render: function() {
         var _this = this;
@@ -1333,7 +1317,7 @@ var Crm = React.createClass({
                     const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
 
                     return (
-                        <span className="cus-op">
+                        <span className="cus-op" data-tracename="导入预览">
                             {isDeleteBtnShow ? (
                                 <Button className="order-btn-class" icon="delete"
                                     onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
@@ -1380,7 +1364,7 @@ var Crm = React.createClass({
             'content-full': !this.state.showFilterList
         });
         return (<RightContent>
-            <div className="crm_content" data-tracename="客户列表">
+            <div className="crm_content">
                 {
                     !this.props.fromSalesHome ?
                         <div className="top-nav-border-fix">
@@ -1482,6 +1466,13 @@ var Crm = React.createClass({
                     afterMergeCustomer={this.afterMergeCustomer}
                     refreshCustomerList={this.refreshCustomerList}
                 />) : null}
+                {this.state.clueId ? <ClueRightPanel
+                    showFlag={true}
+                    currentId={this.state.clueId}
+                    hideRightPanel={this.hideClueRightPanel}
+                    afterDeleteClue={this.afterDeleteClue}
+                /> : null}
+
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"

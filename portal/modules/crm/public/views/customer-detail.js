@@ -27,11 +27,13 @@ const TAB_KEYS = {
     CONTRACT_TAB: '6', // 合同
     DYNAMIC_TAB: '7',//动态
     SCHEDULE_TAB: '8'//日程
-
-
-
-    // （联系计划）
 };
+//权限常量
+const PRIVILEGE_MAP = {
+    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
+    USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS'//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
+};
+
 var CrmRightPanel = React.createClass({
     getInitialState: function() {
         return {
@@ -177,21 +179,24 @@ var CrmRightPanel = React.createClass({
                                     />
                                 ) : null}
                             </TabPane>
-                            <TabPane
-                                tab={Intl.get('crm.detail.user', '用户')}
-                                key={TAB_KEYS.USER_TAB}
-                            >
-                                {this.state.activeKey === TAB_KEYS.USER_TAB ? (
-                                    <CustomerUsers
-                                        curCustomer={this.state.curCustomer}
-                                        refreshCustomerList={this.props.refreshCustomerList}
-                                        ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
-                                        userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
-                                        showOpenAppForm={this.props.showOpenAppForm}
-                                        closeOpenAppPanel={this.props.returnInfoPanel}
-                                    />
+                            {
+                                hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) ? (
+                                    <TabPane
+                                        tab={Intl.get('crm.detail.user', '用户')}
+                                        key={TAB_KEYS.USER_TAB}
+                                    >
+                                        {this.state.activeKey === TAB_KEYS.USER_TAB ? (
+                                            <CustomerUsers
+                                                curCustomer={this.state.curCustomer}
+                                                refreshCustomerList={this.props.refreshCustomerList}
+                                                ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
+                                                userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
+                                                showOpenAppForm={this.props.showOpenAppForm}
+                                                closeOpenAppPanel={this.props.returnInfoPanel}
+                                            />
+                                        ) : null}
+                                    </TabPane>
                                 ) : null}
-                            </TabPane>
                             <TabPane
                                 tab={Intl.get('user.apply.detail.order', '订单')}
                                 key={TAB_KEYS.ORDER_TAB}
@@ -206,7 +211,7 @@ var CrmRightPanel = React.createClass({
                                 ) : null}
                             </TabPane>
                             {
-                                hasPrivilege('OPLATE_CONTRACT_QUERY') ? (
+                                hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) ? (
                                     <TabPane
                                         tab={Intl.get('contract.125', '合同')}
                                         key={TAB_KEYS.CONTRACT_TAB}

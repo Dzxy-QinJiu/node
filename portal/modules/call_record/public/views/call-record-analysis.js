@@ -221,12 +221,14 @@ var CallRecordAnalyis = React.createClass({
         if (checked) {
             var reqBody = this.getCallAnalysisBodyParamSeparately();
             this.getCallAnalysisTrendDataSeparately(reqBody);
+            Trace.traceEvent('通话分析', '点击开启查看各团队通话趋势图的switch');
         } else {
             this.setState({
                 trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT
             });
             let reqBody = this.getCallAnalysisBodyParam();
             this.getCallAnalysisTrendData(reqBody); // 所有团队总趋势图
+            Trace.traceEvent('通话分析', '点击关闭查看各团队通话趋势图的switch');
         }
     },
     // 获取团队参数
@@ -615,12 +617,12 @@ var CallRecordAnalyis = React.createClass({
     // 切换通话时长和数据，展示的趋势图
     handleSelectRadio(event) {
         if (event.target.value === CALL_RADIO_VALUES.COUNT) {
-            Trace.traceEvent(event, '点击通话趋势图中通话数量按钮');
+            Trace.traceEvent('通话分析', '点击通话趋势图中通话数量按钮');
             this.setState({
                 selectRadioValue: CALL_RADIO_VALUES.COUNT
             });
         } else {
-            Trace.traceEvent(event, '点击趋势图中通话时长按钮');
+            Trace.traceEvent('通话分析', '点击趋势图中通话时长按钮');
             this.setState({
                 selectRadioValue: CALL_RADIO_VALUES.DURATION
             });
@@ -664,12 +666,12 @@ var CallRecordAnalyis = React.createClass({
     //切换通话时长和数量，展示的点图
     onChangeCallIntervalRadio(event){
         if (event.target.value === CALL_RADIO_VALUES.COUNT) {
-            Trace.traceEvent(event, '点击通话时段点图中的通话数量按钮');
+            Trace.traceEvent('通话分析', '点击通话时段点图中的通话数量按钮');
             this.setState({
                 selectedCallInterval: CALL_RADIO_VALUES.COUNT
             });
         } else {
-            Trace.traceEvent(event, '点击通话时段点图中的通话时长按钮');
+            Trace.traceEvent('通话分析', '点击通话时段点图中的通话时长按钮');
             this.setState({
                 selectedCallInterval: CALL_RADIO_VALUES.DURATION
             });

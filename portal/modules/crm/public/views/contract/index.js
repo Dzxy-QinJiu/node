@@ -71,7 +71,7 @@ const Contract = React.createClass({
         let contractListLength = this.state.contractList.data.length || 0;
         let loading = this.state.contractList.loading;
         return (
-            <div className="contract-container" data-tracename="合同页面">
+            <div className="crm-contract-container" data-tracename="合同页面">
                 {
                     this.state.isAddFormShow || loading ? null : (contractListLength ? <ReactIntl.FormattedMessage
                         id="sales.frontpage.total.list"

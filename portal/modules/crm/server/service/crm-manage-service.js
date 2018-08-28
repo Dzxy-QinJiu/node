@@ -24,6 +24,8 @@ var crmRestApis = {
     mergeRepeatCustomer: '/rest/customer/v2/customer/merge/customer',
     checkCustomerRepeat: '/rest/customer/v2/customer/repeat/search',
     getFilterIndustries: '/rest/customer/v2/customer/industries',
+    //获取筛选面板负责人名称列表
+    getOwnerNameList: '/rest/customer/v2/customer/username/:type/500/1',
     //获取阶段标签列表
     getStageTagList: '/rest/customer/v2/customer/customer_label/:type/50/1',
     //获取竞品列表
@@ -66,6 +68,8 @@ var crmRestApis = {
     getUserPhoneNumber: '/rest/base/v1/user/member/phoneorder',
     //获取客户是否还能继续添加客户 返回0是可以继续添加，返回大于0的值，表示超出几个客户
     getCustomerLimit: '/rest/customer/v2/customer/limit/flag',
+    //线索生成客户
+    addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
 };
 exports.urls = crmRestApis;
 
@@ -119,6 +123,16 @@ exports.getCompetitorList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getCompetitorList.replace(':type', req.params.type),
+            req: req,
+            res: res
+        }, null);
+};
+
+//获取筛选面板的负责人名称列表
+exports.getOwnerNameList = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getOwnerNameList.replace(':type', req.params.type),
             req: req,
             res: res
         }, null);
@@ -218,10 +232,10 @@ exports.queryCustomer = function(req, res, condition) {
     //可以通过线索的id查询客户
     let customer_clue_id = condition && condition.customer_clue_id;
     delete condition.call_phone;
-    let queryObj = {};
+    let bodyData = {};
     if (call_phone) { // 通话记录，查看客户详情
         url = crmRestApis.getCustomerByPhone + '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder;
-        queryObj = _.clone(condition);
+        bodyData = _.clone(condition);
     } else if (id || customer_clue_id) { // 根据客户的id,或者线索的id查询客户详情
         url = crmRestApis.query;
         if (req.body.hasManageAuth) {
@@ -229,9 +243,9 @@ exports.queryCustomer = function(req, res, condition) {
         }
         url += '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder;
         if (id){
-            queryObj.query = {'id': id};
+            bodyData.query = {'id': id};
         }else if (customer_clue_id){
-            queryObj.query = {'customer_clue_id': customer_clue_id};
+            bodyData.query = {'customer_clue_id': customer_clue_id};
         }
     } else { // 客户列表
         let baseUrl = '';
@@ -250,29 +264,29 @@ exports.queryCustomer = function(req, res, condition) {
             url += '&total_size=' + query.total_size;
         }
         if (condition.exist_fields) {
-            queryObj.exist_fields = condition.exist_fields;
+            bodyData.exist_fields = condition.exist_fields;
             delete condition.exist_fields;
         }
         if (condition.unexist_fields) {
-            queryObj.unexist_fields = condition.unexist_fields;
+            bodyData.unexist_fields = condition.unexist_fields;
             delete condition.unexist_fields;
         }
         if (condition.term_fields) {//精确匹配项：标签的筛选
-            queryObj.term_fields = condition.term_fields;
+            bodyData.term_fields = condition.term_fields;
             delete condition.term_fields;
         }
-        queryObj.query = condition;
+        bodyData.query = condition;
         if (query && query.user_id) {
-            queryObj.query.user_id = query.user_id;
+            bodyData.query.user_id = query.user_id;
         }
-        queryObj.rang_params = JSON.parse(req.body.rangParams);
+        bodyData.rang_params = JSON.parse(req.body.rangParams);
     }
     return restUtil.authRest.post(
         {
             url: url,
             req: req,
             res: res
-        }, queryObj);
+        }, bodyData);
 };
 
 //修改客户
@@ -341,6 +355,15 @@ exports.addCustomer = function(req, res, newCustomer) {
             req: req,
             res: res
         }, newCustomer);
+};
+//由线索生成客户
+exports.addCustomerByClue = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: crmRestApis.addCustomerByClue + `?clue_id=${req.query.clueId}`,
+            req: req,
+            res: res
+        }, req.body);
 };
 
 //删除客户

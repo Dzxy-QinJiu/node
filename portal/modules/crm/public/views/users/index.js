@@ -34,7 +34,9 @@ const APPLY_TYPES = {
 const LAYOUT = {
     TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
     TOTAL_HEIGHT: 24 + 8,// 24:共xxx个的高度,8:共xxx个的下边距
-    APPLY_FORM_HEIGHT: 198 + 10//198:申请表单的高度,10:表单的上边距
+    APPLY_FORM_HEIGHT: 198 + 10,//198:申请表单的高度,10:表单的上边距
+    APPLY_FORM_SAVE_BTN_H: 34,//申请用户面板，保存取消按钮的高度
+    APPLY_PANEL_PADDING: 12//申请面板的边距
 };
 //用户类型的转换对象
 const USER_TYPE_MAP = {
@@ -56,7 +58,8 @@ class CustomerUsers extends React.Component {
             curCustomer: this.props.curCustomer,
             applyType: '',//申请类型
             listenScrollBottom: true,//是否监听滚动
-            appList: []
+            appList: [],
+            ... this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
     }
 
@@ -70,7 +73,7 @@ class CustomerUsers extends React.Component {
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
         if (nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
-            this.setState({curCustomer: nextProps.curCustomer, lastUserId: ''});
+            this.setState({curCustomer: nextProps.curCustomer, lastUserId: '', ...this.getLayoutHeight()});
             setTimeout(() => {
                 this.getCrmUserList();
             });
@@ -137,6 +140,9 @@ class CustomerUsers extends React.Component {
         if (_.isFunction(this.props.closeOpenAppPanel)) {
             this.props.closeOpenAppPanel();
         }
+        setTimeout(() => {
+            this.setState(this.getLayoutHeight());
+        });
     }
 
     getBatchApplyFlag() {
@@ -273,6 +279,9 @@ class CustomerUsers extends React.Component {
         }
         Trace.traceEvent('客户详情', traceDescr);
         this.setState({applyType: applyType});
+        setTimeout(() => {
+            this.setState(this.getLayoutHeight());
+        });
     }
 
     //发邮件使用的参数
@@ -304,12 +313,13 @@ class CustomerUsers extends React.Component {
         }
         if (!batchApplyFlag && !openAppFlag) {
             //申请新用户
-            return (<div className="crm-user-apply-btns">
-                <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
-                    onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS)}>
-                    {Intl.get('crm.apply.user.new', '申请新用户')}
-                </Button>
-            </div>);
+            return (
+                <div className="crm-user-apply-btns" data-tracename="申请新用户">
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
+                        {Intl.get('crm.apply.user.new', '申请新用户')}
+                    </Button>
+                </div>);
         } else {//其他申请
             return (
                 <div className="crm-user-apply-btns">
@@ -359,7 +369,21 @@ class CustomerUsers extends React.Component {
         }
         return rightPanelView;
     }
-
+    getLayoutHeight(){
+        let divHeight = $(window).height() - LAYOUT.TOP_NAV_HEIGHT - LAYOUT.TOTAL_HEIGHT;
+        //减头部的客户基本信息高度
+        divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
+        if ($('.phone-alert-modal-title').size()) {
+            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
+        }
+        let userListHeight = divHeight;
+        //减去申请用户面板的高度
+        if($('.apply-user-form-container').size()){
+            userListHeight -= $('.apply-user-form-container').outerHeight(true);
+        }
+        let applyFormMaxHeight = divHeight - LAYOUT.APPLY_FORM_SAVE_BTN_H - 2 * LAYOUT.APPLY_PANEL_PADDING;
+        return {userListHeight,applyFormMaxHeight};
+    }
     renderUserApplyForm() {
         //有选择用户时，是已有用户开通新用户；无选择的应用时，是开通新用户
         let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
@@ -375,6 +399,7 @@ class CustomerUsers extends React.Component {
                 customerId={this.props.curCustomer.id}
                 cancelApply={this.closeRightPanel.bind(this)}
                 emailData={emailData}
+                maxHeight={this.state.applyFormMaxHeight}
             />
         );
     }
@@ -499,14 +524,8 @@ class CustomerUsers extends React.Component {
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
             isApplyButtonShow = true;
         }
-        let divHeight = $(window).height() - LAYOUT.TOP_NAV_HEIGHT - LAYOUT.TOTAL_HEIGHT;
-        //减头部的客户基本信息高度
-        divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
-        if ($('.phone-alert-modal-title').size()) {
-            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
-        }
         let userNumClass = classNames('user-total-tip', {'user-total-active': !this.props.isMerge && userNum});
-        return (<div className="crm-user-list-container" data-tracename="通用户页面">
+        return (<div className="crm-user-list-container" data-tracename="用户页面">
             <div className="user-number">
                 {this.state.isLoading ? null : userNum ? (
                     <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
@@ -522,13 +541,17 @@ class CustomerUsers extends React.Component {
                 {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
                     : null}
             </div>
-            <div className="crm-user-scroll-wrap" style={{height: divHeight}}>
-                <GeminiScrollbar listenScrollBottom={this.state.listenScrollBottom}
-                    handleScrollBottom={this.handleScrollBottom.bind(this)}>
-                    {this.state.applyType === APPLY_TYPES.OPEN_APP || this.state.applyType === APPLY_TYPES.NEW_USERS ? this.renderUserApplyForm() : this.state.applyType ? (
+            {this.state.applyType ?
+                this.state.applyType === APPLY_TYPES.OPEN_APP || this.state.applyType === APPLY_TYPES.NEW_USERS ?
+                    this.renderUserApplyForm() : (
                         <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
                             closeApplyPanel={this.closeRightPanel.bind(this)}
-                            crmUserList={this.state.crmUserList}/>) : null}
+                            crmUserList={this.state.crmUserList}/>)
+                : null
+            }
+            <div className="crm-user-scroll-wrap" style={{height: this.state.userListHeight}}>
+                <GeminiScrollbar listenScrollBottom={this.state.listenScrollBottom}
+                    handleScrollBottom={this.handleScrollBottom.bind(this)}>
                     {this.renderCrmUserList(isApplyButtonShow)}
                 </GeminiScrollbar>
             </div>

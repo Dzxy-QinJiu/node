@@ -3,11 +3,11 @@ require('../../css/dynamic.less');
 var DynamicStore = require('../../store/dynamic-store');
 //动态action
 var DynamicAction = require('../../action/dynamic-action');
-var TimeLine = require('../../../../../components/time-line');
+var crmAction = require('../../action/crm-actions');
+import {AntcTimeLine} from 'antc';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
-import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 var Dynamic = React.createClass({
     getInitialState: function() {
@@ -36,9 +36,7 @@ var Dynamic = React.createClass({
         $(window).off('resize', this.onStoreChange);
     },
     showClueDetailOut: function(clueId) {
-        // this.setState({
-        //     clueId: clueId
-        // });
+        crmAction.showClueDetail(clueId);
     },
     timeLineItemRender: function(item) {
         const call_time = Intl.get('crm.199',
@@ -64,29 +62,19 @@ var Dynamic = React.createClass({
             </dl>
         );
     },
-    hideRightPanel: function() {
-        this.setState({
-            clueId: ''
-        });
-    },
     render: function() {
         return (
             <RightPanelScrollBar>
                 {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
                     <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
                     <div className="dynamicList">
-                        <TimeLine
-                            list={this.state.dynamicList}
+                        <AntcTimeLine
+                            data={this.state.dynamicList}
                             groupByDay={true}
                             timeField="date"
-                            render={this.timeLineItemRender}
+                            contentRender={this.timeLineItemRender}
                         />
                     </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
-                {this.state.clueId ? <ClueRightPanel
-                    showFlag={true}
-                    currentId={this.state.clueId}
-                    hideRightPanel={this.hideRightPanel}
-                /> : null}
             </RightPanelScrollBar>
         );
     }

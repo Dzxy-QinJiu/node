@@ -25,7 +25,10 @@ import RightPanelScrollBar from './components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
-
+import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
+const PRIVILEGE_MAP = {
+    USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS'//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
+};
 var BasicOverview = React.createClass({
     getInitialState: function() {
         let customerRecordState = CustomerRecordStore.getState();
@@ -92,7 +95,9 @@ var BasicOverview = React.createClass({
         this.getRecommendTags();
         this.getCompetitorList();
         setTimeout(() => {
-            this.getCrmUserList(this.props.curCustomer);
+            if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
+                this.getCrmUserList(this.props.curCustomer);
+            }
         });
     },
     getAppList: function() {
@@ -148,7 +153,9 @@ var BasicOverview = React.createClass({
                 status: false,
                 type: 'calls',
                 sort_field: 'start_time',
-                order: 'ascend'
+                order: 'ascend',
+                start_time: TimeStampUtil.getTodayTimeStamp().start_time,
+                end_time: TimeStampUtil.getTodayTimeStamp().end_time,
             });
         }
     },
@@ -157,7 +164,9 @@ var BasicOverview = React.createClass({
         basicOverviewAction.getBasicData(nextProps.curCustomer);
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
             setTimeout(() => {
-                this.getCrmUserList(nextProps.curCustomer);
+                if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
+                    this.getCrmUserList(nextProps.curCustomer);
+                }
                 if (this.state.callNumber) {
                     //有坐席号，需要展示未处理的电联的联系计划
                     this.getNotCompletedScheduleList(nextProps.curCustomer);
@@ -305,9 +314,9 @@ var BasicOverview = React.createClass({
                 let end_time = app.end_time;
                 //启用状态下，有到期时间的试用用户
                 if (app.is_disabled !== 'true' && app.end_time && app.user_type === TRIAL_TYPE) {
-                    let duration = moment.duration(end_time - moment().valueOf());
-                    let over_draft_days = duration.days();
-                    if (over_draft_days < 3) {//概览页只提示3天内到期的试用用户
+                    let duration = end_time - moment().valueOf();
+                    let over_draft_days = parseInt(duration / oplateConsts.ONE_DAY_TIME_RANGE);
+                    if (over_draft_days > 0 && over_draft_days < 3) {//概览页只提示3天内到期的试用用户
                         let overDraftTime = TimeUtil.getFutureTimeStr(end_time);
                         expireTrialUsers.push({overDraftDays: over_draft_days, overDraftTimeStr: overDraftTime});
                     }
@@ -429,27 +438,27 @@ var BasicOverview = React.createClass({
             }
         });
     },
-    renderScheduleItem: function(item) {
-        return (
-            <ScheduleItem
-                item={item}
-                hideDelete={true}
-                hasSplitLine={false}
-                isMerge={this.props.isMerge}
-                toggleScheduleContact={this.toggleScheduleContact}
-                handleItemStatus={this.handleItemStatus}
-                callNumber={this.state.callNumber}
-                getCallNumberError={this.state.getCallNumberError}
-            />);
+    renderScheduleItem: function() {
+        return _.map(this.state.scheduleList, item => {
+            return (
+                <ScheduleItem
+                    item={item}
+                    hideDelete={true}
+                    hasSplitLine={false}
+                    isMerge={this.props.isMerge}
+                    toggleScheduleContact={this.toggleScheduleContact}
+                    handleItemStatus={this.handleItemStatus}
+                    callNumber={this.state.callNumber}
+                    getCallNumberError={this.state.getCallNumberError}
+                />);
+        });
+
     },
     renderUnComplateScheduleList: function() {
         if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
-            return _.map(this.state.scheduleList, item => {
-                let title = item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : '';
-                return (
-                    <DetailCard title={title + ' ' + Intl.get('crm.right.schedule', '联系计划')}
-                        content={this.renderScheduleItem(item)}/>);
-            });
+            return (
+                <DetailCard title={Intl.get('clue.not.complete.schedule','今天的联系计划')}
+                    content={this.renderScheduleItem()}/>);
         }
         return null;
     },
@@ -465,7 +474,8 @@ var BasicOverview = React.createClass({
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {_.get(basicData, 'app_user_ids[0]') ? this.renderExpireTip() : this.renderApplyUserBlock()}
+                    {hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
+                        this.renderExpireTip() : this.renderApplyUserBlock()}
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}

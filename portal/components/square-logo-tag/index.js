@@ -25,4 +25,9 @@ LogoTag.defaultProps = {
     logo: '',
     name: ''
 };
+const PropTypes = React.PropTypes;
+LogoTag.propTypes = {
+    logo: PropTypes.string,
+    name: PropTypes.string
+};
 export default LogoTag;

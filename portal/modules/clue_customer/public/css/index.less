@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 .clue_customer_content {
   //线索顶部筛选区域
   .date-picker-wrap {
@@ -21,8 +22,17 @@
       }
     }
     .add-anlysis-handle-btns {
+      margin-right:12px;
       button {
-        margin-right: 5px;
+        margin-right: 12px;
+      }
+      button.ant-btn-primary{
+        background-color: @BORDER-BLUE;
+        border-color: @BORDER-BLUE;
+        &:hover{
+          background-color:  @BUTTON-HOVER;
+          border-color: @BUTTON-HOVER;
+        }
       }
     }
   }
@@ -41,7 +51,7 @@
       color: #cecece;
       text-align: center;
       .icon-data-error, .icon-no-data {
-        font-size: 60px;
+        font-size: 96px;
       }
       .abnornal-status-tip {
         text-align: center;
@@ -49,9 +59,6 @@
         color: #999;
         font-size: 14px;
       }
-    }
-    .sales-clue-item-container {
-      margin-left: 20px;
     }
     .clue-customer-total-tip {
       margin-left: 40px;
@@ -79,8 +86,6 @@
     z-index: 12;
     background: rgba(0, 0, 0, 0.5);
   }
-
-
   }
 .ant-calendar{
   width: 331px!important;
@@ -101,22 +106,6 @@
     .click-cell {
       cursor: pointer;
     }
-  }
-}
-
-#app .clue_customer_rightpanel.right-pannel-default{
-  width: 504px!important;
-  background-color:transparent!important;
-  transform: translateX(504px);
-  overflow: visible;
-  .iconfont.icon-close.clue-right-btn{
-    color: #fff;
-    background-color: #8ea9c4;
-    border-radius: 0 !important;
-    width: 24px;
-    height: 24px;
-    float: left;
-    font-size: 14px;
   }
 }
 .ant-select-dropdown{

@@ -67,12 +67,24 @@ class ApplyUserAppConfig extends React.Component {
             </div>);
     }
 }
+const PropTypes = React.PropTypes;
+ApplyUserAppConfig.propTypes = {
+    apps: PropTypes.array,
+    appsFormData: PropTypes.array,
+    configType: PropTypes.string,
+    changeConfigType: PropTypes.func,
+    renderAppConfigForm: PropTypes.func
+};
+
 ApplyUserAppConfig.defaultProps = {
-    apps: [],
-    appsFormData: [],
+    apps: [],//选择的需要配置的应用列表
+    appsFormData: [],//应用配置的form数据列表
+    //配置类型，unified_config：统一配置，separate_config：分别配置
     configType: CONFIG_TYPE.UNIFIED_CONFIG,
+    //配置类型修改事件
     changeConfigType: function() {
     },
+    //渲染应用的配置界面
     renderAppConfigForm: function() {
     }
 };

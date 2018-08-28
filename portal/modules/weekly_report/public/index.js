@@ -83,17 +83,21 @@ const WeeklyReport = React.createClass({
     },
     renderTeamSelect: function() {
         let teamList = _.get(this.state, 'teamList.list') || [];
-        return (
-            <div className='report-team-select-container'>
-                <SelectFullWidth
-                    value={this.state.selectedTeamId}
-                    onChange={this.onTeamChange.bind(this)}
-                >
-                    {_.map(this.state.teamList.list, (teamItem, index) => {
-                        return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
-                    })}
-                </SelectFullWidth>
-            </div>);
+        if (teamList.length > 1){
+            return (
+                <div className='report-team-select-container'>
+                    <SelectFullWidth
+                        value={this.state.selectedTeamId}
+                        onChange={this.onTeamChange.bind(this)}
+                    >
+                        {_.map(this.state.teamList.list, (teamItem, index) => {
+                            return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
+                        })}
+                    </SelectFullWidth>
+                </div>);
+        }else{
+            return null;
+        }
     },
     //周的选择
     onChangeWeek: function(week, e) {

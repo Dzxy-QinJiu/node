@@ -43,7 +43,8 @@ const LAYOUT_CONSTANTS = {
     TOP_TOTAL_HEIGHT: 30,//共xxx条的高度
     OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度
 };
-
+//textarea自适应高度
+const AUTO_SIZE_MAP = {minRows: 2, maxRows: 6};
 // 通话状态
 const CALL_STATUS_MAP = {
     'ALL': Intl.get('common.all', '全部'),
@@ -297,8 +298,8 @@ const CustomerRecord = React.createClass({
         }
     },
     //点击顶部取消按钮后
-    handleCancel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.add-customer-trace .add-foot .cancel-btn'), '关闭添加跟进内容输入区');
+    handleCancel: function(e) {
+        Trace.traceEvent(e, '关闭添加跟进内容输入区');
         //下拉框的默认选项为拜访
         CustomerRecordActions.setType(this.state.initialType);
         CustomerRecordActions.setContent({value: ''});
@@ -309,7 +310,7 @@ const CustomerRecord = React.createClass({
 
     //顶部增加客户跟进记录输入时的处理
     handleInputChange: function(e) {
-        let value = $.trim(e.target.value);
+        let value = e.target.value;
         //有输入的内容，则清空必填项验证的提示
         if (value) {
             CustomerRecordActions.setContent({value: value, validateStatus: 'success', errorMsg: null});
@@ -318,9 +319,9 @@ const CustomerRecord = React.createClass({
         }
     },
     //点击保存按钮，展示模态框
-    showModalDialog: function(item) {
+    showModalDialog: function(item, e) {
         if (item.id) {
-            Trace.traceEvent($(this.getDOMNode()).find('.show-customer-trace .add-detail-container .submit-btn'), '添加补充的跟进内容');
+            Trace.traceEvent(this.getDOMNode(), '添加补充的跟进内容');
             //点击补充客户跟踪记录编辑状态下的保存按钮
             var detail = $.trim(_.get(this.state, 'detailContent.value'));
             if (detail) {
@@ -331,7 +332,7 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.add-customer-trace .add-foot .submit-btn'), '添加跟进内容');
+            Trace.traceEvent(this.getDOMNode(), '保存添加跟进内容');
             //点击顶部输入框下的保存按钮
             var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
             if (addcontent) {
@@ -374,6 +375,7 @@ const CustomerRecord = React.createClass({
                     <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容，保存后不可修改')}
                         value={_.get(this.state, 'inputContent.value') || ''}
                         onChange={this.handleInputChange.bind(this)}
+                        autosize={AUTO_SIZE_MAP}
                     />
                 </FormItem>
                 <SaveCancelButton loading={this.state.addCustomerLoading}
@@ -411,7 +413,7 @@ const CustomerRecord = React.createClass({
     },
     handleAddDetailChange: function(e) {
         //补充客户跟进记录
-        let value = $.trim(e.target.value);
+        let value = e.target.value;
         if (value) {
             CustomerRecordActions.setDetailContent({value: value, validateStatus: 'success', errorMsg: null});
         } else {
@@ -431,6 +433,7 @@ const CustomerRecord = React.createClass({
                     <TextArea placeholder={Intl.get('add.customer.trace.detail', '请补充跟进记录详情，保存后不可修改')}
                         value={_.get(this.state, 'detailContent.value') || ''}
                         onChange={this.handleAddDetailChange.bind(this)}
+                        autosize={AUTO_SIZE_MAP}
                     />
                 </FormItem>
                 {this.state.editRecordNullTip ? (
@@ -509,6 +512,10 @@ const CustomerRecord = React.createClass({
         }
         return '';
     },
+    //在新标签页中打开原文的链接
+    openSourceUrl: function(url) {
+        window.open(url);
+    },
     renderReportContent: function(item) {
         let reportObj = item.remark ? JSON.parse(item.remark) : {};
         if (!_.isObject(reportObj)) return null;
@@ -534,7 +541,7 @@ const CustomerRecord = React.createClass({
                         {decodeHTML(reportContent)}
                     </div>
                     <div>
-                        <a href={reportDoc.url || ''}>{Intl.get('crm.trace.report.source', '原文')}</a>
+                        <a onClick={this.openSourceUrl.bind(this, reportDoc.url)}>{Intl.get('crm.trace.report.source', '原文')}</a>
                         {reportDoc.dataTime ? <span className="trace-record-time">
                             {moment(reportDoc.dataTime).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}
                         </span> : null}
@@ -820,18 +827,18 @@ const CustomerRecord = React.createClass({
                             <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
                                 title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>) : (
                             <Button className='crm-detail-add-btn'
-                                onClick={this.toggleAddRecordPanel.bind(this, '')}>
+                                onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录" >
                                 {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
                             </Button>)
                         }
-                        {_.get(this.state, 'customerRecord[0]') ? (
+                        {_.get(this.state, 'customerRecord[0]') || this.state.filterStatus ? (
                             <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
                                 <a className="ant-dropdown-link trace-filter-item">
                                     {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
                                     <Icon type="down"/>
                                 </a>
                             </Dropdown>) : null}
-                        {_.get(this.state, 'customerRecord[0]') ? (
+                        {_.get(this.state, 'customerRecord[0]') || this.state.filterType ? (
                             <Dropdown overlay={this.getTypeMenu()} trigger={['click']}>
                                 <a className="ant-dropdown-link trace-filter-item">
                                     {this.state.filterType ? CALL_TYPE_MAP[this.state.filterType] : Intl.get('sales.frontpage.trace.type', '跟进类型')}

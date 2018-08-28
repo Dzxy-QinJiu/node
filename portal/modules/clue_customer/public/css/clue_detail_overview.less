@@ -1,6 +1,5 @@
-@FONT_COLOR:#C9C9C9;
+@FONT_COLOR:#999;
 .clue-detail-container{
-
   font-size: 14px;
   .clue-info-wrap{
     //线索添加人信息
@@ -21,15 +20,14 @@
   }
   .clue-detail-block{
     padding:10px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     background: #fff;
     .clue-info-item{
       overflow: hidden;
-      margin-bottom:8px;
+      margin-bottom:4px;
       .clue-info-label{
         float: left;
         width: 60px;
-        text-align: right;
         color: @FONT_COLOR;
         margin-right:10px;
         position: relative;
@@ -37,7 +35,7 @@
       }
       .clue-info-detail{
         float: left;
-        width: 337px;
+        width: 300px;
       }
     }
     .clue-info-item.no-margin-bottom{
@@ -45,6 +43,7 @@
     }
     .contact-item{
       overflow: hidden;
+      margin-left:6px;
        .contact-name{
          float: left;
          margin-right:10px;
@@ -92,7 +91,7 @@
         color: #8da8c5;
       }
       .clue-info-label{
-        top:3px;
+        top:0;
       }
       .btn-container{
         position: absolute;
@@ -100,6 +99,12 @@
         top:6px;
         .ant-btn{
           margin-right:5px;
+        }
+      }
+      .clue-info-detail{
+        padding-left: 6px;
+        .customer_search_wrap{
+          top: -3px;
         }
       }
     }
@@ -125,7 +130,7 @@
       background: #fff;
       margin-bottom: 0;
       .clue-info-label{
-        top:1px;
+        top:3px;
       }
       .btn-container{
         position: absolute;

@@ -38,9 +38,7 @@ weeklyReportStore.prototype.getSaleGroupTeams = function(result) {
         this.teamList.errMsg = result.errMsg;
     } else if (result.resData) {
         this.teamList.errMsg = '';
-        let resData = _.filter(result.resData, (item) => {
-            return item.manager_ids;
-        });
+        let resData = result.resData;
         if (_.isArray(resData) && resData.length) {
             this.teamList.list = resData;
             this.selectedTeamId = _.get(resData, '[0].group_id', '');

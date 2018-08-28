@@ -92,7 +92,7 @@ exports.getCrmLabelCls = function(customer_label) {
             'qualified-tag-style': customer_label === 1,//合格
             'history-qualified-tag-style': customer_label === 2,//曾经合格
             'loss-tag-style': customer_label === LABEL_TYPES.LOSS_TAG,
-            're-contract': customer_label === LABEL_TYPES.RE_CONTRACT,
+            're-contract-tag-style': customer_label === LABEL_TYPES.RE_CONTRACT,
         });
     }
     return customerLabelCls;
@@ -111,9 +111,8 @@ exports.processForTrace = processForTrace;
 exports.isClueTag = isClueTag;
 exports.CUSTOMER_TAGS = {
     QUALIFIED: Intl.get('common.qualified', '合格'),
-    TRIAL_QUALIFIED: Intl.get('common.trial.qualified', '试用合格'),
-    SIGN_QUALIFIED: Intl.get('common.official.qualified', '签约合格'),
     HISTORY_QUALIFIED: Intl.get('common.history.qualified', '曾经合格'),
+    NEVER_QUALIFIED: Intl.get('common.never.qualified', '从未合格')
 };
 //tab页上对应的描述
 var tabNameList = {

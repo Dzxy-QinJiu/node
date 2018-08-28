@@ -3,7 +3,7 @@
 .sales-clue-item-container {
   border-left: 2px solid transparent;
   position: relative;
-  margin: 10px;
+  margin: 24px;
   background: #fff;
   //关联客户
   .associate-wrap {
@@ -72,15 +72,15 @@
     }
 
     .clue-name {
-      font-weight: bold;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 16px;
     }
   }
   //线索的内容部分
   .clue-content {
     padding: 0 0 10px 16px;
-    font-size: 15px;
+    font-size: 14px;
+    color:#333;
     .recent-contacter-detail {
       background: #fff;
       padding: 8px 0;
@@ -95,6 +95,7 @@
   }
   //线索展示底部样式
   .clue-foot {
+    padding: 0 0 0 2px;
     .record-trace-container {
       .trace-author {
         margin: 0px 5px;
@@ -164,14 +165,36 @@
       padding: 0;
     }
     .foot-text-content{
-      .assign-btn{
-        margin-right: 10px;
-      }
       .ant-btn{
         margin-right: 10px;
       }
       .trace-sales,.record-trace-container, .associate-customer{
         margin:5px 0;
+      }
+      .handle-clue {
+        .handle-and-trace{
+          background-color: #fff;
+          border-radius: 4px;
+          height: 28px;
+          display:inline-block;
+          font-size: 14px;
+          color: #8CA9C5;
+          border: 1px solid #ebebeb;
+          white-space: nowrap;
+          line-height: 1.15;
+          padding: 5px 15px;
+          margin-right:5px;
+          .current-trace-person{
+            color:#333;
+            padding-right:5px;
+            border-right: 1px solid #8CA9C5;
+          }
+          .assign-btn{
+            cursor: pointer;
+            padding-left: 5px;
+          }
+
+        }
       }
     }
 
@@ -199,4 +222,28 @@
 
 .sales-clue-item-container.cur-clue {
   border-left: 2px solid #2196F3;
+}
+.customer-label.info-tag-style {
+  background-color: @info-tag-color;
+}
+.customer-label.intent-tag-style {
+  background-color: @intent-tag-color;
+}
+.customer-label.trial-tag-style {
+  background-color: @trial-tag-color;
+}
+.customer-label.sign-tag-style {
+  background-color: @sign-tag-color;
+}
+.customer-label.qualified-tag-style {
+  background-color: @qualified-tag-color;
+}
+.customer-label.history-qualified-tag-style {
+  background-color: @history-qualified-tag-color;
+}
+.customer-label.loss-tag-style {
+  background-color: @loss-tag-color;
+}
+.customer-label.re-contract-tag-style{
+  background-color: @re-contract-color;
 }

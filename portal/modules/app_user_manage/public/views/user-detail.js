@@ -1,9 +1,9 @@
 
 
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-detail-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../css/user-detail-zh_CN.less');
     require('../css/third-party-app-config.less');
 }
@@ -83,7 +83,7 @@ var UserDetail = React.createClass({
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT , this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT , this.panelSwitchRight);
     },
-    closeRightPanel: function() {
+    closeRightPanel: function(e) {
         if(_.isFunction(this.props.closeRightPanel)){
             this.props.closeRightPanel();
         }else{
@@ -98,6 +98,15 @@ var UserDetail = React.createClass({
         this.setState({
             activeKey: key
         });
+        if(key === '1'){
+            Trace.traceEvent('用户详情','基本资料');
+        }else if(key === '2'){
+            Trace.traceEvent('用户详情','用户分析');
+        }else if(key === '3'){
+            Trace.traceEvent('用户详情','审计日志');
+        }else if(key === '4'){
+            Trace.traceEvent('用户详情','变更记录');
+        }
     },
 
     render: function() {
@@ -105,23 +114,23 @@ var UserDetail = React.createClass({
         if(this.state.panel_switch_currentView) {
             let {thirdApp} = this.state;
             switch(this.state.panel_switch_currentView) {
-            case 'app':
-                var initialUser = AppUserDetailStore.getState().initialUser;
-                moveView = (<UserDetailAddApp initialUser={initialUser}/>);
-                break;
-            case 'editapp':
-                var initialUser = AppUserDetailStore.getState().initialUser;
-                var appInfo = this.state.panel_switch_appToEdit;
-                moveView = (
-                    <UserDetailEditApp
-                        initialUser={initialUser}
-                        appInfo={appInfo}/>
-                );
-                break;
-            case 'thirdapp':
-                moveView = (
-                    <ThirdAppDetail {...thirdApp}/>
-                );
+                case 'app':
+                    var initialUser = AppUserDetailStore.getState().initialUser;
+                    moveView = (<UserDetailAddApp initialUser={initialUser}/>);
+                    break;
+                case 'editapp':
+                    var initialUser = AppUserDetailStore.getState().initialUser;
+                    var appInfo = this.state.panel_switch_appToEdit;
+                    moveView = (
+                        <UserDetailEditApp
+                            initialUser={initialUser}
+                            appInfo={appInfo}/>
+                    );
+                    break;
+                case 'thirdapp':
+                    moveView = (
+                        <ThirdAppDetail {...thirdApp}/>
+                    );
             }
         }
         //当前选择的应用（用户详情的接口中无法返回应用是否合格的属性，需要用用户列表接口中返回的应用是否合格属性）
@@ -131,7 +140,7 @@ var UserDetail = React.createClass({
         }
         var tabPaneList = [
             <TabPane tab={Intl.get('user.basic.info', '基本资料')} key="1">
-                {this.state.activeKey == '1' ? <div className="user_manage_user_detail">
+                {this.state.activeKey === '1' ? <div className="user_manage_user_detail">
                     <UserDetailBasic userId={this.props.userId} selectApp={selectApp}/>
                 </div> : null}
             </TabPane>
@@ -139,14 +148,14 @@ var UserDetail = React.createClass({
         if(hasPrivilege('USER_AUDIT_LOG_LIST')) {
             tabPaneList.push(
                 <TabPane tab="用户分析" key="2">
-                    {this.state.activeKey == '2' ? <div className="user-analysis">
+                    {this.state.activeKey === '2' ? <div className="user-analysis">
                         <UserLoginAnalysis userId={this.props.userId} selectedAppId={this.props.selectedAppId}/>
                     </div> : null}
                 </TabPane>
             );
             tabPaneList.push(
                 <TabPane tab="审计日志" key="3">
-                    {this.state.activeKey == '3' ? <div className="user-log">
+                    {this.state.activeKey === '3' ? <div className="user-log">
                         <SingleUserLog 
                             userId={this.props.userId} 
                             selectedAppId={this.props.selectedAppId}
@@ -159,7 +168,7 @@ var UserDetail = React.createClass({
         if(hasPrivilege('USER_TIME_LINE')) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.change.record', '变更记录')} key="4">
-                    {this.state.activeKey == '4' ? <div className="user_manage_user_record">
+                    {this.state.activeKey === '4' ? <div className="user_manage_user_record">
                         <UserDetailChangeRecord
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
@@ -172,7 +181,7 @@ var UserDetail = React.createClass({
         if (hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && this.props.isShownExceptionTab){
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.login.abnormal', '异常登录')} key="5">
-                    {this.state.activeKey == '5' ? <div className="user_manage_login_abnormal">
+                    {this.state.activeKey === '5' ? <div className="user_manage_login_abnormal">
                         <UserAbnormalLogin
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
@@ -195,8 +204,8 @@ var UserDetail = React.createClass({
             );
         }
         return (
-            <div className="full_size app_user_full_size user_manage_user_detail_wrap" ref="wrap">
-                <RightPanelClose onClick={this.closeRightPanel}/>
+            <div className="full_size app_user_full_size user_manage_user_detail_wrap" ref="wrap" data-tracename="用户详情">
+                <RightPanelClose onClick={this.closeRightPanel} data-tracename="关闭用户详情"/>
                 <div className="full_size app_user_full_size_item wrap_padding">
                     <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
                         {tabPaneList}

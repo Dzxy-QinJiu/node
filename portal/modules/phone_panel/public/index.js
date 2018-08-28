@@ -13,6 +13,7 @@ var userData = require('PUB_DIR/sources/user-data');
 import AddCustomerForm from 'CMP_DIR/add-customer-form';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AddMoreInfo from './view/add-more-info';
+import AddScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {Button} from 'antd';
 import {RightPanel, RightPanelClose, RightPanelReturn} from 'CMP_DIR/rightPanel';
@@ -63,7 +64,8 @@ class PhonePanel extends React.Component {
             isInitialHeight: true, //恢复到初始的高度
             addCustomer: false,//是否需要添加客户 true代码需要添加客户，false代表不需要添加客户
             applyFormCustomerName: '',//申请用户面板用到的客户名
-            openAppShowFlag: false//是否展示开通应用面板
+            openAppShowFlag: false,//是否展示开通应用面板
+            isAddingPlanInfo: false//是否展示添加联系计划面板
         };
     }
 
@@ -105,16 +107,18 @@ class PhonePanel extends React.Component {
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
         }
     }
-    setStatePhoneNumb(phoneNum){
+
+    setStatePhoneNumb(phoneNum) {
         this.setState({
             phoneNum: phoneNum
         });
     }
+
     componentWillReceiveProps(nextProps) {
         //获取客户详情
         //只把客户详情赋值
         let paramObj = this.state.paramObj;
-        paramObj.customer_params = _.cloneDeep(_.get(nextProps, 'paramObj.customer_params',null));
+        paramObj.customer_params = _.cloneDeep(_.get(nextProps, 'paramObj.customer_params', null));
         if (nextProps.paramObj.call_params) {
             var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
             if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
@@ -138,7 +142,7 @@ class PhonePanel extends React.Component {
                 if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
                     this.setInitialData(phonemsgObj);
                 }
-                paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params',null));
+                paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
             }
         }
         this.setState({
@@ -153,13 +157,15 @@ class PhonePanel extends React.Component {
         } else {
             phoneNum = phonemsgObj.to || phonemsgObj.dst;
         }
-        this.setState({phoneNum: phoneNum, isAddFlag: false, applyUserShowFlag: false, openAppShowFlag: false});
+        this.setState({
+            phoneNum: phoneNum,
+            isAddFlag: false,
+            applyUserShowFlag: false,
+            openAppShowFlag: false
+        });
         //恢复初始数据
         phoneAlertAction.setInitialState();
         sendMessage && sendMessage('座机拨打电话，之前弹屏已打开' + phoneNum);
-        if (this.props.paramObj.call_params && _.isFunction(this.props.paramObj.call_params.setInitialPhoneObj)) {
-            this.props.paramObj.call_params.setInitialPhoneObj();
-        }
     }
 
     componentWillUnmount() {
@@ -177,9 +183,17 @@ class PhonePanel extends React.Component {
             //在最后阶段，将数据清除掉
             if (this.state.phonemsgObj && (this.state.phonemsgObj.type === PHONERINGSTATUS.phone || this.state.phonemsgObj.type === PHONERINGSTATUS.call_back)) {
                 //恢复初始数据
-                this.props.setInitialPhoneObj();
                 phoneAlertAction.setInitialState();
+                //清空联系人名称的信息
+                let paramObj = this.state.paramObj;
+                if (paramObj.call_params && _.isFunction(paramObj.call_params.setInitialPhoneObj)) {
+                    paramObj.call_params.setInitialPhoneObj();
+                }
+                if (_.get(paramObj, 'call_params.contactNameObj')) {
+                    paramObj.call_params.contactNameObj = {};
+                }
                 this.setState({
+                    paramObj: paramObj,
                     phoneNum: '',
                     rightPanelIsShow: false,
                     isInitialHeight: true,
@@ -257,7 +271,7 @@ class PhonePanel extends React.Component {
             <div className="customer-name">
                 <h3>
                     <i className="iconfont icon-interested"/>
-                    <span>{customer.name}</span>
+                    <span title={customer.name}>{customer.name}</span>
                 </h3>
                 <dl className="customer-info">
                     <dt>
@@ -375,6 +389,13 @@ class PhonePanel extends React.Component {
             isAddingMoreProdctInfo: true,
         });
     };
+    //添加联系计划
+    handleAddPlan = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-plan-info-container'), '点击添加联系计划按钮');
+        this.setState({
+            isAddingPlanInfo: true,
+        });
+    };
     //点击取消按钮
     handleCancel = () => {
         this.setState({
@@ -409,40 +430,61 @@ class PhonePanel extends React.Component {
             }
         });
     }
-
+    //取消保存联系计划
+    handleScheduleCancel = () => {
+        this.setState({
+            isAddingPlanInfo: false
+        });
+    };
     renderMainContent() {
+        let defalutCustomerInfoArr = _.get(this.state,'customerInfoArr[0]',{});
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
+        const newSchedule = {
+            customer_id: defalutCustomerInfoArr.id,
+            customer_name: defalutCustomerInfoArr.name,
+            start_time: '',
+            end_time: '',
+            alert_time: '',
+            topic: '',
+            edit: true
+        };
+        var cls = 'phone-alert-inner-content';
         if (this.state.isAddingMoreProdctInfo) {
             //添加产品反馈，竞品信息
             return (
-                <AddMoreInfo
-                    handleCancel={this.handleCancel}
-                    handleSubmit={this.handleSubmit}
-                    isAddingAppFeedback={this.state.isAddingAppFeedback}
-                    addAppFeedbackErrMsg={this.state.addAppFeedbackErrMsg}
-                />
+                <div className={cls}>
+                    <AddMoreInfo
+                        handleCancel={this.handleCancel}
+                        handleSubmit={this.handleSubmit}
+                        isAddingAppFeedback={this.state.isAddingAppFeedback}
+                        addAppFeedbackErrMsg={this.state.addAppFeedbackErrMsg}
+                    />
+                </div>
             );
-        } else if (this.state.isAddFlag) {
+        } else if (this.state.isAddingPlanInfo){
+            return (
+                <div className={`add-plan ${cls}`}>
+                    <AddScheduleForm
+                        handleScheduleCancel={this.handleScheduleCancel}
+                        currentSchedule={newSchedule}
+                        customerArr={this.state.customerInfoArr}
+                    />
+                </div>
+            );
+        }else if (this.state.isAddFlag) {
             var phoneNum = this.state.phoneNum || phonemsgObj.to;
             //添加客户表单
             return (
-                <AddCustomerForm
-                    phoneNum={phoneNum}
-                    hideAddForm={this.hideAddForm}
-                    updateCustomer={this.updateCustomer}
-                    showRightPanel={this.showRightPanel}
-                    scrollLayOut={Add_CUSTOMER_LAYOUT_CONSTANTS.BOTTOM_DELTA + Add_CUSTOMER_LAYOUT_CONSTANTS.TOP_DELTA}
-                />
-            );
-        } else if (!this.isCustomerDetailCall(this.state.paramObj)) {//不是从客户详情中拨打的电话时
-            //客户信息展示或者添加客户按钮
-            return (
-                <div className="customer-info-container">
-                    <div>
-                        {this.renderCustomerSizeTip(phonemsgObj)}
-                        <div className="customer-detail">{this.renderCustomerInfor(phonemsgObj)}</div>
-                    </div>
+                <div className={cls}>
+                    <AddCustomerForm
+                        phoneNum={phoneNum}
+                        hideAddForm={this.hideAddForm}
+                        updateCustomer={this.updateCustomer}
+                        showRightPanel={this.showRightPanel}
+                        scrollLayOut={Add_CUSTOMER_LAYOUT_CONSTANTS.BOTTOM_DELTA + Add_CUSTOMER_LAYOUT_CONSTANTS.TOP_DELTA}
+                    />
                 </div>
+
             );
         }
     }
@@ -536,7 +578,6 @@ class PhonePanel extends React.Component {
         }
         return customerId;
     }
-
     renderPhoneStatus() {
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         //有监听到推送消息时再渲染出页面
@@ -563,10 +604,20 @@ class PhonePanel extends React.Component {
                         contactNameObj={this.state.paramObj.call_params.contactNameObj}
                         detailCustomerId={this.getDetailCustomerId()}//客户详情中打电话时，客户的id
                         isAddingMoreProdctInfo={this.state.isAddingMoreProdctInfo}
+                        handleAddPlan={this.handleAddPlan}
+                        isAddingPlanInfo={this.state.isAddingPlanInfo}
                     />
-                    <div className="phone-alert-inner-content">
-                        {this.renderMainContent()}
-                    </div>
+                    {this.renderMainContent()}
+                    {!this.isCustomerDetailCall(this.state.paramObj) ? //不是从客户详情中拨打的电话时
+                    //客户信息展示或者添加客户按钮
+
+                        <div className="customer-info-container">
+                            <div>
+                                {this.renderCustomerSizeTip(phonemsgObj)}
+                                <div className="customer-detail">{this.renderCustomerInfor(phonemsgObj)}</div>
+                            </div>
+                        </div>
+                        : null}
                 </div>
                 {/*该客户下的用户列表*/}
                 {this.state.isShowCustomerUserListPanel ? <RightPanel

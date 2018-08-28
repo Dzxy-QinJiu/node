@@ -10,6 +10,9 @@
  * @param filterManager: 是否过滤掉舆情秘书
  */
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
+// 根据权限，判断获取团队和成员时所传字段的值
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import userData from '../user-data';
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -84,8 +87,7 @@ const removeEmptyItem = function(obj) {
 };
 exports.removeEmptyItem = removeEmptyItem;
 
-// 根据权限，判断获取团队和成员时所传字段的值
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+
 exports.getParamByPrivilege = function() {
     let reqData = {};
     if (hasPrivilege('GET_TEAM_LIST_ALL') || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
@@ -301,4 +303,8 @@ exports.renderClueStatus = function(status) {
             break;
     }
     return statusDes;
+};
+//获取线索未处理的权限
+exports.getClueUnhandledPrivilege = function(){
+    return hasPrivilege('CLUECUSTOMER_QUERY_MANAGER') || hasPrivilege('CLUECUSTOMER_QUERY_USER') && !userData.hasOnlyRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 };

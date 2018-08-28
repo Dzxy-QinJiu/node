@@ -1,6 +1,22 @@
 @import '../../../public/css/bootstrap-variables.less';
 @import '../../../public/css/common-variables';
-
+.unread-style{
+  position:absolute;
+  top:10px;
+  left:-40px;
+  margin-left:100%;
+  min-width:16px;
+  height:16px;
+  overflow:hidden;
+  background:#f41919;
+  border-radius:8px;
+  color:#fff;
+  line-height:16px;
+  font-size:12px;
+  text-align:center;
+  font-family:@font-family-sans-serif;
+  z-index: 1000;
+}
 .navbar {
   position: fixed;
   margin: 0 -15px;
@@ -143,6 +159,14 @@
 
     >li.clue_customer_ico i{
       background-image: url("../images/clue_customer.png");
+    }
+    //未读数样式
+    >li.clue_customer_ico{
+        &:before{
+          &:extend(.unread-style);
+          top:12px;
+          left:-35px;
+        }
     }
     >li.clue_customer_ico .active i, > li.clue_customer_ico i:hover{
       background-image: url("../images/clue_customer_hover.png");
@@ -322,21 +346,7 @@
       text-align: center;
       position:relative;
       &:before{
-        position:absolute;
-        top:6px;
-        left:-40px;
-        margin-left:100%;
-        min-width:16px;
-        height:16px;
-        overflow:hidden;
-        background:#f41919;
-        border-radius:8px;
-        color:#fff;
-        line-height:16px;
-        font-size:12px;
-        text-align:center;
-        font-family:@font-family-sans-serif;
-        z-index: 1000;
+        &:extend(.unread-style);
       }
       & > a {
         display: block;

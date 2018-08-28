@@ -40,6 +40,14 @@ module.exports = {
         },
         {
             method: 'get',
+            path: '/rest/crm/owner_name/:type',
+            handler: 'getOwnerNameList',
+            passport: {
+                needLogin: true
+            }
+        },
+        {
+            method: 'get',
             path: '/rest/crm/stage_tag/:type',
             handler: 'getStageTagList',
             passport: {
@@ -102,6 +110,14 @@ module.exports = {
             privileges: [
                 'CUSTOMER_ADD'
             ]
+        },
+        {
+            method: 'post',
+            path: '/rest/crm/add_customer_by_clue',
+            handler: 'addCustomerByClue',
+            passport: {
+                needLogin: true
+            }
         },
         {
             method: 'delete',

@@ -22,6 +22,9 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {SELECT_TYPE, AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+var timeoutFunc;//定时方法
+var timeout = 1000;//1秒后刷新未读数
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 
 class SalesClueItem extends React.Component {
     constructor(props) {
@@ -70,11 +73,13 @@ class SalesClueItem extends React.Component {
     }
 
     handleEditTrace = (updateItem) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
         this.setState({
             isEdittingItem: updateItem
         });
     };
     handleCancelBtn = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '取消保存跟进内容');
         this.setState({
             submitTraceErrMsg: '',
             isEdittingItem: {},
@@ -89,6 +94,17 @@ class SalesClueItem extends React.Component {
     handleSubmitContent = (item) => {
         if (this.state.submitTraceLoading) {
             return;
+        }
+        var value = _.get(item, 'customer_traces[0].remark', '');
+        if (Oplate && Oplate.unread && !value && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
+            Oplate.unread['unhandleClue'] -= 1;
+            if (timeoutFunc) {
+                clearTimeout(timeoutFunc);
+            }
+            timeoutFunc = setTimeout(function() {
+                //触发展示的组件待审批数的刷新
+                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+            }, timeout);
         }
         //获取填写的保存跟进记录的内容
         var textareVal = $.trim(this.state.submitContent);
@@ -169,7 +185,8 @@ class SalesClueItem extends React.Component {
                     onChange={this.handleInputChange}/>
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleSubmitContent.bind(this, salesClueItem)}
-                        disabled={this.state.submitTraceLoading}>{Intl.get('common.save', '保存')}
+                        disabled={this.state.submitTraceLoading} data-tracename="保存跟进内容">
+                        {Intl.get('common.save', '保存')}
                         {this.state.submitTraceLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className='cancel-btn'
@@ -284,6 +301,7 @@ class SalesClueItem extends React.Component {
         var traceAddTime = _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
         var tracePersonId = _.get(salesClueItem, 'customer_traces[0].user_id', '');//跟进人的id
         var tracePersonName = _.get(salesClueItem, 'customer_traces[0].nick_name', '');//跟进人的名字
+        var handlePersonName = _.get(salesClueItem,'user_name');//当前跟进人
         var cls = 'foot-text-content';
         //是否有标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
@@ -291,7 +309,7 @@ class SalesClueItem extends React.Component {
         var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability !== '1';
-        return <div className={cls}>
+        return <div className={cls} data-tracename="线索详情操作区域">
             {/*有跟进记录*/}
             {traceContent ?
                 <div className="record-trace-container">
@@ -305,7 +323,8 @@ class SalesClueItem extends React.Component {
                         </span>
                         {traceContent}
                         {canEditTrace ? <i className="iconfont icon-edit-btn"
-                            onClick={this.handleEditTrace.bind(this, salesClueItem)}></i> : null}
+                            onClick={this.handleEditTrace.bind(this, salesClueItem)}
+                        ></i> : null}
                     </span> : null }</div>
                 : null}
 
@@ -313,7 +332,7 @@ class SalesClueItem extends React.Component {
             {availability && associatedCustomer ?
                 <div className="associate-customer">
                     {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
-                    <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)}>{associatedCustomer}</b></div> : null}
+                    <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}</b></div> : null}
             {/*是无效线索且有判定无效的相关信息*/}
             {inValidClue ?
                 <div className="clue-info-item">
@@ -329,29 +348,32 @@ class SalesClueItem extends React.Component {
                 </div>
                 : null}
             <div className="handle-clue">
-                {/*有分配权限*/}
-                {hasAssignedPrivilege ?
-                    <AntcDropdown
-                        ref={'changesale' + salesClueItem.id}
-                        content={<Button
-                            data-tracename="点击分配线索客户按钮"
-                            className='assign-btn'>{Intl.get('clue.customer.distribute', '分配')}</Button>}
-                        overlayTitle={Intl.get('user.salesman', '销售人员')}
-                        okTitle={Intl.get('common.confirm', '确认')}
-                        cancelTitle={Intl.get('common.cancel', '取消')}
-                        isSaving={this.state.distributeLoading}
-                        overlayContent={this.props.renderSalesBlock()}
-                        handleSubmit={this.props.handleSubmitAssignSales.bind(this, salesClueItem)}
-                        unSelectDataTip={this.state.unSelectDataTip}
-                        clearSelectData={this.props.clearSelectSales}
-                        btnAtTop={false}
-                    /> : null
-                }
+                <div className="handle-and-trace">
+                    {handlePersonName ? <span className="current-trace-person">{Intl.get('clue.handle.clue.person', '当前跟进人')}: {handlePersonName}</span> : null}
+                    {/*有分配权限*/}
+                    {hasAssignedPrivilege ?
+                        <AntcDropdown
+                            ref={'changesale' + salesClueItem.id}
+                            content={<span
+                                data-tracename="点击分配线索客户按钮"
+                                className='assign-btn'>{Intl.get('clue.customer.distribute', '分配')}</span>}
+                            overlayTitle={Intl.get('user.salesman', '销售人员')}
+                            okTitle={Intl.get('common.confirm', '确认')}
+                            cancelTitle={Intl.get('common.cancel', '取消')}
+                            isSaving={this.state.distributeLoading}
+                            overlayContent={this.props.renderSalesBlock()}
+                            handleSubmit={this.props.handleSubmitAssignSales.bind(this, salesClueItem)}
+                            unSelectDataTip={this.state.unSelectDataTip}
+                            clearSelectData={this.props.clearSelectSales}
+                            btnAtTop={false}
+                        /> : null
+                    }
+                </div>
                 {!traceContent && hasPrivilege('CLUECUSTOMER_ADD_TRACE') && !isWillDistributeClue ?
-                    <Button
+                    <Button className='add-trace-content'
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
-                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleAssociateCustomer.bind(this, salesClueItem)}>{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
+                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleAssociateCustomer.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
             </div>
         </div>;
     }
@@ -393,11 +415,11 @@ class SalesClueItem extends React.Component {
             'cur-clue': this.state.isShowClueDetail || this.props.currentId === this.state.isAssocaiteItem.id
         });
         return (
-            <div className={itemCls}>
+            <div className={itemCls} data-tracename="线索概览信息">
                 <div className="clue-top-title">
                     <span className="hidden record-id">{salesClueItem.id}</span>
                     {this.renderClueStatus(salesClueItem.status)}
-                    <span className="clue-name"
+                    <span className="clue-name" data-tracename="查看线索详情"
                         onClick={this.handleShowClueDetail.bind(this, salesClueItem)}>{salesClueItem.name}</span>
                     {salesClueItem.availability === '1' ? <Tag>{Intl.get('sales.clue.is.enable', '无效')}</Tag> : null}
                 </div>
@@ -479,7 +501,6 @@ SalesClueItem.defaultProps = {
     afterAddClueTrace: function() {
 
     },
-    salesManList: [],
     unSelectDataTip: '',
     distributeLoading: false,
     clueCustomerTypeFilter: {},
@@ -507,7 +528,6 @@ SalesClueItem.propTypes = {
     errMsg: React.PropTypes.string,
     showFrontPageTip: React.PropTypes.bool,
     afterAddClueTrace: React.PropTypes.func,
-    salesManList: React.PropTypes.object,
     unSelectDataTip: React.PropTypes.string,
     distributeLoading: React.PropTypes.bool,
     clueCustomerTypeFilter: React.PropTypes.object,

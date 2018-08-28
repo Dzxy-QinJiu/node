@@ -5,7 +5,8 @@ function CRMActions() {
     this.generateActions(
         'setBasicState',
         'afterHandleStatus',
-        'setCrmUserList'
+        'setCrmUserList',
+        'afterAddSchedule'
     );
 
     this.getBasicData = function(curCustomer) {

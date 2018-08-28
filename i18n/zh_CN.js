@@ -188,6 +188,7 @@ var zh_CN = {
     'common.trial.qualified': '试用合格',
     'common.trial.unqualified': '试用不合格',
     'common.history.qualified': '曾经合格',
+    'common.never.qualified': '从未合格',
     'common.delay.time': '延期时间',
     'common.time.unit.day': '天',
     'common.time.unit.week': '周',
@@ -1410,6 +1411,7 @@ var zh_CN = {
     'crm.order.lose.reason': '丢单原因',
     'crm.no.order.lose.reason': '暂无丢单原因',
     'crm.fill.order.lose.reason': '补充丢单原因',
+    'crm.filter.select.placeholder': '请选择要筛选的{groupName}',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
@@ -2228,6 +2230,7 @@ var zh_CN = {
     'app.get.app.key.failed': '获取piwik信息失败',
     'app.insert.code': '我们建议您将下面的代码插入到<head>标签中。',
     'call.record.product.feedback': '产品反馈',
+    'call.record.add.product.feedback': '添加产品反馈',
     'call.record.app.lists': '正在获取应用列表',
     'call.record.feedback.prodcut': '请选择需要反馈的应用产品',
     'call.record.application.product': '应用产品',
@@ -2502,6 +2505,7 @@ var zh_CN = {
     'back.openApp.tip.success': '开通成功',
     'back.openApp.tip.fail': '开通失败',
     'back.openApp.confirm': '确认要开通{appName}功能吗',
+    'back.closeApp.apply': '申请停用',
     'common.history': '历史',
     'common.history.highest': '历史最高',
     'common.this.month.add.highest': '本月比历史最高净增',
@@ -2533,7 +2537,7 @@ var zh_CN = {
     'clue.add.clue.time': '添加于',
     'clue.no.trace.content': '暂无跟进',
     'clue.associate.user': '关联账号',
-    'clue.handle.clue.person': '处理人',
+    'clue.handle.clue.person': '当前跟进人',
     'clue.handle.no.distribute.clue': '未分配',
     'clue.has.no.data': '暂无',
     'clue.handle.clue': '线索处理',
@@ -2543,5 +2547,14 @@ var zh_CN = {
     'analysis.sales.weekly.report': '销售周报',
     'common.font.di': '第',
     'common.weeks': '周',
+    'clue.add.contacts.tip': '添加联系方式',
+    'clue.failed.get.clue.detail': '获取线索详情失败',
+    'clue.has.distribute.clue': '您有新的线索',
+    'clue.click.show.clue.detail': '点击查看线索详情',
+    'clue.import.csv': '上传表格',
+    'clue.download.clue.csv': '下载导入线索表格',
+    'clue.has.not.distribute': '该线索还没有分配',
+    'clue.not.complete.schedule': '今天的联系计划',
+    'clue.no.data.during.range.and.status': '当前筛选时间段及状态没有相关线索信息'
 };
 export default zh_CN;

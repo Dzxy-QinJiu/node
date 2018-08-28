@@ -11,18 +11,18 @@ import UserTimeRangeField from '../../../../components/user_manage_components/us
 import ValidateMixin from '../../../../mixins/ValidateMixin';
 const history = require('../../../../public/sources/history');
 const OrderAction = require('../action/order-actions');
-import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
+import UserNameTextfieldUtil from 'CMP_DIR/user_manage_components/user-name-textfield/util';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
 import contactAjax from '../ajax/contact-ajax';
 
 import DetailCard from 'CMP_DIR/detail-card';
 import DateSelectorPicker from 'CMP_DIR/date-selector/utils';
-import SquareLogoTag from './components/square-logo-tag';
-import ApplyUserAppConfig from './components/apply-user-app-config';
-import AppConfigForm from './components/apply-user-app-config/app-config-form';
+import SquareLogoTag from 'CMP_DIR/square-logo-tag';
+import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
+import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-apply-actions');
-
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 //顶部tab标题的高度
 const LAY_CONSTS = {
     TAB_TITLE_HEIGHT: 80
@@ -44,7 +44,9 @@ const ApplyUserForm = React.createClass({
             isLoading: false,
             configType: CONFIG_TYPE.UNIFIED_CONFIG,//配置类型：统一配置、分别配置
             customerContacts: [],//客户的联系人列表(在订单中，申请用户时，联系人中的邮箱作为用户名的选项)
-            applyFrom: this.props.applyFrom || 'order'//从哪里打开的申请面板,客户订单、客户的用户列表中
+            applyFrom: this.props.applyFrom || 'order',//从哪里打开的申请面板,客户订单、客户的用户列表中
+            maxHeight: this.props.maxHeight,//form表单的最大高度限制
+            formHeight: 215,//form表单初始高度
         };
     },
 
@@ -56,7 +58,7 @@ const ApplyUserForm = React.createClass({
         let diffAppIds = _.difference(newAppIds, oldAppIds);
         //获取新增的应用的默认配置
         this.getAppsDefaultConfig(diffAppIds);
-        this.setState({apps: $.extend(true, [], nextProps.apps)});
+        this.setState({apps: $.extend(true, [], nextProps.apps), maxHeight: nextProps.maxHeight});
     },
     buildFormData: function(props, apps) {
         //获取的应用默认配置列表
@@ -254,6 +256,8 @@ const ApplyUserForm = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
+        Trace.traceEvent(this.getDOMNode(), '点击确定按钮');
+
         if (this.state.isLoading) {
             //正在申请，不可重复申请
             return;
@@ -344,6 +348,7 @@ const ApplyUserForm = React.createClass({
     },
 
     handleCancel: function() {
+        Trace.traceEvent(this.getDOMNode(), '点击取消按钮');
         this.props.cancelApply();
     },
 
@@ -433,6 +438,7 @@ const ApplyUserForm = React.createClass({
             return this.getAppConfig(appData, appDefaultConfigList, formData.tag, true);
         });
         this.setState({configType, formData});
+        this.setFormHeight();
     },
 
     renderAppConfigForm: function(appFormData) {
@@ -510,73 +516,77 @@ const ApplyUserForm = React.createClass({
         };
         let selectAppIds = _.map(this.state.apps, 'client_id');
         return (
-            <Form horizontal className="apply-user-form">
-                <Validation ref="validation" onValidate={this.handleValidate}>
-                    {this.state.applyFrom === 'order' || this.isApplyNewUsers() ?
-                        this.renderUserNamesInputs(formData, formItemLayout) : (
+            <div style={{maxHeight: this.state.maxHeight, height: this.state.formHeight}}>
+                <GeminiScrollbar>
+                    <Form horizontal className="apply-user-form" id="crm-apply-user-form">
+                        <Validation ref="validation" onValidate={this.handleValidate}>
+                            {this.state.applyFrom === 'order' || this.isApplyNewUsers() ?
+                                this.renderUserNamesInputs(formData, formItemLayout) : (
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label={Intl.get('user.selected.user', '已选用户')}
+                                    >
+                                        {_.map(formData.user_names, name => {
+                                            return (<p className="user-name-item">{name}</p>);
+                                        })}
+                                    </FormItem>
+                                )}
+                            {this.state.applyFrom !== 'order' ? (
+                                <FormItem
+                                    {...formItemLayout}
+                                    label={Intl.get('user.apply.type', '申请类型')}
+                                >
+                                    <RadioGroup onChange={this.onUserTypeChange}
+                                        value={formData.tag}>
+                                        <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
+                                            {Intl.get('common.trial.user', '试用用户')}
+                                        </Radio>
+                                        <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
+                                            {Intl.get('user.signed.user', '签约用户')}
+                                        </Radio>
+                                    </RadioGroup>
+                                </FormItem>) : null}
                             <FormItem
                                 {...formItemLayout}
-                                label={Intl.get('user.selected.user', '已选用户')}
+                                label={Intl.get('common.app', '应用')}
+                                validateStatus={this.getValidateStatus('selectAppIds')}
+                                help={this.getHelpMessage('selectAppIds')}
+                                required
                             >
-                                {_.map(formData.user_names, name => {
-                                    return (<p className="user-name-item">{name}</p>);
-                                })}
+                                <Validator rules={[{
+                                    required: true,
+                                    message: Intl.get('user.app.select.please', '请选择应用'),
+                                    type: 'array'
+                                }]}>
+                                    <Select mode="tags" value={selectAppIds} name='selectAppIds'
+                                        dropdownClassName="apply-user-apps-dropdown"
+                                        placeholder={Intl.get('user.app.select.please', '请选择应用')}
+                                        onChange={this.handleChangeApps.bind(this)}>
+                                        {this.getAppOptions(selectAppIds)}
+                                    </Select>
+                                </Validator>
                             </FormItem>
-                        )}
-                    {this.state.applyFrom !== 'order' ? (
-                        <FormItem
-                            {...formItemLayout}
-                            label={Intl.get('user.apply.type', '申请类型')}
-                        >
-                            <RadioGroup onChange={this.onUserTypeChange}
-                                value={formData.tag}>
-                                <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
-                                    {Intl.get('common.trial.user', '试用用户')}
-                                </Radio>
-                                <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
-                                    {Intl.get('user.signed.user', '签约用户')}
-                                </Radio>
-                            </RadioGroup>
-                        </FormItem>) : null}
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get('common.app', '应用')}
-                        validateStatus={this.getValidateStatus('selectAppIds')}
-                        help={this.getHelpMessage('selectAppIds')}
-                        required
-                    >
-                        <Validator rules={[{
-                            required: true,
-                            message: Intl.get('user.app.select.please', '请选择应用'),
-                            type: 'array'
-                        }]}>
-                            <Select mode="tags" value={selectAppIds} name='selectAppIds'
-                                dropdownClassName="apply-user-apps-dropdown"
-                                placeholder={Intl.get('user.app.select.please', '请选择应用')}
-                                onChange={this.handleChangeApps.bind(this)}>
-                                {this.getAppOptions(selectAppIds)}
-                            </Select>
-                        </Validator>
-                    </FormItem>
-                    {_.isArray(selectAppIds) && selectAppIds.length ? (
-                        <ApplyUserAppConfig apps={this.state.apps}
-                            appsFormData={formData.products}
-                            configType={this.state.configType}
-                            changeConfigType={this.changeConfigType}
-                            renderAppConfigForm={this.renderAppConfigForm.bind(this)}
-                        />) : null}
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get('common.remark', '备注')}
-                    >
-                        <TextArea
-                            placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
-                            value={formData.remark}
-                            autosize={{minRows: 2, maxRows: 6}}
-                            onChange={this.onRemarkChange}/>
-                    </FormItem>
-                </Validation>
-            </Form>
+                            {_.isArray(selectAppIds) && selectAppIds.length ? (
+                                <ApplyUserAppConfig apps={this.state.apps}
+                                    appsFormData={formData.products}
+                                    configType={this.state.configType}
+                                    changeConfigType={this.changeConfigType}
+                                    renderAppConfigForm={this.renderAppConfigForm.bind(this)}
+                                />) : null}
+                            <FormItem
+                                {...formItemLayout}
+                                label={Intl.get('common.remark', '备注')}
+                            >
+                                <TextArea
+                                    placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
+                                    value={formData.remark}
+                                    autosize={{minRows: 2, maxRows: 6}}
+                                    onChange={this.onRemarkChange}/>
+                            </FormItem>
+                        </Validation>
+                    </Form>
+                </GeminiScrollbar>
+            </div>
         );
     },
     handleChangeApps: function(appIds) {
@@ -616,6 +626,16 @@ const ApplyUserForm = React.createClass({
         }
         formData.selectAppIds = appIds;
         this.setState({apps: this.state.apps, formData: formData});
+        this.setFormHeight();
+    },
+    setFormHeight: function() {
+        setTimeout(() => {
+            let formHeight = this.state.formHeight;
+            if($('#crm-apply-user-form').size()){
+                formHeight = $('#crm-apply-user-form').height();
+            }
+            this.setState({formHeight});
+        });
     },
     getAppOptions: function(selectAppIds) {
         let appList = this.props.appList;
@@ -648,7 +668,7 @@ const ApplyUserForm = React.createClass({
         }
         return (
             <DetailCard title={title}
-                className="apply-user-form-container"
+                className="crm-apply-user-form-container"
                 content={this.renderApplyUserForm()}
                 isEdit={true}
                 loading={this.state.loading}
