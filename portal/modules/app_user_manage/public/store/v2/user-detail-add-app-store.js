@@ -7,7 +7,7 @@ import DateSelectorUtils from '../../../../../components/date-selector/utils';
 import AppUserUtils from '../../util/app-user-util';
 
 class UserDetailAddAppStore {
-    constructor(){
+    constructor() {
         this.resetState();
         this.bindActions(UserDetailAddAppActions);
     }
@@ -21,6 +21,7 @@ class UserDetailAddAppStore {
         this.currentRealmAppsResult = 'loading';
         //当前安全域下的应用列表
         this.currentRealmApps = [];
+        this.rawApps = [];
         //第三步应用的特殊配置，保存在这个map里
         this.appsSetting = {};
         //时间
@@ -42,6 +43,21 @@ class UserDetailAddAppStore {
             //多人登录
             multilogin: '0'
         };
+        this.defaultSettings = {
+            user_type: AppUserUtils.USER_TYPE_VALUE_MAP.TRIAL_USER,
+            over_draft: '1',
+            //二步认证
+            is_two_factor: '0',
+            //多人登录
+            multilogin: '0',
+            time: {
+                start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
+                //结束时间
+                end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
+                //开通周期
+                range: '0.5m',
+            }
+        },
         //选中的应用列表的数组
         this.selectedApps = [];
         //是否显示至少选择一个应用
@@ -58,7 +74,7 @@ class UserDetailAddAppStore {
     //上一步、下一步
     turnStep(direction) {
         this.stepDirection = direction;
-        if(direction === 'next') {
+        if (direction === 'next') {
             this.step++;
         } else {
             this.step--;
@@ -66,14 +82,14 @@ class UserDetailAddAppStore {
     }
     //获取当前安全域下的应用
     getCurrentRealmApps(result) {
-        if(result.loading) {
+        if (result.loading) {
             this.currentRealmAppsResult = 'loading';
-        } else if(result.error){
+        } else if (result.error) {
             this.currentRealmAppsResult = 'error';
         } else {
             this.currentRealmAppsResult = '';
             let resultList = result.list;
-            if(!_.isArray(resultList) || !resultList[0]) {
+            if (!_.isArray(resultList) || !resultList[0]) {
                 resultList = [];
             }
             //用户详情对象
@@ -81,19 +97,20 @@ class UserDetailAddAppStore {
             //已经开通的应用
             const existApps = detailUser.apps || [];
             //已经选中的应用的map，用来过滤
-            var selected_map = _.groupBy(existApps , 'app_id');
+            var selected_map = _.groupBy(existApps, 'app_id');
             //去掉用户已经拥有的应用
-            this.currentRealmApps = _.filter(resultList , function(app) {
-                if(!selected_map[app.app_id]) {
+            this.currentRealmApps = _.filter(resultList, function(app) {
+                if (!selected_map[app.app_id]) {
                     return true;
                 }
             });
+            this.rawApps = this.currentRealmApps;
         }
     }
     //选中的应用列表发生变化
     setSelectedApps(apps) {
         this.selectedApps = apps;
-        if(_.isArray(this.selectedApps) && this.selectedApps[0]) {
+        if (_.isArray(this.selectedApps) && this.selectedApps[0]) {
             this.isSelectedAppsError = false;
         } else {
             this.isSelectedAppsError = true;
@@ -105,12 +122,12 @@ class UserDetailAddAppStore {
     }
     //为用户添加应用
     addUserApps(result) {
-        if(result.error) {
+        if (result.error) {
             this.submitResult = 'error';
             this.submitErrorMsg = result.errorMsg;
         } else {
             this.submitErrorMsg = '';
-            if(result.loading) {
+            if (result.loading) {
                 this.submitResult = 'loading';
             } else {
                 this.submitResult = 'success';
@@ -118,7 +135,7 @@ class UserDetailAddAppStore {
                     this.resetState();
                     AppUserPanelSwitchAction.resetState();
                     AppUserDetailAction.addAppSuccess(result.apps);
-                } , 500);
+                }, 500);
             }
         }
     }
@@ -174,7 +191,14 @@ class UserDetailAddAppStore {
         this.submitResult = 'selectRoleError';
         this.submitErrorMsg = error;
     }
+    //根据关键字过滤已有应用列表
+    filterApps(keyWords) {
+        if (!keyWords) {
+            this.currentRealmApps = this.rawApps;
+        }
+        this.currentRealmApps = this.rawApps.filter(x => x.app_name.includes(keyWords));
+    }
 }
 
 //使用alt导出store
-export default alt.createStore(UserDetailAddAppStore , 'UserDetailAddAppStoreV2');
+export default alt.createStore(UserDetailAddAppStore, 'UserDetailAddAppStoreV2');

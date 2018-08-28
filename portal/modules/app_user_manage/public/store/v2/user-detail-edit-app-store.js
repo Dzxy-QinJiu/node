@@ -26,7 +26,7 @@ class UserDetailEditAppStore {
     //选中的应用列表发生变化
     setInitialData(appInfo) {
         //修改单个应用，所以选中应用只有一个
-        this.selectedApps = [_.pick(appInfo , 'app_id' , 'app_name')];
+        this.selectedApps = [_.pick(appInfo , 'app_id' , 'app_name', 'app_logo')];
         //根据应用信息计算“开始时间、结束时间、周期”
         let start_time = appInfo.start_time,
             end_time = appInfo.end_time,

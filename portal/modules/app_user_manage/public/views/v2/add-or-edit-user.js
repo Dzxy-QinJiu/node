@@ -534,7 +534,7 @@ const AddOrEditUser = React.createClass({
         });
         return (
             <OperationScrollBar className="basic-data-form-wrap">
-                <div className="basic-data-form">
+                <div className="basic-data-form">                    
                     <div className="form-item">
                         <div className="form-item-label required_label"><ReactIntl.FormattedMessage id="common.username"
                             defaultMessage="用户名"/>

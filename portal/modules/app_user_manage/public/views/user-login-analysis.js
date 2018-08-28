@@ -6,7 +6,13 @@ var UserLoginAnalysisAction = require('../action/user-login-analysis-action');
 var UserLoginAnalysisStore = require('../store/user-login-analysis-store');
 import TimeUtil from '../../../../public/sources/utils/time-format-util';
 import CardContainer from 'CMP_DIR/card-container'; // 容器
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import DetailCard from 'CMP_DIR/detail-card';
+import StatusWrapper from 'CMP_DIR/status-wrapper';
+var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
+var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
+import { AntcChart } from 'antc';
+import { Progress } from 'antd';
 
 const UserLoginAnalysis = React.createClass({
     getDefaultProps: function() {
@@ -17,6 +23,7 @@ const UserLoginAnalysis = React.createClass({
     getInitialState: function() {
         return {
             selectValue: 'LoginFrequency',
+            showDetailMap: {},//是否展示app详情的map
             ...this.getStateData()
         };
     },
@@ -27,8 +34,8 @@ const UserLoginAnalysis = React.createClass({
         return UserLoginAnalysisStore.getState();
     },
     getUserAnalysisInfo(userId, selectedAppId) {
-        UserLoginAnalysisAction.getSingleUserAppList({user_id: userId}, selectedAppId);
-        if(selectedAppId){
+        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId }, selectedAppId);
+        if (selectedAppId) {
             UserLoginAnalysisAction.setSelectedAppId(selectedAppId);
         }
     },
@@ -76,14 +83,14 @@ const UserLoginAnalysis = React.createClass({
         UserLoginAnalysisAction.resetState();
         UserLoginAnalysisAction.setSelectedAppId(appid);
         // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
-        this.getUserAnalysisData({appid: appid});
+        this.getUserAnalysisData({ appid: appid });
     },
     // 应用选择框
-    renderUserAppsList(){
+    renderUserAppsList() {
         let showAppSelect = this.props.selectedAppId;
         return (
             <div className="user-analysis-header clearfix">
-                { showAppSelect ? null : <div className="select-app">
+                {showAppSelect ? null : <div className="select-app">
                     <SelectFullWidth
                         showSearch
                         optionFilterProp="children"
@@ -94,7 +101,7 @@ const UserLoginAnalysis = React.createClass({
                         maxWidth={270}
                         notFoundContent={Intl.get('common.not.found', '无法找到')}
                     >
-                        { _.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
+                        {_.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
                             return (
                                 <Option value={item.app_id} key={item.app_id}>
                                     {item.app_name}
@@ -113,14 +120,14 @@ const UserLoginAnalysis = React.createClass({
         } else if (loginLast !== -1 || loginFirst !== -1) {
             return (
                 <div>
-                    { loginFirst !== -1 ? (
-                        <div>
-                            {Intl.get('user.first.login', '首次登录')}:<span className="login-stress">{loginFirst}</span>
+                    {loginFirst !== -1 ? (
+                        <div className="info-item-container">
+                            {Intl.get('user.first.login', '首次登录')}：<span className="login-stress">{loginFirst}</span>
                         </div>
                     ) : null}
-                    { loginLast !== -1 ? (
-                        <div>
-                            {Intl.get('user.last.login', '最近登录')}:<span className="login-stress">{loginLast}</span>
+                    {loginLast !== -1 ? (
+                        <div className="info-item-container">
+                            {Intl.get('user.last.login', '最近登录')}：<span className="login-stress">{loginLast}</span>
                         </div>
                     ) : null
                     }
@@ -178,30 +185,37 @@ const UserLoginAnalysis = React.createClass({
         } else {
             return (
                 <div className='login-score'>
-                    <div>
-                        {Intl.get('user.login.total.score', '总分')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}</span>
+                    <div className="score-container total-score">
+                        <span className="over-icon">{Intl.get('user.login.total.score', '总分')}</span>
+                        <Progress
+                            type="circle"
+                            width={100}
+                            percent={this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}
+                            format={percent => `${percent}`}
+                        />
                     </div>
-                    <div>
-                        {Intl.get('user.login.latest.activity.score', '最新活跃度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}</span>
-                    </div>
-                    <div>
-                        {Intl.get('user.login.latest.immersion.score', '最新沉浸度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}</span>
-                    </div>
-                    <div>
-                        {Intl.get('user.login.freshness.score', '新鲜度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}</span>
-                    </div>
-                    <div>
-                        {Intl.get('user.login.history.activity.score', '历史活跃度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}</span>
-                    </div>
-                    <div>
-                        {Intl.get('user.login.history.immersion.score', '历史沉浸度分数')}:
-                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}</span>
-                    </div>
+                    <ul className="score-container">
+                        <li>
+                            {Intl.get('user.login.latest.activity.score', '最新活跃度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}</span>
+                        </li>
+                        <li>
+                            {Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}</span>
+                        </li>
+                        <li>
+                            {Intl.get('user.login.freshness.score', '新鲜度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}</span>
+                        </li>
+                        <li>
+                            {Intl.get('user.login.history.activity.score', '历史活跃度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}</span>
+                        </li>
+                        <li>
+                            {Intl.get('user.login.history.immersion.score', '历史沉浸度')}:
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}</span>
+                        </li>
+                    </ul>
                 </div>
             );
         }
@@ -214,7 +228,7 @@ const UserLoginAnalysis = React.createClass({
     // 用户登录信息
     renderUserLoginInfo() {
         let millisecond = this.state.loginInfo.duration;
-        let timeObj = {timeDescr: ' '};
+        let timeObj = { timeDescr: ' ' };
         if (millisecond !== '') {
             timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(millisecond / 1000));
         }
@@ -231,16 +245,17 @@ const UserLoginAnalysis = React.createClass({
         }
         if (count || millisecond) {
             return (
-                <div className="login-info">
-                    <div>
-                        {Intl.get('user.login.times', '登录次数')}:<span className="login-stress">{count}</span>
-                    </div>
-                    { Oplate.hideSomeItem ? null : (
-                        <div>
-                            {Intl.get('user.login.duration', '在线时长')}:<span className="login-stress">{timeObj.timeDescr}</span>
+                <div className="login-info clearfix">
+                    {Oplate.hideSomeItem ? null : (
+                        <div className="info-item-container">
+                            {Intl.get('user.login.duration', '在线时长')}：<span className="login-stress">{timeObj.timeDescr}</span>
                         </div>
                     )}
-                    { this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
+                    <div className="info-item-container">
+                        {Intl.get('user.login.times', '登录次数')}：<span className="login-stress">{count}</span>
+                    </div>
+
+                    {this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
                 </div>
             );
         } else {
@@ -252,7 +267,7 @@ const UserLoginAnalysis = React.createClass({
         let queryObj = this.getQueryParams();
         UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
     },
-    renderLoginChart(){
+    renderLoginChart() {
         if (this.state.loginChartInfo.errorMsg) {
             return (
                 <div className="login-info">
@@ -263,8 +278,8 @@ const UserLoginAnalysis = React.createClass({
                 </div>
             );
         }
-        const radioValue = [{value: 'LoginFrequency', name: '次数'}, {value: 'loginDuration', name: '时长'}];
-        if(_.isArray(this.state.loginChartInfo.loginDuration) || _.isArray(this.state.loginChartInfo.loginCount)) {
+        const radioValue = [{ value: 'LoginFrequency', name: '次数' }, { value: 'loginDuration', name: '时长' }];
+        if (_.isArray(this.state.loginChartInfo.loginDuration) || _.isArray(this.state.loginChartInfo.loginCount)) {
             return (
                 <div className="login-chart">
                     {Oplate.hideSomeItem ? (
@@ -279,13 +294,14 @@ const UserLoginAnalysis = React.createClass({
                             radioValue={radioValue}
                             dateRange={this.state.selectValue}
                             onDateRangeChange={this.handleSelectRadio}
+                            title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
                         >
                             <div className="duration-chart">
                                 {
                                     this.state.selectValue === 'loginDuration' ?
-                                        // 时长
+                                    // 时长
                                         this.renderChart(this.state.loginChartInfo.loginDuration, this.durationTooltip) :
-                                        // 次数
+                                    // 次数
                                         this.renderChart(this.state.loginChartInfo.loginCount, this.chartFrequencyTooltip)
                                 }
                             </div>
@@ -300,12 +316,29 @@ const UserLoginAnalysis = React.createClass({
     },
 
     renderChart(data, charTips) {
+        const calendarHeatMapOption = {
+            calendar: [{
+                cellSize: [7, 7],
+                left: 30,
+                top: 20,
+                bottom: 0,
+                height: 110,
+                width: 'auto'             
+            }],
+            tooltip: {
+                formatter: charTips
+            },
+        };
+
         if (_.isArray(data) && data.length) {
-            return (
-                <TimeSeriesBarChart
-                    dataList={data}
-                    tooltip={charTips}
+            return (               
+                <AntcChart
+                    resultType=""
+                    data={data.map(x => ([moment(x.date).format('YYYY-MM-DD'), x.sum]))}
+                    chartType="calendar_heatmap"
+                    option={calendarHeatMapOption}
                 />
+
             );
         } else {
             return (
@@ -317,19 +350,25 @@ const UserLoginAnalysis = React.createClass({
     },
 
     // 用户登录时长的统计图的提示信息
-    durationTooltip: function(time, sum) {
-        let timeObj = TimeUtil.secondsToHourMinuteSecond(sum || 0);
+    durationTooltip: function(params) {
+        const data = params.data;
+        const date = _.first(data);
+        const value = _.last(data);
+        let timeObj = TimeUtil.secondsToHourMinuteSecond(value || 0);
         return [
-            Intl.get('common.login.time', '时间') + ' : ' + `${time}`,
+            Intl.get('common.login.time', '时间') + ' : ' + `${date}`,
             Intl.get('user.duration', '时长') + ' : ' + `${timeObj.timeDescr}`
         ].join('<br />');
     },
 
     // 用户登录次数的统计图的提示信息
-    chartFrequencyTooltip: function(time, sum) {
+    chartFrequencyTooltip: function(params) {
+        const data = params.data;
+        const date = _.first(data);
+        const value = _.last(data);
         return [
-            Intl.get('common.login.time', '时间') + ' : ' + `${time}`,
-            Intl.get('user.login.time', '次数') + ' : ' + `${sum}`
+            Intl.get('common.login.time', '时间') + ' : ' + `${date}`,
+            Intl.get('user.login.time', '次数') + ' : ' + `${value}`
         ].join('<br />');
     },
 
@@ -338,30 +377,65 @@ const UserLoginAnalysis = React.createClass({
             selectValue: dataRange
         });
     },
-
+    showAppDetail: function(appName, isShow) {
+        const showDetailMap = this.state.showDetailMap;
+        showDetailMap[appName] = isShow;
+        this.setState({
+            showDetailMap
+        });
+    },
     render: function() {
-        let appList = this.renderUserAppsList();
-        let LoadingBlock = this.state.isLoading ? (
-            <Spinner />
-        ) : null;
-        let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 && _.get(this.state.loginScore.data, 'score') === 0 ?
-            (
-                <div className="user-no-login">
-                    {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
-                </div>
-            ) : (
-                <div className="user-login-info">
-                    {this.renderUserLoginScore()}
-                    {this.renderUserLoginInfo()}
-                    {this.renderLoginChart()}
-                </div>
-            );
+        const userLoginBlock = (
+            <ul>
+                {
+                    this.state.userOwnAppArray.map((app, index) => (
+                        <DetailCard
+                            key={index}
+                            titleBottomBorderNone={!this.state.showDetailMap[app.app_name]}
+                            title={(
+                                <div className='title-container'>
+                                    <span className="logo-container" title={app.app_name}>
+                                        <DefaultUserLogoTitle
+                                            nickName={app.app_name}
+                                            userLogo={app.app_logo}
+                                        />
+                                    </span>
+                                    <p title={app.app_name}>{app.app_name}</p>
+                                    <span className="btn-bar">
+                                        {
+                                            this.state.showDetailMap[app.app_name] ?
+                                                <span className="iconfont icon-up-twoline" onClick={this.showAppDetail.bind(this, app.app_name, false)}></span> :
+                                                <span className="iconfont icon-down-twoline" onClick={this.showAppDetail.bind(this, app.app_name, true)}></span>
+                                        }
+                                    </span>
+                                </div>
+                            )}
+                            content={
+                                this.state.showDetailMap[app.app_name] ?
+                                    (<div className="user-login-info">
+                                        {this.renderUserLoginScore()}
+                                        {this.renderUserLoginInfo()}
+                                        {this.renderLoginChart()}
+                                    </div>) : null
+                            }
+                        />
+                    ))
+                }
+            </ul>
+        );
         return (
-            <div className="user-analysis-panel">
-                {appList}
-                {LoadingBlock}
-                {UserLoginBlock}
-            </div>
+            <StatusWrapper
+                loading={this.state.isLoading}
+            >
+                <div className="user-analysis-panel" style={{ height: this.props.height }}>
+                    {/* {appList} */}
+                    <GeminiScrollbar>
+                        {!this.state.loginInfo.count && !this.state.loginInfo.duration ? <div className="user-no-login">
+                            {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
+                        </div> : userLoginBlock}
+                    </GeminiScrollbar>
+                </div>
+            </StatusWrapper>
         );
     }
 });

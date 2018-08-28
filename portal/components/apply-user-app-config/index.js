@@ -28,7 +28,7 @@ class ApplyUserAppConfig extends React.Component {
             <div className="app-config-tab-container">
                 <Tabs type="card" activeKey={this.props.configType} onChange={this.changeConfigType.bind(this)}>
                     <TabPane tab={Intl.get('crm.apply.user.unified.config', '统一配置')} key={CONFIG_TYPE.UNIFIED_CONFIG}>
-                        {this.renderAppConfigForm(appsFormData[0])}
+                        {this.renderAppConfigForm(appsFormData[0], apps[0])}
                     </TabPane>
                     <TabPane tab={Intl.get('crm.apply.user.separate.config', '分别配置')} key={CONFIG_TYPE.SEPARATE_CONFIG}>
                         {_.map(apps, app => {
@@ -40,7 +40,7 @@ class ApplyUserAppConfig extends React.Component {
                                             logo={app ? app.client_logo : ''}
                                         />
                                     </div>
-                                    {this.renderAppConfigForm(formData)}
+                                    {this.renderAppConfigForm(formData, app)}
                                 </div>);
                         })}
                     </TabPane>
@@ -48,9 +48,9 @@ class ApplyUserAppConfig extends React.Component {
             </div>);
     }
 
-    renderAppConfigForm(appFormData) {
+    renderAppConfigForm(appFormData, app) {
         if (_.isFunction(this.props.renderAppConfigForm)) {
-            return this.props.renderAppConfigForm(appFormData);
+            return this.props.renderAppConfigForm(appFormData, app);
         }
         return null;
     }

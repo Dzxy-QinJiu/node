@@ -12,7 +12,9 @@ class UserDetailAddAppActions {
             //保存应用的特殊配置
             'saveAppsSetting',
             //将应用的特殊配置同步到全局配置
-            'syncCustomAppSettingToGlobalSetting'
+            'syncCustomAppSettingToGlobalSetting',
+            //根据关键字过滤已有应用列表
+            'filterApps'
         );
     }
     getCurrentRealmApps() {

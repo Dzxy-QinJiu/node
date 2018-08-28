@@ -279,6 +279,10 @@ var en_US = {
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
     'user.user.app.select': 'Select applications',//选择应用
+    'user.detail.addApp.selectAndConfig': 'Select and config apps',//'选择应用并配置',
+    'user.detail.addApp.setRolePermissions': 'Config role and permissions',//'设置角色权限',
+    'user.detail.errorTip.getRoleTimeout': 'get role data time out',//'获取角色列表超时',
+    'user.detail.errorTip.getPermissionTimeout': 'get permissions data time out',
     'user.user.app.set': 'Application Configuration',//应用设置
     'user.batch.operation': 'Batch operations',//批量操作
     'user.operator': 'Operator',//操作人
@@ -289,6 +293,13 @@ var en_US = {
     'user.login.times': 'Login Times',//登录次数
     'user.login.score': 'Score', // 分数
     'user.login.days': 'Login Days', // 登录天数
+    'user.detail.return': 'return to basic info', //'返回基本信息',
+    'user.detail.loginAnalysis.title': 'Statistic of login times in a year',//'近一年的活跃统计',
+    'user.detail.tip.collapse': 'Collapse config', //'收起停用前设置',
+    'user.detail.tip.expand': 'Expand config', //'展开停用前设置',
+    'user.detail.belongTo': 'Belong to', //'归属',
+    'user.detail.belongToOrg': 'Belong to organazation', //'所属组织',
+    'user.detail.tip.searchApp': 'Input keywords to search apps', //'输入关键字自动搜索',
     'user.remark.write.tip': 'Please fill in the remarks',//请填写备注
     'user.remark.set.tip': 'Configure remarks',//设置备注
     'user.user.list.click': 'Please click at user list',//请在用户列表中点击
@@ -565,6 +576,8 @@ var en_US = {
     'user.position.select.user': 'Please select user', // 请选择用户
     'user.third.thirdapp.consts.sina': 'Sina Weibo',//新浪微博',
     'user.third.thirdapp.consts.tencent': 'Tencent Weibo',//腾讯微博',
+    'user.permission.show': 'spread particular permission', //'展开具体权限',
+    'user.permission.hide': 'collapse particular permission', //'收起具体权限',
     /*用户管理模块-end*/
 
     /*角色管理模块-start*/
@@ -2169,11 +2182,13 @@ var en_US = {
     'user.login.abnormal': 'Abnormal login',//异常登录
     'user.retry.login': 'Login after disabling. The user\'s {appName} account has been disabled and still trying to login.',//停用后登录。该用户的{appName}账号已经停用，仍尝试登录。
     'user.exception.login': 'Login exception. The user\'s {client_name} account is not logged in the usual location.',//登录地异常。该用户的{client_name}账号，不在常用登录地登录。
+    'user.exception.login.location': 'Abnormal login location', //'登录地异常',
     'user.usual.location': 'The common login is {usuallocation}.',//常用登录地为{usuallocation}。
     'user.current.location': 'The current login is {currentlocation}，',//该次登录地为{currentlocation}。
     'user.current.ip': 'the login IP is {currentip}.', // IP为{currentip}
     'user.failed.frequent.login': 'Login frequency exception. The user\'s {appName} account logins more than 50 times for 1 consecutive hour and each time is a successful login.',//登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。
     'user.success.frequent.login': 'Login frequency exception. The user\'s {appName} account logins more than 50 times for 1 consecutive hour and each time is a successful login.',//登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。
+    'user.success.frequent.login.short': 'Login frequency exception',//'登录频率异常',
     'user.login.abnormal.ignore': 'Ignore', // 忽略
     'user.login.abnormal.success': 'This remote information has been ignored.', // 该条异地信息已忽略!
     'user.login.abnormal.failed': 'Failed to Ignored Exception login', // 忽略异常登录地失败！
@@ -2485,6 +2500,7 @@ var en_US = {
     'sales.home.fill.in.trace.content': 'Please fill in follow-up content',//请输入跟进内容
     'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
     'analysis.weekly.report': 'Weekly report',//周报分析
+    'appEdit.basicConig': 'basic config',//'基本配置',
     'back.openApp': 'Open app',//开通应用
     'back.openApp.range': 'range of open-app',//'开通范围',
     'back.openApp.apply': 'apply', //'申请开通',

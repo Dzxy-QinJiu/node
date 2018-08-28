@@ -32,9 +32,9 @@ function UserDetailChangeRecordAction() {
                 dataObj.app_name = result.apps[0].app_name;
                 dataObj.app_id = result.apps[0].app_id;
                 dataObj.data = result.apps;
+                callback && callback(dataObj);
             }
             this.dispatch({loading: false,error: false, dataObj: dataObj});
-            callback && callback(dataObj);
         }, (errorMsg) => {
             this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });

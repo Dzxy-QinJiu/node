@@ -5,8 +5,9 @@
  */
 var language = require('../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
+    require('../css/user-abnornal-login-zh_CN.less');
     require('../css/user-abnornal-login-es_VE.less');
-}else if (language.lan() === 'zh'){
+} else if (language.lan() === 'zh') {
     require('../css/user-abnornal-login-zh_CN.less');
 }
 var UserAbnormalLoginStore = require('../store/user-abnormal-login-store');
@@ -15,9 +16,10 @@ var TimeLine = require('CMP_DIR/time-line');
 //滚动条
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var Spinner = require('CMP_DIR/spinner');
-import {Select,Alert, Button} from 'antd';
+import { Select, Alert, Button } from 'antd';
 import UserAbnormalLoginAjax from '../ajax/user-abnormal-login-ajax';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import StatusWrapper from 'CMP_DIR/status-wrapper';
 
 var Option = Select.Option;
 // 没有消息的提醒
@@ -55,12 +57,12 @@ var UserAbnormalLogin = React.createClass({
             page_size: this.state.page_size,
         };
         let app_id = this.props.selectedAppId;
-        if(app_id){
+        if (app_id) {
             searchObj.app_id = app_id;
             UserAbnormalLoginAction.setApp(app_id);
         }
         var userId = this.props.userId;
-        UserAbnormalLoginAction.getUserApp(userId,() => {
+        UserAbnormalLoginAction.getUserApp(userId, () => {
             this.getAbnormalLoginLists(searchObj);
         });
     },
@@ -78,7 +80,7 @@ var UserAbnormalLogin = React.createClass({
                         page_size: this.state.page_size,
                     };
                     let app_id = this.props.selectedAppId;
-                    if(app_id){
+                    if (app_id) {
                         searchObj.app_id = app_id;
                         UserAbnormalLoginAction.setApp(app_id);
                     }
@@ -103,14 +105,14 @@ var UserAbnormalLogin = React.createClass({
             this.getAbnormalLoginLists(searchObj);
         });
     },
-    renderAbnormalLogin: function() {
-        if (this.state.getAppLoading){
-            return (<Spinner />);
-        }else if (this.state.getAppErrorMsg){
+    renderAbnormalLogin: function(height) {
+        if (this.state.getAppLoading) {
+            return (<StatusWrapper loading={true} height={height} />);
+        } else if (this.state.getAppErrorMsg) {
             //加载完成，出错的情况
             var errMsg = <span>{this.state.getAppErrorMsg}
-                <a onClick={this.retryGetAbnormalLogin} style={{marginLeft: '20px',marginTop: '20px'}}>
-                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
+                <a onClick={this.retryGetAbnormalLogin} style={{ marginLeft: '20px', marginTop: '20px' }}>
+                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试" />
                 </a>
             </span>;
             return (
@@ -122,8 +124,8 @@ var UserAbnormalLogin = React.createClass({
                     />
                 </div>
             );
-        }else{
-            return this.renderAbnormalLoginList();
+        } else {
+            return this.renderAbnormalLoginList(height);
         }
     },
     //监听下拉加载
@@ -136,7 +138,7 @@ var UserAbnormalLogin = React.createClass({
             id: lastId,
             app_id: this.state.appId
         };
-        if (!searchObj.app_id){
+        if (!searchObj.app_id) {
             delete searchObj.app_id;
         }
         this.getAbnormalLoginLists(searchObj);
@@ -148,7 +150,7 @@ var UserAbnormalLogin = React.createClass({
             page_size: this.state.page_size,
             app_id: app_id
         };
-        if (!searchObj.app_id){
+        if (!searchObj.app_id) {
             delete searchObj.app_id;
         }
         this.getAbnormalLoginLists(searchObj);
@@ -156,7 +158,7 @@ var UserAbnormalLogin = React.createClass({
     // 处理忽略的事件
     handleIgnoreAbnormal(item) {
         if (item.id) {
-            UserAbnormalLoginAjax.ignoreAbnormalLogin(item.id).then( (result) => {
+            UserAbnormalLoginAjax.ignoreAbnormalLogin(item.id).then((result) => {
                 if (result === true) {
                     this.setState({
                         ignoreAbnormalErrorMsg: '',
@@ -173,7 +175,7 @@ var UserAbnormalLogin = React.createClass({
                     ignoreAbnormalErrorMsg: errMessage,
                     ignoreId: item.id,
                 });
-            } );
+            });
         }
     },
     // 关闭忽略异常登录的提示信息
@@ -203,46 +205,54 @@ var UserAbnormalLogin = React.createClass({
     },
     renderTimeLineItem: function(item) {
         var des = '';
-        var appObj = _.find(this.state.appLists,(app) => {return app.app_id === item.client_id;});
+        let title = '';
+        var appObj = _.find(this.state.appLists, (app) => { return app.app_id === item.client_id; });
         var appName = appObj ? appObj.app_name : '';
-        if (item.type){
-            switch (item.type){
+        if (item.type) {
+            switch (item.type) {
                 case 'appIllegal':
-                    des = Intl.get('user.retry.login','停用后登录。该用户的{appName}账号已经停用，仍尝试登录。',{'appName': appName});
+                    title = Intl.get('sales.frontpage.login.after.stop', '停用后登录');
+                    des = Intl.get('user.retry.login', '停用后登录。该用户的{appName}账号已经停用，仍尝试登录。', { 'appName': appName });
                     break;
                 case 'illegalLocation':
-                    des = Intl.get('user.exception.login','登录地异常。该用户的{client_name}账号，不在常用登录地登录。',{'client_name': item.client_name});
+                    title = Intl.get('user.exception.login.location', '登录地异常');
+                    des = Intl.get('user.exception.login', '登录地异常。该用户的{client_name}账号，不在常用登录地登录。', { 'client_name': item.client_name });
                     //有常用登录地字段时
-                    des += (item.usual_location ? Intl.get('user.usual.location','常用登录地为{usuallocation}。',{'usuallocation': item.usual_location}) : '');
+                    des += (item.usual_location ? Intl.get('user.usual.location', '常用登录地为{usuallocation}。', { 'usuallocation': item.usual_location }) : '');
                     //有该次登录地字段时
-                    des += (item.current_location ? Intl.get('user.current.location','该次登录地为{currentlocation},',{'currentlocation': item.current_location}) : '');
+                    des += (item.current_location ? Intl.get('user.current.location', '该次登录地为{currentlocation},', { 'currentlocation': item.current_location }) : '');
                     // 有该次登录的IP字段
-                    des += (item.user_ip ? Intl.get('user.current.ip','IP为{currentip}。',{'currentip': item.user_ip}) : '');
+                    des += (item.user_ip ? Intl.get('user.current.ip', 'IP为{currentip}。', { 'currentip': item.user_ip }) : '');
                     break;
                 case 'loginFailedFrequencyException':
-                    des = Intl.get('user.failed.frequent.login','登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。',{'appName': appName});
+                    title = Intl.get('user.success.frequent.login.short', '登录频率异常');
+                    des = Intl.get('user.failed.frequent.login', '登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。', { 'appName': appName });
                     break;
                 case 'loginSuccessFrequencyException':
-                    des = Intl.get('user.success.frequent.login','登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。',{'appName': appName});
+                    title = Intl.get('user.success.frequent.login.short', '登录频率异常');
+                    des = Intl.get('user.success.frequent.login', '登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。', { 'appName': appName });
                     break;
             }
         }
         return (
             <dl>
                 <dd>
-                    <p>
-                        {des}
-                        {
-                            hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && item.type === 'illegalLocation' ?
-                                <Button type="primary" onClick={this.handleIgnoreAbnormal.bind(this, item)}>
-                                    {Intl.get('user.login.abnormal.ignore', '忽略')}
-                                </Button> : null
-                        }
-                    </p>
+                    {title}
+                    {
+                        hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && item.type === 'illegalLocation' ?
+                            <span className="title-btn" onClick={this.handleIgnoreAbnormal.bind(this, item)}>
+                                {Intl.get('user.login.abnormal.ignore', '忽略')}
+                            </span> : null
+                    }
                     {
                         item.id === this.state.ignoreId ? this.showIgnoreAbnormalTips(this.state.ignoreAbnormalErrorMsg) : null
                     }
                 </dd>
+                <dt>
+                    <p>
+                        {des}
+                    </p>
+                </dt>
                 <dt>{moment(item.timeStamp).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
@@ -251,32 +261,31 @@ var UserAbnormalLogin = React.createClass({
     showNoMoreDataTip: function() {
         return this.state.isNoMoreTipShow && this.state.abnormalLoginList.length >= 10;
     },
-    renderAbnormalLoginList: function() {
+    renderAbnormalLoginList: function(height) {
         //应用的下拉框
         var appLists = this.state.appLists;
         var list = appLists.map((item) => {
             return (<Option value={item['app_id']} key={item['app_id']} >{item['app_name']}</Option>);
         });
         list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage id="user.app.all" defaultMessage="全部应用" /></Option>);
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
-        if (this.state.abnormalLoginLoading && !this.state.abnormalLoginList.length){
+        if (this.state.abnormalLoginLoading && !this.state.abnormalLoginList.length) {
             //加载中的情况
             return (
                 <div>
-                    <Select style={{width: 120}}
+                    <Select style={{ width: 120 }}
                         onChange={this.handleChange}
                         value={this.state.appId}
                     >
                         {list}
                     </Select>
-                    <Spinner />
+                    <StatusWrapper loading={true} height={height - 100} />
                 </div>
             );
-        }else if (this.state.abnormalLoginErrMsg){
+        } else if (this.state.abnormalLoginErrMsg) {
             //加载完成，出错的情况
             var errMsg = <span>{this.state.abnormalLoginErrMsg}
-                <a onClick={this.retryGetAbnormalLogin} style={{marginLeft: '20px',marginTop: '20px'}}>
-                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
+                <a onClick={this.retryGetAbnormalLogin} style={{ marginLeft: '20px', marginTop: '20px' }}>
+                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试" />
                 </a>
             </span>;
             return (
@@ -288,39 +297,34 @@ var UserAbnormalLogin = React.createClass({
                     />
                 </div>
             );
-        }else if (this.state.abnormalLoginList.length){
+        } else if (this.state.abnormalLoginList.length) {
             return (
                 <div>
-                    <Select style={{width: 120}}
+                    <Select style={{ width: 120 }}
                         onChange={this.handleChange}
                         value={this.state.appId}
                     >
                         {list}
                     </Select>
-                    <div style={{height: divHeight,marginBottom: 40}}>
-                        <GeminiScrollbar
-                            handleScrollBottom={this.handleScrollBarBottom}
-                            listenScrollBottom={this.state.listenScrollBottom}
-                        >
-                            <TimeLine
-                                list={this.state.abnormalLoginList}
-                                groupByDay={true}
-                                timeField="timeStamp"
-                                render={this.renderTimeLineItem}
-                            />
-                            <NoMoreDataTip
-                                fontSize="12"
-                                show={this.showNoMoreDataTip}
-                                message={Intl.get('common.no.more.abnormal.login','没有更多异常登录了')}
-                            />
-                        </GeminiScrollbar>
-                    </div>
+                    <TimeLine
+                        className="icon-yellow"
+                        list={this.state.abnormalLoginList}
+                        groupByDay={true}
+                        timeField="timeStamp"
+                        render={this.renderTimeLineItem}
+                        dot={<span className="iconfont icon-deactivate-customer-login"></span>}
+                    />
+                    <NoMoreDataTip
+                        fontSize="12"
+                        show={this.showNoMoreDataTip}
+                        message={Intl.get('common.no.more.abnormal.login', '没有更多异常登录了')}
+                    />
                 </div>
             );
-        }else{
+        } else {
             return (
                 <div>
-                    <Select style={{width: 120}}
+                    <Select style={{ width: 120 }}
                         onChange={this.handleChange}
                         value={this.state.appId}
                     >
@@ -336,9 +340,23 @@ var UserAbnormalLogin = React.createClass({
         }
     },
     render: function() {
+        var divHeight = $(window).height()
+            - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP //右侧面板顶部padding
+            - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_BOTTOM //右侧面板底部padding
+            - LAYOUT_CONSTANTS.DYNAMIC_LIST_MARGIN_BOTTOM //列表距离底部margin
+            - LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_HEIGHT //右侧面板tab高度
+            - LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_MARGIN_BOTTOM //右侧面板tab的margin
+            ;
         return (
             <div className="abnormalLoginList">
-                {this.renderAbnormalLogin()}
+                <div style={{ height: this.props.height, marginBottom: 40 }}>
+                    <GeminiScrollbar
+                        handleScrollBottom={this.handleScrollBarBottom}
+                        listenScrollBottom={this.state.listenScrollBottom}
+                    >
+                        {this.renderAbnormalLogin(divHeight)}
+                    </GeminiScrollbar>
+                </div>
             </div>
         );
     }

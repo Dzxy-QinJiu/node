@@ -17,6 +17,9 @@ var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
 import classNames from 'classnames';
+import StatusWrapper from 'CMP_DIR/status-wrapper';
+var TimeLine = require('CMP_DIR/time-line');
+const TOP_PADDING = 80;//top padding for inputs
 var SingleUserLog = React.createClass({
     getDefaultProps: function() {
         return {
@@ -47,7 +50,7 @@ var SingleUserLog = React.createClass({
             queryObj.search = ((this.state.searchName).toString().trim()).toLowerCase();
         }
         SingleUserLogAction.getSingleUserAppList(queryObj, selectedAppId, appLists);
-        if(selectedAppId){
+        if (selectedAppId) {
             SingleUserLogAction.setSelectedAppId(selectedAppId);
         }
     },
@@ -55,14 +58,14 @@ var SingleUserLog = React.createClass({
         SingleUserLogStore.listen(this.onStateChange);
         SingleUserLogAction.resetLogState();
         let userId = this.props.userId;
-        this.getSingleUserLogInfoByApp(userId,this.props.selectedAppId, this.props.appLists);
+        this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
     },
     componentWillReceiveProps: function(nextProps) {
         var newUserId = nextProps.userId;
         if (this.props.userId !== newUserId) {
             setTimeout(() => {
                 SingleUserLogAction.changUserIdKeepSearch();
-                this.getSingleUserLogInfoByApp(newUserId,nextProps.selectedAppId, nextProps.appLists);
+                this.getSingleUserLogInfoByApp(newUserId, nextProps.selectedAppId, nextProps.appLists);
             }, 0);
         }
     },
@@ -124,7 +127,7 @@ var SingleUserLog = React.createClass({
             this.state.messageTips = SELECT_TIME_TIPS.time;
         }
         SingleUserLogAction.resetLogState();
-        SingleUserLogAction.changeSearchTime({startTime, endTime, range});
+        SingleUserLogAction.changeSearchTime({ startTime, endTime, range });
         this.getSingleUserAuditLogList({
             starttime: startTime,
             endtime: endTime,
@@ -144,6 +147,29 @@ var SingleUserLog = React.createClass({
         let showAppSelect = this.props.selectedAppId;
         return (
             <div className="log-info-header clearfix">
+                {showAppSelect ? null : <div className="select-app">
+                    <SelectFullWidth
+                        showSearch
+                        optionFilterProp="children"
+                        className="log_select_app"
+                        value={this.state.selectedLogAppId}
+                        onSelect={this.onSelectedAppChange}
+                        minWidth={120}
+                        maxWidth={270}
+                        notFoundContent={Intl.get('common.not.found', '无法找到')}
+                    >
+                        {_.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
+                            return (
+                                <Option
+                                    value={item.app_id}
+                                    key={item.app_id}
+                                >
+                                    {item.app_name}
+                                </Option>
+                            );
+                        }) : null}
+                    </SelectFullWidth>
+                </div>}
                 <div className="select-time">
                     <DatePicker
                         disableDateAfterToday={true}
@@ -151,7 +177,7 @@ var SingleUserLog = React.createClass({
                         range={this.state.defaultRange}
                         onSelect={this.onSelectDate}
                         start_time={this.state.startTime}
-                        end_time ={this.state.endTime}
+                        end_time={this.state.endTime}
                     >
                         <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
                         <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
@@ -166,29 +192,6 @@ var SingleUserLog = React.createClass({
                         ref="search"
                     />
                 </div>
-                { showAppSelect ? null : <div className="select-app">
-                    <SelectFullWidth
-                        showSearch
-                        optionFilterProp="children"
-                        className="log_select_app"
-                        value={this.state.selectedLogAppId}
-                        onSelect={this.onSelectedAppChange}
-                        minWidth={120}
-                        maxWidth={270}
-                        notFoundContent={Intl.get('common.not.found', '无法找到')}
-                    >
-                        { _.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
-                            return (
-                                <Option
-                                    value={item.app_id}
-                                    key={item.app_id}
-                                >
-                                    {item.app_name}
-                                </Option>
-                            );
-                        }) : null}
-                    </SelectFullWidth>
-                </div>}
             </div>
         );
     },
@@ -202,11 +205,43 @@ var SingleUserLog = React.createClass({
     toggleOperateDetail: function(userLog) {
         SingleUserLogAction.toggleOperateDetail(userLog);
     },
-
+    renderTimeLineItem: function(item) {
+        let operateClass = classNames('iconfont', {
+            'icon-down-twoline': !item.detailShow,
+            'icon-up-twoline': item.detailShow
+        });
+        let operateTitle = item.detailShow ? Intl.get('crm.basic.detail.hide', '收起详情') :
+            Intl.get('crm.basic.detail.show', '展开详情');
+        return (
+            <dl>
+                <dd>
+                    <p>
+                        {item.operate}
+                        {item.operate_detail ? (
+                            <span
+                                className={operateClass}
+                                title={operateTitle}
+                                onClick={this.toggleOperateDetail.bind(this, item)}
+                            />) : null}
+                    </p>
+                </dd>
+                {item.detailShow ? (
+                    <dd>
+                        {item.operate_detail}
+                    </dd>) : null}
+                <dd className="hightlight">
+                    {item.user_ip ? `ip: ${item.user_ip}` : null} {item.location} {item.area}
+                    <br/>
+                    {Intl.get('common.client', '客户端')}:  {item.os}
+                </dd>
+                <dt>{moment(item.timestamp).format(oplateConsts.TIME_FORMAT)}</dt>
+            </dl>
+        );
+    },
     // 日志列表信息
-    userLogInformationBlock: function() {
+    userLogInformationBlock: function(height) {
         if (this.state.logListLoading === 'loading' && this.state.curPage === 1) {
-            return <Spinner />;
+            return <StatusWrapper loading={true} height={height}/>;
         }
         if (this.state.getUserLogErrorMsg) {
             return (
@@ -218,7 +253,7 @@ var SingleUserLog = React.createClass({
                     />
                 </div>
             );
-        }
+        }        
         var auditLogListLength = this.state.auditLogList.length;
         if (auditLogListLength !== 0) {
             return (
@@ -226,44 +261,18 @@ var SingleUserLog = React.createClass({
                     <div className="time-over-range-tips">
                         {this.renderSelectDateTips()}
                     </div>
-                    { this.state.auditLogList.map((userLogInformation, index) => {
-                        let operateClass = classNames('iconfont',{
-                            'icon-down-twoline': !userLogInformation.detailShow,
-                            'icon-up-twoline': userLogInformation.detailShow
-                        });
-                        let operateTitle = userLogInformation.detailShow ? Intl.get('crm.basic.detail.hide', '收起详情') :
-                            Intl.get('crm.basic.detail.show', '展开详情');
-                        return (
-                            <div className="log-info-item" key={index}>
-                                <p className="operation">
-                                    <span className="log-detail">{moment(userLogInformation.timestamp).format(oplateConsts.DATE_TIME_FORMAT)}</span>
-                                </p>
-                                <div>
-                                    <div className="log-detail">
-                                        {userLogInformation.operate}
-                                        {userLogInformation.operate_detail ? (
-                                            <span className={operateClass} title={operateTitle} onClick={this.toggleOperateDetail.bind(this,userLogInformation)}/>) : null}
-                                    </div>
-                                    {userLogInformation.detailShow ? (
-                                        <div className="log-operate-detail">
-                                            {userLogInformation.operate_detail}
-                                        </div>) : null}
-                                </div>
-                                <p>
-                                    <span className="log-detail">{userLogInformation.user_ip }</span>
-                                    <span className="log-detail">
-                                        {userLogInformation.location && userLogInformation.location.indexOf('null') !== -1 ? '' : userLogInformation.location}
-                                        {userLogInformation.area}
-                                    </span>
-                                    <span className="log-detail">{Intl.get('common.client', '客户端')}: {userLogInformation.os}</span>
-                                </p>
-                            </div>
-                        );
-                    })}
+                    <TimeLine
+                        className="icon-blue"
+                        list={this.state.auditLogList}
+                        groupByDay={true}
+                        timeField="timestamp"
+                        render={this.renderTimeLineItem}
+                        dot={<span className="iconfont icon-foot"></span>}
+                    />                    
                 </div>
             );
         } else {
-            return <div className="alert-wrap">
+            return <div className="alert-container">
                 <Alert
                     message={Intl.get('common.no.audit', '暂无审计日志')}
                     type="info"
@@ -277,7 +286,7 @@ var SingleUserLog = React.createClass({
     handleScrollBarBottom: function() {
         // 判断加载的条件
         if (this.state.curPage <= (Math.ceil(this.state.total / this.state.pageSize))) {
-            this.getSingleUserAuditLogList({page: this.state.curPage});
+            this.getSingleUserAuditLogList({ page: this.state.curPage });
         } else {
             this.setState({
                 listenScrollBottom: false
@@ -285,22 +294,20 @@ var SingleUserLog = React.createClass({
         }
     },
     renderLogInformation: function() {
-        var scrollBarHeight = $(window).height() -
-            USER_LOG_LAYOUT_CONSTANTS.TOP_DELTA -
-            USER_LOG_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        var scrollBarHeight = this.props.height - TOP_PADDING;
         return (
-            <div style={{height: scrollBarHeight}} className="log-info">
+            <div style={{ height: scrollBarHeight }} className="log-info">
                 {/**搜索框 */}
                 <GeminiScrollbar
                     handleScrollBottom={this.handleScrollBarBottom}
                     listenScrollBottom={this.state.listenScrollBottom}
                     itemCssSelector=".single-user-log-information"
                 >
-                    {this.userLogInformationBlock()}
+                    {this.userLogInformationBlock(scrollBarHeight)}
                     <NoMoreDataTip
                         fontSize="12"
                         show={this.showNoMoreDataTip}
-                        message={Intl.get('common.no.more.user.log','没有更多日志了')}
+                        message={Intl.get('common.no.more.user.log', '没有更多日志了')}
                     />
                 </GeminiScrollbar>
             </div>
@@ -338,7 +345,7 @@ var SingleUserLog = React.createClass({
                 {
                     this.state.auditLogList.length ? (
                         <div className="total-summary">
-                            {Intl.get('common.total.data', '共{num}条数据', {'num': this.state.total})}
+                            {Intl.get('common.total.data', '共{num}条数据', { 'num': this.state.total })}
                         </div>
                     ) : null
                 }

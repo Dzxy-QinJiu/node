@@ -3,10 +3,11 @@
  * @param loading[boolean]
  * @param errorMsg[string]
  * @param size['small'|'medium'|'large'] spin的尺寸，默认large
+ * @param height[number] 内容区高度
  */
 import { Spin, Alert } from 'antd';
 require('./index.less');
-const StatusWrapper = ({ loading, errorMsg, children, size }) => {
+const StatusWrapper = ({ loading, errorMsg, children, size, height }) => {
     if (errorMsg) {
         const error = typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
         return (<div className="status-wrapper clearfix">
@@ -18,7 +19,7 @@ const StatusWrapper = ({ loading, errorMsg, children, size }) => {
         return (
             <div className="status-wrapper clearfix">
                 <div className={!loading ? 'hide' : 'spiner-container'}>
-                    <div className="spin-wrapper">
+                    <div className="spin-wrapper" style={{height}}>
                         <Spin size={size || 'large'} />
                     </div>
                 </div>
