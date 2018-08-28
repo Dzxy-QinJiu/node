@@ -325,6 +325,8 @@ var zh_CN = {
     'user.username.write.email.tip': '请填写正确的邮箱作为用户名',
     'user.nickname.write.tip': '请填写昵称',
     'user.nickname.set.tip': '设置昵称',
+    'user.nickname.add.tip': '添加昵称',
+    'user.nickname.no.tip': '暂无昵称',
     'user.username.email.only.tip': '用户名是邮箱格式时，只能添加1个用户',
     'user.sales.team': '销售团队',
     'user.salesman': '销售人员',
