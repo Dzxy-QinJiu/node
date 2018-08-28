@@ -199,8 +199,8 @@ var UserDetail = React.createClass({
             callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
         }
     },
-    //处理备注修改的方法,组件用
-    handleRemarkEdit(params, onSuccess, onError) {
+    //处理用户信息修改的方法,组件用
+    handleUserInfoEdit(params, onSuccess, onError) {
         params.user_id = params.id;
         delete params.id;
         AppUserAjax.editAppUser(params).then(onSuccess, onError);
@@ -394,7 +394,22 @@ var UserDetail = React.createClass({
                                                         </div>
                                                     </div> :
                                                     <div>
-                                                        <p>{Intl.get('common.nickname', '昵称')}: {_.get(userInfo, 'data.nick_name')}</p>
+                                                        <div className="basic-info-remark basic-info-item">
+                                                            <span className="basic-info-label">{Intl.get('common.nickname', '昵称')}:</span>
+                                                            <BasicEditInputField
+                                                                width={EDIT_FEILD_WIDTH}
+                                                                id={_.get(userInfo, 'data.user_id')}
+                                                                value={_.get(userInfo, 'data.nick_name')}
+                                                                type="text"
+                                                                field="nick_name"                                                    
+                                                                editBtnTip={Intl.get('user.nickname.set.tip', '设置昵称')}
+                                                                placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
+                                                                hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
+                                                                saveEditInput={this.handleUserInfoEdit}
+                                                                noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
+                                                                addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
+                                                            />
+                                                        </div>   
                                                         <div className="basic-info-remark basic-info-item">
                                                             <span className="basic-info-label">{Intl.get('common.remark', '备注')}:</span>
                                                             <BasicEditInputField
@@ -406,7 +421,7 @@ var UserDetail = React.createClass({
                                                                 editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                                                                 placeholder={Intl.get('user.input.remark', '请输入备注')}
                                                                 hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
-                                                                saveEditInput={this.handleRemarkEdit}
+                                                                saveEditInput={this.handleUserInfoEdit}
                                                                 noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                                                                 addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                                                             />

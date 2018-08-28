@@ -325,6 +325,8 @@ var en_US = {
     'user.username.write.email.tip': 'Please enter the email as username',//请填写正确的邮箱作为用户名
     'user.nickname.write.tip': 'Please enter the nickname',//请填写昵称
     'user.nickname.set.tip': 'Set up nickname',//设置昵称
+    'user.nickname.add.tip': 'Add nickname', //'添加昵称',
+    'user.nickname.no.tip': 'No nickname', //'暂无昵称',
     'user.username.email.only.tip': 'When the format of username is email , only one user can be added',//用户名是邮箱格式时，只能添加1个用户
     'user.sales.team': 'sales teams',//销售团队
     'user.salesman': 'sales staff',//销售人员
