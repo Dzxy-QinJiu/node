@@ -152,14 +152,16 @@ class UserInfo extends React.Component{
 
     }
     //设置邮箱订阅功能
-    handleSubscribe() {
+    handleSubscribe(e) {
         var formData = this.state.formData;
         var configObj = {'config': true};
         if (formData.reject < 1) {
             UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback.bind(this));
+            Trace.traceEvent(e, '取消订阅');
         } else {
             configObj.config = false;
             UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback.bind(this));
+            Trace.traceEvent(e, '重新订阅');
         }
     }
     retryRealm() {
@@ -480,4 +482,4 @@ UserInfo.propTypes = {
 };
 
 const UserInfoForm = Form.create()(UserInfo);
-module.exports = UserInfoForm;
+module.exports = UserInfoForm;
