@@ -55,7 +55,9 @@ var dynamicStyle;
 //布局常量
 const LAYOUT_CONSTANTS = {
     //应用选择组件顶部的高度
-    APPS_CHOOSEN_TOPBAR: 106
+    APPS_CHOOSEN_TOPBAR: 106,
+    TOP_PADDING: 130,
+    APP_SELECTOR_HEIGHT: 180
 };
 
 const UserDetailAddApp = React.createClass({
@@ -415,7 +417,7 @@ const UserDetailAddApp = React.createClass({
                 <div className="input-container">
                     <Input onChange={this.handleInputChange} placeHolder={Intl.get('user.detail.tip.searchApp', '输入关键字自动搜索')} />
                 </div>
-                <div className="app-list-container" style={{ height: 180 }}>
+                <div className="app-list-container" style={{ height: LAYOUT_CONSTANTS.APP_SELECTOR_HEIGHT }}>
                     <GeminiScrollbar>
                         <CheckboxGroup
                             defaultValue={this.state.selectedAppIds}
@@ -436,7 +438,7 @@ const UserDetailAddApp = React.createClass({
     },
     renderAppConfig() {
         return (
-            <div style={{ height: this.props.height - 130 }}>
+            <div style={{ height: this.props.height - LAYOUT_CONSTANTS.TOP_PADDING}}>
                 <GeminiScrollbar>
                     <div className="app-config-container">
                         <div className="selected-app-container">

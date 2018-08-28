@@ -21,20 +21,15 @@ const UserTimeRangeField = {
         }
 
         const onSelectDate = !config.isCustomSetting ? (start_time,end_time,range) => {
+            //统一配置调用
             const formData = this.state.formData;
-            const appPropSettingsMap = this.state.appPropSettingsMap;
-            let mapItem = null;
-            _.each(appPropSettingsMap, value => {
-                mapItem = value;
-            });
             formData.start_time = start_time;
             formData.end_time = end_time;
             formData.range = range;
-            mapItem.time.start_time = start_time;
-            mapItem.time.end_time = end_time;
-            mapItem.time.range = range;
-            this.setState({formData, appPropSettingsMap});
+            //此处只修改formData，在点击下一步时将formData数据同步到appSettingMap中
+            this.setState({formData});
         } : (start_time,end_time,range) => {
+            //分别配置调用
             if (config.appId === 'applyUser') {
                 this.onTimeChange(start_time, end_time, range, app);
             } else {

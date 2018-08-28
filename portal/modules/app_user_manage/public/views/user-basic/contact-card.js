@@ -1,17 +1,11 @@
+/**
+* Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+* 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+* Created by xuning on 2018.8.28
+*/
 import DetailCard from 'CMP_DIR/detail-card';
-import { Select, Input } from 'antd';
-
-import { DetailEditBtn } from 'CMP_DIR/rightPanel';
-import { StatusWrapper } from 'antc';
 import { PropTypes } from 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import SelectFullWidth from 'CMP_DIR/select-fullwidth';
-import OrganizationAjax from 'MOD_DIR/common/public/ajax/organization';
-import { classNames } from 'classnames';
-const Option = Select.Option;
-const ID = 'user-organization';
-//class的前缀
-const CLASS_PREFIX = ID;
 var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
 
 class ContactCard extends React.Component {
@@ -29,9 +23,6 @@ class ContactCard extends React.Component {
             submitType: '',
             errorMsg: ''
         };
-    }
-    componentDidMount() {
-
     }
     toggleEdit = (type) => {
         const showEdit = this.state.showEdit;
@@ -54,13 +45,12 @@ class ContactCard extends React.Component {
                                 {Intl.get('common.email', '邮箱')}:
                             </span>
                             <span className="sales-team-text">
-                                {/* {userInfo.email} */}
-                                <UserDetailEditField
+                                {hasEditAuth ? <UserDetailEditField
                                     user_id={userInfo.user_id}
                                     saveEditInput={this.props.saveEditInput}
                                     showBtn={true}
                                     {...this.props.email}
-                                />
+                                /> : this.props.email.value}
                             </span>
                         </div>
                         <div className="sales-team clearfix">
@@ -68,12 +58,12 @@ class ContactCard extends React.Component {
                                 {Intl.get('user.phone', '手机号')}:
                             </span>
                             <span className="sales-team-text">
-                                <UserDetailEditField
+                                {hasEditAuth ? <UserDetailEditField
                                     user_id={userInfo.user_id}
                                     saveEditInput={this.props.saveEditInput}
                                     showBtn={true}
                                     {...this.props.phone}
-                                />
+                                /> : this.props.phone.value}
                             </span>
                         </div>
                     </div>

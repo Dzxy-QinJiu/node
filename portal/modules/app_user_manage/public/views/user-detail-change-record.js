@@ -26,6 +26,7 @@ var LAYOUT_CONSTANTS = {
     DYNAMIC_LIST_MARGIN_BOTTOM: 20,//列表距离底部margin
     RIGHT_PANEL_TAB_HEIGHT: 36,//右侧面板tab高度
     RIGHT_PANEL_TAB_MARGIN_BOTTOM: 17,//右侧面板tab的margin
+    TOP_PADDING: 100,//选择框留白
 };
 var UserDetailChangeRecord = React.createClass({
     getDefaultProps: function() {
@@ -244,7 +245,7 @@ var UserDetailChangeRecord = React.createClass({
                         onChange={this.handleChange}>
                         {this.getSelectOptions()}
                     </Select>
-                    <StatusWrapper loading={true} height={height - 100} />
+                    <StatusWrapper loading={true} height={height - LAYOUT_CONSTANTS.TOP_PADDING} />
                 </div>
             );
         } else if (recordLength === 0 && !this.state.changeRecordLoading) {

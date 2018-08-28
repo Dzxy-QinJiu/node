@@ -3,6 +3,7 @@
  * @param loading[boolean]
  * @param errorMsg[string]
  * @param size['small'|'medium'|'large'] spin的尺寸，默认large
+ * @param height[number] 内容区高度
  */
 import { Spin, Alert } from 'antd';
 require('./index.less');

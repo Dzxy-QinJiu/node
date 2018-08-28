@@ -280,6 +280,8 @@ var en_US = {
     'user.user.app.select': 'Select applications',//选择应用
     'user.detail.addApp.selectAndConfig': 'Select and config apps',//'选择应用并配置',
     'user.detail.addApp.setRolePermissions': 'Config role and permissions',//'设置角色权限',
+    'user.detail.errorTip.getRoleTimeout': 'get role data time out',//'获取角色列表超时',
+    'user.detail.errorTip.getPermissionTimeout': 'get permissions data time out',
     'user.user.app.set': 'Application Configuration',//应用设置
     'user.batch.operation': 'Batch operations',//批量操作
     'user.operator': 'Operator',//操作人

@@ -318,7 +318,12 @@ const UserLoginAnalysis = React.createClass({
     renderChart(data, charTips) {
         const calendarHeatMapOption = {
             calendar: [{
-                cellSize: [7, 7]
+                cellSize: [7, 7],
+                left: 30,
+                top: 20,
+                bottom: 0,
+                height: 110,
+                width: 'auto'             
             }],
             tooltip: {
                 formatter: charTips
@@ -326,11 +331,7 @@ const UserLoginAnalysis = React.createClass({
         };
 
         if (_.isArray(data) && data.length) {
-            return (
-                // <TimeSeriesBarChart
-                //     dataList={data}
-                //     tooltip={charTips}
-                // />
+            return (               
                 <AntcChart
                     resultType=""
                     data={data.map(x => ([moment(x.date).format('YYYY-MM-DD'), x.sum]))}
@@ -384,13 +385,6 @@ const UserLoginAnalysis = React.createClass({
         });
     },
     render: function() {
-        let appList = this.renderUserAppsList();
-        // let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 ? <div className="user-no-login">
-        //     {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
-        // </div> : <div className="user-login-info">
-        //     {this.renderUserLoginInfo()}
-        //     {this.renderLoginChart()}
-        // </div>;
         const userLoginBlock = (
             <ul>
                 {

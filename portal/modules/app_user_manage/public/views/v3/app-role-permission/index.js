@@ -338,7 +338,7 @@ var AppRolePermission = React.createClass({
         }
         if (state.ajaxRolesResult === CONSTANTS.SUCCESS && state.ajaxRolesList.length === 0) {
             var noDataTip = this.isMyApp() ?
-                (<span>{CONSTANTS.NO_ROLE_DATA}，是否 <a href="javascript:void(0)" onClick={this.goAddRole}><ReactIntl.FormattedMessage id="user.batch.set.role" defaultMessage="设置角色" /></a> ?</span>) :
+                (<span>{CONSTANTS.NO_ROLE_DATA}，{Intl.get('common.yesno', '是否')} <a href="javascript:void(0)" onClick={this.goAddRole}><ReactIntl.FormattedMessage id="user.batch.set.role" defaultMessage="设置角色" /></a> ?</span>) :
                 (<span>{CONSTANTS.NO_ROLE_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
             return <div className="no-data">
                 <Alert message={noDataTip} showIcon type={CONSTANTS.INFO} />

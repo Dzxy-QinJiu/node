@@ -3,10 +3,12 @@
 var language = require('../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-detail-zh_CN.less');
+    require('../css/user-detail-v3.less');
     require('../css/user-detail-es_VE.less');
 } else if (language.lan() === 'zh') {
     require('../css/user-detail-zh_CN.less');
     require('../css/third-party-app-config.less');
+    require('../css/user-detail-v3.less');
 }
 import DetailCard from 'CMP_DIR/detail-card';
 var Tabs = require('antd').Tabs;
@@ -188,6 +190,8 @@ var UserDetail = React.createClass({
     },
     //处理备注修改的方法,组件用
     handleRemarkEdit(params, onSuccess, onError) {
+        params.user_id = params.id;
+        delete params.id;
         AppUserAjax.editAppUser(params).then(onSuccess, onError);
     },
     renderUserStatus: function(user, useIcon = false) {
@@ -211,11 +215,11 @@ var UserDetail = React.createClass({
         }
         //加载时增加padding
         if (userInfo.loading) {
-            contentHeight += 100;
+            contentHeight += LAYOUT_CONSTANTS.LOADING_PADDING;
         }
         //错误信息padding
         if (userInfo.errorMsg) {
-            contentHeight += 70;
+            contentHeight += LAYOUT_CONSTANTS.ERROR_PADDING;
         }
         var moveView = null;
         if (this.state.panel_switch_currentView) {
@@ -384,7 +388,7 @@ var UserDetail = React.createClass({
                                                             <span className="basic-info-label">{Intl.get('common.remark', '备注')}:</span>
                                                             <BasicEditInputField
                                                                 width={EDIT_FEILD_WIDTH}
-                                                                user_id={_.get(userInfo, 'data.user_id')}
+                                                                id={_.get(userInfo, 'data.user_id')}
                                                                 value={_.get(userInfo, 'data.description')}
                                                                 type="textarea"
                                                                 field="remarks"                                                    

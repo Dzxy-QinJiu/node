@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+* 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+* Created by xuning on 2018 
+*/
 import DetailCard from 'CMP_DIR/detail-card';
 import { Select, Input } from 'antd';
 
@@ -8,9 +13,6 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import OrganizationAjax from 'MOD_DIR/common/public/ajax/organization';
 const Option = Select.Option;
-const ID = 'user-organization';
-//class的前缀
-const CLASS_PREFIX = ID;
 
 class OrgCard extends React.Component {
     constructor(props) {
@@ -120,7 +122,7 @@ class OrgCard extends React.Component {
             error: (xhr) => {
                 this.setState({
                     submitType: 'error',
-                    errorMsg: xhr.responseJSON
+                    errorMsg: xhr.responseJSON || Intl.get('common.edit.failed', '修改失败')
                 });
             }
         });
@@ -133,6 +135,7 @@ class OrgCard extends React.Component {
         return (
             <DetailCard
                 loading={this.state.submitType === 'loading'}
+                titleBottomBorderNone={true}
                 handleCancel={this.toggleEdit}
                 handleSubmit={this.submit.bind(this)}
                 isEdit={this.state.showEdit}
@@ -160,7 +163,7 @@ class OrgCard extends React.Component {
                     <div className="sales-team-show-block">                       
                         {
                             this.state.showEdit ?
-                                <div className={CLASS_PREFIX} ref="wrap" id="organization-select-wrap">
+                                <div className='user-organization' ref="wrap" id="organization-select-wrap">
                                     <SelectFullWidth
                                         showSearch
                                         optionFilterProp="children"

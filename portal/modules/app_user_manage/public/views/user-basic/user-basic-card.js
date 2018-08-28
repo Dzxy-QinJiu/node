@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+* 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+* Created by xuning on 2018 
+*/
 import DetailCard from 'CMP_DIR/detail-card';
 import { Select, Input } from 'antd';
 // import { hasPrivilege } from '../../privilege/checker';s
@@ -183,6 +188,7 @@ class UserBasicCard extends React.Component {
                 handleCancel={this.toggleEdit}
                 handleSubmit={this.submit.bind(this)}
                 loading={this.state.submitType === 'loading'}
+                titleBottomBorderNone={true}
                 title={
                     (
                         <div className="sales-team-show-block">

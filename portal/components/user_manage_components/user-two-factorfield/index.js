@@ -34,12 +34,11 @@ const UserTwoFactorField = {
 
         const onChange = !config.isCustomSetting ? (e) => {
             const target = e && e.target;
-            const value = e.target.checked ? '1' : '0';            
-            const newFormData = {};
-            newFormData.is_two_factor = value;
-            merge(this.state.formData, newFormData);
+            const value = target.checked ? '1' : '0';            
+            const formData = this.state.formData;
+            formData.is_two_factor = value;            
             this.setState({
-                formData: this.state.formData,
+                formData
             });
         } : (event) => {
             const value = event.target.checked ? '1' : '0';
@@ -51,8 +50,7 @@ const UserTwoFactorField = {
             }
             this.setState({appPropSettingsMap});
         };
-
-        const formData = this.state.formData;
+        
         if (config.showCheckbox) {
             return (
                 <Checkbox checked={currentValue === '1'} onChange={onChange}>{Intl.get('user.two.step.certification', '二步认证')}</Checkbox>

@@ -10,9 +10,9 @@ exports.getRoleList = function(appId) {
     }).success(function(data) {
         Deferred.resolve(data);
     }).error(function(xhr) {
-        Deferred.reject(xhr.responseJSON);
+        Deferred.reject(xhr.responseJSON || Intl.get('contract.111', '获取数据失败'));
     }).timeout(function(xhr) {
-        Deferred.reject('获取角色列表超时');
+        Deferred.reject(Intl.get('user.detail.errorTip.getRoleTimeout', '获取角色列表超时'));
     });
     return Deferred.promise();
 };
@@ -25,9 +25,9 @@ exports.getPermissionMap = function(appId) {
     }).sendRequest().success(function(data) {
         Deferred.resolve(data);
     }).error(function(xhr) {
-        Deferred.reject(xhr.responseJSON);
+        Deferred.reject(xhr.responseJSON || Intl.get('contract.111', '获取数据失败'));
     }).timeout(function(xhr) {
-        Deferred.reject('获取权限组信息失败');
+        Deferred.reject(Intl.get('user.detail.errorTip.getPermissionTimeout', '获取角色列表超时'));
     });
     return Deferred.promise();
 };

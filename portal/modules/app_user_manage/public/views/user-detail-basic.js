@@ -573,7 +573,7 @@ var UserDetailBasic = React.createClass({
                     user_id={userInfo.user_id}
                 />
                 <ContactCard
-                    user_id={userInfo.user_id}
+                    id={userInfo.user_id}
                     userInfo={this.state.initialUser.user}
                     phone={{
                         value: userInfo.phone,

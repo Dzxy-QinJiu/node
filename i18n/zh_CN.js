@@ -143,6 +143,8 @@ var zh_CN = {
     'user.detail.tip.collapse': '收起停用前设置',
     'user.detail.tip.expand': '展开停用前设置',
     'user.detail.tip.searchApp': '输入关键字自动搜索',
+    'user.detail.errorTip.getRoleTimeout': '获取角色列表超时',
+    'user.detail.errorTip.getPermissionTimeout': '获取权限组信息失败',
     'common.app': '应用',
     'common.sure': '确定',
     'common.is.existed': '用户名已存在！',
