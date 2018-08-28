@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 .recent-contacter-detail {
   font-size: 14px;
   background: #fbfdff;
@@ -13,7 +14,8 @@
     }
     .contact-name {
       margin-right: 8px;
-      font-weight:bold;
+      font-size: 14px;
+      color:#666;
     }
     .phone-num-container, .email-container, .qq-container, .weChat-container {
       .contact-item {
@@ -25,18 +27,28 @@
         padding: 2px 8px;
         background: #fff;
         cursor: pointer;
+        color: @CLICK-BLUE;
         .icon-phone-call-out, .icon-email, .icon-qq, .icon-weChat{
-          color: #8CA9C5;
+          color: @CLICK-BLUE;
           margin-right: 4px;
         }
       }
       .contact-item:hover {
-        background: #f7a53f;
-        color: #fff;
+        color: @BUTTON-HOVER;
         .icon-phone-call-out, .icon-email, .icon-qq, .icon-weChat{
-          color: #fff;
+          color: @BUTTON-HOVER;
         }
       }
+      .contact-item.inability{
+        font-size:14px;
+        color: #999;
+        background: @NOTICE-BACKGROUND;
+        border:none;
+        .icon-phone-call-out, .icon-email, .icon-qq, .icon-weChat{
+          color: #999;
+        }
+      }
+
     }
   }
 }

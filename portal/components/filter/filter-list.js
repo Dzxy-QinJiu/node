@@ -481,15 +481,19 @@ class FilterList extends React.Component {
             });
             return flag;
         };
+        var noCommonStatus = !this.state.commonData || this.state.commonData.length === 0;
+        var commonStatusCls = noCommonStatus ? ' no-content' : '';
         return (
             <GeminiScrollbar style={this.props.style} className={this.props.className}>
                 <div className="filter-wrapper filter-list-wrapper">
+                    {_.isFunction(this.props.renderOtherDataContent) ? this.props.renderOtherDataContent() : null}
                     <StatusWrapper
                         loading={commonLoading}
                         errorMsg={this.props.commonErrorMsg}
                         size="small"
+                        className={commonStatusCls}
                     >
-                        {!this.state.commonData || this.state.commonData.length === 0 ?
+                        {noCommonStatus ?
                             null :
                             <div className="common-container">
                                 {/* icon-common-filter */}
@@ -577,9 +581,6 @@ class FilterList extends React.Component {
                                 </ul>
                             </div>
                         }
-
-
-
                     </StatusWrapper>
                     {
                         this.state.advancedData.length > 0 ?
@@ -589,13 +590,14 @@ class FilterList extends React.Component {
                                 size="small"
                             >
                                 <div className="advanced-container">
-                                    <h4 className="title" onClick={this.toggleCollapse.bind(this, 'advanced')}>
+                                    {this.props.hideAdvancedTitle ? null : <h4 className="title" onClick={this.toggleCollapse.bind(this, 'advanced')}>
                                         {/* todo icon-advanced-filter */}
                                         <p className="">高级筛选</p>
                                         <Icon
-                                            type={this.state.collapsedAdvanced ? 'down' : 'up'}                                            
+                                            type={this.state.collapsedAdvanced ? 'down' : 'up'}
                                         />
-                                    </h4>
+                                    </h4>}
+
                                     {
                                         !this.state.collapsedAdvanced ?
                                             <div className="advanced-items-wrapper" data-tracename="高级筛选">
@@ -609,7 +611,7 @@ class FilterList extends React.Component {
                                                                     <h4 className="title">
                                                                         {groupItem.groupName}
                                                                         {
-                                                                            isGroupSelected(groupItem) ?
+                                                                            isGroupSelected(groupItem) && !groupItem.hideClearBtn ?
                                                                                 <span
                                                                                     data-tracename={`清空"${groupItem.groupName}"筛选条件`}
                                                                                     className="clear-btn"
@@ -657,7 +659,11 @@ FilterList.defaultProps = {
     advancedLoading: false,
     showCommonListLength: 7,
     key: '',
-    onFilterChange: function() { }
+    onFilterChange: function() { },
+    renderOtherDataContent: function() {
+
+    },
+    hideAdvancedTitle: false
 };
 /**
  * advancedData=[
@@ -704,5 +710,7 @@ FilterList.propTypes = {
     style: PropTypes.object,
     className: PropTypes.string,
     showSelectTip: PropTypes.bool,
+    renderOtherDataContent: PropTypes.func,
+    hideAdvancedTitle: PropTypes.bool,
 };
 export default FilterList;

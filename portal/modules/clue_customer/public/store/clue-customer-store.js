@@ -6,7 +6,8 @@
 var ClueCustomerAction = require('../action/clue-customer-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
-import {SELECT_TYPE, isOperation, isSalesLeaderOrManager} from '../utils/clue-customer-utils';
+import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue} from '../utils/clue-customer-utils';
+var filterStore = require('./filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 function ClueCustomerStore() {
     //初始化state数据
@@ -23,15 +24,8 @@ ClueCustomerStore.prototype.resetState = function() {
     this.isLoading = true;//加载线索客户列表数据中。。。
     this.clueCustomerErrMsg = '';//获取线索客户列表失败
     this.customersSize = 0;//线索客户列表的数量
-    this.clueCustomerTypeFilter = {status: defaultValue};//线索客户的类型  0 待分配 1 已分配 2 已跟进
     this.currentId = '';//当前展示的线索的id
     this.curClue = {}; //当前展示的线索详情
-    this.rangParams = [{//时间范围参数
-        from: datePickerUtils.getMilliseconds(timeObj.start_time),
-        to: datePickerUtils.getMilliseconds(timeObj.end_time, true),
-        type: 'time',
-        name: 'source_time'
-    }];
     this.submitTraceErrMsg = '';//提交跟进内容报错的情况
     this.submitTraceLoading = false;//正在提交跟进内容
     this.lastCustomerId = '';//用于下拉加载的客户的id
@@ -116,8 +110,10 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
             this.curClueLists = _.sortBy(this.curClueLists, (item) => {
                 return item.status;
             });
+            var filterClueStatus = filterStore.getState().filterClueStatus;
+            var typeFilter = getClueStatusValue(filterClueStatus);
             //只有在获取线索的状态是全部的时候，才用返回的统计值
-            if (this.clueCustomerTypeFilter.status === ''){
+            if (filterClueStatus && typeFilter.status === ''){
                 //不同状态线索的统计数据
                 var staticsArr = _.isArray(aggList) && aggList[0] ? _.get(aggList[0],'status') : [];
                 this.getStatisticsData(staticsArr);
@@ -196,16 +192,6 @@ ClueCustomerStore.prototype.processForList = function(curClueLists) {
     });
     return list;
 };
-
-//设置开始和结束时间
-ClueCustomerStore.prototype.setTimeRange = function(timeRange) {
-    this.rangParams[0].from = timeRange.start_time;
-    this.rangParams[0].to = timeRange.end_time;
-};
-//设置筛选线索客户的类型
-ClueCustomerStore.prototype.setFilterType = function(value) {
-    this.clueCustomerTypeFilter.status = value;
-};
 //线索客户分配给销售
 ClueCustomerStore.prototype.distributeCluecustomerToSale = function(result) {
     if (result.loading) {
@@ -237,14 +223,19 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
     var newArr = this.processForList([newCustomer]);
     newCustomer = newArr[0];
     this.curClueLists = _.filter(this.curClueLists, customer => customer.id !== newCustomer.id);
+    var filterClueStatus = filterStore.getState().filterClueStatus;
+    var typeFilter = getClueStatusValue(filterClueStatus);
     //只有筛选状态是待分配，并且筛选时间是今天的时候，才把这个新增客户加到列表中
-    if ((this.clueCustomerTypeFilter.status === '0' || this.clueCustomerTypeFilter.status === '') && this.rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= this.rangParams[0].to){
-        this.curClueLists.unshift(newCustomer);
-        this.customersSize++;
-        var total = this.statusStaticis[''],willDistributeCount = this.statusStaticis['0'];
-        total++;
-        willDistributeCount++;
+    if (filterClueStatus && typeFilter){
+        if (((typeFilter.status === '0' || typeFilter.status === '')) && filterStore.getState().rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= filterStore.getState().rangParams[0].to){
+            this.curClueLists.unshift(newCustomer);
+            this.customersSize++;
+            var total = this.statusStaticis[''],willDistributeCount = this.statusStaticis['0'];
+            total++;
+            willDistributeCount++;
+        }
     }
+
     if (updateObj.showDetail){
         //新添加的是正在展示的那条线索
         this.curClue = newCustomer;

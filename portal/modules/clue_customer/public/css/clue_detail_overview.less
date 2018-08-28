@@ -1,25 +1,9 @@
+@import "../../../../public/css/common-variables";
 @FONT_COLOR:#999;
 .clue-detail-container{
   font-size: 14px;
-  .clue-info-wrap{
-    //线索添加人信息
-    .add-person-info{
-      border-top: 1px solid @FONT_COLOR;
-      margin: 0 20px;
-      overflow: hidden;
-      padding-top:10px;
-      .add-clue-info{
-        color:@FONT_COLOR;
-        float: right;
-        .source-name{
-          margin-right:10px;
-        }
-      }
-    }
-
-  }
   .clue-detail-block{
-    padding:10px;
+    padding:12px;
     margin-bottom: 12px;
     background: #fff;
     .clue-info-item{
@@ -29,13 +13,19 @@
         float: left;
         width: 60px;
         color: @FONT_COLOR;
-        margin-right:10px;
+        margin-right:12px;
         position: relative;
         top: 2px;
+        font-size: 14px;
       }
       .clue-info-detail{
         float: left;
         width: 300px;
+        font-size: 14px;
+        color:#333;
+      }
+      .clue-info-detail.no-handled{
+        color: #cccccc;
       }
     }
     .clue-info-item.no-margin-bottom{
@@ -56,19 +46,19 @@
          }
        }
     }
-    .add-person-info{
-      border-top: 1px solid @FONT_COLOR;
-      margin: 0 20px;
-      overflow: hidden;
-      padding-top:10px;
-      .add-clue-info{
-        color:@FONT_COLOR;
-        float: right;
-        .source-name{
-          margin-right:10px;
+      .add-person-info {
+        border-top: 1px solid @TAB_SOLID_COLOR;
+        overflow: hidden;
+        padding-top: 12px;
+        .add-clue-info {
+          color: #999;
+          float: right;
+          font-size: 12px;
+          .source-name {
+            margin-right: 10px;
+          }
         }
       }
-    }
   }
   .associate-customer-detail.clue-detail-block{
     padding: 0;
@@ -108,6 +98,9 @@
         }
       }
     }
+    .clue-inability-btn{
+      color:@CLICK-BLUE;
+    }
 
   }
   .associate-user-detail.clue-detail-block{
@@ -130,7 +123,10 @@
       background: #fff;
       margin-bottom: 0;
       .clue-info-label{
-        top:3px;
+        top:0px;
+      }
+      .handle-clue-person.clue-info-label{
+        top:2px;
       }
       .btn-container{
         position: absolute;

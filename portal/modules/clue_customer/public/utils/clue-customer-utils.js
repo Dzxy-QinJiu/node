@@ -48,6 +48,24 @@ export const SELECT_TYPE = {
     WILL_TRACE: '1',
     HAS_TRACE: '2'
 };
+
+export const CLUE_DIFF_TYPE = [
+    {
+        name: Intl.get('common.all', '全部'),
+        value: SELECT_TYPE.ALL,
+    },
+    {
+        name: Intl.get('clue.customer.will.distribution', '待分配'),
+        value: SELECT_TYPE.WILL_DISTRIBUTE,
+    },
+    {
+        name: Intl.get('sales.home.will.trace', '待跟进'),
+        value: SELECT_TYPE.WILL_TRACE,
+    },
+    {
+        name: Intl.get('clue.customer.has.follow', '已跟进'),
+        value: SELECT_TYPE.HAS_TRACE,
+    }];
 //线索的有效还是无效状态
 export const AVALIBILITYSTATUS = {
     AVALIBILITY: '0',//有效线索
@@ -85,4 +103,15 @@ export const getPhoneInputValidateRules = () => {
             checkOnlyContactPhone(rule, value, callback);
         }
     }];
+};
+//获取所选中线索状态的状态值
+export const getClueStatusValue = (filterClueStatus) => {
+    var typeFilter = {};
+    var targetObj = _.find(filterClueStatus, (item) => {
+        return item.selected;
+    });
+    if (targetObj){
+        typeFilter['status'] = targetObj.value;
+    }
+    return typeFilter;
 };

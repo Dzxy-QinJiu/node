@@ -332,7 +332,7 @@ class SalesClueItem extends React.Component {
             {availability && associatedCustomer ?
                 <div className="associate-customer">
                     {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
-                    <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}</b></div> : null}
+                    <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> : null}
             {/*是无效线索且有判定无效的相关信息*/}
             {inValidClue ?
                 <div className="clue-info-item">

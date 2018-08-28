@@ -1,9 +1,9 @@
 @box_shadow_color: #cac8c8;
 @import "../../../../public/css/common-variables";
 .sales-clue-item-container {
-  border-left: 2px solid transparent;
+  border-left: 4px solid transparent;
   position: relative;
-  margin: 24px;
+  margin: 12px 24px 0 24px;
   background: #fff;
   //关联客户
   .associate-wrap {
@@ -49,11 +49,10 @@
   .clue-top-title {
     padding: 16px 16px 4px 16px;
     .clue-stage {
-      margin-right: 7px;
+      margin-right: 8px;
       font-size: 14px;
-
-      padding: 2px;
       font-weight: bold;
+      padding:4px;
     }
     .clue-stage.will-distribute {
       background: @will-distribute-background;
@@ -74,22 +73,22 @@
     .clue-name {
       cursor: pointer;
       font-size: 16px;
+      color: #333333;
     }
   }
   //线索的内容部分
   .clue-content {
     padding: 0 0 10px 16px;
     font-size: 14px;
-    color:#333;
     .recent-contacter-detail {
       background: #fff;
       padding: 8px 0;
       font-size: 15px;
     }
     .clue-trace-content {
+      color:#666;
       .clue-access-channel {
         margin: 0 5px;
-        color: #8CA9C5;
       }
     }
   }
@@ -97,6 +96,9 @@
   .clue-foot {
     padding: 0 0 0 2px;
     .record-trace-container {
+      font-size: 14px;
+      margin: 5px 0;
+      color: #666;
       .trace-author {
         margin: 0px 5px;
       }
@@ -109,9 +111,6 @@
           cursor: pointer;
           margin-left: 10px;
         }
-      }
-      .trace-author {
-        color: #8CA9C5;
       }
     }
     .clue-info-item{
@@ -128,9 +127,12 @@
     .associate-customer {
       font-size: 14px;
       .customer-name {
-        color: #8CA9C5;
+        color:@CLICK-BLUE;
         cursor: pointer;
         font-weight: normal;
+        .arrow-right{
+          margin-left: 4px;
+        }
       }
     }
     .add-btn {
@@ -141,11 +143,11 @@
     }
     .ant-btn {
       font-size: 14px;
-      color: #8CA9C5;
+      color: @CLICK-BLUE;
       border: 1px solid #ebebeb;
       &:hover {
         color: #fff;
-        background: #2196F3;
+        background: @BUTTON-HOVER;
       }
     }
     .ant-btn.ant-btn-primary {
@@ -154,12 +156,12 @@
     .ant-btn.cancel-btn {
       &:hover {
         background: #fff;
-        color: #8CA9C5;
+        color: @CLICK-BLUE;
       }
     }
     .foot-text-content, .edit-trace-content {
       background: #fbfdff;
-      padding: 8px 16px;
+      padding: 12px 8px;
     }
     .foot-text-content.has-no-content {
       padding: 0;
@@ -178,20 +180,20 @@
           height: 28px;
           display:inline-block;
           font-size: 14px;
-          color: #8CA9C5;
+          color: @CLICK-BLUE;
           border: 1px solid #ebebeb;
           white-space: nowrap;
           line-height: 1.15;
-          padding: 5px 15px;
-          margin-right:5px;
+          padding: 5px 15px 5px 5px;
+          margin-right:8px;
           .current-trace-person{
             color:#333;
             padding-right:5px;
-            border-right: 1px solid #8CA9C5;
+            border-right: 1px solid @CLICK-BLUE;
           }
           .assign-btn{
             cursor: pointer;
-            padding-left: 5px;
+            padding-left: 8px;
           }
 
         }
@@ -221,7 +223,7 @@
 }
 
 .sales-clue-item-container.cur-clue {
-  border-left: 2px solid #2196F3;
+  border-left: 4px solid @BUTTON-HOVER;
 }
 .customer-label.info-tag-style {
   background-color: @info-tag-color;
