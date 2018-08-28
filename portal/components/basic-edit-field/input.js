@@ -260,7 +260,7 @@ var UserBasicEditField = React.createClass({
             <div className="has-error"><span className="ant-form-explain">{this.state.submitErrorMsg}</span></div>
         ) : null;
 
-        var buttonBlock = 1 ? (
+        var buttonBlock = this.state.loading ? (
             <Icon type="loading" />
         ) : this.props.showBtn ? 
             (<div>

@@ -140,15 +140,9 @@ const BasicEditField = React.createClass({
                 return;
             }
             var value = this.state.formData.input;
-            var saveObj = {};
-            //客户详情编辑参数为id
-            if (this.props.id) {
-                saveObj.id = this.props.id;
-            }
-            //用户详情编辑参数为user_id
-            if (this.props.user_id) {
-                saveObj.user_id = this.props.user_id;
-            }
+            var saveObj = {
+                id: this.props.id
+            };           
             if (this.props.type === 'password') {
                 saveObj[this.props.field] = this.md5(value);
             } else {
