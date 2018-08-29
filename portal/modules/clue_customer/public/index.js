@@ -19,7 +19,7 @@ const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 require('./css/index.less');
-import {SELECT_TYPE, getClueStatusValue} from './utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -38,6 +38,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {FilterInput} from 'CMP_DIR/filter';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -66,7 +67,6 @@ const ClueCustomer = React.createClass({
     componentDidMount: function() {
         clueCustomerStore.listen(this.onStoreChange);
         if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
-            console.log(1);
             //获取线索来源
             this.getClueSource();
             //获取线索渠道
@@ -464,6 +464,23 @@ const ClueCustomer = React.createClass({
             this.getClueList();
         });
     },
+    renderAddAndImportBtns: function() {
+        return (
+            <div className="btn-containers">
+                <Button type='primary' className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入线索')}</Button>
+                <Button className='add-clue-btn' onClick={this.showClueAddForm}>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
+            </div>
+        );
+    },
+    //是否有筛选过滤条件
+    hasNoFilterCondition: function() {
+        var filterStoreData = filterStore.getState();
+        if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangParams[0].from') === clueStartTime && this.state.keyword === ''){
+            return true;
+        }else{
+            return false;
+        }
+    },
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent: function() {
         //加载中的展示
@@ -483,13 +500,17 @@ const ClueCustomer = React.createClass({
                 </div>
             );
         } else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
-            //数据为空的展示
+            //如果有筛选条件时
             return (
-                <div className="no-data">
-                    <i className="iconfont icon-no-data"></i>
-                    <p className="abnornal-status-tip">{Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}</p>
-                </div>
+                <NoDataIntro
+                    noDataAndAddBtnTip={Intl.get('clue.no.data','暂无线索信息')}
+                    renderAddAndImportBtns={this.renderAddAndImportBtns}
+                    showAddBtn={this.hasNoFilterCondition()}
+                    noDataTip={Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}
+                />
             );
+
+
         } else {
             //渲染线索列表
             return this.renderClueCustomerBlock();

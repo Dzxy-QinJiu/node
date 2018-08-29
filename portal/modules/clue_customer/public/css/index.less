@@ -43,11 +43,19 @@
       button {
         margin-right: 12px;
         font-size: 16px;
+        color: @FILTER-BUTTON;
+        border-color:@SEARCH-INPUT-BORDER;
+        &:hover{
+          color: @BUTTON-HOVER;
+          border-color:@BUTTON-HOVER;
+        }
       }
       button.ant-btn-primary{
         background-color: @BORDER-BLUE;
         border-color: @BORDER-BLUE;
+        color: #ffffff;
         &:hover{
+          color: #ffffff;
           background-color:  @BUTTON-HOVER;
           border-color: @BUTTON-HOVER;
         }
@@ -63,7 +71,7 @@
     bottom: 0;
     background: @NOTICE-BACKGROUND;
     //加载中，加载完毕和出错的状态
-    .load-content, .err-content, .no-data {
+    .load-content, .err-content, .no-data-intro, .no-data{
       margin-top: 260px;
       font-size: 20px;
       color: #cecece;
@@ -76,6 +84,29 @@
         margin-top: 16px;
         color: #999;
         font-size: 14px;
+      }
+      .btn-containers{
+        margin-top:10px;
+        //.ant-btn{
+        //  font-size: 16px;
+        //  margin-right: 12px;
+        //}
+        //.import-btn{
+        //  background-color:@BORDER-BLUE ;
+        //  border-color:@BORDER-BLUE;
+        //  &:hover{
+        //    background-color: @BUTTON-HOVER ;
+        //    border-color: @BUTTON-HOVER;
+        //  }
+        //}
+        //.add-clue-btn{
+        //  color: @FILTER-BUTTON;
+        //  border-color:@SEARCH-INPUT-BORDER;
+        //  &:hover{
+        //    color: @BUTTON-HOVER;
+        //    border-color:@BUTTON-HOVER;
+        //  }
+        //}
       }
     }
     .clue-customer-total-tip {
