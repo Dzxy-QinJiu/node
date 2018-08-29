@@ -617,7 +617,7 @@ class FilterList extends React.Component {
                                                                     <h4 className="title">
                                                                         {groupItem.groupName}
                                                                         {
-                                                                            isGroupSelected(groupItem) && !groupItem.hideClearBtn ?
+                                                                            isGroupSelected(groupItem) ?
                                                                                 <span
                                                                                     data-tracename={`清空"${groupItem.groupName}"筛选条件`}
                                                                                     className="clear-btn"

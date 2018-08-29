@@ -113,7 +113,7 @@ var Dynamic = React.createClass({
                     // handleScrollBottom={this.handleScrollBarBottom}
                     // listenScrollBottom={this.state.listenScrollBottom}
                 >
-                    {this.state.isLoading && !this.state.lastClueId ? <Spinner/> : this.state.errorMsg ? (
+                    {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
                         <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
                         <div className="clue-dynamic-list">
                             <AntcTimeLine
