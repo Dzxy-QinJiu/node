@@ -11,7 +11,8 @@ function UserLoginAnalysisStore(){
 
 // 用户登录相关的初始信息
 UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
-    this.isLoading = true; 
+    //应用列表加载状态
+    this.appListLoading = false;
     // 用户登录信息（时长、次数、首次和最后一次登录时间）
     this.loginInfo = {
         duration: '' , // 时长
@@ -30,7 +31,9 @@ UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
     this.loginScore = {
         data: {},
         errorMsg: '', //错误信息
-    };
+    };   
+    //存放不同应用下数据
+    this.appUserDataMap = {};
 };
 //恢复默认状态
 UserLoginAnalysisStore.prototype.resetState = function() {
@@ -38,41 +41,51 @@ UserLoginAnalysisStore.prototype.resetState = function() {
 };
 
 //获取用户应用列表
-UserLoginAnalysisStore.prototype.getSingleUserAppList = function({appId,appList}) {
+UserLoginAnalysisStore.prototype.getSingleUserAppList = function({appId,appList,loading}) {
     this.selectedLogAppId = appId;
     this.userOwnAppArray = appList;
+    this.appListLoading = loading;
 };
 
 UserLoginAnalysisStore.prototype.setSelectedAppId = function(appId){
     this.selectedLogAppId = appId;
     ShareObj.share_differ_user_keep_app_id = this.selectedLogAppId;
 };
-
+ 
 // 用户登录信息（时长、次数、首次和最后一次登录时间）
 UserLoginAnalysisStore.prototype.getUserLoginInfo = function(result){
-    this.isLoading = result.loading;
+    const appid = result.paramsObj.appid;
+    this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
+        loading: false,
+        data: {}
+    };
+    const item = this.appUserDataMap[appid];
+    item.loading = result.loading;
+    item.loginInfo = {
+        errorMsg: ''
+    };
     if (result.loading) {
-        this.loginInfo.errorMsg = '';
+        item.loginInfo.errorMsg = '';
     } else {
         if (result.error) {
-            this.loginInfo.errorMsg = result.errorMsg;
+            item.loginInfo.errorMsg = result.errorMsg;
         } else {
             if(_.isArray(result.data)){
                 let loginList = result.data;
                 let loginInfo = _.extend({},loginList[0], loginList[1], loginList[2], loginList[3]);
                 // 时长
-                this.loginInfo.duration = loginInfo.duration && loginInfo.duration.login_long || 0;
+                item.loginInfo.duration = loginInfo.duration && loginInfo.duration.login_long || 0;
                 // 次数
-                this.loginInfo.count = loginInfo.count && loginInfo.count.logins || 0;
+                item.loginInfo.count = loginInfo.count && loginInfo.count.logins || 0;
                 // 首次登录
-                this.loginInfo.first = -1;
+                item.loginInfo.first = -1;
                 if (loginInfo.first !== -1) {
-                    this.loginInfo.first = moment(loginInfo.first).format(oplateConsts.DATE_TIME_FORMAT);
+                    item.loginInfo.first = moment(loginInfo.first).format(oplateConsts.DATE_TIME_FORMAT);
                 }
                 // 最后一次登录
-                this.loginInfo.last = -1;
+                item.loginInfo.last = -1;
                 if (loginInfo.last !== -1) {
-                    this.loginInfo.last = moment(loginInfo.last).format(oplateConsts.DATE_TIME_FORMAT);
+                    item.loginInfo.last = moment(loginInfo.last).format(oplateConsts.DATE_TIME_FORMAT);
                 }
             }
         }
@@ -81,12 +94,21 @@ UserLoginAnalysisStore.prototype.getUserLoginInfo = function(result){
 
 // 用户登录统计图中登录时长、登录频次
 UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
-    this.isLoading = result.loading;
+    const appid = result.paramsObj.appid;
+    this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
+        loading: false,
+        data: {}
+    };
+    const item = this.appUserDataMap[appid];
+    item.loading = result.loading;
+    item.loginChartInfo = {
+        errorMsg: ''
+    };
     if(result.loading){
-        this.loginChartInfo.errorMsg = '';
+        item.loginChartInfo.errorMsg = '';
     } else {
         if (result.error) {
-            this.loginChartInfo.errorMsg = result.errorMsg;
+            item.loginChartInfo.errorMsg = result.errorMsg;
         } else {
             if(_.isArray(result.data)){
                 let loginList = result.data;
@@ -100,7 +122,7 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                         durationArray.push({date: data.timestamp, sum: seconds});
                     });
                 }
-                this.loginChartInfo.loginDuration = durationArray;
+                item.loginChartInfo.loginDuration = durationArray;
                 let firstLoginTime = '', lastLoginTime = '';
                 if (durationArray.length) {
                     let firstLoginObj = durationArray[0];
@@ -131,7 +153,7 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                         }
                     });
                 }
-                this.loginChartInfo.loginCount = frequencyArray;
+                item.loginChartInfo.loginCount = frequencyArray;
             }
         }
     }
@@ -139,15 +161,24 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
 
 // 获取用户的分数
 UserLoginAnalysisStore.prototype.getLoginUserScore = function(result) {
-    this.isLoading = result.loading;
+    const appid = result.paramsObj.app_id;
+    this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
+        loading: false,
+        data: {}
+    };
+    const item = this.appUserDataMap[appid];
+    item.loading = result.loading;
+    item.loginScore = {
+        errorMsg: ''
+    };
     if (result.loading) {
-        this.loginScore.errorMsg = '';
+        item.loginScore.errorMsg = '';
     } else {
         if (result.error) {
-            this.loginScore.errorMsg = result.errorMsg;
+            item.loginScore.errorMsg = result.errorMsg;
         } else {
-            this.loginScore.errorMsg = '';
-            this.loginScore.data = result.data;
+            item.loginScore.errorMsg = '';
+            item.loginScore.data = result.data;
         }
     }
 };
