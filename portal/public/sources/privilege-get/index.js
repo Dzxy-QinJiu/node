@@ -2,22 +2,23 @@ var React = require('react');
 require('./index.less');
 
 var Spinner = require('../../../components/spinner');
-var PrivilegeGet = React.createClass({
-    getInitialState: function() {
-        return {
-            isLoading: true,
-            needLogout: false,
-            errorTip: '',
-            logoutTime: 3//获取用户信息出错3秒后重新登录
-        };
-    },
-    retry: function() {
+
+class PrivilegeGet extends React.Component {
+    state = {
+        isLoading: true,
+        needLogout: false,
+        errorTip: '',
+        logoutTime: 3//获取用户信息出错3秒后重新登录
+    };
+
+    retry = () => {
         if (this.state.needLogout) {
             return;
         }
         this.props.retry();
-    },
-    render: function() {
+    };
+
+    render() {
         if (this.state.isLoading) {
             return (
                 <div className="PrivilegeGet">
@@ -40,6 +41,6 @@ var PrivilegeGet = React.createClass({
             window.location.href = '/logout';
         }
     }
-});
+}
 
 module.exports = PrivilegeGet;

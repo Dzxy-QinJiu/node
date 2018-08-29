@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Col, Form, Input, Icon, Radio} from 'antd';
@@ -25,14 +26,17 @@ function cx(classNames) {
         return Array.prototype.join.call(arguments, ' ');
     }
 }
-var ContactForm = React.createClass({
+var ContactForm = createReactClass({
+    displayName: 'ContactForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             contact: ContactUtil.newViewContactObject(),
             type: 'add'
         };
     },
+
     //联系方式的数组展开放到对应的formData中
     formatContact: function(type, contactData, formData, status) {
         if (contactData && _.isArray(contactData)) {
@@ -42,6 +46,7 @@ var ContactForm = React.createClass({
             }
         }
     },
+
     getInitialState: function() {
         var contact = this.props.contact.contact;
         var phoneInputIds = _.isArray(contact.phone) && contact.phone.length ? _.map(contact.phone, item => {
@@ -193,7 +198,6 @@ var ContactForm = React.createClass({
         });
     },
 
-
     doSubmit: function() {
         var formData = _.extend({}, this.state.formData);
         var phoneArray = [], qqArray = [], weChatArray = [], emailArray = [];
@@ -269,6 +273,7 @@ var ContactForm = React.createClass({
             }
         }
     },
+
     //获取修改的类型，是phone、no_phone还是all
     getEditType: function(formData) {
         let oldData = this.props.contact.contact;
@@ -294,6 +299,7 @@ var ContactForm = React.createClass({
             return '';
         }
     },
+
     //提交完数据后
     afterSubmit: function(result) {
         this.state.errorMsg = result.errorMsg || '';
@@ -317,9 +323,11 @@ var ContactForm = React.createClass({
             ContactAction.hideEditContactForm(this.props.contact);
         }
     },
+
     handleSelect: function() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '新建/修改联系人的角色');
     },
+
     //获取当前已添加的电话列表
     getCurPhoneArray(){
         let formData = this.state.formData;
@@ -375,12 +383,14 @@ var ContactForm = React.createClass({
             }
         }];
     },
+
     //联系人名和部门必填一项的验证
     validateContactNameDepartment: function() {
         //是否通过联系人名和部门必填一项的验证
         let isValid = validateRequiredOne(this.state.formData.name, this.state.formData.department);
         this.setState({isValidNameDepartment: isValid});
     },
+
     //渲染联系人名和部门必填一项的提示
     renderValidNameDepartmentTip: function() {
         if (this.state.isValidNameDepartment) {
@@ -390,6 +400,7 @@ var ContactForm = React.createClass({
                 className="validate-error-tip">{Intl.get('crm.contact.name.department', '联系人姓名和部门必填一项')}</div>;
         }
     },
+
     //添加、删除联系方式的按钮
     renderContactWayBtns(index, size, type){
         return (<div className="contact-way-buttons">
@@ -402,6 +413,7 @@ var ContactForm = React.createClass({
             </div>) : null}
         </div>);
     },
+
     /**
      * 电话输入框
      * @param inex: 电话的第几个输入框的索引（从0开始计算）
@@ -432,6 +444,7 @@ var ContactForm = React.createClass({
             />
         );
     },
+
     /**
      * 联系方式输入框
      * @param label:联系方式的描述（QQ、微信、邮箱）
@@ -459,6 +472,7 @@ var ContactForm = React.createClass({
             </FormItem>
         );
     },
+
     renderContactForm: function() {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -561,7 +575,7 @@ var ContactForm = React.createClass({
             handleSubmit={this.handleSubmit}
             handleCancel={this.cancel}
         />);
-    }
+    },
 });
 
 module.exports = ContactForm;

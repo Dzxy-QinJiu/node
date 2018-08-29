@@ -16,13 +16,12 @@ import Trace from 'LIB_DIR/trace';
 
 const timeRange = 'week';
 
-const AnalysisFilter = React.createClass({
-    getDefaultProps() {
-        return {
-            isAppSelectorShow: true,
-            selectedApp: storageUtil.local.get(STORED_APP_ID_KEY),
-        };
-    },
+class AnalysisFilter extends React.Component {
+    static defaultProps = {
+        isAppSelectorShow: true,
+        selectedApp: storageUtil.local.get(STORED_APP_ID_KEY),
+    };
+
     componentDidMount() {
         if (this.props.isAutoSelectDate) {
             const funcName = 'get' + TIME_RANGE + 'Time';
@@ -35,15 +34,18 @@ const AnalysisFilter = React.createClass({
 
             this.onSelectDate(startTime, endTime);
         }
-    },
-    onSelectDate(startTime, endTime) {
+    }
+
+    onSelectDate = (startTime, endTime) => {
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
-    },
-    onSelectApp(app_id) {
+    };
+
+    onSelectApp = (app_id) => {
         appSelectorEmitter.emit(appSelectorEmitter.SELECT_APP, app_id);
         storageUtil.local.set(STORED_APP_ID_KEY, app_id);
         Trace.traceEvent(ReactDOM.findDOMNode(this),'选择应用');
-    },
+    };
+
     render() {
         return (
             <div className="analysis-filter">
@@ -74,7 +76,7 @@ const AnalysisFilter = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default AnalysisFilter;
 

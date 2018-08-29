@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 require('../../css/apply-user-form.less');
@@ -19,7 +20,8 @@ import DateSelectorPicker from '../../../../../components/date-selector/utils';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
 const dayTime = 24 * 60 * 60 * 1000;
-const ApplyUserForm = React.createClass({
+const ApplyUserForm = createReactClass({
+    displayName: 'ApplyUserForm',
     mixins: [ValidateMixin, UserTimeRangeField],
 
     getInitialState: function() {
@@ -109,6 +111,7 @@ const ApplyUserForm = React.createClass({
         const appFormData = _.find(this.state.formData.products, app => app.client_id === id);
         this.setState({appFormData: appFormData});
     },
+
     /* 获取应用的配置, app：应用，appDefaultConfigList：各应用的默认配置列表，
      * userType:申请的用户类型（正式用户/试用用户）,resetDefault:是否需要重设默认值
      */
@@ -216,10 +219,12 @@ const ApplyUserForm = React.createClass({
     handleCancel: function() {
         this.props.cancelApply();
     },
+
     //是否应用到所有应用上的设置
     toggleCheckbox: function() {
         this.setState({setAllChecked: !this.state.setAllChecked});
     },
+
     renderTabToolTip(app_name) {
         return (
             <Tooltip title={app_name} placement="right">
@@ -227,6 +232,7 @@ const ApplyUserForm = React.createClass({
             </Tooltip>
         );
     },
+
     render: function() {
         const formData = this.state.formData;
         const appFormData = this.state.appFormData;
@@ -333,7 +339,7 @@ const ApplyUserForm = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = ApplyUserForm;

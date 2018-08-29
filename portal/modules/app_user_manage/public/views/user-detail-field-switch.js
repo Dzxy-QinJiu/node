@@ -20,51 +20,51 @@ var AlertTimer = require('../../../../components/alert-timer');
 const CLS = 'user-detail-field-switch';
 
 var Switch = require('antd').Switch;
-var UserDetailFieldSwitch = React.createClass({
+
+class UserDetailFieldSwitch extends React.Component {
     //获取默认属性
-    getDefaultProps: function() {
-        return {
-            //用户id
-            userId: '',
-            //应用id
-            appId: '',
-            //属性原始值
-            originValue: '0',
-            //选中状态下对应的值
-            checkedValue: '1',
-            //未选中状态下对应的值
-            unCheckedValue: '0',
-            //开启文字
-            checkedChildren: Intl.get('user.open.code', '开'),
-            //关闭文字
-            unCheckedChildren: Intl.get('user.close.code', '关'),
-            //选中状态下提交的值
-            checkedSubmitValue: '1',
-            //未选中状态下提交的值
-            unCheckedSubmitValue: '0',
-            //字段
-            field: 'status',
-            //修改成功之后的回调
-            onSubmitSuccess: function() {}
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+    static defaultProps = {
+        //用户id
+        userId: '',
+        //应用id
+        appId: '',
+        //属性原始值
+        originValue: '0',
+        //选中状态下对应的值
+        checkedValue: '1',
+        //未选中状态下对应的值
+        unCheckedValue: '0',
+        //开启文字
+        checkedChildren: Intl.get('user.open.code', '开'),
+        //关闭文字
+        unCheckedChildren: Intl.get('user.close.code', '关'),
+        //选中状态下提交的值
+        checkedSubmitValue: '1',
+        //未选中状态下提交的值
+        unCheckedSubmitValue: '0',
+        //字段
+        field: 'status',
+        //修改成功之后的回调
+        onSubmitSuccess: function() {}
+    };
+
+    state = {
+        timeout: null,
+        resultType: '',
+        errorMsg: '',
+        value: this.props.originValue
+    };
+
+    componentWillReceiveProps(nextProps) {
         if(nextProps.originValue !== this.props.originValue) {
             this.setState({
                 value: nextProps.originValue
             });
         }
-    },
-    getInitialState: function() {
-        return {
-            timeout: null,
-            resultType: '',
-            errorMsg: '',
-            value: this.props.originValue
-        };
-    },
+    }
+
     //获取提交对象
-    getSubmitObj: function() {
+    getSubmitObj = () => {
         //user_id和client_id是必传项
         var submitObj = {
             user_id: this.props.userId,
@@ -75,9 +75,10 @@ var UserDetailFieldSwitch = React.createClass({
         //添加提交字段
         submitObj[this.props.field] = checked ? this.props.checkedSubmitValue : this.props.unCheckedSubmitValue;
         return submitObj;
-    },
+    };
+
     //发送ajax
-    sendAjax: function() {
+    sendAjax = () => {
         this.setState({
             resultType: 'loading',
             errorMsg: ''
@@ -110,9 +111,10 @@ var UserDetailFieldSwitch = React.createClass({
                 errorMsg: errorMsg
             });
         });
-    },
+    };
+
     //当选项改变的时候，发送请求
-    onSwitchChange: function(checked) {
+    onSwitchChange = (checked) => {
         this.setState({
             value: checked ? this.props.checkedValue : this.props.unCheckedValue
         });
@@ -123,14 +125,16 @@ var UserDetailFieldSwitch = React.createClass({
         }else{
             Trace.traceEvent('用户详情','开通产品-点击关闭switch');
         }
-    },
-    onHideAlert: function() {
+    };
+
+    onHideAlert = () => {
         this.setState({
             resultType: '',
             value: this.props.originValue
         });
-    },
-    render: function() {
+    };
+
+    render() {
         if(this.state.resultType === 'loading') {
             return <div className={CLS}><Icon type="loading" /></div>;
         }
@@ -148,6 +152,6 @@ var UserDetailFieldSwitch = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = UserDetailFieldSwitch;

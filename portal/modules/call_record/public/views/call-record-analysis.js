@@ -98,13 +98,15 @@ const TOOLTIPDESCRIPTION = {
 const TREND_TIME = 30 * 24 * 60 * 60 * 1000;
 
 const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
-var CallRecordAnalyis = React.createClass({
-    //获取初始状态
-    getInitialState: function() {
+
+class CallRecordAnalyis extends React.Component {
+    constructor(props) {
+        super(props);
         CallAnalysisAction.resetState();
         let callStateData = CallAnalysisStore.getState();
         let trendWidth = $(window).width() - LAYOUT_WIDTH.ORIGIN_WIDTH;
-        return {
+
+        this.state = {
             ...callStateData,
             callType: CALL_TYPE_OPTION.ALL, // 通话类型
             selectRadioValue: CALL_RADIO_VALUES.COUNT, // 通话趋势图中，时长和数量切换的Radio
@@ -115,23 +117,25 @@ var CallRecordAnalyis = React.createClass({
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             switchStatus: false//是否查看各团队通话趋势图
         };
-    },
+    }
 
-    onStoreChange: function() {
+    onStoreChange = () => {
         this.setState(CallAnalysisStore.getState());
-    },
+    };
 
     // 获取销售团队和成员数据
-    getTeamMemberData() {
+    getTeamMemberData = () => {
         let reqData = commonMethodUtil.getParamByPrivilege();
         CallAnalysisAction.getSaleGroupTeams(reqData);
         CallAnalysisAction.getSaleMemberList(reqData);
-    },
+    };
+
     // 获取订单阶段
-    getSalesStageList() {
+    getSalesStageList = () => {
         CallAnalysisAction.getSalesStageList();
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         CallAnalysisStore.listen(this.onStoreChange);
         this.getSalesStageList(); // 获取订单阶段
         this.getTeamMemberData(); //获取销售团队和成员数据
@@ -143,15 +147,15 @@ var CallRecordAnalyis = React.createClass({
         });
         TableUtil.zoomInSortArea(this.refs.phoneList);
         TableUtil.alignTheadTbody(this.refs.phoneList);
-    },
+    }
 
     // 获取团队或是成员的id
-    getTeamOrMemberId(list, selectValue) {
+    getTeamOrMemberId = (list, selectValue) => {
         return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
-    },
+    };
 
     // 获取团队或成员的参数
-    getTeamMemberParam() {
+    getTeamMemberParam = () => {
         let teamList = this.state.teamList.list; // 团队数据
         let memberList = this.state.memberList.list; // 成员数据
         let secondSelectValue = this.state.secondSelectValue;
@@ -171,10 +175,10 @@ var CallRecordAnalyis = React.createClass({
             }
         }
         return params;
-    },
+    };
 
     // post方式，body中的参数
-    getCallAnalysisBodyParam(params) {
+    getCallAnalysisBodyParam = (params) => {
         let reqBody = {};
         if (this.state.teamList.list.length) {
             reqBody = this.getTeamMemberParam();
@@ -185,10 +189,10 @@ var CallRecordAnalyis = React.createClass({
             }
         }
         return reqBody;
-    },
+    };
 
     // 通话分析的趋势图
-    getCallAnalysisTrendData(reqBody){
+    getCallAnalysisTrendData = (reqBody) => {
         var nowTime = new Date().getTime();
         // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
         let trendParams = {
@@ -197,8 +201,9 @@ var CallRecordAnalyis = React.createClass({
         };
         // 获取通话数量和通话时长的趋势图数据
         CallAnalysisAction.getCallCountAndDur(trendParams, reqBody);
-    },
-    setChartContainerHeight: function() {
+    };
+
+    setChartContainerHeight = () => {
         //如果选择全部团队或者团队选择的个数大于4个时，把容器的高度撑高
         if ((this.state.secondSelectValue === LITERAL_CONSTANT.ALL && this.state.switchStatus) || (_.isArray(this.state.secondSelectValue) && this.state.secondSelectValue.length > 4)) {
             this.setState({
@@ -209,9 +214,10 @@ var CallRecordAnalyis = React.createClass({
                 trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT
             });
         }
-    },
+    };
+
     //点击切换查看各团队通话趋势图
-    handleSwitchChange(checked){
+    handleSwitchChange = (checked) => {
         this.setState({
             switchStatus: checked
         }, () => {
@@ -231,9 +237,10 @@ var CallRecordAnalyis = React.createClass({
             this.getCallAnalysisTrendData(reqBody); // 所有团队总趋势图
             Trace.traceEvent('通话分析', '点击关闭查看各团队通话趋势图的switch');
         }
-    },
+    };
+
     // 获取团队参数
-    getTeamParamSeparately() {
+    getTeamParamSeparately = () => {
         let teamList = this.state.teamList.list; // 团队数据
         let secondSelectValue = this.state.secondSelectValue;
         let params = {};
@@ -246,8 +253,9 @@ var CallRecordAnalyis = React.createClass({
             }
         }
         return params;
-    },
-    getCallAnalysisBodyParamSeparately(params) {
+    };
+
+    getCallAnalysisBodyParamSeparately = (params) => {
         let reqBody = {};
         if (this.state.teamList.list.length) {
             reqBody = this.getTeamParamSeparately();
@@ -258,9 +266,10 @@ var CallRecordAnalyis = React.createClass({
             }
         }
         return reqBody;
-    },
+    };
+
     //分别获取每个团队的趋势图
-    getCallAnalysisTrendDataSeparately(reqBody){
+    getCallAnalysisTrendDataSeparately = (reqBody) => {
         var nowTime = new Date().getTime();
         // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
         let trendParams = {
@@ -269,9 +278,10 @@ var CallRecordAnalyis = React.createClass({
         };
         // 获取通话数量和通话时长的趋势图数据
         CallAnalysisAction.getCallCountAndDurSeparately(trendParams, reqBody);
-    },
+    };
+
     // 通话的接通率
-    getCallInfoData(params){
+    getCallInfoData = (params) => {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -290,10 +300,10 @@ var CallRecordAnalyis = React.createClass({
         }
         let type = this.getCallInfoAuth();
         CallAnalysisAction.getCallInfo(pathParam, queryParams, type);
-    },
+    };
 
     // TOP10
-    getCallDurTopTen(reqBody) {
+    getCallDurTopTen = (reqBody) => {
         // 通话时长TOP10的列表
         var topParam = {
             start_time: this.state.start_time || moment('2010-01-01 00:00:00').valueOf(),
@@ -303,19 +313,19 @@ var CallRecordAnalyis = React.createClass({
             sort_order: 'descend'
         };
         CallAnalysisAction.getCallDurTopTen(topParam, reqBody);// 单次通话时长TOP10
-    },
+    };
 
     // 114占比，与时间、所选团队和成员有关系
-    getCallRate(reqBody) {
+    getCallRate = (reqBody) => {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime()
         };
         CallAnalysisAction.getCallRate(queryParams, reqBody);
-    },
+    };
 
     // 获取趋势图、接通率、TOP10和114占比的数据
-    refreshCallAnalysisData(params) {
+    refreshCallAnalysisData = (params) => {
         let reqBody = this.getCallAnalysisBodyParam(params);
         //如果展示的是每个团队的趋势图，则不需要所有团队的通话时长和数量
         if (!(this.state.switchStatus)) {
@@ -330,9 +340,10 @@ var CallRecordAnalyis = React.createClass({
         this.getCallIntervalTotalData(reqBody);
         // 获取通话客户的地域和阶段分布
         this.getCallCustomerZoneStage(reqBody);
-    },
+    };
+
     //获取通话时段（数量和时长）的参数
-    getCallIntervalParams: function(params) {
+    getCallIntervalParams = (params) => {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -346,32 +357,36 @@ var CallRecordAnalyis = React.createClass({
             queryParams.member_id = params.user_id;
         }
         return queryParams;
-    },
-    getCallInfoAuth() {
+    };
+
+    getCallInfoAuth = () => {
         let authType = 'user';//CUSTOMER_CALLRECORD_STATISTIC_USER
         if (hasPrivilege('CUSTOMER_CALLRECORD_STATISTIC_MANAGER')) {
             authType = 'manager';
         }
         return authType;
-    },
+    };
+
     //通话总次数和总时长统计权限
-    getCallTotalAuth(){
+    getCallTotalAuth = () => {
         let authType = 'user';//CALLRECORD_CUSTOMER_PHONE_STATISTIC_USER
         if (hasPrivilege('CALLRECORD_CUSTOMER_PHONE_STATISTIC_MANAGER')) {
             authType = 'manager';
         }
         return authType;
-    },
+    };
+
     //获取通话时段、总次数、总时长的统计数据
-    getCallIntervalTotalData(params){
+    getCallIntervalTotalData = (params) => {
         let queryParams = this.getCallIntervalParams(params);
         let authType = this.getCallInfoAuth();
         CallAnalysisAction.getCallIntervalData(authType, queryParams);
         let callTotalAuth = this.getCallTotalAuth();
         CallAnalysisAction.getCallTotalList(callTotalAuth, queryParams);//通话总次数、总时长TOP10
-    },
+    };
+
     // 通话客户的地域和阶段分布参数
-    getZoneStageParams(params) {
+    getZoneStageParams = (params) => {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -385,38 +400,42 @@ var CallRecordAnalyis = React.createClass({
             queryParams.member_ids = params.user_id;
         }
         return queryParams;
-    },
+    };
+
     // 获取通话客户的地域和阶段分布权限
-    getCallCustomerZoneStageAuth() {
+    getCallCustomerZoneStageAuth = () => {
         let authType = 'self';// CALL_RECORD_VIEW_USER
         if (hasPrivilege('CALL_RECORD_VIEW_MANAGER')) {
             authType = 'all';
         }
         return authType;
-    },
+    };
+
     // 获取通话客户的地域和阶段分布
-    getCallCustomerZoneStage(params) {
+    getCallCustomerZoneStage = (params) => {
         let queryParams = this.getZoneStageParams(params);
         let authType = this.getCallCustomerZoneStageAuth();
         CallAnalysisAction.getCallCustomerZoneStage(authType, queryParams);
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         CallAnalysisStore.unlisten(this.onStoreChange);
-    },
+    }
 
     //获取销售列的标题
-    getSalesColumnTitle: function() {
+    getSalesColumnTitle = () => {
         var label = Intl.get('sales.home.sales', '销售');
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) {
             label = Intl.get('user.sales.team', '销售团队');
         }
         return label;
-    },
+    };
+
     /**
      * 电话接通率的数据
      * @param isExport 是否是导出时调用的，导出时，时长都展示秒数
      */
-    getPhoneListColumn: function(isExport) {
+    getPhoneListColumn = (isExport) => {
         let col_width = 95, num_col_width = 80;
         let columns = [{
             title: this.getSalesColumnTitle(),
@@ -565,14 +584,14 @@ var CallRecordAnalyis = React.createClass({
         }
 
         return columns;
-    },
+    };
 
-    handleSelect() {
+    handleSelect = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.call-type-select'), '根据通话类型过滤');
-    },
+    };
 
     // 通话类型的筛选框
-    filterCallTypeSelect(){
+    filterCallTypeSelect = () => {
         return (
             <div className="call-type-select">
                 <SelectFullWidth
@@ -593,10 +612,10 @@ var CallRecordAnalyis = React.createClass({
                 </SelectFullWidth>
             </div>
         );
-    },
+    };
 
     // 选择通话类型的值
-    selectCallTypeValue(value){
+    selectCallTypeValue = (value) => {
         if (value === CALL_TYPE_OPTION.PHONE) {
             this.state.callType = CALL_TYPE_OPTION.PHONE;
         } else if (value === CALL_TYPE_OPTION.APP) {
@@ -613,10 +632,10 @@ var CallRecordAnalyis = React.createClass({
                 this.refreshCallAnalysisData({deviceType: this.state.callType});
             }
         });
-    },
+    };
 
     // 切换通话时长和数据，展示的趋势图
-    handleSelectRadio(event) {
+    handleSelectRadio = (event) => {
         if (event.target.value === CALL_RADIO_VALUES.COUNT) {
             Trace.traceEvent('通话分析', '点击通话趋势图中通话数量按钮');
             this.setState({
@@ -628,10 +647,10 @@ var CallRecordAnalyis = React.createClass({
                 selectRadioValue: CALL_RADIO_VALUES.DURATION
             });
         }
-    },
+    };
 
     // 渲染通话数量和通话时长的趋势图
-    renderCallTrendChart() {
+    renderCallTrendChart = () => {
         return (
             <div className="call-trend-container">
                 <div className="call-trend-chart">
@@ -663,9 +682,10 @@ var CallRecordAnalyis = React.createClass({
                 </div>
             </div>
         );
-    },
+    };
+
     //切换通话时长和数量，展示的点图
-    onChangeCallIntervalRadio(event){
+    onChangeCallIntervalRadio = (event) => {
         if (event.target.value === CALL_RADIO_VALUES.COUNT) {
             Trace.traceEvent('通话分析', '点击通话时段点图中的通话数量按钮');
             this.setState({
@@ -677,9 +697,9 @@ var CallRecordAnalyis = React.createClass({
                 selectedCallInterval: CALL_RADIO_VALUES.DURATION
             });
         }
-    },
+    };
 
-    getCallCountAndRecordOptions: function(data, dataName, dataType) {
+    getCallCountAndRecordOptions = (data, dataName, dataType) => {
         var options = {
             tooltip: {
                 formatter: function(obj) {
@@ -712,10 +732,10 @@ var CallRecordAnalyis = React.createClass({
             });
         });
         return options;
-    },
+    };
 
     // 渲染通话时段(时长/数量)的统计
-    renderCallIntervalChart() {
+    renderCallIntervalChart = () => {
         var isCallCount = this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT;
         let data = isCallCount ? this.state.callIntervalData.countList : this.state.callIntervalData.timeList;
         let title = isCallCount ? Intl.get('sales.home.call.cout', '通话数量') : Intl.get('call.record.call.duration', '通话时长');
@@ -748,9 +768,10 @@ var CallRecordAnalyis = React.createClass({
                 chartHeight={CHART_LAYOUT_HEIGHT.INITIAL_HEIGHT}
             />
         );
-    },
+    };
+
     //近一个月的通话趋势的options
-    getCallTrendEchartOptions: function(dataList, charTips, isMutileLine, lineType) {
+    getCallTrendEchartOptions = (dataList, charTips, isMutileLine, lineType) => {
         return {
             tooltip: {
                 trigger: 'axis',
@@ -815,23 +836,26 @@ var CallRecordAnalyis = React.createClass({
             ],
             series: this.getCallTrendDataSerise(dataList, isMutileLine, lineType)
         };
-    },
-    getCallTrendCategorys: function(dataList, isMutileLine, lineType) {
+    };
+
+    getCallTrendCategorys = (dataList, isMutileLine, lineType) => {
         var data = [];
         var dataList = isMutileLine && dataList[0] ? dataList[0][lineType] : dataList;
         _.each(dataList, (item) => {
             data.push(new Date(item.timestamp));
         });
         return data;
-    },
-    getCallTrendLegendData: function(dataList, isMutileLine) {
+    };
+
+    getCallTrendLegendData = (dataList, isMutileLine) => {
         var data = [];
         if (isMutileLine) {
             data = _.map(dataList, 'teamName');
         }
         return data;
-    },
-    getCallTrendDataSerise: function(dataList, isMutileLine, lineType) {
+    };
+
+    getCallTrendDataSerise = (dataList, isMutileLine, lineType) => {
         //共同的属性
         var commonObj = {
             data: [],
@@ -861,9 +885,10 @@ var CallRecordAnalyis = React.createClass({
             });
         }
         return serise;
-    },
+    };
+
     //近一个月的通话趋势
-    renderCallChart(dataList, charTips, isMutileLine, lineType) {
+    renderCallChart = (dataList, charTips, isMutileLine, lineType) => {
         var isLoading = this.state.callList.loading || this.state.eachTeamCallList.loading;
         var isError = this.state.callList.errMsg || this.state.eachTeamCallList.errMsg;
         const charts = [{
@@ -887,9 +912,10 @@ var CallRecordAnalyis = React.createClass({
                 chartHeight={this.state.trendHeight}
             />
         );
-    },
+    };
+
     //通话时长统计描述
-    getDurationDescription: function(item, time, team) {
+    getDurationDescription = (item, time, team) => {
         var descriptionArr = [
             TOOLTIPDESCRIPTION.TIME + ' : ' + `${item}`,
             TOOLTIPDESCRIPTION.DURATION + ' : ' + `${time}`,
@@ -898,10 +924,10 @@ var CallRecordAnalyis = React.createClass({
             descriptionArr.push(TOOLTIPDESCRIPTION.TEAMNAME + ' :' + `${team}`);
         }
         return descriptionArr;
-    },
+    };
 
     // 通话时长统计图的提示信息
-    durationTooltip: function(time, sum, teamArr) {
+    durationTooltip = (time, sum, teamArr) => {
         if (_.isArray(teamArr)) {
             var returnObj = _.map(time, (item, index) => {
                 let timeObj = TimeUtil.secondsToHourMinuteSecond(sum[index] || 0);
@@ -914,9 +940,10 @@ var CallRecordAnalyis = React.createClass({
             let desObj = this.getDurationDescription(time, timeObj.timeDescr);
             return desObj.join('<br />');
         }
-    },
+    };
+
     //获取通话数量描述
-    getCountDescription: function(item, sum, team) {
+    getCountDescription = (item, sum, team) => {
         var countArr = [
             TOOLTIPDESCRIPTION.TIME + ' : ' + `${item}`,
             TOOLTIPDESCRIPTION.COUNT + ' : ' + `${sum}`,
@@ -925,10 +952,10 @@ var CallRecordAnalyis = React.createClass({
             countArr.push(TOOLTIPDESCRIPTION.TEAMNAME + ' : ' + `${team}`);
         }
         return countArr;
-    },
+    };
 
     // 通话数量统计图的提示信息
-    countTooltip: function(time, sum, teamArr) {
+    countTooltip = (time, sum, teamArr) => {
         if (_.isArray(teamArr)) {
             var returnObj = _.map(time, (item, index) => {
                 var desObj = this.getCountDescription(item, sum[index], teamArr[index]);
@@ -939,10 +966,10 @@ var CallRecordAnalyis = React.createClass({
             var desObj = this.getCountDescription(time, sum);
             return desObj.join('<br />');
         }
-    },
+    };
 
     // TOP10数据列表titleObj={title:"通话时长",dataKey:"billsec"}
-    getCallDurTopColumn(titleObj){
+    getCallDurTopColumn = (titleObj) => {
         return [
             {
                 title: Intl.get('common.phone', '电话'),
@@ -973,10 +1000,10 @@ var CallRecordAnalyis = React.createClass({
                 key: 'nick_name'
             }
         ];
-    },
+    };
 
     // 通话率列表
-    renderCallInfo() {
+    renderCallInfo = () => {
         var callInfoCharts = [{
             title: Intl.get('call.analysis.call.title', '通话信息'),
             chartType: 'table',
@@ -997,12 +1024,12 @@ var CallRecordAnalyis = React.createClass({
                 chartHeight='auto'
             />
         );
-    },
+    };
 
     /* 渲染单次通话时长、总时长、总次数为top10的列表
      * titleObj={title:"通话时长",dataKey:"billsec"}
      */
-    renderCallTopTen(dataObj, titleObj, chartHeight){
+    renderCallTopTen = (dataObj, titleObj, chartHeight) => {
         var callTopTenCharts = [{
             title: titleObj.title + 'TOP10',
             chartType: 'table',
@@ -1026,8 +1053,9 @@ var CallRecordAnalyis = React.createClass({
                 />
             </div>
         );
-    },
-    getOneOneFourAndServiceHasTeamTooltip: function() {
+    };
+
+    getOneOneFourAndServiceHasTeamTooltip = () => {
         return {
             show: true,
             formatter: function(obj) {
@@ -1040,9 +1068,10 @@ var CallRecordAnalyis = React.createClass({
                         </div>`;
             }
         };
-    },
+    };
+
     //渲染有团队时，114和客服电话分析图的options
-    getOneOneFourAndServiceHasTeamOptions: function(dataList) {
+    getOneOneFourAndServiceHasTeamOptions = (dataList) => {
         return {
             tooltip: this.getOneOneFourAndServiceHasTeamTooltip(),
             legend: {
@@ -1077,8 +1106,9 @@ var CallRecordAnalyis = React.createClass({
                 }
             ]
         };
-    },
-    getPieOptions: function(dataList) {
+    };
+
+    getPieOptions = (dataList) => {
         return {
             tooltip: {
                 trigger: 'item',
@@ -1110,8 +1140,9 @@ var CallRecordAnalyis = React.createClass({
                 }
             ]
         };
-    },
-    getPieData: function(dataList) {
+    };
+
+    getPieData = (dataList) => {
         var list = dataList || [];
         var legend = _.map(dataList, 'name') || [];
         return legend.map((legendName, idx) => {
@@ -1120,9 +1151,10 @@ var CallRecordAnalyis = React.createClass({
                 value: list[idx].num // 注意：饼图中，value是key
             };
         });
-    },
+    };
+
     // 114占比和客服电话统计
-    renderCallRateChar(type) {
+    renderCallRateChar = (type) => {
         var resultType = getResultType(this.state.callRateList[type].loading, this.state.callRateList[type].errMsg);
         var data = [];
         var title = Intl.get('call.record.service.phone.rate', '114占比统计');
@@ -1185,11 +1217,13 @@ var CallRecordAnalyis = React.createClass({
                 )}
             </div>
         );
-    },
-    getClickMap(zone) {
+    };
+
+    getClickMap = (zone) => {
         CallAnalysisAction.showZoneDistribute(zone);
-    },
-    countTotal: function() {
+    };
+
+    countTotal = () => {
         var total = 0;
         _.each(this.state.customerData.zoneList, function(obj) {
             total += obj.value;
@@ -1198,8 +1232,9 @@ var CallRecordAnalyis = React.createClass({
             total = 0;
         }
         return total;
-    },
-    getCustomerZoneOptions: function() {
+    };
+
+    getCustomerZoneOptions = () => {
         var originFormatter = mapFormatter;
         var $tooltipDom = null;
         var _this = this;
@@ -1229,11 +1264,13 @@ var CallRecordAnalyis = React.createClass({
                 }
             }
         };
-    },
-    provinceName: function(name) {
+    };
+
+    provinceName = (name) => {
         return MAP_PROVINCE[name];
-    },
-    renderCustomerZoneDistribute() {
+    };
+
+    renderCustomerZoneDistribute = () => {
         var dataList = this.state.customerData.zoneList;
         var arr = dataList.concat();
         arr.push({
@@ -1263,8 +1300,9 @@ var CallRecordAnalyis = React.createClass({
                 />
             </div>
         );
-    },
-    renderCustomerPhase() {
+    };
+
+    renderCustomerPhase = () => {
         var dataList = this.state.customerData.customerPhase;
         var data = this.getPieData(dataList);
         var charts = [
@@ -1291,8 +1329,9 @@ var CallRecordAnalyis = React.createClass({
                 />
             </div>
         );
-    },
-    renderOrderPhase() {
+    };
+
+    renderOrderPhase = () => {
         var dataList = this.state.customerData.OrderPhase;
         var data = this.getPieData(dataList);
         var charts = [
@@ -1319,8 +1358,9 @@ var CallRecordAnalyis = React.createClass({
                 />
             </div>
         );
-    },
-    renderCallAnalysisView: function() {
+    };
+
+    renderCallAnalysisView = () => {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height();
         return (<div className="call-table-container" ref="phoneList">
             {/**
@@ -1414,26 +1454,27 @@ var CallRecordAnalyis = React.createClass({
                 </GeminiScrollBar>
             </div>
         </div>);
-    },
+    };
+
     //时间的设置
-    onSelectDate: function(startTime, endTime, timeType) {
+    onSelectDate = (startTime, endTime, timeType) => {
         let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
         CallAnalysisAction.changeSearchTime(timeObj);
         setTimeout(() => {
             this.refreshCallAnalysisData();
         });
-    },
+    };
 
-    handleFirstSelect() {
+    handleFirstSelect = () => {
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择成员过滤');
         } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择团队过滤');
         }
 
-    },
+    };
 
-    handleSelectTeamOrMember() {
+    handleSelectTeamOrMember = () => {
         if (this.state.teamList.list.length > 1) {
             if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '根据团队过滤');
@@ -1443,10 +1484,10 @@ var CallRecordAnalyis = React.createClass({
         } else if (this.state.teamList.list.length === 1) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '根据成员过滤');
         }
-    },
+    };
 
     // 团队和成员筛选框
-    renderTeamMembersSelect() {
+    renderTeamMembersSelect = () => {
         let teamList = this.state.teamList.list; // 团队数据
         let memberList = this.state.memberList.list; // 成员数据
 
@@ -1496,10 +1537,10 @@ var CallRecordAnalyis = React.createClass({
                 </SelectFullWidth>
             </div>
         );
-    },
+    };
 
     // 团队和成员框的选择
-    handleFirstSelectChange(value) {
+    handleFirstSelectChange = (value) => {
         this.setState({
             firstSelectValue: value,
             secondSelectValue: LITERAL_CONSTANT.ALL
@@ -1511,10 +1552,10 @@ var CallRecordAnalyis = React.createClass({
                 this.refreshCallAnalysisData();
             }
         });
-    },
+    };
 
     // 第二个选择框，具体的值：全部和多个选择之间的切换显示
-    onSecondSelectChange(value) {
+    onSecondSelectChange = (value) => {
         // 处理选择全部和多个的情况
         if (value[0] === LITERAL_CONSTANT.ALL && value.length > 1) {
             value.shift(); // 选择具体的某个成员后或团队时，‘全部’应该删除
@@ -1531,9 +1572,9 @@ var CallRecordAnalyis = React.createClass({
                 this.getCallAnalysisTrendDataSeparately(reqBody);//每个团队分别的趋势图
             }
         });
-    },
+    };
 
-    render: function() {
+    render() {
         return (<RightContent>
             <div className="call-analysis-content" data-tracename="通话分析界面">
                 <TopNav>
@@ -1577,6 +1618,6 @@ var CallRecordAnalyis = React.createClass({
             </div>
         </RightContent>);
     }
-});
+}
 
 module.exports = CallRecordAnalyis;

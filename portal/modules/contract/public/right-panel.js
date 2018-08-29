@@ -31,19 +31,18 @@ let stepMap = {
     '3': '回款计划'
 };
 
-const ContractRightPanel = React.createClass({
-    getInitialState: function() {
-        return {
-            isLoading: false,
-            currentView: this.props.view,
-            currentCategory: this.props.view === 'buyForm' ? PURCHASE : PRODUCT,
-            currentTabKey: '1',
-            userList: JSON.parse(JSON.stringify(this.props.userList)),
-            teamList: JSON.parse(JSON.stringify(this.props.teamList)),
-            showDiffAmountWarning: false,
-        };
-    },
-    componentDidMount: function() {
+class ContractRightPanel extends React.Component {
+    state = {
+        isLoading: false,
+        currentView: this.props.view,
+        currentCategory: this.props.view === 'buyForm' ? PURCHASE : PRODUCT,
+        currentTabKey: '1',
+        userList: JSON.parse(JSON.stringify(this.props.userList)),
+        teamList: JSON.parse(JSON.stringify(this.props.teamList)),
+        showDiffAmountWarning: false,
+    };
+
+    componentDidMount() {
         $(window).on('resize', this.setContentHeight);
         this.setContentHeight();
 
@@ -51,31 +50,36 @@ const ContractRightPanel = React.createClass({
         this.supplementUserList(this.props);
         //补充团队列表
         this.supplementTeamList(this.props);
-    },
-    componentDidUpdate: function() {
+    }
+
+    componentDidUpdate() {
         const scrollBar = this.refs.gemiScrollBar;
 
         if (scrollBar) {
             this.setContentHeight();
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         $(window).off('resize', this.setContentHeight);
-    },
-    setContentHeight: function() {
+    }
+
+    setContentHeight = () => {
         const wrapper = $('.ant-tabs-tabpane');
         //新高度 = 窗口高度 - 容器距窗口顶部的距离 - 底部留空
         wrapper.height($(window).height() - $('.ant-tabs-content').offset().top - 70);
         this.updateScrollBar();
-    },
-    updateScrollBar: function() {
+    };
+
+    updateScrollBar = () => {
         const scrollBar = this.refs.gemiScrollBar;
 
         if (!scrollBar) return;
 
         scrollBar.update();
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    componentWillReceiveProps(nextProps) {
         //当前视图是否是合同基本信息添加表单
         const isOnAddForm = ['buyForm', 'sellForm'].indexOf(this.state.currentView) > -1;
 
@@ -104,10 +108,11 @@ const ContractRightPanel = React.createClass({
         this.supplementUserList(nextProps);
         //补充团队列表
         this.supplementTeamList(nextProps);
-    },
+    }
+
     //补充用户列表
     ///以防止在编辑的时候，已经离职的销售人员无法选中的问题
-    supplementUserList: function(props) {
+    supplementUserList = (props) => {
         const userId = props.contract.user_id;
         const userName = props.contract.user_name;
         const userIndex = _.findIndex(props.userList, user => user.user_id === userId);
@@ -120,10 +125,11 @@ const ContractRightPanel = React.createClass({
     
             this.setState(this.state);
         }
-    },
+    };
+
     //补充团队列表
     ///以防止在编辑的时候，已经删除的销售团队无法选中的问题
-    supplementTeamList: function(props) {
+    supplementTeamList = (props) => {
         const teamId = props.contract.sales_team_id;
         const teamName = props.contract.sales_team;
         const teamIndex = _.findIndex(props.teamList, team => team.groupId === teamId);
@@ -136,20 +142,23 @@ const ContractRightPanel = React.createClass({
     
             this.setState(this.state);
         }
-    },
-    changeCurrentTabKey: function(key) {
+    };
+
+    changeCurrentTabKey = (key) => {
         this.setState({
             currentTabKey: key
         });
-    },
-    changeToView: function(view, category) {
+    };
+
+    changeToView = (view, category) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'添加合同>选择\'' + category + '\'类型');
         if (view) this.state.currentView = view;
         if (category) this.state.currentCategory = category;
         this.state.currentTabKey = '1';
         this.setState(this.state);
-    },
-    goPrev: function() {
+    };
+
+    goPrev = () => {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'添加合同>进入上一步');
 
         if (this.state.currentTabKey === 1) this.state.currentView = 'chooseType';
@@ -159,14 +168,16 @@ const ContractRightPanel = React.createClass({
             this.state.currentTabKey = step.toString();
         }
         this.setState(this.state);
-    },
-    goNext: function() {
+    };
+
+    goNext = () => {
         let step = parseInt(this.state.currentTabKey);
         step++;
         this.state.currentTabKey = step.toString();
         this.setState(this.state);
-    },
-    onNextStepBtnClick: function() {
+    };
+
+    onNextStepBtnClick = () => {
         let validation;
         
         if (this.state.currentView === 'sellForm') {
@@ -214,17 +225,20 @@ const ContractRightPanel = React.createClass({
                 this.goNext();
             }
         });
-    },
-    showLoading: function() {
+    };
+
+    showLoading = () => {
         this.setState({isLoading: true});
-    },
-    hideLoading: function() {
+    };
+
+    hideLoading = () => {
         this.setState({isLoading: false});
-    },
+    };
+
     //处理提交
     //cb：回调函数
     //refreshWithResult：是否用提交返回的结果来更新当前合同
-    handleSubmit: function(cb, refreshWithResult) {
+    handleSubmit = (cb, refreshWithResult) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), stepMap[this.state.currentTabKey] + '添加合同>点击完成按钮');
         this.showLoading();
 
@@ -312,15 +326,17 @@ const ContractRightPanel = React.createClass({
             this.hideLoading();
             message.error(errMsg || operateName + '失败');
         });
-    },
-    handleCancel: function() {
+    };
+
+    handleCancel = () => {
         if (this.props.contract.id) {
             this.setState({isFormShow: false});
         } else {
             this.props.hideRightPanel();
         }
-    },
-    render: function() {
+    };
+
+    render() {
         let endPaneKey = '3';
         if ([PROJECT, PURCHASE].indexOf(this.state.currentCategory) > -1) endPaneKey = '2';
         if (this.state.currentCategory === SERVICE) endPaneKey = '4';
@@ -593,7 +609,7 @@ const ContractRightPanel = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = ContractRightPanel;
 

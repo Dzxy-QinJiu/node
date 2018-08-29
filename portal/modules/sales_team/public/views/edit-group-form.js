@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -19,8 +20,10 @@ import Trace from 'LIB_DIR/trace';
 function noop() {
 }
 
-var SalesTeamForm = React.createClass({
+var SalesTeamForm = createReactClass({
+    displayName: 'SalesTeamForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             submitSalesTeamForm: noop,
@@ -33,6 +36,7 @@ var SalesTeamForm = React.createClass({
             }
         };
     },
+
     getFormData: function(salesTeam) {
         if (salesTeam.isEditGroup) {
             return {
@@ -50,6 +54,7 @@ var SalesTeamForm = React.createClass({
             };
         }
     },
+
     getInitialState: function() {
         return {
             status: {
@@ -60,6 +65,7 @@ var SalesTeamForm = React.createClass({
             formData: this.getFormData(this.props.salesTeam)
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.refs.validation.reset();
         this.setState({
@@ -204,9 +210,11 @@ var SalesTeamForm = React.createClass({
         formData.isTeamSaving = false;
         this.setState({formData: formData});
     },
+
     handleSelect: function() {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'选择上级团队');
     },
+
     render: function() {
         var _this = this;
         var formData = this.state.formData;
@@ -289,7 +297,7 @@ var SalesTeamForm = React.createClass({
                 </Form>
             </div>
         );
-    }
+    },
 });
 
 module.exports = SalesTeamForm;

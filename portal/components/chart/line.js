@@ -13,18 +13,18 @@ import { XAXIS_COLOR } from './consts';
 import Trace from 'LIB_DIR/trace';
 import { packageTry } from 'LIB_DIR/func';
 
-var LineChart = React.createClass({
-    echartInstance: null,
-    getDefaultProps: function() {
-        return {
-            chartData: [],
-            width: '100%',
-            height: 214,
-            resultType: 'loading',
-            legend: null
-        };
-    },
-    getLegend: function() {
+class LineChart extends React.Component {
+    static defaultProps = {
+        chartData: [],
+        width: '100%',
+        height: 214,
+        resultType: 'loading',
+        legend: null
+    };
+
+    echartInstance = null;
+
+    getLegend = () => {
         if(!this.props.legend) {
             return {
                 show: false,
@@ -36,8 +36,9 @@ var LineChart = React.createClass({
             show: true,
             data: legend
         };
-    },
-    getCategorys: function() {
+    };
+
+    getCategorys = () => {
         let chartData = this.props.chartData;
 
         if (this.props.dataField !== undefined) {
@@ -52,8 +53,9 @@ var LineChart = React.createClass({
             return m.format(oplateConsts.DATE_FORMAT);
         });
 
-    },
-    getLabel: function() {
+    };
+
+    getLabel = () => {
         return {
             normal: {
                 show: this.props.showLabel || false,
@@ -61,8 +63,9 @@ var LineChart = React.createClass({
                 formatter: this.props.labelFormatter || '{c}'
             }
         };
-    },
-    getSeries: function() {
+    };
+
+    getSeries = () => {
         var _this = this;
         var series = [];
 
@@ -116,8 +119,9 @@ var LineChart = React.createClass({
         }
 
         return series;
-    },
-    getEchartOptions: function() {
+    };
+
+    getEchartOptions = () => {
         var _this = this;
         var option = {
             title: null,
@@ -191,8 +195,9 @@ var LineChart = React.createClass({
             series: this.getSeries()
         };
         return option;
-    },
-    renderChart: function() {
+    };
+
+    renderChart = () => {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -224,11 +229,13 @@ var LineChart = React.createClass({
             });
         }
 
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         this.renderChart();
-    },
-    componentDidUpdate: function(prevProps) {
+    }
+
+    componentDidUpdate(prevProps) {
         if(
             this.props.chartData.length &&
             prevProps.chartData.length &&
@@ -238,16 +245,18 @@ var LineChart = React.createClass({
             return;
         }
         this.renderChart();
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }
-    },
-    render: function() {
+    }
+
+    render() {
         return (
             <div className="analysis-chart">
                 <div ref="chart" style={{width: this.props.width, height: this.props.height}} className="chart"
@@ -255,7 +264,7 @@ var LineChart = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = LineChart;
 

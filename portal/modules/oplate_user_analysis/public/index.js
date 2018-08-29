@@ -199,9 +199,9 @@ function processArgDelayed(arg) {
     }
 }
 
-var OPLATE_USER_ANALYSIS = React.createClass({
+class OPLATE_USER_ANALYSIS extends React.Component {
     //获取图表定义
-    getCharts: function() {
+    getCharts = () => {
         return [{
             title: 'Tabs',
             url: '/rest/analysis/user/v1/:auth_type/summary',
@@ -861,9 +861,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 tab: ['added_expired'],
             },
         }];
-    },
+    };
 
-    getEmitters: function() {
+    getEmitters = () => {
         return [{
             emitter: emitters.appSelectorEmitter,
             event: emitters.appSelectorEmitter.SELECT_APP,
@@ -879,9 +879,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 name: 'endtime',
             }],
         }];
-    },
+    };
 
-    render: function() {
+    render() {
         const charts = this.getCharts();
 
         return (
@@ -916,7 +916,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = OPLATE_USER_ANALYSIS;
 

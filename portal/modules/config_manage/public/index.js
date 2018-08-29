@@ -19,29 +19,29 @@ const auths = {
     COMPETING_PRODUCT: 'CRM_COMPETING_PRODUCT',//竞品管理权限
     TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE'//销售角色管理权限
 };
-var ConfigManage = React.createClass({
-    getInitialState: function() {
-        return ({
-            //行业标签列表
-            TagLists: [],
-            //点击行业添加按钮的loading效果是否显示 否 -1 是 0
-            isAddloading: -1,
-            //当前正在删除的标签的id值 默认 -1
-            DeletingItemId: -1,
-            //点击刷新按钮的loading效果是否显示  否 -1 是 0
-            isRefreshLoading: 0,
-            //能否正常获取数据 否 -1 是 0
-            isGetInforcorrect: -1,
-            //加载失败的提示信息
-            getErrMsg: '',
-            //添加失败的信息
-            addErrMsg: '',
-            // 删除行业失败
-            deleteErrMsg: '',
-        });
-    },
+
+class ConfigManage extends React.Component {
+    state = {
+        //行业标签列表
+        TagLists: [],
+        //点击行业添加按钮的loading效果是否显示 否 -1 是 0
+        isAddloading: -1,
+        //当前正在删除的标签的id值 默认 -1
+        DeletingItemId: -1,
+        //点击刷新按钮的loading效果是否显示  否 -1 是 0
+        isRefreshLoading: 0,
+        //能否正常获取数据 否 -1 是 0
+        isGetInforcorrect: -1,
+        //加载失败的提示信息
+        getErrMsg: '',
+        //添加失败的信息
+        addErrMsg: '',
+        // 删除行业失败
+        deleteErrMsg: '',
+    };
+
     //获取初始行业列表
-    getInitialData: function() {
+    getInitialData = () => {
         var _this = this;
         var page_size = 1000;
         $.ajax({
@@ -66,20 +66,23 @@ var ConfigManage = React.createClass({
             }
         });
 
-    },
-    componentWillMount: function() {
+    };
+
+    componentWillMount() {
         this.getInitialData();
-    },
+    }
+
     //点击刷新按钮
-    getRefreshInfo: function(e) {
+    getRefreshInfo = (e) => {
         this.setState({
             isRefreshLoading: 0,
             TagLists: []
         });
         this.getInitialData();
-    },
+    };
+
     //删除行业标签
-    handleDeleteItem: function(item) {
+    handleDeleteItem = (item) => {
         var _this = this;
         //当前正在删除的标签的id
         _this.setState({
@@ -112,9 +115,10 @@ var ConfigManage = React.createClass({
             }
         });
 
-    },
+    };
+
     //增加行业标签
-    handleSubmit: function(e) {
+    handleSubmit = (e) => {
         Trace.traceEvent(e, '点击添加行业按钮');
         var _this = this;
         e.preventDefault();
@@ -150,9 +154,10 @@ var ConfigManage = React.createClass({
             }
         });
 
-    },
+    };
+
     //增加行业失败
-    handleAddIndustryFail(){
+    handleAddIndustryFail = () => {
         var hide = () => {
             this.setState({
                 addErrMsg: '',
@@ -171,9 +176,9 @@ var ConfigManage = React.createClass({
                 />
             </div>
         );
-    },
+    };
 
-    handleDeleteIndustryFail: function() {
+    handleDeleteIndustryFail = () => {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -190,9 +195,9 @@ var ConfigManage = React.createClass({
                 />
             </div>
         );
-    },
+    };
 
-    render: function() {
+    render() {
         var TagLists = this.state.TagLists;
         var height = $(window).height() - $('.topNav').height();
         return (
@@ -281,7 +286,7 @@ var ConfigManage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = ConfigManage;
 

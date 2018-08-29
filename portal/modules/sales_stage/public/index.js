@@ -14,7 +14,7 @@ var SalesStageForm = require('./views/sales-stage-form');
 var SalesStageInfo = require('./views/sales-stage-info');
 var Spinner = require('../../../components/spinner');
 import Trace from 'LIB_DIR/trace';
-import { message } from 'antd';
+import {message} from 'antd';
 
 function getStateFromStore(_this) {
     return {
@@ -23,121 +23,117 @@ function getStateFromStore(_this) {
     };
 }
 
-var SalesStagePage = React.createClass({
-    getInitialState: function() {
-        return {
-            saveStageErrMsg: '',
-            ...getStateFromStore(this)};
-    },
-
-    onChange: function() {
+class SalesStagePage extends React.Component {
+    onChange = () => {
         var datas = getStateFromStore(this);
         this.setState(datas);
-    },
+    };
 
-    componentDidMount: function() {
+    componentDidMount() {
         $(window).on('resize', this.resizeWindow);
         SalesStageStore.listen(this.onChange);
         SalesStageAction.getSalesStageList();
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         $(window).off('resize', this.resizeWindow);
         SalesStageStore.unlisten(this.onChange);
-    },
+    }
 
-    salesStageWidthFnc: function() {
+    salesStageWidthFnc = () => {
         return $(window).width() - leftWidth;
-    },
+    };
 
-    resizeWindow: function() {
+    resizeWindow = () => {
         this.setState({
             salesStageWidth: this.salesStageWidthFnc()
         });
-    },
+    };
 
-    events: {
-
-        showSalesStageForm: function(salesStage) {
-            if (this.state.isSavingSalesStage) {
-                return;
-            }
-            SalesStageAction.showSalesStageForm(salesStage);
-        },
-
-        hideSalesStageeForm: function() {
-            SalesStageAction.hideSalesStageeForm();
-        },
-
-        submitSalesStageForm: function(salesStage) {
-            if (salesStage.id) {
-                SalesStageAction.editSalesStage(salesStage, () => {
-                    SalesStageAction.hideSalesStageeForm();
-                    message.success(Intl.get('crm.218', '修改成功！'));
-                });
-            } else {
-                SalesStageAction.addSalesStage(salesStage, () => {
-                    SalesStageAction.hideSalesStageeForm();
-                    message.success(Intl.get('crm.216', '添加成功！'));
-                });
-            }
-        },
-
-        deleteSalesStage: function(salesStage) {
-            SalesStageAction.deleteIsSavingSalesStage();
-            SalesStageAction.deleteSalesStage(salesStage, (result) => {
-                if(!result.error){
-                    message.success(Intl.get('crm.138', '删除成功！'));
-                }else{
-                    message.error(Intl.get('crm.139', '删除失败！'));
-                }
-            });
-
-        },
-
-        showSalesStageModalDialog: function(salesStage) {
-            SalesStageAction.showSalesStageModalDialog(salesStage);
-        },
-
-        hideSalesStageModalDialog: function(salesStage) {
-            SalesStageAction.hideSalesStageModalDialog(salesStage);
-        },
-
-        showSalesStageEditOrder: function() {
-            if (this.state.isSavingSalesStage) {
-                return;
-            }
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-div:first-child span'),'变更销售阶段顺序');
-            SalesStageAction.showSalesStageEditOrder();
-        },
-
-        hideSalesStageEditOrder: function() {
-            if (this.state.isSavingSalesStage) {
-                return;
-            }
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-btn:last-child span'),'取消对销售阶段顺序更改的保存');
-            SalesStageAction.hideSalesStageEditOrder();
-        },
-
-        salesStageOrderUp: function(salesStage) {
-            SalesStageAction.salesStageOrderUp(salesStage);
-        },
-
-        salesStageOrderDown: function(salesStage) {
-            SalesStageAction.salesStageOrderDown(salesStage);
-        },
-
-        saveSalesStageOrder: function() {
-            if (this.state.isSavingSalesStage) {
-                return;
-            }
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-btn:last-child span'),'保存对销售阶段的更改');
-            SalesStageAction.changeIsSavingSalesStage();
-            SalesStageAction.saveSalesStageOrder(this.state.salesStageList);
+    events_showSalesStageForm = (salesStage) => {
+        if (this.state.isSavingSalesStage) {
+            return;
         }
-    },
+        SalesStageAction.showSalesStageForm(salesStage);
+    };
 
-    render: function() {
+    events_hideSalesStageeForm = () => {
+        SalesStageAction.hideSalesStageeForm();
+    };
+
+    events_submitSalesStageForm = (salesStage) => {
+        if (salesStage.id) {
+            SalesStageAction.editSalesStage(salesStage, () => {
+                SalesStageAction.hideSalesStageeForm();
+                message.success(Intl.get('crm.218', '修改成功！'));
+            });
+        } else {
+            SalesStageAction.addSalesStage(salesStage, () => {
+                SalesStageAction.hideSalesStageeForm();
+                message.success(Intl.get('crm.216', '添加成功！'));
+            });
+        }
+    };
+
+    events_deleteSalesStage = (salesStage) => {
+        SalesStageAction.deleteIsSavingSalesStage();
+        SalesStageAction.deleteSalesStage(salesStage, (result) => {
+            if (!result.error) {
+                message.success(Intl.get('crm.138', '删除成功！'));
+            } else {
+                message.error(Intl.get('crm.139', '删除失败！'));
+            }
+        });
+
+    };
+
+    events_showSalesStageModalDialog = (salesStage) => {
+        SalesStageAction.showSalesStageModalDialog(salesStage);
+    };
+
+    events_hideSalesStageModalDialog = (salesStage) => {
+        SalesStageAction.hideSalesStageModalDialog(salesStage);
+    };
+
+    events_showSalesStageEditOrder = () => {
+        if (this.state.isSavingSalesStage) {
+            return;
+        }
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-div:first-child span'), '变更销售阶段顺序');
+        SalesStageAction.showSalesStageEditOrder();
+    };
+
+    events_hideSalesStageEditOrder = () => {
+        if (this.state.isSavingSalesStage) {
+            return;
+        }
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-btn:last-child span'), '取消对销售阶段顺序更改的保存');
+        SalesStageAction.hideSalesStageEditOrder();
+    };
+
+    events_salesStageOrderUp = (salesStage) => {
+        SalesStageAction.salesStageOrderUp(salesStage);
+    };
+
+    events_salesStageOrderDown = (salesStage) => {
+        SalesStageAction.salesStageOrderDown(salesStage);
+    };
+
+    events_saveSalesStageOrder = () => {
+        if (this.state.isSavingSalesStage) {
+            return;
+        }
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-btn:last-child span'), '保存对销售阶段的更改');
+        SalesStageAction.changeIsSavingSalesStage();
+        SalesStageAction.saveSalesStageOrder(this.state.salesStageList);
+    };
+
+    state = {
+        saveStageErrMsg: '',
+        ...getStateFromStore(this)
+    };
+
+    render() {
         var _this = this;
         var width = this.state.salesStageWidth;
         var salesStageList = this.state.salesStageList;
@@ -150,27 +146,29 @@ var SalesStagePage = React.createClass({
                             (<div className="sales-stage-top-div-group">
                                 <div className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                        onClick={_this.events.hideSalesStageEditOrder.bind(this)}
-                                    ><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></Button>
+                                            onClick={_this.events_hideSalesStageEditOrder.bind(this)}
+                                    ><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/></Button>
                                 </div>
                                 <div className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                        onClick={_this.events.saveSalesStageOrder.bind(this)}
-                                    ><ReactIntl.FormattedMessage id="common.save" defaultMessage="保存" /></Button>
+                                            onClick={_this.events_saveSalesStageOrder.bind(this)}
+                                    ><ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/></Button>
                                 </div>
                             </div>) :
                             (<div className="sales-stage-top-div-group">
                                 <PrivilegeChecker check="BGM_SALES_STAGE_SORT" className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                        onClick={_this.events.showSalesStageEditOrder.bind(this)}
+                                            onClick={_this.events_showSalesStageEditOrder.bind(this)}
 
-                                    ><ReactIntl.FormattedMessage id="sales.stage.change.sort" defaultMessage="变更顺序" /></Button>
+                                    ><ReactIntl.FormattedMessage id="sales.stage.change.sort"
+                                                                 defaultMessage="变更顺序"/></Button>
                                 </PrivilegeChecker>
                                 <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                        onClick={_this.events.showSalesStageForm.bind(this, 'addSalesStage')}
-                                        data-tracename="添加销售阶段"
-                                    ><ReactIntl.FormattedMessage id="sales.stage.add.sales.stage" defaultMessage="添加销售阶段" /></Button>
+                                            onClick={_this.events_showSalesStageForm.bind(this, 'addSalesStage')}
+                                            data-tracename="添加销售阶段"
+                                    ><ReactIntl.FormattedMessage id="sales.stage.add.sales.stage"
+                                                                 defaultMessage="添加销售阶段"/></Button>
                                 </PrivilegeChecker>
                             </div>)
                     }
@@ -180,8 +178,8 @@ var SalesStagePage = React.createClass({
                 <SalesStageForm
                     salesStage={this.state.currentSalesStage}
                     salesStageFormShow={this.state.salesStageFormShow}
-                    cancelSalesStageForm={this.events.hideSalesStageeForm}
-                    submitSalesStageForm={this.events.submitSalesStageForm}
+                    cancelSalesStageForm={this.events_hideSalesStageeForm}
+                    submitSalesStageForm={this.events_submitSalesStageForm}
                 >
                 </SalesStageForm>
 
@@ -199,12 +197,12 @@ var SalesStagePage = React.createClass({
                                         <SalesStageInfo
                                             salesStage={salesStage}
                                             width={width}
-                                            showSalesStageModalDialog={_this.events.showSalesStageModalDialog}
-                                            hideSalesStageModalDialog={_this.events.hideSalesStageModalDialog}
-                                            deleteSalesStage={_this.events.deleteSalesStage}
-                                            showSalesStageForm={_this.events.showSalesStageForm.bind(_this)}
-                                            salesStageOrderUp={_this.events.salesStageOrderUp}
-                                            salesStageOrderDown={_this.events.salesStageOrderDown}
+                                            showSalesStageModalDialog={_this.events_showSalesStageModalDialog}
+                                            hideSalesStageModalDialog={_this.events_hideSalesStageModalDialog}
+                                            deleteSalesStage={_this.events_deleteSalesStage}
+                                            showSalesStageForm={_this.events_showSalesStageForm.bind(_this)}
+                                            salesStageOrderUp={_this.events_salesStageOrderUp}
+                                            salesStageOrderDown={_this.events_salesStageOrderDown}
                                             salesStageEditOrder={_this.state.salesStageEditOrder}
                                         >
                                         </SalesStageInfo>
@@ -217,7 +215,7 @@ var SalesStagePage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SalesStagePage;
 

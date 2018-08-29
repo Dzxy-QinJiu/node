@@ -11,26 +11,27 @@ import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import classNames from 'classnames';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
-var ContactItem = React.createClass({
-    getInitialState: function() {
-        return {
-            isLoading: false
-        };
-    },
-    getDefaultProps: function() {
-        return {
-            contact: ContactUtil.getEmptyViewContactObject()
-        };
-    },
-    showEditContactForm: function() {
+
+class ContactItem extends React.Component {
+    static defaultProps = {
+        contact: ContactUtil.getEmptyViewContactObject()
+    };
+
+    state = {
+        isLoading: false
+    };
+
+    showEditContactForm = () => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '编辑联系人');
         ContactAction.showEditContactForm(this.props.contact);
-    },
-    showDeleteContactConfirm: function() {
+    };
+
+    showDeleteContactConfirm = () => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '删除联系人');
         ContactAction.showDeleteContactConfirm(this.props.contact);
-    },
-    setDefaultContact: function(contact) {
+    };
+
+    setDefaultContact = (contact) => {
         if (contact.def_contancts === 'true') return;
         if (this.props.isMerge) {
             this.props.setMergeCustomerDefaultContact(this.props.contact.contact.id);
@@ -50,12 +51,14 @@ var ContactItem = React.createClass({
                 }
             });
         }
-    },
-    hideDeleteContactModal: function() {
+    };
+
+    hideDeleteContactModal = () => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '取消删除联系人');
         ContactAction.hideDeleteContactConfirm(this.props.contact);
-    },
-    deleteContact: function() {
+    };
+
+    deleteContact = () => {
         if (this.props.isMerge) {
             this.props.delMergeCustomerContact(this.props.contact.contact.id);
             ContactAction.hideDeleteContactConfirm(this.props.contact.contact);
@@ -75,10 +78,10 @@ var ContactItem = React.createClass({
                 }
             });
         }
-    },
+    };
 
     // 自动拨号
-    handleClickCallOut(phone) {
+    handleClickCallOut = (phone) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
         handleCallOutResult({
             errorMsg: this.props.getCallNumberError,//获取坐席号失败的错误提示
@@ -86,14 +89,15 @@ var ContactItem = React.createClass({
             contactName: _.get(this.props,'contact.contact.name') || '',//联系人姓名
             phoneNumber: phone,//拨打的电话
         });
-    },
+    };
 
     //展开、收起联系方式的处理
-    toggleContactWay(){
+    toggleContactWay = () => {
         ContactAction.toggleContactWay(this.props.contact);
-    },
+    };
+
     //获取联系人的角色、职位、部门信息
-    getContactInfo(contact){
+    getContactInfo = (contact) => {
         let contactInfo = '';
         if (contact.role) {
             contactInfo += contact.role;
@@ -111,9 +115,10 @@ var ContactItem = React.createClass({
             contactInfo += contact.position;
         }
         return contactInfo;
-    },
+    };
+
     //渲染联系人标题区
-    renderContactTitle(contactEleList){
+    renderContactTitle = (contactEleList) => {
         let contact = this.props.contact.contact;
         let isExpanded = this.props.contact.isExpanded;
         //默认联系人
@@ -159,13 +164,14 @@ var ContactItem = React.createClass({
                                 onClick={this.toggleContactWay}/>) : null}
                     </span>)}
             </span>);
-    },
-    //是否有某种联系方式（电话、qq、微信、邮箱）
-    hasContactWay(contact, type){
-        return contact[type] && _.isArray(contact[type]) && contact[type].length;
-    },
+    };
 
-    renderContactWayContent(contact, type) {
+    //是否有某种联系方式（电话、qq、微信、邮箱）
+    hasContactWay = (contact, type) => {
+        return contact[type] && _.isArray(contact[type]) && contact[type].length;
+    };
+
+    renderContactWayContent = (contact, type) => {
         return this.hasContactWay(contact, type) ? _.map(contact[type], item => {
             return ( <div className="contact-way-item">
                 <span className="contact-way-text">{addHyphenToPhoneNumber(item)}</span>
@@ -175,8 +181,9 @@ var ContactItem = React.createClass({
                     </span>) : null}
             </div>);
         }) : null;
-    },
-    getContactEleList(){
+    };
+
+    getContactEleList = () => {
         let contact = this.props.contact.contact;
         let contactList = [];
         if (this.hasContactWay(contact, 'phone')) {
@@ -217,9 +224,10 @@ var ContactItem = React.createClass({
                 </div>);
         }
         return contactList;
-    },
+    };
+
     //渲染联系方式展示区
-    renderContactWay(contactEleList){
+    renderContactWay = (contactEleList) => {
         if (_.get(contactEleList, '[0]')) {
             return (
                 <div className="contact-way-container">
@@ -248,9 +256,9 @@ var ContactItem = React.createClass({
                     </div>
                 </div>);
         }
-    },
+    };
 
-    render(){
+    render() {
         let containerClassName = classNames('contact-item-container', {
             'contact-delete-border': this.props.contact.isShowDeleteContactConfirm
         });
@@ -259,7 +267,7 @@ var ContactItem = React.createClass({
             content={this.renderContactWay(contactEleList)}
             className={containerClassName}/>);
     }
-});
+}
 
 module.exports = ContactItem;
 

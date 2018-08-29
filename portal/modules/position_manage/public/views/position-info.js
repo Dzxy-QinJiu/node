@@ -1,5 +1,6 @@
 // 点开座席号某行时，显示的详细信息
 var React = require('react');
+var createReactClass = require('create-react-class');
 import UserDetailEditField from 'CMP_DIR/basic-edit-field/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
 import {RightPanel, RightPanelClose, RightPanelSubmit, RightPanelCancel} from 'CMP_DIR/rightPanel';
@@ -12,8 +13,10 @@ const Validation = require('rc-form-validation');
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const PositionInfo = React.createClass({
+const PositionInfo = createReactClass({
+    displayName: 'PositionInfo',
     mixins: [Validation.FieldMixin],
+
     getInitialState() {
         let selectRowObj = _.find( this.props.positionList, (item) => {
             return item.phone_order === this.props.clickRowPhoneOrder;
@@ -27,6 +30,7 @@ const PositionInfo = React.createClass({
             editOrgFlag: false // 修改组织的标志，默认是false
         };
     },
+
     componentWillReceiveProps(nextProps) {
         let selectRowObj = _.find( this.props.positionList, (item) => {
             return item.phone_order === nextProps.clickRowPhoneOrder;
@@ -37,11 +41,13 @@ const PositionInfo = React.createClass({
             });
         }
     },
+
     // 获取组织id
     getOrganizationId(selectValue) {
         let organizationList = PositionStore.getState().realmList;
         return _.chain(organizationList).filter(item => selectValue.indexOf(item.realm_name) > -1).map('realm_id').value();
     },
+
     componentWillUpdate(nextProps, nextState) {
         let formData = this.state.formData;
         if (formData.realm_id !== nextState.formData.realm_id && nextState.formData.realm_id) {
@@ -49,11 +55,13 @@ const PositionInfo = React.createClass({
             PositionAction.getUnbindMemberList({realm: SelectId});
         }
     },
+
     componentDidMount() {
         if (this.state.positionInfo.realm_id) {
             PositionAction.getUnbindMemberList({realm: this.state.positionInfo.realm_id});
         }
     },
+
     // 校验输入的座席号
     checkPhoneOrder(rule, value, callback) {
         value = $.trim(value);
@@ -67,18 +75,22 @@ const PositionInfo = React.createClass({
             callback();
         }
     },
+
     // 修改座席号
     changePhoneFieldSuccess(phoneOrder) {
         PositionAction.editPosition(phoneOrder);
     },
+
     // 修改地域
     changeSelectFieldSuccess(location) {
         PositionAction.editLocation(location);
     },
+
     // 修改用户
     editBindMember(member) {
         PositionAction.editBindMember(member);
     },
+
     // 渲染组织列表
     renderOrganizationOptions() {
         let organizationOption = ''; // 组织列表
@@ -94,6 +106,7 @@ const PositionInfo = React.createClass({
         }
         return organizationOption;
     },
+
     //获取用户下拉列表
     getMemberOptions() {
         var memberList = PositionStore.getState().unbindMember.data;
@@ -108,6 +121,7 @@ const PositionInfo = React.createClass({
             return [];
         }
     },
+
     // 选择用户
     onSelectMember(userId) {
         let selectId = this.getUnbindMemberId(userId)[0];
@@ -121,6 +135,7 @@ const PositionInfo = React.createClass({
             positionInfo: $.extend(true, {}, this.state.positionInfo)
         });
     },
+
     // 获取地域下拉列表
     getLocationOptions() {
         let locationList = [{id: 'changsha', name: LANGLOBAL.CITY.cs}, {id: 'jinan', name: LANGLOBAL.CITY.jn}, {id: 'beijing', name: LANGLOBAL.CITY.bj}];
@@ -130,6 +145,7 @@ const PositionInfo = React.createClass({
             </Option>);
         });
     },
+
     // 选择地域
     onSelectLocation(location) {
         this.state.positionInfo.phone_order_location = location;
@@ -137,11 +153,13 @@ const PositionInfo = React.createClass({
             positionInfo: $.extend(true, {}, this.state.positionInfo)
         });
     },
+
     // 获取用户id
     getUnbindMemberId(selectValue) {
         var unbindMemberList = PositionStore.getState().unbindMember.data;
         return _.chain(unbindMemberList).filter(item => selectValue.indexOf(item.nick_name) > -1).map('user_id').value();
     },
+
     // 提交保存
     handleSubmit() {
         let reqObj = {
@@ -164,18 +182,21 @@ const PositionInfo = React.createClass({
             }
         } );
     },
+
     // 修改组织
     handleEditOrganization() {
         this.setState({
             editOrgFlag: true
         });
     },
+
     // 取消编辑
     returnUnEdit() {
         this.setState({
             editOrgFlag: false
         });
     },
+
     render() {
         let selectRowObj = this.state.positionInfo;
         let formData = this.state.formData;
@@ -337,6 +358,6 @@ const PositionInfo = React.createClass({
                 </div>
             </RightPanel>
         );
-    }
+    },
 });
 module.exports = PositionInfo;

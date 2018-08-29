@@ -20,17 +20,16 @@ function getChildRoutes(preRoutePath , fullModuleList) {
         }
     });
     return childRoutes;
-} 
+}
 
 //检查权限的标签
-var PrivilegeChecker = React.createClass({
-    getDefaultProps: function() {
-        return {
-            check: '',
-            tagName: 'div'
-        };
-    },
-    canRenderChildren: function(check) {
+class PrivilegeChecker extends React.Component {
+    static defaultProps = {
+        check: '',
+        tagName: 'div'
+    };
+
+    canRenderChildren = (check) => {
         if(typeof check === 'string') {
             var userInfo = UserData.getUserData() || {};
             var privileges = userInfo.privileges || [];
@@ -43,20 +42,21 @@ var PrivilegeChecker = React.createClass({
         } else if(typeof check === 'function') {
             return check();
         }
-    },
-    getInitialState: function() {
-        return {
-            hasChildNodes: this.canRenderChildren(this.props.check)
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    state = {
+        hasChildNodes: this.canRenderChildren(this.props.check)
+    };
+
+    componentWillReceiveProps(nextProps) {
         if(typeof nextProps.check === 'function' || (nextProps.check !== this.props.check)) {
             this.setState({
                 hasChildNodes: this.canRenderChildren(nextProps.check)
             });
         }
-    },
-    render: function() {
+    }
+
+    render() {
         if(!this.state.hasChildNodes) {
             return null;
         }
@@ -66,7 +66,7 @@ var PrivilegeChecker = React.createClass({
             this.props.children
         );
     }
-});
+}
 
 //是否有某个权限
 function hasPrivilege(list) {

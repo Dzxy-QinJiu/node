@@ -7,26 +7,26 @@ var history = require('./history');
 import Translate from '../intl/i18nTemplate';
 
 //如果访问/，跳转到左侧导航菜单的第一个路由
-var HomeIndexRoute = React.createClass({
+class HomeIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
-    componentWillMount: function() {
+    componentWillMount() {
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
         if (sideBarMenus[0] && sideBarMenus[0].routePath) {
             history.replace(sideBarMenus[0].routePath);
         }
-    },
+    }
+
     //渲染内容为空，只做跳转
-    render: function() {
+    render() {
         return null;
     }
-});
-
+}
 
 //如果访问/，销售人员跳转到销售首页的第一个路由
-var SalesIndexRoute = React.createClass({
+class SalesIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
-    componentWillMount: function() {
+    componentWillMount() {
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
         _.some(sideBarMenus, function(menu) {
@@ -36,16 +36,17 @@ var SalesIndexRoute = React.createClass({
                 return true;
             }
         });
-    },
+    }
+
     //渲染内容为空，只做跳转
-    render: function() {
+    render() {
         return null;
     }
-});
+}
 
 //跳转到合同仪表盘
-var ContractIndexRoute = React.createClass({
-    componentWillMount: function() {
+class ContractIndexRoute extends React.Component {
+    componentWillMount() {
         var data = userData.getUserData();
         var subModules = data.subModules.contract;
         _.some(subModules, function(module) {
@@ -54,27 +55,29 @@ var ContractIndexRoute = React.createClass({
                 return true;
             }
         });
-    },
-    render: function() {
+    }
+
+    render() {
         return null;
     }
-});
+}
 
 //如果之前是直接请求某个模块的路径，后登录的
-var TurnPageIndexRoute = React.createClass({
-    componentWillMount: function() {
+class TurnPageIndexRoute extends React.Component {
+    componentWillMount() {
         var data = userData.getUserData();
         //跳到对应页
         history.replace(data.preUrl || '/');
         //只执行一次，需要删除属性值
         delete data.preUrl;
         return true;
-    },
+    }
+
     //渲染内容为空，只做跳转
-    render: function() {
+    render() {
         return null;
     }
-});
+}
 
 //获取权限之后,系统入口
 function init() {

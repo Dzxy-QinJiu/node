@@ -3,14 +3,17 @@
  * 可切换状态
  */
 var React = require('react');
+var createReactClass = require('create-react-class');
 import {Input,Icon} from 'antd';
 let autosize = require('autosize');
 import FieldMixin from '../../../../../components/antd-form-fieldmixin';
 let AutosizeTextarea = require('../../../../../components/autosize-textarea');
 let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';
-let BasicEditInputField = React.createClass({
+let BasicEditInputField = createReactClass({
+    displayName: 'BasicEditInputField',
     mixins: [FieldMixin],
+
     getDefaultProps: function() {
         return {
             //是否能修改
@@ -22,6 +25,7 @@ let BasicEditInputField = React.createClass({
             }
         };
     },
+
     getInitialState: function() {
         return {
             loading: false,
@@ -33,6 +37,7 @@ let BasicEditInputField = React.createClass({
             submitErrorMsg: ''
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时,重新设置state数据
@@ -44,12 +49,14 @@ let BasicEditInputField = React.createClass({
             this.setState(stateData);
         }
     },
+
     setEditable: function() {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'点击设置备注按钮');
         this.setState({
             displayType: 'edit'
         });
     },
+
     //回到展示状态
     backToDisplay: function() {
         this.setState({
@@ -58,6 +65,7 @@ let BasicEditInputField = React.createClass({
             submitErrorMsg: ''
         });
     },
+
     handleSubmit: function() {
         if (this.state.loading) return;
         if (this.state.remarks == this.props.remarks){
@@ -95,7 +103,6 @@ let BasicEditInputField = React.createClass({
         }
     },
 
-
     handleCancel: function() {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'点击取消保存备注按钮');
         this.setState({
@@ -105,11 +112,13 @@ let BasicEditInputField = React.createClass({
             loading: false
         });
     },
+
     onInputChange: function(e) {
         this.setState({
             remarks: e.target.value
         });
     },
+
     render: function() {
         let textBlock = this.state.displayType === 'text' ? (
             <div>
@@ -156,7 +165,7 @@ let BasicEditInputField = React.createClass({
                 {inputBlock}
             </div>
         );
-    }
+    },
 });
 
 module.exports = BasicEditInputField;

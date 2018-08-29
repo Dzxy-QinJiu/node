@@ -31,22 +31,20 @@ import CommissionAndTarget from './commission-and-target';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from '../views/radio-card';
 
-var UserInfo = React.createClass({
-    getInitialState: function() {
-        return {
-            userInfo: $.extend(true, {}, this.props.userInfo),
-            userBasicDetail: {id: '',createDate: ''},//要传用户的id和用户的创建时间
-            modalStr: '',//模态框提示内容
-            isDel: false,//是否删除
-            userTeamList: UserFormStore.getState().userTeamList,
-            roleList: UserFormStore.getState().roleList,
-            isConfirmPasswordShow: false,//确认密码的展示标识
-            hasLog: true,
-            ...UserInfoStore.getState(),
-        };
-    },
+class UserInfo extends React.Component {
+    state = {
+        userInfo: $.extend(true, {}, this.props.userInfo),
+        userBasicDetail: {id: '',createDate: ''},//要传用户的id和用户的创建时间
+        modalStr: '',//模态框提示内容
+        isDel: false,//是否删除
+        userTeamList: UserFormStore.getState().userTeamList,
+        roleList: UserFormStore.getState().roleList,
+        isConfirmPasswordShow: false,//确认密码的展示标识
+        hasLog: true,
+        ...UserInfoStore.getState(),
+    };
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.userInfo.id !== this.state.userInfo.id) {
             setTimeout(() => {
                 this.getUserData(nextProps.userInfo);
@@ -56,19 +54,22 @@ var UserInfo = React.createClass({
             userInfo: $.extend(true, {}, nextProps.userInfo),
         });
         this.layout();
-    },
-    onChange: function() {
+    }
+
+    onChange = () => {
         this.setState({
             userTeamList: UserFormStore.getState().userTeamList,
             roleList: UserFormStore.getState().roleList,
             ...UserInfoStore.getState()
         });
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         UserInfoStore.unlisten(this.onChange);
         UserFormStore.unlisten(this.onChange);
-    },
-    componentDidMount: function() {
+    }
+
+    componentDidMount() {
         this.layout();
         UserFormStore.listen(this.onChange);
         UserInfoStore.listen(this.onChange);
@@ -85,8 +86,9 @@ var UserInfo = React.createClass({
             UserAction.setUserLoading(true);
             UserInfoAction.getCurUserById(userBasicDetail);
         }
-    },
-    getUserData: function(user) {
+    }
+
+    getUserData = (user) => {
         if (user.id) {
             //跟据用户的id获取销售提成和比例
             UserInfoAction.getSalesGoals({user_id: user.id});
@@ -98,17 +100,19 @@ var UserInfo = React.createClass({
             });
         }
 
-    },
-    layout: function() {
+    };
+
+    layout = () => {
         var bHeight = $('body').height();
         var formHeight = bHeight - $('.head-image-container').outerHeight(true);
         if (this.props.isContinueAddButtonShow) {
             formHeight -= 80;
         }
         $('.log-infor-scroll').height(formHeight);
-    },
+    };
+
     //展示是否禁用、启用的模态框
-    showForbidModalDialog: function(e) {
+    showForbidModalDialog = (e) => {
         var modalStr = Intl.get('member.start.this', '启用此');
         if (this.state.userInfo.status === 1) {
             modalStr = Intl.get('member.stop.this', '禁用此');
@@ -116,8 +120,9 @@ var UserInfo = React.createClass({
         Trace.traceEvent(e, '点击' + modalStr + '成员');
         this.setState({modalStr: modalStr, isDel: false});
         this.showModalDialog();
-    },
-    forbidCard: function(e) {
+    };
+
+    forbidCard = (e) => {
         var modalStr = Intl.get('member.start.this', '启用此');
         if (this.state.userInfo.status === 1) {
             modalStr = Intl.get('member.stop.this', '禁用此');
@@ -132,10 +137,10 @@ var UserInfo = React.createClass({
             }
             this.updateUserStatus(this.props.userInfo.id, status);
         }
-    },
+    };
 
     //获取团队下拉列表
-    getTeamOptions: function() {
+    getTeamOptions = () => {
         var userTeamList = this.state.userTeamList;
         if (_.isArray(userTeamList) && userTeamList.length > 0) {
             return userTeamList.map(function(team) {
@@ -146,28 +151,31 @@ var UserInfo = React.createClass({
         } else {
             return [];
         }
-    },
+    };
+
     //团队的选择事件
-    onSelectTeam: function(teamId) {
+    onSelectTeam = (teamId) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择所属团队');
         this.state.userInfo.teamId = teamId;
         this.setState({userInfo: this.state.userInfo});
-    },
-    cancelEditTeam: function() {
+    };
+
+    cancelEditTeam = () => {
         this.state.userInfo.teamId = this.props.userInfo.teamId;
         this.setState({userInfo: this.state.userInfo});
-    },
+    };
+
     //修改的所属团队成功后的处理
-    afterEditTeamSuccess: function(user) {
+    afterEditTeamSuccess = (user) => {
         //更新详情中的所属团队
         let updateTeam = _.find(this.state.userTeamList, team => team.group_id === user.team);
         UserAction.updateUserTeam(updateTeam);
         if (_.isFunction(this.props.afterEditTeamSuccess)){
             this.props.afterEditTeamSuccess(user);
         }
-    },
+    };
 
-    afterEditRoleSuccess: function(user) {
+    afterEditRoleSuccess = (user) => {
         //更新详情中的角色
         let roleObj = {roleIds: [], roleNames: []}, roleList = this.state.roleList;
         if (_.isArray(user.role) && user.role.length) {
@@ -181,12 +189,14 @@ var UserInfo = React.createClass({
         if (_.isFunction(this.props.afterEditRoleSuccess)){
             this.props.afterEditRoleSuccess(user);
         }
-    },
-    changeUserFieldSuccess: function(user) {
+    };
+
+    changeUserFieldSuccess = (user) => {
         _.isFunction(this.props.changeUserFieldSuccess) && this.props.changeUserFieldSuccess(user);
-    },
+    };
+
     //渲染角色下拉列表
-    getRoleSelectOptions: function(userInfo) {
+    getRoleSelectOptions = (userInfo) => {
         //角色列表
         var roleOptions = [];
         var roleList = this.state.roleList;
@@ -209,37 +219,41 @@ var UserInfo = React.createClass({
             roleOptions = [<Option value="" key="role">{Intl.get('member.no.role', '暂无角色')}</Option>];
         }
         return roleOptions;
-    },
-    selectRole: function(roleIds) {
+    };
+
+    selectRole = (roleIds) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
         this.state.userInfo.roleIds = roleIds;
         this.setState({userInfo: this.state.userInfo});
-    },
-    cancelEditRole: function() {
+    };
+
+    cancelEditRole = () => {
         this.state.userInfo.roleIds = _.extend([], this.props.userInfo.roleIds);
         this.setState({userInfo: this.state.userInfo});
-    },
+    };
 
-    onPasswordDisplayTypeChange: function(type) {
+    onPasswordDisplayTypeChange = (type) => {
         if (type === 'edit') {
             this.setState({isConfirmPasswordShow: true});
         } else {
             this.setState({isConfirmPasswordShow: false});
         }
-    },
-    onPasswordValueChange: function() {
+    };
+
+    onPasswordValueChange = () => {
         const confirmPassword = this.refs.confirmPassword;
         if (confirmPassword && confirmPassword.state.formData.input) {
             confirmPassword.refs.validation.forceValidate();
         }
-    },
-    onConfirmPasswordDisplayTypeChange: function() {
+    };
+
+    onConfirmPasswordDisplayTypeChange = () => {
         this.setState({isConfirmPasswordShow: false});
         this.refs.password.setState({displayType: 'text'});
-    },
+    };
 
     //对密码 进行校验
-    checkPass(rule, value, callback) {
+    checkPass = (rule, value, callback) => {
         if (value && value.match(passwordRegex)) {
             let passStrength = getPassStrenth(value);
             this.refs.password.setState({passStrength: passStrength});
@@ -253,17 +267,18 @@ var UserInfo = React.createClass({
             });
             callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
         }
-    },
+    };
+
     //对确认密码 进行校验
-    checkRePass(rule, value, callback) {
+    checkRePass = (rule, value, callback) => {
         if (value && value === this.refs.password.state.formData.input) {
             callback();
         } else {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
         }
-    },
+    };
 
-    checkPhone: function(rule, value, callback) {
+    checkPhone = (rule, value, callback) => {
         value = $.trim(value);
         if (value) {
             if (
@@ -281,30 +296,33 @@ var UserInfo = React.createClass({
         } else {
             callback();
         }
-    },
-    getRoleUserId: function() {
+    };
+
+    getRoleUserId = () => {
         let roleList = this.state.roleList;
         //角色列表获取出数据后再往组件里传id（避免一开始渲染的时候就传了id，取出数据后组件内相同id不重新赋值渲染的问题）
         if (_.isArray(roleList) && roleList.length > 0) {
             return this.state.userInfo.id;
         }
         return '';
-    },
-    getTeamUserId: function() {
+    };
+
+    getTeamUserId = () => {
         let userTeamList = this.state.userTeamList;
         //团队列表获取出数据后再往组件里传id（避免一开始渲染的时候就传了id，取出数据后组件内相同id不重新赋值渲染的问题）
         if (_.isArray(userTeamList) && userTeamList.length > 0) {
             return this.state.userInfo.id;
         }
         return '';
-    },
-    afterModifySuccess: function(updateObj) {
+    };
+
+    afterModifySuccess = (updateObj) => {
         this.setState({
             saleGoalsAndCommissionRadio: updateObj
         });
-    },
+    };
 
-    renderUserItems: function() {
+    renderUserItems = () => {
         let userInfo = this.state.userInfo;
         let roleSelectOptions = this.getRoleSelectOptions(userInfo);
         let roleNames = '', isSales = false;
@@ -520,13 +538,15 @@ var UserInfo = React.createClass({
                 </dl>
             </div>
         );
-    },
-    uploadImg: function(src) {
+    };
+
+    uploadImg = (src) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '点击上传头像');
         this.state.userInfo.image = src;
         this.setState({userInfo: this.state.userInfo, showSaveIconTip: true});
-    },
-    saveUserIcon: function() {
+    };
+
+    saveUserIcon = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '保存上传头像');
         this.setState({showSaveIconTip: false});
         let userInfo = this.state.userInfo;
@@ -543,36 +563,42 @@ var UserInfo = React.createClass({
                 message.error(errorObj.message || Intl.get('common.upload.error', '上传失败，请重试!'));
             });
         }
-    },
+    };
+
     //切换日志分页时的处理
-    changeLogNum: function(num) {
+    changeLogNum = (num) => {
         UserInfoAction.changeLogNum(num);
         UserInfoAction.getLogList({
             user_name: this.state.userInfo.userName,
             num: num,
             page_size: this.state.page_size
         });
-    },
+    };
+
     //启用、停用
-    updateUserStatus: function(userId, status) {
+    updateUserStatus = (userId, status) => {
         var updateObj = {id: userId, status: status};
         _.isFunction(this.props.updateUserStatus) && this.props.updateUserStatus(updateObj);
-    },
+    };
+
     //展示模态框
-    showModalDialog: function() {
+    showModalDialog = () => {
         UserInfoAction.showModalDialog();
-    },
+    };
+
     //隐藏模态框
-    hideModalDialog: function() {
+    hideModalDialog = () => {
         Trace.traceEvent($('.log-infor-scroll'), '关闭模态框');
         UserInfoAction.hideModalDialog();
-    },
-    cancelEditIcon: function() {
+    };
+
+    cancelEditIcon = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '取消头像的保存');
         this.state.userInfo.image = this.props.userInfo.image;
         this.setState({userInfo: this.state.userInfo, showSaveIconTip: false});
-    },
-    render: function() {
+    };
+
+    render() {
         //当前要展示的信息
         var userInfo = this.state.userInfo;
         let user_id = userInfo.id;
@@ -706,8 +732,7 @@ var UserInfo = React.createClass({
             </div>
         );
     }
-})
-;
+}
 
 module.exports = UserInfo;
 

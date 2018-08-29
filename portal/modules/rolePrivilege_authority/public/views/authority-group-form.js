@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -27,8 +28,10 @@ function noop() {
 
 var saveGroupNameTimer = null;//保存组名结果展示时间的控制
 var TYPE_CONSTANT = 'myApp';
-var AuthorityGroupForm = React.createClass({
+var AuthorityGroupForm = createReactClass({
+    displayName: 'AuthorityGroupForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             cancelRoleForm: noop,
@@ -38,6 +41,7 @@ var AuthorityGroupForm = React.createClass({
             authorityGroupFromShow: false
         };
     },
+
     getInitialState: function() {
         //搜索框中输入的内容
         return {
@@ -54,6 +58,7 @@ var AuthorityGroupForm = React.createClass({
             isShowPopConfirm: false, // 是否显示确认框
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.refs.searchInput.refs.searchInput.value = nextProps.searchContent;
         this.refs.validation.reset();
@@ -62,6 +67,7 @@ var AuthorityGroupForm = React.createClass({
         stateData.searchContent = nextProps.searchContent;
         this.setState(stateData);
     },
+
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -357,6 +363,7 @@ var AuthorityGroupForm = React.createClass({
 
 
     },
+
     renderAuthorityLi: function(authorityList) {
         var _this = this;
         //搜索框中的内容
@@ -498,20 +505,24 @@ var AuthorityGroupForm = React.createClass({
         }
         return hasSelectedLi;
     },
+
     hideDelTooltip: function() {
         this.props.clearDelAuthErrorMsg();
     },
+
     handleSearchEvent: function(inputContent) {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-right'),'按服务地址搜索');
         inputContent = inputContent ? inputContent.trim() : '';
         AuthorityAction.setSearchContent(inputContent);
     },
+
     // 显示确认框
     showConfirm() {
         this.setState({
             isShowPopConfirm: true
         });
     },
+
     render: function() {
         var _this = this;
         var formData = this.state.formData;
@@ -657,7 +668,7 @@ var AuthorityGroupForm = React.createClass({
                 }
             </RightPanel>
         );
-    }
+    },
 });
 
 module.exports = AuthorityGroupForm;

@@ -1,20 +1,20 @@
 var React = require('react');
 import {Icon, Alert} from 'antd';
+
 let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';
 import {AntcAreaSelection} from 'antc';
 
-var LocationSelectField = React.createClass({
-    getDefaultProps: function() {
-        return {
-            list: [],
-            onChange: function() {
-            },
-            onModifySuccess: function() {
-            }
-        };
-    },
-    getInitialState: function() {
+class LocationSelectField extends React.Component {
+    static defaultProps = {
+        list: [],
+        onChange: function() {
+        },
+        onModifySuccess: function() {
+        }
+    };
+
+    initData = () => {
         return {
             loading: false,//正在保存
             list: [],//下拉列表中的数据
@@ -28,11 +28,12 @@ var LocationSelectField = React.createClass({
             county: this.props.county,
             submitErrorMsg: ''
         };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (nextProps.customerId != this.state.customerId) {
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.customerId !== this.state.customerId) {
             //切换客户时,重新设置state数据
-            let stateData = this.getInitialState();
+            let stateData = this.initData();
             stateData.isMerge = nextProps.isMerge;
             stateData.customerId = nextProps.customerId;
             stateData.province = nextProps.province;
@@ -41,8 +42,9 @@ var LocationSelectField = React.createClass({
             stateData.disabled = nextProps.disabled;
             this.setState(stateData);
         }
-    },
-    changeDisplayType: function(type) {
+    }
+
+    changeDisplayType = (type) => {
         if (type === 'text') {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对地域的修改');
             this.setState({
@@ -60,16 +62,18 @@ var LocationSelectField = React.createClass({
                 submitErrorMsg: ''
             });
         }
-    },
+    };
+
     //回到展示状态
-    backToDisplay: function() {
+    backToDisplay = () => {
         this.setState({
             loading: false,
             displayType: 'text',
             submitErrorMsg: ''
         });
-    },
-    handleSubmit: function() {
+    };
+
+    handleSubmit = () => {
         if (this.state.loading) return;
         if (this.state.province == this.props.province
             && this.state.city == this.props.city
@@ -103,16 +107,20 @@ var LocationSelectField = React.createClass({
                 });
             });
         }
-    },
+    };
+
     //更新地址
-    updateLocation: function(address) {
+    updateLocation = (address) => {
         var location = address.split('/');
         this.state.province = location[0] || '';
         this.state.city = location[1] || '';
         this.state.county = location[2] || '';
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改地域');
-    },
-    render: function() {
+    };
+
+    state = this.initData();
+
+    render() {
         var location = [];
         if (this.state.province) {
             location.push(this.state.province);
@@ -128,7 +136,7 @@ var LocationSelectField = React.createClass({
                 <div className="basic-location-field">
                     <span>{location.join('/')}</span>
                     <i className="iconfont icon-update" title={Intl.get('crm.175', '设置地域')}
-                        onClick={this.changeDisplayType.bind(this, 'edit')}/>
+                       onClick={this.changeDisplayType.bind(this, 'edit')}/>
                 </div>
             );
         }
@@ -137,17 +145,17 @@ var LocationSelectField = React.createClass({
         ) : (
             <div>
                 <i title={Intl.get('common.save', '保存')} className="inline-block iconfont icon-choose"
-                    onClick={this.handleSubmit}/>
+                   onClick={this.handleSubmit}/>
                 <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
-                    onClick={this.changeDisplayType.bind(this, 'text')}/>
+                   onClick={this.changeDisplayType.bind(this, 'text')}/>
             </div>
         );
         return (<div className="location-edit-field">
             <AntcAreaSelection labelCol="0" wrapperCol="24" width="260"
-                placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                prov={this.state.province}
-                city={this.state.city}
-                county={this.state.county} updateLocation={this.updateLocation}/>
+                               placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
+                               prov={this.state.province}
+                               city={this.state.city}
+                               county={this.state.county} updateLocation={this.updateLocation}/>
             <div className="buttons">
                 {buttonBlock}
             </div>
@@ -158,6 +166,6 @@ var LocationSelectField = React.createClass({
             }
         </div>);
     }
-});
+}
 
 module.exports = LocationSelectField;

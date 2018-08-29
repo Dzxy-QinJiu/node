@@ -12,83 +12,83 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
-var CustomerSuggest = React.createClass({
-    suggestTimer: null,
-    getDefaultProps: function() {
-        return {
-            showCustomerId: '',//正在展示客户详情的客户id
-            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-            customerOfCurUser: {},//当前展示用户所属客户的详情
-            //是否是必填项
-            required: true,
-            //是否显示错误提示，一般在点击提交的时候，这个值为true
-            show_error: false,
-            //客户的id
+
+class CustomerSuggest extends React.Component {
+    static defaultProps = {
+        showCustomerId: '',//正在展示客户详情的客户id
+        isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+        customerOfCurUser: {},//当前展示用户所属客户的详情
+        //是否是必填项
+        required: true,
+        //是否显示错误提示，一般在点击提交的时候，这个值为true
+        show_error: false,
+        //客户的id
+        id: '',
+        //客户的name
+        customer_name: '',
+        //当选中了customer的时候，会调用这个函数
+        onCustomerChoosen: function() {
+        },
+        //告诉调用的父组件，隐藏错误提示
+        hideCustomerError: function() {
+        },
+        //搜索关键词
+        // keyword: '',
+        //外层的id
+        customerSuggestWrapId: '',
+        //展示内容（非编辑状态）
+        displayText: '',
+        //所展示客户的id
+        displayCustomerId: '',
+        //是否展示客户所属的销售
+        isShowSales: false,
+        //无数据时的提示（没有修改权限时提示没有数据）
+        noDataTip: '',
+        //添加数据的提示（有修改权限时，提示补充数据）
+        addDataTip: '',
+        //是否有修改权限
+        hasEditPrivilege: false,
+        hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
+        customerLable: '',//客户标签
+    };
+
+    state = {
+        //类型
+        result_type: '',
+        //从服务端获取的客户列表
+        list: [],
+        //显示提示
+        show_tip: false,
+        //联想接口错误时候的提示信息
+        suggest_error_msg: '',
+        //销售团队
+        sales_team: {
             id: '',
-            //客户的name
-            customer_name: '',
-            //当选中了customer的时候，会调用这个函数
-            onCustomerChoosen: function() {
-            },
-            //告诉调用的父组件，隐藏错误提示
-            hideCustomerError: function() {
-            },
-            //搜索关键词
-            // keyword: '',
-            //外层的id
-            customerSuggestWrapId: '',
-            //展示内容（非编辑状态）
-            displayText: '',
-            //所展示客户的id
-            displayCustomerId: '',
-            //是否展示客户所属的销售
-            isShowSales: false,
-            //无数据时的提示（没有修改权限时提示没有数据）
-            noDataTip: '',
-            //添加数据的提示（有修改权限时，提示补充数据）
-            addDataTip: '',
-            //是否有修改权限
-            hasEditPrivilege: false,
-            hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
-            customerLable: '',//客户标签
-        };
-    },
-    getInitialState: function() {
-        return {
-            //类型
-            result_type: '',
-            //从服务端获取的客户列表
-            list: [],
-            //显示提示
-            show_tip: false,
-            //联想接口错误时候的提示信息
-            suggest_error_msg: '',
-            //销售团队
-            sales_team: {
-                id: '',
-                name: ''
-            },
-            //销售
-            sales: {
-                id: '',
-                name: ''
-            },
-            //客户
-            customer: {
-                id: this.props.customer_id,
-                name: this.props.customer_name
-            },
-            customerSuggestWrapId: this.props.customerSuggestWrapId || 'app',
-            //线索的id
-            id: this.props.id,
-            displayType: this.props.displayType || 'text',
-            displayText: this.props.displayText,//在界面上展示的值
-            displayCustomerId: this.props.customer_id,
-            value: this.props.customer_name,
-            isShowSales: this.props.isShowSales
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+            name: ''
+        },
+        //销售
+        sales: {
+            id: '',
+            name: ''
+        },
+        //客户
+        customer: {
+            id: this.props.customer_id,
+            name: this.props.customer_name
+        },
+        customerSuggestWrapId: this.props.customerSuggestWrapId || 'app',
+        //线索的id
+        id: this.props.id,
+        displayType: this.props.displayType || 'text',
+        displayText: this.props.displayText,//在界面上展示的值
+        displayCustomerId: this.props.customer_id,
+        value: this.props.customer_name,
+        isShowSales: this.props.isShowSales
+    };
+
+    suggestTimer = null;
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.id !== this.props.id) {
             this.setState({
                 displayType: nextProps.displayType,
@@ -129,9 +129,10 @@ var CustomerSuggest = React.createClass({
                 isShowSales: nextProps.isShowSales
             });
         }
-    },
+    }
+
     //调整右侧面板客户联想宽度
-    adjustDropDownRightPos: function() {
+    adjustDropDownRightPos = () => {
         var $dropDown = $('.customer_combobox_search.ant-select-dropdown');
         if ($dropDown[0]) {
             $dropDown.css('right', 'auto');
@@ -141,8 +142,9 @@ var CustomerSuggest = React.createClass({
                 $dropDown.css('right', 0);
             }
         }
-    },
-    suggestChange: function(value) {
+    };
+
+    suggestChange = (value) => {
         clearTimeout(this.suggestTimer);
         var _this = this;
         this.setState({
@@ -198,8 +200,9 @@ var CustomerSuggest = React.createClass({
                 });
             });
         }, 300);
-    },
-    customerChoosen: function(value, field) {
+    };
+
+    customerChoosen = (value, field) => {
         var selectedCustomer = _.find(this.state.list, function(item) {
             if (item.customer_id === value) {
                 return true;
@@ -246,17 +249,20 @@ var CustomerSuggest = React.createClass({
                 list: []
             });
         }
-    },
-    getCustomerSearchInput: function() {
+    };
+
+    getCustomerSearchInput = () => {
         var $search_input = $('.ant-select-search__field', this.refs.customer_searchbox);
         return $search_input;
-    },
-    retrySuggest: function() {
+    };
+
+    retrySuggest = () => {
         var $search_input = this.getCustomerSearchInput();
         var search_input_val = $search_input.val();
         this.suggestChange(search_input_val);
-    },
-    getCustomerTipBlock: function() {
+    };
+
+    getCustomerTipBlock = () => {
         var $search_input = this.getCustomerSearchInput();
         var search_input_val = $search_input.val();
         if (this.props.show_error) {
@@ -298,8 +304,9 @@ var CustomerSuggest = React.createClass({
                 );
             }
         }
-    },
-    handleCancel: function(e) {
+    };
+
+    handleCancel = (e) => {
         Trace.traceEvent(e, '取消对' + this.props.field + '修改');
         var customer = this.state.customer;
         customer.name = this.props.customer_name;
@@ -309,8 +316,9 @@ var CustomerSuggest = React.createClass({
             suggest_error_msg: ''
         });
         _.isFunction(this.props.handleCancel()) && this.props.handleCancel();
-    },
-    handleSubmit: function(e) {
+    };
+
+    handleSubmit = (e) => {
         Trace.traceEvent(e, '保存对' + this.props.field + '修改');
         var customer = this.state.customer;
         var customerName = customer.name;
@@ -343,8 +351,9 @@ var CustomerSuggest = React.createClass({
             setDisplayState(this.state.displayText, this.state.displayCustomerId);
         }
 
-    },
-    resetCustomer: function() {
+    };
+
+    resetCustomer = () => {
         var result = {
             keyword: '',
             sales_team: {
@@ -367,16 +376,18 @@ var CustomerSuggest = React.createClass({
             show_tip: false,
             list: []
         });
-    },
-    setEditable: function(e) {
+    };
+
+    setEditable = (e) => {
         this.setState({
             keyword: this.props.keyword,
             displayType: 'edit',
 
         });
         Trace.traceEvent(e, '点击编辑' + this.props.field);
-    },
-    showCustomerDetail: function(customerId) {
+    };
+
+    showCustomerDetail = (customerId) => {
         this.setState({
             showCustomerId: customerId
         });
@@ -388,24 +399,28 @@ var CustomerSuggest = React.createClass({
                 hideRightPanel: this.closeRightPanel
             }
         });
-    },
-    closeRightPanel: function() {
+    };
+
+    closeRightPanel = () => {
         this.setState({
             showCustomerId: ''
         });
-    },
-    ShowCustomerUserListPanel: function(data) {
+    };
+
+    ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
             customerOfCurUser: data.customerObj
         });
-    },
-    closeCustomerUserListPanel: function() {
+    };
+
+    closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
         });
-    },
-    render: function() {
+    };
+
+    render() {
         var displayCls = classNames({
             'customer_search_wrap': true,
             'customer_searchbox_error': this.props.show_error && this.props.required,
@@ -499,6 +514,6 @@ var CustomerSuggest = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = CustomerSuggest;

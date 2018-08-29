@@ -3,26 +3,26 @@
  */
 var React = require('react');
 import {Tag, Icon, Input, message} from 'antd';
+
 let BatchChangeStore = require('../../store/batch-change-store');
 let BatchChangeActions = require('../../action/batch-change-actions');
 let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';
 import {isClueTag, isTurnOutTag} from '../../utils/crm-util';
 
-let TagEditField = React.createClass({
-    getDefaultProps: function() {
-        return {
-            //是否能修改
-            disabled: false,
-            customerId: '',
-            //标签
-            labels: '',
-            //修改成功
-            modifySuccess: function() {
-            }
-        };
-    },
-    getInitialState: function() {
+class TagEditField extends React.Component {
+    static defaultProps = {
+        //是否能修改
+        disabled: false,
+        customerId: '',
+        //标签
+        labels: '',
+        //修改成功
+        modifySuccess: function() {
+        }
+    };
+
+    initData = () => {
         return {
             loading: false,
             disabled: this.props.disabled,
@@ -33,21 +33,25 @@ let TagEditField = React.createClass({
             recommendTags: BatchChangeStore.getState().recommendTags,
             submitErrorMsg: ''
         };
-    },
-    onStoreChange: function() {
+    };
+
+    onStoreChange = () => {
         this.setState({recommendTags: BatchChangeStore.getState().recommendTags});
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         BatchChangeStore.listen(this.onStoreChange);
         BatchChangeActions.getRecommendTags();
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         BatchChangeStore.unlisten(this.onStoreChange);
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (nextProps.customerId != this.state.customerId) {
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
-            let stateData = this.getInitialState();
+            let stateData = this.initData();
             stateData.isMerge = nextProps.isMerge;
             stateData.customerId = nextProps.customerId;
             stateData.labels = $.extend(true, [], nextProps.labels);
@@ -61,8 +65,9 @@ let TagEditField = React.createClass({
                 this.setState({labels: nextProps.labels});
             }
         }
-    },
-    addTag: function(e) {
+    }
+
+    addTag = (e) => {
         if (e.keyCode !== 13) return;
 
         const tag = e.target.value.trim();
@@ -76,8 +81,9 @@ let TagEditField = React.createClass({
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.tag-input'), '按enter键添加新标签');
         //清空输入框
         this.refs.newTag.refs.input.value = '';
-    },
-    toggleTag: function(tag, isAdd) {
+    };
+
+    toggleTag = (tag, isAdd) => {
         //不可以操作'线索'和‘转出’标签
         if (isClueTag(tag) || isTurnOutTag(tag)) {
             return;
@@ -102,17 +108,18 @@ let TagEditField = React.createClass({
         }
 
         this.setState(this.state);
-    },
+    };
 
     //回到展示状态
-    backToDisplay: function() {
+    backToDisplay = () => {
         this.setState({
             loading: false,
             displayType: 'text',
             submitErrorMsg: ''
         });
-    },
-    handleSubmit: function(e) {
+    };
+
+    handleSubmit = (e) => {
         if (this.state.loading) return;
         let diff1 = _.difference(this.state.labels, this.props.labels);
         let diff2 = _.difference(this.props.labels, this.state.labels);
@@ -147,22 +154,25 @@ let TagEditField = React.createClass({
                 });
             });
         }
-    },
+    };
 
-    handleCancel: function(e) {
+    handleCancel = (e) => {
         Trace.traceEvent(e, '取消对标签的添加');
         this.setState({
             labels: $.extend(true, [], this.props.labels),
             displayType: 'text',
             submitErrorMsg: ''
         });
-    },
+    };
 
-    setEditable: function(e) {
+    setEditable = (e) => {
         Trace.traceEvent(e, '点击设置标签');
         this.setState({displayType: 'edit'});
-    },
-    render: function() {
+    };
+
+    state = this.initData();
+
+    render() {
         //标签
         let tagsArray = this.state.labels ? this.state.labels : [];
         var tags = tagsArray.map(function(tag, index) {
@@ -175,9 +185,9 @@ let TagEditField = React.createClass({
                 {
                     !this.state.disabled ? (
                         <i className="inline-block iconfont icon-update" title={Intl.get('crm.165', '设置标签')}
-                            onClick={(e) => {
-                                this.setEditable(e);
-                            }}/>
+                           onClick={(e) => {
+                               this.setEditable(e);
+                           }}/>
                     ) : null
                 }
 
@@ -196,9 +206,9 @@ let TagEditField = React.createClass({
                     this.handleSubmit(e);
                 }}/>
                 <i title={Intl.get('common.cancel', '取消')} className="inline-block iconfont icon-close"
-                    onClick={(e) => {
-                        this.handleCancel(e);
-                    }}/>
+                   onClick={(e) => {
+                       this.handleCancel(e);
+                   }}/>
             </div>
         );
         var selectedTagsArray = this.state.labels ? this.state.labels : [];
@@ -219,7 +229,7 @@ let TagEditField = React.createClass({
                 </div>
                 <div className="tag-input">
                     <Input placeholder={Intl.get('crm.28', '按Enter键添加新标签')} ref="newTag"
-                        onKeyUp={this.addTag}
+                           onKeyUp={this.addTag}
                     />
                 </div>
                 <div className="buttons">
@@ -236,5 +246,6 @@ let TagEditField = React.createClass({
             </div>
         );
     }
-});
+}
+
 module.exports = TagEditField;

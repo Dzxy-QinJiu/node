@@ -3,9 +3,10 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var DefaultUserLogoTitle = require('../default-user-logo-title');
 var Link = ReactRouter.Link;
+
 // 头像组件
-var Avatar = React.createClass({
-    render: function() {
+class Avatar extends React.Component {
+    render() {
         var innerStyle = {
             display: 'inline-block',
             width: this.props.size ? this.props.size : 36,
@@ -26,10 +27,11 @@ var Avatar = React.createClass({
             </div>
         );
     }
-});
+}
+
 // 带链接图片组件
-var Aimg = React.createClass({
-    render: function() {
+class Aimg extends React.Component {
+    render() {
         return (
             <Link to={this.props.url} activeClassName="active">
                 <Img alt={this.props.name} src={this.props.src} round={this.props.round}
@@ -39,10 +41,11 @@ var Aimg = React.createClass({
             </Link>
         );
     }
-});
+}
+
 // 图片组件
-var Img = React.createClass({
-    render: function() {
+class Img extends React.Component {
+    render() {
         var imgStyle = {
             width: '100%',
             height: '100%',
@@ -60,10 +63,10 @@ var Img = React.createClass({
             </DefaultUserLogoTitle>
         );
     }
-});
+}
 
-var Name = React.createClass({
-    render: function() {
+class Name extends React.Component {
+    render() {
         var nameStyle = {
             lineHeight: '20px',
             color: '#fff'
@@ -72,7 +75,7 @@ var Name = React.createClass({
             <label style={nameStyle}>{this.props.name}</label>
         );
     }
-});
+}
 
 module.exports = Avatar;
 

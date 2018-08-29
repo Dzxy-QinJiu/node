@@ -39,8 +39,10 @@ const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
-var SalesHomePage = React.createClass({
-    getInitialState: function() {
+
+class SalesHomePage extends React.Component {
+    constructor(props) {
+        super(props);
         SalesHomeAction.setInitState();
         let stateData = SalesHomeStore.getState();
         var isSaleTeamShow = true;
@@ -51,7 +53,8 @@ var SalesHomePage = React.createClass({
         } else {
             isSaleTeamShow = flag;
         }
-        return {
+
+        this.state = {
             ...stateData,
             scrollbarEnabled: false, //是否需要滚动条
             callType: CALL_TYPE_OPTION.ALL, // 通话类型
@@ -65,11 +68,13 @@ var SalesHomePage = React.createClass({
             appList: [], //应用数组
             selectedAppId: '' //选中的应用id
         };
-    },
-    onChange: function() {
+    }
+
+    onChange = () => {
         this.setState(SalesHomeStore.getState());
-    },
-    getDataType: function() {
+    };
+
+    getDataType = () => {
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
@@ -77,14 +82,16 @@ var SalesHomePage = React.createClass({
         } else {
             return '';
         }
-    },
-    getAppList() {
+    };
+
+    getAppList = () => {
         commonDataUtil.getAppList(appList => {
             let selectedAppId = appList.length && appList[0].client_id || '';
             this.setState({appList: appList, selectedAppId: selectedAppId});
         });
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
         //获取统计团队内成员个数的列表
@@ -110,8 +117,9 @@ var SalesHomePage = React.createClass({
                 isAnimateShow: true
             });
         }, DELAY_TIME);
-    },
-    resizeLayout: function() {
+    }
+
+    resizeLayout = () => {
         //宽屏不出现滚动条
         if ($(window).width() < Oplate.layout['screen-md']) {
             $('body').css({
@@ -130,12 +138,14 @@ var SalesHomePage = React.createClass({
         this.setState({
             scrollbarEnabled: this.state.scrollbarEnabled
         });
-    },
+    };
+
     //获取个人配置信息
-    getWebConfig: function() {
+    getWebConfig = () => {
         SalesHomeAction.getWebsiteConfig();
-    },
-    getListBlockHeight: function() {
+    };
+
+    getListBlockHeight = () => {
         let listHeight = null;
 
         if (this.state.scrollbarEnabled) {
@@ -143,13 +153,15 @@ var SalesHomePage = React.createClass({
                 layoutConstant.SELECT_TYPE_H - layoutConstant.BOTTOM;
         }
         return listHeight;
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         SalesHomeAction.setInitState();
         SalesHomeStore.unlisten(this.onChange);
-    },
+    }
+
     //获取查询参数
-    getQueryParams: function() {
+    getQueryParams = () => {
         let queryParams = {
             urltype: 'v2',
             starttime: this.state.start_time,
@@ -163,16 +175,18 @@ var SalesHomePage = React.createClass({
             queryParams.team_id = this.state.currShowSalesTeam.group_id;
         }
         return queryParams;
-    },
+    };
+
     //通话总次数和总时长统计权限
-    getCallTotalAuth(){
+    getCallTotalAuth = () => {
         let authType = 'user';//CALLRECORD_CUSTOMER_PHONE_STATISTIC_USER
         if (hasPrivilege('CALLRECORD_CUSTOMER_PHONE_STATISTIC_MANAGER')) {
             authType = 'manager';
         }
         return authType;
-    },
-    getPhoneTop10Params: function() {
+    };
+
+    getPhoneTop10Params = () => {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -188,9 +202,10 @@ var SalesHomePage = React.createClass({
             queryParams.team_id = this.state.currShowSalesTeam.group_id;
         }
         return queryParams;
-    },
+    };
+
     //刷新数据
-    refreshSalesListData: function(isSwitchTeam) {
+    refreshSalesListData = (isSwitchTeam) => {
         let queryParams = this.getQueryParams();
         let dataType = this.getDataType();
         queryParams.dataType = dataType;
@@ -219,8 +234,9 @@ var SalesHomePage = React.createClass({
         }
         //获取过期用户列表
         SalesHomeAction.getExpireUser(queryObj);
-    },
-    getPhoneParams: function() {
+    };
+
+    getPhoneParams = () => {
         let phoneParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -234,9 +250,10 @@ var SalesHomePage = React.createClass({
             phoneParams.team_ids = this.state.currShowSalesTeam.group_id;
         }
         return phoneParams;
-    },
+    };
+
     // 设置获取回访列表的接口参数
-    getCallBackList(queryParam) {
+    getCallBackList = (queryParam) => {
         let startTime = this.state.start_time ? this.state.start_time : moment('2010-01-01 00:00:00').valueOf(),
             endTime = this.state.end_time ? this.state.end_time : moment().endOf('day').valueOf();
         let paramsObj = {
@@ -257,17 +274,19 @@ var SalesHomePage = React.createClass({
             type: 'call_back'
         };
         SalesHomeAction.getCallBackList(paramsObj, filterObj);
-    },
+    };
+
     //获取销售列的标题
-    getSalesColumnTitle: function() {
+    getSalesColumnTitle = () => {
         var userType = this.state.userType;
         var label = Intl.get('sales.home.sales', '销售');
         if (userType === 'senior_leader') {
             label = Intl.get('user.sales.team', '销售团队');
         }
         return label;
-    },
-    getPhoneColumnTitle: function(label, key) {
+    };
+
+    getPhoneColumnTitle = (label, key) => {
         let sorter = this.state.phoneSorter;
         let sortIcon = null;
         if (sorter.field === key) {
@@ -278,8 +297,9 @@ var SalesHomePage = React.createClass({
             }
         }
         return <span>{label}{sortIcon}</span>;
-    },
-    getCallBackColumnTitle(label, key) {
+    };
+
+    getCallBackColumnTitle = (label, key) => {
         let sorter = this.state.callBackSorter;
         let sortIcon = null;
         if (sorter.field === key) {
@@ -290,15 +310,17 @@ var SalesHomePage = React.createClass({
             }
         }
         return <span>{label}{sortIcon}</span>;
-    },
-    getColumnMinWidth: function(width, key) {
+    };
+
+    getColumnMinWidth = (width, key) => {
         //正在排序的列宽需加上排序按钮的宽度
         if (this.state.phoneSorter.field === key) {
             width += SORT_ICON_WIDTH;
         }
         return width;
-    },
-    getPhoneListColumn: function() {
+    };
+
+    getPhoneListColumn = () => {
         let col_width = 95, num_col_width = 80;
         let columns = [{
             title: this.getSalesColumnTitle(),
@@ -415,8 +437,9 @@ var SalesHomePage = React.createClass({
             });
         }
         return columns;
-    },
-    getCallBackListColumn() {
+    };
+
+    getCallBackListColumn = () => {
         let columns = [
             {
                 title: this.getCallBackColumnTitle(Intl.get('common.callback.time', '回访时间'), 'call_date'),
@@ -452,9 +475,10 @@ var SalesHomePage = React.createClass({
             }
         ];
         return columns;
-    },
+    };
+
     //获取分析图表展示区所需的布局参数
-    getChartLayoutParams: function() {
+    getChartLayoutParams = () => {
         let chartWidth = 0;
         let chartListHeight = $(window).height() - $('.statistic-total-data').height() - layoutConstant.TOP - layoutConstant.BOTTOM;
         let windowWidth = $(window).width();
@@ -465,9 +489,10 @@ var SalesHomePage = React.createClass({
             chartWidth = Math.floor(chartListContainerW - layoutConstant.CHART_PADDING * 2);
         }
         return {chartWidth: chartWidth, chartListHeight: chartListHeight};
-    },
+    };
+
     //通过销售名称获取对应的Id
-    getSaleIdByName: function(name) {
+    getSaleIdByName = (name) => {
         let teamMemberList = this.state.salesTeamMembersObj.data;
         if (_.isArray(teamMemberList) && teamMemberList.length) {
             let sales = _.find(teamMemberList, member => member.nickName === name);
@@ -475,19 +500,19 @@ var SalesHomePage = React.createClass({
         } else {
             return '';
         }
-    },
+    };
 
-    getChangeCallTypeData: function() {
+    getChangeCallTypeData = () => {
         let queryParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(queryParams);
         let callTotalAuth = this.getCallTotalAuth();
         let top10Params = this.getPhoneTop10Params();
         //通话总次数、总时长TOP10
         SalesHomeAction.getCallTotalList(callTotalAuth, top10Params);
-    },
+    };
 
     // 选择通话类型的值
-    selectCallTypeValue(value){
+    selectCallTypeValue = (value) => {
         if (value === CALL_TYPE_OPTION.PHONE) {
             this.state.callType = CALL_TYPE_OPTION.PHONE;
         } else if (value === CALL_TYPE_OPTION.APP) {
@@ -501,10 +526,10 @@ var SalesHomePage = React.createClass({
         this.getChangeCallTypeData();
         //发送点击事件
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.call-type-select'), '电话统计>选择' + value + '类型');
-    },
+    };
 
     // 通话类型的筛选框
-    filterCallTypeSelect(){
+    filterCallTypeSelect = () => {
         return (
             <div className="call-type-select" data-tracename="电话统计">
                 <Select
@@ -524,17 +549,19 @@ var SalesHomePage = React.createClass({
                 </Select>
             </div>
         );
-    },
-    getPhoneTableMinWidth: function() {
+    };
+
+    getPhoneTableMinWidth = () => {
         let tableMinWitdh = this.state.callType === CALL_TYPE_OPTION.APP ? 965 : 845;
         //有排序的列，table的宽带需要加上排序按钮的宽度
         if (!_.isEmpty(this.state.phoneSorter)) {
             tableMinWitdh += SORT_ICON_WIDTH;
         }
         return tableMinWitdh;
-    },
+    };
+
     //渲染数据分析视图
-    renderAnalysisView: function() {
+    renderAnalysisView = () => {
         if (this.state.activeView === viewConstant.CUSTOMER) {
             return (<CustomerAnalysis ref="customerView" startTime={this.state.start_time} endTime={this.state.end_time}
                 timeType={this.state.timeType}
@@ -632,11 +659,12 @@ var SalesHomePage = React.createClass({
                 </div>
             );
         }
-    },
+    };
+
     /* 渲染总时长、总次数为top10的列表
      * titleObj={title:"通话时长",dataKey:"billsec"}
      */
-    renderCallTopTen(dataObj, titleObj){
+    renderCallTopTen = (dataObj, titleObj) => {
         return (
             <div className="call-duration-top-ten">
                 <div className="call-duration-title">
@@ -658,9 +686,10 @@ var SalesHomePage = React.createClass({
                 />}
             </div>
         );
-    },
+    };
+
     // TOP10数据列表
-    getCallDurTopColumn(titleObj){
+    getCallDurTopColumn = (titleObj) => {
         return [
             {
                 title: Intl.get('common.phone', '电话'),
@@ -688,15 +717,18 @@ var SalesHomePage = React.createClass({
                 key: 'nick_name'
             }
         ];
-    },
-    onTableChange: function(pagination, filters, sorter) {
+    };
+
+    onTableChange = (pagination, filters, sorter) => {
         this.setState({phoneSorter: sorter});
-    },
-    onCallBackTableChange(pagination, filters, sorter) {
+    };
+
+    onCallBackTableChange = (pagination, filters, sorter) => {
         this.setState({callBackSorter: sorter});
-    },
+    };
+
     //时间的设置
-    onSelectDate: function(startTime, endTime, timeType) {
+    onSelectDate = (startTime, endTime, timeType) => {
         let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
         SalesHomeAction.changeSearchTime(timeObj);
         SalesHomeAction.resetCallBackRecord();
@@ -712,9 +744,10 @@ var SalesHomePage = React.createClass({
                 this.refs.userView.getChartData();
             }
         });
-    },
+    };
+
     //切换销售团队、销售时，刷新数据
-    refreshDataByChangeSales: function() {
+    refreshDataByChangeSales = () => {
         this.refreshSalesListData(true);
         //刷新统计数据
         if (this.state.activeView === viewConstant.CUSTOMER) {
@@ -724,25 +757,28 @@ var SalesHomePage = React.createClass({
             //刷新用户分析数据
             this.refs.userView.getChartData();
         }
-    },
+    };
+
     //获取右侧销售团队列表的高度
-    getSalesListHeight: function() {
+    getSalesListHeight = () => {
         let salesListHeight = 'auto';
         if (this.state.scrollbarEnabled) {
             salesListHeight = $(window).height() - layoutConstant.TOP - layoutConstant.TITLE_HEIGHT;
         }
         return salesListHeight;
-    },
+    };
+
     //获取左侧即将到期客户高度
-    getWillExpireUserListHeight: function() {
+    getWillExpireUserListHeight = () => {
         let salesListHeight = 'auto';
         if (this.state.scrollbarEnabled) {
             salesListHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.EXPIRE_TITLE_H - layoutConstant.BOTTOM;
         }
         return salesListHeight;
-    },
+    };
+
     //点击 邮箱激活提示 中的不再提示，隐藏提示框
-    hideActiveEmailTip: function() {
+    hideActiveEmailTip = () => {
         SalesHomeAction.setWebsiteConfig({'setting_notice_ignore': 'yes'}, (errMsg) => {
             if (errMsg) {
                 //设置错误后的提示
@@ -754,9 +790,10 @@ var SalesHomePage = React.createClass({
                 });
             }
         });
-    },
+    };
+
     //点击 激活邮箱 按钮
-    activeUserEmail: function() {
+    activeUserEmail = () => {
         if (!this.state.emailShowObj.email) {
             return;
         }
@@ -769,8 +806,9 @@ var SalesHomePage = React.createClass({
                 );
             }
         });
-    },
-    handleCrmTeamListShow: function(e) {
+    };
+
+    handleCrmTeamListShow = (e) => {
         this.setState({
             isSaleTeamShow: !this.state.isSaleTeamShow,
             notfirstLogin: true,
@@ -789,12 +827,14 @@ var SalesHomePage = React.createClass({
             Trace.traceEvent(e, '展示团队列表');
         }
         return e.stopPropagation();
-    },
+    };
+
     //跳转到个人信息页面
-    jumpToUserInfo: function() {
+    jumpToUserInfo = () => {
         history.pushState({}, '/user_info_manage/user_info', {});
-    },
-    renderWillExpireUser: function() {
+    };
+
+    renderWillExpireUser = () => {
         return (
             <WillExpiredUsers
                 expireUserLists={this.state.expireUserLists}
@@ -807,9 +847,10 @@ var SalesHomePage = React.createClass({
                 team_id={this.state.currShowSalesTeam.group_id}
             />
         );
-    },
+    };
+
     //获取触发器
-    getEmitters: function() {
+    getEmitters = () => {
         return [
             {
                 emitter: dateSelectorEmitter,
@@ -837,9 +878,10 @@ var SalesHomePage = React.createClass({
                 }],
             },
         ];
-    },
+    };
+
     //获取图表条件
-    getConditions: function() {
+    getConditions = () => {
         return [
             {
                 name: 'starttime',
@@ -872,9 +914,10 @@ var SalesHomePage = React.createClass({
                 type: 'params',
             }
         ];
-    },
+    };
+
     //获取电话统计图表列表
-    getPhoneAnalysisCharts() {
+    getPhoneAnalysisCharts = () => {
         return [{
             title: Intl.get('weekly.report.call.statics', '电话统计'),
             chartType: 'table',
@@ -925,9 +968,10 @@ var SalesHomePage = React.createClass({
                 }),
             },
         }];
-    },
+    };
+
     //渲染客户关系首页
-    render: function() {
+    render() {
         var crmSaleList = classNames('sale-list-zone', {
             'saleteam-list-show': this.state.isSaleTeamShow && this.state.notfirstLogin,
             'saleteam-list-hide': !this.state.isSaleTeamShow && this.state.notfirstLogin,
@@ -1030,7 +1074,7 @@ var SalesHomePage = React.createClass({
             </div>
         </RightContent>);
     }
-});
+}
 
 module.exports = SalesHomePage;
 

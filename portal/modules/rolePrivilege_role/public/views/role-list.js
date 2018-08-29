@@ -12,65 +12,68 @@ import Trace from 'LIB_DIR/trace';
 function noop() {
 }
 var roleTitleDivHeight = 80; //50+30每组角色列表标题高度+需要留白高度
-var RoleList = React.createClass({
-    getDefaultProps: function() {
-        return {
-            editRole: noop,
-            deleteRole: noop,
-            setDefaultRole: noop
-        };
-    },
-    getInitialState: function() {
-        return {
-            setDefaulting: false
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+
+class RoleList extends React.Component {
+    static defaultProps = {
+        editRole: noop,
+        deleteRole: noop,
+        setDefaultRole: noop
+    };
+
+    state = {
+        setDefaulting: false
+    };
+
+    componentWillReceiveProps(nextProps) {
         this.setState(nextProps);
-    },
+    }
+
     //编辑角色
-    editRole: function(role) {
+    editRole = (role) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.role-btn-class'),'点击编辑角色按钮');
         this.props.editRole(role);
-    },
+    };
 
     //删除角色
-    deleteRole: function(role) {
+    deleteRole = (role) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.role-title-div'),'删除角色');
         this.props.deleteRole(role);
-    },
+    };
 
     //设置默认角色
-    setDefault: function(role) {
+    setDefault = (role) => {
         let appId = this.props.appId;
         this.props.setDefaultRole({
             app_id: appId,
             base_role: role.roleId
         });
-    },
+    };
 
     //
-    delDefault: function() {
+    delDefault = () => {
         this.props.delDefaultRole(this.props.appId);
-    },
+    };
 
     //展示删除时的提示框
-    showModalDialog: function(role) {
+    showModalDialog = (role) => {
         this.props.showModalDialog(role);
-    },
+    };
 
     //隐藏删除时的提示框
-    hideModalDialog: function(role) {
+    hideModalDialog = (role) => {
         this.props.hideModalDialog(role);
-    },
-    hideDelTooltip: function() {
+    };
+
+    hideDelTooltip = () => {
         this.props.clearDelErrorMsg();
-    },    
-    turnToAuthPanel: function() {
+    };
+
+    turnToAuthPanel = () => {
         this.props.setShowRoleAuthType('authority');
-    },
+    };
+
     //权限列表
-    renderAuthList: function(role) {
+    renderAuthList = (role) => {
         var authListEle = [], permissionGroups = role.permissionGroups, _this = this;
         if (_.isArray(permissionGroups) && permissionGroups.length > 0) {
             permissionGroups.map(function(permissionGroup, j) {
@@ -131,9 +134,9 @@ var RoleList = React.createClass({
                 />
             </div>);
         }
-    },
+    };
 
-    render: function() {
+    render() {
         var _this = this;
         var role = this.props.role;
         var roleListDivHeight = this.props.roleListDivHeight;
@@ -204,6 +207,6 @@ var RoleList = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = RoleList;

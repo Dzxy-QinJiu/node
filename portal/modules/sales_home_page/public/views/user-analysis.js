@@ -22,9 +22,10 @@ const LEGEND_RIGHT = 20;
 var constantUtil = require('../util/constant');
 //这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
 var delayConstant = constantUtil.DELAY.TIMERANG;
+
 //用户分析
-var UserAnlyis = React.createClass({
-    getStateData: function() {
+class UserAnlyis extends React.Component {
+    getStateData = () => {
         let stateData = OplateUserAnalysisStore.getState();
         return {
             ...stateData,
@@ -34,15 +35,13 @@ var UserAnlyis = React.createClass({
             originSalesTeamTree: this.props.originSalesTeamTree,
             updateScrollBar: false
         };
-    },
-    onStateChange: function() {
-        this.setState(this.getStateData());
-    },
+    };
 
-    getInitialState: function() {
-        return this.getStateData();
-    },
-    componentWillReceiveProps: function(nextProps) {
+    onStateChange = () => {
+        this.setState(this.getStateData());
+    };
+
+    componentWillReceiveProps(nextProps) {
         let timeObj = {
             timeType: nextProps.timeType,
             startTime: nextProps.startTime,
@@ -61,8 +60,9 @@ var UserAnlyis = React.createClass({
                 },delayConstant);
             });
         }
-    },
-    getDataType: function() {
+    }
+
+    getDataType = () => {
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
@@ -70,8 +70,9 @@ var UserAnlyis = React.createClass({
         } else {
             return '';
         }
-    },
-    getChartData: function() {
+    };
+
+    getChartData = () => {
         var queryParams = {
             starttime: this.state.startTime,
             endtime: this.state.endTime,
@@ -96,47 +97,53 @@ var UserAnlyis = React.createClass({
         }
         OplateUserAnalysisAction.getAddedZone(queryParams);
         OplateUserAnalysisAction.getAddedIndustry(queryParams);
-    },
+    };
+
     //缩放延时，避免页面卡顿
-    resizeTimeout: null,
+    resizeTimeout = null;
+
     //窗口缩放时候的处理函数
-    windowResize: function() {
+    windowResize = () => {
         clearTimeout(this.resizeTimeout);
         //窗口缩放的时候，调用setState，重新走render逻辑渲染
         this.resizeTimeout = setTimeout(() => this.setState(this.getStateData()), 300);
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         OplateUserAnalysisStore.listen(this.onStateChange);
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
         OplateUserAnalysisAction.changeCurrentTab('total');
         this.getChartData();
         $('.statistic-data-analysis .thumb').hide();
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         OplateUserAnalysisStore.unlisten(this.onStateChange);
         //$('body').css('overflow', 'visible');
         //组件销毁时，清除缩放的延时
         clearTimeout(this.resizeTimeout);
         //解除window上绑定的resize函数
         $(window).off('resize', this.windowResize);
-    },
-    getStartDateText: function() {
+    }
+
+    getStartDateText = () => {
         if (this.state.startTime) {
             return moment(new Date(+this.state.startTime)).format(DATE_FORMAT);
         } else {
             return '';
         }
-    },
-    getEndDateText: function() {
+    };
+
+    getEndDateText = () => {
         if (!this.state.endTime) {
             return moment().format(DATE_FORMAT);
         }
         return moment(new Date(+this.state.endTime)).format(DATE_FORMAT);
-    },
+    };
 
     //获取通过点击统计图中的柱子跳转到用户列表时需传的参数
-    getJumpProps: function() {
+    getJumpProps = () => {
         let analysis_filter_field = 'sales_id', currShowSalesTeam = this.props.currShowSalesTeam;
         //当前展示的是下级团队还是团队内所有成员
         if (currShowSalesTeam) {
@@ -158,9 +165,9 @@ var UserAnlyis = React.createClass({
                 analysis_filter_field: analysis_filter_field
             }
         };
-    },
+    };
 
-    renderChartContent: function() {
+    renderChartContent = () => {
         return (
             <div className="chart_list">
                 <AntcAnalysis
@@ -172,8 +179,9 @@ var UserAnlyis = React.createClass({
                 />
             </div>
         );
-    },
-    renderContent: function() {
+    };
+
+    renderContent = () => {
         if(this.state.updateScrollBar){
             return this.renderChartContent();
 
@@ -184,17 +192,19 @@ var UserAnlyis = React.createClass({
                 </GeminiScrollbar>
             );
         }
-    },
+    };
+
     // 获取一段时间开通账号登录情况的权限
-    getAccountAuthType() {
+    getAccountAuthType = () => {
         let type = 'self';
         if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
             type = 'all';
         }
         return type;
-    },
+    };
+
     //获取图表
-    getCharts: function() {
+    getCharts = () => {
         //从 unknown 到 未知 的映射
         let unknownDataMap = {
             unknown: Intl.get('user.unknown', '未知') 
@@ -336,9 +346,11 @@ var UserAnlyis = React.createClass({
                 }],
             },
         }];
-    },
+    };
 
-    render: function() {
+    state = this.getStateData();
+
+    render() {
         let layoutParams = this.props.getChartLayoutParams();
         this.chartWidth = layoutParams.chartWidth;
         return (
@@ -349,7 +361,8 @@ var UserAnlyis = React.createClass({
             </div>
         );
     }
-});
+}
+
 //返回react对象
 module.exports = UserAnlyis;
 

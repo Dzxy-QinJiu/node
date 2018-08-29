@@ -22,13 +22,12 @@ var CONSTANTS = {
     USER_MANAGE: 'userManage'
 };
 
-var RihgtCardsContainer = React.createClass({
-
-    showCardForm: function() {
+class RihgtCardsContainer extends React.Component {
+    showCardForm = () => {
         this.props.showCardForm('add');
-    },
+    };
 
-    render: function() {
+    render() {
         return (<div className="right-cards-container">
             {this.props.children}
             <div className="cards-table-block">
@@ -94,7 +93,7 @@ var RihgtCardsContainer = React.createClass({
 
         );
     }
-});
+}
 
 module.exports = RihgtCardsContainer;
 

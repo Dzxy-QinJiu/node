@@ -28,19 +28,18 @@ const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
 
-var SalesHomePage = React.createClass({
-    getInitialState: function() {
-        return {
-            showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
-            isShowRepeatCustomer: false,//是否展示重复客户
-            curShowCustomerId: '',//展示客户详情的客户id
-            curShowUserId: '',//展示用户详情的用户id
-            isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            customerOfCurUser: {},//当前展示用户所属客户的详情
-            ...SalesHomeStore.getState()
-        };
-    },
-    componentDidMount: function() {
+class SalesHomePage extends React.Component {
+    state = {
+        showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
+        isShowRepeatCustomer: false,//是否展示重复客户
+        curShowCustomerId: '',//展示客户详情的客户id
+        curShowUserId: '',//展示用户详情的用户id
+        isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
+        customerOfCurUser: {},//当前展示用户所属客户的详情
+        ...SalesHomeStore.getState()
+    };
+
+    componentDidMount() {
         SalesHomeStore.listen(this.onChange);
         this.getSalesListData();
         this.getUserPhoneNumber();
@@ -52,41 +51,49 @@ var SalesHomePage = React.createClass({
             $('.selected-customer-detail-item').removeClass('selected-customer-detail-item');
             $(this).closest('.customer-detail-item').addClass('selected-customer-detail-item');
         });
-    },
+    }
+
     //缩放延时，避免页面卡顿
-    resizeTimeout: null,
+    resizeTimeout = null;
+
     //窗口缩放时候的处理函数
-    windowResize(){
+    windowResize = () => {
         clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
             //窗口缩放的时候，调用setState，重新走render逻辑渲染
             this.setState(SalesHomeStore.getState());
         });
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         $(window).off('resize', this.windowResize);
         SalesHomeStore.unlisten(this.onChange);
-    },
-    onChange: function() {
+    }
+
+    onChange = () => {
         this.setState(SalesHomeStore.getState());
-    },
-    closeCustomerUserListPanel: function() {
+    };
+
+    closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
         });
-    },
-    closeRightCustomerPanel: function() {
+    };
+
+    closeRightCustomerPanel = () => {
         $('.selected-customer-detail-item').removeClass('selected-customer-detail-item');
         this.setState({curShowCustomerId: ''});
-    },
-    ShowCustomerUserListPanel: function(data) {
+    };
+
+    ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
             customerOfCurUser: data.customerObj
         });
 
-    },
-    openCustomerDetail: function(customer_id) {
+    };
+
+    openCustomerDetail = (customer_id) => {
         if (this.state.curShowUserId) {
             this.closeRightUserPanel();
         }
@@ -100,17 +107,20 @@ var SalesHomePage = React.createClass({
                 hideRightPanel: this.closeRightCustomerPanel
             }
         });
-    },
-    openUserDetail: function(user_id) {
+    };
+
+    openUserDetail = (user_id) => {
         if (this.state.curShowCustomerId) {
             this.closeRightCustomerPanel();
         }
         this.setState({curShowUserId: user_id});
-    },
-    closeRightUserPanel: function() {
+    };
+
+    closeRightUserPanel = () => {
         this.setState({curShowUserId: ''});
-    },
-    getSalesListData: function() {
+    };
+
+    getSalesListData = () => {
         let queryParams = this.getQueryParams();
         let dataType = this.getDataType();
         queryParams.dataType = dataType;
@@ -164,9 +174,10 @@ var SalesHomePage = React.createClass({
         this.getNewDistributeCustomer();
         //获取销售线索列表
         this.getSalesClueLists();
-    },
+    };
+
     //获取销售线索列表
-    getSalesClueLists: function(lastId) {
+    getSalesClueLists = (lastId) => {
         var constObj = {
             salesClueTypeFilter: this.state.salesClueTypeFilter,
             rangParamsSalesClue: this.state.rangParamsSalesClue,
@@ -177,9 +188,10 @@ var SalesHomePage = React.createClass({
             constObj.id = lastId;
         }
         SalesHomeAction.getClueCustomerList(constObj,['customer_id']);
-    },
+    };
+
     //获取呼入未接通的电话
-    getMissCallTypeList: function(lastId){
+    getMissCallTypeList = (lastId) => {
         var constObj = {
             page_size: this.state.page_size,
             start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天,
@@ -192,9 +204,10 @@ var SalesHomePage = React.createClass({
             constObj.id = lastId;
         }
         SalesHomeAction.getScheduleList(constObj, 'missed_call');
-    },
+    };
+
     //获取最近登录的客户
-    getRecentLoginCustomers: function(lastId) {
+    getRecentLoginCustomers = (lastId) => {
         var queryObj = {
             total_size: this.state.page_size,
             cursor: true,
@@ -205,18 +218,20 @@ var SalesHomePage = React.createClass({
         //获取最近登录的客户
         //默认获取近7天登录的客户
         SalesHomeAction.getRecentLoginCustomers({}, this.state.rangParamsLogin, this.state.page_size, this.state.sorterLogin, queryObj);
-    },
+    };
+
     //重复客户列表
-    getRepeatCustomerList: function(lastId) {
+    getRepeatCustomerList = (lastId) => {
         var queryObj = {page_size: this.state.page_size};
         if (lastId) {
             queryObj.id = lastId;
         }
         //获取重复客户列表
         SalesHomeAction.getRepeatCustomerList(queryObj);
-    },
+    };
+
     //获取新分配但未联系的客户
-    getNewDistributeCustomer: function(lastId) {
+    getNewDistributeCustomer = (lastId) => {
         //客户被分配后是否已联系 allot_no_contact  未联系 : "0" ，已联系 :"1"
         var queryObj = {
             total_size: this.state.page_size,
@@ -228,9 +243,10 @@ var SalesHomePage = React.createClass({
         }
         //获取新分配的客户
         SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
-    },
+    };
+
     //获取今日的日程列表
-    getScheduleListToday: function() {
+    getScheduleListToday = () => {
         var constObj = {
             page_size: 1000,//今天的日程要对取到的数据进行处理，所以不用下拉加载的方式
             status: false,//获取未处理的日程
@@ -238,9 +254,10 @@ var SalesHomePage = React.createClass({
             end_time: this.state.end_time,
         };
         SalesHomeAction.getScheduleList(constObj, 'today');
-    },
+    };
+
     //停用客户登录
-    getAppIlleageLogin: function(lastId) {
+    getAppIlleageLogin = (lastId) => {
         let noticeQueryObj = {
             notice_type: ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN,
             page_size: this.state.page_size,//默认不传是5
@@ -250,9 +267,10 @@ var SalesHomePage = React.createClass({
         }
         //停用客户登录等消息列表
         SalesHomeAction.getSystemNotices(noticeQueryObj, this.state.status, noticeQueryObj.notice_type);
-    },
+    };
+
     //获取登录失败的通知
-    getLoginFailedNotices: function(lastId) {
+    getLoginFailedNotices = (lastId) => {
         let noticeQueryObj = {
             notice_type: ALL_LISTS_TYPE.LOGIN_FAILED,
             page_size: this.state.page_size,//默认不传是5
@@ -262,9 +280,10 @@ var SalesHomePage = React.createClass({
         }
         //获取登录失败的通知
         SalesHomeAction.getSystemNotices(noticeQueryObj, this.state.status, noticeQueryObj.notice_type);
-    },
+    };
+
     //关注客户登录
-    getConcernedLogin: function(lastId) {
+    getConcernedLogin = (lastId) => {
         let noticeQueryObj = {
             notice_type: ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN,
             page_size: this.state.page_size,//默认不传是5
@@ -274,10 +293,10 @@ var SalesHomePage = React.createClass({
         }
         //获取关注客户登录
         SalesHomeAction.getSystemNotices(noticeQueryObj, this.state.status, noticeQueryObj.notice_type);
-    },
+    };
 
     //获取过期日程列表(不包含今天)
-    getExpiredScheduleList: function(lastId) {
+    getExpiredScheduleList = (lastId) => {
         var constObj = {
             page_size: this.state.page_size,
             start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天,
@@ -289,26 +308,28 @@ var SalesHomePage = React.createClass({
             constObj.id = lastId;
         }
         SalesHomeAction.getScheduleList(constObj, 'expired');
-    },
+    };
 
     //获取查询参数
-    getQueryParams: function() {
+    getQueryParams = () => {
         let queryParams = {
             urltype: 'v2',
             starttime: this.state.start_time,
             endtime: this.state.end_time
         };
         return queryParams;
-    },
-    getPhoneParams: function() {
+    };
+
+    getPhoneParams = () => {
         let phoneParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: this.state.callType || CALL_TYPE_OPTION.ALL
         };
         return phoneParams;
-    },
-    getDataType: function() {
+    };
+
+    getDataType = () => {
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
@@ -316,8 +337,9 @@ var SalesHomePage = React.createClass({
         } else {
             return '';
         }
-    },
-    handleScrollBarBottom: function(listType) {
+    };
+
+    handleScrollBarBottom = (listType) => {
         switch (listType) {
             case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
                 this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
@@ -344,8 +366,9 @@ var SalesHomePage = React.createClass({
                 this.getScrollData(this.state.salesClueObj, this.getSalesClueLists);
                 break;
         }
-    },
-    getScrollData: function(curDataObj, getDataFunction) {
+    };
+
+    getScrollData = (curDataObj, getDataFunction) => {
         var length = curDataObj.data.list.length;
         if (length < curDataObj.data.total) {
             var lastId = curDataObj.data.list[length - 1].id;
@@ -355,9 +378,10 @@ var SalesHomePage = React.createClass({
                 listenScrollBottom: false
             });
         }
-    },
+    };
+
     //渲染左侧列表
-    renderDiffCustomerPanel: function() {
+    renderDiffCustomerPanel = () => {
         return (
             <ul>
                 {_.map(ALL_CUSTOMER_LISTS_TYPE, (item) => {
@@ -385,9 +409,10 @@ var SalesHomePage = React.createClass({
                 })}
             </ul>
         );
-    },
+    };
+
     //渲染右侧客户详情
-    renderCustomerContent: function() {
+    renderCustomerContent = () => {
         var rightPanel = null;
         switch (this.state.showCustomerPanel) {
         //今日日程列表
@@ -444,9 +469,10 @@ var SalesHomePage = React.createClass({
                 rightPanel = this.renderSalesClue();
         }
         return rightPanel;
-    },
+    };
+
     //新分配的客户
-    renderNewDistributeCustomer: function() {
+    renderNewDistributeCustomer = () => {
         var data = this.state.newDistributeCustomer.data.list;
         return (
             <div className="new-distribute-customer-container" ref="tableWrap">
@@ -468,9 +494,10 @@ var SalesHomePage = React.createClass({
 
             </div>
         );
-    },
+    };
+
     // 获取拨打电话的座机号
-    getUserPhoneNumber: function() {
+    getUserPhoneNumber = () => {
         let member_id = userData.getUserData().user_id;
         crmAjax.getUserPhoneNumber(member_id).then((result) => {
             if (result.phone_order) {
@@ -483,18 +510,20 @@ var SalesHomePage = React.createClass({
                 errMsg: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
             });
         });
-    },
+    };
+
     //点击左侧不同客户类别的标题
-    handleClickDiffCustomerType: function(customerType) {
+    handleClickDiffCustomerType = (customerType) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.customer-item'), '打开' + customerType + '类型客户面板');
         GeminiScrollbar.scrollTo(this.refs.tableWrap, 0);
         this.setState({
             listenScrollBottom: true,
             showCustomerPanel: customerType,
         });
-    },
+    };
+
     //渲染loading和出错的情况
-    renderLoadingAndErrAndNodataContent: function(dataObj) {
+    renderLoadingAndErrAndNodataContent = (dataObj) => {
         //加载中的样式
         if (dataObj.loading && dataObj.curPage === 1) {
             return (
@@ -522,9 +551,10 @@ var SalesHomePage = React.createClass({
         } else {
             return null;
         }
-    },
+    };
+
     //渲染日程列表
-    renderScheduleContent: function(scheduleType) {
+    renderScheduleContent = (scheduleType) => {
         var data = [];
         //今天的日程
         if (scheduleType === ALL_LISTS_TYPE.SCHEDULE_TODAY) {
@@ -629,9 +659,10 @@ var SalesHomePage = React.createClass({
 
 
         }
-    },
+    };
+
     //渲染销售线索
-    renderSalesClue: function() {
+    renderSalesClue = () => {
         var data = _.get(this.state.salesClueObj,'data.list',[]);
         return (
             <div className="sales-clue-container" data-tracename="销售线索">
@@ -656,11 +687,13 @@ var SalesHomePage = React.createClass({
 
         );
 
-    },
-    afterHandleMessage: function(messageObj) {
+    };
+
+    afterHandleMessage = (messageObj) => {
         SalesHomeAction.afterHandleMessage(messageObj);
-    },
-    renderExpiredCustomerContent: function(data) {
+    };
+
+    renderExpiredCustomerContent = (data) => {
         return (
             <GeminiScrollbar>
                 {_.map(data, (item, index) => {
@@ -689,9 +722,10 @@ var SalesHomePage = React.createClass({
             </GeminiScrollbar>
         );
 
-    },
+    };
+
     //渲染即将到期的试用客户和签约客户
-    renderWillExpiredTryAndAssignedCustomer: function(type) {
+    renderWillExpiredTryAndAssignedCustomer = (type) => {
         var data = [];
         if (type === ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER) {
             //十天内即将到期的试用客户
@@ -722,9 +756,10 @@ var SalesHomePage = React.createClass({
             );
         }
 
-    },
+    };
+
     //渲染关注客户，停用后登录和最近登录
-    renderFocusAndIlleagalAndRecentContent: function(type, data, isRecentLoginCustomer) {
+    renderFocusAndIlleagalAndRecentContent = (type, data, isRecentLoginCustomer) => {
         return (
             <GeminiScrollbar
                 handleScrollBottom={this.handleScrollBarBottom.bind(this, type)}
@@ -745,9 +780,10 @@ var SalesHomePage = React.createClass({
                 })}
             </GeminiScrollbar>
         );
-    },
+    };
+
     //渲染关注客户，停用客户和最近登录的客户情况
-    renderAPPIlleageAndConcernedAndRecentContent: function(type) {
+    renderAPPIlleageAndConcernedAndRecentContent = (type) => {
         var data = [];
         if (type === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN) {
             //关注客户登录
@@ -786,9 +822,10 @@ var SalesHomePage = React.createClass({
                 </div>
             );
         }
-    },
+    };
+
     //不同类型的客户所对应的数据
-    switchDiffCustomerTotalCount: function(type) {
+    switchDiffCustomerTotalCount = (type) => {
         var total = '';
         switch (type) {
             case ALL_LISTS_TYPE.SCHEDULE_TODAY:
@@ -829,8 +866,9 @@ var SalesHomePage = React.createClass({
                 break;
         }
         return total;
-    },
-    render: function() {
+    };
+
+    render() {
         var phoneData = this.state.phoneTotalObj.data;
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
         var cls = classNames('customer-content-right', {
@@ -931,5 +969,6 @@ var SalesHomePage = React.createClass({
             </RightContent>
         );
     }
-});
+}
+
 module.exports = SalesHomePage;

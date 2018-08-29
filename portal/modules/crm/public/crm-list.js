@@ -97,16 +97,9 @@ const DEFAULT_RANGE_PARAM = {
 };
 //查看是否可以继续添加客户
 let member_id = userData.getUserData().user_id;
-var Crm = React.createClass({
-    getInitialState: function() {
-        return {
-            callNumber: '', // 座机号
-            errMsg: '', // 获取座机号失败的信息
-            showFilterList: false,//是否展示筛选区域
-            ...this.getStateData()
-        };
-    },
-    getSelectedCustomer: function(curCustomerList) {
+
+class Crm extends React.Component {
+    getSelectedCustomer = (curCustomerList) => {
         let selectedCustomer = [];
         if (this.state) {
             if (this.state.selectAllMatched) {//全选时
@@ -116,8 +109,9 @@ var Crm = React.createClass({
             }
         }
         return selectedCustomer;
-    },
-    getStateData: function() {
+    };
+
+    getStateData = () => {
         var originCustomerList = CrmStore.getCurPageCustomers();
         var list = CrmStore.processForList(originCustomerList);
         var originCustomerListForPagination = CrmStore.getlastCurPageCustomers();
@@ -163,23 +157,27 @@ var Crm = React.createClass({
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
         };
-    },
-    setRange: function(obj) {
+    };
+
+    setRange = (obj) => {
         if (obj.startTime) {
             this.state.rangParams[0].from = obj.startTime;
         }
         if (obj.endTime) {
             this.state.rangParams[0].to = obj.endTime;
         }
-    },
-    setStartRange: function(value) {
+    };
+
+    setStartRange = (value) => {
         this.state.rangParams[0].from = value;
-    },
-    setEndRange: function(value) {
+    };
+
+    setEndRange = (value) => {
         this.state.rangParams[0].to = value;
-    },
+    };
+
     // 获取拨打电话的座机号
-    getUserPhoneNumber() {
+    getUserPhoneNumber = () => {
         CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
@@ -200,9 +198,9 @@ var Crm = React.createClass({
                 });
             }
         });
-    },
+    };
 
-    componentDidMount: function() {
+    componentDidMount() {
         //批量更新所属销售
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_SALES, this.batchChangeSalesman);
         //批量转出客户
@@ -305,8 +303,9 @@ var Crm = React.createClass({
         if (this.props.location.query.add === 'true') {
             this.showAddForm();
         }
-    },
-    setFilterField: function({filterField, filterValue}) {
+    }
+
+    setFilterField = ({filterField, filterValue}) => {
         //展示的团队列表
         if (filterField === 'team') {
             FilterAction.getTeamList((teams) => {
@@ -335,13 +334,15 @@ var Crm = React.createClass({
             }
             this.search();
         }
-    },
-    componentDidUpdate: function() {
+    };
+
+    componentDidUpdate() {
         if (this.state.isScrollTop) {
             this.scrollTop();
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         clearTimeout(this.batchRenderTimeout);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_SALES, this.batchChangeSalesman);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_TRANSFER_CUSTOMER, this.batchChangeSalesman);
@@ -357,9 +358,9 @@ var Crm = React.createClass({
         CrmAction.setInitialState();
         CrmStore.unlisten(this.onChange);
         this.hideRightPanel();
-    },
+    }
 
-    onChange: function() {
+    onChange = () => {
         var state = this.getStateData();
         this.setState(state, () => {
             //全选状态下，头部的全选按钮没有选中时，手动设置选中
@@ -369,101 +370,118 @@ var Crm = React.createClass({
         });
         $('.total').show();
 
-    },
+    };
+
     //批量操作渲染延迟的timeout
-    batchRenderTimeout: null,
+    batchRenderTimeout = null;
+
     //渲染批量操作
-    delayRenderBatchUpdate: function() {
+    delayRenderBatchUpdate = () => {
         clearTimeout(this.batchRenderTimeout);
         this.batchRenderTimeout = setTimeout(() => {
             var state = this.getStateData();
             this.setState(state);
         }, 100);
-    },
+    };
+
     //批量变更销售人员的处理,调用store进行数据更新
-    batchChangeSalesman: function(taskInfo, taskParams) {
+    batchChangeSalesman = (taskInfo, taskParams) => {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeSalesman({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
-    },
+    };
+
     //批量变更标签的处理,调用store进行数据更新
-    batchChangeTags: function(taskInfo, taskParams) {
+    batchChangeTags = (taskInfo, taskParams) => {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeTags({taskInfo, taskParams, curCustomers}, 'change');
         this.delayRenderBatchUpdate();
-    },
+    };
+
     //批量添加标签的处理,调用store进行数据更新
-    batchAddTags: function(taskInfo, taskParams) {
+    batchAddTags = (taskInfo, taskParams) => {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeTags({taskInfo, taskParams, curCustomers}, 'add');
         this.delayRenderBatchUpdate();
-    },
+    };
+
     //批量移除标签的处理,调用store进行数据更新
-    batchRemoveTags: function(taskInfo, taskParams) {
+    batchRemoveTags = (taskInfo, taskParams) => {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeTags({taskInfo, taskParams, curCustomers}, 'remove');
         this.delayRenderBatchUpdate();
-    },
+    };
+
     //批量变更行业的处理,调用store进行数据更新
-    batchChangeIndustry: function(taskInfo, taskParams) {
+    batchChangeIndustry = (taskInfo, taskParams) => {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeIndustry({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
-    },
+    };
+
     //批量变更行政级别的处理,调用store进行数据更新
-    batchChangeLevel: function(taskInfo, taskParams) {
+    batchChangeLevel = (taskInfo, taskParams) => {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeLevel({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
-    },
+    };
+
     //批量变更地域的处理,调用store进行数据更新
-    batchChangeTerritory: function(taskInfo, taskParams) {
+    batchChangeTerritory = (taskInfo, taskParams) => {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeTerritory({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
-    },
-    changeTableHeight: function(filterPanelHeight = 0) {
+    };
+
+    changeTableHeight = (filterPanelHeight = 0) => {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         tableHeight -= filterPanelHeight;
         this.setState({tableHeight, filterPanelHeight});
-    },
-    confirmDelete: function(cusId, cusName) {
+    };
+
+    confirmDelete = (cusId, cusName) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.cus-op'), '删除客户');
         this.state.currentId = cusId;
         this.state.deleteCusName = cusName;
         this.state.showDeleteConfirm = true;
         this.setState(this.state);
-    }
-    , hideDeleteModal: function() {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-cancel'), '关闭删除客户的确认模态框');
-        this.state.showDeleteConfirm = false;
-        this.setState(this.state);
-    }
-    , deleteCustomer: function() {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除客户');
-        this.hideDeleteModal();
-        const ids = [this.state.currentId];
-        CrmAction.deleteCustomer(ids);
-    }
-    , refreshCustomerList: function(customerId) {
-        this.state.selectedCustomer = [];
-        setTimeout(() => {
-            CrmAction.refreshCustomerList(customerId);
-        }, 1000);
-    }
-    , editOne: function(index, name) {
-        this.state.rightPanelIShow = true;
-    }
-    , showRightPanel: function(id) {
-        //舆情秘书角色不让看详情
-        if (hasSecretaryAuth) {
-            return;
-        }
+    };
 
-        rightPanelShow = true;
-        CrmAction.setCurrentCustomer(id);
-    },
-    renderCustomerDetail: function() {
+    hideDeleteModal = () => {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-cancel'), '关闭删除客户的确认模态框');
+            this.state.showDeleteConfirm = false;
+            this.setState(this.state);
+        };
+
+    deleteCustomer = () => {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除客户');
+            this.hideDeleteModal();
+            const ids = [this.state.currentId];
+            CrmAction.deleteCustomer(ids);
+        };
+
+    refreshCustomerList = (customerId) => {
+            this.state.selectedCustomer = [];
+            setTimeout(() => {
+                CrmAction.refreshCustomerList(customerId);
+            }, 1000);
+        };
+
+    editOne = (index, name) => {
+            this.state.rightPanelIShow = true;
+        };
+
+    showRightPanel = (id) => {
+            //舆情秘书角色不让看详情
+            if (hasSecretaryAuth) {
+                return;
+            }
+
+            rightPanelShow = true;
+            CrmAction.setCurrentCustomer(id);
+        };
+
+    renderCustomerDetail = () => {
         //触发打开带拨打电话状态的客户详情面板
         if (this.state.currentId) {
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
@@ -481,271 +499,278 @@ var Crm = React.createClass({
                 }
             });
         }
-    },
-    hideRightPanel: function() {
+    };
+
+    hideRightPanel = () => {
         this.state.rightPanelIsShow = false;
         rightPanelShow = false;
         this.setState(this.state);
         $('.ant-table-row').removeClass('current-row');
-    }
-    , addOne: function(customer) {
-        this.state.isAddFlag = false;
-        this.state.isScrollTop = true;
-        this.setState(this.state);
-    }
-    , showAddForm: function() {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击添加客户按钮');
-        this.state.isAddFlag = true;
-        this.setState(this.state);
-    }
-    , hideAddForm: function() {
-        this.state.isAddFlag = false;
-        this.setState(this.state);
-    }
+    };
+
+    addOne = (customer) => {
+            this.state.isAddFlag = false;
+            this.state.isScrollTop = true;
+            this.setState(this.state);
+        };
+
+    showAddForm = () => {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击添加客户按钮');
+            this.state.isAddFlag = true;
+            this.setState(this.state);
+        };
+
+    hideAddForm = () => {
+            this.state.isAddFlag = false;
+            this.setState(this.state);
+        };
 
     //查询客户
     //reset参数若为true，则重新从第一页获取
-    , search: function(reset) {
-        const filterStoreCondition = JSON.parse(JSON.stringify(FilterStore.getState().condition));
-        const condition = _.extend({}, filterStoreCondition, FilterStore.getState().inputCondition);
-        //去除查询条件中值为空的项
-        commonMethodUtil.removeEmptyItem(condition);
-        //保存当前查询条件，批量变更的时候会用到
-        this.state.condition = condition;
 
-        //当重置标志为true时，重新从第一页加载，并重置客户列表
-        if (reset) {
-            this.state.customerId = '';
-            CrmAction.setCustomerId('');
-            //清除客户的选择
-            this.clearSelectedCustomer();
-            //将分页器默认选中为第一页
-            CrmAction.setPageNum(1);
-            //清空state上的nextPageNum，避免显示上次的nextPageNum
-            CrmAction.setNextPageNum(1);
-        }
-        //联系方式(电话、邮箱)搜索的处理
-        if (condition.phone) {
-            condition.contacts = [{phone: [condition.phone]}];
-            delete condition.phone;
-        }
-        if (condition.email) {
-            condition.contacts = [{email: [condition.email]}];
-            delete condition.email;
-        }
-        let term_fields = [];//需精确匹配的字段
-        //未知行业,未知地域,未知销售阶段（未展示），未知联系方式(未展示)等处理
-        let unexist = [];//存放未知行业、未知地域的数组
-        let exist = [];
-        if (condition.industry && condition.industry.length) {
-            //未知行业的处理
-            if (condition.industry.indexOf(UNKNOWN) !== -1) {
-                unexist.push('industry');
-                delete condition.industry;
-            } else {//需精确匹配
-                term_fields.push('industry');
+    search = (reset) => {
+            const filterStoreCondition = JSON.parse(JSON.stringify(FilterStore.getState().condition));
+            const condition = _.extend({}, filterStoreCondition, FilterStore.getState().inputCondition);
+            //去除查询条件中值为空的项
+            commonMethodUtil.removeEmptyItem(condition);
+            //保存当前查询条件，批量变更的时候会用到
+            this.state.condition = condition;
+
+            //当重置标志为true时，重新从第一页加载，并重置客户列表
+            if (reset) {
+                this.state.customerId = '';
+                CrmAction.setCustomerId('');
+                //清除客户的选择
+                this.clearSelectedCustomer();
+                //将分页器默认选中为第一页
+                CrmAction.setPageNum(1);
+                //清空state上的nextPageNum，避免显示上次的nextPageNum
+                CrmAction.setNextPageNum(1);
             }
-        }
-        var saleStage = '';
-        if (condition.sales_opportunities && _.isArray(condition.sales_opportunities) && condition.sales_opportunities.length !== 0) {
-            saleStage = condition.sales_opportunities[0].sale_stages;
-        }
-        if (saleStage && saleStage === UNKNOWN) {
-            //未知销售阶段的处理
-            condition.contain_sales_opportunity = 'false';
-            delete condition.sales_opportunities;
-        }
-        //未知地域的处理
-        if (condition.province) {
-            if (condition.province === UNKNOWN) {
-                unexist.push('province');
-                delete condition.province;
-            } else {//需精确匹配
-                term_fields.push('province');
+            //联系方式(电话、邮箱)搜索的处理
+            if (condition.phone) {
+                condition.contacts = [{phone: [condition.phone]}];
+                delete condition.phone;
             }
-        }
-        //阶段标签的处理
-        if (condition.customer_label) {
-            //信息、意向、试用、签约、流失
-            term_fields.push('customer_label');
-        }
-        //合格标签的处理
-        if (condition.qualify_label) {
-            //从未合格标签
-            if(condition.qualify_label === '3'){
-                unexist.push('qualify_label');
-                delete condition.qualify_label;
-            } else {//合格标签、从未合格标签
-                term_fields.push('qualify_label');
+            if (condition.email) {
+                condition.contacts = [{email: [condition.email]}];
+                delete condition.email;
             }
-        }
-        //销售角色的处理
-        if (condition.member_role) {
-            term_fields.push('member_role');
-        }
-        //标签的处理
-        if (_.isArray(condition.labels) && condition.labels.length) {
-            //未打标签的客户筛选处理
-            if (_.includes(condition.labels, SPECIAL_LABEL.NON_TAGGED_CUSTOMER)) {
-                unexist.push('labels');
-                delete condition.labels;
-            } else {
-                //线索、转出不可操作标签的筛选处理
-                if (_.includes(condition.labels, SPECIAL_LABEL.CLUE) || _.includes(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.includes(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
-                    condition.immutable_labels = [];
-                    //线索标签
-                    if (_.includes(condition.labels, SPECIAL_LABEL.CLUE)) {
-                        condition.immutable_labels.push(SPECIAL_LABEL.CLUE);
-                        //过滤掉线索标签
-                        condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.CLUE);
-                    }
-                    //转出标签
-                    if (_.includes(condition.labels, SPECIAL_LABEL.TURN_OUT)) {
-                        condition.immutable_labels.push(SPECIAL_LABEL.TURN_OUT);
-                        //过滤掉转出标签
-                        condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.TURN_OUT);
-                    }
-                    // 已回访
-                    if (_.includes(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
-                        condition.immutable_labels.push(SPECIAL_LABEL.HAS_CALL_BACK);
-                        // 过滤掉已回访标签
-                        condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.HAS_CALL_BACK);
-                    }
-                    term_fields.push('immutable_labels');//精确匹配
+            let term_fields = [];//需精确匹配的字段
+            //未知行业,未知地域,未知销售阶段（未展示），未知联系方式(未展示)等处理
+            let unexist = [];//存放未知行业、未知地域的数组
+            let exist = [];
+            if (condition.industry && condition.industry.length) {
+                //未知行业的处理
+                if (condition.industry.indexOf(UNKNOWN) !== -1) {
+                    unexist.push('industry');
+                    delete condition.industry;
+                } else {//需精确匹配
+                    term_fields.push('industry');
                 }
-                //剩下普通标签的筛选
-                if (condition.labels.length === 0) {
+            }
+            var saleStage = '';
+            if (condition.sales_opportunities && _.isArray(condition.sales_opportunities) && condition.sales_opportunities.length !== 0) {
+                saleStage = condition.sales_opportunities[0].sale_stages;
+            }
+            if (saleStage && saleStage === UNKNOWN) {
+                //未知销售阶段的处理
+                condition.contain_sales_opportunity = 'false';
+                delete condition.sales_opportunities;
+            }
+            //未知地域的处理
+            if (condition.province) {
+                if (condition.province === UNKNOWN) {
+                    unexist.push('province');
+                    delete condition.province;
+                } else {//需精确匹配
+                    term_fields.push('province');
+                }
+            }
+            //阶段标签的处理
+            if (condition.customer_label) {
+                //信息、意向、试用、签约、流失
+                term_fields.push('customer_label');
+            }
+            //合格标签的处理
+            if (condition.qualify_label) {
+                //从未合格标签
+                if(condition.qualify_label === '3'){
+                    unexist.push('qualify_label');
+                    delete condition.qualify_label;
+                } else {//合格标签、从未合格标签
+                    term_fields.push('qualify_label');
+                }
+            }
+            //销售角色的处理
+            if (condition.member_role) {
+                term_fields.push('member_role');
+            }
+            //标签的处理
+            if (_.isArray(condition.labels) && condition.labels.length) {
+                //未打标签的客户筛选处理
+                if (_.includes(condition.labels, SPECIAL_LABEL.NON_TAGGED_CUSTOMER)) {
+                    unexist.push('labels');
                     delete condition.labels;
                 } else {
-                    term_fields.push('labels');
+                    //线索、转出不可操作标签的筛选处理
+                    if (_.includes(condition.labels, SPECIAL_LABEL.CLUE) || _.includes(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.includes(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
+                        condition.immutable_labels = [];
+                        //线索标签
+                        if (_.includes(condition.labels, SPECIAL_LABEL.CLUE)) {
+                            condition.immutable_labels.push(SPECIAL_LABEL.CLUE);
+                            //过滤掉线索标签
+                            condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.CLUE);
+                        }
+                        //转出标签
+                        if (_.includes(condition.labels, SPECIAL_LABEL.TURN_OUT)) {
+                            condition.immutable_labels.push(SPECIAL_LABEL.TURN_OUT);
+                            //过滤掉转出标签
+                            condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.TURN_OUT);
+                        }
+                        // 已回访
+                        if (_.includes(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
+                            condition.immutable_labels.push(SPECIAL_LABEL.HAS_CALL_BACK);
+                            // 过滤掉已回访标签
+                            condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.HAS_CALL_BACK);
+                        }
+                        term_fields.push('immutable_labels');//精确匹配
+                    }
+                    //剩下普通标签的筛选
+                    if (condition.labels.length === 0) {
+                        delete condition.labels;
+                    } else {
+                        term_fields.push('labels');
+                    }
                 }
             }
-        }
-        //竞品,精确匹配
-        if (condition.competing_products && condition.competing_products.length) {
-            term_fields.push('competing_products');
-        }
-        //团队的处理
-        // 所有团队的团队树
-        let teamTreeList = FilterStore.getState().teamTreeList;
-        //实际选中的团队列表
-        let selectedTeams = [];
-        if (filterStoreCondition && filterStoreCondition.sales_team_id) {
-            selectedTeams = filterStoreCondition.sales_team_id.split(',');
-        }
-        //实际要传到后端的团队,默认是选中的团队
-        let totalRequestTeams = JSON.parse(JSON.stringify(selectedTeams));
-        let teamTotalArr = [];
-        //跟据实际选中的id，获取包含下级团队的所有团队详情的列表teamTotalArr
-        _.each(selectedTeams, (teamId) => {
-            teamTotalArr = _.union(teamTotalArr, commonMethodUtil.traversingSelectTeamTree(teamTreeList, teamId));
-        });
-        //跟据包含下级团队的所有团队详情的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
-        totalRequestTeams = _.union(totalRequestTeams, commonMethodUtil.getRequestTeamIds(teamTotalArr));
-        if (totalRequestTeams.length) {
-            condition.sales_team_id = totalRequestTeams.join(',');
-        } else {
-            delete condition.sales_team_id;
-        }
+            //竞品,精确匹配
+            if (condition.competing_products && condition.competing_products.length) {
+                term_fields.push('competing_products');
+            }
+            //团队的处理
+            // 所有团队的团队树
+            let teamTreeList = FilterStore.getState().teamTreeList;
+            //实际选中的团队列表
+            let selectedTeams = [];
+            if (filterStoreCondition && filterStoreCondition.sales_team_id) {
+                selectedTeams = filterStoreCondition.sales_team_id.split(',');
+            }
+            //实际要传到后端的团队,默认是选中的团队
+            let totalRequestTeams = JSON.parse(JSON.stringify(selectedTeams));
+            let teamTotalArr = [];
+            //跟据实际选中的id，获取包含下级团队的所有团队详情的列表teamTotalArr
+            _.each(selectedTeams, (teamId) => {
+                teamTotalArr = _.union(teamTotalArr, commonMethodUtil.traversingSelectTeamTree(teamTreeList, teamId));
+            });
+            //跟据包含下级团队的所有团队详情的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+            totalRequestTeams = _.union(totalRequestTeams, commonMethodUtil.getRequestTeamIds(teamTotalArr));
+            if (totalRequestTeams.length) {
+                condition.sales_team_id = totalRequestTeams.join(',');
+            } else {
+                delete condition.sales_team_id;
+            }
 
-        var queryObj = {
-            total_size: this.state.pageSize * this.state.pageValue,
-            cursor: this.state.cursor,
-            id: this.state.customerId
-        };
-        //其他筛选
-        let dayTime = '';
-        let dayTimeLogin = '';
-        //超xxx天未联系客户
-        switch (condition.otherSelectedItem) {
-            case OTHER_FILTER_ITEMS.THIRTY_UNCONTACT://超30天未联系的客户
-                dayTime = DAY_TIME.THIRTY_DAY;
-                break;
-            case OTHER_FILTER_ITEMS.FIFTEEN_UNCONTACT://超15天未联系的客户
-                dayTime = DAY_TIME.FIFTEEN_DAY;
-                break;
-            case OTHER_FILTER_ITEMS.SEVEN_UNCONTACT://超7天未联系的客户
-                dayTime = DAY_TIME.SEVEN_DAY;
-                break;
-            case OTHER_FILTER_ITEMS.SEVEN_LOGIN://近一周活跃客户
-                dayTimeLogin = DAY_TIME.SEVEN_DAY;
-                break;
-            case OTHER_FILTER_ITEMS.MONTH_LOGIN://近一个月活跃客户
-                dayTimeLogin = DAY_TIME.THIRTY_DAY;
-                break;
-            case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
-                condition.contain_contact = 'false';
-                break;
-            case OTHER_FILTER_ITEMS.LAST_CALL_NO_RECORD://最后联系但未写跟进记录的客户
-                condition.call_and_remark = '1';
-                break;
-            case OTHER_FILTER_ITEMS.NO_RECORD_OVER_30DAYS://超30天未写跟进记录的客户
-                condition.last_trace = '0';
-                break;
-            case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
-                unexist.push('member_id');
-                break;
-            case OTHER_FILTER_ITEMS.INTEREST_MEMBER_IDS://被关注的客户
-                exist.push('interest_member_ids');
-                break;
-            case OTHER_FILTER_ITEMS.MY_INTERST://我关注的客户
-                condition.interest_member_ids = [crmUtil.getMyUserId()];
-                break;
-            case OTHER_FILTER_ITEMS.MULTI_ORDER://多个订单的客户
+            var queryObj = {
+                total_size: this.state.pageSize * this.state.pageValue,
+                cursor: this.state.cursor,
+                id: this.state.customerId
+            };
+            //其他筛选
+            let dayTime = '';
+            let dayTimeLogin = '';
+            //超xxx天未联系客户
+            switch (condition.otherSelectedItem) {
+                case OTHER_FILTER_ITEMS.THIRTY_UNCONTACT://超30天未联系的客户
+                    dayTime = DAY_TIME.THIRTY_DAY;
+                    break;
+                case OTHER_FILTER_ITEMS.FIFTEEN_UNCONTACT://超15天未联系的客户
+                    dayTime = DAY_TIME.FIFTEEN_DAY;
+                    break;
+                case OTHER_FILTER_ITEMS.SEVEN_UNCONTACT://超7天未联系的客户
+                    dayTime = DAY_TIME.SEVEN_DAY;
+                    break;
+                case OTHER_FILTER_ITEMS.SEVEN_LOGIN://近一周活跃客户
+                    dayTimeLogin = DAY_TIME.SEVEN_DAY;
+                    break;
+                case OTHER_FILTER_ITEMS.MONTH_LOGIN://近一个月活跃客户
+                    dayTimeLogin = DAY_TIME.THIRTY_DAY;
+                    break;
+                case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
+                    condition.contain_contact = 'false';
+                    break;
+                case OTHER_FILTER_ITEMS.LAST_CALL_NO_RECORD://最后联系但未写跟进记录的客户
+                    condition.call_and_remark = '1';
+                    break;
+                case OTHER_FILTER_ITEMS.NO_RECORD_OVER_30DAYS://超30天未写跟进记录的客户
+                    condition.last_trace = '0';
+                    break;
+                case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
+                    unexist.push('member_id');
+                    break;
+                case OTHER_FILTER_ITEMS.INTEREST_MEMBER_IDS://被关注的客户
+                    exist.push('interest_member_ids');
+                    break;
+                case OTHER_FILTER_ITEMS.MY_INTERST://我关注的客户
+                    condition.interest_member_ids = [crmUtil.getMyUserId()];
+                    break;
+                case OTHER_FILTER_ITEMS.MULTI_ORDER://多个订单的客户
+                    this.state.rangParams[0] = {
+                        from: 2,
+                        name: 'sales_opportunity_count',
+                        type: 'long',
+                    };
+                    break;
+                case OTHER_FILTER_ITEMS.AVAILABILITY://有效客户
+                    condition.availability = '0';
+                    break;
+
+            }
+            //超xx天未联系的客户过滤需传的参数
+            if (dayTime) {
                 this.state.rangParams[0] = {
-                    from: 2,
-                    name: 'sales_opportunity_count',
-                    type: 'long',
+                    to: moment().valueOf() - dayTime,
+                    name: 'last_contact_time',
+                    type: 'time'
                 };
-                break;
-            case OTHER_FILTER_ITEMS.AVAILABILITY://有效客户
-                condition.availability = '0';
-                break;
+            }
+            //xx天活跃客户过滤需传的参数
+            else if (dayTimeLogin) {
+                this.state.rangParams[0] = {
+                    from: moment().valueOf() - dayTimeLogin,
+                    name: 'last_login_time',
+                    type: 'time'
+                };
+            }
+            else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
+                //既不是超xx天未联系的客户、也不是xx天的活跃、还不是多个订单客户的过滤时，传默认的设置
+                this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
+            }
+            if (unexist.length > 0) {
+                condition.unexist_fields = unexist;
+            }
+            if (exist.length > 0) {
+                condition.exist_fields = exist;
+            }
+            if (term_fields.length > 0) {//需精确匹配的字段
+                condition.term_fields = term_fields;
+            }
+            delete condition.otherSelectedItem;
+            const conditionParams = (this.props.params && this.props.params.condition) || condition;
+            const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
+            const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
+            CrmAction.queryCustomer(conditionParams, rangParams, this.state.pageSize, this.state.sorter, queryObjParams);
+            this.setState({rangeParams: this.state.rangParams});
+        };
 
-        }
-        //超xx天未联系的客户过滤需传的参数
-        if (dayTime) {
-            this.state.rangParams[0] = {
-                to: moment().valueOf() - dayTime,
-                name: 'last_contact_time',
-                type: 'time'
-            };
-        }
-        //xx天活跃客户过滤需传的参数
-        else if (dayTimeLogin) {
-            this.state.rangParams[0] = {
-                from: moment().valueOf() - dayTimeLogin,
-                name: 'last_login_time',
-                type: 'time'
-            };
-        }
-        else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
-            //既不是超xx天未联系的客户、也不是xx天的活跃、还不是多个订单客户的过滤时，传默认的设置
-            this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
-        }
-        if (unexist.length > 0) {
-            condition.unexist_fields = unexist;
-        }
-        if (exist.length > 0) {
-            condition.exist_fields = exist;
-        }
-        if (term_fields.length > 0) {//需精确匹配的字段
-            condition.term_fields = term_fields;
-        }
-        delete condition.otherSelectedItem;
-        const conditionParams = (this.props.params && this.props.params.condition) || condition;
-        const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
-        const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
-        CrmAction.queryCustomer(conditionParams, rangParams, this.state.pageSize, this.state.sorter, queryObjParams);
-        this.setState({rangeParams: this.state.rangParams});
-    },
     //清除客户的选择
-    clearSelectedCustomer: function() {
+    clearSelectedCustomer = () => {
         this.state.selectedCustomer = [];
         this.state.selectAllMatched = false;
         this.setState(this.state);
-    },
-    onTableChange: function(pagination, filters, sorter) {
+    };
+
+    onTableChange = (pagination, filters, sorter) => {
         this.setState({
             isScrollTop: true
         });
@@ -766,62 +791,69 @@ var Crm = React.createClass({
         this.setState(this.state, () => {
             this.search(true);
         });
-    },
-    showCrmTemplateRightPanel: function() {
+    };
+
+    showCrmTemplateRightPanel = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击导入客户按钮');
         this.setState({
             crmTemplateRightPanelShow: true
         });
-    },
+    };
+
     //处理选中行的样式
-    handleRowClassName: function(record, index) {
+    handleRowClassName = (record, index) => {
         if ((record.id === this.state.currentId) && rightPanelShow) {
             return 'current-row';
         }
         else {
             return '';
         }
-    },
-    closeCrmTemplatePanel: function() {
+    };
+
+    closeCrmTemplatePanel = () => {
         this.setState({
             crmTemplateRightPanelShow: false
         });
-    },
+    };
 
-    selectAllSearchResult: function() {
+    selectAllSearchResult = () => {
         this.state.selectAllMatched = true;
         this.state.selectedCustomer = this.state.curPageCustomers.slice();
         this.setState(this.state);
-    },
+    };
 
-    clearSelectAllSearchResult: function() {
+    clearSelectAllSearchResult = () => {
         this.state.selectedCustomer = [];
         this.state.selectAllMatched = false;
         this.setState(this.state, () => {
             $('th.ant-table-selection-column input').click();
         });
-    },
+    };
 
-    scrollTop: function() {
+    scrollTop = () => {
         $(ReactDOM.findDOMNode(this.refs.tableWrap)).find('.ant-table-scroll div.ant-table-body').scrollTop(0);
         this.setState({isScrollTop: false});
-    },
-    showMergePanel: function() {
+    };
+
+    showMergePanel = () => {
         if (_.isArray(this.state.selectedCustomer) && this.state.selectedCustomer.length > 1) {
             this.setState({mergePanelIsShow: true});
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击合并客户按钮');
         }
-    },
-    hideMergePanel: function() {
+    };
+
+    hideMergePanel = () => {
         this.setState({mergePanelIsShow: false});
-    },
+    };
+
     //合并客户后的处理
-    afterMergeCustomer: function(mergeObj) {
+    afterMergeCustomer = (mergeObj) => {
         this.setState({selectedCustomer: [], mergePanelIsShow: false});//清空选择的客户
         CrmAction.afterMergeCustomer(mergeObj);
-    },
+    };
+
     //渲染操作按钮
-    renderHandleBtn: function() {
+    renderHandleBtn = () => {
         let isWebMini = $(window).width() < LAYOUT_CONSTANTS.SCREEN_WIDTH;//浏览器是否缩小到按钮展示改成图标展示
         let btnClass = 'block ';
         btnClass += isWebMini ? 'handle-btn-mini' : 'handle-btn-container';
@@ -875,8 +907,9 @@ var Crm = React.createClass({
                 </PrivilegeChecker>
             </div>);
         }
-    },
-    onCustomerImport(list) {
+    };
+
+    onCustomerImport = (list) => {
         let member_id = crmUtil.getMyUserId();
         //导入客户前先校验，是不是超过了本人的客户上限
         CrmAction.getCustomerLimit({member_id: member_id, num: list.length}, (result) => {
@@ -893,8 +926,9 @@ var Crm = React.createClass({
                 }
             }
         });
-    },
-    confirmImport(flag, cb) {
+    };
+
+    confirmImport = (flag, cb) => {
         this.setState({isImporting: true});
 
         const route = _.find(routeList, route => route.handler === 'uploadCustomerConfirm');
@@ -918,8 +952,9 @@ var Crm = React.createClass({
 
             message.error(Intl.get('crm.99', '导入客户失败'));
         });
-    },
-    doImport() {
+    };
+
+    doImport = () => {
         this.confirmImport(true, () => {
             this.setState({
                 isPreviewShow: false,
@@ -928,15 +963,17 @@ var Crm = React.createClass({
             //刷新客户列表
             this.search();
         });
-    },
-    cancelImport() {
+    };
+
+    cancelImport = () => {
         this.setState({
             isPreviewShow: false,
         });
 
         this.confirmImport(false);
-    },
-    renderImportModalFooter() {
+    };
+
+    renderImportModalFooter = () => {
         const repeatCustomer = _.find(this.state.previewList, item => (item.name_repeat || item.phone_repeat));
         const loading = this.state.isImporting || false;
 
@@ -957,10 +994,10 @@ var Crm = React.createClass({
                 ) : null}
             </div>
         );
-    },
+    };
 
     // 自动拨号
-    handleClickCallOut(phoneNumber, record) {
+    handleClickCallOut = (phoneNumber, record) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
         CallNumberUtil.handleCallOutResult({
             errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
@@ -968,10 +1005,10 @@ var Crm = React.createClass({
             contactName: record.contact,//联系人姓名
             phoneNumber: phoneNumber,//拨打的电话
         });
-    },
+    };
 
     // 联系方式的列表
-    getContactList(text, record, index) {
+    getContactList = (text, record, index) => {
         let phoneArray = text && text.split('\n') || [];
         let className = record.phone_repeat ? 'customer-repeat' : '';
         var phoneList = phoneArray.map((item) => {
@@ -991,20 +1028,23 @@ var Crm = React.createClass({
                 {phoneList}
             </div>
         );
-    },
-    ShowCustomerUserListPanel: function(data) {
+    };
+
+    ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
             customerOfCurUser: data.customerObj
         });
 
-    },
-    closeCustomerUserListPanel: function() {
+    };
+
+    closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
         });
-    },
-    onPageChange: function(page) {
+    };
+
+    onPageChange = (page) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
         var currPageNum = this.state.pageNumBack;
         var curCustomerList = this.state.customersBack;
@@ -1040,9 +1080,9 @@ var Crm = React.createClass({
                 this.search();
             });
         }
-    },
+    };
 
-    handleFocusCustomer: function(record) {
+    handleFocusCustomer = (record) => {
         //请求数据
         let interestObj = {
             id: record.id,
@@ -1081,9 +1121,10 @@ var Crm = React.createClass({
                 );
             }
         });
-    },
+    };
+
     //渲染选择客户数的提示
-    renderSelectCustomerTips: function() {
+    renderSelectCustomerTips = () => {
         //选择全部选项后，展示：已选择全部xxx项，<a>只选当前项</a>
         if (this.state.selectAllMatched) {
             return (
@@ -1104,10 +1145,10 @@ var Crm = React.createClass({
                     }
                 </span>);
         }
-    },
+    };
 
     //删除导入预览中的重复客户
-    deleteDuplicatImportCustomer(index, e) {
+    deleteDuplicatImportCustomer = (index, e) => {
         const route = _.find(routeList, route => route.handler === 'deleteDuplicatImportCustomer');
 
         const params = {
@@ -1132,14 +1173,16 @@ var Crm = React.createClass({
             message.error(Intl.get('crm.delete.duplicate.customer.failed', '删除重复客户失败'));
         });
         return e.stopPropagation();
-    },
-    toggleList() {
+    };
+
+    toggleList = () => {
         this.setState({
             showFilterList: !this.state.showFilterList
         });
-    },
+    };
+
     //获取排序
-    getSorter() {
+    getSorter = () => {
         let sorter = true;
 
         //从销售首页跳转过来的不显示排序
@@ -1148,15 +1191,25 @@ var Crm = React.createClass({
         }
 
         return sorter;
-    },
-    hideClueRightPanel: function(){
+    };
+
+    hideClueRightPanel = () => {
         CrmAction.showClueDetail('');
-    },
+    };
+
     //删除线索之后
-    afterDeleteClue: function() {
+    afterDeleteClue = () => {
         CrmAction.showClueDetail('');
-    },
-    render: function() {
+    };
+
+    state = {
+        callNumber: '', // 座机号
+        errMsg: '', // 获取座机号失败的信息
+        showFilterList: false,//是否展示筛选区域
+        ...this.getStateData()
+    };
+
+    render() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
         let showSelectionFlag = hasPrivilege('CUSTOMER_MERGE_CUSTOMER') || hasPrivilege('CUSTOMER_BATCH_OPERATE');
@@ -1530,7 +1583,7 @@ var Crm = React.createClass({
             </div>
         </RightContent>);
     }
-});
+}
 
 module.exports = Crm;
 

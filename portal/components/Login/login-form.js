@@ -20,22 +20,21 @@ const ERROR_MSGS = {
 var base64_prefix = 'data:image/png;base64,';
 import { storageUtil } from 'ant-utils';
 
-var LoginForm = React.createClass({
-    getInitialState: function() {
-        return {
-            //用户名
-            username: this.props.username,
-            //密码
-            password: '',
-            //验证码
-            captchaCode: this.props.captcha,
-            //登录按钮是否可用
-            loginButtonDisabled: true,
-            //登录状态
-            logining: false
-        };
-    },
-    beforeSubmit: function(event) {
+class LoginForm extends React.Component {
+    state = {
+        //用户名
+        username: this.props.username,
+        //密码
+        password: '',
+        //验证码
+        captchaCode: this.props.captcha,
+        //登录按钮是否可用
+        loginButtonDisabled: true,
+        //登录状态
+        logining: false
+    };
+
+    beforeSubmit = (event) => {
         var userName = $.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
@@ -79,9 +78,10 @@ var LoginForm = React.createClass({
         }
         //修改要提交的密码
         this.refs.password.value = newValue;
-    },
+    };
+
     //sso登录
-    ssologin: function(userName, password) {
+    ssologin = (userName, password) => {
         var lang = window.Oplate && window.Oplate.lang || 'zh_CN';
         var captcha = this.refs.captcha_input ? this.refs.captcha_input.value : '';
         // 将登录界面中的用户名与密码提交到SSO应用中
@@ -97,12 +97,14 @@ var LoginForm = React.createClass({
                 captchaCode: data && data.captcha
             });
         });
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         this.showUserName();
-    },
+    }
+
     //展示记录过的用户名，登录按钮变为可用
-    showUserName: function() {
+    showUserName = () => {
         var userName = window.Oplate.initialProps.username || storageUtil.local.get('last_login_name') || '';
         this.setState({
             username: userName,
@@ -118,18 +120,21 @@ var LoginForm = React.createClass({
                 this.refs.username.focus();
             }
         });
-    },
-    userNameChange: function(evt) {
+    };
+
+    userNameChange = (evt) => {
         this.setState({
             username: evt.target.value
         }, () => this.props.setErrorMsg(''));
-    },
-    passwordChange: function(evt) {
+    };
+
+    passwordChange = (evt) => {
         this.setState({
             password: evt.target.value
         }, () => this.props.setErrorMsg(''));
-    },
-    renderCaptchaBlock: function(hasWindow) {
+    };
+
+    renderCaptchaBlock = (hasWindow) => {
         return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
             <input placeholder={hasWindow ? Intl.get('common.captcha', '验证码') : null} type="text"
                 name="retcode" autoComplete="off"
@@ -137,9 +142,10 @@ var LoginForm = React.createClass({
                 ref="captcha_input" maxLength="4"/>
             {this.renderCaptchaImg(hasWindow)}
         </div>) : null);
-    },
+    };
+
     //展示验证码图片
-    renderCaptchaImg: function(hasWindow) {
+    renderCaptchaImg = (hasWindow) => {
         if (hasWindow && window.Oplate && window.Oplate.useSso) {
             return (
                 <img ref="captcha_img" src={ this.state.captchaCode} width="120" height="40"
@@ -151,31 +157,35 @@ var LoginForm = React.createClass({
                 title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
                 onClick={this.refreshCaptchaCode}/>);
         }
-    },
+    };
+
     //获取验证码
-    getLoginCaptcha: function() {
+    getLoginCaptcha = () => {
         if (window.Oplate && window.Oplate.useSso) {
             this.getLoginCaptchaWithSso();
         } else {
             this.getLoginCaptchaWithoutSso();
         }
-    },
+    };
+
     //刷新验证码
-    refreshCaptchaCode: function() {
+    refreshCaptchaCode = () => {
         if (window.Oplate && window.Oplate.useSso) {
             this.getLoginCaptchaWithSso();
         } else {
             this.refreshCaptchaCodeWithoutSso();
         }
-    },
+    };
+
     //从sso服务器获取验证码
-    getLoginCaptchaWithSso: function() {
+    getLoginCaptchaWithSso = () => {
         if (this.refs.captcha_img) {
             this.refs.captcha_img.src = buildRefreshCaptchaUrl();
         }
-    },
+    };
+
     ///不是用sso，获取验证码
-    getLoginCaptchaWithoutSso: function() {
+    getLoginCaptchaWithoutSso = () => {
         var username = this.state.username;
         if (!username) {
             return;
@@ -195,9 +205,10 @@ var LoginForm = React.createClass({
                 this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
             },
         });
-    },
+    };
+
     //不是用sso，刷新验证码
-    refreshCaptchaCodeWithoutSso: function() {
+    refreshCaptchaCodeWithoutSso = () => {
         var username = this.state.username;
         if (!username) {
             return;
@@ -219,9 +230,9 @@ var LoginForm = React.createClass({
                 });
             }
         });
-    },
+    };
 
-    render: function() {
+    render() {
         const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
         const hasWindow = this.props.hasWindow;
@@ -262,6 +273,6 @@ var LoginForm = React.createClass({
             </form>
         );
     }
-});
+}
 
 module.exports = LoginForm;

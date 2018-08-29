@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -10,8 +11,10 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 
-const AddProduct = React.createClass({
+const AddProduct = createReactClass({
+    displayName: 'AddProduct',
     mixins: [ValidateMixin],
+
     getInitialState: function() {
         let products;
 
@@ -26,6 +29,7 @@ const AddProduct = React.createClass({
             formData: {},
         };
     },
+
     addProduct: function() {
         this.state.products.push({});
 
@@ -33,6 +37,7 @@ const AddProduct = React.createClass({
             this.props.updateScrollBar();
         });
     },
+
     deleteProduct: function(index) {
         this.state.products.splice(index, 1);
 
@@ -40,6 +45,7 @@ const AddProduct = React.createClass({
             this.props.updateScrollBar();
         });
     },
+
     onAppChoosen: function(index, value) {
         const appName = $.trim(value);
         const selectedApp = _.find(this.props.appList, app => app.app_name === appName);
@@ -49,12 +55,14 @@ const AddProduct = React.createClass({
         this.state.products[index].name = appName;
         this.setState(this.state);
     },
+
     setField2: function(field, index, e) {
         let value = _.isObject(e) ? e.target.value : e;
 
         this.state.products[index][field] = value;
         this.setState(this.state);
     },
+
     renderFormContent: function() {
         const appList = this.props.appList;
         const products = this.state.products;
@@ -147,6 +155,7 @@ const AddProduct = React.createClass({
             </Validation>
         );
     },
+
     render: function() {
         return (
             <div className="add-products">
@@ -163,7 +172,7 @@ const AddProduct = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = AddProduct;

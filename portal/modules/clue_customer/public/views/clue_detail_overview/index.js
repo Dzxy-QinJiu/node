@@ -30,18 +30,18 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-var ClueDetailOverview = React.createClass({
-    getInitialState() {
-        return {
-            clickAssigenedBtn: false,//是否点击了分配客户的按钮
-            isShowAddCustomer: false,//是否展示添加客户内容
-            isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            customerOfCurUser: {},//当前展示用户所属客户的详情
-            app_user_id: '',
-            curClue: $.extend(true, {}, this.props.curClue),
-            divHeight: this.props.divHeight
-        };
-    },
+
+class ClueDetailOverview extends React.Component {
+    state = {
+        clickAssigenedBtn: false,//是否点击了分配客户的按钮
+        isShowAddCustomer: false,//是否展示添加客户内容
+        isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
+        customerOfCurUser: {},//当前展示用户所属客户的详情
+        app_user_id: '',
+        curClue: $.extend(true, {}, this.props.curClue),
+        divHeight: this.props.divHeight
+    };
+
     componentWillReceiveProps(nextProps) {
         //修改某些属性时，线索的id不变，但是需要更新一下curClue所以不加 nextProps.curClue.id !== this.props.curClue.id 这个判断了
         if (_.get(nextProps.curClue,'id')) {
@@ -54,8 +54,9 @@ var ClueDetailOverview = React.createClass({
                 divHeight: nextProps.divHeight
             });
         }
-    },
-    changeClueFieldSuccess: function(newCustomerDetail) {
+    }
+
+    changeClueFieldSuccess = (newCustomerDetail) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的
         for (var key in newCustomerDetail) {
             if (key === 'clue_source' && !_.includes(this.props.clueSourceArray, newCustomerDetail[key])) {
@@ -69,97 +70,110 @@ var ClueDetailOverview = React.createClass({
             }
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
-    },
+    };
+
     //今天之后的日期不可以选
-    disabledDate: function(current) {
+    disabledDate = (current) => {
         return current > moment().endOf('day');
-    },
-    getClueSourceOptions: function() {
+    };
+
+    getClueSourceOptions = () => {
         return (
             this.props.clueSourceArray.map((source, idx) => {
                 return (<Option key={idx} value={source}>{source}</Option>);
             })
         );
-    },
-    getAccessChannelOptions: function() {
+    };
+
+    getAccessChannelOptions = () => {
         return (
             this.props.accessChannelArray.map((source, idx) => {
                 return (<Option key={idx} value={source}>{source}</Option>);
             })
         );
-    },
-    getClueClassifyOptions: function() {
+    };
+
+    getClueClassifyOptions = () => {
         return this.props.clueClassifyArray.map((source, idx) => {
             return (<Option key={idx} value={source}>{source}</Option>);
         });
-    },
-    getSalesOptions: function() {
+    };
+
+    getSalesOptions = () => {
         return this.props.salesManList.map((sales, idx) => {
             return (<Option key={idx}
                 value={_.get(sales, 'user_info.user_id')}>
                 {_.get(sales, 'user_info.nick_name')} - {_.get(sales, 'user_groups[0].group_name')}</Option>);
         });
-    },
-    cancelEditClueSource: function() {
+    };
+
+    cancelEditClueSource = () => {
         var curClue = this.state.curClue;
         curClue.clue_source = this.props.curClue.clue_source;
         this.setState({
             curClue: curClue
         });
-    },
-    cancelEditClueChannel: function() {
+    };
+
+    cancelEditClueChannel = () => {
         var curClue = this.state.curClue;
         curClue.access_channel = this.props.curClue.access_channel;
         this.setState({
             curClue: curClue
         });
-    },
-    cancelEditClueClassify: function() {
+    };
+
+    cancelEditClueClassify = () => {
         var curClue = this.state.curClue;
         curClue.clue_classify = this.props.curClue.clue_classify;
         this.setState({
             curClue: curClue
         });
-    },
-    cancelEditSales: function() {
+    };
+
+    cancelEditSales = () => {
         var curClue = this.state.curClue;
         curClue.user_name = this.props.curClue.user_name;
         this.setState({
             curClue: curClue,
             clickAssigenedBtn: false
         });
-    },
+    };
 
-    onSelectCluesource: function(updateSource) {
+    onSelectCluesource = (updateSource) => {
         var curClue = this.state.curClue;
         curClue.clue_source = updateSource;
         this.setState({
             curClue: curClue
         });
-    },
-    onSelectAccessChannel: function(updateChannel) {
+    };
+
+    onSelectAccessChannel = (updateChannel) => {
         var curClue = this.state.curClue;
         curClue.access_channel = updateChannel;
         this.setState({
             curClue: curClue
         });
-    },
-    onSelectClueClassify: function(updateClassify) {
+    };
+
+    onSelectClueClassify = (updateClassify) => {
         var curClue = this.state.curClue;
         curClue.clue_classify = updateClassify;
         this.setState({
             curClue: curClue
         });
-    },
-    onSelectClueSales: function(updateUser) {
+    };
+
+    onSelectClueSales = (updateUser) => {
         var curClue = this.state.curClue;
         curClue.user_name = updateUser;
         this.setState({
             curClue: curClue
         });
-    },
+    };
+
     //保存修改的基本信息
-    saveEditBasicInfo: function(type, saveObj, successFunc, errorFunc) {
+    saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${type}的修改`);
         clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
             if (result) {
@@ -171,9 +185,10 @@ var ClueDetailOverview = React.createClass({
         }, (errorMsg) => {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg);
         });
-    },
+    };
+
     //保存跟进记录内容
-    saveTraceContentInfo: function(remarkContent, saveObj, successFunc, errorFunc) {
+    saveTraceContentInfo = (remarkContent, saveObj, successFunc, errorFunc) => {
         if (Oplate && Oplate.unread && !remarkContent && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
             Oplate.unread['unhandleClue'] -= 1;
             if (timeoutFunc) {
@@ -218,9 +233,10 @@ var ClueDetailOverview = React.createClass({
                 if (_.isFunction(successFunc)) successFunc();
             }
         });
-    },
+    };
+
     //分配线索给某个销售
-    handleChangeAssignedSales: function(submitObj, successFunc, errorFunc) {
+    handleChangeAssignedSales = (submitObj, successFunc, errorFunc) => {
         var user_id = _.get(this.state.curClue,'user_id');
         var targetObj = _.find(this.props.salesManList, (item) => {
             var userId = _.get(item, 'user_info.user_id');
@@ -266,22 +282,25 @@ var ClueDetailOverview = React.createClass({
                 }
             });
         }
-    },
+    };
+
     //点击分配客户按钮
-    handleClickAssignedBtn: function() {
+    handleClickAssignedBtn = () => {
         this.setState({
             clickAssigenedBtn: true
         });
-    },
+    };
+
     //点击关联客户按钮
-    handleClickAssociatedBtn: function() {
+    handleClickAssociatedBtn = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clue-info-item'), '点击关联客户按钮');
         this.setState({
             clickAssociatedBtn: true
         });
-    },
+    };
+
     //线索关联客户
-    handleAssociatedCustomer: function(submitObj, successFunc, errorFunc) {
+    handleAssociatedCustomer = (submitObj, successFunc, errorFunc) => {
         var curClueDetail = this.state.curClue;
         clueCustomerAction.setClueAssociatedCustomer(submitObj, (result) => {
             if (result && result.errorMsg) {
@@ -297,21 +316,24 @@ var ClueDetailOverview = React.createClass({
                 clueCustomerAction.afterModifiedAssocaitedCustomer(curClueDetail);
             }
         });
-    },
-    addAssignedCustomer: function() {
+    };
+
+    addAssignedCustomer = () => {
 
         this.setState({
             isShowAddCustomer: true
         });
-    },
+    };
+
     //关闭添加面板
-    hideAddForm: function() {
+    hideAddForm = () => {
         this.setState({
             isShowAddCustomer: false
         });
-    },
+    };
+
     //添加完客户后
-    addOneCustomer: function(newCustomerArr) {
+    addOneCustomer = (newCustomerArr) => {
         this.setState({
             isShowAddCustomer: false
         });
@@ -327,9 +349,10 @@ var ClueDetailOverview = React.createClass({
             });
             clueCustomerAction.afterModifiedAssocaitedCustomer(curClue);
         }
-    },
+    };
+
     //渲染添加客户内容
-    renderAddCustomer: function() {
+    renderAddCustomer = () => {
         var phoneNum = this.state.curClue ? this.state.curClue.contact_way : '';
         return (
             <CRMAddForm
@@ -340,9 +363,10 @@ var ClueDetailOverview = React.createClass({
                 addOne={this.addOneCustomer}
             />
         );
-    },
+    };
+
     //标记线索无效或者有效
-    handleClickInvalidBtn: function(item) {
+    handleClickInvalidBtn = (item) => {
         var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
         if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY) {
             updateValue = AVALIBILITYSTATUS.AVALIBILITY;
@@ -395,8 +419,9 @@ var ClueDetailOverview = React.createClass({
                 });
             }
         });
-    },
-    renderAssigendClueText: function() {
+    };
+
+    renderAssigendClueText = () => {
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
@@ -411,8 +436,9 @@ var ClueDetailOverview = React.createClass({
                 </div>
             </div>
         );
-    },
-    renderAssignedClueEdit: function() {
+    };
+
+    renderAssignedClueEdit = () => {
         let user = userData.getUserData();
         var curClue = this.state.curClue;
         //分配的状态
@@ -449,8 +475,9 @@ var ClueDetailOverview = React.createClass({
                 </div>
             </div>
         );
-    },
-    renderAssociatedAndInvalidClueHandle: function(curClue) {
+    };
+
+    renderAssociatedAndInvalidClueHandle = (curClue) => {
         //该线索无效
         var isInvalidClue = curClue.availability === '1';
         //是否有修改线索关联客户的权利
@@ -476,13 +503,15 @@ var ClueDetailOverview = React.createClass({
                 </div>
             </div>
         );
-    },
-    handleCancelCustomerSuggest: function() {
+    };
+
+    handleCancelCustomerSuggest = () => {
         this.setState({
             clickAssociatedBtn: false,
         });
-    },
-    renderAssociatedAndInvalidClueText: function(associatedCustomer, isInvalidClue) {
+    };
+
+    renderAssociatedAndInvalidClueText = (associatedCustomer, isInvalidClue) => {
         var curClue = this.state.curClue;
         var invalid_info = curClue.invalid_info;
         //是否有修改线索关联客户的权利
@@ -540,19 +569,22 @@ var ClueDetailOverview = React.createClass({
                 </div>
             );
         }
-    },
-    handleShowAppUser: function(appUserId) {
+    };
+
+    handleShowAppUser = (appUserId) => {
         this.setState({
             curShowUserId: appUserId
         });
-    },
-    closeRightUserPanel: function() {
+    };
+
+    closeRightUserPanel = () => {
         this.setState({
             curShowUserId: ''
         });
-    },
+    };
+
     //渲染跟进内容
-    renderTraceContent: function() {
+    renderTraceContent = () => {
         //是否有添加跟进记录的权限
         var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE');
         var curClue = this.state.curClue;
@@ -593,9 +625,10 @@ var ClueDetailOverview = React.createClass({
                     </div> : null}
             </div>
         );
-    },
+    };
+
     //渲染关联账号的详情
-    renderAppUserDetail: function() {
+    renderAppUserDetail = () => {
         var curClue = this.state.curClue;
         //线索关联的账号
         var appUserInfo = _.isArray(curClue.app_user_info) && curClue.app_user_info.length ? curClue.app_user_info[0] : {};
@@ -614,8 +647,9 @@ var ClueDetailOverview = React.createClass({
                 </div>
             </div>
         );
-    },
-    renderClueBasicDetailInfo: function() {
+    };
+
+    renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
@@ -794,8 +828,9 @@ var ClueDetailOverview = React.createClass({
                 </div>
             </div>
         );
-    },
-    render: function() {
+    };
+
+    render() {
         let user = userData.getUserData();
         var curClue = this.state.curClue;
         //所分配的销售
@@ -841,7 +876,8 @@ var ClueDetailOverview = React.createClass({
             </div>
         );
     }
-});
+}
+
 module.exports = ClueDetailOverview;
 
 

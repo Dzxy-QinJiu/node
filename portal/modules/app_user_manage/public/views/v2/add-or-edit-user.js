@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -63,7 +64,9 @@ const LAYOUT_CONSTANTS = {
     APPS_CHOOSEN_TOPBAR: 106
 };
 
-const AddOrEditUser = React.createClass({
+const AddOrEditUser = createReactClass({
+    displayName: 'AddOrEditUser',
+
     mixins: [FieldMixin,
         UserNameTextField,
         UserCountNumberField,
@@ -75,6 +78,7 @@ const AddOrEditUser = React.createClass({
         UserDescriptionField,
         UserCustomerSuggestField
     ],
+
     getInitialState() {
         let realmList = AppUserStore.getState().realmList;
         let selectRealmName = '', selectRealmId = '';
@@ -91,9 +95,11 @@ const AddOrEditUser = React.createClass({
             ...AppUserFormStore.getState()
         };
     },
+
     onStoreChange() {
         this.setState(AppUserFormStore.getState());
     },
+
     componentDidMount() {
         AppUserFormStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
@@ -101,6 +107,7 @@ const AddOrEditUser = React.createClass({
         var $textarea = $(this.refs.descriptionBlock).find('textarea');
         autosize($textarea[0]);
     },
+
     componentWillUnmount() {
         AppUserFormStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
@@ -108,6 +115,7 @@ const AddOrEditUser = React.createClass({
         dynamicStyle = null;
         tempSuggestNames = [];
     },
+
     //是否只能添加一个用户的判断
     isAddOnlyOneUser(){
         let formData = this.state.formData;
@@ -234,6 +242,7 @@ const AddOrEditUser = React.createClass({
             Trace.traceEvent('已有用户-添加用户','点击了上一步的按钮');
         }
     },
+
     //获取批量更新使用的额外数据
     getExtraData() {
         var extra = {};
@@ -246,6 +255,7 @@ const AddOrEditUser = React.createClass({
         //返回额外数据
         return extra;
     },
+
     //获取提交的数据
     getSubmitData() {
         //要提交的数据
@@ -324,6 +334,7 @@ const AddOrEditUser = React.createClass({
         }
         return result;
     },
+
     //完成的时候，调用
     onStepFinish() {
         if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
@@ -352,12 +363,15 @@ const AddOrEditUser = React.createClass({
             }, 500);
         });
     },
+
     onCustomerChoosen: function(info) {
         AppUserFormActions.customerChoosen(info);
     },
+
     hideCustomerError: function() {
         AppUserFormActions.hideCustomerError();
     },
+
     //检查单个字段对应的用户是否存在
     checkRestField: function(field, value) {
         var Deferred = $.Deferred();
@@ -377,10 +391,13 @@ const AddOrEditUser = React.createClass({
         });
         return Deferred.promise();
     },
+
     //ajax缓存，用于abort
     restFieldAjaxMap: {},
+
     //timeout,用户clearTimeout
     restFieldTimeoutMap: {},
+
     //获取验证方法
     getRestFieldValidator: function(field) {
         var _this = this;
@@ -418,9 +435,11 @@ const AddOrEditUser = React.createClass({
             }, 1000);
         };
     },
+
     organizationSelect(organization) {
         AppUserFormActions.setSelectedOrganization(organization);
     },
+
     // 校验用户名的合法性
     checkUserValid(rule, value, callback){
         var trimValue = value.trim();
@@ -746,6 +765,7 @@ const AddOrEditUser = React.createClass({
             </OperationScrollBar>
         );
     },
+
     onAppsChange(apps) {
         AppUserFormActions.setSelectedApps(apps);
         //当只有一个应用的时候，需要把特殊设置的应用属性隐藏掉，
@@ -758,6 +778,7 @@ const AddOrEditUser = React.createClass({
             });
         }
     },
+
     //渲染选择应用
     renderAppsCarousel() {
         const isSubmitError = this.state.isSelectedAppsError;
@@ -811,9 +832,11 @@ const AddOrEditUser = React.createClass({
             </div>
         );
     },
+
     onAppPropertyChange(appsSetting) {
         AppUserFormActions.saveAppsSetting(appsSetting);
     },
+
     //渲染应用设置
     renderRolesCarousel() {
         const formData = this.state.formData;
@@ -840,13 +863,16 @@ const AddOrEditUser = React.createClass({
             />
         );
     },
+
     closeAppUserForm() {
         AppUserActions.closeRightPanel();
         AppUserFormActions.resetState();
     },
+
     hideOpenTimeErrorTips() {
         AppUserFormActions.showOpenTimeErrorTips(false);
     },
+
     renderIndicator() {
         if (this.state.submitResult === 'loading') {
             return (
@@ -892,6 +918,7 @@ const AddOrEditUser = React.createClass({
         }
         return null;
     },
+
     // 选择的安全域
     onSelectedRealm(value) {
         let realmList = AppUserStore.getState().realmList;
@@ -982,7 +1009,7 @@ const AddOrEditUser = React.createClass({
                 </Form>
             </div>
         );
-    }
+    },
 });
 
 export default AddOrEditUser;

@@ -10,18 +10,18 @@ const querystring = require('querystring');
 import Trace from 'LIB_DIR/trace';
 import { packageTry } from 'LIB_DIR/func';
 
-var FunnelChart = React.createClass({
-    echartInstance: null,
-    getDefaultProps: function() {
-        return {
-            chartData: [],
-            title: '',
-            width: '100%',
-            height: 600,
-            resultType: 'loading',
-        };
-    },
-    getSeries: function() {
+class FunnelChart extends React.Component {
+    static defaultProps = {
+        chartData: [],
+        title: '',
+        width: '100%',
+        height: 600,
+        resultType: 'loading',
+    };
+
+    echartInstance = null;
+
+    getSeries = () => {
         const series1 = {
             type: 'funnel',
             x: 10,
@@ -69,8 +69,9 @@ var FunnelChart = React.createClass({
         };
 
         return [series1, series2];
-    },
-    getEchartOptions: function() {
+    };
+
+    getEchartOptions = () => {
         var option = {
             title: {
                 text: this.props.title,
@@ -89,8 +90,9 @@ var FunnelChart = React.createClass({
             series: this.getSeries(),
         };
         return option;
-    },
-    renderChart: function() {
+    };
+
+    renderChart = () => {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -116,11 +118,13 @@ var FunnelChart = React.createClass({
                 window.open(jumpProps.url + '?' + querystring.stringify(query));
             });
         }
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         this.renderChart();
-    },
-    componentDidUpdate: function(prevProps) {
+    }
+
+    componentDidUpdate(prevProps) {
         if(
             this.props.chartData.length &&
             prevProps.chartData.length &&
@@ -130,23 +134,25 @@ var FunnelChart = React.createClass({
             return;
         }
         this.renderChart();
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }
-    },
-    render: function() {
+    }
+
+    render() {
         return (
             <div className="analysis-chart" ref="wrap" style={{width: this.props.width, float: 'left'}}>
                 <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
             </div>
         );
     }
-});
+}
 
 module.exports = FunnelChart;
 

@@ -17,31 +17,30 @@ const LAYOUT_CONSTANTS = {
     MENU_ITEM_PADDING: 10
 };
 
-var Organization = React.createClass({
-    componentDidMount: function() {
+class Organization extends React.Component {
+    static defaultProps = {
+        list: [],
+        user_id: '',
+        onChange: function(){},
+        showBtn: false,
+        organization_id: '',
+        onModifySuccess: function() {}
+    };
+
+    state = {
+        list: [],
+        displayType: 'text',
+        organization_id: this.props.organization_id,
+        organization_name: this.props.organization_name,
+        submitType: '',
+        errorMsg: ''
+    };
+
+    componentDidMount() {
         this.getOrganizationList();
-    },
-    getDefaultProps: function() {
-        return {
-            list: [],
-            user_id: '',
-            onChange: function(){},
-            showBtn: false,
-            organization_id: '',
-            onModifySuccess: function() {}
-        };
-    },
-    getInitialState: function() {
-        return {
-            list: [],
-            displayType: 'text',
-            organization_id: this.props.organization_id,
-            organization_name: this.props.organization_name,
-            submitType: '',
-            errorMsg: ''
-        };
-    },
-    getOrganizationList: function() {
+    }
+
+    getOrganizationList = () => {
         OrganizationAjax.getOrganizationListAjax().sendRequest().success((list) => {
             this.setState({
                 list: list
@@ -55,9 +54,9 @@ var Organization = React.createClass({
                 list: []
             });
         });
-    },
-    componentId: _.uniqueId(ID),
-    onSelectChange: function(value,text) {
+    };
+
+    onSelectChange = (value, text) => {
         var trimValue = $.trim(value);
         if(!trimValue) {
             this.props.onChange('');
@@ -70,8 +69,9 @@ var Organization = React.createClass({
                 organization_id: value
             });
         }
-    },
-    getOrganizationOptions: function() {
+    };
+
+    getOrganizationOptions = () => {
         var list = this.state.list.map((item) => {
             return (<Option key={item.group_id} value={item.group_id}>{item.group_name}</Option>);
         });
@@ -79,14 +79,16 @@ var Organization = React.createClass({
             list.unshift(<Option key="" value="">&nbsp;</Option>);
         }
         return list;
-    },
-    getSelectedText: function() {
+    };
+
+    getSelectedText = () => {
         var target = _.find(this.state.list , (item) => {
             return item.group_id === this.state.organization_id;
         });
         return target ? target.group_name : <span>&nbsp;</span>;
-    },
-    changeDisplayType: function(type) {
+    };
+
+    changeDisplayType = (type) => {
         if(type === 'text') {
             this.setState({
                 organization_id: this.props.organization_id,
@@ -100,8 +102,9 @@ var Organization = React.createClass({
                 displayType: type
             });
         }
-    },
-    submit: function() {
+    };
+
+    submit = () => {
         if(this.state.submitType === 'loading') {
             return;
         }
@@ -149,8 +152,9 @@ var Organization = React.createClass({
                 });
             }
         });
-    },
-    renderIndicator: function() {
+    };
+
+    renderIndicator = () => {
         if(!this.props.showBtn) {
             return null;
         }
@@ -170,8 +174,9 @@ var Organization = React.createClass({
         if(this.state.submitType === 'error') {
             return <Alert message={this.state.errorMsg || Intl.get('common.edit.failed', '修改失败')} type="error" showIcon/>;
         }
-    },
-    render: function() {
+    };
+
+    render() {
 
         if(this.props.showBtn && this.state.displayType === 'text') {
             return (
@@ -207,6 +212,6 @@ var Organization = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Organization;

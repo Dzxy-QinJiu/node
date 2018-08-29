@@ -10,14 +10,15 @@ import { Input } from 'antd';
 const { TextArea } = Input;
 const autosize = require('autosize');
 
-const AutosizeTextarea = React.createClass({
-    componentDidMount: function() {
+class AutosizeTextarea extends React.Component {
+    componentDidMount() {
         autosize($(ReactDOM.findDOMNode(this)).find('textarea'));
-    },
-    render: function() {
+    }
+
+    render() {
         return <TextArea {...this.props} />;
     }
-});
+}
 
 module.exports = AutosizeTextarea;
 

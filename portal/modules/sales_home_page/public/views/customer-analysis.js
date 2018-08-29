@@ -37,8 +37,14 @@ var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 const showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;
 
 //客户分析
-var CustomerAnalysis = React.createClass({
-    getStateData: function() {
+class CustomerAnalysis extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        let stateData = this.getStateData();
+        this.state = stateData;
+    }
+
+    getStateData = () => {
         let stateData = OplateCustomerAnalysisStore.getState();
         return {
             ...stateData,
@@ -48,19 +54,18 @@ var CustomerAnalysis = React.createClass({
             originSalesTeamTree: this.props.originSalesTeamTree,
             updateScrollBar: false
         };
-    },
-    onStateChange: function() {
+    };
+
+    onStateChange = () => {
         this.setState(this.getStateData());
-    },
-    getInitialState: function() {
-        let stateData = this.getStateData();
-        return stateData;
-    },
+    };
+
     componentWillMount() {
         teamTreeEmitter.on(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
         teamTreeEmitter.on(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
-    },    
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         let timeObj = {
             timeType: nextProps.timeType,
             startTime: nextProps.startTime,
@@ -107,18 +112,21 @@ var CustomerAnalysis = React.createClass({
                 }, delayConstant);
             });
         }
-    },
-    onTeamChange(team_id, allSubTeamIds) {
+    }
+
+    onTeamChange = (team_id, allSubTeamIds) => {
         let teamId = team_id;
         if (allSubTeamIds && allSubTeamIds.length > 0) {
             teamId = allSubTeamIds.join(',');
         }        
         OplateCustomerAnalysisAction.teamChange(teamId);
-    },
-    onMemberChange(member_id) {
+    };
+
+    onMemberChange = (member_id) => {
         OplateCustomerAnalysisAction.memberChange(member_id);
-    },
-    getDataType: function() {
+    };
+
+    getDataType = () => {
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
@@ -126,8 +134,9 @@ var CustomerAnalysis = React.createClass({
         } else {
             return '';
         }
-    },
-    getStageChangeCustomerList: function(data) {
+    };
+
+    getStageChangeCustomerList = (data) => {
         const { isFirst } = data;
         const paramObj = {
             params: {
@@ -152,9 +161,10 @@ var CustomerAnalysis = React.createClass({
         } else {
             OplateCustomerAnalysisAction.getStageChangeCustomerList(paramObj);
         }
-    },
+    };
+
     //获取不同阶段客户数
-    getCustomerStageAnalysis: function(params) {
+    getCustomerStageAnalysis = (params) => {
         let teamId = this.state.currentTeamId;
         if (teamId && teamId.includes(',')) {
             teamId = teamId.split(',')[0];//此接口需要的teamid为最上级的团队id
@@ -167,9 +177,10 @@ var CustomerAnalysis = React.createClass({
             team_id: teamId
         };
         OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
-    },
+    };
+
     //获取客户阶段变更数据
-    getStageChangeCustomers: function() {
+    getStageChangeCustomers = () => {
         let params = {
             rang_params: [
                 {
@@ -181,8 +192,9 @@ var CustomerAnalysis = React.createClass({
             ],
         };
         OplateCustomerAnalysisAction.getStageChangeCustomers(params);
-    },
-    getChartData: function() {
+    };
+
+    getChartData = () => {
         const queryParams = {
             starttime: this.state.startTime,
             endtime: this.state.endTime,
@@ -214,16 +226,19 @@ var CustomerAnalysis = React.createClass({
                 OplateCustomerAnalysisAction.getAnalysisData(reqData);
             });
         });
-    },
+    };
+
     //缩放延时，避免页面卡顿
-    resizeTimeout: null,
+    resizeTimeout = null;
+
     //窗口缩放时候的处理函数
-    windowResize: function() {
+    windowResize = () => {
         clearTimeout(this.resizeTimeout);
         //窗口缩放的时候，调用setState，重新走render逻辑渲染
         this.resizeTimeout = setTimeout(() => this.setState(this.getStateData()), 300);
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         OplateCustomerAnalysisStore.listen(this.onStateChange);
         OplateCustomerAnalysisAction.getSalesStageList();
         this.getChartData();
@@ -236,12 +251,14 @@ var CustomerAnalysis = React.createClass({
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
         $('.statistic-data-analysis .thumb').hide();
-    },
+    }
+
     //切换展示客户阶段统计
-    toggleCusStageMetic: function() {
+    toggleCusStageMetic = () => {
         OplateCustomerAnalysisAction.toggleStageCustomerList();
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         OplateCustomerAnalysisStore.unlisten(this.onStateChange);
         //$('body').css('overflow', 'visible');
         //组件销毁时，清除缩放的延时
@@ -250,7 +267,8 @@ var CustomerAnalysis = React.createClass({
         $(window).off('resize', this.windowResize);
         teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
         teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
-    },
+    }
+
     /**
      * 参数说明，ant-design的table组件
      * @param pagination   分页参数，当前不需要使用分页
@@ -258,7 +276,7 @@ var CustomerAnalysis = React.createClass({
      * @param sorter       排序参数，当前需要使用sorter
      *                      {field : 'xxx' //排序字段 , order : 'descend'/'ascend' //排序顺序}
      */
-    onTransferSortChange(pagination, filters, sorter) {
+    onTransferSortChange = (pagination, filters, sorter) => {
         this.state.transferCustomers.sorter = sorter;
         this.state.transferCustomers.lastId = '';
         this.setState({
@@ -267,9 +285,10 @@ var CustomerAnalysis = React.createClass({
             this.getTransferCustomers({ isFirst: true });
         });
 
-    },
+    };
+
     //获取转出客户统计数据
-    getTransferCustomers: function({ isFirst = false }, teamId, memberId) {
+    getTransferCustomers = ({ isFirst = false }, teamId, memberId) => {
         let params = {
             isFirst,
             sort_field: this.state.transferCustomers.sorter.field,
@@ -303,23 +322,26 @@ var CustomerAnalysis = React.createClass({
         } else {
             OplateCustomerAnalysisAction.getTransferCustomers(params);
         }
-    },
-    getStartDateText: function() {
+    };
+
+    getStartDateText = () => {
         if (this.state.startTime) {
             return moment(new Date(+this.state.startTime)).format(DATE_FORMAT);
         } else {
             return '';
         }
-    },
+    };
+
     //获取结束日期文字
-    getEndDateText: function() {
+    getEndDateText = () => {
         if (!this.state.endTime) {
             return moment().format(DATE_FORMAT);
         }
         return moment(new Date(+this.state.endTime)).format(DATE_FORMAT);
-    },
+    };
+
     //获取通过点击统计图中的柱子跳转到用户列表时需传的参数
-    getJumpProps: function() {
+    getJumpProps = () => {
         let analysis_filter_field = 'sales_id', currShowSalesTeam = this.props.currShowSalesTeam;
         //当前展示的是下级团队还是团队内所有成员
         if (currShowSalesTeam) {
@@ -341,13 +363,14 @@ var CustomerAnalysis = React.createClass({
                 analysis_filter_field: analysis_filter_field
             }
         };
-    },
+    };
 
-    processOrderStageData: function(data) {
+    processOrderStageData = (data) => {
         return processOrderStageData(this.state.salesStageList, data);
-    },
+    };
+
     //处理阶段点击的回调 
-    handleStageNumClick: function(item, type) {
+    handleStageNumClick = (item, type) => {
         this.setState({
             selectedCustomerStage: {
                 type,
@@ -369,37 +392,44 @@ var CustomerAnalysis = React.createClass({
             }]
         });
         this.toggleCusStageMetic();
-    },
-    onStageSortChange(pagination, filters, sorter) {
+    };
+
+    onStageSortChange = (pagination, filters, sorter) => {
         this.getStageChangeCustomers(sorter.order);
-    },
-    changeCurrentTab: function(tabName, event) {
+    };
+
+    changeCurrentTab = (tabName, event) => {
         OplateCustomerAnalysisAction.changeCurrentTab(tabName);
         this.getChartData();
-    },
+    };
+
     //客户详情面板相关方法
-    ShowCustomerUserListPanel: function(data) {
+    ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
         });
-    },
-    closeCustomerUserListPanel: function() {
+    };
+
+    closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
         });
-    },
-    hideRightPanel: function() {
+    };
+
+    hideRightPanel = () => {
         this.setState({
             showRightPanel: false
         });
-    },
+    };
+
     //数字转百分比
-    numToPercent(num) {
+    numToPercent = (num) => {
         return (num * 100).toFixed(2) + '%';
-    },
+    };
+
     //处理转出客户点击
-    handleTransferedCustomerClick: function(item, index) {
+    handleTransferedCustomerClick = (item, index) => {
         this.setState({
             showRightPanel: true,
             selectedCustomerId: item.customer_id,
@@ -413,9 +443,10 @@ var CustomerAnalysis = React.createClass({
                 hideRightPanel: this.hideRightPanel
             }
         });
-    },
+    };
+
     //处理试用合格客户数统计数字点击事件
-    handleTrialQualifiedNumClick(customerIds) {
+    handleTrialQualifiedNumClick = (customerIds) => {
         this.setState({
             isShowCustomerTable: true,
             crmLocationState: {
@@ -423,9 +454,10 @@ var CustomerAnalysis = React.createClass({
                 trialQualifiedCustomerIds: customerIds
             }
         });
-    },
+    };
+
     //试用合格客户数统计数字渲染函数
-    trialQualifiedNumRender(customerIdsField, text, record) {
+    trialQualifiedNumRender = (customerIdsField, text, record) => {
         const customerIds = record[customerIdsField];
 
         if (customerIds) {
@@ -441,9 +473,10 @@ var CustomerAnalysis = React.createClass({
                 </span>
             );
         }
-    },
+    };
+
     //获取试用合格客户数统计图表
-    getTrialQualifiedChart() {
+    getTrialQualifiedChart = () => {
         //统计列
         const statisticsColumns = [{
             dataIndex: 'last_month',
@@ -720,9 +753,10 @@ var CustomerAnalysis = React.createClass({
         }
 
         return chart;
-    },
+    };
+
     //获取图表列表
-    getCharts: function() {
+    getCharts = () => {
         //表格内容高度
         const TABLE_HIGHT = 175;
 
@@ -1107,8 +1141,9 @@ var CustomerAnalysis = React.createClass({
         charts.unshift(trialQualifiedChart);
 
         return charts;
-    },
-    renderChartContent: function() {
+    };
+
+    renderChartContent = () => {
         return (
             <div className="chart_list">
                 <AntcAnalysis
@@ -1120,8 +1155,9 @@ var CustomerAnalysis = React.createClass({
                 />
             </div>
         );
-    },
-    renderContent: function() {
+    };
+
+    renderContent = () => {
 
         if (this.state.updateScrollBar) {
             return (
@@ -1136,15 +1172,17 @@ var CustomerAnalysis = React.createClass({
                 </GeminiScrollbar>
             );
         }
-    },
-    hideCustomerTable() {
+    };
+
+    hideCustomerTable = () => {
         this.setState({
             isShowCustomerTable: false,
             crmLocationState: null,
         });
-    },
+    };
+
     //新开客户统计表格数字点击处理函数
-    handleNewAddedCustomerNumClick(num, type) {
+    handleNewAddedCustomerNumClick = (num, type) => {
         //客户数为0时不打开客户列表面板
         if (!num || num === '0') {
             return;
@@ -1153,9 +1191,9 @@ var CustomerAnalysis = React.createClass({
             newAddedCustomerType: type,
             isShowCustomerTable: true
         });
-    },
+    };
 
-    render: function() {
+    render() {
         let layoutParams = this.props.getChartLayoutParams();
         this.chartWidth = layoutParams.chartWidth;
 
@@ -1228,7 +1266,8 @@ var CustomerAnalysis = React.createClass({
             </div>
         );
     }
-});
+}
+
 //返回react对象
 module.exports = CustomerAnalysis;
 

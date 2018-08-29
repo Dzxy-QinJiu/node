@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Icon, Alert, Select, Form} from 'antd';
@@ -9,11 +10,14 @@ import FieldMixin from '../../../../../components/antd-form-fieldmixin';
 let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';
 
-var IndustrySelectField = React.createClass({
+var IndustrySelectField = createReactClass({
+    displayName: 'IndustrySelectField',
     mixins: [FieldMixin],
+
     componentDidMount: function() {
         this.getIndustryList();
     },
+
     getDefaultProps: function() {
         return {
             list: [],
@@ -23,6 +27,7 @@ var IndustrySelectField = React.createClass({
             }
         };
     },
+
     getInitialState: function() {
         return {
             loading: false,//正在保存
@@ -40,6 +45,7 @@ var IndustrySelectField = React.createClass({
             submitErrorMsg: ''
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
@@ -51,6 +57,7 @@ var IndustrySelectField = React.createClass({
             this.setState(stateData);
         }
     },
+
     getIndustryList: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingList: true});
@@ -62,18 +69,21 @@ var IndustrySelectField = React.createClass({
             this.setState({isLoadingList: false, list: list});
         });
     },
+
     getSelectOptions: function() {
         var list = this.state.list.map((item, i) => {
             return (<Option key={i} value={item}>{item}</Option>);
         });
         return list;
     },
+
     getSelectedText: function() {
         var target = _.find(this.state.list, (item) => {
             return item === this.state.formData.industry;
         });
         return target ? target : <span>&nbsp;</span>;
     },
+
     changeDisplayType: function(type) {
         if (type === 'text') {
             Trace.traceEvent(ReactDOM.findDOMNode(this),'取消对行业的修改');
@@ -93,6 +103,7 @@ var IndustrySelectField = React.createClass({
         }
 
     },
+
     //回到展示状态
     backToDisplay: function() {
         this.setState({
@@ -101,6 +112,7 @@ var IndustrySelectField = React.createClass({
             submitErrorMsg: ''
         });
     },
+
     handleSubmit: function() {
         var validation = this.refs.validation;
         if (this.state.loading) {
@@ -141,9 +153,11 @@ var IndustrySelectField = React.createClass({
             }
         });
     },
+
     handleSelect: function() {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'选择行业');
     },
+
     render: function() {
         if (this.state.displayType === 'text') {
             return (
@@ -201,7 +215,7 @@ var IndustrySelectField = React.createClass({
                 </div>) : null
             }
         </Form>);
-    }
+    },
 });
 
 module.exports = IndustrySelectField;

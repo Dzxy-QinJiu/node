@@ -39,22 +39,21 @@ const APPLY_TYPES = {
     OPEN_APP: 'openAPP'//开通应用
 };
 
-const OrderIndex = React.createClass({
-    getInitialState: function() {
-        return {...OrderStore.getState(), curCustomer: this.props.curCustomer};
-    },
+class OrderIndex extends React.Component {
+    state = {...OrderStore.getState(), curCustomer: this.props.curCustomer};
 
-    onChange: function() {
+    onChange = () => {
         this.setState(OrderStore.getState());
-    },
+    };
 
-    componentDidMount: function() {
+    componentDidMount() {
         OrderStore.listen(this.onChange);
         OrderAction.getAppList();
         this.getOrderList(this.props.curCustomer, this.props.isMerge);
         OrderAction.getSysStageList();
-    },
-    getOrderList: function(curCustomer, isMerge) {
+    }
+
+    getOrderList = (curCustomer, isMerge) => {
         if (isMerge) {
             OrderAction.getMergeOrderList(curCustomer);
         } else {
@@ -65,8 +64,9 @@ const OrderIndex = React.createClass({
             OrderAction.setOrderListLoading(true);
             OrderAction.getOrderList({customer_id: curCustomer.id}, {type: type});
         }
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
         if (nextProps.isMerge || nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
             this.state.orderList = nextProps.curCustomer.sales_opportunities || [];
@@ -75,19 +75,20 @@ const OrderIndex = React.createClass({
                 this.getOrderList(nextProps.curCustomer, nextProps.isMerge);
             });
         }
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         OrderStore.unlisten(this.onChange);
-    },
+    }
 
-    showForm: function(id) {
+    showForm = (id) => {
         var message = id ? '编辑订单' : '添加订单';
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-right-panel-addbtn'), message);
         OrderAction.showForm(id);
-    },
+    };
+
     //获取到期后的状态
-    getOverDraftStatus: function(over_draft) {
+    getOverDraftStatus = (over_draft) => {
         let status = Intl.get('user.expire.immutability', '到期不变');
         if (over_draft === '1') {
             status = Intl.get('user.expire.stop', '到期停用');
@@ -95,9 +96,9 @@ const OrderIndex = React.createClass({
             status = Intl.get('user.expire.degrade', '到期降级');
         }
         return status;
-    },
+    };
 
-    renderOverDraft: function(app) {
+    renderOverDraft = (app) => {
         if (app.is_disabled === 'true') {
             return Intl.get('user.status.stopped', '已停用');
         } else {
@@ -129,14 +130,15 @@ const OrderIndex = React.createClass({
                 return '';
             }
         }
-    },
+    };
 
     //应用选择的处理
-    onChangeAppCheckBox: function(userId, appId, e) {
+    onChangeAppCheckBox = (userId, appId, e) => {
         OrderAction.onChangeAppCheckBox({userId: userId, appId: appId, checked: e.target.checked});
-    },
+    };
+
     //用户的应用
-    getUserAppOptions: function(userObj) {
+    getUserAppOptions = (userObj) => {
         let appList = userObj.apps;
         let userId = userObj.user ? userObj.user.user_id : '';
         if (_.isArray(appList) && appList.length) {
@@ -156,12 +158,14 @@ const OrderIndex = React.createClass({
             });
         }
         return [];
-    },
+    };
+
     //用户名前的选择框
-    onChangeUserCheckBox: function(userId, e) {
+    onChangeUserCheckBox = (userId, e) => {
         OrderAction.onChangeUserCheckBox({userId: userId, checked: e.target.checked});
-    },
-    handleMenuClick: function(applyType) {
+    };
+
+    handleMenuClick = (applyType) => {
         let traceDescr = '';
         if (applyType === APPLY_TYPES.STOP_USE) {
             traceDescr = '打开申请停用面板';
@@ -176,12 +180,14 @@ const OrderIndex = React.createClass({
         }
         Trace.traceEvent(ReactDOM.findDOMNode(this), traceDescr);
         OrderAction.onChangeApplyType(applyType);
-    },
-    getApplyBtnType: function(applyType) {
+    };
+
+    getApplyBtnType = (applyType) => {
         return this.state.applyType === applyType ? 'primary' : '';
-    },
+    };
+
     //发邮件使用的参数
-    getEmailData: function(checkedUsers) {
+    getEmailData = (checkedUsers) => {
         let email_customer_names = [];
         let email_user_names = [];
 
@@ -196,9 +202,9 @@ const OrderIndex = React.createClass({
             email_customer_names: email_customer_names.join('、'),
             email_user_names: email_user_names.join('、')
         };
-    },
+    };
 
-    render: function() {
+    render() {
         const _this = this;
         const appList = this.state.appList;
         let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
@@ -287,8 +293,7 @@ const OrderIndex = React.createClass({
             </div>
         );
     }
-})
-;
+}
 
 module.exports = OrderIndex;
 

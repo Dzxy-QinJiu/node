@@ -6,8 +6,9 @@
 var React = require('react');
 require('./index.less');
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
-var BasicData = React.createClass({
-    render: function() {
+
+class BasicData extends React.Component {
+    render() {
         return (
             <div className="basic-info-container">
                 <div className="clue-type-title">
@@ -17,5 +18,6 @@ var BasicData = React.createClass({
             </div>
         );
     }
-});
+}
+
 module.exports = BasicData;

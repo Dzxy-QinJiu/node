@@ -8,13 +8,12 @@ import { Upload, Icon, message } from 'antd';
 import { clueEmitter } from 'OPLATE_EMITTER';
 import Trace from 'LIB_DIR/trace';
 
-var ClueImport = React.createClass({
-    getInitialState() {
-        return {
-            isLoading: false
-        };
-    },
-    handleChange(info) {
+class ClueImport extends React.Component {
+    state = {
+        isLoading: false
+    };
+
+    handleChange = (info) => {
         this.setState({isLoading: true});
         if (info.file.status === 'done') {
             const response = info.file.response;
@@ -27,8 +26,9 @@ var ClueImport = React.createClass({
             }
             this.setState({isLoading: false});
         }
-    },
-    render: function() {
+    };
+
+    render() {
         var props = {
             name: 'clues',
             action: '/rest/clue/upload',
@@ -41,6 +41,6 @@ var ClueImport = React.createClass({
             </Upload>
         );
     }
-});
+}
 
 module.exports = ClueImport;

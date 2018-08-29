@@ -31,27 +31,22 @@ var LAYOUT_CONSTANTS = {
     BOTTOM_HEIGHT: 20,
 };
 const IGNORE_ABNORMAL_SUCCESS = Intl.get('user.login.abnormal.success', '该条异地信息已忽略！');
-var UserAbnormalLogin = React.createClass({
-    getDefaultProps: function() {
-        return {
-            userId: '1',
-            appLists: []
-        };
-    },
-    getInitialState: function() {
-        return {
-            ignoreAbnormalErrorMsg: '', // 忽略异地登录信息的失败的提示信息，默认为空
-            ignoreId: '', // 忽略的id
-            ...this.getStateData()
-        };
-    },
-    onStateChange: function() {
+
+class UserAbnormalLogin extends React.Component {
+    static defaultProps = {
+        userId: '1',
+        appLists: []
+    };
+
+    onStateChange = () => {
         this.setState(this.getStateData());
-    },
-    getStateData: function() {
+    };
+
+    getStateData = () => {
         return UserAbnormalLoginStore.getState();
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         UserAbnormalLoginStore.listen(this.onStateChange);
         var searchObj = {
             user_id: this.props.userId,
@@ -66,11 +61,13 @@ var UserAbnormalLogin = React.createClass({
         UserAbnormalLoginAction.getUserApp(userId, () => {
             this.getAbnormalLoginLists(searchObj);
         });
-    },
-    getAbnormalLoginLists: function(searchObj) {
+    }
+
+    getAbnormalLoginLists = (searchObj) => {
         UserAbnormalLoginAction.getUserAbnormalLogin(searchObj);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.userId !== this.props.userId) {
             var userId = nextProps.userId;
             setTimeout(() => {
@@ -89,14 +86,16 @@ var UserAbnormalLogin = React.createClass({
                 });
             });
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         setTimeout(() => {
             UserAbnormalLoginAction.resetState();
         });
         UserAbnormalLoginStore.unlisten(this.onStateChange);
-    },
-    retryGetAbnormalLogin: function() {
+    }
+
+    retryGetAbnormalLogin = () => {
         var searchObj = {
             user_id: this.props.userId,
             page_size: this.state.page_size,
@@ -105,8 +104,9 @@ var UserAbnormalLogin = React.createClass({
         UserAbnormalLoginAction.getUserApp(userId, () => {
             this.getAbnormalLoginLists(searchObj);
         });
-    },
-    renderAbnormalLogin: function(height) {
+    };
+
+    renderAbnormalLogin = (height) => {
         if (this.state.getAppLoading) {
             return (<StatusWrapper loading={true} height={height} />);
         } else if (this.state.getAppErrorMsg) {
@@ -128,9 +128,10 @@ var UserAbnormalLogin = React.createClass({
         } else {
             return this.renderAbnormalLoginList(height);
         }
-    },
+    };
+
     //监听下拉加载
-    handleScrollBarBottom: function() {
+    handleScrollBarBottom = () => {
         var length = this.state.abnormalLoginList.length;
         var lastId = this.state.abnormalLoginList[length - 1].id;
         var searchObj = {
@@ -143,8 +144,9 @@ var UserAbnormalLogin = React.createClass({
             delete searchObj.app_id;
         }
         this.getAbnormalLoginLists(searchObj);
-    },
-    handleChange: function(app_id, app_name) {
+    };
+
+    handleChange = (app_id, app_name) => {
         UserAbnormalLoginAction.setApp(app_id);
         var searchObj = {
             user_id: this.props.userId,
@@ -155,9 +157,10 @@ var UserAbnormalLogin = React.createClass({
             delete searchObj.app_id;
         }
         this.getAbnormalLoginLists(searchObj);
-    },
+    };
+
     // 处理忽略的事件
-    handleIgnoreAbnormal(item) {
+    handleIgnoreAbnormal = (item) => {
         if (item.id) {
             UserAbnormalLoginAjax.ignoreAbnormalLogin(item.id).then((result) => {
                 if (result === true) {
@@ -178,15 +181,17 @@ var UserAbnormalLogin = React.createClass({
                 });
             });
         }
-    },
+    };
+
     // 关闭忽略异常登录的提示信息
-    onCloseAbnormalIgnoreTips() {
+    onCloseAbnormalIgnoreTips = () => {
         if (!this.state.ignoreAbnormalErrorMsg) {
             UserAbnormalLoginAction.deleteAbnormalLoginInfo(this.state.ignoreId);
         }
-    },
+    };
+
     // 点忽略之后的显示提示信息
-    showIgnoreAbnormalTips(tips) {
+    showIgnoreAbnormalTips = (tips) => {
         let type = 'info';
         let message = IGNORE_ABNORMAL_SUCCESS;
         if (tips) {
@@ -203,8 +208,9 @@ var UserAbnormalLogin = React.createClass({
                 />
             </div>
         );
-    },
-    renderTimeLineItem: function(item) {
+    };
+
+    renderTimeLineItem = (item) => {
         var des = '';
         let title = '';
         var appObj = _.find(this.state.appLists, (app) => { return app.app_id === item.client_id; });
@@ -257,12 +263,14 @@ var UserAbnormalLogin = React.createClass({
                 <dt>{moment(item.timeStamp).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
-    },
+    };
+
     //是否显示没有更多数据了
-    showNoMoreDataTip: function() {
+    showNoMoreDataTip = () => {
         return this.state.isNoMoreTipShow && this.state.abnormalLoginList.length >= 10;
-    },
-    renderAbnormalLoginList: function(height) {
+    };
+
+    renderAbnormalLoginList = (height) => {
         //应用的下拉框
         var appLists = this.state.appLists;
         var list = appLists.map((item) => {
@@ -339,8 +347,15 @@ var UserAbnormalLogin = React.createClass({
                 </div>
             );
         }
-    },
-    render: function() {
+    };
+
+    state = {
+        ignoreAbnormalErrorMsg: '', // 忽略异地登录信息的失败的提示信息，默认为空
+        ignoreId: '', // 忽略的id
+        ...this.getStateData()
+    };
+
+    render() {
         var divHeight = $(window).height()
             - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP //右侧面板顶部padding
             - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_BOTTOM //右侧面板底部padding
@@ -361,5 +376,6 @@ var UserAbnormalLogin = React.createClass({
             </div>
         );
     }
-});
+}
+
 module.exports = UserAbnormalLogin;

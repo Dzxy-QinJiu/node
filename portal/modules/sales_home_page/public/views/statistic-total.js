@@ -9,16 +9,18 @@ let SalesHomeAction = require('../action/sales-home-actions');
 let viewConstant = require('../util/constant').VIEW_CONSTANT;//视图常量
 let TimeUtil = require('../../../../public/sources/utils/time-format-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-let StatisticTotal = React.createClass({
+
+class StatisticTotal extends React.Component {
     //渲染等待效果、暂无数据的提示
-    renderTooltip: function(totalObj) {
+    renderTooltip = (totalObj) => {
         if (totalObj.resultType === 'loading') {
             return (<Icon type="loading"/>);
         } else if (totalObj.resultType === 'error') {
             return (<div className="no-total-data">{Intl.get('sales.home.get.data.failed', '获取数据失败')}</div>);
         }
-    },
-    renderCustomerContent: function() {
+    };
+
+    renderCustomerContent = () => {
         const customerTotalObj = this.props.customerTotalObj;
         const customerData = customerTotalObj.data;
         if (customerTotalObj.resultType) {
@@ -39,8 +41,9 @@ let StatisticTotal = React.createClass({
             </span>
         </div>);
 
-    },
-    renderUserContent: function() {
+    };
+
+    renderUserContent = () => {
         var userTotalObj = this.props.userTotalObj;
         const userData = userTotalObj.data;
         if (userTotalObj.resultType) {
@@ -60,8 +63,9 @@ let StatisticTotal = React.createClass({
                 />
             </span>
         </div>);
-    },
-    renderPhoneContent: function() {
+    };
+
+    renderPhoneContent = () => {
         var phoneTotalObj = this.props.phoneTotalObj;
         const phoneData = phoneTotalObj.data;
         if (phoneTotalObj.resultType) {
@@ -91,14 +95,16 @@ let StatisticTotal = React.createClass({
                 />
             </span>
         </div>);
-    },
-    renderContractContent: function() {
+    };
+
+    renderContractContent = () => {
         return (<div className="statistic-total-content">
             <span className="contract-add-data add-data-style">新增8个</span>
             <span className="contract-total-data total-data-style">共6909个</span>
         </div>);
-    },
-    renderCallBackContent() {
+    };
+
+    renderCallBackContent = () => {
         let callBackRecord = this.props.callBackRecord;
         if (callBackRecord.isLoading) {
             return <Icon type='loading' />;
@@ -117,9 +123,10 @@ let StatisticTotal = React.createClass({
                 </span>
             </div>
         );
-    },
+    };
+
     //设置当前要展示的视图
-    setActiveView: function(view, e) {
+    setActiveView = (view, e) => {
         if(view === 'customer'){
             Trace.traceEvent(e, '查看客户统计');
         }else if(view === 'user'){
@@ -130,9 +137,9 @@ let StatisticTotal = React.createClass({
             Trace.traceEvent(e, '查看回访统计');
         }
         SalesHomeAction.setActiveView(view);
-    },
+    };
 
-    render: function() {
+    render() {
         //响应式样式 col-xs-12 col-sm-6 col-md-6 col-lg-3（四个框时的样式）
         const autoResizeCls = 'total-data-item col-xs-12 col-sm-6 col-md-6 col-lg-3';
         let activeView = this.props.activeView;
@@ -170,7 +177,7 @@ let StatisticTotal = React.createClass({
                 </div>
             </div>);
     }
-});
+}
 
 module.exports = StatisticTotal;
 

@@ -40,38 +40,39 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import UserStatusSwitch from './user-status-switch';
 import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
 
-var UserDetail = React.createClass({
-    getDefaultProps: function() {
-        return {
-            userId: '1',
-            appLists: [],
-        };
-    },
-    reLayout: function() {
+class UserDetail extends React.Component {
+    static defaultProps = {
+        userId: '1',
+        appLists: [],
+    };
+
+    state = {
+        activeKey: '1',//tab激活页的key
+        //用户基本信息
+        userInfo: {
+            data: null,
+            loading: false,
+            erorMsg: ''
+        },
+        showBasicDetail: true,//是否展示顶部用户信息
+        showEditPw: false,
+        ...AppUserPanelSwitchStore.getState()
+    };
+
+    reLayout = () => {
         this.onStoreChange();
-    },
-    getInitialState: function() {
-        return {
-            activeKey: '1',//tab激活页的key
-            //用户基本信息
-            userInfo: {
-                data: null,
-                loading: false,
-                erorMsg: ''
-            },
-            showBasicDetail: true,//是否展示顶部用户信息
-            showEditPw: false,
-            ...AppUserPanelSwitchStore.getState()
-        };
-    },
-    onStoreChange: function() {
+    };
+
+    onStoreChange = () => {
         var stateData = AppUserPanelSwitchStore.getState();
         this.setState(stateData);
-    },
+    };
+
     //滑动的延时
-    panelSwitchTimeout: null,
+    panelSwitchTimeout = null;
+
     //面板向左滑
-    panelSwitchLeft: function(timeout) {
+    panelSwitchLeft = (timeout) => {
         clearTimeout(this.panelSwitchTimeout);
         if (!timeout) {
             $(this.refs.wrap).addClass('move_left');
@@ -82,9 +83,10 @@ var UserDetail = React.createClass({
                 $(this.refs.topWrap).addClass('move-left-wrapper');
             }, timeout);
         }
-    },
+    };
+
     //面板向右滑
-    panelSwitchRight: function(timeout) {
+    panelSwitchRight = (timeout) => {
         clearTimeout(this.panelSwitchTimeout);
         if (!timeout) {
             $(this.refs.wrap).removeClass('move_left');
@@ -95,24 +97,28 @@ var UserDetail = React.createClass({
                 $(this.refs.topWrap).removeClass('move-left-wrapper');
             }, timeout);
         }
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         $(window).on('resize', this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
         document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         $(window).off('resize', this.reLayout);
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
         document.querySelector('.gm-scroll-view').removeEventListener('mousewheel', this.handleWheel, false);
-    },
-    wheelTimer: null,
+    }
+
+    wheelTimer = null;
+
     //滚动监听处理
-    handleWheel: function(e) {
+    handleWheel = (e) => {
         clearTimeout(this.wheelTimer);
         this.wheelTimer = setTimeout(() => {
             // 向上滚动
@@ -128,9 +134,9 @@ var UserDetail = React.createClass({
                 });
             }
         }, WHEEL_DELAY);
-    },
+    };
 
-    closeRightPanel: function() {
+    closeRightPanel = () => {
         if (_.isFunction(this.props.closeRightPanel)) {
             this.props.closeRightPanel();
         } else {
@@ -139,44 +145,49 @@ var UserDetail = React.createClass({
         AppUserDetailAction.dismiss();
         SingleUserLogAction.dismiss();
         emitter.emit('user_detail_close_right_panel');
-    },
+    };
 
-    changeTab: function(key) {        
+    changeTab = (key) => {        
         this.setState({
             activeKey: key
         }, () => {
             document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
         });
-    },
+    };
 
-    getBasicInfo(userInfo) {
+    getBasicInfo = (userInfo) => {
         this.setState({
             userInfo
         });
-    },
+    };
+
     //控制显示编辑密码区域
-    showEditPw(isShow) {
+    showEditPw = (isShow) => {
         this.setState({
             showEditPw: isShow
         });
-    },
-    onPasswordDisplayTypeChange: function(type) {
+    };
+
+    onPasswordDisplayTypeChange = (type) => {
         if (type === 'edit') {
             this.setState({ isConfirmPasswordShow: true });
         } else {
             this.setState({ isConfirmPasswordShow: false });
         }
-    },
-    onConfirmPasswordDisplayTypeChange: function() {
+    };
+
+    onConfirmPasswordDisplayTypeChange = () => {
         this.setState({ isConfirmPasswordShow: false, showEditPw: false });       
-    },
-    onPasswordValueChange: function() {
+    };
+
+    onPasswordValueChange = () => {
         if (this.confirmPasswordRef && this.confirmPasswordRef.state.formData.input) {
             this.confirmPasswordRef.refs.validation.forceValidate();
         }
-    },
+    };
+
     //对密码 进行校验
-    checkPass(rule, value, callback) {
+    checkPass = (rule, value, callback) => {
         if (value && value.match(passwordRegex)) {
             let passStrength = getPassStrenth(value);
             this.passwordRef.setState({ passStrength: passStrength });
@@ -190,17 +201,19 @@ var UserDetail = React.createClass({
             });
             callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
         }
-    },
+    };
+
     //对确认密码 进行校验
-    checkRePass(rule, value, callback) {
+    checkRePass = (rule, value, callback) => {
         if (value && value === this.passwordRef.state.formData.input) {
             callback();
         } else {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
         }
-    },
+    };
+
     //处理用户信息修改的方法,组件用
-    handleUserInfoEdit(params, onSuccess, onError) {
+    handleUserInfoEdit = (params, onSuccess, onError) => {
         params.user_id = params.id;
         delete params.id;
         AppUserAjax.editAppUser(params).then(result => {
@@ -208,15 +221,17 @@ var UserDetail = React.createClass({
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_USER_INFO, params);
             return onSuccess(result);
         }, onError);
-    },
-    renderUserStatus: function(user, useIcon = false) {
+    };
+
+    renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
         if (!hasPrivilege('APP_USER_EDIT')) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
         return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
-    },
-    render: function() {
+    };
+
+    render() {
         const { userInfo } = this.state;
         //内容区高度        
         let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP - LAYOUT_CONSTANTS.USER_DETAIL;
@@ -447,6 +462,6 @@ var UserDetail = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = UserDetail;

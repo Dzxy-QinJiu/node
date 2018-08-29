@@ -8,38 +8,36 @@ import AlertTimer from '../../../../components/alert-timer';
 import Trace from 'LIB_DIR/trace';
 const CHECKIPMSG = Intl.get('config.manage.input.ip','请输入有效的IP（eg:192.168.1.9）');
 
-const IpConfig = React.createClass({
-    getInitialState(){
-        return {
-            ...IpConfigStore.getState(),
-            addIpErrMsg: '', // 添加IP失败信息
-            deleteErrMsg: '', // 删除IP失败信息
-            isLoading: false,
-            deleteIpId: 0 // 删除IP配置
-        };
-    },
+class IpConfig extends React.Component {
+    state = {
+        ...IpConfigStore.getState(),
+        addIpErrMsg: '', // 添加IP失败信息
+        deleteErrMsg: '', // 删除IP失败信息
+        isLoading: false,
+        deleteIpId: 0 // 删除IP配置
+    };
 
-    onStoreChange(){
+    onStoreChange = () => {
         this.setState(IpConfigStore.getState());
-    },
+    };
 
-    componentDidMount(){
+    componentDidMount() {
         IpConfigStore.listen(this.onStoreChange);
         IpConfigAction.getIpConfigList({pageSize: 1000});
         IpConfigAction.getFilterIp();
-    },
+    }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         IpConfigStore.unlisten(this.onStoreChange);
-    },
+    }
 
     // 获取配置IP列表
-    getIpConfigList(){
+    getIpConfigList = () => {
         IpConfigAction.getIpConfigList({pageSize: 1000});
-    },
-    
+    };
+
     // 提交保存按钮
-    handleSubmit(event){
+    handleSubmit = (event) => {
         Trace.traceEvent(event,'点击添加IP按钮');
         var _this = this;
         this.setState({
@@ -61,10 +59,10 @@ const IpConfig = React.createClass({
                 isLoading: false
             });
         } );
-    },
+    };
 
     // 添加配置IP,失败的处理
-    handleAddIpConfigFail(){
+    handleAddIpConfigFail = () => {
         return (
             <div className="add-config-fail">
                 <Alert
@@ -75,10 +73,10 @@ const IpConfig = React.createClass({
             </div>
 
         );
-    },
+    };
 
     // 删除配置IP
-    handleDeleteIpConfig(id){
+    handleDeleteIpConfig = (id) => {
         this.setState({
             deleteIpId: id
         });
@@ -90,10 +88,10 @@ const IpConfig = React.createClass({
                 deleteIpId: 0
             });
         });
-    },
+    };
 
     // 删除配置IP,失败的处理
-    handleDeleteIpConfigFail(item){
+    handleDeleteIpConfigFail = (item) => {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -110,10 +108,10 @@ const IpConfig = React.createClass({
                 />
             </div>
         );
-    },
+    };
 
     // 遍历获取配置IP列表
-    renderIpList(){
+    renderIpList = () => {
         if(this.state.IpConfigloading && this.refs.addIpItem.value == '' && this.state.deleteIpId == 0) {
             return <Spinner />;
         }
@@ -162,9 +160,9 @@ const IpConfig = React.createClass({
                 </ul>
             </div>
         );
-    },
+    };
 
-    checkIpFormat(){
+    checkIpFormat = () => {
         var inputValue = this.refs.addIpItem.value;
         var reg = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/;
 
@@ -179,19 +177,19 @@ const IpConfig = React.createClass({
             });
             $('#addIpConfigSaveBtn').removeAttr('disabled');
         }
-    },
+    };
 
-    blurEvent(){
+    blurEvent = () => {
         if(this.refs.addIpItem.value == ''){
             this.setState({
                 addIpErrMsg: ''
             });
             $('#addIpConfigSaveBtn').removeAttr('disabled');
         }
-    },
+    };
 
     // 添加配置IP
-    renderIpForm(){
+    renderIpForm = () => {
         return(
             <form onSubmit={this.handleSubmit}>
                 <input
@@ -207,26 +205,26 @@ const IpConfig = React.createClass({
                 {this.state.addIpErrMsg != '' ? this.handleAddIpConfigFail() : null}
             </form>
         );
-    },
+    };
 
-    reloadGetIpConfigList(){
+    reloadGetIpConfigList = () => {
         this.setState({
             deleteIpId: 0
         });
         this.getIpConfigList();
-    },
+    };
 
     // 选择是否过滤内网ip
-    selectIsFilterIntranet: function(e){
+    selectIsFilterIntranet = (e) => {
         var status = e.target.checked;
         this.setState({
             checked: e.target.checked
         },() => {
             IpConfigAction.filterIp(status);
         } );
-    },
+    };
 
-    render(){
+    render() {
         return (
             <div className="box" data-tracename="IP配置">
                 <div className="box-title">
@@ -259,6 +257,6 @@ const IpConfig = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default IpConfig;

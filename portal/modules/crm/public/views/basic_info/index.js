@@ -19,28 +19,29 @@ import CrmBasicAjax from '../../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
-var BasicData = React.createClass({
-    getInitialState: function() {
-        return {
-            ...CRMStore.getState(),
-            salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
-            showDetailFlag: false,//控制客户详情展示隐藏的标识
-            editNameFlag: false,//编辑客户名的标识
-            editBasicFlag: false,//编辑客户基本信息的标识
-            isLoadingIndustryList: false,
-            industryList: []
-        };
-    },
-    onChange: function() {
+
+class BasicData extends React.Component {
+    state = {
+        ...CRMStore.getState(),
+        salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
+        showDetailFlag: false,//控制客户详情展示隐藏的标识
+        editNameFlag: false,//编辑客户名的标识
+        editBasicFlag: false,//编辑客户基本信息的标识
+        isLoadingIndustryList: false,
+        industryList: []
+    };
+
+    onChange = () => {
         this.setState({...CRMStore.getState()});
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         CRMStore.listen(this.onChange);
         CRMAction.getBasicData(this.props.curCustomer);
         this.getIndustryList();
-    },
+    }
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         CRMAction.getBasicData(nextProps.curCustomer);
         if (nextProps.curCustomer && this.state.basicData.id !== nextProps.curCustomer.id) {
             this.setState({
@@ -48,12 +49,14 @@ var BasicData = React.createClass({
                 editNameFlag: false
             });
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         CRMStore.unlisten(this.onChange);
-    },
+    }
+
     //获取行业列表
-    getIndustryList: function() {
+    getIndustryList = () => {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustryList: true});
         CrmAction.getIndustries(result => {
@@ -63,10 +66,10 @@ var BasicData = React.createClass({
             }
             this.setState({isLoadingIndustryList: false, industryList: list});
         });
-    },
+    };
 
     //修改客户基本资料成功后的处理
-    editBasicSuccess: function(newBasic) {
+    editBasicSuccess = (newBasic) => {
         if (this.props.isMerge) {
             //合并面板的修改保存
             if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(newBasic);
@@ -79,20 +82,23 @@ var BasicData = React.createClass({
                 this.props.editCustomerBasic(newBasic);
             }
         }
-    },
-    getAdministrativeLevelOptions: function() {
+    };
+
+    getAdministrativeLevelOptions = () => {
         let options = crmUtil.administrativeLevels.map(obj => {
             return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>);
         });
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
-    },
-    getAdministrativeLevel: function(levelId) {
+    };
+
+    getAdministrativeLevel = (levelId) => {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
-    },
+    };
+
     //是否有转出客户的权限
-    enableTransferCustomer: function() {
+    enableTransferCustomer = () => {
         let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
@@ -103,24 +109,26 @@ var BasicData = React.createClass({
             enable = true;
         }
         return enable;
-    },
+    };
+
     //控制客户详情展示隐藏的方法
-    toggleBasicDetail: function() {
+    toggleBasicDetail = () => {
         this.setState({
             showDetailFlag: !this.state.showDetailFlag
         });
         setTimeout(() => {
             this.props.setTabsContainerHeight();
         });
-    },
+    };
+
     //设置编辑客户名的标识
-    setEditNameFlag: function(flag) {
+    setEditNameFlag = (flag) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), flag ? '修改客户名' : '取消客户名的修改');
         this.setState({editNameFlag: flag});
-    },
+    };
 
     //保存修改的基本信息
-    saveEditBasicInfo: function(type, saveObj, successFunc, errorFunc) {
+    saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
         saveObj.type = type;
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存客户${type}的修改`);
         if (this.props.isMerge) {
@@ -138,9 +146,10 @@ var BasicData = React.createClass({
                 if (_.isFunction(errorFunc)) errorFunc(errorMsg);
             });
         }
-    },
+    };
+
     //关注客户的处理
-    handleFocusCustomer: function(basicData) {
+    handleFocusCustomer = (basicData) => {
         var initialBasicData = JSON.parse(JSON.stringify(basicData));
         var myUserId = crmUtil.getMyUserId();
         var hasFocusedCustomer = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids, myUserId) > -1;
@@ -171,9 +180,10 @@ var BasicData = React.createClass({
                 CrmAction.editBasicSuccess(interestObj);
             }
         });
-    },
+    };
+
     //渲染客户的基本信息
-    renderBasicBlock: function(basicData) {
+    renderBasicBlock = (basicData) => {
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
         let industryOptions = this.state.industryList.map((item, i) => {
             return (<Option key={i} value={item}>{item}</Option>);
@@ -275,8 +285,9 @@ var BasicData = React.createClass({
                     </div>
                 </div>
             </div>);
-    },
-    render: function() {
+    };
+
+    render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
         let interestFlag = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids, crmUtil.getMyUserId()) > -1;
@@ -337,7 +348,7 @@ var BasicData = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = BasicData;
 

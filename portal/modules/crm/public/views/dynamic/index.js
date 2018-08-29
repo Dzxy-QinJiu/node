@@ -10,36 +10,41 @@ import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
-var Dynamic = React.createClass({
-    getInitialState: function() {
-        return {
-            ...DynamicStore.getState(),
-            windowHeight: $(window).height()
-        };
-    },
-    onStoreChange: function() {
+
+class Dynamic extends React.Component {
+    state = {
+        ...DynamicStore.getState(),
+        windowHeight: $(window).height()
+    };
+
+    onStoreChange = () => {
         this.setState({...DynamicStore.getState()});
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         DynamicStore.listen(this.onStoreChange);
         DynamicAction.getDynamicList(this.props.currentId);
         $(window).on('resize', this.onStoreChange);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.currentId !== this.props.currentId) {
             setTimeout(() => {
                 DynamicAction.getDynamicList(nextProps.currentId);
             });
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         DynamicStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
-    },
-    showClueDetailOut: function(clueId) {
+    }
+
+    showClueDetailOut = (clueId) => {
         crmAction.showClueDetail(clueId);
-    },
-    timeLineItemRender: function(item) {
+    };
+
+    timeLineItemRender = (item) => {
         const call_time = Intl.get('crm.199',
             '在{time}拨打了号码{phone} ，通话时长{duration} 秒',
             {
@@ -62,8 +67,9 @@ var Dynamic = React.createClass({
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
-    },
-    render: function() {
+    };
+
+    render() {
         return (
             <RightPanelScrollBar>
                 {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
@@ -79,7 +85,7 @@ var Dynamic = React.createClass({
             </RightPanelScrollBar>
         );
     }
-});
+}
 
 module.exports = Dynamic;
 

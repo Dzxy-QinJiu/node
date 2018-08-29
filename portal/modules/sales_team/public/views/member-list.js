@@ -3,6 +3,7 @@
  */
 
 var React = require('react');
+var createReactClass = require('create-react-class');
 import {InputNumber, Button, message, Icon} from 'antd';
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var DefaultUserLogoTitle = require('../../../../components/default-user-logo-title');
@@ -35,7 +36,9 @@ const SALES_GOALS_TYPE = {
 };
 function noop() {
 }
-var MemberList = React.createClass({
+var MemberList = createReactClass({
+    displayName: 'MemberList',
+
     getDefaultProps: function() {
         return {
             getIsDeleteMember: noop,
@@ -71,6 +74,7 @@ var MemberList = React.createClass({
 
         };
     },
+
     onChange: function() {
         var savingFlags = MemberListEditStore.getState();
         this.setState({
@@ -80,6 +84,7 @@ var MemberList = React.createClass({
             currentUser: UserStore.getState().currentUser,
         });
     },
+
     getMemberListHeight: function() {
         let containerHeight = this.props.containerHeight;
         let memberListPaddingTop = 20;//成员列表顶部padding
@@ -91,11 +96,13 @@ var MemberList = React.createClass({
         }
         return containerHeight - memberListPaddingTop - memberListTitleHeight;
     },
+
     layout: function() {
         setTimeout(() => {
             this.setState({memberListHeight: this.getMemberListHeight()});
         });
     },
+
     componentDidMount: function() {
         MemberListEditStore.listen(this.onChange);
         UserStore.listen(this.onChange);
@@ -107,6 +114,7 @@ var MemberList = React.createClass({
         UserStore.unlisten(this.onChange);
         $(window).off('resize', this.layout);
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.setState(this.getInitialState());
         this.setState({
@@ -207,6 +215,7 @@ var MemberList = React.createClass({
     resetAddMemberList: function() {
         this.setState({addMemberList: $.extend(true, [], this.props.addMemberList)});
     },
+
     addMember: function() {
         //如果有确认保存的提示框，应先保存或取消保存后再进行操作
         if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
@@ -393,6 +402,7 @@ var MemberList = React.createClass({
             </div>
         );
     },
+
     //渲染当前正在展示的团队成员列表
     renderCurTeamMemberList: function(hasSelectBtn) {
         var _this = this;
@@ -428,6 +438,7 @@ var MemberList = React.createClass({
             {usersElement}
         </div>);
     },
+
     //获取当前选择成员个数
     getSelectSize: function() {
         var selectedOwnerSize = 0, selectedManagerSize = 0, selectedUserSize = 0;
@@ -476,6 +487,7 @@ var MemberList = React.createClass({
             });
         }
     },
+
     //删除团队成员的处理
     delMember: function() {
         if (!$('#del-member-btn').hasClass('member-btn-enable')) {
@@ -522,6 +534,7 @@ var MemberList = React.createClass({
         this.setState({saveMemberListObj: delObj});
         this.cleanSearchInput();
     },
+
     //加为负责人的处理
     addOwner: function(event) {
         if (!$('#set-owner-btn').hasClass('member-btn-enable')) {
@@ -699,6 +712,7 @@ var MemberList = React.createClass({
             </div>
         );
     },
+
     //渲染保存结果的提示
     renderSaveMsg: function() {
         let saveResult = this.state.saveMemberListResult;
@@ -711,6 +725,7 @@ var MemberList = React.createClass({
             </div>) : null;
 
     },
+
     renderAddBtns: function() {
         return (<div className="operation-bottom-btn-div">
             {this.renderSaveMsg()}
@@ -724,6 +739,7 @@ var MemberList = React.createClass({
             </Button>
         </div>);
     },
+
     createMemberInfoElement: function() {
         var _this = this;
         var selectMemberListH = 0;
@@ -787,16 +803,19 @@ var MemberList = React.createClass({
                 }
             </div>);
     },
+
     //修改团队销售目标时的处理
     changeTeamSalesGoals: function(val) {
         this.state.salesGoals.goal = this.turnGoalToSaveData(val);
         this.setState({salesGoals: this.state.salesGoals});
     },
+
     //修改成员销售目标时的处理
     changeMemberSalesGoals: function(val) {
         this.state.salesGoals.member_goal = this.turnGoalToSaveData(val);
         this.setState({salesGoals: this.state.salesGoals});
     },
+
     //展示是否保存团队销售目标的确认框
     showTeamConfirm: function(e) {
         if (this.props.salesGoals.goal !== this.state.salesGoals.goal) {
@@ -804,6 +823,7 @@ var MemberList = React.createClass({
             Trace.traceEvent(e, '修改团队销售目标');
         }
     },
+
     //展示是否保存个人销售目标的确认框
     showMemberConfirm: function(e) {
         if (this.props.salesGoals.member_goal !== this.state.salesGoals.member_goal) {
@@ -811,10 +831,12 @@ var MemberList = React.createClass({
             Trace.traceEvent(e, '修改个人销售目标');
         }
     },
+
     //将销售目标转换为保存时所需的数据x万=>x*10000
     turnGoalToSaveData: function(goal) {
         return _.isNumber(goal) && !_.isNaN(goal) ? (goal * 10000) : null;
     },
+
     //获取要保存的销售目标
     getSaveSalesGoals: function(type) {
         let curTeamObj = this.state.curShowTeamMemberObj;
@@ -875,6 +897,7 @@ var MemberList = React.createClass({
         }
         return saveParams;
     },
+
     //保存销售目标
     saveSalesGoals: function(type) {
         let salesGoals = this.getSaveSalesGoals(type);
@@ -909,12 +932,14 @@ var MemberList = React.createClass({
             this.cancelSaveSalesGoals(type,false);
         });
     },
+
     closeRightPanel: function() {
         //将数据清空
         UserAction.setInitialData();
         SalesTeamAction.closeRightPanel();
         UserAction.hideContinueAddButton();
     },
+
     //取消销售目标的保存
     cancelSaveSalesGoals: function(type,flag) {
         if (type === SALES_GOALS_TYPE.TEAM) {
@@ -930,10 +955,12 @@ var MemberList = React.createClass({
 
         }
     },
+
     //将销售目标转换为界面展示所需数据：x0000=>x万
     turnGoalToShowData: function(goal) {
         return _.isNumber(goal) && !_.isNaN(goal) ? (goal / 10000) : '';
     },
+
     toggleBatchChangeTeamGoalBtn: function(flag) {
         this.setState({
             isShowBatchChangeTeamGoal: flag
@@ -941,6 +968,7 @@ var MemberList = React.createClass({
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-goals-container'), '设置团队销售目标');
 
     },
+
     toggleBatchChangeSelfGoalBtn: function(flag) {
         this.setState({
             isShowBatchChangeSelfGoal: flag
@@ -948,6 +976,7 @@ var MemberList = React.createClass({
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-goals-container'), '批量设置个人销售目标');
 
     },
+
     //渲染团队目标
     renderSalesGoals: function() {
         return (
@@ -982,22 +1011,26 @@ var MemberList = React.createClass({
                 </div>}
             </div>);
     },
+
     //修改用户的基本信息或者修改用户的状态后
     changeUserFieldSuccess: function(user) {
         //修改用户的昵称
         SalesTeamAction.updateCurShowTeamMemberObj(user);
     },
+
     updateUserStatus: function(updateObj) {
         UserAction.updateUserStatus(updateObj);
         UserAction.updateCurrentUserStatus(updateObj.status);
         this.changeUserFieldSuccess(updateObj);
     },
+
     //修改团队后的处理
     afterEditTeamSuccess: function(user) {
         SalesTeamAction.updateCurShowTeamMemberObj(user);
         //对左边数据重新进行获取
         SalesTeamAction.getTeamMemberCountList();
     },
+
     render: function() {
         var salesTeamPersonnelWidth = this.props.salesTeamMemberWidth;
         var containerHeight = this.props.containerHeight;
@@ -1034,6 +1067,6 @@ var MemberList = React.createClass({
                 </RightPanel>
             </div>
         );
-    }
+    },
 });
 module.exports = MemberList;

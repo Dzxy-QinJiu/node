@@ -9,18 +9,18 @@ var echartsTooltipCssText = require('../../lib/utils/echarts-tooltip-csstext');
 var immutable = require('immutable');
 import { packageTry } from 'LIB_DIR/func';
 
-var PieChart = React.createClass({
-    echartInstance: null,
-    getDefaultProps: function() {
-        return {
-            chartData: [],
-            legend: [],
-            width: '100%',
-            height: 214,
-            resultType: 'loading',
-        };
-    },
-    getEchartOptions: function() {
+class PieChart extends React.Component {
+    static defaultProps = {
+        chartData: [],
+        legend: [],
+        width: '100%',
+        height: 214,
+        resultType: 'loading',
+    };
+
+    echartInstance = null;
+
+    getEchartOptions = () => {
         var option = {
             animation: false,
             tooltip: {
@@ -40,8 +40,9 @@ var PieChart = React.createClass({
             series: this.getSeries(),
         };
         return option;
-    },
-    getLegendData() {
+    };
+
+    getLegendData = () => {
         let legend = this.props.legend;
         if (!legend) {
             const data = this.props.dataField ? this.props.chartData[this.props.dataField] : this.props.chartData;
@@ -54,8 +55,9 @@ var PieChart = React.createClass({
             }
         }
         return legend;
-    },
-    getSeries: function() {
+    };
+
+    getSeries = () => {
         let series = [];
         const serieObj = {
             name: '',
@@ -128,8 +130,9 @@ var PieChart = React.createClass({
         }
 
         return series;
-    },
-    getSerieData: function(data) {
+    };
+
+    getSerieData = (data) => {
         if (_.isArray(data)) {
             return data.map(item => {
                 return {
@@ -157,8 +160,9 @@ var PieChart = React.createClass({
 
             return serieData;
         }
-    },
-    renderChart: function() {
+    };
+
+    renderChart = () => {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -171,11 +175,13 @@ var PieChart = React.createClass({
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         var options = this.getEchartOptions();
         this.echartInstance.setOption(options,true);
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         this.renderChart();
-    },
-    componentDidUpdate: function(prevProps) {
+    }
+
+    componentDidUpdate(prevProps) {
         if(
             this.props.chartData &&
             prevProps.chartData &&
@@ -186,16 +192,18 @@ var PieChart = React.createClass({
             return;
         }
         this.renderChart();
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }
-    },
-    render: function() {
+    }
+
+    render() {
         var _this = this;
         return (
             <div className="analysis-chart">
@@ -203,7 +211,7 @@ var PieChart = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = PieChart;
 

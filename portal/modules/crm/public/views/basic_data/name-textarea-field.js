@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -16,8 +17,10 @@ let CrmAction = require('../../action/crm-actions');
 let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';
 
-let NameTextareaField = React.createClass({
+let NameTextareaField = createReactClass({
+    displayName: 'NameTextareaField',
     mixins: [FieldMixin],
+
     getDefaultProps: function() {
         return {
             //是否能修改
@@ -29,6 +32,7 @@ let NameTextareaField = React.createClass({
             }
         };
     },
+
     getInitialState: function() {
         return {
             loading: false,
@@ -45,6 +49,7 @@ let NameTextareaField = React.createClass({
             submitErrorMsg: ''
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时，重新设置state数据
@@ -56,10 +61,12 @@ let NameTextareaField = React.createClass({
             this.setState(stateData);
         }
     },
+
     setEditable: function(e) {
         Trace.traceEvent(e,'点击设置客户名');
         this.setState({displayType: 'edit'});
     },
+
     //回到展示状态
     backToDisplay: function() {
         this.setState({
@@ -107,7 +114,6 @@ let NameTextareaField = React.createClass({
         });
     },
 
-
     handleCancel: function(e) {
         let formData = this.state.formData;
         let status = this.state.status;
@@ -138,6 +144,7 @@ let NameTextareaField = React.createClass({
             callback(new Error( Intl.get('crm.81', '请填写客户名称')));
         }
     },
+
     render: function() {
         let formData = this.state.formData;
         let status = this.state.status;
@@ -202,7 +209,7 @@ let NameTextareaField = React.createClass({
                 {inputBlock}
             </div>
         );
-    }
+    },
 });
 
 module.exports = NameTextareaField;

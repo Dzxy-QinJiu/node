@@ -2,16 +2,16 @@
  * 用户管理-已有用户-编辑单个应用
  */
 var React = require('react');
-import AppUserAction from '../../action/app-user-actions';
+var createReactClass = require('create-react-class');
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
 import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
 import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
 import AppPropertySetting from '../v3/app-property-setting';
-import { Tabs, Icon, Alert } from 'antd';
+import {Tabs, Icon, Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
-import { RightPanelClose, RightPanelReturn } from '../../../../../components/rightPanel';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
+
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 //记录上下留白布局
@@ -20,55 +20,49 @@ const LAYOUT = {
     TAB_BOTTOM_PADDING: 60
 };
 
+var outerAppsSetting = {};
 
-const UserDetailEditApp = React.createClass({
+const UserDetailEditApp = createReactClass({
+    displayName: 'UserDetailEditApp',
+
     getInitialState() {
         return UserDetailEditAppStore.getState();
     },
+
     onStoreChange() {
         this.setState(UserDetailEditAppStore.getState());
     },
+
     componentDidMount() {
         UserDetailEditAppStore.listen(this.onStoreChange);
         $(window).on('resize', this.onStoreChange);
         UserDetailEditAppActions.setInitialData(this.props.appInfo);
     },
+
     componentWillUnmount() {
         UserDetailEditAppStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
     },
+
     cancel() {
         if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
         }
-        Trace.traceEvent('变更应用','点击取消按钮');
+        Trace.traceEvent('变更应用', '点击取消按钮');
         AppUserPanelSwitchAction.resetState();
         //面板向右滑
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
         UserDetailEditAppActions.resetState();
     },
-    return() {
-        if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
-            return;
-        }
-        AppUserPanelSwitchAction.resetState();
-        //面板向右滑
-        AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
-        UserDetailEditAppActions.resetState();
-    },
-    closeRightPanel() {
-        AppUserPanelSwitchAction.resetState();
-        //面板向右滑
-        AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
-        UserDetailEditAppActions.resetState();
-        AppUserAction.closeRightPanel();
-    },
+
     //保存表单的值
-    appsSetting: {},
+    appsSetting: outerAppsSetting,
+
     //表单值，改变了，会触发，保存到 this.appsSetting
     onAppPropertyChange(appsSetting) {
         this.appsSetting = appsSetting;
     },
+
     getChangeAppInfo(submitData) {
         let changeAppInfo = _.clone(submitData);
         changeAppInfo.app_id = changeAppInfo.client_id;
@@ -88,10 +82,11 @@ const UserDetailEditApp = React.createClass({
 
         return changeAppInfo;
     },
+
     //提交时会触发
     onFinish() {
-        Trace.traceEvent('变更应用','点击确定按钮');
-        if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
+        Trace.traceEvent('变更应用', '点击确定按钮');
+        if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
         }
         //获取提交数据
@@ -156,11 +151,12 @@ const UserDetailEditApp = React.createClass({
             UserDetailEditAppActions.resetState();
         });
     },
+
     //渲染loading，错误，成功提示
     renderIndicator() {
         if (this.state.submitResult === 'loading') {
             return (
-                <Icon type="loading" />
+                <Icon type="loading"/>
             );
         }
         var hide = function() {
@@ -168,24 +164,26 @@ const UserDetailEditApp = React.createClass({
         };
         if (this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get('user.app.edit.success', '修改应用成功')} type="success" showIcon onHide={hide} />
+                <AlertTimer time={3000} message={Intl.get('user.app.edit.success', '修改应用成功')} type="success" showIcon
+                            onHide={hide}/>
             );
         }
         if (this.state.submitResult === 'error') {
             return (
                 <div className="alert-timer">
-                    <Alert message={this.state.submitErrorMsg} type="error" showIcon />
+                    <Alert message={this.state.submitErrorMsg} type="error" showIcon/>
                 </div>
             );
         }
         return null;
     },
+
     render() {
         const height = this.props.height + LAYOUT_CONSTANTS.BTN_PADDING;//减去底部按钮的padding;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{ height }}>
+            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height}}>
                 <h4 onClick={this.cancel}>
-                    <Icon type="left" />{Intl.get('user.user.app.set', '应用设置')}
+                    <Icon type="left"/>{Intl.get('user.user.app.set', '应用设置')}
                 </h4>
                 <AppPropertySetting
                     appsSetting={this.state.appSettingConfig}
@@ -206,7 +204,7 @@ const UserDetailEditApp = React.createClass({
                 </OperationStepsFooter>
             </div>
         );
-    }
+    },
 });
 
 module.exports = UserDetailEditApp;

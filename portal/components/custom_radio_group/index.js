@@ -1,37 +1,41 @@
 var React = require('react');
 require('./index.less');
 
-var CustomRadioGroup = React.createClass({
-    getDefaultProps: function() {
-        return {
-            options: [],
-            extraData: {},
-            value: '',
-            marginRight: 30,
-            padding: 14,
-            onChange: function() {},
-            onClick: function() {}
-        };
-    },
-    getInitialState: function() {
-        var value = this.props.value;
-        return {
+class CustomRadioGroup extends React.Component {
+    static defaultProps = {
+        options: [],
+        extraData: {},
+        value: '',
+        marginRight: 30,
+        padding: 14,
+        onChange: function() {},
+        onClick: function() {}
+    };
+
+    constructor(props) {
+        super(props);
+        var value = props.value;
+
+        this.state = {
             value: value
         };
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         this.setState({
             value: nextProps.value
         });
-    },
-    onClickRadio: function(value , name) {
+    }
+
+    onClickRadio = (value, name) => {
         this.props.onClick(value,name,this.props.extraData);
         this.props.onChange(value,name,this.props.extraData);
         this.setState({
             value: value
         });
-    },
-    render: function() {
+    };
+
+    render() {
         var _this = this;
         var value = this.state.value;
         var props = this.props;
@@ -53,6 +57,6 @@ var CustomRadioGroup = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = CustomRadioGroup;

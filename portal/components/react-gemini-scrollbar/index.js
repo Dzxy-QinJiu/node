@@ -34,54 +34,50 @@ if (language.lan() == 'es' || language.lan() == 'en') {
 var GeminiScrollbar = require('./gemini-scrollbar');
 var Icon = require('antd').Icon;
 
-var ReactScrollBar = React.createClass({
-    displayName: 'GeminiScrollbar',
+class ReactScrollBar extends React.Component {
+    static displayName = 'GeminiScrollbar';
 
-    propTypes: {
+    static propTypes = {
         autoshow: React.PropTypes.bool,
         forceGemini: React.PropTypes.bool,
         enabled: React.PropTypes.bool,
         listenScrollBottom: React.PropTypes.bool,
         handleScrollBottom: React.PropTypes.func,
         itemCssSelector: React.PropTypes.string
-    },
+    };
 
-    getDefaultProps: function getDefaultProps() {
-        return {
-            autoshow: false,
-            forceGemini: true,
-            enabled: true,
-            listenScrollBottom: false,
-            handleScrollBottom: function() {},
-            //用于大尺寸显示器下，加载完一页数据以后，自动判断是否加载下一页数据
-            itemCssSelector: ''
-        };
-    },
+    static defaultProps = {
+        autoshow: false,
+        forceGemini: true,
+        enabled: true,
+        listenScrollBottom: false,
+        handleScrollBottom: function() {},
+        //用于大尺寸显示器下，加载完一页数据以后，自动判断是否加载下一页数据
+        itemCssSelector: ''
+    };
 
-    getInitialState: function() {
-        return {
-            scrollBottomLoading: false
-        };
-    },
+    state = {
+        scrollBottomLoading: false
+    };
 
     /**
      * Holds the reference to the GeminiScrollbar instance.
      * @property scrollbar <public> [Object]
      */
-    scrollbar: null,
+    scrollbar = null;
 
-    hideBottomLoading: function() {
+    hideBottomLoading = () => {
         this.setState({
             scrollBottomLoading: false
         }, function() {
             this.scrollbar.scrollBottomUnlock();
         });
-    },
+    };
 
     /**
      * when scroll to bottom , this function occur
      */
-    handleScrollBottom: function() {
+    handleScrollBottom = () => {
         this.setState({
             scrollBottomLoading: true
         });
@@ -91,8 +87,9 @@ var ReactScrollBar = React.createClass({
         };
 
         this.props.handleScrollBottom(scrollBarObject);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    componentWillReceiveProps(nextProps) {
         if (this.props.listenScrollBottom != nextProps.listenScrollBottom) {
             if (nextProps.listenScrollBottom === true) {
                 this.scrollbar.bindScrollBottom();
@@ -107,8 +104,9 @@ var ReactScrollBar = React.createClass({
                 });
             }
         }
-    },
-    initScrollbar: function() {
+    }
+
+    initScrollbar = () => {
         this.scrollbar = new GeminiScrollbar({
             element: ReactDOM.findDOMNode(this),
             autoshow: this.props.autoshow,
@@ -118,14 +116,16 @@ var ReactScrollBar = React.createClass({
             //用于大尺寸显示器下，加载完一页数据以后，自动判断是否加载下一页数据
             itemCssSelector: this.props.itemCssSelector
         }).create();
-    },
+    };
+
     //更新滚动条位置，大小
-    update: function() {
+    update = () => {
         if (this.scrollbar) {
             this.scrollbar.update();
         }
-    },
-    componentDidMount: function componentDidMount() {
+    };
+
+    componentDidMount() {
         if (this.props.enabled) {
             this.initScrollbar();
             if (this.props.listenScrollBottom) {
@@ -139,8 +139,9 @@ var ReactScrollBar = React.createClass({
                 this.scrollbar._detectLoadNextPage();
             }
         }
-    },
-    componentWillUnmount: function componentWillUnmount() {
+    }
+
+    componentWillUnmount() {
         if (this.scrollbar) {
             this.scrollbar.destroy();
             this.scrollbar = null;
@@ -148,8 +149,9 @@ var ReactScrollBar = React.createClass({
         if (this.bindedEventEmitter) {
             scrollBarEmitter.removeListener(scrollBarEmitter.HIDE_BOTTOM_LOADING, this.hideBottomLoading);
         }
-    },
-    componentDidUpdate: function componentDidUpdate() {
+    }
+
+    componentDidUpdate() {
         if (this.props.enabled) {
             if (!this.scrollbar) {
                 this.initScrollbar();
@@ -167,8 +169,9 @@ var ReactScrollBar = React.createClass({
                 this.scrollbar = null;
             }
         }
-    },
-    render: function render() {
+    }
+
+    render() {
         var _props = this.props;
         var className = _props.className;
         var children = _props.children;
@@ -203,7 +206,7 @@ var ReactScrollBar = React.createClass({
             </div>
         );
     }
-});
+}
 
 ReactScrollBar.scrollTo = function(dom, px) {
     var $scrollbar = $(dom).find('.gm-scroll-view');

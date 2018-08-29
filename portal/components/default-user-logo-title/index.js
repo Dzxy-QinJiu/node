@@ -5,26 +5,24 @@ var React = require('react');
 require('./default-img-title.less');
 var classNames = require('classnames');
 
-var DefaultUserLogoTitle = React.createClass({
-    getInitialState: function() {
-        return {
-            userLogo: this.props.userLogo
-        };
-    },
+class DefaultUserLogoTitle extends React.Component {
+    state = {
+        userLogo: this.props.userLogo
+    };
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if(nextProps.userLogo !== this.props.userLogo) {
             this.setState({
                 userLogo: nextProps.userLogo
             });
         }
-    },
+    }
 
-    setDefaultImg: function() {
+    setDefaultImg = () => {
         this.setState({userLogo: ''});
-    },
+    };
 
-    render: function() {
+    render() {
         var userName = this.props.userName ? this.props.userName : '';
         //没有昵称时，用用户名展示
         var nickName = this.props.nickName ? this.props.nickName : userName;
@@ -46,7 +44,7 @@ var DefaultUserLogoTitle = React.createClass({
                 >{nickName.substr(0, 1)}</div>)
         );
     }
-});
+}
 
 module.exports = DefaultUserLogoTitle;
 

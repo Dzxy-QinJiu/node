@@ -15,38 +15,36 @@ const DISPLAY_TYPES = {
     EDIT: 'edit',
     TEXT: 'text'
 };
-var SalesTeamCard = React.createClass({
-    getDefaultProps: function() {
-        return {
-            list: [],
-            onChange: function() {
-            },
-            onModifySuccess: function() {
-            }
-        };
-    },
 
-    getInitialState: function() {
-        return {
-            list: [],//下拉列表中的数据
-            displayType: DISPLAY_TYPES.TEXT,
-            isLoadingList: true,//正在获取下拉列表中的数据
-            enableEdit: this.props.enableEdit,
-            enableTransfer: this.props.enableTransfer,
-            isMerge: this.props.isMerge,
-            customerId: this.props.customerId,
-            userName: this.props.userName,
-            userId: this.props.userId,
-            salesTeam: this.props.salesTeam,
-            salesTeamId: this.props.salesTeamId,
-            salesManList: [],
-            salesTeamList: [],
-            loading: false,
-            submitErrorMsg: '',
-            salesRole: ''
-        };
-    },
-    componentDidMount: function() {
+class SalesTeamCard extends React.Component {
+    static defaultProps = {
+        list: [],
+        onChange: function() {
+        },
+        onModifySuccess: function() {
+        }
+    };
+
+    state = {
+        list: [],//下拉列表中的数据
+        displayType: DISPLAY_TYPES.TEXT,
+        isLoadingList: true,//正在获取下拉列表中的数据
+        enableEdit: this.props.enableEdit,
+        enableTransfer: this.props.enableTransfer,
+        isMerge: this.props.isMerge,
+        customerId: this.props.customerId,
+        userName: this.props.userName,
+        userId: this.props.userId,
+        salesTeam: this.props.salesTeam,
+        salesTeamId: this.props.salesTeamId,
+        salesManList: [],
+        salesTeamList: [],
+        loading: false,
+        submitErrorMsg: '',
+        salesRole: ''
+    };
+
+    componentDidMount() {
         //有修改所属销售的权限时
         if (this.state.enableEdit) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
@@ -62,8 +60,9 @@ var SalesTeamCard = React.createClass({
             //获取销售对应的角色
             this.getSalesRoleByMemberId(this.state.userId);
         }
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
             this.setState({
@@ -94,8 +93,9 @@ var SalesTeamCard = React.createClass({
                 enableTransfer: nextProps.enableTransfer
             });
         }
-    },
-    getSalesTeamList: function(userId, salesManList) {
+    }
+
+    getSalesTeamList = (userId, salesManList) => {
         let salesTeamList = [];
         _.each(salesManList, (salesMan) => {
             if (salesMan.user_info && salesMan.user_info.user_id === userId && _.isArray(salesMan.user_groups)) {
@@ -108,9 +108,10 @@ var SalesTeamCard = React.createClass({
             }
         });
         return salesTeamList;
-    },
+    };
+
     //管理员获取所有成员列表
-    getAllUserList: function() {
+    getAllUserList = () => {
         batchChangeAction.getALLUserList({}, (result) => {
             if (_.isArray(result) && result.length) {
                 this.setState({salesManList: result, salesTeamList: []});
@@ -120,10 +121,10 @@ var SalesTeamCard = React.createClass({
                 });
             }
         });
-    },
+    };
 
     //获取客户所属销售及其团队下拉列表
-    getSalesManList: function() {
+    getSalesManList = () => {
         batchChangeAjax.getSalesManList().then(list => {
             if (_.isArray(list) && list.length) {
                 //过滤掉停用的成员
@@ -135,8 +136,9 @@ var SalesTeamCard = React.createClass({
         }, errorMsg => {
             this.setState({salesManList: []});
         });
-    },
-    getSalesRoleByMemberId: function(memberId) {
+    };
+
+    getSalesRoleByMemberId = (memberId) => {
         if (!memberId) return;
         $.ajax({
             url: '/rest/sales/role',
@@ -156,9 +158,10 @@ var SalesTeamCard = React.createClass({
                 });
             }
         });
-    },
+    };
+
     // 获取普通销售所在团队里的成员列表
-    getSalesTeamMembers: function() {
+    getSalesTeamMembers = () => {
         let userInfo = userData.getUserData();
         let teamId = userInfo.team_id;
         batchChangeAjax.getSalesTeamMembers(teamId).then(list => {
@@ -178,9 +181,10 @@ var SalesTeamCard = React.createClass({
         }, errorMsg => {
             this.setState({salesManList: []});
         });
-    },
+    };
+
     //获取所属销售及团队的信息，idStr: userId&&teamId
-    getSalesTeamParams: function(idStr) {
+    getSalesTeamParams = (idStr) => {
         let params = {
             userId: '',
             userName: '',
@@ -211,18 +215,19 @@ var SalesTeamCard = React.createClass({
             }
         }
         return params;
-    },
+    };
+
     //更新销售人员
-    handleSalesManChange: function(idStr) {
+    handleSalesManChange = (idStr) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改销售人员及其团队');
         let params = this.getSalesTeamParams(idStr);
         this.setState(params);
         if (params.userId && !this.props.hideSalesRole) {
             this.getSalesRoleByMemberId(params.userId);
         }
-    },
+    };
 
-    changeDisplayType: function(type) {
+    changeDisplayType = (type) => {
         if (type === DISPLAY_TYPES.TEXT) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对销售人员/团队的修改');
             if (!this.props.hideSalesRole) {
@@ -245,16 +250,18 @@ var SalesTeamCard = React.createClass({
                 displayType: type
             });
         }
-    },
+    };
+
     //回到展示状态
-    backToDisplay: function() {
+    backToDisplay = () => {
         this.setState({
             loading: false,
             displayType: DISPLAY_TYPES.TEXT,
             submitErrorMsg: ''
         });
-    },
-    submitData: function() {
+    };
+
+    submitData = () => {
         let submitData = {
             id: this.state.customerId,
             type: 'sales',
@@ -296,8 +303,9 @@ var SalesTeamCard = React.createClass({
                 });
             });
         }
-    },
-    handleSubmit: function() {
+    };
+
+    handleSubmit = () => {
         if (this.state.loading) return;
         if (this.state.userId === this.props.userId) {
             //没做修改时，直接回到展示状态
@@ -319,15 +327,17 @@ var SalesTeamCard = React.createClass({
         } else {
             this.submitData();
         }
-    },
+    };
+
     //更新团队
-    handleTeamChange: function(value) {
+    handleTeamChange = (value) => {
         const team = _.find(this.state.salesTeamList, item => item.group_id === value);
         this.state.salesTeamId = value;
         this.state.salesTeam = team ? team.group_name : '';
         this.setState(this.state);
-    },
-    renderTitle: function() {
+    };
+
+    renderTitle = () => {
         return (
             <div className="sales-team-show-block">
                 <div className="sales-team">
@@ -347,8 +357,9 @@ var SalesTeamCard = React.createClass({
                     </div>}
             </div>
         );
-    },
-    renderContent: function() {
+    };
+
+    renderContent = () => {
         if (this.state.displayType === DISPLAY_TYPES.TEXT) return null;
         let dataList = [];
         //展示其所在团队的成员列表
@@ -396,12 +407,14 @@ var SalesTeamCard = React.createClass({
                 </Select>
             </div>
         );
-    },
-    transferSales: function() {
+    };
+
+    transferSales = () => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '转出客户');
         this.setState({displayType: DISPLAY_TYPES.TRANSFER});
-    },
-    renderHandleSaveBtns: function() {
+    };
+
+    renderHandleSaveBtns = () => {
         let isTransfer = this.state.displayType === DISPLAY_TYPES.TRANSFER;
         return (<div className="button-container">
             <Button className="button-cancel" onClick={this.changeDisplayType.bind(this, isTransfer ? DISPLAY_TYPES.EDIT : DISPLAY_TYPES.TEXT)}>
@@ -429,8 +442,9 @@ var SalesTeamCard = React.createClass({
                 <span className="save-error">{this.state.submitErrorMsg}</span>
             ) : null}
         </div>);
-    },
-    render: function() {
+    };
+
+    render() {
         return (<DetailCard title={this.renderTitle()}
             content={this.renderContent()}
             className="sales-team-container"
@@ -438,6 +452,6 @@ var SalesTeamCard = React.createClass({
             renderHandleSaveBtns={this.renderHandleSaveBtns}
         />);
     }
-});
+}
 
 module.exports = SalesTeamCard;

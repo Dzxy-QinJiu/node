@@ -5,15 +5,15 @@ var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var ContractImport = require('./import');
 import Trace from 'LIB_DIR/trace';
-var ImportContractTemplate = React.createClass({
 
-    handleCancel: function(e) {
+class ImportContractTemplate extends React.Component {
+    handleCancel = (e) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'点击取消导入合同按钮');
         e.preventDefault();
         this.props.closeContractTemplatePanel();
-    },
+    };
 
-    render: function(){
+    render() {
         return (
             <div className="import-contract-template-panel">
                 <RightPanel
@@ -68,6 +68,6 @@ var ImportContractTemplate = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = ImportContractTemplate;

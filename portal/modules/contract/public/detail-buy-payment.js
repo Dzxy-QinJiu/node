@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -19,8 +20,10 @@ import routeList from '../common/route';
 import ajax from '../common/ajax';
 import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
 
-const DetailBuyPayment = React.createClass({
+const DetailBuyPayment = createReactClass({
+    displayName: 'DetailBuyPayment',
     mixins: [ValidateMixin],
+
     componentDidMount: function() {
         $(window).on('resize', this.setContentHeight);
         //加一个延时，等dom渲染完后再设置内容高度，否则会设置不正确
@@ -28,25 +31,30 @@ const DetailBuyPayment = React.createClass({
             this.setContentHeight();
         });
     },
+
     componentWillUnmount: function() {
         $(window).off('resize', this.setContentHeight);
     },
+
     setContentHeight: function() {
         const wrapper = $('.finance-list');
         //新高度 = 窗口高度 - 容器距窗口顶部的距离 - 底部留空
         wrapper.height($(window).height() - wrapper.offset().top - 20);
         this.refs.gemiScrollBar.update();
     },
+
     showForm: function(index, payment) {
         const key = 'formData' + index;
         this.state[key] = _.clone(payment);
         this.state['isFormShow' + index] = true;
         this.setState(this.state);
     },
+
     hideForm: function(index) {
         this.state['isFormShow' + index] = false;
         this.setState(this.state);
     },
+
     handleSubmit: function(type, index, id) {
         let data, params;
 
@@ -78,6 +86,7 @@ const DetailBuyPayment = React.createClass({
             });
         }
     },
+
     editPayment: function(type, data, params, cb, id) {
         this.props.showLoading();
 
@@ -102,6 +111,7 @@ const DetailBuyPayment = React.createClass({
             message.error(errorObj.message || OPERATE[type] + '失败');
         });
     },
+
     renderForm: function(payment, index) {
         index = isNaN(index) ? '' : index;
         const ref = 'validation' + index;
@@ -153,6 +163,7 @@ const DetailBuyPayment = React.createClass({
             </Validation>
         );
     },
+
     render: function() {
         let payments = this.props.contract.payments || [];
         payments = _.sortBy(payments, item => item.date).reverse();
@@ -234,7 +245,7 @@ const DetailBuyPayment = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = DetailBuyPayment;

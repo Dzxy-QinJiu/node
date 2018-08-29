@@ -17,29 +17,30 @@
 var React = require('react');
 var echarts = require('echarts');
 import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
-var TimeSeriesBarchart = React.createClass({
-    getDefaultProps: function() {
-        return {
-            dataList: [],
-            isShowSplitArea: false,
-            tooltip: function() {}
-        };
-    },
-    getInitialState: function() {
-        return {
-            echartListCache: this.props.dataList
-        };
-    },
-    componentDidMount: function() {
+
+class TimeSeriesBarchart extends React.Component {
+    static defaultProps = {
+        dataList: [],
+        isShowSplitArea: false,
+        tooltip: function() {}
+    };
+
+    state = {
+        echartListCache: this.props.dataList
+    };
+
+    componentDidMount() {
         this.drawEchart();
-    },
-    componentDidUpdate: function() {
+    }
+
+    componentDidUpdate() {
         if(this.state.echartListCache !== this.props.dataList) {
             this.state.echartListCache = this.props.dataList;
             this.drawEchart();
         }
-    },
-    transformDataList: function() {
+    }
+
+    transformDataList = () => {
         var resultList = this.props.dataList.map(function(item) {
             return [
                 new Date(item.date),
@@ -63,8 +64,9 @@ var TimeSeriesBarchart = React.createClass({
             ]);
         }
         return resultList;
-    },
-    drawEchart: function() {
+    };
+
+    drawEchart = () => {
         var series = this.transformDataList();
         var xInterval = null;
         if (series.length <= 5) {
@@ -192,13 +194,14 @@ var TimeSeriesBarchart = React.createClass({
         };
         var chart = echarts.init(this.refs.echart_wrap,macronsTheme);
         chart.setOption(option);
-    },
-    render: function() {
+    };
+
+    render() {
         return (
             <div className="echart_wrap" ref="echart_wrap" style={{width: '100%',height: '100%'}}></div>
         );
     }
-});
+}
 
 module.exports = TimeSeriesBarchart;
 

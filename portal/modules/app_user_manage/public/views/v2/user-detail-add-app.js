@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -61,7 +62,9 @@ const LAYOUT_CONSTANTS = {
     APP_SELECTOR_HEIGHT: 180
 };
 
-const UserDetailAddApp = React.createClass({
+const UserDetailAddApp = createReactClass({
+    displayName: 'UserDetailAddApp',
+
     //mixin
     mixins: [
         FieldMixin,
@@ -71,6 +74,7 @@ const UserDetailAddApp = React.createClass({
         UserTwoFactorField,
         UserMultiLoginField
     ],
+
     getInitialState() {
         const storeObj = UserDetailAddAppStore.getState();
         const appPropSettingsMap = this.createPropertySettingData(storeObj);
@@ -85,19 +89,23 @@ const UserDetailAddApp = React.createClass({
             configType: CONFIG_TYPE.UNIFIED_CONFIG,//配置类型：统一配置、分别配置
         };
     },
+
     onStateChange() {
         this.setState(UserDetailAddAppStore.getState());
     },
+
     componentDidMount() {
         UserDetailAddAppStore.listen(this.onStateChange);
         UserDetailAddAppActions.getCurrentRealmApps();
         $(window).on('resize', this.onStateChange);
     },
+
     componentWillUnmount() {
         UserDetailAddAppStore.unlisten(this.onStateChange);
         dynamicStyle && dynamicStyle.destroy();
         dynamicStyle = null;
     },
+
     createPropertySettingData(state) {
         //选中的应用
         const selectedApps = state.selectedApps;
@@ -257,6 +265,7 @@ const UserDetailAddApp = React.createClass({
             return appPropSettingsMap;
         }
     },
+
     //取消添加单个应用
     cancel() {
         UserDetailAddAppActions.resetState();
@@ -264,6 +273,7 @@ const UserDetailAddApp = React.createClass({
         //面板向右滑
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
     },
+
     //关闭右侧面板
     closeRightPanel() {
         AppUserDetailAction.dismiss();
@@ -273,6 +283,7 @@ const UserDetailAddApp = React.createClass({
         AppUserAction.closeRightPanel();
         UserDetailAddAppActions.resetState();
     },
+
     handleRemoveApp(app) {
         const removeAppId = app.app_id;
         let selectedAppIds = this.state.selectedAppIds;
@@ -286,11 +297,13 @@ const UserDetailAddApp = React.createClass({
         });
 
     },
+
     changeConfigType(configType) {
         this.setState({
             configType: configType
         });
     },
+
     handleFormItemEdit(field, app, appFormData, e) {
         let value = null;
         if (e.target.type === 'checkbox') {
@@ -312,14 +325,15 @@ const UserDetailAddApp = React.createClass({
             formData[field].value = value;           
             this.setState({ appPropSettingsMap });
         }
-    },    
-  
+    },
+
     //选中的应用发生变化的时候
     onSelectedAppsChange(appIds) {
         this.setState({
             selectedAppIds: appIds
         });
     },
+
     //渲染“选择应用”步骤
     renderAppsCarousel() {
         const isSubmitError = this.state.isSelectedAppsError;
@@ -375,7 +389,9 @@ const UserDetailAddApp = React.createClass({
             </div>
         );
     },
+
     searchTimer: null,
+
     handleInputChange(e) {
         const keyWords = e.target.value;
         clearTimeout(this.searchTimer);
@@ -383,11 +399,13 @@ const UserDetailAddApp = React.createClass({
             UserDetailAddAppActions.filterApps(keyWords);
         }, 100);
     },
+
     showAppSelector(isShow) {
         this.setState({
             showAppSelector: isShow
         });
     },
+
     //根据选中app的ids，设置已选中app
     handleSetSelectedApps(selectedAppIds) {
         //检验通过了，切换到下一步
@@ -408,10 +426,12 @@ const UserDetailAddApp = React.createClass({
             });
         }
     },
+
     handleFinishSelectApp() {
         this.handleSetSelectedApps(this.state.selectedAppIds);
         this.showAppSelector(false);
     },
+
     renderAppSelector() {
         return (
             <div className="app-selector-container">
@@ -437,6 +457,7 @@ const UserDetailAddApp = React.createClass({
             </div>
         );
     },
+
     renderAppConfig() {
         return (
             <div style={{ height: this.props.height - LAYOUT_CONSTANTS.TOP_PADDING}}>
@@ -489,6 +510,7 @@ const UserDetailAddApp = React.createClass({
             </div>
         );
     },
+
     formatAppFormMapItem(mapItem) {
         let item = mapItem;
         if (!mapItem) {
@@ -504,6 +526,7 @@ const UserDetailAddApp = React.createClass({
             multilogin: item.multilogin.value,
         };
     },
+
     //渲染“开通信息”步骤
     renderAppConfigForm(appFormData, app) {
         let formData = this.state.formData;
@@ -537,6 +560,7 @@ const UserDetailAddApp = React.createClass({
             />
         );
     },
+
     //渲染“应用设置”步骤
     renderRolesCarousel() {
         const formData = this.state.formData;
@@ -554,6 +578,7 @@ const UserDetailAddApp = React.createClass({
             </div>
         );
     },
+
     //当应用的个性设置改变的时候触发
     onAppPropertyChange(appsSetting) {
         let newAppsSetting = this.state.appsSetting;
@@ -563,6 +588,7 @@ const UserDetailAddApp = React.createClass({
         });
         UserDetailAddAppActions.saveAppsSetting(newAppsSetting);
     },
+
     //渲染loading，错误，成功提示
     renderIndicator() {
         if (this.state.submitResult === 'loading') {
@@ -593,6 +619,7 @@ const UserDetailAddApp = React.createClass({
         }
         return null;
     },
+
     turnStep(direction) {
         if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
             return;
@@ -634,6 +661,7 @@ const UserDetailAddApp = React.createClass({
             UserDetailAddAppActions.turnStep(direction);
         }
     },
+
     //获取提交的数据
     getSubmitData() {
         //formData
@@ -683,6 +711,7 @@ const UserDetailAddApp = React.createClass({
         });
         return products;
     },
+
     //完成
     onStepFinish() {
         if (this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
@@ -718,6 +747,7 @@ const UserDetailAddApp = React.createClass({
             });
         });
     },
+
     //render函数
     render() {
         return (
@@ -774,7 +804,7 @@ const UserDetailAddApp = React.createClass({
                 </Form>
             </div>
         );
-    }
+    },
 });
 
 export default UserDetailAddApp;

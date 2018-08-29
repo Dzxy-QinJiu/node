@@ -36,28 +36,29 @@ const LAYOUT_CONSTANTS = {
     BOTTOM_DISTANCE: 70
 };
 
-const CommissionPayment = React.createClass({
-    getInitialState() {
-        return {
-            containerHeight: $('.commission-payment-panel').height(),
-            teamList: [],
-            userList: [],
-            currentCommission: {},
-            isRightPanelShow: false,
-            selectedRowIndex: null, // 点击的行索引
-            ...CommissionPaymentStore.getState()
-        };
-    },
-    onStoreChange() {
+class CommissionPayment extends React.Component {
+    state = {
+        containerHeight: $('.commission-payment-panel').height(),
+        teamList: [],
+        userList: [],
+        currentCommission: {},
+        isRightPanelShow: false,
+        selectedRowIndex: null, // 点击的行索引
+        ...CommissionPaymentStore.getState()
+    };
+
+    onStoreChange = () => {
         this.setState(CommissionPaymentStore.getState());
-    },
-    getTeamList() {
+    };
+
+    getTeamList = () => {
         teamAjaxTrans.getTeamListAjax().sendRequest().success(list => {
             list = _.isArray(list) ? list : [];
             this.setState({teamList: list});
         });
-    },
-    getUserList() {
+    };
+
+    getUserList = () => {
         salesmanAjax.getSalesmanListAjax().addQueryParam({with_ketao_member: true}).sendRequest()
             .success(result => {
                 if (_.isArray(result)) {
@@ -89,7 +90,8 @@ const CommissionPayment = React.createClass({
                     isGetUserSuccess: false,
                 });
             });
-    },
+    };
+
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         //窗口大小改变事件
@@ -98,36 +100,41 @@ const CommissionPayment = React.createClass({
         this.getTeamList();
         this.getUserList();
         this.getCommissionPaymentList();
-    },
-    componentWillUnmount(){
+    }
+
+    componentWillUnmount() {
         $('body').css('overflow', 'auto');
         //卸载窗口大小改变事件
         resizeEmitter.removeListener(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
         CommissionPaymentStore.unlisten(this.onStoreChange);
-    },
-    resizeHandler(data) {
+    }
+
+    resizeHandler = (data) => {
         this.setState({
             containerHeight: data.height
         });
-    },
+    };
+
     // 搜索条件
-    searchEvent() {
+    searchEvent = () => {
         let queryParam = this.refs.searchInput.state.formData;
         setTimeout( () => {
             CommissionPaymentActions.setInitialPartlyState();
             this.getCommissionPaymentList(queryParam);
         } );
-    },
+    };
+
     // 选择角色
-    onSelectedRoleFlagChange(role) {
+    onSelectedRoleFlagChange = (role) => {
         CommissionPaymentActions.onSelectedRoleFlagChange(role);
         setTimeout( () => {
             CommissionPaymentActions.setInitialPartlyState();
             this.getCommissionPaymentList({role: this.state.role});
         } );
-    },
+    };
+
     // 时间选择
-    setSelectDate(start_time, end_time) {
+    setSelectDate = (start_time, end_time) => {
         let timeObj = {
             startTime: start_time,
             endTime: end_time
@@ -137,17 +144,19 @@ const CommissionPayment = React.createClass({
             CommissionPaymentActions.setInitialPartlyState();
             this.getCommissionPaymentList(timeObj);
         } );
-    },
-    getParams(params) {
+    };
+
+    getParams = (params) => {
         return {
             page_size: this.state.pageSize,
             sort_field: params && params.sortField || this.state.sortField,
             order: params && params.order || this.state.order,
             id: params && params.lastId || this.state.lastId
         };
-    },
+    };
+
     // 获取提成发放列表
-    getCommissionPaymentList(queryObj) {
+    getCommissionPaymentList = (queryObj) => {
         let params = this.getParams(queryObj);
         let reqData = { query: {} };
         _.extend(reqData.query , this.refs.searchInput.state.formData);
@@ -163,28 +172,33 @@ const CommissionPayment = React.createClass({
             to: to
         }];
         CommissionPaymentActions.getCommissionPaymentList(params, reqData);
-    },
-    handleScrollBottom() {
+    };
+
+    handleScrollBottom = () => {
         this.getCommissionPaymentList({
             lastId: this.state.lastId
         });
-    },
-    showNoMoreDataTip() {
+    };
+
+    showNoMoreDataTip = () => {
         return !this.state.commissionPaymentList.loading &&
             this.state.commissionPaymentList.data.length >= 10 && !this.state.listenScrollBottom;
-    },
-    showRightPanel() {
+    };
+
+    showRightPanel = () => {
         this.setState({
             isRightPanelShow: true,
             currentCommission: {}
         });
-    },
-    hideRightPanel() {
+    };
+
+    hideRightPanel = () => {
         this.setState({
             isRightPanelShow: false
         });
-    },
-    renderSearchSelectCondition() {
+    };
+
+    renderSearchSelectCondition = () => {
         return (
             <div className="search-select-condition">
                 <div className="search-condition">
@@ -222,8 +236,9 @@ const CommissionPayment = React.createClass({
                 </div>
             </div>
         );
-    },
-    getCommissionPaymentTableColumns() {
+    };
+
+    getCommissionPaymentTableColumns = () => {
         return [
             {
                 title: Intl.get('sales.commission.grant.time', '发放时间'),
@@ -274,8 +289,9 @@ const CommissionPayment = React.createClass({
                 key: 'remark'
             }
         ];
-    },
-    handleTableChange(pagination, filters, sorter) {
+    };
+
+    handleTableChange = (pagination, filters, sorter) => {
         const sortOrder = sorter.order || this.state.sortOrder;
         const sortField = sorter.field || this.state.sortField;
         CommissionPaymentActions.setSort({sortField, sortOrder});
@@ -286,23 +302,26 @@ const CommissionPayment = React.createClass({
                 order: sortOrder
             });
         } );
-    },
-    handleRowClick(record, rowIndex) {
+    };
+
+    handleRowClick = (record, rowIndex) => {
         this.state.selectedRowIndex = rowIndex;
         this.state.currentCommission = record || {};
         this.state.isRightPanelShow = true;
         this.setState(this.state);
-    },
-    handleRowClassName(record, rowIndex) {
+    };
+
+    handleRowClassName = (record, rowIndex) => {
         if ((rowIndex === this.state.selectedRowIndex) && this.state.isRightPanelShow) {
             return 'current-row';
         }
         else {
             return '';
         }
-    },
+    };
+
     // 渲染提成发放列表
-    renderCommissionPaymentTable() {
+    renderCommissionPaymentTable = () => {
         let columns = this.getCommissionPaymentTableColumns();
         let dataSource = this.state.commissionPaymentList.data;
         let isLoading = this.state.commissionPaymentList.loading;
@@ -351,8 +370,9 @@ const CommissionPayment = React.createClass({
 
             </div>
         );
-    },
-    renderLoadingBlock() {
+    };
+
+    renderLoadingBlock = () => {
         if (!this.state.commissionPaymentList.loading || this.state.lastId) {
             return null;
         }
@@ -361,8 +381,9 @@ const CommissionPayment = React.createClass({
                 <Spinner />
             </div>
         );
-    },
-    renderCommissionContent() {
+    };
+
+    renderCommissionContent = () => {
         return (
             <div className="commission-payment-content">
                 {this.renderSearchSelectCondition()}
@@ -370,19 +391,23 @@ const CommissionPayment = React.createClass({
                 {this.renderCommissionPaymentTable()}
             </div>
         );
-    },
-    addCommission(commission) {
+    };
+
+    addCommission = (commission) => {
         CommissionPaymentActions.addCommission(commission);
-    },
-    refreshCurrentCommission(commission) {
+    };
+
+    refreshCurrentCommission = (commission) => {
         this.setState({
             currentCommission: commission
         });
         CommissionPaymentActions.refreshCurrentCommission(commission);
-    },
-    deleteCommission(id) {
+    };
+
+    deleteCommission = (id) => {
         CommissionPaymentActions.deleteCommission(id);
-    },
+    };
+
     render() {
         return (
             <div className="commission-payment-panel" style={{height: this.state.containerHeight}}>
@@ -407,6 +432,6 @@ const CommissionPayment = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = CommissionPayment;

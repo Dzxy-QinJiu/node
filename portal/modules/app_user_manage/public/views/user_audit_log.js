@@ -39,23 +39,20 @@ const USER_TYPE_OPTION = {
     EMPLOYEE: 'internal' // 员工
 };
 
-var LogView = React.createClass({
-    getInitialState: function() {
-        return {
-            userType: USER_TYPE_OPTION.ALL, // 用户类型类型
-            selectedRowIndex: null, // 点击的行索引
-            isShowRightPanel: this.props.isShowRightPanel,
-            ...UserAuditLogStore.getState()
-        };
+class LogView extends React.Component {
+    state = {
+        userType: USER_TYPE_OPTION.ALL, // 用户类型类型
+        selectedRowIndex: null, // 点击的行索引
+        isShowRightPanel: this.props.isShowRightPanel,
+        ...UserAuditLogStore.getState()
+    };
 
-    },
-
-    onStoreChange: function() {
+    onStoreChange = () => {
         var state = UserAuditLogStore.getState();
         this.setState(state);
-    },
+    };
 
-    componentDidMount: function() {
+    componentDidMount() {
         $('body').css('overflow', 'hidden');
         UserAuditLogStore.listen(this.onStoreChange);
         $(window).on('resize', this.changeTableHeight);
@@ -67,21 +64,23 @@ var LogView = React.createClass({
             });
         });
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-    },
-    componentWillReceiveProps: function(newProps) {
+    }
+
+    componentWillReceiveProps(newProps) {
         this.setState({
             isShowRightPanel: newProps.isShowRightPanel || false
         });
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         $('body').css('overflow', 'auto');
         UserAuditLogStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.changeTableHeight);
         UserAuditLogAction.resetState();
-    },
+    }
 
     // 根据选择条件获取对应的数据
-    getAuditLog: function(queryParams) {
+    getAuditLog = (queryParams) => {
         var searchObj = {
             load_size: this.state.loadSize, // 每次加载的条数
             appid: queryParams && 'appid' in queryParams ? queryParams.appid : this.state.selectAppId,
@@ -113,12 +112,14 @@ var LogView = React.createClass({
             searchObj.endtime = endtime;
         }
         UserAuditLogAction.getAuditLogList(searchObj, this.addNoIdUserClass);
-    },
-    addNoIdUserClass: function() {
+    };
+
+    addNoIdUserClass = () => {
         $('.userNoIdClass').parents('.ant-table-row').addClass('no_valid_user');
-    },
+    };
+
     // 应用下拉框的选择
-    getAppOptions: function() {
+    getAppOptions = () => {
         var list = this.state.userAppArray.map(function(item) {
             return <Option
                 key={item.app_id}
@@ -129,10 +130,10 @@ var LogView = React.createClass({
             </Option>;
         });
         return list;
-    },
+    };
 
     // 选择应用
-    selectApp: function(app_id) {
+    selectApp = (app_id) => {
         UserAuditLogAction.setUserLogSelectedAppId(app_id);
         Trace.traceEvent('用户审计日志','点击筛选菜单中的应用');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
@@ -140,10 +141,10 @@ var LogView = React.createClass({
             appid: app_id,
             sort_id: ''
         });
-    },
+    };
 
     // 搜索框
-    handleSearchEvent: function(inputContent) {
+    handleSearchEvent = (inputContent) => {
         Trace.traceEvent('用户审计日志','搜索框输入');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         inputContent = inputContent ? inputContent : '';
@@ -154,9 +155,10 @@ var LogView = React.createClass({
                 sort_id: ''
             });
         }
-    },
+    };
+
     // 更改时间
-    onSelectDate: function(start_time, end_time, range) {
+    onSelectDate = (start_time, end_time, range) => {
         let startTime = start_time;
         if (Date.now() - THREE_MONTH_TIME_RANGE > start_time) {
             startTime = Date.now() - THREE_MONTH_TIME_RANGE;
@@ -174,9 +176,9 @@ var LogView = React.createClass({
             endtime: endTime,
             sort_id: ''
         });
-    },
+    };
 
-    getTableColumns: function() {
+    getTableColumns = () => {
         var columns = [
             {
                 title: Intl.get('common.username', '用户名'),
@@ -350,16 +352,16 @@ var LogView = React.createClass({
             }
         ];
         return columns;
-    },
+    };
 
     // 委内维拉项目，显示的列表项（不包括类型、IP归属地、运营商）
-    getTableColumnsVe: function() {
+    getTableColumnsVe = () => {
         return _.filter(this.getTableColumns(), (item) => {
             return item.dataIndex !== 'location' && item.dataIndex !== 'area' && item.dataIndex !== 'tags';
         });
-    },
+    };
 
-    handleTableChange: function(pagination, filters, sorter) {
+    handleTableChange = (pagination, filters, sorter) => {
         const sortField = sorter.field || this.state.sortField;
         //将ascend、descend转换成后端要求的asc、desc
         const sortOrder = (sorter.order && sorter.order.replace('end', '')) || this.state.sortOrder;
@@ -369,14 +371,15 @@ var LogView = React.createClass({
             sort_field: sortField,
             sort_order: sortOrder
         });
-    },
+    };
 
-    changeTableHeight: function() {
+    changeTableHeight = () => {
         this.setState({
             windowHeight: $(window).height()
         });
-    },
-    renderLoadingBlock: function() {
+    };
+
+    renderLoadingBlock = () => {
         if (this.state.appUserListResult !== 'loading') {
             return null;
         } else if (this.state.getUserLogErrorMsg !== '') {
@@ -389,9 +392,9 @@ var LogView = React.createClass({
                 <Spinner />
             </div>
         );
-    },
+    };
 
-    onSelectFilterUserType(value) {
+    onSelectFilterUserType = (value) => {
         this.state.userType = value;
         UserAuditLogAction.handleFilterUserType();
         this.setState({
@@ -403,10 +406,10 @@ var LogView = React.createClass({
         });
         Trace.traceEvent('用户审计日志', '用户筛选');
 
-    },
+    };
 
     // 渲染过滤用户类型
-    renderFilterUserType() {
+    renderFilterUserType = () => {
         return (
             <Select
                 className="select-user-type"
@@ -420,8 +423,9 @@ var LogView = React.createClass({
                 }
             </Select>
         );
-    },
-    renderLogHeader: function() {
+    };
+
+    renderLogHeader = () => {
         var appOptions = this.getAppOptions();
         return (
             <div className="user_audit_log_container">
@@ -483,8 +487,9 @@ var LogView = React.createClass({
 
             </div>
         );
-    },
-    handleRefresh: function() {
+    };
+
+    handleRefresh = () => {
         UserAuditLogAction.handleRefresh();
         setTimeout(() => {
             this.getAuditLog({
@@ -494,12 +499,13 @@ var LogView = React.createClass({
             });
         });
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
-    },
-    getRowKey: function(record, index) {
-        return index;
-    },
+    };
 
-    handleScrollBottom: function() {
+    getRowKey = (record, index) => {
+        return index;
+    };
+
+    handleScrollBottom = () => {
         var length = this.state.auditLogList.length;
         if (length < this.state.total) {
             this.getAuditLog({
@@ -510,30 +516,32 @@ var LogView = React.createClass({
                 listenScrollBottom: false
             });
         }
-    },
+    };
 
     //是否显示没有更多数据了
-    showNoMoreDataTip: function() {
+    showNoMoreDataTip = () => {
         return !this.state.appUserListResult &&
             this.state.auditLogList.length >= 10 && !this.state.listenScrollBottom;
-    },
+    };
 
     //处理选中行的样式
-    handleRowClassName: function(record, index) {
+    handleRowClassName = (record, index) => {
         if ((index === this.state.selectedRowIndex) && this.state.isShowRightPanel) {
             return 'current_row';
         }
         else {
             return '';
         }
-    },
+    };
+
     //记录点击行的索引
-    handleRowClick: function(record, index) {
+    handleRowClick = (record, index) => {
         this.setState({
             selectedRowIndex: index
         });
-    },
-    renderTableContent: function() {
+    };
+
+    renderTableContent = () => {
         var isLoading = this.state.appUserListResult === 'loading';
         var doNotShow = false;
         if (isLoading && this.state.sortId === '') {
@@ -586,10 +594,10 @@ var LogView = React.createClass({
                     </div> : null}
             </div>
         );
-    },
+    };
 
     // 错误处理
-    renderDataErrorHandle: function() {
+    renderDataErrorHandle = () => {
         return <div className="alert-wrap">
             <Alert
                 message={this.state.getUserLogErrorMsg}
@@ -597,9 +605,9 @@ var LogView = React.createClass({
                 showIcon={true}
             />
         </div>;
-    },
+    };
 
-    render: function() {
+    render() {
         return (
             <div ref="userListTable" className="user_audit_log_style">
                 {this.renderLogHeader()}
@@ -608,7 +616,7 @@ var LogView = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = LogView;
 

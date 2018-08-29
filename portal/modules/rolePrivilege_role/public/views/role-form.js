@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -35,8 +36,10 @@ let CONSTANTS = {
     SAVE_BTN_H: 65
 };
 
-var RoleForm = React.createClass({
+var RoleForm = createReactClass({
+    displayName: 'RoleForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             cancelRoleForm: noop,
@@ -48,6 +51,7 @@ var RoleForm = React.createClass({
             roleFormShow: false
         };
     },
+
     getFormData: function(props) {
         var formData = $.extend(true, {}, props.role);
         if (props.formType == 'add') {
@@ -55,6 +59,7 @@ var RoleForm = React.createClass({
         }
         return formData;
     },
+
     getInitialState: function() {
         var stateData = RoleFormStore.getState();
         return {
@@ -69,6 +74,7 @@ var RoleForm = React.createClass({
             saveMsg: stateData.saveMsg//保存失败后的提示信息
         };
     },
+
     onChange: function() {
         var stateData = RoleFormStore.getState();
         this.setState({
@@ -76,6 +82,7 @@ var RoleForm = React.createClass({
             saveMsg: stateData.saveMsg//保存失败后的提示信息
         });
     },
+
     componentDidMount: function() {
         RoleFormStore.listen(this.onChange);
     },
@@ -174,6 +181,7 @@ var RoleForm = React.createClass({
             );
         }
     },
+
     //全选、取消选中的处理
     handleSelectAllAuthority: function(curPermissionGroupName, flag) {
         if (flag) {
@@ -220,14 +228,17 @@ var RoleForm = React.createClass({
             );
         }
     },
+
     hideSaveTooltip: function() {
         RoleFormAction.clearSaveFlags();
     },
+
     //转到权限设置面板（我的应用中的处理）
     turnToAuthPanel: function(e) {
         this.handleCancel(e);
         this.props.setShowRoleAuthType('authority');
     },
+
     //展示收起单个权限组的处理
     toggleAuth: function(curPermissionGroupName) {
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
@@ -244,6 +255,7 @@ var RoleForm = React.createClass({
             );
         }
     },
+
     //展示收起所有权限分组的处理
     toggleAllAuth: function() {
         if (this.state.allAuthIsShow ) {
@@ -397,7 +409,7 @@ var RoleForm = React.createClass({
                 </div>) : null}
             </RightPanel>
         );
-    }
+    },
 });
 
 module.exports = RoleForm;

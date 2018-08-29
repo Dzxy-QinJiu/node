@@ -31,31 +31,9 @@ const LAYOUT_CONSTNTS = {
     H_SCROLL_BAR_HEIGHT: 15,
     CONTENT_PADDING: 16,
 };
-const List = React.createClass({
-    getInitialState: function() {
-        return {
-            condition: {},
-            rangeParams: [],
-            isScrollTop: this.props.isScrollTop,
-            sum: this.props.sum,
-            filterSelected: {
-                user_name: 'all',
-                sales_name: 'all',
-                sales_team: 'all',
-                category: 'all',
-                stage: 'all',
-                label: 'all',
-            },
-            isPreviewShow: false,
-            previewList: [],
-            selectedItemId: '',//选中的合同id
-            hideCustomColumnDiv: true, // 是否隐藏自定义选择展示列的div
-            currentTypeShowColumns: [], // 展示的列
-            currentTypeAllColumns: this.getCurrentTypeAllColumns(), // 当前分类下所有列
-            selectShowColumnsValue: [], // 选中的展示列的值
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+
+class List extends React.Component {
+    componentWillReceiveProps(nextProps) {
         // 切换视图时清空表头搜索筛选条件
         if (nextProps.type !== this.props.type) {
             let filterSelected = {};
@@ -91,8 +69,9 @@ const List = React.createClass({
         this.setState({
             hideCustomColumnDiv: true
         });
-    },
-    componentDidMount: function() {
+    }
+
+    componentDidMount() {
         //窗口大小改变事件
         resizeEmitter.on(resizeEmitter.WINDOW_SIZE_CHANGE, this.setTableHeight);
         TableUtil.zoomInSortArea(this.refs.listTable);
@@ -101,19 +80,22 @@ const List = React.createClass({
         let selectShowColumnsValue = this.getSelectShowColumnsValue();
         // 根据当前获取的展示列的值设置当前展示的列
         this.handleSelectShowColumnsChange(selectShowColumnsValue);
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         //窗口大小改变事件
         resizeEmitter.removeListener(resizeEmitter.WINDOW_SIZE_CHANGE, this.setTableHeight);
         contractEmitter.removeListener(contractEmitter.IMPORT_CONTRACT, this.onContractImport);
-    },
-    componentDidUpdate: function() {
+    }
+
+    componentDidUpdate() {
         this.setTableHeight();
         if (this.state.isScrollTop) {
             this.scrollTop();
         }
-    },
-    setTableHeight: function() {
+    }
+
+    setTableHeight = () => {
         let newHeight = $(window).height() 
             - $('.custom-tbody').offset().top 
             - $('.custom-tfoot').outerHeight() 
@@ -122,11 +104,13 @@ const List = React.createClass({
             - LAYOUT_CONSTNTS.BOTTOM;
         $(this.refs.listTable).find('.custom-tbody').height(newHeight);
         this.refs.gemiScrollBar.update();
-    },
-    getRowKey: function(record, index) {
+    };
+
+    getRowKey = (record, index) => {
         return index;
-    },
-    onRowClick: function(record, index, e) {
+    };
+
+    onRowClick = (record, index, e) => {
         if (e.currentTarget.className === 'ant-table-selection-column') return;
         const $tr = $(e.target).closest('tr');
         $tr.addClass('current-row').siblings().removeClass('current-row');
@@ -134,20 +118,23 @@ const List = React.createClass({
         this.state.selectedItemId = record.id;
         this.setState(this.state);
         this.props.showRightPanel(view, index);
-    },
+    };
+
     //处理选中行的样式
-    handleRowClassName: function(record, index) {
+    handleRowClassName = (record, index) => {
         if ((record.id === this.state.selectedItemId) && this.props.isRightPanelShow) {
             return 'current-row';
         }
         else {
             return '';
         }
-    },
-    onChange: function(pagination, filters, sorter) {
+    };
+
+    onChange = (pagination, filters, sorter) => {
         this.props.getContractList(true, sorter);
-    },
-    onFilterChange: function(field, value) {
+    };
+
+    onFilterChange = (field, value) => {
         //value可能为undefined，需要处理一下
         if (!value) {
             value = '';
@@ -212,21 +199,21 @@ const List = React.createClass({
             this.props.getContractList(true);
             Trace.traceEvent(ReactDOM.findDOMNode(this),'按照' + field + '筛选');
         }, 500);
-    },
+    };
 
-    toggleDateSelector: function(field) {
+    toggleDateSelector = (field) => {
         this.state[field] = !this.state[field];
         this.setState(this.state);
-    },
+    };
 
-    handleScrollBottom: function() {
+    handleScrollBottom = () => {
         this.props.getContractList();
-    },
+    };
 
-    scrollTop: function() {
+    scrollTop = () => {
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         this.setState({isScrollTop: false});
-    },
+    };
 
     /**
      * 表头筛选下拉菜单构造器
@@ -246,7 +233,7 @@ const List = React.createClass({
      * 若@valueKey、@nameKey都不传，则认为list为简单数组，直接以数组项本身作为下拉菜单的显示值和实际值
      *
      */
-    buildFilterSelect: function(column, list, valueKey, nameKey) {
+    buildFilterSelect = (column, list, valueKey, nameKey) => {
         let options = list.map(item => {
             const name = nameKey ? item[nameKey] : '';
             const value = valueKey ? item[valueKey] : item;
@@ -270,9 +257,9 @@ const List = React.createClass({
                 {options}
             </Select>
         );
-    },
+    };
 
-    onFilterSelectChange: function(column, value) {
+    onFilterSelectChange = (column, value) => {
         let condition = this.state.condition;
 
         if (value === 'all') {
@@ -288,16 +275,16 @@ const List = React.createClass({
                 this.props.getContractList(true);
             });
         }
-    },
+    };
 
-    onContractImport(list) {
+    onContractImport = (list) => {
         this.setState({
             isPreviewShow: true,
             previewList: list,
         });
-    },
+    };
 
-    confirmImport(flag, cb) {
+    confirmImport = (flag, cb) => {
         const route = _.find(routeList, route => route.handler === 'uploadContractConfirm');
 
         const params = {
@@ -315,9 +302,9 @@ const List = React.createClass({
         }, () => {
             message.error(Intl.get('contract.86', '导入合同失败'));
         });
-    },
+    };
 
-    doImport() {
+    doImport = () => {
         this.confirmImport(true, () => {
             this.setState({
                 isPreviewShow: false,
@@ -326,22 +313,23 @@ const List = React.createClass({
             //刷新合同列表
             this.props.getContractList();
         });
-    },
+    };
 
-    cancelImport() {
+    cancelImport = () => {
         this.setState({
             isPreviewShow: false,
         });
         this.confirmImport(false);
-    },
+    };
 
-    toggleCustomColumnDivVisible() {
+    toggleCustomColumnDivVisible = () => {
         this.setState({
             hideCustomColumnDiv: !this.state.hideCustomColumnDiv
         });
-    },
+    };
+
     // 设置当前选择的展示列及展示列的值数组
-    handleSelectShowColumnsChange(values, currentTypeAllColumns) {
+    handleSelectShowColumnsChange = (values, currentTypeAllColumns) => {
         if (!values.length) return;
 
         let newCurrentTypeShowColumns = [],
@@ -357,9 +345,10 @@ const List = React.createClass({
             currentTypeShowColumns: newCurrentTypeShowColumns,
             selectShowColumnsValue: values
         });
-    },
+    };
+
     // 获取当前所有列
-    getCurrentTypeAllColumns(nextTypeFlag) {
+    getCurrentTypeAllColumns = (nextTypeFlag) => {
         let type = nextTypeFlag || this.props.type;
         let columns = [];
         //根据视图类型定义表格列
@@ -458,9 +447,10 @@ const List = React.createClass({
         });
 
         return columns;
-    },
+    };
+
     // 获取存储在localStorage中的当前合同类型的展示列值数组(默认为当前合同类型的全部列的值组成的数组)
-    getSelectShowColumnsValue(nextTypeFlag) {
+    getSelectShowColumnsValue = (nextTypeFlag) => {
         let type = nextTypeFlag || this.props.type,
             websiteConfig = getLocalWebsiteConfig(),
             selectShowColumnsValue;
@@ -471,20 +461,43 @@ const List = React.createClass({
             selectShowColumnsValue = columns.map(column => column.title);
         }
         return selectShowColumnsValue;
-    },
+    };
+
     // 保存当前合同分类的展示列的值数组
-    saveNewCustomColumns() {
+    saveNewCustomColumns = () => {
         let curTypeSelectColumnsValueObj = {};
         curTypeSelectColumnsValueObj[this.props.type] = this.state.selectShowColumnsValue;
         setWebsiteConfig(curTypeSelectColumnsValueObj, this.toggleCustomColumnDivVisible);
-    },
+    };
 
     //获取显示的列
-    getShowColumns: function() {
+    getShowColumns = () => {
         return extend(true, [], this.state.currentTypeShowColumns);
-    },
+    };
 
-    render: function() {
+    state = {
+        condition: {},
+        rangeParams: [],
+        isScrollTop: this.props.isScrollTop,
+        sum: this.props.sum,
+        filterSelected: {
+            user_name: 'all',
+            sales_name: 'all',
+            sales_team: 'all',
+            category: 'all',
+            stage: 'all',
+            label: 'all',
+        },
+        isPreviewShow: false,
+        previewList: [],
+        selectedItemId: '',//选中的合同id
+        hideCustomColumnDiv: true, // 是否隐藏自定义选择展示列的div
+        currentTypeShowColumns: [], // 展示的列
+        currentTypeAllColumns: this.getCurrentTypeAllColumns(), // 当前分类下所有列
+        selectShowColumnsValue: [], // 选中的展示列的值
+    };
+
+    render() {
         const filterColumns = this.getShowColumns().map(column => {
             if (column.hasFilter) {
                 if (column.dataIndex === 'sales_team') {
@@ -664,7 +677,7 @@ const List = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = List;
 

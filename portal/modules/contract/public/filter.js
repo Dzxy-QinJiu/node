@@ -2,24 +2,25 @@ var React = require('react');
 import { Select, Icon } from 'antd';
 import SearchInput from '../../../components/searchInput';
 
-const Filter = React.createClass({
-    getInitialState: function() {
-        return {
-            condition: {},
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+class Filter extends React.Component {
+    state = {
+        condition: {},
+    };
+
+    componentWillReceiveProps(nextProps) {
         //切换视图时清空表头搜索筛选条件
         if (nextProps.type !== this.props.type) {
             this.setState({condition: {}});
             this.refs.searchInput.closeSearchInput();
         }
-    },
-    search: function() {
+    }
+
+    search = () => {
         this.state.condition = this.refs.searchInput.state.formData;
         this.props.getContractList();
-    },
-    render: function() {
+    };
+
+    render() {
         const searchFields = [
             {
                 name: Intl.get('contract.24', '合同号'),
@@ -50,7 +51,7 @@ const Filter = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Filter;
 

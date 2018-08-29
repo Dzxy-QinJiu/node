@@ -26,30 +26,31 @@ var AlertTimer = require('../../../../components/alert-timer');
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import PhoneInput from 'CMP_DIR/phone-input';
+
 function noop() {
 }
+
 const FORM_CONST = {
     LABEL_COL: 5,
     WRAPPER_COL: 18
 };
-var UserForm = React.createClass({
-    getDefaultProps: function() {
-        return {
-            submitUserForm: noop,
-            user: {
-                id: '',
-                userName: '',
-                name: '',
-                image: '',
-                phone: '',
-                email: '',
-                role: [],
-                team: ''
-            }
-        };
-    },
 
-    getInitialState: function() {
+class UserForm extends React.Component {
+    static defaultProps = {
+        submitUserForm: noop,
+        user: {
+            id: '',
+            userName: '',
+            name: '',
+            image: '',
+            phone: '',
+            email: '',
+            role: [],
+            team: ''
+        }
+    };
+
+    initData = () => {
         return {
             ...UserFormStore.getState(),
             formData: {
@@ -64,17 +65,21 @@ var UserForm = React.createClass({
             phoneEmailCheck: true//电话邮箱必填一项的验证
 
         };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        this.setState(this.getInitialState());
-    },
-    onChange: function() {
+    };
+
+    componentWillReceiveProps(nextProps) {
+        this.setState(this.initData());
+    }
+
+    onChange = () => {
         this.setState({... UserFormStore.getState()});
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         UserFormStore.unlisten(this.onChange);
-    },
-    componentDidMount: function() {
+    }
+
+    componentDidMount() {
         var _this = this;
         _this.layout();
         UserFormStore.listen(_this.onChange);
@@ -82,28 +87,30 @@ var UserForm = React.createClass({
             e.stopPropagation();
             _this.layout();
         });
-    },
+    }
 
-    layout: function() {
+    layout = () => {
         var bHeight = $('body').height();
         var formHeight = bHeight - $('form .head-image-container').outerHeight(true);
         $('.user-form-scroll').height(formHeight);
-    },
+    };
 
     //关闭面板前清空验证的处理
-    resetValidatFlags: function() {
+    resetValidatFlags = () => {
         UserFormAction.resetUserNameFlags();
         UserFormAction.resetEmailFlags();
-    },
-    handleCancel: function(e) {
+    };
+
+    handleCancel = (e) => {
         e.preventDefault();
         this.resetValidatFlags();
         this.props.closeRightPanel();
-    },
-    handleSubmit: function(e) {
+    };
+
+    handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if(err) return;
+            if (err) return;
             if (this.state.userNameExist || this.state.emailExist || this.state.userNameError || this.state.emailError) {
                 err = true;
             }
@@ -131,9 +138,10 @@ var UserForm = React.createClass({
                 }
             }
         });
-    },
+    };
+
     //电话唯一性的验证
-    getPhoneInputValidateRules: function() {
+    getPhoneInputValidateRules = () => {
         return [{
             validator: (rule, value, callback) => {
                 value = $.trim(value);
@@ -151,30 +159,32 @@ var UserForm = React.createClass({
                             }
                         }
                     });
-                }else{
+                } else {
                     callback();
                 }
             }
         }];
-    },
-    uploadImg: function(src) {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'),'上传头像');
+    };
+
+    uploadImg = (src) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'), '上传头像');
         this.props.form.setFieldsValue({image: src});
-    },
+    };
+
     //关闭
-    closePanel: function() {
+    closePanel = () => {
         this.resetValidatFlags();
         this.props.closeRightPanel();
-    },
+    };
 
     //返回详细信息展示页
-    returnInfoPanel: function(newAddUser) {
+    returnInfoPanel = (newAddUser) => {
         this.resetValidatFlags();
         this.props.returnInfoPanel(newAddUser);
-    },
+    };
 
     //去掉保存后提示信息
-    hideSaveTooltip: function() {
+    hideSaveTooltip = () => {
         if (this.props.formType === 'add' && (this.state.saveResult === 'success' || this.state.saveResult === 'warn')) {
             //返回详情页继续添加
             this.returnInfoPanel(this.state.savedUser);
@@ -182,10 +192,10 @@ var UserForm = React.createClass({
         }
 
         UserFormAction.resetSaveResult(this.props.formType, this.state.saveResult);
-    },
+    };
 
     //用户名只能由字母、数字、下划线组成
-    checkUserName: function(rule, value, callback) {
+    checkUserName = (rule, value, callback) => {
         if (this.state.userNameExist || this.state.userNameError) {
             UserFormAction.resetUserNameFlags();
         }
@@ -199,10 +209,10 @@ var UserForm = React.createClass({
         } else {
             callback();
         }
-    },
+    };
 
     //邮箱唯一性验证
-    checkOnlyEmail: function(e) {
+    checkOnlyEmail = (e) => {
         let email = $.trim(this.props.form.getFieldValue('email'));
         if (email && email !== this.props.user.email.value && /^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
             .test(email)) {
@@ -213,47 +223,47 @@ var UserForm = React.createClass({
             UserFormAction.resetEmailFlags();
             UserFormAction.resetUserNameFlags();
         }
-    },
+    };
 
     //验证所有者用户名的唯一性
-    checkOnlyUserName: function() {
+    checkOnlyUserName = () => {
         var userName = $.trim(this.props.form.getFieldValue('userName'));
         if (userName && (/^[A-Za-z0-9]\w+$/).test(userName)) {
             UserFormAction.checkOnlyUserName(userName);
         } else {
             UserFormAction.resetUserNameFlags();
         }
-    },
+    };
 
     //用户名唯一性验证的展示
-    renderUserNameMsg: function() {
+    renderUserNameMsg = () => {
         if (this.state.userNameExist) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.is.existed"
-                defaultMessage="用户名已存在！"/></div>);
+                                                                                   defaultMessage="用户名已存在！"/></div>);
         } else if (this.state.userNameError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.username.is.unique"
-                defaultMessage="用户名唯一性校验出错！"/>
+                                                                                   defaultMessage="用户名唯一性校验出错！"/>
             </div>);
         } else {
             return '';
         }
-    },
+    };
 
     //邮箱唯一性验证的展示
-    renderEmailMsg: function() {
+    renderEmailMsg = () => {
         if (this.state.emailExist || this.state.userNameExist) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.is.used"
-                defaultMessage="邮箱已被使用！"/></div>);
+                                                                                   defaultMessage="邮箱已被使用！"/></div>);
         } else if (this.state.emailError || this.state.userNameError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.validate.error"
-                defaultMessage="邮箱校验失败！"/></div>);
+                                                                                   defaultMessage="邮箱校验失败！"/></div>);
         } else {
             return '';
         }
-    },
+    };
 
     //渲染角色下拉列表
-    renderRoleOptions: function() {
+    renderRoleOptions = () => {
         let formData = this.props.form.getFieldsValue();
         //角色列表
         var roleOptions = '';
@@ -276,13 +286,13 @@ var UserForm = React.createClass({
             });
         } else {
             roleOptions =
-                    <Option value=""><ReactIntl.FormattedMessage id="member.no.role" defaultMessage="暂无角色"/></Option>;
+                <Option value=""><ReactIntl.FormattedMessage id="member.no.role" defaultMessage="暂无角色"/></Option>;
         }
         return roleOptions;
-    },
+    };
 
     //渲染所属团队下拉列表
-    renderTeamOptions: function() {
+    renderTeamOptions = () => {
         let values = this.props.form.getFieldsValue();
         //团队列表
         var teamOptions = '';
@@ -300,17 +310,22 @@ var UserForm = React.createClass({
             });
         } else {
             teamOptions =
-                    <Option value=""><ReactIntl.FormattedMessage id="member.no.groups" defaultMessage="暂无团队"/></Option>;
+                <Option value=""><ReactIntl.FormattedMessage id="member.no.groups" defaultMessage="暂无团队"/></Option>;
         }
         return teamOptions;
-    },
-    handleSelect: function() {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'),'选择角色');
-    },
-    handleTeamSelect: function() {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'),'选择所属团队');
-    },
-    render: function() {
+    };
+
+    handleSelect = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择角色');
+    };
+
+    handleTeamSelect = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择所属团队');
+    };
+
+    state = this.initData();
+
+    render() {
         let values = this.props.form.getFieldsValue();
         var className = 'right-panel-content';
         if (this.props.userFormShow) {
@@ -328,12 +343,12 @@ var UserForm = React.createClass({
                 <RightPanelClose onClick={this.closePanel} data-tracename="关闭添加/编辑面板"/>
                 {(this.props.formType === 'add' || !this.props.userFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel} data-tracename="返回详细信息展示页"/>)}
-                <Form horizontal className="form" autoComplete="off" >
+                <Form horizontal className="form" autoComplete="off">
                     <FormItem id="image">
                         {getFieldDecorator('image')(
                             <div>
                                 <HeadIcon
-                                    headIcon={values.image }
+                                    headIcon={values.image}
                                     iconDescr={values.name || headDescr}
                                     upLoadDescr={headDescr}
                                     isEdit={true}
@@ -353,13 +368,16 @@ var UserForm = React.createClass({
                                     labelCol={{span: FORM_CONST.LABEL_COL}}
                                     wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
                                 >
-                                    {getFieldDecorator('name',{
+                                    {getFieldDecorator('name', {
                                         rules: [{
-                                            required: true, min: 1, max: 20, message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')
+                                            required: true,
+                                            min: 1,
+                                            max: 20,
+                                            message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')
                                         }]
                                     })(
                                         <Input name="name" id="nickName"
-                                            placeholder={Intl.get('common.required.tip','必填项*')}
+                                               placeholder={Intl.get('common.required.tip', '必填项*')}
                                         />
                                     )}
                                 </FormItem>
@@ -379,17 +397,21 @@ var UserForm = React.createClass({
                                     wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
                                 >
 
-                                    {getFieldDecorator('email',{
+                                    {getFieldDecorator('email', {
                                         rules: [{
-                                            required: true, type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                        },{
+                                            required: true,
+                                            type: 'email',
+                                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                        }, {
                                             validator: {}
                                         }]
                                     })(
                                         <Input name="email" id="email" type="text"
-                                            placeholder={Intl.get('common.required.tip','必填项*')}
-                                            className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
-                                            onBlur={(e) => {this.checkOnlyEmail(e);}}
+                                               placeholder={Intl.get('common.required.tip', '必填项*')}
+                                               className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
+                                               onBlur={(e) => {
+                                                   this.checkOnlyEmail(e);
+                                               }}
                                         />
                                     )}
 
@@ -403,21 +425,23 @@ var UserForm = React.createClass({
                                     {this.state.isLoadingRoleList ? (
                                         <div className="role-list-loading">
                                             <ReactIntl.FormattedMessage id="member.get.role.lists"
-                                                defaultMessage="正在获取角色列表"/>
+                                                                        defaultMessage="正在获取角色列表"/>
                                             <Icon type="loading"/>
                                         </div>) : (
                                         <div>
-                                            {getFieldDecorator('role',{
+                                            {getFieldDecorator('role', {
                                                 rules: [{
-                                                    required: true, type: 'array', message: Intl.get('member.select.role', '请选择角色')
+                                                    required: true,
+                                                    type: 'array',
+                                                    message: Intl.get('member.select.role', '请选择角色')
                                                 }]
                                             })(
                                                 <Select multiple
-                                                    optionFilterProp="children"
-                                                    searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
-                                                    notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
-                                                    onSelect={this.handleSelect}
-                                                    getPopupContainer={() => document.getElementById('user-add-form')}
+                                                        optionFilterProp="children"
+                                                        searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
+                                                        notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                                        onSelect={this.handleSelect}
+                                                        getPopupContainer={() => document.getElementById('user-add-form')}
                                                 >
                                                     {this.renderRoleOptions()}
                                                 </Select>
@@ -426,7 +450,7 @@ var UserForm = React.createClass({
                                     }
                                 </FormItem>
                                 {/** v8环境下，不显示所属团队 */}
-                                {this.props.formType === 'add' ? ( !Oplate.hideSomeItem && <FormItem
+                                {this.props.formType === 'add' ? (!Oplate.hideSomeItem && <FormItem
                                     label={Intl.get('common.belong.team', '所属团队')}
                                     labelCol={{span: FORM_CONST.LABEL_COL}}
                                     wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
@@ -438,15 +462,15 @@ var UserForm = React.createClass({
                                         <div>
                                             {getFieldDecorator('team')(
                                                 <Select name="team" id="team"
-                                                    placeholder={Intl.get('member.select.group', '请选择团队')}
-                                                    notFoundContent={Intl.get('member.no.group', '暂无此团队')}
-                                                    showSearch
-                                                    searchPlaceholder={Intl.get('member.search.group.by.name', '输入团队名称搜索')}
-                                                    optionFilterProp="children"
-                                                    value={values.team}
+                                                        placeholder={Intl.get('member.select.group', '请选择团队')}
+                                                        notFoundContent={Intl.get('member.no.group', '暂无此团队')}
+                                                        showSearch
+                                                        searchPlaceholder={Intl.get('member.search.group.by.name', '输入团队名称搜索')}
+                                                        optionFilterProp="children"
+                                                        value={values.team}
                                                     // onChange={this.setField.bind(this, 'team')}
-                                                    onSelect={this.handleTeamSelect}
-                                                    getPopupContainer={() => document.getElementById('user-add-form')}
+                                                        onSelect={this.handleTeamSelect}
+                                                        getPopupContainer={() => document.getElementById('user-add-form')}
                                                 >
                                                     {this.renderTeamOptions()}
                                                 </Select>
@@ -460,14 +484,14 @@ var UserForm = React.createClass({
                                         {saveResult ?
                                             (
                                                 <AlertTimer time={3000}
-                                                    message={this.state.saveMsg}
-                                                    type={this.state.saveResult} showIcon
-                                                    onHide={this.hideSaveTooltip}/>
+                                                            message={this.state.saveMsg}
+                                                            type={this.state.saveResult} showIcon
+                                                            onHide={this.hideSaveTooltip}/>
                                             ) : ''
                                         }
                                     </div>
                                     <RightPanelCancel onClick={this.handleCancel} data-tracename="取消新添加成员的基本信息">
-                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
+                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                                     </RightPanelCancel>
                                     <RightPanelSubmit onClick={this.handleSubmit} data-tracename="保存新添加成员的基本信息">
                                         <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
@@ -480,10 +504,10 @@ var UserForm = React.createClass({
                         <Spinner className="right-panel-saving"/>
                     </div>) : ''}
                 </Form>
-            </ div >
+            </ div>
         );
     }
-});
+}
 
 const UserFormForm = Form.create()(UserForm);
 module.exports = UserFormForm;

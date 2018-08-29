@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 import {Form, Input, Button, Select, Checkbox } from 'antd';
 const Validation = require('rc-form-validation');
 const FormItem = Form.Item;
@@ -15,8 +16,10 @@ const POSITION_AREA_OPTIONS = {
     JN: 'jinan',
     BJ: 'beijing'
 };
-const BatchPositionForm = React.createClass({
+const BatchPositionForm = createReactClass({
+    displayName: 'BatchPositionForm',
     mixins: [Validation.FieldMixin],
+
     getInitialState: function() {
         return {
             status: {
@@ -32,11 +35,13 @@ const BatchPositionForm = React.createClass({
             errMsg: '' // 添加座席号的错误信息
         };
     },
+
     // 获取组织id
     getOrganizationId(selectValue) {
         let organizationList = PositionStore.getState().realmList;
         return _.chain(organizationList).filter(item => selectValue.indexOf(item.realm_name) > -1).map('realm_id').value();
     },
+
     componentWillUpdate(nextProps, nextState) {
         let formData = this.state.formData;
         if (formData.realm_id !== nextState.formData.realm_id && nextState.formData.realm_id) {
@@ -44,6 +49,7 @@ const BatchPositionForm = React.createClass({
             PositionAction.getUnbindMemberList({realm: SelectId});
         }
     },
+
     // 地域的选择
     selectAreaValue(value) {
         let selectOptions = 'changsha';
@@ -56,6 +62,7 @@ const BatchPositionForm = React.createClass({
             areaValue: selectOptions
         });
     },
+
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -66,6 +73,7 @@ const BatchPositionForm = React.createClass({
         });
         return classes;
     },
+
     // 校验输入的座席号（数字即可，对位数没有限制）
     checkPhoneOrder(rule, value, callback) {
         value = $.trim(value);
@@ -79,6 +87,7 @@ const BatchPositionForm = React.createClass({
             callback();
         }
     },
+
     // 关闭添加座席号前，要清空表单中的数据
     resetForm() {
         this.setState({
@@ -90,11 +99,13 @@ const BatchPositionForm = React.createClass({
             }
         });
     },
+
     // 获取用户id
     getUnbindMemberId(selectValue) {
         var unbindMemberList = PositionStore.getState().unbindMember.data;
         return _.chain(unbindMemberList).filter(item => selectValue.indexOf(item.nick_name) > -1).map('user_id').value();
     },
+
     // 提交保存
     handleSubmit() {
         let queryObj = {
@@ -124,11 +135,13 @@ const BatchPositionForm = React.createClass({
             }
         } );
     },
+
     // 关闭添加座席号面板
     closeRightPanel() {
         this.props.closeRightPanel();
         this.resetForm();
     },
+
     // 渲染组织列表
     renderOrganizationOptions() {
         let organizationOption = ''; // 组织列表
@@ -143,7 +156,8 @@ const BatchPositionForm = React.createClass({
             organizationOption = <Option value=''>{LANGLOBAL.ORGANIZATION.option}</Option>;
         }
         return organizationOption;
-    }, 
+    },
+
     //渲染未绑定的用户下拉列表
     renderMemberOptions() {
         //未绑定的用户列表
@@ -160,17 +174,20 @@ const BatchPositionForm = React.createClass({
         } 
         return unbindMemberOptions;
     },
+
     // 鼠标放在座席号的输入框中
     focusPositionInput() {
         this.setState({
             errMsg: ''
         });
     },
+
     handleCheckBox(event) {
         this.setState({
             isBindMember: event.target.checked
         });
     },
+
     render() {
         let formData = this.state.formData;
         let status = this.state.status;
@@ -275,7 +292,7 @@ const BatchPositionForm = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = BatchPositionForm;

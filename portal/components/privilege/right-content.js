@@ -5,8 +5,8 @@ function getPathname() {
     return window.location.pathname.replace(/^\//, '');
 }
 
-var RightContent = React.createClass({
-    checkRoute: function() {
+class RightContent extends React.Component {
+    checkRoute = () => {
         var locationPath = getPathname();
         if (this.props.route && locationPath === this.props.route.path) {
             var routes = this.props.route.routesExports;
@@ -16,8 +16,9 @@ var RightContent = React.createClass({
             }
         }
         return false;
-    },
-    render: function() {
+    };
+
+    render() {
         var jump = this.checkRoute();
         if (jump) {
             return null;
@@ -31,7 +32,7 @@ var RightContent = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = RightContent;
 

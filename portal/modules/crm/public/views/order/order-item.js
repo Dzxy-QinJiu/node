@@ -29,57 +29,56 @@ const ORDER_STATUS = {
 const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')];
 //展示申请试用用户的阶段
 const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')];
-const OrderItem = React.createClass({
-    getInitialState: function() {
-        return {
-            modalDialogFlag: false,//是否展示模态框
-            modalContent: '',//模态框提示内容
-            modalDialogType: 0,//1：删除
-            isLoading: false,
-            isAlertShow: false,
-            isAppPanelShow: false,
-            submitErrorMsg: '',//修改应用时的错误提示
-            apps: this.props.order.apps,
-            stage: this.props.order.sale_stages,
-            formData: JSON.parse(JSON.stringify(this.props.order)),
-            isShowApplyUserForm: false,//是否展示申请用户的表单
-            applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
-            applyUserApps: [],//申请用户对应的应用列表
-            customerName: this.props.customerName,//申请用户时用客户名作为昵称
-            isClosingOrder: false,//正在关闭订单
-            closeOrderErrorMsg: '',//关闭订单失败的错误提示
-            curOrderCloseStatus: '',//当前选择的订单的关闭状态
-            isExpandDetail: false,//关闭的订单是否展示详情
-        };
-    },
 
-    componentWillReceiveProps: function(nextProps) {
+class OrderItem extends React.Component {
+    state = {
+        modalDialogFlag: false,//是否展示模态框
+        modalContent: '',//模态框提示内容
+        modalDialogType: 0,//1：删除
+        isLoading: false,
+        isAlertShow: false,
+        isAppPanelShow: false,
+        submitErrorMsg: '',//修改应用时的错误提示
+        apps: this.props.order.apps,
+        stage: this.props.order.sale_stages,
+        formData: JSON.parse(JSON.stringify(this.props.order)),
+        isShowApplyUserForm: false,//是否展示申请用户的表单
+        applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
+        applyUserApps: [],//申请用户对应的应用列表
+        customerName: this.props.customerName,//申请用户时用客户名作为昵称
+        isClosingOrder: false,//正在关闭订单
+        closeOrderErrorMsg: '',//关闭订单失败的错误提示
+        curOrderCloseStatus: '',//当前选择的订单的关闭状态
+        isExpandDetail: false,//关闭的订单是否展示详情
+    };
+
+    componentWillReceiveProps(nextProps) {
         this.setState({
             formData: JSON.parse(JSON.stringify(nextProps.order)),
             stage: nextProps.order.sale_stages,
             apps: nextProps.order.apps,
             customerName: nextProps.customerName
         });
-    },
+    }
 
     //展示是否删除的模态框
-    showDelModalDialog: function() {
+    showDelModalDialog = () => {
         this.setState({
             modalDialogFlag: true,
             modalContent: '确定要删除这个订单吗？',
             modalDialogType: 1,
             isLoading: false
         });
-    },
+    };
 
-    hideModalDialog: function() {
+    hideModalDialog = () => {
         this.setState({
             modalDialogFlag: false
         });
-    },
+    };
 
     //模态提示框确定后的处理
-    handleModalOK: function(order) {
+    handleModalOK = (order) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除订单');
         switch (this.state.modalDialogType) {
             case 1:
@@ -107,9 +106,9 @@ const OrderItem = React.createClass({
                 }
                 break;
         }
-    },
+    };
 
-    showApplyForm: function(applyType, order, apps) {
+    showApplyForm = (applyType, order, apps) => {
         if (apps && !apps.length) {
             this.setState({isAlertShow: true});
             setTimeout(() => {
@@ -123,31 +122,33 @@ const OrderItem = React.createClass({
             applyUserApps: apps
         });
         // this.props.showApplyUserForm(applyType, order, apps);
-    },
-    cancelApply: function() {
+    };
+
+    cancelApply = () => {
         this.setState({
             isAlertShow: false,
             isShowApplyUserForm: false,
             applyType: Intl.get('common.trial.user', '试用用户'),
             applyUserApps: []
         });
-    },
-    showStageSelect: function() {
+    };
+
+    showStageSelect = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div .ant-btn-circle'), '编辑销售阶段');
         this.setState({isStageSelectShow: true});
-    },
+    };
 
-    showAppPanel: function() {
+    showAppPanel = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-application-list .ant-btn-circle'), '修改应用');
         this.setState({isAppPanelShow: true});
-    },
+    };
 
-    closeAppPanel: function() {
+    closeAppPanel = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div'), '取消应用的修改');
         this.setState({isAppPanelShow: false, apps: this.state.formData.apps});
-    },
+    };
 
-    onAppsChange: function(selectedApps) {
+    onAppsChange = (selectedApps) => {
         let oldAppList = _.isArray(this.state.apps) ? this.state.apps : [];
         if (selectedApps.length > oldAppList.length) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-icon-list-content'), '选中某个应用');
@@ -157,10 +158,10 @@ const OrderItem = React.createClass({
         this.state.apps = _.map(selectedApps, 'client_id');
 
         this.setState(this.state);
-    },
+    };
 
     //修改订单的预算、备注
-    saveOrderBasicInfo: function(saveObj, successFunc, errorFunc) {
+    saveOrderBasicInfo = (saveObj, successFunc, errorFunc) => {
         saveObj.customer_id = this.props.order.customer_id;
         //预算展示的是元，接口中需要的是万
         if (_.has(saveObj, 'budget')) {
@@ -182,10 +183,10 @@ const OrderItem = React.createClass({
                 }
             });
         }
-    },
+    };
 
     //修改订单的销售阶段
-    editOrderStage: function(sale_stages) {
+    editOrderStage = (sale_stages) => {
         let saveObj = {
             customer_id: _.get(this.props, 'order.customer_id'),
             id: _.get(this.state, 'formData.id'),
@@ -209,9 +210,10 @@ const OrderItem = React.createClass({
                 });
             }
         }
-    },
+    };
+
     //修改订单的应用
-    editOrderApp: function() {
+    editOrderApp = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div'), '保存应用的修改');
         let reqData = JSON.parse(JSON.stringify(this.props.order));
         reqData.apps = this.state.apps;
@@ -235,10 +237,10 @@ const OrderItem = React.createClass({
                 this.setState(this.state);
             });
         }
-    },
+    };
 
     //生成合同
-    generateContract: function() {
+    generateContract = () => {
         this.setState({isLoading: true});
 
         const route = _.find(routeList, route => route.handler === 'generateContract');
@@ -268,16 +270,17 @@ const OrderItem = React.createClass({
 
             message.error(errorMsg);
         });
-    },
+    };
 
     //转到合同
-    gotoContract: function() {
+    gotoContract = () => {
         history.pushState({
             contractId: this.props.order.contract_id
         }, '/contract/list', {});
-    },
+    };
+
     //关闭订单（赢单、丢单）
-    closeOrder: function(status) {
+    closeOrder = (status) => {
         if (this.state.isClosingOrder) return;
         this.setState({isClosingOrder: true});
         let order = this.state.formData;
@@ -302,17 +305,17 @@ const OrderItem = React.createClass({
                 });
             }
         });
-    },
+    };
 
-    getSelectedAppList(order){
+    getSelectedAppList = (order) => {
         let selectedAppList = [];
         if (_.get(order, 'apps[0]')) {
             selectedAppList = _.filter(this.props.appList, app => order.apps.indexOf(app.client_id) > -1);
         }
         return selectedAppList;
-    },
+    };
 
-    renderOrderContent() {
+    renderOrderContent = () => {
         const order = this.state.formData;
         let selectedAppList = this.getSelectedAppList(order);
         let selectedAppListId = _.map(selectedAppList, 'client_id');
@@ -454,8 +457,9 @@ const OrderItem = React.createClass({
                 {/*</div>*/}
             </div>
         );
-    },
-    renderOrderStatus(status){
+    };
+
+    renderOrderStatus = (status) => {
         if (status) {
             let descr = '', statusClass = '', iconClass = '';
             if (status === ORDER_STATUS.WIN) {
@@ -474,14 +478,17 @@ const OrderItem = React.createClass({
                 </span>);
         }
         return null;
-    },
-    selectCloseOrderStatus({item, key}){
+    };
+
+    selectCloseOrderStatus = ({item, key}) => {
         this.setState({curOrderCloseStatus: key});
-    },
-    cancelCloseOrder(){
+    };
+
+    cancelCloseOrder = () => {
         this.setState({curOrderCloseStatus: ''});
-    },
-    renderOrderStage(curStage){
+    };
+
+    renderOrderStage = (curStage) => {
         let stageList = this.props.stageList;
         let currentStageIndex = _.findIndex(stageList, stage => stage.name === curStage);
         let stageStepList = _.map(stageList, (stage, index) => {
@@ -523,12 +530,14 @@ const OrderItem = React.createClass({
         return (
             <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
                 onClickStep={this.onClickStep.bind(this)}/>);
-    },
-    onClickStep(event){
+    };
+
+    onClickStep = (event) => {
         $(event.target).parents('.step-item').find('.order-stage-name').trigger('click');
-    },
+    };
+
     //渲染填写丢单原因的表单
-    renderLoseOrderForm(order){
+    renderLoseOrderForm = (order) => {
         return (
             <div className="close-order-lose-wrap">
                 <BasicEditInputField
@@ -543,12 +552,14 @@ const OrderItem = React.createClass({
                     cancelEditInput={this.cancelCloseOrder}
                 />
             </div>);
-    },
-    toggleOrderDetail(){
+    };
+
+    toggleOrderDetail = () => {
         let isExpandDetail = this.state.isExpandDetail;
         this.setState({isExpandDetail: !isExpandDetail});
-    },
-    renderOrderTitle(){
+    };
+
+    renderOrderTitle = () => {
         let isExpandDetail = this.state.isExpandDetail;
         const order = this.state.formData;
         const expandIconClassName = classNames('iconfont order-expand-icon', {
@@ -586,8 +597,9 @@ const OrderItem = React.createClass({
                 )}
             </span>
         );
-    },
-    renderOrderBottom(){
+    };
+
+    renderOrderBottom = () => {
         let order = this.state.formData;
         //申请按钮文字
         let applyBtnText = '';
@@ -614,8 +626,9 @@ const OrderItem = React.createClass({
                 <span className="order-user">{order.user_name || ''}</span>
             </div>
         );
-    },
-    render(){
+    };
+
+    render() {
         let containerClassName = classNames('order-item-container', {
             'item-delete-border': this.state.modalDialogFlag,
             'order-win-hide-detail': _.get(this.state, 'formData.oppo_status') === ORDER_STATUS.WIN && !this.state.isExpandDetail//赢单后隐藏订单详情时的样式
@@ -639,7 +652,7 @@ const OrderItem = React.createClass({
                 ) : null}
             </div>);
     }
-});
+}
 
 module.exports = OrderItem;
 

@@ -941,16 +941,15 @@ DateSelector.propTypes = {
  * <DateSelectorOption value="1m">1个月</DateSelectorOption>
  *
  */
-var DateSelectorOption = React.createClass({
-    getDefaultProps: function() {
-        return {
-            value: ''
-        };
-    },
-    render: function(){
+class DateSelectorOption extends React.Component {
+    static defaultProps = {
+        value: ''
+    };
+
+    render() {
         return null;
     }
-});
+}
 
 //添加option
 DateSelector.Option = DateSelectorOption;

@@ -1,19 +1,19 @@
 var React = require('react');
 require('./index.less');
 var AnalysisRealmCount = require('../analysis-realm-count');
-var AnalysisRankList = React.createClass({
-    getDefaultProps: function() {
-        return {
-            dataList: [],
-            total: 0,
-            title: '当前安全域开通总数',
-            //没数据的时候显示假数据
-            noData: false,
-            //单位
-            unit: '个'
-        };
-    },
-    render: function() {
+
+class AnalysisRankList extends React.Component {
+    static defaultProps = {
+        dataList: [],
+        total: 0,
+        title: '当前安全域开通总数',
+        //没数据的时候显示假数据
+        noData: false,
+        //单位
+        unit: '个'
+    };
+
+    render() {
         var total = this.props.total;
         var list = this.props.dataList;
         var _this = this;
@@ -48,6 +48,6 @@ var AnalysisRankList = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = AnalysisRankList;

@@ -19,31 +19,31 @@ const realmOptions = [
         value: '2'
     }
 ];
-const RealmConfig = React.createClass({
-    getInitialState() {
-        return {
-            ...RealmConfigStore.getState(),
-            setRealmConfigErrMsg: '', // 修改密码策略失败信息    
-            getRealmConfigErrMsg: '',
-            isLoading: false,
-            strategy: '1',
-            showConfirm: false
-        };
-    },
 
-    onStoreChange() {
+class RealmConfig extends React.Component {
+    state = {
+        ...RealmConfigStore.getState(),
+        setRealmConfigErrMsg: '', // 修改密码策略失败信息    
+        getRealmConfigErrMsg: '',
+        isLoading: false,
+        strategy: '1',
+        showConfirm: false
+    };
+
+    onStoreChange = () => {
         this.setState(RealmConfigStore.getState());
-    },
+    };
 
     componentDidMount() {
         RealmConfigStore.listen(this.onStoreChange);
         RealmConfigAction.getRealmStrategy();
-    },
+    }
 
     componentWillUnmount() {
         RealmConfigStore.unlisten(this.onStoreChange);
-    },
-    setRealmConfig() {
+    }
+
+    setRealmConfig = () => {
         return (
             <div className="add-config-fail">
                 <Alert
@@ -53,8 +53,9 @@ const RealmConfig = React.createClass({
                 />
             </div>
         );
-    },
-    getRealmConfig() {
+    };
+
+    getRealmConfig = () => {
         return (
             <div className="add-config-fail">
                 <Alert
@@ -64,31 +65,36 @@ const RealmConfig = React.createClass({
                 />
             </div>
         );
-    },
-    onChange(e) {
+    };
+
+    onChange = (e) => {
         let value = e.target.value;
         this.setState({
             showConfirm: true,
             strategy: value
         });
-    },
-    save() {
+    };
+
+    save = () => {
         RealmConfigAction.updateRealmStrategy({pwd_strategy: this.state.strategy});
-    },
-    confirm() {
+    };
+
+    confirm = () => {
         let newVal = this.state.strategy == '1' ? 'MD5' : '删除前4位的MD5';
         Trace.traceEvent('密码策略','修改密码策略为\'' + newVal + '\'');
         this.save();
         this.setState({
             showConfirm: false
         });
-    },
-    cancel() {
+    };
+
+    cancel = () => {
         this.setState({
             showConfirm: false,
             strategy: this.strategy == '1' ? '2' : '1'
         });
-    },
+    };
+
     render() {
         return (
             <div className="box realm-config">
@@ -119,6 +125,6 @@ const RealmConfig = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default RealmConfig;

@@ -48,20 +48,19 @@ import {
     getRequestTeamIds
 } from 'PUB_DIR/sources/utils/common-method-util';
 
-var UserTabContent = React.createClass({
-    getInitialState: function() {
-        return {
-            curShowCustomerId: '', //查看右侧详情的客户id
-            clueAddFormShow: false,//是否展示右侧添加线索客户的表单
-            defaultClueData: {},//添加线索客户的默认信息
-            accessChannelArray: accessChannelArray,//线索渠道
-            clueSourceArray: clueSourceArray,//线索来源
-            clueClassifyArray: clueClassifyArray,//线索分类
-            producingClueCustomerItem: {},//正在生成线索客户的用户
-            ...AppUserStore.getState()
-        };
-    },
-    getClueSource: function() {
+class UserTabContent extends React.Component {
+    state = {
+        curShowCustomerId: '', //查看右侧详情的客户id
+        clueAddFormShow: false,//是否展示右侧添加线索客户的表单
+        defaultClueData: {},//添加线索客户的默认信息
+        accessChannelArray: accessChannelArray,//线索渠道
+        clueSourceArray: clueSourceArray,//线索来源
+        clueClassifyArray: clueClassifyArray,//线索分类
+        producingClueCustomerItem: {},//正在生成线索客户的用户
+        ...AppUserStore.getState()
+    };
+
+    getClueSource = () => {
         clueCustomerAjax.getClueSource().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
@@ -72,8 +71,9 @@ var UserTabContent = React.createClass({
             // eslint-disable-next-line no-console
             console.log('获取线索来源出错了 ' + errorMsg);
         });
-    },
-    getClueChannel: function() {
+    };
+
+    getClueChannel = () => {
         clueCustomerAjax.getClueChannel().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
@@ -84,8 +84,9 @@ var UserTabContent = React.createClass({
             // eslint-disable-next-line no-console
             console.log('获取线索渠道出错了 ' + errorMsg);
         });
-    },
-    getClueClassify: function() {
+    };
+
+    getClueClassify = () => {
         clueCustomerAjax.getClueClassify().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
@@ -96,8 +97,9 @@ var UserTabContent = React.createClass({
             // eslint-disable-next-line no-console
             console.log('获取线索分类出错了 ' + errorMsg);
         });
-    },
-    fetchUserList: function(obj) {
+    };
+
+    fetchUserList = (obj) => {
         var sortable = this.state.selectedAppId && !this.state.filterRoles.selectedRole;
         var sort_field = '',
             sort_order = '';
@@ -143,11 +145,13 @@ var UserTabContent = React.createClass({
             ajaxObj.team_ids = totalRequestTeams;
         }
         AppUserAction.getAppUserList(ajaxObj);
-    },
-    onStoreChange: function() {
+    };
+
+    onStoreChange = () => {
         this.setState(AppUserStore.getState());
-    },
-    onRowClick: function(event) {
+    };
+
+    onRowClick = (event) => {
 
         var target = event.target;
         //如果点击到生成线索按钮，不展示客户详情
@@ -193,13 +197,15 @@ var UserTabContent = React.createClass({
             Trace.traceEvent('已有用户','打开用户详情');
 
         }
-    },
-    hideRightPanel: function() {
+    };
+
+    hideRightPanel = () => {
         this.setState({
             curShowCustomerId: ''
         });
-    },
-    showCustomerDetail: function(customer_id) {
+    };
+
+    showCustomerDetail = (customer_id) => {
         this.setState({
             curShowCustomerId: customer_id,
         });
@@ -212,22 +218,26 @@ var UserTabContent = React.createClass({
                 hideRightPanel: this.hideRightPanel
             }
         });
-    },
+    };
+
     //更新用户基本信息
-    updateUserInfo: function(userInfo) {
+    updateUserInfo = (userInfo) => {
         //从右侧面板更改（昵称，备注），同步到用户列表中
         AppUserAction.updateUserInfo(userInfo);
-    },
+    };
+
     //更新客户信息
-    updateCustomerInfo: function({tag, customer_id, customer_name, user_id, sales_id, sales_name}) {
+    updateCustomerInfo = ({tag, customer_id, customer_name, user_id, sales_id, sales_name}) => {
         AppUserAction.updateCustomerInfo({tag, customer_id, customer_name, user_id, sales_id, sales_name});
-    },
+    };
+
     //更新单个应用的字段
-    updateAppField: function(result) {
+    updateAppField = (result) => {
         AppUserAction.updateAppField(result);
-    },
+    };
+
     //绑定自定义事件
-    bindEventEmitter: function() {
+    bindEventEmitter = () => {
         //通过发网络请求更新用户列表
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST, this.fetchUserList);
         //不发请求，更新用户基本信息(备注)
@@ -258,78 +268,90 @@ var UserTabContent = React.createClass({
         batchPushEmitter.on(batchPushEmitter.TASK_GRANT_UPDATE, this.batchPushChangeGrantUpdate);
         //批量推送，添加用户，更新用户列表
         batchPushEmitter.on(batchPushEmitter.TASK_USER_CREATE, this.batchPushChangeUserCreate);
-    },
+    };
+
     //添加应用之后，更新用户列表中的数据
-    updateAddAppInfo: function(updateInfo) {
+    updateAddAppInfo = (updateInfo) => {
         AppUserAction.updateAddAppInfo(updateInfo);
-    },
+    };
+
     //全部停用之后，更新用户列表中的数据
-    updateDisableAllApps: function(updateInfo) {
+    updateDisableAllApps = (updateInfo) => {
         AppUserAction.updateDisableAllApps(updateInfo);
-    },
+    };
+
     //更新一个用户的一个应用成功后，同步列表中的数据
-    updateAppInfo: function(updateInfo) {
+    updateAppInfo = (updateInfo) => {
         AppUserAction.updateAppInfo(updateInfo);
-    },
+    };
+
     //更改用户列表滚动条位置
-    changeUserListScrollTop: function(topPx) {
+    changeUserListScrollTop = (topPx) => {
         if (typeof topPx === 'number' && topPx >= 0 ||
             typeof topPx === 'string' && /^\d+$/.test(topPx)
         ) {
             GeminiScrollBar.scrollTo(this.refs.tableWrap, topPx);
         }
-    },
+    };
+
     //批量推送，修改所属客户，更新用户列表
-    batchPushChangeCustomer: function(taskInfo, taskParams) {
+    batchPushChangeCustomer = (taskInfo, taskParams) => {
         AppUserAction.batchPushChangeCustomer({
             taskInfo: taskInfo,
             taskParams: taskParams
         });
-    },
+    };
+
     //批量推送，修改用户类型，更新用户列表
-    batchPushChangeGrantType: function(taskInfo, taskParams) {
+    batchPushChangeGrantType = (taskInfo, taskParams) => {
         AppUserAction.batchPushChangeGrantType({
             taskInfo: taskInfo,
             taskParams: taskParams
         });
-    },
+    };
+
     //批量推送，修改开通状态，更新用户列表
-    batchPushChangeGrantPeriod: function(taskInfo, taskParams) {
+    batchPushChangeGrantPeriod = (taskInfo, taskParams) => {
         AppUserAction.batchPushChangeGrantPeriod({
             taskInfo: taskInfo,
             taskParams: taskParams
         });
-    },
+    };
+
     //批量推送，批量延期，更新用户列表
-    batchPushChangeGrantDelay: function(taskInfo, taskParams) {
+    batchPushChangeGrantDelay = (taskInfo, taskParams) => {
         AppUserAction.batchPushChangeGrantDelay({
             taskInfo: taskInfo,
             taskParams: taskParams
         });
-    },
+    };
+
     //批量推送，修改所属客户，更新用户列表
-    batchPushChangeGrantStatus: function(taskInfo, taskParams) {
+    batchPushChangeGrantStatus = (taskInfo, taskParams) => {
         AppUserAction.batchPushChangeGrantStatus({
             taskInfo: taskInfo,
             taskParams: taskParams
         });
-    },
+    };
+
     //批量推送，开通产品，更新用户列表
-    batchPushChangeGrantUpdate: function(taskInfo, taskParams) {
+    batchPushChangeGrantUpdate = (taskInfo, taskParams) => {
         AppUserAction.batchPushChangeGrantUpdate({
             taskInfo: taskInfo,
             taskParams: taskParams
         });
-    },
+    };
+
     //批量推送，添加用户，更新用户列表
-    batchPushChangeUserCreate: function(taskInfo, taskParams) {
+    batchPushChangeUserCreate = (taskInfo, taskParams) => {
         AppUserAction.batchPushChangeUserCreate({
             taskInfo: taskInfo,
             taskParams: taskParams
         });
-    },
+    };
+
     //解除绑定自定义事件
-    unbindEventEmitter: function() {
+    unbindEventEmitter = () => {
         //通过发网络请求更新用户列表
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST, this.fetchUserList);
         //不发请求，更新用户基本信息(备注)
@@ -358,11 +380,13 @@ var UserTabContent = React.createClass({
         batchPushEmitter.removeListener(batchPushEmitter.TASK_GRANT_UPDATE, this.batchPushChangeGrantUpdate);
         //批量推送，添加用户，更新用户列表
         batchPushEmitter.removeListener(batchPushEmitter.TASK_USER_CREATE, this.batchPushChangeUserCreate);
-    },
-    changeScrollBarHeight: function() {
+    };
+
+    changeScrollBarHeight = () => {
         this.setState({});
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         $('body').css('overflow', 'hidden');
         AppUserStore.listen(this.onStoreChange);
         if (!Oplate.hideSomeItem) {
@@ -378,15 +402,17 @@ var UserTabContent = React.createClass({
             //获取线索渠道
             this.getClueChannel();
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         $('body').css('overflow', 'auto');
         AppUserStore.unlisten(this.onStoreChange);
         $(this.refs.userListTable).off('click', 'tr', this.onRowClick);
         $(window).off('resize', this.changeScrollBarHeight);
         this.unbindEventEmitter();
-    },
-    getTableColumns: function() {
+    }
+
+    getTableColumns = () => {
         var _this = this;
         var isSelectAllApp = !this.state.selectedAppId;
         var sortable = !isSelectAllApp && !this.state.filterRoles.selectedRole;
@@ -602,9 +628,10 @@ var UserTabContent = React.createClass({
             }
         ];
         return columns;
-    },
+    };
+
     //转化成线索客户
-    transformClueCustomer: function(item) {
+    transformClueCustomer = (item) => {
         var defaultName = item.user.user_name;
         var defaultData = {
             name: Intl.get('clue.customer.register.user', '注册用户') + defaultName,
@@ -628,14 +655,16 @@ var UserTabContent = React.createClass({
             defaultClueData: defaultData,
             producingClueCustomerItem: item// 正在生成线索客户的用户
         });
-    },
+    };
+
     // 委内维拉项目，显示的列表项（不包括类型、所属客户、所属销售）
-    getTableColumnsVe: function() {
+    getTableColumnsVe = () => {
         return _.filter(this.getTableColumns(), (item) => {
             return item.key !== 'accountType' && item.key !== 'customer_name' && item.key !== 'member_name';
         });
-    },
-    getRowSelection: function() {
+    };
+
+    getRowSelection = () => {
         var justSelected = _.chain(this.state.selectedUserRows)
             .map(function(obj) {
                 return obj.user.user_id;
@@ -651,34 +680,37 @@ var UserTabContent = React.createClass({
             }
         };
 
-    },
+    };
+
     //获取过滤字段的class
     /**
      * @param field 过滤字段的key user_type outdate user_status
      * @param value 过滤字段的值  xxx
      */
-    getFilterFieldClass: function(field, value) {
+    getFilterFieldClass = (field, value) => {
         var filterFieldMap = this.state.filterFieldMap;
         if (!value) {
             return !filterFieldMap[field] ? 'selected' : '';
         } else {
             return filterFieldMap[field] === value ? 'selected' : '';
         }
-    },
+    };
+
     //按照某个筛选条件进行过滤
     /**
      * @param field 过滤字段的key user_type outdate user_status
      * @param value 过滤字段的值  xxx
      */
-    toggleSearchField: function(field, value) {
+    toggleSearchField = (field, value) => {
         AppUserAction.toggleSearchField({field, value});
         //页面滚动条置顶，避免重新获取数据之后，接着翻页
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         setTimeout(() => {
             this.fetchUserList();
         });
-    },
-    renderFilterBlock: function() {
+    };
+
+    renderFilterBlock = () => {
         return (
             <div className="global_filter_adv" ref="filter_adv"
                 style={{display: this.state.filterAreaExpanded ? 'block' : 'none'}}>
@@ -686,9 +718,10 @@ var UserTabContent = React.createClass({
                 {!this.props.customer_id && (language.lan() === 'zh' || language.lan() === 'en') ? this.renderFilterRoles() : null}
             </div>
         );
-    },
+    };
+
     //渲染过滤字段筛选条件列表
-    renderFilterFields: function() {
+    renderFilterFields = () => {
         //当按照角色筛选的时候，不能再按照其他条件筛选
         return <div style={{display: this.state.filterRoles.selectedRole ? 'none' : 'block'}} data-tracename="应用筛选">
             <dl>
@@ -835,9 +868,10 @@ var UserTabContent = React.createClass({
                         : null}
                 </div>)}
         </div>;
-    },
+    };
+
     //针对一个角色id进行过滤
-    filterUserByRole: function(role_id) {
+    filterUserByRole = (role_id) => {
         AppUserAction.filterUserByRole(role_id);
         //页面滚动条置顶，避免重新获取数据之后，接着翻页
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
@@ -846,13 +880,15 @@ var UserTabContent = React.createClass({
                 role_id: role_id
             });
         });
-    },
+    };
+
     //重新获取角色筛选信息
-    retryLoadRoles: function() {
+    retryLoadRoles = () => {
         AppUserAction.getRolesByAppId(this.state.selectedAppId);
-    },
+    };
+
     //渲染筛选的角色
-    renderFilterRoles: function() {
+    renderFilterRoles = () => {
         //当含有其他过滤条件时，不能再过滤权限
         //当有关键词时，不能再过滤权限
         //如果用户没有过滤角色的权限，也不能过滤
@@ -916,13 +952,15 @@ var UserTabContent = React.createClass({
                 </ul>
             </dd>
         </dl>;
-    },
+    };
+
     //重新获取团队信息
-    retryLoadTeams: function() {
+    retryLoadTeams = () => {
         AppUserAction.getTeamLists();
-    },
+    };
+
     //按团队搜素
-    renderFilterTeamName: function() {
+    renderFilterTeamName = () => {
         //团队搜索支持多选
         //关联搜索与团队相关的信息
         var team_ids = this.state.filterFieldMap.team_ids || [];
@@ -986,8 +1024,9 @@ var UserTabContent = React.createClass({
                 </ul>
             </dd>
         </dl>;
-    },
-    renderLoadingBlock: function() {
+    };
+
+    renderLoadingBlock = () => {
         if (this.state.appUserListResult !== 'loading' || this.state.lastUserId) {
             return null;
         }
@@ -996,20 +1035,23 @@ var UserTabContent = React.createClass({
                 <Spinner />
             </div>
         );
-    },
-    handleScrollBottom: function() {
+    };
+
+    handleScrollBottom = () => {
         this.fetchUserList({
             lastUserId: this.state.lastUserId
         });
-    },
+    };
+
     //是否显示没有更多数据了
-    showNoMoreDataTip: function() {
+    showNoMoreDataTip = () => {
         return !this.state.appUserListResult &&
             this.state.appUserList.length >= 10 &&
             !this.state.listenScrollBottom;
-    },
+    };
+
     //表格内容改变
-    onTableChange: function(pagination, filters, sorter) {
+    onTableChange = (pagination, filters, sorter) => {
         //后端要的排序数据是asc和desc，ant-design给的数据是ascend和descend
         //将end去掉
         var sortParams = {
@@ -1023,18 +1065,20 @@ var UserTabContent = React.createClass({
             sort_order: sortParams.sort_order,
             sort_field: sortParams.sort_field
         });
-    },
+    };
+
     //处理选中行的样式
-    handleRowClassName: function(record, index) {
+    handleRowClassName = (record, index) => {
         if ((record.key === this.state.detailUser.key) && this.state.isShowRightPanel) {
             return 'current_row';
         }
         else {
             return '';
         }
-    },
+    };
+
     //渲染表格区域
-    renderTableBlock: function() {
+    renderTableBlock = () => {
         //这里不能return null了，表格的排序会丢失
         var isLoading = this.state.appUserListResult === 'loading';
         var doNotShow = false;
@@ -1120,41 +1164,47 @@ var UserTabContent = React.createClass({
                 }
             </div>
         );
-    },
-    hideClueAddForm: function() {
+    };
+
+    hideClueAddForm = () => {
         this.setState({
             clueAddFormShow: false
         });
-    },
+    };
+
     //更新线索来源列表
-    updateClueSource: function(newSource) {
+    updateClueSource = (newSource) => {
         this.state.clueSourceArray.push(newSource);
         this.setState({
             clueSourceArray: this.state.clueSourceArray
         });
-    },
+    };
+
     //更新线索渠道列表
-    updateClueChannel: function(newChannel) {
+    updateClueChannel = (newChannel) => {
         this.state.accessChannelArray.push(newChannel);
         this.setState({
             accessChannelArray: this.state.accessChannelArray
         });
-    },
+    };
+
     //更新线索分类
-    updateClueClassify: function(newClue) {
+    updateClueClassify = (newClue) => {
         this.state.clueClassifyArray.push(newClue);
         this.setState({
             clueClassifyArray: this.state.clueClassifyArray
         });
-    },
+    };
+
     //线索客户添加完毕后
-    afterAddSalesClue: function() {
+    afterAddSalesClue = () => {
         AppUserAction.updateUserAppsInfo(this.state.producingClueCustomerItem);
         this.setState({
             producingClueCustomerItem: {}//正在生成线索客户的用户
         });
-    },
-    render: function() {
+    };
+
+    render() {
         var appUserId = this.state.producingClueCustomerItem.user ? this.state.producingClueCustomerItem.user.user_id : '';
         var appUserName = _.get(this.state.producingClueCustomerItem, 'user.user_name');
         return (
@@ -1180,7 +1230,7 @@ var UserTabContent = React.createClass({
             </div>
         );
     }
-});
+}
 
 
 module.exports = UserTabContent;

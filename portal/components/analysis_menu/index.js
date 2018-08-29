@@ -25,16 +25,18 @@ var moduleUrlMap = {
     'weekly_report_analysis': '/analysis/weekly_report'
 };
 
-var AnalysisMenu = React.createClass({
-    getCurrentPath: function() {
+class AnalysisMenu extends React.Component {
+    getCurrentPath = () => {
         var pathname = window.location.pathname;
         return pathname;
-    },
-    getCurrentLinkText: function() {
+    };
+
+    getCurrentLinkText = () => {
         var category = this.getCurrentPath();
         return urlTextMap[category];
-    },
-    render: function() {
+    };
+
+    render() {
         var menuListArray = [];
         var modules = UserData.getUserData().modules;
         _.each(modules , function(module) {
@@ -62,6 +64,6 @@ var AnalysisMenu = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = AnalysisMenu;

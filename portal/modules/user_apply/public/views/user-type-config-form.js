@@ -5,6 +5,7 @@
  */
 // 添加用户类型配置
 var React = require('react');
+var createReactClass = require('create-react-class');
 const language = require('PUB_DIR/language/getLanguage');
 require('../css/user-type-config.less');
 require('CMP_DIR/user_manage_components/css/form-basic-zh_CN.less');
@@ -27,11 +28,14 @@ var LAYOUT_CONSTANTS = {
     RIGHT_PANEL_PADDING_BOTTOM: 0
 };
 
-var UserTypeConfigForm = React.createClass({
+var UserTypeConfigForm = createReactClass({
+    displayName: 'UserTypeConfigForm',
+
     mixins: [FieldMixin,
         UserOverDraftField,
         UserMultiLoginField
     ],
+
     getDefaultProps: function() {
         return {
             handleCancel: function() {
@@ -41,6 +45,7 @@ var UserTypeConfigForm = React.createClass({
             appName: ''
         };
     },
+
     getInitialState: function() {
         return {
             //向后台提交的数据
@@ -76,6 +81,7 @@ var UserTypeConfigForm = React.createClass({
             this.props.togglePageChange(false);
         }
     },
+
     // 提交用户类型配置数据
     handleSubmit: function(e) {
         var _this = this;
@@ -155,6 +161,7 @@ var UserTypeConfigForm = React.createClass({
             });
         }
     },
+
     // 计算开通周期的毫秒数，如果为永久，就传0
     getTimeMillis: function() {
         var range = this.state.formData.range;
@@ -181,18 +188,21 @@ var UserTypeConfigForm = React.createClass({
         }
         return mills;
     },
+
     //点击取消按钮，跳转页面
     handleCancel: function(e) {
         Trace.traceEvent(e, '取消编辑配置用户类型');
         this.props.handleCancel();
         this.props.togglePageChange(false);
     },
+
     //修改时间周期后
     RangeModify: function(val) {
         var formData = this.state.formData;
         formData.range = val;
         this.setState({formData: formData});
     },
+
     //角色权限修改后
     rolesPermissionsChange: function(roles, permissions) {
         var formData = this.state.formData;
@@ -200,6 +210,7 @@ var UserTypeConfigForm = React.createClass({
         formData.selectedPermissions = permissions.slice();
         this.setState({formData: formData});
     },
+
     //周期选择组件
     renderModifyTime: function() {
         return (
@@ -219,9 +230,11 @@ var UserTypeConfigForm = React.createClass({
             </div>
         );
     },
+
     updateScrollBar: function() {
         this.refs.scrollbar.update();
     },
+
     //提交后的成功或者错误提示
     handleSubmitResult: function() {
         var hide = () => {
@@ -257,6 +270,7 @@ var UserTypeConfigForm = React.createClass({
         );
 
     },
+
     render: function() {
         var item = this.props.item;
         var divHeight = $(window).height()
@@ -332,7 +346,7 @@ var UserTypeConfigForm = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = UserTypeConfigForm;

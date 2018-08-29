@@ -16,64 +16,64 @@ import Trace from 'LIB_DIR/trace';
 
 function noop() {
 }
-var LeftTree = React.createClass({
-    getDefaultProps: function() {
-        return {
-            getSalesTeamMemberList: noop
-        };
-    },
 
-    showOperationArea: function(item) {
+class LeftTree extends React.Component {
+    static defaultProps = {
+        getSalesTeamMemberList: noop
+    };
+
+    showOperationArea = (item) => {
         SalesTeamAction.showOperationArea(item);
-    },
+    };
 
-    editGroup: function(item) {
+    editGroup = (item) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-update'),'编辑子团队');
         SalesTeamAction.editGroup(item);
-    },
-    addGroup: function(item) {
+    };
+
+    addGroup = (item) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'增加子团队');
         SalesTeamAction.addGroup(item);
-    },
+    };
 
-    deleteGroup: function(item) {
+    deleteGroup = (item) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-delete'),'删除子团队');
         SalesTeamAction.deleteGroup(item);
-    },
+    };
 
-    cancelEditGroup: function(item) {
+    cancelEditGroup = (item) => {
         if (item && item.isEditGroup) {
             SalesTeamAction.cancelEditGroup(item);
         } else {
             SalesTeamAction.cancelAddGroup(item);
             setTimeout(() => $('.sales-team-search-input-container .search-input').val(this.props.searchContent));
         }
-    },
+    };
 
-    bodyClickFun: function(e) {
+    bodyClickFun = (e) => {
         var target = e.target;
         if (this.refs.operationElement && !$.contains(this.refs.operationElement, target)) {
             SalesTeamAction.hideAllOperationArea();
         }
-    },
+    };
 
-    bindEvent: function() {
+    bindEvent = () => {
         $('body').on('click', this.bodyClickFun);
-    },
+    };
 
-    unbindEvent: function() {
+    unbindEvent = () => {
         $('body').off('click', this.bodyClickFun);
-    },
+    };
 
-    componentDidMount: function() {
+    componentDidMount() {
         this.bindEvent();
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         this.unbindEvent();
-    },
+    }
 
-    toggleGroupTree: function(item, event) {
+    toggleGroupTree = (item, event) => {
         Trace.traceEvent(event,'打开或者关闭子列表');
         event.stopPropagation();
         var groupId = item.key;
@@ -89,9 +89,9 @@ var LeftTree = React.createClass({
             return;
         }
         SalesTeamAction.toggleGroupTree(groupId);
-    },
+    };
 
-    onSelectGroup: function(item, event) {
+    onSelectGroup = (item, event) => {
         event.stopPropagation();
 
         if (item.isEditGroup || item.isAddGroup) {
@@ -116,16 +116,19 @@ var LeftTree = React.createClass({
         SalesTeamAction.getSalesGoals(groupId);
         SalesTeamAction.getSalesTeamMemberList(groupId);
         SalesTeamAction.setSelectSalesTeamGroup(groupId);
-    },
-    hideModalDialog: function() {
+    };
+
+    hideModalDialog = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'隐藏模态框');
         SalesTeamAction.hideModalDialog(this.props.deleteGroupItem);
-    },
-    saveDeleteGroup: function() {
+    };
+
+    saveDeleteGroup = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'确定删除某团队');
         SalesTeamAction.saveDeleteGroup(this.props.deleteGroupItem.key);
-    },
-    operationElement: function(item) {
+    };
+
+    operationElement = (item) => {
         return (
             <div className="tree-operation-btn-div" ref="operationElement">
                 <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
@@ -146,9 +149,9 @@ var LeftTree = React.createClass({
                 </PrivilegeChecker>
             </div>
         );
-    },
+    };
 
-    element: function(item, type) {
+    element = (item, type) => {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
         let teamMemberCount = commonMethodUtil.getTeamMemberCount(item, 0, this.props.teamMemberCountList, false);
         return (
@@ -200,9 +203,9 @@ var LeftTree = React.createClass({
                 </div>
 
             </div>);
-    },
+    };
 
-    treeElement: function(btnClass, item, type) {
+    treeElement = (btnClass, item, type) => {
 
         if (!type) {
             btnClass += ' no-has-children';
@@ -233,12 +236,14 @@ var LeftTree = React.createClass({
                 </div>
             )
         );
-    },
-    hideDelTooltip: function() {
+    };
+
+    hideDelTooltip = () => {
         SalesTeamAction.clearDelTeamErrorMsg();
-    },
+    };
+
     //搜索团队的事件处理
-    searchEvent: function(searchContent) {
+    searchEvent = (searchContent) => {
         searchContent = searchContent ? searchContent.trim() : '';
         if (searchContent) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-root-add .search-input-container input'),'跟据团队名称搜索团队');
@@ -253,13 +258,14 @@ var LeftTree = React.createClass({
             //清空搜索内容
             SalesTeamAction.setSearchContent('');
         }
-    },
+    };
 
-    addSalesTeamRoot: function(e) {
+    addSalesTeamRoot = (e) => {
         Trace.traceEvent(e,'添加团队');
         SalesTeamAction.addSalesTeamRoot();
-    },
-    render: function() {
+    };
+
+    render() {
         var _this = this;
         var salesTeamGroupList = this.props.salesTeamGroupList;
 
@@ -345,5 +351,6 @@ var LeftTree = React.createClass({
             </div>
         );
     }
-});
+}
+
 module.exports = LeftTree;

@@ -5,14 +5,13 @@ var React = require('react');
 require('./index.less');
 
 var classNames = require('classnames');
-var PassStrengthBar = React.createClass({
-    getDefaultProps: function() {
-        return {
-            passStrength: 'L'//密码强度，L/M/H
-        };
-    },
 
-    render: function() {
+class PassStrengthBar extends React.Component {
+    static defaultProps = {
+        passStrength: 'L'//密码强度，L/M/H
+    };
+
+    render() {
         var strength = this.props.passStrength;
         var classSet = classNames({
             'ant-pwd-strength': true,
@@ -37,7 +36,7 @@ var PassStrengthBar = React.createClass({
             </ul>
         );
     }
-});
+}
 
 //密码强度是否展示的获取
 exports.getPassStrenth = function(value) {

@@ -3,6 +3,7 @@
  */
 //顶部导航
 var React = require('react');
+var createReactClass = require('create-react-class');
 var TopNav = require('../../../components/top-nav');
 require('./css/user-info-zh_CN.less');
 var language = require('../../../public/language/getLanguage');
@@ -29,8 +30,10 @@ var PrivilegeChecker = require('../../../components/privilege/checker');
 import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../components/react-intl-mixin';
 
-var UserInfoPage = React.createClass({
+var UserInfoPage = createReactClass({
+    displayName: 'UserInfoPage',
     mixins: [reactIntlMixin],
+
     getInitialState: function() {
         return {
             ...UserInfoStore.getState(),
@@ -41,6 +44,7 @@ var UserInfoPage = React.createClass({
     onChange: function() {
         this.setState(UserInfoStore.getState());
     },
+
     componentDidMount: function() {
         var hasPrivilege = PrivilegeChecker.hasPrivilege;
         $(window).on('resize', this.resizeWindow);
@@ -54,6 +58,7 @@ var UserInfoPage = React.createClass({
             load_size: this.state.loadSize
         });
     },
+
     componentWillUnmount: function() {
         $('body').css('overflow', 'auto');
         $(window).off('resize', this.resizeWindow);
@@ -79,6 +84,7 @@ var UserInfoPage = React.createClass({
         }
         return height < minUserInfoHeight ? minUserInfoHeight : height;
     },
+
     handleScrollBottom() {
         UserInfoAction.getLogList({
             sort_id: this.state.sortId,
@@ -142,7 +148,7 @@ var UserInfoPage = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = UserInfoPage;

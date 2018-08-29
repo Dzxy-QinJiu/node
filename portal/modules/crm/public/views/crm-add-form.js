@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {regex} from 'ant-utils';
@@ -36,8 +37,10 @@ function cx(classNames) {
         return Array.prototype.join.call(arguments, ' ');
     }
 }
-var CRMAddForm = React.createClass({
+var CRMAddForm = createReactClass({
+    displayName: 'CRMAddForm',
     mixins: [FieldMixin],
+
     getInitialState: function() {
         //在线索关联客户，新添加客户时，新添加客户的名字是线索名称，客户联系人是线索联系人
         var propsFormData = this.props.formData;
@@ -77,9 +80,11 @@ var CRMAddForm = React.createClass({
             isLoadingIndustry: false//是否正在加载行业列表
         };
     },
+
     componentDidMount: function() {
         this.getIndustry();
     },
+
     getIndustry: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
@@ -103,6 +108,7 @@ var CRMAddForm = React.createClass({
         this.state.formData.county_code = addressObj.countyCode || '';
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
     },
+
     //提交修改
     handleSubmit: function(e) {
         if (this.state.isLoading) {
@@ -220,6 +226,7 @@ var CRMAddForm = React.createClass({
             this.setState(this.state);
         });
     },
+
     //根据客户名获取客户的行政级别并填充到对应字段上
     getAdministrativeLevelByName: function(customerName) {
         crmAjax.getAdministrativeLevel({name: customerName}).then(result => {
@@ -228,6 +235,7 @@ var CRMAddForm = React.createClass({
             this.setState({formData: this.state.formData});
         });
     },
+
     //客户名唯一性验证
     checkOnlyCustomerName: function(e) {
         var customerName = $.trim(this.state.formData.name);
@@ -309,6 +317,7 @@ var CRMAddForm = React.createClass({
             return '';
         }
     },
+
     //客户名格式验证
     checkCustomerName: function(rule, value, callback) {
         value = $.trim(value);
@@ -350,15 +359,19 @@ var CRMAddForm = React.createClass({
             }
         }];
     },
+
     handleRemarkInput: function(e) {
         Trace.traceEvent(e, '添加备注');
     },
+
     handleSelect: function() {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item label[for=\'industry\']').next('div'), '选择行业');
     },
+
     handleRoleSelect: function() {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item label[for=\'role\']').next('div'), '选择角色');
     },
+
     getAdministrativeLevelOptions: function() {
         let options = crmUtil.administrativeLevels.map(obj => {
             return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>);
@@ -366,6 +379,7 @@ var CRMAddForm = React.createClass({
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
     },
+
     render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -576,7 +590,7 @@ var CRMAddForm = React.createClass({
             </RightPanel>
 
         );
-    }
+    },
 });
 module.exports = CRMAddForm;
 

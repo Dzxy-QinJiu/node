@@ -24,38 +24,37 @@ const ERROR_MSGS = {
 var base64_prefix = 'data:image/png;base64,';
 import { storageUtil } from 'ant-utils';
 
-var ForgotPassword = React.createClass({
-    getInitialState: function() {
-        return {
-            //用户名
-            username: this.props.username,
-            //用户Id
-            userId: '',
-            //密码
-            password: '',
-            //新密码
-            newPassword: '',
-            //成功信息
-            successMsg: '',
-            //验证码
-            captchaCode: this.props.captchaCode,
-            //验证码值
-            captchaCodeValue: '',
-            //当前视图
-            currentView: VIEWS.SEND_AUTH_CODE,
-            //当前步骤
-            step: 0,
-            //联系方式信息
-            contactInfo: '',
-            //联系方式类型
-            contactType: '',
-            //联系方式类型名称
-            contactTypeName: '',
-            //凭证
-            ticket: '',
-        };
-    },
-    componentDidMount: function() {
+class ForgotPassword extends React.Component {
+    state = {
+        //用户名
+        username: this.props.username,
+        //用户Id
+        userId: '',
+        //密码
+        password: '',
+        //新密码
+        newPassword: '',
+        //成功信息
+        successMsg: '',
+        //验证码
+        captchaCode: this.props.captchaCode,
+        //验证码值
+        captchaCodeValue: '',
+        //当前视图
+        currentView: VIEWS.SEND_AUTH_CODE,
+        //当前步骤
+        step: 0,
+        //联系方式信息
+        contactInfo: '',
+        //联系方式类型
+        contactType: '',
+        //联系方式类型名称
+        contactTypeName: '',
+        //凭证
+        ticket: '',
+    };
+
+    componentDidMount() {
         var userName = window.Oplate.initialProps.username || storageUtil.local.get('last_login_name') || '';
 
         this.setState({
@@ -67,8 +66,9 @@ var ForgotPassword = React.createClass({
                 this.getLoginCaptcha(VIEWS.RESET_PASSWORD);
             }
         });
-    },
-    renderCaptchaBlock: function(hasWindow) {
+    }
+
+    renderCaptchaBlock = (hasWindow) => {
         const type = this.state.currentView === VIEWS.SEND_AUTH_CODE ? VIEWS.RESET_PASSWORD : '';
 
         return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
@@ -81,9 +81,10 @@ var ForgotPassword = React.createClass({
                 title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
                 onClick={this.refreshCaptchaCode.bind(this, type)}/>
         </div>) : null);
-    },
+    };
+
     //渲染成功提示信息
-    getSuccessMsgBlock() {
+    getSuccessMsgBlock = () => {
         const msg = this.state.successMsg;
 
         return msg ? (
@@ -91,9 +92,10 @@ var ForgotPassword = React.createClass({
                 {msg}
             </div>
         ) : null;
-    },
+    };
+
     //获取验证码
-    getLoginCaptcha: function(type = '') {
+    getLoginCaptcha = (type = '') => {
         var username = this.state.username;
         if (!username) {
             return;
@@ -115,9 +117,10 @@ var ForgotPassword = React.createClass({
                 this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
             }
         });
-    },
+    };
+
     //刷新验证码
-    refreshCaptchaCode: function(type = '') {
+    refreshCaptchaCode = (type = '') => {
         var username = this.state.username;
         if (!username) {
             return;
@@ -141,9 +144,9 @@ var ForgotPassword = React.createClass({
                 });
             }
         });
-    },
+    };
 
-    changeView(view) {
+    changeView = (view) => {
         const views = [
             VIEWS.SEND_AUTH_CODE,
             VIEWS.VERIFY_AUTH_CODE,
@@ -165,33 +168,33 @@ var ForgotPassword = React.createClass({
         if (view === VIEWS.SEND_AUTH_CODE) {
             this.getLoginCaptcha(VIEWS.RESET_PASSWORD);
         }
-    },
+    };
 
-    handleContactInfoChange(e) {
+    handleContactInfoChange = (e) => {
         let contactInfo = e.target.value.trim();
         this.setState({ contactInfo });
         this.props.setErrorMsg('');
 
-    },
+    };
 
-    handleCaptchaCodeValueChange(e) {
+    handleCaptchaCodeValueChange = (e) => {
         let captchaCodeValue = e.target.value.trim();
         this.setState({ captchaCodeValue });
         this.props.setErrorMsg('');
 
-    },
+    };
 
-    handleAuthCodeChange(e) {
+    handleAuthCodeChange = (e) => {
         let authCode = e.target.value.trim();
         this.setState({ authCode });
-    },
+    };
 
-    handleNewPasswordChange(e) {
+    handleNewPasswordChange = (e) => {
         let newPassword = e.target.value.trim();
         this.setState({ newPassword });
-    },
+    };
 
-    checkContactInfo(callback) {
+    checkContactInfo = (callback) => {
         let contactInfo = this.state.contactInfo;
         let contactType = '';
         let contactTypeName = '';
@@ -236,9 +239,9 @@ var ForgotPassword = React.createClass({
                 this.props.setErrorMsg(Intl.get('login.check_contact_info_failure', '联系方式检查失败'));
             }
         });
-    },
+    };
 
-    sendMsg() {
+    sendMsg = () => {
         this.checkContactInfo(() => {
             const captcha = this.state.captchaCodeValue;
             const user_name = this.state.username;
@@ -274,9 +277,9 @@ var ForgotPassword = React.createClass({
                 }
             });
         });
-    },
+    };
 
-    getTicket() {
+    getTicket = () => {
         const code = this.state.authCode;
         const user_id = this.state.userId;
 
@@ -303,9 +306,9 @@ var ForgotPassword = React.createClass({
                 this.props.setErrorMsg(Intl.get('login.authentication_failure', '身份验证失败'));
             }
         });
-    },
+    };
 
-    resetPassword() {
+    resetPassword = () => {
         const ticket = this.state.ticket;
         const user_id = this.state.userId;
         let new_password = this.state.newPassword;
@@ -338,9 +341,9 @@ var ForgotPassword = React.createClass({
                 this.props.setErrorMsg(Intl.get('login.reset_password_failure', '重置密码失败'));
             }
         });
-    },
+    };
 
-    render: function() {
+    render() {
         const hasWindow = this.props.hasWindow;
 
         return (
@@ -413,7 +416,7 @@ var ForgotPassword = React.createClass({
             </form>
         );
     }
-});
+}
 
 module.exports = ForgotPassword;
 

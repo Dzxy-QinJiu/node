@@ -4,9 +4,9 @@
 
 var React = require('react');
 var language = require('../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/role-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('./css/role-zh_CN.less');
 }
 var Button = require('antd').Button;
@@ -19,6 +19,7 @@ var PrivilegeChecker = require('../../../components/privilege/checker').Privileg
 var TopNav = require('../../../components/top-nav');
 var Spinner = require('../../../components/spinner');
 var NoData = require('../../../components/analysis-nodata');
+
 function getStateFromStore(_this) {
     var storeData = RoleStore.getState();
     storeData.roleContainerHeight = _this.roleContainerHeightFnc();
@@ -28,81 +29,78 @@ function getStateFromStore(_this) {
 var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var bootomHeight = 52; //距离底部高度
 
-var RolePage = React.createClass({
-    getInitialState: function() {
-        return getStateFromStore(this);
-    },
-
-    onChange: function() {
+class RolePage extends React.Component {
+    onChange = () => {
         var datas = getStateFromStore(this);
         this.setState(datas);
-    },
+    };
 
-    resizeWindow: function() {
+    resizeWindow = () => {
         this.setState({
             roleContainerHeight: this.roleContainerHeightFnc()
         });
-    },
+    };
 
-    componentDidMount: function() {
+    componentDidMount() {
         $(window).on('resize', this.resizeWindow);
         RoleStore.listen(this.onChange);
         RoleAction.getRoleList();
         RoleAction.getDefaultRole();
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         $(window).off('resize', this.resizeWindow);
         RoleStore.unlisten(this.onChange);
         $('body').css('overflow', 'auto');
-    },
+    }
 
-    roleContainerHeightFnc: function() {
+    roleContainerHeightFnc = () => {
         return $(window).height() - topHeight;
-    },
+    };
 
-    events: {
-        //展示编辑面板
-        showRoleForm: function() {
-            RoleAction.showRoleForm();
-        },
-        //隐藏编辑面板
-        hideRoleForm: function() {
-            RoleAction.hideRoleForm();
-        },
+    //展示编辑面板
+    events_showRoleForm = () => {
+        RoleAction.showRoleForm();
+    };
 
-        //修改角色时展示编辑面板
-        editRole: function(role) {
-            RoleAction.showRoleForm(role);
-        },
+    //隐藏编辑面板
+    events_hideRoleForm = () => {
+        RoleAction.hideRoleForm();
+    };
 
-        //删除角色
-        deleteRole: function(role) {
-            RoleAction.deleteRole(role);
-        },
+    //修改角色时展示编辑面板
+    events_editRole = (role) => {
+        RoleAction.showRoleForm(role);
+    };
 
-        //添加角色
-        addRole: function() {
-            RoleAction.showRoleForm();
-        },
+    //删除角色
+    events_deleteRole = (role) => {
+        RoleAction.deleteRole(role);
+    };
 
-        //展示删除角色时的提示框
-        showModalDialog: function(role) {
-            RoleAction.showModalDialog(role);
-        },
+    //添加角色
+    events_addRole = () => {
+        RoleAction.showRoleForm();
+    };
 
-        //隐藏删除角色时的提示框
-        hideModalDialog: function(role) {
-            RoleAction.hideModalDialog(role);
-        },
+    //展示删除角色时的提示框
+    events_showModalDialog = (role) => {
+        RoleAction.showModalDialog(role);
+    };
 
-        //清除删除失败的提示内容
-        clearDelErrorMsg: function() {
-            RoleAction.clearDelErrorMsg();
-        }
-    },
+    //隐藏删除角色时的提示框
+    events_hideModalDialog = (role) => {
+        RoleAction.hideModalDialog(role);
+    };
 
-    render: function() {
+    //清除删除失败的提示内容
+    events_clearDelErrorMsg = () => {
+        RoleAction.clearDelErrorMsg();
+    };
+
+    state = getStateFromStore(this);
+
+    render() {
         var _this = this;
         var height = this.state.roleContainerHeight;
         var roleListDivHeight = height - bootomHeight;
@@ -111,17 +109,17 @@ var RolePage = React.createClass({
         if (roleList && roleList.length > 0) {
             repoListElement = roleList.map(function(role, i) {
                 //给当前要删除的角色列表传入删除角色失败的内容
-                var delRoleErrorMsg = (role.roleId == _this.state.delRoleId) ? _this.state.delRoleErrorMsg : '';
+                var delRoleErrorMsg = (role.roleId === _this.state.delRoleId) ? _this.state.delRoleErrorMsg : '';
                 return (
                     <div className="backgroundManagement_role_content">
                         <RoleListView
                             key={i}
                             role={role}
-                            editRole={_this.events.editRole}
-                            deleteRole={_this.events.deleteRole}
-                            showModalDialog={_this.events.showModalDialog}
-                            hideModalDialog={_this.events.hideModalDialog}
-                            clearDelErrorMsg={_this.events.clearDelErrorMsg}
+                            editRole={_this.events_editRole}
+                            deleteRole={_this.events_deleteRole}
+                            showModalDialog={_this.events_showModalDialog}
+                            hideModalDialog={_this.events_hideModalDialog}
+                            clearDelErrorMsg={_this.events_clearDelErrorMsg}
                             delRoleErrorMsg={delRoleErrorMsg}
                             roleListDivHeight={roleListDivHeight}
                             delRoleStr="ROLEP_RIVILEGE_ROLE_DELETE"
@@ -138,12 +136,12 @@ var RolePage = React.createClass({
                         <TopNav.MenuList/>
                         <PrivilegeChecker check="ROLEP_RIVILEGE_ROLE_ADD" className="role-add-div">
                             <Button type="ghost" className="role-add-btn"
-                                onClick={this.events.addRole.bind(this)}><ReactIntl.FormattedMessage
-                                    id="role.add.role" defaultMessage="添加角色"/></Button>
+                                    onClick={this.events_addRole.bind(this)}><ReactIntl.FormattedMessage
+                                id="role.add.role" defaultMessage="添加角色"/></Button>
                         </PrivilegeChecker>
                     </TopNav>
                     <RoleForm
-                        cancelRoleForm={this.events.hideRoleForm}
+                        cancelRoleForm={this.events_hideRoleForm}
                         role={this.state.currentRole}
                         permissionGroups={this.state.permissionGroups}
                         formType={this.state.formType}
@@ -166,7 +164,7 @@ var RolePage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = RolePage;
 

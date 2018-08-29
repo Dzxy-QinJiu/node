@@ -9,6 +9,7 @@ var Popover = require('antd').Popover;
 var classNames = require('classnames');
 var insertStyle = require('../insert-style');
 var React = require('react');
+var createReactClass = require('create-react-class');
 var userInfoEmitter = require('../../public/sources/utils/emitters').userInfoEmitter;
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
 var _ = require('lodash');
@@ -154,8 +155,10 @@ var hamburgerIntroModalLayout = {
     tipAreaTop: -50,
 };
 
-var NavSidebar = React.createClass({
+var NavSidebar = createReactClass({
+    displayName: 'NavSidebar',
     mixins: [UnreadMixin],
+
     getInitialState: function() {
         return {
             menus: getMenus(),
@@ -175,8 +178,10 @@ var NavSidebar = React.createClass({
             hasUnreadReply: false,//是否有未读的回复
         };
     },
+
     //轮询获取未读数的清除器
     unreadTimeout: null,
+
     //动态添加未读数样式，以便在通知页面顶部显示未读数数字
     insertStyleForUnreadCount: function(unreadCountObj) {
         if (this.unreadStyle) {
@@ -196,6 +201,7 @@ var NavSidebar = React.createClass({
         }
         this.unreadStyle = insertStyle(styles.join('\n'));
     },
+
     //刷新未读数
     refreshNotificationUnread: function() {
         if (Oplate && Oplate.unread) {
@@ -207,6 +213,7 @@ var NavSidebar = React.createClass({
             this.insertStyleForUnreadCount(messages);
         }
     },
+
     changeUserInfoLogo: function(userLogoInfo) {
         //修改名称
         if (userLogoInfo.nickName) {
@@ -224,9 +231,11 @@ var NavSidebar = React.createClass({
             userData.updateUserLogo(userLogoInfo);
         }
     },
+
     resizeFunction: function() {
         this.setState({});
     },
+
     //确定要加引导的元素是日程管理的图标还是汉堡包按钮
     selectedIntroElement: function() {
         //查看汉堡包按钮是否存在
@@ -254,6 +263,7 @@ var NavSidebar = React.createClass({
 
     //是否需要发送ajax请求获取"未读数"数据
     needSendNotificationRequest: false,
+
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.on(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
@@ -284,6 +294,7 @@ var NavSidebar = React.createClass({
             }
         });
     },
+
     getHasUnreadReply: function() {
         const APPLY_UNREAD_REPLY = 'apply_unread_reply';
         let userId = userData.getUserData().user_id;
@@ -295,6 +306,7 @@ var NavSidebar = React.createClass({
             this.refreshHasUnreadReply(applyUnreadReplyList);
         }
     },
+
     refreshHasUnreadReply: function(unreadReplyList) {
         if (_.isArray(unreadReplyList) && unreadReplyList.length) {
             this.setState({hasUnreadReply: true});
@@ -302,10 +314,12 @@ var NavSidebar = React.createClass({
             this.setState({hasUnreadReply: false});
         }
     },
+
     //本次要加的引导是否没有被点击过
     isIntroModlueNeverClicked: function(WebsiteConfigModuleRecord) {
         return (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0);
     },
+
     calculateHeight: function() {
         //>75  目的是左侧只有一个导航图标时不会出现汉堡包按钮
         //窗口高度小于 （logo高度+导航高度+个人信息高度）时，出现汉堡包按钮，隐藏导航图标
@@ -321,6 +335,7 @@ var NavSidebar = React.createClass({
             this.selectedIntroElement();
         }
     },
+
     componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
@@ -329,9 +344,11 @@ var NavSidebar = React.createClass({
         $(window).off('resize', this.resizeFunction);
         clearTimeout(this.unreadTimeout);
     },
+
     navContainerHeightFnc: function() {
         return $(window).height();
     },
+
     getNotificationClass: function() {
         var urlInfo = url.parse(window.location.href);
         if (/^\/notification\//.test(urlInfo.pathname)) {
@@ -349,6 +366,7 @@ var NavSidebar = React.createClass({
             }
         });
     },
+
     //个人信息部分右侧弹框
     getUserInfoLinks: function() {
         //个人资料部分
@@ -383,10 +401,12 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
+
     toggleNotificationPanel(event) {
         event.stopPropagation();
         this.props.toggleNotificationPanel();
     },
+
     getNotificationBlock: function() {
         var notificationLinks = this.getLinkListByPrivilege(NotificationLinkList);
         if (!notificationLinks.length) {
@@ -398,6 +418,7 @@ var NavSidebar = React.createClass({
             </div>
         );
     },
+
     getApplyBlock: function() {
         var applyLinks = this.getLinkListByPrivilege(applyentryLink);
         if (!applyLinks.length) {
@@ -414,6 +435,7 @@ var NavSidebar = React.createClass({
             </div>
         );
     },
+
     getBackendConfigLinks: function(backendConfigLinks) {
         return (
             <ul className="ul-unstyled">
@@ -431,6 +453,7 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
+
     //后台管理配置模块
     renderBackendConfigBlock: function() {
         let backendConfigLinks = this.getLinkListByPrivilege(BackendConfigLinkList);
@@ -471,6 +494,7 @@ var NavSidebar = React.createClass({
             </div>
         );
     },
+
     getNavbarLists: function() {
         //侧边导航高度减少后，出现汉堡包按钮，汉堡包按钮的弹出框
         return (
@@ -488,11 +512,13 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
+
     handleOnclickHole: function() {
         //跳转到新加模块界面
         history.pushState({}, '/' + menu.routePath, {});
         this.saveModalClicked();
     },
+
     //将该模块存入后端并隐藏模态框
     saveModalClicked: function() {
         this.setState({
@@ -500,13 +526,16 @@ var NavSidebar = React.createClass({
         });
         setWebsiteConfigModuleRecord({'module_record': [menu.name]});
     },
+
     hideModalIntro: function() {
         this.saveModalClicked();
     },
+
     closeNotificationPanel(event) {
         event.stopPropagation();
         this.props.closeNotificationPanel();
     },
+
     render: function() {
         var windowHeight = this.navContainerHeightFnc();
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
@@ -580,7 +609,7 @@ var NavSidebar = React.createClass({
                 /> : null}
             </nav>
         );
-    }
+    },
 });
 
 module.exports = NavSidebar;

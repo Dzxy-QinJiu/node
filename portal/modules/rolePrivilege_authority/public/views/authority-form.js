@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -34,8 +35,10 @@ var CONSTANT = {
 function noop() {
 }
 var TYPE_CONSTANT = 'myApp';
-var AuthorityForm = React.createClass({
+var AuthorityForm = createReactClass({
+    displayName: 'AuthorityForm',
     mixins: [Validation.FieldMixin],
+
     getInitialState: function() {
         var saveFlags = AuthorityFormStore.getState();
         return {
@@ -63,6 +66,7 @@ var AuthorityForm = React.createClass({
             saveGroupResult: saveFlags.saveGroupResult//error、success
         };
     },
+
     onChange: function() {
         var saveFlags = AuthorityFormStore.getState();
         this.setState({
@@ -71,9 +75,11 @@ var AuthorityForm = React.createClass({
             saveGroupResult: saveFlags.saveGroupResult
         });
     },
+
     componentDidMount: function() {
         AuthorityFormStore.listen(this.onChange);
     },
+
     componentWillUnmount: function() {
         AuthorityFormStore.unlisten(this.onChange);
     },
@@ -318,6 +324,7 @@ var AuthorityForm = React.createClass({
             AuthorityFormAction.clearSaveFlags(this.state.saveGroupResult);
         }
     },
+
     //更新state中formData的服务地址数组
     updateCurPermissionApiArray: function(permissionIndex, permissionApiArray) {
         if (permissionIndex) {
@@ -351,15 +358,18 @@ var AuthorityForm = React.createClass({
             this.updateCurPermissionApiArray(permissionIndex, permissionApiArray);
         }
     },
+
     //选择服务地址的请求方式的处理
     onPermissionSelect: function(index, permissionIndex, selectVal) {
         this.updatePermissionApiObj(index, selectVal, 'method', permissionIndex);
     },
+
     //服务地址输入的处理
     onPermissionInputChange: function(index, permissionIndex, event) {
         var newKey = event.target.value;
         this.updatePermissionApiObj(index, newKey, 'url', permissionIndex);
     },
+
     //添加一个服务地址的处理
     addPermissionApi: function(permissionIndex, event) {
         Trace.traceEvent(event,'添加服务地址');
@@ -370,6 +380,7 @@ var AuthorityForm = React.createClass({
         });
         this.updateCurPermissionApiArray(permissionIndex, permissionApiArray);
     },
+
     //删除服务地址
     delPermissionApi: function(index, permissionIndex, event) {
         Trace.traceEvent(event,'删除服务地址');
@@ -383,6 +394,7 @@ var AuthorityForm = React.createClass({
             this.updateCurPermissionApiArray(permissionIndex, permissionApiArray);
         }
     },
+
     //验证服务地址是否为空
     validatePermissionApi: function(index, permissionIndex, event) {
         var value = event.target.value;
@@ -433,6 +445,7 @@ var AuthorityForm = React.createClass({
                 </div>) : null}
         </div>);
     },
+
     //获取当前权限的服务地址数组
     getCurPermissionApiArray: function(permissionIndex) {
         var permissionApiArray = [];
@@ -445,6 +458,7 @@ var AuthorityForm = React.createClass({
         }
         return permissionApiArray;
     },
+
     //渲染某个权限的服务地址
     renderPermissionApis: function(permissionIndex) {
         var permissionApiArray = this.getCurPermissionApiArray(permissionIndex);
@@ -468,6 +482,7 @@ var AuthorityForm = React.createClass({
         }
         return permissionApisEle;
     },
+
     //获取当前权限的数据权限
     getCurPermissionDatas: function(permissionIndex) {
         var permissionDatas = [];
@@ -525,6 +540,7 @@ var AuthorityForm = React.createClass({
             </div>
         );
     },
+
     //数据权限输入框发生改变
     onPermissionDataChange: function(idx, permissionIndex, event) {
         var permissionDatas = this.getCurPermissionDatas(permissionIndex);
@@ -532,6 +548,7 @@ var AuthorityForm = React.createClass({
         this.updateCurPermissionDatas(permissionIndex, permissionDatas);
         this.validatePermissionData(idx, permissionIndex, event);
     },
+
     //验证数据权限是否为空
     validatePermissionData: function(idx, permissionIndex, event) {
         var value = event.target.value;
@@ -554,6 +571,7 @@ var AuthorityForm = React.createClass({
             formData: this.state.formData
         });
     },
+
     //更新state中formData的服务地址数组
     updateCurPermissionDatas: function(permissionIndex, permissionDatas) {
         if (permissionIndex) {
@@ -574,12 +592,14 @@ var AuthorityForm = React.createClass({
         permissionDatas.push('');
         this.updateCurPermissionDatas(permissionIndex, permissionDatas);
     },
+
     //移除一个数据权限
     removePermissionData: function(index, permissionIndex) {
         var permissionDatas = this.getCurPermissionDatas(permissionIndex);
         permissionDatas.splice(index, 1);
         this.updateCurPermissionDatas(permissionIndex, permissionDatas);
     },
+
     render: function() {
         var _this = this;
         var multiFormNumArr = this.state.multiFormNumArr;
@@ -730,7 +750,7 @@ var AuthorityForm = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = AuthorityForm;

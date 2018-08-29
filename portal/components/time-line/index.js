@@ -12,22 +12,21 @@ import { Timeline } from 'antd';
 const classNames = require('classnames');
 const PropTypes = React.PropTypes;
 
-const TimeLine = React.createClass({
-    getDefaultProps: function() {
-        return {
-            //列表数据
-            list: [],
-            //是否按天分组
-            groupByDay: false,
-            //时间字段名
-            timeField: '',
-            //左侧是否用相对时间显示
-            relativeDate: false,
-            //渲染函数，根据回调返回的列表项数据，渲染列表项html
-            render: function(item){return null;},
-        };
-    },
-    render: function() {
+class TimeLine extends React.Component {
+    static defaultProps = {
+        //列表数据
+        list: [],
+        //是否按天分组
+        groupByDay: false,
+        //时间字段名
+        timeField: '',
+        //左侧是否用相对时间显示
+        relativeDate: false,
+        //渲染函数，根据回调返回的列表项数据，渲染列表项html
+        render: function(item){return null;},
+    };
+
+    render() {
         let classNameArr = ['time-line'];
 
         if (this.props.groupByDay) classNameArr.push('group-by-day');
@@ -95,7 +94,7 @@ const TimeLine = React.createClass({
             </div>
         );
     }
-});
+}
 
 TimeLine.propTypes = {
     list: PropTypes.array,

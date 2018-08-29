@@ -29,21 +29,22 @@ const searchFields = [
         field: 'phone_order'
     }
 ];
-const PositionManage = React.createClass({
-    getInitialState() {
-        return {
-            isShowAddRightPanel: false, // 批量添加右侧面板
-            isShowDetailRightPanel: false, // 座席号详情面板
-            clickRowPhoneOrder: '', // 点击查看详情那一行的座席号
-            selectedRowIndex: null, // 点击的行索引
-            ...PositionStore.getState()
-        };
-    },
-    onStoreChange() {
+
+class PositionManage extends React.Component {
+    state = {
+        isShowAddRightPanel: false, // 批量添加右侧面板
+        isShowDetailRightPanel: false, // 座席号详情面板
+        clickRowPhoneOrder: '', // 点击查看详情那一行的座席号
+        selectedRowIndex: null, // 点击的行索引
+        ...PositionStore.getState()
+    };
+
+    onStoreChange = () => {
         this.setState(PositionStore.getState());
-    },
+    };
+
     // 获取座席号列表
-    getPhoneOrderList(queryParams) {
+    getPhoneOrderList = (queryParams) => {
         let reqObj = {
             page_size: this.state.pageSize, // 每次加载的条数
             sort_field: queryParams && queryParams.sort_field || this.state.sortField,
@@ -62,7 +63,8 @@ const PositionManage = React.createClass({
             reqObj.id = id;
         }
         PositionAction.getPhoneOrderList(reqObj); // 获取座席号列表
-    },
+    };
+
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         PositionStore.listen(this.onStoreChange);
@@ -70,33 +72,38 @@ const PositionManage = React.createClass({
         PositionAction.getRealmList(); // 获取安全域列表
         this.getPhoneOrderList();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-    },
+    }
+
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
         PositionStore.unlisten(this.onStoreChange);
-    },
+    }
+
     // 打开详情面板
-    showRightPanel(phoneOrder) {
+    showRightPanel = (phoneOrder) => {
         this.setState({
             isShowDetailRightPanel: true,
             clickRowPhoneOrder: phoneOrder,
             isShowAddRightPanel: false
         });
-    },
+    };
+
     // 关闭右侧详情面板
-    closeRightDetailPanel() {
+    closeRightDetailPanel = () => {
         $('tr').removeClass('current-row');
         this.setState({
             isShowDetailRightPanel: false
         });
-    },
-    handleAddPosition(){
+    };
+
+    handleAddPosition = () => {
         this.setState({
             isShowAddRightPanel: true
         });
-    },
+    };
+
     // 座席号表格列
-    getPositionColumns(){
+    getPositionColumns = () => {
         return [
             {
                 title: LANGLOBAL.POSITION.number, // 座席号
@@ -136,19 +143,22 @@ const PositionManage = React.createClass({
                 key: 'nick_name'
             }
         ];
-    },
+    };
+
     //右侧面板的关闭
-    closeRightPanel() {
+    closeRightPanel = () => {
         this.setState({
             isShowAddRightPanel: false
         });
-    },
-    getRowClickData(record) {
+    };
+
+    getRowClickData = (record) => {
         this.setState({
             isShowDetailRightPanel: true
         });
-    },
-    handleTableChange(pagination, filters, sorter) {
+    };
+
+    handleTableChange = (pagination, filters, sorter) => {
         const sortOrder = sorter.order || this.state.sortOrder;
         const sortField = sorter.field + '.raw' || this.state.sortField;
         PositionAction.setSort({sortField, sortOrder});
@@ -160,31 +170,36 @@ const PositionManage = React.createClass({
             });
         } );
 
-    },
-    handleScrollBottom() {
+    };
+
+    handleScrollBottom = () => {
         this.getPhoneOrderList({
             id: this.state.positionList.sortId
         });
-    },
-    showNoMoreDataTip() {
+    };
+
+    showNoMoreDataTip = () => {
         return !this.state.positionList.isLoading &&
             this.state.positionList.data.length >= 10 && !this.state.listenScrollBottom;
-    },
-    handleRowClick(record, index, event) {
+    };
+
+    handleRowClick = (record, index, event) => {
         this.setState({
             selectedRowIndex: index
         });
         this.showRightPanel(record.phone_order);
-    },
-    handleRowClassName(record, index) {
+    };
+
+    handleRowClassName = (record, index) => {
         if ((index == this.state.selectedRowIndex) && this.state.isShowDetailRightPanel) {
             return 'current-row';
         }
         else {
             return '';
         }
-    },
-    renderTableContent() {
+    };
+
+    renderTableContent = () => {
         let columns = this.getPositionColumns();
         let isLoading = this.state.positionList.isLoading;
         let doNotShow = false;
@@ -220,15 +235,17 @@ const PositionManage = React.createClass({
                 </div>
             </div>
         );
-    },
-    search() {
+    };
+
+    search = () => {
         let queryParam = this.refs.searchInput.state.formData;
         PositionAction.search(queryParam);
         setTimeout( () => {
             PositionAction.resetState();
             this.getPhoneOrderList(queryParam);
         } );
-    },
+    };
+
     render() {
         return (
             <div className="position_manage_page" ref="positionListTable" >
@@ -266,6 +283,6 @@ const PositionManage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = PositionManage;

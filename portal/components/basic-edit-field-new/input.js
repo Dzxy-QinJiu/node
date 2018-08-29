@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -18,8 +19,10 @@ import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
 import {parseAmount} from 'LIB_DIR/func';
 
-const BasicEditField = React.createClass({
+const BasicEditField = createReactClass({
+    displayName: 'BasicEditField',
     mixins: [FieldMixin],
+
     getDefaultProps: function() {
         return {
             id: '1',
@@ -67,6 +70,7 @@ const BasicEditField = React.createClass({
             hoverShowEdit: true,
         };
     },
+
     getInitialState: function() {
         var type = this.props.type, value = this.props.value;
         if (type === 'password') {
@@ -89,6 +93,7 @@ const BasicEditField = React.createClass({
             }
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.id !== this.props.id) {
             var type = nextProps.type, value = nextProps.value;
@@ -103,6 +108,7 @@ const BasicEditField = React.createClass({
             });
         }
     },
+
     setEditable: function(e) {
         var formData = this.state.formData;
         formData.input = this.state.value;
@@ -128,11 +134,13 @@ const BasicEditField = React.createClass({
         this.props.onDisplayTypeChange('edit');
         Trace.traceEvent(e, '点击编辑' + this.props.field);
     },
+
     md5: function(value) {
         var md5Hash = crypto.createHash('md5');
         md5Hash.update(value);
         return md5Hash.digest('hex');
     },
+
     handleSubmit: function(e) {
         var validation = this.refs.validation;
         Trace.traceEvent(e, '保存对' + this.props.field + '的修改');
@@ -173,6 +181,7 @@ const BasicEditField = React.createClass({
             }
         });
     },
+
     handleCancel: function(e) {
         var oldValue = this.props.type === 'password' ? secretPassword : this.state.value;
         var formData = this.state.formData;
@@ -189,6 +198,7 @@ const BasicEditField = React.createClass({
         if (_.isFunction(this.props.cancelEditInput)) this.props.cancelEditInput();
         Trace.traceEvent(e, '取消对' + this.props.field + '的修改');
     },
+
     onFocusInput: function(type, event) {
         if (type === 'password') {
             var currentValue = event.target.value;
@@ -201,6 +211,7 @@ const BasicEditField = React.createClass({
             }
         }
     },
+
     onBlurInput: function(type, event) {
         if (type === 'password') {
             var currentValue = event.target.value;
@@ -213,10 +224,12 @@ const BasicEditField = React.createClass({
             }
         }
     },
+
     onInputChange: function(e) {
         this.setField.bind(this, 'input', e);
         this.props.onValueChange();
     },
+
     render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -316,7 +329,7 @@ const BasicEditField = React.createClass({
                 {passwordStrengthBlock}
             </div>
         );
-    }
+    },
 });
 
 module.exports = BasicEditField;

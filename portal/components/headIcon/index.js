@@ -12,20 +12,18 @@ var limitSize = 300;//图片大小限制300kb
 var message = require('antd').message;
 var DefaultUserLogoTitle = require('../default-user-logo-title');
 
-var HeadIcon = React.createClass({
-    getInitialState: function() {
-        return {
-            headIcon: this.props.headIcon
-        };
-    },
+class HeadIcon extends React.Component {
+    state = {
+        headIcon: this.props.headIcon
+    };
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         this.setState({
             headIcon: nextProps.headIcon
         });
-    },
+    }
 
-    uploadImg: function(event) {
+    uploadImg = (event) => {
         var _this = this;
         var flag = false;
         var file = event.target.files ? event.target.files[0] : null;
@@ -52,15 +50,15 @@ var HeadIcon = React.createClass({
             }
         }
         return flag;
-    },
+    };
 
-    setDefaultImg: function() {
+    setDefaultImg = () => {
         this.setState({
             headIcon: ''
         });
-    },
+    };
 
-    render: function() {
+    render() {
         var headIcon = this.state.headIcon;
         return (
             <div className="head-image-container">
@@ -99,7 +97,7 @@ var HeadIcon = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = HeadIcon;
 

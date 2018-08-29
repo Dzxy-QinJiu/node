@@ -21,35 +21,34 @@ const resizeEmitter = require('PUB_DIR/sources/utils/emitters').resizeEmitter;
 const threeMonthAgo = moment().subtract(3, 'month').valueOf();
 const now = moment().valueOf();
 
-const ContractDashboard = React.createClass({
-    getInitialState() {
-        return {
-            //是否隐藏团队分布图
-            isTeamDisChartHide: false,
-            amount: '',
-            grossProfit: '',
-            repayGrossProfit: '',
-            contentHeight: 0,
-        };
-    },
+class ContractDashboard extends React.Component {
+    state = {
+        //是否隐藏团队分布图
+        isTeamDisChartHide: false,
+        amount: '',
+        grossProfit: '',
+        repayGrossProfit: '',
+        contentHeight: 0,
+    };
+
     componentDidMount() {
         //窗口大小改变事件
         resizeEmitter.on(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
-    },
+    }
 
     componentWillUnmount() {
         //卸载窗口大小改变事件
         resizeEmitter.removeListener(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
-    },
+    }
 
     //窗口缩放时候的处理函数
-    resizeHandler(data){
+    resizeHandler = (data) => {
         this.setState({
             contentHeight: data.height
         });
-    },
+    };
 
-    getComponent(component, componentProps) {
+    getComponent = (component, componentProps) => {
         if (!componentProps) componentProps = {};
 
         componentProps.height = CHART_HEIGHT;
@@ -57,17 +56,17 @@ const ContractDashboard = React.createClass({
         componentProps.ref = (ref) => {this.refs[componentProps.refName] = ref;};
 
         return React.createElement(component, componentProps, null);
-    },
+    };
 
     //改变数字格式
-    changeNumberFormat(num){
+    changeNumberFormat = (num) => {
         //把以元为单位的数字改为以万元为单位。
         num = formatAmount(num);
         //保留两位小数，不进行四舍五入
         return Math.floor(num * 100) / 100;
-    },
+    };
 
-    renderCountBoxContent(args, value) {
+    renderCountBoxContent = (args, value) => {
         return (
             <div>
                 <div>{args.title}</div>
@@ -91,27 +90,32 @@ const ContractDashboard = React.createClass({
                 ) : null}
             </div>
         );
-    },
-    showTeamDisChart() {
+    };
+
+    showTeamDisChart = () => {
         this.setState({isTeamDisChartHide: false});
-    },
-    hideTeamDisChart() {
+    };
+
+    hideTeamDisChart = () => {
         this.setState({isTeamDisChartHide: true});
-    },
-    processAmountData(data) {
+    };
+
+    processAmountData = (data) => {
         return _.map(data, item => {
             item.value = formatAmount(item.value);
             return item;
         });
-    },
-    renderChartContent(content) {
+    };
+
+    renderChartContent = (content) => {
         return (
             <div className="chart-content">
                 {content}
             </div>
         );
-    },
-    render: function() {
+    };
+
+    render() {
         const countBoxStyle = {
             border: 'none',
         };
@@ -374,7 +378,7 @@ const ContractDashboard = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = ContractDashboard;
 

@@ -5,20 +5,27 @@ var SelectFullWidth = require('../select-fullwidth');
 var Select = require('antd').Select;
 var Option = Select.Option;
 var userData = require('../../public/sources/user-data');
-var AnalysisAppSelector = React.createClass({
+
+class AnalysisAppSelector extends React.Component {
+    static defaultProps = {
+        onSelectApp: function() {},
+        //默认宽度没有限制
+        type: 'user',
+        //是否默认选中第一个应用
+        isSelectFirstApp: false
+    };
+
+    state = {
+        appList: [],
+        selectedApp: '',
+        hasAll: false,
+    };
+
     //失败次数
-    failCount: 0,
-    getDefaultProps: function() {
-        return {
-            onSelectApp: function() {},
-            //默认宽度没有限制
-            type: 'user',
-            //是否默认选中第一个应用
-            isSelectFirstApp: false
-        };
-    },
+    failCount = 0;
+
     //是否选中第一个应用
-    isChoosenFirst: function() {
+    isChoosenFirst = () => {
         if (this.props.isSelectFirstApp) return true;
 
         var privileges = userData.getUserData().privileges || [];
@@ -29,8 +36,9 @@ var AnalysisAppSelector = React.createClass({
             return true;
         }
         return false;
-    },
-    selectApp: function(appId,hasAll,apps) {
+    };
+
+    selectApp = (appId, hasAll, apps) => {
         //bugfix（已完成）:如果是销售，没有应用列表，并且不展示所有应用，应该将appId置空
         if(!hasAll && appId === 'all' && !apps.length) {
             appId = '';
@@ -45,15 +53,9 @@ var AnalysisAppSelector = React.createClass({
             appId = 'all';
         }
         this.props.onSelectApp(appId,isChoosenAll,hasAll,apps);
-    },
-    getInitialState: function() {
-        return {
-            appList: [],
-            selectedApp: '',
-            hasAll: false,
-        };
-    },
-    getAppList: function() {
+    };
+
+    getAppList = () => {
         var _this = this;
         ajax.getAppList().then(function(data) {
 
@@ -88,14 +90,17 @@ var AnalysisAppSelector = React.createClass({
                 }
             }
         });
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         this.getAppList();
-    },
-    onSelectedAppChange: function(app_id,name) {
+    }
+
+    onSelectedAppChange = (app_id, name) => {
         this.selectApp(app_id,this.state.hasAll,this.state.appList);
-    },
-    render: function() {
+    };
+
+    render() {
         var appList = this.state.appList;
         var options = appList.map(function(appInfo) {
             return (
@@ -119,7 +124,7 @@ var AnalysisAppSelector = React.createClass({
             </SelectFullWidth>
         );
     }
-});
+}
 
 module.exports = AnalysisAppSelector;
 

@@ -3,22 +3,22 @@
  */
 
 var React = require('react');
-let Box = React.createClass({
-    getDefaultProps: function() {
-        return {
-            renderContent: function(value) {
-                return value;
-            }
-        };
-    },
-    render: function() {
+
+class Box extends React.Component {
+    static defaultProps = {
+        renderContent: function(value) {
+            return value;
+        }
+    };
+
+    render() {
         return (
             <div className="chart-box">
                 {this.props.renderContent(this.props.chartData.value,this.props.app_id)}
             </div>
         );
     }
-});
+}
 
 module.exports = Box;
 

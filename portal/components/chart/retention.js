@@ -10,17 +10,17 @@ var Table = require('antd').Table;
 const DATE_FORMAT_WITH_YEAR = oplateConsts.DATE_FORMAT;
 const DATE_FORMAT_WITHOUT_YEAR = oplateConsts.DATE_MONTH_DAY_FORMAT;
 
-var Retention = React.createClass({
-    echartInstance: null,
-    getDefaultProps: function() {
-        return {
-            chartData: [],
-            title: Intl.get('oplate.user.analysis.9', '用户留存'),
-            height: 214,
-            resultType: 'loading',
-        };
-    },
-    getColumnName(index, diffDay) {
+class Retention extends React.Component {
+    static defaultProps = {
+        chartData: [],
+        title: Intl.get('oplate.user.analysis.9', '用户留存'),
+        height: 214,
+        resultType: 'loading',
+    };
+
+    echartInstance = null;
+
+    getColumnName = (index, diffDay) => {
         let columnName;
 
         if (index === 0) {
@@ -50,14 +50,16 @@ var Retention = React.createClass({
         }
 
         return columnName;
-    },
-    shouldComponentUpdate: function(nextProps) {
+    };
+
+    shouldComponentUpdate(nextProps) {
         if(immutable.is(this.props.chartData , nextProps.chartData) && this.props.resultType === nextProps.resultType) {
             return false;
         }
         return true;
-    },
-    renderTable: function() {
+    }
+
+    renderTable = () => {
         if (!_.isArray(this.props.chartData) || !this.props.chartData.length) {
             return (<div className="nodata">{Intl.get('common.no.data','暂无数据')}</div>);
         }
@@ -140,8 +142,9 @@ var Retention = React.createClass({
         return (
             <Table columns={tableColumns} dataSource={list} pagination={false}/>
         );
-    },
-    render: function() {
+    };
+
+    render() {
         return (
             <div className="analysis-chart">
                 <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}>
@@ -150,7 +153,7 @@ var Retention = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Retention;
 

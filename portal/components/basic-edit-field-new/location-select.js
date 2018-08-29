@@ -3,29 +3,29 @@ import Trace from 'LIB_DIR/trace';
 import { AntcAreaSelection } from 'antc';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
-const LocationSelectField = React.createClass({
-    getDefaultProps: function() {
-        return {
-            id: '',
-            hasEditPrivilege: false,
-            provinceName: '',
-            cityName: '',
-            countyName: '',
-            //编辑区的宽度
-            width: '100%',
-            //无数据时的提示（没有修改权限时提示没有数据）
-            noDataTip: '',
-            //添加数据的提示（有修改权限时，提示补充数据）
-            addDataTip: '',
-            //编辑按钮的提示文案
-            editBtnTip: Intl.get('crm.175', '设置地域'),
-            onChange: function() {
-            },
-            onModifySuccess: function() {
-            }
-        };
-    },
-    getInitialState: function() {
+
+class LocationSelectField extends React.Component {
+    static defaultProps = {
+        id: '',
+        hasEditPrivilege: false,
+        provinceName: '',
+        cityName: '',
+        countyName: '',
+        //编辑区的宽度
+        width: '100%',
+        //无数据时的提示（没有修改权限时提示没有数据）
+        noDataTip: '',
+        //添加数据的提示（有修改权限时，提示补充数据）
+        addDataTip: '',
+        //编辑按钮的提示文案
+        editBtnTip: Intl.get('crm.175', '设置地域'),
+        onChange: function() {
+        },
+        onModifySuccess: function() {
+        }
+    };
+
+    initData = () => {
         return {
             loading: false,//正在保存
             displayType: 'text',
@@ -38,11 +38,12 @@ const LocationSelectField = React.createClass({
             county_code: this.props.county_code,
             submitErrorMsg: ''
         };
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.id !== this.state.id) {
             //切换客户时,重新设置state数据
-            let stateData = this.getInitialState();
+            let stateData = this.initData();
             stateData.id = nextProps.id;
             stateData.province = nextProps.province;
             stateData.city = nextProps.city;
@@ -52,8 +53,9 @@ const LocationSelectField = React.createClass({
             stateData.county_code = nextProps.county_code;
             this.setState(stateData);
         }
-    },
-    changeDisplayType: function(type) {
+    }
+
+    changeDisplayType = (type) => {
         if (type === 'text') {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对地域的修改');
             this.setState({
@@ -74,16 +76,18 @@ const LocationSelectField = React.createClass({
                 submitErrorMsg: ''
             });
         }
-    },
+    };
+
     //回到展示状态
-    backToDisplay: function() {
+    backToDisplay = () => {
         this.setState({
             loading: false,
             displayType: 'text',
             submitErrorMsg: ''
         });
-    },
-    handleSubmit: function() {
+    };
+
+    handleSubmit = () => {
         if (this.state.loading) return;
         if (this.state.province === this.props.province
             && this.state.city === this.props.city
@@ -109,13 +113,15 @@ const LocationSelectField = React.createClass({
                 submitErrorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
             });
         });
-    },
-    handleCancel: function(e) {
+    };
+
+    handleCancel = (e) => {
         Trace.traceEvent(e, '取消对地域的修改');
         this.changeDisplayType('text');
-    },
+    };
+
     //更新地址
-    updateLocation: function(addressObj) {
+    updateLocation = (addressObj) => {
         this.state.province = addressObj.provName || '';
         this.state.city = addressObj.cityName || '';
         this.state.county = addressObj.countyName || '';
@@ -123,8 +129,11 @@ const LocationSelectField = React.createClass({
         this.state.city_code = addressObj.cityCode || '';
         this.state.county_code = addressObj.countyCode || '';
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改地域');
-    },
-    render: function() {
+    };
+
+    state = this.initData();
+
+    render() {
         var location = [];
         if (this.state.province) {
             location.push(this.state.province);
@@ -171,6 +180,6 @@ const LocationSelectField = React.createClass({
             />
         </div>);
     }
-});
+}
 
 module.exports = LocationSelectField;

@@ -21,30 +21,31 @@ const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
 };
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
-const WeeklyReportDetail = React.createClass({
-    getDefaultProps() {
-        return {
-            selectedItem: {}
-        };
-    },
-    getInitialState() {
-        return {
-            selectedItem: this.props.selectedItem,
-            selectedTeamName: this.props.selectedTeamName,
-            isAddingLeaveUserId: '',//正在添加请假信息的销售
-            formType: 'add',//是添加请假信息还是修改请假信息
-            isEdittingItem: {},//正在编辑的请假信息
-            ...WeeklyReportDetailStore.getState()
-        };
-    },
-    onStoreChange() {
+
+class WeeklyReportDetail extends React.Component {
+    static defaultProps = {
+        selectedItem: {}
+    };
+
+    state = {
+        selectedItem: this.props.selectedItem,
+        selectedTeamName: this.props.selectedTeamName,
+        isAddingLeaveUserId: '',//正在添加请假信息的销售
+        formType: 'add',//是添加请假信息还是修改请假信息
+        isEdittingItem: {},//正在编辑的请假信息
+        ...WeeklyReportDetailStore.getState()
+    };
+
+    onStoreChange = () => {
         this.setState(WeeklyReportDetailStore.getState());
-    },
+    };
+
     componentDidMount() {
         WeeklyReportDetailStore.listen(this.onStoreChange);
         this.getWeeklyReportData(); // 获取电话统计、、、 数据
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.selectedItem.teamId !== this.state.selectedItem.teamId || nextProps.selectedItem.nWeek !== this.state.selectedItem.nWeek) {
             this.setState({
                 selectedTeamName: nextProps.selectedTeamName,
@@ -54,21 +55,23 @@ const WeeklyReportDetail = React.createClass({
                 this.getWeeklyReportData();
             });
         }
-    },
+    }
+
     componentWillUnmount() {
         this.setState({
             isAddingLeaveUserId: ''
         });
         WeeklyReportDetailStore.unlisten(this.onStoreChange);
-    },
+    }
+
     //获取今年某周的开始日期
-    getBeginDateOfWeek: function(weekIndex) {
+    getBeginDateOfWeek = (weekIndex) => {
         var time = (weekIndex - 1) * 7 * oplateConsts.ONE_DAY_TIME_RANGE;
         return moment().startOf('year').valueOf() + time;
-    },
+    };
 
     //获取某年某周的结束日期
-    getEndDateOfWeek: function(weekIndex) {
+    getEndDateOfWeek = (weekIndex) => {
         //获取今年第一天是周几
         var firstDayWeek = new Date(moment().startOf('year').valueOf()).getDay();
         var spendDay = 1;
@@ -77,23 +80,26 @@ const WeeklyReportDetail = React.createClass({
         }
         var time = ((weekIndex - 1) * 7 + spendDay ) * oplateConsts.ONE_DAY_TIME_RANGE;
         return moment().startOf('year').valueOf() + time - 1;
-    },
+    };
+
     //添加请假信息
-    handleAddAskForLeave: function(userId) {
+    handleAddAskForLeave = (userId) => {
         this.setState({
             formType: 'add',
             isAddingLeaveUserId: userId
         });
-    },
+    };
+
     //更新请假信息
-    handleUpdateAskForLeave: function(item) {
+    handleUpdateAskForLeave = (item) => {
         this.setState({
             formType: 'edit',
             isEdittingItem: item
         });
 
-    },
-    getWeeklyReportData: function() {
+    };
+
+    getWeeklyReportData = () => {
         //不加延时会报错
         setTimeout(() => {
             this.getCallInfoData();// 接通率
@@ -104,10 +110,10 @@ const WeeklyReportDetail = React.createClass({
             this.getRegionOverlayData();//获取区域分布信息
             this.getCustomerStageData();//获取客户阶段信息
         });
-    },
+    };
 
     //添加请假信息之后
-    afterAddLeave: function(resData) {
+    afterAddLeave = (resData) => {
         //如果某天请假时间超过一天，返回 code为1 返回请假时间不能超过一天的提示信息
         if (resData.code === 1) {
             message.warning(resData.msg);
@@ -139,15 +145,17 @@ const WeeklyReportDetail = React.createClass({
                 isAddingLeaveUserId: '',
             });
         }
-    },
+    };
+
     //取消添加请假信息
-    cancelAddLeave: function() {
+    cancelAddLeave = () => {
         this.setState({
             isAddingLeaveUserId: ''
         });
-    },
+    };
+
     //更新请假信息之后
-    afterUpdateLeave: function(resData) {
+    afterUpdateLeave = (resData) => {
         //如果某天请假时间超过一天，返回 code为1 返回请假时间不能超过一天的提示信息
         if (resData.code === 1) {
             message.warning(resData.msg);
@@ -184,16 +192,18 @@ const WeeklyReportDetail = React.createClass({
                 isEdittingItem: {}
             });
         }
-    },
+    };
+
     //取消更新请假信息之后
-    cancelUpdateLeave: function() {
+    cancelUpdateLeave = () => {
         this.setState({
             formType: 'add',
             isEdittingItem: {}
         });
-    },
+    };
+
     //删除某条请假信息
-    handleRemoveAskForLeave: function(deleteItem) {
+    handleRemoveAskForLeave = (deleteItem) => {
         var removedId = deleteItem.id;
         WeeklyReportDetailAction.deleteForLeave(removedId, () => {
             var salesPhoneList = this.state.salesPhone.list;
@@ -219,9 +229,10 @@ const WeeklyReportDetail = React.createClass({
                 salesPhone: this.state.salesPhone,
             });
         });
-    },
+    };
+
     //没有请假信息的时候,是全勤的
-    renderFullWork: function(isAdding, userId) {
+    renderFullWork = (isAdding, userId) => {
         return (
             <div className="attendance-remark">
                 {isAdding ? (<div className="edit-for-leave-wrap">
@@ -244,9 +255,10 @@ const WeeklyReportDetail = React.createClass({
                 </div>}
             </div>
         );
-    },
+    };
+
     //有请假信息的时候 展示请假信息列表
-    renderAskForLeave: function(record, userId) {
+    renderAskForLeave = (record, userId) => {
         return (
             <div className="leave-info-container">
                 {
@@ -302,9 +314,10 @@ const WeeklyReportDetail = React.createClass({
                 }
             </div>
         );
-    },
+    };
+
     //合同数据
-    getContractListColumn: function() {
+    getContractListColumn = () => {
         let columns = [{
             title: Intl.get('crm.6', '负责人'),
             dataIndex: 'nickName',
@@ -327,9 +340,10 @@ const WeeklyReportDetail = React.createClass({
             align: 'right',
         }];
         return columns;
-    },
+    };
+
     //回款数据
-    getRepaymentListColumn: function() {
+    getRepaymentListColumn = () => {
         let columns = [{
             title: Intl.get('crm.6', '负责人'),
             dataIndex: 'nickName',
@@ -352,9 +366,10 @@ const WeeklyReportDetail = React.createClass({
             align: 'right',
         }];
         return columns;
-    },
+    };
+
     // 电话接通率的数据
-    getPhoneListColumn: function() {
+    getPhoneListColumn = () => {
         var _this = this;
         let columns = [{
             title: Intl.get('user.salesman', '销售人员'),
@@ -403,8 +418,9 @@ const WeeklyReportDetail = React.createClass({
             }
         },];
         return columns;
-    },
-    getCustomerStageListColumn(){
+    };
+
+    getCustomerStageListColumn = () => {
         let columns = [{
             title: Intl.get('user.salesman', '销售人员'),
             dataIndex: 'nick_name',
@@ -432,8 +448,9 @@ const WeeklyReportDetail = React.createClass({
             align: 'right',
         });
         return columns;
-    },
-    getRegionOverlayListColumn(){
+    };
+
+    getRegionOverlayListColumn = () => {
         let columns = [{
             title: Intl.get('realm.select.address.province', '省份'),
             dataIndex: 'province_name',
@@ -518,31 +535,34 @@ const WeeklyReportDetail = React.createClass({
             align: 'right',
         },];
         return columns;
-    },
+    };
 
-    getCallInfoAuth() {
+    getCallInfoAuth = () => {
         let authType = 'user';//CUSTOMER_CALLRECORD_STATISTIC_USER
         if (hasPrivilege('CUSTOMER_CALLRECORD_STATISTIC_MANAGER')) {
             authType = 'manager';
         }
         return authType;
-    },
-    getContractType(){
+    };
+
+    getContractType = () => {
         let authType = 'common';
         if (hasPrivilege('KETAO_CONTRACT_ANALYSIS_REPORT_FORM')) {
             authType = 'manager';
         }
         return authType;
-    },
-    getOverlayType(){
+    };
+
+    getOverlayType = () => {
         let authType = 'common';
         if (hasPrivilege('KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER')) {
             authType = 'manager';
         }
         return authType;
-    },
+    };
+
     //获取query参数
-    getQueryParams(){
+    getQueryParams = () => {
         let queryParams = {
             start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
             end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
@@ -551,9 +571,10 @@ const WeeklyReportDetail = React.createClass({
             queryParams.team_id = this.state.selectedItem.teamId;
         }
         return queryParams;
-    },
+    };
+
     //合同和回款的query参数
-    getContractAndRepayParams(){
+    getContractAndRepayParams = () => {
         let queryParams = {
             start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
             end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
@@ -562,9 +583,10 @@ const WeeklyReportDetail = React.createClass({
             queryParams.sale_team_ids = this.state.selectedItem.teamId;
         }
         return queryParams;
-    },
+    };
+
     //获取通话的queryparams参数
-    getCallInfoParams(){
+    getCallInfoParams = () => {
         let queryParams = {
             start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
             end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
@@ -573,41 +595,47 @@ const WeeklyReportDetail = React.createClass({
             queryParams.team_ids = this.state.selectedItem.teamId;
         }
         return queryParams;
-    },
+    };
+
     // 通话的接通率
-    getCallInfoData(){
+    getCallInfoData = () => {
         var queryObj = _.clone(this.getCallInfoParams());
         queryObj.deviceType = this.state.call_type;
         let type = this.getCallInfoAuth();
         WeeklyReportDetailAction.getCallInfo(queryObj, type);
-    },
+    };
+
     //获取合同情况
-    getContractData(){
+    getContractData = () => {
         var queryObj = _.clone(this.getContractAndRepayParams());
         let type = this.getContractType();
         WeeklyReportDetailAction.getContractInfo(queryObj, type);
 
-    },
+    };
+
     //获取回款情况
-    getRepaymentData(){
+    getRepaymentData = () => {
         var queryObj = _.clone(this.getContractAndRepayParams());
         let type = this.getContractType();
         WeeklyReportDetailAction.getRepaymentInfo(queryObj, type);
-    },
+    };
+
     //获取区域覆盖情况
-    getRegionOverlayData(){
+    getRegionOverlayData = () => {
         var queryObj = _.clone(this.getQueryParams());
         let type = this.getOverlayType();
         WeeklyReportDetailAction.getRegionOverlayInfo(queryObj, type);
-    },
+    };
+
     //获取客户阶段情况
-    getCustomerStageData(){
+    getCustomerStageData = () => {
         var queryObj = _.clone(this.getQueryParams());
         let type = this.getOverlayType();
         WeeklyReportDetailAction.getCustomerStageInfo(queryObj, type);
-    },
+    };
+
     //渲染不同的表格
-    renderDiffTypeTable(type){
+    renderDiffTypeTable = (type) => {
         var data = {}, retryFunction = '', columns = {};
         switch (type) {
             case 'callInfo'://电话接通率
@@ -666,22 +694,25 @@ const WeeklyReportDetail = React.createClass({
                 />
             );
         }
-    },
-    getStartAndEndTime() {
+    };
+
+    getStartAndEndTime = () => {
         return {
             startTime: moment(this.getBeginDateOfWeek(this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT),
             endTime: moment(this.getEndDateOfWeek(this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT)
         };
-    },
+    };
+
     //获取报告区域的高度
-    getReportDetailDivHeight: function() {
+    getReportDetailDivHeight = () => {
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
         var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
         return height;
-    },
-    render: function() {
+    };
+
+    render() {
         var divHeight = this.getReportDetailDivHeight();
         return (
             <div className="weekly-report-detail-container">
@@ -722,5 +753,6 @@ const WeeklyReportDetail = React.createClass({
             </div>
         );
     }
-});
+}
+
 export default WeeklyReportDetail;

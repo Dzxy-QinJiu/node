@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -14,12 +15,15 @@ import ValidateMixin from '../../../mixins/ValidateMixin';
 import BasicMixin from './mixin-basic';
 import { COST_STRUCTURE } from '../consts';
 
-const AddBasic = React.createClass({
+const AddBasic = createReactClass({
+    displayName: 'AddBasic',
     mixins: [ValidateMixin, BasicMixin],
+
     handleCostStructureChange: function(value) {
         this.state.formData.cost_structure = value.join();
         this.setState(this.state);
     },
+
     render: function() {
         const formData = this.state.formData;
 
@@ -170,7 +174,7 @@ const AddBasic = React.createClass({
                 </Validation>
             </Form>
         );
-    }
+    },
 });
 
 module.exports = AddBasic;

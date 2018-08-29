@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 require('../../css/schedule.less');
@@ -71,8 +72,10 @@ const SCHEDULE_TYPES = [
     {name: Intl.get('common.others', '其他'), value: 'other', iconCls: 'icon-trace-other'}
 ];
 
-var CrmAlertForm = React.createClass({
+var CrmAlertForm = createReactClass({
+    displayName: 'CrmAlertForm',
     mixins: [ValidateMixin],
+
     getInitialState: function() {
         var formData = this.getInitialFormData();
         var selectedAlertTimeRange = 'not_remind';
@@ -101,18 +104,21 @@ var CrmAlertForm = React.createClass({
         formData.alert_time = formData.alert_time || moment().add(TIME_CONSTS.ONE, 'h').subtract(TIME_CONSTS.TEN, 'm').valueOf();
         return formData;
     },
+
     //是否是今天
     isToday: function(date) {
         const newTime = moment(date).format(DATE_FORMAT);
         const today = moment().format(DATE_FORMAT);
         return (newTime === today);
     },
+
     //是否是N天后
     isNDayLater: function(date, n) {
         const newTime = moment(date).format(DATE_FORMAT);
         const isNDayLater = moment().add(n, 'day').format(DATE_FORMAT);
         return (newTime === isNDayLater);
     },
+
     //更改开始日期
     onScheduleDateChange: function(date) {
         //选中的是不是今天
@@ -147,6 +153,7 @@ var CrmAlertForm = React.createClass({
         this.setState(this.state);
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改提醒日期');
     },
+
     //更改开始时间
     onScheduleStartTimeChange: function(momentTime, timeStr) {
         //用原有时间里的日期部分加上新选择的时间，组合出新选择的时间字符串
@@ -164,6 +171,7 @@ var CrmAlertForm = React.createClass({
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改开始时间');
 
     },
+
     //更改结束时间
     onScheduleEndTimeChange: function(momentTime, timeStr) {
         //用原有时间里的日期部分加上新选择的时间，组合出新选择的时间字符串
@@ -260,6 +268,7 @@ var CrmAlertForm = React.createClass({
             }
         });
     },
+
     showMessage: function(content, type) {
         this.setState({
             isLoading: false,
@@ -268,6 +277,7 @@ var CrmAlertForm = React.createClass({
             messageContent: content || '',
         });
     },
+
     //对应不同下拉框中的选项
     switchDiffSelectOptions(formData){
         var value = this.state.selectedAlertTimeRange;
@@ -318,6 +328,7 @@ var CrmAlertForm = React.createClass({
         }
         this.handleSubmit(submitObj);
     },
+
     handleSave: function(e) {
         var formData = this.state.formData;
         if (this.state.selectedTimeRange !== 'custom') {
@@ -348,6 +359,7 @@ var CrmAlertForm = React.createClass({
         this.switchDiffSelectOptions(this.state.formData);
         Trace.traceEvent(e, '保存联系计划');
     },
+
     handleCancel: function(e) {
         Trace.traceEvent(e, '取消添加联系计划');
         _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
@@ -361,6 +373,7 @@ var CrmAlertForm = React.createClass({
         }
 
     },
+
     //修改日程类型
     handleTypeChange: function(event) {
         let value = event.target.value;
@@ -370,6 +383,7 @@ var CrmAlertForm = React.createClass({
             formData: this.state.formData
         });
     },
+
     //修改选择的时间
     handleTimeRangeChange: function(value) {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-radio-button'), '修改联系时间为' + value);
@@ -388,6 +402,7 @@ var CrmAlertForm = React.createClass({
             isSelectFullday: this.state.isSelectFullday
         });
     },
+
     renderSelectFulldayOptions: function() {
         if (this.state.selectedTimeRange === '1d') {
             //如果选中的是一天，要把后面几个选项去掉
@@ -426,6 +441,7 @@ var CrmAlertForm = React.createClass({
             );
         }
     },
+
     renderNotSelectFulldayOptions: function() {
         if (this.state.selectedTimeRange === 'custom') {
             var CLONE_NO_SELECT_FULL_OPTIONS = _.clone(NO_SELECT_FULL_OPTIONS);
@@ -459,6 +475,7 @@ var CrmAlertForm = React.createClass({
         }
 
     },
+
     //修改联系计划的主题
     handleTopicChange: function(customerId) {
         var targetObj = _.find(this.props.customerArr, (item) => {
@@ -472,12 +489,14 @@ var CrmAlertForm = React.createClass({
             formData: formData
         });
     },
+
     //是否选中全天
     onChangeSelectFullday: function(checked) {
         this.setState({
             isSelectFullday: checked,
         });
     },
+
     //改变提醒时间的类型
     handleAlertTimeChange: function(value) {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-select-lg .ant-select-selection__rendered'), '修改提醒时间的类型为' + value);
@@ -651,7 +670,7 @@ var CrmAlertForm = React.createClass({
                 </Validation>
             </Form>
         );
-    }
+    },
 });
 
 module.exports = CrmAlertForm;

@@ -7,23 +7,24 @@ var Spinner = require('../../../../../components/spinner');
 var immutable = require('immutable');
 var Table = require('antd').Table;
 
-var Retention = React.createClass({
-    echartInstance: null,
-    getDefaultProps: function() {
-        return {
-            data: [],
-            title: Intl.get('oplate.user.analysis.9', '用户留存'),
-            height: 214,
-            resultType: 'loading',
-        };
-    },
-    shouldComponentUpdate: function(nextProps) {
+class Retention extends React.Component {
+    static defaultProps = {
+        data: [],
+        title: Intl.get('oplate.user.analysis.9', '用户留存'),
+        height: 214,
+        resultType: 'loading',
+    };
+
+    echartInstance = null;
+
+    shouldComponentUpdate(nextProps) {
         if(immutable.is(this.props.data , nextProps.data) && this.props.resultType === nextProps.resultType) {
             return false;
         }
         return true;
-    },
-    renderTable: function() {
+    }
+
+    renderTable = () => {
         var tableColumns = this.props.data.columns.map((item) => {
             var title = item;
             if(item === 'date') {
@@ -46,8 +47,9 @@ var Retention = React.createClass({
         return (
             <Table columns={tableColumns} dataSource={this.props.data.tableJsonList} pagination={false}/>
         );
-    },
-    render: function() {
+    };
+
+    render() {
         var _this = this;
         return (
             <div className="retention_table" ref="wrap">
@@ -62,7 +64,7 @@ var Retention = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Retention;
 

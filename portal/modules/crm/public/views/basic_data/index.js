@@ -41,46 +41,49 @@ function getBasicPanelH(isMerge) {
     }
 }
 
-var BasicData = React.createClass({
-    getInitialState: function() {
-        return getStateFromStore(this.props.isMerge);
-    },
-    onChange: function() {
+class BasicData extends React.Component {
+    state = getStateFromStore(this.props.isMerge);
+
+    onChange = () => {
         var datas = getStateFromStore(this.props.isMerge);
         this.setState(datas);
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         this.autoLayout();
         CRMStore.listen(this.onChange);
         CRMAction.getBasicData(this.props.curCustomer);
-    },
-    autoLayout: function() {
+    }
+
+    autoLayout = () => {
         var _this = this;
         $(window).resize(function() {
             _this.setState({
                 basicPanelH: getBasicPanelH(_this.props.isMerge)
             });
         });
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    componentWillReceiveProps(nextProps) {
         CRMAction.getBasicData(nextProps.curCustomer);
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         CRMStore.unlisten(this.onChange);
-    },
+    }
 
     //展示编辑基本资料页面
-    showEditForm: function() {
+    showEditForm = () => {
         this.setState({editShowFlag: true});
-    },
+    };
 
     //返回基本资料展示页面
-    returnInfoPanel: function() {
+    returnInfoPanel = () => {
         this.setState({editShowFlag: false});
-    },
+    };
 
     //提交修改
-    submitBaiscForm: function(newBasicData, changedData) {
+    submitBaiscForm = (newBasicData, changedData) => {
         if (this.props.isMerge) {
             //合并面板的修改保存
             this.props.updateMergeCustomer(newBasicData);
@@ -90,15 +93,17 @@ var BasicData = React.createClass({
                 FilterAction.getTagList();
             });
         }
-    },
+    };
+
     //展示按客户搜索到的用户列表
-    triggerUserList: function() {
+    triggerUserList = () => {
         //获取客户基本信息
         var basicData = this.state.basicData || {};
         this.props.ShowCustomerUserListPanel({customerObj: basicData || {}});
-    },
+    };
+
     //修改客户基本资料成功后的处理
-    editBasicSuccess: function(newBasic) {
+    editBasicSuccess = (newBasic) => {
         if (this.props.isMerge) {
             //合并面板的修改保存
             this.props.updateMergeCustomer(newBasic);
@@ -115,31 +120,36 @@ var BasicData = React.createClass({
                 this.props.editCustomerBasic(newBasic);
             }
         }
-    },
-    getAdministrativeLevelOptions: function() {
+    };
+
+    getAdministrativeLevelOptions = () => {
         let options = crmUtil.administrativeLevels.map(obj => {
             return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>);
         });
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
-    },
-    onSelectAdministrativeLevel: function(administrative_level) {
+    };
+
+    onSelectAdministrativeLevel = (administrative_level) => {
         administrative_level = parseInt(administrative_level);
         if (!_.isNaN(administrative_level)) {
             this.state.basicData.administrative_level = parseInt(administrative_level);
             this.setState({basicData: this.state.basicData});
         }
-    },
-    cancelAdministrativeLevel: function() {
+    };
+
+    cancelAdministrativeLevel = () => {
         this.state.basicData.administrative_level = CRMStore.getState().basicData.administrative_level;
         this.setState({basicData: this.state.basicData});
-    },
-    getAdministrativeLevel: function(levelId) {
+    };
+
+    getAdministrativeLevel = (levelId) => {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id === levelId);
         return levelObj ? levelObj.level : '';
-    },
+    };
+
     //是否有转出客户的权限
-    enableTransferCustomer: function() {
+    enableTransferCustomer = () => {
         let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
@@ -150,9 +160,9 @@ var BasicData = React.createClass({
             enable = true;
         }
         return enable;
-    },
+    };
 
-    render: function() {
+    render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否显示用户统计内容
         var showUserStatistic = basicData.app_user_ids && (basicData.app_user_ids[0] ? true : false);
@@ -341,7 +351,7 @@ var BasicData = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = injectIntl(BasicData);
 

@@ -14,14 +14,16 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 require('../../app_user_manage/public/css/main-zh_CN.less');
 
 var ApplyView = require('./views/apply-view');
-var UserApply = React.createClass({
-    render: function() {
+
+class UserApply extends React.Component {
+    render() {
         return(
             <div className="user_apply_page" data-tracename="用户审批">
                 <ApplyView applyId={this.props.location.query && this.props.location.query.id}/>
             </div>
         );
     }
-});
+}
+
 module.exports = UserApply;
 

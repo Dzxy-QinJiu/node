@@ -2,6 +2,7 @@
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
 var React = require('react');
+var createReactClass = require('create-react-class');
 require('./index.less');
 import { Tooltip, Alert, Tabs } from 'antd';
 import classNames from 'classnames';
@@ -21,7 +22,9 @@ var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 const TabPane = Tabs.TabPane;
 import { PropTypes } from 'prop-types';
 
-const AppPropertySetting = React.createClass({
+const AppPropertySetting = createReactClass({
+    displayName: 'AppPropertySetting',
+
     mixins: [
         UserCountNumberField,
         UserTimeRangeField,
@@ -31,6 +34,7 @@ const AppPropertySetting = React.createClass({
         UserMultiLoginField,
         UserStatusRadioField
     ],
+
     propTypes: {
         //默认配置(添加需要传-添加用户，添加单个应用)
         defaultSettings: PropTypes.object,
@@ -51,6 +55,7 @@ const AppPropertySetting = React.createClass({
         //显示多人登录
         showMultiLogin: PropTypes.bool
     },
+
     getDefaultProps() {
         return {
             defaultSettings: {},
@@ -69,6 +74,7 @@ const AppPropertySetting = React.createClass({
             showMultiLogin: true
         };
     },
+
     //获取初始state
     getInitialState() {
         const props = this.props;
@@ -87,6 +93,7 @@ const AppPropertySetting = React.createClass({
             activeKey: ''
         };
     },
+
     createPropertySettingData(props) {
         //选中的应用
         const selectedApps = props.selectedApps;
@@ -254,12 +261,14 @@ const AppPropertySetting = React.createClass({
             return appPropSettingsMap;
         }
     },
+
     compareEquals(json1, json2) {
         if (JSON.stringify(json1) !== JSON.stringify(json2)) {
             return false;
         }
         return true;
     },
+
     componentWillReceiveProps(nextProps) {
 
         if (!this.compareEquals(nextProps.selectedApps, this.props.selectedApps)) {
@@ -278,6 +287,7 @@ const AppPropertySetting = React.createClass({
             this.setState({ appPropSettingsMap, activeKey: '' });
         }
     },
+
     componentDidUpdate(prevProps, prevState) {
         if (!this.compareEquals(this.state.appPropSettingsMap, prevState.appPropSettingsMap)) {
             this.props.onAppPropertyChange(this.state.appPropSettingsMap);
@@ -286,6 +296,7 @@ const AppPropertySetting = React.createClass({
             this.handleChangeCurrentApp();
         }
     },
+
     handleChangeCurrentApp() {
         clearTimeout(this.changeCurrentAppLoadingTimeout);
         this.setState({
@@ -297,6 +308,7 @@ const AppPropertySetting = React.createClass({
             });
         }, 100);
     },
+
     changeCurrentApp(appInfo) {
         const appId = appInfo.app_id;
         if (this.state.currentApp.app_id === appId) {
@@ -307,6 +319,7 @@ const AppPropertySetting = React.createClass({
         this.setState(newState);
 
     },
+
     onRolesPermissionSelect(app_id, roles, permissions) {
         var state = this.state;       
         var app_info = state.appPropSettingsMap[app_id];
@@ -318,6 +331,7 @@ const AppPropertySetting = React.createClass({
             this.props.onAppPropertyChange(this.state.appPropSettingsMap);
         });
     },
+
     renderTabContent(app_id) {
         const currentApp = this.state.currentApp;
         // if (currentApp.app_id !== app_id) {
@@ -352,9 +366,11 @@ const AppPropertySetting = React.createClass({
             </div>
         );
     },
+
     updateScrollBar: function() {
         this.refs.gemini && this.refs.gemini.update();
     },
+
     currentTabChange(app_id) {
         var selectedApps = this.props.selectedApps;
         var targetApp = _.find(selectedApps, (app) => app.app_id === app_id);
@@ -362,6 +378,7 @@ const AppPropertySetting = React.createClass({
             this.changeCurrentApp(targetApp);
         }
     },
+
     renderTabToolTip(app_name) {
         return (
             <Tooltip title={app_name} placement="right">
@@ -369,11 +386,13 @@ const AppPropertySetting = React.createClass({
             </Tooltip>
         );
     },
+
     handleTabChange(activeKey) {
         this.setState({
             activeKey
         });
     },
+
     render() {
         let height = this.props.height;
         if (height !== 'auto') {
@@ -420,7 +439,7 @@ const AppPropertySetting = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 export default AppPropertySetting;

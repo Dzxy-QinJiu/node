@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Form, Input, Select, DatePicker} from 'antd';
@@ -9,7 +10,8 @@ import ValidateMixin from '../../../../../mixins/ValidateMixin';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
-const OrderForm = React.createClass({
+const OrderForm = createReactClass({
+    displayName: 'OrderForm',
     mixins: [ValidateMixin],
 
     getInitialState: function() {
@@ -61,11 +63,13 @@ const OrderForm = React.createClass({
             }
         });
     },
+
     onAppsChange: function(selectedApps) {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击选中/取消选中某个应用');
         this.state.formData.apps = _.map(selectedApps, 'client_id');
         this.setState(this.state);
     },
+
     changeExpectedTime: function(value) {
         let timestamp = value && value.valueOf() || '';
         let formData = this.state.formData;
@@ -74,9 +78,11 @@ const OrderForm = React.createClass({
             formDate: formData
         });
     },
+
     handleSelect: function() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择销售阶段');
     },
+
     renderOrderForm: function() {
         const formData = this.state.formData;
         //添加时，app的添加，修改时不需要展示
@@ -182,6 +188,7 @@ const OrderForm = React.createClass({
             </Form>
         );
     },
+
     render(){
         return (<DetailCard content={this.renderOrderForm()}
             isEdit={true}
@@ -191,7 +198,7 @@ const OrderForm = React.createClass({
             handleSubmit={this.handleSubmit}
             handleCancel={this.handleCancel}
         />);
-    }
+    },
 });
 
 module.exports = OrderForm;

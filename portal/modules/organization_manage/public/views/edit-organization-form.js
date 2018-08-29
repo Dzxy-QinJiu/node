@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -29,8 +30,10 @@ const messages = defineMessages({
 function noop() {
 }
 
-var OrganizationForm = React.createClass({
+var OrganizationForm = createReactClass({
+    displayName: 'OrganizationForm',
     mixins: [Validation.FieldMixin, reactIntlMixin],
+
     getDefaultProps: function() {
         return {
             submitOrganizationForm: noop,
@@ -42,6 +45,7 @@ var OrganizationForm = React.createClass({
             }
         };
     },
+
     getFormData: function(organization) {
         if (organization.isEditGroup) {
             return {
@@ -60,6 +64,7 @@ var OrganizationForm = React.createClass({
             };
         }
     },
+
     getInitialState: function() {
         return {
             status: {
@@ -70,6 +75,7 @@ var OrganizationForm = React.createClass({
             formData: this.getFormData(this.props.organization),
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.refs.validation.reset();
         this.setState({formData: this.getFormData(nextProps.organization)});
@@ -195,6 +201,7 @@ var OrganizationForm = React.createClass({
             }
         }
     },
+
     //渲染上级部门列表
     renderSuperiorTeam: function() {
         var teamOptions = [];
@@ -219,14 +226,17 @@ var OrganizationForm = React.createClass({
         formData.isOrganizationSaving = false;
         this.setState({formData: formData});
     },
+
     //取消enter事件
     cancelEnter: function(event) {
         event.preventDefault();
     },
+
     onCategoryChange: function(event) {
         this.state.formData.category = event.target.value;
         this.setState({formData: this.state.formData});
     },
+
     render: function() {
         var _this = this;
         var formData = this.state.formData;
@@ -319,7 +329,7 @@ var OrganizationForm = React.createClass({
                 </Form>
             </div>
         );
-    }
+    },
 });
 
 module.exports = injectIntl(OrganizationForm);

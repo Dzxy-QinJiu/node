@@ -14,25 +14,65 @@ var insertStyle = require('../insert-style');
 var DefaultUserLogoTitle = require('../default-user-logo-title');
 var SearchList = require('../SearchList');
 var AppRolePermission = require('../user_manage_components/app-role-permission');
+
 //应用选择器，在销售机会、用户管理中使用
-var AppSelector = React.createClass({
+class AppSelector extends React.Component {
+    static defaultProps = {
+        //唯一id，用来关联当前组件的store和action
+        uniqueId: 'uniqueId',
+        //图片大小
+        size: 60,
+        //选中的app
+        selectedApps: [],
+        //所有app
+        totalApps: [],
+        //当app变化时，通知父组件做变更
+        onChange: function() {},
+        //父容器，用来计算弹出层位置
+        container: null,
+        //是否是只读模式，即不能添加应用
+        readOnly: false,
+        //只是修改角色和权限
+        onlyEditRoleAndPermission: false,
+        //不需要设置角色、权限
+        doNotSetRolesAndPermission: false,
+        //高度变化时触发回调
+        onHeightChange: function(){},
+        //应用主题
+        appTheme: 'white'
+    };
+
+    constructor(props) {
+        super(props);
+        this.uniqueId = props.uniqueId;
+        this.store = AppSelectorStore(this.uniqueId);
+        this.action = AppSelectorAction(this.uniqueId);
+        this.state = this.store.getState();
+    }
+
     //为了给选择器设置不同的尺寸
-    dynamicStyle: null,
+    dynamicStyle = null;
+
     //唯一标识id
-    uniqueId: null,
+    uniqueId = null;
+
     //store整合数据
-    store: null,
+    store = null;
+
     //action整合操作
-    action: null,
-    onStoreChange: function() {
+    action = null;
+
+    onStoreChange = () => {
         var _this = this;
         this.setState(this.store.getState() , function() {
             _this.onHeightChange();
         });
-    },
-    showedRoleLayerForFirstApp: false,
+    };
+
+    showedRoleLayerForFirstApp = false;
+
     //传递的属性更新时，同步到store中
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if(
             !immutable.is(nextProps.totalApps , this.props.totalApps) ||
             !immutable.is(nextProps.selectedApps , this.props.selectedApps)
@@ -48,22 +88,18 @@ var AppSelector = React.createClass({
                 _this.getImageByAppId(nextProps.selectedApps);
             });
         }
-    },
-    getInitialState: function() {
-        this.uniqueId = this.props.uniqueId;
-        this.store = AppSelectorStore(this.uniqueId);
-        this.action = AppSelectorAction(this.uniqueId);
-        return this.store.getState();
-    },
-    getImageByAppId: function(apps) {
+    }
+
+    getImageByAppId = (apps) => {
         var _this = this;
         _.each(apps , function(app) {
             if(app.app_logo === 'default') {
                 _this.action.getImageSrcByAjax(app);
             }
         });
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         this.store.listen(this.onStoreChange);
         this.bindEvent();
         var uniqueId = this.uniqueId;
@@ -99,15 +135,17 @@ var AppSelector = React.createClass({
             });
             _this.getImageByAppId(_this.props.selectedApps);
         });
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         this.unbindEvent();
         this.store.unlisten(this.onStoreChange);
         this.store.destroy();
         this.action.destroy();
         this.dynamicStyle.destroy();
-    },
-    componentDidUpdate: function() {
+    }
+
+    componentDidUpdate() {
 
         if(this.state.appLayerShow) {
             var isLeft = this.isShowInLeft();
@@ -128,48 +166,26 @@ var AppSelector = React.createClass({
                 _this.action.showPermissionLayerForApp(_this.state.selectedApps[0]);
             });
         }
-    },
-    bodyClickFun: function(e) {
+    }
+
+    bodyClickFun = (e) => {
         if(this.state.appLayerShow) {
             var target = e.target;
             if(!$.contains(this.refs.wrapDom , target)) {
                 this.action.hideAppLayer();
             }
         }
-    },
-    bindEvent: function() {
+    };
+
+    bindEvent = () => {
         $('body').on('click' , this.bodyClickFun);
-    },
-    unbindEvent: function() {
+    };
+
+    unbindEvent = () => {
         $('body').off('click' , this.bodyClickFun);
-    },
-    getDefaultProps: function() {
-        return {
-            //唯一id，用来关联当前组件的store和action
-            uniqueId: 'uniqueId',
-            //图片大小
-            size: 60,
-            //选中的app
-            selectedApps: [],
-            //所有app
-            totalApps: [],
-            //当app变化时，通知父组件做变更
-            onChange: function() {},
-            //父容器，用来计算弹出层位置
-            container: null,
-            //是否是只读模式，即不能添加应用
-            readOnly: false,
-            //只是修改角色和权限
-            onlyEditRoleAndPermission: false,
-            //不需要设置角色、权限
-            doNotSetRolesAndPermission: false,
-            //高度变化时触发回调
-            onHeightChange: function(){},
-            //应用主题
-            appTheme: 'white'
-        };
-    },
-    getUnchoosenApps: function() {
+    };
+
+    getUnchoosenApps = () => {
         var selectedAppIds = _.groupBy(this.state.selectedApps , function(obj) {
             return obj.app_id;
         });
@@ -180,31 +196,36 @@ var AppSelector = React.createClass({
 
         return unChoosenApps;
 
-    },
-    addApp: function(app) {
+    };
+
+    addApp = (app) => {
         var _this = this;
         this.action.addApp(app);
         setTimeout(function(){
             _this.props.onChange(_this.state.selectedApps);
         });
-    },
-    removeApp: function(app) {
+    };
+
+    removeApp = (app) => {
         var _this = this;
         this.action.removeApp(app);
         setTimeout(function(){
             _this.props.onChange(_this.state.selectedApps);
         });
-    },
-    showDropDown: function() {
+    };
+
+    showDropDown = () => {
         this.action.showAppLayer();
-    },
-    onHeightChange: function() {
+    };
+
+    onHeightChange = () => {
         var _this = this;
         setTimeout(function(){
             _this.props.onHeightChange();
         });
-    },
-    isShowInLeft: function() {
+    };
+
+    isShowInLeft = () => {
         //如果没有传container，则无法计算左、右
         //直接认为是从右边显示
         if(!this.props.container) {
@@ -224,19 +245,22 @@ var AppSelector = React.createClass({
         }
 
         return false;
-    },
+    };
+
     //显示设置权限层
-    showPermissionLayer: function(app) {
+    showPermissionLayer = (app) => {
         this.action.showPermissionLayerForApp(app);
-    },
+    };
+
     //角色权限改变时触发
-    onRolesPermissionSelect: function(roles,permissions) {
+    onRolesPermissionSelect = (roles, permissions) => {
         this.action.rolesPermissionChange({roles,permissions});
         setTimeout(() => {
             this.props.onChange(this.state.selectedApps);
         });
-    },
-    render: function() {
+    };
+
+    render() {
         var _this = this;
         var unchoosenApps = this.getUnchoosenApps();
 
@@ -348,5 +372,6 @@ var AppSelector = React.createClass({
             </div>
         );
     }
-});
+}
+
 module.exports = AppSelector;

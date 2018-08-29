@@ -5,30 +5,34 @@ var SearchInput = require('../../../../components/searchInput');
 var FilterAction = require('../action/filter-actions');
 var FilterStore = require('../store/filter-store');
 
-var CrmFilter = React.createClass({
-    getInitialState: function() {
-        return FilterStore.getState();
-    },
-    onStoreChange: function() {
+class CrmFilter extends React.Component {
+    state = FilterStore.getState();
+
+    onStoreChange = () => {
         this.setState(FilterStore.getState());
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         FilterStore.listen(this.onStoreChange);
-    },
+    }
+
     //如果是从客户分析点击团队成员跳转过来时，将搜索框中的关键字置为点击的成员名称
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.crmFilterValue){
             this.refs.searchInput.state.keyword = nextProps.crmFilterValue;
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         FilterStore.unlisten(this.onStoreChange);
-    },
-    searchEvent: function() {
+    }
+
+    searchEvent = () => {
         FilterAction.setInputCondition(this.refs.searchInput.state.formData);
         setTimeout(() => this.props.search());
-    },
-    togglePanel: function() {
+    };
+
+    togglePanel = () => {
         if (this.state.isPanelShow) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn-ghost'),'关闭筛选面板');
             FilterAction.hidePanel();
@@ -38,8 +42,9 @@ var CrmFilter = React.createClass({
             FilterAction.showPanel();
             this.props.changeTableHeight(true);
         }
-    },
-    render: function() {
+    };
+
+    render() {
         const searchFields = [
             {
                 name: Intl.get('crm.41', '客户名'),
@@ -73,7 +78,7 @@ var CrmFilter = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = CrmFilter;
 

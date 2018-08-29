@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Icon,Form,Input,Select,message}from 'antd';
@@ -22,8 +23,10 @@ var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import { AntcAreaSelection } from 'antc';
 
-var CallAddCustomerForm = React.createClass({
+var CallAddCustomerForm = createReactClass({
+    displayName: 'CallAddCustomerForm',
     mixins: [Validation.FieldMixin],
+
     getInitialState: function() {
         var formData = {
             name: '',//客户名称
@@ -57,9 +60,11 @@ var CallAddCustomerForm = React.createClass({
             isLoadingIndustry: false//是否正在加载行业列表
         };
     },
+
     componentDidMount: function() {
         this.getIndustryList();
     },
+
     getIndustryList: function(){
         //获取后台管理中设置的行业列表
         this.gr();
@@ -193,6 +198,7 @@ var CallAddCustomerForm = React.createClass({
             this.setState({customerNameExist: false, checkNameError: false});
         }
     },
+
     //客户名唯一性验证的提示信息
     renderCustomerNameMsg: function() {
         if (this.state.customerNameExist) {
@@ -240,6 +246,7 @@ var CallAddCustomerForm = React.createClass({
             return '';
         }
     },
+
     //客户名格式验证
     checkCustomerName: function(rule, value, callback) {
         value = $.trim(value);
@@ -432,7 +439,7 @@ var CallAddCustomerForm = React.createClass({
                 }
             </RightPanel>
         );
-    }
+    },
 });
 module.exports = CallAddCustomerForm;
 

@@ -13,38 +13,36 @@ const isPhone = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
 //带区号的手机号正则
 const isMob = /^((\+?86)|(\+86))?(13[012356789][0-9]{8}|15[012356789][0-9]{8}|18[02356789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
 
-const TeleConfig = React.createClass({
-    getInitialState() {
-        return {
-            ...TeleConfigStore.getState(),
-            addTeleErrMsg: '',
-            deleteErrMsg: '',
-            isLoading: false,
-            isAdding: false,
-            deleteTele: ''
-        };
-    },
+class TeleConfig extends React.Component {
+    state = {
+        ...TeleConfigStore.getState(),
+        addTeleErrMsg: '',
+        deleteErrMsg: '',
+        isLoading: false,
+        isAdding: false,
+        deleteTele: ''
+    };
 
-    onStoreChange() {
+    onStoreChange = () => {
         this.setState(TeleConfigStore.getState());
-    },
+    };
 
     componentDidMount() {
         TeleConfigStore.listen(this.onStoreChange);
         this.getTeleList();
-    },
+    }
 
     componentWillUnmount() {
         TeleConfigStore.unlisten(this.onStoreChange);
-    },
+    }
 
     // 获取客服电话列表
-    getTeleList() {
+    getTeleList = () => {
         TeleConfigAction.getTeleList({ pageSize: 1000 });
-    },
+    };
 
     // 提交保存按钮
-    handleSubmit(event) {
+    handleSubmit = (event) => {
         var _this = this;
         event.preventDefault();
         if (this.state.isLoading) {
@@ -85,10 +83,10 @@ const TeleConfig = React.createClass({
                 isAdding: false
             });
         });
-    },
+    };
 
     // 添加客服电话,失败的处理
-    handleAddTeleFail() {
+    handleAddTeleFail = () => {
         return (
             <div className="add-config-fail">
                 <Alert
@@ -99,10 +97,10 @@ const TeleConfig = React.createClass({
             </div>
 
         );
-    },
+    };
 
     // 删除客服电话
-    handleDeleteTele(phone) {
+    handleDeleteTele = (phone) => {
         this.setState({
             deleteTele: phone
         });
@@ -117,10 +115,10 @@ const TeleConfig = React.createClass({
                 deleteTele: ''
             });
         });
-    },
+    };
 
     // 删除客服电话，失败的处理
-    handleDeleteTeleFail(item) {
+    handleDeleteTeleFail = (item) => {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -137,10 +135,10 @@ const TeleConfig = React.createClass({
                 />
             </div>
         );
-    },
+    };
 
     // 遍历电话列表
-    renderTelesList() {
+    renderTelesList = () => {
         if (this.state.isLoading && this.refs.addTeleItem.value == '' && this.state.deleteTele == 0) {
             return <Spinner />;
         }
@@ -189,9 +187,9 @@ const TeleConfig = React.createClass({
                 </ul>
             </div>
         );
-    },
+    };
 
-    checkTeleFormat() {
+    checkTeleFormat = () => {
         var inputValue = this.refs.addTeleItem.value;
         var isValid = true;
         if (inputValue) { 
@@ -210,9 +208,9 @@ const TeleConfig = React.createClass({
             isInvalid: !isValid,
             isRepeat: isRepeat
         });
-    },
+    };
 
-    blurEvent() {
+    blurEvent = () => {
         if (this.refs.addTeleItem.value == '') {
             this.setState({
                 addTeleErrMsg: '',
@@ -220,10 +218,10 @@ const TeleConfig = React.createClass({
             });
 
         }
-    },
+    };
 
     // 添加客服电话
-    renderTeleForm() {
+    renderTeleForm = () => {
         return (
             <form onSubmit={this.handleSubmit}>
                 <input
@@ -239,14 +237,14 @@ const TeleConfig = React.createClass({
                 {this.state.addTeleErrMsg != '' ? this.handleAddTeleFail() : null}
             </form>
         );
-    },
+    };
 
-    reloadGetTeleList() {
+    reloadGetTeleList = () => {
         this.setState({
             deleteTele: ''
         });
         this.getTeleList();
-    },
+    };
 
     render() {
         return (
@@ -278,6 +276,6 @@ const TeleConfig = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default TeleConfig;

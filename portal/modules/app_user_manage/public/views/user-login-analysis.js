@@ -15,38 +15,34 @@ var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
 import { Progress } from 'antd';
 
-const UserLoginAnalysis = React.createClass({
-    getDefaultProps: function() {
-        return {
-            userId: '1'
-        };
-    },
-    getInitialState: function() {
-        return {
-            selectValue: 'LoginFrequency',
-            showDetailMap: {},//是否展示app详情的map
-            ...this.getStateData()
-        };
-    },
-    onStateChange: function() {
+class UserLoginAnalysis extends React.Component {
+    static defaultProps = {
+        userId: '1'
+    };
+
+    onStateChange = () => {
         this.setState(this.getStateData());
-    },
-    getStateData: function() {
+    };
+
+    getStateData = () => {
         return UserLoginAnalysisStore.getState();
-    },
-    getUserAnalysisInfo(userId, selectedAppId) {
+    };
+
+    getUserAnalysisInfo = (userId, selectedAppId) => {
         UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId }, selectedAppId);
         if (selectedAppId) {
             UserLoginAnalysisAction.setSelectedAppId(selectedAppId);
         }
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         UserLoginAnalysisStore.listen(this.onStateChange);
         UserLoginAnalysisAction.resetState();
         let userId = this.props.userId;
         this.getUserAnalysisInfo(userId, this.props.selectedAppId);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         var newUserId = nextProps.userId;
         if (this.props.userId !== newUserId) {
             setTimeout(() => {
@@ -54,11 +50,13 @@ const UserLoginAnalysis = React.createClass({
                 this.getUserAnalysisInfo(newUserId, nextProps.selectedAppId);
             }, 0);
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         UserLoginAnalysisStore.unlisten(this.onStateChange);
-    },
-    getQueryParams(queryParams) {
+    }
+
+    getQueryParams = (queryParams) => {
         let app_id = queryParams && queryParams.appid || this.state.selectedLogAppId;
         const appsArray = this.state.userOwnAppArray;
         const matchAppInfo = _.find(appsArray, appItem => appItem.app_id === app_id);
@@ -69,9 +67,10 @@ const UserLoginAnalysis = React.createClass({
             starttime: +create_time,
             endtime: new Date().getTime()
         };
-    },
+    };
+
     // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
-    getUserAnalysisData(queryParams) {
+    getUserAnalysisData = (queryParams) => {
         let queryObj = this.getQueryParams(queryParams);
         const chartParams = {
             ...queryObj,
@@ -82,16 +81,17 @@ const UserLoginAnalysis = React.createClass({
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
         UserLoginAnalysisAction.getUserLoginChartInfo(chartParams);
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
-    },
+    };
+
     // 选择应用
-    onSelectedAppChange: function(appid) {
+    onSelectedAppChange = (appid) => {
         UserLoginAnalysisAction.resetState();
         UserLoginAnalysisAction.setSelectedAppId(appid);
         // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
         this.getUserAnalysisData({ appid: appid });
-    },   
+    };
 
-    renderLoginFirstLastTime(loginLast, loginFirst) {
+    renderLoginFirstLastTime = (loginLast, loginFirst) => {
         if (!loginLast && !loginFirst) {
             return null;
         } else if (loginLast !== -1 || loginFirst !== -1) {
@@ -117,35 +117,40 @@ const UserLoginAnalysis = React.createClass({
                 </div>
             );
         }
-    },
+    };
+
     // 登录用户分数的参数
-    getUserLoginScoreParams(queryParams) {
+    getUserLoginScoreParams = (queryParams) => {
         let queryObj = this.getQueryParams(queryParams);
         return {
             app_id: queryObj.appid,
             account_id: queryObj.user_id
         };
-    },
+    };
+
     // 获取登录用户的类型
-    getUserLoginType() {
+    getUserLoginType = () => {
         let type = 'self';
         if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
             type = 'all';
         }
         return type;
-    },
+    };
+
     // 将小数转化为整数显示
-    transScoreInteger(data) {
+    transScoreInteger = (data) => {
         return Math.round(data * 100);
-    },
+    };
+
     // 重新用户登录分数
-    retryGetUserLoginScore() {
+    retryGetUserLoginScore = () => {
         let reqData = this.getUserLoginScoreParams();
         let type = this.getUserLoginType();
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
-    },
+    };
+
     // 用户分数
-    renderUserLoginScore(app) {
+    renderUserLoginScore = (app) => {
         let loginScore = _.get(this.state.appUserDataMap, [app.app_id, 'loginScore']) || {};
         if (loginScore.errorMsg) {
             return (
@@ -196,14 +201,16 @@ const UserLoginAnalysis = React.createClass({
                 </div>
             );
         }
-    },
+    };
+
     // 重新用户登录信息
-    retryGetUserLoginInfo() {
+    retryGetUserLoginInfo = () => {
         let queryObj = this.getQueryParams();
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
-    },
+    };
+
     // 用户登录信息
-    renderUserLoginInfo(app) {
+    renderUserLoginInfo = (app) => {
         let millisecond = _.get(this.state.appUserDataMap, [app.app_id, 'duration']);
         let timeObj = { timeDescr: ' ' };
         if (millisecond !== '') {
@@ -238,13 +245,15 @@ const UserLoginAnalysis = React.createClass({
         } else {
             return null;
         }
-    },
+    };
+
     // 重新获取图表数据
-    retryGetLoginChart() {
+    retryGetLoginChart = () => {
         let queryObj = this.getQueryParams();
         UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
-    },
-    renderLoginChart(app) {
+    };
+
+    renderLoginChart = (app) => {
         const loginChartInfo = _.get(this.state.appUserDataMap, [app.app_id, 'loginChartInfo']);
         if (loginChartInfo.errorMsg) {
             return (
@@ -291,9 +300,9 @@ const UserLoginAnalysis = React.createClass({
             return null;
         }
 
-    },
+    };
 
-    renderChart(data, charTips) {
+    renderChart = (data, charTips) => {
         const calendarHeatMapOption = {
             calendar: [{
                 cellSize: [7, 7],
@@ -325,10 +334,10 @@ const UserLoginAnalysis = React.createClass({
                 </div>
             );
         }
-    },
+    };
 
     // 用户登录时长的统计图的提示信息
-    durationTooltip: function(params) {
+    durationTooltip = (params) => {
         const data = params.data;
         const date = _.first(data);
         const value = _.last(data);
@@ -337,10 +346,10 @@ const UserLoginAnalysis = React.createClass({
             Intl.get('common.login.time', '时间') + ' : ' + `${date}`,
             Intl.get('user.duration', '时长') + ' : ' + `${timeObj.timeDescr}`
         ].join('<br />');
-    },
+    };
 
     // 用户登录次数的统计图的提示信息
-    chartFrequencyTooltip: function(params) {
+    chartFrequencyTooltip = (params) => {
         const data = params.data;
         const date = _.first(data);
         const value = _.last(data);
@@ -348,14 +357,15 @@ const UserLoginAnalysis = React.createClass({
             Intl.get('common.login.time', '时间') + ' : ' + `${date}`,
             Intl.get('user.login.time', '次数') + ' : ' + `${value}`
         ].join('<br />');
-    },
+    };
 
-    handleSelectRadio: function(dataRange) {
+    handleSelectRadio = (dataRange) => {
         this.setState({
             selectValue: dataRange
         });
-    },
-    showAppDetail: function(app, isShow) {
+    };
+
+    showAppDetail = (app, isShow) => {
         const showDetailMap = this.state.showDetailMap;
         showDetailMap[app.app_name] = isShow;
         if (isShow) {
@@ -364,8 +374,15 @@ const UserLoginAnalysis = React.createClass({
         this.setState({
             showDetailMap
         });
-    },
-    render: function() {
+    };
+
+    state = {
+        selectValue: 'LoginFrequency',
+        showDetailMap: {},//是否展示app详情的map
+        ...this.getStateData()
+    };
+
+    render() {
         const userLoginBlock = (
             <ul>
                 {
@@ -431,6 +448,6 @@ const UserLoginAnalysis = React.createClass({
             </StatusWrapper>
         );
     }
-});
+}
 
 module.exports = UserLoginAnalysis;

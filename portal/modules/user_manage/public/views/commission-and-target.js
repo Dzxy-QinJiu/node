@@ -9,37 +9,36 @@ var classNames = require('classnames');
 var autosize = require('autosize');
 import Trace from 'LIB_DIR/trace';
 require('../css/commission.less');
-var CommissionAndTarget = React.createClass({
-    getDefaultProps: function() {
-        return {
-            //某条销售目标或者提成比例记录的id
-            id: '',
-            //某个用户的详情
-            userInfo: {},
-            //字段
-            field: '',
-            //是否能修改
-            disabled: false,
-            //显示的值
-            value: '',
-            //提示文案
-            title: Intl.get('common.update', '修改'),
-            setSalesGoals: function() {
-            },
-        };
-    },
-    getInitialState: function() {
-        return {
-            id: this.props.id,
-            userInfo: $.extend(true,{},this.props.userInfo),
-            loading: false,
-            displayType: this.props.displayType || 'text',
-            initalValue: this.props.value,
-            value: '',
-            submitErrorMsg: '',
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+
+class CommissionAndTarget extends React.Component {
+    static defaultProps = {
+        //某条销售目标或者提成比例记录的id
+        id: '',
+        //某个用户的详情
+        userInfo: {},
+        //字段
+        field: '',
+        //是否能修改
+        disabled: false,
+        //显示的值
+        value: '',
+        //提示文案
+        title: Intl.get('common.update', '修改'),
+        setSalesGoals: function() {
+        },
+    };
+
+    state = {
+        id: this.props.id,
+        userInfo: $.extend(true,{},this.props.userInfo),
+        loading: false,
+        displayType: this.props.displayType || 'text',
+        initalValue: this.props.value,
+        value: '',
+        submitErrorMsg: '',
+    };
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.userInfo.id !== this.state.userInfo.id || nextProps.value !== this.state.initalValue || nextProps.id !== this.state.id) {
             this.setState({
                 userInfo: $.extend(true,{},nextProps.userInfo),
@@ -47,14 +46,16 @@ var CommissionAndTarget = React.createClass({
                 id: nextProps.id
             });
         }
-    },
-    setEditable: function(e) {
+    }
+
+    setEditable = (e) => {
         this.setState({
             displayType: 'edit',
         });
         Trace.traceEvent(e, '点击编辑' + this.props.field);
-    },
-    handleSubmit: function(e) {
+    };
+
+    handleSubmit = (e) => {
         Trace.traceEvent(e, '保存对' + this.props.field + '的修改');
         var value = this.state.value;
         this.setState({
@@ -105,21 +106,23 @@ var CommissionAndTarget = React.createClass({
                 submitErrorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
             });
         });
-    },
+    };
 
-    handleCancel: function(e) {
+    handleCancel = (e) => {
         this.setState({
             displayType: 'text',
             submitErrorMsg: ''
         });
         Trace.traceEvent(e, '取消对' + this.props.field + '的修改');
-    },
-    onInputChange: function(value) {
+    };
+
+    onInputChange = (value) => {
         this.setState({
             value: value
         });
-    },
-    render: function() {
+    };
+
+    render() {
         var displayCls = classNames({
             'commission-target-text': true,
             'editing': this.state.displayType === 'edit'
@@ -183,7 +186,7 @@ var CommissionAndTarget = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = CommissionAndTarget;
 

@@ -8,17 +8,35 @@ import batchChangeAjax from '../../ajax/batch-change-ajax';
 import Trace from 'LIB_DIR/trace';
 var CrmAction = require('../../action/crm-actions');
 
-var SalesSelectField = React.createClass({
-    getDefaultProps: function() {
-        return {
-            list: [],
-            onChange: function() {
-            },
-            onModifySuccess: function() {
-            }
-        };
-    },
-    getSalesTeamList: function(userId, salesManList) {
+class SalesSelectField extends React.Component {
+    static defaultProps = {
+        list: [],
+        onChange: function() {
+        },
+        onModifySuccess: function() {
+        }
+    };
+
+    state = {
+        list: [],//下拉列表中的数据
+        displayType: 'text',
+        isLoadingList: true,//正在获取下拉列表中的数据
+        enableEdit: this.props.enableEdit,
+        enableTransfer: this.props.enableTransfer,
+        isMerge: this.props.isMerge,
+        customerId: this.props.customerId,
+        userName: this.props.userName,
+        userId: this.props.userId,
+        salesTeam: this.props.salesTeam,
+        salesTeamId: this.props.salesTeamId,
+        salesManList: [],
+        salesTeamList: [],
+        loading: false,
+        submitErrorMsg: '',
+        salesRole: ''
+    };
+
+    getSalesTeamList = (userId, salesManList) => {
         let salesTeamList = [];
         _.each(salesManList, (salesMan) => {
             if (salesMan.user_info && salesMan.user_info.user_id === userId) {
@@ -31,28 +49,9 @@ var SalesSelectField = React.createClass({
             }
         });
         return salesTeamList;
-    },
-    getInitialState: function() {
-        return {
-            list: [],//下拉列表中的数据
-            displayType: 'text',
-            isLoadingList: true,//正在获取下拉列表中的数据
-            enableEdit: this.props.enableEdit,
-            enableTransfer: this.props.enableTransfer,
-            isMerge: this.props.isMerge,
-            customerId: this.props.customerId,
-            userName: this.props.userName,
-            userId: this.props.userId,
-            salesTeam: this.props.salesTeam,
-            salesTeamId: this.props.salesTeamId,
-            salesManList: [],
-            salesTeamList: [],
-            loading: false,
-            submitErrorMsg: '',
-            salesRole: ''
-        };
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         //有修改所属销售的权限时
         if (this.state.enableEdit) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
@@ -63,8 +62,9 @@ var SalesSelectField = React.createClass({
             this.getSalesRoleByMemberId(this.state.userId);
         }
 
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时，重新设置state数据
             this.setState({
@@ -96,10 +96,10 @@ var SalesSelectField = React.createClass({
                 enableTransfer: nextProps.enableTransfer
             });
         }
-    },
+    }
 
     //获取客户所属销售及其团队下拉列表
-    getSalesManList: function() {
+    getSalesManList = () => {
         batchChangeAjax.getSalesManList().then(list => {
             if (_.isArray(list) && list.length) {
                 //过滤掉停用的成员
@@ -111,8 +111,9 @@ var SalesSelectField = React.createClass({
         }, errorMsg => {
             this.setState({salesManList: []});
         });
-    },
-    getSalesRoleByMemberId: function(memberId) {
+    };
+
+    getSalesRoleByMemberId = (memberId) => {
         $.ajax({
             url: '/rest/sales/role',
             type: 'get',
@@ -131,9 +132,10 @@ var SalesSelectField = React.createClass({
                 });
             }
         });
-    },
+    };
+
     // 获取普通销售所在团队里的成员列表
-    getSalesTeamMembers: function() {
+    getSalesTeamMembers = () => {
         let userInfo = userData.getUserData();
         let teamId = userInfo.team_id;
         batchChangeAjax.getSalesTeamMembers(teamId).then(list => {
@@ -153,9 +155,10 @@ var SalesSelectField = React.createClass({
         }, errorMsg => {
             this.setState({salesManList: []});
         });
-    },
+    };
+
     //更新销售人员
-    handleSalesManChange: function(userId) {
+    handleSalesManChange = (userId) => {
         if (this.props.hideSalesRole){
             this.getSalesRoleByMemberId(userId);
         }
@@ -182,9 +185,9 @@ var SalesSelectField = React.createClass({
         }
         // }
         this.setState(this.state);
-    },
+    };
 
-    changeDisplayType: function(type) {
+    changeDisplayType = (type) => {
         if (type === 'text') {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对销售人员/团队的修改');
             if (!this.props.hideSalesRole){
@@ -208,17 +211,18 @@ var SalesSelectField = React.createClass({
                 displayType: type
             });
         }
-    },
+    };
+
     //回到展示状态
-    backToDisplay: function() {
+    backToDisplay = () => {
         this.setState({
             loading: false,
             displayType: 'text',
             submitErrorMsg: ''
         });
-    },
+    };
 
-    submitData: function() {
+    submitData = () => {
         let submitData = {
             id: this.state.customerId,
             type: 'sales',
@@ -260,9 +264,9 @@ var SalesSelectField = React.createClass({
             });
         }
 
-    },
+    };
 
-    handleSubmit: function() {
+    handleSubmit = () => {
         if (this.state.loading) return;
         if (this.state.userId == this.props.userId) {
             //没做修改时，直接回到展示状态
@@ -284,16 +288,17 @@ var SalesSelectField = React.createClass({
         }else{
             this.submitData();
         }
-    },
+    };
+
     //更新团队
-    handleTeamChange: function(value) {
+    handleTeamChange = (value) => {
         const team = _.find(this.state.salesTeamList, item => item.group_id === value);
         this.state.salesTeamId = value;
         this.state.salesTeam = team ? team.group_name : '';
         this.setState(this.state);
-    },
+    };
 
-    render: function() {
+    render() {
         //销售人员与销售团队下拉列表的填充内容
         let salesmanOptions = this.state.salesManList.map(function(salesman) {
             return (<Option value={salesman.user_info.user_id}
@@ -382,7 +387,7 @@ var SalesSelectField = React.createClass({
             </dl>}
         </div>);
     }
-});
+}
 
 module.exports = SalesSelectField;
 

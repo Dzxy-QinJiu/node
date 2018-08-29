@@ -8,35 +8,35 @@ import classNames from 'classnames';
 import {getSalesTeamRoleList} from '../../../common/public/ajax/role';
 import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
-const SalesRoleManage = React.createClass({
-    getInitialState: function() {
-        return ({
-            //角色列表
-            salesRoleList: [],
-            //点击角色添加按钮的loading效果是否显示
-            isAddloading: false,
-            //当前正在删除的角色
-            DeletingItem: '',
-            //正在设置默认的角色
-            settingDefaultRole: '',
-            //点击刷新按钮的loading效果是否显示
-            isRefreshLoading: false,
-            //加载失败的提示信息
-            getErrMsg: '',
-            //添加失败的信息
-            addErrMsg: '',
-            // 删除角色失败
-            deleteErrMsg: '',
-            //正在编辑客户容量的角色
-            isEdittingItem: '',
-            updateRoleCustomerNum: 0,//要更新某个销售角色的客户容量,默认值0
-            addRoleCustomerNum: '',//某个添加角色的客户容量
-            isUpdateloading: false,
-            updateErrMsg: '',//修改客户容量失败后的错误信息
-        });
-    },
+
+class SalesRoleManage extends React.Component {
+    state = {
+        //角色列表
+        salesRoleList: [],
+        //点击角色添加按钮的loading效果是否显示
+        isAddloading: false,
+        //当前正在删除的角色
+        DeletingItem: '',
+        //正在设置默认的角色
+        settingDefaultRole: '',
+        //点击刷新按钮的loading效果是否显示
+        isRefreshLoading: false,
+        //加载失败的提示信息
+        getErrMsg: '',
+        //添加失败的信息
+        addErrMsg: '',
+        // 删除角色失败
+        deleteErrMsg: '',
+        //正在编辑客户容量的角色
+        isEdittingItem: '',
+        updateRoleCustomerNum: 0,//要更新某个销售角色的客户容量,默认值0
+        addRoleCustomerNum: '',//某个添加角色的客户容量
+        isUpdateloading: false,
+        updateErrMsg: '',//修改客户容量失败后的错误信息
+    };
+
     //获取销售角色列表
-    getSalesRoleList: function() {
+    getSalesRoleList = () => {
         this.setState({
             isRefreshLoading: true
         });
@@ -51,20 +51,23 @@ const SalesRoleManage = React.createClass({
                 getErrMsg: xhr.responseJSON
             });
         });
-    },
-    componentWillMount: function() {
+    };
+
+    componentWillMount() {
         this.getSalesRoleList();
-    },
+    }
+
     //点击刷新按钮
-    getRefreshInfo: function(e) {
+    getRefreshInfo = (e) => {
         this.setState({
             isRefreshLoading: true,
             salesRoleList: []
         });
         this.getSalesRoleList();
-    },
+    };
+
     //删除销售角色
-    handleDeleteItem: function(delId) {
+    handleDeleteItem = (delId) => {
         //当前正在删除的销售角色的id
         this.setState({
             DeletingItem: delId
@@ -88,9 +91,10 @@ const SalesRoleManage = React.createClass({
                 });
             }
         });
-    },
+    };
+
     //设为默认角色
-    setDefautRole: function(role) {
+    setDefautRole = (role) => {
         if (role.is_default) {
             return;
         }
@@ -117,9 +121,10 @@ const SalesRoleManage = React.createClass({
                 });
             }
         });
-    },
+    };
+
     //增加销售角色
-    handleSubmit: function(e) {
+    handleSubmit = (e) => {
         Trace.traceEvent(e, '点击添加销售角色按钮');
         e.preventDefault();
         //输入的销售角色名称去左右空格
@@ -176,9 +181,10 @@ const SalesRoleManage = React.createClass({
             }
         });
 
-    },
+    };
+
     //增加销售角色失败
-    handleAddRoleFail(){
+    handleAddRoleFail = () => {
         var hide = () => {
             this.setState({
                 addErrMsg: '',
@@ -190,13 +196,13 @@ const SalesRoleManage = React.createClass({
                 {this.renderErrorAlert(this.state.addErrMsg, hide)}
             </div>
         );
-    },
+    };
 
-    renderErrorAlert: function(errorMsg, hide) {
+    renderErrorAlert = (errorMsg, hide) => {
         return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" showIcon onHide={hide}/>);
-    },
+    };
 
-    handleDeleteRoleFail: function() {
+    handleDeleteRoleFail = () => {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -207,28 +213,32 @@ const SalesRoleManage = React.createClass({
                 {this.renderErrorAlert(this.state.deleteErrMsg, hide)}
             </div>
         );
-    },
-    getRoleColor: function() {
+    };
+
+    getRoleColor = () => {
         //角色列表中已存在的颜色列表
         let existColors = _.map(this.state.salesRoleList, 'color');
         //第一个不在已有角色的颜色列表中的颜色，作为当前添加角色的颜色
         let roleColor = _.find(COLOR_LIST, color => existColors.indexOf(color) === -1);
         return roleColor;
-    },
-    handleEditItem: function(item) {
+    };
+
+    handleEditItem = (item) => {
         this.setState({
             isEdittingItem: item.id,
             updateErrMsg: ''
         });
-    },
-    cancelEditCustomerNum: function() {
+    };
+
+    cancelEditCustomerNum = () => {
         this.setState({
             isEdittingItem: '',
             updateErrMsg: '',
             updateRoleCustomerNum: 0
         });
-    },
-    submitUpdateCustomerNum: function(item) {
+    };
+
+    submitUpdateCustomerNum = (item) => {
         if (this.state.updateRoleCustomerNum === 0){
             this.setState({
                 isEdittingItem: ''
@@ -269,8 +279,9 @@ const SalesRoleManage = React.createClass({
             }
         });
 
-    },
-    renderSalesRoleList: function() {
+    };
+
+    renderSalesRoleList = () => {
         let salesRoleList = this.state.salesRoleList;
         //正在获取数据的状态渲染
         if (this.state.isRefreshLoading) {
@@ -326,18 +337,21 @@ const SalesRoleManage = React.createClass({
             return <Alert type="info" showIcon
                 message={Intl.get('config.manage.no.role', '暂无销售角色，请添加！')}/>;
         }
-    },
-    onChange: function(value) {
+    };
+
+    onChange = (value) => {
         this.setState({
             addRoleCustomerNum: value
         });
-    },
-    onUpdateCustomerNumChange: function(value) {
+    };
+
+    onUpdateCustomerNumChange = (value) => {
         this.setState({
             updateRoleCustomerNum: value
         });
-    },
-    render: function() {
+    };
+
+    render() {
         return (
             <div className="box" data-tracename="销售角色配置">
                 <div className="box-title">
@@ -378,6 +392,6 @@ const SalesRoleManage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SalesRoleManage;
