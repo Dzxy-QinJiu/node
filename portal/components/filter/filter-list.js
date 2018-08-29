@@ -45,7 +45,13 @@ class FilterList extends React.Component {
                 commonData: this.sortByClickNum(commonData)
             });
         }
-        if (advancedData && advancedData.length && (JSON.stringify(advancedData) !== JSON.stringify(this.state.rawAdvancedData))) {
+        const pickNameValue = advancedData => {
+            advancedData.forEach(group => {
+                group.data = group.data.map(x => ({name: x.name, value: x.value}));
+            });
+            return advancedData;
+        };
+        if (advancedData && advancedData.length && (JSON.stringify(pickNameValue(advancedData)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData)))) {
             this.setState({
                 rawAdvancedData: advancedData,
                 advancedData
