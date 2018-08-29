@@ -66,7 +66,7 @@ const UserAuditLog = React.createClass({
                 <div className="user-audit-log-wrap" ref="wrap">
                     <LogVIew isShowRightPanel={this.state.isShowRightPanel}/>
                 </div>
-                <RightPanel className="right-pannel-default app_user_manage_rightpanel white-space-nowrap"
+                <RightPanel className="right-pannel-default app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
                     showFlag={this.state.isShowRightPanel}>
                     {
                         this.state.selectedUserId ? (

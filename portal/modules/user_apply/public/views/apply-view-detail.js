@@ -1883,7 +1883,7 @@ const ApplyViewDetail = React.createClass({
                 {this.renderApplyFormResult()}
                 {this.renderBackoutApply()}
                 {this.state.showRightPanel && (this.state.rightPanelUserId || this.state.rightPanelAppConfig) ?
-                    <RightPanel className="app_user_manage_rightpanel apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
+                    <RightPanel className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
                         showFlag={this.state.showRightPanel}>
                         {
                             this.state.rightPanelUserId ? <UserDetail

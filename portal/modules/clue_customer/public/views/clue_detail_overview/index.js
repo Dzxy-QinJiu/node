@@ -828,7 +828,7 @@ var ClueDetailOverview = React.createClass({
                     {this.renderAppUserDetail()}
                     {
                         this.state.curShowUserId ?
-                            <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default"
+                            <RightPanel className="app_user_manage_rightpanel right-pannel-default white-space-nowrap right-panel detail-v3-panel"
                                 showFlag={this.state.curShowUserId}>
                                 <UserDetail userId={this.state.curShowUserId}
                                     closeRightPanel={this.closeRightUserPanel}/>
