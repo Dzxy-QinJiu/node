@@ -2,6 +2,7 @@
  * 统计分析筛选组件
  */
 
+var React = require('react');
 import './style.less';
 import { storageUtil } from 'ant-utils';
 import AnalysisAppSelector from '../analysis_app_selector';
@@ -76,3 +77,4 @@ const AnalysisFilter = React.createClass({
 });
 
 export default AnalysisFilter;
+

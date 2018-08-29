@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2015/12/23.
  */
+var React = require('react');
 var language = require('../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./card-es_VE.less');

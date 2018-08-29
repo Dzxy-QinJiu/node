@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../css/organization.less');
 import {Icon,Alert,Select} from 'antd';
 import SelectFullWidth from '../../../../../components/select-fullwidth';

@@ -2,6 +2,7 @@
  * 批量变更标签和销售人员
  */
 
+var React = require('react');
 require('../css/crm-batch-change.less');
 var BatchChangeStore = require('../store/batch-change-store');
 var crmStore = require('../store/crm-store');
@@ -771,4 +772,5 @@ var CrmBatchChange = React.createClass({
 });
 
 module.exports = CrmBatchChange;
+
 

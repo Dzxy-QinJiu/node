@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../css/dynamic.less');
 //动态store
 var DynamicStore = require('../../store/dynamic-store');
@@ -81,3 +82,4 @@ var Dynamic = React.createClass({
 });
 
 module.exports = Dynamic;
+

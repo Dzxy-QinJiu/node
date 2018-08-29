@@ -1,3 +1,4 @@
+var React = require('react');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/main-es_VE.less');
@@ -567,3 +568,4 @@ var AppUserManage = React.createClass({
 });
 
 module.exports = AppUserManage;
+

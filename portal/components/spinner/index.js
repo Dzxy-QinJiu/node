@@ -1,3 +1,4 @@
+var React = require('react');
 require('./index.less');
 var classNames = require('classnames');
 var Spinner = React.createClass({

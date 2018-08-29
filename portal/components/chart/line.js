@@ -1,6 +1,7 @@
 /**
  * 线图
  */
+var React = require('react');
 var echarts = require('echarts');
 require('./style.less');
 var macronsTheme = require('./theme-macrons');
@@ -257,3 +258,4 @@ var LineChart = React.createClass({
 });
 
 module.exports = LineChart;
+

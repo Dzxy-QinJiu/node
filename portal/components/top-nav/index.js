@@ -1,4 +1,5 @@
 //引入用户数据
+var React = require('react');
 var UserData = require('../../public/sources/user-data');
 //class名
 var classNames = require('classnames');

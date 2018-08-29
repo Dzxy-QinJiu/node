@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/index.less');
 require('CMP_DIR/antd-table-pagination/index.less');
 import RightContent from 'CMP_DIR/privilege/right-content';

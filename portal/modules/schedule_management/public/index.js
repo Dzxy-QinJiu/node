@@ -3,6 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/12/8.
  */
+var React = require('react');
 require('./css/index.less');
 require('react-big-calendar/lib/css/react-big-calendar.css');
 import Trace from 'LIB_DIR/trace';

@@ -1,6 +1,7 @@
 /**
  * 用户留存
  */
+var React = require('react');
 require('./index.less');
 var Spinner = require('../../../../../components/spinner');
 var immutable = require('immutable');
@@ -64,3 +65,4 @@ var Retention = React.createClass({
 });
 
 module.exports = Retention;
+

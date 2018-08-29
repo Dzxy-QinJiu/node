@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2016/11/8.
  */
+var React = require('react');
 var language = require('../../../../public/language/getLanguage');
 require('PUB_DIR/css/card-info-common.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -709,3 +710,4 @@ var UserInfo = React.createClass({
 ;
 
 module.exports = UserInfo;
+

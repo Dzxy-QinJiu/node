@@ -2,6 +2,7 @@
  * 用户分析
  * Created by wangliping on 2016/11/23.
  */
+var React = require('react');
 import { AntcAnalysis } from 'antc';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateUserAnalysisAction = require('../../../oplate_user_analysis/public/action/oplate-user-analysis.action');
@@ -351,3 +352,4 @@ var UserAnlyis = React.createClass({
 });
 //返回react对象
 module.exports = UserAnlyis;
+

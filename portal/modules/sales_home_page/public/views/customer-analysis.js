@@ -2,6 +2,7 @@
  * 客户分析
  * Created by wangliping on 2016/11/24.
  */
+var React = require('react');
 import { AntcAnalysis } from 'antc';
 let history = require('PUB_DIR/sources/history');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
@@ -1230,3 +1231,4 @@ var CustomerAnalysis = React.createClass({
 });
 //返回react对象
 module.exports = CustomerAnalysis;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 require('../../css/apply-user-form.less');
@@ -336,3 +337,4 @@ const ApplyUserForm = React.createClass({
 });
 
 module.exports = ApplyUserForm;
+

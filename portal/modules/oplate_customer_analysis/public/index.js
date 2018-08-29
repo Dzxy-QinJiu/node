@@ -2,6 +2,7 @@
  * 客户分析
  */
 
+var React = require('react');
 require('./css/oplate-customer-analysis.less');
 import ajax from 'ant-ajax';
 import { AntcAnalysis } from 'antc';
@@ -711,3 +712,4 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 });
 
 module.exports = OPLATE_CUSTOMER_ANALYSIS;
+

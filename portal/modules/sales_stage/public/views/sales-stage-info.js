@@ -1,6 +1,7 @@
 /**
  * Created by xiaojinfeng on  2015/12/25 11:04 .
  */
+var React = require('react');
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Button = require('antd').Button;
 var ModalDialog = require('../../../../components/ModalDialog');

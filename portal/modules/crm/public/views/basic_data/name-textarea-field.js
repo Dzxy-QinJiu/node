@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -205,3 +206,4 @@ let NameTextareaField = React.createClass({
 });
 
 module.exports = NameTextareaField;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 require('./index.less');
 var Spinner = require('CMP_DIR/spinner');
 var Ajax = require('./ajax');

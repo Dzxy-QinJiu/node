@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Col, Form, Input, Icon, Radio} from 'antd';
@@ -564,3 +565,4 @@ var ContactForm = React.createClass({
 });
 
 module.exports = ContactForm;
+

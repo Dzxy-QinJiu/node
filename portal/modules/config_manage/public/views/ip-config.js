@@ -1,3 +1,4 @@
+var React = require('react');
 import IpConfigStore from '../store/ip-config-store';
 import IpConfigAction from '../action/ip-config-action';
 import IpConfigAjax from '../ajax/ip-config-ajax';

@@ -1,3 +1,4 @@
+var React = require('react');
 import { Button, Icon } from 'antd';
 var DEFAULT_ALl = Intl.get('common.all', '全部');
 import Trace from 'LIB_DIR/trace';
@@ -41,3 +42,4 @@ var UserFilterAdv = React.createClass({
     ;
 
 module.exports = UserFilterAdv;
+

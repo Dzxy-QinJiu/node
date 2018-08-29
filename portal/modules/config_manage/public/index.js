@@ -1,3 +1,4 @@
+var React = require('react');
 var TopNav = require('CMP_DIR/top-nav');
 var Spinner = require('CMP_DIR/spinner');
 var Icon = require('antd').Icon;
@@ -283,3 +284,4 @@ var ConfigManage = React.createClass({
 });
 
 module.exports = ConfigManage;
+

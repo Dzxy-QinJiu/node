@@ -1,3 +1,4 @@
+var React = require('react');
 var SalesZonePieChart = React.createClass({
     render: function() {
         return (

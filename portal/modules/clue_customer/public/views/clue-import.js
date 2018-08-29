@@ -3,6 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/4/23.
  */
+var React = require('react');
 import { Upload, Icon, message } from 'antd';
 import { clueEmitter } from 'OPLATE_EMITTER';
 import Trace from 'LIB_DIR/trace';

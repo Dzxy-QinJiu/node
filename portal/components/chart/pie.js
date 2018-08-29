@@ -1,6 +1,7 @@
 /**
  * 饼图
  */
+var React = require('react');
 var echarts = require('echarts');
 require('./style.less');
 var macronsTheme = require('./theme-macrons');
@@ -205,3 +206,4 @@ var PieChart = React.createClass({
 });
 
 module.exports = PieChart;
+

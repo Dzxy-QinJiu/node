@@ -1,3 +1,4 @@
+var React = require('react');
 import routeList from '../common/route';
 import ajax from '../common/ajax';
 import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
@@ -595,4 +596,5 @@ const ContractRightPanel = React.createClass({
 });
 
 module.exports = ContractRightPanel;
+
 

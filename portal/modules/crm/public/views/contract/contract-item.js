@@ -1,3 +1,4 @@
+var React = require('react');
 import DetailCard from 'CMP_DIR/detail-card';
 import { AntcTable, AntcValidity } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
@@ -387,3 +388,4 @@ const ContractItem = React.createClass({
 });
 
 module.exports = ContractItem;
+

@@ -3,6 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/2/5.
  */
+var React = require('react');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import WeeklyReportAction from './action/weekly-report-actions';
 import WeeklyReportStore from './store/weekly-report-store';

@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Form, Input, Select, DatePicker} from 'antd';
@@ -194,3 +195,4 @@ const OrderForm = React.createClass({
 });
 
 module.exports = OrderForm;
+

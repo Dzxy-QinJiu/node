@@ -1,3 +1,4 @@
+var React = require('react');
 var Button = require('antd').Button;
 var rightPanelUtil = require('../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;

@@ -3,6 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/2/7.
  */
+var React = require('react');
 import WeeklyReportDetailAction from '../action/weekly-report-detail-actions';
 import WeeklyReportDetailStore from '../store/weekly-report-detail-store';
 import Spinner from 'CMP_DIR/spinner';

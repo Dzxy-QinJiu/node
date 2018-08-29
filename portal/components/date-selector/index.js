@@ -86,6 +86,7 @@
      className      可以为日历添加一个特殊的className
  *
  */
+var React = require('react');
 require('./index.less');
 import BootstrapDatepicker from '../bootstrap-datepicker';
 import Dropdown from 'rc-dropdown';
@@ -955,3 +956,4 @@ var DateSelectorOption = React.createClass({
 DateSelector.Option = DateSelectorOption;
 
 export default DateSelector;
+

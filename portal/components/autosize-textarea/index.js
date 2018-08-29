@@ -5,6 +5,7 @@
  * 只是注意不要再传type属性，因为这个属性已内置
  */
 
+var React = require('react');
 import { Input } from 'antd';
 const { TextArea } = Input;
 const autosize = require('autosize');
@@ -19,3 +20,4 @@ const AutosizeTextarea = React.createClass({
 });
 
 module.exports = AutosizeTextarea;
+

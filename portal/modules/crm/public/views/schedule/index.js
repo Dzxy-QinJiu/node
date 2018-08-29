@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../css/schedule.less');
 var ScheduleStore = require('../../store/schedule-store');
 var ScheduleAction = require('../../action/schedule-action');
@@ -275,3 +276,4 @@ var CrmSchedule = React.createClass({
 });
 
 module.exports = CrmSchedule;
+

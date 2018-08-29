@@ -1,5 +1,6 @@
 // 第三方应用管理配置信息
  
+var React = require('react');
 import Spinner from 'CMP_DIR/spinner';
 import { Alert } from 'antd';
 import AppUserUtil, { LAYOUT_CONSTANTS } from '../../util/app-user-util'; //右侧面板常量

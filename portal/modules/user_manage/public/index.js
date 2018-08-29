@@ -1,3 +1,4 @@
+var React = require('react');
 var RightCardsContainer = require('../../../components/rightCardsContainer');
 var UserStore = require('./store/user-store');
 var UserAction = require('./action/user-actions');
@@ -264,3 +265,4 @@ var UserManage = React.createClass({
 });
 
 module.exports = UserManage;
+

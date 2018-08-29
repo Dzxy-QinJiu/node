@@ -1,3 +1,4 @@
+var React = require('react');
 import {Icon, Alert} from 'antd';
 let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';

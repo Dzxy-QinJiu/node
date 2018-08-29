@@ -1,3 +1,4 @@
+var React = require('react');
 // require('../css/crm-right-panel.less');
 
 var Tabs = require('antd').Tabs;
@@ -256,4 +257,5 @@ var CrmRightPanel = React.createClass({
 });
 
 module.exports = CrmRightPanel;
+
 

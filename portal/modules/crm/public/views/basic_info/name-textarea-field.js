@@ -2,6 +2,7 @@
  * 编辑 客户名 的组件
  *
  */
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Form, Button, Icon} from 'antd';
@@ -235,3 +236,4 @@ let NameTextareaField = React.createClass({
 });
 
 module.exports = NameTextareaField;
+

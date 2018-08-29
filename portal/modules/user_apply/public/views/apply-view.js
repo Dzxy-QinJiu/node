@@ -1,3 +1,4 @@
+var React = require('react');
 var AppUserUtil = require('../util/app-user-util');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');

@@ -1,3 +1,4 @@
+var React = require('react');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var Router = require('react-router').Router;
 var userData = require('./user-data');
@@ -191,3 +192,4 @@ function init() {
 }
 
 exports.init = init;
+

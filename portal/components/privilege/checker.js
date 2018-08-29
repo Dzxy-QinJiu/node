@@ -1,4 +1,5 @@
 
+var React = require('react');
 var UserData = require('../../public/sources/user-data');
 
 //根据权限获取子路由
@@ -111,4 +112,5 @@ exports.getChildRoutes = getChildRoutes;
 exports.hasPrivilege = hasPrivilege;
 //数据访问类型（管理者还是普通人员）
 exports.getDataAuthType = getDataAuthType;
+
 

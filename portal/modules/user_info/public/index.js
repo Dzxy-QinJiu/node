@@ -2,6 +2,7 @@
  * Created by xiaojinfeng on  2016/1/14 10:25 .
  */
 //顶部导航
+var React = require('react');
 var TopNav = require('../../../components/top-nav');
 require('./css/user-info-zh_CN.less');
 var language = require('../../../public/language/getLanguage');
@@ -145,3 +146,4 @@ var UserInfoPage = React.createClass({
 });
 
 module.exports = UserInfoPage;
+

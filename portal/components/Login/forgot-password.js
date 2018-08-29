@@ -2,6 +2,7 @@
  * 找回密码
  */
 
+var React = require('react');
 import { isPhone, isEmail } from '../../lib/func';
 var crypto = require('crypto');
 import { Steps } from 'antd';
@@ -415,3 +416,4 @@ var ForgotPassword = React.createClass({
 });
 
 module.exports = ForgotPassword;
+

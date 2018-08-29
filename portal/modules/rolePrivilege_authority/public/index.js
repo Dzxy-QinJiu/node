@@ -2,6 +2,7 @@
  * Created by xiaojinfeng on  2015/12/22 16:59 .
  */
 
+var React = require('react');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./css/authority-es_VE.less');
@@ -213,3 +214,4 @@ var AuthorityPage = React.createClass({
 });
 
 module.exports = AuthorityPage;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 import CallRecord from './views/call-record';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../components/rightPanel';
@@ -97,3 +98,4 @@ const CallRecordList = React.createClass({
     }
 });
 module.exports = CallRecordList;
+

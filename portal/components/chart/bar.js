@@ -1,6 +1,7 @@
 /**
  * 柱状图
  */
+var React = require('react');
 var echarts = require('echarts');
 require('./style.less');
 var macronsTheme = require('./theme-macrons');
@@ -424,3 +425,4 @@ var BarChart = React.createClass({
 });
 
 module.exports = BarChart;
+

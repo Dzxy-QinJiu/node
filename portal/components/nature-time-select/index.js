@@ -1,3 +1,4 @@
+var React = require('react');
 require('./index.less');
 import { Select, InputNumber,Radio } from 'antd';
 var RadioButton = Radio.Button;
@@ -105,3 +106,4 @@ var TimeSelect = React.createClass({
 });
 
 module.exports = TimeSelect;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 require('bootstrap-datepicker');
 require('bootstrap-datepicker/dist/css/bootstrap-datepicker.css');
 var language = require('../../public/language/getLanguage');
@@ -189,3 +190,4 @@ var BootstrapDatepicker = React.createClass({
 });
 
 module.exports = BootstrapDatepicker;
+

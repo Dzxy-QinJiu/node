@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -1927,3 +1928,4 @@ const ApplyViewDetail = React.createClass({
 });
 
 export default ApplyViewDetail;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 import { Select, Icon } from 'antd';
 import SearchInput from '../../../components/searchInput';
 
@@ -52,3 +53,4 @@ const Filter = React.createClass({
 });
 
 module.exports = Filter;
+

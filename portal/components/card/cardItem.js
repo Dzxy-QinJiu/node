@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2015/12/23.
  */
+var React = require('react');
 import {Icon} from 'antd';
 
 var CardItem = React.createClass({

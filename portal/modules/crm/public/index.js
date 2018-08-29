@@ -1,3 +1,4 @@
+var React = require('react');
 var util = require('./utils/contact-util');
 let CustomerRepeat = require('./views/customer-repeat');
 let CrmList = require('./crm-list');
@@ -45,3 +46,4 @@ var CrmIndex = React.createClass({
 });
 
 module.exports = CrmIndex;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 require('./css/index.less');
 import TopNav from 'CMP_DIR/top-nav'; //顶部导航
 import { Button, Table} from 'antd';

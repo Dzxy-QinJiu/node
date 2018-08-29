@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Icon,Form,Input,Select,message}from 'antd';
@@ -434,3 +435,4 @@ var CallAddCustomerForm = React.createClass({
     }
 });
 module.exports = CallAddCustomerForm;
+

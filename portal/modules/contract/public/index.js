@@ -1,3 +1,4 @@
+var React = require('react');
 import './style.less';
 import classNames from 'classnames';
 import {message, Button, Icon, Modal, Radio, Select} from 'antd';
@@ -770,3 +771,4 @@ const Contract = React.createClass({
 });
 
 module.exports = Contract;
+

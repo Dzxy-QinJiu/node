@@ -5,6 +5,7 @@
  *
  */
 
+var React = require('react');
 require('./style.less');
 
 import { Timeline } from 'antd';
@@ -106,3 +107,4 @@ TimeLine.propTypes = {
 };
 
 module.exports = TimeLine;
+

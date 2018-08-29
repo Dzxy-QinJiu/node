@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/crm-right-panel.less');
 import {Tabs, Select, Button, Icon, message} from 'antd';
 var TabPane = Tabs.TabPane;
@@ -635,4 +636,5 @@ var CrmRightMergePanel = React.createClass({
 });
 
 module.exports = CrmRightMergePanel;
+
 

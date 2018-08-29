@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2017/3/9.
  */
+var React = require('react');
 import {Tag, Icon, Input, message} from 'antd';
 let BatchChangeStore = require('../../store/batch-change-store');
 let BatchChangeActions = require('../../action/batch-change-actions');

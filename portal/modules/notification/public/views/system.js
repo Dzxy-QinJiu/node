@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../../app_user_manage/public/css/main-zh_CN.less');
 import {Alert, Select, message, Icon, Button} from 'antd';
 import LAYOUT from '../utils/layout';

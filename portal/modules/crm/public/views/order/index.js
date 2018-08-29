@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../css/order.less');
 import {Icon, Button, Checkbox, Menu, Dropdown, Alert} from 'antd';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
@@ -290,3 +291,4 @@ const OrderIndex = React.createClass({
 ;
 
 module.exports = OrderIndex;
+

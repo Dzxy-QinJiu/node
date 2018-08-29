@@ -1,3 +1,4 @@
+var React = require('react');
 import {Button, message, Select, Icon, Menu, Dropdown, Popconfirm} from 'antd';
 const Option = Select.Option;
 const ModalDialog = require('../../../../../components/ModalDialog');
@@ -641,3 +642,4 @@ const OrderItem = React.createClass({
 });
 
 module.exports = OrderItem;
+

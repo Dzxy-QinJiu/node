@@ -4,6 +4,7 @@
  *
  * 使用方法
  *
+var React = require('react');
  *  var SelectFullWidth = require("../../../components/select-fullwidth");
  *  var Option = require("antd").Select.Option;
  *

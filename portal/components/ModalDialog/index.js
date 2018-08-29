@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2015/12/29.
  */
+var React = require('react');
 var language = require('../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./modalDialog-es_VE.less');
@@ -53,3 +54,4 @@ var ModalDialog = React.createClass({
 });
 
 module.exports = ModalDialog;
+

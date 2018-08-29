@@ -1,6 +1,7 @@
 /**
  * 漏斗图
  */
+var React = require('react');
 var echarts = require('echarts');
 require('./style.less');
 var macronsTheme = require('./theme-macrons');
@@ -148,3 +149,4 @@ var FunnelChart = React.createClass({
 });
 
 module.exports = FunnelChart;
+

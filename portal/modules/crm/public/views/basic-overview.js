@@ -1,3 +1,4 @@
+var React = require('react');
 import '../css/basic-overview.less';
 import DetailCard from 'CMP_DIR/detail-card';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -520,3 +521,4 @@ var BasicOverview = React.createClass({
 });
 
 module.exports = BasicOverview;
+

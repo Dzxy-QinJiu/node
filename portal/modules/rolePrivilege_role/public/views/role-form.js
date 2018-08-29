@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -400,3 +401,4 @@ var RoleForm = React.createClass({
 });
 
 module.exports = RoleForm;
+

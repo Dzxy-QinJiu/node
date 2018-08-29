@@ -2,6 +2,7 @@
  * 合同列表
  */
 
+var React = require('react');
 import { Table, Input, Select, Modal, message, Button, Checkbox } from 'antd';
 const CheckboxGroup = Checkbox.Group;
 import TableUtil from '../../../components/antd-table-pagination';
@@ -666,3 +667,4 @@ const List = React.createClass({
 });
 
 module.exports = List;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Button = require('antd').Button;
 var AlertTimer = require('../../../../components/alert-timer');

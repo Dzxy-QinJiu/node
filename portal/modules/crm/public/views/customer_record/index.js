@@ -3,6 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
+var React = require('react');
 var language = require('../../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../css/customer-trace-es_VE.less');
@@ -863,3 +864,4 @@ const CustomerRecord = React.createClass({
     }
 });
 module.exports = CustomerRecord;
+

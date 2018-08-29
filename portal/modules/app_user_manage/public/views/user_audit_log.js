@@ -1,3 +1,4 @@
+var React = require('react');
 import { AntcTable } from 'antc';
 import { Icon, Select, Alert, Button, message } from 'antd';
 // 加载时的动作显示
@@ -610,3 +611,4 @@ var LogView = React.createClass({
 });
 
 module.exports = LogView;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 import TeleConfigStore from '../store/tele-config-store';
 import TeleConfigAction from '../action/tele-config-action';
 import TeleConfigAjax from '../ajax/tele-config-ajax';

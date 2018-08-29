@@ -1,3 +1,4 @@
+var React = require('react');
 require('./css/customer-suggest.less');
 var Link = require('react-router').Link;
 import {Select, Tag} from 'antd';

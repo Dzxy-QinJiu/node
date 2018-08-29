@@ -1,3 +1,4 @@
+var React = require('react');
 import RealmConfigStore from '../store/realm-config-store';
 import RealmConfigAction from '../action/realm-config-action';
 import RealmConfigAjax from '../ajax/realm-config-ajax';

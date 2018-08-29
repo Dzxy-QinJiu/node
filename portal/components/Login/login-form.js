@@ -5,6 +5,7 @@
  */
 'use strict';
 
+var React = require('react');
 var crypto = require('crypto');
 const classnames = require('classnames');
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';

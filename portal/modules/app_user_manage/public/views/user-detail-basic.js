@@ -1,6 +1,7 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
+var React = require('react');
 import { Alert, Icon } from 'antd';
 import { Button as BootstrapButton, Modal as BootstrapModal } from 'react-bootstrap';
 import UserStatusSwitch from './user-status-switch';

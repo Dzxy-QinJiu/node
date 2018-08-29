@@ -1,6 +1,7 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
+var React = require('react');
 require('./index.less');
 import { Tooltip, Alert, Tabs } from 'antd';
 import classNames from 'classnames';

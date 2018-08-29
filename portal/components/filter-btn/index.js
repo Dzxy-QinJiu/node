@@ -1,3 +1,4 @@
+var React = require('react');
 var classNames = require('classnames');
 var Icon = require('antd').Icon;
 var Button = require('antd').Button;

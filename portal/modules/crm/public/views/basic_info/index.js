@@ -1,3 +1,4 @@
+var React = require('react');
 import '../../css/crm-basic-info.less';
 import classNames from 'classnames';
 var CRMStore = require('../../store/basic-overview-store');
@@ -339,4 +340,5 @@ var BasicData = React.createClass({
 });
 
 module.exports = BasicData;
+
 

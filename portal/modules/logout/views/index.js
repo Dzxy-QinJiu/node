@@ -1,3 +1,4 @@
+var React = require('react');
 var LogOut = React.createClass({
     render: function() {
         return (
@@ -11,3 +12,4 @@ var LogOut = React.createClass({
 });
 
 module.exports = LogOut;
+

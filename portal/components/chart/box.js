@@ -2,6 +2,7 @@
  * 文本块
  */
 
+var React = require('react');
 let Box = React.createClass({
     getDefaultProps: function() {
         return {
@@ -20,3 +21,4 @@ let Box = React.createClass({
 });
 
 module.exports = Box;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import { Alert } from 'antd';
@@ -204,3 +205,4 @@ var SalesStageForm = React.createClass({
 });
 
 module.exports = SalesStageForm;
+

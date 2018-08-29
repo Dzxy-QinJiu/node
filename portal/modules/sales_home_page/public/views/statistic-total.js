@@ -2,6 +2,7 @@
  * 客户、用户、电话、合同统计总数
  * Created by wangliping on 2016/11/14.
  */
+var React = require('react');
 let Icon = require('antd').Icon;
 let classNames = require('classnames');
 let SalesHomeAction = require('../action/sales-home-actions');
@@ -172,3 +173,4 @@ let StatisticTotal = React.createClass({
 });
 
 module.exports = StatisticTotal;
+

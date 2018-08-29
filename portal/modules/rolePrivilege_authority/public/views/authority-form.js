@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -733,3 +734,4 @@ var AuthorityForm = React.createClass({
 });
 
 module.exports = AuthorityForm;
+

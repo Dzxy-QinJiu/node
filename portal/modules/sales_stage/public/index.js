@@ -1,6 +1,7 @@
 /**
  * Created by xiaojinfeng on  2015/12/22 16:59 .
  */
+var React = require('react');
 require('./css/sales-stage.less');
 var Button = require('antd').Button;
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
@@ -219,3 +220,4 @@ var SalesStagePage = React.createClass({
 });
 
 module.exports = SalesStagePage;
+

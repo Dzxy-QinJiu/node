@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -152,4 +153,5 @@ const AddRepayment = React.createClass({
 });
 
 module.exports = AddRepayment;
+
 

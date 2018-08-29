@@ -1,4 +1,5 @@
 // 点开座席号某行时，显示的详细信息
+var React = require('react');
 import UserDetailEditField from 'CMP_DIR/basic-edit-field/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
 import {RightPanel, RightPanelClose, RightPanelSubmit, RightPanelCancel} from 'CMP_DIR/rightPanel';

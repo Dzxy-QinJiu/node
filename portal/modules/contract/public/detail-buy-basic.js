@@ -2,6 +2,7 @@
  * 采购合同基本信息展示及编辑页面
  */
 
+var React = require('react');
 import rightPanelUtil from '../../../components/rightPanel';
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
@@ -119,4 +120,5 @@ const DetailBuyBasic = React.createClass({
 });
 
 module.exports = DetailBuyBasic;
+
 

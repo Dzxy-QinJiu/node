@@ -1,4 +1,5 @@
 'use strict';
+var React = require('react');
 var scrollBarEmitter = require('../../public/sources/utils/emitters').scrollBarEmitter;
 var _extends = Object.assign || function(target) {
     for (var i = 1; i < arguments.length; i++) {

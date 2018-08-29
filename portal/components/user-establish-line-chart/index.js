@@ -1,3 +1,4 @@
+var React = require('react');
 var UserEstablishLineChart = React.createClass({
     render: function() {
         return (

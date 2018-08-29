@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -250,3 +251,4 @@ let BasicEditSelectField = React.createClass({
 });
 
 module.exports = BasicEditSelectField;
+

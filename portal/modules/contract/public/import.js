@@ -1,3 +1,4 @@
+var React = require('react');
 import { Upload, Icon, message } from 'antd';
 import routeList from '../common/route';
 
@@ -43,3 +44,4 @@ const ContractImport = React.createClass({
 });
 
 module.exports = ContractImport;
+

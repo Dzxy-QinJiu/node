@@ -6,6 +6,7 @@
 /**
  * 修改时间的组件
  */
+var React = require('react');
 import {DatePicker, Icon} from 'antd';
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
@@ -181,3 +182,4 @@ var DatePickerEditField = React.createClass({
 });
 
 module.exports = DatePickerEditField;
+

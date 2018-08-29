@@ -2,6 +2,7 @@
  * 销售合同基本信息展示及编辑页面
  */
 
+var React = require('react');
 import { Form, Input, Select, Row, Col } from 'antd';
 const FormItem = Form.Item;
 import ValidateMixin from '../../../mixins/ValidateMixin';
@@ -503,4 +504,5 @@ const DetailBasic = React.createClass({
 });
 
 module.exports = DetailBasic;
+
 

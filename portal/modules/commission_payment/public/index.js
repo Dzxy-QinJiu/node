@@ -1,3 +1,4 @@
+var React = require('react');
 require('./css/index.less');
 import CommissionPaymentStore from './store/index';
 import CommissionPaymentActions from './action/index';

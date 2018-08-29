@@ -1,3 +1,4 @@
+var React = require('react');
 import {Button, message} from 'antd';
 var BootstrapButton = require('react-bootstrap').Button;
 var ContactUtil = require('../../utils/contact-util');
@@ -261,3 +262,4 @@ var ContactItem = React.createClass({
 });
 
 module.exports = ContactItem;
+

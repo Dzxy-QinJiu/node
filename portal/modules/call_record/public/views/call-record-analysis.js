@@ -6,6 +6,7 @@
  *  this.state.teamList.length > 1 时， 有两个以上的团队，显示团队和成员的筛选框，114柱状图
  * */
 
+var React = require('react');
 import {Select, Radio, Alert, Switch} from 'antd';
 const Option = Select.Option;
 const RadioGroup = Radio.Group;

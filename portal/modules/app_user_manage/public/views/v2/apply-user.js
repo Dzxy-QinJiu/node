@@ -2,6 +2,7 @@
  * 申请用户
  */
 //右侧面板样式，上一步、下一步，滑动布局等
+var React = require('react');
 var language = require('../../../../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('../../../../../components/user_manage_components/css/right-panel-es_VE.less');
@@ -169,3 +170,4 @@ const ApplyUser = React.createClass({
 });
 
 export default ApplyUser;
+

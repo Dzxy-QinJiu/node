@@ -1,3 +1,4 @@
+var React = require('react');
 require('./css/index.less');
 import {Tag, Modal, message, Button, Icon} from 'antd';
 import {AntcTable} from 'antc';
@@ -1532,3 +1533,4 @@ var Crm = React.createClass({
 });
 
 module.exports = Crm;
+

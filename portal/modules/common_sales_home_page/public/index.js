@@ -1,3 +1,4 @@
+var React = require('react');
 var RightContent = require('CMP_DIR/privilege/right-content');
 require('./css/index.less');
 var SalesHomeStore = require('./store/sales-home-store');

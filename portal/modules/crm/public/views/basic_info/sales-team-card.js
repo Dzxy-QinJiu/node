@@ -1,3 +1,4 @@
+var React = require('react');
 import {message, Select, Button, Icon} from 'antd';
 let Option = Select.Option;
 let userData = require('../../../../../public/sources/user-data');

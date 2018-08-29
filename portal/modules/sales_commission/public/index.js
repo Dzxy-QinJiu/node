@@ -1,3 +1,4 @@
+var React = require('react');
 require('./css/index.less');
 import SalesCommissionStore from './store/index';
 import SalesCommissionActions from './action/index';

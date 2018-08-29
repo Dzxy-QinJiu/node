@@ -1,3 +1,4 @@
+var React = require('react');
 require('./css/btn.less');
 // 折叠左侧栏按钮组件
 var BtnCollapse = React.createClass({
@@ -16,3 +17,4 @@ var BtnCollapse = React.createClass({
 });
 
 module.exports = BtnCollapse;
+

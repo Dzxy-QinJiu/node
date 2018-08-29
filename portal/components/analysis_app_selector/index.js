@@ -1,3 +1,4 @@
+var React = require('react');
 require('./index.less');
 var ajax = require('./ajax');
 var SelectFullWidth = require('../select-fullwidth');
@@ -121,3 +122,4 @@ var AnalysisAppSelector = React.createClass({
 });
 
 module.exports = AnalysisAppSelector;
+

@@ -1,4 +1,5 @@
 'use strict';
+var React = require('react');
 var ReactRouter = require('react-router');
 var DefaultUserLogoTitle = require('../default-user-logo-title');
 var Link = ReactRouter.Link;
@@ -74,3 +75,4 @@ var Name = React.createClass({
 });
 
 module.exports = Avatar;
+

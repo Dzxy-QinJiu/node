@@ -2,6 +2,7 @@
  * 客户查重界面
  * Created by wangliping on 2016/12/29.
  */
+var React = require('react');
 import '../css/customer-repeat.less';
 import {Button, message, Icon, Input, Row, Col, Popconfirm, Alert} from 'antd';
 import TopNav from'../../../../components/top-nav';
@@ -405,3 +406,4 @@ let CustomerRepeat = React.createClass({
 });
 
 module.exports = CustomerRepeat;
+

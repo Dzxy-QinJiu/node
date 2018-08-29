@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/user-login-analysis.less');
 var Spinner = require('../../../../components/spinner');
 var SelectFullWidth = require('../../../../components/select-fullwidth');

@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 /**
@@ -985,3 +986,4 @@ const AddOrEditUser = React.createClass({
 });
 
 export default AddOrEditUser;
+

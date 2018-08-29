@@ -1,6 +1,7 @@
 /**
  * 用户留存
  */
+var React = require('react');
 require('./style.less');
 var immutable = require('immutable');
 var Table = require('antd').Table;
@@ -152,3 +153,4 @@ var Retention = React.createClass({
 });
 
 module.exports = Retention;
+

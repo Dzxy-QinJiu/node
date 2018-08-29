@@ -2,6 +2,7 @@
  * 显示、编辑 的组件
  * 可切换状态
  */
+var React = require('react');
 import {Input,Icon} from 'antd';
 let autosize = require('autosize');
 import FieldMixin from '../../../../../components/antd-form-fieldmixin';

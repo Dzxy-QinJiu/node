@@ -1,3 +1,4 @@
+var React = require('react');
 var language = require('../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/index-es_VE.less');
@@ -486,3 +487,4 @@ var UserForm = React.createClass({
 
 const UserFormForm = Form.create()(UserForm);
 module.exports = UserFormForm;
+

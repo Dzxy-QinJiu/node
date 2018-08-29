@@ -1,3 +1,4 @@
+var React = require('react');
 require('./github-markdown.css');
 const ReactMarkdown = require('react-markdown');
 

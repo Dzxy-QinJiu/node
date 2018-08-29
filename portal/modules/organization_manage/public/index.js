@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
+var React = require('react');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./css/organization-es_VE.less');

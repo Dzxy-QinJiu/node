@@ -1,3 +1,4 @@
+var React = require('react');
 var history = require('../../public/sources/history');
 
 function getPathname() {
@@ -33,3 +34,4 @@ var RightContent = React.createClass({
 });
 
 module.exports = RightContent;
+

@@ -1,4 +1,5 @@
 //用户状态添加switch切换逻辑
+var React = require('react');
 import { Icon, Switch } from 'antd';
 const AppUserAjax = require('../ajax/app-user-ajax');
 const AlertTimer = require('CMP_DIR/alert-timer');

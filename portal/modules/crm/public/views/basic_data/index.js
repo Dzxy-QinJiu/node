@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../css/crm-basic.less');
 require('../../css/basic-edit-field.less');
 var CRMStore = require('../../store/basic-overview-store');
@@ -343,4 +344,5 @@ var BasicData = React.createClass({
 });
 
 module.exports = injectIntl(BasicData);
+
 

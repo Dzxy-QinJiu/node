@@ -14,6 +14,7 @@
         return 'some html here';
     }
  */
+var React = require('react');
 var echarts = require('echarts');
 import macronsTheme from 'CMP_DIR/echarts-theme/macrons';
 var TimeSeriesBarchart = React.createClass({
@@ -200,3 +201,4 @@ var TimeSeriesBarchart = React.createClass({
 });
 
 module.exports = TimeSeriesBarchart;
+

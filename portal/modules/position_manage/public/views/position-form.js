@@ -1,3 +1,4 @@
+var React = require('react');
 import {Form, Input, Button, Select, Checkbox } from 'antd';
 const Validation = require('rc-form-validation');
 const FormItem = Form.Item;

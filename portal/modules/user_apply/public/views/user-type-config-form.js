@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2017/2/15.
  */
 // 添加用户类型配置
+var React = require('react');
 const language = require('PUB_DIR/language/getLanguage');
 require('../css/user-type-config.less');
 require('CMP_DIR/user_manage_components/css/form-basic-zh_CN.less');
@@ -335,3 +336,4 @@ var UserTypeConfigForm = React.createClass({
 });
 
 module.exports = UserTypeConfigForm;
+

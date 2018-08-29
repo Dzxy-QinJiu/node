@@ -2,6 +2,7 @@
  * 客户、用户、电话、合同统计总数
  * Created by wangliping on 2016/11/14.
  */
+var React = require('react');
 import {Breadcrumb, Icon, Menu, Dropdown, message} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -486,3 +487,4 @@ let CrmRightList = React.createClass({
 });
 
 module.exports = CrmRightList;
+

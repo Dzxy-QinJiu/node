@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 var RightPanelClose = require('../../../../components/rightPanel').RightPanelClose;
@@ -1210,3 +1211,4 @@ var UserDetailAddApp = React.createClass({
 });
 
 module.exports = UserDetailAddApp;
+

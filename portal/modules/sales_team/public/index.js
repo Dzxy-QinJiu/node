@@ -1,6 +1,7 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
+var React = require('react');
 require('./css/sales-team.less');
 import {Icon,Input,Button} from 'antd';
 var SalesTeamStore = require('./store/sales-team-store');

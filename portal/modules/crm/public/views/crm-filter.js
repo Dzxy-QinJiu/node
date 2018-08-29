@@ -1,3 +1,4 @@
+var React = require('react');
 import { Button, Icon } from 'antd';
 import Trace from 'LIB_DIR/trace';
 var SearchInput = require('../../../../components/searchInput');
@@ -75,3 +76,4 @@ var CrmFilter = React.createClass({
 });
 
 module.exports = CrmFilter;
+

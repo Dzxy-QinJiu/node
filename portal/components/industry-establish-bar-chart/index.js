@@ -1,3 +1,4 @@
+var React = require('react');
 var IndustryEstablishBarChart = React.createClass({
     render: function() {
         return (

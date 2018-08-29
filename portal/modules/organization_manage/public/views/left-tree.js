@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
+var React = require('react');
 import {Icon,Button} from 'antd';
 var classNames = require('classnames');
 var GroupFrom = require('./edit-organization-form');

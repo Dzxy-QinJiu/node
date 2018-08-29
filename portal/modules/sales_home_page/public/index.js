@@ -1,3 +1,4 @@
+var React = require('react');
 require('./css/index.less');
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
@@ -1032,3 +1033,4 @@ var SalesHomePage = React.createClass({
 });
 
 module.exports = SalesHomePage;
+

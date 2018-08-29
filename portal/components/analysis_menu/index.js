@@ -1,3 +1,4 @@
+var React = require('react');
 require('./index.less');
 var Dropdown = require('antd').Dropdown;
 var Menu = require('antd').Menu;

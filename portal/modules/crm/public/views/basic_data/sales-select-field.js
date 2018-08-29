@@ -1,3 +1,4 @@
+var React = require('react');
 import {Icon, Alert, Select, message} from 'antd';
 let Option = Select.Option;
 let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
@@ -384,3 +385,4 @@ var SalesSelectField = React.createClass({
 });
 
 module.exports = SalesSelectField;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 require('./index.less');
 
 var CustomRadioGroup = React.createClass({

@@ -1,3 +1,4 @@
+var React = require('react');
 import UserDetail from './user-detail';
 import {RightPanel} from '../../../../components/rightPanel';
 import LogVIew from './user_audit_log';
@@ -80,3 +81,4 @@ const UserAuditLog = React.createClass({
     }
 });
 module.exports = UserAuditLog;
+

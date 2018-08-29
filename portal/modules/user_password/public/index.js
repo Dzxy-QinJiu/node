@@ -1,6 +1,7 @@
 /**
  * Created by xiaojinfeng on  2016/1/14 10:25 .
  */
+var React = require('react');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/user-password-es_VE.less');
@@ -239,3 +240,4 @@ var UserPwdPage = React.createClass({
 
 const UserInfoFormForm = Form.create()(UserPwdPage);
 module.exports = UserInfoFormForm;
+

@@ -1,6 +1,7 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
+var React = require('react');
 require('./index.less');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {

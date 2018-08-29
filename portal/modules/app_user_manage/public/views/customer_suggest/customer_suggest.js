@@ -1,4 +1,5 @@
 
+var React = require('react');
 var language = require('../../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./customer_suggest-es_VE.less');

@@ -1,4 +1,5 @@
 //用户详情添加switch切换逻辑
+var React = require('react');
 var language = require('../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-detail-field-switch-es_VE.less');

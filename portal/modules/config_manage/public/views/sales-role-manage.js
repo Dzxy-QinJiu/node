@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/index.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
@@ -379,4 +380,4 @@ const SalesRoleManage = React.createClass({
     }
 });
 
-module.exports = SalesRoleManage;
+module.exports = SalesRoleManage;

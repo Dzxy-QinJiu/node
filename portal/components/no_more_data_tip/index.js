@@ -1,3 +1,4 @@
+var React = require('react');
 var Alert = require('antd').Alert;
 require('./index.less');
 const CSS_ID_PREFIX = 'no_more_data_tip_';

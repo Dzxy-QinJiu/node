@@ -1,3 +1,4 @@
+var React = require('react');
 import { AntcTable } from 'antc';
 var Spinner = require('../../../../components/spinner');
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';

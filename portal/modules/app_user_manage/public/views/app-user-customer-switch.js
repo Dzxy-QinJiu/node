@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/main-es_VE.less');
 var AppUserUtil = require('../util/app-user-util');
 var SearchInput = require('../../../../components/searchInput');

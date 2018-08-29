@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {Icon, Alert, Select, Form} from 'antd';
@@ -204,3 +205,4 @@ var IndustrySelectField = React.createClass({
 });
 
 module.exports = IndustrySelectField;
+

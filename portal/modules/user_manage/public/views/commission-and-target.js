@@ -3,6 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/4/3.
  */
+var React = require('react');
 import {InputNumber, Icon} from 'antd';
 var classNames = require('classnames');
 var autosize = require('autosize');
@@ -185,3 +186,4 @@ var CommissionAndTarget = React.createClass({
 });
 
 module.exports = CommissionAndTarget;
+

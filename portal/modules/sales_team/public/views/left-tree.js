@@ -1,6 +1,7 @@
 /**
  * Created by xiaojinfeng on 2016/04/11.
  */
+var React = require('react');
 import {Icon,Button} from 'antd';
 import commonMethodUtil from '../../../../public/sources/utils/common-method-util';
 var classNames = require('classnames');

@@ -1,6 +1,7 @@
 /**
  * 添加提成发放记录
  * */
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import ajax from '../../../contract/common/ajax';
@@ -477,4 +478,5 @@ const CommissionPayment = React.createClass({
 });
 
 module.exports = CommissionPayment;
+
 

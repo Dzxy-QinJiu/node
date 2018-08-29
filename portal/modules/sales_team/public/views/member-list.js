@@ -2,6 +2,7 @@
  * Created by xiaojinfeng on 2016/04/13.
  */
 
+var React = require('react');
 import {InputNumber, Button, message, Icon} from 'antd';
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var DefaultUserLogoTitle = require('../../../../components/default-user-logo-title');

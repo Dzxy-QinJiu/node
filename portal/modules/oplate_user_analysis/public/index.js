@@ -2,6 +2,7 @@
  * 用户分析
  */
 
+var React = require('react');
 require('./css/oplate-user-analysis.less');
 import { AntcAnalysis } from 'antc';
 import AnalysisFilter from 'CMP_DIR/analysis/filter';
@@ -918,3 +919,4 @@ var OPLATE_USER_ANALYSIS = React.createClass({
 });
 
 module.exports = OPLATE_USER_ANALYSIS;
+

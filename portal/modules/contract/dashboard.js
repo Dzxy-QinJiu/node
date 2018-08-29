@@ -2,6 +2,7 @@
  * 合同仪表盘
  */
 
+var React = require('react');
 import './public/style.less';
 import Analysis from '../../components/analysis';
 import { CHART_HEIGHT } from './consts';
@@ -376,3 +377,4 @@ const ContractDashboard = React.createClass({
 });
 
 module.exports = ContractDashboard;
+

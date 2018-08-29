@@ -1,3 +1,4 @@
+var React = require('react');
 var language = require('../../../public/language/getLanguage');
 import Trace from 'LIB_DIR/trace';
 

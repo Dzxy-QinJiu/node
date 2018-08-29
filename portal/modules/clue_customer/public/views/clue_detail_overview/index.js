@@ -3,6 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/8.
  */
+var React = require('react');
 require('../../css/clue_detail_overview.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import {Button, Icon} from 'antd';
@@ -842,4 +843,5 @@ var ClueDetailOverview = React.createClass({
     }
 });
 module.exports = ClueDetailOverview;
+
 

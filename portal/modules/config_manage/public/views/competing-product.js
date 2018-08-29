@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/index.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
@@ -224,3 +225,4 @@ const competingProductManage = React.createClass({
 });
 
 module.exports = competingProductManage;
+

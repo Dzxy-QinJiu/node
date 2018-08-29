@@ -1,3 +1,4 @@
+var React = require('react');
 import Dropdown from 'rc-dropdown';
 import Menu, { Item as MenuItem} from 'rc-menu';
 require('./index.less');

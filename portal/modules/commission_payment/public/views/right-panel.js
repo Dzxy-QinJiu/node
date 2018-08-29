@@ -1,3 +1,4 @@
+var React = require('react');
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanelClose = rightPanelUtil.RightPanelClose;
 import Spinner from 'CMP_DIR/spinner';
@@ -117,4 +118,5 @@ const CommissionRightPanel = React.createClass({
 });
 
 module.exports = CommissionRightPanel;
+
 

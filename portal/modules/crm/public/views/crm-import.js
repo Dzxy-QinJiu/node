@@ -1,3 +1,4 @@
+var React = require('react');
 import { Upload, Icon, message } from 'antd';
 import { crmEmitter } from 'OPLATE_EMITTER';
 import Trace from 'LIB_DIR/trace';
@@ -40,3 +41,4 @@ var CrmImport = React.createClass({
 });
 
 module.exports = CrmImport;
+

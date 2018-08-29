@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../css/contact.less');
 //一个用于显示的联系人
 var ContactItem = require('./contact-item');
@@ -173,3 +174,4 @@ var Contacts = React.createClass({
 });
 
 module.exports = Contacts;
+

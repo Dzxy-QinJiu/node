@@ -1,4 +1,5 @@
 
+var React = require('react');
 require('./style.less');
 
 var FilterBlock = React.createClass({
@@ -10,3 +11,4 @@ var FilterBlock = React.createClass({
 });
 
 module.exports = FilterBlock;
+

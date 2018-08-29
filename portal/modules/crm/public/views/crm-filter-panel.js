@@ -1,3 +1,4 @@
+var React = require('react');
 import { getSelected } from '../../../../lib/utils/filter-utils';
 var FilterStore = require('../store/filter-store');
 var FilterAction = require('../action/filter-actions');
@@ -509,3 +510,4 @@ const CrmFilterPanel = React.createClass({
 });
 
 module.exports = CrmFilterPanel;
+

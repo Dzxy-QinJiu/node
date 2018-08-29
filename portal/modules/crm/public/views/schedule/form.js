@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 require('../../css/schedule.less');
@@ -654,3 +655,4 @@ var CrmAlertForm = React.createClass({
 });
 
 module.exports = CrmAlertForm;
+

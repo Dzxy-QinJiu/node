@@ -1,6 +1,7 @@
 /**
  * 销售明细组件
  * */
+var React = require('react');
 import { AntcTable } from 'antc';
 import SaleCommissionDetailStore from '../store/sale-commission-detail-store';
 import SaleCommissionDetailActions from '../action/sale-commission-detail-actions';

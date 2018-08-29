@@ -1,3 +1,4 @@
+var React = require('react');
 const Validation = require('rc-form-validation');
 const Validator = Validation.Validator;
 import {regex} from 'ant-utils';
@@ -578,3 +579,4 @@ var CRMAddForm = React.createClass({
     }
 });
 module.exports = CRMAddForm;
+

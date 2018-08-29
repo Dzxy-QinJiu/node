@@ -1,6 +1,7 @@
 /**
  * Created by xiaojinfeng on 2016/04/28.
  */
+var React = require('react');
 require('./default-img-title.less');
 var classNames = require('classnames');
 
@@ -48,3 +49,4 @@ var DefaultUserLogoTitle = React.createClass({
 });
 
 module.exports = DefaultUserLogoTitle;
+

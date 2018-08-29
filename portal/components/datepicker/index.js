@@ -54,6 +54,7 @@
 
  比如：
  // 日志范围，从当前时间，3个月内的数据
+var React = require('react');
  const THREE_MONTH_TIME_RANGE = 3 * 30 * 24 * 60 * 60 * 1000;
  dateSelectRange = THREE_MONTH_TIME_RANGE
  现在是2017/09/27
