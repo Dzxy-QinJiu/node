@@ -203,7 +203,11 @@ var UserDetail = React.createClass({
     handleUserInfoEdit(params, onSuccess, onError) {
         params.user_id = params.id;
         delete params.id;
-        AppUserAjax.editAppUser(params).then(onSuccess, onError);
+        AppUserAjax.editAppUser(params).then(result => {
+            //将修改成功后的数据在用户列表展示
+            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_USER_INFO, params);
+            return onSuccess(result);
+        }, onError);
     },
     renderUserStatus: function(user, useIcon = false) {
         let userStatus = user && user.status;
@@ -346,7 +350,7 @@ var UserDetail = React.createClass({
                                     </div>
                                     <div className="basic-info-btns">
                                         {
-                                            !userInfo.loading ? <span className="iconfont icon-edit-pw" onClick={() => { this.showEditPw(true); }} /> : null
+                                            !userInfo.loading ? <span className="iconfont icon-edit-pw" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
                                         }
                                         {
                                             !userInfo.loading ? this.renderUserStatus(userInfo.data, true) : null
