@@ -113,7 +113,6 @@ class ClueFilterPanel extends React.Component {
                 groupName: Intl.get('clue.filter.clue.status','线索状态'),
                 groupId: 'clue_status',
                 singleSelect: true,
-                hideClearBtn: true,
                 data: filterClueStatus,
             },{
                 groupName: Intl.get('crm.sales.clue.source', '线索来源'),
@@ -146,6 +145,7 @@ class ClueFilterPanel extends React.Component {
                         onFilterChange={this.handleFilterChange.bind(this)}
                         hideAdvancedTitle={true}
                         renderOtherDataContent={this.renderTimeRangeSelect}
+                        style={this.props.style}
                     />
                 </div>
             </div>
@@ -158,13 +158,15 @@ ClueFilterPanel.defaultProps = {
     clueClassifyArray: [],
     getClueList: function() {
 
-    }
+    },
+    style: {}
 };
 ClueFilterPanel.propTypes = {
     clueSourceArray: React.PropTypes.object,
     accessChannelArray: React.PropTypes.object,
     clueClassifyArray: React.PropTypes.object,
     getClueList: React.PropTypes.func,
+    style: React.PropTypes.object,
 };
 
 export default ClueFilterPanel;

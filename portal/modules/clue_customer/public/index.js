@@ -59,7 +59,6 @@ const ClueCustomer = React.createClass({
             previewList: [],//预览列表
             clueAnalysisPanelShow: false,//线索分析面板是否展示
             showFilterList: false,//是否展示线索筛选区域
-            // clueCustomerTypeFilter: {status: ''},
             ...clueCustomerStore.getState()
         };
     },
@@ -75,13 +74,6 @@ const ClueCustomer = React.createClass({
             this.getClueClassify();
         }
         clueCustomerAction.getSalesManList();
-        // if (isOperation() || isSalesLeaderOrManager()){
-        //     //运营人员  管理员、销售领导 默认展示全部线索客户 status对应""
-        //     clueCustomerAction.setFilterType(SELECT_TYPE.ALL);
-        // } else {
-        //     //普通销售 销售默认展示待跟进的线索客户 status对应1
-        //     clueCustomerAction.setFilterType(SELECT_TYPE.WILL_TRACE);
-        // }
         this.getClueList();
         this.getUserPhoneNumber();
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
@@ -638,10 +630,7 @@ const ClueCustomer = React.createClass({
                                 accessChannelArray={this.state.accessChannelArray}
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 getClueList={this.getClueList.bind(this, true)}
-                                // showSelectTip={_.get(this.state.selectedCustomer, 'length')}
                                 style={{width: 350, height: this.state.tableHeight}}
-                                // filterPanelHeight={this.state.filterPanelHeight}
-                                // changeTableHeight={this.changeTableHeight}
                             />
                         </div>
                         <div className={contentClassName}>
