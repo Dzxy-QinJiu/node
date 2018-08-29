@@ -84,7 +84,7 @@ let CustomerRepeat = React.createClass({
     //删除选中的重复的客户
     delRepeatCustomer: function(customer) {
         if (customer && customer.id) {
-            Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '删除重复客户');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '删除重复客户');
             CustomerRepeatAction.delRepeatCustomer([customer.id], result => {
                 if (result.error) {
                     message.error(result.errorMsg);
@@ -107,7 +107,7 @@ let CustomerRepeat = React.createClass({
         if (userData.hasRole(userData.ROLE_CONSTANS.SECRETARY)) {
             return;
         }
-        Trace.traceEvent(this.getDOMNode(), '点击查看客户详情');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击查看客户详情');
         CustomerRepeatAction.setRightPanelShow(true);
         CustomerRepeatAction.setCurCustomer(id);
     },
@@ -143,7 +143,7 @@ let CustomerRepeat = React.createClass({
     },
     showMergePanel: function(repeatList) {
         if (_.isArray(repeatList) && repeatList.length > 0) {
-            Trace.traceEvent($(this.getDOMNode()).find('.customer-merge-btn'), '点击合并按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.customer-merge-btn'), '点击合并按钮');
             CustomerRepeatAction.setMergeRepeatCustomers(repeatList);
             CustomerRepeatAction.setMergePanelShow(true);
         }
@@ -155,11 +155,11 @@ let CustomerRepeat = React.createClass({
     showSearchInput: function(key) {
         CustomerRepeatAction.toggleSearchInput({key: key, isShow: true});
         if (key === 'name') {
-            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按客户名称搜索按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.repeat-customer-search-icon'), '点击按客户名称搜索按钮');
         } else if (key === 'user_name') {
-            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按负责人搜索按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.repeat-customer-search-icon'), '点击按负责人搜索按钮');
         } else if (key === 'remarks') {
-            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按备注搜索按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.repeat-customer-search-icon'), '点击按备注搜索按钮');
         }
         //之前有搜索的内容时，先还原
         if (!_.isEmpty(this.state.filterObj)) {
@@ -202,11 +202,11 @@ let CustomerRepeat = React.createClass({
         CustomerRepeatAction.setFilterObj(this.state.filterObj);
         CustomerRepeatAction.toggleSearchInput({key: filterKey, isShow: false});
         if (filterKey === 'name') {
-            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭客户名称后的搜索框');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.anticon-cross-circle-o'), '关闭客户名称后的搜索框');
         } else if (filterKey === 'user_name') {
-            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭负责人后的搜索框');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.anticon-cross-circle-o'), '关闭负责人后的搜索框');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭备注后的搜索框');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.anticon-cross-circle-o'), '关闭备注后的搜索框');
         }
     },
     onSearchInputKeyUp: function(filterKey) {
@@ -216,11 +216,11 @@ let CustomerRepeat = React.createClass({
         searchInputTimeOut = setTimeout(() => {
             this.filterRepeatCustomer(filterKey);
             if (filterKey === 'name') {
-                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据客户名称过滤');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('input'), '跟据客户名称过滤');
             } else if (filterKey === 'user_name') {
-                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据负责人过滤');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('input'), '跟据负责人过滤');
             } else if (filterKey === 'remarks') {
-                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据备注过滤');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('input'), '跟据备注过滤');
             }
         }, delayTime);
 

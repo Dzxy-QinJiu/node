@@ -73,7 +73,7 @@ let TagEditField = React.createClass({
             return;
         }
         this.toggleTag(tag, true);
-        Trace.traceEvent($(this.getDOMNode()).find('.tag-input'), '按enter键添加新标签');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.tag-input'), '按enter键添加新标签');
         //清空输入框
         this.refs.newTag.refs.input.value = '';
     },
@@ -82,7 +82,7 @@ let TagEditField = React.createClass({
         if (isClueTag(tag) || isTurnOutTag(tag)) {
             return;
         }
-        Trace.traceEvent($(this.getDOMNode()).find('.block-tag-edit'), '点击选中/取消选中某个标签');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.block-tag-edit'), '点击选中/取消选中某个标签');
         let labels = this.state.labels || [];
 
         if (labels.indexOf(tag) > -1) {

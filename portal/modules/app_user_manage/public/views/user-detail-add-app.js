@@ -224,15 +224,14 @@ var UserDetailAddApp = React.createClass({
         //开通类型、开通状态、开通周期、批量延期需要选择应用
         if((
             //批量延期
-            this.hasDelayTimeBlock() ||
+            (this.hasDelayTimeBlock() ||
             //批量修改开通类型
             this.hasApplyTypeBlock() ||
             //批量修改开通状态
             this.hasApplyStatusBlock() ||
             //批量修改开通周期
-            this.hasApplyTimeBlock() ||
-            //销售修改开通状态
-            this.hasSalesApplyStatusBlock()
+            this.hasApplyTimeBlock() || //销售修改开通状态
+            this.hasSalesApplyStatusBlock())
             //不是开通产品
         ) && !this.hasApplyAppBlock()) {
             selectedAppId = JSON.stringify(this.state.formData.batchSelectedApps);

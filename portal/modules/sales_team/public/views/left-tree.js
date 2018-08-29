@@ -28,16 +28,16 @@ var LeftTree = React.createClass({
     },
 
     editGroup: function(item) {
-        Trace.traceEvent($(this.getDOMNode()).find('ul.left-tree-ul .tree-operation-div .icon-update'),'编辑子团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-update'),'编辑子团队');
         SalesTeamAction.editGroup(item);
     },
     addGroup: function(item) {
-        Trace.traceEvent($(this.getDOMNode()).find('ul.left-tree-ul .tree-operation-div .icon-add'),'增加子团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'增加子团队');
         SalesTeamAction.addGroup(item);
     },
 
     deleteGroup: function(item) {
-        Trace.traceEvent($(this.getDOMNode()).find('ul.left-tree-ul .tree-operation-div .icon-delete'),'删除子团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-delete'),'删除子团队');
         SalesTeamAction.deleteGroup(item);
     },
 
@@ -118,11 +118,11 @@ var LeftTree = React.createClass({
         SalesTeamAction.setSelectSalesTeamGroup(groupId);
     },
     hideModalDialog: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'隐藏模态框');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'隐藏模态框');
         SalesTeamAction.hideModalDialog(this.props.deleteGroupItem);
     },
     saveDeleteGroup: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'确定删除某团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'确定删除某团队');
         SalesTeamAction.saveDeleteGroup(this.props.deleteGroupItem.key);
     },
     operationElement: function(item) {
@@ -241,13 +241,13 @@ var LeftTree = React.createClass({
     searchEvent: function(searchContent) {
         searchContent = searchContent ? searchContent.trim() : '';
         if (searchContent) {
-            Trace.traceEvent($(this.getDOMNode()).find('.sales-team-root-add .search-input-container input'),'跟据团队名称搜索团队');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-root-add .search-input-container input'),'跟据团队名称搜索团队');
             //搜索内容的设置
             SalesTeamAction.setSearchContent(searchContent);
             //根据团队名称进行搜索
             SalesTeamAction.filterByTeamName(searchContent);
         } else if (this.props.searchContent) {
-            Trace.traceEvent($(this.getDOMNode()).find('.sales-team-root-add .search-input-container input'),'清空搜索内容');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-root-add .search-input-container input'),'清空搜索内容');
             //清空搜索条件时，还原所有团队及团队关系
             SalesTeamAction.resetSearchSalesTeam();
             //清空搜索内容

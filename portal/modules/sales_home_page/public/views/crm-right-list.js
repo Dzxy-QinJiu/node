@@ -233,7 +233,7 @@ let CrmRightList = React.createClass({
 
     //如果销售角色id为“normal”，则选择清空销售角色的函数,反之则选择改变销售角色的函数
     changeAllSalesRole(sales, options){
-        Trace.traceEvent($(this.getDOMNode()).find(`#sales-member-li${sales.userId} .icon-role-auth-config`), '设置销售角色');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(`#sales-member-li${sales.userId} .icon-role-auth-config`), '设置销售角色');
 
         if(options.key === 'normal'){
             this.resetSalesRole(sales, options);

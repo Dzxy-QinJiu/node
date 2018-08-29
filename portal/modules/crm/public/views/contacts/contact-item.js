@@ -23,11 +23,11 @@ var ContactItem = React.createClass({
         };
     },
     showEditContactForm: function() {
-        Trace.traceEvent(this.getDOMNode(), '编辑联系人');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '编辑联系人');
         ContactAction.showEditContactForm(this.props.contact);
     },
     showDeleteContactConfirm: function() {
-        Trace.traceEvent(this.getDOMNode(), '删除联系人');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '删除联系人');
         ContactAction.showDeleteContactConfirm(this.props.contact);
     },
     setDefaultContact: function(contact) {
@@ -52,7 +52,7 @@ var ContactItem = React.createClass({
         }
     },
     hideDeleteContactModal: function() {
-        Trace.traceEvent(this.getDOMNode(), '取消删除联系人');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '取消删除联系人');
         ContactAction.hideDeleteContactConfirm(this.props.contact);
     },
     deleteContact: function() {
@@ -60,7 +60,7 @@ var ContactItem = React.createClass({
             this.props.delMergeCustomerContact(this.props.contact.contact.id);
             ContactAction.hideDeleteContactConfirm(this.props.contact.contact);
         } else {
-            Trace.traceEvent(this.getDOMNode(), '确认删除联系人');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '确认删除联系人');
             let customerId = this.props.contact.contact.customer_id;
             ContactAction.deleteContact(this.props.contact, () => {
                 //删的默认联系人
@@ -79,7 +79,7 @@ var ContactItem = React.createClass({
 
     // 自动拨号
     handleClickCallOut(phone) {
-        Trace.traceEvent(this.getDOMNode(), '拨打电话');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
         handleCallOutResult({
             errorMsg: this.props.getCallNumberError,//获取坐席号失败的错误提示
             callNumber: this.props.callNumber,//坐席号

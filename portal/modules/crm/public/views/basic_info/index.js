@@ -115,14 +115,14 @@ var BasicData = React.createClass({
     },
     //设置编辑客户名的标识
     setEditNameFlag: function(flag) {
-        Trace.traceEvent(this.getDOMNode(), flag ? '修改客户名' : '取消客户名的修改');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), flag ? '修改客户名' : '取消客户名的修改');
         this.setState({editNameFlag: flag});
     },
 
     //保存修改的基本信息
     saveEditBasicInfo: function(type, saveObj, successFunc, errorFunc) {
         saveObj.type = type;
-        Trace.traceEvent(this.getDOMNode(), `保存客户${type}的修改`);
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `保存客户${type}的修改`);
         if (this.props.isMerge) {
             if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(saveObj);
             if (_.isFunction(successFunc)) successFunc();
@@ -144,7 +144,7 @@ var BasicData = React.createClass({
         var initialBasicData = JSON.parse(JSON.stringify(basicData));
         var myUserId = crmUtil.getMyUserId();
         var hasFocusedCustomer = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids, myUserId) > -1;
-        Trace.traceEvent(this.getDOMNode(), hasFocusedCustomer ? '取消关注客户' : '关注客户');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), hasFocusedCustomer ? '取消关注客户' : '关注客户');
         //请求数据
         let interestObj = {
             id: basicData.id,

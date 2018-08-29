@@ -18,7 +18,7 @@ var SalesStageInfo = React.createClass({
     },
 
     deleteSalesStage: function(salesStage) {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'确定删除某销售阶段');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'确定删除某销售阶段');
         this.props.deleteSalesStage(salesStage);
     },
 
@@ -27,7 +27,7 @@ var SalesStageInfo = React.createClass({
     },
 
     hideSalesStageModalDialog: function(salesStage) {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'关闭删除销售阶段模态框');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'关闭删除销售阶段模态框');
         this.props.hideSalesStageModalDialog(salesStage);
     },
 

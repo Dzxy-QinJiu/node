@@ -133,7 +133,7 @@ const SearchInput = React.createClass({
         this.setState(this.state);
     },
     onKeywordSelect: function(value, option) {
-        Trace.traceEvent(this.getDOMNode(),'按' + value + '搜索');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'按' + value + '搜索');
         const keyword = this.state.keyword.trim();
         const index = option.props.index;
         let formData = this.state.formData;
@@ -203,7 +203,7 @@ const SearchInput = React.createClass({
             this.state.keyword = '';
             this.state.formData = {};
             this.props.searchEvent();
-            Trace.traceEvent(this.getDOMNode(),'清除搜索条件');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'清除搜索条件');
         }
     },
     render: function() {

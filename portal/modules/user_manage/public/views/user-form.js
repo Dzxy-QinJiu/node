@@ -158,7 +158,7 @@ var UserForm = React.createClass({
         }];
     },
     uploadImg: function(src) {
-        Trace.traceEvent($(this.getDOMNode()).find('.head-image-container .update-logo-desr'),'上传头像');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'),'上传头像');
         this.props.form.setFieldsValue({image: src});
     },
     //关闭
@@ -305,10 +305,10 @@ var UserForm = React.createClass({
         return teamOptions;
     },
     handleSelect: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('form ul li'),'选择角色');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'),'选择角色');
     },
     handleTeamSelect: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('form ul li'),'选择所属团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'),'选择所属团队');
     },
     render: function() {
         let values = this.props.form.getFieldsValue();

@@ -143,14 +143,14 @@ const ContractRightPanel = React.createClass({
         });
     },
     changeToView: function(view, category) {
-        Trace.traceEvent(this.getDOMNode(),'添加合同>选择\'' + category + '\'类型');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'添加合同>选择\'' + category + '\'类型');
         if (view) this.state.currentView = view;
         if (category) this.state.currentCategory = category;
         this.state.currentTabKey = '1';
         this.setState(this.state);
     },
     goPrev: function() {
-        Trace.traceEvent(this.getDOMNode(),'添加合同>进入上一步');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'添加合同>进入上一步');
 
         if (this.state.currentTabKey === 1) this.state.currentView = 'chooseType';
         else {
@@ -185,7 +185,7 @@ const ContractRightPanel = React.createClass({
         }
         //当验证通过时，发送点击事件信息
         if(validation) {
-            Trace.traceEvent(this.getDOMNode(), '添加合同>从\'' + stepMap[this.state.currentTabKey] + '\'进入下一步');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '添加合同>从\'' + stepMap[this.state.currentTabKey] + '\'进入下一步');
         }
 
         //添加服务合同时，产品信息可不填
@@ -225,7 +225,7 @@ const ContractRightPanel = React.createClass({
     //cb：回调函数
     //refreshWithResult：是否用提交返回的结果来更新当前合同
     handleSubmit: function(cb, refreshWithResult) {
-        Trace.traceEvent(this.getDOMNode(), stepMap[this.state.currentTabKey] + '添加合同>点击完成按钮');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), stepMap[this.state.currentTabKey] + '添加合同>点击完成按钮');
         this.showLoading();
 
         const currentView = this.state.currentView;

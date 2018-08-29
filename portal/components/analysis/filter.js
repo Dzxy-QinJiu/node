@@ -42,7 +42,7 @@ const AnalysisFilter = React.createClass({
     onSelectApp(app_id) {
         appSelectorEmitter.emit(appSelectorEmitter.SELECT_APP, app_id);
         storageUtil.local.set(STORED_APP_ID_KEY, app_id);
-        Trace.traceEvent(this.getDOMNode(),'选择应用');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'选择应用');
     },
     render() {
         return (

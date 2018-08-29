@@ -290,7 +290,7 @@ var Crm = React.createClass({
             if ($(e.target).hasClass('focus-customer')) {
                 return;
             }
-            Trace.traceEvent($(_this.getDOMNode()).find('.ant-table-tbody'), '打开客户详情');
+            Trace.traceEvent($(ReactDOM.findDOMNode(_this)).find('.ant-table-tbody'), '打开客户详情');
             var $tr = $(this).closest('tr');
             var id = $tr.find('.record-id').text();
             _this.showRightPanel(id);
@@ -428,19 +428,19 @@ var Crm = React.createClass({
         this.setState({tableHeight, filterPanelHeight});
     },
     confirmDelete: function(cusId, cusName) {
-        Trace.traceEvent($(this.getDOMNode()).find('.cus-op'), '删除客户');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.cus-op'), '删除客户');
         this.state.currentId = cusId;
         this.state.deleteCusName = cusName;
         this.state.showDeleteConfirm = true;
         this.setState(this.state);
     }
     , hideDeleteModal: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-cancel'), '关闭删除客户的确认模态框');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-cancel'), '关闭删除客户的确认模态框');
         this.state.showDeleteConfirm = false;
         this.setState(this.state);
     }
     , deleteCustomer: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确定删除客户');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除客户');
         this.hideDeleteModal();
         const ids = [this.state.currentId];
         CrmAction.deleteCustomer(ids);
@@ -494,7 +494,7 @@ var Crm = React.createClass({
         this.setState(this.state);
     }
     , showAddForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击添加客户按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击添加客户按钮');
         this.state.isAddFlag = true;
         this.setState(this.state);
     }
@@ -768,7 +768,7 @@ var Crm = React.createClass({
         });
     },
     showCrmTemplateRightPanel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击导入客户按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击导入客户按钮');
         this.setState({
             crmTemplateRightPanelShow: true
         });
@@ -803,13 +803,13 @@ var Crm = React.createClass({
     },
 
     scrollTop: function() {
-        $(this.refs.tableWrap.getDOMNode()).find('.ant-table-scroll div.ant-table-body').scrollTop(0);
+        $(ReactDOM.findDOMNode(this.refs.tableWrap)).find('.ant-table-scroll div.ant-table-body').scrollTop(0);
         this.setState({isScrollTop: false});
     },
     showMergePanel: function() {
         if (_.isArray(this.state.selectedCustomer) && this.state.selectedCustomer.length > 1) {
             this.setState({mergePanelIsShow: true});
-            Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击合并客户按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击合并客户按钮');
         }
     },
     hideMergePanel: function() {
@@ -961,7 +961,7 @@ var Crm = React.createClass({
 
     // 自动拨号
     handleClickCallOut(phoneNumber, record) {
-        Trace.traceEvent($(this.getDOMNode()).find('.column-contact-way'), '拨打电话');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
         CallNumberUtil.handleCallOutResult({
             errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
             callNumber: this.state.callNumber,//坐席号
@@ -1005,7 +1005,7 @@ var Crm = React.createClass({
         });
     },
     onPageChange: function(page) {
-        Trace.traceEvent($(this.getDOMNode()).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
         var currPageNum = this.state.pageNumBack;
         var curCustomerList = this.state.customersBack;
         if (page === currPageNum) {
@@ -1170,7 +1170,7 @@ var Crm = React.createClass({
                 }
                 _this.state.selectedCustomer = selectedRows;
                 _this.setState(_this.state);
-                Trace.traceEvent($(_this.getDOMNode()).find('.ant-table-selection-column'), '点击选中/取消选中某个客户');
+                Trace.traceEvent($(ReactDOM.findDOMNode(_this)).find('.ant-table-selection-column'), '点击选中/取消选中某个客户');
             },
             //对客户列表当前页进行全选或取消全选操作时触发
             onSelectAll: function(selected, selectedRows, changeRows) {
@@ -1178,7 +1178,7 @@ var Crm = React.createClass({
                     _this.state.selectAllMatched = false;
                 }
                 _this.setState({selectedCustomer: selectedRows, selectAllMatched: _this.state.selectAllMatched});
-                Trace.traceEvent($(_this.getDOMNode()).find('.ant-table-selection-column'), '点击选中/取消选中全部客户');
+                Trace.traceEvent($(ReactDOM.findDOMNode(_this)).find('.ant-table-selection-column'), '点击选中/取消选中全部客户');
             }
         } : null;
 

@@ -426,7 +426,7 @@ var BasicOverview = React.createClass({
             status: item.status === 'false' ? 'handle' : 'false',
         };
         var status = item.status === 'false' ? '完成' : '未完成';
-        Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
         basicOverviewAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {

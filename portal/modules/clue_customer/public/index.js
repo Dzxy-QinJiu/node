@@ -178,7 +178,7 @@ const ClueCustomer = React.createClass({
     },
     //点击导入线索按钮
     showImportClueTemplate: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.import-clue-customer-container'), '点击导入线索按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue-customer-container'), '点击导入线索按钮');
         this.setState({
             clueImportTemplateFormShow: true
         });
@@ -190,7 +190,7 @@ const ClueCustomer = React.createClass({
         });
     },
     showClueAddForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.add-clue-customer-container'), '点击添加销售线索按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-clue-customer-container'), '点击添加销售线索按钮');
         this.setState({
             clueAddFormShow: true
         });
@@ -215,7 +215,7 @@ const ClueCustomer = React.createClass({
         );
     },
     handleClickCallOut(phoneNumber, record) {
-        Trace.traceEvent($(this.getDOMNode()).find('.column-contact-way'), '拨打电话');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
         handleCallOutResult({
             errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
             callNumber: this.state.callNumber,//坐席号
@@ -523,7 +523,7 @@ const ClueCustomer = React.createClass({
     },
 
     searchFullTextEvent: function(keyword) {
-        Trace.traceEvent($(this.getDOMNode()).find('.search-container'), '根据关键字搜索');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
         clueCustomerAction.setKeyWord(keyword);
         //如果keyword不存在，就用获取线索的接口

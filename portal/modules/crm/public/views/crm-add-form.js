@@ -101,7 +101,7 @@ var CRMAddForm = React.createClass({
         this.state.formData.province_code = addressObj.provCode || '';
         this.state.formData.city_code = addressObj.cityCode || '';
         this.state.formData.county_code = addressObj.countyCode || '';
-        Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item'), '选择地址');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
     },
     //提交修改
     handleSubmit: function(e) {
@@ -354,10 +354,10 @@ var CRMAddForm = React.createClass({
         Trace.traceEvent(e, '添加备注');
     },
     handleSelect: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item label[for=\'industry\']').next('div'), '选择行业');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item label[for=\'industry\']').next('div'), '选择行业');
     },
     handleRoleSelect: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item label[for=\'role\']').next('div'), '选择角色');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item label[for=\'role\']').next('div'), '选择角色');
     },
     getAdministrativeLevelOptions: function() {
         let options = crmUtil.administrativeLevels.map(obj => {

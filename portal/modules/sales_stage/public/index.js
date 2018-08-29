@@ -107,7 +107,7 @@ var SalesStagePage = React.createClass({
             if (this.state.isSavingSalesStage) {
                 return;
             }
-            Trace.traceEvent($(this.getDOMNode()).find('.topNav .sales-stage-top-div:first-child span'),'变更销售阶段顺序');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-div:first-child span'),'变更销售阶段顺序');
             SalesStageAction.showSalesStageEditOrder();
         },
 
@@ -115,7 +115,7 @@ var SalesStagePage = React.createClass({
             if (this.state.isSavingSalesStage) {
                 return;
             }
-            Trace.traceEvent($(this.getDOMNode()).find('.topNav .sales-stage-top-btn:last-child span'),'取消对销售阶段顺序更改的保存');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-btn:last-child span'),'取消对销售阶段顺序更改的保存');
             SalesStageAction.hideSalesStageEditOrder();
         },
 
@@ -131,7 +131,7 @@ var SalesStagePage = React.createClass({
             if (this.state.isSavingSalesStage) {
                 return;
             }
-            Trace.traceEvent($(this.getDOMNode()).find('.topNav .sales-stage-top-btn:last-child span'),'保存对销售阶段的更改');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-btn:last-child span'),'保存对销售阶段的更改');
             SalesStageAction.changeIsSavingSalesStage();
             SalesStageAction.saveSalesStageOrder(this.state.salesStageList);
         }

@@ -160,7 +160,7 @@ var ClueDetailOverview = React.createClass({
     },
     //保存修改的基本信息
     saveEditBasicInfo: function(type, saveObj, successFunc, errorFunc) {
-        Trace.traceEvent(this.getDOMNode(), `保存线索${type}的修改`);
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${type}的修改`);
         clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
@@ -275,7 +275,7 @@ var ClueDetailOverview = React.createClass({
     },
     //点击关联客户按钮
     handleClickAssociatedBtn: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.clue-info-item'), '点击关联客户按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clue-info-item'), '点击关联客户按钮');
         this.setState({
             clickAssociatedBtn: true
         });

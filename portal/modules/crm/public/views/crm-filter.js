@@ -30,11 +30,11 @@ var CrmFilter = React.createClass({
     },
     togglePanel: function() {
         if (this.state.isPanelShow) {
-            Trace.traceEvent($(this.getDOMNode()).find('.ant-btn-ghost'),'关闭筛选面板');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn-ghost'),'关闭筛选面板');
             FilterAction.hidePanel();
             this.props.changeTableHeight();
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.ant-btn-ghost'),'打开筛选面板');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn-ghost'),'打开筛选面板');
             FilterAction.showPanel();
             this.props.changeTableHeight(true);
         }

@@ -65,7 +65,7 @@ const Contract = React.createClass({
         $(window).off('resize', this.onStoreChange);
     },
     showForm() {
-        Trace.traceEvent($(this.getDOMNode()).find('.crm-detail-add-btn'), '添加合同');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-detail-add-btn'), '添加合同');
         ContractAction.showForm();
     },
     render() {

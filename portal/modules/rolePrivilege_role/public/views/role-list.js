@@ -30,13 +30,13 @@ var RoleList = React.createClass({
     },
     //编辑角色
     editRole: function(role) {
-        Trace.traceEvent($(this.getDOMNode()).find('.role-btn-class'),'点击编辑角色按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.role-btn-class'),'点击编辑角色按钮');
         this.props.editRole(role);
     },
 
     //删除角色
     deleteRole: function(role) {
-        Trace.traceEvent($(this.getDOMNode()).find('.role-title-div'),'删除角色');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.role-title-div'),'删除角色');
         this.props.deleteRole(role);
     },
 

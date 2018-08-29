@@ -96,9 +96,9 @@ var AuthorityGroupForm = React.createClass({
         //全选、取消选中的处理
         handleSelectAllAuthority: function(flag) {
             if (flag) {
-                Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-div'),'选中全部的权限');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-div'),'选中全部的权限');
             } else {
-                Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-div'),'取消选中的权限');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-div'),'取消选中的权限');
             }
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(permission) {
@@ -113,7 +113,7 @@ var AuthorityGroupForm = React.createClass({
 
         //反选
         reverseSelectAuthority: function() {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-div'),'反选权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-div'),'反选权限');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(permission) {
                     permission.status = !permission.status;
@@ -126,7 +126,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //将选中的权限转给哪个权限组的处理
         handleChangeGroup: function(group) {
-            Trace.traceEvent($(this.getDOMNode()).find('.icon-turn-arrow'),'将选中的权限转给权限组');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-turn-arrow'),'将选中的权限转给权限组');
             var selectIDs = [];
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(permission) {
@@ -153,7 +153,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //展示权限详细信息
         showAuthorityInfo: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.auth-item-icon'),'展示权限详细信息');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.auth-item-icon'),'展示权限详细信息');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(auth) {
                     if (auth.permissionId == authorityId) {
@@ -169,7 +169,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //关闭权限详细信息的展示
         closeAuthDetailInfo: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.auth-item-icon'),'关闭权限详细信息');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.auth-item-icon'),'关闭权限详细信息');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(auth) {
                     if (auth.permissionId == authorityId) {
@@ -181,7 +181,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //展示编辑详情表单页
         showAuthorityEditForm: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.auth-item-icon'),'展示编辑权限详情');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.auth-item-icon'),'展示编辑权限详情');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(auth) {
                     if (auth.permissionId == authorityId) {
@@ -197,7 +197,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //关闭编辑详情表单页
         closeAuthorityEditForm: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.auth-item-icon'),'关闭编辑权限详情');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.auth-item-icon'),'关闭编辑权限详情');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(auth) {
                     if (auth.permissionId == authorityId) {
@@ -209,7 +209,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //添加权限表单页
         showAuthorityAddForm: function() {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn'),'添加一个新权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-name-btn'),'添加一个新权限');
             this.setState({
                 showAddFormFlag: true
             });
@@ -295,13 +295,13 @@ var AuthorityGroupForm = React.createClass({
 
         //删除权限
         deleteAuthority: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.edit-role-content-label'),'删除一个权限组');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.edit-role-content-label'),'删除一个权限组');
             this.props.deleteAuthority([authorityId]);
         },
         //删除多个权限
         deleteAuthoritys: function() {
             var authorityIds = [];
-            Trace.traceEvent($(this.getDOMNode()).find('.edit-role-content-label'),'删除权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.edit-role-content-label'),'删除权限');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(authority) {
                     if (authority.status) {
@@ -502,7 +502,7 @@ var AuthorityGroupForm = React.createClass({
         this.props.clearDelAuthErrorMsg();
     },
     handleSearchEvent: function(inputContent) {
-        Trace.traceEvent($(this.getDOMNode()).find('.pull-right'),'按服务地址搜索');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-right'),'按服务地址搜索');
         inputContent = inputContent ? inputContent.trim() : '';
         AuthorityAction.setSearchContent(inputContent);
     },

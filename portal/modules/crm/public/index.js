@@ -18,7 +18,7 @@ var CrmIndex = React.createClass({
     },
     //展示重复客户界面的设置
     showRepeatCustomer: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.filter-block .customer-repeat-btn'),'点击客户查重按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.filter-block .customer-repeat-btn'),'点击客户查重按钮');
         this.setState({
             isRepeatCustomerShow: true
         });

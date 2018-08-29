@@ -111,7 +111,7 @@ var CrmRightPanel = React.createClass({
     },
     //切换tab时的处理
     changeActiveKey: function(key) {
-        Trace.traceEvent($(this.getDOMNode()).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + tabNameList[key]);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + tabNameList[key]);
         this.setState({
             activeKey: key
         });

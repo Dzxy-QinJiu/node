@@ -285,9 +285,9 @@ var CallAddCustomerForm = React.createClass({
 
     handleSelect(value){
         if (value === 'industry') {
-            Trace.traceEvent(this.getDOMNode(), '选择行业');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '选择行业');
         } else if(value === 'contacts0_role') {
-            Trace.traceEvent(this.getDOMNode(), '选择角色');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
         }
     },
 

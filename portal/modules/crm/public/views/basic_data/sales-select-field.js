@@ -161,7 +161,7 @@ var SalesSelectField = React.createClass({
         }
 
         this.state.userId = userId;
-        Trace.traceEvent(this.getDOMNode(), '修改销售人员及其团队');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '修改销售人员及其团队');
         //修改销售人员时，将其对应的所属团队及其相关团队列表一起修改
         const salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === userId);
         if (salesman) {
@@ -186,7 +186,7 @@ var SalesSelectField = React.createClass({
 
     changeDisplayType: function(type) {
         if (type === 'text') {
-            Trace.traceEvent(this.getDOMNode(), '取消对销售人员/团队的修改');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对销售人员/团队的修改');
             if (!this.props.hideSalesRole){
                 this.getSalesRoleByMemberId(this.props.userId);
             }
@@ -203,7 +203,7 @@ var SalesSelectField = React.createClass({
                 salesRole: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(), '点击设置销售按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击设置销售按钮');
             this.setState({
                 displayType: type
             });
@@ -227,7 +227,7 @@ var SalesSelectField = React.createClass({
             sales_team_id: this.state.salesTeamId,
             sales_team: this.state.salesTeam
         };
-        Trace.traceEvent(this.getDOMNode(), '保存对销售人员/团队的修改');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存对销售人员/团队的修改');
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
             this.backToDisplay();

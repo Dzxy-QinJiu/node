@@ -177,9 +177,9 @@ var RoleForm = React.createClass({
     //全选、取消选中的处理
     handleSelectAllAuthority: function(curPermissionGroupName, flag) {
         if (flag) {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'选中全部的权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-name-btn-label'),'选中全部的权限');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'取消选中的权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-name-btn-label'),'取消选中的权限');
         }
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
@@ -202,7 +202,7 @@ var RoleForm = React.createClass({
 
     //反选
     reverseSelectAuthority: function(curPermissionGroupName) {
-        Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'反选权限');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-name-btn-label'),'反选权限');
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
                 function(permisssionGroup) {
@@ -247,9 +247,9 @@ var RoleForm = React.createClass({
     //展示收起所有权限分组的处理
     toggleAllAuth: function() {
         if (this.state.allAuthIsShow ) {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-container'),'全部收起权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-container'),'全部收起权限');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-container'),'全部展开权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-container'),'全部展开权限');
         }
 
         let allAuthIsShow = !this.state.allAuthIsShow;//展示、收起所有权限分组的切换

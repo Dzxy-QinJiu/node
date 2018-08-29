@@ -220,16 +220,16 @@ var ApplyTabContent = React.createClass({
         UserApplyActions.setLastApplyId('');
         setTimeout(() => {
             if (this.state.isCheckUnreadApplyList) {
-                Trace.traceEvent($(this.getDOMNode()).find('.app_user_manage_apply_list'), '查看有未读回复的申请');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看有未读回复的申请');
             } else {
-                Trace.traceEvent($(this.getDOMNode()).find('.app_user_manage_apply_list'), '取消有未读回复申请的查看');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '取消有未读回复申请的查看');
             }
             this.fetchApplyList();
         });
     },
     //点击展示详情
     clickShowDetail: function(obj, idx) {
-        Trace.traceEvent($(this.getDOMNode()).find('.app_user_manage_apply_list'), '查看申请详情');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
         UserApplyActions.setSelectedDetailItem({obj, idx});
     },
     renderApplyList: function() {
@@ -308,14 +308,14 @@ var ApplyTabContent = React.createClass({
         } else if (obj.key === 'cancel') {
             selectType = Intl.get('user.apply.backout', '已撤销');
         }
-        Trace.traceEvent($(this.getDOMNode()).find('.pull-left'), '根据' + selectType + '过滤');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-left'), '根据' + selectType + '过滤');
         UserApplyActions.changeApplyListType(obj.key);
         setTimeout(() => this.fetchApplyList());
     },
     changeSearchInputValue: function(value) {
         value = value ? value : '';
         if (value.trim() !== this.state.searchKeyword.trim()) {
-            Trace.traceEvent($(this.getDOMNode()).find('.pull-right'), '根据申请人/客户名/用户名搜索');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-right'), '根据申请人/客户名/用户名搜索');
             UserApplyActions.changeSearchInputValue(value);
             setTimeout(() => this.fetchApplyList());
         }

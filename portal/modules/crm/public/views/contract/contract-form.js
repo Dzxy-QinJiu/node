@@ -62,7 +62,7 @@ const Contract = React.createClass( {
     },
     // 删除产品信息
     handleDeleteProductsInfo(appId) {
-        Trace.traceEvent($(this.getDOMNode()).find('.total-price'), '点击删除产品信息');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.total-price'), '点击删除产品信息');
         let restProducts = _.filter(this.state.products, item => item.client_id !== appId);
         let restSelectAppIdArray = _.filter(this.state.selectedAppIdArray, id => id !== appId);
         this.setState({

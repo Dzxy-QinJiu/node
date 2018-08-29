@@ -205,7 +205,7 @@ var SalesTeamForm = React.createClass({
         this.setState({formData: formData});
     },
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(),'选择上级团队');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'选择上级团队');
     },
     render: function() {
         var _this = this;

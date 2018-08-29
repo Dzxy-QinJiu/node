@@ -568,7 +568,7 @@ var CallRecordAnalyis = React.createClass({
     },
 
     handleSelect() {
-        Trace.traceEvent($(this.getDOMNode()).find('.call-type-select'), '根据通话类型过滤');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.call-type-select'), '根据通话类型过滤');
     },
 
     // 通话类型的筛选框
@@ -1426,9 +1426,9 @@ var CallRecordAnalyis = React.createClass({
 
     handleFirstSelect() {
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
-            Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '选择成员过滤');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择成员过滤');
         } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
-            Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '选择团队过滤');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择团队过滤');
         }
 
     },
@@ -1436,12 +1436,12 @@ var CallRecordAnalyis = React.createClass({
     handleSelectTeamOrMember() {
         if (this.state.teamList.list.length > 1) {
             if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
-                Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '根据团队过滤');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '根据团队过滤');
             } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
-                Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '根据成员过滤');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '根据成员过滤');
             }
         } else if (this.state.teamList.list.length === 1) {
-            Trace.traceEvent($(this.getDOMNode()).find('.team-member-select'), '根据成员过滤');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '根据成员过滤');
         }
     },
 

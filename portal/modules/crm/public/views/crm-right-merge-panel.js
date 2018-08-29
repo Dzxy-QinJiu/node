@@ -251,14 +251,14 @@ var CrmRightMergePanel = React.createClass({
     },
     //切换tab时的处理
     changeActiveKey: function(key) {
-        Trace.traceEvent($(this.getDOMNode()).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + tabNameList[key]);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + tabNameList[key]);
         this.setState({
             activeKey: key
         });
     },
     //选择合并后要保存的客户
     handleChange: function(customerId) {
-        Trace.traceEvent($(this.getDOMNode()).find('.merge-customer-select'), '切换合并后要保存的客户名称');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.merge-customer-select'), '切换合并后要保存的客户名称');
         let mergedCustomer = this.getMergedCustomer(this.state.mergeCustomerList, this.state.originCustomerList, customerId);
         this.setState({selectedCustomer: mergedCustomer});
     },

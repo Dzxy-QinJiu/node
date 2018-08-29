@@ -22,7 +22,7 @@ const OrderForm = React.createClass({
     },
 
     handleCancel: function(e) {
-        Trace.traceEvent(this.getDOMNode(), '取消添加订单');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '取消添加订单');
         e.preventDefault();
         OrderAction.hideForm();
     },
@@ -30,7 +30,7 @@ const OrderForm = React.createClass({
     handleSubmit: function(e) {
         e.preventDefault();
         const validation = this.refs.validation;
-        Trace.traceEvent(this.getDOMNode(), '保存订单');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存订单');
         validation.validate(valid => {
             if (!valid) {
                 return;
@@ -62,7 +62,7 @@ const OrderForm = React.createClass({
         });
     },
     onAppsChange: function(selectedApps) {
-        Trace.traceEvent(this.getDOMNode(), '点击选中/取消选中某个应用');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击选中/取消选中某个应用');
         this.state.formData.apps = _.map(selectedApps, 'client_id');
         this.setState(this.state);
     },
@@ -75,7 +75,7 @@ const OrderForm = React.createClass({
         });
     },
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(), '选择销售阶段');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择销售阶段');
     },
     renderOrderForm: function() {
         const formData = this.state.formData;

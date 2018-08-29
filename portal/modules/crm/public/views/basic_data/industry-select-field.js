@@ -76,7 +76,7 @@ var IndustrySelectField = React.createClass({
     },
     changeDisplayType: function(type) {
         if (type === 'text') {
-            Trace.traceEvent(this.getDOMNode(),'取消对行业的修改');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'取消对行业的修改');
             this.state.formData.industry = this.props.industry;
             this.setState({
                 formData: this.state.formData,
@@ -84,7 +84,7 @@ var IndustrySelectField = React.createClass({
                 submitErrorMsg: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(),'设置行业');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'设置行业');
             this.setState({
                 displayType: type,
                 submitErrorMsg: '',
@@ -119,7 +119,7 @@ var IndustrySelectField = React.createClass({
                     type: 'industry',
                     industry: this.state.formData.industry
                 };
-                Trace.traceEvent(this.getDOMNode(),'保存对行业的修改');
+                Trace.traceEvent(ReactDOM.findDOMNode(this),'保存对行业的修改');
                 if (this.props.isMerge) {
                     this.props.updateMergeCustomer(submitData);
                     this.backToDisplay();
@@ -142,7 +142,7 @@ var IndustrySelectField = React.createClass({
         });
     },
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(),'选择行业');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'选择行业');
     },
     render: function() {
         if (this.state.displayType === 'text') {

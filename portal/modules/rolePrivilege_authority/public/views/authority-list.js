@@ -40,7 +40,7 @@ var AuthorityList = React.createClass({
     },
 
     deleteAuthorityGroup: function(authorityGroup) {
-        Trace.traceEvent($(this.getDOMNode()).find('.authority-operation'),'点击删除权限');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.authority-operation'),'点击删除权限');
         var authorityIds = [];
         if (authorityGroup && _.isArray(authorityGroup.permissionList) && authorityGroup.permissionList.length > 0) {
             authorityGroup.permissionList.forEach(function(authority) {
@@ -52,7 +52,7 @@ var AuthorityList = React.createClass({
 
     //编辑权限分组
     showAuthorityGroupForm: function(authorityGroup) {
-        Trace.traceEvent($(this.getDOMNode()).find('.icon-update'),'点击编辑权限分组');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-update'),'点击编辑权限分组');
         AuthorityAction.beforeEditAuthority(authorityGroup);
         this.props.showAuthorityGroupForm(authorityGroup);
     },

@@ -4,7 +4,8 @@
  * 包括共用状态和方法的定义以及共用字段的渲染
  */
 
-import { Form, Input, Select, DatePicker, Radio, Icon } from 'antd';
+import {Form, Input, Select, DatePicker, Radio, Icon} from 'antd';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -14,21 +15,23 @@ const extend = require('extend');
 const AutosizeTextarea = require('../../../components/autosize-textarea');
 import ajax from '../common/ajax';
 import routeList from '../common/route';
+
 const customerAjax = require('../../common/public/ajax/customer');
-import { CATEGORY, CONTRACT_STAGE, STAGE_AUDIT, CONTRACT_LABEL, LABEL_NEW_SIGNING, PURCHASE_TYPE } from '../consts';
+import {CATEGORY, CONTRACT_STAGE, STAGE_AUDIT, CONTRACT_LABEL, LABEL_NEW_SIGNING, PURCHASE_TYPE} from '../consts';
 import rightPanelUtil from '../../../components/rightPanel';
+
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
-import { VIEW_TYPE } from '../consts';
-import { regex } from 'ant-utils';
+import {VIEW_TYPE} from '../consts';
+import {regex} from 'ant-utils';
 
 const formItemLayout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 12 },
+    labelCol: {span: 4},
+    wrapperCol: {span: 12},
 };
 
 const formItemLayout2 = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 10 },
+    labelCol: {span: 4},
+    wrapperCol: {span: 10},
 };
 
 let queryCustomerTimeout = null;
@@ -121,7 +124,7 @@ export default {
         }
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
                 label={Intl.get('contract.24', '合同号')}
                 validateStatus={this.getValidateStatus('num')}
@@ -150,13 +153,19 @@ export default {
     },
     renderCustomerField: function() {
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
                 label={Intl.get('crm.41', '客户名')}
                 validateStatus={this.getValidateStatus('customer_name')}
                 help={this.getHelpMessage('customer_name')}
             >
-                <Validator rules={[{required: true, message: Intl.get('contract.58', '请填写客户名')}, {pattern: regex.customerNameRegex, message: Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')}]}>
+                <Validator rules={[{
+                    required: true,
+                    message: Intl.get('contract.58', '请填写客户名')
+                }, {
+                    pattern: regex.customerNameRegex,
+                    message: Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')
+                }]}>
                     <Input
                         name="customer_name"
                         value={this.state.formData.customer_name}
@@ -193,20 +202,20 @@ export default {
 
         state.formData.customers.push({});
         state.belongCustomerErrMsg.push(''),
-        state.belongCustomerIsChoosen.push(false),
+            state.belongCustomerIsChoosen.push(false),
 
-        this.setState(state, () => {
-            this.scrollBottom();
-        });
+            this.setState(state, () => {
+                this.scrollBottom();
+            });
     },
     deleteBelongCustomer(index) {
         let state = this.state;
 
         state.formData.customers.splice(index, 1);
         state.belongCustomerErrMsg.splice(index, 1),
-        state.belongCustomerIsChoosen.splice(index, 1),
+            state.belongCustomerIsChoosen.splice(index, 1),
 
-        this.setState(state);
+            this.setState(state);
     },
     //渲染所属客户表单项
     renderBelongCustomerField: function(popupContainer = document.getElementById('contractRightPanel')) {
@@ -218,9 +227,9 @@ export default {
                     const fieldName = 'belong_customer' + index;
 
                     return (
-                        <FormItem 
+                        <FormItem
                             key={index}
-                            wrapperCol={{ span: 24 }}
+                            wrapperCol={{span: 24}}
                             validateStatus={this.getValidateStatus(fieldName)}
                             help={this.getHelpMessage(fieldName)}
                         >
@@ -240,14 +249,14 @@ export default {
                             </Validator>
                             {index > 0 ? (
                                 <div className="circle-button circle-button-minus"
-                                    title={Intl.get('common.delete', '删除')}
-                                    onClick={this.deleteBelongCustomer.bind(this, index)}>
+                                     title={Intl.get('common.delete', '删除')}
+                                     onClick={this.deleteBelongCustomer.bind(this, index)}>
                                     <Icon type="minus"/>
                                 </div>
                             ) : (
                                 <div className="circle-button circle-button-plus"
-                                    title={Intl.get('common.add', '添加')}
-                                    onClick={this.addBelongCustomer.bind(this, index)}>
+                                     title={Intl.get('common.add', '添加')}
+                                     onClick={this.addBelongCustomer.bind(this, index)}>
                                     <Icon type="plus"/>
                                 </div>
                             )}
@@ -259,7 +268,7 @@ export default {
     },
     renderBuyerField: function() {
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
                 label={Intl.get('contract.4', '甲方')}
             >
@@ -271,7 +280,7 @@ export default {
             </FormItem>
         );
     },
-    
+
     // 将输入设置为state
     handleInputToState(type, keyword) {
         switch (type) {
@@ -294,7 +303,7 @@ export default {
         const validateName = 'user_name';
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
                 label={Intl.get('crm.6', '负责人')}
                 validateStatus={this.getValidateStatus(validateName)}
@@ -317,7 +326,10 @@ export default {
                 </Validator>
 
                 {this.props.isGetUserSuccess ? null : (
-                    <div className="no-user-list-tip">{Intl.get('contract.65', '获取负责人列表失败')}，{Intl.get('contract.66', '点击')}<a href="javascript:void(0)" onClick={this.props.getUserList}>{Intl.get('common.get.again', '重新获取')}</a></div>
+                    <div
+                        className="no-user-list-tip">{Intl.get('contract.65', '获取负责人列表失败')}，{Intl.get('contract.66', '点击')}<a
+                        href="javascript:void(0)"
+                        onClick={this.props.getUserList}>{Intl.get('common.get.again', '重新获取')}</a></div>
                 )}
             </FormItem>
         );
@@ -328,7 +340,7 @@ export default {
         });
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
                 label={Intl.get('crm.113', '部门')}
             >
@@ -354,9 +366,9 @@ export default {
         });
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
-                label={Intl.get('sales.commission.role.representative': '销售代表')}
+                label={Intl.get('sales.commission.role.representative', '销售代表')}
             >
                 <Select
                     showSearch
@@ -378,17 +390,17 @@ export default {
         });
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
-                label={Intl.get('user.user.team': '团队')}
+                label={Intl.get('user.user.team', '团队')}
             >
                 <Select
                     showSearch
                     optionFilterProp='children'
-                    placeholder={Intl.get('member.select.group': '请选择团队')}
+                    placeholder={Intl.get('member.select.group', '请选择团队')}
                     value={this.state.formData.sales_rep_team_id}
                     onSelect={this.onSalesRepTeamChoosen}
-                    notFoundContent={Intl.get('member.no.groups': '暂无团队')}
+                    notFoundContent={Intl.get('member.no.groups', '暂无团队')}
                 >
                     {teamOptions}
                 </Select>
@@ -397,13 +409,16 @@ export default {
     },
     renderAmountField: function() {
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout2}
                 label="合同额"
                 validateStatus={this.getValidateStatus('contract_amount')}
                 help={this.getHelpMessage('contract_amount')}
             >
-                <Validator rules={[{required: true, message: Intl.get('contract.69', '请填写合同金额')}, this.getNumberValidateRule()]}>
+                <Validator rules={[{
+                    required: true,
+                    message: Intl.get('contract.69', '请填写合同金额')
+                }, this.getNumberValidateRule()]}>
                     <Input
                         name="contract_amount"
                         value={this.parseAmount(this.state.formData.contract_amount)}
@@ -416,12 +431,12 @@ export default {
     },
     renderDateField: function() {
         if (!this.state.formData.date) {
-            let formData = this.state.formData; 
+            let formData = this.state.formData;
             formData.date = new Date;
         }
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
                 label={Intl.get('contract.34', '签订时间')}
             >
@@ -443,12 +458,12 @@ export default {
         });
 
         if (!this.state.formData.stage) {
-            let formData = this.state.formData; 
+            let formData = this.state.formData;
             formData.stage = CONTRACT_STAGE[0];
         }
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout2}
                 label={Intl.get('contract.36', '合同阶段')}
             >
@@ -469,12 +484,12 @@ export default {
         });
 
         if (!this.state.formData.label) {
-            let formData = this.state.formData; 
+            let formData = this.state.formData;
             formData.label = LABEL_NEW_SIGNING.value;
         }
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout2}
                 label={Intl.get('contract.164', '签约类型')}
             >
@@ -495,7 +510,7 @@ export default {
         });
 
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout2}
                 label={Intl.get('contract.37', '合同类型')}
             >
@@ -512,7 +527,7 @@ export default {
     },
     renderRemarksField: function() {
         return (
-            <FormItem 
+            <FormItem
                 {...formItemLayout}
                 label={Intl.get('common.remark', '备注')}
             >
@@ -598,10 +613,10 @@ export default {
             type: route.method,
             data: {num: value},
         };
-        
+
         ajax(arg).then(result => {
             if (result && result.result === 'true') {
-                callback(new Error( Intl.get('contract.74', '该合同号已存在')));
+                callback(new Error(Intl.get('contract.74', '该合同号已存在')));
             } else {
                 callback();
             }
@@ -615,7 +630,7 @@ export default {
             return <Option key={item.dataIndex} value={item.dataIndex}>{item.name}</Option>;
         });
 
-        let formData = this.state.formData; 
+        let formData = this.state.formData;
 
         // 这个属性只有采购合同有，别的合同没有，当用到这个组件的时候说明是采购合同，然后加上这个属性
         if (formData.purchase_contract_type) {
@@ -633,7 +648,10 @@ export default {
                 validateStatus={this.getValidateStatus('purchase_contract_type')}
                 help={this.getHelpMessage('purchase_contract_type')}
             >
-                <Validator rules={[{required: true, message: Intl.get('contract.purchase.contract.type.select.tips', '请选择分类')}]}>
+                <Validator rules={[{
+                    required: true,
+                    message: Intl.get('contract.purchase.contract.type.select.tips', '请选择分类')
+                }]}>
                     <Select
                         showSearch
                         name='purchase_contract_type'
@@ -657,7 +675,7 @@ export default {
                 callback();
                 return;
             }
-            
+
             const startTime = this.state.formData.start_time;
             const endTime = this.state.formData.end_time;
             const isStartTime = timeType === 'start_time' ? true : false;

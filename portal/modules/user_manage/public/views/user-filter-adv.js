@@ -7,7 +7,7 @@ var UserFilterAdv = React.createClass({
         if (role != this.props.selectRole) {
             //角色筛选
             this.props.filterUserByRole(role);
-            Trace.traceEvent(this.getDOMNode(),'点击角色进行过滤');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'点击角色进行过滤');
         }
     },
     getRoleListJsx: function() {

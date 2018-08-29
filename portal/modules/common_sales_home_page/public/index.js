@@ -486,7 +486,7 @@ var SalesHomePage = React.createClass({
     },
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType: function(customerType) {
-        Trace.traceEvent($(this.getDOMNode()).find('.customer-item'), '打开' + customerType + '类型客户面板');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.customer-item'), '打开' + customerType + '类型客户面板');
         GeminiScrollbar.scrollTo(this.refs.tableWrap, 0);
         this.setState({
             listenScrollBottom: true,

@@ -319,7 +319,7 @@ const ScheduleManagement = React.createClass({
             var dateObj = this.getDifTypeStartAndEnd(scheduleManagementStore.getViewDate(), viewName);
             //重新获取数据
             this.getAgendaData(dateObj,viewName);
-            Trace.traceEvent($(this.getDOMNode()).find('.check-group-container'), '点击日程联系类型按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.check-group-container'), '点击日程联系类型按钮');
         });
     },
     render: function() {

@@ -212,7 +212,7 @@ var AuthorityEditForm = React.createClass({
     },
     //添加一个服务地址的处理
     addPermissionApi: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'添加服务地址');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.permission-inputgroup-btns-div'),'添加服务地址');
         var permissionApiArray = this.state.formData.permissionApiArray || [];
         permissionApiArray.push({
             permissionApiUrl: '',
@@ -225,7 +225,7 @@ var AuthorityEditForm = React.createClass({
     },
     //删除服务地址
     delPermissionApi: function(index, event) {
-        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'删除服务地址');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.permission-inputgroup-btns-div'),'删除服务地址');
         var value = event.target.value;
         if (value) {
             return;
@@ -361,7 +361,7 @@ var AuthorityEditForm = React.createClass({
     },
     //添加一个数据权限
     addPermissionData: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'添加一个数据权限');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.permission-inputgroup-btns-div'),'添加一个数据权限');
         var permissionDatas = this.state.formData.permissionDatas;
         permissionDatas.push('');
         this.setState({
@@ -370,7 +370,7 @@ var AuthorityEditForm = React.createClass({
     },
     //移除一个数据权限
     removePermissionData: function(index) {
-        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'移除一个数据权限');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.permission-inputgroup-btns-div'),'移除一个数据权限');
         var permissionDatas = this.state.formData.permissionDatas;
         permissionDatas.splice(index, 1);
         this.setState({

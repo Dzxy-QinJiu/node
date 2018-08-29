@@ -55,7 +55,7 @@ const LocationSelectField = React.createClass({
     },
     changeDisplayType: function(type) {
         if (type === 'text') {
-            Trace.traceEvent(this.getDOMNode(), '取消对地域的修改');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对地域的修改');
             this.setState({
                 province: this.props.province,
                 city: this.props.city,
@@ -67,7 +67,7 @@ const LocationSelectField = React.createClass({
                 submitErrorMsg: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(), '点击设置地域按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击设置地域按钮');
             this.setState({
                 loading: false,
                 displayType: type,
@@ -100,7 +100,7 @@ const LocationSelectField = React.createClass({
             city_code: this.state.city_code,
             county_code: this.state.county_code,
         };
-        Trace.traceEvent(this.getDOMNode(), '保存对地域的修改');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存对地域的修改');
         this.props.saveEditLocation(submitData, () => {
             this.backToDisplay();
         }, (errorMsg) => {
@@ -122,7 +122,7 @@ const LocationSelectField = React.createClass({
         this.state.province_code = addressObj.provCode || '';
         this.state.city_code = addressObj.cityCode || '';
         this.state.county_code = addressObj.countyCode || '';
-        Trace.traceEvent(this.getDOMNode(), '修改地域');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '修改地域');
     },
     render: function() {
         var location = [];

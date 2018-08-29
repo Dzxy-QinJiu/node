@@ -64,14 +64,14 @@ var CrmBatchChange = React.createClass({
         BatchChangeStore.unlisten(this.onStoreChange);
     },
     setCurrentTab: function(tab) {
-        Trace.traceEvent($(this.getDOMNode()).find('.op-type'), '点击切换变更类型');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.op-type'), '点击切换变更类型');
         BatchChangeActions.setCurrentTab(tab);
         if (tab === BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS) {
             this.state.stopContentHide = true;
         }
     },
     onSalesmanChange: function(sales_man) {
-        Trace.traceEvent($(this.getDOMNode()).find('.change-salesman'), '点击切换销售人员');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.change-salesman'), '点击切换销售人员');
         BatchChangeActions.setSalesMan(sales_man);
     },
     getSalesBatchParams: function() {
@@ -494,7 +494,7 @@ var CrmBatchChange = React.createClass({
         }
     },
     industryChange: function(industry) {
-        Trace.traceEvent($(this.getDOMNode()).find('.block-industry-edit'), '选择行业');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.block-industry-edit'), '选择行业');
         BatchChangeActions.industryChange([industry]);
     },
     renderIndustryBlock: function() {
@@ -536,7 +536,7 @@ var CrmBatchChange = React.createClass({
     //更新地址
     updateLocation: function(address) {
         BatchChangeActions.locationChange(address);
-        Trace.traceEvent($(this.getDOMNode()).find('.change-territory'), '选择地址');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.change-territory'), '选择地址');
     },
     //标签变更类型的切换
     onChangeTag: function(e, v) {

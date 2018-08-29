@@ -149,7 +149,7 @@ var UserInfo = React.createClass({
     },
     //团队的选择事件
     onSelectTeam: function(teamId) {
-        Trace.traceEvent(this.getDOMNode(), '选择所属团队');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择所属团队');
         this.state.userInfo.teamId = teamId;
         this.setState({userInfo: this.state.userInfo});
     },
@@ -211,7 +211,7 @@ var UserInfo = React.createClass({
         return roleOptions;
     },
     selectRole: function(roleIds) {
-        Trace.traceEvent(this.getDOMNode(), '选择角色');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
         this.state.userInfo.roleIds = roleIds;
         this.setState({userInfo: this.state.userInfo});
     },
@@ -522,12 +522,12 @@ var UserInfo = React.createClass({
         );
     },
     uploadImg: function(src) {
-        Trace.traceEvent($(this.getDOMNode()).find('.upload-img-select'), '点击上传头像');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '点击上传头像');
         this.state.userInfo.image = src;
         this.setState({userInfo: this.state.userInfo, showSaveIconTip: true});
     },
     saveUserIcon: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.upload-img-select'), '保存上传头像');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '保存上传头像');
         this.setState({showSaveIconTip: false});
         let userInfo = this.state.userInfo;
         if (userInfo.image && userInfo.image !== this.props.userInfo.image) {
@@ -568,7 +568,7 @@ var UserInfo = React.createClass({
         UserInfoAction.hideModalDialog();
     },
     cancelEditIcon: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.upload-img-select'), '取消头像的保存');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '取消头像的保存');
         this.state.userInfo.image = this.props.userInfo.image;
         this.setState({userInfo: this.state.userInfo, showSaveIconTip: false});
     },

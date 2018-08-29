@@ -214,7 +214,7 @@ var SalesTeamCard = React.createClass({
     },
     //更新销售人员
     handleSalesManChange: function(idStr) {
-        Trace.traceEvent(this.getDOMNode(), '修改销售人员及其团队');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '修改销售人员及其团队');
         let params = this.getSalesTeamParams(idStr);
         this.setState(params);
         if (params.userId && !this.props.hideSalesRole) {
@@ -224,7 +224,7 @@ var SalesTeamCard = React.createClass({
 
     changeDisplayType: function(type) {
         if (type === DISPLAY_TYPES.TEXT) {
-            Trace.traceEvent(this.getDOMNode(), '取消对销售人员/团队的修改');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对销售人员/团队的修改');
             if (!this.props.hideSalesRole) {
                 this.getSalesRoleByMemberId(this.props.userId);
             }
@@ -240,7 +240,7 @@ var SalesTeamCard = React.createClass({
                 salesRole: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(), '点击设置销售按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击设置销售按钮');
             this.setState({
                 displayType: type
             });
@@ -267,7 +267,7 @@ var SalesTeamCard = React.createClass({
             this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
         } else if (this.state.displayType === DISPLAY_TYPES.EDIT) {
-            Trace.traceEvent(this.getDOMNode(), '重新分配客户的所属销售');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '重新分配客户的所属销售');
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.backToDisplay();
@@ -281,7 +281,7 @@ var SalesTeamCard = React.createClass({
                 });
             });
         } else if (this.state.displayType === DISPLAY_TYPES.TRANSFER) {
-            Trace.traceEvent(this.getDOMNode(), '确认转出客户');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '确认转出客户');
             submitData.member_role = this.state.salesRole;
             CrmBasicAjax.transferCustomer(submitData).then(result => {
                 if (result) {
@@ -398,7 +398,7 @@ var SalesTeamCard = React.createClass({
         );
     },
     transferSales: function() {
-        Trace.traceEvent(this.getDOMNode(), '转出客户');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '转出客户');
         this.setState({displayType: DISPLAY_TYPES.TRANSFER});
     },
     renderHandleSaveBtns: function() {

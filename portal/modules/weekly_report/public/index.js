@@ -51,12 +51,12 @@ const WeeklyReport = React.createClass({
     onSearchInputChange: function(keyword) {
         keyword = keyword ? keyword : '';
         if (keyword.trim() !== this.state.searchKeyword.trim()) {
-            Trace.traceEvent($(this.getDOMNode()).find('.search-content'), '根据关键词搜索');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-content'), '根据关键词搜索');
             WeeklyReportAction.changeSearchInputValue(keyword);
         }
     },
     handleClickReportTitle: function(obj, idx) {
-        Trace.traceEvent($(this.getDOMNode()).find('.report-title-item'), '查看周报详情');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.report-title-item'), '查看周报详情');
         WeeklyReportAction.setSelectedWeeklyReportItem({ obj, idx });
     },
     handleErrResult: function() {

@@ -18,7 +18,7 @@ var ClueImport = React.createClass({
         this.setState({isLoading: true});
         if (info.file.status === 'done') {
             const response = info.file.response;
-            Trace.traceEvent(this.getDOMNode(),'点击导入按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'点击导入按钮');
             if (_.isArray(response) && response.length) {
                 clueEmitter.emit(clueEmitter.IMPORT_CLUE, response);
                 this.props.closeClueTemplatePanel();

@@ -103,9 +103,9 @@ var UserManage = React.createClass({
 
         searchEvent: function(searchContent) {
             if (searchContent) {
-                Trace.traceEvent($(this.getDOMNode()).find('.search-input-container input'),'跟据用户名/昵称/电话/邮箱搜索成员');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-input-container input'),'跟据用户名/昵称/电话/邮箱搜索成员');
             }else{
-                Trace.traceEvent($(this.getDOMNode()).find('.search-input-container input'),'清空搜索内容');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-input-container input'),'清空搜索内容');
             }
             UserAction.updateCurPage(1);
             UserAction.updateSearchContent(searchContent);

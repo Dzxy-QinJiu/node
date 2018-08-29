@@ -267,9 +267,9 @@ const CallRecord = React.createClass({
 
     handleSelect(filterKey) {
         if (filterKey === 'disposition') {
-            Trace.traceEvent(this.getDOMNode(), '根据通话状态过滤');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '根据通话状态过滤');
         } else if (filterKey === 'type') {
-            Trace.traceEvent(this.getDOMNode(), '根据通话类型过滤');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '根据通话类型过滤');
         }
     },
 
@@ -340,7 +340,7 @@ const CallRecord = React.createClass({
 
     // 被选中时调用
     onSelectContentChange(filterKey, value) {
-        Trace.traceEvent(this.getDOMNode(), '根据电话号码过滤');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '根据电话号码过滤');
         value = $.trim(value);
         if (this.state.recommendList.list.length) {
             this.state.filterObj[filterKey] = value;
@@ -428,7 +428,7 @@ const CallRecord = React.createClass({
     },
     // 添加客户和联系人面板
     showAddCustomerForm: function(phoneNumber) {
-        Trace.traceEvent(this.getDOMNode(), '点击+添加客户和联系人');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击+添加客户和联系人');
         this.setState({
             isAddFlag: true,
             phoneNumber: phoneNumber
@@ -436,7 +436,7 @@ const CallRecord = React.createClass({
     },
     // 隐藏添加客户和联系人面板
     hideAddCustomerForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.add-customer'), '关闭添加客户和联系人面板');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-customer'), '关闭添加客户和联系人面板');
         this.setState({
             isAddFlag: false
         });
@@ -735,7 +735,7 @@ const CallRecord = React.createClass({
     // 确认框点击不保存时
     cancelConfirm(record, oldValue) {
         const id = record.id;
-        Trace.traceEvent(this.getDOMNode(), '是否保存编辑的跟进内容，点击否');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '是否保存编辑的跟进内容，点击否');
         let value = $('.new-custom-tbody #content' + id).val();
         if (oldValue) { // oldValue是跟进内容原有的值，当有内容时
             $('.new-custom-tbody #content' + id).val(oldValue);
@@ -749,7 +749,7 @@ const CallRecord = React.createClass({
     // 编辑跟进内容的提交
     handleContentSubmit(record) {
         const id = record.id;
-        Trace.traceEvent(this.getDOMNode(), '是否保存编辑的跟进内容，点击是');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '是否保存编辑的跟进内容，点击是');
         CallRecordActions.toggleConfirm({ id, flag: false });
         let value = $('.new-custom-tbody #content' + record.id).val();
         let queryObj = {

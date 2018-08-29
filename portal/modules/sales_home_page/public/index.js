@@ -500,7 +500,7 @@ var SalesHomePage = React.createClass({
         });
         this.getChangeCallTypeData();
         //发送点击事件
-        Trace.traceEvent($(this.getDOMNode()).find('.call-type-select'), '电话统计>选择' + value + '类型');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.call-type-select'), '电话统计>选择' + value + '类型');
     },
 
     // 通话类型的筛选框

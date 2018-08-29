@@ -210,7 +210,7 @@ const List = React.createClass({
 
         searchTimeout = setTimeout(() => {
             this.props.getContractList(true);
-            Trace.traceEvent(this.getDOMNode(),'按照' + field + '筛选');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'按照' + field + '筛选');
         }, 500);
     },
 

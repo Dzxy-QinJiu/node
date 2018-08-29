@@ -322,7 +322,7 @@ class AddCustomerForm extends React.Component {
         this.setState({
             formData: state.formData
         });
-        Trace.traceEvent($(this.getDOMNode()).find('form div .ant-form-item'), '选择地址');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
     };
     //选择不同的级别
     handleChangeAdminLevel = (index) => {

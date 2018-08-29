@@ -321,9 +321,9 @@ var MemberList = React.createClass({
             searchValue: searchValue
         });
         if (searchValue) {
-            Trace.traceEvent($(this.getDOMNode()).find('.sales-team-member-search-input-div input'), '输入昵称/用户名进行过滤');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-member-search-input-div input'), '输入昵称/用户名进行过滤');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.sales-team-member-search-input-div input'), '清空搜索内容');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-member-search-input-div input'), '清空搜索内容');
         }
     },
 
@@ -821,7 +821,7 @@ var MemberList = React.createClass({
         let salesGoals = this.state.salesGoals;
         let saveParams = {};
         if (type === SALES_GOALS_TYPE.TEAM) {
-            Trace.traceEvent($(this.getDOMNode()).find('.member-top-operation-div'), '保存团队销售目标');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.member-top-operation-div'), '保存团队销售目标');
             var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
             //团队销售目标
             saveParams = {
@@ -849,7 +849,7 @@ var MemberList = React.createClass({
                 }
             }
         } else if (type === SALES_GOALS_TYPE.MEMBER) {
-            Trace.traceEvent($(this.getDOMNode()).find('.member-top-operation-div'), '保存个人销售目标');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.member-top-operation-div'), '保存个人销售目标');
             //个人销售目标
             if (_.isArray(curTeamObj.users) && curTeamObj.users.length) {
                 saveParams = {
@@ -918,12 +918,12 @@ var MemberList = React.createClass({
     //取消销售目标的保存
     cancelSaveSalesGoals: function(type,flag) {
         if (type === SALES_GOALS_TYPE.TEAM) {
-            Trace.traceEvent($(this.getDOMNode()).find('.member-top-operation-div'), '取消团队销售目标的保存');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.member-top-operation-div'), '取消团队销售目标的保存');
             this.state.salesGoals.goal = this.props.salesGoals.goal;
             this.setState({teamConfirmVisible: false, salesGoals: this.state.salesGoals});
             this.toggleBatchChangeTeamGoalBtn(flag);
         } else if (type === SALES_GOALS_TYPE.MEMBER) {
-            Trace.traceEvent($(this.getDOMNode()).find('.member-top-operation-div'), '取消个人销售目标的保存');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.member-top-operation-div'), '取消个人销售目标的保存');
             this.state.salesGoals.member_goal = this.props.salesGoals.member_goal;
             this.setState({memberConfirmVisible: false, salesGoals: this.state.salesGoals});
             this.toggleBatchChangeSelfGoalBtn(flag);
@@ -938,14 +938,14 @@ var MemberList = React.createClass({
         this.setState({
             isShowBatchChangeTeamGoal: flag
         });
-        Trace.traceEvent($(this.getDOMNode()).find('.sales-team-goals-container'), '设置团队销售目标');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-goals-container'), '设置团队销售目标');
 
     },
     toggleBatchChangeSelfGoalBtn: function(flag) {
         this.setState({
             isShowBatchChangeSelfGoal: flag
         });
-        Trace.traceEvent($(this.getDOMNode()).find('.sales-team-goals-container'), '批量设置个人销售目标');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-goals-container'), '批量设置个人销售目标');
 
     },
     //渲染团队目标

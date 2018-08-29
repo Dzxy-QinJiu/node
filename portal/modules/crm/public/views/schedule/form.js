@@ -145,7 +145,7 @@ var CrmAlertForm = React.createClass({
             }
         }
         this.setState(this.state);
-        Trace.traceEvent(this.getDOMNode(), '修改提醒日期');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '修改提醒日期');
     },
     //更改开始时间
     onScheduleStartTimeChange: function(momentTime, timeStr) {
@@ -161,7 +161,7 @@ var CrmAlertForm = React.createClass({
         this.state.formData.start_time = newTime;
         this.state.formData.end_time = moment(newTime).add(TIME_CONSTS.ONE, 'm').valueOf();
         this.setState(this.state);
-        Trace.traceEvent(this.getDOMNode(), '修改开始时间');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '修改开始时间');
 
     },
     //更改结束时间
@@ -179,7 +179,7 @@ var CrmAlertForm = React.createClass({
         this.setState({
             formData: this.state.formData
         });
-        Trace.traceEvent(this.getDOMNode(), '修改结束时间');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '修改结束时间');
     },
 
     //添加联系计划
@@ -364,7 +364,7 @@ var CrmAlertForm = React.createClass({
     //修改日程类型
     handleTypeChange: function(event) {
         let value = event.target.value;
-        Trace.traceEvent($(this.getDOMNode()).find('.ant-select-selection__rendered'), '修改日程的类型为' + value);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-select-selection__rendered'), '修改日程的类型为' + value);
         this.state.formData.scheduleType = value;
         this.setState({
             formData: this.state.formData
@@ -372,7 +372,7 @@ var CrmAlertForm = React.createClass({
     },
     //修改选择的时间
     handleTimeRangeChange: function(value) {
-        Trace.traceEvent($(this.getDOMNode()).find('.ant-radio-button'), '修改联系时间为' + value);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-radio-button'), '修改联系时间为' + value);
         var formData = this.state.formData;
         if (value === 'custom') {
             //选择自定义时，要把开始和结束时间改为当前时间
@@ -480,7 +480,7 @@ var CrmAlertForm = React.createClass({
     },
     //改变提醒时间的类型
     handleAlertTimeChange: function(value) {
-        Trace.traceEvent($(this.getDOMNode()).find('.ant-select-lg .ant-select-selection__rendered'), '修改提醒时间的类型为' + value);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-select-lg .ant-select-selection__rendered'), '修改提醒时间的类型为' + value);
         this.setState({
             selectedAlertTimeRange: value,
         });

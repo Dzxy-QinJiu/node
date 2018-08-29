@@ -1413,7 +1413,7 @@ const ApplyViewDetail = React.createClass({
 
     // 隐藏撤销申请的模态框
     hideBackoutModal: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.btn-cancel'), '点击取消按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
         this.state.showBackoutConfirm = false;
         this.setState(this.state);
     },
@@ -1569,9 +1569,9 @@ const ApplyViewDetail = React.createClass({
 
     submitApprovalForm(approval) {
         if (approval === '1') {
-            Trace.traceEvent($(this.getDOMNode()).find('.btn-primary-sure'), '点击通过按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
         } else if (approval === '2') {
-            Trace.traceEvent($(this.getDOMNode()).find('.btn-primary-sure'), '点击驳回按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
         }
         const realSubmit = () => {
             //详情信息

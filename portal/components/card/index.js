@@ -41,7 +41,7 @@ var Card = React.createClass({
     },
     showRightFullScreen: function(event) {
         event.stopPropagation();
-        Trace.traceEvent($(this.getDOMNode()).find('.icon-role-auth-config'),'查看应用角色列表和权限列表');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-role-auth-config'),'查看应用角色列表和权限列表');
         this.props.showRightFullScreen(this.props.curCard);
     },
 

@@ -45,7 +45,7 @@ let BasicEditInputField = React.createClass({
         }
     },
     setEditable: function() {
-        Trace.traceEvent(this.getDOMNode(),'点击设置备注按钮');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'点击设置备注按钮');
         this.setState({
             displayType: 'edit'
         });
@@ -69,7 +69,7 @@ let BasicEditInputField = React.createClass({
             type: 'comment',
             remarks: $.trim(this.state.remarks)
         };
-        Trace.traceEvent(this.getDOMNode(),'点击保存备注按钮');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'点击保存备注按钮');
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
@@ -97,7 +97,7 @@ let BasicEditInputField = React.createClass({
 
 
     handleCancel: function() {
-        Trace.traceEvent(this.getDOMNode(),'点击取消保存备注按钮');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'点击取消保存备注按钮');
         this.setState({
             remarks: this.props.remarks,
             displayType: 'text',

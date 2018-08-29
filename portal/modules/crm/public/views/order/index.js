@@ -83,7 +83,7 @@ const OrderIndex = React.createClass({
 
     showForm: function(id) {
         var message = id ? '编辑订单' : '添加订单';
-        Trace.traceEvent($(this.getDOMNode()).find('.crm-right-panel-addbtn'), message);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-right-panel-addbtn'), message);
         OrderAction.showForm(id);
     },
     //获取到期后的状态
@@ -174,7 +174,7 @@ const OrderIndex = React.createClass({
         } else if (applyType === APPLY_TYPES.OPEN_APP) {
             traceDescr = '打开申请开通应用面板';
         }
-        Trace.traceEvent(this.getDOMNode(), traceDescr);
+        Trace.traceEvent(ReactDOM.findDOMNode(this), traceDescr);
         OrderAction.onChangeApplyType(applyType);
     },
     getApplyBtnType: function(applyType) {

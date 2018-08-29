@@ -105,10 +105,10 @@ var CrmSchedule = React.createClass({
         ScheduleAction.showAddForm(newSchedule);
         //滚动条滚动到顶端以显示添加表单
         GeminiScrollbar.scrollTo(this.refs.alertWrap, 0);
-        Trace.traceEvent(this.getDOMNode(), '添加联系计划');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '添加联系计划');
     },
     editSchedule: function(alert) {
-        Trace.traceEvent(this.getDOMNode(), '编辑联系计划');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '编辑联系计划');
         ScheduleAction.showEditForm(alert);
     },
     //修改状态
@@ -122,7 +122,7 @@ var CrmSchedule = React.createClass({
             status: item.status === 'false' ? 'handle' : 'false',
         };
         var status = item.status === 'false' ? '完成' : '未完成';
-        Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-wrapper .ant-btn'), '修改联系计划的状态为' + status);
         ScheduleAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {
@@ -137,7 +137,7 @@ var CrmSchedule = React.createClass({
     },
     deleteSchedule: function(id) {
         const reqData = {id: id};
-        Trace.traceEvent($(this.getDOMNode()).find('.item-wrapper .anticon-delete'), '删除联系计划');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-wrapper .anticon-delete'), '删除联系计划');
         ScheduleAction.deleteSchedule(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 ScheduleAction.afterDelSchedule(id);

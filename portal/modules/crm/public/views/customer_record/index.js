@@ -252,7 +252,7 @@ const CustomerRecord = React.createClass({
         });
     },
     handleChange: function(event) {
-        Trace.traceEvent($(this.getDOMNode()).find('#add-container .ant-select-selection'), '选择跟进记录的类型');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('#add-container .ant-select-selection'), '选择跟进记录的类型');
         CustomerRecordActions.setType(event.target.value);
     },
     //获取列表失败后重试
@@ -264,7 +264,7 @@ const CustomerRecord = React.createClass({
         //顶部增加跟进记录的内容
         var customerId = this.state.customerId || '';
         if (this.state.saveButtonType === 'add') {
-            Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确认添加跟进内容');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
             //输入框中的内容
             var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
             var queryObj = {
@@ -281,7 +281,7 @@ const CustomerRecord = React.createClass({
             //补充跟进记录的内容
             var detail = $.trim(_.get(this.state, 'detailContent.value'));
             var item = this.state.edittingItem;
-            Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
             var queryObj = {
                 id: item.id,
                 customer_id: item.customer_id || customerId,
@@ -322,7 +322,7 @@ const CustomerRecord = React.createClass({
     //点击保存按钮，展示模态框
     showModalDialog: function(item, e) {
         if (item.id) {
-            Trace.traceEvent(this.getDOMNode(), '添加补充的跟进内容');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '添加补充的跟进内容');
             //点击补充客户跟踪记录编辑状态下的保存按钮
             var detail = $.trim(_.get(this.state, 'detailContent.value'));
             if (detail) {
@@ -333,7 +333,7 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
         } else {
-            Trace.traceEvent(this.getDOMNode(), '保存添加跟进内容');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '保存添加跟进内容');
             //点击顶部输入框下的保存按钮
             var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
             if (addcontent) {
@@ -393,7 +393,7 @@ const CustomerRecord = React.createClass({
             message.error(Intl.get('crm.save.customertrace.first', '请先保存或取消保存已编辑的跟进记录内容'));
             return;
         }
-        Trace.traceEvent($(this.getDOMNode()).find('.show-container .item-detail-content .add-detail-tip'), '点击补充跟进内容区域');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.show-container .item-detail-content .add-detail-tip'), '点击补充跟进内容区域');
         item.showAdd = true;
         this.setState({
             customerRecord: this.state.customerRecord,
@@ -402,7 +402,7 @@ const CustomerRecord = React.createClass({
         });
     },
     handleCancelDetail: function(item) {
-        Trace.traceEvent($(this.getDOMNode()).find('.show-customer-trace .add-detail-container .cancel-btn'), '关闭补充跟进内容输入区');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.show-customer-trace .add-detail-container .cancel-btn'), '关闭补充跟进内容输入区');
         //点击补充客户跟进记录编辑状态下的取消按钮
         item.showAdd = false;
         this.setState({
@@ -560,7 +560,7 @@ const CustomerRecord = React.createClass({
     },
     // 自动拨号
     handleClickCallOut(phone) {
-        Trace.traceEvent(this.getDOMNode(), '拨打电话');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
         if (this.props.getCallNumberError) {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {

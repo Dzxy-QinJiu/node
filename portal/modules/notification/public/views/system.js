@@ -138,7 +138,7 @@ let SystemNotification = React.createClass({
         });
     },
     handleTypeChange: function(val) {
-        Trace.traceEvent($(this.getDOMNode()).find('.notification-type-select'), '类型筛选');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.notification-type-select'), '类型筛选');
         this.setState({
             selectedNoticeType: val,
             lastSystemNoticeId: '',
@@ -150,7 +150,7 @@ let SystemNotification = React.createClass({
 
     },
     handleStatusChange: function(status) {
-        Trace.traceEvent($(this.getDOMNode()).find('.notification-status-select'), '处理/未处理筛选');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.notification-status-select'), '处理/未处理筛选');
         this.setState({
             status: status,
             lastSystemNoticeId: '',

@@ -106,7 +106,7 @@ var ContactForm = React.createClass({
             }
 
             ContactAction.addContactWay(_this.state.contact, type);
-            Trace.traceEvent(_this.getDOMNode(), '添加新建联系人的联系方式' + type);
+            Trace.traceEvent(ReactDOM.findDOMNode(_this), '添加新建联系人的联系方式' + type);
         };
     },
 
@@ -117,7 +117,7 @@ var ContactForm = React.createClass({
                 _this.state.phoneInputIds.splice(index, 1);
             }
 
-            Trace.traceEvent(_this.getDOMNode(), '删除新建联系人的联系方式' + type);
+            Trace.traceEvent(ReactDOM.findDOMNode(_this), '删除新建联系人的联系方式' + type);
             _this.state.contact.contactWayAddObj[type] = _this.state.contact.contactWayAddObj[type].filter((x, idx) => idx !== index);
             //删除的变量名
             const delKey = type + index;
@@ -243,13 +243,13 @@ var ContactForm = React.createClass({
             if (this.props.contactListLength === 0) {//添加的第一个联系人设为默认联系人
                 formData.def_contacts = 'true';
             }
-            Trace.traceEvent(this.getDOMNode(), '保存新建联系人的信息');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '保存新建联系人的信息');
             ContactAction.submitAddContact(formData, (result) => {
                 this.afterSubmit(result);
             });
         } else {
             if (this.props.isMerge) {
-                Trace.traceEvent(this.getDOMNode(), '保存对当前联系人信息的修改');
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '保存对当前联系人信息的修改');
                 //合并重复客户时的处理
                 this.props.updateMergeCustomerContact(formData);
                 ContactAction.hideEditContactForm(this.props.contact);
@@ -261,7 +261,7 @@ var ContactForm = React.createClass({
                     ContactAction.submitEditContact(formData, editType, (result) => {
                         this.afterSubmit(result);
                     });
-                    Trace.traceEvent(this.getDOMNode(), '保存对当前联系人信息的修改');
+                    Trace.traceEvent(ReactDOM.findDOMNode(this), '保存对当前联系人信息的修改');
                 } else {//没有修改时，直接关闭修改按钮即可
                     this.cancel();
                 }
@@ -310,15 +310,15 @@ var ContactForm = React.createClass({
 
     cancel: function() {
         if (this.props.type === 'add') {
-            Trace.traceEvent($(this.getDOMNode()).find('.crm-contact-form-btns .form-cancel-btn'), '取消添加联系人');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-contact-form-btns .form-cancel-btn'), '取消添加联系人');
             ContactAction.hideAddContactForm();
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.crm-contact-form-btns .form-cancel-btn'), '取消更改联系人');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-contact-form-btns .form-cancel-btn'), '取消更改联系人');
             ContactAction.hideEditContactForm(this.props.contact);
         }
     },
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(), '新建/修改联系人的角色');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '新建/修改联系人的角色');
     },
     //获取当前已添加的电话列表
     getCurPhoneArray(){

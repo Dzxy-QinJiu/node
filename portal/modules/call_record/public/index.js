@@ -35,7 +35,7 @@ const CallRecordList = React.createClass({
         $wrap.on('click', '.customer_column', function() {
             var $customer_id_hidden = $(this).find('.customer_id_hidden');
             if ($customer_id_hidden[0]) {
-                Trace.traceEvent($(_this.getDOMNode()).find('.customer_column'), '打开客户详情');
+                Trace.traceEvent($(ReactDOM.findDOMNode(_this)).find('.customer_column'), '打开客户详情');
                 _this.showRightPanel($customer_id_hidden.val());
             }
         });

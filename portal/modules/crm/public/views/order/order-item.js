@@ -80,7 +80,7 @@ const OrderItem = React.createClass({
 
     //模态提示框确定后的处理
     handleModalOK: function(order) {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确定删除订单');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除订单');
         switch (this.state.modalDialogType) {
             case 1:
                 //删除订单
@@ -133,26 +133,26 @@ const OrderItem = React.createClass({
         });
     },
     showStageSelect: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.order-introduce-div .ant-btn-circle'), '编辑销售阶段');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div .ant-btn-circle'), '编辑销售阶段');
         this.setState({isStageSelectShow: true});
     },
 
     showAppPanel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.order-application-list .ant-btn-circle'), '修改应用');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-application-list .ant-btn-circle'), '修改应用');
         this.setState({isAppPanelShow: true});
     },
 
     closeAppPanel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.order-introduce-div'), '取消应用的修改');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div'), '取消应用的修改');
         this.setState({isAppPanelShow: false, apps: this.state.formData.apps});
     },
 
     onAppsChange: function(selectedApps) {
         let oldAppList = _.isArray(this.state.apps) ? this.state.apps : [];
         if (selectedApps.length > oldAppList.length) {
-            Trace.traceEvent($(this.getDOMNode()).find('.search-icon-list-content'), '选中某个应用');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-icon-list-content'), '选中某个应用');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.search-icon-list-content'), '取消选中某个应用');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-icon-list-content'), '取消选中某个应用');
         }
         this.state.apps = _.map(selectedApps, 'client_id');
 
@@ -192,7 +192,7 @@ const OrderItem = React.createClass({
             sale_stages: sale_stages,
         };
         if (saveObj.customer_id && saveObj.id) {
-            Trace.traceEvent($(this.getDOMNode()).find('.order-introduce-div'), '保存销售阶段的修改');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div'), '保存销售阶段的修改');
             if (this.props.isMerge) {
                 //合并客户时，修改订单的销售阶段或应用
                 if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(saveObj);
@@ -212,7 +212,7 @@ const OrderItem = React.createClass({
     },
     //修改订单的应用
     editOrderApp: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.order-introduce-div'), '保存应用的修改');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div'), '保存应用的修改');
         let reqData = JSON.parse(JSON.stringify(this.props.order));
         reqData.apps = this.state.apps;
         if (this.props.isMerge) {
