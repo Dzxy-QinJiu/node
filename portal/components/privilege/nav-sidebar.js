@@ -58,7 +58,8 @@ var ExcludeLinkList = [
     {'name': Intl.get('common.my.app', '我的应用'), path: 'my_app'},
     {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
     {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
-    {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'}
+    {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
+    {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'}
 ];
 
 //后台管理配置
@@ -397,20 +398,19 @@ var NavSidebar = React.createClass({
             </div>
         );
     },
-    getApplyBlock: function() {
+    getApplyBlock: function(isActive) {
         var applyLinks = this.getLinkListByPrivilege(applyentryLink);
         if (!applyLinks.length) {
             return null;
         }
         return (
-            <div className="sidebar-applyentry">
-                <Link to={applyLinks[0].href} activeClassName="active">
-                    <i className="iconfont icon-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}/>
+            <li className="sidebar-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}>
+                <Link to={applyLinks[0].href} activeClassName="active" className={isActive ? 'iconfont icon-active-apply-ico' : 'iconfont icon-apply-ico'}>
                     {this.state.messages.approve === 0 && this.state.hasUnreadReply ?
                         <span className="iconfont icon-apply-message-tip"
                             title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
                 </Link>
-            </div>
+            </li>
         );
     },
     getBackendConfigLinks: function(backendConfigLinks) {
@@ -532,7 +532,7 @@ var NavSidebar = React.createClass({
                                         return false;
                                     }).map(function(menu, i) {
                                         var category = menu.routePath.replace(/\/.*$/, '');
-                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}`;
+                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}-ico` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}-ico`;
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
                                         if (!(_.includes(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);
@@ -543,12 +543,12 @@ var NavSidebar = React.createClass({
                                                     activeClassName='active'
                                                     className={extraClass}
                                                 >                                                    
-                                                    <span>{menu.name}</span>
                                                 </Link>
                                             </li>
                                         );
                                     })
                                 }
+                                {_this.getApplyBlock(currentPageCategory === 'apply')}
                             </ul>
                             <Popover content={this.getNavbarLists()} trigger="hover" placement="rightTop"
                                 overlayClassName="nav-sidebar-lists">
@@ -562,8 +562,7 @@ var NavSidebar = React.createClass({
 
                     </div>
 
-                    <div className="sidebar-user" ref="userInfo">
-                        {_this.getApplyBlock()}
+                    <div className="sidebar-user" ref="userInfo">                        
                         {_this.getNotificationBlock()}
                         {_this.renderBackendConfigBlock()}
                         {_this.getUserInfoBlock()}
