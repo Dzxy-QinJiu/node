@@ -423,7 +423,7 @@ var CustomerSuggest = React.createClass({
                         <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
                             {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
                             {this.state.displayText}
-                            <span>&gt;</span>
+                            <span className="arrow-right">&gt;</span>
                         </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}

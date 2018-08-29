@@ -55,6 +55,9 @@ class ContactItem extends React.Component {
         } else if (_.isArray(this.state.contacts) && this.state.contacts.length) {
             customerId = this.state.contacts[0].customer_id;
         }
+        var clsname = classNames('contact-item',{
+            'inability': !this.state.callNumber,
+        });
         return (
             <div className="contact-content">
                 {this.props.showContactLabel ?
@@ -71,7 +74,7 @@ class ContactItem extends React.Component {
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
                                         return (
-                                            <span className="contact-item"
+                                            <span className={clsname}
                                                 onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
                                                 data-tracename="拨打电话">
 

@@ -236,6 +236,7 @@ exports.getClueFulltext = function(req, res) {
     var reqBody = req.body;
     var rangeParams = JSON.parse(reqBody.rangeParams);
     var typeFilter = JSON.parse(reqBody.typeFilter);
+
     var url = restApis.getClueFulltext.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':sort_field',req.params.sort_field).replace(':order',req.params.order);
     if (rangeParams[0].from){
         url += `?start_time=${rangeParams[0].from}`;
@@ -261,6 +262,18 @@ exports.getClueFulltext = function(req, res) {
     }
     if (reqBody.id){
         bodyObj.id = reqBody.id;
+    }
+    if (reqBody.clue_source){
+        bodyObj.clue_source = reqBody.clue_source;
+    }
+    if (reqBody.access_channel){
+        bodyObj.access_channel = reqBody.access_channel;
+    }
+    if (reqBody.clue_classify){
+        bodyObj.clue_classify = reqBody.clue_classify;
+    }
+    if (reqBody.availability){
+        bodyObj.availability = reqBody.availability;
     }
     return restUtil.authRest.post({
         url: url,

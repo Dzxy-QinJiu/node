@@ -399,9 +399,9 @@ var ClueDetailOverview = React.createClass({
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
-                    {Intl.get('clue.handle.clue', '线索处理')}：
+                    {Intl.get('cluecustomer.trace.person', '跟进人')}：
                 </div>
-                <div className="clue-info-detail">
+                <div className="clue-info-detail no-handled">
                     {Intl.get('clue.has.not.distribute', '该线索还没有分配')}
                 </div>
                 <div className="btn-container">
@@ -428,7 +428,7 @@ var ClueDetailOverview = React.createClass({
         }
         return (
             <div className="clue-info-item">
-                <div className="clue-info-label">
+                <div className="clue-info-label handle-clue-person">
                     {Intl.get('clue.handle.clue.person', '当前跟进人')}：
                 </div>
                 <div className="clue-info-detail">
@@ -461,14 +461,14 @@ var ClueDetailOverview = React.createClass({
                 <div className="clue-info-label">
                     {Intl.get('clue.handle.clue', '线索处理')}：
                 </div>
-                <div className="clue-info-detail">
+                <div className="clue-info-detail no-handled">
                     {Intl.get('clue.has.no.handle', '暂未处理')}
                 </div>
                 <div className="btn-container">
                     {associatedPrivilege ? <Button type="primary"
                         onClick={this.handleClickAssociatedBtn.bind(this, curClue)}>{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
 
-                    {avalibility ? <Button data-tracename="判定线索无效按钮" disabled={this.state.isInvalidClue}
+                    {avalibility ? <Button data-tracename="判定线索无效按钮" className='clue-inability-btn' disabled={this.state.isInvalidClue}
                         onClick={this.handleClickInvalidBtn.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
                         {this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button> : null}
 

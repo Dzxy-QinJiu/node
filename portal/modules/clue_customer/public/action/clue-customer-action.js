@@ -118,14 +118,14 @@ function ClueCustomerActions() {
     //线索的全文搜索
     this.getClueFulltext = function(queryObj) {
         //是否是在全部状态下返回数据
-        var getOnlyAnalysisData = queryObj.getOnlyAnalysisData ? true : false;
-        this.dispatch({error: false, loading: true, getOnlyAnalysisData: getOnlyAnalysisData});
+        this.dispatch({error: false, loading: true
+        });
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result, getOnlyAnalysisData: getOnlyAnalysisData});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result
+            });
         }, (errorMsg) => {
             this.dispatch({
-                flag: getOnlyAnalysisData,
                 error: true,
                 loading: false,
                 errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')

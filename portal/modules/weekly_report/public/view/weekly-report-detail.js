@@ -6,7 +6,6 @@
 import WeeklyReportDetailAction from '../action/weekly-report-detail-actions';
 import WeeklyReportDetailStore from '../store/weekly-report-detail-store';
 import Spinner from 'CMP_DIR/spinner';
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {AntcTable, AntcCardContainer} from 'antc';
 import {Alert, Button, Popconfirm, message} from 'antd';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -16,10 +15,6 @@ var classNames = require('classnames');
 import {LEALVE_OPTION} from '../utils/weekly-report-utils';
 var WeekReportUtil = require('../utils/weekly-report-utils');
 var userData = require('PUB_DIR/sources/user-data');
-var CLASSNAMES = {
-    ALIGNLEFT: 'table-data-align-left',
-    ALIGNRIGHT: 'table-data-align-right'
-};
 //权限常量
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限

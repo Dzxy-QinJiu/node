@@ -7,17 +7,19 @@
  */
 import { Spin, Alert } from 'antd';
 require('./index.less');
-const StatusWrapper = ({ loading, errorMsg, children, size, height }) => {
+var classNames = require('classnames');
+const StatusWrapper = ({ loading, errorMsg, children, size, className, height}) => {
+    var statusClass = classNames('status-wrapper clearfix',className);
     if (errorMsg) {
         const error = typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
-        return (<div className="status-wrapper clearfix">
+        return (<div className={statusClass}>
             <div className="alert-container">
                 <Alert message={error} type="error" showIcon />
             </div>
         </div>);
     } else {
         return (
-            <div className="status-wrapper clearfix">
+            <div className={statusClass}>
                 <div className={!loading ? 'hide' : 'spiner-container'}>
                     <div className="spin-wrapper" style={{height}}>
                         <Spin size={size || 'large'} />

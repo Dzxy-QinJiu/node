@@ -2581,6 +2581,7 @@ var zh_CN = {
     'clue.has.not.distribute': '该线索还没有分配',
     'clue.not.complete.schedule': '今天的联系计划',
     'clue.no.data.during.range.and.status': '当前筛选时间段及状态没有相关线索信息',
+    'clue.filter.clue.status': '线索状态',
     'clue.statistic.get.error': '获取线索统计数据失败',
     'user.email.only.error': '邮箱唯一性验证失败',
 };
