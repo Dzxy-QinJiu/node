@@ -1,10 +1,11 @@
+var React = require('react');
 /**
  * 合同分析统计表
  */
 
 import { AntcTable } from 'antc';
 import { parseAmount } from 'LIB_DIR/func';
-import { PropTypes } from 'prop-types';
+import 'prop-types';
 
 class ContractStatistics extends React.Component {
     constructor(props) {

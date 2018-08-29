@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -328,15 +330,15 @@ phoneStatusTop.defaultProps = {
     }
 };
 phoneStatusTop.propTypes = {
-    addMoreInfoCls: React.PropTypes.string,
-    phoneAlertModalTitleCls: React.PropTypes.string,
-    phonemsgObj: React.PropTypes.object,
-    addTraceItemId: React.PropTypes.string,
-    detailCustomerId: React.PropTypes.string,
-    isAddingMoreProdctInfo: React.PropTypes.boolean,
-    contactNameObj: React.PropTypes.object,
-    handleAddProductFeedback: React.PropTypes.func,
-    isAddingPlanInfo: React.PropTypes.boolean,
-    handleAddPlan: React.PropTypes.boolean,
+    addMoreInfoCls: PropTypes.string,
+    phoneAlertModalTitleCls: PropTypes.string,
+    phonemsgObj: PropTypes.object,
+    addTraceItemId: PropTypes.string,
+    detailCustomerId: PropTypes.string,
+    isAddingMoreProdctInfo: PropTypes.boolean,
+    contactNameObj: PropTypes.object,
+    handleAddProductFeedback: PropTypes.func,
+    isAddingPlanInfo: PropTypes.boolean,
+    handleAddPlan: PropTypes.boolean,
 };
 export default phoneStatusTop;

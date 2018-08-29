@@ -1,3 +1,4 @@
+const PropTypes = require('prop-types');
 /**
  * 带放大镜图标的搜索输入框组件
  *
@@ -63,7 +64,6 @@ import Trace from 'LIB_DIR/trace';
 
 let inputTimeOut = null;
 const delayTime = 500;
-const PropTypes = React.PropTypes;
 
 class SearchInput extends React.Component {
     static defaultProps = {

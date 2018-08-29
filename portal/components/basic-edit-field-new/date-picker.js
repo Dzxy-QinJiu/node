@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -190,7 +192,6 @@ DatePickerEditField.defaultProps = {
     saveEditDateInput: function() {
     }
 };
-const PropTypes = React.PropTypes;
 DatePickerEditField.propTypes = {
     id: PropTypes.string,
     field: PropTypes.string,

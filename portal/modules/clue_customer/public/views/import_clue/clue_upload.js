@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -57,8 +59,8 @@ ClueUpload.defaultProps = {
     }
 };
 ClueUpload.propTypes = {
-    isLoading: React.PropTypes.bool,
-    afterUpload: React.PropTypes.func,
+    isLoading: PropTypes.bool,
+    afterUpload: PropTypes.func,
 };
 
 export default ClueUpload;

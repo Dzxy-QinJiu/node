@@ -1,10 +1,11 @@
+var PropTypes = require('prop-types');
+var React = require('react');
 /**
  * 详情中保存、取消按钮的组件（包括保存的等待、错误提示）
  * Created by wangliping on 2018/3/27.
  */
 require('./index.less');
 import {Button, Icon} from 'antd';
-const PropTypes = React.PropTypes;
 class SaveCancelButton extends React.Component {
     constructor(props) {
         super(props);

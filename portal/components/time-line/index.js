@@ -1,3 +1,4 @@
+const PropTypes = require('prop-types');
 /**
  * 时间线组件
  *
@@ -10,7 +11,6 @@ require('./style.less');
 
 import { Timeline } from 'antd';
 const classNames = require('classnames');
-const PropTypes = React.PropTypes;
 
 class TimeLine extends React.Component {
     static defaultProps = {

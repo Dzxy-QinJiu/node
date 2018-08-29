@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * 用于选择值类型的modal
  * author：xuning
@@ -12,7 +14,6 @@
 import {Button, Modal, Select} from 'antd';
 var Option = Select.Option;
 import {CONTRACT_VALUE_TYPES, CONTRACT_DEFAULT_VALUE_TYPE} from '../consts';
-const PropTypes = React.PropTypes;
 
 class ValueModal extends React.Component {
     constructor(props) {

@@ -1,10 +1,11 @@
+var React = require('react');
 /**
  * 签单情况统计表
  */
 
 import { AntcTable } from 'antc';
 import { parseAmount, exportToCsv } from 'LIB_DIR/func';
-import { PropTypes } from 'prop-types';
+import 'prop-types';
 const querystring = require('querystring');
 
 //团队分组列列宽

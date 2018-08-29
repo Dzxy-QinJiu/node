@@ -1,4 +1,5 @@
 'use strict';
+var PropTypes = require('prop-types');
 var React = require('react');
 var scrollBarEmitter = require('../../public/sources/utils/emitters').scrollBarEmitter;
 var _extends = Object.assign || function(target) {
@@ -38,12 +39,12 @@ class ReactScrollBar extends React.Component {
     static displayName = 'GeminiScrollbar';
 
     static propTypes = {
-        autoshow: React.PropTypes.bool,
-        forceGemini: React.PropTypes.bool,
-        enabled: React.PropTypes.bool,
-        listenScrollBottom: React.PropTypes.bool,
-        handleScrollBottom: React.PropTypes.func,
-        itemCssSelector: React.PropTypes.string
+        autoshow: PropTypes.bool,
+        forceGemini: PropTypes.bool,
+        enabled: PropTypes.bool,
+        listenScrollBottom: PropTypes.bool,
+        handleScrollBottom: PropTypes.func,
+        itemCssSelector: PropTypes.string
     };
 
     static defaultProps = {

@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * 近期登录用户列表
  * Created by wangliping on 2017/8/31.
@@ -28,6 +29,7 @@ const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {storageUtil} from 'ant-utils';
+import PropTypes from 'prop-types';
 import {traversingSelectTeamTree, getRequestTeamIds} from 'PUB_DIR/sources/utils/common-method-util';
 //存储个人配置的key
 const WEBSITE_CONFIG = oplateConsts.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG;
@@ -571,7 +573,6 @@ class RecentLoginUsers extends React.Component {
         );
     }
 }
-const PropTypes = React.PropTypes;
 RecentLoginUsers.propTypes = {
     teamlists: PropTypes.array,
     teamTreeList: PropTypes.array,

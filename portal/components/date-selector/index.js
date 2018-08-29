@@ -1,3 +1,7 @@
+var React = require('react');
+require('./index.less');
+import BootstrapDatepicker from '../bootstrap-datepicker';
+
 /**
  *
  提供通用日期选择组件
@@ -86,9 +90,8 @@
      className      可以为日历添加一个特殊的className
  *
  */
-var React = require('react');
-require('./index.less');
-import BootstrapDatepicker from '../bootstrap-datepicker';
+import PropTypes from 'prop-types';
+
 import Dropdown from 'rc-dropdown';
 import Menu, { Item as MenuItem} from 'rc-menu';
 import classNames from 'classnames';
@@ -97,8 +100,6 @@ import Utils from './utils';
 
 //季度中文字
 const QUARTER_CHINESE_TEXT_LIST = ['一','二','三','四'];
-//类型
-const PropTypes = React.PropTypes;
 //下拉菜单宽度
 const MENU_WIDTH = 80;
 //日期格式

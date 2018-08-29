@@ -1,5 +1,7 @@
+var React = require('react');
 import './style.less';
 import './index.less';
+const PropTypes = require('prop-types');
 const QRCode = require('qrcode.react');
 const classnames = require('classnames');
 const Logo = require('../Logo');
@@ -314,7 +316,6 @@ class LoginMain extends React.Component {
         }
     }
 }
-const PropTypes = React.PropTypes;
 LoginMain.propTypes = {
     loginErrorMsg: PropTypes.string,
     captchaCode: PropTypes.string

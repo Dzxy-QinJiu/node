@@ -1,3 +1,5 @@
+var React = require('react');
+const PropTypes = require('prop-types');
 const Validation = require('rc-form-validation');
 import {Button, Form, Input, Icon, message} from 'antd';
 const FormItem = Form.Item;
@@ -471,14 +473,14 @@ class UserInfo extends React.Component{
 }
 
 UserInfo.propTypes = {
-    userInfo: React.PropTypes.object,
-    userInfoFormShow: React.PropTypes.bool,
-    form: React.PropTypes.object,
-    realmLoading: React.PropTypes.bool,
-    realmErrorMsg: React.PropTypes.string,
-    managedRealm: React.PropTypes.object,
-    userInfoErrorMsg: React.PropTypes.string,
-    userInfoLoading: React.PropTypes.bool,
+    userInfo: PropTypes.object,
+    userInfoFormShow: PropTypes.bool,
+    form: PropTypes.object,
+    realmLoading: PropTypes.bool,
+    realmErrorMsg: PropTypes.string,
+    managedRealm: PropTypes.object,
+    userInfoErrorMsg: PropTypes.string,
+    userInfoLoading: PropTypes.bool,
 };
 
 const UserInfoForm = Form.create()(UserInfo);

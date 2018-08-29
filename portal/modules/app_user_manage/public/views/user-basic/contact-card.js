@@ -1,10 +1,11 @@
+var React = require('react');
 /**
 * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
 * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
 * Created by xuning on 2018.8.28
 */
 import DetailCard from 'CMP_DIR/detail-card';
-import { PropTypes } from 'prop-types';
+import 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
 

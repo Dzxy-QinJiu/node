@@ -1,3 +1,4 @@
+const PropTypes = require('prop-types');
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
@@ -24,8 +25,6 @@ import UserOverDraftField from '../user-over-draftfield';
 import UserTwoFactorField from '../user-two-factorfield';
 import UserMultiLoginField from '../user-multilogin-radiofield';
 import AppRolePermission from '../app-role-permission';
-
-const PropTypes = React.PropTypes;
 
 const AppPropertySetting = createReactClass({
     displayName: 'AppPropertySetting',

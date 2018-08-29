@@ -1,6 +1,7 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 import {Alert, Spin, Button} from 'antd';
 const classname = require('classnames');
-const PropTypes = React.PropTypes;
 
 class TableList extends React.Component {
     constructor(props) {

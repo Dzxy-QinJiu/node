@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * 筛选器面板
  * author：xuning
@@ -11,7 +13,6 @@ const Option = Select.Option;
 import DateSelector from 'CMP_DIR/date-selector';
 import teamAjaxTrans from '../../../../common/public/ajax/team';
 const salesmanAjax = require('../../../../common/public/ajax/salesman');
-const PropTypes = React.PropTypes;
 
 class Filter extends React.Component {
     constructor(props) {

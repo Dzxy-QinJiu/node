@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -13,6 +14,7 @@ const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import {AntcAnalysis} from 'antc';
+import PropTypes from 'prop-types';
 import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
 const PIE_CENTER_POSITION = ['50%', '60%'];
 const CHART_HEIGHT = '400';
@@ -634,8 +636,8 @@ ClueAnalysisPanel.defaultProps = {
     clueSourceArray: [],
 };
 ClueAnalysisPanel.propTypes = {
-    clueSourceArray: React.PropTypes.object,
-    accessChannelArray: React.PropTypes.object,
-    closeClueAnalysisPanel: React.PropTypes.func
+    clueSourceArray: PropTypes.object,
+    accessChannelArray: PropTypes.object,
+    closeClueAnalysisPanel: PropTypes.func
 };
 export default ClueAnalysisPanel;

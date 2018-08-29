@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * 自定义下拉菜单组件,在antd dropdown组件基础上进行设置的（带有保存、取消按钮，自定义下拉菜单中的展示的内容）
  * Created by wangliping on 2017/9/29.
@@ -120,17 +122,17 @@ AntcDropdown.defaultProps = {
     stopContentHide: false//避免选中选项后会关闭content内容区域
 };
 AntcDropdown.propTypes = {
-    showMenu: React.PropTypes.bool,
-    content: React.PropTypes.string,
-    overlayTitle: React.PropTypes.string,
-    overlayContent: React.PropTypes.string,
-    okTitle: React.PropTypes.string,
-    cancelTitle: React.PropTypes.string ,
-    unSelectDataTip: React.PropTypes.string,
-    isSaving: React.PropTypes.bool,
-    handleSubmit: React.PropTypes.func,
-    clearSelectData: React.PropTypes.func,
-    btnAtTop: React.PropTypes.bool,
-    stopContentHide: React.PropTypes.bool,
+    showMenu: PropTypes.bool,
+    content: PropTypes.string,
+    overlayTitle: PropTypes.string,
+    overlayContent: PropTypes.string,
+    okTitle: PropTypes.string,
+    cancelTitle: PropTypes.string ,
+    unSelectDataTip: PropTypes.string,
+    isSaving: PropTypes.bool,
+    handleSubmit: PropTypes.func,
+    clearSelectData: PropTypes.func,
+    btnAtTop: PropTypes.bool,
+    stopContentHide: PropTypes.bool,
 };
 export default AntcDropdown;

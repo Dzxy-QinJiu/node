@@ -1,3 +1,4 @@
+var PropTypes = require('prop-types');
 var React = require('react');
 var Tooltip = require('react-bootstrap').Tooltip;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
@@ -6,9 +7,9 @@ var DefaultUserLogoTitle = require('../default-user-logo-title');
 
 class AppLogoImg extends React.Component {
     static propTypes = {
-        id: React.PropTypes.string.isRequired,
-        title: React.PropTypes.string,
-        showTooltip: React.PropTypes.bool
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string,
+        showTooltip: PropTypes.bool
     };
 
     static defaultProps = {

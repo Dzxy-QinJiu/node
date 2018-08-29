@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 
 
 var language = require('../../../public/language/getLanguage');
@@ -6,7 +8,6 @@ if (language.lan() == 'es' || language.lan() == 'en') {
 }else if (language.lan() == 'zh'){
     require('./index-zh_CN.less');
 }
-const PropTypes = React.PropTypes;
 import Button from 'antd';
 import {RightPanelSubmit,RightPanelCancel} from '../../rightPanel';
 import classNames from 'classnames';

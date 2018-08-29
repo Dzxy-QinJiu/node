@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * 字段拖动面板
  * onPreview 点击预览按钮的回调,会将分析区域的参数列表传入
@@ -17,7 +19,6 @@ import {
     CONTRACT_DEFAULT_VALUE_TYPE,
     CONTRACT_VALUE_TYPES
 } from '../consts';
-const PropTypes = React.PropTypes;
 
 class FilterPanel extends React.Component {
     constructor(props) {

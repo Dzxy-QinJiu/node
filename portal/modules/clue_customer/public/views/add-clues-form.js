@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -14,6 +15,7 @@ const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
 import {checkClueName, getPhoneInputValidateRules} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
+import PropTypes from 'prop-types';
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var uuid = require('uuid/v4');
@@ -481,17 +483,17 @@ ClueAddForm.defaultProps = {
 
 };
 ClueAddForm.propTypes = {
-    defaultClueData: React.PropTypes.object,
-    clueSourceArray: React.PropTypes.object,
-    updateClueSource: React.PropTypes.func,
-    accessChannelArray: React.PropTypes.object,
-    updateClueChannel: React.PropTypes.func,
-    clueClassifyArray: React.PropTypes.object,
-    updateClueClassify: React.PropTypes.func,
-    afterAddSalesClue: React.PropTypes.func,
-    form: React.PropTypes.object,
-    hideAddForm: React.PropTypes.func,
-    appUserId: React.PropTypes.string,
-    appUserName: React.PropTypes.string
+    defaultClueData: PropTypes.object,
+    clueSourceArray: PropTypes.object,
+    updateClueSource: PropTypes.func,
+    accessChannelArray: PropTypes.object,
+    updateClueChannel: PropTypes.func,
+    clueClassifyArray: PropTypes.object,
+    updateClueClassify: PropTypes.func,
+    afterAddSalesClue: PropTypes.func,
+    form: PropTypes.object,
+    hideAddForm: PropTypes.func,
+    appUserId: PropTypes.string,
+    appUserName: PropTypes.string
 };
 export default Form.create()(ClueAddForm);

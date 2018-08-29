@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -8,6 +9,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import dates from 'date-arithmetic';
 import BigCalendar from 'react-big-calendar';
 var classNames = require('classnames');
+import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
@@ -283,7 +285,6 @@ DayAgendaScheduleLists.defaultProps = {
     showCustomerDetail: function() {}
 
 };
-const PropTypes = React.PropTypes;
 DayAgendaScheduleLists.propTypes = {
     curCustomerId: PropTypes.string,
     updateScrollBar: PropTypes.boolean,

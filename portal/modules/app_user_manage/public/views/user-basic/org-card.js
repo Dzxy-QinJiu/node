@@ -1,3 +1,4 @@
+var React = require('react');
 /**
 * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
 * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -8,7 +9,7 @@ import { Select, Input } from 'antd';
 
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import { StatusWrapper } from 'antc';
-import { PropTypes } from 'prop-types';
+import 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import OrganizationAjax from 'MOD_DIR/common/public/ajax/organization';

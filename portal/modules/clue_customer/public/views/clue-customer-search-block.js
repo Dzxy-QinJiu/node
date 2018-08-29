@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -7,6 +8,7 @@ import {Radio} from 'antd';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import DatePicker from 'CMP_DIR/datepicker';
+const PropTypes = require('prop-types');
 var userData = require('PUB_DIR/sources/user-data');
 var clueCustomerAction = require('../action/clue-customer-action');
 var clueCustomerStore = require('../store/clue-customer-store');
@@ -95,6 +97,6 @@ ClueCustomerSearchBlock.defaultProps = {
     }
 };
 ClueCustomerSearchBlock.propTypes = {
-    onTypeChange: React.PropTypes.func,
+    onTypeChange: PropTypes.func,
 };
 export default ClueCustomerSearchBlock;

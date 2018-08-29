@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -11,6 +12,7 @@ import {Alert, message, Button, Icon} from 'antd';
 // 没有消息的提醒
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 var Spinner = require('CMP_DIR/spinner');
+import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
@@ -327,9 +329,9 @@ ExpireScheduleLists.defaultProps = {
 };
 
 ExpireScheduleLists.propTypes = {
-    isShowExpiredPanel: React.PropTypes.func,
-    showCustomerDetail: React.PropTypes.func,
-    updateExpiredPanelState: React.PropTypes.func,
+    isShowExpiredPanel: PropTypes.func,
+    showCustomerDetail: PropTypes.func,
+    updateExpiredPanelState: PropTypes.func,
 };
 
 export default ExpireScheduleLists;
