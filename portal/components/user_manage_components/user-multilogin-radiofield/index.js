@@ -83,7 +83,7 @@ const UserTypeRadioField = {
                         onChange={callback}
                     >
                         <Radio key={CHECKED.TRUE} value={CHECKED.TRUE}><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
-                        <Radio key={CHECKED.FALSE} value={CHECKE.FALSE}><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
+                        <Radio key={CHECKED.FALSE} value={CHECKED.FALSE}><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
                     </RadioGroup>
                 </FormItem>
                 {this.state.show_multilogin_error ? (<div className="error_form_tip"><ReactIntl.FormattedMessage id="user.multi.login.type.tip" defaultMessage="请选择多人登录类型" /></div>) : null}
