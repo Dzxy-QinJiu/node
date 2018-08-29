@@ -241,6 +241,7 @@ var zh_CN = {
 
     //公共部分--end
     'login.login': '登录',
+    'login.register': '注册',
     'login.service.error': '很抱歉,服务器出现了异常状况',
     'login.error.retry': '登录服务暂时不可用，请稍后重试',
     'login.username.password.error': '用户名或密码错误',

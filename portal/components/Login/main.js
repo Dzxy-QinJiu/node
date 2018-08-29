@@ -4,27 +4,26 @@ const QRCode = require('qrcode.react');
 const classnames = require('classnames');
 const Logo = require('../Logo');
 const LoginForm = require('./login-form');
+const RegisterForm = require('./register-form');
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
 const TabPane = Tabs.TabPane;
 let QRCodeLoginInterval = null;
 const LOGIN_INTERVAL_TIME = 5 * 1000;//5s:获取二维码展示后，调用登录接口的时间间隔
 var Spinner = require('../spinner');
-const LANGUAGES = [
-    {code: 'zh_CN', name: '简体中文'},
-    {code: 'en_US', name: 'English'},
-    {code: 'es_VE', name: 'Español'},
-];
 //扫码登录的前缀，用于手机端扫码时判断扫的是不是登录的二维码
 const LOGIN_QRCODE_PREFIX = 'ketao_login_';
 const VIEWS = {
     LOGIN: 'login',
-    FORGOT_PASSWORD: 'forgot_password',
+    RIGISTER: 'register',
 };
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import {storageUtil} from 'ant-utils';
 const logoScr = require('./image/wihte-logo.png');
-
+const FOMR_HEIGHT = {
+    COMMON_H: 300,//只有用户名、密码时，登录表单的容器高度
+    CAPTCHA_H: 48,//验证码输入框的高度
+};
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
@@ -69,10 +68,6 @@ class LoginMain extends React.Component {
 
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
-    }
-
-    changeView(view) {
-        this.setState({currentView: view, errorMsg: ''});
     }
 
     setErrorMsg(errorMsg) {
@@ -214,6 +209,22 @@ class LoginMain extends React.Component {
         this.setState({ketaoQRCodeShow: false});
     }
 
+    //注册、登录界面的切换
+    changeView() {
+        this.setState({
+            currentView: this.state.currentView === VIEWS.RIGISTER ? VIEWS.LOGIN : VIEWS.RIGISTER,
+            errorMsg: ''
+        });
+    }
+
+    getFormHeight() {
+        let height = FOMR_HEIGHT.COMMON_H;
+        if (this.state.captcha) {
+            height += FOMR_HEIGHT.CAPTCHA_H;
+        }
+        return height;
+    }
+
     render() {
         //如果是初次渲染不展示表单;
         //如果有错误信息，则不显示loading状态
@@ -223,92 +234,31 @@ class LoginMain extends React.Component {
             </div>);
         } else {
             const hasWindow = !(typeof window === 'undefined');
-
             return (
                 <div className="login-wrap">
-                    <Logo logoSrc={logoScr} />
-                    {/*{ hasWindow ? (Oplate.hideLangQRcode ? null :*/}
-                    {/*(<div>*/}
-                    {/*<div className="lang-wrap">*/}
-                    {/*<span>{Intl.get('common.user.lang', '语言')}：</span>*/}
-                    {/*{LANGUAGES.map(lang => {*/}
-                    {/*return <span><a href={`/login?lang=${lang.code}`}*/}
-                    {/*onClick={this.changeLang.bind(this, lang.code)}*/}
-                    {/*className={this.getLangClassName(lang.code, hasWindow)}>{lang.name}</a></span>;*/}
-                    {/*})}*/}
-                    {/*</div>*/}
-                    {/*</div>)) : null*/}
-                    {/*}*/}
-                    {this.state.ketaoQRCodeShow ? (
-                        <div className="ketao-download-qrcode-container">
-                            <Icon type="cross" onClick={this.closeDownLoadKetaoQRCode.bind(this)}/>
-                            <div className="ketao-download-qrcode">
-                                <QRCode
-                                    value={location.protocol + '//' + location.host + '/ketao'}
-                                    level="H"
-                                    size={165}
-                                />
+                    <Logo logoSrc={logoScr}/>
+                    <Button className='login-register-btn' onClick={this.changeView.bind(this)}>
+                        {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.login', '登录') : Intl.get('login.register', '注册')}
+                    </Button>
+                    {hasWindow ? (
+                        <div className="form-wrap" style={{height: this.getFormHeight()}}>
+                            <div className="form-title">
+                                {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.register', '注册') : Intl.get('login.login', '登录') }
                             </div>
-                            <div className="scan-ketao-qrcode-download-tip">
-                                {Intl.get('scan.ketao.qrcode.download.tip', '扫码下载客套APP安卓端')}
-                            </div>
-                        </div>) : (hasWindow ? (
-                        <Tabs activeKey={this.state.loginActiveKey} onChange={this.handleTabChange.bind(this)}>
-                            <TabPane tab={Intl.get('login.account.login', '账号登录')} key="2">
-                                <div className="form-wrap">
-                                    {this.state.currentView === VIEWS.LOGIN ? (
-                                        <LoginForm
-                                            captcha={this.state.captcha}
-                                            hasWindow={hasWindow}
-                                            setErrorMsg={this.setErrorMsg}
-                                            {...this.props}
-                                        />
-                                    ) : null}
-
-
-                                    {this.state.errorMsg ? (
-                                        <Alert message={this.state.errorMsg} type="error" showIcon/>
-                                    ) : null}
-
-                                </div>
-                            </TabPane>
-                            <TabPane tab={Intl.get('login.scan.qrcode.login', '扫码登录')} key="1">
-                                {this.state.isLoadingQRCode ? (<div className="qrcode-tip-layer">
-                                    <div className="qrcode-tip-content">
-                                        {Intl.get('login.qrcode.loading', '正在获取二维码...')}
-                                    </div>
-                                </div>) : this.state.QRCodeErrorMsg ? (
-                                    <div className="qrcode-tip-layer">
-                                        <div className="qrcode-tip-content">
-                                            <Icon type="exclamation-circle"/><br/>
-                                            <span className="error-text">{this.state.QRCodeErrorMsg}</span><br/>
-                                            <Button
-                                                onClick={this.getLoginQRCode.bind(this)}>{this.state.QRCodeErrorMsg === Intl.get('errorcode.147', '二维码已失效') ?
-                                                    Intl.get('common.refresh', '刷新') : Intl.get('common.get.again', '重新获取')}</Button>
-                                        </div>
-                                    </div>) : null}
-                                <div className="login-qrcode-container">
-                                    <QRCode
-                                        value={LOGIN_QRCODE_PREFIX + this.state.QRCode}
-                                        level="H"
-                                        size={165}
-                                    />
-                                </div>
-                                <div className="login-scan-qrcode-tip">
-                                    <ReactIntl.FormattedMessage
-                                        id="login.qrcode.scan.tip"
-                                        defaultMessage={'请使用{appName}扫描二维码安全登录'}
-                                        values={{
-                                            'appName': <a className="ketao-font-style"
-                                                onClick={this.showDownLoadKetaoQRCode.bind(this)}>{Intl.get('login.ketao.app.name', '客套APP')}</a>,
-                                        }}
-                                    />
-                                </div>
-                            </TabPane>
-                        </Tabs>) : null
-                    )}
-
-
+                            {this.state.currentView === VIEWS.RIGISTER ? (
+                                <RegisterForm/>
+                            ) : <LoginForm
+                                captcha={this.state.captcha}
+                                hasWindow={hasWindow}
+                                setErrorMsg={this.setErrorMsg}
+                                {...this.props}
+                            />}
+                            {this.state.errorMsg ? (
+                                <Alert message={this.state.errorMsg} type="error" showIcon className="login-error-msg"/>
+                            ) : null}
+                        </div>
+                    ) : null
+                    }
                 </div>
             );
         }

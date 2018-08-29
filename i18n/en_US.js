@@ -235,6 +235,7 @@ var en_US = {
     'common.callback.customer': 'Callback customer', // '回访客户',
     //公共部分--end
     'login.login': 'Login',//登录
+    'login.register': 'Register',//注册
     'login.service.error': 'Sorry for the abnormal condition of the server',//很抱歉,服务器出现了异常状况
     'login.error.retry': 'The login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
     'login.username.password.error': 'The username or password is incorrect',//用户名或密码错误
