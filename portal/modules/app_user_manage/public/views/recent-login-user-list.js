@@ -557,7 +557,7 @@ class RecentLoginUsers extends React.Component {
                     }
                 </div>
                 <RightPanel
-                    className="app_user_manage_rightpanel"
+                    className="app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
                     showFlag={this.state.isShowUserDetail}
                 >
                     {this.state.isShowUserDetail ? ( <UserDetail userId={this.state.userId}

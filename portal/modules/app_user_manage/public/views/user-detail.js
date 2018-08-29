@@ -1,12 +1,11 @@
 
 
 var language = require('../../../../public/language/getLanguage');
+require('../css/user-detail-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
-    require('../css/user-detail-zh_CN.less');
     require('../css/user-detail-v3.less');
     require('../css/user-detail-es_VE.less');
 } else if (language.lan() === 'zh') {
-    require('../css/user-detail-zh_CN.less');
     require('../css/third-party-app-config.less');
     require('../css/user-detail-v3.less');
 }
