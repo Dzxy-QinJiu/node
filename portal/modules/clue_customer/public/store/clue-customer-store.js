@@ -40,13 +40,6 @@ ClueCustomerStore.prototype.resetState = function() {
     this.distributeLoading = false;//线索客户正在分配给某个销售
     this.distributeErrMsg = '';//线索客户分配失败
     this.keyword = '';//线索全文搜索的关键字
-    //几种不同类型的线索统计默认值
-    this.statusStaticis = {
-        '': 0,
-        '0': 0,
-        '1': 0,
-        '2': 0
-    };
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
     this.curClueLists = [];//查询到的线索列表
@@ -55,32 +48,6 @@ ClueCustomerStore.prototype.setClueInitialData = function() {
 };
 ClueCustomerStore.prototype.setLastClueId = function(updateId) {
     this.lastCustomerId = updateId;
-};
-ClueCustomerStore.prototype.getStatisticsData = function(statisticsArr) {
-    var total = 0;
-    if (!_.isEmpty(statisticsArr)){
-        //把后端返回的统计数据进行处理
-        _.forEach(this.statusStaticis, (value, key) => {
-            var targetObj = _.find(statisticsArr,(item) => {
-                return key === item.name;
-            });
-            if (targetObj){
-                this.statusStaticis[key] = targetObj.total;
-                total += targetObj.total;
-            }else{
-                this.statusStaticis[key] = 0;
-            }
-        });
-        this.statusStaticis[''] = total;
-    }else{
-        this.statusStaticis = {
-            '': 0,
-            '0': 0,
-            '1': 0,
-            '2': 0
-        };
-    }
-
 };
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
@@ -93,34 +60,19 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     } else {
         let data = clueData.clueCustomerObj;
         let list = data ? data.result : [];
-        var aggList = _.isArray(data.agg_list) ? data.agg_list : [];
-        if (clueData.getOnlyAnalysisData){
-            this.getStatisticsData(aggList[0]['status']);
-        }else{
-            if (this.lastCustomerId) {
-                this.curClueLists = this.curClueLists.concat(this.processForList(list));
-            } else {
-                this.curClueLists = this.processForList(list);
-            }
-            this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
-            this.customersSize = data ? data.total : 0;
-            this.listenScrollBottom = this.customersSize > this.curClueLists.length;
-            this.isLoading = false;
-            //跟据线索客户不同的状态进行排序
-            this.curClueLists = _.sortBy(this.curClueLists, (item) => {
-                return item.status;
-            });
-            var filterClueStatus = filterStore.getState().filterClueStatus;
-            var typeFilter = getClueStatusValue(filterClueStatus);
-            //只有在获取线索的状态是全部的时候，才用返回的统计值
-            if (filterClueStatus && typeFilter.status === ''){
-                //不同状态线索的统计数据
-                var staticsArr = _.isArray(aggList) && aggList[0] ? _.get(aggList[0],'status') : [];
-                this.getStatisticsData(staticsArr);
-            }
+        if (this.lastCustomerId) {
+            this.curClueLists = this.curClueLists.concat(this.processForList(list));
+        } else {
+            this.curClueLists = this.processForList(list);
         }
-
-
+        this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
+        this.customersSize = data ? data.total : 0;
+        this.listenScrollBottom = this.customersSize > this.curClueLists.length;
+        this.isLoading = false;
+        //跟据线索客户不同的状态进行排序
+        this.curClueLists = _.sortBy(this.curClueLists, (item) => {
+            return item.status;
+        });
     }
 };
 //更新线索客户的一些属性
@@ -230,9 +182,6 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
         if (((typeFilter.status === '0' || typeFilter.status === '')) && filterStore.getState().rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= filterStore.getState().rangParams[0].to){
             this.curClueLists.unshift(newCustomer);
             this.customersSize++;
-            var total = this.statusStaticis[''],willDistributeCount = this.statusStaticis['0'];
-            total++;
-            willDistributeCount++;
         }
     }
 
@@ -308,8 +257,6 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
     var clueStatus = data.clueStatus;
     this.curClueLists = _.filter(this.curClueLists, clue => clueId !== clue.id);
     this.customersSize--;
-    this.statusStaticis[''] = this.statusStaticis[''] - 1;
-    this.statusStaticis[clueStatus] = this.statusStaticis[clueStatus] - 1;
 };
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

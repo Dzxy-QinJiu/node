@@ -11,7 +11,6 @@ var UnreadMixin = {
         if (getClueUnhandledPrivilege()){
             this.showUnhandledClueCount();
         }
-
     },
     /*
      *  待审批数的展示

@@ -17,10 +17,9 @@ var SearchInput = require('CMP_DIR/searchInput');
 import {message, Icon, Row, Col, Button, Alert, Select} from 'antd';
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
-import DatePicker from 'CMP_DIR/datepicker';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 require('./css/index.less');
-import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue} from './utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -44,6 +43,7 @@ import ClueFilterPanel from './views/clue-filter-panel';
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
     BOTTOM_DISTANCE: 40,
+    FILTER_WIDTH: 350
 };
 const ClueCustomer = React.createClass({
     getInitialState: function() {
@@ -66,6 +66,7 @@ const ClueCustomer = React.createClass({
     componentDidMount: function() {
         clueCustomerStore.listen(this.onStoreChange);
         if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
+            console.log(1);
             //获取线索来源
             this.getClueSource();
             //获取线索渠道
@@ -221,15 +222,8 @@ const ClueCustomer = React.createClass({
             phoneNumber: phoneNumber,//拨打的电话
         });
     },
-
-    setInitialData: function() {
-        clueCustomerAction.setClueInitialData();
-    },
     //获取线索列表
-    getClueList: function(flag) {
-        if(flag){
-            clueCustomerAction.setClueInitialData();
-        }
+    getClueList: function() {
         var rangParams = filterStore.getState().rangParams;
         var filterClueStatus = filterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
@@ -244,23 +238,24 @@ const ClueCustomer = React.createClass({
             userId: userData.getUserData().userId || '',
             typeFilter: JSON.stringify(typeFilter)
         };
+        var filterStoreData = filterStore.getState();
         //选中的线索来源
-        var filterClueSource = filterStore.getState().filterClueSource;
+        var filterClueSource = filterStoreData.filterClueSource;
         if (_.isArray(filterClueSource) && filterClueSource.length){
             queryObj.clue_source = filterClueSource.join(',');
         }
         //选中的线索接入渠道
-        var filterClueAccess = filterStore.getState().filterClueAccess;
+        var filterClueAccess = filterStoreData.filterClueAccess;
         if (_.isArray(filterClueAccess) && filterClueAccess.length){
             queryObj.access_channel = filterClueAccess.join(',');
         }
         //选中的线索分类
-        var filterClueClassify = filterStore.getState().filterClueClassify;
+        var filterClueClassify = filterStoreData.filterClueClassify;
         if (_.isArray(filterClueClassify) && filterClueClassify.length){
             queryObj.clue_classify = filterClueClassify.join(',');
         }
         //过滤无效线索
-        var isFilterInavalibilityClue = filterStore.getState().filterClueAvailability;
+        var isFilterInavalibilityClue = filterStoreData.filterClueAvailability;
         if (isFilterInavalibilityClue){
             queryObj.availability = isFilterInavalibilityClue;
         }
@@ -286,23 +281,9 @@ const ClueCustomer = React.createClass({
     },
     afterAddClueTrace: function(updateId) {
         var clueCustomerTypeFilter = getClueStatusValue(filterStore.getState().filterClueStatus);
-        this.updateStatusStatistics(SELECT_TYPE.WILL_TRACE,SELECT_TYPE.HAS_TRACE);
         if (clueCustomerTypeFilter.status === SELECT_TYPE.WILL_TRACE){
             clueCustomerAction.afterAddClueTrace(updateId);
         }
-    },
-    updateStatusStatistics: function(subtrItem, addItem) {
-        var statusStaticis = this.state.statusStaticis;
-        _.forEach(statusStaticis, (value, key) => {
-            //加完跟进记录后，在待跟进的线索列表中减一
-            if (key === subtrItem) {
-                statusStaticis[key] = value - 1;
-            }
-            //在已跟进的线索列表中加一
-            if (key === addItem) {
-                statusStaticis[key] = value + 1;
-            }
-        });
     },
     renderClueCustomerList: function() {
         var customerList = this.state.curClueLists;
@@ -414,7 +395,6 @@ const ClueCustomer = React.createClass({
                     //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
                     if (clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE) {
                         clueCustomerAction.afterAssignSales(item.id);
-                        this.updateStatusStatistics(SELECT_TYPE.WILL_DISTRIBUTE, SELECT_TYPE.WILL_TRACE);
                     } else {
                         item.user_name = sale_name;
                         item.user_id = sale_id;
@@ -584,9 +564,6 @@ const ClueCustomer = React.createClass({
     },
 
     render: function() {
-        let user = userData.getUserData();
-        var statusStaticis = this.state.statusStaticis;
-        var _this = this;
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
             });
@@ -629,8 +606,8 @@ const ClueCustomer = React.createClass({
                                 clueSourceArray={this.state.clueSourceArray}
                                 accessChannelArray={this.state.accessChannelArray}
                                 clueClassifyArray={this.state.clueClassifyArray}
-                                getClueList={this.getClueList.bind(this, true)}
-                                style={{width: 350, height: this.state.tableHeight}}
+                                getClueList={this.getClueList}
+                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: this.state.tableHeight}}
                             />
                         </div>
                         <div className={contentClassName}>
@@ -658,12 +635,14 @@ const ClueCustomer = React.createClass({
                             getClueList={this.getClueList}
                         />
                     </div>
-                    <ClueRightPanel
-                        showFlag={this.state.rightPanelIsShow}
-                        currentId={this.state.currentId}
-                        curClue={this.state.curClue}
-                        hideRightPanel={this.hideRightPanel}
-                    />
+                    {this.state.rightPanelIsShow ?
+                        <ClueRightPanel
+                            showFlag={this.state.rightPanelIsShow}
+                            currentId={this.state.currentId}
+                            curClue={this.state.curClue}
+                            hideRightPanel={this.hideRightPanel}
+                        /> : null}
+
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}

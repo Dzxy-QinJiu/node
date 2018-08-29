@@ -5,28 +5,39 @@
  */
 var FilterAction = require('../../action/filter-action');
 var FilterStore = require('../../store/filter-store');
+var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import {CLUE_DIFF_TYPE} from '../../utils/clue-customer-utils';
 import DatePicker from 'CMP_DIR/datepicker';
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            clueSourceArray: this.props.clueSourceArray,
+            accessChannelArray: this.props.accessChannelArray,
+            clueClassifyArray: this.props.clueClassifyArray,
             ...FilterStore.getState(),
         };
     }
+
     onStoreChange = () => {
         this.setState(FilterStore.getState());
     };
     componentDidMount = () => {
         FilterStore.listen(this.onStoreChange);
     };
+    componentWillReceiveProps = (nextProps) => {
+        this.setState({
+            clueSourceArray: nextProps.clueSourceArray,
+            accessChannelArray: nextProps.accessChannelArray,
+            clueClassifyArray: nextProps.clueClassifyArray,
+        });
+    };
     componentWillUnmount = () => {
         FilterStore.unlisten(this.onStoreChange);
     };
 
     handleFilterChange = (data) => {
-        console.log(data);
+        clueCustomerAction.setClueInitialData();
         data.forEach(item => {
             if (item.groupId) {
                 //线索状态
@@ -94,11 +105,11 @@ class ClueFilterPanel extends React.Component {
     };
     render(){
         //线索来源
-        const clueSourceArray = this.props.clueSourceArray;
+        const clueSourceArray = this.state.clueSourceArray;
         //接入渠道
-        const accessChannelArray = this.props.accessChannelArray;
+        const accessChannelArray = this.state.accessChannelArray;
         //线索分类
-        const clueClassifyArray = this.props.clueClassifyArray;
+        const clueClassifyArray = this.state.clueClassifyArray;
         var filterClueStatus = _.cloneDeep(this.state.filterClueStatus);
         filterClueStatus = _.filter(filterClueStatus, item => {
             return item.value;
@@ -117,21 +128,21 @@ class ClueFilterPanel extends React.Component {
             },{
                 groupName: Intl.get('crm.sales.clue.source', '线索来源'),
                 groupId: 'clue_source',
-                data: _.drop(clueSourceArray).map(x => ({
+                data: clueSourceArray.map(x => ({
                     name: x,
                     value: x
                 }))
             },{
                 groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
                 groupId: 'clue_access',
-                data: _.drop(accessChannelArray).map(x => ({
+                data: accessChannelArray.map(x => ({
                     name: x,
                     value: x
                 }))
             },{
                 groupName: Intl.get('clue.customer.classify', '线索分类'),
                 groupId: 'clue_classify',
-                data: _.drop(clueClassifyArray).map(x => ({
+                data: clueClassifyArray.map(x => ({
                     name: x,
                     value: x
                 }))
