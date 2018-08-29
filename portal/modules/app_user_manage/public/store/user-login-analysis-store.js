@@ -56,8 +56,7 @@ UserLoginAnalysisStore.prototype.setSelectedAppId = function(appId){
 UserLoginAnalysisStore.prototype.getUserLoginInfo = function(result){
     const appid = result.paramsObj.appid;
     this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
-        loading: false,
-        data: {}
+        loading: false
     };
     const item = this.appUserDataMap[appid];
     item.loading = result.loading;
@@ -96,8 +95,7 @@ UserLoginAnalysisStore.prototype.getUserLoginInfo = function(result){
 UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
     const appid = result.paramsObj.appid;
     this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
-        loading: false,
-        data: {}
+        loading: false
     };
     const item = this.appUserDataMap[appid];
     item.loading = result.loading;
@@ -163,8 +161,7 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
 UserLoginAnalysisStore.prototype.getLoginUserScore = function(result) {
     const appid = result.paramsObj.app_id;
     this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
-        loading: false,
-        data: {}
+        loading: false
     };
     const item = this.appUserDataMap[appid];
     item.loading = result.loading;
