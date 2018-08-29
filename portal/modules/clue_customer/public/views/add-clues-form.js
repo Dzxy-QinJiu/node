@@ -297,7 +297,7 @@ class ClueAddForm extends React.Component {
                 />
                 <div className="add-clue-item" style={{'height': divHeight}}>
                     <GeminiScrollbar>
-                        <Form horizontal className="sales-clue-form" id="sales-clue-form">
+                        <Form layout='horizontal' className="sales-clue-form" id="sales-clue-form">
                             <FormItem
                                 className="form-item-label"
                                 label={Intl.get('clue.analysis.consult.time', '咨询时间')}

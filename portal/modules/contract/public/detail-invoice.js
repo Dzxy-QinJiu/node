@@ -205,7 +205,7 @@ const DetailInvoice = createReactClass({
                 ) : null}
 
                 {this.state.isFormShow ? (
-                    <Form horizontal>
+                    <Form layout='horizontal'>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
                                 {...formItemLayout}

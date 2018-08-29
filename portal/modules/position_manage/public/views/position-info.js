@@ -303,7 +303,7 @@ const PositionInfo = createReactClass({
                                 </dd>
                             </dl>
                         </div> : <div>
-                            <Form horizontal autoComplete='off'>
+                            <Form layout='horizontal' autoComplete='off'>
                                 <Validation ref='validation' onValidate={this.handleValidate}>
                                     <FormItem
                                         label={LANGLOBAL.ORGANIZATION.select} // 选择组织

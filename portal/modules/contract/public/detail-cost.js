@@ -302,7 +302,7 @@ const DetailCost = createReactClass({
                     </div>
                 ) : null}
 
-                <Form horizontal>
+                <Form layout='horizontal'>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         {this.renderUserField()}
                         {this.renderTeamField()}

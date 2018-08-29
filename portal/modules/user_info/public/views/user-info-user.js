@@ -384,7 +384,7 @@ class UserInfo extends React.Component{
                 </div>
 
                 {this.props.userInfoFormShow ? <div className="edit-form-div">
-                    <Form horizontal className="user-info-form">
+                    <Form layout='horizontal' className="user-info-form">
                         <FormItem
                             label={Intl.get('common.email', '邮箱')}
                             labelCol={{span: 4}}

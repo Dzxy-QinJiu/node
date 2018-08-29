@@ -153,7 +153,7 @@ var SalesStageForm = createReactClass({
                 <RightPanelClose onClick={this.handleCancel} data-tracename="关闭添加/编辑销售阶段"></RightPanelClose>
                 <div className="right-form-scroll-div">
 
-                    <Form horizontal className="form">
+                    <Form layout='horizontal' className="form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
                                 label={Intl.get('sales.stage.sales.stage', '销售阶段')}

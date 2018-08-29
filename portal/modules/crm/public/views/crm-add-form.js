@@ -399,7 +399,7 @@ var CRMAddForm = createReactClass({
                 <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加客户面板"/>
                 <div className="add-form-wrap">
                     <GeminiScrollbar>
-                        <Form horizontal className="crm-add-form" id="crm-add-form">
+                        <Form layout='horizontal' className="crm-add-form" id="crm-add-form">
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 <FormItem
                                     label={Intl.get('crm.4', '客户名称')}

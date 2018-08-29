@@ -480,7 +480,7 @@ var ContactForm = createReactClass({
         this.phoneInputRefs = [];
         let contactWayAddObj = contact.contactWayAddObj || {};
         return (
-            <Form horizontal className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
+            <Form layout='horizontal' className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         colon={false}

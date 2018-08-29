@@ -955,7 +955,7 @@ const AddOrEditUser = createReactClass({
         return (
             <div className="user-manage-v2 user-manage-adduser">
                 <RightPanelClose onClick={this.closeAppUserForm}/>
-                <Form horizontal>
+                <Form layout='horizontal'>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <OperationSteps
                             title={Intl.get('user.user.add', '添加用户')}

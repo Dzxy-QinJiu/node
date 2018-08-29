@@ -173,7 +173,7 @@ let NameTextareaField = createReactClass({
 
         let inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
-                <Form horizontal autoComplete="off">
+                <Form layout='horizontal' autoComplete="off">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label=""

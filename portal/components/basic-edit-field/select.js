@@ -213,7 +213,7 @@ let BasicEditSelectField = createReactClass({
 
         var selectBlock = this.state.displayType === 'edit' ? (
             <div className="selectWrap" ref="selectWrap" key="select-wrap">
-                <Form horizontal autoComplete="off">
+                <Form layout='horizontal' autoComplete="off">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label=""

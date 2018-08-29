@@ -521,7 +521,7 @@ var CrmAlertForm = createReactClass({
         //如果一个电话对应多个联系人的时候，要可以选择标题
         let hasOverOneCustomer = _.isArray(this.props.customerArr) && this.props.customerArr.length > 1;
         return (
-            <Form horizontal data-tracename="添加联系计划表单" className="schedule-form" id="schedule-form">
+            <Form layout='horizontal' data-tracename="添加联系计划表单" className="schedule-form" id="schedule-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {/*如果是批量操作的时候，不需要展示标题*/
                         this.props.selectedCustomer ? null : (

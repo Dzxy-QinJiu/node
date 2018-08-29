@@ -343,7 +343,7 @@ class UserForm extends React.Component {
                 <RightPanelClose onClick={this.closePanel} data-tracename="关闭添加/编辑面板"/>
                 {(this.props.formType === 'add' || !this.props.userFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel} data-tracename="返回详细信息展示页"/>)}
-                <Form horizontal className="form" autoComplete="off">
+                <Form layout='horizontal' className="form" autoComplete="off">
                     <FormItem id="image">
                         {getFieldDecorator('image')(
                             <div>

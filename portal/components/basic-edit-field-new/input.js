@@ -272,7 +272,7 @@ const BasicEditField = createReactClass({
 
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
-                <Form horizontal autoComplete="off" style={{width: this.props.width || '100%'}}>
+                <Form layout='horizontal' autoComplete="off" style={{width: this.props.width || '100%'}}>
                     <input type="password" style={{display: 'none'}} name="input" autoComplete="off"/>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem

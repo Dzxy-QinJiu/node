@@ -247,7 +247,7 @@ var OrganizationForm = createReactClass({
         var editResult = this.state.formData.saveOrganizationResult;
         return (
             <div className={formClass}>
-                <Form horizontal className="form" onSubmit={this.cancelEnter}>
+                <Form layout='horizontal' className="form" onSubmit={this.cancelEnter}>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         {//在组织上添加时，需要选择添加的是团队还是部门
                             this.props.organization.isAddGroup && this.props.organization.category == CATEGORY_TYPE.ORGANIZATION ?

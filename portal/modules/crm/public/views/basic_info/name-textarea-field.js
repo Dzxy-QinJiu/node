@@ -213,7 +213,7 @@ let NameTextareaField = createReactClass({
         let formData = this.state.formData;
         let status = this.state.status;
         return (
-            <Form horizontal autoComplete="off" data-tracename="客户名" className="name-form">
+            <Form layout='horizontal' autoComplete="off" data-tracename="客户名" className="name-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         label=""

@@ -678,7 +678,7 @@ const ApplyViewDetail = createReactClass({
             {!this.hasApprovalPrivilege() ? <span>{info.nick_names[0]}</span>
                 : (this.state.isNickNameEdit ?
                     ( <div className="user-name-wrap">
-                        <Form horizontal>
+                        <Form layout='horizontal'>
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 {this.renderNickNameTextField({existCheck: true})}
                             </Validation>
@@ -1050,7 +1050,7 @@ const ApplyViewDetail = createReactClass({
                     {this.renderApplyUserNames(detailInfo)}
                     {
                         selectedDetailItem.isConsumed === 'true' || !this.hasApprovalPrivilege() ? null : (
-                            <Form horizontal>
+                            <Form layout='horizontal'>
                                 <Validation ref="validation" onValidate={this.handleValidate}>
                                     <div className="apply-info-label">
                                         <div className="user-info-label password-label">

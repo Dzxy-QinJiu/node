@@ -106,7 +106,7 @@ const OrderForm = createReactClass({
             }
         }
         return (
-            <Form horizontal className="order-form" id="order-form">
+            <Form layout='horizontal' className="order-form" id="order-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         label={Intl.get('sales.stage.sales.stage', '销售阶段')}

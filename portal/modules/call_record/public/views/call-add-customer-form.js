@@ -313,7 +313,7 @@ var CallAddCustomerForm = createReactClass({
         return (
             <RightPanel showFlag={this.props.showFlag}>
                 <RightPanelClose onClick={this.closeAddPanel}/>
-                <Form horizontal className="crm-add-form">
+                <Form layout='horizontal' className="crm-add-form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label={Intl.get('crm.4', '客户名称')}

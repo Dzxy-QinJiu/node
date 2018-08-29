@@ -225,7 +225,7 @@ var SalesTeamForm = createReactClass({
         var editResult = this.state.formData.saveTeamResult;
         return (
             <div className={formClass} data-tracename ="编辑/添加团队表单">
-                <Form horizontal className="form">
+                <Form layout='horizontal' className="form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label={Intl.get('common.definition', '名称')}

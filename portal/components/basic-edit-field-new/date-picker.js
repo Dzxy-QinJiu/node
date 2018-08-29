@@ -132,7 +132,7 @@ class DatePickerEditField extends React.Component {
         }
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="date-wrap">
-                <Form horizontal autoComplete="off" style={{width: this.props.width || '100%'}}>
+                <Form layout='horizontal' autoComplete="off" style={{width: this.props.width || '100%'}}>
                     <FormItem
                         labelCol={{span: 0}}
                         wrapperCol={{span: 24}}

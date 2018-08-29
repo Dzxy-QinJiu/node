@@ -53,7 +53,7 @@ const AddBasic = createReactClass({
         if (!formData.need_invoice) formData.need_invoice = 'true';
 
         return (
-            <Form horizontal className="add-basic" data-tracename="添加合同>基本信息">
+            <Form layout='horizontal' className="add-basic" data-tracename="添加合同>基本信息">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {this.renderNumField()}
                     {this.renderCustomerField()}

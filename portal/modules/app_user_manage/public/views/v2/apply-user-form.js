@@ -244,7 +244,7 @@ const ApplyUserForm = createReactClass({
         return (
             <div className="full_size wrap_padding apply_user_form_wrap">
                 <div className="apply_user_form" ref="scrollWrap">
-                    <Form horizontal>
+                    <Form layout='horizontal'>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
                                 label={Intl.get('user.selected.user', '已选用户')}

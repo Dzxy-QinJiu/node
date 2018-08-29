@@ -175,7 +175,7 @@ var UserPwdPage = createReactClass({
                         <TopNav.MenuList/>
                     </TopNav>
                     <div className="user-pwd-manage-div">
-                        <Form horizontal className="user-info-edit-pwd-form" autoComplete="off">
+                        <Form layout='horizontal' className="user-info-edit-pwd-form" autoComplete="off">
                             <FormItem
                                 label={Intl.get('user.password.initial.password', '原始密码')}
                                 labelCol={{span: 5}}

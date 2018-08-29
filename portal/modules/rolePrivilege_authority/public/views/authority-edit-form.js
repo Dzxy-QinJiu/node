@@ -449,7 +449,7 @@ var AuthorityEditForm = createReactClass({
         return (
             <div className="authority-formItem-group-container">
                 <div className="default-authority-formItem-group">
-                    <Form horizontal className="form"
+                    <Form layout='horizontal' className="form"
                     >
                         <Validation ref="validation"
                             onValidate={this.handleValidate}

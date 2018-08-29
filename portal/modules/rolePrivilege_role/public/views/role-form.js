@@ -290,7 +290,7 @@ var RoleForm = createReactClass({
         return (
             <RightPanel className="white-space-nowrap" showFlag={this.state.roleFormShow} >
                 <RightPanelClose onClick={this.handleCancel}/>
-                <Form horizontal className="role-form">
+                <Form layout='horizontal' className="role-form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label={Intl.get('common.role', '角色')}

@@ -195,7 +195,7 @@ const BatchPositionForm = createReactClass({
             <div className='add-position-form'>
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <div className='add-position-content'>
-                    <Form horizontal autoComplete='off'>
+                    <Form layout='horizontal' autoComplete='off'>
                         <Validation ref='validation' onValidate={this.handleValidate}>
                             <FormItem
                                 label={LANGLOBAL.CITY.area} // 地域

@@ -553,7 +553,7 @@ var AuthorityGroupForm = createReactClass({
                 <RightPanelClose onClick={this.props.closeAuthorityGroupForm}/>
                 <div className="right-form-scroll-div" data-tracename="添加/编辑权限">
                     <GeminiScrollbar className="geminiScrollbar-vertical">
-                        <Form horizontal className="authority-group-form" onSubmit={this.events.cancelEnter}>
+                        <Form layout='horizontal' className="authority-group-form" onSubmit={this.events.cancelEnter}>
                             <Popconfirm title={Intl.get('authority.edit.is.save', '是否保存修改的权限组名')}
                                 visible={this.state.isShowPopConfirm}
                                 onConfirm={this.events.saveGroupName.bind(this)}

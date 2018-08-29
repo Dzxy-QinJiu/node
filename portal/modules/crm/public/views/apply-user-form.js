@@ -534,7 +534,7 @@ const ApplyUserForm = createReactClass({
         return (
             <div style={{maxHeight: this.state.maxHeight, height: this.state.formHeight}}>
                 <GeminiScrollbar>
-                    <Form horizontal className="apply-user-form" id="crm-apply-user-form">
+                    <Form layout='horizontal' className="apply-user-form" id="crm-apply-user-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             {this.state.applyFrom === 'order' || this.isApplyNewUsers() ?
                                 this.renderUserNamesInputs(formData, formItemLayout) : (

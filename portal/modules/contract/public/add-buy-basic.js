@@ -19,7 +19,7 @@ const AddBuyBasic = createReactClass({
         const formData = this.state.formData;
 
         return (
-            <Form horizontal className="add-basic">
+            <Form layout='horizontal' className="add-basic">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {this.renderNumField()}
                     {this.renderUserField()}

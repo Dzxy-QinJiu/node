@@ -694,7 +694,7 @@ var AuthorityForm = createReactClass({
                 <RightPanelClose onClick={this.handleCancel}/>
                 <div className="right-form-scroll-div">
                     <GeminiScrollbar className="geminiScrollbar-vertical">
-                        <Form horizontal className="form"
+                        <Form layout='horizontal' className="form"
                         >
                             <Validation ref="validation"
                                 onValidate={this.handleValidate}

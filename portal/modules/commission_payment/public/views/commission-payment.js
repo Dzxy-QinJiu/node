@@ -471,7 +471,7 @@ const CommissionPayment = createReactClass({
                     </div>
                 ) : null}
 
-                <Form horizontal>
+                <Form layout='horizontal'>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         {this.renderDateField()}
                         {this.renderUserField()}

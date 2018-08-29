@@ -1199,7 +1199,7 @@ var UserDetailAddApp = createReactClass({
             <div style={{height: '100%'}}>
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <div className="user-detail-add-app">
-                    <Form horizontal action="javascript:void(0)">
+                    <Form layout='horizontal' action="javascript:void(0)">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <Tabs defaultActiveKey="addapp">
                                 <TabPane tab={Intl.get('user.batch.change', '批量变更')} key="addapp">
