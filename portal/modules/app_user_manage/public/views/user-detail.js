@@ -217,13 +217,11 @@ var UserDetail = React.createClass({
     },
     render: function() {
         const { userInfo } = this.state;
-        //内容区高度
-        const remarkDOM = $('#app #top-remark');
-        const remarkHeight = remarkDOM ? remarkDOM.height() : 0;
+        //内容区高度        
         let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP - LAYOUT_CONSTANTS.USER_DETAIL;
         //用户详细信息高度
         if (this.state.showBasicDetail) {
-            contentHeight = contentHeight - remarkHeight - LAYOUT_CONSTANTS.TITLE_PADDING;
+            contentHeight = contentHeight + LAYOUT_CONSTANTS.REMARK_PADDING - LAYOUT_CONSTANTS.TITLE_PADDING;
         } else {
             contentHeight += LAYOUT_CONSTANTS.USER_DETAIL;
         }

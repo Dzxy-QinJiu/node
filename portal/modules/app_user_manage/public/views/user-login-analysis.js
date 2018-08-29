@@ -65,17 +65,21 @@ const UserLoginAnalysis = React.createClass({
         return {
             user_id: this.props.userId,
             appid: app_id,
-            starttime: new Date(moment().subtract(1, 'years')).getTime(),
+            starttime: +create_time,
             endtime: new Date().getTime()
         };
     },
     // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
     getUserAnalysisData(queryParams) {
         let queryObj = this.getQueryParams(queryParams);
+        const chartParams = {
+            ...queryObj,
+            starttime: new Date(moment().subtract(1, 'years')).getTime()
+        };
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
-        UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
+        UserLoginAnalysisAction.getUserLoginChartInfo(chartParams);
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
     },
     // 选择应用
