@@ -17,6 +17,7 @@ function UserLoginAnalysisAction() {
     );
     // 获取单个用户的应用列表
     this.getSingleUserAppList = function(searchObj, selectedAppId){
+        this.dispatch({loading: true, appList: []});
         userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
             let userOwnAppArray = result.apps;
             // 存储应用id的变量
@@ -69,7 +70,8 @@ function UserLoginAnalysisAction() {
             this.dispatch(
                 {
                     appId: selectedLogAppId,
-                    appList: userOwnAppArray
+                    appList: userOwnAppArray,
+                    loading: false
                 }
             );
         }, () => {
@@ -78,7 +80,8 @@ function UserLoginAnalysisAction() {
             this.dispatch(
                 {
                     appId: '',
-                    appList: []
+                    appList: [],
+                    loading: false
                 }
             );
         });
@@ -86,39 +89,39 @@ function UserLoginAnalysisAction() {
 
     // 获取用户的分数
     this.getLoginUserScore = function(reqData, type) {
-        this.dispatch({loading: true, error: false});
+        this.dispatch({paramsObj: reqData, loading: true, error: false});
         userAuditLogAjax.getLoginUserScore(reqData, type).then((data) => {
-            this.dispatch({loading: false, error: false, data: data});
+            this.dispatch({paramsObj: reqData, loading: false, error: false, data: data});
         },(errorMsg) => {
-            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+            this.dispatch({paramsObj: reqData, loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
     // 用户登录信息（时长、次数、首次和最后一次登录时间）
     this.getUserLoginInfo = function(loginParam){
         if (loginParam && loginParam.appid) {
-            this.dispatch({loading: true, error: false});
+            this.dispatch({paramsObj: loginParam, loading: true, error: false});
             userAuditLogAjax.getUserLoginInfo(loginParam).then( (data) => {
-                this.dispatch({loading: false, error: false, data: data});
+                this.dispatch({paramsObj: loginParam, loading: false, error: false, data: data});
             },(errorMsg) => {
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+                this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: errorMsg});
             });
         } else {
-            this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
+            this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
         }
     };
 
     // 用户登录统计图中登录时长、登录频次
     this.getUserLoginChartInfo = function(loginParam){
         if (loginParam && loginParam.appid) {
-            this.dispatch({loading: true, error: false});
+            this.dispatch({paramsObj: loginParam, loading: true, error: false});
             userAuditLogAjax.getUserLoginChartInfo(loginParam).then((data) => {
-                this.dispatch({loading: false, error: false, data: data});
+                this.dispatch({paramsObj: loginParam, loading: false, error: false, data: data});
             },(errorMsg) => {
-                this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+                this.dispatch({paramsObj: loginParam, loading: false,error: true, errorMsg: errorMsg});
             });
         } else {
-            this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
+            this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
         }
     };
 }

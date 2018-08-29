@@ -72,10 +72,14 @@ const UserLoginAnalysis = React.createClass({
     // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
     getUserAnalysisData(queryParams) {
         let queryObj = this.getQueryParams(queryParams);
+        const chartParams = {
+            ...queryObj,
+            starttime: new Date(moment().subtract(1, 'years')).getTime()
+        };
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
-        UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
+        UserLoginAnalysisAction.getUserLoginChartInfo(chartParams);
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
     },
     // 选择应用
@@ -84,35 +88,7 @@ const UserLoginAnalysis = React.createClass({
         UserLoginAnalysisAction.setSelectedAppId(appid);
         // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
         this.getUserAnalysisData({ appid: appid });
-    },
-    // 应用选择框
-    renderUserAppsList() {
-        let showAppSelect = this.props.selectedAppId;
-        return (
-            <div className="user-analysis-header clearfix">
-                {showAppSelect ? null : <div className="select-app">
-                    <SelectFullWidth
-                        showSearch
-                        optionFilterProp="children"
-                        className="log_select_app"
-                        value={this.state.selectedLogAppId}
-                        onSelect={this.onSelectedAppChange}
-                        minWidth={120}
-                        maxWidth={270}
-                        notFoundContent={Intl.get('common.not.found', '无法找到')}
-                    >
-                        {_.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
-                            return (
-                                <Option value={item.app_id} key={item.app_id}>
-                                    {item.app_name}
-                                </Option>
-                            );
-                        }) : null}
-                    </SelectFullWidth>
-                </div>}
-            </div>
-        );
-    },
+    },   
 
     renderLoginFirstLastTime(loginLast, loginFirst) {
         if (!loginLast && !loginFirst) {
@@ -168,8 +144,8 @@ const UserLoginAnalysis = React.createClass({
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
     },
     // 用户分数
-    renderUserLoginScore() {
-        let loginScore = this.state.loginScore;
+    renderUserLoginScore(app) {
+        let loginScore = _.get(this.state.appUserDataMap, [app.app_id, 'loginScore']) || {};
         if (loginScore.errorMsg) {
             return (
                 <div className="login-info">
@@ -226,8 +202,8 @@ const UserLoginAnalysis = React.createClass({
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
     },
     // 用户登录信息
-    renderUserLoginInfo() {
-        let millisecond = this.state.loginInfo.duration;
+    renderUserLoginInfo(app) {
+        let millisecond = _.get(this.state.appUserDataMap, [app.app_id, 'duration']);
         let timeObj = { timeDescr: ' ' };
         if (millisecond !== '') {
             timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(millisecond / 1000));
@@ -267,27 +243,28 @@ const UserLoginAnalysis = React.createClass({
         let queryObj = this.getQueryParams();
         UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
     },
-    renderLoginChart() {
-        if (this.state.loginChartInfo.errorMsg) {
+    renderLoginChart(app) {
+        const loginChartInfo = _.get(this.state.appUserDataMap, [app.app_id, 'loginChartInfo']);
+        if (loginChartInfo.errorMsg) {
             return (
                 <div className="login-info">
                     <div className="alert-tip">
-                        {this.state.loginChartInfo.errorMsg}，
+                        {loginChartInfo.errorMsg}，
                         <a href="javascript:void(0)" onClick={this.retryGetLoginChart}>{Intl.get('common.retry', '重试')}</a>
                     </div>
                 </div>
             );
         }
         const radioValue = [{ value: 'LoginFrequency', name: '次数' }, { value: 'loginDuration', name: '时长' }];
-        if (_.isArray(this.state.loginChartInfo.loginDuration) || _.isArray(this.state.loginChartInfo.loginCount)) {
+        if (_.isArray(loginChartInfo.loginDuration) || _.isArray(loginChartInfo.loginCount)) {
             return (
                 <div className="login-chart">
                     {Oplate.hideSomeItem ? (
                         <div className="duration-chart">
-                            {this.state.loginChartInfo.count ? (
+                            {loginChartInfo.count ? (
                                 <div className="v8-chart-title"> {Intl.get('user.login.times', '登录次数')}</div>
                             ) : null}
-                            {this.renderChart(this.state.loginChartInfo.loginCount, this.chartFrequencyTooltip)}
+                            {this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)}
                         </div>
                     ) : (
                         <CardContainer
@@ -300,9 +277,9 @@ const UserLoginAnalysis = React.createClass({
                                 {
                                     this.state.selectValue === 'loginDuration' ?
                                     // 时长
-                                        this.renderChart(this.state.loginChartInfo.loginDuration, this.durationTooltip) :
+                                        this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
                                     // 次数
-                                        this.renderChart(this.state.loginChartInfo.loginCount, this.chartFrequencyTooltip)
+                                        this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)
                                 }
                             </div>
                         </CardContainer>
@@ -321,9 +298,9 @@ const UserLoginAnalysis = React.createClass({
                 cellSize: [7, 7],
                 left: 30,
                 top: 20,
-                bottom: 0,
+                bottom: 'auto',
                 height: 110,
-                width: 'auto'             
+                width: 'auto'
             }],
             tooltip: {
                 formatter: charTips
@@ -331,7 +308,7 @@ const UserLoginAnalysis = React.createClass({
         };
 
         if (_.isArray(data) && data.length) {
-            return (               
+            return (
                 <AntcChart
                     resultType=""
                     data={data.map(x => ([moment(x.date).format('YYYY-MM-DD'), x.sum]))}
@@ -377,9 +354,12 @@ const UserLoginAnalysis = React.createClass({
             selectValue: dataRange
         });
     },
-    showAppDetail: function(appName, isShow) {
+    showAppDetail: function(app, isShow) {
         const showDetailMap = this.state.showDetailMap;
-        showDetailMap[appName] = isShow;
+        showDetailMap[app.app_name] = isShow;
+        if (isShow) {
+            this.getUserAnalysisData({ appid: app.app_id });
+        }
         this.setState({
             showDetailMap
         });
@@ -388,51 +368,63 @@ const UserLoginAnalysis = React.createClass({
         const userLoginBlock = (
             <ul>
                 {
-                    this.state.userOwnAppArray.map((app, index) => (
-                        <DetailCard
-                            key={index}
-                            titleBottomBorderNone={!this.state.showDetailMap[app.app_name]}
-                            title={(
-                                <div className='title-container'>
-                                    <span className="logo-container" title={app.app_name}>
-                                        <DefaultUserLogoTitle
-                                            nickName={app.app_name}
-                                            userLogo={app.app_logo}
-                                        />
-                                    </span>
-                                    <p title={app.app_name}>{app.app_name}</p>
-                                    <span className="btn-bar">
-                                        {
-                                            this.state.showDetailMap[app.app_name] ?
-                                                <span className="iconfont icon-up-twoline" onClick={this.showAppDetail.bind(this, app.app_name, false)}></span> :
-                                                <span className="iconfont icon-down-twoline" onClick={this.showAppDetail.bind(this, app.app_name, true)}></span>
-                                        }
-                                    </span>
-                                </div>
-                            )}
-                            content={
-                                this.state.showDetailMap[app.app_name] ?
-                                    (<div className="user-login-info">
-                                        {this.renderUserLoginScore()}
-                                        {this.renderUserLoginInfo()}
-                                        {this.renderLoginChart()}
-                                    </div>) : null
-                            }
-                        />
-                    ))
+                    this.state.userOwnAppArray.map((app, index) => {
+                        const userInfo = this.state.appUserDataMap[app.app_id] || {};
+                        const loading = userInfo.loading;
+                        return (
+                            <DetailCard
+                                key={index}
+                                titleBottomBorderNone={!this.state.showDetailMap[app.app_name]}
+                                title={(
+                                    <div className='title-container'>
+                                        <span className="logo-container" title={app.app_name}>
+                                            <DefaultUserLogoTitle
+                                                nickName={app.app_name}
+                                                userLogo={app.app_logo}
+                                            />
+                                        </span>
+                                        <p title={app.app_name}>{app.app_name}</p>
+                                        <span className="btn-bar">
+                                            {
+                                                this.state.showDetailMap[app.app_name] ?
+                                                    <span className="iconfont icon-up-twoline" onClick={this.showAppDetail.bind(this, app, false)}></span> :
+                                                    <span className="iconfont icon-down-twoline" onClick={this.showAppDetail.bind(this, app, true)}></span>
+                                            }
+                                        </span>
+                                    </div>
+                                )}
+                                content={
+                                    this.state.showDetailMap[app.app_name] ?
+                                        (<StatusWrapper
+                                            loading={loading}
+                                            size='medium'
+                                        >
+                                            <div className="user-login-info">
+                                                {
+                                                    !loading && (!_.get(userInfo, 'loginInfo', 'count') && !_.get(userInfo, 'loginInfo', 'duration') ? <div className="user-no-login">
+                                                        {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
+                                                    </div> : <div>
+                                                        {this.renderUserLoginScore(app)}
+                                                        {this.renderUserLoginInfo(app)}
+                                                        {this.renderLoginChart(app)}
+                                                    </div>)
+                                                }
+                                            </div>
+                                        </StatusWrapper>) : null
+                                }
+                            />
+                        );
+                    })
                 }
             </ul>
         );
         return (
             <StatusWrapper
-                loading={this.state.isLoading}
+                loading={this.state.appListLoading}
             >
                 <div className="user-analysis-panel" style={{ height: this.props.height }}>
-                    {/* {appList} */}
                     <GeminiScrollbar>
-                        {!this.state.loginInfo.count && !this.state.loginInfo.duration ? <div className="user-no-login">
-                            {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
-                        </div> : userLoginBlock}
+                        {userLoginBlock}
                     </GeminiScrollbar>
                 </div>
             </StatusWrapper>
