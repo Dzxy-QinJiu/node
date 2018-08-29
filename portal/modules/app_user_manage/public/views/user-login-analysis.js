@@ -65,7 +65,7 @@ const UserLoginAnalysis = React.createClass({
         return {
             user_id: this.props.userId,
             appid: app_id,
-            starttime: +create_time,
+            starttime: new Date(moment().subtract(1, 'years')).getTime(),
             endtime: new Date().getTime()
         };
     },
