@@ -5,7 +5,10 @@
 @icon-grey: #CBCBCB;
 @icon-blue: #2196F3;
 @nav-icon-size: 31px;
+@nav-text-height:  32px;
 @nav-item-height: 50px;
+@nav-text-width: 72px;
+@nav-text-fontSize: 14px;
 .unread-style {
     position: absolute;
     top: 10px;
@@ -93,13 +96,40 @@
     }
     .navbar-nav {
         float: none;
-        margin: 0;
-        margin-top: -5px;
-        font-size: 14px;
-        >li {
+        margin: 0;   
+        margin-top: 14px;     
+        font-size: @nav-text-fontSize;
+        >li {            
+            //文字菜单
+            &.text-nav-li {
+                &:first-child {
+                    margin-top: -13px;
+                }
+                height: @nav-text-height;
+                width: @nav-text-width;
+                margin: 0;
+                a {
+                    height: @nav-text-height;
+                    color: @font-grey;
+                    line-height: @nav-text-height;
+                    text-align: center;
+                    margin: 0;
+                    padding: 0;
+                }
+                a:hover,
+                a.active,
+                a:active,
+                a:focus {
+                    color: @icon-blue;
+                }
+                &.sidebar-applyentry .iconfont.icon-apply-message-tip {
+                    top: -7px;
+                    right: 14px;
+                }
+            }
             //用户审批入口
             &.sidebar-applyentry {
-                padding: 10px 0;
+                padding: 0;
                 text-align: center;
                 position: relative;
                 &:before {
@@ -123,7 +153,7 @@
                 } //有未读回复提示的样式
                 .iconfont.icon-apply-message-tip {
                     position: absolute;
-                    top: 1px;
+                    top: -17px;
                     right: 17px;
                     height: 14px;
                     width: 14px;
