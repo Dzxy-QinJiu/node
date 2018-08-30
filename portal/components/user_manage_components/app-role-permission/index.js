@@ -202,7 +202,7 @@ class AppRolePermission extends React.Component {
         } else {
             var type = 'role';
             var app_id = this.props.app_id;
-            history.pushState({type: type,appId: app_id} , '/myApp' ,{});
+            history.push('/myApp' ,{type: type,appId: app_id});
         }
 
     };
@@ -214,7 +214,7 @@ class AppRolePermission extends React.Component {
         } else {
             var type = 'authority';
             var app_id = this.props.app_id;
-            history.pushState({type: type,appId: app_id} , '/myApp' ,{});
+            history.push('/myApp',{type: type,appId: app_id});
         }
     };
 

@@ -1,5 +1,6 @@
 var React = require('react');
 import {Button, message, Select, Icon, Menu, Dropdown, Popconfirm} from 'antd';
+
 const Option = Select.Option;
 const ModalDialog = require('../../../../../components/ModalDialog');
 const Spinner = require('../../../../../components/spinner');
@@ -8,6 +9,7 @@ const history = require('../../../../../public/sources/history');
 import SearchIconList from '../../../../../components/search-icon-list';
 import routeList from '../../../common/route';
 import ajax from '../../../common/ajax';
+
 const hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
 import Trace from 'LIB_DIR/trace';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -256,27 +258,27 @@ class OrderItem extends React.Component {
         };
 
         ajax(arg).then(result => {
-            this.setState({isLoading: false});
+                this.setState({isLoading: false});
 
-            message.success(Intl.get('crm.140', '生成合同成功'));
-            //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                message.success(Intl.get('crm.140', '生成合同成功'));
+                //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
 
-            setTimeout(() => {
-                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(this.props.order.customer_id);
-            }, 1000);
-        },
-        errorMsg => {
-            this.setState({isLoading: false});
+                setTimeout(() => {
+                    _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(this.props.order.customer_id);
+                }, 1000);
+            },
+            errorMsg => {
+                this.setState({isLoading: false});
 
-            message.error(errorMsg);
-        });
+                message.error(errorMsg);
+            });
     };
 
     //转到合同
     gotoContract = () => {
-        history.pushState({
+        history.push('/contract/list', {
             contractId: this.props.order.contract_id
-        }, '/contract/list', {});
+        });
     };
 
     //关闭订单（赢单、丢单）
@@ -373,9 +375,9 @@ class OrderItem extends React.Component {
                                         onItemsChange={this.onAppsChange}
                                     />
                                     <SaveCancelButton loading={this.state.isLoading}
-                                        saveErrorMsg={this.state.submitErrorMsg}
-                                        handleSubmit={this.editOrderApp}
-                                        handleCancel={this.closeAppPanel}
+                                                      saveErrorMsg={this.state.submitErrorMsg}
+                                                      handleSubmit={this.editOrderApp}
+                                                      handleCancel={this.closeAppPanel}
                                     />
                                 </div>
                             ) : (
@@ -499,7 +501,7 @@ class OrderItem extends React.Component {
                 return {
                     title: (
                         <Popconfirm title={Intl.get('crm.order.update.confirm', '确定要修改订单阶段？')}
-                            onConfirm={this.editOrderStage.bind(this, stage.name)}>
+                                    onConfirm={this.editOrderStage.bind(this, stage.name)}>
                             <span className="order-stage-name">{stageName}</span>
                         </Popconfirm>)
                 };
@@ -520,8 +522,8 @@ class OrderItem extends React.Component {
             <Dropdown overlay={menu} trigger={['click']}>
                 {this.state.curOrderCloseStatus === ORDER_STATUS.WIN ? (
                     <Popconfirm placement="topRight" visible={true} onCancel={this.cancelCloseOrder}
-                        onConfirm={this.closeOrder.bind(this, ORDER_STATUS.WIN)}
-                        title={Intl.get('crm.order.close.win.confirm', '确定将订单的关闭状态设为赢单吗？')}>
+                                onConfirm={this.closeOrder.bind(this, ORDER_STATUS.WIN)}
+                                title={Intl.get('crm.order.close.win.confirm', '确定将订单的关闭状态设为赢单吗？')}>
                         {Intl.get('crm.order.status.win', '赢单')}
                     </Popconfirm>) : (
                     <span className="order-stage-name">{Intl.get('crm.order.close.step', '关闭订单')}</span>)}
@@ -529,7 +531,7 @@ class OrderItem extends React.Component {
         stageStepList.push({title: closeOrderStep});
         return (
             <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
-                onClickStep={this.onClickStep.bind(this)}/>);
+                      onClickStep={this.onClickStep.bind(this)}/>);
     };
 
     onClickStep = (event) => {
@@ -572,7 +574,7 @@ class OrderItem extends React.Component {
                     <span>
                         {this.renderOrderStatus(order.oppo_status)}
                         <span className={expandIconClassName} onClick={this.toggleOrderDetail}
-                            title={isExpandDetail ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}/>
+                              title={isExpandDetail ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}/>
                     </span>) : (
                     <span>
                         {this.state.curOrderCloseStatus === ORDER_STATUS.LOSE ? this.renderLoseOrderForm(order) :
@@ -581,16 +583,16 @@ class OrderItem extends React.Component {
                             {this.state.modalDialogFlag ? (
                                 <span className="item-delete-buttons">
                                     <Button className="item-delete-cancel delete-button-style"
-                                        onClick={this.hideModalDialog.bind(this, order)}>
+                                            onClick={this.hideModalDialog.bind(this, order)}>
                                         {Intl.get('common.cancel', '取消')}
                                     </Button>
                                     <Button className="item-delete-confirm delete-button-style"
-                                        onClick={this.handleModalOK.bind(this, order)}>
+                                            onClick={this.handleModalOK.bind(this, order)}>
                                         {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                     </Button>
                                 </span>) : (
                                 <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
-                                    data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
+                                      data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
                             }
                         </span>
                     </span>
@@ -617,7 +619,7 @@ class OrderItem extends React.Component {
             <div className="order-bottom-wrap">
                 {applyBtnText && this.props.isApplyButtonShow && order.oppo_status !== ORDER_STATUS.LOSE ? (//丢单后不展示申请用户按钮
                     <Button className="order-bottom-button"
-                        onClick={this.showApplyForm.bind(this, applyType, order, selectedAppList)}
+                            onClick={this.showApplyForm.bind(this, applyType, order, selectedAppList)}
                     >
                         {applyBtnText}
                     </Button>
@@ -636,9 +638,9 @@ class OrderItem extends React.Component {
         return (
             <div>
                 <DetailCard title={this.renderOrderTitle()}
-                    content={this.renderOrderContent()}
-                    bottom={this.renderOrderBottom()}
-                    className={containerClassName}/>
+                            content={this.renderOrderContent()}
+                            bottom={this.renderOrderBottom()}
+                            className={containerClassName}/>
                 {this.state.isShowApplyUserForm ? (
                     <ApplyUserForm
                         userType={this.state.applyType}

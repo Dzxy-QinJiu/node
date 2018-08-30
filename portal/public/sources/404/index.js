@@ -3,7 +3,7 @@ var history = require('../history');
 
 class NotFound extends React.Component {
     componentWillMount() {
-        history.replaceState(null,'/',{});
+        history.replace('/',{});
     }
 
     render() {

@@ -281,7 +281,7 @@ class ExpireScheduleLists extends React.Component {
     //点击添加待办按钮
     handleAddTodo = () => {
         //跳转到客户列表页面
-        history.pushState({}, '/crm', {});
+        history.push('/crm', {});
     };
 
     render() {

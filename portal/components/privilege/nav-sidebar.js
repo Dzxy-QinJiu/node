@@ -515,7 +515,7 @@ var NavSidebar = createReactClass({
 
     handleOnclickHole: function() {
         //跳转到新加模块界面
-        history.pushState({}, '/' + menu.routePath, {});
+        history.push('/' + menu.routePath, {});
         this.saveModalClicked();
     },
 

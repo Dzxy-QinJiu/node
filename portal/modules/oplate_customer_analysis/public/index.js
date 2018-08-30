@@ -129,7 +129,7 @@ class OPLATE_CUSTOMER_ANALYSIS extends React.Component {
 
     //处理试用合格客户数统计数字点击事件
     handleTrialQualifiedNumClick = (customerIds) => {
-        history.pushState({
+        history.push({
             from: 'sales_home',
             trialQualifiedCustomerIds: customerIds
         }, '/crm', {});

@@ -12,7 +12,8 @@ var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
 var Tooltip = require('antd').Tooltip;
 var myAppEmitter = require('PUB_DIR/sources/utils/emitters').myAppEmitter;
-import { Checkbox } from 'antd';
+import {Checkbox} from 'antd';
+
 const CheckboxGroup = Checkbox.Group;
 
 //常量
@@ -55,8 +56,10 @@ class AppRolePermission extends React.Component {
         app_id: '',
         selectedRoles: [],
         selectedPermissions: [],
-        onRolesPermissionSelect: function() { },
-        updateScrollBar: function() { },
+        onRolesPermissionSelect: function() {
+        },
+        updateScrollBar: function() {
+        },
     };
 
     getRolesPermissionsByAjax = (app_id) => {
@@ -71,11 +74,11 @@ class AppRolePermission extends React.Component {
     getMyApps = () => {
         //获取我的应用列表
         appAjaxTrans.getOwnerAppListAjax().sendRequest().success((list) => {
-            this.setState({ myApps: list });
+            this.setState({myApps: list});
         }).error(() => {
-            this.setState({ myApps: [] });
+            this.setState({myApps: []});
         }).timeout(() => {
-            this.setState({ myApps: [] });
+            this.setState({myApps: []});
         });
     };
 
@@ -206,7 +209,7 @@ class AppRolePermission extends React.Component {
         } else {
             var type = 'role';
             var app_id = this.props.app_id;
-            history.pushState({ type: type, appId: app_id }, '/myApp', {});
+            history.push('/myApp', {type: type, appId: app_id});
         }
 
     };
@@ -218,7 +221,7 @@ class AppRolePermission extends React.Component {
         } else {
             var type = 'authority';
             var app_id = this.props.app_id;
-            history.pushState({ type: type, appId: app_id }, '/myApp', {});
+            history.push('/myApp',{type: type, appId: app_id});
         }
     };
 
@@ -226,13 +229,14 @@ class AppRolePermission extends React.Component {
         var state = this.state;
         //如果两个请求都在loading，只显示一个Loading
         if (state.ajaxRolesResult === CONSTANTS.LOADING && state.ajaxPermissionResult === CONSTANTS.LOADING) {
-            return <Spinner />;
+            return <Spinner/>;
         }
         //权限角色，都获取失败，提示
         if (state.ajaxRolesResult === CONSTANTS.ERROR && state.ajaxPermissionResult === CONSTANTS.ERROR) {
             return <div className="no-data">
-                <Alert message={CONSTANTS.ROLE_PERMISSION_ERROR_MSG} showIcon type="error" />
-                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getRolesPermissionsByAjax.bind(this, this.props.app_id)} />
+                <Alert message={CONSTANTS.ROLE_PERMISSION_ERROR_MSG} showIcon type="error"/>
+                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}
+                      onClick={this.getRolesPermissionsByAjax.bind(this, this.props.app_id)}/>
             </div>;
         }
         //权限角色，都没数据，提示
@@ -242,12 +246,16 @@ class AppRolePermission extends React.Component {
             state.ajaxPermissionList.length === 0
         ) {
             var noDataTip = this.isMyApp() ?
-                (<span>{CONSTANTS.NO_ROLE_PERMISSION_DATA}，<ReactIntl.FormattedMessage id="common.yesno" defaultMessage="是否" /> <a href="javascript:void(0)" onClick={this.goAddRole}><ReactIntl.FormattedMessage id="user.batch.set.role" defaultMessage="设置角色" /></a> ?</span>) :
+                (<span>{CONSTANTS.NO_ROLE_PERMISSION_DATA}，<ReactIntl.FormattedMessage id="common.yesno"
+                                                                                       defaultMessage="是否"/> <a
+                    href="javascript:void(0)" onClick={this.goAddRole}><ReactIntl.FormattedMessage
+                    id="user.batch.set.role" defaultMessage="设置角色"/></a> ?</span>) :
                 (<span>{CONSTANTS.NO_ROLE_PERMISSION_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
 
             return <div className="no-data">
-                <Alert message={noDataTip} showIcon type="info" />
-                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getRolesPermissionsByAjax.bind(this, this.props.app_id)} />
+                <Alert message={noDataTip} showIcon type="info"/>
+                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}
+                      onClick={this.getRolesPermissionsByAjax.bind(this, this.props.app_id)}/>
             </div>;
         }
         //展开、收起 class名
@@ -261,7 +269,8 @@ class AppRolePermission extends React.Component {
                 <h3>
                     <span className='font-bold'>{Intl.get('user.log.role.auth', '角色权限')}</span>
                     {
-                        state.ajaxRolesList.length ? <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getRolesByAjax.bind(this, this.props.app_id)} /> : null
+                        state.ajaxRolesList.length ? <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}
+                                                           onClick={this.getRolesByAjax.bind(this, this.props.app_id)}/> : null
                     }
                 </h3>
                 <div className="app-property-content app-property-roles">
@@ -293,7 +302,8 @@ class AppRolePermission extends React.Component {
                             </div>)
                         : null
                 }
-                <div className="app-property-content app-property-permissions" style={{ display: state.showPermissionBlock ? 'block' : 'none' }}>
+                <div className="app-property-content app-property-permissions"
+                     style={{display: state.showPermissionBlock ? 'block' : 'none'}}>
                     {this.renderPermissionView()}
                 </div>
             </div>
@@ -338,21 +348,25 @@ class AppRolePermission extends React.Component {
     renderRoleView = () => {
         var state = this.state;
         if (state.ajaxRolesResult === CONSTANTS.LOADING) {
-            return <Spinner />;
+            return <Spinner/>;
         }
         if (state.ajaxRolesResult === CONSTANTS.ERROR) {
             return <div className="no-data">
-                <Alert message={this.state.ajaxRolesErrorMsg} showIcon type={CONSTANTS.ERROR} />
-                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getRolesByAjax.bind(this, this.props.app_id)} />
+                <Alert message={this.state.ajaxRolesErrorMsg} showIcon type={CONSTANTS.ERROR}/>
+                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}
+                      onClick={this.getRolesByAjax.bind(this, this.props.app_id)}/>
             </div>;
         }
         if (state.ajaxRolesResult === CONSTANTS.SUCCESS && state.ajaxRolesList.length === 0) {
             var noDataTip = this.isMyApp() ?
-                (<span>{CONSTANTS.NO_ROLE_DATA}，{Intl.get('common.yesno', '是否')} <a href="javascript:void(0)" onClick={this.goAddRole}><ReactIntl.FormattedMessage id="user.batch.set.role" defaultMessage="设置角色" /></a> ?</span>) :
+                (<span>{CONSTANTS.NO_ROLE_DATA}，{Intl.get('common.yesno', '是否')} <a href="javascript:void(0)"
+                                                                                    onClick={this.goAddRole}><ReactIntl.FormattedMessage
+                    id="user.batch.set.role" defaultMessage="设置角色"/></a> ?</span>) :
                 (<span>{CONSTANTS.NO_ROLE_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
             return <div className="no-data">
-                <Alert message={noDataTip} showIcon type={CONSTANTS.INFO} />
-                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getRolesByAjax.bind(this, this.props.app_id)} />
+                <Alert message={noDataTip} showIcon type={CONSTANTS.INFO}/>
+                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}
+                      onClick={this.getRolesByAjax.bind(this, this.props.app_id)}/>
             </div>;
         }
         //选中的角色
@@ -370,7 +384,8 @@ class AppRolePermission extends React.Component {
                     'selected': selectedRolesList.indexOf(roleInfo.role_id) >= 0
                 });
                 return (
-                    <div key={roleInfo.role_id} className={cls} onClick={this.toggleSelectedRole.bind(this, roleInfo)}>{roleInfo.role_name}</div>
+                    <div key={roleInfo.role_id} className={cls}
+                         onClick={this.toggleSelectedRole.bind(this, roleInfo)}>{roleInfo.role_name}</div>
                 );
             })}
         </div>;
@@ -407,21 +422,26 @@ class AppRolePermission extends React.Component {
     renderPermissionView = () => {
         var state = this.state;
         if (state.ajaxPermissionResult === CONSTANTS.LOADING) {
-            return <Spinner />;
+            return <Spinner/>;
         }
         if (state.ajaxPermissionResult === CONSTANTS.ERROR) {
             return <div className="no-data">
-                <Alert message={this.state.ajaxPermissionErrorMsg} showIcon type={CONSTANTS.ERROR} />
-                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getPermissionsByAjax.bind(this, this.props.app_id)} />
+                <Alert message={this.state.ajaxPermissionErrorMsg} showIcon type={CONSTANTS.ERROR}/>
+                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}
+                      onClick={this.getPermissionsByAjax.bind(this, this.props.app_id)}/>
             </div>;
         }
         if (state.ajaxPermissionResult === CONSTANTS.SUCCESS && state.ajaxPermissionList.length === 0) {
             var noDataTip = this.isMyApp() ?
-                (<span>{CONSTANTS.NO_PERMISSION_DATA}，<ReactIntl.FormattedMessage id="common.yesno" defaultMessage="是否" /> <a href="javascript:void(0)" onClick={this.goAddPermission}><ReactIntl.FormattedMessage id="user.batch.set.auth" defaultMessage="设置权限" /></a> ?</span>) :
+                (<span>{CONSTANTS.NO_PERMISSION_DATA}，<ReactIntl.FormattedMessage id="common.yesno"
+                                                                                  defaultMessage="是否"/> <a
+                    href="javascript:void(0)" onClick={this.goAddPermission}><ReactIntl.FormattedMessage
+                    id="user.batch.set.auth" defaultMessage="设置权限"/></a> ?</span>) :
                 (<span>{CONSTANTS.NO_PERMISSION_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
             return <div className="no-data">
-                <Alert message={noDataTip} showIcon type={CONSTANTS.INFO} />
-                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getPermissionsByAjax.bind(this, this.props.app_id)} />
+                <Alert message={noDataTip} showIcon type={CONSTANTS.INFO}/>
+                <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}
+                      onClick={this.getPermissionsByAjax.bind(this, this.props.app_id)}/>
             </div>;
         }
         var selectedPermissionList = state.selectedPermissionList;
@@ -436,8 +456,10 @@ class AppRolePermission extends React.Component {
                 {
                     showDetail ?
                         <div>
-                            <h4 onClick={() => { this.showPerItemdetail(group, false); }}>
-                                <Icon type="down" />
+                            <h4 onClick={() => {
+                                this.showPerItemdetail(group, false);
+                            }}>
+                                <Icon type="down"/>
                                 <span>
                                     {group.permission_group_name}
                                 </span>
@@ -448,7 +470,7 @@ class AppRolePermission extends React.Component {
                                         key={idx}
                                         disabled={this.state.selectedRolesAlreadyContainedPermissionIds.includes(x.permission_id)}
                                         checked={
-                                            this.state.selectedPermissionList.includes(x.permission_id) || 
+                                            this.state.selectedPermissionList.includes(x.permission_id) ||
                                             this.state.selectedRolesAlreadyContainedPermissionIds.includes(x.permission_id)
                                         }
                                         onChange={this.toggleSelectedPermission.bind(this, x)}
@@ -457,8 +479,10 @@ class AppRolePermission extends React.Component {
                             </div>
                         </div> :
                         <div>
-                            <h4 onClick={() => { this.showPerItemdetail(group, true); }}>
-                                <Icon type="right" />
+                            <h4 onClick={() => {
+                                this.showPerItemdetail(group, true);
+                            }}>
+                                <Icon type="right"/>
                                 <span>
                                     {group.permission_group_name}
                                 </span>
