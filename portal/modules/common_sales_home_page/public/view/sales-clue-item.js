@@ -369,7 +369,7 @@ class SalesClueItem extends React.Component {
                         /> : null
                     }
                 </div>
-                {!traceContent && hasPrivilege('CLUECUSTOMER_ADD_TRACE') && !isWillDistributeClue ?
+                {!traceContent && hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
                     <Button className='add-trace-content'
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
