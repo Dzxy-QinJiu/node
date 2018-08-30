@@ -15,7 +15,7 @@ exports.getCallRecordList = function(req, res) {
     callRecordService.getCallRecordList(req, res, req.params, req.body,req.query).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
-        res.json(codeMessage && codeMessage.message);
+        res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 //获取无效电话
@@ -23,7 +23,7 @@ exports.getInvalidCallRecordList = function(req, res) {
     callRecordService.getInvalidCallRecordList(req, res, req.params, req.body,req.query).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
-        res.json(codeMessage && codeMessage.message);
+        res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 // 编辑通话记录中跟进内容
@@ -31,7 +31,7 @@ exports.editCallTraceContent = function(req, res) {
     callRecordService.editCallTraceContent(req, res, req.body).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
-        res.json(codeMessage && codeMessage.message);
+        res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
@@ -40,6 +40,6 @@ exports.getRecommendPhoneList = function(req, res) {
     callRecordService.getRecommendPhoneList(req, res, req.params, req.body).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
-        res.json(codeMessage && codeMessage.message);
+        res.status(500).json(codeMessage && codeMessage.message);
     }); 
 };
