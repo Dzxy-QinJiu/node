@@ -13,10 +13,12 @@ var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
 var GeminiScrollBar = require('CMP_DIR/react-gemini-scrollbar');
 require('./css/index.less');
 const auths = {
-    STRATEGY: 'GET_CONFIG_PWD_STRATEGY',// 获取安全域密码策略
+    INDUSTRY: 'GET_CONFIG_INDUSTRY',//获取行业配置的权限
+    IP: 'GET_CONFIG_IP',//获取IP配置的权限
     TELECONFIG: 'CUSTOMER_INVALID_PHONE_GET',// 获取客服电话权限
     COMPETING_PRODUCT: 'CRM_COMPETING_PRODUCT',//竞品管理权限
-    TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE'//销售角色管理权限
+    TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE',//销售角色管理权限
+    STRATEGY: 'GET_CONFIG_PWD_STRATEGY',// 获取安全域密码策略
 };
 var ConfigManage = React.createClass({
     getInitialState: function() {
@@ -92,7 +94,7 @@ var ConfigManage = React.createClass({
                 //获取正在删除标签在数组中的下标
                 var delIndex = '';
                 _this.state.TagLists.forEach(function(tag, index) {
-                    if (tag.id == item.id) {
+                    if (tag.id === item.id) {
                         delIndex = index;
                     }
                 });
@@ -190,9 +192,74 @@ var ConfigManage = React.createClass({
             </div>
         );
     },
-
-    render: function() {
+    renderIndutryConfig: function() {
         var TagLists = this.state.TagLists;
+        return (
+            <div className="box" data-tracename="行业配置">
+                <div className="box-title">
+                    <ReactIntl.FormattedMessage id="config.manage.industry.manage"
+                        defaultMessage="行业管理"/>&nbsp;&nbsp;
+                    <span
+                        onClick={this.getRefreshInfo.bind(this)}
+                        className="refresh"
+                        data-tracename="点击获取行业刷新按钮"
+                    >
+                        <Icon type="reload" title={Intl.get('config.manage.reload.industry', '重新获取行业')}/>
+                    </span>
+                    {this.state.deleteErrMsg !== '' ? this.handleDeleteIndustryFail() : null}
+                </div>
+                <div className="box-body">
+                    {this.state.isGetInforcorrect === -1 ? (
+                        (this.state.isRefreshLoading === -1 ?
+                            <Alert type="error" showIcon message={this.state.getErrMsg}/>
+                            : <Spinner/>)
+                    ) : (
+                        TagLists.length === 0 && this.state.isRefreshLoading === -1 ?
+                            (<Alert type="info" showIcon
+                                message={Intl.get('config.manage.no.industry', '暂无行业配置，请添加！')}/>)
+                            : (this.state.isRefreshLoading === -1 ? null : <Spinner/>)
+                    )}
+
+                    <ul className="mb-taglist">
+                        {TagLists.map((item, index) => {
+                            return (
+                                <li className="mb-tag" key={index}>
+                                    <div className="mb-tag-content">
+                                        <span className="mb-tag-text">{item.industry}</span>
+                                            &nbsp;&nbsp;
+                                        <span className="glyphicon glyphicon-remove mb-tag-remove"
+                                            onClick={this.handleDeleteItem.bind(this, item)}
+                                            data-tracename="点击删除某个行业按钮"
+                                        ></span>
+                                        { this.state.DeletingItemId === item.id ? (
+                                            <span ><Icon type="loading"/></span>
+                                        ) : null
+                                        }
+                                    </div>
+                                </li>
+                            );
+                        }
+                        )}
+                    </ul>
+                </div>
+                <div className="box-footer">
+                    <form onSubmit={this.handleSubmit}>
+                        <div>
+                            <input className="mb-input" ref="edit"/>
+                            <button className="btn mb-add-button" type="submit" id="addIndustrySaveBtn">
+                                <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>
+                                {this.state.isAddloading === 0 ?
+                                    <Icon type="loading" style={{marginLeft: 12}}/> : (null)}
+                            </button>
+                        </div>
+                        {this.state.addErrMsg !== '' ? this.handleAddIndustryFail() : null}
+                    </form>
+                </div>
+            </div>
+        );
+    },
+    render: function() {
+
         var height = $(window).height() - $('.topNav').height();
         return (
             <div className="config-manage-container" data-tracename="配置">
@@ -201,73 +268,17 @@ var ConfigManage = React.createClass({
                 </TopNav>
                 <div className="config-container" style={{height: height}}>
                     <GeminiScrollBar>
-                        <div className="box" data-tracename="行业配置">
-                            <div className="box-title">
-                                <ReactIntl.FormattedMessage id="config.manage.industry.manage"
-                                    defaultMessage="行业管理"/>&nbsp;&nbsp;
-                                <span
-                                    onClick={this.getRefreshInfo.bind(this)}
-                                    className="refresh"
-                                    data-tracename="点击获取行业刷新按钮"
-                                >
-                                    <Icon type="reload" title={Intl.get('config.manage.reload.industry', '重新获取行业')}/>
-                                </span>
-                                {this.state.deleteErrMsg != '' ? this.handleDeleteIndustryFail() : null}
-                            </div>
-                            <div className="box-body">
-                                {this.state.isGetInforcorrect == -1 ? (
-                                    (this.state.isRefreshLoading == -1 ?
-                                        <Alert type="error" showIcon message={this.state.getErrMsg}/>
-                                        : <Spinner/>)
-                                ) : (
-                                    TagLists.length == 0 && this.state.isRefreshLoading == -1 ?
-                                        (<Alert type="info" showIcon
-                                            message={Intl.get('config.manage.no.industry', '暂无行业配置，请添加！')}/>)
-                                        : (this.state.isRefreshLoading == -1 ? null : <Spinner/>)
-                                )}
-
-                                <ul className="mb-taglist">
-                                    {TagLists.map((item, index) => {
-                                        return (
-                                            <li className="mb-tag">
-                                                <div className="mb-tag-content">
-                                                    <span className="mb-tag-text">{item.industry}</span>
-                                                        &nbsp;&nbsp;
-                                                    <span className="glyphicon glyphicon-remove mb-tag-remove"
-                                                        onClick={this.handleDeleteItem.bind(this, item)}
-                                                        data-tracename="点击删除某个行业按钮"
-                                                    ></span>
-                                                    { this.state.DeletingItemId == item.id ? (
-                                                        <span ><Icon type="loading"/></span>
-                                                    ) : null
-                                                    }
-                                                </div>
-                                            </li>
-                                        );
-                                    }
-                                    )}
-                                </ul>
-                            </div>
-                            <div className="box-footer">
-                                <form onSubmit={this.handleSubmit}>
-                                    <div>
-                                        <input className="mb-input" ref="edit"/>
-                                        <button className="btn mb-add-button" type="submit" id="addIndustrySaveBtn">
-                                            <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>
-                                            {this.state.isAddloading == 0 ?
-                                                <Icon type="loading" style={{marginLeft: 12}}/> : (null)}
-                                        </button>
-                                    </div>
-                                    {this.state.addErrMsg != '' ? this.handleAddIndustryFail() : null}
-                                </form>
-                            </div>
-                        </div>
-                        < IpConfig />
+                        <PrivilegeChecker check={auths.INDUSTRY}>
+                            {this.renderIndutryConfig()}
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.IP}>
+                            <IpConfig />
+                        </PrivilegeChecker>
                         <PrivilegeChecker check={auths.STRATEGY}>
-                            < RealmConfig />
+                            <RealmConfig />
                         </PrivilegeChecker>
                         <PrivilegeChecker check={auths.TELECONFIG}>
-                            < TeleConfig />
+                            <TeleConfig />
                         </PrivilegeChecker>
                         <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
                             <CompetingProductManage/>
