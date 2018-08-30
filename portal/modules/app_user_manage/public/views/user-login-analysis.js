@@ -74,7 +74,7 @@ const UserLoginAnalysis = React.createClass({
         let queryObj = this.getQueryParams(queryParams);
         const chartParams = {
             ...queryObj,
-            starttime: new Date(moment().subtract(1, 'years')).getTime()
+            starttime: new Date(moment().subtract(11, 'months').startOf('month')).getTime()
         };
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
@@ -203,17 +203,18 @@ const UserLoginAnalysis = React.createClass({
     },
     // 用户登录信息
     renderUserLoginInfo(app) {
-        let millisecond = _.get(this.state.appUserDataMap, [app.app_id, 'duration']);
+        const loginInfo = _.get(this.state.appUserDataMap, [app.app_id, 'loginInfo']) || {};
+        let millisecond = loginInfo.duration || '';
         let timeObj = { timeDescr: ' ' };
         if (millisecond !== '') {
             timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(millisecond / 1000));
         }
-        let count = this.state.loginInfo.count;
-        if (this.state.loginInfo.errorMsg) {
+        let count = loginInfo.count;
+        if (loginInfo.errorMsg) {
             return (
                 <div className="login-info">
                     <div className="alert-tip">
-                        {this.state.loginInfo.errorMsg}，
+                        {loginInfo.errorMsg}，
                         <a href="javascript:void(0)" onClick={this.retryGetUserLoginInfo}>{Intl.get('common.retry', '重试')}</a>
                     </div>
                 </div>
@@ -231,7 +232,7 @@ const UserLoginAnalysis = React.createClass({
                         {Intl.get('user.login.times', '登录次数')}：<span className="login-stress">{count}</span>
                     </div>
 
-                    {this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
+                    {this.renderLoginFirstLastTime(loginInfo.last, loginInfo.first)}
                 </div>
             );
         } else {
@@ -296,11 +297,8 @@ const UserLoginAnalysis = React.createClass({
         const calendarHeatMapOption = {
             calendar: [{
                 cellSize: [7, 7],
-                left: 30,
+                left: 'center',
                 top: 20,
-                bottom: 'auto',
-                height: 110,
-                width: 'auto'
             }],
             tooltip: {
                 formatter: charTips

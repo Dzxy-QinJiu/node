@@ -35,6 +35,8 @@
 @bd-blue: #2497F4;
 @color: #4c8ec4;
 @btn-blue: #108ee9;
+@chart-height: 116px;
+
 .titlecut() {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -132,10 +134,17 @@
             }
         }
     }
-    .user-analysis-panel {
+    .user-analysis-panel {       
         .user-login-info {
+            .alert-tip {
+                margin-top: 0;
+                margin-left: 45px;
+                position: relative;
+                top: 45px;
+            }
             .login-score {
                 text-align: center;
+                height: @chart-height;
                 .score-container {
                     display: inline-block;
                     vertical-align: middle;
@@ -182,7 +191,8 @@
                     }
                 }
                 .duration-chart {
-                    margin-left: -20px;
+                    height:@chart-height;
+                    margin-left: 0;
                     background: white;
                 }
                 .box-container {

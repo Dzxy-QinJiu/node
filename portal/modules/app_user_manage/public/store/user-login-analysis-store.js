@@ -133,25 +133,10 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                     }
                 }
                 // 登录次数统计
-                let loginCount = loginChartInfo.loginCount;
-                let frequencyArray = [];
-                if (_.isArray(loginCount) && loginCount.length > 0) {
-                    _.each(loginCount, (data) => {
-                        if (lastLoginTime) {
-                            if (data.timestamp < firstLoginTime && !data.count) {
-                                return;
-                            }
-                            if (lastLoginTime >= data.timestamp || data.count) {
-                                frequencyArray.push({date: data.timestamp, sum: data.count});
-                            }
-                        } else {
-                            if (data.count) { // 有登录次数的情况
-                                frequencyArray.push({date: data.timestamp, sum: data.count});
-                            }
-                        }
-                    });
-                }
-                item.loginChartInfo.loginCount = frequencyArray;
+                item.loginChartInfo.loginCount = loginChartInfo.loginCount.map(x => ({
+                    date: x.timestamp,
+                    sum: x.count
+                }));
             }
         }
     }
