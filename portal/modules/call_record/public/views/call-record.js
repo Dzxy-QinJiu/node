@@ -1061,13 +1061,17 @@ const CallRecord = React.createClass({
     renderCallRecordContent() {
         //只有第一页的时候，显示loading和错误信息
         if (this.state.callRecord.page === 1) {
-            if (this.state.callRecord.errorMsg) {
-                return <div className="alert-wrap">
-                    <Alert
-                        message={this.state.callRecord.errorMsg}
-                        type="error"
-                        showIcon={true}
-                    />
+            if (this.state.callRecord.is_loading){
+                return (
+                    <div className="load-content">
+                        <Spinner />
+                        <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
+                    </div>
+                );
+            }else if (this.state.callRecord.errorMsg) {
+                return <div className="errmsg-wrap">
+                    <i className="iconfont icon-data-error"></i>
+                    <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
                 </div>;
             }
         }
@@ -1093,9 +1097,6 @@ const CallRecord = React.createClass({
 
         return (
             <div style={{ position: 'relative' }}>
-                <Spinner
-                    className={(this.state.callRecord.page === 1 && this.state.callRecord.is_loading) ? 'spin-fix' : 'hide'}
-                />
                 <div
                     className={tableClassnames}
                     ref="thead"

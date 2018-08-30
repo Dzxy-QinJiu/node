@@ -3,7 +3,6 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../components/rightPanel';
 import crmAjax from '../../crm/public/ajax';
 var callReordEmitter = require('../../../public/sources/utils/emitters').callReordEmitter;
-import {message} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 

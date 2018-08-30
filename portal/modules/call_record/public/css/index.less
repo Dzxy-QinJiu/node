@@ -563,8 +563,28 @@
   }
 }
 
-.call-record-fix tr>td {
-  padding: 6px 8px!important;
+.call-record-fix {
+  tr > td {
+    padding: 6px 8px !important;
+  }
+  .load-content, .errmsg-wrap {
+    margin: 260px auto;
+    text-align: center;
+    .iconfont{
+      font-size: 96px;
+      color:@LOADING_ERR_ICON;
+    }
+    .load8 {
+      transform: scale(1, 1);
+      position: initial;
+    }
+    .abnornal-status-tip {
+      margin-top: 10px;
+      font-size: 20px;
+      color:@LOADING_ERR_TIP;
+    }
+
+  }
 }
 
 .ant-select-dropdown {
