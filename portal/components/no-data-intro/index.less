@@ -1,0 +1,46 @@
+@import "../../public/css/common-variables";
+.no-data-intro,.no-data{
+  overflow: hidden;
+  text-align: center;
+  font-size: 20px;
+  color: #cecece;
+  .icon-no-data {
+    font-size: 96px;
+  }
+  .no-data-container {
+    margin-left: 24px;
+    display: inline-block;
+    position: relative;
+    top: -10px;
+    .no-data-tip {
+      font-size: 24px;
+      color: #999;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+  }
+  .abnornal-status-tip {
+    text-align: center;
+    color: #999;
+    font-size: 20px;
+  }
+  .ant-btn{
+    font-size: 16px;
+    margin-right: 12px;
+    color: @FILTER-BUTTON;
+    border-color:@SEARCH-INPUT-BORDER;
+    &:hover{
+      color: @BUTTON-HOVER;
+      border-color:@BUTTON-HOVER;
+    }
+  }
+  .ant-btn.ant-btn-primary{
+    background-color:@BORDER-BLUE ;
+    border-color:@BORDER-BLUE;
+    color:#fff;
+    &:hover{
+      background-color: @BUTTON-HOVER ;
+      border-color: @BUTTON-HOVER;
+    }
+  }
+}

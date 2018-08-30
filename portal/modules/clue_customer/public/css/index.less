@@ -1,5 +1,5 @@
 @import "../../../../public/css/common-variables";
-@filter-width: 350px;
+@filter-width: 300px;
 .clue_customer_content {
   //线索顶部筛选区域
   .date-picker-wrap {
@@ -43,11 +43,19 @@
       button {
         margin-right: 12px;
         font-size: 16px;
+        color: @FILTER-BUTTON;
+        border-color:@SEARCH-INPUT-BORDER;
+        &:hover{
+          color: @BUTTON-HOVER;
+          border-color:@BUTTON-HOVER;
+        }
       }
       button.ant-btn-primary{
         background-color: @BORDER-BLUE;
         border-color: @BORDER-BLUE;
+        color: #ffffff;
         &:hover{
+          color: #ffffff;
           background-color:  @BUTTON-HOVER;
           border-color: @BUTTON-HOVER;
         }
@@ -63,7 +71,7 @@
     bottom: 0;
     background: @NOTICE-BACKGROUND;
     //加载中，加载完毕和出错的状态
-    .load-content, .err-content, .no-data {
+    .load-content, .err-content, .no-data-intro, .no-data{
       margin-top: 260px;
       font-size: 20px;
       color: #cecece;
@@ -73,9 +81,9 @@
       }
       .abnornal-status-tip {
         text-align: center;
-        margin-top: 16px;
         color: #999;
-        font-size: 14px;
+        font-size: 20px;
+        margin-top:10px;
       }
     }
     .clue-customer-total-tip {
@@ -85,16 +93,14 @@
     .filter-container {
       float: left;
       border-right: 1px solid #ccc;
-      min-width: @filter-width;
+      min-width: @filter-width - 60;
       height: 100%;
       position: absolute;
       transition: all 0.5s;
       padding-left: 24px;
-      visibility: visible;
       background: #fff;
       &.filter-close {
-        visibility: hidden;
-        left: 0 - @filter-width;
+        left: 0 - @filter-width - 20;
         border-right: 1px solid transparent;
       }
       .filter-wrapper{

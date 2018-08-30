@@ -131,13 +131,13 @@ UserStore.prototype.getCurUserList = function(userListObj) {
             this.userListTipMsg = '';
         } else {
             //无数据时的处理
-            if (this.searchContent) {
+            if (this.searchContent || this.selectRole) {
                 this.userListTipMsg = Intl.get('member.no.suitable.member', '没有符合条件的成员!');
             } else {
                 this.userListTipMsg = Intl.get('common.no.member', '暂无成员') + '!';
             }
         }
-        // this.curUserList = curUserList;
+
         if (this.curPage === 1) {
             this.curUserList = [];
         }

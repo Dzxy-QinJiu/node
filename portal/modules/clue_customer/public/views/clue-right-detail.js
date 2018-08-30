@@ -107,7 +107,6 @@ class ClueRightPanel extends React.Component {
         });
     };
     getClueSource = () => {
-        console.log(2);
         clueCustomerAjax.getClueSource().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({

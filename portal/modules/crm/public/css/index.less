@@ -180,6 +180,9 @@
             &.content-full {
                 padding-left: 0;
             }
+            .no-data-intro, .no-data{
+                padding-top:260px;
+            }
         }
         margin: @top_nav_height+2 @container_padding auto @container_padding;
         .ant-table-placeholder {
@@ -350,18 +353,10 @@
         }
     }
     .table-loading-wrap {
-        position: fixed;
-        top: 90px;
-        right: 0;
-        bottom: 90px;
-        left: 0;
-        z-index: 9;
-        .loader8 {
-            position: absolute;
-            top: 0;
-            right: 0;
-            left: 0;
-            bottom: 0;
+        margin:260px auto;
+        padding-left:  @filter-width + 22px;;
+        &.content-full {
+            padding-left: 0;
         }
     }
     .call-out {

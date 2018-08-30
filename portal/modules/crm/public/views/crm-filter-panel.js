@@ -496,6 +496,7 @@ const CrmFilterPanel = React.createClass({
             <div data-tracename="筛选">
                 <div className="crm-filter-panel">
                     <FilterList
+                        ref="filterlist"
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                         commonData={commonData}

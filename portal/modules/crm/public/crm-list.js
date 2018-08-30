@@ -37,6 +37,7 @@ import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import {FilterInput} from 'CMP_DIR/filter';
 var classNames = require('classnames');
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -522,6 +523,7 @@ var Crm = React.createClass({
             CrmAction.setPageNum(1);
             //清空state上的nextPageNum，避免显示上次的nextPageNum
             CrmAction.setNextPageNum(1);
+            CrmAction.setCurCustomers([]);
         }
         //联系方式(电话、邮箱)搜索的处理
         if (condition.phone) {
@@ -1155,6 +1157,22 @@ var Crm = React.createClass({
     afterDeleteClue: function() {
         CrmAction.showClueDetail('');
     },
+    //是否没有筛选条件
+    hasNoFilterCondition: function() {
+        if (_.get(this.refs,'filterinput.state.filterName')){
+            return false;
+        }else{
+            return true;
+        }
+    },
+    renderAddAndImportBtns: function() {
+        return (
+            <div className="btn-containers">
+                <Button type='primary' className='import-btn' onClick={this.showCrmTemplateRightPanel}>{Intl.get('crm.2', '导入客户')}</Button>
+                <Button className='add-clue-btn' onClick={this.showAddForm}>{Intl.get('crm.3', '添加客户')}</Button>
+            </div>
+        );
+    },
     render: function() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1363,6 +1381,9 @@ var Crm = React.createClass({
             'content-container': !this.props.fromSalesHome,
             'content-full': !this.state.showFilterList
         });
+        const tableLoadingClassName = classNames('table-loading-wrap',{
+            'content-full': !this.state.showFilterList
+        });
         return (<RightContent>
             <div className="crm_content">
                 {
@@ -1370,6 +1391,7 @@ var Crm = React.createClass({
                         <div className="top-nav-border-fix">
                             <div className="search-input-wrapper">
                                 <FilterInput
+                                    ref="filterinput"
                                     showSelectChangeTip={_.get(this.state.selectedCustomer, 'length')}
                                     toggleList={this.toggleList.bind(this)}
                                 />
@@ -1383,7 +1405,6 @@ var Crm = React.createClass({
                                 ) : null}
                                 <div style={{display: selectCustomerLength ? 'none' : 'block'}}>
                                     <CrmFilter
-                                        ref="crmFilter"
                                         search={this.search.bind(this, true)}
                                         changeTableHeight={this.changeTableHeight}
                                         crmFilterValue={this.state.crmFilterValue}
@@ -1413,6 +1434,7 @@ var Crm = React.createClass({
                                 <div
                                     className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
                                     <CrmFilterPanel
+                                        ref="crmfilterpanel"
                                         search={this.search.bind(this, true)}
                                         showSelectTip={_.get(this.state.selectedCustomer, 'length')}
                                         style={{width: 300, height: this.state.tableHeight + 100}}
@@ -1422,7 +1444,7 @@ var Crm = React.createClass({
                                 </div> : null
                         }
                         <div className={contentClassName} style={{display: shouldTableShow ? 'block' : 'none'}}>
-                            <AntcTable
+                            {this.state.customersSize ? <AntcTable
                                 rowSelection={rowSelection}
                                 rowKey={rowKey}
                                 columns={columns}
@@ -1442,13 +1464,19 @@ var Crm = React.createClass({
                                 locale={{
                                     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                                 }}
-                            />
+                            /> : <NoDataIntro
+                                noDataAndAddBtnTip={Intl.get('contract.60', '暂无客户')}
+                                renderAddAndImportBtns={this.renderAddAndImportBtns}
+                                showAddBtn={this.hasNoFilterCondition()}
+                                noDataTip={Intl.get('common.no.filter.crm', '没有符合条件的客户')}
+                            />}
+
                         </div>
 
                     </div>
                 </div>
-                {this.state.isLoading && this.state.nextPageNum === 0 ? (
-                    <div className="table-loading-wrap">
+                {!shouldTableShow ? (
+                    <div className={tableLoadingClassName}>
                         <Spinner />
                     </div>
                 ) : null}

@@ -8,6 +8,7 @@ var FilterStore = require('../../store/filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import DatePicker from 'CMP_DIR/datepicker';
+import {clueStartTime } from '../../utils/clue-customer-utils';
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -68,7 +69,7 @@ class ClueFilterPanel extends React.Component {
     onSelectDate = (start_time, end_time) => {
         if (!start_time) {
             //为了防止开始时间不传，后端默认时间是从1970年开始的问题
-            start_time = moment('2010-01-01 00:00:00').valueOf();
+            start_time = clueStartTime;
         }
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();

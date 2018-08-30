@@ -23,7 +23,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CUSTOMER_CLUE_SOURCE_GET'
+                'CLUECUSTOMER_CLUE_SOURCE_GET'
             ]
         },
         {
@@ -34,7 +34,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CUSTOMER_ACCESS_CHANNEL_GET'
+                'CLUECUSTOMER_ACCESS_CHANNEL_GET'
             ]
         },
         {

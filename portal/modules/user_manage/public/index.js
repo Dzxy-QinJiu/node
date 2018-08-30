@@ -16,6 +16,8 @@ var CONSTANTS = {
     LOG_PAGE_SIZE: 11//个人操作日志一页展示的条数
 };
 import Trace from 'LIB_DIR/trace';
+import {Button} from 'antd';
+
 
 var UserManage = React.createClass({
     getInitialState: function() {
@@ -190,6 +192,21 @@ var UserManage = React.createClass({
         UserAction.updateUserStatus(updateObj);
         UserAction.updateCurrentUserStatus(updateObj.status);
     },
+    hasNoFilterCondition: function() {
+        if (this.state.searchContent || this.state.selectRole){
+            return false;
+        }else{
+            return true;
+        }
+
+    },
+    renderAddAndImportBtns: function() {
+        return (
+            <div className="btn-containers">
+                <Button className='add-clue-btn' onClick={this.events.showUserForm.bind(this,'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
+            </div>
+        );
+    },
     render: function() {
         var firstLoading = this.state.isLoading;
         return (
@@ -218,6 +235,8 @@ var UserManage = React.createClass({
                     isPanelShow={this.state.isFilterPanelShow}
                     toggleFilterPanel={this.events.toggleFilterPanel.bind(this)}
                     type="userManage"
+                    renderAddAndImportBtns={this.renderAddAndImportBtns}
+                    showAddBtn={this.hasNoFilterCondition()}
                 >
                     <TopNav>
                         <TopNav.MenuList />
