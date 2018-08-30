@@ -657,7 +657,29 @@ var ClueDetailOverview = React.createClass({
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('clue.customer.source.ip','客户ip')}：
+                            {Intl.get('call.record.customer.source', '来源')}：
+                        </div>
+                        <div className="clue-info-detail">
+                            <BasicEditSelectField
+                                combobox={true}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                id={curClue.id}
+                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'clue_source')}
+                                cancelEditField={this.cancelEditClueSource}
+                                value={curClue.clue_source}
+                                field="clue_source"
+                                selectOptions={this.getClueSourceOptions()}
+                                displayText={curClue.clue_source}
+                                onSelectChange={this.onSelectCluesource}
+                                placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
+                                noDataTip={Intl.get('common.unknown', '未知')}
+                                addDataTip={Intl.get('clue.add.clue.source', '添加线索来源')}
+                            />
+                        </div>
+                    </div>
+                    <div className="clue-info-item">
+                        <div className="clue-info-label">
+                            {Intl.get('clue.customer.source.ip','来源ip')}：
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditInputField
@@ -681,28 +703,6 @@ var ClueDetailOverview = React.createClass({
                             </div>
                         </div>
                         : null}
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('call.record.customer.source', '来源')}：
-                        </div>
-                        <div className="clue-info-detail">
-                            <BasicEditSelectField
-                                combobox={true}
-                                hasEditPrivilege={hasPrivilegeEdit}
-                                id={curClue.id}
-                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'clue_source')}
-                                cancelEditField={this.cancelEditClueSource}
-                                value={curClue.clue_source}
-                                field="clue_source"
-                                selectOptions={this.getClueSourceOptions()}
-                                displayText={curClue.clue_source}
-                                onSelectChange={this.onSelectCluesource}
-                                placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
-                                noDataTip={Intl.get('common.unknown', '未知')}
-                                addDataTip={Intl.get('clue.add.clue.source', '添加线索来源')}
-                            />
-                        </div>
-                    </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
                             {Intl.get('crm.sales.clue.access.channel', '接入渠道')}：

@@ -345,20 +345,6 @@ class ClueAddForm extends React.Component {
                             {this.renderCheckContactMsg()}
                             <FormItem
                                 className="form-item-label"
-                                label={Intl.get('clue.customer.source.ip','客户来源ip')}
-                                {...formItemLayout}
-                            >
-                                {getFieldDecorator('source_ip',{
-                                    rules: [{validator: checkClueSourceIP}]
-                                })(
-                                    <Input
-                                        name="source_ip"
-                                        id="source_ip"
-                                    />
-                                )}
-                            </FormItem>
-                            <FormItem
-                                className="form-item-label"
                                 label={Intl.get('crm.sales.clue.descr', '线索描述')}
                                 {...formItemLayout}
                             >
@@ -391,6 +377,20 @@ class ClueAddForm extends React.Component {
                                             }
                                         </Select>
                                     )}
+                            </FormItem>
+                            <FormItem
+                                className="form-item-label"
+                                label={Intl.get('clue.customer.source.ip','来源ip')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('source_ip',{
+                                    rules: [{validator: checkClueSourceIP}]
+                                })(
+                                    <Input
+                                        name="source_ip"
+                                        id="source_ip"
+                                    />
+                                )}
                             </FormItem>
                             <FormItem
                                 label={Intl.get('crm.sales.clue.access.channel', '接入渠道')}
