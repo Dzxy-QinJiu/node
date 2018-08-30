@@ -380,7 +380,7 @@ class ClueAddForm extends React.Component {
                             </FormItem>
                             <FormItem
                                 className="form-item-label"
-                                label={Intl.get('clue.customer.source.ip','来源ip')}
+                                label={Intl.get('clue.customer.source.ip','来源IP')}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('source_ip',{

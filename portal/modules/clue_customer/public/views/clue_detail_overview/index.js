@@ -679,7 +679,7 @@ var ClueDetailOverview = React.createClass({
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('clue.customer.source.ip','来源ip')}：
+                            {Intl.get('clue.customer.source.ip','来源IP')}：
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditInputField
