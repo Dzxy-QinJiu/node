@@ -9,6 +9,6 @@ const AppUserManagePage = (props) => (
 module.exports = function(path) {
     return {
         path: path,
-        compoent: AppUserManagePage
+        component: AppUserManagePage
     };
 };

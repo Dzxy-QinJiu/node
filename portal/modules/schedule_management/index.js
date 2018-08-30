@@ -9,7 +9,7 @@ const SchedulePage = (props) => (
 module.exports = function(path) {
     return {
         path: '/schedule_management',
-        compoent: SchedulePage
+        component: SchedulePage
     };
 };
 

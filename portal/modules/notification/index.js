@@ -9,6 +9,6 @@ const NotificationPage = (props) => (
 module.exports = function(path) {
     return {
         path: '/notification_system',
-        compoent: NotificationPage
+        component: NotificationPage
     };
 };

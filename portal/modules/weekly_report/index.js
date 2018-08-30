@@ -11,9 +11,8 @@ const WeeklyReportPage = (props) => (
     </Bundle>
 );
 
-module.exports = function(path) {
-    return {
-        path: '/analysis/weekly_report',
-        compoent: WeeklyReportPage
-    };
+
+module.exports = {
+    path: '/analysis/user1',
+    component: WeeklyReportPage
 };

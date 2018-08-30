@@ -12,6 +12,6 @@ const OrganizationPage = (props) => (
 module.exports = function(path) {
     return {
         path: path,
-        compoent: OrganizationPage
+        component: OrganizationPage
     };
 };

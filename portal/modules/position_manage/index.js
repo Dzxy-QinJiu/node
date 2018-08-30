@@ -9,6 +9,6 @@ const PositionManagePage = (props) => (
 module.exports = function(path) {
     return {
         path: path,
-        compoent: PositionManagePage
+        component: PositionManagePage
     };
 };

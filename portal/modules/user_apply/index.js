@@ -14,6 +14,6 @@ const ApplyPage = (props) => (
 module.exports = function(path) {
     return {
         path: '/apply',
-        compoent: ApplyPage
+        component: ApplyPage
     };
 };
