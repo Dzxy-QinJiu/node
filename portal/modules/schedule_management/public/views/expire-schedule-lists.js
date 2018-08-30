@@ -175,7 +175,7 @@ class ExpireScheduleLists extends React.Component {
                                         onClick={this.handleMarkFinishStatus.bind(this, item)}
                                         data-tracename="点击标记日程状态为完成"
                                     >{Intl.get('schedule.list.mark.finish', '标记为完成')}
-                                        {this.state.handleStatusLoading ?
+                                        {this.state.handleStatusLoading && item.id === this.state.isEdittingItemId ?
                                             <Icon type="loading"/> : null}</Button> :
                                     <span>{Intl.get('schedule.create.person', '创建人')}: {item.member_nick}</span>}
                             </p>
