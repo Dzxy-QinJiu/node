@@ -327,7 +327,7 @@ class AppUserCustomerSwitch extends React.Component {
                     <ApplyUser
                         appList={JSON.parse(storageUtil.local.get('oplateCrmAppList'))}
                         users={this.state.selectedCustomerUserRows}
-                        customerId={this.props.params.customerId}
+                        customerId={this.props.match.params.customerId}
                         cancelApply={this.hideRightPanel}
                         emailData={emailData}
                     />
