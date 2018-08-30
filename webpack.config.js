@@ -247,7 +247,7 @@ var webpackConfig = {
     plugins: pluginLists,
     module: {
         rules: loadersLists,
-        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /History.min.js/]
+        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /history.min.js/]
     },
     resolveLoader: {
         moduleExtensions: ['-loader']
@@ -267,7 +267,7 @@ var webpackConfig = {
             moment$: 'moment/min/moment-with-locales.min.js',
             alt: 'alt/dist/alt.min.js',
             jquery: 'jquery/dist/jquery.min.js',
-            history$: 'history/umd/History.min.js',
+            history$: 'history/umd/history.min.js',
             OPLATE_EMITTER: path.resolve(__dirname, 'portal/public/sources/utils/emitters'),
             PUB_DIR: path.resolve(__dirname, 'portal/public'),
             LIB_DIR: path.resolve(__dirname, 'portal/lib'),

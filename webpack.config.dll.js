@@ -46,7 +46,7 @@ module.exports = {
         library: '[name]'
     },
     module: {
-        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /History.min.js/]
+        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /history.min.js/]
     },
     resolve: {
         modules: [
@@ -58,7 +58,7 @@ module.exports = {
             moment$: 'moment/min/moment-with-locales.min.js',
             alt: 'alt/dist/alt.min.js',
             jquery: 'jquery/dist/jquery.min.js',
-            history$: 'history/umd/History.min.js'
+            history$: 'history/umd/history.min.js'
         }
     },
     plugins: pluginLists,
