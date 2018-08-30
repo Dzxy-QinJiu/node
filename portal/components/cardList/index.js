@@ -5,7 +5,7 @@ var cardEmitter = require('../../public/sources/utils/emitters').cardEmitter;
 var Card = require('../card');
 
 //没有数据
-var NoData = require('../analysis-nodata');
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 //滚动条
 var GeminiScrollbar = require('../react-gemini-scrollbar');
 
@@ -35,7 +35,9 @@ var CardList = React.createClass({
     getDefaultProps: function() {
         return {
             editCard: noop,
-            deleteCard: noop
+            deleteCard: noop,
+            showAddBtn: false,
+            renderAddAndImportBtns: noop
         };
     },
 
@@ -48,6 +50,11 @@ var CardList = React.createClass({
     },
     componentDidMount: function() {
         $('body').css('overflow', 'hidden');
+        this.getInitialCardCount();
+        $(window).on('resize', this.changeWindowSize);
+        cardEmitter.on(cardEmitter.ADD_CARD, this.addCard);
+    },
+    getInitialCardCount: function() {
         // 初始加载卡片的个数
         var firstLoaderCount = this.getCardsCount();
         this.props.updatePageSize(firstLoaderCount);
@@ -56,8 +63,6 @@ var CardList = React.createClass({
         });
         // 初次加载
         this.props.changePageEvent(firstLoaderCount, 1);
-        $(window).on('resize', this.changeWindowSize);
-        cardEmitter.on(cardEmitter.ADD_CARD, this.addCard);
     },
 
     // 添加卡片时，滚动到顶部，重新获取数据
@@ -284,7 +289,11 @@ var CardList = React.createClass({
         return (
             <div className="card-list-container" style={{paddingTop: paddingTop}}>
                 {
-                    this.props.listTipMsg ? (<NoData msg={this.props.listTipMsg}/>) : (
+                    this.props.listTipMsg ? (<NoDataIntro
+                        noDataTip={this.props.listTipMsg}
+                        renderAddAndImportBtns={this.props.renderAddAndImportBtns}
+                        showAddBtn={this.props.showAddBtn}
+                        noDataAndAddBtnTip={this.props.listTipMsg}/>) : (
                         <div ref="scrolltoTop">
                             <div className="card-list" style={{height: cardListHeight}}>
                                 <GeminiScrollbar

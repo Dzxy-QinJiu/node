@@ -61,6 +61,7 @@ var CrmFilter = React.createClass({
         return (
             <div className="block search-input-select-block">
                 <SearchInput
+                    ref="searchInput"
                     type="select"
                     searchFields={searchFields}
                     searchEvent={this.searchEvent}
