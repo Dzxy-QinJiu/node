@@ -6,10 +6,8 @@ const SchedulePage = (props) => (
     </Bundle>
 );
 
-module.exports = function(path) {
-    return {
-        path: '/schedule_management',
-        component: SchedulePage
-    };
+module.exports = {
+    path: '/schedule_management',
+    component: SchedulePage
 };
 

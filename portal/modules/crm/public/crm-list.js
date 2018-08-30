@@ -38,6 +38,7 @@ import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import {FilterInput} from 'CMP_DIR/filter';
 var classNames = require('classnames');
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
+import queryString from  'query-string';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -221,7 +222,7 @@ class Crm extends React.Component {
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
         this.getUserPhoneNumber();
-        const query = _.clone(this.props.location.query);
+        const query = queryString.parse(this.props.location.search);
         const locationState = this.props.location.state;
         if (query.analysis_filter_field) {
             var filterField = query.analysis_filter_field;
@@ -300,7 +301,7 @@ class Crm extends React.Component {
             }
         });
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
-        if (this.props.location.query.add === 'true') {
+        if (query.add === 'true') {
             this.showAddForm();
         }
     }

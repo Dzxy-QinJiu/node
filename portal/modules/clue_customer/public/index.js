@@ -7,7 +7,7 @@ var React = require('react');
 var rightPanelShow = false;
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
-var filterStore = require('./store/filter-store');
+var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
 import {clueEmitter} from 'OPLATE_EMITTER';
 var userData = require('../../../public/sources/user-data');
@@ -242,8 +242,8 @@ class ClueCustomer extends React.Component {
 
     //获取线索列表
     getClueList = () => {
-        var rangParams = filterStore.getState().rangParams;
-        var filterClueStatus = filterStore.getState().filterClueStatus;
+        var rangParams = clueFilterStore.getState().rangParams;
+        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         //跟据类型筛选
         const queryObj = {
@@ -256,7 +256,7 @@ class ClueCustomer extends React.Component {
             userId: userData.getUserData().userId || '',
             typeFilter: JSON.stringify(typeFilter)
         };
-        var filterStoreData = filterStore.getState();
+        var filterStoreData = clueFilterStore.getState();
         //选中的线索来源
         var filterClueSource = filterStoreData.filterClueSource;
         if (_.isArray(filterClueSource) && filterClueSource.length){
@@ -300,7 +300,7 @@ class ClueCustomer extends React.Component {
     };
 
     afterAddClueTrace = (updateId) => {
-        var clueCustomerTypeFilter = getClueStatusValue(filterStore.getState().filterClueStatus);
+        var clueCustomerTypeFilter = getClueStatusValue(clueFilterStore.getState().filterClueStatus);
         if (clueCustomerTypeFilter.status === SELECT_TYPE.WILL_TRACE){
             clueCustomerAction.afterAddClueTrace(updateId);
         }
@@ -328,7 +328,7 @@ class ClueCustomer extends React.Component {
                         renderSalesBlock={this.renderSalesBlock}
                         unSelectDataTip={this.state.unSelectDataTip}
                         clearSelectSales={this.clearSelectSales}
-                        clueCustomerTypeFilter = {getClueStatusValue(filterStore.getState().filterClueStatus)}
+                        clueCustomerTypeFilter = {getClueStatusValue(clueFilterStore.getState().filterClueStatus)}
                     />
                 );
             }));
@@ -415,7 +415,7 @@ class ClueCustomer extends React.Component {
                         //隐藏批量变更销售面板
                         this.refs['salesclueitem' + item.id].refs['changesale' + item.id].handleCancel();
                     }
-                    var clueCustomerTypeFilter = getClueStatusValue(filterStore.getState().filterClueStatus);
+                    var clueCustomerTypeFilter = getClueStatusValue(clueFilterStore.getState().filterClueStatus);
                     //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
                     if (clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE) {
                         clueCustomerAction.afterAssignSales(item.id);

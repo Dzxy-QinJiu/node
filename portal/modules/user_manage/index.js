@@ -1,12 +1,12 @@
 import Bundle from '../../public/sources/route-bundle';
 
-const AppUserPage = (props) => (
+const MemberPage = (props) => (
     <Bundle load={() => import('./public')}>
-        {(AppUserPage) => <AppUserPage {...props}/>}
+        {(MemberPage) => <MemberPage {...props}/>}
     </Bundle>
 );
 
 module.exports = {
     path: '/background_management/user',
-    component: AppUserPage
+    component: MemberPage
 };

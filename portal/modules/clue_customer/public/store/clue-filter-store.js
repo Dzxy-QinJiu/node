@@ -7,13 +7,13 @@ var FilterAction = require('../action/filter-action');
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
 var userData = require('PUB_DIR/sources/user-data');
 import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS} from '../utils/clue-customer-utils';
-function FilterStore() {
+function ClueFilterStore() {
     this.setInitialData();
     //绑定action方法
     this.bindActions(FilterAction);
 }
 
-FilterStore.prototype.setInitialData = function() {
+ClueFilterStore.prototype.setInitialData = function() {
     var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     var defaultValue = '';
     if (userData.getUserData().isCommonSales) {
@@ -42,16 +42,16 @@ FilterStore.prototype.setInitialData = function() {
     this.filterClueAvailability = '';
 };
 //获取线索来源
-FilterStore.prototype.setCondition = function(list) {
+ClueFilterStore.prototype.setCondition = function(list) {
     this.provinceList = list;
 };
 //设置开始和结束时间
-FilterStore.prototype.setTimeRange = function(timeRange) {
+ClueFilterStore.prototype.setTimeRange = function(timeRange) {
     this.rangParams[0].from = timeRange.start_time;
     this.rangParams[0].to = timeRange.end_time;
 };
 //设置筛选线索的类型
-FilterStore.prototype.setFilterType = function(updateType) {
+ClueFilterStore.prototype.setFilterType = function(updateType) {
     this.filterClueAvailability = '';
     _.forEach(this.filterClueStatus, (item) => {
         item.selected = false;
@@ -65,28 +65,28 @@ FilterStore.prototype.setFilterType = function(updateType) {
     });
 };
 //设置筛选线索的来源
-FilterStore.prototype.setFilterClueSoure = function(updateSource) {
+ClueFilterStore.prototype.setFilterClueSoure = function(updateSource) {
     var selectedSource = [];
     _.forEach(updateSource, (item) => {
         selectedSource.push(item.value);
     });
     this.filterClueSource = selectedSource;
 };
-FilterStore.prototype.setFilterClueAccess = function(updateAccess) {
+ClueFilterStore.prototype.setFilterClueAccess = function(updateAccess) {
     var selectedAccess = [];
     _.forEach(updateAccess, (item) => {
         selectedAccess.push(item.value);
     });
     this.filterClueAccess = selectedAccess;
 };
-FilterStore.prototype.setFilterClueClassify = function(updateClassify) {
+ClueFilterStore.prototype.setFilterClueClassify = function(updateClassify) {
     var selectedClassify = [];
     _.forEach(updateClassify, (item) => {
         selectedClassify.push(item.value);
     });
     this.filterClueClassify = selectedClassify;
 };
-FilterStore.prototype.setFilterClueAvailbility = function() {
+ClueFilterStore.prototype.setFilterClueAvailbility = function() {
     this.filterClueAvailability = AVALIBILITYSTATUS.INAVALIBILITY;
 };
-module.exports = alt.createStore(FilterStore, 'FilterStore');
+module.exports = alt.createStore(ClueFilterStore, 'ClueFilterStore');

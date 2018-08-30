@@ -6,14 +6,14 @@ var Checker = require('../../../components/privilege/checker');
 var UserData = require('../../../public/sources/user-data');
 var AppUserManage = require('../../../modules/app_user_manage');
 var OrganizationManage = require('../../../modules/organization_manage');
-import PositionManage from '../../../modules/position_manage';
+var PositionManage = require('../../../modules/position_manage');
 
 function getChildRoutes() {
     var listRoute = AppUserManage('/user/list');
     var logRoute = AppUserManage('/user/log');
     var organizationRoute = OrganizationManage('/user/organization');
     let positionManage = PositionManage('/user/position');
-    
+
     var childRoutes = Checker.getChildRoutes('user',
         [
             listRoute,

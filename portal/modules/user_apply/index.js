@@ -11,9 +11,7 @@ const ApplyPage = (props) => (
     </Bundle>
 );
 
-module.exports = function(path) {
-    return {
-        path: '/apply',
-        component: ApplyPage
-    };
+module.exports = {
+    path: '/apply',
+    component: ApplyPage
 };

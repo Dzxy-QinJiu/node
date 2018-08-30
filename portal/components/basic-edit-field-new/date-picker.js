@@ -202,7 +202,7 @@ DatePickerEditField.propTypes = {
     disabledDate: PropTypes.func,
     format: PropTypes.string,
     placeholder: PropTypes.string,
-    width: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     noDataTip: PropTypes.string,
     addDataTip: PropTypes.string,
     hideButtonBlock: PropTypes.bool,

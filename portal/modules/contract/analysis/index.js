@@ -6,9 +6,7 @@ const ContractAnalysisPage = (props) => (
     </Bundle>
 );
 
-module.exports = function(path) {
-    return {
-        path: '/contract/analysis',
-        component: ContractAnalysisPage
-    };
+module.exports = {
+    path: '/contract/analysis',
+    component: ContractAnalysisPage
 };

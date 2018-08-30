@@ -6,9 +6,7 @@ const NotificationPage = (props) => (
     </Bundle>
 );
 
-module.exports = function(path) {
-    return {
-        path: '/notification_system',
-        component: NotificationPage
-    };
-};
+module.exports = {
+    path: '/notification_system',
+    component: NotificationPage
+}; 

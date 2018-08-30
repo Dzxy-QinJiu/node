@@ -6,7 +6,7 @@ var React = require('react');
  * Created by zhangshujuan on 2018/8/27.
  */
 var FilterAction = require('../../action/filter-action');
-var FilterStore = require('../../store/filter-store');
+var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import DatePicker from 'CMP_DIR/datepicker';
@@ -17,15 +17,15 @@ class ClueFilterPanel extends React.Component {
             clueSourceArray: this.props.clueSourceArray,
             accessChannelArray: this.props.accessChannelArray,
             clueClassifyArray: this.props.clueClassifyArray,
-            ...FilterStore.getState(),
+            ...clueFilterStore.getState(),
         };
     }
 
     onStoreChange = () => {
-        this.setState(FilterStore.getState());
+        this.setState(clueFilterStore.getState());
     };
     componentDidMount = () => {
-        FilterStore.listen(this.onStoreChange);
+        clueFilterStore.listen(this.onStoreChange);
     };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
@@ -35,7 +35,7 @@ class ClueFilterPanel extends React.Component {
         });
     };
     componentWillUnmount = () => {
-        FilterStore.unlisten(this.onStoreChange);
+        clueFilterStore.unlisten(this.onStoreChange);
     };
 
     handleFilterChange = (data) => {

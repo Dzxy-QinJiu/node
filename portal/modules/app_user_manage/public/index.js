@@ -35,6 +35,7 @@ var SelectFullWidth = require('../../../components/select-fullwidth');
 var Popover = require('antd').Popover;
 import ApplyUser from './views/v2/apply-user';
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
+import queryString from 'query-string';
 
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
@@ -63,12 +64,12 @@ class AppUserManage extends React.Component {
         //获取所有应用
         AppUserAction.getAppList();
         if (currentView === 'user' && this.props.location) {
-            const query = _.clone(this.props.location.query);
+            const query = queryString.parse(this.props.location.search);
             //从销售首页，点击试用用户和正式用户过期用户数字跳转过来
             var app_id = this.props.location.state && this.props.location.state.app_id;
             var _this = this;
             //有客户名时，直接按照客户名查询，应用选中全部
-            if (this.props.location.action === 'PUSH') {
+            if (this.props.history.action === 'PUSH') {
                 //针对不同情况，查询用户列表
                 if (app_id) {
                     //从销售首页点击过期用户数字跳转过来时，有app_id
