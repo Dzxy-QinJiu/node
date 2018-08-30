@@ -308,13 +308,13 @@ class ExpireScheduleLists extends React.Component {
                         {this.renderExpireListContent()}
                     </div>
                 </div>
-                <div className="scroll-tip">
+                <div className="scroll-tip btn-item">
                     <span className="scroll-flag" onClick={this.handleScrollExpiredPanel}
                         data-tracename="点击展开或收起超期日程列表">{expiredTipContent}</span>
                 </div>
                 {/*添加日程*/}
                 <div className="add-schedule-btn">
-                    <Button type="primary" onClick={this.handleAddTodo} data-tracename="待办">+ {Intl.get('shedule.list.add.todo', '待办')}</Button>
+                    <Button type="primary" className="btn-item" onClick={this.handleAddTodo} data-tracename="待办">+ {Intl.get('shedule.list.add.todo', '待办')}</Button>
                 </div>
             </div>
         );

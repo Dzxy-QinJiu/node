@@ -473,7 +473,7 @@ let SystemNotification = React.createClass({
         return (
             <div className="notification_system" data-tracename="系统消息列表">
                 <TopNav>
-                    <div className="notification-type-select">
+                    <div className="notification-type-select btn-item">
                         <SelectFullWidth
                             minWidth={60}
                             value={this.state.selectedNoticeType}
@@ -485,7 +485,7 @@ let SystemNotification = React.createClass({
                             })}
                         </SelectFullWidth>
                     </div>
-                    <div className="notification-status-select">
+                    <div className="notification-status-select btn-item">
                         <Select size="large" value={this.state.status} onChange={this.handleStatusChange}>
                             {STATUS_ARRAY.map((status) => {
                                 return (<Option value={status.value} key={status.value}>{status.name}</Option>);

@@ -13,6 +13,7 @@
             position: absolute;
             display: inline-block;
             right: 0;
+            top: @filter_area_margin_top;
             .btn-item {
                 float: left;  
                 line-height: @top-nav-height;             
@@ -23,8 +24,8 @@
                 right: 3px;
                 .crm-batch-change-container {
                     float: left;
-                    margin-left: 20px;
-                    margin-top: 20px;
+                    margin-left: 0;
+                    margin-top: 0;
                     margin-right: 5px;
                     button {
                         margin-left: 5px;
@@ -94,7 +95,6 @@
         height: 30px;
         line-height: 30px;
         margin-top: @filter_area_margin_top;
-        margin-left: @container_padding - 5px;
         width: 450px;
         .search-input-container {
             display: inline-block;
@@ -137,8 +137,8 @@
         .handle-btn-mini {
             float: right;
             width: 40px;
-            height: 75px;
-            line-height: 75px;
+            height: @btn-height;
+            line-height: @btn-height;
             text-align: center;
             color: #4d96d1;
             cursor: pointer;
@@ -165,6 +165,12 @@
         margin-top: 18px;
         margin-left: 32px;
         display: inline-block;
+        .search-wrapper { 
+            margin-right: @btn-margin;
+            .btn-item {
+                margin-right: 0!important;
+            }
+        }
     }
     .content-block {
         .filter-container {

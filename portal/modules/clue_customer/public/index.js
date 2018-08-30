@@ -169,7 +169,7 @@ const ClueCustomer = React.createClass({
         return (
             <div className="import-clue-customer-container pull-right">
                 {hasPrivilege('CUSTOMER_ADD_CLUE') ?
-                    <Button type="primary" onClick={this.showImportClueTemplate}>
+                    <Button type="primary" onClick={this.showImportClueTemplate} className="btn-item">
                         <span className="clue-container">
                             {Intl.get('clue.manage.import.clue', '导入线索')}
                         </span>
@@ -208,6 +208,7 @@ const ClueCustomer = React.createClass({
             <div className="add-clue-customer-container pull-right">
                 {hasPrivilege('CUSTOMER_ADD_CLUE') ?
                     <Button onClick={this.showClueAddForm}
+                        className="btn-item"
                         title={Intl.get('crm.sales.add.clue', '添加线索')}>
                         <span className="button-container">{Intl.get('crm.sales.add.clue', '添加线索')}</span>
                     </Button> :
@@ -540,7 +541,7 @@ const ClueCustomer = React.createClass({
     renderClueAnalysisBtn: function() {
         return (
             <div className="clue-analysis-btn-container pull-right">
-                <Button className="call-analysis-btn" title={Intl.get('clue.alanalysis.charts','线索分析')} onClick={this.handleClueAnalysisPanel}
+                <Button className="call-analysis-btn btn-item" title={Intl.get('clue.alanalysis.charts','线索分析')} onClick={this.handleClueAnalysisPanel}
                     data-tracename="点击线索分析按钮">
                     {Intl.get('user.detail.analysis', '分析')}
                 </Button>
@@ -604,8 +605,8 @@ const ClueCustomer = React.createClass({
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
                     <TopNav>
-                        <div className="date-picker-wrap">
-                            <span className="consult-time">{Intl.get('clue.analysis.consult.time', '咨询时间')}</span>
+                        <div className="date-picker-wrap btn-item">
+                            <span className="consult-time btn-item">{Intl.get('clue.analysis.consult.time', '咨询时间')}</span>
                             <DatePicker
                                 disableDateAfterToday={true}
                                 range="week"
@@ -624,7 +625,7 @@ const ClueCustomer = React.createClass({
                                 <DatePicker.Option
                                     value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                             </DatePicker>
-                            <div className="type-container">
+                            <div className="type-container btn-item">
                                 <Select value={this.state.clueCustomerTypeFilter.status} onChange={this.onStatusChange}>
                                     {/*除普通销售外都展示全部这个按钮*/}
                                     {user.isCommonSales ? null : <Option value="">
@@ -644,7 +645,7 @@ const ClueCustomer = React.createClass({
                                     </Option>
                                 </Select>
                             </div>
-                            <div className="search-container">
+                            <div className="search-container btn-item">
                                 <SearchInput
                                     searchEvent={this.searchFullTextEvent}
                                     searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}

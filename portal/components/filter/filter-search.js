@@ -237,7 +237,7 @@ class FilterSearch extends React.Component {
                                 trigger="click"
                                 visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
                             >
-                                <Icon type="filter" />
+                                <Button type={this.state.showList?'primary': ''} className="btn-item">{Intl.get('common.filter', '筛选')}</Button>
                             </Popover>
                         </div>
 

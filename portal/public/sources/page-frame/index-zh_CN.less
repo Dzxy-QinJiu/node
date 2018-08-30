@@ -134,13 +134,14 @@ body.macintosh pre {
   }
 }
 .btn-item {
-  margin-right: @btn-margin;
+  margin-right: @btn-margin!important;
+  margin-left: 0!important;
   button,
   .ant-select-selection,
   .range-datepicker {
-      line-height: @btn-height;
+      line-height: @btn-height!important;
       font-size: @btn-font-size;
-      height: @btn-height;
+      height: @btn-height!important;
       vertical-align: middle;
       min-width: @btn-min-width;
       color: @btn-font-color;
@@ -166,9 +167,10 @@ body.macintosh pre {
 .btn-item {
   float: left;
   margin-right: @btn-margin;
-  line-height: @btn-height;
-  font-size: @btn-font-size;
-  height: @btn-height;
+  margin-left: 0;
+  line-height: @btn-height!important;
+  font-size: @btn-font-size!important;
+  height: @btn-height!important;
   vertical-align: middle;
   min-width: @btn-min-width;
   color: @btn-font-color;
@@ -186,6 +188,18 @@ body.macintosh pre {
           .ant-select-selection-selected-value {
               padding-top: 0;
           }
+      }
+  }
+  &.ant-select-selection,
+  .range-datepicker {
+      line-height: @btn-height!important;
+      font-size: @btn-font-size!important;
+      height: @btn-height!important;
+      vertical-align: middle;
+      min-width: @btn-min-width;
+      color: @btn-font-color;
+      &.ant-btn-primary {
+          color: white;
       }
   }
 }
