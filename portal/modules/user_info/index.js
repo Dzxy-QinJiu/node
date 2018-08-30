@@ -1,4 +1,13 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const UserInfoPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(UserInfoPage) => <UserInfoPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
     path: '/user_info_manage/user_info',
-    component: require('./public')
+    component: UserInfoPage
 };
+

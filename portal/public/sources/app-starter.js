@@ -95,10 +95,6 @@ function init() {
                     childRoutes.push(require('../../modules/sales_home_page'));
                 }
                 break;
-            //用户管理
-            case 'user_manage':
-                childRoutes.push(require('../../modules/user_manage'));
-                break;
             case 'oplate_user_analysis':
                 childRoutes.push(require('../../modules/oplate_user_analysis'));
                 break;
