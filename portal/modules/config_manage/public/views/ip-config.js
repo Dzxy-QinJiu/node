@@ -6,6 +6,7 @@ import { Alert,Icon, Checkbox } from 'antd';
 import AlertTimer from '../../../../components/alert-timer';
 import Trace from 'LIB_DIR/trace';
 const CHECKIPMSG = Intl.get('config.manage.input.ip','请输入有效的IP（eg:192.168.1.9）');
+import {ipRegex} from 'PUB_DIR/sources/utils/consts';
 
 const IpConfig = React.createClass({
     getInitialState(){
@@ -113,7 +114,7 @@ const IpConfig = React.createClass({
 
     // 遍历获取配置IP列表
     renderIpList(){
-        if(this.state.IpConfigloading && this.refs.addIpItem.value == '' && this.state.deleteIpId == 0) {
+        if(this.state.IpConfigloading && this.refs.addIpItem.value === '' && this.state.deleteIpId === 0) {
             return <Spinner />;
         }
         if(this.state.getIpConfigErrMsg) {
@@ -141,7 +142,7 @@ const IpConfig = React.createClass({
                 <ul className="mb-taglist">
                     {ipList.map((item, key) => {
                         return (
-                            <li className="mb-tag" ref={key}>
+                            <li className="mb-tag" ref={key} key={key}>
                                 <div className="mb-tag-content">
                                     <span className="mb-tag-text">{item.ip}</span>&nbsp;&nbsp;
                                     <span className="glyphicon glyphicon-remove mb-tag-remove"
@@ -149,7 +150,7 @@ const IpConfig = React.createClass({
                                         data-tracename="移除某个IP"
                                     >
                                     </span>
-                                    { this.state.deleteIpId == item.id ? (
+                                    { this.state.deleteIpId === item.id ? (
                                         <span ><Icon type="loading" /></span>
                                     ) : null
                                     }
@@ -165,9 +166,7 @@ const IpConfig = React.createClass({
 
     checkIpFormat(){
         var inputValue = this.refs.addIpItem.value;
-        var reg = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/;
-
-        if(!reg.test(inputValue)){
+        if(!ipRegex.test(inputValue)){
             this.setState({
                 addIpErrMsg: CHECKIPMSG
             });
@@ -181,7 +180,7 @@ const IpConfig = React.createClass({
     },
 
     blurEvent(){
-        if(this.refs.addIpItem.value == ''){
+        if(this.refs.addIpItem.value === ''){
             this.setState({
                 addIpErrMsg: ''
             });
@@ -203,7 +202,7 @@ const IpConfig = React.createClass({
                     <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>
                     {this.state.isLoading ? <Icon type="loading" style={{marginLeft: 12}}/> : null}
                 </button>
-                {this.state.addIpErrMsg != '' ? this.handleAddIpConfigFail() : null}
+                {this.state.addIpErrMsg !== '' ? this.handleAddIpConfigFail() : null}
             </form>
         );
     },
@@ -247,7 +246,7 @@ const IpConfig = React.createClass({
                     <span>
                         <ReactIntl.FormattedMessage id="config.filter.inner.ip" defaultMessage="过滤内网ip"/>
                     </span>
-                    {this.state.deleteErrMsg != '' ? this.handleDeleteIpConfigFail() : null}
+                    {this.state.deleteErrMsg !== '' ? this.handleDeleteIpConfigFail() : null}
                 </div>
                 <div className="box-body">
                     {this.renderIpList()}

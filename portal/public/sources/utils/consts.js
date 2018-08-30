@@ -73,6 +73,8 @@ export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
 export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
 //QQ号码的正则表达式
 export const qqRegex = /^[1-9][0-9]{4,}$/;
+//IP的正则表达式
+export const ipRegex = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/;
 
 export const SYSTEM_NOTICE_TYPES = {
     OFFSITE_LOGIN: 'illegalLocation',//异地登录

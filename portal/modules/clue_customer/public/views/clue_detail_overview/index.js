@@ -657,21 +657,6 @@ var ClueDetailOverview = React.createClass({
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            IP：
-                        </div>
-                        <div className="clue-info-detail">
-                            <BasicEditInputField
-                                hasEditPrivilege={false}
-                                id={curClue.id}
-                                saveEditInput={this.saveEditBasicInfo.bind(this, 'source_ip')}
-                                value={curClue.source_ip}
-                                field='source_ip'
-                                noDataTip={Intl.get('common.unknown', '未知')}
-                            />
-                        </div>
-                    </div>
-                    <div className="clue-info-item">
-                        <div className="clue-info-label">
                             {Intl.get('call.record.customer.source', '来源')}：
                         </div>
                         <div className="clue-info-detail">
@@ -692,6 +677,32 @@ var ClueDetailOverview = React.createClass({
                             />
                         </div>
                     </div>
+                    <div className="clue-info-item">
+                        <div className="clue-info-label">
+                            {Intl.get('clue.customer.source.ip','来源IP')}：
+                        </div>
+                        <div className="clue-info-detail">
+                            <BasicEditInputField
+                                hasEditPrivilege={false}
+                                id={curClue.id}
+                                saveEditInput={this.saveEditBasicInfo.bind(this, 'source_ip')}
+                                value={curClue.source_ip}
+                                field='source_ip'
+                                noDataTip={Intl.get('common.unknown', '未知')}
+                            />
+                        </div>
+                    </div>
+                    {curClue.province || curClue.city ?
+                        <div className="clue-info-item">
+                            <div className="clue-info-label">
+                                {Intl.get('crm.96', '地域')}：
+                            </div>
+                            <div className="clue-info-detail">
+                                {curClue.province}
+                                {curClue.city}
+                            </div>
+                        </div>
+                        : null}
                     <div className="clue-info-item">
                         <div className="clue-info-label">
                             {Intl.get('crm.sales.clue.access.channel', '接入渠道')}：

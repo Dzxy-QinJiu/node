@@ -2586,5 +2586,7 @@ var zh_CN = {
     'clue.filter.clue.status': '线索状态',
     'clue.statistic.get.error': '获取线索统计数据失败',
     'user.email.only.error': '邮箱唯一性验证失败',
+    'clue.customer.source.ip': '来源IP',
+    'clue.source.province.city': '线索归属地'
 };
 export default zh_CN;

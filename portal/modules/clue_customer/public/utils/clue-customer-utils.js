@@ -1,5 +1,5 @@
 //客户名格式验证
-import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import {nameRegex, ipRegex} from 'PUB_DIR/sources/utils/consts';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 var userData = require('PUB_DIR/sources/user-data');
 export const checkClueName = function(rule, value, callback) {
@@ -9,6 +9,19 @@ export const checkClueName = function(rule, value, callback) {
             callback();
         } else {
             callback(new Error(Intl.get('clue.name.rule', '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
+        }
+    }
+    else{
+        callback();
+    }
+};
+export const checkClueSourceIP = function(rule, value, callback) {
+    value = $.trim(value);
+    if (value) {
+        if (ipRegex.test(value)) {
+            callback();
+        } else {
+            callback(new Error(Intl.get('config.manage.input.ip', '请输入有效的IP（eg:192.168.1.9）')));
         }
     }
     else{
