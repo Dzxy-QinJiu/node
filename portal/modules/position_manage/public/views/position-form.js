@@ -1,7 +1,7 @@
 var React = require('react');
 var createReactClass = require('create-react-class');
 import {Form, Input, Button, Select, Checkbox } from 'antd';
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 const FormItem = Form.Item;
 const Option = Select.Option;
 const Validator = Validation.Validator;

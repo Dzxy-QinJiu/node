@@ -9,7 +9,7 @@ import {Form, Input, Select, DatePicker, Radio, Icon} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 const extend = require('extend');
 const AutosizeTextarea = require('../../../components/autosize-textarea');

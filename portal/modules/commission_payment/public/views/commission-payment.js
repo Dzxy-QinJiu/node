@@ -3,7 +3,7 @@
  * */
 var React = require('react');
 var createReactClass = require('create-react-class');
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 import ajax from '../../../contract/common/ajax';
 import routeList from '../../../contract/common/route';

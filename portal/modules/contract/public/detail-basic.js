@@ -19,7 +19,7 @@ import AddBasic from './add-basic';
 import AddProduct from './add-product';
 import DetailRepayment from './detail-repayment';
 import { REPAYMENT_OWN_COLUMNS } from '../consts';
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 import { AntcMdTable } from 'antc';
 const extend = require('extend');
 import { parseAmount } from 'LIB_DIR/func';

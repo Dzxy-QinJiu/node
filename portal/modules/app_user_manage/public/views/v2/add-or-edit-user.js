@@ -1,6 +1,6 @@
 var React = require('react');
 var createReactClass = require('create-react-class');
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 创建用户

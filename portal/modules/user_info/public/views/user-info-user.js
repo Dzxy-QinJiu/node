@@ -1,6 +1,6 @@
 var React = require('react');
 const PropTypes = require('prop-types');
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 import {Button, Form, Input, Icon, message} from 'antd';
 const FormItem = Form.Item;
 var HeadIcon = require('../../../../components/headIcon');

@@ -9,7 +9,7 @@ import PositionAction from '../action/index';
 import PositionStore from '../store/index';
 import {Form, Input, Select} from 'antd';
 import * as LANGLOBAL from '../consts';
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 const FormItem = Form.Item;
 const Option = Select.Option;
 
