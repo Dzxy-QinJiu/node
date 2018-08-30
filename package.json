@@ -95,7 +95,7 @@
     "os-locale": "2.0.0",
     "q": "1.4.1",
     "qrcode.react": "0.6.1",
-    "rc-form-validation": "2.5.0",
+    "rc-form-validation-for-react16": "^2.5.1",
     "react": "16.4.1",
     "react-bootstrap": "0.32.1",
     "react-copy-to-clipboard": "5.0.1",
