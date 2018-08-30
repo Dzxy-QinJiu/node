@@ -59,7 +59,7 @@ class CustomerStageTable extends React.Component {
     handleScrollBottom() {
         this.props.handleScrollBottom({
             query: {
-                label: this.props.params.type,
+                label: this.props.match.params.type,
                 nickname: this.props.params.nickname
             },
             rang_params: [{

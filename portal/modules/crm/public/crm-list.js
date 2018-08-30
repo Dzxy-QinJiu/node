@@ -757,7 +757,7 @@ class Crm extends React.Component {
                 condition.term_fields = term_fields;
             }
             delete condition.otherSelectedItem;
-            const conditionParams = (this.props.params && this.props.params.condition) || condition;
+            const conditionParams = (this.props.match.params && this.props.params.condition) || condition;
             const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
             const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
             CrmAction.queryCustomer(conditionParams, rangParams, this.state.pageSize, this.state.sorter, queryObjParams);

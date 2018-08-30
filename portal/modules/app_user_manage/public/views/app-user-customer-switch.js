@@ -30,7 +30,7 @@ class AppUserCustomerSwitch extends React.Component {
     };
 
     getCustomerId = () => {
-        return this.props.params.customerId;
+        return this.props.match.params.customerId;
     };
 
     changeTableHeight = () => {
