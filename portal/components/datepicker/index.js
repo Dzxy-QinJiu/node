@@ -73,7 +73,7 @@ var React = require('react');
  *
  */
 import PropTypes from 'prop-types';
-
+var React = require('react');
 import Dropdown from 'rc-dropdown';
 import {Button, Radio, Popover, Icon} from 'antd';
 import Menu, {Item as MenuItem} from 'rc-menu';
@@ -908,16 +908,15 @@ DatePicker.propTypes = {
  * <DatePickerOption value="month">月</DatePickerOption>
  *
  */
-var DatePickerOption = React.createClass({
-    getDefaultProps: function() {
-        return {
-            value: ''
-        };
-    },
-    render: function() {
+class DatePickerOption extends React.Component {
+    static defaultProps = {
+        value: ''
+    };
+
+    render() {
         return null;
     }
-});
+}
 
 //添加option
 DatePicker.Option = DatePickerOption;

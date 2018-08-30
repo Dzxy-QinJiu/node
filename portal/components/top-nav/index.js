@@ -4,7 +4,7 @@ var UserData = require('../../public/sources/user-data');
 //class名
 var classNames = require('classnames');
 //顶部导航菜单的超链接
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var Dropdown = require('antd').Dropdown;
 var topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
 
@@ -155,8 +155,8 @@ TopNav.MenuList = class extends React.Component {
                                 'topNav-menu-item-selected': locationPath === menu.routePath
                             });
 
-                            var liContent = (<Link to={`/${menu.routePath}`}
-                                activeClassName="active" ref="navLinks">{menu.name}</Link>);
+                            var liContent = (<NavLink to={`/${menu.routePath}`}
+                                activeClassName="active" ref="navLinks">{menu.name}</NavLink>);
                             if (menuName === 'myAppMenu' && menu.name === '我的应用') {
                                 liContent = (<Dropdown overlay={subMenu}>
                                     {liContent}

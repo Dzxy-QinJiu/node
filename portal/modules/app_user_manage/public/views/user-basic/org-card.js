@@ -9,7 +9,7 @@ import { Select, Input } from 'antd';
 
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import { StatusWrapper } from 'antc';
-import 'prop-types';
+import { PropTypes } from 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import OrganizationAjax from 'MOD_DIR/common/public/ajax/organization';

@@ -1,17 +1,15 @@
 var React = require('react');
 var history = require('../../public/sources/history');
 
-function getPathname() {
-    return window.location.pathname.replace(/^\//, '');
-}
+import {renderRoutes} from 'react-router-config';
 
 class RightContent extends React.Component {
     checkRoute = () => {
-        var locationPath = getPathname();
+        var locationPath = location.pathname;
         if (this.props.route && locationPath === this.props.route.path) {
             var routes = this.props.route.routesExports;
             if (routes && routes[0] && routes[0].path) {
-                history.replace('/' + locationPath + '/' + routes[0].path);
+                history.replace(routes[0].path);
                 return true;
             }
         }
@@ -19,15 +17,16 @@ class RightContent extends React.Component {
     };
 
     render() {
-        var jump = this.checkRoute();
-        if (jump) {
-            return null;
+        if (this.props.route) {
+            var jump = this.checkRoute();
+            if (jump) {
+                return null;
+            }
         }
-
         return (
             <div className="rightContent">
                 <div className="main">
-                    {this.props.children}
+                    {this.props.route ? renderRoutes(this.props.route.routes) : this.props.children}
                 </div>
             </div>
         );
@@ -35,4 +34,3 @@ class RightContent extends React.Component {
 }
 
 module.exports = RightContent;
-

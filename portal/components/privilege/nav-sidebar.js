@@ -1,6 +1,6 @@
 require('./css/nav-sidebar.less');
 var userData = require('../../public/sources/user-data');
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var Logo = require('../Logo/index.js');
 var Avatar = require('../Avatar/index.js');
 var LogOut = require('../../modules/logout/views/index.js');
@@ -388,9 +388,9 @@ var NavSidebar = createReactClass({
                     UserInfoLinkList.map(function(obj) {
                         return (
                             <li key={obj.key}>
-                                <Link to={obj.href} activeClassName="active">
+                                <NavLink to={obj.href} activeClassName="active">
                                     {obj.name}
-                                </Link>
+                                </NavLink>
                             </li>
                         );
                     })
@@ -426,12 +426,12 @@ var NavSidebar = createReactClass({
         }
         return (
             <div className="sidebar-applyentry">
-                <Link to={applyLinks[0].href} activeClassName="active">
+                <NavLink to={applyLinks[0].href} activeClassName="active">
                     <i className="iconfont icon-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}/>
                     {this.state.messages.approve === 0 && this.state.hasUnreadReply ?
                         <span className="iconfont icon-apply-message-tip"
                             title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
-                </Link>
+                </NavLink>
             </div>
         );
     },
@@ -443,9 +443,9 @@ var NavSidebar = createReactClass({
                     backendConfigLinks.map(function(obj) {
                         return (
                             <li key={obj.key}>
-                                <Link to={obj.href} activeClassName="active">
+                                <NavLink to={obj.href} activeClassName="active">
                                     {obj.name}
-                                </Link>
+                                </NavLink>
                             </li>
                         );
                     })
@@ -466,9 +466,9 @@ var NavSidebar = createReactClass({
             <div className="sidebar-backend-config">
                 <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
                     overlayClassName="nav-sidebar-backend-config">
-                    <Link to={defaultLink.href} activeClassName="active">
+                    <NavLink to={defaultLink.href} activeClassName="active">
                         <i className="iconfont icon-role-auth-config"/>
-                    </Link>
+                    </NavLink>
                 </Popover>
             </div>
         );
@@ -484,7 +484,7 @@ var NavSidebar = createReactClass({
                     overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
                         <Avatar className="avatar"
-                            size="51"
+                            size="51px"
                             src={this.state.userInfoLogo}
                             userName={this.state.userInfo.user_name}
                             nickName={this.state.userInfo.nick_name}
@@ -502,9 +502,9 @@ var NavSidebar = createReactClass({
                 {NavSidebarLists.map(function(obj, index) {
                     return (
                         <li key={index}>
-                            <Link to={`/${obj.routePath}`} activeClassName="active">
+                            <NavLink to={`/${obj.routePath}`} activeClassName="active">
                                 {obj.name}
-                            </Link>
+                            </NavLink>
                         </li>
                     );
                 })
@@ -569,13 +569,13 @@ var NavSidebar = createReactClass({
                                         }
                                         return (
                                             <li key={i} className={`ico ${menu.routePath.replace(/\//g, '_')}_ico`}>
-                                                <Link to={`/${menu.routePath}`}
+                                                <NavLink to={`/${menu.routePath}`}
                                                     activeClassName={extraClass}
                                                     className={extraClass}
                                                 >
                                                     <i title={menu.name}></i>
                                                     <span>{menu.name}</span>
-                                                </Link>
+                                                </NavLink>
                                             </li>
                                         );
                                     })

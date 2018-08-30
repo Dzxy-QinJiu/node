@@ -25,7 +25,7 @@ const noop = function() {
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import routeList from '../../modules/common/route';
 import ajax from '../../modules/common/ajax';
-import 'prop-types';
+import { PropTypes } from 'prop-types';
 const PHONE_INPUT_ID = 'phoneInput';
 class AddCustomerForm extends React.Component {
     constructor(props) {

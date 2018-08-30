@@ -1,16 +1,15 @@
 'use strict';
 var React = require('react');
-var ReactRouter = require('react-router');
+import {NavLink} from 'react-router-dom';
 var DefaultUserLogoTitle = require('../default-user-logo-title');
-var Link = ReactRouter.Link;
 
 // 头像组件
 class Avatar extends React.Component {
     render() {
         var innerStyle = {
             display: 'inline-block',
-            width: this.props.size ? this.props.size : 36,
-            height: this.props.size ? this.props.size : 36
+            width: this.props.size ? this.props.size : '36px',
+            height: this.props.size ? this.props.size : '36px'
         };
         var aStyle = {
             cursor: 'default'
@@ -33,12 +32,12 @@ class Avatar extends React.Component {
 class Aimg extends React.Component {
     render() {
         return (
-            <Link to={this.props.url} activeClassName="active">
+            <NavLink to={this.props.url} activeClassName="active">
                 <Img alt={this.props.name} src={this.props.src} round={this.props.round}
                     userName={this.props.userName} nickName={this.props.nickName}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
-            </Link>
+            </NavLink>
         );
     }
 }

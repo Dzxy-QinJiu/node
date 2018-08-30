@@ -17,7 +17,7 @@ var path = require('path');
 var webpack = require("webpack");
 var config = require('./conf/config');
 //打包模式
-var webpackMode = config.webpackMode || 'dev';
+var webpackMode =  'dev';
 
 module.exports = {
     mode: webpackMode === 'production' ? 'production' : 'development',

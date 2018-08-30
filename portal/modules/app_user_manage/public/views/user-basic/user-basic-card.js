@@ -1,21 +1,18 @@
-const PropTypes = require('prop-types');
-var React = require('react');
 /**
-* Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
-* 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
-* Created by xuning on 2018 
-*/
+ * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by xuning on 2018
+ */
 import DetailCard from 'CMP_DIR/detail-card';
-import { Select, Input } from 'antd';
-// import { hasPrivilege } from '../../privilege/checker';s
 import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_suggest/customer_suggest';
+import {DetailEditBtn} from 'CMP_DIR/rightPanel';
+import {StatusWrapper} from 'antc';
+import {PropTypes} from 'prop-types';
 
+var React = require('react');
 //class的前缀
-const CLASS_PREFIX = 'user-customer';
 const USER_CUSTOMER_SUGGEST_ID = 'user-customer-suggest-wrap';
-var customerAjax = require('MOD_DIR/common/public/ajax/customer');
-import { DetailEditBtn } from 'CMP_DIR/rightPanel';
-import { StatusWrapper } from 'antc';
+
 
 class UserBasicCard extends React.Component {
     constructor(props) {
@@ -42,6 +39,7 @@ class UserBasicCard extends React.Component {
             sales_team_name: props.sales_team_name
         };
     }
+
     componentWillReceiveProps(nextProps) {
         //外层传进来新的客户、销售、销售团队数据的时候，更新这些字段
         var propList = [
@@ -62,6 +60,7 @@ class UserBasicCard extends React.Component {
             this.setState(newState);
         }
     }
+
     onCustomerChoosen(info) {
         var customer_id = info && info.customer && info.customer.id || '';
         if (!customer_id) {
@@ -88,6 +87,7 @@ class UserBasicCard extends React.Component {
             sales_team_name: info && info.sales_team && info.sales_team.name || ''
         });
     }
+
     hideCustomerError() {
         this.setState({
             show_customer_error: false,
@@ -95,11 +95,13 @@ class UserBasicCard extends React.Component {
             error_message: ''
         });
     }
+
     toggleEdit = () => {
         this.setState({
             showEdit: !this.state.showEdit
         });
-    }
+    };
+
     changeCustomerAjax(appUser) {
         this.setState({
             submitType: 'loading'
@@ -141,6 +143,7 @@ class UserBasicCard extends React.Component {
             }
         });
     }
+
     submit() {
         if (this.state.submitType === 'loading') {
             return;
@@ -181,6 +184,7 @@ class UserBasicCard extends React.Component {
         };
         this.changeCustomerAjax(appUser);
     }
+
     render() {
         return (
             <DetailCard
@@ -210,7 +214,8 @@ class UserBasicCard extends React.Component {
                     <div className="sales-team-show-block">
                         {
                             this.state.showEdit ?
-                                <div className="select_text_wrap" ref="wrap" style={{ display: 'block' }} id={USER_CUSTOMER_SUGGEST_ID}>
+                                <div className="select_text_wrap" ref="wrap" style={{display: 'block'}}
+                                     id={USER_CUSTOMER_SUGGEST_ID}>
                                     <CustomerSuggest
                                         required={true}
                                         customer_id={this.props.customer_id}
@@ -239,6 +244,7 @@ class UserBasicCard extends React.Component {
         );
     }
 }
+
 UserBasicCard.propTypes = {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     customer_id: PropTypes.string,

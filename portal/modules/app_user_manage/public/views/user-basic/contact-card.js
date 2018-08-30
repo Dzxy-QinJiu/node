@@ -5,7 +5,7 @@ var React = require('react');
 * Created by xuning on 2018.8.28
 */
 import DetailCard from 'CMP_DIR/detail-card';
-import 'prop-types';
+import { PropTypes } from 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
 

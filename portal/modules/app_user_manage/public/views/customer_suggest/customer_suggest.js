@@ -8,7 +8,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var Select = require('antd').Select;
 var Icon = require('antd').Icon;
-var Link = require('react-router').Link;
+import {Link} from 'react-router-dom';
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('../../../../../public/sources/user-data');
 var classNames = require('classnames');

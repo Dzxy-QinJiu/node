@@ -1,6 +1,7 @@
 var React = require('react');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-var Router = require('react-router').Router;
+import {Router} from 'react-router-dom';
+import {renderRoutes} from 'react-router-config';
 var userData = require('./user-data');
 var history = require('./history');
 
@@ -153,45 +154,41 @@ function init() {
         path: '*',
         components: require('./404')
     });
-
-    var rootRoute = {
-        component: 'div',
-        childRoutes: [{
-            path: '/',
-            //添加indexroute，做首页访问的跳转
-            getIndexRoute: function(location, callback) {
-                if (user.preUrl && user.preUrl !== '/') {
-                    callback(null, {
-                        component: TurnPageIndexRoute
-                    });
-                } else {
-                    if (hasPrivilege('GET_ALL_CALL_RECORD') || //GET_ALL_CALL_RECORD 获取所有电话统计记录的权限
-                        hasPrivilege('GET_MY_CALL_RECORD')) {//GET_MY_CALL_RECORD 获取我的电话统计记录的权限
-                        //客套销售首页视图的权限跳到销售主页
-                        callback(null, {
-                            component: SalesIndexRoute
-                        });
-                    } else if (userData.hasRole(userData.ROLE_CONSTANS.ACCOUNTANT)) {
-                        //财务人员跳转到合同仪表盘
-                        callback(null, {
-                            component: ContractIndexRoute
-                        });
-                    } else {
-                        callback(null, {
-                            component: HomeIndexRoute
-                        });
-                    }
-                }
-            },
-            component: require('./page-frame'),
-            childRoutes: childRoutes
-        }]
+    //根路径路由
+    const IndexRoute = (props) => {
+        if (user.preUrl && user.preUrl !== '/') {
+            return <TurnPageIndexRoute/>;
+        } else {
+            if (hasPrivilege('GET_ALL_CALL_RECORD') || //GET_ALL_CALL_RECORD 获取所有电话统计记录的权限
+                hasPrivilege('GET_MY_CALL_RECORD')) {//GET_MY_CALL_RECORD 获取我的电话统计记录的权限
+                //客套销售首页视图的权限跳到销售主页
+                return <SalesIndexRoute/>;
+            } else if (userData.hasRole(userData.ROLE_CONSTANS.ACCOUNTANT)) {
+                //财务人员跳转到合同仪表盘
+                return <ContractIndexRoute/>;
+            } else {
+                return <HomeIndexRoute/>;
+            }
+        }
     };
 
+    //路由配置
+    const routePaths = [
+        {
+            component: require('./page-frame'),
+            routes: [
+                {
+                    path: '/',
+                    exact: true,
+                    component: IndexRoute
+                },
+                ...childRoutes
+            ]
+        }
+    ];
+    const routes = (<Router history={history}>{renderRoutes(routePaths)}</Router>);
 
-    ReactDOM.render(<Translate Template={<Router history={history} routes={rootRoute}/>}></Translate>,
-        $('#app')[0]
-    );
+    ReactDOM.render(<Translate Template={routes}></Translate>, $('#app')[0]);
 }
 
 exports.init = init;

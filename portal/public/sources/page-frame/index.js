@@ -1,6 +1,7 @@
 var React = require('react');
 var language = require('../../../public/language/getLanguage');
 import Trace from 'LIB_DIR/trace';
+import {renderRoutes} from 'react-router-config';
 
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./index-es_VE.less');
@@ -164,7 +165,7 @@ class PageFrame extends React.Component {
                         <LeftMenu toggleNotificationPanel={this.toggleNotificationPanel} closeNotificationPanel={this.closeNotificationPanel}/>
                     </div>
                     <div className="col-xs-10">
-                        {this.props.children}
+                        {renderRoutes(this.props.route.routes)}
                         {this.state.phonePanelShow ? (
                             <PhonePanel
                                 showFlag={this.state.phonePanelShow}

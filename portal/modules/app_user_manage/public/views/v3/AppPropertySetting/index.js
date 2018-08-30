@@ -20,7 +20,7 @@ var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import AppUserUtil from 'MOD_DIR/app_user_manage/public/util/app-user-util.js';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 const TabPane = Tabs.TabPane;
-import 'prop-types';
+import { PropTypes } from 'prop-types';
 
 const AppPropertySetting = createReactClass({
     displayName: 'AppPropertySetting',

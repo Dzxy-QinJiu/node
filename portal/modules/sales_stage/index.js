@@ -1,8 +1,4 @@
 module.exports = {
-    path: 'sales_stage',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require) {
-            cb(null, require('./public'));
-        });
-    }
+    path: '/background_management/sales_stage',
+    component: require('./public')
 };

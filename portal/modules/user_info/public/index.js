@@ -16,7 +16,7 @@ var UserInfoStore = require('./store/user-info-store');
 var UserInfoAction = require('./action/user-info-actions');
 var UserInfo = require('./views/user-info-user');
 var UserInfoLog = require('./views/user-info-log');
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var topHeight = 65;//顶部导航的高度
 var logTitleHeight = 40;//登录日志顶部title高度
 const logBottomHeight = 40; // 登录日志距离底部高度
@@ -121,9 +121,9 @@ var UserInfoPage = createReactClass({
                                         defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
                                         values={{
                                             editpassword: <span className="update-pwd">
-                                                <Link to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
+                                                <NavLink to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
                                                     <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
-                                                </Link>
+                                                </NavLink>
                                             </span>
                                         }}
                                     />

@@ -5,7 +5,7 @@ var React = require('react');
 
 import { AntcTable } from 'antc';
 import { parseAmount, exportToCsv } from 'LIB_DIR/func';
-import 'prop-types';
+import { PropTypes } from 'prop-types';
 const querystring = require('querystring');
 
 //团队分组列列宽

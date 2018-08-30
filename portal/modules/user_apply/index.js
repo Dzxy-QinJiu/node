@@ -4,10 +4,6 @@
  * Created by zhangshujuan on 2017/3/15.
  */
 module.exports = {
-    path: 'apply',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public'));
-        });
-    }
+    path: '/apply',
+    component: require('./public')
 };

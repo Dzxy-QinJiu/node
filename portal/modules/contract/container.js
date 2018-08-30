@@ -1,13 +1,14 @@
-const PropTypes = require('prop-types');
-var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by liwenjun on 2018/6/21.
  */
-import TopNav from 'CMP_DIR/top-nav';
+const PropTypes = require('prop-types');
 const history = require('../../public/sources/history');
+var React = require('react');
+import TopNav from 'CMP_DIR/top-nav';
 import './public/style.less';
+
 class ContractContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +36,7 @@ class ContractContainer extends React.Component {
             <div className="rightContent">
                 <div className="main">
                     <TopNav>
-                        <TopNav.MenuList />
+                        <TopNav.MenuList/>
                     </TopNav>
                     <div className="contract-container">
                         {this.props.children}
@@ -45,6 +46,7 @@ class ContractContainer extends React.Component {
         );
     }
 }
+
 ContractContainer.propTypes = {
     children: PropTypes.element,
     route: PropTypes.object,

@@ -5,7 +5,7 @@ var React = require('react');
 
 import { AntcTable } from 'antc';
 import { parseAmount } from 'LIB_DIR/func';
-import 'prop-types';
+import { PropTypes } from 'prop-types';
 
 class ContractStatistics extends React.Component {
     constructor(props) {

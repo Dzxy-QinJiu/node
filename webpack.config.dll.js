@@ -7,7 +7,7 @@ var path = require('path');
 var webpack = require('webpack');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var config = require('./conf/config');
-var webpackMode = config.webpackMode || 'dev';
+var webpackMode =   'dev';
 
 var pluginLists = [
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),

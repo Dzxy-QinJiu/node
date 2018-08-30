@@ -4,10 +4,6 @@
  * Created by zhangshujuan on 2018/2/5.
  */
 module.exports = {
-    path: 'analysis/weekly_report',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public'));
-        });
-    }
+    path: '/analysis/weekly_report',
+    component: require('./public')
 };

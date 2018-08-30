@@ -17,7 +17,7 @@ var autosize = require('autosize');
 import Trace from 'LIB_DIR/trace';
 require('./css/basic-edit-field.less');
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import 'prop-types';
+import { PropTypes } from 'prop-types';
 
 var UserBasicEditField = createReactClass({
     displayName: 'UserBasicEditField',

@@ -1,8 +1,4 @@
 module.exports = {
-    path: 'analysis',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public')); 
-        });
-    }
+    path: '/contract/analysis',
+    component: require('./public')
 };

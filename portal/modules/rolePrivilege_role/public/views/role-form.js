@@ -5,7 +5,7 @@ const Validator = Validation.Validator;
 /**
  * Created by jinfeng on 2015/12/28.
  */
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var Form = require('antd').Form;
 var Input = require('antd').Input;
 var Button = require('antd').Button;
@@ -376,8 +376,8 @@ var RoleForm = createReactClass({
                                     defaultMessage={'暂无权限,请先{add}'}
                                     values={{
                                         'add': (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}>{Intl.get('role.add.auth', '添加权限')}</a>) : (
-                                            <Link to="/backgroundManagement/authority" activeClassName="active">
-                                                {Intl.get('role.add.auth', '添加权限')}</Link>
+                                            <NavLink to="/backgroundManagement/authority" activeClassName="active">
+                                                {Intl.get('role.add.auth', '添加权限')}</NavLink>
                                         ))
                                     }}
                                 />

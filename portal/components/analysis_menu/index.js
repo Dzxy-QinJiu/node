@@ -2,7 +2,7 @@ var React = require('react');
 require('./index.less');
 var Dropdown = require('antd').Dropdown;
 var Menu = require('antd').Menu;
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var UserData = require('../../public/sources/user-data');
 var moduleTextMap = {
     'oplate_user_analysis': Intl.get('sales.user.analysis', '用户分析'),
@@ -44,7 +44,7 @@ class AnalysisMenu extends React.Component {
                 var url = moduleUrlMap[module];
                 menuListArray.push((
                     <Menu.Item key={module}>
-                        <Link to={url} activeClassName="active">{moduleTextMap[module]}</Link>
+                        <NavLink to={url} activeClassName="active">{moduleTextMap[module]}</NavLink>
                     </Menu.Item>
                 ));
             }

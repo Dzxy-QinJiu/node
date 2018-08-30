@@ -2,6 +2,7 @@
  * Created by xiaojinfeng on  2015/12/25 11:04 .
  */
 var React = require('react');
+import {NavLink} from 'react-router-dom';
 var AlertTimer = require('../../../../components/alert-timer');
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Button = require('antd').Button;
@@ -127,8 +128,8 @@ class RoleList extends React.Component {
                         'add': (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}
                             data-tracename ="添加权限"
                         >{Intl.get('role.add.auth', '添加权限')}</a>) : (
-                            <Link to="/backgroundManagement/authority" activeClassName="active">
-                                {Intl.get('role.add.auth', '添加权限')}</Link>
+                            <NavLink to="/backgroundManagement/authority" activeClassName="active">
+                                {Intl.get('role.add.auth', '添加权限')}</NavLink>
                         ))
                     }}
                 />

@@ -26,7 +26,7 @@ import * as exportUtil from './export-data-util';
 import { capitalizeFirstLetter } from 'LIB_DIR/func';
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
-import 'prop-types';
+import { PropTypes } from 'prop-types';
 
 //图表类型映射关系
 const CHART_TYPE_MAP = {
