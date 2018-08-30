@@ -657,7 +657,7 @@ var ClueDetailOverview = React.createClass({
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            IP：
+                            {Intl.get('clue.customer.source.ip','客户ip')}：
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditInputField
@@ -670,6 +670,17 @@ var ClueDetailOverview = React.createClass({
                             />
                         </div>
                     </div>
+                    {curClue.province || curClue.city ?
+                        <div className="clue-info-item">
+                            <div className="clue-info-label">
+                                {Intl.get('crm.96', '地域')}：
+                            </div>
+                            <div className="clue-info-detail">
+                                {curClue.province}
+                                {curClue.city}
+                            </div>
+                        </div>
+                        : null}
                     <div className="clue-info-item">
                         <div className="clue-info-label">
                             {Intl.get('call.record.customer.source', '来源')}：

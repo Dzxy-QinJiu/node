@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, getPhoneInputValidateRules} from '../utils/clue-customer-utils';
+import {checkClueName, getPhoneInputValidateRules, checkClueSourceIP} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import {nameRegex} from 'PUB_DIR/sources/utils/consts';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
@@ -46,6 +46,7 @@ class ClueAddForm extends React.Component {
                 clue_source: '',//线索来源
                 access_channel: '',//接入渠道
                 source: '',//线索描述
+                source_ip: '',//客户来源的ip
                 source_time: today,//线索时间，默认：今天
             },
             isSaving: false,
@@ -257,7 +258,6 @@ class ClueAddForm extends React.Component {
         }, 1000);
 
     };
-
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
@@ -343,6 +343,20 @@ class ClueAddForm extends React.Component {
                                     phoneOnlyOneRules={getPhoneInputValidateRules()}/>
                             </FormItem>
                             {this.renderCheckContactMsg()}
+                            <FormItem
+                                className="form-item-label"
+                                label={Intl.get('clue.customer.source.ip','客户来源ip')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('source_ip',{
+                                    rules: [{validator: checkClueSourceIP}]
+                                })(
+                                    <Input
+                                        name="source_ip"
+                                        id="source_ip"
+                                    />
+                                )}
+                            </FormItem>
                             <FormItem
                                 className="form-item-label"
                                 label={Intl.get('crm.sales.clue.descr', '线索描述')}

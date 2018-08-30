@@ -2564,5 +2564,7 @@ var en_US = {
     'clue.filter.clue.status': 'clue status',//线索状态
     'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
     'user.email.only.error': 'Failed to verify email',//邮箱唯一性验证失败
+    'clue.customer.source.ip': 'customer ip',//客户ip
+    'clue.source.province.city': 'source address'//线索归属地
 };
 export default en_US;
