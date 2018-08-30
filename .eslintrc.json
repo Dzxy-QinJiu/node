@@ -13,8 +13,8 @@
     "react": {
       "createClass": "createReactClass",
       "pragma": "React",
-      "version": "0.14.3",
-      "flowVersion": "0.53"
+      "version": "16.4.1",
+      "flowVersion": "0.76.0"
     },
     "propWrapperFunctions": [
       "forbidExtraProps"
