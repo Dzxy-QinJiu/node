@@ -1,5 +1,5 @@
 @import "../../../../public/css/common-variables";
-@filter-width: 350px;
+@filter-width: 340px;
 .clue_customer_content {
   //线索顶部筛选区域
   .date-picker-wrap {
@@ -87,26 +87,6 @@
       }
       .btn-containers{
         margin-top:10px;
-        //.ant-btn{
-        //  font-size: 16px;
-        //  margin-right: 12px;
-        //}
-        //.import-btn{
-        //  background-color:@BORDER-BLUE ;
-        //  border-color:@BORDER-BLUE;
-        //  &:hover{
-        //    background-color: @BUTTON-HOVER ;
-        //    border-color: @BUTTON-HOVER;
-        //  }
-        //}
-        //.add-clue-btn{
-        //  color: @FILTER-BUTTON;
-        //  border-color:@SEARCH-INPUT-BORDER;
-        //  &:hover{
-        //    color: @BUTTON-HOVER;
-        //    border-color:@BUTTON-HOVER;
-        //  }
-        //}
       }
     }
     .clue-customer-total-tip {
@@ -116,15 +96,13 @@
     .filter-container {
       float: left;
       border-right: 1px solid #ccc;
-      min-width: @filter-width;
+      min-width: @filter-width - 60;
       height: 100%;
       position: absolute;
       transition: all 0.5s;
       padding-left: 24px;
-      visibility: visible;
       background: #fff;
       &.filter-close {
-        visibility: hidden;
         left: 0 - @filter-width;
         border-right: 1px solid transparent;
       }

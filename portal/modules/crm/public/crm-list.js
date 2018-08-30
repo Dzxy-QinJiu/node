@@ -523,6 +523,7 @@ var Crm = React.createClass({
             CrmAction.setPageNum(1);
             //清空state上的nextPageNum，避免显示上次的nextPageNum
             CrmAction.setNextPageNum(1);
+            CrmAction.setCurCustomers([]);
         }
         //联系方式(电话、邮箱)搜索的处理
         if (condition.phone) {
@@ -1380,6 +1381,9 @@ var Crm = React.createClass({
             'content-container': !this.props.fromSalesHome,
             'content-full': !this.state.showFilterList
         });
+        const tableLoadingClassName = classNames('table-loading-wrap',{
+            'content-full': !this.state.showFilterList
+        });
         return (<RightContent>
             <div className="crm_content">
                 {
@@ -1471,8 +1475,8 @@ var Crm = React.createClass({
 
                     </div>
                 </div>
-                {this.state.isLoading && this.state.nextPageNum === 0 ? (
-                    <div className="table-loading-wrap">
+                {!shouldTableShow ? (
+                    <div className={tableLoadingClassName}>
                         <Spinner />
                     </div>
                 ) : null}

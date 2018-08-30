@@ -44,7 +44,7 @@ import ClueFilterPanel from './views/clue-filter-panel';
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
     BOTTOM_DISTANCE: 40,
-    FILTER_WIDTH: 350
+    FILTER_WIDTH: 300
 };
 const ClueCustomer = React.createClass({
     getInitialState: function() {
@@ -66,14 +66,12 @@ const ClueCustomer = React.createClass({
 
     componentDidMount: function() {
         clueCustomerStore.listen(this.onStoreChange);
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
-            //获取线索来源
-            this.getClueSource();
-            //获取线索渠道
-            this.getClueChannel();
-            //获取线索分类
-            this.getClueClassify();
-        }
+        //获取线索来源
+        this.getClueSource();
+        //获取线索渠道
+        this.getClueChannel();
+        //获取线索分类
+        this.getClueClassify();
         clueCustomerAction.getSalesManList();
         this.getClueList();
         this.getUserPhoneNumber();

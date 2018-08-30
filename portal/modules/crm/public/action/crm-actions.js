@@ -24,7 +24,8 @@ function CrmActions() {
         //修改默认联系人后，更新客户列表中该客户的默认联系人
         'updateCustomerDefContact',
         //展示线索详情
-        'showClueDetail'
+        'showClueDetail',
+        'setCurCustomers'
     );
 
     this.queryCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {

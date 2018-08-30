@@ -539,5 +539,9 @@ CrmStore.prototype.setNextPageNum = function(pageNum) {
 CrmStore.prototype.showClueDetail = function(clueId) {
     this.clueId = clueId;
 };
+CrmStore.prototype.setCurCustomers = function(curCustomers) {
+    this.curCustomers = curCustomers;
+};
+
 
 module.exports = alt.createStore(CrmStore, 'CrmStore');
