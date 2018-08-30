@@ -234,24 +234,20 @@ var LoginForm = React.createClass({
                         <input
                             placeholder={hasWindow ? Intl.get('login.username.phone.email', '用户名/手机/邮箱') : null}
                             type="text"
-                            name="username" autoComplete="off" tabIndex="1"
+                            autoComplete="off" tabIndex="1"
                             ref="username" value={this.state.username} onChange={this.userNameChange}
                             onBlur={this.getLoginCaptcha}/>
                     </div>
 
                     <div className="input-item">
+                        <input type="password" className="password-hidden-input"/>
                         <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
                             type="password" tabIndex="2"
                             ref="password_input"
                             onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
                     </div>
-
-
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
-
-                <input type="hidden" name="password" id="hidedInput" ref="password"/>
-
                 <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
                     tabIndex="3"
                     disabled={this.state.loginButtonDisabled }

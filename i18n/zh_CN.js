@@ -276,7 +276,17 @@ var zh_CN = {
     'login.load.ketao.tip': '下载客套APP安卓端',
     'login.scan.ketao.qrcode.tip': '扫码下载客套APP安卓端',
     'login.qrcode.loading': '正在获取二维码...',
-
+    'register.set.company.id': '设置公司标识',
+    'register.valid.phone': '验证手机',
+    'register.fill.account': '账号设置',
+    'register.fill.company.name': '请输入公司标识',
+    'register.company.tip': '支持小写字母和中划线，以后将作为贵公司的二级域名',
+    'register.company.valid.tip': '请输入小写字母和中划线组成的公司标识',
+    'register.company.only.error': '公司标识唯一性验证失败',
+    'register.company.name.exist': '公司标识已存在',
+    'register.get.phone.captcha.code': '获取短信验证码',
+    'register.company.name.fill': '请输入公司名称',
+    'register.finished.button': '完成注册',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/

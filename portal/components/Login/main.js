@@ -4,7 +4,7 @@ const QRCode = require('qrcode.react');
 const classnames = require('classnames');
 const Logo = require('../Logo');
 const LoginForm = require('./login-form');
-const RegisterForm = require('./register-form');
+import RegisterForm from './register-form';
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
 const TabPane = Tabs.TabPane;
@@ -42,6 +42,7 @@ class LoginMain extends React.Component {
             ketaoQRCodeShow: false,//是否展示下载展示客套App的二维码
             QRCodeErrorMsg: '',//扫码登录相关的错误
             isLoadingQRCode: false,//是否正在获取二维码
+            currRegistStep: 0,//注册的当前步骤
         };
 
         this.setErrorMsg = this.setErrorMsg.bind(this);
@@ -213,14 +214,32 @@ class LoginMain extends React.Component {
     changeView() {
         this.setState({
             currentView: this.state.currentView === VIEWS.RIGISTER ? VIEWS.LOGIN : VIEWS.RIGISTER,
-            errorMsg: ''
+            errorMsg: '',
+            currRegistStep: 0,
         });
+    }
+
+    onRegisterStepChange(step) {
+        if (step !== this.state.currRegistStep) {
+            this.setState({currRegistStep: step});
+        }
     }
 
     getFormHeight() {
         let height = FOMR_HEIGHT.COMMON_H;
-        if (this.state.captcha) {
-            height += FOMR_HEIGHT.CAPTCHA_H;
+        //注册页
+        if (this.state.currentView === VIEWS.RIGISTER) {
+            //手机验证
+            if (this.state.currRegistStep === 1) {
+                height += FOMR_HEIGHT.CAPTCHA_H;
+            } else if (this.state.currRegistStep === 2) {//账号设置
+                height += 2 * FOMR_HEIGHT.CAPTCHA_H;
+            }
+        }
+        else {//登录页
+            if (this.state.captcha) {//有验证码
+                height += FOMR_HEIGHT.CAPTCHA_H;
+            }
         }
         return height;
     }
@@ -245,14 +264,14 @@ class LoginMain extends React.Component {
                             <div className="form-title">
                                 {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.register', '注册') : Intl.get('login.login', '登录') }
                             </div>
-                            {this.state.currentView === VIEWS.RIGISTER ? (
-                                <RegisterForm/>
-                            ) : <LoginForm
-                                captcha={this.state.captcha}
-                                hasWindow={hasWindow}
-                                setErrorMsg={this.setErrorMsg}
-                                {...this.props}
-                            />}
+                            {this.state.currentView === VIEWS.RIGISTER ?
+                                <RegisterForm onRegisterStepChange={this.onRegisterStepChange.bind(this)}/> :
+                                <LoginForm
+                                    captcha={this.state.captcha}
+                                    hasWindow={hasWindow}
+                                    setErrorMsg={this.setErrorMsg}
+                                    {...this.props}
+                                />}
                             {this.state.errorMsg ? (
                                 <Alert message={this.state.errorMsg} type="error" showIcon className="login-error-msg"/>
                             ) : null}
