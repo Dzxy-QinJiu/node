@@ -36,13 +36,14 @@ const defaultSorter = {field: 'date', order: 'descend'};
 class Contract extends React.Component {
     constructor(props) {
         super(props);
+        const action = props.history.action;
         const location = props.location;
         //通过订单生成的合同id
         const orderGenerateContractId = location.state && location.state.contractId;
         //是否是从订单转过来的
         let isFromOrder = false;
         //判断条件中的PUSH是用来判断是否是通过history.pushState重定向过来的，重定向过来的location.action的值是PUSH，刷新页面的时候location.action的值是POP
-        if (orderGenerateContractId && location.action === 'PUSH') {
+        if (orderGenerateContractId && action === 'PUSH') {
             isFromOrder = true;
         }
 
