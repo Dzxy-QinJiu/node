@@ -2536,6 +2536,7 @@ var en_US = {
     'menu.shortName.call': 'call', //'通话',
     'menu.shortName.operate': 'operate', //'运营',
     'menu.shortName.schedule': 'schedule', //'日程',
+    'menu.shortName.config': 'config', //'设置',
 
 };
 export default en_US;

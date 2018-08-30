@@ -1,11 +1,10 @@
 var language = require('../../../public/language/getLanguage');
+require('./css/main-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/main-es_VE.less');
-} else if (language.lan() === 'zh') {
-    require('./css/main-zh_CN.less');
 }
 import RecentLoginUsersPanel from './views/recent-login-user-list';
-import {RightPanelReturn} from 'CMP_DIR/rightPanel';
+import { RightPanelReturn } from 'CMP_DIR/rightPanel';
 var RightPanel = require('../../../components/rightPanel').RightPanel;
 //顶部导航
 var TopNav = require('../../../components/top-nav');
@@ -32,6 +31,7 @@ var FilterBtn = require('../../../components/filter-btn');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 var SelectFullWidth = require('../../../components/select-fullwidth');
 var Popover = require('antd').Popover;
+import { Button } from 'antd';
 import ApplyUser from './views/v2/apply-user';
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
 
@@ -98,24 +98,24 @@ var AppUserManage = React.createClass({
                     delete query.analysis_filter_value;
 
                     for (let key in query) {
-                        AppUserAction.toggleSearchField({field: key, value: query[key]});
+                        AppUserAction.toggleSearchField({ field: key, value: query[key] });
                     }
 
                     if (filterField === 'team_ids') {
                         if (filterValue === 'unknown') {
-                            AppUserAction.toggleSearchField({field: 'is_filter_unknown_team', value: true});
+                            AppUserAction.toggleSearchField({ field: 'is_filter_unknown_team', value: true });
                         }
                         AppUserAction.getTeamLists(teams => {
                             const team = _.find(teams, item => item.group_name === filterValue);
                             const teamId = team && team.group_id || '';
-                            AppUserAction.toggleSearchField({field: filterField, value: teamId});
+                            AppUserAction.toggleSearchField({ field: filterField, value: teamId });
                             setTimeout(() => {
                                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);
                             });
                         });
                     } else if (filterField === 'sales_id') {
                         //通过销售首页点击团队成员统计图转过来的，查看某个销售对应的用户列表
-                        AppUserAction.toggleSearchField({field: filterField, value: filterValue});
+                        AppUserAction.toggleSearchField({ field: filterField, value: filterValue });
                         setTimeout(() => {
                             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);
                         });
@@ -128,7 +128,7 @@ var AppUserManage = React.createClass({
                     AppUserAction.getTeamLists();
                 }
             }
-        }else if (currentView === 'user' && this.props.customer_id ){
+        } else if (currentView === 'user' && this.props.customer_id) {
             //在客户详情中查看某个客户下的用户
             var customer_id = this.props.customer_id;
             //按照客户名进行查询
@@ -164,7 +164,7 @@ var AppUserManage = React.createClass({
                 app_id: ShareObj.app_id || ''
             };
             //如果有选择的应用，则默认按创建时间排序
-            if(ShareObj.app_id){//用户列表，选择某个应用后，切换到审计日志再回来时，列表需要排序
+            if (ShareObj.app_id) {//用户列表，选择某个应用后，切换到审计日志再回来时，列表需要排序
                 quryObj.sort_field = 'grant_create_date';
                 quryObj.sort_order = 'desc';
             }
@@ -182,7 +182,7 @@ var AppUserManage = React.createClass({
         ShareObj.share_app_list = [];
     },
     addAppUser: function(e) {
-        Trace.traceEvent(e,'添加用户');
+        Trace.traceEvent(e, '添加用户');
         AppUserAction.showAppUserForm();
         return e.stopPropagation();
     },
@@ -203,7 +203,7 @@ var AppUserManage = React.createClass({
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
         list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage
-            id="user.app.all" defaultMessage="全部应用"/></Option>);
+            id="user.app.all" defaultMessage="全部应用" /></Option>);
         return list;
     },
     onSelectedAppChange: function(app_id, app_name) {
@@ -257,7 +257,7 @@ var AppUserManage = React.createClass({
     },
     //切换筛选状态
     toggleFilterArea: function(e) {
-        Trace.traceEvent(e,'点击筛选按钮');
+        Trace.traceEvent(e, '点击筛选按钮');
         AppUserAction.toggleFilterExpanded();
     },
     //是否有添加用户按钮
@@ -266,10 +266,10 @@ var AppUserManage = React.createClass({
     },
     //销售选择用户的提示
     getUserRowsTooltip: function() {
-        return <span><ReactIntl.FormattedMessage id="user.user.list.click" defaultMessage="请在用户列表中点击"/><i
+        return <span><ReactIntl.FormattedMessage id="user.user.list.click" defaultMessage="请在用户列表中点击" /><i
             className="iconfont icon-radio"
-            style={{fontSize: '20px',verticalAlign: 'middle',position: 'relative',top: '-3px'}}/><ReactIntl.FormattedMessage
-            id="user.user.list.select" defaultMessage="选择用户"/></span>;
+            style={{ fontSize: '20px', verticalAlign: 'middle', position: 'relative', top: '-3px' }} /><ReactIntl.FormattedMessage
+            id="user.user.list.select" defaultMessage="选择用户" /></span>;
     },
     //发邮件使用的参数
     getEmailData: function() {
@@ -291,27 +291,27 @@ var AppUserManage = React.createClass({
         };
     },
     showBatchOperate: function(e) {
-        Trace.traceEvent(e,'已有用户-批量变更');
+        Trace.traceEvent(e, '已有用户-批量变更');
         AppUserAction.showBatchOperate();
     },
     //获取缩放时候的批量操作按钮
     getBatchOperateBtnMini: function() {
-        if (this.isShowBatchOperateBtn()){
+        if (this.isShowBatchOperateBtn()) {
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn-mini" onClick={this.showBatchOperate}>
-                    <i className="iconfont icon-piliangcaozuo"/>
+                    <i className="iconfont icon-piliangcaozuo" />
                 </div>;
             }
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                 <div className="inline-block add-btn-mini gray">
-                    <i className="iconfont icon-piliangcaozuo"/>
+                    <i className="iconfont icon-piliangcaozuo" />
                 </div>
             </Popover>;
         }
         return null;
     },
     //是否显示批量变更按钮
-    isShowBatchOperateBtn: function(){
+    isShowBatchOperateBtn: function() {
         //当前视图
         let currentView = AppUserUtil.getCurrentView();
         //是否是从某个客户详情中跳转过来的
@@ -326,12 +326,16 @@ var AppUserManage = React.createClass({
         if (this.isShowBatchOperateBtn()) {
             //如果选择了用户，直接显示
             if (this.state.selectedUserRows.length) {
-                return <div className="inline-block add-btn add-btn-common"
+                return <div className="inline-block "
                     onClick={this.showBatchOperate}>{Intl.get('user.batch.change', '批量变更')}</div>;
             }
             //没有选择用户，加一个提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
-                <div className="inline-block add-btn add-btn-common gray">{Intl.get('user.batch.change', '批量变更')}</div>
+                <div className="inline-block add-btn-common gray">
+                    <Button className="btn-item">
+                        {Intl.get('user.batch.change', '批量变更')}
+                    </Button>
+                </div>
             </Popover>;
         }
         return null;
@@ -342,14 +346,14 @@ var AppUserManage = React.createClass({
         if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
             //选中了用户直接显示
             if (this.state.selectedUserRows.length) {
-                return <div className="inline-block add-btn add-btn-common" onClick={this.showApplyUserForm}>
-                    <span><ReactIntl.FormattedMessage id="user.app.open" defaultMessage="开通应用"/></span>
+                return <div className="inline-block add-btn-common " onClick={this.showApplyUserForm}>
+                    <Button className="btn-item"><ReactIntl.FormattedMessage id="user.app.open" defaultMessage="开通应用" /></Button>
                 </div>;
             }
             //没选中用户加提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
-                <div className="inline-block add-btn add-btn-common gray">
-                    <span><ReactIntl.FormattedMessage id="user.app.open" defaultMessage="开通应用"/></span>
+                <div className="inline-block   gray">
+                    <span><ReactIntl.FormattedMessage id="user.app.open" defaultMessage="开通应用" /></span>
                 </div>
             </Popover>;
         }
@@ -359,13 +363,13 @@ var AppUserManage = React.createClass({
     getApplyUserBtnMini: function() {
         if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
             if (this.state.selectedUserRows.length) {
-                return <div className="inline-block add-btn-mini" onClick={this.showApplyUserForm}>
-                    <i className="iconfont icon-shenqing"/>
+                return <div className="inline-block  add-btn-mini" onClick={this.showApplyUserForm}>
+                    <i className="iconfont icon-shenqing" />
                 </div>;
             }
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
-                <div className="inline-block add-btn-mini gray">
-                    <i className="iconfont icon-shenqing"/>
+                <div className="inline-block  add-btn-mini gray">
+                    <i className="iconfont icon-shenqing" />
                 </div>
             </Popover>;
         }
@@ -376,11 +380,11 @@ var AppUserManage = React.createClass({
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     },
     showRecentLoginPanel: function(e) {
-        Trace.traceEvent(e,'打开查看近期登陆用户列表');
+        Trace.traceEvent(e, '打开查看近期登陆用户列表');
         AppUserAction.setRecentLoginPanelFlag(true);
     },
     hideRecentLoginPanel: function(e) {
-        Trace.traceEvent(e,'关闭查看近期登录用户列表');
+        Trace.traceEvent(e, '关闭查看近期登录用户列表');
         AppUserAction.setRecentLoginPanelFlag(false);
     },
     //关闭属于某个客户的用户列表
@@ -395,7 +399,7 @@ var AppUserManage = React.createClass({
         var rightPanelView = null;
         if (this.state.isShowRightPanel) {
             switch (this.state.rightPanelType) {
-                case 'detail' :
+                case 'detail':
                     rightPanelView = (
                         <UserDetail userId={this.state.detailUser.user.user_id}
                             appLists={this.state.detailUser.apps}
@@ -407,18 +411,18 @@ var AppUserManage = React.createClass({
                     break;
                 case 'addOrEditUser':
                     rightPanelView = (
-                        <AddOrEditUser operation_type={this.state.appUserFormType}/>
+                        <AddOrEditUser operation_type={this.state.appUserFormType} />
                     );
                     break;
-                case 'batch' :
+                case 'batch':
                     rightPanelView = (
                         <div className="full_size wrap_padding">
-                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
+                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows} />
                         </div>
                     );
                     break;
                 case 'applyUser':
-                //发邮件使用的数据
+                    //发邮件使用的数据
                     var emailData = this.getEmailData();
                     //应用列表
                     var appListTransform = this.state.appList.map((obj) => {
@@ -468,9 +472,9 @@ var AppUserManage = React.createClass({
                         {/*如果是从客户页面跳转过来的，增加一个返回按钮*/}
                         {this.state.customer_id ?
                             <div className={topNavLeftClass}>
-                                <RightPanelReturn onClick={this.hideCustomerUserList}/>
+                                <RightPanelReturn onClick={this.hideCustomerUserList} />
                                 <div className="customer_name_wrap">
-                                    {Intl.get('crm.customer.user', '{customer}客户的用户', {'customer': this.state.customer_name})}
+                                    {Intl.get('crm.customer.user', '{customer}客户的用户', { 'customer': this.state.customer_name })}
                                 </div>
                             </div>
                             : null}
@@ -482,7 +486,7 @@ var AppUserManage = React.createClass({
                                     className="inline-block app_user_filter_btn"
                                 /> : null
                             }
-                            <div className="inline-block user_manage_droplist">
+                            <div className="inline-block btn-item">
                                 <SelectFullWidth
                                     optionFilterProp="children"
                                     showSearch
@@ -498,7 +502,7 @@ var AppUserManage = React.createClass({
                             {/*如果是按照角色筛选，则不能再按照关键字搜索了*/}
                             {
                                 this.state.customer_id || this.state.filterRoles.selectedRole ? null : (
-                                    <div className="inline-block search-input-block">
+                                    <div className="inline-block btn-m-r user_manage_droplist">
                                         <SearchInput
                                             ref="searchInput"
                                             type="input"
@@ -508,17 +512,18 @@ var AppUserManage = React.createClass({
                                     </div>
                                 )
                             }
-                            { !Oplate.hideSomeItem && !this.state.customer_id ? <PrivilegeChecker
-                                onClick={this.showRecentLoginPanel}
-                                check="APP_USER_LIST"
-                                className="inline-block recent-login-btn">
-                                <span className="iconfont icon-online recent-login-user-btn" title="查看近期登录用户列表"/>
-                            </PrivilegeChecker> : null }
+                            {!Oplate.hideSomeItem && !this.state.customer_id ?
+                                <PrivilegeChecker
+                                    onClick={this.showRecentLoginPanel}
+                                    check="APP_USER_LIST"
+                                    className="inline-block recent-login-btn btn-item fl-r">
+                                    <span className="iconfont icon-online recent-login-user-btn" title="查看近期登录用户列表" />
+                                </PrivilegeChecker> : null}
                             <PrivilegeChecker
                                 onClick={this.addAppUser}
                                 check={this.addUserBtnCheckun}
-                                className="inline-block add-btn add-btn-common">
-                                <ReactIntl.FormattedMessage id="user.user.add" defaultMessage="添加用户"/>
+                                className="inline-block add-btn-common">
+                                <Button className="btn-item"><ReactIntl.FormattedMessage id="user.user.add" defaultMessage="添加用户" /></Button>
                             </PrivilegeChecker>
                             {this.getApplyUserBtn()}
                             {this.getBatchOperateBtn()}
@@ -527,7 +532,7 @@ var AppUserManage = React.createClass({
                                 check={this.addUserBtnCheckun}
                                 title={Intl.get('user.user.add', '添加用户')}
                                 className="inline-block add-btn-mini">
-                                <Icon type="plus"/>
+                                <Icon type="plus" />
                             </PrivilegeChecker>
                             {this.getApplyUserBtnMini()}
                             {this.getBatchOperateBtnMini()}
@@ -556,7 +561,7 @@ var AppUserManage = React.createClass({
                         teamTreeList={this.state.teamTreeList}
                         selectedAppId={this.state.selectedAppId}
                         appList={this.state.appList}
-                        hideRecentLoginPanel={this.hideRecentLoginPanel}/>) : null}
+                        hideRecentLoginPanel={this.hideRecentLoginPanel} />) : null}
                 </RightPanel>
             </div>
         );

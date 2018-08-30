@@ -888,7 +888,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 data-tracename="用户分析"
             >
                 <TopNav>
-                    <AnalysisMenu />
+                    <AnalysisMenu showTab={true}/>
                     <AnalysisFilter />
                 </TopNav>
 

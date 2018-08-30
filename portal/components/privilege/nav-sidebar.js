@@ -39,7 +39,9 @@ const menuShortNamesMap = {
     'analysis/customer': Intl.get('menu.shortName.operate', '运营'),
     'schedule_management': Intl.get('menu.shortName.schedule', '日程'),
     'contract': Intl.get('contract.125', '合同'),
-    'apply': Intl.get('crm.109', '申请')
+    'apply': Intl.get('crm.109', '申请'),
+    'background_management': Intl.get('menu.shortName.config', '设置'),
+    'user_info_manage': Intl.get('menu.notification', '通知')
 };
 //获取菜单
 function getMenus() {
@@ -410,11 +412,17 @@ var NavSidebar = React.createClass({
         if (!notificationLinks.length) {
             return null;
         }
+
         return (
             <div className="notification" onClick={this.toggleNotificationPanel}>
-                <i className="iconfont icon-tongzhi" title={Intl.get('menu.system.notification', '系统消息')}></i>
+                {
+                    !this.state.hideNavIcon ?
+                        <i className="iconfont icon-tongzhi" title={Intl.get('menu.system.notification', '系统消息')}></i> :
+                        <a>{menuShortNamesMap.user_info_manage}</a>
+                }
             </div>
         );
+
     },
     getApplyBlock: function(isActive) {
         var applyLinks = this.getLinkListByPrivilege(applyentryLink);
@@ -481,16 +489,31 @@ var NavSidebar = React.createClass({
         }
         let backendConfigList = this.getBackendConfigLinks(backendConfigLinks);
         let defaultLink = backendConfigLinks[0];
-        return (
-            <div className="sidebar-backend-config">
-                <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                    overlayClassName="nav-sidebar-backend-config">
-                    <Link to={defaultLink.href} activeClassName="active">
-                        <i className="iconfont icon-role-auth-config" />
-                    </Link>
-                </Popover>
-            </div>
-        );
+        if (!this.state.hideNavIcon) {
+            return (
+                <div className="sidebar-backend-config">
+                    <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
+                        overlayClassName="nav-sidebar-backend-config">
+                        <Link to={defaultLink.href} activeClassName="active">
+                            <i className="iconfont icon-role-auth-config" />
+                        </Link>
+                    </Popover>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div className="sidebar-backend-config text-nav-li">
+                    <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
+                        overlayClassName="nav-sidebar-backend-config">
+                        <Link to={defaultLink.href} activeClassName="active">
+                            {menuShortNamesMap.background_management}
+                        </Link>
+                    </Popover>
+                </div>
+            );
+        }
+
     },
 
     //侧边导航左下个人信息

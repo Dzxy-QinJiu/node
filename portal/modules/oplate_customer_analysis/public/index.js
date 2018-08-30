@@ -681,7 +681,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 data-tracename="客户分析"
             >
                 <TopNav>
-                    <AnalysisMenu />
+                    <AnalysisMenu showTab={true}/>
                     <AnalysisFilter />
                 </TopNav>
 

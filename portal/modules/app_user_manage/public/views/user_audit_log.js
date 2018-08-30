@@ -408,7 +408,7 @@ var LogView = React.createClass({
     renderFilterUserType() {
         return (
             <Select
-                className="select-user-type"
+                className="select-user-type btn-item"
                 value={this.state.userType}
                 onChange={this.onSelectFilterUserType}
             >
@@ -427,7 +427,7 @@ var LogView = React.createClass({
                 <TopNav>
                     <TopNav.MenuList />
                     <div className="user_audit_log_header">
-                        <div className="user_audit_log_select_time" data-tracename="时间筛选">
+                        <div className="user_audit_log_select_time btn-item" data-tracename="时间筛选">
                             <DatePicker
                                 disableDateAfterToday={true}
                                 dateSelectRange={THREE_MONTH_TIME_RANGE}
@@ -446,7 +446,7 @@ var LogView = React.createClass({
                                     value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                             </DatePicker>
                         </div>
-                        <div className="user_audit_log_select_app">
+                        <div className="user_audit_log_select_app btn-item">
                             <SelectFullWidth
                                 showSearch
                                 optionFilterProp="children"
@@ -459,7 +459,7 @@ var LogView = React.createClass({
                             </SelectFullWidth>
                         </div>
                         {Oplate.hideSomeItem ? null : this.renderFilterUserType()} {/**委内维拉项目隐藏*/}
-                        <div className="user_audit_log_search_content">
+                        <div className="user_audit_log_search_content btn-item">
                             <SearchInput
                                 type="input"
                                 searchPlaceHolder={Intl.get('user.search.placeholder', '请输入关键词搜索')}
@@ -467,9 +467,9 @@ var LogView = React.createClass({
                             />
                         </div>
                         <div className="user_audit_log_all">
-                            <RefreshButton handleRefresh={this.handleRefresh} />
+                            <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>  
                         </div>
-                        <span className="refresh-btn customize-btn">
+                        <span className="refresh-btn customize-btn btn-item">
                             <i
                                 className="iconfont icon-down-twoline"
                                 id="audit-log"

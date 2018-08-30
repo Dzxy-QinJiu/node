@@ -2557,5 +2557,6 @@ var zh_CN = {
     'menu.shortName.call': '通话',
     'menu.shortName.operate': '运营',
     'menu.shortName.schedule': '日程',
+    'menu.shortName.config': '设置',
 };
 export default zh_CN;
