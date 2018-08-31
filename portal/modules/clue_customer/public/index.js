@@ -19,7 +19,7 @@ const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 require('./css/index.less');
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getLocalSalesClickCount, SetLocalSalesClickCount} from './utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -316,10 +316,11 @@ const ClueCustomer = React.createClass({
     },
     renderSalesBlock: function() {
         let dataList = [];
+        var clueSalesIdList = getClueSalesList();
         //销售领导、域管理员,展示其所有（子）团队的成员列表
         this.state.salesManList.forEach((salesman) => {
             let teamArray = salesman.user_groups;
-            var clickCount = getLocalSalesClickCount(_.get(salesman,'user_info.user_id'));
+            var clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'user_info.user_id'));
             //一个销售属于多个团队的处理（旧数据中存在这种情况）
             if (_.isArray(teamArray) && teamArray.length) {
                 //销售与所属团队的组合数据，用来区分哪个团队中的销售

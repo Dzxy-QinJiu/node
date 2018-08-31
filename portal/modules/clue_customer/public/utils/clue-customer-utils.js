@@ -150,8 +150,7 @@ export const getClueSalesList = function() {
 };
 
 //获取localstorage中的销售的点击数
-export const getLocalSalesClickCount = function(sale_id) {
-    var clueSalesIdList = getClueSalesList();
+export const getLocalSalesClickCount = function(clueSalesIdList, sale_id) {
     var targetObj = _.find(clueSalesIdList,(item) => {
         return item.saleId === sale_id;
     });

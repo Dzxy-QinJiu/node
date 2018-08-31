@@ -23,7 +23,7 @@ const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
     'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
 };
-import {SELECT_TYPE, AVALIBILITYSTATUS, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var timeoutFunc;//定时方法
@@ -93,8 +93,9 @@ var ClueDetailOverview = React.createClass({
         });
     },
     getSalesOptions: function() {
+        var clueSalesIdList = getClueSalesList();
         _.forEach(this.props.salesManList,(sales) => {
-            sales.clickCount = getLocalSalesClickCount(_.get(sales, 'user_info.user_id'));
+            sales.clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(sales, 'user_info.user_id'));
         });
         //按点击的次数进行排序
         var dataList = _.sortBy(this.props.salesManList,(item) => {return -item.clickCount;});
