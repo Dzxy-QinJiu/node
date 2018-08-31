@@ -67,5 +67,26 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    },{
+        'method': 'get',
+        'path': '/company/name/validate',
+        'handler': 'getCompanyByName',
+        'passport': {
+            'needLogin': false
+        }
+    },{
+        'method': 'get',
+        'path': '/phone/validate/code',
+        'handler': 'getVertificationCode',
+        'passport': {
+            'needLogin': false
+        }
+    },{
+        'method': 'post',
+        'path': '/account/register',
+        'handler': 'registerAccount',
+        'passport': {
+            'needLogin': false
+        }
     }]
 };

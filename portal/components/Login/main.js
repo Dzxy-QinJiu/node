@@ -24,6 +24,12 @@ const FOMR_HEIGHT = {
     COMMON_H: 300,//只有用户名、密码时，登录表单的容器高度
     CAPTCHA_H: 48,//验证码输入框的高度
 };
+//注册步骤
+const REGISTER_STEPS = {
+    COMPANY_ID_SET: 0,//设置公司唯一标识
+    PHONE_VALID: 1,//电话验证
+    ACCOUNT_SET: 2//账号设置
+};
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
@@ -42,7 +48,7 @@ class LoginMain extends React.Component {
             ketaoQRCodeShow: false,//是否展示下载展示客套App的二维码
             QRCodeErrorMsg: '',//扫码登录相关的错误
             isLoadingQRCode: false,//是否正在获取二维码
-            currRegistStep: 0,//注册的当前步骤
+            currRegistStep: REGISTER_STEPS.COMPANY_ID_SET,//注册的当前步骤
         };
 
         this.setErrorMsg = this.setErrorMsg.bind(this);
@@ -215,7 +221,7 @@ class LoginMain extends React.Component {
         this.setState({
             currentView: this.state.currentView === VIEWS.RIGISTER ? VIEWS.LOGIN : VIEWS.RIGISTER,
             errorMsg: '',
-            currRegistStep: 0,
+            currRegistStep: REGISTER_STEPS.COMPANY_ID_SET,
         });
     }
 
@@ -230,9 +236,9 @@ class LoginMain extends React.Component {
         //注册页
         if (this.state.currentView === VIEWS.RIGISTER) {
             //手机验证
-            if (this.state.currRegistStep === 1) {
+            if (this.state.currRegistStep === REGISTER_STEPS.PHONE_VALID) {
                 height += FOMR_HEIGHT.CAPTCHA_H;
-            } else if (this.state.currRegistStep === 2) {//账号设置
+            } else if (this.state.currRegistStep === REGISTER_STEPS.ACCOUNT_SET) {//账号设置
                 height += 2 * FOMR_HEIGHT.CAPTCHA_H;
             }
         }
@@ -265,7 +271,9 @@ class LoginMain extends React.Component {
                                 {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.register', '注册') : Intl.get('login.login', '登录') }
                             </div>
                             {this.state.currentView === VIEWS.RIGISTER ?
-                                <RegisterForm onRegisterStepChange={this.onRegisterStepChange.bind(this)}/> :
+                                <RegisterForm REGISTER_STEPS={REGISTER_STEPS}
+                                    changeToLoginView={this.changeView.bind(this)}
+                                    onRegisterStepChange={this.onRegisterStepChange.bind(this)}/> :
                                 <LoginForm
                                     captcha={this.state.captcha}
                                     hasWindow={hasWindow}
