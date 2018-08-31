@@ -277,7 +277,7 @@ var en_US = {
     'register.company.valid.tip': 'Please enter lowercase and middle line',//请输入小写字母和中划线组成的公司标识
     'register.company.only.error': 'Failed to validate company identifier',//公司标识唯一性验证失败
     'register.company.name.exist': 'Company identifier already exists',//公司标识已存在
-    'register.get.phone.captcha.code': 'Get SMS verification code',//获取短信验证码
+    'register.get.phone.captcha.code': 'Get SMS code',//获取短信验证码
     'register.company.name.fill': 'Please enter company name',//请输入公司名称
     'register.finished.button': 'Finish',//完成注册
     'register.phon.validat.tip': 'Please input the correct phone number, eg: 13877775555',//请输入正确的手机号, 格式如:13877775555
