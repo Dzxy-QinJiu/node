@@ -2549,6 +2549,7 @@ var en_US = {
     'clue.set.invalid': 'Invalid judgment',//判定无效
     'clue.cancel.set.invalid': 'Cancel invalid',//取消无效
     'annalysis.sales.weekly.report': 'Sales weekly report',//销售周报
+    'annalysis.sales.monthly.report': 'Sales monthly report',//销售月报
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
@@ -2570,6 +2571,15 @@ var en_US = {
     'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
     'user.email.only.error': 'Failed to verify email',//邮箱唯一性验证失败
     'clue.customer.source.ip': 'source IP',//客户ip
-    'clue.source.province.city': 'source address'//线索归属地
+    'clue.source.province.city': 'source address',//线索归属地
+    'common.assessment.index': 'Assessment index',//考核指标
+    'common.call.charge': 'call charge',//话费
+    'common.this.month.qualified.customers.num': 'This month qualified customer number',//本月合格客户数
+    'common.history.highest.qualified.customers.num': 'History highest qualified customer number',//历史最高合格客户数
+    'common.net.increase.qualified.customers.num': 'Net increase qualified customer number',//净增合格客户数
+    'common.ranking': 'ranking',//排名
+    'common.telephone.statistics': 'Telephone statistics',//电话量统计
+    'common.ketao.app.telephone.statistics': 'Ketao app telephone statistics',//客套APP电话量统计
+    'common.trial.qualified.customer.statistics': 'Trial qualified customer statistics',//试用合格客户数统计
 };
 export default en_US;

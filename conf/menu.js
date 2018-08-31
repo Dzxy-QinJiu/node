@@ -237,6 +237,21 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
             },
+            //月报统计
+            {
+                id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
+                name: backendIntl.get('annalysis.sales.monthly.report', '销售月报'),
+                routePath: 'analysis/monthly_report',
+                privileges: [
+                    'CALL_RECORD_VIEW_MANAGER',
+                    'CALL_RECORD_VIEW_USER',
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: [
+                    'CALL_RECORD_VIEW_MANAGER',
+                    'CALL_RECORD_VIEW_USER',
+                ]
+            },
             {
                 id: 'SALES_HOME_PAGE', //唯一标识，销售首页
                 name: backendIntl.get('menu.sales.homepage', '销售主页'),

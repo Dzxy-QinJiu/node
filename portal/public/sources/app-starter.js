@@ -142,6 +142,9 @@ function init() {
             case 'weekly_report_analysis':
                 childRoutes.push(require('../../modules/weekly_report'));
                 break;
+            case 'monthly_report_analysis':
+                childRoutes.push(require('../../modules/monthly-report'));
+                break;
         }
     });
 
