@@ -240,7 +240,7 @@ var UserManage = React.createClass({
                 >
                     <TopNav>
                         <TopNav.MenuList />
-                        <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block fl-r btn-item-container"
+                        <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block float-r btn-item-container"
                             onClick={this.events.showUserForm.bind(this,'add')}
                             data-tracename="添加成员" >
                             <Button className="btn-item btn-m-r-2">

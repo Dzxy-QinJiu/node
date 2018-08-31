@@ -880,7 +880,7 @@ const CallRecord = React.createClass({
         return (<RightContent>
             <div className="call_record_content">
                 <TopNav>
-                    <div className="filter-phone-button fl-l">
+                    <div className="filter-phone-button float-l">
                         <Button type="ghost" size="large" onClick={this.toggleFilter}
                             className="btn-item">{this.state.isFilter ? Intl.get('call.record.cancel.search', '取消搜索') : Intl.get('sales.team.search', '搜索')}</Button>
                     </div>
@@ -896,7 +896,7 @@ const CallRecord = React.createClass({
                         <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
                         <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                     </DatePicker>                    
-                    <div className="filter-phone-button fl-r">
+                    <div className="filter-phone-button float-r">
                         <Select
                             className="btn-item"
                             defaultValue="all"
