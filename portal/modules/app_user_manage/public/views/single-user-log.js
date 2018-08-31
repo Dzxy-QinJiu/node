@@ -18,7 +18,7 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
 import classNames from 'classnames';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-var TimeLine = require('CMP_DIR/time-line');
+import {AntcTimeLine} from 'antc';
 const TOP_PADDING = 80;//top padding for inputs
 var SingleUserLog = React.createClass({
     getDefaultProps: function() {
@@ -261,12 +261,12 @@ var SingleUserLog = React.createClass({
                     <div className="time-over-range-tips">
                         {this.renderSelectDateTips()}
                     </div>
-                    <TimeLine
+                    <AntcTimeLine
                         className="icon-blue"
-                        list={this.state.auditLogList}
+                        data={this.state.auditLogList}
                         groupByDay={true}
                         timeField="timestamp"
-                        render={this.renderTimeLineItem}
+                        contentRender={this.renderTimeLineItem}
                         dot={<span className="iconfont icon-foot"></span>}
                     />                    
                 </div>
