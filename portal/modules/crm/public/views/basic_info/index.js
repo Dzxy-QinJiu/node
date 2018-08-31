@@ -1,8 +1,8 @@
 var React = require('react');
 import '../../css/crm-basic-info.less';
 import classNames from 'classnames';
-var CRMStore = require('../../store/basic-overview-store');
-var CRMAction = require('../../action/basic-overview-actions');
+var CrmOverviewStore = require('../../store/basic-overview-store');
+var CrmOverviewActions = require('../../action/basic-overview-actions');
 var SalesTeamStore = require('../../../../sales_team/public/store/sales-team-store');
 var PrivilegeChecker = require('../../../../../components/privilege/checker').PrivilegeChecker;
 let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
@@ -22,7 +22,7 @@ import Trace from 'LIB_DIR/trace';
 
 class BasicData extends React.Component {
     state = {
-        ...CRMStore.getState(),
+        ...CrmOverviewStore.getState(),
         salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
         showDetailFlag: false,//控制客户详情展示隐藏的标识
         editNameFlag: false,//编辑客户名的标识
@@ -32,17 +32,17 @@ class BasicData extends React.Component {
     };
 
     onChange = () => {
-        this.setState({...CRMStore.getState()});
+        this.setState({...CrmOverviewStore.getState()});
     };
 
     componentDidMount() {
-        CRMStore.listen(this.onChange);
-        CRMAction.getBasicData(this.props.curCustomer);
+        CrmOverviewStore.listen(this.onChange);
+        CrmOverviewActions.getBasicData(this.props.curCustomer);
         this.getIndustryList();
     }
 
     componentWillReceiveProps(nextProps) {
-        CRMAction.getBasicData(nextProps.curCustomer);
+        CrmOverviewActions.getBasicData(nextProps.curCustomer);
         if (nextProps.curCustomer && this.state.basicData.id !== nextProps.curCustomer.id) {
             this.setState({
                 showDetailFlag: false,
@@ -52,7 +52,7 @@ class BasicData extends React.Component {
     }
 
     componentWillUnmount() {
-        CRMStore.unlisten(this.onChange);
+        CrmOverviewStore.unlisten(this.onChange);
     }
 
     //获取行业列表

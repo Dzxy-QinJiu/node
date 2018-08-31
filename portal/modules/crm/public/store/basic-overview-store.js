@@ -1,6 +1,6 @@
 var CRMActions = require('../action/basic-overview-actions');
 
-function CRMStore() {
+function CrmOverviewStore() {
     //基本资料
     this.basicData = {};
     //加载数据中。。。
@@ -17,11 +17,11 @@ function CRMStore() {
     this.bindActions(CRMActions);
 }
 
-CRMStore.prototype.setCrmUserList = function(list) {
+CrmOverviewStore.prototype.setCrmUserList = function(list) {
     this.crmUserList = _.isArray(list) ? list : [];
 };
 //获取客户开通的用户列表
-CRMStore.prototype.getCrmUserList = function(resultObj) {
+CrmOverviewStore.prototype.getCrmUserList = function(resultObj) {
     if (resultObj.loading) {
         this.isUserLoading = true;
         this.userErrorMsg = '';
@@ -38,7 +38,7 @@ CRMStore.prototype.getCrmUserList = function(resultObj) {
         }
     }
 };
-CRMStore.prototype.getNotCompletedScheduleList = function(result) {
+CrmOverviewStore.prototype.getNotCompletedScheduleList = function(result) {
     if (result.loading) {
         this.isLoadingScheduleList = true;
         this.getScheduleListErrmsg = '';
@@ -52,31 +52,31 @@ CRMStore.prototype.getNotCompletedScheduleList = function(result) {
         this.scheduleList = _.isArray(result.data.list) ? result.data.list : [];
     }
 };
-CRMStore.prototype.afterHandleStatus = function(newStatusObj) {
+CrmOverviewStore.prototype.afterHandleStatus = function(newStatusObj) {
     var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id === newStatusObj.id;});
     curSchedule[0].status = newStatusObj.status;
 };
 //成功添加日程后，如果该日程类型为今天的电联日程，就在列表中加上该日程
-CRMStore.prototype.afterAddSchedule = function(newScheduleObj) {
+CrmOverviewStore.prototype.afterAddSchedule = function(newScheduleObj) {
     this.scheduleList.push(newScheduleObj);
 };
 
-CRMStore.prototype.getEditShowFlag = function() {
+CrmOverviewStore.prototype.getEditShowFlag = function() {
     return this.getState().editShowFlag;
 };
 
 //监听Actions的方法处理
-CRMStore.prototype.getBasicData = function(basicData) {
+CrmOverviewStore.prototype.getBasicData = function(basicData) {
     this.basicData = basicData;
     this.userTotal = basicData && _.isArray(basicData.app_user_ids) ? basicData.app_user_ids.length : 0;
     this.basicIsLoading = false;
 };
 
-CRMStore.prototype.setBasicState = function(state) {
+CrmOverviewStore.prototype.setBasicState = function(state) {
     this.basicIsLoading = state;
 };
 
-CRMStore.prototype.submitBaiscForm = function(newBasicData) {
+CrmOverviewStore.prototype.submitBaiscForm = function(newBasicData) {
     //如果当前展示的是要修改的客户资料，则更新，否则，不更新
     if (newBasicData.id === this.basicData.id) {
         this.basicData = newBasicData;
@@ -84,4 +84,4 @@ CRMStore.prototype.submitBaiscForm = function(newBasicData) {
     this.editShowFlag = false;
 };
 
-module.exports = alt.createStore(CRMStore, 'CRMStore');
+module.exports = alt.createStore(CrmOverviewStore, 'CrmOverviewStore');

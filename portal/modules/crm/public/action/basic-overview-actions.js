@@ -1,7 +1,7 @@
 const util = require('../utils/contact-util');
 const crmAjax = require('../ajax');
 const scheduleAjax = require('../ajax/schedule-ajax');
-function CRMActions() {
+function CrmOverviewActions() {
     this.generateActions(
         'setBasicState',
         'afterHandleStatus',
@@ -41,4 +41,4 @@ function CRMActions() {
     };
 }
 
-module.exports = alt.createActions(CRMActions);
+module.exports = alt.createActions(CrmOverviewActions);
