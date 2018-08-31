@@ -22,7 +22,7 @@ const UserLoginAnalysis = React.createClass({
     },
     getInitialState: function() {
         return {
-            selectValue: 'LoginFrequency',
+            selectValueMap: {},
             showDetailMap: {},//是否展示app详情的map
             ...this.getStateData()
         };
@@ -270,13 +270,13 @@ const UserLoginAnalysis = React.createClass({
                     ) : (
                         <CardContainer
                             radioValue={radioValue}
-                            dateRange={this.state.selectValue}
-                            onDateRangeChange={this.handleSelectRadio}
+                            dateRange={this.state.selectValueMap[app.app_id] || 'LoginFrequency'}
+                            onDateRangeChange={this.handleSelectRadio.bind(this, app)}
                             title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
                         >
                             <div className="duration-chart">
                                 {
-                                    this.state.selectValue === 'loginDuration' ?
+                                    this.state.selectValueMap[app.app_id] === 'loginDuration' ?
                                     // 时长
                                         this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
                                     // 次数
@@ -347,9 +347,11 @@ const UserLoginAnalysis = React.createClass({
         ].join('<br />');
     },
 
-    handleSelectRadio: function(dataRange) {
+    handleSelectRadio: function(app, dataRange) {
+        const {selectValueMap} = this.state;
+        selectValueMap[app.app_id] = dataRange;
         this.setState({
-            selectValue: dataRange
+            selectValueMap
         });
     },
     showAppDetail: function(app, isShow) {
