@@ -12,7 +12,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var UserDetailChangeRecordStore = require('../store/user-detail-change-record-store');
 var UserDetailChangeRecordAction = require('../action/user-detail-change-record-actions');
-var TimeLine = require('../../../../components/time-line');
+import {AntcTimeLine} from 'antc';
 //滚动条
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
@@ -271,12 +271,12 @@ var UserDetailChangeRecord = React.createClass({
                         onChange={this.handleChange} getPopupContainer={() => document.getElementById('change-record-area')}>
                         {this.getSelectOptions()}
                     </Select>
-                    <TimeLine
+                    <AntcTimeLine
                         className="icon-blue"
-                        list={this.state.changeRecord}
+                        data={this.state.changeRecord}
                         groupByDay={true}
                         timeField="record_time"
-                        render={this.renderTimeLineItem}
+                        contentRender={this.renderTimeLineItem}
                         dot={<span className="iconfont icon-change"></span>}
                     />
                 </div>

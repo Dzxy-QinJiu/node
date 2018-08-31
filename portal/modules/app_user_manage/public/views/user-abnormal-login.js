@@ -12,7 +12,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var UserAbnormalLoginStore = require('../store/user-abnormal-login-store');
 var UserAbnormalLoginAction = require('../action/user-abnormal-login-actions');
-var TimeLine = require('CMP_DIR/time-line');
+import {AntcTimeLine} from 'antc';
 //滚动条
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var Spinner = require('CMP_DIR/spinner');
@@ -306,12 +306,12 @@ var UserAbnormalLogin = React.createClass({
                     >
                         {list}
                     </Select>
-                    <TimeLine
+                    <AntcTimeLine
                         className="icon-yellow"
-                        list={this.state.abnormalLoginList}
+                        data={this.state.abnormalLoginList}
                         groupByDay={true}
                         timeField="timeStamp"
-                        render={this.renderTimeLineItem}
+                        contentRender={this.renderTimeLineItem}
                         dot={<span className="iconfont icon-deactivate-customer-login"></span>}
                     />
                     <NoMoreDataTip
