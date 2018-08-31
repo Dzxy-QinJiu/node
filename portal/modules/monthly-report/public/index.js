@@ -256,6 +256,7 @@ const MonthlyReport = React.createClass({
                 height: 'auto',
                 layout: {sm: 24},
                 url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+                //条件参数，只对当前图表有效
                 conditions: [{
                     name: 'data_type',
                     value: this.getDataType(),
@@ -278,6 +279,7 @@ const MonthlyReport = React.createClass({
             },
         ];
     },
+    //公共条件，应用于所有图表
     getConditions(selectedTeamId) {
         return [
             {
