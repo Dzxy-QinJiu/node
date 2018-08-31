@@ -235,6 +235,7 @@ var en_US = {
     'common.callback.customer': 'Callback customer', // '回访客户',
     //公共部分--end
     'login.login': 'Login',//登录
+    'login.register': 'Register',//注册
     'login.service.error': 'Sorry for the abnormal condition of the server',//很抱歉,服务器出现了异常状况
     'login.error.retry': 'The login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
     'login.username.password.error': 'The username or password is incorrect',//用户名或密码错误
@@ -269,7 +270,24 @@ var en_US = {
     'login.load.ketao.tip': 'Download ketao APP Android',//下载客套APP安卓端
     'login.scan.ketao.qrcode.tip': 'Scan QR code to download ketao APP Android',//扫码下载客套APP安卓端
     'login.qrcode.loading': 'loading QR code...',//正在获取二维码...
-
+    'register.set.company.id': 'Set up company ID',//设置公司标识
+    'register.valid.phone': 'Phone number verification',//验证手机
+    'register.fill.account': 'Set up account',//账号设置
+    'register.fill.company.name': 'Please enter company identifier',//请输入公司标识
+    'register.company.valid.tip': 'Please enter lowercase and middle line',//请输入小写字母和中划线组成的公司标识
+    'register.company.only.error': 'Failed to validate company identifier',//公司标识唯一性验证失败
+    'register.company.name.exist': 'Company identifier already exists',//公司标识已存在
+    'register.get.phone.captcha.code': 'Get SMS code',//获取短信验证码
+    'register.company.name.fill': 'Please enter company name',//请输入公司名称
+    'register.finished.button': 'Finish',//完成注册
+    'register.phon.validat.tip': 'Please input the correct phone number, eg: 13877775555',//请输入正确的手机号, 格式如:13877775555
+    'register.code.has.send': 'SMS verification code has been sent, please do not send it again',//短信验证码已经发送，请勿重复发送
+    'register.code.get.error': 'Failed to get SMS verification code',//获取短信验证码失败
+    'register.code.effective.time': '{second} seconds later, try again.',//{second}秒后重试
+    'register.get.code.fill.in': 'Please get SMS verification code',//请获取验证码
+    'register.error.tip': 'Failed to regist',//注册失败
+    'register.phon.has.registed': 'The phone number has been registered',//该手机号已被注册
+    'register.code.validate.error': 'Verification error of SMS verification code',//短信验证码验证错误
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
