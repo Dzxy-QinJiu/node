@@ -5,6 +5,7 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import { LEAVE_TYPES } from './consts';
 import Remarks from './remarks';
 const TopNav = require('CMP_DIR/top-nav');
 const AnalysisMenu = require('CMP_DIR/analysis_menu');
@@ -124,8 +125,32 @@ const MonthlyReport = React.createClass({
             },
             {
                 title: Intl.get('common.remark', '备注'),
-                dataIndex: '',
+                dataIndex: 'leave_info_list',
                 render: this.renderRemarks,
+                csvRender: leaveInfoList => {
+                    let content = Intl.get('weekly.report.full.work.day', '全勤');
+
+                    if (leaveInfoList) {
+                        const remarksList = _.map(leaveInfoList, remarks => {
+                            const leaveTime = moment(remarks.leave_time).format(oplateConsts.DATE_FORMAT);
+                            const leaveDetail = remarks.leave_detail;
+                            const leaveDays = remarks.leave_days;
+                            const leaveType = _.find(LEAVE_TYPES, typeItem => typeItem.value === leaveDetail);
+                            let leaveDetailLabel = '';
+
+                            if (leaveType) {
+                                leaveDetailLabel = leaveType.label;
+                            }
+
+                            const text = leaveTime + leaveDetailLabel + Intl.get('weekly.report.n.days', '{n}天', {n: leaveDays});
+                            return text;
+                        });
+
+                        content = remarksList.join('; ');
+                    }
+
+                    return content;
+                },
                 width: '20%',
             },
         ];
