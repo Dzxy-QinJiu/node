@@ -157,12 +157,12 @@ class SearchInput extends React.Component {
     };
 
     searchEvent = (e) => {
+        var searchContent = e.target.value;
         var _this = this;
         if (inputTimeOut) {
             clearTimeout(inputTimeOut);
         }
         inputTimeOut = setTimeout(function() {
-            var searchContent = e.target.value;
             _this.props.searchEvent(searchContent);
         }, delayTime);
     };
