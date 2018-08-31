@@ -945,7 +945,7 @@ var SalesHomePage = React.createClass({
         return (<RightContent>
             <div className="sales_home_content">
                 <TopNav>
-                    <div className="date-range-wrap">
+                    <div className="date-range-wrap btn-item">
                         <DatePicker
                             disableDateAfterToday={true}
                             range={this.state.timeType}

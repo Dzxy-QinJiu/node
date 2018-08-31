@@ -868,7 +868,7 @@ var Crm = React.createClass({
                 </PrivilegeChecker>
                 <PrivilegeChecker
                     check="CRM_REPEAT"
-                    className={btnClass + ' customer-repeat-btn'}
+                    className={btnClass + ' customer-repeat-btn btn-m-r-2'}
                     title={isWebMini ? Intl.get('crm.1', '客户查重') : ''}
                     onClick={this.props.showRepeatCustomer}
                 >

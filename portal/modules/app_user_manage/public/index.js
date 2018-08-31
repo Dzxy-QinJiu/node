@@ -326,8 +326,10 @@ var AppUserManage = React.createClass({
         if (this.isShowBatchOperateBtn()) {
             //如果选择了用户，直接显示
             if (this.state.selectedUserRows.length) {
-                return <div className="inline-block "
-                    onClick={this.showBatchOperate}>{Intl.get('user.batch.change', '批量变更')}</div>;
+                return <div className="inline-block">
+                    <Button className="btn-item" onClick={this.showBatchOperate}>
+                        {Intl.get('user.batch.change', '批量变更')}
+                    </Button></div>;
             }
             //没有选择用户，加一个提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
@@ -505,7 +507,7 @@ var AppUserManage = React.createClass({
                             {/*如果是按照角色筛选，则不能再按照关键字搜索了*/}
                             {
                                 this.state.customer_id || this.state.filterRoles.selectedRole ? null : (
-                                    <div className="inline-block btn-m-r user_manage_droplist">
+                                    <div className="inline-block btn-item user_manage_droplist">
                                         <SearchInput
                                             ref="searchInput"
                                             type="input"
@@ -519,7 +521,7 @@ var AppUserManage = React.createClass({
                                 <PrivilegeChecker
                                     onClick={this.showRecentLoginPanel}
                                     check="APP_USER_LIST"
-                                    className="inline-block recent-login-btn btn-item fl-r">
+                                    className="inline-block recent-login-btn btn-item fl-r btn-m-r-2">
                                     <span className="iconfont icon-online recent-login-user-btn" title="查看近期登录用户列表" />
                                 </PrivilegeChecker> : null}
                             <PrivilegeChecker

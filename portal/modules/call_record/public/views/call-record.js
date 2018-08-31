@@ -906,7 +906,7 @@ const CallRecord = React.createClass({
                             {filterOptions}
                         </Select>
                         <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>                    
-                        <Button className="btn-item" onClick={this.handleCallAnalysis} data-tracename="点击通话分析按钮">
+                        <Button className="btn-item btn-m-r-2" onClick={this.handleCallAnalysis} data-tracename="点击通话分析按钮">
                             {Intl.get('user.detail.analysis', '分析')}
                         </Button>                        
                     </div>

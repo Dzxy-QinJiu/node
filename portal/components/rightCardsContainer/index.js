@@ -43,13 +43,13 @@ var RihgtCardsContainer = React.createClass({
                         <div className="block search-input-block my-app-title">
                             <ReactIntl.FormattedMessage id="common.my.app" defaultMessage="我的应用"/>
                         </div>) : (
-                        <div className="block search-input-block">
+                        <div className="block search-input-block btn-item">
                             <SearchInput searchPlaceHolder={this.props.searchPlaceHolder}
                                 searchEvent={this.props.searchEvent}/>
                         </div>
                     )}
                     {this.props.type === CONSTANTS.APP_MANAGE || this.props.type === CONSTANTS.USER_MANAGE ? (
-                        <Button type="ghost" className="tag-filter-btn" onClick={this.props.toggleFilterPanel}>
+                        <Button type="ghost" className="tag-filter-btn btn-item" onClick={this.props.toggleFilterPanel}>
 
                             <ReactIntl.FormattedMessage id="common.filter" defaultMessage="筛选"/>
                             { this.props.isPanelShow ? <Icon type="up"/> :
