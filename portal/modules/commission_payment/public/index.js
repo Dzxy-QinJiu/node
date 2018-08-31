@@ -107,6 +107,7 @@ class CommissionPayment extends React.Component {
         $('body').css('overflow', 'auto');
         //卸载窗口大小改变事件
         resizeEmitter.removeListener(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
+        CommissionPaymentActions.resetState();
         CommissionPaymentStore.unlisten(this.onStoreChange);
     }
 

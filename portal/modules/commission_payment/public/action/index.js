@@ -9,7 +9,8 @@ class CommissionPaymentActions {
             'addCommission', // 添加提成
             'refreshCurrentCommission', // 更新提成,
             'deleteCommission', // 删除提成
-            'setInitialPartlyState' // 重置
+            'setInitialPartlyState', // 重置
+            'resetState'//重置所有数据
         );
     }
     // 提成发放列表
