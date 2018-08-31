@@ -127,7 +127,7 @@ const MonthlyReport = React.createClass({
                 title: Intl.get('common.remark', '备注'),
                 dataIndex: 'leave_info_list',
                 render: this.renderRemarks,
-                csvRender: leaveInfoList => {
+                csvRenderTd: leaveInfoList => {
                     let content = Intl.get('weekly.report.full.work.day', '全勤');
 
                     if (leaveInfoList) {
