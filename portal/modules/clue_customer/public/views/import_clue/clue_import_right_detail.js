@@ -38,7 +38,7 @@ class ClueImportTemplate extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            current: 1,//进度条的步骤
+            current: 0,//进度条的步骤
             isLoading: false,//正在上传
             previewList: [],//预览列表
             isImporting: false//正在导入
@@ -61,7 +61,7 @@ class ClueImportTemplate extends React.Component {
         this.props.closeClueTemplatePanel();
         setTimeout(() => {
             this.setState({
-                current: 1,
+                current: 0,
                 isLoading: false,
                 previewList: [],
                 isPreviewShow: false,
@@ -73,7 +73,7 @@ class ClueImportTemplate extends React.Component {
     afterUpload = () => {
         this.setState({
             isLoading: false,
-            current: 2
+            current: 1
         });
     };
     renderFirstStepContent = () => {
@@ -92,7 +92,7 @@ class ClueImportTemplate extends React.Component {
     doImport =(e) => {
         Trace.traceEvent(e, '确定导入线索');
         this.setState({
-            current: 3,
+            current: 2,
             isImporting: true
         });
         $.ajax({
@@ -114,12 +114,12 @@ class ClueImportTemplate extends React.Component {
         });
     };
     renderImportFooter = () => {
-        const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
+        const disabledImportBtn = _.find(this.state.previewList, item => (item.repeat)) || _.isEmpty(this.state.previewList);
         return (
             <div className="prev-foot">
                 {this.state.isImporting ? <div className="is-importing">
                     <Spinner/>
-                </div> : <Button type="primary" onClick={this.doImport} disabled={repeatCustomer}>
+                </div> : <Button type="primary" onClick={this.doImport} disabled={disabledImportBtn}>
                     {Intl.get('common.import', '导入')}
                 </Button>}
                 <Button type="ghost" onClick={this.handleCancel} data-tracename="取消导入线索">
@@ -261,13 +261,13 @@ class ClueImportTemplate extends React.Component {
     renderStepsContent = (current) => {
         var stepContent = null;
         switch (current) {
-            case 1:
+            case 0:
                 stepContent = this.renderFirstStepContent();
                 break;
-            case 2:
+            case 1:
                 stepContent = this.renderSecondStepContent();
                 break;
-            case 3:
+            case 2:
                 stepContent = this.renderSecondStepContent();
                 break;
         }
@@ -276,7 +276,7 @@ class ClueImportTemplate extends React.Component {
     render() {
         var current = this.state.current;
         var width = LAYOUT.INITIALWIDTH;
-        if (current !== 1) {
+        if (current !== 0) {
             width = $(window).width() - LAYOUT.LARGEWIDTH;
         }
         return (
