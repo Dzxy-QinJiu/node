@@ -2,6 +2,7 @@ require('./index.less');
 var Dropdown = require('antd').Dropdown;
 var Menu = require('antd').Menu;
 var Link = require('react-router').Link;
+const TopNav = require('CMP_DIR/top-nav');
 var UserData = require('../../public/sources/user-data');
 var moduleTextMap = {
     'oplate_user_analysis': Intl.get('sales.user.analysis', '用户分析'),
@@ -35,13 +36,19 @@ var AnalysisMenu = React.createClass({
     },
     render: function() {
         var menuListArray = [];
+        const menuList = [];
         var modules = UserData.getUserData().modules;
         _.each(modules , function(module) {
             if(/analysis/.test(module)) {
                 var url = moduleUrlMap[module];
+                const name = moduleTextMap[module];
+                menuList.push({
+                    routePath: url.replace('/analysis', 'analysis'),
+                    name
+                });
                 menuListArray.push((
                     <Menu.Item key={module}>
-                        <Link to={url} activeClassName="active">{moduleTextMap[module]}</Link>
+                        <Link to={url} activeClassName="active">{name}</Link>
                     </Menu.Item>
                 ));
             }
@@ -51,6 +58,11 @@ var AnalysisMenu = React.createClass({
                 {menuListArray}
             </Menu>
         );
+        if (this.props.showTab) {            
+            return (
+                <TopNav.MenuList menuList={menuList}/>
+            );
+        }
         return (
             <div className="analysis-menu">
                 <Dropdown overlay={MenuList}>

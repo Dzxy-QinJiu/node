@@ -164,7 +164,7 @@ const ClueCustomer = React.createClass({
         return (
             <div className="import-clue-customer-container pull-right">
                 {hasPrivilege('CUSTOMER_ADD_CLUE') ?
-                    <Button type="primary" onClick={this.showImportClueTemplate}>
+                    <Button type="primary" onClick={this.showImportClueTemplate} className="btn-item">
                         <span className="clue-container">
                             {Intl.get('clue.manage.import.clue', '导入线索')}
                         </span>
@@ -203,6 +203,7 @@ const ClueCustomer = React.createClass({
             <div className="add-clue-customer-container pull-right">
                 {hasPrivilege('CUSTOMER_ADD_CLUE') ?
                     <Button onClick={this.showClueAddForm}
+                        className="btn-item"
                         title={Intl.get('crm.sales.add.clue', '添加线索')}>
                         <span className="button-container">{Intl.get('crm.sales.add.clue', '添加线索')}</span>
                     </Button> :
@@ -529,7 +530,7 @@ const ClueCustomer = React.createClass({
     renderClueAnalysisBtn: function() {
         return (
             <div className="clue-analysis-btn-container pull-right">
-                <Button className="call-analysis-btn" title={Intl.get('clue.alanalysis.charts','线索分析')} onClick={this.handleClueAnalysisPanel}
+                <Button className="call-analysis-btn btn-item" title={Intl.get('clue.alanalysis.charts','线索分析')} onClick={this.handleClueAnalysisPanel}
                     data-tracename="点击线索分析按钮">
                     {Intl.get('user.detail.analysis', '分析')}
                 </Button>
@@ -600,7 +601,7 @@ const ClueCustomer = React.createClass({
                     <TopNav>
                         <div className="date-picker-wrap">
                             <div className="search-container">
-                                <Button className='filter-btn-container' onClick={this.toggleList}>{Intl.get('common.filter', '筛选')}</Button>
+                                <Button className='filter-btn-container btn-item' type={this.state.showFilterList ? 'primary' : ''} onClick={this.toggleList}>{Intl.get('common.filter', '筛选')}</Button>
                                 <SearchInput
                                     searchEvent={this.searchFullTextEvent}
                                     searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}

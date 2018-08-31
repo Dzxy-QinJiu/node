@@ -10,13 +10,13 @@ var PrivilegeChecker = require('../../../components/privilege/checker').Privileg
 var UserFormAction = require('./action/user-form-actions');
 var Spinner = require('../../../components/spinner');
 var UserFilterAdv = require('./views/user-filter-adv');
+import {Button} from 'antd';
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
 var CONSTANTS = {
     LOG_PAGE_SIZE: 11//个人操作日志一页展示的条数
 };
 import Trace from 'LIB_DIR/trace';
-import {Button} from 'antd';
 
 
 var UserManage = React.createClass({
@@ -240,10 +240,12 @@ var UserManage = React.createClass({
                 >
                     <TopNav>
                         <TopNav.MenuList />
-                        <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block handle-btn-container"
+                        <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block fl-r btn-item-container"
                             onClick={this.events.showUserForm.bind(this,'add')}
                             data-tracename="添加成员" >
-                            <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
+                            <Button className="btn-item">
+                                <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
+                            </Button>
                         </PrivilegeChecker>
                     </TopNav>
                     <UserFilterAdv isFilterPanelShow={this.state.isFilterPanelShow}

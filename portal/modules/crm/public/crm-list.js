@@ -494,7 +494,7 @@ var Crm = React.createClass({
         this.setState(this.state);
     }
     , showAddForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击添加客户按钮');
+        Trace.traceEvent($(this.getDOMNode()).find('.btn-item'), '点击添加客户按钮');
         this.state.isAddFlag = true;
         this.setState(this.state);
     }
@@ -769,7 +769,7 @@ var Crm = React.createClass({
         });
     },
     showCrmTemplateRightPanel: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击导入客户按钮');
+        Trace.traceEvent($(this.getDOMNode()).find('.btn-item'), '点击导入客户按钮');
         this.setState({
             crmTemplateRightPanelShow: true
         });
@@ -810,7 +810,7 @@ var Crm = React.createClass({
     showMergePanel: function() {
         if (_.isArray(this.state.selectedCustomer) && this.state.selectedCustomer.length > 1) {
             this.setState({mergePanelIsShow: true});
-            Trace.traceEvent($(this.getDOMNode()).find('.handle-btn-container'), '点击合并客户按钮');
+            Trace.traceEvent($(this.getDOMNode()).find('.btn-item'), '点击合并客户按钮');
         }
     },
     hideMergePanel: function() {
@@ -825,7 +825,7 @@ var Crm = React.createClass({
     renderHandleBtn: function() {
         let isWebMini = $(window).width() < LAYOUT_CONSTANTS.SCREEN_WIDTH;//浏览器是否缩小到按钮展示改成图标展示
         let btnClass = 'block ';
-        btnClass += isWebMini ? 'handle-btn-mini' : 'handle-btn-container';
+        btnClass += isWebMini ? 'handle-btn-mini' : 'btn-item';
         if (this.state.selectedCustomer.length) {
             //选择客户后，展示合并和批量变更的按钮
             return (<div className="top-btn-wrapper">
@@ -852,28 +852,28 @@ var Crm = React.createClass({
         } else {
             return (<div className="top-btn-wrapper">
                 <PrivilegeChecker
-                    check="CRM_REPEAT"
-                    className={btnClass + ' customer-repeat-btn'}
-                    title={isWebMini ? Intl.get('crm.1', '客户查重') : ''}
-                    onClick={this.props.showRepeatCustomer}
-                >
-                    {isWebMini ? <i className="iconfont icon-search-repeat"/> : Intl.get('crm.1', '客户查重')}
-                </PrivilegeChecker>
-                <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
                     title={isWebMini ? Intl.get('crm.2', '导入客户') : ''}
                     onClick={this.showCrmTemplateRightPanel}
                 >
-                    {isWebMini ? <i className="iconfont icon-import-btn"/> : Intl.get('crm.2', '导入客户')}
-                </PrivilegeChecker>
+                    {isWebMini ? <i className="iconfont icon-import-btn"/> : <Button type='primary'>{Intl.get('crm.2', '导入客户')}</Button>}
+                </PrivilegeChecker>                          
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
                     title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}
                     onClick={this.showAddForm}>
-                    {isWebMini ? <Icon type="plus"/> : Intl.get('crm.3', '添加客户')}
+                    {isWebMini ? <Icon type="plus"/> : <Button>{Intl.get('crm.3', '添加客户')}</Button>}
                 </PrivilegeChecker>
+                <PrivilegeChecker
+                    check="CRM_REPEAT"
+                    className={btnClass + ' customer-repeat-btn'}
+                    title={isWebMini ? Intl.get('crm.1', '客户查重') : ''}
+                    onClick={this.props.showRepeatCustomer}
+                >
+                    {isWebMini ? <i className="iconfont icon-search-repeat"/> : <Button>{Intl.get('crm.1', '客户查重')}</Button>}
+                </PrivilegeChecker>      
             </div>);
         }
     },

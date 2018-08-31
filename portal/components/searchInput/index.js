@@ -72,7 +72,8 @@ const SearchInput = React.createClass({
             searchPlaceholder: '',
             searchFields: [],
             searchOnTyped: false,
-            hasCloseBtn: false
+            hasCloseBtn: false,
+            className: ''
         };
     },
     getInitialState: function() {
@@ -217,7 +218,7 @@ const SearchInput = React.createClass({
         }
 
         return (
-            <div className="search-input-container">
+            <div className={'search-input-container ' + this.props.className}>
                 {this.props.type === 'input' ? (
                     <Input type="text" placeholder={this.props.searchPlaceHolder} ref="searchInput"
                         onChange={this.searchEvent}
@@ -250,7 +251,8 @@ SearchInput.propTypes = {
     searchPlaceholder: PropTypes.string,
     searchFields: PropTypes.array,
     searchOnTyped: PropTypes.bool,
-    hasCloseBtn: PropTypes.bool
+    hasCloseBtn: PropTypes.bool,
+    className: PropTypes.string
 };
 
 module.exports = SearchInput;

@@ -120,7 +120,7 @@ TopNav.MenuList = React.createClass({
         //获取所有子模块
         var AllSubModules = (UserData.getUserData() && UserData.getUserData().subModules) || {};
         //获取当前界面的子模块
-        var subModules = AllSubModules[category] || [];
+        var subModules = this.props.menuList || AllSubModules[category] || [];
         //获取pathname
         var locationPath = getPathname();
         //获取样式名

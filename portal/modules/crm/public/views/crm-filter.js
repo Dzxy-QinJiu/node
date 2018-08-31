@@ -16,7 +16,7 @@ var CrmFilter = React.createClass({
     },
     //如果是从客户分析点击团队成员跳转过来时，将搜索框中的关键字置为点击的成员名称
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.crmFilterValue){
+        if (nextProps.crmFilterValue) {
             this.refs.searchInput.state.keyword = nextProps.crmFilterValue;
         }
     },
@@ -29,11 +29,11 @@ var CrmFilter = React.createClass({
     },
     togglePanel: function() {
         if (this.state.isPanelShow) {
-            Trace.traceEvent($(this.getDOMNode()).find('.ant-btn-ghost'),'关闭筛选面板');
+            Trace.traceEvent($(this.getDOMNode()).find('.ant-btn-ghost'), '关闭筛选面板');
             FilterAction.hidePanel();
             this.props.changeTableHeight();
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.ant-btn-ghost'),'打开筛选面板');
+            Trace.traceEvent($(this.getDOMNode()).find('.ant-btn-ghost'), '打开筛选面板');
             FilterAction.showPanel();
             this.props.changeTableHeight(true);
         }
@@ -65,9 +65,10 @@ var CrmFilter = React.createClass({
                     type="select"
                     searchFields={searchFields}
                     searchEvent={this.searchEvent}
+                    className="btn-item"
                 />
                 <Button type="ghost" onClick={this.togglePanel}>
-                    {Intl.get('common.filter', '筛选')} { this.state.isPanelShow ? <Icon type="up"/> : <Icon type="down"/> }
+                    {Intl.get('common.filter', '筛选')} {this.state.isPanelShow ? <Icon type="up" /> : <Icon type="down" />}
                 </Button>
             </div>
         );
