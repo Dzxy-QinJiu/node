@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 应付款信息添加表单
@@ -9,19 +11,23 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 
-const AddBuyPayment = React.createClass({
+const AddBuyPayment = createReactClass({
+    displayName: 'AddBuyPayment',
     mixins: [ValidateMixin],
+
     getInitialFormData: function() {
         return {
             unit: 'days',
         };
     },
+
     getInitialState: function() {
         return {
             payments: [],
             formData: this.getInitialFormData(),
         };
     },
+
     addPayment: function() {
         this.refs.validation.validate(valid => {
             if (!valid) {
@@ -35,11 +41,13 @@ const AddBuyPayment = React.createClass({
             }
         });
     },
+
     deletePayment: function(index) {
         this.state.payments.splice(index, 1);
 
         this.setState(this.state);
     },
+
     onNumChange: function(e) {
         const num = e.target.value;
         this.state.formData.num = num;
@@ -52,6 +60,7 @@ const AddBuyPayment = React.createClass({
 
         this.setState(this.state);
     },
+
     onUnitChange: function(value) {
         this.state.formData.unit = value;
 
@@ -65,6 +74,7 @@ const AddBuyPayment = React.createClass({
 
         this.setState(this.state);
     },
+
     render: function() {
         return (
             <div className="add-payments">
@@ -139,8 +149,9 @@ const AddBuyPayment = React.createClass({
                 ) : null}
             </div>
         );
-    }
+    },
 });
 
 module.exports = AddBuyPayment;
+
 

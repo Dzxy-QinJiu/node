@@ -1,8 +1,13 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const CallRecordPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(CallRecordPage) => <CallRecordPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'call_record',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public')); 
-        });
-    }
+    path: '/call_record',
+    component: CallRecordPage
 };
+

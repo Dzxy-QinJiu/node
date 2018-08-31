@@ -2,6 +2,8 @@
  * 销售合同基本信息展示及编辑页面
  */
 
+var React = require('react');
+var createReactClass = require('create-react-class');
 import { Form, Input, Select, Row, Col } from 'antd';
 const FormItem = Form.Item;
 import ValidateMixin from '../../../mixins/ValidateMixin';
@@ -17,7 +19,7 @@ import AddBasic from './add-basic';
 import AddProduct from './add-product';
 import DetailRepayment from './detail-repayment';
 import { REPAYMENT_OWN_COLUMNS } from '../consts';
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 import { AntcMdTable } from 'antc';
 const extend = require('extend');
 import { parseAmount } from 'LIB_DIR/func';
@@ -30,8 +32,10 @@ const REFS = {
     PRODUCT_FORM: 'addProduct',
 };
 
-const DetailBasic = React.createClass({
+const DetailBasic = createReactClass({
+    displayName: 'DetailBasic',
     mixins: [ValidateMixin, BasicMixin],
+
     getInitialState: function() {
         return {
             isBasicInfoEdit: false,
@@ -41,16 +45,19 @@ const DetailBasic = React.createClass({
             isRepaymentLoading: false,
         };
     },
+
     componentDidMount: function() {
         //在回款列表上打开详情时，由于列表项中不包含回款记录字段，所以要再用合同id获取一下合同详情
         if (this.props.viewType === VIEW_TYPE.REPAYMENT && !this.props.contract.repayments) {
             this.refreshContract();
         }
     },
+
     refreshContract: function() {
         this.props.refreshCurrentContract(this.props.contract.id, false);
         this.setState({isRepaymentLoading: true});
     },
+
     componentWillReceiveProps: function(nextProps) {
         if (this.props.contract.id !== nextProps.contract.id) {
             let newState = this.getInitialState();
@@ -74,43 +81,53 @@ const DetailBasic = React.createClass({
             }
         }
     },
+
     showBasicInfoForm: function() {
         this.setState({isBasicInfoEdit: true, isAppEdit: false, isRepaymentEdit: false});
     },
+
     hideBasicInfoForm: function() {
         this.setState({isBasicInfoEdit: false});
     },
+
     showAppForm: function() {
         this.setState({isAppEdit: true, isBasicInfoEdit: false, isRepaymentEdit: false}, () => {
             this.props.updateScrollBar();
         });
     },
+
     hideAppForm: function() {
         this.setState({isAppEdit: false}, () => {
             this.props.updateScrollBar();
         });
     },
+
     showRepaymentForm: function() {
         this.setState({isRepaymentEdit: true, isBasicInfoEdit: false, isAppEdit: false}, () => {
             this.props.updateScrollBar();
         });
     },
+
     hideRepaymentForm: function() {
         this.setState({isRepaymentEdit: false}, () => {
             this.props.updateScrollBar();
         });
     },
+
     showBelongCustomerForm: function() {
         this.setState({isBelongCustomerEdit: true}, () => {
             this.scrollBottom();
         });
     },
+
     hideBelongCustomerForm: function() {
         this.setState(this.getInitialState);
     },
+
     getRowKey: function(record, index) {
         return index;
     },
+
     handleSubmit: function(target) {
         const ref = target === 'app' ? REFS.PRODUCT_FORM : REFS.BASIC_INFO_FORM;
 
@@ -128,6 +145,7 @@ const DetailBasic = React.createClass({
             this.doSubmit(target);
         }
     },
+
     handleBelongCustomerSubmit: function() {
         this.refs.validation.validate(valid => {
             if (!valid) {
@@ -137,6 +155,7 @@ const DetailBasic = React.createClass({
             }
         });
     },
+
     //执行提交，若target指定为app，则提交产品数据，否则提交合同基本信息数据
     doSubmit: function(target) {
         if (target === 'app') {
@@ -164,6 +183,7 @@ const DetailBasic = React.createClass({
             }
         }, true);
     },
+
     // 格式化数值
     formatValues(value, showUnit = true) {
         // 校验参数是否为数值
@@ -179,6 +199,7 @@ const DetailBasic = React.createClass({
         }
         return showUnit ? value + Intl.get('contract.155', '元') : value;
     },
+
     render: function() {
         const contract = this.props.contract;
         const products = contract.products || [];
@@ -499,8 +520,9 @@ const DetailBasic = React.createClass({
                 ) : null}
             </div>
         );
-    }
+    },
 });
 
 module.exports = DetailBasic;
+
 

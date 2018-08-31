@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * select(下拉选择框)显示、编辑 的组件
@@ -11,8 +13,10 @@ import FieldMixin from '../antd-form-fieldmixin';
 var FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 
-let BasicEditSelectField = React.createClass({
+let BasicEditSelectField = createReactClass({
+    displayName: 'BasicEditSelectField',
     mixins: [FieldMixin],
+
     getDefaultProps: function() {
         return {
             id: '1',
@@ -69,6 +73,7 @@ let BasicEditSelectField = React.createClass({
             submitErrorMsg: ''
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.id !== this.props.id) {
             this.setState({
@@ -90,6 +95,7 @@ let BasicEditSelectField = React.createClass({
             });
         }
     },
+
     setEditable: function(e) {
         var formData = this.state.formData;
         formData.select = this.props.value;
@@ -99,6 +105,7 @@ let BasicEditSelectField = React.createClass({
         });
         Trace.traceEvent(e,'点击编辑' + this.props.field);
     },
+
     handleSubmit: function(e) {
         var validation = this.refs.validation;
         var _this = this;
@@ -149,6 +156,7 @@ let BasicEditSelectField = React.createClass({
             }
         });
     },
+
     handleCancel: function(e) {
         Trace.traceEvent(e,'取消对' + this.props.field + '修改');
         var formData = this.state.formData;
@@ -163,9 +171,11 @@ let BasicEditSelectField = React.createClass({
         });
         this.props.cancelEditField();
     },
+
     onSelectChange: function(selectVal) {
         this.props.onSelectChange(selectVal);
     },
+
     render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -203,7 +213,7 @@ let BasicEditSelectField = React.createClass({
 
         var selectBlock = this.state.displayType === 'edit' ? (
             <div className="selectWrap" ref="selectWrap" key="select-wrap">
-                <Form horizontal autoComplete="off">
+                <Form layout='horizontal' autoComplete="off">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label=""
@@ -246,7 +256,8 @@ let BasicEditSelectField = React.createClass({
                 {selectBlock}
             </div>
         );
-    }
+    },
 });
 
 module.exports = BasicEditSelectField;
+

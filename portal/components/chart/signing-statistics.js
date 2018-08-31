@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * 签单情况统计表
  */

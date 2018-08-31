@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * Created by wangliping on 2017/10/13.
  * 一直展示的选择框，类似可搜索的Select,但下拉框一直展示不隐藏
@@ -136,12 +138,12 @@ AlwaysShowSelect.defaultProps = {
     }//取到所展示的内容
 };
 AlwaysShowSelect.propTypes = {
-    placeholder: React.PropTypes.string,
-    value: React.PropTypes.string,
-    hasClearOption: React.PropTypes.bool,
-    dataList: React.PropTypes.object,
-    notFoundContent: React.PropTypes.string,
-    onChange: React.PropTypes.func,
-    getSelectContent: React.PropTypes.func
+    placeholder: PropTypes.string,
+    value: PropTypes.string,
+    hasClearOption: PropTypes.bool,
+    dataList: PropTypes.object,
+    notFoundContent: PropTypes.string,
+    onChange: PropTypes.func,
+    getSelectContent: PropTypes.func
 };
 export default AlwaysShowSelect;

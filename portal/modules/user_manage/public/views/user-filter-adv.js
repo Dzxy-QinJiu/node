@@ -1,15 +1,18 @@
+var React = require('react');
 import { Button, Icon } from 'antd';
 var DEFAULT_ALl = Intl.get('common.all', '全部');
 import Trace from 'LIB_DIR/trace';
-var UserFilterAdv = React.createClass({
-    roleSelected: function(role) {
+
+class UserFilterAdv extends React.Component {
+    roleSelected = (role) => {
         if (role != this.props.selectRole) {
             //角色筛选
             this.props.filterUserByRole(role);
-            Trace.traceEvent(this.getDOMNode(),'点击角色进行过滤');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'点击角色进行过滤');
         }
-    },
-    getRoleListJsx: function() {
+    };
+
+    getRoleListJsx = () => {
         const userRoleList = $.extend(true, [], this.props.userRoleList);
         userRoleList.unshift({role_name: DEFAULT_ALl, num: this.props.allUserTotal, role_define: ''});
         return userRoleList.map((role, idx) => {
@@ -21,8 +24,9 @@ var UserFilterAdv = React.createClass({
                 <span className="tag-count">{role.num}</span>
             </li>);
         });
-    },
-    render: function() {
+    };
+
+    render() {
 
         return (
             <div className="user-filter-adv" style={{display: this.props.isFilterPanelShow ? 'block' : 'none'}} >
@@ -37,7 +41,7 @@ var UserFilterAdv = React.createClass({
             </div>
         );
     }
-})
-    ;
+}
 
 module.exports = UserFilterAdv;
+

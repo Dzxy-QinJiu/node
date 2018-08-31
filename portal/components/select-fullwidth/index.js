@@ -4,6 +4,7 @@
  *
  * 使用方法
  *
+var React = require('react');
  *  var SelectFullWidth = require("../../../components/select-fullwidth");
  *  var Option = require("antd").Select.Option;
  *
@@ -18,23 +19,23 @@
  *  minWidth用来指定select的最小宽度，非必传属性，默认值是120
  *  maxWidth用来指定select的最大宽度，非必传属性，默认值是500
  */
+var React = require('react');
 var Select = require('antd').Select;
 var measureText = require('../../public/sources/utils/measure-text');
-var SelectFullWidth = React.createClass({
-    getDefaultProps: function() {
-        return {
-            minWidth: 120,
-            maxWidth: 500,
-            onLayout: function() {}
-        };
-    },
-    getInitialState: function() {
-        return {
-            width: this.props.minWidth,
-            textList: []
-        };
-    },
-    computeWidth: function() {
+
+class SelectFullWidth extends React.Component {
+    static defaultProps = {
+        minWidth: 120,
+        maxWidth: 500,
+        onLayout: function() {}
+    };
+
+    state = {
+        width: this.props.minWidth,
+        textList: []
+    };
+
+    computeWidth = () => {
         var textList = this.state.textList;
         //获取外层节点
         var wrapDom = ReactDOM.findDOMNode(this);
@@ -67,15 +68,17 @@ var SelectFullWidth = React.createClass({
                 width: width
             });
         });
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         var textList = React.Children.map(this.props.children, (ele , idx) => {
             return ele.props.children;
         });
         this.state.textList = textList;
         this.computeWidth();
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         var textList = React.Children.map(nextProps.children, (ele , idx) => {
             return ele.props.children;
         });
@@ -83,8 +86,9 @@ var SelectFullWidth = React.createClass({
             this.state.textList = textList;
             this.computeWidth();
         }
-    },
-    render: function() {
+    }
+
+    render() {
         var {style, children, ...props} = this.props;
         if(!style) {
             style = {};
@@ -96,6 +100,6 @@ var SelectFullWidth = React.createClass({
             </Select>
         );
     }
-});
+}
 
 module.exports = SelectFullWidth;

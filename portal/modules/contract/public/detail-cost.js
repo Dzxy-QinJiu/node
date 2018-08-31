@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 费用信息添加、展示及编辑页面
@@ -27,8 +29,10 @@ const formItemLayout2 = {
     wrapperCol: { span: 6 },
 };
 
-const DetailCost = React.createClass({
+const DetailCost = createReactClass({
+    displayName: 'DetailCost',
     mixins: [ValidateMixin],
+
     getInitialState: function() {
         const isAdd = _.isEmpty(this.props.cost);
         return {
@@ -37,20 +41,24 @@ const DetailCost = React.createClass({
             isAdd: isAdd,
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.clearState();
     },
+
     showForm: function() {
         this.setState({
             isFormShow: true,
             formData: _.clone(this.props.cost),
         });
     },
+
     hideForm: function() {
         this.setState({
             isFormShow: false,
         });
     },
+
     handleSubmit: function(type, id) {
         let data, params;
 
@@ -69,6 +77,7 @@ const DetailCost = React.createClass({
             });
         }
     },
+
     editCost: function(type, data, params) {
         this.props.showLoading();
 
@@ -107,6 +116,7 @@ const DetailCost = React.createClass({
             }
         });
     },
+
     renderUserField: function() {
         const userOptions = this.props.userList.map(user => {
             return <Option key={user.user_id} value={user.user_id}>{user.nick_name}</Option>;
@@ -145,6 +155,7 @@ const DetailCost = React.createClass({
             </FormItem>
         );
     },
+
     onUserChoosen: function(value) {
         const selectedUser = _.find(this.props.userList, user => user.user_id === value);
 
@@ -152,6 +163,7 @@ const DetailCost = React.createClass({
         this.state.formData.sales_name = selectedUser.nick_name;
         this.onTeamChoosen(selectedUser.group_id);
     },
+
     renderTeamField: function() {
         const teamOptions = this.props.teamList.map(team => {
             return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
@@ -181,6 +193,7 @@ const DetailCost = React.createClass({
             </FormItem>
         );
     },
+
     onTeamChoosen: function(value) {
         const selectedTeam = _.find(this.props.teamList, team => team.groupId === value);
         this.state.formData.sales_team_id = value;
@@ -193,6 +206,7 @@ const DetailCost = React.createClass({
             this.handleValidate(this.state.status, formDataCopy);
         });
     },
+
     renderAmountField: function() {
         return (
             <FormItem 
@@ -217,6 +231,7 @@ const DetailCost = React.createClass({
             </FormItem>
         );
     },
+
     renderDateField: function() {
         if (!this.state.formData.date) {
             this.state.formData.date = moment().valueOf();
@@ -240,6 +255,7 @@ const DetailCost = React.createClass({
             </FormItem>
         );
     },
+
     renderTypeField: function() {
         const typeOptions = COST_TYPE.map(type => {
             return <Option key={type} value={type}>{type}</Option>;
@@ -267,6 +283,7 @@ const DetailCost = React.createClass({
             </FormItem>
         );
     },
+
     render: function() {
         //编辑按钮是否显示
         const isEditBtnShow = !this.state.isFormShow && hasPrivilege('OPLATE_SALES_COST_ADD');
@@ -285,7 +302,7 @@ const DetailCost = React.createClass({
                     </div>
                 ) : null}
 
-                <Form horizontal>
+                <Form layout='horizontal'>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         {this.renderUserField()}
                         {this.renderTeamField()}
@@ -306,8 +323,9 @@ const DetailCost = React.createClass({
                 </Form>
             </div>
         );
-    }
+    },
 });
 
 module.exports = DetailCost;
+
 

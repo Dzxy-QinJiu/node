@@ -1,3 +1,5 @@
+var React = require('react');
+import PropTypes from 'prop-types';
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -95,7 +97,6 @@ class AppConfigForm extends React.Component {
         );
     }
 }
-const PropTypes = React.PropTypes;
 AppConfigForm.propTypes = {
     appFormData: PropTypes.object,//应用配置表单数据
     needUserType: PropTypes.bool,//是否需要用户类型表单项

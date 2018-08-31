@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * 电话输入框组件
  */
@@ -99,18 +101,18 @@ PhoneInput.defaultProps = {
     form: {}
 };
 PhoneInput.propTypes = {
-    label: React.PropTypes.string,
-    labelCol: React.PropTypes.object,
-    wrapperCol: React.PropTypes.object,
-    placeholder: React.PropTypes.string,
-    initialValue: React.PropTypes.string,
-    colon: React.PropTypes.bool,
-    suffix: React.PropTypes.object,
-    onChange: React.PropTypes.func,
-    validateRules: React.PropTypes.object,
-    hideLable: React.PropTypes.bool,
-    id: React.PropTypes.string,
-    form: React.PropTypes.object,
+    label: PropTypes.string,
+    labelCol: PropTypes.object,
+    wrapperCol: PropTypes.object,
+    placeholder: PropTypes.string,
+    initialValue: PropTypes.string,
+    colon: PropTypes.bool,
+    suffix: PropTypes.object,
+    onChange: PropTypes.func,
+    validateRules: PropTypes.object,
+    hideLable: PropTypes.bool,
+    id: PropTypes.string,
+    form: PropTypes.object,
 };
 
 const options = {

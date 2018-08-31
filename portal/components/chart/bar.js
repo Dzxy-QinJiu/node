@@ -1,6 +1,7 @@
 /**
  * 柱状图
  */
+var React = require('react');
 var echarts = require('echarts');
 require('./style.less');
 var macronsTheme = require('./theme-macrons');
@@ -14,25 +15,27 @@ import { packageTry } from 'LIB_DIR/func';
 
 var COLORSINGLE = '#1790cf';
 var COLORMULTIPLE = ['#1790cf', '#1bb2d8'];
-var BarChart = React.createClass({
-    echartInstance: null,
-    getDefaultProps: function() {
-        return {
-            chartData: [],
-            width: '100%',
-            height: 214,
-            resultType: 'loading',
-            startDate: '',
-            endDate: '',
-            showLabel: false,//是否展示柱状图上的数据
-            //超过多少的柱子时横轴文字需要倾斜显示
-            xAxisRotateLength: 12,
-        };
-    },
-    componentDidMount: function() {
+
+class BarChart extends React.Component {
+    static defaultProps = {
+        chartData: [],
+        width: '100%',
+        height: 214,
+        resultType: 'loading',
+        startDate: '',
+        endDate: '',
+        showLabel: false,//是否展示柱状图上的数据
+        //超过多少的柱子时横轴文字需要倾斜显示
+        xAxisRotateLength: 12,
+    };
+
+    echartInstance = null;
+
+    componentDidMount() {
         this.renderChart();
-    },
-    componentDidUpdate: function(prevProps) {
+    }
+
+    componentDidUpdate(prevProps) {
         if(
             this.props.chartData.length &&
             prevProps.chartData.length &&
@@ -42,16 +45,18 @@ var BarChart = React.createClass({
             return;
         }
         this.renderChart();
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }
-    },
-    adjustXaxis: function(categories, xAxisOptions) {
+    }
+
+    adjustXaxis = (categories, xAxisOptions) => {
         const length = categories.length;
         if (length < 40) {
             //横坐标展示所有的种类
@@ -66,8 +71,9 @@ var BarChart = React.createClass({
                 }
             }
         }
-    },
-    getLegend: function() {
+    };
+
+    getLegend = () => {
         if (!this.props.legend) {
             return {
                 show: false,
@@ -78,8 +84,9 @@ var BarChart = React.createClass({
             show: true,
             data: _.map(this.props.legend , 'name')
         };
-    },
-    getCategories: function() {
+    };
+
+    getCategories = () => {
         let chartData = this.props.chartData;
 
         if (this.props.dataField) {
@@ -92,8 +99,9 @@ var BarChart = React.createClass({
             categories = _.map(chartData , 'name');
         }
         return categories;
-    },
-    getSeries: function() {
+    };
+
+    getSeries = () => {
         var _this = this;
         let chartData = this.props.chartData;
 
@@ -141,8 +149,9 @@ var BarChart = React.createClass({
                 return serie;
             });
         }
-    },
-    getMargin: function() {
+    };
+
+    getMargin = () => {
         let chartData = this.props.chartData;
 
         if (this.props.dataField) {
@@ -158,8 +167,9 @@ var BarChart = React.createClass({
         });
         var maxMargin = _.max(marginList) + 10;
         return maxMargin;
-    },
-    getEchartOptions: function() {
+    };
+
+    getEchartOptions = () => {
         const categories = this.getCategories();
         const xAxisOptions = {
             interval: 'auto',//x轴坐标label间隔的控制,默认：自动调整，（0：所有label全部展示）
@@ -251,8 +261,9 @@ var BarChart = React.createClass({
             series: this.getSeries()
         };
         return option;
-    },
-    getReverseEchartOptions: function() {
+    };
+
+    getReverseEchartOptions = () => {
         //grid上的margin
         var maxMargin = this.getMargin();
         const categories = this.getCategories();
@@ -344,8 +355,9 @@ var BarChart = React.createClass({
             series: this.getSeries()
         };
         return option;
-    },
-    getTooltip: function() {
+    };
+
+    getTooltip = () => {
         var _this = this;
         return {
             show: true,
@@ -379,8 +391,9 @@ var BarChart = React.createClass({
                          </div>`;
             }
         };
-    },
-    renderChart: function() {
+    };
+
+    renderChart = () => {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -412,8 +425,9 @@ var BarChart = React.createClass({
             });
         }
 
-    },
-    render: function() {
+    };
+
+    render() {
         return (
             <div className="analysis-chart">
                 <div ref="chart" style={{width: this.props.width, height: this.props.height}} className="chart"
@@ -421,6 +435,7 @@ var BarChart = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = BarChart;
+

@@ -1,18 +1,18 @@
+var React = require('react');
 import { Upload, Icon, message } from 'antd';
 import { crmEmitter } from 'OPLATE_EMITTER';
 import Trace from 'LIB_DIR/trace';
 
-var CrmImport = React.createClass({
-    getInitialState() {
-        return {
-            isLoading: false
-        };
-    },
-    handleChange(info) {
+class CrmImport extends React.Component {
+    state = {
+        isLoading: false
+    };
+
+    handleChange = (info) => {
         this.setState({isLoading: true});
         if (info.file.status === 'done') {
             const response = info.file.response;
-            Trace.traceEvent(this.getDOMNode(),'点击导入按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'点击导入按钮');
             if (_.isArray(response) && response.length) {
                 crmEmitter.emit(crmEmitter.IMPORT_CUSTOMER, response);
                 this.props.closeCrmTemplatePanel();
@@ -22,8 +22,9 @@ var CrmImport = React.createClass({
 
             this.setState({isLoading: false});
         }
-    },
-    render: function() {
+    };
+
+    render() {
         var _this = this;
         var props = {
             name: 'customers',
@@ -37,6 +38,7 @@ var CrmImport = React.createClass({
             </Upload>
         );
     }
-});
+}
 
 module.exports = CrmImport;
+

@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * 电话状态及客户详情展示面板
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -9,6 +10,7 @@ require('./css/phone-status.less');
 var phoneAlertAction = require('./action/phone-alert-action');
 var phoneAlertStore = require('./store/phone-alert-store');
 var addMoreInfoAction = require('./action/add-more-info-action');
+const PropTypes = require('prop-types');
 var userData = require('PUB_DIR/sources/user-data');
 import AddCustomerForm from 'CMP_DIR/add-customer-form';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -716,10 +718,10 @@ PhonePanel.defaultProps = {
 };
 
 PhonePanel.propTypes = {
-    showFlag: React.PropTypes.bool,
-    paramObj: React.PropTypes.object,
-    setInitialPhoneObj: React.PropTypes.func,
-    closePhonePanel: React.PropTypes.func,
-    notificationCustomer: React.PropTypes.bool
+    showFlag: PropTypes.bool,
+    paramObj: PropTypes.object,
+    setInitialPhoneObj: PropTypes.func,
+    closePhonePanel: PropTypes.func,
+    notificationCustomer: PropTypes.bool
 };
 export default PhonePanel;

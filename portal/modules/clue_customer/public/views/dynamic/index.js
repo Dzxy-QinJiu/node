@@ -3,6 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/8.
  */
+var React = require('react');
 require('../../css/dynamic.less');
 //动态store
 var DynamicStore = require('../../store/dynamic-store');
@@ -17,25 +18,26 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 
-var Dynamic = React.createClass({
-    getInitialState: function() {
-        return {
-            showCustomerId: '',//正在展示客户详情的客户id
-            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-            customerOfCurUser: {},//当前展示用户所属客户的详情
-            ...DynamicStore.getState(),
-            divHeight: this.props.divHeight
-        };
-    },
-    onStoreChange: function() {
+class Dynamic extends React.Component {
+    state = {
+        showCustomerId: '',//正在展示客户详情的客户id
+        isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+        customerOfCurUser: {},//当前展示用户所属客户的详情
+        ...DynamicStore.getState(),
+        divHeight: this.props.divHeight
+    };
+
+    onStoreChange = () => {
         this.setState({...DynamicStore.getState()});
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         DynamicStore.listen(this.onStoreChange);
         DynamicAction.getDynamicList(this.props.currentId, this.state.pageSize);
         $(window).on('resize', this.onStoreChange);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.currentId !== this.props.currentId) {
             DynamicAction.setInitialData();
             setTimeout(() => {
@@ -47,18 +49,21 @@ var Dynamic = React.createClass({
                 divHeight: nextProps.divHeight
             });
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         DynamicAction.setInitialData();
         DynamicStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
-    },
-    handleShowCustomerDetail: function(customerId) {
+    }
+
+    handleShowCustomerDetail = (customerId) => {
         this.setState({
             showCustomerId: customerId
         });
-    },
-    showCustomerDetail: function(customerId) {
+    };
+
+    showCustomerDetail = (customerId) => {
         this.setState({
             showCustomerId: customerId
         });
@@ -70,24 +75,28 @@ var Dynamic = React.createClass({
                 hideRightPanel: this.closeRightPanel
             }
         });
-    },
-    closeRightPanel: function() {
+    };
+
+    closeRightPanel = () => {
         this.setState({
             showCustomerId: ''
         });
-    },
-    ShowCustomerUserListPanel: function(data) {
+    };
+
+    ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
             customerOfCurUser: data.customerObj
         });
-    },
-    closeCustomerUserListPanel: function() {
+    };
+
+    closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
         });
-    },
-    timeLineItemRender: function(item) {
+    };
+
+    timeLineItemRender = (item) => {
         return (
             <dl>
                 <dd>
@@ -97,14 +106,16 @@ var Dynamic = React.createClass({
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
-    },
+    };
+
     //关闭已有客户的右侧面板
-    hideRightPanel: function(){
+    hideRightPanel = () => {
         this.setState({
             showCustomerId: ''
         });
-    },
-    render: function() {
+    };
+
+    render() {
 
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
@@ -140,7 +151,8 @@ var Dynamic = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Dynamic;
+
 

@@ -1,6 +1,8 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
+var React = require('react');
+var createReactClass = require('create-react-class');
 require('../../../../components/antd-table-pagination/index.less');
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var DefaultUserLogoTitle = require('../../../../components/default-user-logo-title');
@@ -98,8 +100,10 @@ var MEMBER_TYPE = {
 
 function noop() {
 }
-var MemberList = React.createClass({
+var MemberList = createReactClass({
+    displayName: 'MemberList',
     mixins: [reactIntlMixin],
+
     getDefaultProps: function() {
         return {
             saveEditMember: noop,
@@ -120,21 +124,25 @@ var MemberList = React.createClass({
             memberListHeight: this.getMemberListHeight()
         };
     },
+
     onChange: function() {
         var editMemberListState = MemberListEditStore.getState();
         this.setState(editMemberListState);
     },
+
     getMemberListHeight: function() {
         let containerHeight = this.props.containerHeight;
         let memberListPaddingTop = 20;//成员列表顶部padding
         let memberListTitleHeight = 50;//成员列表顶部操作区域高度
         return containerHeight - memberListPaddingTop - memberListTitleHeight;
     },
+
     layout: function() {
         setTimeout(() => {
             this.setState({memberListHeight: this.getMemberListHeight()});
         });
     },
+
     componentDidMount: function() {
         MemberListEditStore.listen(this.onChange);
         $(window).on('resize', this.layout);
@@ -143,6 +151,7 @@ var MemberList = React.createClass({
             dynamicStyle = null;
         }
     },
+
     //获取不在任何组织内的成员列表
     getMemberList: function(currPage, pageSize) {
         var searchObj = {
@@ -155,10 +164,12 @@ var MemberList = React.createClass({
         }
         MemberListEditAction.getMemberList(searchObj);
     },
+
     componentWillUnmount: function() {
         MemberListEditStore.unlisten(this.onChange);
         $(window).off('resize', this.layout);
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.setState(this.getInitialState());
         this.setState({
@@ -219,7 +230,6 @@ var MemberList = React.createClass({
         }
     },
 
-
     editMember: function() {
         if (!this.props.isEditMember) {
             this.resetCurShowTeamMemberObj();
@@ -247,6 +257,7 @@ var MemberList = React.createClass({
         }
         this.cleanSearchInput();
     },
+
     //确认的处理
     saveEditMember: function() {
         var ownerId = '', userIds = [];
@@ -317,7 +328,6 @@ var MemberList = React.createClass({
         }
     },
 
-
     createOperationBtn: function() {
         var isAddMember = this.props.isAddMember; //是否是添加状态
         var isEditMember = this.props.isEditMember;//是否是编辑状态
@@ -386,6 +396,7 @@ var MemberList = React.createClass({
             </div>
         );
     },
+
     //渲染当前正在展示的组织成员列表
     renderCurTeamMemberList: function(hasSelectBtn) {
         var _this = this;
@@ -421,6 +432,7 @@ var MemberList = React.createClass({
             {usersElement}
         </div>);
     },
+
     //获取当前选择成员个数
     getSelectSize: function() {
         var selectedManagerSize = 0, selectedUserSize = 0;
@@ -451,6 +463,7 @@ var MemberList = React.createClass({
             selectedSize: selectedUserSize + selectedManagerSize
         };
     },
+
     //删除组织成员的处理
     delMember: function() {
         if (!$('#del-member-btn').hasClass('member-btn-enable')) {
@@ -495,6 +508,7 @@ var MemberList = React.createClass({
         this.setState({saveMemberListObj: saveMemberListObj});
         this.cleanSearchInput();
     },
+
     //加为负责人的处理
     addOwner: function() {
         //var selectSize = this.getSelectSize();
@@ -527,6 +541,7 @@ var MemberList = React.createClass({
             curShowTeamMemberObj: curShowTeamMemberObj
         });
     },
+
     //加为管理员的处理
     addManager: function() {
         if (!$('#set-manager-btn').hasClass('member-btn-enable')) {
@@ -637,6 +652,7 @@ var MemberList = React.createClass({
             </div>
         </div>);
     },
+
     getTableColumns: function() {
         return [
             {
@@ -659,6 +675,7 @@ var MemberList = React.createClass({
             }
         ];
     },
+
     getPagination: function() {
         var basicConfig = {
             total: this.state.addMemberTotal,
@@ -676,6 +693,7 @@ var MemberList = React.createClass({
         }
         return basicConfig;
     },
+
     onShowSizeChange: function(current, pageSize) {
         MemberListEditAction.setAddMemberPageSize(pageSize);
         if (current * pageSize > this.state.addMemberTotal) {
@@ -691,10 +709,12 @@ var MemberList = React.createClass({
             description: this.state.searchContent
         });
     },
+
     handleTableChange: function(pagination) {
         MemberListEditAction.setAddMemberPage(pagination.current);
         this.getMemberList(pagination.current, this.state.addMemberPageSize);
     },
+
     getRowSelection: function() {
         return {
             type: 'checkbox',
@@ -707,6 +727,7 @@ var MemberList = React.createClass({
         };
 
     },
+
     renderSaveMsg: function() {
         let saveResult = this.state.saveMemberListResult;
         return saveResult ?
@@ -718,6 +739,7 @@ var MemberList = React.createClass({
             </div>) : null;
 
     },
+
     renderAddBtns: function() {
         let enable = true;//没有选择要添加的组织成员时，不可点击添加
         if (this.props.isAddMember && this.state.selectedMemberRows.length === 0) {
@@ -798,6 +820,7 @@ var MemberList = React.createClass({
                 }
             </div>);
     },
+
     onSearchInputChange: function(keyword) {
         let searchValue = keyword ? keyword.trim() : '';
         if (searchValue !== this.state.searchValue) {
@@ -806,9 +829,11 @@ var MemberList = React.createClass({
             });
         }
     },
+
     cleanSearchInput: function() {
         this.setState({searchValue: ''});
     },
+
     render: function() {
         var _this = this;
         var organizationPersonnelWidth = this.props.organizationMemberWidth;
@@ -849,6 +874,6 @@ var MemberList = React.createClass({
                 </div>) : ''}
             </div>
         );
-    }
+    },
 });
 module.exports = injectIntl(MemberList);

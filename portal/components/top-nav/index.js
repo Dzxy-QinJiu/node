@@ -1,16 +1,18 @@
 //引入用户数据
+var React = require('react');
 var UserData = require('../../public/sources/user-data');
 //class名
 var classNames = require('classnames');
 //顶部导航菜单的超链接
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var Dropdown = require('antd').Dropdown;
 var topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
+
 //顶部导航外层div
-var TopNav = React.createClass({
-    resizeHandler: function() {
+class TopNav extends React.Component {
+    resizeHandler = () => {
         //找到外层节点
-        var $wrap = $(ReactDOM.findDOMNode(this.refs.topNav));
+        var $wrap = $(ReactDOM.findDOMNode(this.topNav));
         //找到菜单列表
         var $topLinks = $wrap.find('.topnav-links-wrap');
         //找到所有显示出来的子节点
@@ -53,15 +55,17 @@ var TopNav = React.createClass({
                 $topLinks.addClass('fixed-layout');
             }
         }
-    },
-    resizeFunc: function() {
+    };
+
+    resizeFunc = () => {
         clearTimeout(this.resizeFunc.timeout);
         this.resizeFunc.timeout = setTimeout(this.resizeHandler , 10);
-    },
+    };
+
     //点击页面空白处，下拉菜单消失
-    clickBodyEmptySpace: function(event) {
+    clickBodyEmptySpace = (event) => {
         var $target = $(event.target);
-        var $topNav = $(ReactDOM.findDOMNode(this.refs.topNav));
+        var $topNav = $(ReactDOM.findDOMNode(this.topNav));
         var $topNavLinksWrap = $topNav.find('.topnav-links-wrap');
         var $dropDown = $topNav.find('.topnav-links');
         if($target.is('.navbar-toggle') || $.contains($dropDown[0] , $target[0])) {
@@ -69,34 +73,39 @@ var TopNav = React.createClass({
         }
         $('body').off('click' , this.clickBodyEmptySpace);
         $topNavLinksWrap.removeClass('fixed-layout');
-    },
-    navBarToggle: function() {
+    };
+
+    navBarToggle = () => {
         var $topNav = $(ReactDOM.findDOMNode(this));
         var $topLinks = $topNav.find('.topnav-links-wrap');
         $topLinks.toggleClass('fixed-layout');
         if($topLinks.hasClass('fixed-layout')) {
             $('body').on('click' , this.clickBodyEmptySpace);
         }
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         $(window).on('resize' , this.resizeFunc);
         $(ReactDOM.findDOMNode(this)).find('.navbar-toggle').on('click' , this.navBarToggle);
         this.resizeFunc();
         topNavEmitter.on(topNavEmitter.RELAYOUT , this.resizeFunc);
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         $(window).off('resize' , this.resizeFunc);
         $('body').off('click' , this.clickBodyEmptySpace);
         topNavEmitter.removeListener(topNavEmitter.RELAYOUT , this.resizeFunc);
-    },
-    render: function() {
+    }
+
+    render() {
         return (
-            <div className="topNav" ref="topNav">
+            <div className="topNav" ref={(element) => this.topNav = element }>
                 {this.props.children}
             </div>
         );
     }
-});
+}
+
 //获取路径，去掉开头的/
 function getPathname() {
     return window.location.pathname.replace(/^\//, '');
@@ -113,8 +122,8 @@ function getCategory() {
     return '';
 }
 //顶部导航的导航菜单
-TopNav.MenuList = React.createClass({
-    render: function() {
+TopNav.MenuList = class extends React.Component {
+    render() {
         //获取第一层路由
         var category = getCategory();
         //获取所有子模块
@@ -146,8 +155,8 @@ TopNav.MenuList = React.createClass({
                                 'topNav-menu-item-selected': locationPath === menu.routePath
                             });
 
-                            var liContent = (<Link to={`/${menu.routePath}`}
-                                activeClassName="active" ref="navLinks">{menu.name}</Link>);
+                            var liContent = (<NavLink to={`/${menu.routePath}`}
+                                activeClassName="active" ref={(element) => this.navLinks = element}>{menu.name}</NavLink>);
                             if (menuName === 'myAppMenu' && menu.name === '我的应用') {
                                 liContent = (<Dropdown overlay={subMenu}>
                                     {liContent}
@@ -164,6 +173,6 @@ TopNav.MenuList = React.createClass({
             </div>
         );
     }
-});
+};
 
 module.exports = TopNav;

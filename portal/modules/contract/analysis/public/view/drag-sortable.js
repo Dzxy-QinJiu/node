@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * 拖动区域
  * options
@@ -8,9 +9,9 @@
  *
  */
 import uniqueId from 'lodash/uniqueId';
+import PropTypes from 'prop-types';
 import Sortable from 'react-sortablejs';
 import {Icon} from 'antd';
-const PropTypes = React.PropTypes;
 
 // Functional Component
 const SharedGroup = ({items, options, onChange, onRemove, onClick}) => {

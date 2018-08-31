@@ -1,10 +1,14 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const SalesCommissionPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(SalesCommissionPage) => <SalesCommissionPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = function(path) {
     return {
         path: path,
-        getComponent: function(location, cb) {
-            require.ensure([], function(require) {
-                cb(null, require('./public'));
-            });
-        }
+        component: SalesCommissionPage
     };
 };

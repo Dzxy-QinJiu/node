@@ -1,6 +1,6 @@
 require('./css/nav-sidebar.less');
 var userData = require('../../public/sources/user-data');
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var Logo = require('../Logo/index.js');
 var Avatar = require('../Avatar/index.js');
 var LogOut = require('../../modules/logout/views/index.js');
@@ -9,6 +9,7 @@ var Popover = require('antd').Popover;
 var classNames = require('classnames');
 var insertStyle = require('../insert-style');
 var React = require('react');
+var createReactClass = require('create-react-class');
 var userInfoEmitter = require('../../public/sources/utils/emitters').userInfoEmitter;
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
 var _ = require('lodash');
@@ -19,7 +20,7 @@ var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let history = require('../../public/sources/history');
 import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 const session = storageUtil.session;
 //需要加引导的模块
@@ -67,12 +68,12 @@ function getUserName() {
 
 //不需要在左侧图标列表中输出的链接
 var ExcludeLinkList = [
-    { 'name': Intl.get('menu.sales.homepage', '销售主页'), path: 'sales/home' },
-    { 'name': Intl.get('common.my.app', '我的应用'), path: 'my_app' },
-    { 'name': Intl.get('menu.backend', '后台管理'), path: 'background_management' },
-    { 'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage' },
-    { 'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system' },
-    { 'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply' }
+    {'name': Intl.get('menu.sales.homepage', '销售主页'), path: 'sales/home'},
+    {'name': Intl.get('common.my.app', '我的应用'), path: 'my_app'},
+    {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
+    {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
+    {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
+    {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'}
 ];
 
 //后台管理配置
@@ -167,8 +168,10 @@ var hamburgerIntroModalLayout = {
     tipAreaTop: -50,
 };
 
-var NavSidebar = React.createClass({
+var NavSidebar = createReactClass({
+    displayName: 'NavSidebar',
     mixins: [UnreadMixin],
+
     getInitialState: function() {
         return {
             menus: getMenus(),
@@ -189,8 +192,10 @@ var NavSidebar = React.createClass({
             hideNavIcon: false,//是否隐藏图标（小屏幕只展示文字）
         };
     },
+
     //轮询获取未读数的清除器
     unreadTimeout: null,
+
     //动态添加未读数样式，以便在通知页面顶部显示未读数数字
     insertStyleForUnreadCount: function(unreadCountObj) {
         if (this.unreadStyle) {
@@ -210,6 +215,7 @@ var NavSidebar = React.createClass({
         }
         this.unreadStyle = insertStyle(styles.join('\n'));
     },
+
     //刷新未读数
     refreshNotificationUnread: function() {
         if (Oplate && Oplate.unread) {
@@ -221,6 +227,7 @@ var NavSidebar = React.createClass({
             this.insertStyleForUnreadCount(messages);
         }
     },
+
     changeUserInfoLogo: function(userLogoInfo) {
         //修改名称
         if (userLogoInfo.nickName) {
@@ -238,9 +245,11 @@ var NavSidebar = React.createClass({
             userData.updateUserLogo(userLogoInfo);
         }
     },
+
     resizeFunction: function() {
         this.setState({});
     },
+
     //确定要加引导的元素是日程管理的图标还是汉堡包按钮
     selectedIntroElement: function() {
         //查看汉堡包按钮是否存在
@@ -268,6 +277,7 @@ var NavSidebar = React.createClass({
 
     //是否需要发送ajax请求获取"未读数"数据
     needSendNotificationRequest: false,
+
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.on(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
@@ -298,6 +308,7 @@ var NavSidebar = React.createClass({
             }
         });
     },
+
     getHasUnreadReply: function() {
         const APPLY_UNREAD_REPLY = 'apply_unread_reply';
         let userId = userData.getUserData().user_id;
@@ -309,17 +320,20 @@ var NavSidebar = React.createClass({
             this.refreshHasUnreadReply(applyUnreadReplyList);
         }
     },
+
     refreshHasUnreadReply: function(unreadReplyList) {
         if (_.isArray(unreadReplyList) && unreadReplyList.length) {
-            this.setState({ hasUnreadReply: true });
+            this.setState({hasUnreadReply: true});
         } else {
-            this.setState({ hasUnreadReply: false });
+            this.setState({hasUnreadReply: false});
         }
     },
+
     //本次要加的引导是否没有被点击过
     isIntroModlueNeverClicked: function(WebsiteConfigModuleRecord) {
         return (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0);
     },
+
     calculateHeight: function() {
         //>75  目的是左侧只有一个导航图标时不会出现汉堡包按钮
         //窗口高度小于 （logo高度+导航高度+个人信息高度）时，出现汉堡包按钮，隐藏导航图标
@@ -341,6 +355,7 @@ var NavSidebar = React.createClass({
             this.selectedIntroElement();
         }
     },
+
     componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
@@ -349,9 +364,11 @@ var NavSidebar = React.createClass({
         $(window).off('resize', this.resizeFunction);
         clearTimeout(this.unreadTimeout);
     },
+
     navContainerHeightFnc: function() {
         return $(window).height();
     },
+
     getNotificationClass: function() {
         var urlInfo = url.parse(window.location.href);
         if (/^\/notification\//.test(urlInfo.pathname)) {
@@ -369,6 +386,7 @@ var NavSidebar = React.createClass({
             }
         });
     },
+
     //个人信息部分右侧弹框
     getUserInfoLinks: function() {
         //个人资料部分
@@ -390,29 +408,30 @@ var NavSidebar = React.createClass({
                     UserInfoLinkList.map(function(obj) {
                         return (
                             <li key={obj.key}>
-                                <Link to={obj.href} activeClassName="active">
+                                <NavLink to={obj.href} activeClassName="active">
                                     {obj.name}
-                                </Link>
+                                </NavLink>
                             </li>
                         );
                     })
                 }
                 <li>
-                    <LogOut />
+                    <LogOut/>
                 </li>
             </ul>
         );
     },
+
     toggleNotificationPanel(event) {
         event.stopPropagation();
         this.props.toggleNotificationPanel();
     },
+
     getNotificationBlock: function() {
         var notificationLinks = this.getLinkListByPrivilege(NotificationLinkList);
         if (!notificationLinks.length) {
             return null;
         }
-
         return (
             <div className="notification" onClick={this.toggleNotificationPanel}>
                 {
@@ -422,8 +441,8 @@ var NavSidebar = React.createClass({
                 }
             </div>
         );
-
     },
+
     getApplyBlock: function(isActive) {
         var applyLinks = this.getLinkListByPrivilege(applyentryLink);
         const hasMessage = this.state.messages.approve === 0 && this.state.hasUnreadReply;
@@ -444,21 +463,21 @@ var NavSidebar = React.createClass({
         if (!this.state.hideNavIcon) {
             return (
                 <li className="sidebar-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}>
-                    <Link to={applyLinks[0].href} activeClassName="active" className={isActive ? 'iconfont icon-active-apply-ico' : 'iconfont icon-apply-ico'}>
+                    <NavLink to={applyLinks[0].href} activeClassName="active" className={isActive ? 'iconfont icon-active-apply-ico' : 'iconfont icon-apply-ico'}>
                         {renderMessageTip()}
-                    </Link>
+                    </NavLink>
                 </li>
             );
         }
         else {
             return (
                 <li className="sidebar-applyentry text-nav-li" title={Intl.get('menu.appuser.apply', '用户审批')}>
-                    <Link to={applyLinks[0].href} activeClassName="active">
+                    <NavLink to={applyLinks[0].href} activeClassName="active">
                         {renderMessageTip()}
                         <span>
                             {menuShortNamesMap.apply}
                         </span>
-                    </Link>
+                    </NavLink>
                 </li>
             );
         }
@@ -471,9 +490,9 @@ var NavSidebar = React.createClass({
                     backendConfigLinks.map(function(obj) {
                         return (
                             <li key={obj.key}>
-                                <Link to={obj.href} activeClassName="active">
+                                <NavLink to={obj.href} activeClassName="active">
                                     {obj.name}
-                                </Link>
+                                </NavLink>
                             </li>
                         );
                     })
@@ -494,9 +513,9 @@ var NavSidebar = React.createClass({
                 <div className="sidebar-backend-config">
                     <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
                         overlayClassName="nav-sidebar-backend-config">
-                        <Link to={defaultLink.href} activeClassName="active">
+                        <NavLink to={defaultLink.href} activeClassName="active">
                             <i className="iconfont icon-role-auth-config" />
-                        </Link>
+                        </NavLink>
                     </Popover>
                 </div>
             );
@@ -506,9 +525,9 @@ var NavSidebar = React.createClass({
                 <div className="sidebar-backend-config text-nav-li">
                     <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
                         overlayClassName="nav-sidebar-backend-config">
-                        <Link to={defaultLink.href} activeClassName="active">
+                        <NavLink to={defaultLink.href} activeClassName="active">
                             {menuShortNamesMap.background_management}
-                        </Link>
+                        </NavLink>
                     </Popover>
                 </div>
             );
@@ -526,16 +545,17 @@ var NavSidebar = React.createClass({
                     overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
                         <Avatar className="avatar"
-                            size="51"
+                            size="51px"
                             src={this.state.userInfoLogo}
                             userName={this.state.userInfo.user_name}
                             nickName={this.state.userInfo.nick_name}
-                            round="true" link="true" url="/user_info_manage" />
+                            round="true" link="true" url="/user_info_manage"/>
                     </div>
                 </Popover>
             </div>
         );
     },
+
     getNavbarLists: function() {
         //侧边导航高度减少后，出现汉堡包按钮，汉堡包按钮的弹出框
         return (
@@ -543,9 +563,9 @@ var NavSidebar = React.createClass({
                 {NavSidebarLists.map(function(obj, index) {
                     return (
                         <li key={index}>
-                            <Link to={`/${obj.routePath}`} activeClassName="active">
+                            <NavLink to={`/${obj.routePath}`} activeClassName="active">
                                 {obj.name}
-                            </Link>
+                            </NavLink>
                         </li>
                     );
                 })
@@ -553,25 +573,30 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
+
     handleOnclickHole: function() {
         //跳转到新加模块界面
-        history.pushState({}, '/' + menu.routePath, {});
+        history.push('/' + menu.routePath, {});
         this.saveModalClicked();
     },
+
     //将该模块存入后端并隐藏模态框
     saveModalClicked: function() {
         this.setState({
             isShowIntroModal: false
         });
-        setWebsiteConfigModuleRecord({ 'module_record': [menu.name] });
+        setWebsiteConfigModuleRecord({'module_record': [menu.name]});
     },
+
     hideModalIntro: function() {
         this.saveModalClicked();
     },
+
     closeNotificationPanel(event) {
         event.stopPropagation();
         this.props.closeNotificationPanel();
     },
+
     render: function() {
         var windowHeight = this.navContainerHeightFnc();
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
@@ -607,11 +632,11 @@ var NavSidebar = React.createClass({
                                         if (!this.state.hideNavIcon) {
                                             return (
                                                 <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'clue-container' : ''}>
-                                                    <Link to={`/${menu.routePath}`}
+                                                    <NavLink to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                         className={extraClass}
                                                     >
-                                                    </Link>
+                                                    </NavLink>
                                                 </li>
                                             );
                                         }
@@ -619,13 +644,13 @@ var NavSidebar = React.createClass({
                                         else {
                                             return (
                                                 <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'text-nav-li clue-container' : 'text-nav-li'}>
-                                                    <Link to={`/${menu.routePath}`}
+                                                    <NavLink to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                     >
                                                         <span>
                                                             {menuShortNamesMap[menu.routePath]}
                                                         </span>
-                                                    </Link>
+                                                    </NavLink>
                                                 </li>
                                             );
                                         }

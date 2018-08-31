@@ -1,15 +1,23 @@
 import CommissionPaymentActions from '../action/index';
 const DatePickerUtils = require('../../../../components/datepicker/utils');
 class CommissionPaymentStore {
-    constructor(){
+    constructor() {
+        this.resetState();
+        this.bindActions(CommissionPaymentActions);
+    }
+
+    resetState() {
+        this.setSolidState();
+        this.setInitialPartlyState();
+    }
+
+    setSolidState() {
         this.role = ''; // 选择角色，默认是全部的决定
         let timeObj = DatePickerUtils.getThisQuarterTime(); // 本季度
         this.startTime = DatePickerUtils.getMilliseconds(timeObj.start_time); //开始时间
         this.endTime = _.min([DatePickerUtils.getMilliseconds(timeObj.end_time, true), Date.now()]); //结束时间
         this.sortField = 'create_time'; //排序字段
         this.order = 'descend'; //排序方向
-        this.setInitialPartlyState();
-        this.bindActions(CommissionPaymentActions);
     }
     setInitialPartlyState(){
         this.total = 0; // 销售总条数

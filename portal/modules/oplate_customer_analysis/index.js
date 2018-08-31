@@ -1,13 +1,15 @@
 /**
  * 说明：统计分析-客户分析
  */
+import Bundle from '../../public/sources/route-bundle';
+
+const CustomerAnalysisPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(CustomerAnalysisPage) => <CustomerAnalysisPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    //页面路径
-    path: 'analysis/customer',
-    //实际渲染文件为public/index.js
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public'));
-        });
-    }
+    path: '/analysis/customer',
+    component: CustomerAnalysisPage
 };

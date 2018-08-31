@@ -2,6 +2,7 @@
  * 申请用户
  */
 //右侧面板样式，上一步、下一步，滑动布局等
+var React = require('react');
 var language = require('../../../../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('../../../../../components/user_manage_components/css/right-panel-es_VE.less');
@@ -25,8 +26,8 @@ const LAYOUT_CONSTANTS = {
     APPS_CHOOSEN_TOPBAR: 106
 };
 
-const ApplyUser = React.createClass({
-    generateInitState() {
+class ApplyUser extends React.Component {
+    generateInitState = () => {
         return {
             apps: [],
             step: 0,
@@ -34,14 +35,13 @@ const ApplyUser = React.createClass({
             applyFormShow: false,
             operator: UserData.getUserData().nick_name,
         };
-    },
-    getInitialState() {
-        return this.generateInitState();
-    },
-    componentsWillUnmount() {
+    };
+
+    componentsWillUnmount = () => {
         dynamicStyle && dynamicStyle.destroy();
-    },
-    turnStep(direction) {
+    };
+
+    turnStep = (direction) => {
         let step = this.state.step;
         if (direction === 'next') {
             if (step == 0) {
@@ -60,15 +60,17 @@ const ApplyUser = React.createClass({
         } else {
             this.setState({step: 0});
         }
-    },
-    onStepFinish() {
+    };
+
+    onStepFinish = () => {
         this.setState({isSubmiting: true});
         this.refs.applyUserForm.handleSubmit(() => {
             this.setState({isSubmiting: false});
         });
-    },
+    };
+
     //渲染申请表单
-    renderApplyFormCarousel() {
+    renderApplyFormCarousel = () => {
         if (this.state.applyFormShow) {
             return (
                 <OperationScrollBar className="basic-data-form-wrap">
@@ -83,14 +85,16 @@ const ApplyUser = React.createClass({
                 </OperationScrollBar>
             );
         }
-    },
-    onAppsChange(apps) {
+    };
+
+    onAppsChange = (apps) => {
         this.state.appValid = !!apps.length;
         this.state.apps = apps;
         this.setState(this.state);
-    },
+    };
+
     //渲染选择应用
-    renderAppsCarousel() {
+    renderAppsCarousel = () => {
         //高度限制，让页面出现滚动条
         var height = $(window).height() -
             OperationSteps.height -
@@ -121,11 +125,15 @@ const ApplyUser = React.createClass({
                 }
             </div>
         );
-    },
-    closeAppUserForm() {
+    };
+
+    closeAppUserForm = () => {
         this.props.cancelApply();
         this.setState(this.generateInitState());
-    },
+    };
+
+    state = this.generateInitState();
+
     render() {
         return (
             <div className="user-manage-v2 user-manage-v2-applyuser">
@@ -166,6 +174,7 @@ const ApplyUser = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default ApplyUser;
+

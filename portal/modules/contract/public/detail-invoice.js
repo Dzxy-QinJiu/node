@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 发票信息添加、展示及编辑页面
@@ -17,16 +19,20 @@ const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import {DATE_FORMAT, OPERATE} from '../consts';
 
-const DetailInvoice = React.createClass({
+const DetailInvoice = createReactClass({
+    displayName: 'DetailInvoice',
     mixins: [ValidateMixin],
+
     getInitialState: function() {
         return {
             formData: {},
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.clearState();
     },
+
     showForm: function(index, invoice) {
         if (isNaN(index)) {
             index = '';
@@ -48,11 +54,13 @@ const DetailInvoice = React.createClass({
         this.state['isFormShow' + index] = true;
         this.setState(this.state);
     },
+
     hideForm: function(index) {
         if (isNaN(index)) index = '';
         this.state['isFormShow' + index] = false;
         this.setState(this.state);
     },
+
     handleSubmit: function(type, index, target, id) {
         let data, params, cb;
 
@@ -78,6 +86,7 @@ const DetailInvoice = React.createClass({
             });
         }
     },
+
     editInvoice: function(type, data, params, cb, target, id) {
         this.props.showLoading();
 
@@ -113,6 +122,7 @@ const DetailInvoice = React.createClass({
             }
         });
     },
+
     renderForm: function(invoice, index) {
         index = isNaN(index) ? '' : index;
         const ref = 'validation' + index;
@@ -170,6 +180,7 @@ const DetailInvoice = React.createClass({
             </div>
         );
     },
+
     render: function() {
         const invoiceDetail = this.props.contract.invoice_detail || {};
         let invoices = this.props.contract.invoices || [];
@@ -194,7 +205,7 @@ const DetailInvoice = React.createClass({
                 ) : null}
 
                 {this.state.isFormShow ? (
-                    <Form horizontal>
+                    <Form layout='horizontal'>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
                                 {...formItemLayout}
@@ -409,8 +420,9 @@ const DetailInvoice = React.createClass({
                 )}
             </div>
         );
-    }
+    },
 });
 
 module.exports = DetailInvoice;
+
 

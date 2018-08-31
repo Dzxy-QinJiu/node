@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * <OperationSteps title={Intl.get("user.user.add", "添加用户")} current={2}>
          <OperationSteps.Step action={Intl.get("user.user.basic", "基本信息")} />
@@ -10,7 +12,6 @@ require('./index.less');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./index-es.less');
 }
-const PropTypes = React.PropTypes;
 import classNames from 'classnames';
 //步骤条
 class OperationSteps extends React.Component {

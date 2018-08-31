@@ -1,21 +1,27 @@
+var React = require('react');
 require('./css/index.less');
 import SalesCommissionStore from './store/index';
 import SalesCommissionActions from './action/index';
 import SaleCommissionDetail from './view/sale-commission-detail';
 import appAjaxTrans from '../../common/public/ajax/app';
 import teamAjaxTrans from '../../common/public/ajax/team';
+
+const LAYOUT_CONSTS = require('LIB_DIR/consts').LAYOUT;
 const salesmanAjax = require('../../common/public/ajax/salesman');
 //窗口改变的事件emitter
 import {resizeEmitter} from 'PUB_DIR/sources/utils/emitters';
+
 const SearchInput = require('CMP_DIR/searchInput');
 import DatePicker from 'CMP_DIR/datepicker';
+
 const SelectFullWidth = require('CMP_DIR/select-fullwidth');
 import RefreshButton from 'CMP_DIR/refresh-button';
+
 const Spinner = require('CMP_DIR/spinner');
-import { AntcTable } from 'antc';
-import { Row, Col, Checkbox, message } from 'antd';
+import {AntcTable} from 'antc';
+import {Row, Col, Checkbox, message} from 'antd';
 import SalesCommissionAjax from './ajax/index';
-import { handleTableData } from 'CMP_DIR/analysis/export-data-util.js';
+import {handleTableData} from 'CMP_DIR/analysis/export-data-util.js';
 import {exportToCsv} from 'LIB_DIR/func';
 import AlertTimer from 'CMP_DIR/alert-timer';
 
@@ -51,33 +57,35 @@ const SALES_COMMISSION = {
     WARN: Intl.get('sale.commission.recalculate.warn', '重新计算请求太过频繁，请半小时后再重新计算')
 };
 
-const SalesCommission = React.createClass({
-    getInitialState() {
-        return {
-            containerHeight: $('.sales-commission-panel').height(),
-            appList: [],
-            teamList: [],
-            userList: [],
-            isGetUserSuccess: true,
-            ...SalesCommissionStore.getState()
-        };
-    },
-    onStoreChange() {
+class SalesCommission extends React.Component {
+    state = {
+        containerHeight: $('.row>.col-xs-10') ? ($('.row>.col-xs-10').height() - LAYOUT_CONSTS.TOP_NAV - LAYOUT_CONSTS.PADDING_BOTTOM) : 0,
+        appList: [],
+        teamList: [],
+        userList: [],
+        isGetUserSuccess: true,
+        ...SalesCommissionStore.getState()
+    };
+
+    onStoreChange = () => {
         this.setState(SalesCommissionStore.getState());
-    },
-    getAppList() {
+    };
+
+    getAppList = () => {
         appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(list => {
             list = _.isArray(list) ? list : [];
             this.setState({appList: list});
         });
-    },
-    getTeamList() {
+    };
+
+    getTeamList = () => {
         teamAjaxTrans.getTeamListAjax().sendRequest().success(list => {
             list = _.isArray(list) ? list : [];
             this.setState({teamList: list});
         });
-    },
-    getUserList() {
+    };
+
+    getUserList = () => {
         salesmanAjax.getSalesmanListAjax().addQueryParam({with_ketao_member: true}).sendRequest()
             .success(result => {
                 if (_.isArray(result)) {
@@ -109,7 +117,8 @@ const SalesCommission = React.createClass({
                     isGetUserSuccess: false,
                 });
             });
-    },
+    };
+
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         //窗口大小改变事件
@@ -119,58 +128,66 @@ const SalesCommission = React.createClass({
         this.getAppList();
         this.getUserList();
         this.getSalesCommissionList();
-    },
-    componentWillUnmount(){
+    }
+
+    componentWillUnmount() {
         $('body').css('overflow', 'auto');
         //卸载窗口大小改变事件
         resizeEmitter.removeListener(resizeEmitter.WINDOW_SIZE_CHANGE, this.resizeHandler);
+        SalesCommissionActions.setInitialState();//卸载前重置所有数据
         SalesCommissionStore.unlisten(this.onStoreChange);
-    },
-    resizeHandler(data) {
+    }
+
+    resizeHandler = (data) => {
         this.setState({
             containerHeight: data.height,
         });
-    },
+    };
+
     // 搜索条件
-    searchEvent() {
-        setTimeout( () => {
+    searchEvent = () => {
+        setTimeout(() => {
             SalesCommissionActions.setInitialPartlyState();
             this.getSalesCommissionList();
-        } );
-    },
+        });
+    };
+
     // 选择是否达标
-    onSelectedStandardFlagChange(standardFlag) {
+    onSelectedStandardFlagChange = (standardFlag) => {
         SalesCommissionActions.setSelectedStandardFlag(standardFlag);
-        setTimeout( () => {
+        setTimeout(() => {
             SalesCommissionActions.setInitialPartlyState();
             this.getSalesCommissionList({remark: this.state.standardFlag});
-        } );
-    },
+        });
+    };
+
     // 时间选择
-    setSelectDate(start_time, end_time) {
+    setSelectDate = (start_time, end_time) => {
         let timeObj = {
             startTime: start_time,
             endTime: end_time
         };
         SalesCommissionActions.setSelectDate(timeObj);
-        setTimeout( () => {
+        setTimeout(() => {
             SalesCommissionActions.setInitialPartlyState();
             this.getSalesCommissionList(timeObj);
-        } );
-    },
-    getParams(params) {
+        });
+    };
+
+    getParams = (params) => {
         return {
             page_size: this.state.pageSize,
             sort_field: params && params.sortField || this.state.sortField,
             order: params && params.order || this.state.order,
             id: params && params.lastId || this.state.lastId
         };
-    },
+    };
+
     // 获取销售提成列表
-    getSalesCommissionList(queryObj) {
+    getSalesCommissionList = (queryObj) => {
         let params = this.getParams(queryObj);
-        let reqData = { query: {remark: this.state.standardFlag} };// 默认情况下，是显示达标的
-        _.extend(reqData.query , this.refs.searchInput.state.formData);
+        let reqData = {query: {remark: this.state.standardFlag}};// 默认情况下，是显示达标的
+        _.extend(reqData.query, this.refs.searchInput.state.formData);
         const from = queryObj && queryObj.startTime || this.state.startTime;
         const to = queryObj && queryObj.endTime || this.state.endTime;
         reqData.rang_params = [{
@@ -180,57 +197,64 @@ const SalesCommission = React.createClass({
             to: to
         }];
         SalesCommissionActions.getSalesCommissionList(params, reqData);
-    },
-    handleScrollBottom() {
+    };
+
+    handleScrollBottom = () => {
         this.getSalesCommissionList({
             lastId: this.state.lastId
         });
-    },
-    showNoMoreDataTip() {
+    };
+
+    showNoMoreDataTip = () => {
         return !this.state.salesCommissionList.loading &&
             this.state.salesCommissionList.data.length >= 10 && !this.state.listenScrollBottom;
-    },
-    handleTableChange(pagination, filters, sorter) {
+    };
+
+    handleTableChange = (pagination, filters, sorter) => {
         const sortOrder = sorter.order || this.state.sortOrder;
         const sortField = sorter.field || this.state.sortField;
         SalesCommissionActions.setSort({sortField, sortOrder});
-        setTimeout( () => {
+        setTimeout(() => {
             SalesCommissionActions.setInitialPartlyState();
             this.getSalesCommissionList({
                 sort_field: sortField,
                 order: sortOrder
             });
-        } );
-    },
-    handleRowClick(record, index) {
+        });
+    };
+
+    handleRowClick = (record, index) => {
         let userInfo = {
             userId: record.user_id,
             userName: record.user_name
         };
         SalesCommissionActions.getUserInfo(userInfo);
-    },
-    handleRowClassName(record, index) {
+    };
+
+    handleRowClassName = (record, index) => {
         if (record.user_id === this.state.userId) {
             return 'current-row';
         }
         else {
             return '';
         }
-    },
+    };
+
     // 重新计算销售提成
-    setRecalculateTips(messageObj) {
+    setRecalculateTips = (messageObj) => {
         SalesCommissionActions.setRecalculateTips(messageObj);
-    },
-    handleRefresh() {
+    };
+
+    handleRefresh = () => {
         this.setRecalculateTips({message: SALES_COMMISSION.SUBMIT, type: 'info'});
         let queryObj = {
             start_time: this.state.startTime,
             end_time: this.state.endTime
         };
-        SalesCommissionAjax.recalculateSaleCommission(queryObj).then( (result) => {
+        SalesCommissionAjax.recalculateSaleCommission(queryObj).then((result) => {
             if (result) {
                 this.setRecalculateTips({message: SALES_COMMISSION.TIPS, type: 'success'});
-                setTimeout( () => {
+                setTimeout(() => {
                     SalesCommissionActions.setInitialPartlyState();
                     this.getSalesCommissionList();
                 }, 5 * 60 * 1000);
@@ -239,14 +263,16 @@ const SalesCommission = React.createClass({
             }
         }, () => {
             this.setRecalculateTips({message: SALES_COMMISSION.WARN, type: 'warning'});
-        } );
-    },
-    HideRecalculateSalesTips() {
+        });
+    };
+
+    HideRecalculateSalesTips = () => {
         SalesCommissionActions.setRecalculateTips({message: '', type: ''});
-    },
-    renderSearchSelectCondition() {
+    };
+
+    renderSearchSelectCondition = () => {
         let dataSource = this.state.salesCommissionList.data;
-        const exportClass = classnames('export-file',{ 'no-show-export-button': !dataSource.length});
+        const exportClass = classnames('export-file', {'no-show-export-button': !dataSource.length});
         return (
             <div className="search-select-condition">
                 <div className="search-condition">
@@ -267,7 +293,8 @@ const SalesCommission = React.createClass({
                         range="quarter"
                         onSelect={this.setSelectDate}
                     >
-                        <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                        <DatePicker.Option
+                            value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
                         <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
                     </DatePicker>
                 </div>
@@ -295,8 +322,9 @@ const SalesCommission = React.createClass({
                 </div>
             </div>
         );
-    },
-    getSalesTableColumns() {
+    };
+
+    getSalesTableColumns = () => {
         return [
             {
                 title: Intl.get('sales.home.sales', '销售'),
@@ -361,21 +389,24 @@ const SalesCommission = React.createClass({
                 }
             }
         ];
-    },
+    };
+
     // 处理已发放的状态
-    handleChangeGrant(rowData, event) {
+    handleChangeGrant = (rowData, event) => {
         let grant = event.target.checked === true ? 'yes' : 'no';
         rowData.grant = grant;
         SalesCommissionActions.updateSaleCommission(rowData);
-    },
-    exportTableData() {
+    };
+
+    exportTableData = () => {
         let columns = this.getSalesTableColumns();
         let data = this.state.salesCommissionList.data;
         let exportData = handleTableData(data, columns);
-        exportToCsv('sales_commission_table.csv',exportData);
-    },
+        exportToCsv('sales_commission_table.csv', exportData);
+    };
+
     // 渲染销售提成列表
-    renderSalesCommissionTable() {
+    renderSalesCommissionTable = () => {
         let columns = this.getSalesTableColumns();
         let dataSource = this.state.salesCommissionList.data;
         let isLoading = this.state.salesCommissionList.loading;
@@ -402,12 +433,12 @@ const SalesCommission = React.createClass({
                 <div className="sales-table-content">
                     <AntcTable
                         dropLoad={dropLoadConfig}
-                        dataSource={ dataSource }
-                        columns={ columns }
+                        dataSource={dataSource}
+                        columns={columns}
                         onChange={this.handleTableChange}
                         onRowClick={this.handleRowClick}
                         rowClassName={this.handleRowClassName}
-                        locale={{ emptyText: Intl.get('common.no.data', '暂无数据') }}
+                        locale={{emptyText: Intl.get('common.no.data', '暂无数据')}}
                         scroll={{
                             y: (tableHeight > 0 ? tableHeight - LAYOUT_CONSTANTS.BOTTOM_DISTANCE : 550)
                         }}
@@ -427,26 +458,29 @@ const SalesCommission = React.createClass({
 
             </div>
         );
-    },
-    renderLoadingBlock() {
+    };
+
+    renderLoadingBlock = () => {
         if (!this.state.salesCommissionList.loading || this.state.lastId) {
             return null;
         }
         return (
             <div className="sales-commission-loading">
-                <Spinner />
+                <Spinner/>
             </div>
         );
-    },
-    renderSaleContent() {
+    };
+
+    renderSaleContent = () => {
         return (
             <div className="sales-content">
                 {this.renderSearchSelectCondition()}
                 {this.renderLoadingBlock()}
                 {this.renderSalesCommissionTable()}
             </div>
-        );  
-    },
+        );
+    };
+
     render() {
         const updateSaleGrantErrMsg = this.state.updateSaleGrantErrMsg;
         if (updateSaleGrantErrMsg) {
@@ -483,6 +517,6 @@ const SalesCommission = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SalesCommission;

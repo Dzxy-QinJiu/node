@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 
 
 var language = require('../../../public/language/getLanguage');
@@ -6,7 +8,6 @@ if (language.lan() == 'es' || language.lan() == 'en') {
 }else if (language.lan() == 'zh'){
     require('./index-zh_CN.less');
 }
-const PropTypes = React.PropTypes;
 import Button from 'antd';
 import {RightPanelSubmit,RightPanelCancel} from '../../rightPanel';
 import classNames from 'classnames';
@@ -21,13 +22,13 @@ class OperationStepsFooter extends React.Component {
 
     turnStep(action) {
         switch (action) {
-        case 'prev':
-        case 'next':
-            this.props.onStepChange(action);
-            break;
-        case 'finish':
-            this.props.onFinish();
-            break;
+            case 'prev':
+            case 'next':
+                this.props.onStepChange(action);
+                break;
+            case 'finish':
+                this.props.onFinish();
+                break;
         }
     }
 

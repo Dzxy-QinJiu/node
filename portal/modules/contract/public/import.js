@@ -1,3 +1,4 @@
+var React = require('react');
 import { Upload, Icon, message } from 'antd';
 import routeList from '../common/route';
 
@@ -6,16 +7,15 @@ const url = route.path;
 import { contractEmitter } from '../../../public/sources/utils/emitters';
 import Trace from 'LIB_DIR/trace';
 
-const ContractImport = React.createClass({
-    getInitialState() {
-        return {
-            isLoading: false
-        };
-    },
-    handleChange(info) {
+class ContractImport extends React.Component {
+    state = {
+        isLoading: false
+    };
+
+    handleChange = (info) => {
         this.setState({isLoading: true});        
         if (info.file.status === 'done') {
-            Trace.traceEvent(this.getDOMNode(),'点击导入合同按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'点击导入合同按钮');
             if (info.file.response.code === 0) {
                 contractEmitter.emit(contractEmitter.IMPORT_CONTRACT, info.file.response.result);
                 this.props.closeContractTemplatePanel();
@@ -25,8 +25,9 @@ const ContractImport = React.createClass({
 
             this.setState({isLoading: false});
         }
-    },
-    render: function() {
+    };
+
+    render() {
         const _this = this;
         const props = {
             name: 'contracts',
@@ -40,6 +41,7 @@ const ContractImport = React.createClass({
             </Upload>
         );
     }
-});
+}
 
 module.exports = ContractImport;
+

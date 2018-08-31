@@ -1,8 +1,12 @@
+import Bundle from '../../../public/sources/route-bundle';
+
+const ContractAnalysisPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(ContractAnalysisPage) => <ContractAnalysisPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'analysis',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public')); 
-        });
-    }
+    path: '/contract/analysis',
+    component: ContractAnalysisPage
 };

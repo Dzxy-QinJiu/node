@@ -1,3 +1,4 @@
+var React = require('react');
 var AppUserUtil = require('../util/app-user-util');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
@@ -31,9 +32,16 @@ function updateUnapprovedCount(count) {
         }, timeout);
     }
 }
-var ApplyTabContent = React.createClass({
 
-    fetchApplyList: function() {
+class ApplyTabContent extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        var state = this.getStoreData();
+        state.applyId = props.applyId;
+        this.state = state;
+    }
+
+    fetchApplyList = () => {
         let approval_state = UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? 'pass' : this.state.applyListType;
         let sort_field = 'produce_date';//全部类型、待审批下按申请时间倒序排
         //[已通过、已驳回、已审批、已撤销
@@ -60,9 +68,9 @@ var ApplyTabContent = React.createClass({
                 UserApplyActions.updateDealApplyError('success');
             }
         });
-    },
+    };
 
-    componentDidMount: function() {
+    componentDidMount() {
         UserApplyStore.listen(this.onStoreChange);
         $(window).on('resize', this.onWindowResize);
         //如果存在url传过来的申请applyId
@@ -76,8 +84,9 @@ var ApplyTabContent = React.createClass({
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED, this.pushDataListener);
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.applyId !== this.props.applyId) {
             this.setState({applyId: nextProps.applyId}, () => {
                 if (!this.state.applyId) {
@@ -86,9 +95,10 @@ var ApplyTabContent = React.createClass({
                 }
             });
         }
-    },
+    }
+
     //从sessionStorage中获取该用户未读的回复列表
-    getUnreadReplyList: function() {
+    getUnreadReplyList = () => {
         const APPLY_UNREAD_REPLY = 'apply_unread_reply';
         let userId = UserData.getUserData().user_id;
         //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
@@ -98,12 +108,14 @@ var ApplyTabContent = React.createClass({
             let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
             this.refreshUnreadReplyList(applyUnreadReplyList);
         }
-    },
+    };
+
     //刷新未读回复的列表
-    refreshUnreadReplyList: function(unreadReplyList) {
+    refreshUnreadReplyList = (unreadReplyList) => {
         UserApplyActions.refreshUnreadReplyList(unreadReplyList);
-    },
-    updateSelectedItem: function(message) {
+    };
+
+    updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
             const selectedDetailItem = this.state.selectedDetailItem;
             selectedDetailItem.isConsumed = 'true';
@@ -112,22 +124,21 @@ var ApplyTabContent = React.createClass({
         }
         //处理申请成功还是失败,"success"/"error"
         UserApplyActions.updateDealApplyError(message && message.status || this.state.dealApplyError);
-    },
-    onWindowResize: function() {
+    };
+
+    onWindowResize = () => {
         this.setState(this.getStoreData());
-    },
-    getInitialState: function() {
-        var state = this.getStoreData();
-        state.applyId = this.props.applyId;
-        return state;
-    },
-    getStoreData: function() {
+    };
+
+    getStoreData = () => {
         return UserApplyStore.getState();
-    },
-    onStoreChange: function() {
+    };
+
+    onStoreChange = () => {
         this.setState(this.getStoreData());
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         $('body').css({
             'overflow-x': 'visible',
             'overflow-y': 'visible'
@@ -138,17 +149,18 @@ var ApplyTabContent = React.createClass({
         //销毁时，删除申请消息监听器
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED, this.pushDataListener);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
-    },
+    }
 
-    retryFetchApplyList: function(e) {
+    retryFetchApplyList = (e) => {
         if (this.state.applyListObj.errorMsg) {
             Trace.traceEvent(e, '点击了重试');
         } else {
             Trace.traceEvent(e, '点击了重新获取');
         }
         setTimeout(() => this.fetchApplyList());
-    },
-    renderApplyListError: function() {
+    };
+
+    renderApplyListError = () => {
         var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== 'all';
         var noDataSearch = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.searchKeyword !== '';
         if (this.state.applyListObj.loadingResult === 'error' || noData || noDataSearch) {
@@ -190,8 +202,9 @@ var ApplyTabContent = React.createClass({
                 </div>);
         }
         return null;
-    },
-    getApplyStateText: function(obj) {
+    };
+
+    getApplyStateText = (obj) => {
         if (obj.isConsumed === 'true') {
             if (obj.approval_state === '1') {
                 return Intl.get('user.apply.pass', '已通过');
@@ -203,35 +216,39 @@ var ApplyTabContent = React.createClass({
         } else {
             return Intl.get('user.apply.false', '待审批');
         }
-    },
-    getTimeStr: function(d, format) {
+    };
+
+    getTimeStr = (d, format) => {
         d = parseInt(d);
         if (isNaN(d)) {
             return '';
         }
         return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-    },
+    };
+
     //(取消)展示有未读回复的申请列表
-    toggleUnreadApplyList: function(showUnreadTip) {
+    toggleUnreadApplyList = (showUnreadTip) => {
         //没有未读回复，并且没有在查看未读回复列表下时，点击按钮不做处理
         if (!showUnreadTip && !this.state.isCheckUnreadApplyList) return;
         UserApplyActions.setIsCheckUnreadApplyList(!this.state.isCheckUnreadApplyList);
         UserApplyActions.setLastApplyId('');
         setTimeout(() => {
             if (this.state.isCheckUnreadApplyList) {
-                Trace.traceEvent($(this.getDOMNode()).find('.app_user_manage_apply_list'), '查看有未读回复的申请');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看有未读回复的申请');
             } else {
-                Trace.traceEvent($(this.getDOMNode()).find('.app_user_manage_apply_list'), '取消有未读回复申请的查看');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '取消有未读回复申请的查看');
             }
             this.fetchApplyList();
         });
-    },
+    };
+
     //点击展示详情
-    clickShowDetail: function(obj, idx) {
-        Trace.traceEvent($(this.getDOMNode()).find('.app_user_manage_apply_list'), '查看申请详情');
+    clickShowDetail = (obj, idx) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
         UserApplyActions.setSelectedDetailItem({obj, idx});
-    },
-    renderApplyList: function() {
+    };
+
+    renderApplyList = () => {
         let unreadReplyList = this.state.unreadReplyList;
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
@@ -270,15 +287,17 @@ var ApplyTabContent = React.createClass({
                 }
             </ul>
         );
-    },
-    getApplyListDivHeight: function() {
+    };
+
+    getApplyListDivHeight = () => {
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
         var height = $(window).height() - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA + 30;
         return height;
-    },
-    getApplyListType: function() {
+    };
+
+    getApplyListType = () => {
         switch (this.state.applyListType) {
             case 'all':
                 return Intl.get('user.apply.all', '全部申请');
@@ -293,8 +312,9 @@ var ApplyTabContent = React.createClass({
             case 'cancel':
                 return Intl.get('user.apply.backout', '已撤销');
         }
-    },
-    menuClick: function(obj) {
+    };
+
+    menuClick = (obj) => {
         let selectType = '';
         if (obj.key === 'all') {
             selectType = Intl.get('user.apply.all', '全部申请');
@@ -307,27 +327,30 @@ var ApplyTabContent = React.createClass({
         } else if (obj.key === 'cancel') {
             selectType = Intl.get('user.apply.backout', '已撤销');
         }
-        Trace.traceEvent($(this.getDOMNode()).find('.pull-left'), '根据' + selectType + '过滤');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-left'), '根据' + selectType + '过滤');
         UserApplyActions.changeApplyListType(obj.key);
         setTimeout(() => this.fetchApplyList());
-    },
-    changeSearchInputValue: function(value) {
+    };
+
+    changeSearchInputValue = (value) => {
         value = value ? value : '';
         if (value.trim() !== this.state.searchKeyword.trim()) {
-            Trace.traceEvent($(this.getDOMNode()).find('.pull-right'), '根据申请人/客户名/用户名搜索');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-right'), '根据申请人/客户名/用户名搜索');
             UserApplyActions.changeSearchInputValue(value);
             setTimeout(() => this.fetchApplyList());
         }
-    },
-    refreshPage: function(e) {
+    };
+
+    refreshPage = (e) => {
         if (!this.state.showUpdateTip) return;
         Trace.traceEvent(e, '点击了刷新');
         UserApplyActions.setLastApplyId('');
         setTimeout(() => this.fetchApplyList());
         UserApplyActions.setShowUpdateTip(false);
-    },
+    };
+
     //监听推送数据
-    pushDataListener: function(data) {
+    pushDataListener = (data) => {
         //有数据，将是否展示更新tip
         if (UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY)) {
             if (data && data.approval_state === 'pass') {
@@ -336,13 +359,14 @@ var ApplyTabContent = React.createClass({
         } else if (data) {
             UserApplyActions.setShowUpdateTip(true);
         }
-    },
+    };
 
     //下拉加载
-    handleScrollBarBottom: function() {
+    handleScrollBarBottom = () => {
         this.fetchApplyList();
-    },
-    getUnreadReplyTitle: function(showUnreadTip) {
+    };
+
+    getUnreadReplyTitle = (showUnreadTip) => {
         let unreadReplyTitle = Intl.get('user.apply.no.unread.reply', '无未读回复');
         if (this.state.isCheckUnreadApplyList) {//在查看未读回复列表下的提示
             unreadReplyTitle = Intl.get('user.apply.show.all.check', '查看全部申请');
@@ -350,8 +374,9 @@ var ApplyTabContent = React.createClass({
             unreadReplyTitle = Intl.get('user.apply.unread.reply', '有未读回复');
         }
         return unreadReplyTitle;
-    },
-    renderApplyHeader: function() {
+    };
+
+    renderApplyHeader = () => {
         //如果是从url传入了参数applyId
         if (this.state.applyId) {
             return null;
@@ -422,24 +447,25 @@ var ApplyTabContent = React.createClass({
                 </div>
             );
         }
-    },
+    };
 
     //是否显示没有更多数据了
-    showNoMoreDataTip: function() {
+    showNoMoreDataTip = () => {
         return !this.state.applyListObj.loadingResult &&
             this.state.applyListObj.list.length >= 10 && !this.state.listenScrollBottom;
-    },
+    };
+
     //当前展示的详情是否是有未读回复的详情
-    getIsUnreadDetail: function() {
+    getIsUnreadDetail = () => {
         let selectApplyId = this.state.selectedDetailItem ? this.state.selectedDetailItem.id : '';
         if (selectApplyId) {
             return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id === selectApplyId);
         } else {
             return false;
         }
-    },
+    };
 
-    render: function() {
+    render() {
         //根本就没有用户审批的时候，显示没数据的提示
         if (this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType === 'all' && this.state.searchKeyword === '') {
             let noDataTip = this.state.isCheckUnreadApplyList ? (<ReactIntl.FormattedMessage
@@ -538,7 +564,7 @@ var ApplyTabContent = React.createClass({
             </div>
         );
     }
-});
+}
 
 
 module.exports = ApplyTabContent;

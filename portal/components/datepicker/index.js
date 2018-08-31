@@ -1,3 +1,7 @@
+require('./index.less');
+import BootstrapDatepicker from '../bootstrap-datepicker';
+import classNames from 'classnames';
+
 /**
  *
  提供通用日期选择组件
@@ -54,6 +58,7 @@
 
  比如：
  // 日志范围，从当前时间，3个月内的数据
+var React = require('react');
  const THREE_MONTH_TIME_RANGE = 3 * 30 * 24 * 60 * 60 * 1000;
  dateSelectRange = THREE_MONTH_TIME_RANGE
  现在是2017/09/27
@@ -67,9 +72,8 @@
  className      可以为日历添加一个特殊的className
  *
  */
-require('./index.less');
-import BootstrapDatepicker from '../bootstrap-datepicker';
-import classNames from 'classnames';
+import PropTypes from 'prop-types';
+var React = require('react');
 import Dropdown from 'rc-dropdown';
 import {Button, Radio, Popover, Icon} from 'antd';
 import Menu, {Item as MenuItem} from 'rc-menu';
@@ -82,8 +86,6 @@ const QUARTER_CHINESE_TEXT_LIST = [
     Intl.get('user.number.second', '二'),
     Intl.get('user.number.three', '三'),
     Intl.get('user.number.four', '四')];
-//类型
-const PropTypes = React.PropTypes;
 //日期格式
 const DATE_FORMAT = Utils.DATE_FORMAT;
 
@@ -145,29 +147,29 @@ class DatePicker extends React.Component {
             timeObj = {start_time: '', end_time: ''};
         } else {
             switch (timeRange) {
-            case 'day':
-                timeObj = Utils.getTodayTime();
-                break;
-            case 'week':
-                timeObj = Utils.getThisWeekTime(props.disableDateAfterToday ? true : false);
-                break;
-            case 'month':
-                timeObj = Utils.getThisMonthTime(props.disableDateAfterToday ? true : false);
-                break;
-            case 'quarter':
-                timeObj = Utils.getThisQuarterTime(props.disableDateAfterToday ? true : false);
-                showYear = true;
-                break;
-            case 'year':
-                timeObj = Utils.getThisYearTime(props.disableDateAfterToday ? true : false);
-                showYear = true;
-                break;
-            case 'custom':
-                timeObj = Utils.getCustomTime(new Date(props.start_time), new Date(props.end_time));
-                break;
-            default:
-                timeObj = Utils.getTodayTime();
-                break;
+                case 'day':
+                    timeObj = Utils.getTodayTime();
+                    break;
+                case 'week':
+                    timeObj = Utils.getThisWeekTime(props.disableDateAfterToday ? true : false);
+                    break;
+                case 'month':
+                    timeObj = Utils.getThisMonthTime(props.disableDateAfterToday ? true : false);
+                    break;
+                case 'quarter':
+                    timeObj = Utils.getThisQuarterTime(props.disableDateAfterToday ? true : false);
+                    showYear = true;
+                    break;
+                case 'year':
+                    timeObj = Utils.getThisYearTime(props.disableDateAfterToday ? true : false);
+                    showYear = true;
+                    break;
+                case 'custom':
+                    timeObj = Utils.getCustomTime(new Date(props.start_time), new Date(props.end_time));
+                    break;
+                default:
+                    timeObj = Utils.getTodayTime();
+                    break;
             }
         }
         this.state = {
@@ -906,16 +908,15 @@ DatePicker.propTypes = {
  * <DatePickerOption value="month">月</DatePickerOption>
  *
  */
-var DatePickerOption = React.createClass({
-    getDefaultProps: function() {
-        return {
-            value: ''
-        };
-    },
-    render: function() {
+class DatePickerOption extends React.Component {
+    static defaultProps = {
+        value: ''
+    };
+
+    render() {
         return null;
     }
-});
+}
 
 //添加option
 DatePicker.Option = DatePickerOption;

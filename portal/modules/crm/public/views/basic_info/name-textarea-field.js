@@ -2,7 +2,9 @@
  * 编辑 客户名 的组件
  *
  */
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 import {Form, Button, Icon} from 'antd';
 let FormItem = Form.Item;
@@ -16,8 +18,10 @@ let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-let NameTextareaField = React.createClass({
+let NameTextareaField = createReactClass({
+    displayName: 'NameTextareaField',
     mixins: [FieldMixin],
+
     getDefaultProps: function() {
         return {
             customerId: '',
@@ -27,6 +31,7 @@ let NameTextareaField = React.createClass({
             }
         };
     },
+
     getInitialState: function() {
         return {
             loading: false,
@@ -44,6 +49,7 @@ let NameTextareaField = React.createClass({
             submitErrorMsg: ''
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
@@ -94,7 +100,6 @@ let NameTextareaField = React.createClass({
         });
     },
 
-
     handleCancel: function(e) {
         let formData = this.state.formData;
         let status = this.state.status;
@@ -125,6 +130,7 @@ let NameTextareaField = React.createClass({
             callback(new Error(Intl.get('crm.81', '请填写客户名称')));
         }
     },
+
     //客户名唯一性验证
     checkOnlyCustomerName: function(e) {
         var customerName = $.trim(this.state.formData.name);
@@ -149,6 +155,7 @@ let NameTextareaField = React.createClass({
             this.setState({customerNameExist: false, checkNameError: false});
         }
     },
+
     //客户名唯一性验证的提示信息
     renderCustomerNameMsg: function() {
         if (this.state.customerNameExist) {
@@ -201,11 +208,12 @@ let NameTextareaField = React.createClass({
             return '';
         }
     },
+
     render: function() {
         let formData = this.state.formData;
         let status = this.state.status;
         return (
-            <Form horizontal autoComplete="off" data-tracename="客户名" className="name-form">
+            <Form layout='horizontal' autoComplete="off" data-tracename="客户名" className="name-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         label=""
@@ -231,7 +239,8 @@ let NameTextareaField = React.createClass({
                 />
             </Form>
         );
-    }
+    },
 });
 
 module.exports = NameTextareaField;
+

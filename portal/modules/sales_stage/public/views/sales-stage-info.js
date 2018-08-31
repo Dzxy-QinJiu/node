@@ -1,48 +1,48 @@
 /**
  * Created by xiaojinfeng on  2015/12/25 11:04 .
  */
+var React = require('react');
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Button = require('antd').Button;
 var ModalDialog = require('../../../../components/ModalDialog');
 import Trace from 'LIB_DIR/trace';
 function noop() {
 }
-var SalesStageInfo = React.createClass({
-    getDefaultProps: function() {
-        return {
-            hideSalesStageModalDialog: noop,
-            editSalesStage: noop,
-            deleteSalesStage: noop
-        };
-    },
 
-    deleteSalesStage: function(salesStage) {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'确定删除某销售阶段');
+class SalesStageInfo extends React.Component {
+    static defaultProps = {
+        hideSalesStageModalDialog: noop,
+        editSalesStage: noop,
+        deleteSalesStage: noop
+    };
+
+    deleteSalesStage = (salesStage) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'确定删除某销售阶段');
         this.props.deleteSalesStage(salesStage);
-    },
+    };
 
-    showSalesStageForm: function(salesStage) {
+    showSalesStageForm = (salesStage) => {
         this.props.showSalesStageForm(salesStage);
-    },
+    };
 
-    hideSalesStageModalDialog: function(salesStage) {
-        Trace.traceEvent($(this.getDOMNode()).find('.modal-dialog .modal-footer'),'关闭删除销售阶段模态框');
+    hideSalesStageModalDialog = (salesStage) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'关闭删除销售阶段模态框');
         this.props.hideSalesStageModalDialog(salesStage);
-    },
+    };
 
-    showSalesStageModalDialog: function(salesStage) {
+    showSalesStageModalDialog = (salesStage) => {
         this.props.showSalesStageModalDialog(salesStage);
-    },
+    };
 
-    salesStageOrderUp: function(salesStage) {
+    salesStageOrderUp = (salesStage) => {
         this.props.salesStageOrderUp(salesStage);
-    },
+    };
 
-    salesStageOrderDown: function(salesStage) {
+    salesStageOrderDown = (salesStage) => {
         this.props.salesStageOrderDown(salesStage);
-    },
+    };
 
-    render: function() {
+    render() {
         var _this = this;
         var salesStage = this.props.salesStage;
         var width = this.props.width;
@@ -97,6 +97,6 @@ var SalesStageInfo = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SalesStageInfo;

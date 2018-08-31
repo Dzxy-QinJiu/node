@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -5,6 +6,7 @@
  * 动态增删联系人的组件
  */
 require('./index.less');
+import PropTypes from 'prop-types';
 import {emailRegex, qqRegex} from 'PUB_DIR/sources/utils/consts';
 import PhoneInput from 'CMP_DIR/phone-input';
 import classNames from 'classnames';
@@ -332,7 +334,6 @@ class DynamicAddDelContacts extends React.Component {
             </div>);
     }
 }
-const PropTypes = React.PropTypes;
 DynamicAddDelContacts.propTypes = {
     form: PropTypes.object,
     phoneOnlyOneRules: PropTypes.array,

@@ -2,6 +2,7 @@
  * 客户、用户、电话、合同统计总数
  * Created by wangliping on 2016/11/14.
  */
+var React = require('react');
 import {Breadcrumb, Icon, Menu, Dropdown, message} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -20,20 +21,21 @@ const teamTreeEmitter = Emitters.teamTreeEmitter;
 const TOP_TEAM_ID = 'sales-team-list-parent-group-id';
 var delayConstant = constantUtil.DELAY.TIMERANG;
 const CALLING_STATUS = 'busy';//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
-let CrmRightList = React.createClass({
-    getInitialState: function() {
-        return {
-            searchInputShow: false,
-            searchValue: '',
-            updateScrollBar: false,
-            salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj),//销售团队下的成员列表
-            salesRoleList: []//销售角色列表
-        };
-    },
-    componentDidMount: function() {
+
+class CrmRightList extends React.Component {
+    state = {
+        searchInputShow: false,
+        searchValue: '',
+        updateScrollBar: false,
+        salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj),//销售团队下的成员列表
+        salesRoleList: []//销售角色列表
+    };
+
+    componentDidMount() {
         this.getSalesRoleList();
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         this.setState({salesTeamMembersObj: $.extend(true, {}, nextProps.salesTeamMembersObj)});
         if (nextProps.updateScrollBar) {
             this.setState({
@@ -46,9 +48,10 @@ let CrmRightList = React.createClass({
                 }, delayConstant);
             });
         }
-    },
+    }
+
     //获取销售角色列表
-    getSalesRoleList: function() {
+    getSalesRoleList = () => {
         getSalesTeamRoleList().sendRequest().success((data) => {
             _.isArray(data) && data.unshift({id: 'normal', name: Intl.get('role.normal.sales', '普通销售')});
             this.setState({
@@ -59,17 +62,19 @@ let CrmRightList = React.createClass({
                 salesRoleList: [],
             });
         });
-    },
+    };
+
     //渲染等待效果、暂无数据的提示
-    renderTooltip: function(resultType, errorMsg) {
+    renderTooltip = (resultType, errorMsg) => {
         if (resultType === 'loading') {
             return (<Icon type="loading"/>);
         } else if (resultType === 'error' || resultType === 'noData') {
             return (<div className="no-data-tip">{errorMsg || Intl.get('sales.home.get.data.failed', '获取数据失败')}</div>);
         }
-    },
+    };
+
     //获取传入团队的所有子团队的group_id,数组第一项为传入团队的group_id
-    getAllSubTeamId: function(team) {
+    getAllSubTeamId = (team) => {
         let allChildTeamIds = [];
         const getAllSubChild = team => {
             if (team.group_id) {
@@ -83,9 +88,10 @@ let CrmRightList = React.createClass({
         };
         getAllSubChild(team);
         return allChildTeamIds;
-    },
+    };
+
     //点击查看当前团队的数据
-    selectSalesTeam: function(e, team) {
+    selectSalesTeam = (e, team) => {
         OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.selectSalesTeam(team);
         let allChildTeamIds = [];
@@ -100,9 +106,10 @@ let CrmRightList = React.createClass({
         });
         this.hideSearchInput();
         Trace.traceEvent(e, '点击查看团队的数据');
-    },
+    };
+
     //点击查看当前成员的数据
-    selectSalesman: function(e, user) {
+    selectSalesman = (e, user) => {
         OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.selectSalesman(user);
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, user.userId);
@@ -110,9 +117,10 @@ let CrmRightList = React.createClass({
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
         Trace.traceEvent(e, '点击查看销售人员的数据');
-    },
+    };
+
     //通过面包屑返回到销售团队列表
-    returnSalesTeamList: function(e, team) {
+    returnSalesTeamList = (e, team) => {
         OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.returnSalesTeamList(team.group_id);
         //刷新左侧的统计、分析数据
@@ -130,9 +138,10 @@ let CrmRightList = React.createClass({
             allChildTeamIds = this.getAllSubTeamId(team);
         }
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team_id, allChildTeamIds);
-    },
+    };
+
     //通过面包屑返回到销售成员列表
-    returnSalesMemberList: function(e, team) {
+    returnSalesMemberList = (e, team) => {
         let team_id = team.group_id;
         OplateCustomerAnalysisAction.resetChartData('loading');
         SalesHomeAction.returnSalesMemberList();
@@ -145,9 +154,10 @@ let CrmRightList = React.createClass({
             allChildTeamIds = this.getAllSubTeamId(team);
         }
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team_id, allChildTeamIds);
-    },
+    };
+
     //获取销售的标题
-    getSalesmanTitle: function() {
+    getSalesmanTitle = () => {
         let salesTitle = '', originTeamTree = this.props.originSalesTeamTree;
         if (this.props.currShowSalesman) {
             //通过点击销售团队成员列表中的成员跳到其用户提醒时
@@ -175,9 +185,10 @@ let CrmRightList = React.createClass({
             salesTitle = userData.getUserData().nick_name;
         }
         return salesTitle;
-    },
+    };
+
     //加入其上级团队
-    addTitleItem: function(team, titleItem) {
+    addTitleItem = (team, titleItem) => {
         //该团队是当前展示列表的上级团队
         if (team.isCurrShowListParent && team.group_id !== this.props.currShowSalesTeam.group_id) {
             titleItem.push(<Breadcrumb.Item>
@@ -192,10 +203,10 @@ let CrmRightList = React.createClass({
                 });
             }
         }
-    },
+    };
 
     //获取销售团队/成员列表的标题
-    getSalesListTitle: function() {
+    getSalesListTitle = () => {
         let salesTitle = '', originTeamTree = this.props.originSalesTeamTree;
         if (this.props.currShowSalesTeam) {
             //通过点击销售团队列表中的销售团队转到其团队/成员列表时
@@ -211,9 +222,10 @@ let CrmRightList = React.createClass({
             salesTitle = originTeamTree.group_name;
         }
         return salesTitle;
-    },
+    };
+
     //更新团队成员角色
-    updateTeamMemberRole: function(sales, role) {
+    updateTeamMemberRole = (sales, role) => {
         let salesTeamMemberList = this.state.salesTeamMembersObj.data;
         if (_.isArray(salesTeamMemberList) && salesTeamMemberList.length) {
             _.some(salesTeamMemberList, member => {
@@ -228,11 +240,11 @@ let CrmRightList = React.createClass({
                 salesTeamMembersObj: this.state.salesTeamMembersObj
             });
         }
-    },
+    };
 
     //如果销售角色id为“normal”，则选择清空销售角色的函数,反之则选择改变销售角色的函数
-    changeAllSalesRole(sales, options){
-        Trace.traceEvent($(this.getDOMNode()).find(`#sales-member-li${sales.userId} .icon-role-auth-config`), '设置销售角色');
+    changeAllSalesRole = (sales, options) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(`#sales-member-li${sales.userId} .icon-role-auth-config`), '设置销售角色');
 
         if(options.key === 'normal'){
             this.resetSalesRole(sales, options);
@@ -240,10 +252,10 @@ let CrmRightList = React.createClass({
         }else{
             this.changeSalesRole(sales, options);
         }
-    },
+    };
 
     //更改销售角色
-    changeSalesRole: function(sales, options) {
+    changeSalesRole = (sales, options) => {
         if (sales.teamRoleId === options.key) {
             return;
         }
@@ -268,10 +280,10 @@ let CrmRightList = React.createClass({
                 this.setState({salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj)});
             }
         });
-    },
+    };
 
     //清空、重置销售角色
-    resetSalesRole: function(sales,options) {
+    resetSalesRole = (sales, options) => {
         let selectRoleNormal = {};
         this.updateTeamMemberRole(sales, selectRoleNormal);
         $.ajax({
@@ -291,18 +303,20 @@ let CrmRightList = React.createClass({
                 this.setState({salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj)});
             }
         });
-    },
+    };
+
     //获取销售角色的菜单
-    getSalesRoleMenus: function(sales) {
+    getSalesRoleMenus = (sales) => {
         let salesRoleList = this.state.salesRoleList;
         return (<Menu selectedKeys={[sales.teamRoleId]} onClick={this.changeAllSalesRole.bind(this, sales)}>
             {_.isArray(salesRoleList) && salesRoleList.length ? _.map(salesRoleList, role => {
                 return (<Menu.Item key={role.id}>{role.name} </Menu.Item>);
             }) : null}
         </Menu>);
-    },
+    };
+
     //获取销售团队的成员列表
-    renderSalesRole: function(salesman) {
+    renderSalesRole = (salesman) => {
         let color = salesman.teamRoleColor || '#123';
         if (salesman.status === 0) {//停用的就展示灰色的方块
             return (<span className="sales-item-icon"/>);
@@ -313,8 +327,9 @@ let CrmRightList = React.createClass({
             return <span className="iconfont icon-role-set sales-role-icon"
                 title={Intl.get('sales.home.role.null', '未设置角色')}/>;
         }
-    },
-    renderSalesRoleSetBtn: function(salesman) {
+    };
+
+    renderSalesRoleSetBtn = (salesman) => {
         let salesRoleList = this.state.salesRoleList;
         if (salesman.status !== 0 && hasPrivilege('MEMBER_TEAM_ROLE_MANAGE') && _.isArray(salesRoleList) && salesRoleList.length) {
             return (
@@ -326,9 +341,10 @@ let CrmRightList = React.createClass({
         } else {//停用的成员或没有设置角色权限或销售角色列表为空时，不展示设置角色按钮
             return null;
         }
-    },
+    };
+
     //获取销售团队的成员列表
-    getSalesMemberList: function() {
+    getSalesMemberList = () => {
         let salesListLi = [];
         let salesTeamMembersObj = this.state.salesTeamMembersObj;
         if (salesTeamMembersObj.resultType) {
@@ -368,9 +384,10 @@ let CrmRightList = React.createClass({
             }
         }
         return salesListLi;
-    },
+    };
+
     //获取销售团队列表
-    getSalesTeamList: function() {
+    getSalesTeamList = () => {
         let salesListLi = [], salesTeamList = this.props.salesTeamListObj.data;
         let teamMemberCountList = this.props.teamMemberCountList;
         if (_.isArray(salesTeamList) && salesTeamList.length > 0) {
@@ -389,21 +406,24 @@ let CrmRightList = React.createClass({
             salesListLi = this.renderTooltip('noData', Intl.get('sales.home.no.team', '暂无销售团队'));
         }
         return salesListLi;
-    },
+    };
 
-    searchEvent: function(searchValue) {
+    searchEvent = (searchValue) => {
         this.setState({
             searchValue: searchValue
         });
-    },
-    hideSearchInput: function() {
+    };
+
+    hideSearchInput = () => {
         this.setState({searchInputShow: false, searchValue: ''});
         //$(".sales-team-top .search-input").val("");
-    },
-    showSearchInput: function() {
+    };
+
+    showSearchInput = () => {
         this.setState({searchInputShow: true});
-    },
-    renderListContent: function() {
+    };
+
+    renderListContent = () => {
         let salesTitle = '', salesListLi = [], isShowSearch = true;
         switch (this.props.currShowType) {
             case showTypeConstant.SALESMAN:
@@ -443,8 +463,9 @@ let CrmRightList = React.createClass({
                 </ul>
             </div>
         );
-    },
-    renderContent: function(salesListLi) {
+    };
+
+    renderContent = (salesListLi) => {
         if (this.state.updateScrollBar) {
             return (
                 <div>
@@ -458,22 +479,23 @@ let CrmRightList = React.createClass({
                 </GeminiScrollbar>
             );
         }
-    },
+    };
+
     //获取颜色（从echart的颜色列表中循环获取）
-    getBgColor: function(i) {
+    getBgColor = (i) => {
         let colorIndex = i;
         if (i > COLOR_LIST.length) {
             colorIndex = i % COLOR_LIST.length;
         }
         return COLOR_LIST[colorIndex];
-    },
+    };
 
     //设置当前要展示的视图
-    setActiveView: function(view) {
+    setActiveView = (view) => {
         SalesHomeAction.setActiveView(view);
-    },
+    };
 
-    render: function() {
+    render() {
         let resultType = this.props.salesTeamListObj.resultType, errorMsg = this.props.salesTeamListObj.errorMsg;
         return (
             <div className="crm-sales-team-zone" data-tracename="销售（团队）列表">
@@ -483,6 +505,7 @@ let CrmRightList = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = CrmRightList;
+

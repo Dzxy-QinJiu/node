@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 require('../css/apply-user-form.less');
 require('../../../../public/css/antd-vertical-tabs.css');
@@ -31,7 +33,8 @@ const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
 };
-const ApplyUserForm = React.createClass({
+const ApplyUserForm = createReactClass({
+    displayName: 'ApplyUserForm',
     mixins: [ValidateMixin, UserTimeRangeField],
 
     getInitialState: function() {
@@ -60,6 +63,7 @@ const ApplyUserForm = React.createClass({
         this.getAppsDefaultConfig(diffAppIds);
         this.setState({apps: $.extend(true, [], nextProps.apps), maxHeight: nextProps.maxHeight});
     },
+
     buildFormData: function(props, apps) {
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state ? this.state.appDefaultConfigList : [];
@@ -110,11 +114,13 @@ const ApplyUserForm = React.createClass({
             return formData;
         }
     },
+
     isApplyNewUsers: function() {
         let selectUsers = this.props.users;
         //从用户列表中过来的，没有选择的用户时，说明是申请新用户
         return this.state.applyFrom === 'crmUserList' && !(_.isArray(selectUsers) && selectUsers.length);
     },
+
     componentDidMount: function() {
         let appList = this.props.apps;
         if (_.isArray(appList) && appList.length) {
@@ -126,6 +132,7 @@ const ApplyUserForm = React.createClass({
             this.getCustomerContacts();
         }
     },
+
     //获取客户联系人列表
     getCustomerContacts: function() {
         let customerId = this.state.formData ? this.state.formData.customer_id : '';
@@ -141,6 +148,7 @@ const ApplyUserForm = React.createClass({
             });
         });
     },
+
     //获取各应用的默认设置
     getAppsDefaultConfig: function(appIds) {
         if (_.isArray(appIds) && appIds.length) {
@@ -196,6 +204,7 @@ const ApplyUserForm = React.createClass({
         });
         this.setState({formData: formData});
     },
+
     onNickNameChange: function(e) {
         this.state.formData.nick_name = e.target.value.trim();
         this.setState(this.state);
@@ -256,7 +265,7 @@ const ApplyUserForm = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
-        Trace.traceEvent(this.getDOMNode(), '点击确定按钮');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮');
 
         if (this.state.isLoading) {
             //正在申请，不可重复申请
@@ -311,6 +320,7 @@ const ApplyUserForm = React.createClass({
             }
         });
     },
+
     applyUserFromOder: function(submitData) {
         submitData.user_name = $.trim(submitData.user_name);
         //添加申请邮件中用的客户名
@@ -348,7 +358,7 @@ const ApplyUserForm = React.createClass({
     },
 
     handleCancel: function() {
-        Trace.traceEvent(this.getDOMNode(), '点击取消按钮');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击取消按钮');
         this.props.cancelApply();
     },
 
@@ -358,6 +368,7 @@ const ApplyUserForm = React.createClass({
         //TODO 获取验证时所需的开通个数
         return appFormData ? appFormData.number : 1;
     },
+
     checkUserExist(rule, value, callback) {
         let customer_id = this.state.formData.customer_id;
         let number = this.getApplyUserCount();
@@ -371,6 +382,7 @@ const ApplyUserForm = React.createClass({
         };
         UserNameTextfieldUtil.checkUserExist(rule, obj, callback, number, this.refs.username_block);
     },
+
     selectEmail: function(value, field) {
         value = $.trim(value);
         if (value) {
@@ -378,6 +390,7 @@ const ApplyUserForm = React.createClass({
             this.setState({formData: this.state.formData});
         }
     },
+
     renderUserNameInput: function(userName) {
         const placeholder = Intl.get('user.username.write.tip', '请填写用户名');
         let input = (
@@ -419,6 +432,7 @@ const ApplyUserForm = React.createClass({
             return input;
         }
     },
+
     changeConfigType: function(configType) {
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
@@ -453,6 +467,7 @@ const ApplyUserForm = React.createClass({
             onCountChange={this.onCountChange}
             onOverDraftChange={this.onOverDraftChange}/>);
     },
+
     //从订单中申请用户或申请新用户时，用户名和昵称输入框的渲染
     renderUserNamesInputs: function(formData, formItemLayout) {
         return (
@@ -490,6 +505,7 @@ const ApplyUserForm = React.createClass({
                 </FormItem>
             </div>);
     },
+
     /**
      * 申请表单的渲染
      * 1、从订单中申请试用、签约用户时，
@@ -518,7 +534,7 @@ const ApplyUserForm = React.createClass({
         return (
             <div style={{maxHeight: this.state.maxHeight, height: this.state.formHeight}}>
                 <GeminiScrollbar>
-                    <Form horizontal className="apply-user-form" id="crm-apply-user-form">
+                    <Form layout='horizontal' className="apply-user-form" id="crm-apply-user-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             {this.state.applyFrom === 'order' || this.isApplyNewUsers() ?
                                 this.renderUserNamesInputs(formData, formItemLayout) : (
@@ -589,6 +605,7 @@ const ApplyUserForm = React.createClass({
             </div>
         );
     },
+
     handleChangeApps: function(appIds) {
         this.state.apps = _.map(appIds, appId => {
             return _.find(this.props.appList, app => app.client_id === appId);
@@ -628,6 +645,7 @@ const ApplyUserForm = React.createClass({
         this.setState({apps: this.state.apps, formData: formData});
         this.setFormHeight();
     },
+
     setFormHeight: function() {
         setTimeout(() => {
             let formHeight = this.state.formHeight;
@@ -637,6 +655,7 @@ const ApplyUserForm = React.createClass({
             this.setState({formHeight});
         });
     },
+
     getAppOptions: function(selectAppIds) {
         let appList = this.props.appList;
         if (_.isArray(appList) && appList.length) {
@@ -657,6 +676,7 @@ const ApplyUserForm = React.createClass({
         }
         return [];
     },
+
     render: function() {
         let title = '';
         if (this.props.userType) {
@@ -677,7 +697,8 @@ const ApplyUserForm = React.createClass({
                 handleCancel={this.handleCancel.bind(this)}
                 okBtnText={Intl.get('common.sure', '确定')}
             />);
-    }
+    },
 });
 
 module.exports = ApplyUserForm;
+

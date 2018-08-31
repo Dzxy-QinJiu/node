@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * Created by wangliping on 2016/10/18.
@@ -28,8 +30,10 @@ const messages = defineMessages({
 function noop() {
 }
 
-var OrganizationForm = React.createClass({
+var OrganizationForm = createReactClass({
+    displayName: 'OrganizationForm',
     mixins: [Validation.FieldMixin, reactIntlMixin],
+
     getDefaultProps: function() {
         return {
             submitOrganizationForm: noop,
@@ -41,6 +45,7 @@ var OrganizationForm = React.createClass({
             }
         };
     },
+
     getFormData: function(organization) {
         if (organization.isEditGroup) {
             return {
@@ -59,6 +64,7 @@ var OrganizationForm = React.createClass({
             };
         }
     },
+
     getInitialState: function() {
         return {
             status: {
@@ -69,6 +75,7 @@ var OrganizationForm = React.createClass({
             formData: this.getFormData(this.props.organization),
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.refs.validation.reset();
         this.setState({formData: this.getFormData(nextProps.organization)});
@@ -194,6 +201,7 @@ var OrganizationForm = React.createClass({
             }
         }
     },
+
     //渲染上级部门列表
     renderSuperiorTeam: function() {
         var teamOptions = [];
@@ -218,14 +226,17 @@ var OrganizationForm = React.createClass({
         formData.isOrganizationSaving = false;
         this.setState({formData: formData});
     },
+
     //取消enter事件
     cancelEnter: function(event) {
         event.preventDefault();
     },
+
     onCategoryChange: function(event) {
         this.state.formData.category = event.target.value;
         this.setState({formData: this.state.formData});
     },
+
     render: function() {
         var _this = this;
         var formData = this.state.formData;
@@ -236,7 +247,7 @@ var OrganizationForm = React.createClass({
         var editResult = this.state.formData.saveOrganizationResult;
         return (
             <div className={formClass}>
-                <Form horizontal className="form" onSubmit={this.cancelEnter}>
+                <Form layout='horizontal' className="form" onSubmit={this.cancelEnter}>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         {//在组织上添加时，需要选择添加的是团队还是部门
                             this.props.organization.isAddGroup && this.props.organization.category == CATEGORY_TYPE.ORGANIZATION ?
@@ -318,7 +329,8 @@ var OrganizationForm = React.createClass({
                 </Form>
             </div>
         );
-    }
+    },
 });
 
 module.exports = injectIntl(OrganizationForm);
+

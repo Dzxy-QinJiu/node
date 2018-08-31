@@ -1,3 +1,5 @@
+var React = require('react');
+var createReactClass = require('create-react-class');
 import Dropdown from 'rc-dropdown';
 import Menu, { Item as MenuItem} from 'rc-menu';
 require('./index.less');
@@ -22,7 +24,7 @@ var LAYOUT = {
  >
  </SearchList>
  */
-var SearchList = React.createClass({
+var SearchList = createReactClass({
     //唯一id，做相对定位用
     searchListId: _.uniqueId('oplate-search-list'),
     //React组件的名称

@@ -1,3 +1,4 @@
+var React = require('react');
 import { Form, Input, Select, Icon, DatePicker } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -14,26 +15,25 @@ const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
 import Trace from 'LIB_DIR/trace';
 const { CategoryList, ContractLabel } = require('PUB_DIR/sources/utils/consts');
 
-const Contract = React.createClass( {
-    getInitialState() {
-        return {
-            isLoading: false,
-            errMsg: '',
-            contractType: '产品合同', // 合同类型
-            contractLabel: 'new', // 合同签约类型
-            formData: {
-                customer_name: this.props.curCustomer.name,
-                buyer: this.props.curCustomer.name,
-                stage: '待审',
-                date: moment().valueOf(),
-                start_time: moment().valueOf(),
-                end_time: moment().add(1, 'year').valueOf(),
-                contract_amount: 0,
-                gross_profit: 0,
-            }, // 合同信息
-            products: [] // 产品数据
-        };
-    },
+class Contract extends React.Component {
+    state = {
+        isLoading: false,
+        errMsg: '',
+        contractType: '产品合同', // 合同类型
+        contractLabel: 'new', // 合同签约类型
+        formData: {
+            customer_name: this.props.curCustomer.name,
+            buyer: this.props.curCustomer.name,
+            stage: '待审',
+            date: moment().valueOf(),
+            start_time: moment().valueOf(),
+            end_time: moment().add(1, 'year').valueOf(),
+            contract_amount: 0,
+            gross_profit: 0,
+        }, // 合同信息
+        products: [] // 产品数据
+    };
+
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps, 'customerId') && nextProps.customerId !== this.props.customerId) {
             let formData = this.state.formData;
@@ -41,28 +41,31 @@ const Contract = React.createClass( {
             formData.buyer = nextProps.curCustomer.name;
             this.setState({ formData });
         }
-    },
+    }
 
     // 修改产品信息
-    modifyProductsInfo(appId, modifyValue, filed) {
+    modifyProductsInfo = (appId, modifyValue, filed) => {
         let modifyAppObj = _.find(this.state.products, item => item.client_id === appId);
         if (modifyAppObj) {
             modifyAppObj[filed] = modifyValue;
         }
-    },
+    };
+
     // 修改产品数量
-    handleModifyUserCount(appId, event) {
+    handleModifyUserCount = (appId, event) => {
         let userCount = event.target.value;
         this.modifyProductsInfo(appId, userCount, 'count');
-    },
+    };
+
     // 修改产品金额
-    handleModifyPrice(appId, event) {
+    handleModifyPrice = (appId, event) => {
         let totalPrice = event.target.value;
         this.modifyProductsInfo(appId, totalPrice, 'total_price');
-    },
+    };
+
     // 删除产品信息
-    handleDeleteProductsInfo(appId) {
-        Trace.traceEvent($(this.getDOMNode()).find('.total-price'), '点击删除产品信息');
+    handleDeleteProductsInfo = (appId) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.total-price'), '点击删除产品信息');
         let restProducts = _.filter(this.state.products, item => item.client_id !== appId);
         let restSelectAppIdArray = _.filter(this.state.selectedAppIdArray, id => id !== appId);
         this.setState({
@@ -70,58 +73,67 @@ const Contract = React.createClass( {
             selectedAppIdArray: restSelectAppIdArray,
             lastSelectedAppIdArray: restSelectAppIdArray
         });
-    },
+    };
+
     // 甲方
-    handleCustomerName(event) {
+    handleCustomerName = (event) => {
         let formData = this.state.formData;
         formData.buyer = event.target.value;
         this.setState({ formData });
-    },
+    };
+
     // 合同类型
-    handleSelectContractType(value) {
+    handleSelectContractType = (value) => {
         this.setState({
             contractType: value
         });
-    },
+    };
+
     // 合同签约类型
-    handleSelectContractLabel(value) {
+    handleSelectContractLabel = (value) => {
         this.setState({
             contractLabel: value
         });
-    },
+    };
+
     // 签订时间
-    handleSignContractDate(date) {
+    handleSignContractDate = (date) => {
         let formData = this.state.formData;
         let timestamp = date && date.valueOf() || '';
         formData.date = timestamp;
         this.setState({ formData });
-    },
+    };
+
     // 有效期
-    handleValidityTimeRange(startTime, endTime) {
+    handleValidityTimeRange = (startTime, endTime) => {
         let formData = this.state.formData;
         formData.start_time = startTime;
         formData.end_time = endTime;
         this.setState({ formData });
-    },
+    };
+
     // 合同额
-    handleContractAmount(event) {
+    handleContractAmount = (event) => {
         let formData = this.state.formData;
         formData.contract_amount = removeCommaFromNum(event.target.value);
         this.setState({ formData });
-    },
+    };
+
     // 毛利
-    handleContractGross(event) {
+    handleContractGross = (event) => {
         let formData = this.state.formData;
         formData.gross_profit = removeCommaFromNum(event.target.value);
         this.setState({ formData });
-    },
+    };
+
     // 鼠标聚焦到input输入框时
-    handleInputFocus() {
+    handleInputFocus = () => {
         this.setState({
             errMsg: ''
         });
-    },
-    renderContractForm() {
+    };
+
+    renderContractForm = () => {
         const formItemLayout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 20 }
@@ -220,9 +232,10 @@ const Contract = React.createClass( {
                 </div>
             </div>
         );
-    },
+    };
+
     // 添加合同的ajax
-    addContractAjax(reqData) {
+    addContractAjax = (reqData) => {
         this.setState({ isLoading: true });
         ContractAjax.addContract({ type: 'sell' }, reqData).then((resData) => {
             if (resData && resData.code === 0) {
@@ -239,8 +252,9 @@ const Contract = React.createClass( {
                 errMsg: errMsg || Intl.get('crm.154', '添加失败')
             });
         });
-    },
-    handleSubmit(event) {
+    };
+
+    handleSubmit = (event) => {
         event.preventDefault();
         Trace.traceEvent(event, '点击保存按钮');
         this.props.form.validateFields((err) => {
@@ -273,15 +287,18 @@ const Contract = React.createClass( {
                 this.addContractAjax(reqData);
             }
         });
-    },
-    handleCancel(event) {
+    };
+
+    handleCancel = (event) => {
         Trace.traceEvent(event, '点击取消按钮');
         ContractAction.hideForm();
-    },
-    handleProductChange(data) {
+    };
+
+    handleProductChange = (data) => {
         this.setState({products: data});
-    },
-    render(){
+    };
+
+    render() {
         return (
             <DetailCard
                 content={this.renderContractForm()}
@@ -293,7 +310,7 @@ const Contract = React.createClass( {
                 handleCancel={this.handleCancel}
             />);
     }
-});
+}
 
 const ContractForm = Form.create()(Contract);
 

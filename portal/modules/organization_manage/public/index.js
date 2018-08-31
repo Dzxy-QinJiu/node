@@ -1,6 +1,8 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
+var React = require('react');
+var createReactClass = require('create-react-class');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./css/organization-es_VE.less');
@@ -38,8 +40,10 @@ var CONSTANT = {
     SAVE_ERROR: Intl.get('common.save.failed')
 };
 
-var OrganizationPage = React.createClass({
+var OrganizationPage = createReactClass({
+    displayName: 'OrganizationPage',
     mixins: [reactIntlMixin],
+
     getInitialState: function() {
         var data = OrganizationStore.getState();
         data.containerHeight = this.containerHeightFnc();
@@ -101,11 +105,13 @@ var OrganizationPage = React.createClass({
     cancelAddGroup: function() {
         OrganizationAction.cancelAddGroup();
     },
+
     //组织名称修改的处理
     onOrganizationNameChange: function(event) {
         this.state.organizationName = event.target.value;
         this.setState({organizationName: this.state.organizationName});
     },
+
     //添加组织
     addOrganization: function() {
         var _this = this;
@@ -131,6 +137,7 @@ var OrganizationPage = React.createClass({
             _this.updateSaveState();
         });
     },
+
     //更新添加组织返回结果的相关数据
     updateSaveState: function() {
         this.setState({
@@ -139,6 +146,7 @@ var OrganizationPage = React.createClass({
             saveOrganizationResult: this.state.saveOrganizationResult
         });
     },
+
     //隐藏添加组织后的提示信息
     hideSaveTooltip: function() {
         if (this.state.saveOrganizationResult == CONSTANT.SUCCESS) {
@@ -147,6 +155,7 @@ var OrganizationPage = React.createClass({
         this.state.saveOrganizationMsg = '';
         this.state.saveOrganizationResult = '';
     },
+
     //无组织时，添加组织面板的渲染
     renderAddOrganization: function() {
         return (<PrivilegeChecker check="USER_ORGANIZATION_ADD" className="organization-null-add-container">
@@ -172,6 +181,7 @@ var OrganizationPage = React.createClass({
             </div>
         </PrivilegeChecker>);
     },
+
     render: function() {
         var containerHeight = this.state.containerHeight - 2;
         var containerWidth = this.state.containerWidth - 2;
@@ -215,7 +225,7 @@ var OrganizationPage = React.createClass({
                 }
             </div>
         );
-    }
+    },
 });
 
 module.exports = injectIntl(OrganizationPage);

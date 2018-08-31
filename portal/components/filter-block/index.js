@@ -1,12 +1,14 @@
 
+var React = require('react');
 require('./style.less');
 
-var FilterBlock = React.createClass({
-    render: function() {
+class FilterBlock extends React.Component {
+    render() {
         return (
             <div className="filter-block clearfix">{this.props.children}</div>
         );
     }
-});
+}
 
 module.exports = FilterBlock;
+

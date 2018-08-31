@@ -1,10 +1,12 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/27.
  */
 var FilterAction = require('../../action/filter-action');
-var FilterStore = require('../../store/filter-store');
+var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import DatePicker from 'CMP_DIR/datepicker';
@@ -16,15 +18,15 @@ class ClueFilterPanel extends React.Component {
             clueSourceArray: this.props.clueSourceArray,
             accessChannelArray: this.props.accessChannelArray,
             clueClassifyArray: this.props.clueClassifyArray,
-            ...FilterStore.getState(),
+            ...clueFilterStore.getState(),
         };
     }
 
     onStoreChange = () => {
-        this.setState(FilterStore.getState());
+        this.setState(clueFilterStore.getState());
     };
     componentDidMount = () => {
-        FilterStore.listen(this.onStoreChange);
+        clueFilterStore.listen(this.onStoreChange);
     };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
@@ -34,7 +36,7 @@ class ClueFilterPanel extends React.Component {
         });
     };
     componentWillUnmount = () => {
-        FilterStore.unlisten(this.onStoreChange);
+        clueFilterStore.unlisten(this.onStoreChange);
     };
 
     handleFilterChange = (data) => {
@@ -174,11 +176,11 @@ ClueFilterPanel.defaultProps = {
     style: {}
 };
 ClueFilterPanel.propTypes = {
-    clueSourceArray: React.PropTypes.object,
-    accessChannelArray: React.PropTypes.object,
-    clueClassifyArray: React.PropTypes.object,
-    getClueList: React.PropTypes.func,
-    style: React.PropTypes.object,
+    clueSourceArray: PropTypes.object,
+    accessChannelArray: PropTypes.object,
+    clueClassifyArray: PropTypes.object,
+    getClueList: PropTypes.func,
+    style: PropTypes.object,
 };
 
 export default ClueFilterPanel;

@@ -1,3 +1,4 @@
+var React = require('react');
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Button = require('antd').Button;
 var AlertTimer = require('../../../../components/alert-timer');
@@ -9,37 +10,35 @@ import Trace from 'LIB_DIR/trace';
 function noop() {
 }
 
-var AuthorityList = React.createClass({
+class AuthorityList extends React.Component {
+    static defaultProps = {
+        addAuthority: noop,
+        deleteAuthority: noop,
+        authorityGroup: {
+            permissionGroupName: '',
+            permissionList: []
+        }
+    };
 
-    getDefaultProps: function() {
-        return {
-            addAuthority: noop,
-            deleteAuthority: noop,
-            authorityGroup: {
-                permissionGroupName: '',
-                permissionList: []
-            }
-        };
-    },
+    state = {
+        authorityGroup: this.props.authorityGroup
+    };
 
-    getInitialState: function() {
-        return {
+    componentWillReceiveProps(nextProps) {
+        this.setState({
             authorityGroup: this.props.authorityGroup
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        this.setState(this.getInitialState());
+        });
         this.setState({
             authorityGroup: nextProps.authorityGroup,
         });
-    },
+    }
 
-    showAddAuthorityForm: function(authorityGroup) {
+    showAddAuthorityForm = (authorityGroup) => {
         this.props.showAddAuthorityForm(authorityGroup, 'addAuthority');
-    },
+    };
 
-    deleteAuthorityGroup: function(authorityGroup) {
-        Trace.traceEvent($(this.getDOMNode()).find('.authority-operation'),'点击删除权限');
+    deleteAuthorityGroup = (authorityGroup) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.authority-operation'),'点击删除权限');
         var authorityIds = [];
         if (authorityGroup && _.isArray(authorityGroup.permissionList) && authorityGroup.permissionList.length > 0) {
             authorityGroup.permissionList.forEach(function(authority) {
@@ -47,43 +46,44 @@ var AuthorityList = React.createClass({
             });
         }
         this.props.deleteAuthorityGroup(authorityIds, authorityGroup.permissionGroupName);
-    },
+    };
 
     //编辑权限分组
-    showAuthorityGroupForm: function(authorityGroup) {
-        Trace.traceEvent($(this.getDOMNode()).find('.icon-update'),'点击编辑权限分组');
+    showAuthorityGroupForm = (authorityGroup) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-update'),'点击编辑权限分组');
         AuthorityAction.beforeEditAuthority(authorityGroup);
         this.props.showAuthorityGroupForm(authorityGroup);
-    },
+    };
+
     //展示删除时的提示框
-    showModalDialog: function(authorityGroup) {
+    showModalDialog = (authorityGroup) => {
         this.props.showModalDialog(authorityGroup);
-    },
+    };
 
     //隐藏删除时的提示框
-    hideModalDialog: function(authorityGroup) {
+    hideModalDialog = (authorityGroup) => {
         this.props.hideModalDialog(authorityGroup);
-    },
+    };
 
     //展示删除时的提示框
-    showAuthorityModalDialog: function(authority) {
+    showAuthorityModalDialog = (authority) => {
         this.props.showAuthorityModalDialog(authority);
-    },
+    };
 
     //展示删除时的提示框
-    hideAuthorityModalDialog: function(authority) {
+    hideAuthorityModalDialog = (authority) => {
         this.props.hideAuthorityModalDialog(authority);
-    },
+    };
 
-    showAuthorityInfo: function(authority) {
+    showAuthorityInfo = (authority) => {
         this.props.showAuthorityInfo(authority);
-    },
+    };
 
-    hideDelTooltip: function() {
+    hideDelTooltip = () => {
         this.props.clearDelAuthGroupErrorMsg();
-    },
+    };
 
-    render: function() {
+    render() {
         var _this = this;
         var authorityGroup = this.props.authorityGroup;
         authorityGroup.authorityIDs = [];
@@ -134,6 +134,6 @@ var AuthorityList = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = AuthorityList;

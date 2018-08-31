@@ -1,6 +1,7 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
+var React = require('react');
 import { Alert, Icon } from 'antd';
 import { Button as BootstrapButton, Modal as BootstrapModal } from 'react-bootstrap';
 import UserStatusSwitch from './user-status-switch';
@@ -13,43 +14,35 @@ var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var AlertTimer = require('CMP_DIR/alert-timer');
-var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
 var AppUserUtil = require('../util/app-user-util');
-var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var measureText = require('PUB_DIR/sources/utils/measure-text');
-var Organization = require('./v2/organization');
-import UserCustomer from 'CMP_DIR/user_manage_components/user-customer';
 import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
 var UserDetailFieldSwitch = require('./user-detail-field-switch');
 var language = require('PUB_DIR/language/getLanguage');
 var AppUserAjax = require('../ajax/app-user-ajax');
 import DetailCard from 'CMP_DIR/detail-card';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
-import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_suggest/customer_suggest';
 import UserBasicCard from './user-basic/user-basic-card';
 import OrgCard from './user-basic/org-card';
 import ContactCard from './user-basic/contact-card';
-import { secondsToHourMinuteSecond } from '../../../../public/sources/utils/time-format-util';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 const FORMAT = oplateConsts.DATE_FORMAT;
 
-var UserDetailBasic = React.createClass({
-    getDefaultProps: function() {
-        return {
-            userId: '1'
-        };
-    },
-    getInitialState: function() {
-        return this.getStateData();
-    },
-    onStateChange: function() {
+class UserDetailBasic extends React.Component {
+    static defaultProps = {
+        userId: '1'
+    };
+
+    onStateChange = () => {
         this.setState(this.getStateData());
-    },
-    getStateData: function() {
+    };
+
+    getStateData = () => {
         return AppUserDetailStore.getState();
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         AppUserDetailStore.listen(this.onStateChange);
         if (!this.props.userId) return;
         AppUserDetailAction.getUserDetail(this.props.userId);
@@ -61,8 +54,9 @@ var UserDetailBasic = React.createClass({
             };
             this.props.getBasicInfo(userInfo);
         }
-    },
-    componentDidUpdate: function(prevProps, prevState) {
+    }
+
+    componentDidUpdate(prevProps, prevState) {
         var newUserId = this.props.userId;
         if (prevProps.userId !== newUserId && newUserId) {
             setTimeout(function() {
@@ -79,22 +73,25 @@ var UserDetailBasic = React.createClass({
             };
             this.props.getBasicInfo(userInfo);
         }
-    },
-    retryGetDetail: function() {
+    }
+
+    retryGetDetail = () => {
         var userId = this.props.userId;
         if (!userId) return;
         setTimeout(function() {
             AppUserDetailAction.dismiss();
             AppUserDetailAction.getUserDetail(userId);
         }, 0);
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         AppUserDetailStore.unlisten(this.onStateChange);
         setTimeout(() => {
             AppUserDetailAction.dismiss();
         });
-    },
-    checkPhone: function(rule, value, callback) {
+    }
+
+    checkPhone = (rule, value, callback) => {
         if ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) ||
             (/^\d{3,4}\-\d{7,8}$/.test(value)) ||
             (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
@@ -102,18 +99,21 @@ var UserDetailBasic = React.createClass({
         } else {
             callback(new Error(Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
         }
-    },
-    showDisableAllAppsModal: function(e) {
+    };
+
+    showDisableAllAppsModal = (e) => {
         Trace.traceEvent(e,'全部停用');
         AppUserDetailAction.showDisableAllAppsModal();
         return e.stopPropagation();
-    },
-    cancelAllAppsModal: function(e) {
+    };
+
+    cancelAllAppsModal = (e) => {
         Trace.traceEvent(e,'点击取消全部停用的按钮');
         AppUserDetailAction.cancelAllAppsModal();
         return e.stopPropagation();
-    },
-    submitDisableAllApps: function(e) {
+    };
+
+    submitDisableAllApps = (e) => {
         Trace.traceEvent(e,'点击确定全部停用的按钮');
         AppUserDetailAction.cancelAllAppsModal();
         AppUserDetailAction.submitDisableAllApps({
@@ -125,8 +125,9 @@ var UserDetailBasic = React.createClass({
             });
         });
         return e.stopPropagation();
-    },
-    getDisableAllAppsBlock: function() {
+    };
+
+    getDisableAllAppsBlock = () => {
         if (this.state.modalStatus.disable_all.loading) {
             return (
                 <Icon type="loading" />
@@ -170,32 +171,37 @@ var UserDetailBasic = React.createClass({
                 <ReactIntl.FormattedMessage id="user.all.stop" defaultMessage="全部停用" />
             </PrivilegeChecker>
         );
-    },
+    };
+
     //显示app的面板
-    showAddAppPanel: function(e) {
+    showAddAppPanel = (e) => {
         Trace.traceEvent(e,'添加应用');
         AppUserPanelSwitchActions.switchToAddAppPanel();
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
-    },
-    editSingleApp: function(app, e) {
+    };
+
+    editSingleApp = (app, e) => {
         Trace.traceEvent(e,'修改应用的配置信息');
         AppUserPanelSwitchActions.switchToEditAppPanel(app);
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
-    },
+    };
+
     //获取用户类型文本
-    getUserTypeText: function(app) {
+    getUserTypeText = (app) => {
         var user_type_value = app.user_type;
         var user_type_text = AppUserUtil.getUserTypeText(user_type_value);
         return user_type_text;
-    },
+    };
+
     //修改单个字段成功
-    onFieldChangeSuccess: function(result) {
+    onFieldChangeSuccess = (result) => {
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_FIELD, result);
         AppUserDetailAction.changeAppFieldSuccess(result);
-    },
-    renderMultiLogin: function(app, readOnly) {
+    };
+
+    renderMultiLogin = (app, readOnly) => {
         var multilogin = /^[10]$/.test((app.multilogin + '')) ? app.multilogin + '' : '';
         if (!hasPrivilege('APP_USER_EDIT')) {
             return multilogin ? (multilogin === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : multilogin;
@@ -219,8 +225,9 @@ var UserDetailBasic = React.createClass({
             field="mutilogin"
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
-    },
-    renderIsTwoFactor: function(app, readOnly) {
+    };
+
+    renderIsTwoFactor = (app, readOnly) => {
         var is_two_factor = /^[10]$/.test((app.is_two_factor + '')) ? app.is_two_factor + '' : '';
         if (!hasPrivilege('APP_USER_EDIT')) {
             return is_two_factor ? (is_two_factor === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')) : is_two_factor;
@@ -243,8 +250,9 @@ var UserDetailBasic = React.createClass({
             field="is_two_factor"
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
-    },
-    renderOverDraft: function(app) {
+    };
+
+    renderOverDraft = (app) => {
         var over_draft = /^[210]$/.test((app.over_draft + '')) ? app.over_draft + '' : '1';
         if (over_draft === '0') {
             return Intl.get('user.status.immutability', '不变');
@@ -254,8 +262,9 @@ var UserDetailBasic = React.createClass({
             return Intl.get('user.status.degrade', '降级');
         }
 
-    },
-    renderStatus: function(app) {
+    };
+
+    renderStatus = (app) => {
         var is_disabled = app.is_disabled;
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
@@ -279,8 +288,9 @@ var UserDetailBasic = React.createClass({
             field="status"
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
-    },
-    renderAppInfo: function(app) {
+    };
+
+    renderAppInfo = (app) => {
         var start_time = moment(new Date(+app.start_time)).format(FORMAT);
         var end_time = moment(new Date(+app.end_time)).format(FORMAT);
         var establish_time = moment(new Date(+app.create_time)).format(FORMAT);
@@ -327,12 +337,14 @@ var UserDetailBasic = React.createClass({
                 </div>
             </div>
         );
-    },
-    showAppDetail: function(params) {
+    };
+
+    showAppDetail = (params) => {
         AppUserDetailAction.showAppDetail(params);
-    },
+    };
+
     //获取应用列表段
-    getAppsBlock: function() {
+    getAppsBlock = () => {
         var _this = this;
         var maxWidthApp = _.maxBy(this.state.initialUser.apps, function(app) {
             return measureText.measureTextWidth(app.app_name, 12);
@@ -420,8 +432,9 @@ var UserDetailBasic = React.createClass({
                 })}
             </ul>
         );
-    },
-    renderAddAppBtn: function() {
+    };
+
+    renderAddAppBtn = () => {
         //所有应用列表
         var allApps = AppUserStore.getState().appList || [];
         //已经添加的应用
@@ -444,8 +457,11 @@ var UserDetailBasic = React.createClass({
                 </PrivilegeChecker>
             ) : null
         );
-    },
-    userBelongChange: function({ tag, customer_id, customer_name, sales_id, sales_name, sales_team_id, sales_team_name }) {
+    };
+
+    userBelongChange = (
+        { tag, customer_id, customer_name, sales_id, sales_name, sales_team_id, sales_team_name },
+    ) => {
         //更改用户所属
         AppUserDetailAction.changeUserBelong({
             tag,
@@ -466,45 +482,46 @@ var UserDetailBasic = React.createClass({
             sales_id,
             sales_name
         });
-    },
+    };
+
     //修改单个字段成功
-    changeUserFieldSuccess: function(userObj) {
+    changeUserFieldSuccess = (userObj) => {
         AppUserDetailAction.changeUserFieldSuccess(userObj);
         //更新用户基本信息
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_USER_INFO, userObj);
-    },
+    };
+
     //修改组织成功
-    organizationChangeSuccess: function({ organization_id, organization_name }) {
+    organizationChangeSuccess = ({ organization_id, organization_name }) => {
         AppUserDetailAction.changeUserOrganization({
             group_id: organization_id,
             group_name: organization_name
         });
-    },
-    userCustomerChangeSuccess: function(customerObj) {
+    };
+
+    userCustomerChangeSuccess = (customerObj) => {
         AppUserDetailAction.changeCustomer(customerObj);
         //更新用户客户信息
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_CUSTOMER_INFO, customerObj);
-    },
-    onPasswordDisplayTypeChange: function(type) {
+    };
+
+    onPasswordDisplayTypeChange = (type) => {
         if (type === 'edit') {
             this.setState({ isConfirmPasswordShow: true });
         } else {
             this.setState({ isConfirmPasswordShow: false });
         }
-    },
-    onPasswordValueChange: function() {
+    };
+
+    onPasswordValueChange = () => {
         const confirmPassword = this.refs.confirmPassword;
         if (confirmPassword && confirmPassword.state.formData.input) {
             confirmPassword.refs.validation.forceValidate();
         }
-    },
-    onConfirmPasswordDisplayTypeChange: () => {
-        this.setState({ isConfirmPasswordShow: false });
-        this.refs.password.setState({ displayType: 'text' });
-    },
+    };
 
     //对密码 进行校验
-    checkPass(rule, value, callback) {
+    checkPass = (rule, value, callback) => {
         if (value && value.match(passwordRegex)) {
             let passStrength = getPassStrenth(value);
             this.refs.password.setState({ passStrength: passStrength });
@@ -518,24 +535,28 @@ var UserDetailBasic = React.createClass({
             });
             callback(Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码'));
         }
-    },
+    };
+
     //对确认密码 进行校验
-    checkRePass(rule, value, callback) {
+    checkRePass = (rule, value, callback) => {
         if (value && value === this.refs.password.state.formData.input) {
             callback();
         } else {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
         }
-    },
+    };
 
-    renderUserStatus: function(user, useIcon = false) {
+    renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
         if (!hasPrivilege('APP_USER_EDIT')) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
         return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
-    },
-    render: function() {
+    };
+
+    state = this.getStateData();
+
+    render() {
         var LoadingBlock = this.state.isLoading ? (
             <Spinner />
         ) : null;
@@ -663,6 +684,6 @@ var UserDetailBasic = React.createClass({
             </StatusWrapper>
         );
     }
-});
+}
 
 module.exports = UserDetailBasic;

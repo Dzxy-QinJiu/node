@@ -1,3 +1,5 @@
+var PropTypes = require('prop-types');
+var React = require('react');
 /**
  * 详情中信息展示的卡片
  * Created by wangliping on 2018/3/27.
@@ -71,7 +73,6 @@ DetailCard.defaultProps = {
     },//渲染自定义的处理保存的按钮
     saveErrorMsg: ''//保存的错误提示
 };
-const PropTypes = React.PropTypes;
 DetailCard.propTypes = {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     titleDescr: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),

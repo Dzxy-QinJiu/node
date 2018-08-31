@@ -1,7 +1,9 @@
 /**
  * 添加提成发放记录
  * */
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 import ajax from '../../../contract/common/ajax';
 import routeList from '../../../contract/common/route';
@@ -29,8 +31,10 @@ const formItemLayout2 = {
 
 let queryCustomerTimeout = null;
 
-const CommissionPayment = React.createClass({
+const CommissionPayment = createReactClass({
+    displayName: 'CommissionPayment',
     mixins: [ValidateMixin],
+
     getInitialState() {
         const isAdd = _.isEmpty(this.props.commission);
         return {
@@ -41,20 +45,24 @@ const CommissionPayment = React.createClass({
             customerErrMsg: '',
         };
     },
+
     componentWillReceiveProps(nextProps) {
         this.clearState();
     },
+
     showForm() {
         this.setState({
             isFormShow: true,
             formData: _.clone(this.props.commission),
         });
     },
+
     hideForm() {
         this.setState({
             isFormShow: false,
         });
     },
+
     handleSubmit(type, id) {
         let data, params;
 
@@ -79,6 +87,7 @@ const CommissionPayment = React.createClass({
             });
         }
     },
+
     editCommission(type, data, params) {
         this.props.showLoading();
 
@@ -117,6 +126,7 @@ const CommissionPayment = React.createClass({
             }
         });
     },
+
     renderDateField() {
         let state = this.state;
         if (!state.formData.grant_time) {
@@ -141,6 +151,7 @@ const CommissionPayment = React.createClass({
             </FormItem>
         );
     },
+
     renderRoleField() {
         return (
             <FormItem
@@ -165,6 +176,7 @@ const CommissionPayment = React.createClass({
             </FormItem>
         );
     },
+
     renderUserField() {
         const userOptions = this.props.userList.map(user => {
             return <Option key={user.user_id} value={user.user_id}>{user.nick_name}</Option>;
@@ -206,12 +218,14 @@ const CommissionPayment = React.createClass({
             </FormItem>
         );
     },
+
     onUserChoose(value) {
         const selectedUser = _.find(this.props.userList, user => user.user_id === value);
         this.state.formData.user_id = value;
         this.state.formData.user_name = selectedUser.nick_name;
         this.onTeamChoose(selectedUser.group_id);
     },
+
     renderTeamField() {
         const teamOptions = this.props.teamList.map(team => {
             return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
@@ -241,6 +255,7 @@ const CommissionPayment = React.createClass({
             </FormItem>
         );
     },
+
     onTeamChoose(value) {
         const selectedTeam = _.find(this.props.teamList, team => team.groupId === value);
         this.state.formData.sales_team_id = value;
@@ -253,6 +268,7 @@ const CommissionPayment = React.createClass({
             this.handleValidate(this.state.status, formDataCopy);
         });
     },
+
     renderAmountField() {
         return (
             <FormItem
@@ -280,6 +296,7 @@ const CommissionPayment = React.createClass({
             </FormItem>
         );
     },
+
     onRemarkChoose(value) {
         this.state.formData.remark = value;
         //暂存表单数据
@@ -290,6 +307,7 @@ const CommissionPayment = React.createClass({
             this.handleValidate(this.state.status, formDataCopy);
         });
     },
+
     //输入客户名
     queryCustomer: function(keyword) {
         this.state.formData.customer_name = keyword;
@@ -336,12 +354,14 @@ const CommissionPayment = React.createClass({
             });
         }
     },
+
     onCustomerChoose(value) {
         const selectedCustomer = _.find(this.state.customerList, customer => customer.customer_id === value);
         this.state.formData.customer_id = value;
         this.state.formData.customer_name = selectedCustomer.customer_name;
 
     },
+
     getCustomerValidateRules() {
         return [{
             validator: (rule, value, callback) => {
@@ -357,6 +377,7 @@ const CommissionPayment = React.createClass({
             }
         }];
     },
+
     renderCustomerField() {
         return (
             <FormItem
@@ -394,10 +415,12 @@ const CommissionPayment = React.createClass({
             </FormItem>
         );
     },
+
     remarkContent(value) {
         this.state.formData.remark = value;
         this.setState(this.state);
     },
+
     renderRemarkField() {
         const remarkOptions = REMARK_LIST.map(remark => {
             return <Option key={remark} value={remark}>{remark}</Option>;
@@ -429,6 +452,7 @@ const CommissionPayment = React.createClass({
             </FormItem>
         );
     },
+
     render() {
         //编辑按钮是否显示
         const isEditBtnShow = !this.state.isFormShow && hasPrivilege('OPLATE_CONTRACT_SALERS_COMMISSION');
@@ -447,7 +471,7 @@ const CommissionPayment = React.createClass({
                     </div>
                 ) : null}
 
-                <Form horizontal>
+                <Form layout='horizontal'>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         {this.renderDateField()}
                         {this.renderUserField()}
@@ -473,8 +497,9 @@ const CommissionPayment = React.createClass({
                 </Form>
             </div>
         );
-    }
+    },
 });
 
 module.exports = CommissionPayment;
+
 

@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -7,6 +8,7 @@ require('../css/contact-item.less');
 import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
 class ContactItem extends React.Component {
     constructor(props) {
@@ -151,11 +153,11 @@ ContactItem.defaultProps = {
     errMsg: ''
 };
 ContactItem.propTypes = {
-    contacts: React.PropTypes.object,//联系人信息
-    customerData: React.PropTypes.object,//客户信息
-    itemType: React.PropTypes.string,
-    callNumber: React.PropTypes.string,//座机号
-    showContactLabel: React.PropTypes.bool,//是否展示联系人这几个字
-    errMsg: React.PropTypes.string
+    contacts: PropTypes.object,//联系人信息
+    customerData: PropTypes.object,//客户信息
+    itemType: PropTypes.string,
+    callNumber: PropTypes.string,//座机号
+    showContactLabel: PropTypes.bool,//是否展示联系人这几个字
+    errMsg: PropTypes.string
 };
 export default ContactItem;

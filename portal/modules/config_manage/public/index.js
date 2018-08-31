@@ -1,3 +1,4 @@
+var React = require('react');
 var TopNav = require('CMP_DIR/top-nav');
 var Spinner = require('CMP_DIR/spinner');
 var Icon = require('antd').Icon;
@@ -20,29 +21,29 @@ const auths = {
     TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE',//销售角色管理权限
     STRATEGY: 'GET_CONFIG_PWD_STRATEGY',// 获取安全域密码策略
 };
-var ConfigManage = React.createClass({
-    getInitialState: function() {
-        return ({
-            //行业标签列表
-            TagLists: [],
-            //点击行业添加按钮的loading效果是否显示 否 -1 是 0
-            isAddloading: -1,
-            //当前正在删除的标签的id值 默认 -1
-            DeletingItemId: -1,
-            //点击刷新按钮的loading效果是否显示  否 -1 是 0
-            isRefreshLoading: 0,
-            //能否正常获取数据 否 -1 是 0
-            isGetInforcorrect: -1,
-            //加载失败的提示信息
-            getErrMsg: '',
-            //添加失败的信息
-            addErrMsg: '',
-            // 删除行业失败
-            deleteErrMsg: '',
-        });
-    },
+
+class ConfigManage extends React.Component {
+    state = {
+        //行业标签列表
+        TagLists: [],
+        //点击行业添加按钮的loading效果是否显示 否 -1 是 0
+        isAddloading: -1,
+        //当前正在删除的标签的id值 默认 -1
+        DeletingItemId: -1,
+        //点击刷新按钮的loading效果是否显示  否 -1 是 0
+        isRefreshLoading: 0,
+        //能否正常获取数据 否 -1 是 0
+        isGetInforcorrect: -1,
+        //加载失败的提示信息
+        getErrMsg: '',
+        //添加失败的信息
+        addErrMsg: '',
+        // 删除行业失败
+        deleteErrMsg: '',
+    };
+
     //获取初始行业列表
-    getInitialData: function() {
+    getInitialData = () => {
         var _this = this;
         var page_size = 1000;
         $.ajax({
@@ -67,20 +68,23 @@ var ConfigManage = React.createClass({
             }
         });
 
-    },
-    componentWillMount: function() {
+    };
+
+    componentWillMount() {
         this.getInitialData();
-    },
+    }
+
     //点击刷新按钮
-    getRefreshInfo: function(e) {
+    getRefreshInfo = (e) => {
         this.setState({
             isRefreshLoading: 0,
             TagLists: []
         });
         this.getInitialData();
-    },
+    };
+
     //删除行业标签
-    handleDeleteItem: function(item) {
+    handleDeleteItem = (item) => {
         var _this = this;
         //当前正在删除的标签的id
         _this.setState({
@@ -113,9 +117,10 @@ var ConfigManage = React.createClass({
             }
         });
 
-    },
+    };
+
     //增加行业标签
-    handleSubmit: function(e) {
+    handleSubmit = (e) => {
         Trace.traceEvent(e, '点击添加行业按钮');
         var _this = this;
         e.preventDefault();
@@ -151,9 +156,10 @@ var ConfigManage = React.createClass({
             }
         });
 
-    },
+    };
+
     //增加行业失败
-    handleAddIndustryFail(){
+    handleAddIndustryFail = () => {
         var hide = () => {
             this.setState({
                 addErrMsg: '',
@@ -172,9 +178,9 @@ var ConfigManage = React.createClass({
                 />
             </div>
         );
-    },
+    };
 
-    handleDeleteIndustryFail: function() {
+    handleDeleteIndustryFail = () => {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -191,8 +197,8 @@ var ConfigManage = React.createClass({
                 />
             </div>
         );
-    },
-    renderIndutryConfig: function() {
+    };
+    renderIndutryConfig = () => {
         var TagLists = this.state.TagLists;
         return (
             <div className="box" data-tracename="行业配置">
@@ -219,7 +225,6 @@ var ConfigManage = React.createClass({
                                 message={Intl.get('config.manage.no.industry', '暂无行业配置，请添加！')}/>)
                             : (this.state.isRefreshLoading === -1 ? null : <Spinner/>)
                     )}
-
                     <ul className="mb-taglist">
                         {TagLists.map((item, index) => {
                             return (
@@ -257,40 +262,43 @@ var ConfigManage = React.createClass({
                 </div>
             </div>
         );
-    },
-    render: function() {
+    };
 
-        var height = $(window).height() - $('.topNav').height();
-        return (
-            <div className="config-manage-container" data-tracename="配置">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
-                <div className="config-container" style={{height: height}}>
-                    <GeminiScrollBar>
-                        <PrivilegeChecker check={auths.INDUSTRY}>
-                            {this.renderIndutryConfig()}
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check={auths.IP}>
-                            <IpConfig />
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check={auths.STRATEGY}>
-                            <RealmConfig />
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check={auths.TELECONFIG}>
-                            <TeleConfig />
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
-                            <CompetingProductManage/>
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check={auths.TEAM_ROLE_MANAGE}>
-                            <SalesRoleManage/>
-                        </PrivilegeChecker>
-                    </GeminiScrollBar>
-                </div>
-            </div>
-        );
-    }
-});
+     render = () => {
+       
+
+         var height = $(window).height() - $('.topNav').height();
+         return (
+             <div className="config-manage-container" data-tracename="配置">
+                 <TopNav>
+                     <TopNav.MenuList />
+                 </TopNav>
+                 <div className="config-container" style={{height: height}}>
+                     <GeminiScrollBar>
+                         <PrivilegeChecker check={auths.INDUSTRY}>
+                             {this.renderIndutryConfig()}
+                         </PrivilegeChecker>
+                         <PrivilegeChecker check={auths.IP}>
+                             <IpConfig />
+                         </PrivilegeChecker>
+                         <PrivilegeChecker check={auths.STRATEGY}>
+                             <RealmConfig />
+                         </PrivilegeChecker>
+                         <PrivilegeChecker check={auths.TELECONFIG}>
+                             <TeleConfig />
+                         </PrivilegeChecker>
+                         <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
+                             <CompetingProductManage/>
+                         </PrivilegeChecker>
+                         <PrivilegeChecker check={auths.TEAM_ROLE_MANAGE}>
+                             <SalesRoleManage/>
+                         </PrivilegeChecker>
+                     </GeminiScrollBar>
+                 </div>
+             </div>
+         );
+     }
+}
 
 module.exports = ConfigManage;
+

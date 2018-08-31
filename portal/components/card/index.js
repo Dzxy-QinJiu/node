@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2015/12/23.
  */
+var React = require('react');
 var language = require('../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./card-es_VE.less');
@@ -13,13 +14,12 @@ var DefaultUserLogoTitle = require('../default-user-logo-title');
 const DELETE_CREATEREALM_DELAYTIME = 4000;
 import Trace from 'LIB_DIR/trace';
 
-var Card = React.createClass({
-    getDefaultProps: function(){
-        return {
-            cardWidth: 'auto'
-        };
-    },
-    selectCardEvent: function() {
+class Card extends React.Component {
+    static defaultProps = {
+        cardWidth: 'auto'
+    };
+
+    selectCardEvent = () => {
         var cardId = this.props.curCard.id;
         if (this.props.isSelect) {
             //之前选中，则取消选中
@@ -28,8 +28,9 @@ var Card = React.createClass({
             //    之前未选中，则选中
             this.props.selectCard(cardId);
         }
-    },
-    showCardInfo: function(event) {
+    };
+
+    showCardInfo = (event) => {
         Trace.traceEvent(event,'查看应用详情');
         var curCard = this.props.curCard;
         //curCard.id =='' 如果是在创建中的安全域card是不能点击的
@@ -37,14 +38,15 @@ var Card = React.createClass({
             return;
         }
         this.props.showCardInfo(curCard);
-    },
-    showRightFullScreen: function(event) {
-        event.stopPropagation();
-        Trace.traceEvent($(this.getDOMNode()).find('.icon-role-auth-config'),'查看应用角色列表和权限列表');
-        this.props.showRightFullScreen(this.props.curCard);
-    },
+    };
 
-    render: function() {
+    showRightFullScreen = (event) => {
+        event.stopPropagation();
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-role-auth-config'),'查看应用角色列表和权限列表');
+        this.props.showRightFullScreen(this.props.curCard);
+    };
+
+    render() {
         //当前要展示的卡片
         var card = this.props.curCard;
         var imgUrl = this.props.imgUrl;
@@ -119,6 +121,6 @@ var Card = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Card;

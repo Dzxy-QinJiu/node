@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -11,6 +12,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
+import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 import ApplyOpenAppPanel from 'MOD_DIR/app_user_manage/public/views/v2/apply-user';
 import ApplyUserForm from '../apply-user-form';
@@ -570,9 +572,9 @@ CustomerUsers.defaultProps = {
 };
 
 CustomerUsers.propTypes = {
-    isMerge: React.PropTypes.bool,
-    curCustomer: React.PropTypes.object,
-    closeOpenAppPanel: React.PropTypes.func,
-    ShowCustomerUserListPanel: React.PropTypes.func
+    isMerge: PropTypes.bool,
+    curCustomer: PropTypes.object,
+    closeOpenAppPanel: PropTypes.func,
+    ShowCustomerUserListPanel: PropTypes.func
 };
 export default CustomerUsers;

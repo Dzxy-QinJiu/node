@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * Created by wangliping on 2016/5/19.
@@ -19,8 +21,10 @@ import Trace from 'LIB_DIR/trace';
 function noop() {
 }
 
-var AuthorityEditForm = React.createClass({
+var AuthorityEditForm = createReactClass({
+    displayName: 'AuthorityEditForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             authority: {
@@ -35,6 +39,7 @@ var AuthorityEditForm = React.createClass({
             }
         };
     },
+
     getInitialState: function() {
         var saveFlags = AuthorityFormStore.getState();
         return {
@@ -53,6 +58,7 @@ var AuthorityEditForm = React.createClass({
             permissionList: this.props.permissionList || []
         };
     },
+
     onChange: function() {
         var saveFlags = AuthorityFormStore.getState();
         this.setState({
@@ -60,9 +66,11 @@ var AuthorityEditForm = React.createClass({
             saveAuthorityMsg: saveFlags.saveAuthorityMsg
         });
     },
+
     componentDidMount: function() {
         AuthorityFormStore.listen(this.onChange);
     },
+
     componentWillUnmount: function() {
         AuthorityFormStore.unlisten(this.onChange);
     },
@@ -174,6 +182,7 @@ var AuthorityEditForm = React.createClass({
             }
         });
     },
+
     hideSaveTooltip: function() {
         AuthorityFormAction.clearSaveAuthorityFlags();
     },
@@ -200,18 +209,21 @@ var AuthorityEditForm = React.createClass({
             });
         }
     },
+
     //选择服务地址的请求方式的处理
     onPermissionSelect: function(index, selectVal) {
         this.updatePermissionApiObj(index, selectVal, 'method');
     },
+
     //服务地址输入的处理
     onPermissionInputChange: function(index, event) {
         var newKey = event.target.value;
         this.updatePermissionApiObj(index, newKey, 'url');
     },
+
     //添加一个服务地址的处理
     addPermissionApi: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'添加服务地址');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.permission-inputgroup-btns-div'),'添加服务地址');
         var permissionApiArray = this.state.formData.permissionApiArray || [];
         permissionApiArray.push({
             permissionApiUrl: '',
@@ -222,9 +234,10 @@ var AuthorityEditForm = React.createClass({
             formData: this.state.formData
         });
     },
+
     //删除服务地址
     delPermissionApi: function(index, event) {
-        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'删除服务地址');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.permission-inputgroup-btns-div'),'删除服务地址');
         var value = event.target.value;
         if (value) {
             return;
@@ -238,6 +251,7 @@ var AuthorityEditForm = React.createClass({
             });
         }
     },
+
     //验证服务地址是否为空
     validatePermissionApi: function(index, event) {
         var permissionUrl = event.target.value;
@@ -256,6 +270,7 @@ var AuthorityEditForm = React.createClass({
             });
         }
     },
+
     renderPermissionApiItem: function(permissionApi, index, permissionApiLen) {
         var onlyOneItem = index == 0 && index == permissionApiLen - 1;//只有一条服务地址
         return (<div className="permission-api-item" key={index}>
@@ -290,6 +305,7 @@ var AuthorityEditForm = React.createClass({
                 </div>) : null}
         </div>);
     },
+
     //数据权限输入框发生改变
     onPermissionDataChange: function(idx, event) {
         var permissionDatas = this.state.formData.permissionDatas;
@@ -300,6 +316,7 @@ var AuthorityEditForm = React.createClass({
         });
         this.validatePermissionData(idx, event);
     },
+
     //验证数据权限是否为空
     validatePermissionData: function(index, event) {
         var value = event.target.value;
@@ -314,6 +331,7 @@ var AuthorityEditForm = React.createClass({
             formData: this.state.formData
         });
     },
+
     //渲染数据权限
     renderPermissionDatas: function() {
         var permissionDatas = this.state.formData.permissionDatas;
@@ -358,24 +376,27 @@ var AuthorityEditForm = React.createClass({
             </div>
         );
     },
+
     //添加一个数据权限
     addPermissionData: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'添加一个数据权限');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.permission-inputgroup-btns-div'),'添加一个数据权限');
         var permissionDatas = this.state.formData.permissionDatas;
         permissionDatas.push('');
         this.setState({
             formData: this.state.formData
         });
     },
+
     //移除一个数据权限
     removePermissionData: function(index) {
-        Trace.traceEvent($(this.getDOMNode()).find('.permission-inputgroup-btns-div'),'移除一个数据权限');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.permission-inputgroup-btns-div'),'移除一个数据权限');
         var permissionDatas = this.state.formData.permissionDatas;
         permissionDatas.splice(index, 1);
         this.setState({
             formData: this.state.formData
         });
     },
+
     checkPermissionNameExist: function(rule, value, callback) {
         value = $.trim(value);
         const authority = this.props.authority;
@@ -393,6 +414,7 @@ var AuthorityEditForm = React.createClass({
             }
         }
     },
+
     renderPermissionApis: function() {
         var permissionApiArray = this.state.formData.permissionApiArray;
         var permissionApiLen = _.isArray(permissionApiArray) ? permissionApiArray.length : 0;
@@ -427,7 +449,7 @@ var AuthorityEditForm = React.createClass({
         return (
             <div className="authority-formItem-group-container">
                 <div className="default-authority-formItem-group">
-                    <Form horizontal className="form"
+                    <Form layout='horizontal' className="form"
                     >
                         <Validation ref="validation"
                             onValidate={this.handleValidate}
@@ -519,7 +541,8 @@ var AuthorityEditForm = React.createClass({
             </div>
         );
 
-    }
+    },
 })
     ;
 module.exports = AuthorityEditForm;
+

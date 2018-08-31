@@ -1,3 +1,4 @@
+var React = require('react');
 import DetailCard from 'CMP_DIR/detail-card';
 import { AntcTable, AntcValidity } from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
@@ -22,23 +23,23 @@ const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
 };
 
-const ContractItem = React.createClass({
-    getInitialState() {
-        return {
-            isDeleteContractFlag: false, // 是否删除合同，默认false
-            formData: JSON.parse(JSON.stringify(this.props.contract)),
-            isLoading: false,
-            errMsg: '', // 删除错误的信息提示
-        };
-    },
+class ContractItem extends React.Component {
+    state = {
+        isDeleteContractFlag: false, // 是否删除合同，默认false
+        formData: JSON.parse(JSON.stringify(this.props.contract)),
+        isLoading: false,
+        errMsg: '', // 删除错误的信息提示
+    };
+
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
             this.setState({
                 formData: JSON.parse(JSON.stringify(nextProps.contract)),
             });
         }
-    },
-    toggleContractDetail(event) {
+    }
+
+    toggleContractDetail = (event) => {
         let formData = this.state.formData;
         formData.isShowAllContractInfo = !formData.isShowAllContractInfo;
         if (formData.isShowAllContractInfo) {
@@ -47,16 +48,18 @@ const ContractItem = React.createClass({
             Trace.traceEvent(event, '点击收起详情');
         }
         this.setState({formData});
-    },
-    cancelDeleteContract(event) {
+    };
+
+    cancelDeleteContract = (event) => {
         Trace.traceEvent(event, '点击取消删除合同');
         this.setState({
             isDeleteContractFlag: false,
             errMsg: ''
         });
-    },
+    };
+
     // 删除合同
-    deleteContract(contract, event) {
+    deleteContract = (contract, event) => {
         Trace.traceEvent(event, '点击确认删除合同');
         this.setState({isLoading: true});
         ContractAjax.deletePendingContract(contract.id).then( (resData) => {
@@ -76,14 +79,16 @@ const ContractItem = React.createClass({
                 errMsg: errMsg || IIntl.get('crm.139', '删除失败')
             });
         });
-    },
-    showDeleteContractConfirm(event) {
+    };
+
+    showDeleteContractConfirm = (event) => {
         Trace.traceEvent(event, '点击删除按钮');
         this.setState({
             isDeleteContractFlag: true
         });
-    },
-    renderContractTitle() {
+    };
+
+    renderContractTitle = () => {
         const contract = this.state.formData;
         let contractStageClass = classNames('contract-stage', {
             'contract-pending': contract.stage === '待审',
@@ -136,9 +141,10 @@ const ContractItem = React.createClass({
                 <span className={contractClass} title={contractTitle} onClick={this.toggleContractDetail}/>
             </div>
         );
-    },
+    };
+
     // 格式化数值
-    formatValues(value, showUnit = true) {
+    formatValues = (value, showUnit = true) => {
         // 校验参数是否为数值
         value = parseFloat(value);
         if (isNaN(value)) {
@@ -151,8 +157,9 @@ const ContractItem = React.createClass({
             value = parseAmount(value);
         }
         return showUnit ? value + Intl.get('contract.155', '元') : value;
-    },
-    saveContractBasicInfo(saveObj, successFunc, errorFunc) {
+    };
+
+    saveContractBasicInfo = (saveObj, successFunc, errorFunc) => {
         let contract = this.state.formData;
         // 客户信息
         saveObj.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
@@ -170,8 +177,9 @@ const ContractItem = React.createClass({
                 errorFunc(errMsg || Intl.get('common.edit.failed', '修改失败'));
             }
         });
-    },
-    handleSubmitEditValidityTime(startTime, endTime, successCallback, errorCallback) {
+    };
+
+    handleSubmitEditValidityTime = (startTime, endTime, successCallback, errorCallback) => {
         const saveObj = {
             start_time: startTime,
             end_time: endTime,
@@ -188,16 +196,18 @@ const ContractItem = React.createClass({
         };
 
         this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
-    },
-    handleProductSave(data, successFunc, errorFunc) {
+    };
+
+    handleProductSave = (data, successFunc, errorFunc) => {
         let saveObj = {
             products: data,
             id: this.state.formData.id
         };
 
         this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
-    },
-    renderContractContent() {
+    };
+
+    renderContractContent = () => {
         const contract = this.state.formData;
         const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : '';
         const end_time = contract.end_time ? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : '';
@@ -336,14 +346,16 @@ const ContractItem = React.createClass({
                 }
             </div>
         );
-    },
+    };
+
     // 隐藏错误信息
-    hideErrorMsg() {
+    hideErrorMsg = () => {
         this.setState({
             errMsg: ''
         });
-    },
-    renderContractBottom() {
+    };
+
+    renderContractBottom = () => {
         const contract = this.state.formData;
         const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : '';
         return (
@@ -369,8 +381,9 @@ const ContractItem = React.createClass({
                 />
             </div>
         );
-    },
-    render(){
+    };
+
+    render() {
         let containerClassName = classNames('contract-item-container', {
             'item-delete-border': this.state.isDeleteContractFlag,
         });
@@ -384,6 +397,7 @@ const ContractItem = React.createClass({
             />
         );
     }
-});
+}
 
 module.exports = ContractItem;
+

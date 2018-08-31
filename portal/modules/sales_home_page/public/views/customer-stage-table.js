@@ -1,7 +1,9 @@
+var React = require('react');
 import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcTable } from 'antc';
 import { Alert } from 'antd';
 import Spinner from 'CMP_DIR/spinner';
+import PropTypes from 'prop-types';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
@@ -57,12 +59,12 @@ class CustomerStageTable extends React.Component {
     handleScrollBottom() {
         this.props.handleScrollBottom({
             query: {
-                label: this.props.params.type,
-                nickname: this.props.params.nickname
+                label: this.props.match.params.type,
+                nickname: this.props.match.params.nickname
             },
             rang_params: [{
-                'from': moment(this.props.params.time).startOf('day').valueOf(),
-                'to': moment(this.props.params.time).endOf('day').valueOf(),
+                'from': moment(this.props.match.params.time).startOf('day').valueOf(),
+                'to': moment(this.props.match.params.time).endOf('day').valueOf(),
                 'name': 'time',
                 'type': 'time'
             }]
@@ -191,11 +193,11 @@ class CustomerStageTable extends React.Component {
 }
 
 CustomerStageTable.propTypes = {
-    handleScrollBottom: React.PropTypes.func,
-    params: React.PropTypes.object,
-    result: React.PropTypes.object,
-    showNoMoreData: React.PropTypes.boolean,
-    onClose: React.PropTypes.func
+    handleScrollBottom: PropTypes.func,
+    params: PropTypes.object,
+    result: PropTypes.object,
+    showNoMoreData: PropTypes.boolean,
+    onClose: PropTypes.func
 };
 
 export default CustomerStageTable;

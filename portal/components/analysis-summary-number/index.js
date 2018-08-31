@@ -1,20 +1,21 @@
 /**
  * 数据分析中，按照总客户(用户)、新增客户(用户)、各销售阶段客户(过期用户)、（新增过期用户)，显示一个统计数字
  */
+var React = require('react');
 require('./index.less');
 import Trace from 'LIB_DIR/trace';
 var Icon = require('antd').Icon;
-var SummaryNumber = React.createClass({
-    getDefaultProps: function() {
-        return {
-            desp: Intl.get('oplate_customer_analysis.7', '总客户'),
-            num: '',
-            active: false,
-            resultType: 'loading',
-            onClick: function(){}
-        };
-    },
-    renderLoading: function() {
+
+class SummaryNumber extends React.Component {
+    static defaultProps = {
+        desp: Intl.get('oplate_customer_analysis.7', '总客户'),
+        num: '',
+        active: false,
+        resultType: 'loading',
+        onClick: function(){}
+    };
+
+    renderLoading = () => {
         return (
             <div>
                 <p>
@@ -23,8 +24,9 @@ var SummaryNumber = React.createClass({
                 <Icon type="loading"/>
             </div>
         );
-    },
-    renderContent: function() {
+    };
+
+    renderContent = () => {
         var number = '';
         if(this.props.num === 0 || this.props.num) {
             number = this.props.num + '';
@@ -46,8 +48,9 @@ var SummaryNumber = React.createClass({
             </div>
         );
 
-    },
-    render: function() {
+    };
+
+    render() {
         var activeClass = 'summary-number';
         if(this.props.active) {
             activeClass += ' active';
@@ -62,6 +65,6 @@ var SummaryNumber = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SummaryNumber;

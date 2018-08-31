@@ -1,5 +1,6 @@
 // 第三方应用管理配置信息
- 
+
+var React = require('react');
 import Spinner from 'CMP_DIR/spinner';
 import { Alert } from 'antd';
 import AppUserUtil, { LAYOUT_CONSTANTS } from '../../util/app-user-util'; //右侧面板常量
@@ -12,26 +13,25 @@ import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions'
 
 const FORMAT = oplateConsts.DATE_FORMAT;
 
-const ThreePartyAppConfig = React.createClass({
-    getDefaultProps() {
-        return {
-            userId: '1'
-        };
-    },
-    getInitialState() {
-        return this.getStateData();
-    },
-    onStateChange() {
+class ThreePartyAppConfig extends React.Component {
+    static defaultProps = {
+        userId: '1'
+    };
+
+    onStateChange = () => {
         this.setState(this.getStateData());
-    },
-    getStateData() {
+    };
+
+    getStateData = () => {
         return ThirdPartyAppConfigStore.getState();
-    },
+    };
+
     componentDidMount() {
         ThirdPartyAppConfigStore.listen(this.onStateChange);
         ThirdPartyAppConfigAction.getAppConfigList(this.props.userId);
 
-    },
+    }
+
     componentDidUpdate(prevProps, prevState) {
         var newUserId = this.props.userId;
         if (prevProps.userId != newUserId) {
@@ -40,27 +40,31 @@ const ThreePartyAppConfig = React.createClass({
                 ThirdPartyAppConfigAction.getAppConfigList(newUserId);
             }, 0);
         }
-    },
-    retryGetAppConfig() {
+    }
+
+    retryGetAppConfig = () => {
         var userId = this.props.userId;
         setTimeout( () => {
             ThirdPartyAppConfigAction.dismiss();
             ThirdPartyAppConfigAction.getAppConfigList(userId);
         }, 0);
-    },
+    };
+
     componentWillUnmount() {
         ThirdPartyAppConfigStore.unlisten(this.onStateChange);
         setTimeout( () => {
             ThirdPartyAppConfigAction.dismiss();
         });
-    },
+    }
+
     // 增加第三方应用配置的信息
-    showAddAppPanel() {
+    showAddAppPanel = () => {
         AppUserPanelSwitchAction.switchToThirdAppPanel({userId: this.props.userId});
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
-    },
-    renderAppInfo(app) {
+    };
+
+    renderAppInfo = (app) => {
         var establish_time = moment(new Date(+app.create_time)).format(FORMAT);
         var displayEstablishTime = '';
 
@@ -82,8 +86,9 @@ const ThreePartyAppConfig = React.createClass({
                 </div>
             </div>
         );
-    },
-    renderAddAppBtn() {
+    };
+
+    renderAddAppBtn = () => {
         return (
             <PrivilegeChecker
                 check="THIRD_PARTY_MANAGE" // 只有管理员可以查看应用详情、添加、编辑和停用应用
@@ -94,15 +99,17 @@ const ThreePartyAppConfig = React.createClass({
                 <ReactIntl.FormattedMessage id="third.party.app.add" defaultMessage="添加开放平台应用"/>
             </PrivilegeChecker>
         );
-    },
+    };
+
     // 显示单个应用详情
-    showSingleAppDetail(app) {
+    showSingleAppDetail = (app) => {
         AppUserPanelSwitchAction.switchToThirdAppPanel({appId: app.id, userId: this.props.userId});
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
-    },
+    };
+
     //获取应用列表段
-    getAppsBlock() {
+    getAppsBlock = () => {
         let className = 'logo';
         className += ' pull-left';
         return (
@@ -155,7 +162,10 @@ const ThreePartyAppConfig = React.createClass({
                 )}
             </ul>
         );
-    },
+    };
+
+    state = this.getStateData();
+
     render() {
         let LoadingBlock = this.state.isLoading ? (
             <Spinner />
@@ -211,6 +221,6 @@ const ThreePartyAppConfig = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default ThreePartyAppConfig;

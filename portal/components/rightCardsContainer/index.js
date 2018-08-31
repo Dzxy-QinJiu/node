@@ -2,6 +2,7 @@
  * Created by wangliping on 2016/1/6.
  */
 
+var React = require('react');
 var language = require('../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./rightCardsContainer-es_VE.less');
@@ -23,18 +24,17 @@ var CONSTANTS = {
     USER_MANAGE: 'userManage'
 };
 
-var RihgtCardsContainer = React.createClass({
-    getDefaultProps: function() {
-        return {
-            showAddBtn: false,
-            renderAddAndImportBtns: noop
-        };
-    },
-    showCardForm: function() {
-        this.props.showCardForm('add');
-    },
+class RihgtCardsContainer extends React.Component {
+     static defaultProps = {
+         showAddBtn: false,
+         renderAddAndImportBtns: noop
+     };
 
-    render: function() {
+    showCardForm = () => {
+        this.props.showCardForm('add');
+    };
+
+    render() {
         return (<div className="right-cards-container">
             {this.props.children}
             <div className="cards-table-block">
@@ -102,6 +102,7 @@ var RihgtCardsContainer = React.createClass({
 
         );
     }
-});
+}
 
 module.exports = RihgtCardsContainer;
+

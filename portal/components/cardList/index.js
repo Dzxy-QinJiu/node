@@ -1,3 +1,4 @@
+var React = require('react');
 require('./cardList.less');
 var scrollBarEmitter = require('../../public/sources/utils/emitters').scrollBarEmitter;
 var cardEmitter = require('../../public/sources/utils/emitters').cardEmitter;
@@ -31,56 +32,55 @@ var TYPES = {
 function noop() {
 }
 
-var CardList = React.createClass({
-    getDefaultProps: function() {
-        return {
-            editCard: noop,
-            deleteCard: noop,
-            showAddBtn: false,
-            renderAddAndImportBtns: noop
-        };
-    },
+class CardList extends React.Component {
+    static defaultProps = {
+        editCard: noop,
+        deleteCard: noop,
+        showAddBtn: false,
+        renderAddAndImportBtns: noop
+    };
 
-    getInitialState: function() {
-        return {
-            listenScrollBottom: true,
-            cardWidth: 'auto',
-            loadedCardCount: 0
-        };
-    },
-    componentDidMount: function() {
+    state = {
+        listenScrollBottom: true,
+        cardWidth: 'auto',
+        loadedCardCount: 0
+    };
+
+    componentDidMount() {
         $('body').css('overflow', 'hidden');
         this.getInitialCardCount();
+        
         $(window).on('resize', this.changeWindowSize);
         cardEmitter.on(cardEmitter.ADD_CARD, this.addCard);
-    },
-    getInitialCardCount: function() {
-        // 初始加载卡片的个数
-        var firstLoaderCount = this.getCardsCount();
-        this.props.updatePageSize(firstLoaderCount);
-        this.setState({
-            loadedCardCount: firstLoaderCount
-        });
-        // 初次加载
-        this.props.changePageEvent(firstLoaderCount, 1);
-    },
+    }
+   getInitialCardCount= () => {
+      
+       // 初始加载卡片的个数
+       var firstLoaderCount = this.getCardsCount();
+       this.props.updatePageSize(firstLoaderCount);
+       this.setState({
+           loadedCardCount: firstLoaderCount
+       });
+       // 初次加载
+       this.props.changePageEvent(firstLoaderCount, 1);
+   };
 
     // 添加卡片时，滚动到顶部，重新获取数据
-    addCard: function() {
+    addCard = () => {
         this.setState({
             loadedCardCount: this.props.pageSize
         });
         GeminiScrollbar.scrollTo(this.refs.scrolltoTop, 0);
         this.props.changePageEvent(this.props.pageSize, 1);
-    },
+    };
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         $('body').css('overflow', 'auto');
         $(window).off('resize', this.changeWindowSize);
-    },
+    }
 
     // 改变窗口
-    changeWindowSize: function() {
+    changeWindowSize = () => {
         // 重新render，计算滚动条的长短
         this.setState({});
         var _this = this;
@@ -94,9 +94,10 @@ var CardList = React.createClass({
                 });
             }
         }, 100);
-    },
+    };
+
     // 获取卡片容器的高度
-    getCardListHeight: function() {
+    getCardListHeight = () => {
         //右侧卡片区域的高度设置
         var cardListHeight = $('body').height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
         if (this.props.isPanelShow) {
@@ -107,30 +108,35 @@ var CardList = React.createClass({
             }
         }
         return cardListHeight;
-    },
+    };
+
     //编辑域
-    editCard: function(card) {
+    editCard = (card) => {
         this.props.editCard(card);
-    },
+    };
+
     //删除域
-    deleteCard: function() {
+    deleteCard = () => {
         this.props.deleteCard();
-    },
+    };
+
     //选择安全域
-    selectCard: function(cardId) {
+    selectCard = (cardId) => {
         this.props.addSelectCard(cardId);
-    },
+    };
+
     //取消选择安全域
-    unSelectCard: function(cardId) {
+    unSelectCard = (cardId) => {
         this.props.subtractSelectCard(cardId);
-    },
+    };
 
     //展示详细信息
-    showCardInfo: function(card) {
+    showCardInfo = (card) => {
         this.props.showCardInfo(card);
-    },
+    };
+
     // 根据剩余空白宽度调整卡边的宽度
-    adjustCardWidth: function() {
+    adjustCardWidth = () => {
         var cardWidth = 0;
         var cardListWidth = $('.card-list-content').width();
         // 根据固定卡片宽度计算可以放卡片的个数
@@ -159,10 +165,10 @@ var CardList = React.createClass({
         });
 
         return cardWidth;
-    },
+    };
 
     // 计算当前屏幕可以放置的卡片个数
-    getCardsCount(){
+    getCardsCount = () => {
         // 默认行数和列数
         var cols = 1;
         var rows = 1;
@@ -188,9 +194,9 @@ var CardList = React.createClass({
         // 返回当前屏幕中可以放置的卡片个数
         return (rows * cols);
 
-    },
+    };
 
-    getRequestPageSize: function() {
+    getRequestPageSize = () => {
         // cardCount是此屏幕中可以放置卡片的个数
         var cardCount = this.getCardsCount();
         //  窗口缩小时，每屏按没缩放之前区卡边的个数
@@ -202,26 +208,25 @@ var CardList = React.createClass({
             this.props.updatePageSize(screenBigCountPageSize);
             return screenBigCountPageSize;
         }
-    },
+    };
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.curPage === 1) {
             this.setState({
                 listenScrollBottom: true
             });
         }
-    },
+    }
 
-    stopScrollLoadedData: function() {
+    stopScrollLoadedData = () => {
         if (this.props.cardListSize === this.state.loadedCardCount) {
             this.setState({
                 listenScrollBottom: false
             });
         }
-    },
+    };
 
-
-    handleScrollBottom: function() {
+    handleScrollBottom = () => {
         // 获取每次加载的数据
         var everyLoadedPageSize = this.getRequestPageSize();
         // 计算剩余还没加载卡边的个数  cardListSize总卡片数  loadedCardCount已加载卡片数
@@ -248,9 +253,9 @@ var CardList = React.createClass({
         if (this.state.loadedCardCount === this.props.cardListSize) {
             scrollBarEmitter.on(scrollBarEmitter.STOP_LOADED_DATA, this.stopScrollLoadedData);
         }
-    },
+    };
 
-    renderScrollBarLazyload: function() {
+    renderScrollBarLazyload = () => {
         var _this = this;
         var bulkOpersShow = _this.props.bulkOpersShow;
         var curCardListLen = _this.props.curCardList.length;
@@ -289,11 +294,7 @@ var CardList = React.createClass({
         return (
             <div className="card-list-container" style={{paddingTop: paddingTop}}>
                 {
-                    this.props.listTipMsg ? (<NoDataIntro
-                        noDataTip={this.props.listTipMsg}
-                        renderAddAndImportBtns={this.props.renderAddAndImportBtns}
-                        showAddBtn={this.props.showAddBtn}
-                        noDataAndAddBtnTip={this.props.listTipMsg}/>) : (
+                    this.props.listTipMsg ? (<NoData msg={this.props.listTipMsg}/>) : (
                         <div ref="scrolltoTop">
                             <div className="card-list" style={{height: cardListHeight}}>
                                 <GeminiScrollbar
@@ -311,15 +312,15 @@ var CardList = React.createClass({
                 }
             </div>
         );
-    },
+    };
 
-    render: function() {
+    render() {
         return (
             <div>
                 {this.renderScrollBarLazyload()}
             </div>
         );
     }
-});
+}
 
 module.exports = CardList;

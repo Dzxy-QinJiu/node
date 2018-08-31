@@ -1,3 +1,4 @@
+var React = require('react');
 import UserDetail from './user-detail';
 import {RightPanel} from '../../../../components/rightPanel';
 import LogVIew from './user_audit_log';
@@ -9,16 +10,11 @@ if (language.lan() == 'es' || language.lan() == 'en') {
 }
 var UserAuditLogStore = require('../store/user_audit_log_store');
 
-const UserAuditLog = React.createClass({
-    selectedUserId: '',
-    isShowRightPanel: false,
-    getInitialState: function() {
-        return {
-            selectedUserId: this.selectedUserId,
-            isShowRightPanel: this.isShowRightPanel
-        };
-    },
-    closeRightPanel: function() {
+class UserAuditLog extends React.Component {
+    selectedUserId = '';
+    isShowRightPanel = false;
+
+    closeRightPanel = () => {
         $(this.refs.wrap).find('.current_row').removeClass('current_row');
         this.selectedUserId = '';
         this.isShowRightPanel = false;
@@ -26,12 +22,18 @@ const UserAuditLog = React.createClass({
             selectedUserId: '',
             isShowRightPanel: false
         });
-    },
-    componentWillMount: function() {
+    };
+
+    state = {
+        selectedUserId: this.selectedUserId,
+        isShowRightPanel: this.isShowRightPanel
+    };
+
+    componentWillMount() {
         emitter.on('user_detail_close_right_panel' , this.closeRightPanel);
-    },
-    
-    componentDidMount: function() {
+    }
+
+    componentDidMount() {
         var $wrap = $(this.refs.wrap);
         var _this = this;
         $wrap.on('click' , 'td.click-show-user-detail' , function() {
@@ -51,15 +53,15 @@ const UserAuditLog = React.createClass({
                 }
             }
         });
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         this.selectedUserId = '';
         this.isShowRightPanel = false;
         emitter.removeListener('user_detail_close_right_panel' , this.closeRightPanel);
-    },
-   
-    render: function() {
+    }
+
+    render() {
         let selectedAppId = UserAuditLogStore.getState().selectAppId;
         return (
             <div>
@@ -78,5 +80,7 @@ const UserAuditLog = React.createClass({
 
         );
     }
-});
+}
+
 module.exports = UserAuditLog;
+

@@ -2,6 +2,7 @@
  * 采购合同基本信息展示及编辑页面
  */
 
+var React = require('react');
 import rightPanelUtil from '../../../components/rightPanel';
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
@@ -10,24 +11,26 @@ const hasPrivilege = require('../../../components/privilege/checker').hasPrivile
 import { getTeamName, getPurchaseContractTypeName } from './utils';
 import AddBuyBasic from './add-buy-basic';
 
-const DetailBuyBasic = React.createClass({
-    getInitialState: function() {
-        return {
-            isFormShow: false,
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+class DetailBuyBasic extends React.Component {
+    state = {
+        isFormShow: false,
+    };
+
+    componentWillReceiveProps(nextProps) {
         if (this.props.contract.id !== nextProps.contract.id) {
             this.hideForm();
         }
-    },
-    showForm: function() {
+    }
+
+    showForm = () => {
         this.setState({isFormShow: true});
-    },
-    hideForm: function() {
+    };
+
+    hideForm = () => {
         this.setState({isFormShow: false});
-    },
-    handleSubmit: function() {
+    };
+
+    handleSubmit = () => {
         this.refs.addBuyBasic.refs.validation.validate(valid => {
             if (!valid) {
                 return;
@@ -39,8 +42,9 @@ const DetailBuyBasic = React.createClass({
                 });
             }
         });
-    },
-    render: function() {
+    };
+
+    render() {
         const contract = this.props.contract;
 
         const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : '';
@@ -116,7 +120,8 @@ const DetailBuyBasic = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = DetailBuyBasic;
+
 

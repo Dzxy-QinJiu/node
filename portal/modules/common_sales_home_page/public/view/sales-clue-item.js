@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -15,6 +16,7 @@ import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 const DELAY_TIME = 3000;
 var classNames = require('classnames');
+import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
@@ -523,20 +525,20 @@ SalesClueItem.defaultProps = {
 
 };
 SalesClueItem.propTypes = {
-    salesClueItemDetail: React.PropTypes.object,
-    callNumber: React.PropTypes.string,
-    errMsg: React.PropTypes.string,
-    showFrontPageTip: React.PropTypes.bool,
-    afterAddClueTrace: React.PropTypes.func,
-    unSelectDataTip: React.PropTypes.string,
-    distributeLoading: React.PropTypes.bool,
-    clueCustomerTypeFilter: React.PropTypes.object,
-    afterRemarkClue: React.PropTypes.func,
-    renderSalesBlock: React.PropTypes.func,
-    handleSubmitAssignSales: React.PropTypes.func,
-    clearSelectSales: React.PropTypes.func,
-    currentId: React.PropTypes.string,
-    showClueDetailOut: React.PropTypes.func,
+    salesClueItemDetail: PropTypes.object,
+    callNumber: PropTypes.string,
+    errMsg: PropTypes.string,
+    showFrontPageTip: PropTypes.bool,
+    afterAddClueTrace: PropTypes.func,
+    unSelectDataTip: PropTypes.string,
+    distributeLoading: PropTypes.bool,
+    clueCustomerTypeFilter: PropTypes.object,
+    afterRemarkClue: PropTypes.func,
+    renderSalesBlock: PropTypes.func,
+    handleSubmitAssignSales: PropTypes.func,
+    clearSelectSales: PropTypes.func,
+    currentId: PropTypes.string,
+    showClueDetailOut: PropTypes.func,
 
 };
 export default SalesClueItem;

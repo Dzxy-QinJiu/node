@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../css/contact.less');
 //一个用于显示的联系人
 var ContactItem = require('./contact-item');
@@ -23,20 +24,21 @@ var LAYOUT_CONSTANTS = {
 };
 
 import Trace from 'LIB_DIR/trace';
-var Contacts = React.createClass({
-    getInitialState: function() {
-        return {
-            callNumber: this.props.callNumber || '', // 座机号
-            getCallNumberError: '', // 获取座机号失败的信息
-            curCustomer: this.props.curCustomer,//当前查看详情的客户
-            windowHeight: $(window).height(),
-            ...ContactStore.getState()
-        };
-    },
-    onStoreChange: function() {
+
+class Contacts extends React.Component {
+    state = {
+        callNumber: this.props.callNumber || '', // 座机号
+        getCallNumberError: '', // 获取座机号失败的信息
+        curCustomer: this.props.curCustomer,//当前查看详情的客户
+        windowHeight: $(window).height(),
+        ...ContactStore.getState()
+    };
+
+    onStoreChange = () => {
         this.setState(ContactStore.getState());
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         ContactStore.listen(this.onStoreChange);
         if (this.props.curCustomer) {
             ContactAction.getContactList(this.props.curCustomer, this.props.isMerge);
@@ -46,8 +48,9 @@ var Contacts = React.createClass({
             this.getUserPhoneNumber();
         }
         $(window).on('resize', this.onStoreChange);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.isMerge || nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
             this.setState({
                 curCustomer: nextProps.curCustomer
@@ -57,21 +60,24 @@ var Contacts = React.createClass({
                 ContactAction.getContactList(nextProps.curCustomer, nextProps.isMerge);
             });
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         ContactStore.unlisten(this.onStoreChange);
         setTimeout(() => {
             ContactAction.setInitData();
         });
         $(window).off('resize', this.onStoreChange);
-    },
-    showAddContactForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.crm-right-panel-addbtn .anticon-plus'), '添加联系人');
+    }
+
+    showAddContactForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-right-panel-addbtn .anticon-plus'), '添加联系人');
         ContactAction.showAddContactForm();
         GeminiScrollbar.scrollTo(this.refs.scrollList, 0);
-    },
+    };
+
     // 获取拨打电话的座席号
-    getUserPhoneNumber() {
+    getUserPhoneNumber = () => {
         CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
@@ -92,8 +98,9 @@ var Contacts = React.createClass({
                 });
             }
         });
-    },
-    render: function() {
+    };
+
+    render() {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
         let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
         //减头部的客户基本信息高度
@@ -170,6 +177,7 @@ var Contacts = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Contacts;
+

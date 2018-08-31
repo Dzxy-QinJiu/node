@@ -1,6 +1,7 @@
 /**
  * 销售明细组件
  * */
+var React = require('react');
 import { AntcTable } from 'antc';
 import SaleCommissionDetailStore from '../store/sale-commission-detail-store';
 import SaleCommissionDetailActions from '../action/sale-commission-detail-actions';
@@ -16,19 +17,19 @@ const SALES_COMMISSION = {
     FAILED_CONTRACT: Intl.get('sales.commission.failed.get.contract.detail', '获取合同详情失败！')
 };
 
-const SaleCommissionDetail = React.createClass({
-    getInitialState() {
-        return {
-            currentContract: {},
-            isRightPanelShow: false,
-            selectedRowIndex: null, // 点击的行索引
-            ...SaleCommissionDetailStore.getState()
-        };
-    },
-    onStoreChange() {
+class SaleCommissionDetail extends React.Component {
+    state = {
+        currentContract: {},
+        isRightPanelShow: false,
+        selectedRowIndex: null, // 点击的行索引
+        ...SaleCommissionDetailStore.getState()
+    };
+
+    onStoreChange = () => {
         this.setState(SaleCommissionDetailStore.getState());
-    },
-    refreshCurrentContract(id) {
+    };
+
+    refreshCurrentContract = (id) => {
         let handler = 'queryContract';
 
         if (this.state.type === VIEW_TYPE.COST) {
@@ -59,7 +60,8 @@ const SaleCommissionDetail = React.createClass({
                 this.setState(this.state);
             }
         });
-    },
+    };
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.userId && nextProps.userId !== this.props.userId) {
             // 提成列表和提成明细中，会出现dispatch冲突，加延时处理
@@ -74,23 +76,28 @@ const SaleCommissionDetail = React.createClass({
                 SaleCommissionDetailActions.setGrantStatus(nextProps.grantStatus);
             },100 );
         }
-    },
+    }
+
     componentDidMount() {
         SaleCommissionDetailStore.listen(this.onStoreChange);
-    },
-    componentWillUnmount(){
+    }
+
+    componentWillUnmount() {
+        SaleCommissionDetailActions.resetState();
         SaleCommissionDetailStore.unlisten(this.onStoreChange);
-    },
-    getParams(params) {
+    }
+
+    getParams = (params) => {
         return {
             page_size: this.state.pageSize,
             sort_field: params && params.sortField || this.state.sortField,
             order: params && params.order || this.state.order,
             user_id: params && params.userId || this.props.userId
         };
-    },
+    };
+
     // 获取销售提成明细
-    getSaleCommissionDetail(queryObj) {
+    getSaleCommissionDetail = (queryObj) => {
         let params = this.getParams(queryObj);
         let reqData = {
             start_time: this.props.startTime,
@@ -98,9 +105,10 @@ const SaleCommissionDetail = React.createClass({
             id: this.state.lastId
         };
         SaleCommissionDetailActions.getSaleCommissionDetail(params, reqData);
-    },
+    };
+
     // 展示合同详情
-    showContractDetail(contractNum, rowData, index) {
+    showContractDetail = (contractNum, rowData, index) => {
         this.setState(() => {
             SalesCommissionAjax.getContractDetail(contractNum).then( (resData) => {
                 if (resData.code === 0 && resData.contract) {
@@ -116,13 +124,15 @@ const SaleCommissionDetail = React.createClass({
                 message.error(errMsg || SALES_COMMISSION.FAILED_CONTRACT);
             } );
         });
-    },
-    hideRightPanel() {
+    };
+
+    hideRightPanel = () => {
         this.setState({
             isRightPanelShow: false
         });
-    },
-    getSalesDetailTableColumns() {
+    };
+
+    getSalesDetailTableColumns = () => {
         return [
             {
                 title: Intl.get('contract.122', '回款时间'),
@@ -203,8 +213,9 @@ const SaleCommissionDetail = React.createClass({
                 }
             }
         ];
-    },
-    getTimeTitle() {
+    };
+
+    getTimeTitle = () => {
         let year = moment(+this.props.startTime).get('year');
         let startQuarter = moment(+this.props.startTime).get('quarter');
         let endQuarter = moment(+this.props.endTime).get('quarter');
@@ -213,8 +224,9 @@ const SaleCommissionDetail = React.createClass({
         } else {
             return `${year}${Intl.get('common.time.unit.year','年')}`;
         }
-    },
-    salesDetailHeadInfo() {
+    };
+
+    salesDetailHeadInfo = () => {
         return (
             <div className="sales-detail-head">
                 <span className="commission-detail">
@@ -222,8 +234,9 @@ const SaleCommissionDetail = React.createClass({
                 </span>
             </div>
         );
-    },
-    handleTableChange(pagination, filters, sorter) {
+    };
+
+    handleTableChange = (pagination, filters, sorter) => {
         const sortOrder = sorter.order || this.state.sortOrder;
         const sortField = sorter.field || this.state.sortField;
         SaleCommissionDetailActions.setSort({sortField, sortOrder});
@@ -234,25 +247,29 @@ const SaleCommissionDetail = React.createClass({
                 order: sortOrder
             });
         } );
-    },
-    handleRowClassName(record, index) {
+    };
+
+    handleRowClassName = (record, index) => {
         if ((index === this.state.selectedRowIndex) && this.state.isRightPanelShow) {
             return 'current-row';
         } else {
             return '';
         }
-    },
-    handleScrollBottom() {
+    };
+
+    handleScrollBottom = () => {
         this.getSaleCommissionDetail({
             lastId: this.state.lastId
         });
-    },
-    showNoMoreDataTip() {
+    };
+
+    showNoMoreDataTip = () => {
         return !this.state.saleCommissionDetailList.loading &&
             this.state.saleCommissionDetailList.data.length >= 10 && !this.state.listenScrollBottom;
-    },
+    };
+
     // 销售明细表格
-    renderSaleDetailTable() {
+    renderSaleDetailTable = () => {
         let columns = this.getSalesDetailTableColumns();
         let dataSource = this.state.saleCommissionDetailList.data;
         let loading = this.state.saleCommissionDetailList.loading;
@@ -288,8 +305,9 @@ const SaleCommissionDetail = React.createClass({
                 </div>
             </div>
         );
-    },
-    renderLoadingBlock() {
+    };
+
+    renderLoadingBlock = () => {
         if (!this.state.saleCommissionDetailList.loading || this.state.lastId) {
             return null;
         }
@@ -298,9 +316,10 @@ const SaleCommissionDetail = React.createClass({
                 <Spinner />
             </div>
         );
-    },
+    };
+
     // 销售明细
-    renderSaleDetailContent() {
+    renderSaleDetailContent = () => {
         return (
             <div className="sale-detail-content">
                 {this.salesDetailHeadInfo()}
@@ -308,7 +327,8 @@ const SaleCommissionDetail = React.createClass({
                 {this.renderSaleDetailTable()}
             </div>
         );
-    },
+    };
+
     render() {
         return (
             <div className="sale-detail">
@@ -334,6 +354,6 @@ const SaleCommissionDetail = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SaleCommissionDetail;

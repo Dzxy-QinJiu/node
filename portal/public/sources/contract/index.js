@@ -18,24 +18,22 @@ function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('contract',
         [
             ContractDashboard,
-            Contract('sell'),
-            Contract('buy'),
-            Contract('repayment'),
-            Contract('cost'),
-            SalesCommission('sales_commission'),
-            CommissionPayment('commission_payment'),
+            Contract('/contract/sell'),
+            Contract('/contract/buy'),
+            Contract('/contract/repayment'),
+            Contract('/contract/cost'),
+            SalesCommission('/contract/sales_commission'),
+            CommissionPayment('/contract/commission_payment'),
             ContractAnalysis
         ]
     );
     return childRoutes;
 }
+
 module.exports = {
-    path: 'contract',
+    path: '/contract',
     //在RightContent中用来做跳转,重要
     routesExports: getChildRoutes(),
-    getChildRoutes: function(location, cb) {
-        var childRoutes = getChildRoutes();
-        cb(null, childRoutes);
-    },
+    routes: getChildRoutes(),
     component: ContractContainer
 };

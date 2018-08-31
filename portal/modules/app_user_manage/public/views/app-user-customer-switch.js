@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/main-es_VE.less');
 var AppUserUtil = require('../util/app-user-util');
 var SearchInput = require('../../../../components/searchInput');
@@ -21,38 +22,46 @@ var LAYOUT_CONSTANTS = {
     BOTTOM_DISTANCE: 88
 };
 
-var AppUserCustomerSwitch = React.createClass({
-    searchInputEvent: function(value) {
+class AppUserCustomerSwitch extends React.Component {
+    state = AppUserCustomerSwitchStore.getState();
+
+    searchInputEvent = (value) => {
         AppUserCustomerSwitchActions.setSearchKeyword(value);
-    },
-    getCustomerId: function() {
-        return this.props.params.customerId;
-    },
-    changeTableHeight: function() {
+    };
+
+    getCustomerId = () => {
+        return this.props.match.params.customerId;
+    };
+
+    changeTableHeight = () => {
         this.setState({
             windowHeight: $(window).height()
         });
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         $('body').css('overflow', 'hidden');
         $(window).on('resize', this.changeTableHeight);
         AppUserCustomerSwitchStore.listen(this.onStoreChange);
         TableUtil.alignTheadTbody(this.refs.userListTable);
         this.fetchCustomerUserList();
-    },
-    fetchCustomerUserList: function(obj) {
+    }
+
+    fetchCustomerUserList = (obj) => {
         var ajaxObj = {
             num: obj ? obj.customerUserPage : this.state.customerUserPage,
             customer_id: this.getCustomerId(),
             keyword: obj ? obj.searchKeyword : this.state.searchKeyword
         };
         AppUserCustomerSwitchActions.getCustomerUserList(ajaxObj);
-    },
-    componentDidUpdate: function() {
+    };
+
+    componentDidUpdate() {
         TableUtil.alignTheadTbody(this.refs.userListTable);
         this.updateJumpPageByJquery();
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         $('body').css('overflow', 'auto');
         $(window).off('resize', this.changeTableHeight);
         AppUserCustomerSwitchStore.unlisten(this.onStoreChange);
@@ -60,25 +69,26 @@ var AppUserCustomerSwitch = React.createClass({
             dynamicStyle.destroy();
             dynamicStyle = null;
         }
-    },
-    onStoreChange: function() {
+    }
+
+    onStoreChange = () => {
         this.setState(
             AppUserCustomerSwitchStore.getState()
         );
-    },
-    getInitialState: function() {
-        return AppUserCustomerSwitchStore.getState();
-    },
-    back: function() {
+    };
+
+    back = () => {
         //返回客户列表
-        history.pushState({}, '/crm', {});
-    },
-    showApplyForm: function() {
+        history.push('/crm', {});
+    };
+
+    showApplyForm = () => {
         this.setState({
             isShowRightPanel: true
         });
-    },
-    renderLoadingBlock: function() {
+    };
+
+    renderLoadingBlock = () => {
         if(this.state.customerUserListResult !== 'loading') {
             return null;
         }
@@ -87,8 +97,9 @@ var AppUserCustomerSwitch = React.createClass({
                 <Spinner />
             </div>
         );
-    },
-    getAppNameList: function(apps, rowData) {
+    };
+
+    getAppNameList = (apps, rowData) => {
         var appList = apps.map(function(app, i) {
             return (
                 <li key={i}>
@@ -101,8 +112,9 @@ var AppUserCustomerSwitch = React.createClass({
                 {appList}
             </ul>
         );
-    },
-    getTableColumns: function() {
+    };
+
+    getTableColumns = () => {
         var _this = this;
         var columns = [
             {
@@ -152,12 +164,14 @@ var AppUserCustomerSwitch = React.createClass({
             }
         ];
         return columns;
-    },
+    };
+
     //使用jquery更新跳转到的页面，ant-design有bug，！！！
-    updateJumpPageByJquery: function() {
+    updateJumpPageByJquery = () => {
         TableUtil.updatePaginationJumpNewPage(this.refs.tableWrap , this.state.customerUserPage);
-    },
-    onShowSizeChange: function(current , pageSize) {
+    };
+
+    onShowSizeChange = (current, pageSize) => {
         storageUtil.local.set(AppUserUtil.localStorageCustomerViewPageSizeKey , pageSize);
         //改变界面上看到的页数
         AppUserCustomerSwitchActions.setCustomerPageSize(pageSize);
@@ -171,8 +185,9 @@ var AppUserCustomerSwitch = React.createClass({
         this.fetchCustomerUserList({
             num: changeToPage
         });
-    },
-    getPagination: function() {
+    };
+
+    getPagination = () => {
         var basicConfig = {
             total: this.state.customerUserCount,
             pageSize: this.state.pageSize,
@@ -185,8 +200,9 @@ var AppUserCustomerSwitch = React.createClass({
             basicConfig.showQuickJumper = true;
         }
         return basicConfig;
-    },
-    getRowSelection: function() {
+    };
+
+    getRowSelection = () => {
         return {
             type: 'checkbox',
             onSelect: function(currentRow, isSelected, allSelectedRows) {
@@ -196,19 +212,22 @@ var AppUserCustomerSwitch = React.createClass({
                 AppUserCustomerSwitchActions.setSelectedCustomerUserRows(allSelectedRows);
             }
         };
-    },
-    handleTableChange: function(pagination, filters, sorter) {
+    };
+
+    handleTableChange = (pagination, filters, sorter) => {
         AppUserCustomerSwitchActions.setCustomerUserPage(pagination.current);
-    },
-    componentWillUpdate: function(nextProps, nextState) {
+    };
+
+    componentWillUpdate(nextProps, nextState) {
         if (
             (this.state.customerUserPage !== nextState.customerUserPage) ||
             (this.state.searchKeyword !== nextState.searchKeyword)
         ) {
             this.fetchCustomerUserList(nextState);
         }
-    },
-    renderTableBlock: function() {
+    }
+
+    renderTableBlock = () => {
         if(this.state.firstLoading) {
             return null;
         }
@@ -238,14 +257,16 @@ var AppUserCustomerSwitch = React.createClass({
                 </div>
             </div>
         );
-    },
-    hideRightPanel: function() {
+    };
+
+    hideRightPanel = () => {
         this.setState({
             isShowRightPanel: false
         });
-    },
+    };
+
     //获取邮箱使用的字段
-    getEmailDatas: function() {
+    getEmailDatas = () => {
         var selectedRows = this.state.selectedCustomerUserRows;
 
         var email_customer_names = [];
@@ -262,8 +283,9 @@ var AppUserCustomerSwitch = React.createClass({
             email_customer_names: email_customer_names.join('、'),
             email_user_names: email_user_names.join('、')
         };
-    },
-    render: function() {
+    };
+
+    render() {
         if (dynamicStyle) {
             dynamicStyle.destroy();
             dynamicStyle = null;
@@ -305,7 +327,7 @@ var AppUserCustomerSwitch = React.createClass({
                     <ApplyUser
                         appList={JSON.parse(storageUtil.local.get('oplateCrmAppList'))}
                         users={this.state.selectedCustomerUserRows}
-                        customerId={this.props.params.customerId}
+                        customerId={this.props.match.params.customerId}
                         cancelApply={this.hideRightPanel}
                         emailData={emailData}
                     />
@@ -313,6 +335,6 @@ var AppUserCustomerSwitch = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = AppUserCustomerSwitch;

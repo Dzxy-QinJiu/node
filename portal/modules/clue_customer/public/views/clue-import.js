@@ -3,21 +3,21 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/4/23.
  */
+var React = require('react');
 import { Upload, Icon, message } from 'antd';
 import { clueEmitter } from 'OPLATE_EMITTER';
 import Trace from 'LIB_DIR/trace';
 
-var ClueImport = React.createClass({
-    getInitialState() {
-        return {
-            isLoading: false
-        };
-    },
-    handleChange(info) {
+class ClueImport extends React.Component {
+    state = {
+        isLoading: false
+    };
+
+    handleChange = (info) => {
         this.setState({isLoading: true});
         if (info.file.status === 'done') {
             const response = info.file.response;
-            Trace.traceEvent(this.getDOMNode(),'点击导入按钮');
+            Trace.traceEvent(ReactDOM.findDOMNode(this),'点击导入按钮');
             if (_.isArray(response) && response.length) {
                 clueEmitter.emit(clueEmitter.IMPORT_CLUE, response);
                 this.props.closeClueTemplatePanel();
@@ -26,8 +26,9 @@ var ClueImport = React.createClass({
             }
             this.setState({isLoading: false});
         }
-    },
-    render: function() {
+    };
+
+    render() {
         var props = {
             name: 'clues',
             action: '/rest/clue/upload',
@@ -40,6 +41,6 @@ var ClueImport = React.createClass({
             </Upload>
         );
     }
-});
+}
 
 module.exports = ClueImport;

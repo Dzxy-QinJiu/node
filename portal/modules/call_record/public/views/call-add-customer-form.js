@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 import {Icon,Form,Input,Select,message}from 'antd';
 var rightPanelUtil = require('../../../../components/rightPanel');
@@ -21,8 +23,10 @@ var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import { AntcAreaSelection } from 'antc';
 
-var CallAddCustomerForm = React.createClass({
+var CallAddCustomerForm = createReactClass({
+    displayName: 'CallAddCustomerForm',
     mixins: [Validation.FieldMixin],
+
     getInitialState: function() {
         var formData = {
             name: '',//客户名称
@@ -56,9 +60,11 @@ var CallAddCustomerForm = React.createClass({
             isLoadingIndustry: false//是否正在加载行业列表
         };
     },
+
     componentDidMount: function() {
         this.getIndustryList();
     },
+
     getIndustryList: function(){
         //获取后台管理中设置的行业列表
         this.gr();
@@ -192,6 +198,7 @@ var CallAddCustomerForm = React.createClass({
             this.setState({customerNameExist: false, checkNameError: false});
         }
     },
+
     //客户名唯一性验证的提示信息
     renderCustomerNameMsg: function() {
         if (this.state.customerNameExist) {
@@ -239,6 +246,7 @@ var CallAddCustomerForm = React.createClass({
             return '';
         }
     },
+
     //客户名格式验证
     checkCustomerName: function(rule, value, callback) {
         value = $.trim(value);
@@ -284,9 +292,9 @@ var CallAddCustomerForm = React.createClass({
 
     handleSelect(value){
         if (value === 'industry') {
-            Trace.traceEvent(this.getDOMNode(), '选择行业');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '选择行业');
         } else if(value === 'contacts0_role') {
-            Trace.traceEvent(this.getDOMNode(), '选择角色');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
         }
     },
 
@@ -305,7 +313,7 @@ var CallAddCustomerForm = React.createClass({
         return (
             <RightPanel showFlag={this.props.showFlag}>
                 <RightPanelClose onClick={this.closeAddPanel}/>
-                <Form horizontal className="crm-add-form">
+                <Form layout='horizontal' className="crm-add-form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label={Intl.get('crm.4', '客户名称')}
@@ -431,6 +439,7 @@ var CallAddCustomerForm = React.createClass({
                 }
             </RightPanel>
         );
-    }
+    },
 });
 module.exports = CallAddCustomerForm;
+

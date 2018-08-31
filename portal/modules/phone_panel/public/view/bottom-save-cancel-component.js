@@ -1,3 +1,5 @@
+var PropTypes = require('prop-types');
+var React = require('react');
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -46,10 +48,10 @@ BottomSaveCancel.defaultProps = {
     addAppFeedbackErrMsg: ''
 };
 BottomSaveCancel.propTypes = {
-    isAddingAppFeedback: React.PropTypes.string,
-    addAppFeedbackErrMsg: React.PropTypes.string,
-    handleSubmit: React.PropTypes.func,
-    handleCancel: React.PropTypes.func,
+    isAddingAppFeedback: PropTypes.string,
+    addAppFeedbackErrMsg: PropTypes.string,
+    handleSubmit: PropTypes.func,
+    handleCancel: PropTypes.func,
 
 };
 export default BottomSaveCancel;

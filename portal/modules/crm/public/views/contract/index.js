@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../css/contract.less');
 import { Button } from 'antd';
 import Spinner from 'CMP_DIR/spinner';
@@ -10,35 +11,38 @@ import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import ContractForm from './contract-form';
 import Trace from 'LIB_DIR/trace';
 
-const Contract = React.createClass({
-    getInitialState() {
-        return {
-            curCustomer: this.props.curCustomer,//当前查看详情的客户
-            windowHeight: $(window).height(),
-            appList: [],
-            ...ContractStore.getState()
-        };
-    },
-    onStoreChange() {
+class Contract extends React.Component {
+    state = {
+        curCustomer: this.props.curCustomer,//当前查看详情的客户
+        windowHeight: $(window).height(),
+        appList: [],
+        ...ContractStore.getState()
+    };
+
+    onStoreChange = () => {
         this.setState(ContractStore.getState());
-    },
-    getParams() {
+    };
+
+    getParams = () => {
         return {
             pageSize: this.state.pageSize,
             sortField: this.state.sortField,
             order: this.state.order
         };
-    },
-    getAppList() {
+    };
+
+    getAppList = () => {
         commonDataUtil.getAppList(appList => {
             this.setState({appList: appList});
         });
-    },
-    getContractByCustomerId(customerId) {
+    };
+
+    getContractByCustomerId = (customerId) => {
         let params = this.getParams();
         let reqBody = {query: {'customer_id': customerId}};
         ContractAction.getContractByCustomerId(params, reqBody);
-    },
+    };
+
     componentDidMount() {
         ContractStore.listen(this.onStoreChange);
         this.getAppList();
@@ -46,7 +50,8 @@ const Contract = React.createClass({
             this.getContractByCustomerId(this.props.curCustomer.id);
         }
         $(window).on('resize', this.onStoreChange);
-    },
+    }
+
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
         if (_.get(nextProps.curCustomer , 'id') && nextProps.curCustomer.id !== oldCustomerId) {
@@ -58,15 +63,18 @@ const Contract = React.createClass({
                 this.getContractByCustomerId(nextProps.curCustomer.id);
             });
         }
-    },
+    }
+
     componentWillUnmount() {
         ContractStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
-    },
-    showForm() {
-        Trace.traceEvent($(this.getDOMNode()).find('.crm-detail-add-btn'), '添加合同');
+    }
+
+    showForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-detail-add-btn'), '添加合同');
         ContractAction.showForm();
-    },
+    };
+
     render() {
         let contractListLength = this.state.contractList.data.length || 0;
         let loading = this.state.contractList.loading;
@@ -116,6 +124,6 @@ const Contract = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Contract;

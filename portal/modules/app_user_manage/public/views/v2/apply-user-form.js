@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 require('../../css/apply-user-form.less');
 import {Form, Input, Radio, InputNumber, Icon, message, Checkbox, Tabs, Tooltip} from 'antd';
@@ -18,7 +20,8 @@ import DateSelectorPicker from '../../../../../components/date-selector/utils';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
 const dayTime = 24 * 60 * 60 * 1000;
-const ApplyUserForm = React.createClass({
+const ApplyUserForm = createReactClass({
+    displayName: 'ApplyUserForm',
     mixins: [ValidateMixin, UserTimeRangeField],
 
     getInitialState: function() {
@@ -108,6 +111,7 @@ const ApplyUserForm = React.createClass({
         const appFormData = _.find(this.state.formData.products, app => app.client_id === id);
         this.setState({appFormData: appFormData});
     },
+
     /* 获取应用的配置, app：应用，appDefaultConfigList：各应用的默认配置列表，
      * userType:申请的用户类型（正式用户/试用用户）,resetDefault:是否需要重设默认值
      */
@@ -215,10 +219,12 @@ const ApplyUserForm = React.createClass({
     handleCancel: function() {
         this.props.cancelApply();
     },
+
     //是否应用到所有应用上的设置
     toggleCheckbox: function() {
         this.setState({setAllChecked: !this.state.setAllChecked});
     },
+
     renderTabToolTip(app_name) {
         return (
             <Tooltip title={app_name} placement="right">
@@ -226,6 +232,7 @@ const ApplyUserForm = React.createClass({
             </Tooltip>
         );
     },
+
     render: function() {
         const formData = this.state.formData;
         const appFormData = this.state.appFormData;
@@ -237,7 +244,7 @@ const ApplyUserForm = React.createClass({
         return (
             <div className="full_size wrap_padding apply_user_form_wrap">
                 <div className="apply_user_form" ref="scrollWrap">
-                    <Form horizontal>
+                    <Form layout='horizontal'>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
                                 label={Intl.get('user.selected.user', '已选用户')}
@@ -332,7 +339,8 @@ const ApplyUserForm = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = ApplyUserForm;
+

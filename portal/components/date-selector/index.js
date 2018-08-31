@@ -1,3 +1,7 @@
+var React = require('react');
+require('./index.less');
+import BootstrapDatepicker from '../bootstrap-datepicker';
+
 /**
  *
  提供通用日期选择组件
@@ -86,8 +90,8 @@
      className      可以为日历添加一个特殊的className
  *
  */
-require('./index.less');
-import BootstrapDatepicker from '../bootstrap-datepicker';
+import PropTypes from 'prop-types';
+
 import Dropdown from 'rc-dropdown';
 import Menu, { Item as MenuItem} from 'rc-menu';
 import classNames from 'classnames';
@@ -96,8 +100,6 @@ import Utils from './utils';
 
 //季度中文字
 const QUARTER_CHINESE_TEXT_LIST = ['一','二','三','四'];
-//类型
-const PropTypes = React.PropTypes;
 //下拉菜单宽度
 const MENU_WIDTH = 80;
 //日期格式
@@ -171,24 +173,24 @@ class DateSelector extends React.Component{
         } else if(/today|yesterday|thisweek|lastweek|thismonth|lastmonth/.test(props.range)) {
             var timeObj;
             switch(props.range) {
-            case 'today':
-                timeObj = Utils.getTodayTime();
-                break;
-            case 'yesterday':
-                timeObj = Utils.getYesterdayTime();
-                break;
-            case 'thisweek':
-                timeObj = Utils.getThisWeekTime();
-                break;
-            case 'lastweek':
-                timeObj = Utils.getLastWeekTime();
-                break;
-            case 'thismonth':
-                timeObj = Utils.getThisMonthTime();
-                break;
-            case 'lastmonth':
-                timeObj = Utils.getLastMonthTime();
-                break;
+                case 'today':
+                    timeObj = Utils.getTodayTime();
+                    break;
+                case 'yesterday':
+                    timeObj = Utils.getYesterdayTime();
+                    break;
+                case 'thisweek':
+                    timeObj = Utils.getThisWeekTime();
+                    break;
+                case 'lastweek':
+                    timeObj = Utils.getLastWeekTime();
+                    break;
+                case 'thismonth':
+                    timeObj = Utils.getThisMonthTime();
+                    break;
+                case 'lastmonth':
+                    timeObj = Utils.getLastMonthTime();
+                    break;
             }
             start_time = timeObj.start_time;
             end_time = timeObj.end_time;
@@ -940,18 +942,18 @@ DateSelector.propTypes = {
  * <DateSelectorOption value="1m">1个月</DateSelectorOption>
  *
  */
-var DateSelectorOption = React.createClass({
-    getDefaultProps: function() {
-        return {
-            value: ''
-        };
-    },
-    render: function(){
+class DateSelectorOption extends React.Component {
+    static defaultProps = {
+        value: ''
+    };
+
+    render() {
         return null;
     }
-});
+}
 
 //添加option
 DateSelector.Option = DateSelectorOption;
 
 export default DateSelector;
+

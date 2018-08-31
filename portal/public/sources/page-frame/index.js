@@ -1,5 +1,7 @@
+var React = require('react');
 var language = require('../../../public/language/getLanguage');
 import Trace from 'LIB_DIR/trace';
+import {renderRoutes} from 'react-router-config';
 require('./index-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./index-es_VE.less');
@@ -21,20 +23,20 @@ const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
     call_params: null//后端推送过来的通话状态相关的参数
 };
-var PageFrame = React.createClass({
-    getInitialState: function() {
-        return {
-            phonePanelShow: false,//是否展示拨打电话面板（包括：客户详情）
-            paramObj: $.extend(true, {}, emptyParamObj),
-            audioPanelShow: false,//是否展示播放录音面板
-            audioParamObj: {},
-            isShowNotificationPanel: false, // 是否展示系统通知面板
-            rightContentHeight: 0,
-            showCluePanel: false,
-            clueId: ''//展示线索的id
-        };
-    },
-    componentDidMount: function() {
+
+class PageFrame extends React.Component {
+    state = {
+        phonePanelShow: false,//是否展示拨打电话面板（包括：客户详情）
+        paramObj: $.extend(true, {}, emptyParamObj),
+        audioPanelShow: false,//是否展示播放录音面板
+        audioParamObj: {},
+        isShowNotificationPanel: false, // 是否展示系统通知面板
+        rightContentHeight: 0,
+        showCluePanel: false,
+        clueId: ''//展示线索的id
+    };
+
+    componentDidMount() {
         this.setContentHeight();
         Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听
@@ -46,82 +48,94 @@ var PageFrame = React.createClass({
         //系统内有弹窗时，点击弹框中的线索名称可以查看线索详情
         notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         $(window).on('resize', this.resizeHandler);
-    },
-    resizeEmitter() {
+    }
+
+    resizeEmitter = () => {
         resizeEmitter.emit(resizeEmitter.WINDOW_SIZE_CHANGE, {
             width: $('#app .col-xs-10').width(),
             height: this.state.rightContentHeight
         });
-    },
-    resizeHandler() {
+    };
+
+    resizeHandler = () => {
         clearTimeout(this.scrollTimer);
         this.scrollTimer = setTimeout(() => {
             this.setContentHeight();
         }, 100);
-    },
-    componentDidUpdate: function() {
+    };
+
+    componentDidUpdate() {
         this.resizeEmitter();
-    },
-    setContentHeight() {
+    }
+
+    setContentHeight = () => {
         const height = $(window).height() - LAYOUT_CONSTS.TOP_NAV - LAYOUT_CONSTS.PADDING_BOTTOM;
         this.setState({
             rightContentHeight: height
         });
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         $(window).off('resize', this.resizeHandler);
-    },
-    showClueDetailFromNotification: function(clueObj) {
+    }
+
+    showClueDetailFromNotification = (clueObj) => {
         this.setState({
             showCluePanel: true,
             clueId: clueObj.clueId
         });
-    },
-    hideClueRightPanel: function() {
+    };
+
+    hideClueRightPanel = () => {
         this.setState({
             showCluePanel: false,
             clueId: ''
         });
-    },
-    openAudioPanel: function(audioParamObj) {
+    };
+
+    openAudioPanel = (audioParamObj) => {
         this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj)});
-    },
-    hideReportBtn: function(btnShowFlag) {
+    };
+
+    hideReportBtn = (btnShowFlag) => {
         this.state.audioParamObj.isShowReportButton = btnShowFlag.isShowReportButton;
         this.setState({
             audioParamObj: this.state.audioParamObj
         });
-    },
-    openPhonePanel: function(paramObj) {
+    };
+
+    openPhonePanel = (paramObj) => {
         if (!this.state.phonePanelShow) {
             if (paramObj.call_params) {
                 Trace.traceEvent('电话弹屏', '弹出拨打电话的面板');
             } else {
-                Trace.traceEvent(this.getDOMNode(), '查看客户详情');
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '查看客户详情');
             }
         }
         this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});
-    },
+    };
 
-    closePhonePanel: function() {
+    closePhonePanel = () => {
         //关闭电话弹屏面板时，将系统内拨打电话时，记录的电话联系人信息清掉
         if(this.state.paramObj.call_params && _.isFunction(this.state.paramObj.call_params.setInitialPhoneObj)) {
             this.state.paramObj.call_params.setInitialPhoneObj();
         }
         this.setState({phonePanelShow: false, paramObj: $.extend(true, {}, emptyParamObj)});
-    },
-    closeAudioPanel: function() {
+    };
+
+    closeAudioPanel = () => {
         this.setState({audioPanelShow: false, audioParamObj: {}});
         if (this.state.audioParamObj && _.isFunction(this.state.audioParamObj.closeAudioPlayContainer)){
             this.state.audioParamObj.closeAudioPlayContainer();
         }
-    },
-    toggleNotificationPanel() {
+    };
+
+    toggleNotificationPanel = () => {
         this.setState({
             isShowNotificationPanel: !this.state.isShowNotificationPanel
         }, () => {
@@ -131,14 +145,16 @@ var PageFrame = React.createClass({
                 });
             }
         });
-    },
-    closeNotificationPanel() {
+    };
+
+    closeNotificationPanel = () => {
         this.setState({
             isShowNotificationPanel: false,
             phonePanelShow: false
         });
-    },
-    render: function() {
+    };
+
+    render() {
         var audioParamObj = this.state.audioParamObj;
         return (
             <div className="container-fluid">
@@ -147,7 +163,7 @@ var PageFrame = React.createClass({
                         <LeftMenu toggleNotificationPanel={this.toggleNotificationPanel} closeNotificationPanel={this.closeNotificationPanel}/>
                     </div>
                     <div className="col-xs-10">
-                        {this.props.children}
+                        {renderRoutes(this.props.route.routes)}
                         {this.state.phonePanelShow ? (
                             <PhonePanel
                                 showFlag={this.state.phonePanelShow}
@@ -184,6 +200,6 @@ var PageFrame = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = PageFrame;

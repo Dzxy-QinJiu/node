@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -23,6 +24,7 @@ var noop = function() {
 const DYNAMICHEIGHT = {
     LAYOUT: 130
 };
+import PropTypes from 'prop-types';
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import ClueDynamic from '../views/dynamic';
 import ClueBasicInfo from '../views/clue_detail_overview';
@@ -336,12 +338,12 @@ ClueRightPanel.defaultProps = {
     className: ''
 };
 ClueRightPanel.propTypes = {
-    curClue: React.PropTypes.object,
-    hideRightPanel: React.PropTypes.func,
-    salesManList: React.PropTypes.object,
-    showFlag: React.PropTypes.bool,
-    currentId: React.PropTypes.string,
-    className: React.PropTypes.string,
+    curClue: PropTypes.object,
+    hideRightPanel: PropTypes.func,
+    salesManList: PropTypes.object,
+    showFlag: PropTypes.bool,
+    currentId: PropTypes.string,
+    className: PropTypes.string,
 
 };
 export default ClueRightPanel;

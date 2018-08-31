@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 计划回款信息添加表单
@@ -10,20 +12,24 @@ const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import { numberAddNoMoreThan } from '../../../lib/validator/rules';
 
-const AddRepayment = React.createClass({
+const AddRepayment = createReactClass({
+    displayName: 'AddRepayment',
     mixins: [ValidateMixin],
+
     getInitialFormData: function() {
         return {
             type: 'repay_plan',
             unit: 'days',
         };
     },
+
     getInitialState: function() {
         return {
             repayments: [],
             formData: this.getInitialFormData(),
         };
     },
+
     addRepayment: function() {
         this.refs.validation.validate(valid => {
             if (!valid) {
@@ -38,11 +44,13 @@ const AddRepayment = React.createClass({
             }
         });
     },
+
     deleteRepayment: function(index) {
         this.state.repayments.splice(index, 1);
 
         this.setState(this.state);
     },
+
     onNumChange: function(e) {
         const num = e.target.value;
         this.state.formData.num = num;
@@ -55,6 +63,7 @@ const AddRepayment = React.createClass({
 
         this.setState(this.state);
     },
+
     onUnitChange: function(value) {
         this.state.formData.unit = value;
 
@@ -68,6 +77,7 @@ const AddRepayment = React.createClass({
 
         this.setState(this.state);
     },
+
     render: function() {
         //合同额
         const contractAmount = this.props.parent.refs.addBasic.state.formData.contract_amount;
@@ -148,8 +158,9 @@ const AddRepayment = React.createClass({
                 ) : null}
             </div>
         );
-    }
+    },
 });
 
 module.exports = AddRepayment;
+
 

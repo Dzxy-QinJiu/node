@@ -1,8 +1,12 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const NotificationPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(NotificationPage) => <NotificationPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'notification_system',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require) {
-            cb(null, require('./public'));
-        });
-    }
-};
+    path: '/notification_system',
+    component: NotificationPage
+}; 

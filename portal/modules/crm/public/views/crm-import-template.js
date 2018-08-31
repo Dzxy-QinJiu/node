@@ -1,17 +1,17 @@
+var React = require('react');
 var Button = require('antd').Button;
 var rightPanelUtil = require('../../../../components/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var CrmImport = require('./crm-import');
 
-var ImportCrmTemplate = React.createClass({
-    
-    handleCancel: function(e) {
+class ImportCrmTemplate extends React.Component {
+    handleCancel = (e) => {
         e.preventDefault();
         this.props.closeCrmTemplatePanel();
-    },
+    };
 
-    render: function(){
+    render() {
         return (
             <div className="import-crm-template-panel" data-tracename="导入客户面板">
                 <RightPanel
@@ -55,6 +55,7 @@ var ImportCrmTemplate = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = ImportCrmTemplate;
+

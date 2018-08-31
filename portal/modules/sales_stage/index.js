@@ -1,8 +1,12 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const SalesStagePage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(SalesStagePage) => <SalesStagePage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'sales_stage',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require) {
-            cb(null, require('./public'));
-        });
-    }
+    path: '/background_management/sales_stage',
+    component: SalesStagePage
 };

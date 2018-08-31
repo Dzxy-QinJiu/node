@@ -1,3 +1,4 @@
+var React = require('react');
 import { getSelected } from '../../../../lib/utils/filter-utils';
 var FilterStore = require('../store/filter-store');
 var FilterAction = require('../action/filter-actions');
@@ -65,14 +66,15 @@ const qualifiedTagList = [{
 }, {
     name: CUSTOMER_TAGS.NEVER_QUALIFIED, value: '3'
 }];
-const CrmFilterPanel = React.createClass({
-    getInitialState: function() {
-        return FilterStore.getState();
-    },
-    onStoreChange: function() {
+
+class CrmFilterPanel extends React.Component {
+    state = FilterStore.getState();
+
+    onStoreChange = () => {
         this.setState(FilterStore.getState());
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         FilterStore.listen(this.onStoreChange);
         FilterAction.getTeamList();
         FilterAction.getSalesRoleList();
@@ -91,23 +93,27 @@ const CrmFilterPanel = React.createClass({
             type = 'manager';
         }
         FilterAction.getFilterProvinces(type);
-    },
-    componentDidUpdate: function(prevProps) {
+    }
+
+    componentDidUpdate(prevProps) {
         var filterPanelHeight = $('.crm-filter-panel').outerHeight(true);
         if (prevProps.filterPanelHeight !== filterPanelHeight) {
             // this.props.changeTableHeight(filterPanelHeight);
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         FilterStore.unlisten(this.onStoreChange);
-    },
-    appSelected: function(app) {
+    }
+
+    appSelected = (app) => {
         FilterAction.setApp(app);
 
         const _this = this;
         setTimeout(() => _this.props.search());
-    },
-    stageSelected: function(stage) {
+    };
+
+    stageSelected = (stage) => {
         const curSelectedStages = this.state.condition.sales_opportunities[0].sale_stages;
         let newSelectedStages = getSelected(curSelectedStages, stage);
         //未知的处理
@@ -122,9 +128,10 @@ const CrmFilterPanel = React.createClass({
 
         setTimeout(() => this.props.search());
         stage = stage ? stage : '全部';
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按销售阶段筛选');
-    },
-    teamSelected: function(team) {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按销售阶段筛选');
+    };
+
+    teamSelected = (team) => {
         const curSelectedTeams = this.state.condition.sales_team_id;
 
         const newSelectedTeams = getSelected(curSelectedTeams, team);
@@ -134,10 +141,11 @@ const CrmFilterPanel = React.createClass({
         FilterAction.setTeam(newSelectedTeams);
 
         setTimeout(() => this.props.search());
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按团队筛选客户');
-    },
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按团队筛选客户');
+    };
+
     //行政级别的筛选
-    levelSelected: function(level) {
+    levelSelected = (level) => {
         const curSelectedLevels = this.state.condition.administrative_level;
 
         const newSelectedLevels = getSelected(curSelectedLevels, level);
@@ -147,9 +155,10 @@ const CrmFilterPanel = React.createClass({
         FilterAction.setLevel(newSelectedLevels);
 
         setTimeout(() => this.props.search());
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按行政级别筛选客户');
-    },
-    tagSelected: function(tag) {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按行政级别筛选客户');
+    };
+
+    tagSelected = (tag) => {
         //标签
         let labels = this.state.condition.labels;
         let selectedTags = [''];
@@ -181,10 +190,11 @@ const CrmFilterPanel = React.createClass({
         const _this = this;
         setTimeout(() => _this.props.search());
         tag = tag ? tag : '全部';
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按标签筛选');
-    },
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按标签筛选');
+    };
+
     //阶段标签的选择
-    stageTagSelected: function(stageTag) {
+    stageTagSelected = (stageTag) => {
         if (this.state.condition.customer_label === stageTag) {
             if (stageTag) {//不是全部时，则取消当前选项的选择
                 stageTag = '';
@@ -194,10 +204,11 @@ const CrmFilterPanel = React.createClass({
         }
         FilterAction.setStageTag(stageTag);
         setTimeout(() => this.props.search());
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按阶段标签筛选');
-    },
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按阶段标签筛选');
+    };
+
     //销售角色的选择
-    salesRoleSelected: function(role) {
+    salesRoleSelected = (role) => {
         if (this.state.condition.member_role === role) {
             if (role) {//不是全部时，则取消当前选项的选择
                 role = '';
@@ -207,10 +218,11 @@ const CrmFilterPanel = React.createClass({
         }
         FilterAction.setSalesRole(role);
         setTimeout(() => this.props.search());
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按销售角色筛选');
-    },
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按销售角色筛选');
+    };
+
     //竞品的选择
-    competitorSelected: function(tag) {
+    competitorSelected = (tag) => {
         let labels = this.state.condition.competing_products;
         let selectedTags = [''];
         //当前选中的标签多于一个且当前点击的不是全部时进行处理
@@ -226,10 +238,10 @@ const CrmFilterPanel = React.createClass({
         }
         FilterAction.setCompetitor(selectedTags);
         setTimeout(() => this.props.search());
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按标签筛选');
-    },
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按标签筛选');
+    };
 
-    industrySelected: function(industry) {
+    industrySelected = (industry) => {
         const curSelectedIndustrys = this.state.condition.industry;
         let newSelectedIndustrys = '';
         //未知的处理
@@ -244,9 +256,10 @@ const CrmFilterPanel = React.createClass({
 
         setTimeout(() => this.props.search());
         industry = industry ? industry : '全部';
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按行业筛选');
-    },
-    provinceSelected: function(province) {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按行业筛选');
+    };
+
+    provinceSelected = (province) => {
         const curSelectedProvince = this.state.condition.province;
         let newSelectedProvince = '';
         //未知的处理
@@ -259,9 +272,10 @@ const CrmFilterPanel = React.createClass({
         FilterAction.setProvince(newSelectedProvince);
         setTimeout(() => this.props.search());
         province = province ? province : '全部';
-        Trace.traceEvent($(this.getDOMNode()).find('li'), '按地域筛选');
-    },
-    otherSelected: function(item) {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按地域筛选');
+    };
+
+    otherSelected = (item) => {
         //当前选择的是之前选择的时
         if (item === this.state.condition.otherSelectedItem) {
             if (item) {//不是全部时，则取消当前选项的选择
@@ -274,47 +288,48 @@ const CrmFilterPanel = React.createClass({
         setTimeout(() => this.props.search());
         switch (item) {
             case otherFilterArray[1].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '超30天未联系的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超30天未联系的筛选');
                 break;
             case otherFilterArray[2].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '超15天未联系的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超15天未联系的筛选');
                 break;
             case otherFilterArray[3].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '超7天未联系的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超7天未联系的筛选');
                 break;
             case otherFilterArray[4].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '无联系方式的客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '无联系方式的客户的筛选');
                 break;
             case otherFilterArray[5].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '最后联系但未写更近记录客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '最后联系但未写更近记录客户的筛选');
                 break;
             case otherFilterArray[6].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '超30天未写跟进记录客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超30天未写跟进记录客户的筛选');
                 break;
             case otherFilterArray[7].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '被关注客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '被关注客户的筛选');
                 break;
             case otherFilterArray[8].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '我关注客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '我关注客户的筛选');
                 break;
             case otherFilterArray[9].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '多个订单客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '多个订单客户的筛选');
                 break;
             case otherFilterArray[12].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '近一周的活跃客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '近一周的活跃客户的筛选');
                 break;
             case otherFilterArray[13].value:
-                Trace.traceEvent($(this.getDOMNode()).find('li'), '近一个月的活跃客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '近一个月的活跃客户的筛选');
                 break;
         }
         if (otherFilterArray[10] && item === otherFilterArray[10].value) {
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '未分配客户的筛选');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '未分配客户的筛选');
         }
         if (otherFilterArray[11] && item === otherFilterArray[11].value) {
-            Trace.traceEvent($(this.getDOMNode()).find('li'), '有效客户');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '有效客户');
         }
-    },
-    handleFilterChange(data) {
+    };
+
+    handleFilterChange = (data) => {
         const condition = {};
         if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
             condition[COMMON_OTHER_ITEM] = '';
@@ -345,8 +360,9 @@ const CrmFilterPanel = React.createClass({
         setTimeout(() => {
             this.props.search();
         });
-    },
-    render: function() {
+    };
+
+    render() {
         const appListJsx = this.state.appList.map((app, idx) => {
             let className = app.client_id === this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
             return <li key={idx} onClick={this.appSelected.bind(this, app.client_id)}
@@ -507,6 +523,7 @@ const CrmFilterPanel = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = CrmFilterPanel;
+

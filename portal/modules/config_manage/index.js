@@ -1,9 +1,12 @@
-module.exports = {
-    path: 'configaration',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require) {
-            cb(null, require('./public'));
-        });
-    }
+import Bundle from '../../public/sources/route-bundle';
 
+const ConfigarationPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(ConfigarationPage) => <ConfigarationPage {...props}/>}
+    </Bundle>
+);
+
+module.exports = {
+    path: '/background_management/configaration',
+    component: ConfigarationPage
 };

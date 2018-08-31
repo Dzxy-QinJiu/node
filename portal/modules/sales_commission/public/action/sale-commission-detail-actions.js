@@ -5,7 +5,8 @@ class SaleCommissionDetailActions {
         this.generateActions(
             'setSort', // 设置排序
             'setGrantStatus', // 设置已发放的状态
-            'setInitialState' // 重置
+            'setInitialState', // 重置
+            'resetState'//重置所有数据
         );
     }
     // 单个的销售提成明细

@@ -1,11 +1,11 @@
 /**
  * Created by wangliping on 2015/12/23.
  */
+var React = require('react');
 import {Icon} from 'antd';
 
-var CardItem = React.createClass({
-
-    render: function() {
+class CardItem extends React.Component {
+    render() {
         var className = 'card-item';
         if (this.props.className) {
             className += ' ' + this.props.className;
@@ -24,7 +24,7 @@ var CardItem = React.createClass({
                 ) : null}
             </div>
         );
-    } 
-});
+    }
+}
 
 module.exports = CardItem;

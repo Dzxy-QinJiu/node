@@ -3,6 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
+var React = require('react');
 var language = require('../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-detail-change-record-zh_CN.less');
@@ -28,30 +29,30 @@ var LAYOUT_CONSTANTS = {
     RIGHT_PANEL_TAB_MARGIN_BOTTOM: 17,//右侧面板tab的margin
     TOP_PADDING: 100,//选择框留白
 };
-var UserDetailChangeRecord = React.createClass({
-    getDefaultProps: function() {
-        return {
-            userId: '1'
-        };
-    },
-    getInitialState: function() {
-        return this.getStateData();
-    },
-    onStateChange: function() {
+
+class UserDetailChangeRecord extends React.Component {
+    static defaultProps = {
+        userId: '1'
+    };
+
+    onStateChange = () => {
         this.setState(this.getStateData());
-    },
-    getStateData: function() {
+    };
+
+    getStateData = () => {
         return UserDetailChangeRecordStore.getState();
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         UserDetailChangeRecordStore.listen(this.onStateChange);
         var userId = this.props.userId;
         UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
             this.showSelectedApp(this.props, queryObj);
         });
-    },
+    }
+
     //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
-    showSelectedApp: function(props, queryObj) {
+    showSelectedApp = (props, queryObj) => {
         var appId = props.selectedAppId;
         //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
         if (appId) {
@@ -72,11 +73,13 @@ var UserDetailChangeRecord = React.createClass({
             page_size: this.state.page_size,
         });
 
-    },
-    getUserDetailChangeRecord: function(queryObj) {
+    };
+
+    getUserDetailChangeRecord = (queryObj) => {
         UserDetailChangeRecordAction.getUserDetailChangeRecord(queryObj);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.userId !== this.props.userId) {
             //dispatch过程中不能再dispatch，加延时，两个dispatch发送错开时间
             var userId = nextProps.userId;
@@ -86,11 +89,13 @@ var UserDetailChangeRecord = React.createClass({
                 });
             });
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         UserDetailChangeRecordStore.unlisten(this.onStateChange);
-    },
-    renderTimeLineItem: function(item) {
+    }
+
+    renderTimeLineItem = (item) => {
         var desc = item.operator_aka;
         //角色 类型 状态 昵称 密码 邮箱 电话 备注
         var role = '', tags = '', tagName = '', status = '', nickname = '', password = '', email = '', phone = '', description = '', timerange = '', begin = ' ', end = ' ', overdraft = '', istwofactor = '', mutilogin = '';
@@ -174,8 +179,9 @@ var UserDetailChangeRecord = React.createClass({
                 <dt>{moment(item.record_time).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
-    },
-    handleChange: function(value) {
+    };
+
+    handleChange = (value) => {
         const app = _.find(this.state.appLists, item => item.app_id === value);
         const appName = app ? app.app_name : '';
         let queryObj = {
@@ -185,21 +191,24 @@ var UserDetailChangeRecord = React.createClass({
         };
         UserDetailChangeRecordAction.getUserDetailChangeRecord(queryObj);
         UserDetailChangeRecordAction.setApp(appName);
-    },
-    retryChangeRecord: function() {
+    };
+
+    retryChangeRecord = () => {
         let queryObj = {
             user_id: this.props.userId,
         };
         UserDetailChangeRecordAction.getUserDetailChangeRecord(queryObj);
-    },
-    getSelectOptions: function() {
+    };
+
+    getSelectOptions = () => {
         var appLists = this.state.appLists;
         var list = appLists.map((item) => {
             return (<Option value={item['app_id']} key={item['app_id']}>{item['app_name']}</Option>);
         });
         return list;
-    },
-    retryRenderTraceRecord: function() {
+    };
+
+    retryRenderTraceRecord = () => {
         var userId = this.props.userId;
         UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
             UserDetailChangeRecordAction.setApp(this.state.app);
@@ -210,8 +219,9 @@ var UserDetailChangeRecord = React.createClass({
             });
         });
 
-    },
-    renderTraceRecord: function(height) {
+    };
+
+    renderTraceRecord = (height) => {
         if (this.state.getAppLoading) {
             return (<StatusWrapper loading={true} height={height} />);
         } else if (this.state.getAppErrorMsg) {
@@ -233,8 +243,9 @@ var UserDetailChangeRecord = React.createClass({
         } else {
             return this.renderRecordBlock(height);
         }
-    },
-    renderRecordBlock: function(height) {
+    };
+
+    renderRecordBlock = (height) => {
         var recordLength = this.state.changeRecord.length;
         var width = 120;
         if (this.state.changeRecordLoading && this.state.app) {
@@ -299,8 +310,11 @@ var UserDetailChangeRecord = React.createClass({
             );
         }
 
-    },
-    render: function() {
+    };
+
+    state = this.getStateData();
+
+    render() {
         var divHeight = $(window).height()
             - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP //右侧面板顶部padding
             - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_BOTTOM //右侧面板底部padding
@@ -317,5 +331,7 @@ var UserDetailChangeRecord = React.createClass({
         );
 
     }
-});
+}
+
 module.exports = UserDetailChangeRecord;
+

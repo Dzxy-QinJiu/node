@@ -2,6 +2,8 @@
  * Created by xiaojinfeng on  2016/1/14 10:25 .
  */
 //顶部导航
+var React = require('react');
+var createReactClass = require('create-react-class');
 var TopNav = require('../../../components/top-nav');
 require('./css/user-info-zh_CN.less');
 var language = require('../../../public/language/getLanguage');
@@ -14,7 +16,7 @@ var UserInfoStore = require('./store/user-info-store');
 var UserInfoAction = require('./action/user-info-actions');
 var UserInfo = require('./views/user-info-user');
 var UserInfoLog = require('./views/user-info-log');
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var topHeight = 65;//顶部导航的高度
 var logTitleHeight = 40;//登录日志顶部title高度
 const logBottomHeight = 40; // 登录日志距离底部高度
@@ -28,8 +30,10 @@ var PrivilegeChecker = require('../../../components/privilege/checker');
 import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../components/react-intl-mixin';
 
-var UserInfoPage = React.createClass({
+var UserInfoPage = createReactClass({
+    displayName: 'UserInfoPage',
     mixins: [reactIntlMixin],
+
     getInitialState: function() {
         return {
             ...UserInfoStore.getState(),
@@ -40,6 +44,7 @@ var UserInfoPage = React.createClass({
     onChange: function() {
         this.setState(UserInfoStore.getState());
     },
+
     componentDidMount: function() {
         var hasPrivilege = PrivilegeChecker.hasPrivilege;
         $(window).on('resize', this.resizeWindow);
@@ -53,6 +58,7 @@ var UserInfoPage = React.createClass({
             load_size: this.state.loadSize
         });
     },
+
     componentWillUnmount: function() {
         $('body').css('overflow', 'auto');
         $(window).off('resize', this.resizeWindow);
@@ -78,6 +84,7 @@ var UserInfoPage = React.createClass({
         }
         return height < minUserInfoHeight ? minUserInfoHeight : height;
     },
+
     handleScrollBottom() {
         UserInfoAction.getLogList({
             sort_id: this.state.sortId,
@@ -114,9 +121,9 @@ var UserInfoPage = React.createClass({
                                         defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
                                         values={{
                                             editpassword: <span className="update-pwd">
-                                                <Link to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
+                                                <NavLink to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
                                                     <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
-                                                </Link>
+                                                </NavLink>
                                             </span>
                                         }}
                                     />
@@ -141,7 +148,8 @@ var UserInfoPage = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = UserInfoPage;
+

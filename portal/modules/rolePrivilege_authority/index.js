@@ -1,8 +1,13 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const AuthorityPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(AuthorityPage) => <AuthorityPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'authority',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public'));
-        });
-    }
+    path: '/background_management/authority',
+    component: AuthorityPage
 };
+

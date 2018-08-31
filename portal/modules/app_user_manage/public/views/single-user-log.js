@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/single-user-log.less');
 //时间范围选择
 import DatePicker from '../../../../components/datepicker';
@@ -20,25 +21,21 @@ import classNames from 'classnames';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import {AntcTimeLine} from 'antc';
 const TOP_PADDING = 80;//top padding for inputs
-var SingleUserLog = React.createClass({
-    getDefaultProps: function() {
-        return {
-            userId: '1'
-        };
-    },
-    getInitialState: function() {
-        return {
-            messageTips: '',
-            ...this.getStateData()
-        };
-    },
-    onStateChange: function() {
+
+class SingleUserLog extends React.Component {
+    static defaultProps = {
+        userId: '1'
+    };
+
+    onStateChange = () => {
         this.setState(this.getStateData());
-    },
-    getStateData: function() {
+    };
+
+    getStateData = () => {
         return SingleUserLogStore.getState();
-    },
-    getSingleUserLogInfoByApp(userId, selectedAppId, appLists) {
+    };
+
+    getSingleUserLogInfoByApp = (userId, selectedAppId, appLists) => {
         let queryObj = {
             user_id: userId,
             starttime: this.state.startTime,
@@ -53,14 +50,16 @@ var SingleUserLog = React.createClass({
         if (selectedAppId) {
             SingleUserLogAction.setSelectedAppId(selectedAppId);
         }
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         SingleUserLogStore.listen(this.onStateChange);
         SingleUserLogAction.resetLogState();
         let userId = this.props.userId;
         this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         var newUserId = nextProps.userId;
         if (this.props.userId !== newUserId) {
             setTimeout(() => {
@@ -68,11 +67,13 @@ var SingleUserLog = React.createClass({
                 this.getSingleUserLogInfoByApp(newUserId, nextProps.selectedAppId, nextProps.appLists);
             }, 0);
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         SingleUserLogStore.unlisten(this.onStateChange);
-    },
-    getQueryParams(queryParams) {
+    }
+
+    getQueryParams = (queryParams) => {
         return {
             user_id: this.props.userId,
             appid: queryParams && queryParams.appid || this.state.selectedLogAppId,
@@ -81,10 +82,10 @@ var SingleUserLog = React.createClass({
             starttime: queryParams && queryParams.starttime || this.state.startTime,
             endtime: queryParams && queryParams.endtime || this.state.endTime
         };
-    },
+    };
 
     // 获取单个用户的日志列表
-    getSingleUserAuditLogList(queryParams) {
+    getSingleUserAuditLogList = (queryParams) => {
         let queryObj = this.getQueryParams(queryParams);
         let search = queryParams && 'search' in queryParams ? queryParams.search : this.state.searchName;
         if (search) {
@@ -100,10 +101,10 @@ var SingleUserLog = React.createClass({
             queryObj.log_type = log_type;
         }
         SingleUserLogAction.getSingleAuditLogList(queryObj);
-    },
+    };
 
     // 搜索处理事件
-    handleSearchEvent: function(inputContent) {
+    handleSearchEvent = (inputContent) => {
         inputContent = inputContent ? inputContent : '';
         if (inputContent.trim() !== this.state.searchName.trim()) {
             SingleUserLogAction.getLogsBySearch();
@@ -113,9 +114,10 @@ var SingleUserLog = React.createClass({
                 page: 1
             });
         }
-    },
+    };
+
     // 改变时间
-    onSelectDate: function(start_time, end_time, range) {
+    onSelectDate = (start_time, end_time, range) => {
         let startTime = start_time;
         if (Date.now() - THREE_MONTH_TIME_RANGE > start_time) {
             startTime = Date.now() - THREE_MONTH_TIME_RANGE;
@@ -133,17 +135,19 @@ var SingleUserLog = React.createClass({
             endtime: endTime,
             page: 1
         });
-    },
+    };
+
     // 选择应用
-    onSelectedAppChange: function(appid) {
+    onSelectedAppChange = (appid) => {
         SingleUserLogAction.resetLogState();
         SingleUserLogAction.setSelectedAppId(appid);
         this.getSingleUserAuditLogList({
             appid: appid,
             page: 1
         });
-    },
-    renderUserLogSelectInfo() {
+    };
+
+    renderUserLogSelectInfo = () => {
         let showAppSelect = this.props.selectedAppId;
         return (
             <div className="log-info-header clearfix">
@@ -194,18 +198,20 @@ var SingleUserLog = React.createClass({
                 </div>
             </div>
         );
-    },
+    };
 
     //是否显示没有更多数据了
-    showNoMoreDataTip: function() {
+    showNoMoreDataTip = () => {
         return !this.state.logListLoading &&
             this.state.auditLogList.length >= 10 && !this.state.listenScrollBottom;
-    },
+    };
+
     //展开收起操作详情
-    toggleOperateDetail: function(userLog) {
+    toggleOperateDetail = (userLog) => {
         SingleUserLogAction.toggleOperateDetail(userLog);
-    },
-    renderTimeLineItem: function(item) {
+    };
+
+    renderTimeLineItem = (item) => {
         let operateClass = classNames('iconfont', {
             'icon-down-twoline': !item.detailShow,
             'icon-up-twoline': item.detailShow
@@ -237,9 +243,10 @@ var SingleUserLog = React.createClass({
                 <dt>{moment(item.timestamp).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
-    },
+    };
+
     // 日志列表信息
-    userLogInformationBlock: function(height) {
+    userLogInformationBlock = (height) => {
         if (this.state.logListLoading === 'loading' && this.state.curPage === 1) {
             return <StatusWrapper loading={true} height={height}/>;
         }
@@ -280,10 +287,10 @@ var SingleUserLog = React.createClass({
                 />
             </div>;
         }
-    },
+    };
 
     // 下拉加载日志列表信息
-    handleScrollBarBottom: function() {
+    handleScrollBarBottom = () => {
         // 判断加载的条件
         if (this.state.curPage <= (Math.ceil(this.state.total / this.state.pageSize))) {
             this.getSingleUserAuditLogList({ page: this.state.curPage });
@@ -292,8 +299,9 @@ var SingleUserLog = React.createClass({
                 listenScrollBottom: false
             });
         }
-    },
-    renderLogInformation: function() {
+    };
+
+    renderLogInformation = () => {
         var scrollBarHeight = this.props.height - TOP_PADDING;
         return (
             <div style={{ height: scrollBarHeight }} className="log-info">
@@ -312,10 +320,10 @@ var SingleUserLog = React.createClass({
                 </GeminiScrollbar>
             </div>
         );
-    },
+    };
 
     // 选择时间范围的提示信息
-    renderSelectDateTips() {
+    renderSelectDateTips = () => {
         let messageTips = this.state.messageTips;
         var hide = () => {
             this.setState({
@@ -334,8 +342,14 @@ var SingleUserLog = React.createClass({
             );
         }
         return null;
-    },
-    render: function() {
+    };
+
+    state = {
+        messageTips: '',
+        ...this.getStateData()
+    };
+
+    render() {
         return (
             <div className="user-log-panel">
                 {this.renderUserLogSelectInfo()}
@@ -352,6 +366,6 @@ var SingleUserLog = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SingleUserLog;

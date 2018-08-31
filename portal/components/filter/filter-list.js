@@ -1,3 +1,4 @@
+var React = require('react');
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { Alert, Icon, Popover, message, Select} from 'antd';
 const Option = Select.Option;

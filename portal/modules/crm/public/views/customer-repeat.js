@@ -2,6 +2,7 @@
  * 客户查重界面
  * Created by wangliping on 2016/12/29.
  */
+var React = require('react');
 import '../css/customer-repeat.less';
 import {Button, message, Icon, Input, Row, Col, Popconfirm, Alert} from 'antd';
 import TopNav from'../../../../components/top-nav';
@@ -27,18 +28,13 @@ let CONSTANTS = {
 };
 let searchInputTimeOut = null;
 const delayTime = 800;
-let CustomerRepeat = React.createClass({
-    getInitialState: function() {
-        return {
-            crmListHeight: this.getCrmListHeight(),
-            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
-            ...CustomerRepeatStore.getState()};
-    },
-    onStoreChange: function() {
+
+class CustomerRepeat extends React.Component {
+    onStoreChange = () => {
         this.setState(CustomerRepeatStore.getState());
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         CustomerRepeatStore.listen(this.onStoreChange);
         //第一次的数据从父组件中传进来时，第一次不用发请求获取数据了
         if (this.props.setInitialRepeatList && this.props.initialRepeatObj){
@@ -62,8 +58,9 @@ let CustomerRepeat = React.createClass({
             var id = $tr.find('.record-id').text();
             _this.showRightPanel(id);
         });
-    },
-    componentDidUpdate: function() {
+    }
+
+    componentDidUpdate() {
         let curCustomerId = _.isObject(this.state.curCustomer) ? this.state.curCustomer.id : '';
         if (curCustomerId && this.state.rightPanelIsShow) {
             $('.customer-repeat-container .record-id').each(function() {
@@ -73,17 +70,20 @@ let CustomerRepeat = React.createClass({
                 }
             });
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         CustomerRepeatStore.unlisten(this.onStoreChange);
-    },
-    getCrmListHeight: function() {
+    }
+
+    getCrmListHeight = () => {
         return $(window).height() - CONSTANTS.PADDING_TOP - CONSTANTS.TABLE_HEAD_HEIGHT - CONSTANTS.TOTAL_HEIGHT - CONSTANTS.PADDING_BOTTOM;
-    },
+    };
+
     //删除选中的重复的客户
-    delRepeatCustomer: function(customer) {
+    delRepeatCustomer = (customer) => {
         if (customer && customer.id) {
-            Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '删除重复客户');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '删除重复客户');
             CustomerRepeatAction.delRepeatCustomer([customer.id], result => {
                 if (result.error) {
                     message.error(result.errorMsg);
@@ -92,29 +92,33 @@ let CustomerRepeat = React.createClass({
                 }
             });
         }
-    },
+    };
+
     //返回客户列表
-    returnCustomerList: function(e) {
+    returnCustomerList = (e) => {
         Trace.traceEvent(e, '点击返回按钮回到客户列表页面');
         this.props.closeRepeatCustomer();
         //重置获取数据页数，保证下次进来获取第一页数据时界面的刷新
         CustomerRepeatAction.resetPage();
         CustomerRepeatAction.setSelectedCustomer([]);
-    },
-    showRightPanel: function(id) {
+    };
+
+    showRightPanel = (id) => {
         //舆情秘书角色不让看详情
         if (userData.hasRole(userData.ROLE_CONSTANS.SECRETARY)) {
             return;
         }
-        Trace.traceEvent(this.getDOMNode(), '点击查看客户详情');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击查看客户详情');
         CustomerRepeatAction.setRightPanelShow(true);
         CustomerRepeatAction.setCurCustomer(id);
-    },
-    hideRightPanel: function() {
+    };
+
+    hideRightPanel = () => {
         CustomerRepeatAction.setRightPanelShow(false);
         CustomerRepeatAction.setCurCustomer('');
-    },
-    handleScrollBottom() {
+    };
+
+    handleScrollBottom = () => {
         //下拉加载数据
         let queryParams = {
                 page_size: CONSTANTS.PAGE_SIZE,
@@ -125,12 +129,14 @@ let CustomerRepeat = React.createClass({
         }
         CustomerRepeatAction.setRepeatCustomerLoading(true);
         CustomerRepeatAction.getRepeatCustomerList(queryParams);
-    },
-    refreshRepeatCustomerList: function(customerId) {
+    };
+
+    refreshRepeatCustomerList = (customerId) => {
         setTimeout(() => CustomerRepeatAction.refreshRepeatCustomer(customerId), 1000);
-    },
+    };
+
     //获取删除客户时的确认提示
-    getModalContent: function(customer) {
+    getModalContent = (customer) => {
         let modalContent = Intl.get('crm.43', '确定要是删除该客户吗?');
         if (customer) {
             let userSize = _.isArray(customer.app_user_ids) && customer.app_user_ids.length || 0;
@@ -139,26 +145,28 @@ let CustomerRepeat = React.createClass({
             }
         }
         return modalContent;
-    },
-    showMergePanel: function(repeatList) {
+    };
+
+    showMergePanel = (repeatList) => {
         if (_.isArray(repeatList) && repeatList.length > 0) {
-            Trace.traceEvent($(this.getDOMNode()).find('.customer-merge-btn'), '点击合并按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.customer-merge-btn'), '点击合并按钮');
             CustomerRepeatAction.setMergeRepeatCustomers(repeatList);
             CustomerRepeatAction.setMergePanelShow(true);
         }
-    },
-    hideMergePanel: function() {
-        CustomerRepeatAction.setMergePanelShow(false);
-    },
+    };
 
-    showSearchInput: function(key) {
+    hideMergePanel = () => {
+        CustomerRepeatAction.setMergePanelShow(false);
+    };
+
+    showSearchInput = (key) => {
         CustomerRepeatAction.toggleSearchInput({key: key, isShow: true});
         if (key === 'name') {
-            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按客户名称搜索按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.repeat-customer-search-icon'), '点击按客户名称搜索按钮');
         } else if (key === 'user_name') {
-            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按负责人搜索按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.repeat-customer-search-icon'), '点击按负责人搜索按钮');
         } else if (key === 'remarks') {
-            Trace.traceEvent($(this.getDOMNode()).find('.repeat-customer-search-icon'), '点击按备注搜索按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.repeat-customer-search-icon'), '点击按备注搜索按钮');
         }
         //之前有搜索的内容时，先还原
         if (!_.isEmpty(this.state.filterObj)) {
@@ -169,9 +177,10 @@ let CustomerRepeat = React.createClass({
                 filterObj: JSON.stringify({})
             });
         }
-    },
+    };
+
     //表头过滤框的内容修改的处理
-    onChangeFilterObj: function(filterKey, event) {
+    onChangeFilterObj = (filterKey, event) => {
         this.state.filterObj[filterKey] = event.target.value;
         if (!event.target.value) {
             //清空过滤框的内容，直接进行过滤
@@ -179,9 +188,10 @@ let CustomerRepeat = React.createClass({
             delete this.state.filterObj[filterKey];
         }
         CustomerRepeatAction.setFilterObj(this.state.filterObj);
-    },
+    };
+
     //获取过滤后的重复客户
-    filterRepeatCustomer: function(filterKey) {
+    filterRepeatCustomer = (filterKey) => {
         if (this.state.filterObj[filterKey] === undefined) {
             return;
         }
@@ -191,9 +201,10 @@ let CustomerRepeat = React.createClass({
             page_size: CONSTANTS.PAGE_SIZE,
             filterObj: JSON.stringify(this.state.filterObj)
         });
-    },
+    };
+
     //清空过滤框中的内容
-    clearFilterContent: function(filterKey) {
+    clearFilterContent = (filterKey) => {
         this.state.filterObj[filterKey] = '';
         //清空过滤框的内容，直接进行过滤
         this.filterRepeatCustomer(filterKey);
@@ -201,31 +212,33 @@ let CustomerRepeat = React.createClass({
         CustomerRepeatAction.setFilterObj(this.state.filterObj);
         CustomerRepeatAction.toggleSearchInput({key: filterKey, isShow: false});
         if (filterKey === 'name') {
-            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭客户名称后的搜索框');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.anticon-cross-circle-o'), '关闭客户名称后的搜索框');
         } else if (filterKey === 'user_name') {
-            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭负责人后的搜索框');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.anticon-cross-circle-o'), '关闭负责人后的搜索框');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.anticon-cross-circle-o'), '关闭备注后的搜索框');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.anticon-cross-circle-o'), '关闭备注后的搜索框');
         }
-    },
-    onSearchInputKeyUp: function(filterKey) {
+    };
+
+    onSearchInputKeyUp = (filterKey) => {
         if (searchInputTimeOut) {
             clearTimeout(searchInputTimeOut);
         }
         searchInputTimeOut = setTimeout(() => {
             this.filterRepeatCustomer(filterKey);
             if (filterKey === 'name') {
-                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据客户名称过滤');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('input'), '跟据客户名称过滤');
             } else if (filterKey === 'user_name') {
-                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据负责人过滤');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('input'), '跟据负责人过滤');
             } else if (filterKey === 'remarks') {
-                Trace.traceEvent($(this.getDOMNode()).find('input'), '跟据备注过滤');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('input'), '跟据备注过滤');
             }
         }, delayTime);
 
-    },
+    };
+
     //filterKey:对应的过滤字段，columnLabel:该列的表头描述
-    getSearchInput: function(filterKey, columnLabel) {
+    getSearchInput = (filterKey, columnLabel) => {
         const placeholder = Intl.get('common.filter.by.key', '根据{key}过滤', {key: columnLabel});
         let filterValue = this.state.filterObj[filterKey];
         return (<div className="filter-input-container">
@@ -235,24 +248,28 @@ let CustomerRepeat = React.createClass({
             />
             <Icon type="cross-circle-o" onClick={this.clearFilterContent.bind(this, filterKey)}/>
         </div>);
-    },
-    getColumnTitle: function(filterKey, columnLabel) {
+    };
+
+    getColumnTitle = (filterKey, columnLabel) => {
         return ( <div>{columnLabel}<Icon type="search" onClick={this.showSearchInput.bind(this, filterKey)}
             className="repeat-customer-search-icon"/></div>);
-    },
-    ShowCustomerUserListPanel: function(data) {
+    };
+
+    ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
         });
 
-    },
-    closeCustomerUserListPanel: function() {
+    };
+
+    closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
         });
-    },
-    renderRepeatCustomerHead: function() {
+    };
+
+    renderRepeatCustomerHead = () => {
         return (<Row>
             <Col span={23}>
                 <Row>
@@ -271,15 +288,17 @@ let CustomerRepeat = React.createClass({
                 </Row>
             </Col>
         </Row>);
-    },
-    renderContactWay: function(customer) {
+    };
+
+    renderContactWay = (customer) => {
         if (_.isArray(customer.phones) && customer.phones.length) {
             return customer.phones.map((phone, index) => (<div key={index}>{phone}</div>));
         } else {
             return null;
         }
-    },
-    getCustomerRow: function(customer) {
+    };
+
+    getCustomerRow = (customer) => {
         let customerNameCls = classNames('repeat-customer-col customer-name-click',
             {'customer-name-active': this.state.curCustomer.id === customer.id});
         return (
@@ -311,8 +330,9 @@ let CustomerRepeat = React.createClass({
                     </PrivilegeChecker>
                 </Col>
             </Row>);
-    },
-    renderRepeatCustomerList: function() {
+    };
+
+    renderRepeatCustomerList = () => {
         let repeatCustomerList = this.state.repeatCustomerList;
         if (this.state.page === 1 && this.state.isLoadingRepeatCustomer) {
             return (<div className="table-loading-wrap">
@@ -346,8 +366,9 @@ let CustomerRepeat = React.createClass({
                 <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.more.crm', '没有更多客户了')}/>
                 </div>);
         }
-    },
-    renderCustomerDetail: function() {
+    };
+
+    renderCustomerDetail = () => {
         //触发打开带拨打电话状态的客户详情面板
         if (this.state.curCustomer) {
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
@@ -361,8 +382,15 @@ let CustomerRepeat = React.createClass({
                 }
             });
         }
-    },
-    render: function() {
+    };
+
+    state = {
+        crmListHeight: this.getCrmListHeight(),
+        isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+        CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+        ...CustomerRepeatStore.getState()};
+
+    render() {
         let tableData = this.state.repeatCustomerList;
         const total = Intl.get('crm.14', '共{count}条记录', {count: this.state.repeatCustomersSize});
         if(this.state.rightPanelIsShow){
@@ -402,6 +430,7 @@ let CustomerRepeat = React.createClass({
             />) : null}
         </div>);
     }
-});
+}
 
 module.exports = CustomerRepeat;
+

@@ -1,31 +1,33 @@
+var React = require('react');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-var Router = require('react-router').Router;
+import {Router} from 'react-router-dom';
+import {renderRoutes} from 'react-router-config';
 var userData = require('./user-data');
 var history = require('./history');
 
 import Translate from '../intl/i18nTemplate';
 
 //如果访问/，跳转到左侧导航菜单的第一个路由
-var HomeIndexRoute = React.createClass({
+class HomeIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
-    componentWillMount: function() {
+    componentWillMount() {
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
         if (sideBarMenus[0] && sideBarMenus[0].routePath) {
             history.replace(sideBarMenus[0].routePath);
         }
-    },
+    }
+
     //渲染内容为空，只做跳转
-    render: function() {
+    render() {
         return null;
     }
-});
-
+}
 
 //如果访问/，销售人员跳转到销售首页的第一个路由
-var SalesIndexRoute = React.createClass({
+class SalesIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
-    componentWillMount: function() {
+    componentWillMount() {
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
         _.some(sideBarMenus, function(menu) {
@@ -35,16 +37,17 @@ var SalesIndexRoute = React.createClass({
                 return true;
             }
         });
-    },
+    }
+
     //渲染内容为空，只做跳转
-    render: function() {
+    render() {
         return null;
     }
-});
+}
 
 //跳转到合同仪表盘
-var ContractIndexRoute = React.createClass({
-    componentWillMount: function() {
+class ContractIndexRoute extends React.Component {
+    componentWillMount() {
         var data = userData.getUserData();
         var subModules = data.subModules.contract;
         _.some(subModules, function(module) {
@@ -53,27 +56,29 @@ var ContractIndexRoute = React.createClass({
                 return true;
             }
         });
-    },
-    render: function() {
+    }
+
+    render() {
         return null;
     }
-});
+}
 
 //如果之前是直接请求某个模块的路径，后登录的
-var TurnPageIndexRoute = React.createClass({
-    componentWillMount: function() {
+class TurnPageIndexRoute extends React.Component {
+    componentWillMount() {
         var data = userData.getUserData();
         //跳到对应页
         history.replace(data.preUrl || '/');
         //只执行一次，需要删除属性值
         delete data.preUrl;
         return true;
-    },
+    }
+
     //渲染内容为空，只做跳转
-    render: function() {
+    render() {
         return null;
     }
-});
+}
 
 //获取权限之后,系统入口
 function init() {
@@ -89,10 +94,6 @@ function init() {
                 } else {
                     childRoutes.push(require('../../modules/sales_home_page'));
                 }
-                break;
-            //用户管理
-            case 'user_manage':
-                childRoutes.push(require('../../modules/user_manage'));
                 break;
             case 'oplate_user_analysis':
                 childRoutes.push(require('../../modules/oplate_user_analysis'));
@@ -152,45 +153,42 @@ function init() {
         path: '*',
         components: require('./404')
     });
-
-    var rootRoute = {
-        component: 'div',
-        childRoutes: [{
-            path: '/',
-            //添加indexroute，做首页访问的跳转
-            getIndexRoute: function(location, callback) {
-                if (user.preUrl && user.preUrl !== '/') {
-                    callback(null, {
-                        component: TurnPageIndexRoute
-                    });
-                } else {
-                    if (hasPrivilege('GET_ALL_CALL_RECORD') || //GET_ALL_CALL_RECORD 获取所有电话统计记录的权限
-                        hasPrivilege('GET_MY_CALL_RECORD')) {//GET_MY_CALL_RECORD 获取我的电话统计记录的权限
-                        //客套销售首页视图的权限跳到销售主页
-                        callback(null, {
-                            component: SalesIndexRoute
-                        });
-                    } else if (userData.hasRole(userData.ROLE_CONSTANS.ACCOUNTANT)) {
-                        //财务人员跳转到合同仪表盘
-                        callback(null, {
-                            component: ContractIndexRoute
-                        });
-                    } else {
-                        callback(null, {
-                            component: HomeIndexRoute
-                        });
-                    }
-                }
-            },
-            component: require('./page-frame'),
-            childRoutes: childRoutes
-        }]
+    //根路径路由
+    const IndexRoute = (props) => {
+        if (user.preUrl && user.preUrl !== '/') {
+            return <TurnPageIndexRoute/>;
+        } else {
+            if (hasPrivilege('GET_ALL_CALL_RECORD') || //GET_ALL_CALL_RECORD 获取所有电话统计记录的权限
+                hasPrivilege('GET_MY_CALL_RECORD')) {//GET_MY_CALL_RECORD 获取我的电话统计记录的权限
+                //客套销售首页视图的权限跳到销售主页
+                return <SalesIndexRoute/>;
+            } else if (userData.hasRole(userData.ROLE_CONSTANS.ACCOUNTANT)) {
+                //财务人员跳转到合同仪表盘
+                return <ContractIndexRoute/>;
+            } else {
+                return <HomeIndexRoute/>;
+            }
+        }
     };
 
+    //路由配置
+    const routePaths = [
+        {
+            component: require('./page-frame'),
+            routes: [
+                {
+                    path: '/',
+                    exact: true,
+                    component: IndexRoute
+                },
+                ...childRoutes
+            ]
+        }
+    ];
+    const routes = (<Router history={history}>{renderRoutes(routePaths)}</Router>);
 
-    ReactDOM.render(<Translate Template={<Router history={history} routes={rootRoute}/>}></Translate>,
-        $('#app')[0]
-    );
+    ReactDOM.render(<Translate Template={routes}></Translate>, $('#app')[0]);
 }
 
 exports.init = init;
+
