@@ -58,6 +58,6 @@ module.exports = {
     //页面布局常量
     LAYOUT: {
         TOP_NAV: 64,
-        PADDING_BOTTOM: 20
+        PADDING_BOTTOM: 16
     }
 };

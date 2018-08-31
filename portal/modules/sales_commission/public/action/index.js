@@ -8,7 +8,8 @@ class SalesCommissionActions {
             'setSort', // 设置排序
             'getUserInfo', // 获取销售的信息
             'setRecalculateTips', // 设置重新计算的提示
-            'setInitialPartlyState' // 重置
+            'setInitialPartlyState', // 重置
+            'setInitialState'//重置所有state
         );
     }
     // 销售提成列表

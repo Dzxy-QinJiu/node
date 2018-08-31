@@ -13,6 +13,7 @@ import { AntcTable } from 'antc';
 import teamAjaxTrans from '../../common/public/ajax/team';
 const salesmanAjax = require('../../common/public/ajax/salesman');
 import CommissionRightPanel from './views/right-panel';
+const LAYOUT_CONSTS = require('LIB_DIR/consts').LAYOUT;
 
 const searchFields = [
     {
@@ -38,7 +39,7 @@ const LAYOUT_CONSTANTS = {
 
 class CommissionPayment extends React.Component {
     state = {
-        containerHeight: $('.commission-payment-panel').height(),
+        containerHeight: $('.row>.col-xs-10') ? ($('.row>.col-xs-10').height() - LAYOUT_CONSTS.TOP_NAV - LAYOUT_CONSTS.PADDING_BOTTOM) : 0,
         teamList: [],
         userList: [],
         currentCommission: {},

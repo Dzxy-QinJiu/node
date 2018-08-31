@@ -5,16 +5,17 @@
 var React = require('react');
 import './public/style.less';
 import Analysis from '../../components/analysis';
-import { CHART_HEIGHT } from './consts';
+import {CHART_HEIGHT} from './consts';
 import AnalysisFilter from '../../components/analysis/filter';
 import TeamTree from '../../components/team-tree';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 
-import { formatAmount } from 'LIB_DIR/func';
-import { AntcCardContainer } from 'antc'; // 容器
-import { CONTRACT_STATIC_COLUMNS } from './consts';
-import { Row, Col } from 'antd';
+import {formatAmount} from 'LIB_DIR/func';
+import {AntcCardContainer} from 'antc'; // 容器
+import {CONTRACT_STATIC_COLUMNS} from './consts';
+import {Row, Col} from 'antd';
 
+const LAYOUT_CONSTS = require('LIB_DIR/consts').LAYOUT;
 //窗口改变的事件emitter
 const resizeEmitter = require('PUB_DIR/sources/utils/emitters').resizeEmitter;
 
@@ -28,7 +29,7 @@ class ContractDashboard extends React.Component {
         amount: '',
         grossProfit: '',
         repayGrossProfit: '',
-        contentHeight: 0,
+        contentHeight: $('.row>.col-xs-10') ? ($('.row>.col-xs-10').height() - LAYOUT_CONSTS.TOP_NAV - LAYOUT_CONSTS.PADDING_BOTTOM) : 0,
     };
 
     componentDidMount() {
@@ -53,7 +54,9 @@ class ContractDashboard extends React.Component {
 
         componentProps.height = CHART_HEIGHT;
 
-        componentProps.ref = (ref) => {this[componentProps.refName] = ref;};
+        componentProps.ref = (ref) => {
+            this[componentProps.refName] = ref;
+        };
 
         return React.createElement(component, componentProps, null);
     };
@@ -71,21 +74,25 @@ class ContractDashboard extends React.Component {
             <div>
                 <div>{args.title}</div>
                 <div className="count-content">
-                    {Intl.get('sales.home.new.add', '新增')} <span className="count-value">{args.type === 'repay' ? this.changeNumberFormat(value) : value}</span> {args.unit}
+                    {Intl.get('sales.home.new.add', '新增')} <span
+                    className="count-value">{args.type === 'repay' ? this.changeNumberFormat(value) : value}</span> {args.unit}
                 </div>
                 {args.type === 'contract' && this.state.amount ? (
                     <div className="count-content">
-                        {Intl.get('contract.25', '合同额')} <span className="count-value">{this.changeNumberFormat(this.state.amount)}</span> {Intl.get('contract.139', '万')}
+                        {Intl.get('contract.25', '合同额')} <span
+                        className="count-value">{this.changeNumberFormat(this.state.amount)}</span> {Intl.get('contract.139', '万')}
                     </div>
                 ) : null}
                 {args.type === 'contract' && this.state.grossProfit ? (
                     <div className="count-content">
-                        {Intl.get('contract.109', '毛利')} <span className="count-value">{this.changeNumberFormat(this.state.grossProfit)}</span> {Intl.get('contract.139', '万')}
+                        {Intl.get('contract.109', '毛利')} <span
+                        className="count-value">{this.changeNumberFormat(this.state.grossProfit)}</span> {Intl.get('contract.139', '万')}
                     </div>
                 ) : null}
                 {args.type === 'repay' && this.state.repayGrossProfit ? (
                     <div className="count-content">
-                        {Intl.get('contract.109', '毛利')} <span className="count-value">{this.changeNumberFormat(this.state.repayGrossProfit)}</span> {Intl.get('contract.139', '万')}
+                        {Intl.get('contract.109', '毛利')} <span
+                        className="count-value">{this.changeNumberFormat(this.state.repayGrossProfit)}</span> {Intl.get('contract.139', '万')}
                     </div>
                 ) : null}
             </div>
@@ -144,7 +151,10 @@ class ContractDashboard extends React.Component {
                     target: 'Contract',
                     chartType: 'box',
                     property: 'amount',
-                    processData: data => {this.setState({amount: data.value}); return data;},
+                    processData: data => {
+                        this.setState({amount: data.value});
+                        return data;
+                    },
                 }),
                 style: _.extend({}, countBoxStyle, {
                     display: 'none'
@@ -157,7 +167,10 @@ class ContractDashboard extends React.Component {
                     target: 'Contract',
                     chartType: 'box',
                     property: 'gross_profit',
-                    processData: data => {this.setState({grossProfit: data.value}); return data;},
+                    processData: data => {
+                        this.setState({grossProfit: data.value});
+                        return data;
+                    },
                 }),
                 style: _.extend({}, countBoxStyle, {
                     display: 'none'
@@ -188,7 +201,10 @@ class ContractDashboard extends React.Component {
                     chartType: 'box',
                     type: 'repay',
                     property: 'total=gross_profit',
-                    processData: data => {this.setState({repayGrossProfit: data.value}); return data;},
+                    processData: data => {
+                        this.setState({repayGrossProfit: data.value});
+                        return data;
+                    },
                 }),
                 style: _.extend({}, countBoxStyle, {
                     display: 'none'
@@ -323,7 +339,7 @@ class ContractDashboard extends React.Component {
                 <GeminiScrollBar>
                     <div className="dashboard-content">
                         <Row>
-                            <AnalysisFilter isAppSelectorShow={false} isAutoSelectDate={true} />
+                            <AnalysisFilter isAppSelectorShow={false} isAutoSelectDate={true}/>
                         </Row>
                         <Row gutter={16}>
                             <Col span={18}>
@@ -352,12 +368,12 @@ class ContractDashboard extends React.Component {
                                                 <div className="chart-wrap">
                                                     {chart.title && !chart.isTitleHide ? (
                                                         <AntcCardContainer title={chart.title}
-                                                            csvFileName={refName + '.csv'}
-                                                            exportData={exportData.bind(this)}
+                                                                           csvFileName={refName + '.csv'}
+                                                                           exportData={exportData.bind(this)}
                                                         >
                                                             {this.renderChartContent(chart.content)}
                                                         </AntcCardContainer>
-                                                    ) : this.renderChartContent(chart.content) }
+                                                    ) : this.renderChartContent(chart.content)}
                                                 </div>
                                             </Col>
                                         );

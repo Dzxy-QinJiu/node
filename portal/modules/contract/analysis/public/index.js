@@ -14,8 +14,7 @@ import AnalysisAction from './action/analysis-action';
 var userData = require('../../../../public/sources/user-data');
 const userInfo = userData.getUserData();
 import ModalIntro from 'CMP_DIR/modal-intro';
-import TopNav from 'CMP_DIR/top-nav';
-
+const LAYOUT_CONSTS = require('LIB_DIR/consts').LAYOUT;
 const {setWebsiteConfig, getLocalWebsiteConfig} = require('LIB_DIR/utils/websiteConfig');
 
 /**websiteConfig数据结构
@@ -38,7 +37,7 @@ class ContractAnalysis extends React.Component {
         this.state = {
             ...AnalysisStore.getState(),
             id: null,
-            contentHeight: 0,
+            contentHeight: $('.row>.col-xs-10') ? ($('.row>.col-xs-10').height() - LAYOUT_CONSTS.TOP_NAV - LAYOUT_CONSTS.PADDING_BOTTOM) : 0,
             tableData: null,
             status: CONTRACT_VIEW_AUTH.SELF.value,//展示权限 self仅自己可见 all全部
             loading: false,

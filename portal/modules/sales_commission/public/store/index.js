@@ -1,7 +1,16 @@
 import SalesCommissionActions from '../action/index';
 const DatePickerUtils = require('../../../../components/datepicker/utils');
 class SalesCommissionStore {
-    constructor(){
+    constructor() {
+        this.setInitialState();
+        this.bindActions(SalesCommissionActions);
+    }
+
+    setInitialState() {
+        this.setSolidState();
+        this.setInitialPartlyState();
+    }
+    setSolidState() {
         this.searchContent = '';
         this.standardFlag = 'true'; // 是否达标的标志，默认是达标的
         let timeObj = DatePickerUtils.getThisQuarterTime(); // 本季度
@@ -9,10 +18,9 @@ class SalesCommissionStore {
         this.endTime = _.min([DatePickerUtils.getMilliseconds(timeObj.end_time, true), Date.now()]); //结束时间
         this.sortField = 'create_time'; //排序字段
         this.order = 'descend'; //排序方向
-        this.setInitialPartlyState();
-        this.bindActions(SalesCommissionActions);
     }
-    setInitialPartlyState(){
+
+    setInitialPartlyState() {
         this.total = 0; // 销售总条数
         this.lastId = ''; // 最后一个id，默认为空
         this.pageSize = 20; // 每次加载的数据数

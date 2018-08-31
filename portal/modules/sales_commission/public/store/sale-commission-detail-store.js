@@ -1,12 +1,21 @@
 import SaleCommissionDetailActions from '../action/sale-commission-detail-actions';
 class SaleCommissionDetailStore {
-    constructor(){
-        this.sortField = 'commission_detail'; //排序字段
-        this.order = 'descend'; //排序方向
-        this.setInitialState ();
+    constructor() {
+        this.resetState();
         this.bindActions(SaleCommissionDetailActions);
     }
-    setInitialState(){
+
+    resetState() {
+        this.setSolidState();
+        this.setInitialState();
+    }
+
+    setSolidState() {
+        this.sortField = 'commission_detail'; //排序字段
+        this.order = 'descend'; //排序方向
+    }
+
+    setInitialState() {
         this.lastId = ''; // 最后一个id，默认为空
         this.pageSize = 20; // 每次加载的数据数
         this.listenScrollBottom = true; // 下拉加载

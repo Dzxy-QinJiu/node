@@ -83,6 +83,7 @@ class SaleCommissionDetail extends React.Component {
     }
 
     componentWillUnmount() {
+        SaleCommissionDetailActions.resetState();
         SaleCommissionDetailStore.unlisten(this.onStoreChange);
     }
 
