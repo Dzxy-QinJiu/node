@@ -477,9 +477,11 @@ class Crm extends React.Component {
             if (hasSecretaryAuth) {
                 return;
             }
-
             rightPanelShow = true;
             CrmAction.setCurrentCustomer(id);
+            setTimeout(() => {
+                this.renderCustomerDetail();
+            });
         };
 
     renderCustomerDetail = () => {
@@ -1410,9 +1412,9 @@ class Crm extends React.Component {
         //初始加载，客户列表数据还没有取到时，不显示表格
         const shouldTableShow = (this.state.isLoading && !this.state.curPageCustomers.length) ? false : true;
         let selectCustomerLength = this.state.selectedCustomer.length;
-        if (this.state.rightPanelIsShow) {
-            this.renderCustomerDetail();
-        }
+        // if (this.state.rightPanelIsShow) {
+        //     this.renderCustomerDetail();
+        // }
         let customerOfCurUser = this.state.customerOfCurUser;
         const contentClassName = classNames({
             'content-container': !this.props.fromSalesHome,
