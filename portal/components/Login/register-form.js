@@ -4,7 +4,7 @@
  * Created by wangliping on 2018/8/30.
  */
 require('./css/register.less');
-import {mobileRegex} from 'PUB_DIR/sources/utils/consts';
+import {mobileRegex} from '../../public/sources/utils/consts';
 import crypto from 'crypto';
 import {Form, Button, Steps, Input} from 'antd';
 import classNames from 'classnames';
