@@ -2570,6 +2570,7 @@ var zh_CN = {
     'clue.set.invalid': '判定无效',
     'clue.cancel.set.invalid': '取消无效',
     'analysis.sales.weekly.report': '销售周报',
+    'analysis.sales.monthly.report': '销售月报',
     'common.font.di': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',
@@ -2587,6 +2588,11 @@ var zh_CN = {
     'clue.statistic.get.error': '获取线索统计数据失败',
     'user.email.only.error': '邮箱唯一性验证失败',
     'clue.customer.source.ip': '来源IP',
-    'clue.source.province.city': '线索归属地'
+    'clue.source.province.city': '线索归属地',
+    'common.assessment.index': '考核指标',
+    'common.call.charge': '话费',
+    'common.this.month.qualified.customers.num': '本月合格客户数',
+    'common.history.highest.qualified.customers.num': '历史最高合格客户数',
+    'common.net.increase.qualified.customers.num': '净增合格客户数',
 };
 export default zh_CN;

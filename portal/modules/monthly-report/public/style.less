@@ -1,0 +1,50 @@
+.monthly-report {
+    .monthly-report-content {
+        padding: 0;
+        margin-top: 64px;
+        background: #f3f5f5;
+        .report-title {
+            padding: 16px;
+            font-size: 18px;
+            .team-name {
+                font-weight: bold;
+            }
+            .year-month {
+                color: #999;
+            }
+        }
+        .remarks-list {
+            line-height: 24px;
+            .iconfont {
+                margin-left: 0;
+                cursor: pointer;
+            }
+            .icon-edit-btn, .icon-delete {
+                float: right;
+                margin-left: 8px;
+                display: none;
+            }
+            .remarks-item:hover {
+                .icon-edit-btn, .icon-delete {
+                    display: block;
+                }
+            }
+            .remarks-form {
+                .iconfont, .anticon {
+                    margin-left: 8px;
+                }
+            }
+        }
+    }
+    .filter {
+        float: right;
+        margin-top: 16px;
+        margin-right: 20px;
+        .ant-select {
+            vertical-align: middle;
+        }
+        .ant-calendar-picker {
+            margin-left: 10px;
+        }
+    }
+}
