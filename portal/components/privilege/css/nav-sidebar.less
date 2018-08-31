@@ -102,7 +102,7 @@
         font-size: @nav-text-fontSize;
         >li {
             //线索未读数
-            &.clue-container {
+            &.clue-container, &.sidebar-applyentry {
                 &:before {
                     position: absolute;
                     right: 17px;
@@ -120,10 +120,16 @@
                     z-index: 1000;
                 }
             }
+            &.sidebar-applyentry:before {
+                left: -29px;
+            }
             //文字菜单
             &.text-nav-li {
                 &.clue-container:before{
                     right: 2px;
+                }
+                &.sidebar-applyentry:before {
+                    left: -18px;
                 }
                 &:first-child {
                     margin-top: -13px;
