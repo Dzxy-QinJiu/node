@@ -101,8 +101,30 @@
         margin-top: 14px;
         font-size: @nav-text-fontSize;
         >li {
+            //线索未读数
+            &.clue-container {
+                &:before {
+                    position: absolute;
+                    right: 17px;
+                    top: 8px;   
+                    min-width: 16px;
+                    height: 16px;
+                    overflow: hidden;
+                    background: #f41919;
+                    border-radius: 8px;
+                    color: #fff;
+                    line-height: 16px;
+                    font-size: 12px;
+                    text-align: center;
+                    font-family: "SimHei", "Helvetica Neue", Helvetica, sans-serif;
+                    z-index: 1000;
+                }
+            }
             //文字菜单
             &.text-nav-li {
+                &.clue-container:before{
+                    right: 2px;
+                }
                 &:first-child {
                     margin-top: -13px;
                 }

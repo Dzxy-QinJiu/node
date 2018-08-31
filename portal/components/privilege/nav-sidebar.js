@@ -606,7 +606,7 @@ var NavSidebar = React.createClass({
                                         //不隐藏图标时
                                         if (!this.state.hideNavIcon) {
                                             return (
-                                                <li key={i} title={menu.name}>
+                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'clue-container' : ''}>
                                                     <Link to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                         className={extraClass}
@@ -618,7 +618,7 @@ var NavSidebar = React.createClass({
                                         //小屏幕隐藏图标
                                         else {
                                             return (
-                                                <li className="text-nav-li" key={i} title={menu.name}>
+                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'text-nav-li clue-container' : 'text-nav-li'}>
                                                     <Link to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                     >
