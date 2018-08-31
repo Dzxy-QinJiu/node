@@ -19,7 +19,7 @@ const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 require('./css/index.less');
-import {SELECT_TYPE, getClueStatusValue,clueStartTime} from './utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -316,20 +316,25 @@ const ClueCustomer = React.createClass({
     },
     renderSalesBlock: function() {
         let dataList = [];
+        var clueSalesIdList = getClueSalesList();
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        this.state.salesManList.forEach(function(salesman) {
+        this.state.salesManList.forEach((salesman) => {
             let teamArray = salesman.user_groups;
+            var clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'user_info.user_id'));
             //一个销售属于多个团队的处理（旧数据中存在这种情况）
             if (_.isArray(teamArray) && teamArray.length) {
                 //销售与所属团队的组合数据，用来区分哪个团队中的销售
                 teamArray.forEach(team => {
                     dataList.push({
                         name: salesman.user_info.nick_name + '-' + team.group_name,
-                        value: salesman.user_info.user_id + '&&' + team.group_id
+                        value: salesman.user_info.user_id + '&&' + team.group_id,
+                        clickCount: clickCount
                     });
                 });
             }
         });
+        //按点击的次数进行排序
+        dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
@@ -370,6 +375,7 @@ const ClueCustomer = React.createClass({
                 'team_name': team_name,
             };
             clueCustomerAction.distributeCluecustomerToSale(submitObj, (feedbackObj) => {
+                SetLocalSalesClickCount(sale_id);
                 if (feedbackObj && feedbackObj.errorMsg) {
                     message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
                 } else {
