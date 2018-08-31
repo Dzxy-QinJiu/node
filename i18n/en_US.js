@@ -2573,5 +2573,9 @@ var en_US = {
     'common.this.month.qualified.customers.num': 'This month qualified customer number',//本月合格客户数
     'common.history.highest.qualified.customers.num': 'History highest qualified customer number',//历史最高合格客户数
     'common.net.increase.qualified.customers.num': 'Net increase qualified customer number',//净增合格客户数
+    'common.ranking': 'ranking',//排名
+    'common.telephone.statistics': 'Telephone statistics',//电话量统计
+    'common.ketao.app.telephone.statistics': 'Ketao app telephone statistics',//客套APP电话量统计
+    'common.trial.qualified.customer.statistics': 'Trial qualified customer statistics',//试用合格客户数统计
 };
 export default en_US;

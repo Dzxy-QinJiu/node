@@ -171,8 +171,8 @@ class Remarks extends React.Component {
                 {this.state.isLoading ? (
                     <Icon type="loading" />
                 ) : null}
-                <i className="iconfont icon-choose" title="保存" onClick={this.handleSave.bind(this, remarks.id, action)}></i>
-                <i className="iconfont icon-close" title="取消" onClick={this.handleCancel.bind(this)}></i>
+                <i className="iconfont icon-choose" title={Intl.get('common.save', '保存')} onClick={this.handleSave.bind(this, remarks.id, action)}></i>
+                <i className="iconfont icon-close" title={Intl.get('common.save', '取消')} onClick={this.handleCancel.bind(this)}></i>
             </div>
         );
     }
@@ -200,16 +200,16 @@ class Remarks extends React.Component {
 
                     return (
                         <div className="remarks-item">
-                            {leaveTime}{leaveDetailLabel}{leaveDays}天
+                            {leaveTime}{leaveDetailLabel}{Intl.get('weekly.report.n.days', '{n}天', {n: leaveDays})}
 
                             <Popconfirm
                                 title={Intl.get('weekly.report.are.you.sure.del.remark', '确定要删除该条请假信息吗？')}
                                 onConfirm={this.handleSave.bind(this, remarks.id, 'delete')}
                             >
-                                <i className="iconfont icon-delete" title="删除" />
+                                <i className="iconfont icon-delete" title={Intl.get('common.delete', '删除')} />
                             </Popconfirm>
 
-                            <i className="iconfont icon-edit-btn" title="编辑" onClick={this.handleEdit.bind(this, remarks)} />
+                            <i className="iconfont icon-edit-btn" title={Intl.get('common.edit', '编辑')} onClick={this.handleEdit.bind(this, remarks)} />
                         </div>
                     );
                 } 
@@ -217,8 +217,8 @@ class Remarks extends React.Component {
         } else if (!isAdd) {
             remarksJsx = (
                 <div className="remarks-item">
-                    全勤
-                    <i className="iconfont icon-edit-btn" title="编辑" onClick={this.handleAdd.bind(this)} />
+                    {Intl.get('weekly.report.full.work.day', '全勤')}
+                    <i className="iconfont icon-edit-btn" title={Intl.get('common.edit', '编辑')} onClick={this.handleAdd.bind(this)} />
                 </div>
             );
         }
@@ -229,7 +229,7 @@ class Remarks extends React.Component {
 
                 {isAdd ? this.renderForm() : null}
                 {!isAdd && remarksList.length ? (
-                    <i className="iconfont icon-add" title="添加" onClick={this.handleAdd.bind(this)} />
+                    <i className="iconfont icon-add" title={Intl.get('common.add', '添加')} onClick={this.handleAdd.bind(this)} />
                 ) : null}
             </div>
         );

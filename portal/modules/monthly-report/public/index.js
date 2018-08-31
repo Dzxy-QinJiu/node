@@ -82,7 +82,7 @@ const MonthlyReport = React.createClass({
     getPhoneStatisticsColumns() {
         return [
             {
-                title: '排名',
+                title: Intl.get('common.ranking', '排名'),
                 dataIndex: 'rank',
                 width: '10%',
             },
@@ -190,7 +190,7 @@ const MonthlyReport = React.createClass({
     getCharts() {
         return [
             {
-                title: '电话量统计',
+                title: Intl.get('common.telephone.statistics', '电话量统计'),
                 height: 'auto',
                 layout: {sm: 24},
                 url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
@@ -212,7 +212,7 @@ const MonthlyReport = React.createClass({
                 },
             },
             {
-                title: '客套APP电话量统计',
+                title: Intl.get('common.ketao.app.telephone.statistics', '客套APP电话量统计'),
                 height: 'auto',
                 layout: {sm: 24},
                 url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
@@ -227,7 +227,7 @@ const MonthlyReport = React.createClass({
                 },
             },
             {
-                title: '试用合格客户数统计',
+                title: Intl.get('common.trial.qualified.customer.statistics', '试用合格客户数统计'),
                 height: 'auto',
                 layout: {sm: 24},
                 url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',

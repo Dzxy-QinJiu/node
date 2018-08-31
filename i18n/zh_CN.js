@@ -2594,5 +2594,9 @@ var zh_CN = {
     'common.this.month.qualified.customers.num': '本月合格客户数',
     'common.history.highest.qualified.customers.num': '历史最高合格客户数',
     'common.net.increase.qualified.customers.num': '净增合格客户数',
+    'common.ranking': '排名',
+    'common.telephone.statistics': '电话量统计',
+    'common.ketao.app.telephone.statistics': '客套APP电话量统计',
+    'common.trial.qualified.customer.statistics': '试用合格客户数统计',
 };
 export default zh_CN;
