@@ -64,7 +64,7 @@ var UnreadMixin = {
             var styleText = '';
             //设置数字
             if (count > 0) {               
-                var len = (2 + '').length;
+                var len = (count + '').length;
                 if (len >= 3) {
                     styleText = '.clue-container:before{content:\'99+\';display:block;padding:0 2px 0 2px;}';
                 } else {
