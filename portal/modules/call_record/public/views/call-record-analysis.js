@@ -573,7 +573,7 @@ var CallRecordAnalyis = React.createClass({
     // 通话类型的筛选框
     filterCallTypeSelect(){
         return (
-            <div className="call-type-select">
+            <div className="call-type-select btn-item">
                 <SelectFullWidth
                     showSearch
                     value={this.state.callType}
@@ -1375,7 +1375,7 @@ var CallRecordAnalyis = React.createClass({
                             </div>
                             <div className="call-interval-block col-xs-6 padding-both-none">
                                 {this.renderCallIntervalChart()}
-                                <div className="call-interval-radio clearfix">
+                                <div className="call-interval-radio clearfix btn-item">
                                     <RadioGroup onChange={this.onChangeCallIntervalRadio}
                                         value={this.state.selectedCallInterval}>
                                         <Radio value={CALL_RADIO_VALUES.COUNT}>
@@ -1480,6 +1480,7 @@ var CallRecordAnalyis = React.createClass({
                         defaultValue={FIRSR_SELECT_DATA[0]}
                         onChange={this.handleFirstSelectChange}
                         onSelect={this.handleFirstSelect}
+                        className="btn-item"
                     >
                         {firstOptions}
                     </SelectFullWidth>
@@ -1488,7 +1489,7 @@ var CallRecordAnalyis = React.createClass({
                     multiple
                     value={this.state.secondSelectValue}
                     onChange={this.onSecondSelectChange}
-                    className="team-member-select-options"
+                    className="team-member-select-options btn-item"
                     onSelect={this.handleSelectTeamOrMember}
                 >
                     {secondOptions}
@@ -1543,20 +1544,22 @@ var CallRecordAnalyis = React.createClass({
                         <div>
                             {this.filterCallTypeSelect()}
                         </div>
-                        <DatePicker
-                            disableDateAfterToday={true}
-                            range="day"
-                            onSelect={this.onSelectDate}>
-                            <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
-                            <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                            <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                            <DatePicker.Option
-                                value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                            <DatePicker.Option
-                                value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
-                            <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
-                            <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                        </DatePicker>
+                        <span className="btn-item">
+                            <DatePicker
+                                disableDateAfterToday={true}
+                                range="day"
+                                onSelect={this.onSelectDate}>
+                                <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                                <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                                <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                                <DatePicker.Option
+                                    value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                                <DatePicker.Option
+                                    value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                                <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
+                                <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
+                            </DatePicker>
+                        </span>
                         {/**
                          * 团队和成员筛选框
                          * */}

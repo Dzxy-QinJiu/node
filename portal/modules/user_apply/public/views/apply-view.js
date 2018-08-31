@@ -383,7 +383,7 @@ var ApplyTabContent = React.createClass({
             let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType === 'all' && !this.state.searchKeyword;
             return (
                 <div className="searchbar clearfix">
-                    <div className="apply-type-filter" id="apply-type-container">
+                    <div className="apply-type-filter btn-item" id="apply-type-container">
                         {
                             UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
                                 <Dropdown overlay={menuList} placement="bottomLeft"
@@ -396,7 +396,7 @@ var ApplyTabContent = React.createClass({
                             )
                         }
                     </div>
-                    <div className="apply-search-wrap">
+                    <div className="apply-search-wrap btn-item">
                         <SearchInput
                             type="input"
                             className="form-control"

@@ -1,10 +1,8 @@
 var language = require('../../../public/language/getLanguage');
 import Trace from 'LIB_DIR/trace';
-
+require('./index-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./index-es_VE.less');
-} else if (language.lan() === 'zh') {
-    require('./index-zh_CN.less');
 }
 require('./oplate');
 const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;

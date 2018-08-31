@@ -880,7 +880,12 @@ const CallRecord = React.createClass({
         return (<RightContent>
             <div className="call_record_content">
                 <TopNav>
+                    <div className="filter-phone-button float-l">
+                        <Button type="ghost" size="large" onClick={this.toggleFilter}
+                            className="btn-item">{this.state.isFilter ? Intl.get('call.record.cancel.search', '取消搜索') : Intl.get('sales.team.search', '搜索')}</Button>
+                    </div>
                     <DatePicker
+                        className="btn-item"
                         disableDateAfterToday={true}
                         range="day"
                         onSelect={this.onSelectDate}>
@@ -890,23 +895,20 @@ const CallRecord = React.createClass({
                         <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
                         <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
                         <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                    </DatePicker>
-                    <Button type="ghost" size="large" onClick={this.toggleFilter}
-                        className="search-btn">{this.state.isFilter ? Intl.get('call.record.cancel.search', '取消搜索') : Intl.get('sales.team.search', '搜索')}</Button>
-                    <div className="filter-phone-button">
+                    </DatePicker>                    
+                    <div className="filter-phone-button float-r">
                         <Select
-                            className="filter-select-fix"
+                            className="btn-item"
                             defaultValue="all"
                             dropdownMatchSelectWidth={false}
                             onChange={this.selectFilterPhone}
                         >
                             {filterOptions}
                         </Select>
-                        <RefreshButton handleRefresh={this.handleRefresh}/>
-                        <span className="call-analysis-btn">
-                            <i className="iconfont  icon-call-analysis call-analysis" title="通话分析"
-                                onClick={this.handleCallAnalysis} data-tracename="点击通话分析按钮"></i>
-                        </span>
+                        <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>                    
+                        <Button className="btn-item btn-m-r-2" onClick={this.handleCallAnalysis} data-tracename="点击通话分析按钮">
+                            {Intl.get('user.detail.analysis', '分析')}
+                        </Button>                        
                     </div>
                 </TopNav>
                 <div className="call_record_wrap splice-table" id="new-table" >

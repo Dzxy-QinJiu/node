@@ -47,7 +47,7 @@ const AnalysisFilter = React.createClass({
         return (
             <div className="analysis-filter">
                 {this.props.isAppSelectorShow ? (
-                    <span>
+                    <span className="btn-item">
                         <AnalysisAppSelector
                             onSelectApp={this.onSelectApp}
                             maxWidth={200}
@@ -56,7 +56,7 @@ const AnalysisFilter = React.createClass({
                         />
                     </span>
                 ) : null}
-                <div className="date-selector-wrap">
+                <div className="date-selector-wrap btn-item">
                     <DatePicker
                         disableDateAfterToday={true}
                         range={timeRange}

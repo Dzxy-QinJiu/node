@@ -2560,6 +2560,10 @@ var en_US = {
     'clue.download.clue.csv': 'Download the import clue form',//下载导入线索表格
     'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
     'clue.not.complete.schedule': 'The schedule of today',//今天的联系计划
+    'menu.shortName.call': 'call', //'通话',
+    'menu.shortName.operate': 'operate', //'运营',
+    'menu.shortName.schedule': 'schedule', //'日程',
+    'menu.shortName.config': 'config', //'设置',
     'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.',//当前筛选时间段及状态没有相关线索信息
     'clue.no.data': 'There is no relevant clue information',//暂无线索信息
     'clue.filter.clue.status': 'clue status',//线索状态

@@ -148,25 +148,25 @@ var SalesStagePage = React.createClass({
                         this.state.salesStageEditOrder ?
                             (<div className="sales-stage-top-div-group">
                                 <div className="sales-stage-top-div">
-                                    <Button type="ghost" className="sales-stage-top-btn"
+                                    <Button type="ghost" className="sales-stage-top-btn btn-item"
                                         onClick={_this.events.hideSalesStageEditOrder.bind(this)}
                                     ><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></Button>
                                 </div>
                                 <div className="sales-stage-top-div">
-                                    <Button type="ghost" className="sales-stage-top-btn"
+                                    <Button type="ghost" className="sales-stage-top-btn btn-item"
                                         onClick={_this.events.saveSalesStageOrder.bind(this)}
                                     ><ReactIntl.FormattedMessage id="common.save" defaultMessage="保存" /></Button>
                                 </div>
                             </div>) :
                             (<div className="sales-stage-top-div-group">
                                 <PrivilegeChecker check="BGM_SALES_STAGE_SORT" className="sales-stage-top-div">
-                                    <Button type="ghost" className="sales-stage-top-btn"
+                                    <Button type="ghost" className="sales-stage-top-btn btn-item btn-m-r-2"
                                         onClick={_this.events.showSalesStageEditOrder.bind(this)}
 
                                     ><ReactIntl.FormattedMessage id="sales.stage.change.sort" defaultMessage="变更顺序" /></Button>
                                 </PrivilegeChecker>
                                 <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
-                                    <Button type="ghost" className="sales-stage-top-btn"
+                                    <Button type="ghost" className="sales-stage-top-btn btn-item"
                                         onClick={_this.events.showSalesStageForm.bind(this, 'addSalesStage')}
                                         data-tracename="添加销售阶段"
                                     ><ReactIntl.FormattedMessage id="sales.stage.add.sales.stage" defaultMessage="添加销售阶段" /></Button>

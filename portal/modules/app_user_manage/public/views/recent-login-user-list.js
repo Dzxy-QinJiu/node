@@ -452,7 +452,7 @@ class RecentLoginUsers extends React.Component {
         return (
             <div className="recent-login-users-container" data-tracename="近期登录用户列表">
                 <TopNav>
-                    <div className="inline-block recent-login-time-select">
+                    <div className="inline-block recent-login-time-select btn-item">
                         <DatePicker
                             disableDateAfterToday={true}
                             range="day"
@@ -467,7 +467,7 @@ class RecentLoginUsers extends React.Component {
                             <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                         </DatePicker>
                     </div>
-                    <div className="inline-block recent-login-app-select">
+                    <div className="inline-block recent-login-app-select btn-item">
                         <SelectFullWidth
                             optionFilterProp="children"
                             showSearch
@@ -480,7 +480,7 @@ class RecentLoginUsers extends React.Component {
                         </SelectFullWidth>
                     </div>
 
-                    <div className="inline-block recent-login-type-select">
+                    <div className="inline-block recent-login-type-select btn-item">
                         <Select
                             value={this.state.user_type}
                             onChange={this.onUserTypeChange.bind(this)}
@@ -492,7 +492,7 @@ class RecentLoginUsers extends React.Component {
                             }
                         </Select>
                     </div>
-                    <div className="inline-block recent-login-filter-type-select">
+                    <div className="inline-block recent-login-filter-type-select btn-item">
                         <SelectFullWidth
                             value={this.state.team_ids}
                             onChange={this.onTeamChange.bind(this)}
@@ -504,7 +504,7 @@ class RecentLoginUsers extends React.Component {
                             }
                         </SelectFullWidth>
                     </div>
-                    <div className="inline-block recent-login-filter-type-select">
+                    <div className="inline-block recent-login-filter-type-select btn-item">
                         <SelectFullWidth
                             value={this.state.filter_type}
                             onChange={this.onFilterTypeChange.bind(this)}

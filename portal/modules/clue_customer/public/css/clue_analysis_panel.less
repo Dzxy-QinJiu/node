@@ -1,5 +1,20 @@
+@import "../../../../public/css/common-variables";
 //线索分析
 .clue-analysis-panel.right-pannel-default {
+  .ant-tabs-nav {
+    margin-left: 10px;
+  }
+  .ant-tabs-tab {
+    font-size: @btn-font-size;   
+    line-height: @btn-height;
+    height: 63px;  
+    padding: 14px 0 !important;
+    margin: 0 10px;
+    &.ant-tabs-tab-active {
+      color: @BORDER-BLUE;
+      border-bottom: 4px solid @BORDER-BLUE;
+    }
+  }
   width: auto;
   left: 75px;
   transform: translateX(100%);
@@ -14,10 +29,7 @@
       .ant-tabs-top {
         width: 100%;
         .ant-tabs-bar {
-          margin-bottom: 0;
-          .ant-tabs-nav .ant-tabs-tab {
-            padding-left: 25px !important;
-          }
+          margin-bottom: 0;          
           .ant-tabs-ink-bar {
             background-color: transparent;
           }
@@ -32,28 +44,25 @@
     .date-picker-container {
       position: absolute;
       right: 0;
-      top: 0;
+      top: @filter_area_margin_top;
       z-index: 10;
-      width: 400px;
       .date-picker-wrap {
-        position: absolute;
-        right: 92px;
-        top: 18px;
-        z-index: 10;
+        float: right;        
         padding-top: 0;
         .range-datepicker {
           display: inline-block;
           float: none;
+          margin-top: -2px;
         }
         .date-picker-tip {
-          position: relative;
-          top: -10px;
+          margin-right: 0!important;
         }
       }
     }
 
     .close-pannel {
-      margin-top: 20px;
+      margin-top: 4px;
+      float: right;
     }
 
     //图表的样式

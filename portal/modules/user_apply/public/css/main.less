@@ -384,7 +384,7 @@
           font-size: 14px;
           border: 1px solid #cdd5d9;
           border-radius: 3px;
-          line-height: 27px;
+          line-height: 29px;
           &:hover {
             border: 1px solid #57c5f7;
           }
@@ -401,6 +401,18 @@
         float: left;
         width: 160px;
         margin-left: 10px;
+        .search-input-container {
+          height: @btn-height;
+          padding: 0 5px;
+          .search-input {
+            height: 30px;
+            line-height: 32px;
+            padding: 0;
+            line-height: 29px;
+            border: none;
+            outline: none;
+          }
+        }
       }
       //刷新、查看未读回复的按钮
       .search-btns {

@@ -137,7 +137,7 @@ const WeeklyReport = React.createClass({
         return (
             <div className="weekly-report-container" data-tracename='销售周报'>
                 <TopNav>
-                    <AnalysisMenu />
+                    <AnalysisMenu showTab={true}/>
                     {this.renderWeekSelect()}
                     {this.renderTeamSelect()}
                 </TopNav>
