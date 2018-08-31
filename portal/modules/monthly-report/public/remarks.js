@@ -133,7 +133,7 @@ class Remarks extends React.Component {
             const day = firstDay.clone().add(i, 'days');
 
             const timestamp = day.valueOf();
-            const dateText = day.format('YYYY-MM-DD');
+            const dateText = day.format(oplateConsts.DATE_FORMAT);
             dateOptions.push(<Option key={i} value={timestamp}>{dateText}</Option>);
         }
 
@@ -188,7 +188,7 @@ class Remarks extends React.Component {
                 if (remarks.id === editRemarksId) {
                     return this.renderForm();
                 } else {
-                    const leaveTime = moment(remarks.leave_time).format('YYYY-MM-DD');
+                    const leaveTime = moment(remarks.leave_time).format(oplateConsts.DATE_FORMAT);
                     const leaveDetail = remarks.leave_detail;
                     const leaveDays = remarks.leave_days;
                     const leaveType = _.find(LEAVE_TYPES, typeItem => typeItem.value === leaveDetail);

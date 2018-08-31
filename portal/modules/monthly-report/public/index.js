@@ -349,7 +349,7 @@ const MonthlyReport = React.createClass({
                                 {selectedTeamName + Intl.get('analysis.sales.monthly.report', '销售月报')}
                             </span>
                             <span className="year-month">
-                            （{this.state.selectedMonth.format('YYYY-MM')}）
+                            （{this.state.selectedMonth.format(oplateConsts.DATE_YEAR_MONTH_FORMAT)}）
                             </span>
                         </div>
                     ) : null}
