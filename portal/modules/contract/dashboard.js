@@ -53,7 +53,7 @@ class ContractDashboard extends React.Component {
 
         componentProps.height = CHART_HEIGHT;
 
-        componentProps.ref = (ref) => {this.refs[componentProps.refName] = ref;};
+        componentProps.ref = (ref) => {this[componentProps.refName] = ref;};
 
         return React.createElement(component, componentProps, null);
     };
@@ -336,7 +336,7 @@ class ContractDashboard extends React.Component {
 
                                         const componentProps = chart.content.props;
                                         const refName = componentProps.refName;
-                                        const ref = this.refs[refName];
+                                        const ref = this[refName];
                                         const exportData = () => {
                                             if (refName === 'qian_dan_qing_kuang_tong_ji') {
                                                 $('.signing-statistics-export-btn').click();
