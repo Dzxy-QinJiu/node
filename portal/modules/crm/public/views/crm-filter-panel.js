@@ -1,4 +1,5 @@
 var React = require('react');
+const PropTypes = require('prop-types');
 import { getSelected } from '../../../../lib/utils/filter-utils';
 var FilterStore = require('../store/filter-store');
 var FilterAction = require('../action/filter-actions');
@@ -502,7 +503,7 @@ class CrmFilterPanel extends React.Component {
                 groupName: Intl.get('crm.6', '负责人'),
                 groupId: 'user_name',
                 singleSelect: true,
-                data: _.drop(this.state.ownerNameList).map(x => ({
+                data: _.map(this.state.ownerNameList, x => ({
                     name: x,
                     value: x
                 }))
@@ -524,6 +525,10 @@ class CrmFilterPanel extends React.Component {
         );
     }
 }
-
+CrmFilterPanel.propTypes = {
+    showSelectTip: PropTypes.bool,
+    style: PropTypes.object,
+    search: PropTypes.func
+};
 module.exports = CrmFilterPanel;
 
