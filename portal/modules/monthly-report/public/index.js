@@ -366,7 +366,7 @@ const MonthlyReport = React.createClass({
         return (
             <div className="monthly-report" data-tracename='销售月报'>
                 <TopNav>
-                    <AnalysisMenu />
+                    <AnalysisMenu showTab={true}/>
                     {this.renderFilter(selectedTeamId)}
                 </TopNav>
                 <div className="monthly-report-content">

@@ -45,10 +45,12 @@ var AnalysisMenu = React.createClass({
             if(/analysis/.test(module)) {
                 var url = moduleUrlMap[module];
                 const name = moduleTextMap[module];
-                menuList.push({
-                    routePath: url.replace('/analysis', 'analysis'),
-                    name
-                });
+                if (url) {
+                    menuList.push({
+                        routePath: url.replace('/analysis', 'analysis'),
+                        name
+                    });
+                }
                 menuListArray.push((
                     <Menu.Item key={module}>
                         <Link to={url} activeClassName="active">{name}</Link>

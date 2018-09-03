@@ -98,11 +98,11 @@
     .navbar-nav {
         float: none;
         margin: 0;
-        margin-top: 14px;
+        margin-top: -6px;
         font-size: @nav-text-fontSize;
         >li {
             //线索未读数
-            &.clue-container, &.sidebar-applyentry {
+            &.clue-icon-container, &.sidebar-applyentry {
                 &:before {
                     position: absolute;
                     right: 17px;
@@ -125,14 +125,14 @@
             }
             //文字菜单
             &.text-nav-li {
-                &.clue-container:before{
+                &.clue-icon-container:before{
                     right: 2px;
                 }
                 &.sidebar-applyentry:before {
                     left: -18px;
                 }
                 &:first-child {
-                    margin-top: -13px;
+                    margin-top: 6px;
                 }
                 height: @nav-text-height;
                 width: @nav-text-width;
