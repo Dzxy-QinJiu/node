@@ -72,7 +72,8 @@ var ExcludeLinkList = [
     { 'name': Intl.get('menu.backend', '后台管理'), path: 'background_management' },
     { 'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage' },
     { 'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system' },
-    { 'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply' }
+    { 'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply' },
+    {'name': Intl.get('analysis.sales.monthly.report', '销售月报'), path: 'analysis/monthly_report'}
 ];
 
 //后台管理配置
@@ -598,7 +599,7 @@ var NavSidebar = React.createClass({
                                         return false;
                                     }).map((menu, i) => {
                                         var category = menu.routePath.replace(/\/.*$/, '');
-                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}-ico` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}-ico`;
+                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}-ico active` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}-ico`;
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
                                         if (!(_.includes(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);
@@ -606,7 +607,7 @@ var NavSidebar = React.createClass({
                                         //不隐藏图标时
                                         if (!this.state.hideNavIcon) {
                                             return (
-                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'clue-container' : ''}>
+                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'clue-icon-container' : ''}>
                                                     <Link to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                         className={extraClass}
@@ -618,7 +619,7 @@ var NavSidebar = React.createClass({
                                         //小屏幕隐藏图标
                                         else {
                                             return (
-                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'text-nav-li clue-container' : 'text-nav-li'}>
+                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'text-nav-li clue-icon-container' : 'text-nav-li'}>
                                                     <Link to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                     >

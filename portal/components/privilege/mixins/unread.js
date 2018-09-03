@@ -66,13 +66,13 @@ var UnreadMixin = {
             if (count > 0) {               
                 var len = (count + '').length;
                 if (len >= 3) {
-                    styleText = '.clue-container:before{content:\'99+\';display:block;padding:0 2px 0 2px;}';
+                    styleText = '.clue-icon-container:before{content:\'99+\';display:block;padding:0 2px 0 2px;}';
                 } else {
-                    styleText = `.clue-container:before{content:'${count}';display:block}`;
+                    styleText = `.clue-icon-container:before{content:'${count}';display:block}`;
                 }
 
             } else {
-                styleText = '.clue-container:before{content:\'\';display:none}';
+                styleText = '.clue-icon-container:before{content:\'\';display:none}';
             }
             //展示数字
             this.clueUnhandledStyle = insertStyle(styleText);

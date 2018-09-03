@@ -240,7 +240,7 @@ class LeftMenuClass {
             //月报统计
             {
                 id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('annalysis.sales.monthly.report', '销售月报'),
+                name: backendIntl.get('analysis.sales.monthly.report', '销售月报'),
                 routePath: 'analysis/monthly_report',
                 privileges: [
                     'CALL_RECORD_VIEW_MANAGER',
