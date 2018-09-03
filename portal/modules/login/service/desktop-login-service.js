@@ -36,7 +36,9 @@ var urls = {
     //获取短信验证码
     getVertificationCode: '/rest/open/resource/verificationcode',
     //注册新公司账号
-    registerAccount: '/rest/open/resource/organization'
+    registerAccount: '/rest/open/resource/organization',
+    //短信验证码的验证
+    validatePhoneCode: 'rest/open/resource/verificationcode/check'
 };
 //验证码的高和宽
 var captcha = {
@@ -410,6 +412,15 @@ exports.registerAccount = function(req, res) {
             req: req,
             res: res,
         }, req.body);
+};
+//短信验证码的验证
+exports.validatePhoneCode = function(req, res) {
+    return restUtil.baseRest.get(
+        {
+            url: urls.validatePhoneCode,
+            req: req,
+            res: res,
+        }, req.query);
 };
 
 

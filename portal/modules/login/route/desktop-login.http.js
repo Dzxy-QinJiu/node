@@ -76,12 +76,19 @@ module.exports = {
         }
     },{
         'method': 'get',
-        'path': '/phone/validate/code',
+        'path': '/phone/validate_code',
         'handler': 'getVertificationCode',
         'passport': {
             'needLogin': false
         }
     },{
+        'method': 'get',
+        'path': '/phone/code/validate',
+        'handler': 'validatePhoneCode',
+        'passport': {
+            'needLogin': false
+        }
+    }, {
         'method': 'post',
         'path': '/account/register',
         'handler': 'registerAccount',

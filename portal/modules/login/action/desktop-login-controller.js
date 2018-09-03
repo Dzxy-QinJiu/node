@@ -345,7 +345,14 @@ exports.registerAccount = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
-
+//短信验证码的验证
+exports.validatePhoneCode = function(req, res) {
+    DesktopLoginService.validatePhoneCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
 
 //修改session数据
 function modifySessionData(req, data) {

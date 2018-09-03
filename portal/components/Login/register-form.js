@@ -25,8 +25,8 @@ class RegisterForm extends React.Component {
             captchaCode: '',//短信验证码
             codeEffectiveTime: CODE_EFFECTIVE_TIME,//验证码的有效时间：60s
             getCodeErrorMsg: '',//获取验证码的错误提示
-            getCodeTip: '',//请获取验证码并输入的提示
-            validateCompanyOnlyMsg: '',//验证公司标识唯一性的提示
+            validateCodeErrorMsg: '',//验证码验证错误提示
+            validateNameOnlyMsg: '',//验证公司标识唯一性的提示
             registerErrorMsg: '',//注册的错误提示
             formData: {
                 name: '',//公司唯一标识
@@ -43,28 +43,36 @@ class RegisterForm extends React.Component {
         value = $.trim(value);
         if (value) {
             if (/^[a-z\-]*$/.test(value)) {
-                $.ajax({
-                    url: '/company/name/validate',
-                    dataType: 'json',
-                    type: 'get',
-                    data: {name: value},
-                    success: data => {
-                        if (data) {
-                            callback(Intl.get('register.company.name.exist', '公司标识已存在'));
-                        } else {
-                            callback();
-                        }
-                    },
-                    error: xhr => {
-                        callback(Intl.get('register.company.only.error', '公司标识唯一性验证失败'));
-                    }
-                });
+                callback();
             } else {
                 callback(Intl.get('register.company.valid.tip', '请输入小写字母和中划线组成的公司标识'));
             }
         } else {
+            if (this.state.validateNameOnlyMsg) {
+                this.setState({validateNameOnlyMsg: ''});
+            }
             callback(Intl.get('register.fill.company.name', '请输入公司标识'));
         }
+    }
+
+    //公司唯一标识是否已存在的验证
+    validateNameOnly(name, successFunc) {
+        $.ajax({
+            url: '/company/name/validate',
+            dataType: 'json',
+            type: 'get',
+            data: {name},
+            success: data => {
+                if (data) {
+                    this.setState({validateNameOnlyMsg: Intl.get('register.company.name.exist', '公司标识已存在')});
+                } else {
+                    if (_.isFunction(successFunc)) successFunc();
+                }
+            },
+            error: xhr => {
+                this.setState({validateNameOnlyMsg: Intl.get('register.company.only.error', '公司标识唯一性验证失败')});
+            }
+        });
     }
 
     //提交form表单的数据
@@ -99,6 +107,29 @@ class RegisterForm extends React.Component {
         });
     }
 
+    //验证码是否输入正确的验证
+    validatePhoneCode(phone, code, successFunc) {
+        $.ajax({
+            url: '/phone/code/validate',
+            dataType: 'json',
+            type: 'get',
+            data: {phone, code},
+            success: data => {
+                if (data) {
+                    if (_.isFunction(successFunc)) successFunc();
+                } else {
+                    this.setState({validateCodeErrorMsg: Intl.get('errorcode.43', '验证码错误'), getCodeErrorMsg: ''});
+                }
+            },
+            error: xhr => {
+                this.setState({
+                    validateCodeErrorMsg: Intl.get('register.code.validate.error', '短信验证码验证错误'),
+                    getCodeErrorMsg: ''
+                });
+            }
+        });
+    }
+
     changeStep(step) {
         const REGISTER_STEPS = this.props.REGISTER_STEPS;
         const form = this.props.form;
@@ -107,29 +138,24 @@ class RegisterForm extends React.Component {
             let formData = this.state.formData;
             //公司唯一标识的设置
             if (this.state.currentStep === REGISTER_STEPS.COMPANY_ID_SET) {
-                formData.name = $.trim(form.getFieldValue('name'));
+                let name = $.trim(form.getFieldValue('name'));
+                this.validateNameOnly(name, () => {
+                    //验证通过，切换到下一步
+                    formData.name = name;
+                    this.setState({currentStep: step, formData});
+                    this.props.onRegisterStepChange(step);
+                });
             } else if (this.state.currentStep === REGISTER_STEPS.PHONE_VALID) {
                 //手机验证
-                if (this.state.captchaCode || this.state.getCodeErrorMsg === Intl.get('register.code.has.send', '短信验证码已经发送，请勿重复发送')) {//验证码已发送
-                    let code = $.trim(form.getFieldValue('code'));
-                    // if (code && code === this.state.captchaCode) {
-                    formData.phone = $.trim(form.getFieldValue('phone'));
+                let code = $.trim(form.getFieldValue('code'));
+                let phone = $.trim(form.getFieldValue('phone'));
+                this.validatePhoneCode(phone, code, () => {
+                    formData.phone = phone;
                     formData.code = code;
-                    // } else {
-                    //     this.setState({getCodeErrorMsg: Intl.get('errorcode.43', '验证码错误'), getCodeTip: ''});
-                    //     return;
-                    // }
-                } else if (this.state.getCodeErrorMsg) {
-                    //获取验证码失败了
-                    return;
-                } else {
-                    //请获取验证码并输入的提示
-                    this.setState({getCodeTip: Intl.get('register.get.code.fill.in', '请获取验证码')});
-                    return;
-                }
+                    this.setState({currentStep: step, formData});
+                    this.props.onRegisterStepChange(step);
+                });
             }
-            this.setState({currentStep: step, formData});
-            this.props.onRegisterStepChange(step);
         });
     }
 
@@ -171,26 +197,26 @@ class RegisterForm extends React.Component {
         let phone = $.trim(this.props.form.getFieldValue('phone'));
         if (phone && mobileRegex.test(phone)) {
             $.ajax({
-                url: '/phone/validate/code',
+                url: '/phone/validate_code',
                 dataType: 'json',
                 type: 'get',
                 data: {phone},
                 success: data => {
                     if (data) {
-                        this.setState({captchaCode: data, getCodeErrorMsg: '', getCodeTip: ''});
+                        this.setState({captchaCode: data, getCodeErrorMsg: '', validateCodeErrorMsg: ''});
                         //设置验证码有效时间为一分钟
                         this.setCodeEffectiveInterval();
                     } else {
                         this.setState({
                             getCodeErrorMsg: Intl.get('register.code.get.error', '获取短信验证码失败'),
-                            getCodeTip: ''
+                            validateCodeErrorMsg: ''
                         });
                     }
                 },
                 error: xhr => {
                     this.setState({
                         getCodeErrorMsg: xhr.responseJSON || Intl.get('register.code.get.error', '获取短信验证码失败'),
-                        getCodeTip: ''
+                        validateCodeErrorMsg: ''
                     });
                 }
             });
@@ -210,6 +236,19 @@ class RegisterForm extends React.Component {
         }
     }
 
+    validateCode(rule, value, callback) {
+        let code = $.trim(value);
+        if (code) {
+            callback();
+        } else {
+            this.setState({
+                getCodeErrorMsg: '',
+                validateCodeErrorMsg: ''
+            });
+            callback(Intl.get('retry.input.captcha', '请输入验证码'));
+        }
+    }
+
     renderFormItems() {
         let formItems = null;
         const {getFieldDecorator} = this.props.form;
@@ -220,11 +259,15 @@ class RegisterForm extends React.Component {
                     <div className="register-step-item">
                         <FormItem hasFeedback={false}>
                             {getFieldDecorator('name', {
-                                rules: [{validator: this.validatorCompanyName}]
+                                rules: [{validator: this.validatorCompanyName.bind(this)}]
                             })(
                                 <Input placeholder={Intl.get('register.company.valid.tip', '请输入小写字母和中划线组成的公司标识')}
                                     addonAfter={COMPANY_SUFFIX}/>
                             )}
+                            {this.state.validateNameOnlyMsg ?
+                                <div className="register-error-tip">
+                                    {this.state.validateNameOnlyMsg}
+                                </div> : null}
                         </FormItem>
                         <FormItem>
                             <Button type="primary"
@@ -244,7 +287,7 @@ class RegisterForm extends React.Component {
                         </FormItem>
                         <FormItem>
                             {getFieldDecorator('code', {
-                                rules: [{required: true, message: Intl.get('retry.input.captcha', '请输入验证码')}],
+                                rules: [{validator: this.validateCode.bind(this)}],
                             })(
                                 <Input className='captcha-code-input'
                                     placeholder={Intl.get('retry.input.captcha', '请输入验证码')}/>
@@ -252,9 +295,9 @@ class RegisterForm extends React.Component {
                             <div className="captcha-code-wrap" onClick={this.getValidateCode.bind(this)}>
                                 {this.renderCaptchaCode()}
                             </div>
-                            {this.state.getCodeErrorMsg || this.state.getCodeTip ?
+                            {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg ?
                                 <div className="register-error-tip">
-                                    {this.state.getCodeErrorMsg || this.state.getCodeTip}
+                                    {this.state.getCodeErrorMsg || this.state.validateCodeErrorMsg}
                                 </div> : null}
                         </FormItem>
                         <FormItem>
