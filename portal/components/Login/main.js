@@ -30,6 +30,7 @@ const REGISTER_STEPS = {
     PHONE_VALID: 1,//电话验证
     ACCOUNT_SET: 2//账号设置
 };
+const bgImgUrl = require('./image/login-bg.jpg');
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
@@ -251,16 +252,19 @@ class LoginMain extends React.Component {
     }
 
     render() {
+        const bgStyle = {
+            backgroundImage: `url(${bgImgUrl})`,
+        };
         //如果是初次渲染不展示表单;
         //如果有错误信息，则不显示loading状态
         if (!this.state.showUi) {
-            return (<div className="login-wrap">
+            return (<div className="login-wrap" style={bgStyle}>
                 {this.state.errorMsg ? null : <Spinner className="isloading"/>}
             </div>);
         } else {
             const hasWindow = !(typeof window === 'undefined');
             return (
-                <div className="login-wrap">
+                <div className="login-wrap" style={bgStyle}>
                     <Logo logoSrc={logoScr}/>
                     <Button className='login-register-btn' onClick={this.changeView.bind(this)}>
                         {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.login', '登录') : Intl.get('login.register', '注册')}
