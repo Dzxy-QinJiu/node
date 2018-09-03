@@ -624,7 +624,7 @@ var NavSidebar = createReactClass({
                                         return false;
                                     }).map((menu, i) => {
                                         var category = menu.routePath.replace(/\/.*$/, '');
-                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}-ico` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}-ico`;
+                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}-ico active` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}-ico`;
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
                                         if (!(_.includes(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);
@@ -632,7 +632,7 @@ var NavSidebar = createReactClass({
                                         //不隐藏图标时
                                         if (!this.state.hideNavIcon) {
                                             return (
-                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'clue-container' : ''}>
+                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'clue-icon-container' : ''}>
                                                     <NavLink to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                         className={extraClass}
@@ -644,7 +644,7 @@ var NavSidebar = createReactClass({
                                         //小屏幕隐藏图标
                                         else {
                                             return (
-                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'text-nav-li clue-container' : 'text-nav-li'}>
+                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'text-nav-li clue-icon-container' : 'text-nav-li'}>
                                                     <NavLink to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                     >
