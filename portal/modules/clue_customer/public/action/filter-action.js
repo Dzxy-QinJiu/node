@@ -10,7 +10,10 @@ function FilterAction() {
         'setFilterClueSoure',
         'setFilterClueAccess',
         'setFilterClueClassify',
-        'setFilterClueAvailbility'
+        'setFilterClueAvailbility',
+        'setFilterClueProvince',
+        'setExistedFiled',
+        'setUnexistedFiled'
     );
 }
 module.exports = alt.createActions(FilterAction);

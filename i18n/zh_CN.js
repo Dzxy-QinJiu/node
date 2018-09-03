@@ -2602,5 +2602,7 @@ var zh_CN = {
     'common.telephone.statistics': '电话量统计',
     'common.ketao.app.telephone.statistics': '客套APP电话量统计',
     'common.trial.qualified.customer.statistics': '试用合格客户数统计',
+    'clue.repeat.clue.list': '重复线索',
+    'clue.has.no.relative.customer': '没有关联客户的线索'
 };
 export default zh_CN;
