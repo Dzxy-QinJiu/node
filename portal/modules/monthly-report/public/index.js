@@ -1,8 +1,8 @@
+var React = require('react');
 require('./style.less');
 import { AntcAnalysis } from 'antc';
 import { Select, DatePicker} from 'antd';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import { LEAVE_TYPES } from './consts';
@@ -15,20 +15,20 @@ const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 
-const MonthlyReport = React.createClass({
-    getInitialState() {
-        return {
-            teamList: [],
-            memberList: [],
-            selectedTeam: '',
-            selectedMonth: moment(),
-        };
-    },
+class MonthlyReport extends React.Component {
+    state = {
+        teamList: [],
+        memberList: [],
+        selectedTeam: '',
+        selectedMonth: moment(),
+    };
+
     componentDidMount() {
         this.getTeamList();
         this.getMemberList();
-    },
-    getTeamList() {
+    }
+
+    getTeamList = () => {
         const reqData = commonMethodUtil.getParamByPrivilege();
 
         ajax.send({
@@ -39,8 +39,9 @@ const MonthlyReport = React.createClass({
                 selectedTeam: _.get(result, '[0]'),
             });
         });
-    },
-    getMemberList() {
+    };
+
+    getMemberList = () => {
         const reqData = commonMethodUtil.getParamByPrivilege();
 
         ajax.send({
@@ -50,8 +51,9 @@ const MonthlyReport = React.createClass({
                 memberList: result,
             });
         });
-    },
-    getAuthType() {
+    };
+
+    getAuthType = () => {
         let authType = 'user';//CALL_RECORD_VIEW_USER
         
         if (hasPrivilege('CALL_RECORD_VIEW_MANAGER')) {
@@ -59,15 +61,17 @@ const MonthlyReport = React.createClass({
         }
 
         return authType;
-    },
-    getDataType() {
+    };
+
+    getDataType = () => {
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else {
             return 'self';
         }
-    },
-    renderRemarks(text, record, recordIndex) {
+    };
+
+    renderRemarks = (text, record, recordIndex) => {
         const data = record.leave_info_list;
         const userId = record.user_id;
 
@@ -78,9 +82,10 @@ const MonthlyReport = React.createClass({
                 selectedMonth={this.state.selectedMonth}
             />
         );
-    },
+    };
+
     //电话量统计表格列定义
-    getPhoneStatisticsColumns() {
+    getPhoneStatisticsColumns = () => {
         return [
             {
                 title: Intl.get('common.ranking', '排名'),
@@ -154,9 +159,10 @@ const MonthlyReport = React.createClass({
                 width: '20%',
             },
         ];
-    },
+    };
+
     //客套app电话量统计表格列定义
-    getAppStatisticsColumns() {
+    getAppStatisticsColumns = () => {
         return [
             {
                 title: Intl.get('sales.home.sales', '销售'),
@@ -185,9 +191,10 @@ const MonthlyReport = React.createClass({
                 width: '10%',
             },
         ];
-    },
+    };
+
     //试用合格客户数统计表格列定义
-    getTrialQualifiedColumns() {
+    getTrialQualifiedColumns = () => {
         return [
             {
                 title: Intl.get('sales.home.sales', '销售'),
@@ -211,8 +218,9 @@ const MonthlyReport = React.createClass({
                 width: '10%',
             },
         ];
-    },
-    getCharts() {
+    };
+
+    getCharts = () => {
         return [
             {
                 title: Intl.get('common.telephone.statistics', '电话量统计'),
@@ -278,9 +286,10 @@ const MonthlyReport = React.createClass({
                 },
             },
         ];
-    },
+    };
+
     //公共条件，应用于所有图表
-    getConditions(selectedTeamId) {
+    getConditions = (selectedTeamId) => {
         return [
             {
                 name: 'type',
@@ -300,8 +309,9 @@ const MonthlyReport = React.createClass({
                 value: selectedTeamId,
             },
         ];
-    },
-    getEmitters() {
+    };
+
+    getEmitters = () => {
         return [
             {
                 emitter: dateSelectorEmitter,
@@ -320,8 +330,9 @@ const MonthlyReport = React.createClass({
                 }],
             },
         ];
-    },
-    renderFilter(selectedTeamId) {
+    };
+
+    renderFilter = (selectedTeamId) => {
         return (
             <div className="filter">
                 {selectedTeamId ? (
@@ -343,22 +354,25 @@ const MonthlyReport = React.createClass({
                 />
             </div>
         );
-    },
-    onTeamChange(teamId) {
+    };
+
+    onTeamChange = (teamId) => {
         const selectedTeam = _.find(this.state.teamList, team => team.group_id === teamId);
 
         this.setState({selectedTeam});
 
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamId);
-    },
-    onDateChange(date) {
+    };
+
+    onDateChange = (date) => {
         this.setState({selectedMonth: date});
 
         const startTime = date.startOf('month').valueOf();
         const endTime = date.endOf('month').valueOf();
 
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
-    },
+    };
+
     render() {
         const selectedTeamId = _.get(this.state.selectedTeam, 'group_id');
         const selectedTeamName = _.get(this.state.selectedTeam, 'group_name');
@@ -394,6 +408,6 @@ const MonthlyReport = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = MonthlyReport;

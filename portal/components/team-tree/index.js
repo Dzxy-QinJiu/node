@@ -25,6 +25,7 @@
  * 可通过将disableEmitter属性设置为true来关闭事件发射，只用onTeamSelect等回调函数得到选中的团队id或成员id
  */
 
+var React = require('react');
 require('./style.less');
 import routeList from '../../modules/common/route';
 import ajax from '../../modules/common/ajax';
@@ -36,26 +37,25 @@ const TreeNode = Tree.TreeNode;
 const noop = function() {
 };
 
-const TeamTree = React.createClass({
-    getDefaultProps() {
-        return {
-            onTeamSelect: noop,
-            onMemberSelect: noop,
-            disableEmitter: false,
-        };
-    },
-    getInitialState() {
-        return {
-            teamList: [],
-            userList: [],
-            breadcrumb: [],
-        };
-    },
+class TeamTree extends React.Component {
+    static defaultProps = {
+        onTeamSelect: noop,
+        onMemberSelect: noop,
+        disableEmitter: false,
+    };
+
+    state = {
+        teamList: [],
+        userList: [],
+        breadcrumb: [],
+    };
+
     componentDidMount() {
         this.getTeamList();
         this.getUserList();
-    },
-    getTeamList() {
+    }
+
+    getTeamList = () => {
         const route = _.find(routeList, route => route.handler === 'getTeamList');
 
         const arg = {
@@ -67,16 +67,18 @@ const TeamTree = React.createClass({
         }, errorMsg => {
             this.setState({teamList: []});
         });
-    },
-    getUserList() {
+    };
+
+    getUserList = () => {
         salesmanAjax.getSalesmanListAjax().sendRequest()
             .success(result => {
                 this.setState({userList: result});
             }).error(() => {
                 this.setState({userList: []});
             });
-    },
-    handleTeamSelect(e) {
+    };
+
+    handleTeamSelect = (e) => {
         const selectedKeys = e.selectedKeys || e;
         const teamId = selectedKeys[0];
 
@@ -89,8 +91,9 @@ const TeamTree = React.createClass({
 
             this.props.onTeamSelect(teamId);
         }
-    },
-    handleMemberSelect(e) {
+    };
+
+    handleMemberSelect = (e) => {
         const selectedKeys = e.selectedKeys || e;
         const memberId = selectedKeys[0];
 
@@ -101,9 +104,10 @@ const TeamTree = React.createClass({
 
             this.props.onMemberSelect(memberId);
         }
-    },
+    };
+
     //选中团队后，根据团队中的成员id，结合成员列表，得到该团队下属成员的id及名称列表，并保存到state中
-    setTeamMembers(teamId) {
+    setTeamMembers = (teamId) => {
         this.state.teamMembers = [];
 
         const team = _.find(this.state.teamList, item => item.group_id === teamId);
@@ -124,9 +128,10 @@ const TeamTree = React.createClass({
         this.setState(this.state, () => {
             this.removeSelectState();
         });
-    },
+    };
+
     //根据选中团队的id，构造包含其所有父团队的列表，并保存到state中，用于渲染面包屑导航
-    buildBreadcrumb(teamId) {
+    buildBreadcrumb = (teamId) => {
         this.state.breadcrumb = [];
 
         const loop = (list, id) => {
@@ -140,8 +145,9 @@ const TeamTree = React.createClass({
         loop(this.state.teamList, teamId);
 
         this.setState(this.state);
-    },
-    renderTeamTree() {
+    };
+
+    renderTeamTree = () => {
         function loop(obj, key) {
             return _.map(obj[key], item => {
                 if (obj[item.group_id]) {
@@ -155,13 +161,15 @@ const TeamTree = React.createClass({
         const groupedTeamList = _.groupBy(this.state.teamList, team => team.parent_group);
 
         return loop(groupedTeamList, undefined);
-    },
-    renderTeamMembers() {
+    };
+
+    renderTeamMembers = () => {
         return _.map(this.state.teamMembers, item => {
             return <TreeNode title={item.memberName} key={item.memberId}/>;
         });
-    },
-    renderBreadcrumb() {
+    };
+
+    renderBreadcrumb = () => {
         const breadcrumb = this.state.breadcrumb;
 
         return (
@@ -186,9 +194,10 @@ const TeamTree = React.createClass({
                 })}
             </div>
         );
-    },
+    };
+
     //显示从根节点开始的团队树
-    showTeamTree() {
+    showTeamTree = () => {
         if (!this.props.disableEmitter) {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, '');
         }
@@ -199,11 +208,13 @@ const TeamTree = React.createClass({
         });
 
         this.props.onTeamSelect();
-    },
+    };
+
     //取消之前选中项的选中状态
-    removeSelectState() {
+    removeSelectState = () => {
         $('.ant-tree-node-selected').children().click();
-    },
+    };
+
     render() {
         return (
             <div className="team-tree">
@@ -227,6 +238,7 @@ const TeamTree = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default TeamTree;
+

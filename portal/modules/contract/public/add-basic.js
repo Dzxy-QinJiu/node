@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 销售合同基本信息添加表单
@@ -13,12 +15,15 @@ import ValidateMixin from '../../../mixins/ValidateMixin';
 import BasicMixin from './mixin-basic';
 import { COST_STRUCTURE } from '../consts';
 
-const AddBasic = React.createClass({
+const AddBasic = createReactClass({
+    displayName: 'AddBasic',
     mixins: [ValidateMixin, BasicMixin],
+
     handleCostStructureChange: function(value) {
         this.state.formData.cost_structure = value.join();
         this.setState(this.state);
     },
+
     render: function() {
         const formData = this.state.formData;
 
@@ -48,7 +53,7 @@ const AddBasic = React.createClass({
         if (!formData.need_invoice) formData.need_invoice = 'true';
 
         return (
-            <Form horizontal className="add-basic" data-tracename="添加合同>基本信息">
+            <Form layout='horizontal' className="add-basic" data-tracename="添加合同>基本信息">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {this.renderNumField()}
                     {this.renderCustomerField()}
@@ -169,8 +174,9 @@ const AddBasic = React.createClass({
                 </Validation>
             </Form>
         );
-    }
+    },
 });
 
 module.exports = AddBasic;
+
 

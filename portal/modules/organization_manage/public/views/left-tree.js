@@ -1,6 +1,8 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
+var React = require('react');
+var createReactClass = require('create-react-class');
 import {Icon,Button} from 'antd';
 var classNames = require('classnames');
 var GroupFrom = require('./edit-organization-form');
@@ -25,8 +27,10 @@ const messages = defineMessages({
 function noop() {
 }
 
-var LeftTree = React.createClass({
+var LeftTree = createReactClass({
+    displayName: 'LeftTree',
     mixins: [reactIntlMixin],
+
     getDefaultProps: function() {
         return {
             getOrganizationMemberList: noop
@@ -57,6 +61,7 @@ var LeftTree = React.createClass({
             setTimeout(() => $('.organization-search-input-container .search-input').val(this.props.searchContent));
         }
     },
+
     bodyClickFun: function(e) {
         var target = e.target;
         if (this.refs.operationElement && !$.contains(this.refs.operationElement, target)) {
@@ -121,9 +126,11 @@ var LeftTree = React.createClass({
         OrganizationAction.getOrganizationMemberList(groupId);
         OrganizationAction.setSelectOrganizationGroup(groupId);
     },
+
     hideModalDialog: function() {
         OrganizationAction.hideModalDialog(this.props.deleteGroupItem);
     },
+
     saveDeleteGroup: function() {
         OrganizationAction.saveDeleteGroup(this.props.deleteGroupItem.key);
     },
@@ -131,9 +138,11 @@ var LeftTree = React.createClass({
     hideDelTooltip: function() {
         OrganizationAction.clearDelGroupErrorMsg();
     },
+
     addOrganizationRoot: function() {
         OrganizationAction.addOrganizationRoot();
     },
+
     operationElement: function(item) {
         return (
             <div className="tree-operation-btn-div" ref="operationElement">
@@ -158,6 +167,7 @@ var LeftTree = React.createClass({
             </div>
         );
     },
+
     element: function(item, type) {
         let iconflag = <i className="iconfont icon-zuzhi" title={Intl.get('user.organization','组织')}></i>;
         if (item.category == CATEGORY_TYPE.DEPARTMENT) {
@@ -252,12 +262,14 @@ var LeftTree = React.createClass({
             </div>)
         );
     },
+
     //隐藏搜索框
     clearSearchInput: function() {
         OrganizationAction.setSearchContent('');
         OrganizationAction.resetSearchOrganization();
         $('.organization-search-input-container .search-input').val('');
     },
+
     //搜索组织的事件处理
     searchEvent: function(searchContent) {
         searchContent = searchContent ? searchContent.trim() : '';
@@ -274,6 +286,7 @@ var LeftTree = React.createClass({
             OrganizationAction.setSearchContent('');
         }
     },
+
     render: function() {
         var _this = this;
         var organizationGroupList = this.props.organizationGroupList;
@@ -358,6 +371,6 @@ var LeftTree = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 module.exports = injectIntl(LeftTree);

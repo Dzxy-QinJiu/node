@@ -1,3 +1,4 @@
+var React = require('react');
 // require('../css/crm-right-panel.less');
 
 var Tabs = require('antd').Tabs;
@@ -34,51 +35,50 @@ const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS'//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
 };
 
-var CrmRightPanel = React.createClass({
-    getInitialState: function() {
-        return {
-            activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
-            apps: [],
-            curOrder: {},
-            curCustomer: this.props.curCustomer,
-            tabsContainerHeight: 'auto',
-            getCusomerResultdMsg: ''//获取客户详情后的失败或无数据的提示
-        };
-    },
+class CrmRightPanel extends React.Component {
+    state = {
+        activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
+        apps: [],
+        curOrder: {},
+        curCustomer: this.props.curCustomer,
+        tabsContainerHeight: 'auto',
+        getCusomerResultdMsg: ''//获取客户详情后的失败或无数据的提示
+    };
 
-    componentWillMount: function() {
+    componentWillMount() {
         if (!this.state.curCustomer) {
             if (this.props.currentId) {
                 this.getCurCustomer(this.props.currentId);
             }
         }
-    },
-    componentDidMount: function() {
+    }
+
+    componentDidMount() {
         this.setTabsContainerHeight();
         $(window).resize(e => {
             e.stopPropagation();
             this.setTabsContainerHeight();
         });
-    },
+    }
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.curCustomer) {
             this.setState({curCustomer: nextProps.curCustomer});
         } else if (nextProps.currentId !== this.props.currentId) {
             this.getCurCustomer(nextProps.currentId);
         }
         this.setTabsContainerHeight();
-    },
+    }
 
-    setTabsContainerHeight: function() {
+    setTabsContainerHeight = () => {
         let tabsContainerHeight = $('body').height() - $('.basic-info-contianer').outerHeight(true);
         if ($('.phone-alert-modal-title').size()) {
             tabsContainerHeight -= $('.phone-alert-modal-title').outerHeight(true);
         }
         this.setState({tabsContainerHeight: tabsContainerHeight});
-    },
+    };
 
-    getCurCustomer: function(id) {
+    getCurCustomer = (id) => {
         let condition = {id: id};
         crmAjax.queryCustomer(condition).then(resData => {
             if (resData && _.isArray(resData.result) && resData.result.length) {
@@ -92,30 +92,33 @@ var CrmRightPanel = React.createClass({
             this.state.getCusomerResultdMsg = Intl.get('crm.detail.get.error', '获取客户详情失败');
             this.setState(this.state);
         });
-    },
+    };
 
     //展示申请用户界面
-    showApplyUserForm: function(type, curOrder, apps) {
+    showApplyUserForm = (type, curOrder, apps) => {
         if (_.isFunction(this.props.showApplyUserForm)) {
             let customerName = this.state.curCustomer ? this.state.curCustomer.name : '';
             this.props.showApplyUserForm(type, curOrder, apps, customerName);
         }
-    },
-    hideRightPanel: function(e) {
+    };
+
+    hideRightPanel = (e) => {
         Trace.traceEvent(e, '关闭客户详情');
         this.props.hideRightPanel();
         this.setState({
             activeKey: TAB_KEYS.OVERVIEW_TAB
         });
-    },
+    };
+
     //切换tab时的处理
-    changeActiveKey: function(key) {
-        Trace.traceEvent($(this.getDOMNode()).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + tabNameList[key]);
+    changeActiveKey = (key) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + tabNameList[key]);
         this.setState({
             activeKey: key
         });
-    },
-    render: function() {
+    };
+
+    render() {
         if (this.state.getCusomerResultdMsg) {//未获取到详情及获取出错时的提示
             return (<div className="no-data-tip">{this.state.getCusomerResultdMsg}</div>);
         }
@@ -253,7 +256,8 @@ var CrmRightPanel = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = CrmRightPanel;
+
 

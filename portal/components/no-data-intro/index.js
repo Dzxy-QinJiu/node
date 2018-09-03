@@ -4,14 +4,17 @@
  * Created by zhangshujuan on 2018/8/29.
  */
 import PropTypes from 'prop-types';
+
 require('./index.less');
+
 class NoDataIntro extends React.Component {
     constructor(props) {
         super();
         this.state = {};
     }
-    render(){
-        if(this.props.showAddBtn){
+
+    render() {
+        if (this.props.showAddBtn) {
             return (
                 <div className="no-data-intro">
                     <i className="iconfont icon-no-data"></i>
@@ -21,7 +24,7 @@ class NoDataIntro extends React.Component {
                     </div>
                 </div>
             );
-        }else{
+        } else {
             return (
                 <div className="no-data">
                     <i className="iconfont icon-no-data"></i>
@@ -31,6 +34,7 @@ class NoDataIntro extends React.Component {
         }
     }
 }
+
 NoDataIntro.defaultProps = {
     showAddBtn: false,
     noDataAndAddBtnTip: '',
@@ -41,9 +45,9 @@ NoDataIntro.defaultProps = {
 
 };
 NoDataIntro.propTypes = {
-    showAddBtn: React.PropTypes.bool,
-    noDataAndAddBtnTip: React.PropTypes.string,
-    renderAddAndImportBtns: React.PropTypes.func,
-    noDataTip: React.PropTypes.string,
+    showAddBtn: PropTypes.bool,
+    noDataAndAddBtnTip: PropTypes.string,
+    renderAddAndImportBtns: PropTypes.func,
+    noDataTip: PropTypes.string,
 };
 export default NoDataIntro;

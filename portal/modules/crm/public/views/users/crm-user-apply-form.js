@@ -1,7 +1,9 @@
+var React = require('react');
 /**
  * Created by wangliping on 2017/9/20.
  */
 import {Form, DatePicker, InputNumber, Select, Radio, Input} from 'antd';
+import PropTypes from 'prop-types';
 import language from 'PUB_DIR/language/getLanguage';
 const {TextArea} = Input;
 const Option = Select.Option;
@@ -426,9 +428,9 @@ CrmUserApplyForm.defaultProps = {
     },
 };
 CrmUserApplyForm.propTypes = {
-    APPLY_TYPES: React.PropTypes.object,
-    applyType: React.PropTypes.string,
-    crmUserList: React.PropTypes.array,
-    closeApplyPanel: React.PropTypes.func
+    APPLY_TYPES: PropTypes.object,
+    applyType: PropTypes.string,
+    crmUserList: PropTypes.array,
+    closeApplyPanel: PropTypes.func
 };
 export default CrmUserApplyForm;

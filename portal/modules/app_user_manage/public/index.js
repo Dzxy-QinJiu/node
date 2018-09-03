@@ -1,3 +1,4 @@
+var React = require('react');
 var language = require('../../../public/language/getLanguage');
 require('./css/main-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -34,10 +35,11 @@ var Popover = require('antd').Popover;
 import { Button } from 'antd';
 import ApplyUser from './views/v2/apply-user';
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
+import queryString from 'query-string';
 
 /*用户管理界面外层容器*/
-var AppUserManage = React.createClass({
-    getStoreData: function() {
+class AppUserManage extends React.Component {
+    getStoreData = () => {
         var AppUserStoreData = AppUserStore.getState();
         var AppUserPanelSwitchStoreData = AppUserPanelSwitchStore.getState();
         return {
@@ -45,17 +47,16 @@ var AppUserManage = React.createClass({
             ...AppUserPanelSwitchStoreData,
             customer_name: this.props.customer_name//从客户页面跳转过来传过的客户名字
         };
-    },
-    onStoreChange: function() {
+    };
+
+    onStoreChange = () => {
         this.setState(this.getStoreData());
-    },
-    //获取初始状态
-    getInitialState: function() {
-        return this.getStoreData();
-    },
+    };
+
     //记住上一次路由
-    prevRoutePath: null,
-    componentDidMount: function() {
+    prevRoutePath = null;
+
+    componentDidMount() {
         AppUserStore.listen(this.onStoreChange);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         //当前视图
@@ -63,12 +64,12 @@ var AppUserManage = React.createClass({
         //获取所有应用
         AppUserAction.getAppList();
         if (currentView === 'user' && this.props.location) {
-            const query = _.clone(this.props.location.query);
+            const query = queryString.parse(this.props.location.search);
             //从销售首页，点击试用用户和正式用户过期用户数字跳转过来
             var app_id = this.props.location.state && this.props.location.state.app_id;
             var _this = this;
             //有客户名时，直接按照客户名查询，应用选中全部
-            if (this.props.location.action === 'PUSH') {
+            if (this.props.history.action === 'PUSH') {
                 //针对不同情况，查询用户列表
                 if (app_id) {
                     //从销售首页点击过期用户数字跳转过来时，有app_id
@@ -139,8 +140,9 @@ var AppUserManage = React.createClass({
         }
         //记住上一次路由
         this.prevRoutePath = currentView;
-    },
-    componentWillReceiveProps: function(nextProps) {
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.customer_id && this.state.customer_id !== nextProps.customer_id) {
             this.setState({
                 customer_id: nextProps.customer_id,
@@ -152,8 +154,9 @@ var AppUserManage = React.createClass({
                 page_size: nextProps.user_size
             });
         }
-    },
-    componentDidUpdate: function() {
+    }
+
+    componentDidUpdate() {
         //如果当前路由是用户，上一次路由是用户审批时，重新获取应用列表
         var currentRoutePath = AppUserUtil.getCurrentView();
         if (currentRoutePath === 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
@@ -174,23 +177,27 @@ var AppUserManage = React.createClass({
             this.refs.searchInput.refs.searchInput.value = '';
         }
         this.prevRoutePath = AppUserUtil.getCurrentView();
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         AppUserStore.unlisten(this.onStoreChange);
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         ShareObj.app_id = '';
         ShareObj.share_app_list = [];
-    },
-    addAppUser: function(e) {
+    }
+
+    addAppUser = (e) => {
         Trace.traceEvent(e, '添加用户');
         AppUserAction.showAppUserForm();
         return e.stopPropagation();
-    },
+    };
+
     //显示用户表单
-    showAddUserForm: function() {
+    showAddUserForm = () => {
         AppUserAction.showAppUserForm();
-    },
-    getAppOptions: function() {
+    };
+
+    getAppOptions = () => {
         var appList = this.state.appList;
         if (!_.isArray(appList) || !appList.length) {
             if (_.isArray(ShareObj.share_app_list) && ShareObj.share_app_list.length) {
@@ -205,8 +212,9 @@ var AppUserManage = React.createClass({
         list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage
             id="user.app.all" defaultMessage="全部应用" /></Option>);
         return list;
-    },
-    onSelectedAppChange: function(app_id, app_name) {
+    };
+
+    onSelectedAppChange = (app_id, app_name) => {
         //原来的应用id
         const oldSelectAppId = this.state.selectedAppId;
         //设置当前选中应用
@@ -222,13 +230,16 @@ var AppUserManage = React.createClass({
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);
         });
         this.appsSelectorLayout();
-    },
+    };
+
     //显示申请用户的表单
-    showApplyUserForm: function() {
+    showApplyUserForm = () => {
         AppUserAction.showApplyUserForm();
-    },
-    searchTimeout: null,
-    doSearch: function(obj) {
+    };
+
+    searchTimeout = null;
+
+    doSearch = (obj) => {
         clearTimeout(this.searchTimeout);
         var _this = this;
         this.searchTimeout = setTimeout(function() {
@@ -245,8 +256,9 @@ var AppUserManage = React.createClass({
             //查询列表
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST, queryObj);
         }, 500);
-    },
-    onSearchInputChange: function(keyword) {
+    };
+
+    onSearchInputChange = (keyword) => {
         keyword = keyword ? keyword : '';
         if (keyword.trim() !== this.state.keywordValue.trim()) {
             AppUserAction.keywordValueChange(keyword);
@@ -254,25 +266,29 @@ var AppUserManage = React.createClass({
                 keyword: keyword
             });
         }
-    },
+    };
+
     //切换筛选状态
-    toggleFilterArea: function(e) {
+    toggleFilterArea = (e) => {
         Trace.traceEvent(e, '点击筛选按钮');
         AppUserAction.toggleFilterExpanded();
-    },
+    };
+
     //是否有添加用户按钮
-    addUserBtnCheckun: function() {
+    addUserBtnCheckun = () => {
         return hasPrivilege('APP_USER_ADD') && !this.state.customer_id;
-    },
+    };
+
     //销售选择用户的提示
-    getUserRowsTooltip: function() {
+    getUserRowsTooltip = () => {
         return <span><ReactIntl.FormattedMessage id="user.user.list.click" defaultMessage="请在用户列表中点击" /><i
             className="iconfont icon-radio"
             style={{ fontSize: '20px', verticalAlign: 'middle', position: 'relative', top: '-3px' }} /><ReactIntl.FormattedMessage
             id="user.user.list.select" defaultMessage="选择用户" /></span>;
-    },
+    };
+
     //发邮件使用的参数
-    getEmailData: function() {
+    getEmailData = () => {
         var selectedRows = this.state.selectedUserRows;
 
         var email_customer_names = [];
@@ -289,13 +305,15 @@ var AppUserManage = React.createClass({
             email_customer_names: email_customer_names.join('、'),
             email_user_names: email_user_names.join('、')
         };
-    },
-    showBatchOperate: function(e) {
+    };
+
+    showBatchOperate = (e) => {
         Trace.traceEvent(e, '已有用户-批量变更');
         AppUserAction.showBatchOperate();
-    },
+    };
+
     //获取缩放时候的批量操作按钮
-    getBatchOperateBtnMini: function() {
+    getBatchOperateBtnMini = () => {
         if (this.isShowBatchOperateBtn()) {
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn-mini" onClick={this.showBatchOperate}>
@@ -309,18 +327,20 @@ var AppUserManage = React.createClass({
             </Popover>;
         }
         return null;
-    },
+    };
+
     //是否显示批量变更按钮
-    isShowBatchOperateBtn: function() {
+    isShowBatchOperateBtn = () => {
         //当前视图
         let currentView = AppUserUtil.getCurrentView();
         //是否是从某个客户详情中跳转过来的
         let isCustomerDetailJump = currentView === 'user' && this.props.customer_id;
         //管理员：可以进行批量变更，销售：从某个客户详情中跳转过来时，可以批量变更（销售只可以批量操作同一客户下的用户）
         return hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) || (isCustomerDetailJump && hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES));
-    },
+    };
+
     //显示批量操作按钮
-    getBatchOperateBtn: function() {
+    getBatchOperateBtn = () => {
         //管理员直接显示
         //销售需要从某个客户详情中跳转过来时，才可以展示
         if (this.isShowBatchOperateBtn()) {
@@ -341,9 +361,10 @@ var AppUserManage = React.createClass({
             </Popover>;
         }
         return null;
-    },
+    };
+
     //显示申请用户按钮
-    getApplyUserBtn: function() {
+    getApplyUserBtn = () => {
         //销售显示开通应用
         if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
             //选中了用户直接显示
@@ -360,9 +381,10 @@ var AppUserManage = React.createClass({
             </Popover>;
         }
         return null;
-    },
+    };
+
     //显示缩放时候的开通应用按钮
-    getApplyUserBtnMini: function() {
+    getApplyUserBtnMini = () => {
         if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block  add-btn-mini" onClick={this.showApplyUserForm}>
@@ -376,26 +398,34 @@ var AppUserManage = React.createClass({
             </Popover>;
         }
         return null;
-    },
+    };
+
     //当应用列表重新布局的时候，让顶部导航重新渲染
-    appsSelectorLayout: function() {
+    appsSelectorLayout = () => {
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-    },
-    showRecentLoginPanel: function(e) {
+    };
+
+    showRecentLoginPanel = (e) => {
         Trace.traceEvent(e, '打开查看近期登陆用户列表');
         AppUserAction.setRecentLoginPanelFlag(true);
-    },
-    hideRecentLoginPanel: function(e) {
+    };
+
+    hideRecentLoginPanel = (e) => {
         Trace.traceEvent(e, '关闭查看近期登录用户列表');
         AppUserAction.setRecentLoginPanelFlag(false);
-    },
+    };
+
     //关闭属于某个客户的用户列表
-    hideCustomerUserList: function() {
+    hideCustomerUserList = () => {
         this.props.hideCustomerUserList();
         //清空数据
         AppUserAction.setInitialData();
-    },
-    render: function() {
+    };
+
+    //获取初始状态
+    state = this.getStoreData();
+
+    render() {
         var currentView = AppUserUtil.getCurrentView();
         var appOptions = this.getAppOptions();
         var rightPanelView = null;
@@ -571,6 +601,7 @@ var AppUserManage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = AppUserManage;
+

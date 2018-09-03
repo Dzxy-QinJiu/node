@@ -1,8 +1,12 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const MemberPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(MemberPage) => <MemberPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'user',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public')); 
-        });
-    }
+    path: '/background_management/user',
+    component: MemberPage
 };

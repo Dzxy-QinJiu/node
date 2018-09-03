@@ -1,16 +1,17 @@
+var React = require('react');
 var classNames = require('classnames');
 var Icon = require('antd').Icon;
 var Button = require('antd').Button;
 require('./index.less');
-var FilterBtn = React.createClass({
-    getDefaultProps: function() {
-        return {
-            expanded: false,
-            className: '',
-            onClick: function() {}
-        };
-    },
-    render: function() {
+
+class FilterBtn extends React.Component {
+    static defaultProps = {
+        expanded: false,
+        className: '',
+        onClick: function() {}
+    };
+
+    render() {
         var cls = classNames(this.props.className , 'global_filter_btn');
         var expanded = this.props.expanded;
         return (
@@ -20,5 +21,6 @@ var FilterBtn = React.createClass({
             </Button>
         );
     }
-});
+}
+
 module.exports = FilterBtn;

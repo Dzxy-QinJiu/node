@@ -3,10 +3,11 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/7/23.
  */
+var React = require('react');
 var rightPanelShow = false;
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 var clueCustomerStore = require('./store/clue-customer-store');
-var filterStore = require('./store/filter-store');
+var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
 import {clueEmitter} from 'OPLATE_EMITTER';
 var userData = require('../../../public/sources/user-data');
@@ -46,25 +47,24 @@ var LAYOUT_CONSTANTS = {
     BOTTOM_DISTANCE: 40,
     FILTER_WIDTH: 300
 };
-const ClueCustomer = React.createClass({
-    getInitialState: function() {
-        return {
-            clueAddFormShow: false,//
-            rightPanelIsShow: rightPanelShow,//是否展示右侧客户详情
-            tableHeight: 630,
-            accessChannelArray: accessChannelArray,//线索渠道
-            clueSourceArray: clueSourceArray,//线索来源
-            clueClassifyArray: clueClassifyArray,//线索分类
-            isRemarkingItem: '',//正在标记的那条线索
-            clueImportTemplateFormShow: false,//线索导入面板是否展示
-            previewList: [],//预览列表
-            clueAnalysisPanelShow: false,//线索分析面板是否展示
-            showFilterList: false,//是否展示线索筛选区域
-            ...clueCustomerStore.getState()
-        };
-    },
 
-    componentDidMount: function() {
+class ClueCustomer extends React.Component {
+    state = {
+        clueAddFormShow: false,//
+        rightPanelIsShow: rightPanelShow,//是否展示右侧客户详情
+        tableHeight: 630,
+        accessChannelArray: accessChannelArray,//线索渠道
+        clueSourceArray: clueSourceArray,//线索来源
+        clueClassifyArray: clueClassifyArray,//线索分类
+        isRemarkingItem: '',//正在标记的那条线索
+        clueImportTemplateFormShow: false,//线索导入面板是否展示
+        previewList: [],//预览列表
+        clueAnalysisPanelShow: false,//线索分析面板是否展示
+        showFilterList: false,//是否展示线索筛选区域
+        ...clueCustomerStore.getState()
+    };
+
+    componentDidMount() {
         clueCustomerStore.listen(this.onStoreChange);
         //获取线索来源
         this.getClueSource();
@@ -76,39 +76,46 @@ const ClueCustomer = React.createClass({
         this.getClueList();
         this.getUserPhoneNumber();
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
-    },
-    showClueDetailOut: function(item) {
+    }
+
+    showClueDetailOut = (item) => {
         rightPanelShow = true;
         this.setState({rightPanelIsShow: true});
         clueCustomerAction.setCurrentCustomer(item.id);
-    },
+    };
+
     //展示右侧面板
-    showRightPanel: function(id) {
+    showRightPanel = (id) => {
         rightPanelShow = true;
         this.setState({rightPanelIsShow: true});
         clueCustomerAction.setCurrentCustomer(id);
-    },
-    hideRightPanel: function() {
+    };
+
+    hideRightPanel = () => {
         rightPanelShow = false;
         this.setState({rightPanelIsShow: false});
         //关闭右侧面板后，将当前展示线索的id置为空
         clueCustomerAction.setCurrentCustomer('');
-    },
-    onClueImport: function(list) {
+    };
+
+    onClueImport = (list) => {
         this.setState({
             isPreviewShow: true,
             previewList: list,
         });
-    },
-    componentWillUnmount: function() {
+    };
+
+    componentWillUnmount() {
         clueCustomerStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
         clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
-    },
-    onStoreChange: function() {
+    }
+
+    onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
-    },
-    getClueSource: function() {
+    };
+
+    getClueSource = () => {
         clueCustomerAjax.getClueSource().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
@@ -119,8 +126,9 @@ const ClueCustomer = React.createClass({
             // eslint-disable-next-line no-console
             console.log('获取线索来源出错了 ' + errorMsg);
         });
-    },
-    getClueChannel: function() {
+    };
+
+    getClueChannel = () => {
         clueCustomerAjax.getClueChannel().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
@@ -131,8 +139,9 @@ const ClueCustomer = React.createClass({
             // eslint-disable-next-line no-console
             console.log('获取线索渠道出错了 ' + errorMsg);
         });
-    },
-    getClueClassify: function() {
+    };
+
+    getClueClassify = () => {
         clueCustomerAjax.getClueClassify().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
                 this.setState({
@@ -143,9 +152,10 @@ const ClueCustomer = React.createClass({
             // eslint-disable-next-line no-console
             console.log('获取线索分类出错了 ' + errorMsg);
         });
-    },
+    };
+
     //获取用户的坐席号
-    getUserPhoneNumber: function() {
+    getUserPhoneNumber = () => {
         let member_id = userData.getUserData().user_id;
         crmAjax.getUserPhoneNumber(member_id).then((result) => {
             if (result.phone_order) {
@@ -158,9 +168,10 @@ const ClueCustomer = React.createClass({
                 errMsg: errMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!')
             });
         });
-    },
+    };
+
     //渲染导入线索的按钮
-    renderImportClue: function() {
+    renderImportClue = () => {
         return (
             <div className="import-clue-customer-container pull-right">
                 {hasPrivilege('CUSTOMER_ADD_CLUE') ?
@@ -172,33 +183,38 @@ const ClueCustomer = React.createClass({
                     : null}
             </div>
         );
-    },
+    };
+
     //点击导入线索按钮
-    showImportClueTemplate: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.import-clue-customer-container'), '点击导入线索按钮');
+    showImportClueTemplate = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue-customer-container'), '点击导入线索按钮');
         this.setState({
             clueImportTemplateFormShow: true
         });
-    },
+    };
+
     //关闭导入线索模板
-    closeClueTemplatePanel: function() {
+    closeClueTemplatePanel = () => {
         this.setState({
             clueImportTemplateFormShow: false
         });
-    },
-    showClueAddForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.add-clue-customer-container'), '点击添加销售线索按钮');
+    };
+
+    showClueAddForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-clue-customer-container'), '点击添加销售线索按钮');
         this.setState({
             clueAddFormShow: true
         });
-    },
+    };
+
     //关闭增加线索面板
-    hideClueAddForm: function() {
+    hideClueAddForm = () => {
         this.setState({
             clueAddFormShow: false
         });
-    },
-    renderHandleBtn: function() {
+    };
+
+    renderHandleBtn = () => {
         return (
             <div className="add-clue-customer-container pull-right">
                 {hasPrivilege('CUSTOMER_ADD_CLUE') ?
@@ -211,20 +227,22 @@ const ClueCustomer = React.createClass({
                 }
             </div>
         );
-    },
-    handleClickCallOut(phoneNumber, record) {
-        Trace.traceEvent($(this.getDOMNode()).find('.column-contact-way'), '拨打电话');
+    };
+
+    handleClickCallOut = (phoneNumber, record) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
         handleCallOutResult({
             errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
             callNumber: this.state.callNumber,//坐席号
             contactName: record.contact,//联系人姓名
             phoneNumber: phoneNumber,//拨打的电话
         });
-    },
+    };
+
     //获取线索列表
-    getClueList: function() {
-        var rangParams = filterStore.getState().rangParams;
-        var filterClueStatus = filterStore.getState().filterClueStatus;
+    getClueList = () => {
+        var rangParams = clueFilterStore.getState().rangParams;
+        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         //跟据类型筛选
         const queryObj = {
@@ -237,7 +255,7 @@ const ClueCustomer = React.createClass({
             userId: userData.getUserData().userId || '',
             typeFilter: JSON.stringify(typeFilter)
         };
-        var filterStoreData = filterStore.getState();
+        var filterStoreData = clueFilterStore.getState();
         //选中的线索来源
         var filterClueSource = filterStoreData.filterClueSource;
         if (_.isArray(filterClueSource) && filterClueSource.length){
@@ -260,8 +278,9 @@ const ClueCustomer = React.createClass({
         }
         //取全部线索列表
         clueCustomerAction.getClueFulltext(queryObj);
-    },
-    errTipBlock: function() {
+    };
+
+    errTipBlock = () => {
         //加载完成，出错的情况
         var errMsg = <span>{this.state.clueCustomerErrMsg}
             <a onClick={this.getClueList}>
@@ -277,14 +296,16 @@ const ClueCustomer = React.createClass({
                 />
             </div>
         );
-    },
-    afterAddClueTrace: function(updateId) {
-        var clueCustomerTypeFilter = getClueStatusValue(filterStore.getState().filterClueStatus);
+    };
+
+    afterAddClueTrace = (updateId) => {
+        var clueCustomerTypeFilter = getClueStatusValue(clueFilterStore.getState().filterClueStatus);
         if (clueCustomerTypeFilter.status === SELECT_TYPE.WILL_TRACE){
             clueCustomerAction.afterAddClueTrace(updateId);
         }
-    },
-    renderClueCustomerList: function() {
+    };
+
+    renderClueCustomerList = () => {
         var customerList = this.state.curClueLists;
         return (
             _.map(customerList, (item) => {
@@ -306,16 +327,18 @@ const ClueCustomer = React.createClass({
                         renderSalesBlock={this.renderSalesBlock}
                         unSelectDataTip={this.state.unSelectDataTip}
                         clearSelectSales={this.clearSelectSales}
-                        clueCustomerTypeFilter = {getClueStatusValue(filterStore.getState().filterClueStatus)}
+                        clueCustomerTypeFilter = {getClueStatusValue(clueFilterStore.getState().filterClueStatus)}
                     />
                 );
             }));
-    },
-    clearSelectSales: function() {
+    };
+
+    clearSelectSales = () => {
         clueCustomerAction.setSalesMan({'salesMan': ''});
         clueCustomerAction.setSalesManName({'salesManNames': ''});
-    },
-    renderSalesBlock: function() {
+    };
+
+    renderSalesBlock = () => {
         let dataList = [];
         var clueSalesIdList = getClueSalesList();
         //销售领导、域管理员,展示其所有（子）团队的成员列表
@@ -348,8 +371,9 @@ const ClueCustomer = React.createClass({
                 />
             </div>
         );
-    },
-    handleSubmitAssignSales: function(item) {
+    };
+
+    handleSubmitAssignSales = (item) => {
         var user_id = _.get(item, 'user_id');
         if (!this.state.salesMan) {
             clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
@@ -396,7 +420,7 @@ const ClueCustomer = React.createClass({
                         //隐藏批量变更销售面板
                         this.refs['salesclueitem' + item.id].refs['changesale' + item.id].handleCancel();
                     }
-                    var clueCustomerTypeFilter = getClueStatusValue(filterStore.getState().filterClueStatus);
+                    var clueCustomerTypeFilter = getClueStatusValue(clueFilterStore.getState().filterClueStatus);
                     //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
                     if (clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE) {
                         clueCustomerAction.afterAssignSales(item.id);
@@ -413,23 +437,27 @@ const ClueCustomer = React.createClass({
                 }
             });
         }
-    },
+    };
+
     //获取已选销售的id
-    onSalesmanChange(salesMan){
+    onSalesmanChange = (salesMan) => {
         clueCustomerAction.setSalesMan({'salesMan': salesMan});
-    },
+    };
+
     //设置已选销售的名字
-    setSelectContent: function(salesManNames) {
+    setSelectContent = (salesManNames) => {
         clueCustomerAction.setSalesManName({'salesManNames': salesManNames});
-    },
-    handleScrollBarBottom: function() {
+    };
+
+    handleScrollBarBottom = () => {
         var currListLength = _.isArray(this.state.curClueLists) ? this.state.curClueLists.length : 0;
         // 判断加载的条件
         if (currListLength <= this.state.customersSize) {
             this.getClueList();
         }
-    },
-    renderClueCustomerBlock: function() {
+    };
+
+    renderClueCustomerBlock = () => {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         if (this.state.curClueLists.length) {
             return (
@@ -456,38 +484,41 @@ const ClueCustomer = React.createClass({
                 </div>
             );
         }
-    },
-    showNoMoreDataTip: function() {
+    };
+
+    showNoMoreDataTip = () => {
         return !this.state.isLoading &&
             this.state.curClueLists.length >= 20 && !this.state.listenScrollBottom;
-    },
-    onTypeChange: function() {
+    };
+
+    onTypeChange = () => {
         clueCustomerAction.setClueInitialData();
         rightPanelShow = false;
         this.setState({rightPanelIsShow: false});
         setTimeout(() => {
             this.getClueList();
         });
-    },
-    renderAddAndImportBtns: function() {
+    };
+
+    renderAddAndImportBtns = () => {
         return (
             <div className="btn-containers">
                 <Button type='primary' className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入线索')}</Button>
                 <Button className='add-clue-btn' onClick={this.showClueAddForm}>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
             </div>
         );
-    },
+    };
     //是否有筛选过滤条件
-    hasNoFilterCondition: function() {
-        var filterStoreData = filterStore.getState();
+    hasNoFilterCondition = () => {
+        var filterStoreData = clueFilterStore.getState();
         if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangParams[0].from') === clueStartTime && this.state.keyword === ''){
             return true;
         }else{
             return false;
         }
-    },
+    };
     //渲染loading和出错的情况
-    renderLoadingAndErrAndNodataContent: function() {
+    renderLoadingAndErrAndNodataContent = () => {
         //加载中的展示
         if (this.state.isLoading && !this.state.lastCustomerId) {
             return (
@@ -520,20 +551,23 @@ const ClueCustomer = React.createClass({
             //渲染线索列表
             return this.renderClueCustomerBlock();
         }
-    },
+    };
+
     //点击展开线索分析面板
-    handleClueAnalysisPanel: function() {
+    handleClueAnalysisPanel = () => {
         this.setState({
             clueAnalysisPanelShow: true
         });
-    },
+    };
+
     //点击关闭线索分析面板
-    closeClueAnalysisPanel: function() {
+    closeClueAnalysisPanel = () => {
         this.setState({
             clueAnalysisPanelShow: false
         });
-    },
-    renderClueAnalysisBtn: function() {
+    };
+
+    renderClueAnalysisBtn = () => {
         return (
             <div className="clue-analysis-btn-container pull-right">
                 <Button className="call-analysis-btn btn-item" title={Intl.get('clue.alanalysis.charts','线索分析')} onClick={this.handleClueAnalysisPanel}
@@ -542,54 +576,61 @@ const ClueCustomer = React.createClass({
                 </Button>
             </div>
         );
-    },
-    refreshClueList: function() {
-        this.getClueList();
-    },
+    };
 
-    searchFullTextEvent: function(keyword) {
-        Trace.traceEvent($(this.getDOMNode()).find('.search-container'), '根据关键字搜索');
+    refreshClueList = () => {
+        this.getClueList();
+    };
+
+    searchFullTextEvent = (keyword) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
         clueCustomerAction.setKeyWord(keyword);
         //如果keyword不存在，就用获取线索的接口
         this.onTypeChange();
-    },
+    };
+
     //更新线索来源列表
-    updateClueSource: function(newSource) {
+    updateClueSource = (newSource) => {
         this.state.clueSourceArray.push(newSource);
         this.setState({
             clueSourceArray: this.state.clueSourceArray
         });
-    },
+    };
+
     //更新线索渠道列表
-    updateClueChannel: function(newChannel) {
+    updateClueChannel = (newChannel) => {
         this.state.accessChannelArray.push(newChannel);
         this.setState({
             accessChannelArray: this.state.accessChannelArray
         });
-    },
+    };
+
     //更新线索分类
-    updateClueClassify: function(newClue) {
+    updateClueClassify = (newClue) => {
         this.state.clueClassifyArray.push(newClue);
         this.setState({
             clueClassifyArray: this.state.clueClassifyArray
         });
-    },
+    };
+
     //是否是运营人员
-    isOperation(){
+    isOperation = () => {
         return userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
-    },
+    };
+
     //是否是管理员
-    isRealmManager(){
+    isRealmManager = () => {
         return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
-    },
-    toggleList() {
+    };
+
+    toggleList = () => {
         this.setState({
             showFilterList: !this.state.showFilterList
         });
-    },
+    };
 
-    render: function() {
+    render() {
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
             });
@@ -683,5 +724,7 @@ const ClueCustomer = React.createClass({
             </RightContent>
         );
     }
-});
+}
+
 module.exports = ClueCustomer;
+

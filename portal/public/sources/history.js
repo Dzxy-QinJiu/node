@@ -3,10 +3,10 @@
  * 用来在页面中进行跳转时使用
  * https://github.com/mjackson/history/blob/master/docs/GettingStarted.md#navigation
  */
-var createHistory = require('history').createHistory;
+var createHistory = require('history').createBrowserHistory;
 var url = require('url');
 var history = createHistory();
-history.listenBefore(function(location) {
+history.listen(function(location) {
     var parseObj = url.parse(window.location.href);
     if (parseObj.pathname !== location.pathname) {
         alt.flush();

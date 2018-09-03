@@ -1,11 +1,16 @@
 /**
  * 销售月报
  */
+import Bundle from '../../public/sources/route-bundle';
+
+const MonthlyReportPage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(MonthlyReportPage) => <MonthlyReportPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'analysis/monthly_report',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public'));
-        });
-    }
+    path: '/analysis/monthly_report',
+    component: MonthlyReportPage
 };
+

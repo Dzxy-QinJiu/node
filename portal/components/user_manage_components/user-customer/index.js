@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 require('./index.less');
 import classNames from 'classnames';
 import {Icon,Alert} from 'antd';
@@ -5,7 +7,6 @@ import CustomerSuggest from '../../../modules/app_user_manage/public/views/custo
 import AlertTimer from '../../alert-timer';
 import {hasPrivilege} from '../../privilege/checker';
 
-const PropTypes = React.PropTypes;
 //class的前缀
 const CLASS_PREFIX = 'user-customer';
 const USER_CUSTOMER_SUGGEST_ID = 'user-customer-suggest-wrap';

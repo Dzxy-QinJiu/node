@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * Created by xiaojinfeng on 2016/04/19.
@@ -18,8 +20,10 @@ import Trace from 'LIB_DIR/trace';
 function noop() {
 }
 
-var SalesTeamForm = React.createClass({
+var SalesTeamForm = createReactClass({
+    displayName: 'SalesTeamForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             submitSalesTeamForm: noop,
@@ -32,6 +36,7 @@ var SalesTeamForm = React.createClass({
             }
         };
     },
+
     getFormData: function(salesTeam) {
         if (salesTeam.isEditGroup) {
             return {
@@ -49,6 +54,7 @@ var SalesTeamForm = React.createClass({
             };
         }
     },
+
     getInitialState: function() {
         return {
             status: {
@@ -59,6 +65,7 @@ var SalesTeamForm = React.createClass({
             formData: this.getFormData(this.props.salesTeam)
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.refs.validation.reset();
         this.setState({
@@ -203,9 +210,11 @@ var SalesTeamForm = React.createClass({
         formData.isTeamSaving = false;
         this.setState({formData: formData});
     },
+
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(),'选择上级团队');
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'选择上级团队');
     },
+
     render: function() {
         var _this = this;
         var formData = this.state.formData;
@@ -216,7 +225,7 @@ var SalesTeamForm = React.createClass({
         var editResult = this.state.formData.saveTeamResult;
         return (
             <div className={formClass} data-tracename ="编辑/添加团队表单">
-                <Form horizontal className="form">
+                <Form layout='horizontal' className="form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label={Intl.get('common.definition', '名称')}
@@ -288,7 +297,8 @@ var SalesTeamForm = React.createClass({
                 </Form>
             </div>
         );
-    }
+    },
 });
 
 module.exports = SalesTeamForm;
+

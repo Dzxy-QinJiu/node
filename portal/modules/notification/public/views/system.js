@@ -1,3 +1,4 @@
+var React = require('react');
 require('../../../app_user_manage/public/css/main-zh_CN.less');
 import {Alert, Select, message, Icon, Button} from 'antd';
 import LAYOUT from '../utils/layout';
@@ -32,51 +33,54 @@ const STATUS_ARRAY = [{
     name: Intl.get('notification.system.handled', '已处理'),
     value: STATUS.HANDLED
 }];
-let SystemNotification = React.createClass({
-    getInitialState: function() {
-        return {
-            isLoadingSystemNotices: false,//正在获取系统消息
-            loadSystemNoticesErrorMsg: '',//获取系统消息的错误提示
-            systemNotices: [],//系统消息列表
-            totalSize: 0,//系统消息总数
-            lastSystemNoticeId: '',//用来下拉加载的当前展示的最后一个通知的id
-            listenScrollBottom: false,//是否监听下拉加载
-            selectedNoticeType: '',//当前选中的要查看的通知类型
-            curShowCustomerId: '',//展示客户详情的客户id
-            curShowUserId: '',//展示用户详情的用户id
-            status: STATUS.UNHANDLED,//未处理，handled:已处理
-            showUpdateTip: false, //是否展示有新数据刷新的提示
-            isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            customerOfCurUser: {},//当前展示用户所属客户的详情
-            selectedLiIndex: null,
-            handleNoticeMessageSuccessFlag: false, // 处理通知成功的信息提示
-            handleNoticeMessageErrorTips: '', // 处理通知失败的信息提示
-            noticeId: '', // 点击处理通知的id
-        };
-    },
-    componentDidMount: function() {
+
+class SystemNotification extends React.Component {
+    state = {
+        isLoadingSystemNotices: false,//正在获取系统消息
+        loadSystemNoticesErrorMsg: '',//获取系统消息的错误提示
+        systemNotices: [],//系统消息列表
+        totalSize: 0,//系统消息总数
+        lastSystemNoticeId: '',//用来下拉加载的当前展示的最后一个通知的id
+        listenScrollBottom: false,//是否监听下拉加载
+        selectedNoticeType: '',//当前选中的要查看的通知类型
+        curShowCustomerId: '',//展示客户详情的客户id
+        curShowUserId: '',//展示用户详情的用户id
+        status: STATUS.UNHANDLED,//未处理，handled:已处理
+        showUpdateTip: false, //是否展示有新数据刷新的提示
+        isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
+        customerOfCurUser: {},//当前展示用户所属客户的详情
+        selectedLiIndex: null,
+        handleNoticeMessageSuccessFlag: false, // 处理通知成功的信息提示
+        handleNoticeMessageErrorTips: '', // 处理通知失败的信息提示
+        noticeId: '', // 点击处理通知的id
+    };
+
+    componentDidMount() {
         this.getSystemNotices();
         //新系统消息的监听
         notificationEmitter.on(notificationEmitter.SYSTEM_NOTICE_UPDATED, this.pushDataListener);
         $(window).on('resize', this.resizeWindowHeight);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         //销毁时，删除新系统消息监听器
         notificationEmitter.removeListener(notificationEmitter.SYSTEM_NOTICE_UPDATED, this.pushDataListener);
         $(window).off('resize', this.resizeWindowHeight);
-    },
+    }
+
     //监听推送数据
-    pushDataListener: function(data) {
+    pushDataListener = (data) => {
         //有数据，将是否展示更新tip
         if (data) {
             this.setState({showUpdateTip: true});
         }
-    },
-    resizeWindowHeight: function() {
+    };
+
+    resizeWindowHeight = () => {
         this.setState(this.state);
-    },
-    getSystemNotices: function() {
+    };
+
+    getSystemNotices = () => {
         let queryObj = {
             notice_type: this.state.selectedNoticeType,//通知类型，"":全部类型
             page_size: PAGE_SIZE,//默认不传是5
@@ -107,19 +111,22 @@ let SystemNotification = React.createClass({
                 loadSystemNoticesErrorMsg: errorMsg || Intl.get('notification.system.notice.failed', '获取系统消息列表失败')
             });
         });
-    },
+    };
+
     //下拉加载
-    handleScrollBarBottom: function() {
+    handleScrollBarBottom = () => {
         if (this.state.totalSize > this.state.systemNotices.length) {
             this.getSystemNotices();
         }
-    },
+    };
+
     //是否显示没有更多数据了
-    showNoMoreDataTip: function() {
+    showNoMoreDataTip = () => {
         return !this.state.isLoadingSystemNotices &&
             this.state.systemNotices.length >= 10 && !this.state.listenScrollBottom;
-    },
-    openCustomerDetail: function(customer_id, index) {
+    };
+
+    openCustomerDetail = (customer_id, index) => {
         if (this.state.curShowUserId) {
             this.closeRightUserPanel();
         }
@@ -135,9 +142,10 @@ let SystemNotification = React.createClass({
                 hideRightPanel: this.closeRightCustomerPanel
             }
         });
-    },
-    handleTypeChange: function(val) {
-        Trace.traceEvent($(this.getDOMNode()).find('.notification-type-select'), '类型筛选');
+    };
+
+    handleTypeChange = (val) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.notification-type-select'), '类型筛选');
         this.setState({
             selectedNoticeType: val,
             lastSystemNoticeId: '',
@@ -147,9 +155,10 @@ let SystemNotification = React.createClass({
             this.getSystemNotices();
         });
 
-    },
-    handleStatusChange: function(status) {
-        Trace.traceEvent($(this.getDOMNode()).find('.notification-status-select'), '处理/未处理筛选');
+    };
+
+    handleStatusChange = (status) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.notification-status-select'), '处理/未处理筛选');
         this.setState({
             status: status,
             lastSystemNoticeId: '',
@@ -158,8 +167,9 @@ let SystemNotification = React.createClass({
         setTimeout(() => {
             this.getSystemNotices();
         });
-    },
-    renderHandledNotice: function(notice, idx) {
+    };
+
+    renderHandledNotice = (notice, idx) => {
         //是否是异地登录的类型
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
         let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
@@ -193,8 +203,9 @@ let SystemNotification = React.createClass({
                 </div>
             </li>
         );
-    },
-    renderNoticeList: function() {
+    };
+
+    renderNoticeList = () => {
         let systemNotices = this.state.systemNotices;
         if (this.state.isLoadingSystemNotices && !this.state.lastSystemNoticeId) {//等待状态
             return <Spinner/>;
@@ -226,14 +237,16 @@ let SystemNotification = React.createClass({
                 showIcon={true}
             />);
         }
-    },
-    closeRightCustomerPanel: function() {
+    };
+
+    closeRightCustomerPanel = () => {
         this.setState({
             curShowCustomerId: '',
             selectedLiIndex: null
         });
-    },
-    openUserDetail: function(user_id, index) {
+    };
+
+    openUserDetail = (user_id, index) => {
         if (this.state.curShowCustomerId) {
             this.closeRightCustomerPanel();
         }
@@ -241,9 +254,10 @@ let SystemNotification = React.createClass({
             curShowUserId: user_id,
             selectedLiIndex: index
         });
-    },
+    };
+
     // 待处理数据整合,同一个用户登录同一个应用，计算登录次数以及获取最后一次登录时间
-    handleNoticeDetailData(noticeDetail) {
+    handleNoticeDetailData = (noticeDetail) => {
         let noticeDetailData = _.cloneDeep(noticeDetail);
         // 登录的用户名 eg: [a, b]
         let userName = _.chain(noticeDetailData).map('user_name').uniq().value();
@@ -279,9 +293,10 @@ let SystemNotification = React.createClass({
             }
         } );
         return processData;
-    },
+    };
+
     // idx表示的是系统通知的条数
-    renderUnHandledNoticeContent: function(notice, idx) {
+    renderUnHandledNoticeContent = (notice, idx) => {
         let showList = [];
         if (_.isArray(notice.detail) && notice.detail.length) {
             showList = this.handleNoticeDetailData(notice.detail);
@@ -310,17 +325,19 @@ let SystemNotification = React.createClass({
                 </span>
             </div>;
         });
-    },
-    setHandlingFlag: function(notice, flag) {
+    };
+
+    setHandlingFlag = (notice, flag) => {
         _.some(this.state.systemNotices, item => {
             if (item.id === notice.id) {
                 item.isHandling = flag;
             }
         });
         this.setState({systemNotices: this.state.systemNotices});
-    },
+    };
+
     //处理系统消息
-    handleSystemNotice: function(notice, e) {
+    handleSystemNotice = (notice, e) => {
         Trace.traceEvent(e, '处理系统消息');
         if (notice.isHandling) {
             return;
@@ -344,15 +361,17 @@ let SystemNotification = React.createClass({
                 handleNoticeMessageErrorTips: errorMsg || Intl.get('notification.system.handle.failed', '将系统消息设为已处理失败')
             });
         });
-    },
-    hideNoticeSuccessTips() {
+    };
+
+    hideNoticeSuccessTips = () => {
         //处理成功后，将该消息从未处理消息中删除,随处理失败的提示消失
         this.state.systemNotices = _.filter(this.state.systemNotices, item => item.id !== this.state.noticeId);
         this.setState({
             handleNoticeMessageSuccessFlag: false
         });
-    },
-    getIconFontClassName(type) {
+    };
+
+    getIconFontClassName = (type) => {
         let iconfontClassName = 'iconfont';
         if (type === SYSTEM_NOTICE_TYPES.FOCUS_CUSTOMER_LOGIN) { // 关注客户登录
             iconfontClassName += ' icon-concern-customer-login';
@@ -364,9 +383,10 @@ let SystemNotification = React.createClass({
             iconfontClassName += ' icon-remote-login';
         }
         return iconfontClassName;
-    },
+    };
+
     //未处理的系统消息  idx表示的是共有多少条系统通知
-    renderUnHandledNotice: function(notice, idx) {
+    renderUnHandledNotice = (notice, idx) => {
         let loginUser = userData.getUserData();
         let loginUserId = loginUser ? loginUser.user_id : '';//只可以处理自己的系统消息
         let unhandleNoticeLiItemClass = classnames({
@@ -422,14 +442,16 @@ let SystemNotification = React.createClass({
                 </div>
             </li>
         );
-    },
-    closeRightUserPanel: function() {
+    };
+
+    closeRightUserPanel = () => {
         this.setState({
             curShowUserId: '',
             selectedLiIndex: null
         });
-    },
-    refreshSystemNotice: function() {
+    };
+
+    refreshSystemNotice = () => {
         this.setState({
             lastSystemNoticeId: '',
             showUpdateTip: false
@@ -437,9 +459,10 @@ let SystemNotification = React.createClass({
         setTimeout(() => {
             this.getSystemNotices();
         });
-    },
+    };
+
     //展示更新提示
-    renderUpdateTip: function() {
+    renderUpdateTip = () => {
         if (this.state.showUpdateTip && this.state.status === STATUS.UNHANDLED) {//在未处理列表下，有新数据推送过来时
             return (<div className="system-notice-update">
                 <ReactIntl.FormattedMessage
@@ -454,20 +477,23 @@ let SystemNotification = React.createClass({
             </div> );
         }
         return null;
-    },
-    ShowCustomerUserListPanel: function(data) {
+    };
+
+    ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
             customerOfCurUser: data.customerObj
         });
 
-    },
-    closeCustomerUserListPanel: function() {
+    };
+
+    closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
         });
-    },
-    render: function() {
+    };
+
+    render() {
         let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP;
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
@@ -531,6 +557,6 @@ let SystemNotification = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SystemNotification;

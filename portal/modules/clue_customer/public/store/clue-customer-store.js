@@ -7,7 +7,7 @@ var ClueCustomerAction = require('../action/clue-customer-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue} from '../utils/clue-customer-utils';
-var filterStore = require('./filter-store');
+var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 function ClueCustomerStore() {
     //初始化state数据
@@ -175,11 +175,11 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
     var newArr = this.processForList([newCustomer]);
     newCustomer = newArr[0];
     this.curClueLists = _.filter(this.curClueLists, customer => customer.id !== newCustomer.id);
-    var filterClueStatus = filterStore.getState().filterClueStatus;
+    var filterClueStatus = clueFilterStore.getState().filterClueStatus;
     var typeFilter = getClueStatusValue(filterClueStatus);
     //只有筛选状态是待分配，并且筛选时间是今天的时候，才把这个新增客户加到列表中
     if (filterClueStatus && typeFilter){
-        if (((typeFilter.status === '0' || typeFilter.status === '')) && filterStore.getState().rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= filterStore.getState().rangParams[0].to){
+        if (((typeFilter.status === '0' || typeFilter.status === '')) && clueFilterStore.getState().rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangParams[0].to){
             this.curClueLists.unshift(newCustomer);
             this.customersSize++;
         }

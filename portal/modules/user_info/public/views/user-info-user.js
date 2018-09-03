@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+const PropTypes = require('prop-types');
+const Validation = require('rc-form-validation-for-react16');
 import {Button, Form, Input, Icon, message} from 'antd';
 const FormItem = Form.Item;
 var HeadIcon = require('../../../../components/headIcon');
@@ -382,7 +384,7 @@ class UserInfo extends React.Component{
                 </div>
 
                 {this.props.userInfoFormShow ? <div className="edit-form-div">
-                    <Form horizontal className="user-info-form">
+                    <Form layout='horizontal' className="user-info-form">
                         <FormItem
                             label={Intl.get('common.email', '邮箱')}
                             labelCol={{span: 4}}
@@ -471,14 +473,14 @@ class UserInfo extends React.Component{
 }
 
 UserInfo.propTypes = {
-    userInfo: React.PropTypes.object,
-    userInfoFormShow: React.PropTypes.bool,
-    form: React.PropTypes.object,
-    realmLoading: React.PropTypes.bool,
-    realmErrorMsg: React.PropTypes.string,
-    managedRealm: React.PropTypes.object,
-    userInfoErrorMsg: React.PropTypes.string,
-    userInfoLoading: React.PropTypes.bool,
+    userInfo: PropTypes.object,
+    userInfoFormShow: PropTypes.bool,
+    form: PropTypes.object,
+    realmLoading: PropTypes.bool,
+    realmErrorMsg: PropTypes.string,
+    managedRealm: PropTypes.object,
+    userInfoErrorMsg: PropTypes.string,
+    userInfoLoading: PropTypes.bool,
 };
 
 const UserInfoForm = Form.create()(UserInfo);

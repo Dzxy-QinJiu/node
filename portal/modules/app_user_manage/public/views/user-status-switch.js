@@ -1,46 +1,46 @@
 //用户状态添加switch切换逻辑
+var React = require('react');
 import { Icon, Switch } from 'antd';
 const AppUserAjax = require('../ajax/app-user-ajax');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import language from 'PUB_DIR/language/getLanguage';
 import { StatusWrapper } from 'antc';
 
-const UserStatusFieldSwitch = React.createClass({
+class UserStatusFieldSwitch extends React.Component {
     //获取默认属性
-    getDefaultProps: function() {
-        return {
-            //用户id
-            userId: '',
-            //状态
-            status: '',
-            //修改成功之后的回调
-            modifySuccess: function() {
-            }
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+    static defaultProps = {
+        //用户id
+        userId: '',
+        //状态
+        status: '',
+        //修改成功之后的回调
+        modifySuccess: function() {
+        }
+    };
+
+    state = {
+        resultType: '',
+        errorMsg: '',
+        status: this.props.status
+    };
+
+    componentWillReceiveProps(nextProps) {
         if (nextProps.status !== this.props.status) {
             this.setState({
                 status: nextProps.status
             });
         }
-    },
-    getInitialState: function() {
-        return {
-            resultType: '',
-            errorMsg: '',
-            status: this.props.status
-        };
-    },
+    }
 
-    onHideAlert: function() {
+    onHideAlert = () => {
         this.setState({
             resultType: '',
             errorMsg: '',
             status: this.props.status
         });
-    },
-    changeUserStatus: function(checked) {
+    };
+
+    changeUserStatus = (checked) => {
         //展示修改用户状态并展示是否保存的提示框
         this.setState({ status: checked }, () => {
             this.saveUserStatus();
@@ -50,8 +50,9 @@ const UserStatusFieldSwitch = React.createClass({
         }else{
             Trace.traceEvent('用户详情','点击停用用户状态switch');
         }
-    },
-    saveUserStatus: function() {
+    };
+
+    saveUserStatus = () => {
         let submitObj = {
             user_id: this.props.userId,
             status: this.state.status ? '1' : '0'
@@ -73,9 +74,9 @@ const UserStatusFieldSwitch = React.createClass({
                 errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
             });
         });
-    },
+    };
 
-    render: function() {
+    render() {
         if (this.props.useIcon) {
             return (
                 <div className="status-switch-container">
@@ -112,6 +113,6 @@ const UserStatusFieldSwitch = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = UserStatusFieldSwitch;

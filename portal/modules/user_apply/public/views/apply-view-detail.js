@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 新版审批详情界面
@@ -120,11 +122,14 @@ function getDelayDisplayTime(delay) {
             ${days ? days + Intl.get('common.time.unit.day', '天') : ''}`;
 }
 
-const ApplyViewDetail = React.createClass({
+const ApplyViewDetail = createReactClass({
+    displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
+
     hasApprovalPrivilege(){
         return hasPrivilege('USER_PWD_CHANGE_APPROVAL');
     },
+
     getDefaultProps() {
         return {
             showNoData: false,
@@ -133,6 +138,7 @@ const ApplyViewDetail = React.createClass({
             isUnreadDetail: false//是否有未读回复
         };
     },
+
     getInitialState() {
         return {
             appConfig: appConfig,
@@ -141,9 +147,11 @@ const ApplyViewDetail = React.createClass({
             ...ApplyViewDetailStore.getState()
         };
     },
+
     onStoreChange() {
         this.setState(ApplyViewDetailStore.getState());
     },
+
     getApplyDetail(detailItem, applyData) {
 
         setTimeout(() => {
@@ -155,6 +163,7 @@ const ApplyViewDetail = React.createClass({
             }
         });
     },
+
     componentDidMount() {
         ApplyViewDetailStore.listen(this.onStoreChange);
         if (this.props.detailItem.id) {
@@ -163,19 +172,23 @@ const ApplyViewDetail = React.createClass({
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
     },
+
     componentWillUnmount() {
         emitter.removeListener('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
     },
+
     closeRightPanel() {
         ApplyViewDetailActions.closeRightPanel();
     },
+
     componentDidUpdate(prevProps) {
         if (this.props.detailItem.id && prevProps.detailItem.id !== this.props.detailItem.id) {
             this.appsSetting = {};
             this.getApplyDetail(this.props.detailItem);
         }
     },
+
     getApplyListDivHeight: function() {
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
@@ -183,6 +196,7 @@ const ApplyViewDetail = React.createClass({
         var height = $(window).height() - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
         return height;
     },
+
     renderApplyDetailLoading() {
         if (this.state.detailInfoObj.loadingResult === 'loading') {
             var height = this.getApplyListDivHeight();
@@ -194,10 +208,12 @@ const ApplyViewDetail = React.createClass({
         }
         return null;
     },
+
     retryFetchDetail(e) {
         Trace.traceEvent(e, '点击了重试');
         this.getApplyDetail(this.props.detailItem);
     },
+
     renderApplyDetailError() {
         if (this.state.detailInfoObj.loadingResult === 'error') {
             var height = this.getApplyListDivHeight();
@@ -223,6 +239,7 @@ const ApplyViewDetail = React.createClass({
         }
         return null;
     },
+
     renderApplyDetailNodata() {
         if (this.props.showNoData) {
             var height = this.getApplyListDivHeight();
@@ -241,6 +258,7 @@ const ApplyViewDetail = React.createClass({
         }
         return null;
     },
+
     //获取详情高度
     getApplyDetailHeight() {
         if ($(window).width() < Oplate.layout['screen-md']) {
@@ -250,6 +268,7 @@ const ApplyViewDetail = React.createClass({
             AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA -
             AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.BOTTOM_DELTA;
     },
+
     //回复列表滚动到最后
     replyListScrollToBottom() {
         //等待react异步渲染完成
@@ -262,6 +281,7 @@ const ApplyViewDetail = React.createClass({
             GeminiScrollbar.scrollTo(this.refs.geminiWrap, scrollHeight);
         });
     },
+
     //重新获取回复列表
     refreshReplyList(e) {
         Trace.traceEvent(e, '点击了重新获取');
@@ -269,6 +289,7 @@ const ApplyViewDetail = React.createClass({
             ApplyViewDetailActions.getReplyList(this.props.detailItem.id);
         }
     },
+
     //用户头像加载失败的时候，使用默认头像进行显示
     userLogoOnError: function(event) {
         //添加次数判断，避免死循环
@@ -279,6 +300,7 @@ const ApplyViewDetail = React.createClass({
             event.target.src = DefaultHeadIconImage;
         }
     },
+
     //渲染回复列表
     renderReplyList() {
         let replyListInfo = this.state.replyListInfo;
@@ -318,6 +340,7 @@ const ApplyViewDetail = React.createClass({
             return null;
         }
     },
+
     //渲染刷新回复列表的提示
     renderRefreshReplyTip: function() {
         return (<span className="refresh-reply-data-tip">
@@ -419,6 +442,7 @@ const ApplyViewDetail = React.createClass({
             </div>
         );
     },
+
     renderDetailCustomerBlock: function(detailInfo) {
         return (
             <div className="apply-detail-customer apply-detail-info">
@@ -454,9 +478,11 @@ const ApplyViewDetail = React.createClass({
                 </div>
             </div>);
     },
+
     toggleApplyExpanded(bool) {
         ApplyViewDetailActions.toggleApplyExpanded(bool);
     },
+
     renderDetailOperateBtn() {
         if (this.state.selectedDetailItem.isConsumed === 'true' || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
             return null;
@@ -479,6 +505,7 @@ const ApplyViewDetail = React.createClass({
             </Tooltip>
         );
     },
+
     //是否是已有用户开通试用
     //或是否是已有用户开通正式
     isExistUserApply: function() {
@@ -491,6 +518,7 @@ const ApplyViewDetail = React.createClass({
         }
         return false;
     },
+
     //将用户名设置为编辑状态
     editUserName(e) {
         Trace.traceEvent(e, '点击修改用户名');
@@ -500,9 +528,11 @@ const ApplyViewDetail = React.createClass({
             });
         });
     },
+
     renderEditUserName(){
         ApplyViewDetailActions.setUserNameEdit(true);
     },
+
     userNameSure(e) {
         Trace.traceEvent(e, '保存修改用户名');
         const validation = this.refs.validation;
@@ -515,11 +545,13 @@ const ApplyViewDetail = React.createClass({
             ApplyViewDetailActions.setUserNameEdit(false);
         });
     },
+
     userNameCancel(e) {
         Trace.traceEvent(e, '取消修改用户名');
         ApplyViewDetailActions.cancelUserName();
         ApplyViewDetailActions.setUserNameEdit(false);
     },
+
     //渲染用户名区域，文字状态，修改状态
     renderUserNameBlock(info) {
         if (this.state.selectedDetailItem.isConsumed === 'true') {
@@ -550,6 +582,7 @@ const ApplyViewDetail = React.createClass({
                 )}
         </div>);
     },
+
     //渲染用户名
     renderApplyDetailUserNames(detailInfo) {
         //已有用戶
@@ -614,11 +647,13 @@ const ApplyViewDetail = React.createClass({
             }
         }
     },
+
     //将昵称设置为编辑状态
     editNickName(e) {
         Trace.traceEvent(e, '点击修改昵称');
         ApplyViewDetailActions.setNickNameEdit(true);
     },
+
     nickNameSure(e) {
         Trace.traceEvent(e, '保存修改昵称');
         const formData = this.state.formData;
@@ -627,11 +662,13 @@ const ApplyViewDetail = React.createClass({
             ApplyViewDetailActions.setNickNameEdit(false);
         }
     },
+
     nickNameCancel(e) {
         Trace.traceEvent(e, '取消修改昵称');
         ApplyViewDetailActions.cancelNickName();
         ApplyViewDetailActions.setNickNameEdit(false);
     },
+
     //渲染昵称区域，文字状态，修改状态
     renderNickNameBlock(info) {
         if (this.state.selectedDetailItem.isConsumed === 'true') {
@@ -641,7 +678,7 @@ const ApplyViewDetail = React.createClass({
             {!this.hasApprovalPrivilege() ? <span>{info.nick_names[0]}</span>
                 : (this.state.isNickNameEdit ?
                     ( <div className="user-name-wrap">
-                        <Form horizontal>
+                        <Form layout='horizontal'>
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 {this.renderNickNameTextField({existCheck: true})}
                             </Validation>
@@ -741,6 +778,7 @@ const ApplyViewDetail = React.createClass({
             appConfig: appConfig
         });
     },
+
     // 渲染备注
     renderComment(){
         const detailInfo = this.state.detailInfoObj.info;
@@ -934,11 +972,14 @@ const ApplyViewDetail = React.createClass({
             </div>
         );
     },
+
     appsSetting: {},
+
     //当应用选择器数据改变的时候，保存到变量中，提交时使用
     onAppPropertyChange(appsSetting) {
         this.appsSetting = appsSetting;
     },
+
     //渲染用户申请
     renderApplyUser: function(detailInfo) {
         if (this.state.applyIsExpanded) {
@@ -981,6 +1022,7 @@ const ApplyViewDetail = React.createClass({
                 </div>
             </div>);
     },
+
     //销售渲染申请开通状态
     renderDetailChangeStatus: function(detailInfo) {
         return (
@@ -998,6 +1040,7 @@ const ApplyViewDetail = React.createClass({
             </div>
         );
     },
+
     //渲染销售申请修改密码
     renderDetailChangePassword: function(detailInfo) {
         let selectedDetailItem = this.state.selectedDetailItem;
@@ -1007,7 +1050,7 @@ const ApplyViewDetail = React.createClass({
                     {this.renderApplyUserNames(detailInfo)}
                     {
                         selectedDetailItem.isConsumed === 'true' || !this.hasApprovalPrivilege() ? null : (
-                            <Form horizontal>
+                            <Form layout='horizontal'>
                                 <Validation ref="validation" onValidate={this.handleValidate}>
                                     <div className="apply-info-label">
                                         <div className="user-info-label password-label">
@@ -1061,6 +1104,7 @@ const ApplyViewDetail = React.createClass({
             </div>
         );
     },
+
     renderApplyAppNames: function(detailInfo) {
         return (<div className="apply-info-label">
             <span className="user-info-label">{Intl.get('common.app', '应用')}:</span>
@@ -1069,6 +1113,7 @@ const ApplyViewDetail = React.createClass({
             </span>
         </div>);
     },
+
     //渲染用户延期
     renderDetailDelayTime: function(detailInfo) {
         var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
@@ -1091,6 +1136,7 @@ const ApplyViewDetail = React.createClass({
             </div>
         );
     },
+
     //显示用户详情
     showUserDetail: function(userId) {
         ApplyViewDetailActions.showUserDetail(userId);
@@ -1100,6 +1146,7 @@ const ApplyViewDetail = React.createClass({
     delayTimeNumberModify: function(value) {
         ApplyViewDetailActions.delayTimeNumberModify(value);
     },
+
     //延期时间单位改变
     delayTimeUnitModify: function(unit) {
         ApplyViewDetailActions.delayTimeUnitModify(unit);
@@ -1110,6 +1157,7 @@ const ApplyViewDetail = React.createClass({
         Trace.traceEvent(e, '点击修改延期时间');
         ApplyViewDetailActions.setDelayTimeModify(true);
     },
+
     //保存修改的延迟时间
     saveModifyDelayTime(e) {
         Trace.traceEvent(e, '保存修改延期时间');
@@ -1120,10 +1168,12 @@ const ApplyViewDetail = React.createClass({
         }
 
     },
+
     cancelModifyDelayTime(e) {
         Trace.traceEvent(e, '取消修改延期时间');
         ApplyViewDetailActions.cancelModifyDelayTime();
     },
+
     // 获取修改后的时间
     getDelayTimeMillis: function() {
         //延期周期
@@ -1192,6 +1242,7 @@ const ApplyViewDetail = React.createClass({
             </Tooltip>
         );
     },
+
     //显示客户详情
     showCustomerDetail: function(customerId) {
         ApplyViewDetailActions.showCustomerDetail(customerId);
@@ -1204,6 +1255,7 @@ const ApplyViewDetail = React.createClass({
             }
         });
     },
+
     //密码的验证
     checkPassword: function(rule, value, callback) {
         if (value && value.match(passwordRegex)) {
@@ -1258,6 +1310,7 @@ const ApplyViewDetail = React.createClass({
         );
 
     },
+
     //渲染确认密码
     renderConfirmPasswordBlock: function() {
         var status = this.state.status;
@@ -1287,6 +1340,7 @@ const ApplyViewDetail = React.createClass({
             </FormItem>
         </div>);
     },
+
     //确认密码验证
     checkConfirmPassword: function(rule, value, callback) {
         if (value && value !== this.state.formData.apply_detail_password) {
@@ -1295,6 +1349,7 @@ const ApplyViewDetail = React.createClass({
             callback();
         }
     },
+
     //延期，修改应用状态，修改密码，渲染“所属客户”
     //如果只有一个客户，这里才渲染，多个客户的情况，node端不返回前端数据（没有customer_name和customer_id）
     //早期的数据只有customer_name（只显示名字）
@@ -1355,6 +1410,7 @@ const ApplyViewDetail = React.createClass({
             return this.renderApplyUser(detailInfo);
         }
     },
+
     //添加一条回复
     addReply: function(e) {
         Trace.traceEvent(e, '点击回复按钮');
@@ -1375,6 +1431,7 @@ const ApplyViewDetail = React.createClass({
         //提交数据
         ApplyViewDetailActions.addReply(submitData);
     },
+
     //渲染回复表单loading,success,error
     renderReplyFormResult: function() {
         var replyFormInfo = this.state.replyFormInfo;
@@ -1390,6 +1447,7 @@ const ApplyViewDetail = React.createClass({
         }
         return null;
     },
+
     //备注 输入框改变时候触发
     commentInputChange(event) {
         //如果添加回复的ajax没有执行完，则不提交
@@ -1412,7 +1470,7 @@ const ApplyViewDetail = React.createClass({
 
     // 隐藏撤销申请的模态框
     hideBackoutModal: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.btn-cancel'), '点击取消按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
         this.state.showBackoutConfirm = false;
         this.setState(this.state);
     },
@@ -1456,6 +1514,7 @@ const ApplyViewDetail = React.createClass({
             </Modal>
         );
     },
+
     getApplyResultDscr(detailInfoObj){
         let resultDscr = '';
         switch (detailInfoObj.approval_state) {
@@ -1475,6 +1534,7 @@ const ApplyViewDetail = React.createClass({
     getNoSecondTimeStr(time){
         return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
     },
+
     //渲染详情底部区域
     renderDetailBottom() {
         var selectedDetailItem = this.state.selectedDetailItem;
@@ -1531,6 +1591,7 @@ const ApplyViewDetail = React.createClass({
                 </Row>
             </div>);
     },
+
     // 用户名重名时
     renderDuplicationName(errorMsg){
         this.toggleApplyExpanded(false);
@@ -1568,9 +1629,9 @@ const ApplyViewDetail = React.createClass({
 
     submitApprovalForm(approval) {
         if (approval === '1') {
-            Trace.traceEvent($(this.getDOMNode()).find('.btn-primary-sure'), '点击通过按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
         } else if (approval === '2') {
-            Trace.traceEvent($(this.getDOMNode()).find('.btn-primary-sure'), '点击驳回按钮');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
         }
         const realSubmit = () => {
             //详情信息
@@ -1708,10 +1769,12 @@ const ApplyViewDetail = React.createClass({
             });
         }
     },
+
     viewApprovalResult(e) {
         Trace.traceEvent(e, '查看审批结果');
         this.getApplyDetail(this.props.detailItem);
     },
+
     //我再改改
     cancelShowRolesModal(e) {
         Trace.traceEvent(e, '点击了我再改改');
@@ -1721,6 +1784,7 @@ const ApplyViewDetail = React.createClass({
         });
         return;
     },
+
     //继续提交
     continueSubmit(e) {
         Trace.traceEvent(e, '点击了继续');
@@ -1729,6 +1793,7 @@ const ApplyViewDetail = React.createClass({
             this.submitApprovalForm();
         });
     },
+
     renderApplyFormResult() {
         //如果没有进行角色设置，显示角色设置的模态框
         if (this.state.rolesNotSettingModalDialog.show) {
@@ -1802,30 +1867,36 @@ const ApplyViewDetail = React.createClass({
         }
         return null;
     },
+
     //重新发送
     reSendApproval(e) {
         Trace.traceEvent(e, '点击重试按钮');
         this.submitApprovalForm();
     },
+
     //取消发送
     cancelSendApproval(e) {
         Trace.traceEvent(e, '点击取消按钮');
         ApplyViewDetailActions.cancelSendApproval();
     },
+
     // 申请应用的配置界面
     showAppConfigRightPanle(){
         ApplyViewDetailActions.showAppConfigRightPanle();
     },
+
     // 应用配置取消保存
     handleCancel(){
         ApplyViewDetailActions.handleCancel();
     },
+
     // 应用配置保存成功时
     handleSaveAppConfig(appId){
         ApplyViewDetailActions.handleSaveAppConfig();
         this.getApplyDetail(this.props.detailItem);
         //this.getAppConfigExtra( appId ,appConfig.user_type);
     },
+
     // 假设没有默认配置，默认配置成功
     getAppConfigExtra(client_id, user_type){
         ApplyViewDetailActions.getApplyAppDefaultInfo({client_id, user_type});
@@ -1844,11 +1915,13 @@ const ApplyViewDetail = React.createClass({
         });
 
     },
+
     closeCustomerUserListPanel() {
         this.setState({
             isShowCustomerUserListPanel: false
         });
     },
+
     // 获取更改或是没有更改的用户数最大值
     getChangeMaxUserNumber(){
         let userNumber = [];
@@ -1923,7 +1996,8 @@ const ApplyViewDetail = React.createClass({
             </div>
 
         );
-    }
+    },
 });
 
 export default ApplyViewDetail;
+

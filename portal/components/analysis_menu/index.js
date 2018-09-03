@@ -1,7 +1,8 @@
+var React = require('react');
 require('./index.less');
 var Dropdown = require('antd').Dropdown;
 var Menu = require('antd').Menu;
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 const TopNav = require('CMP_DIR/top-nav');
 var UserData = require('../../public/sources/user-data');
 var moduleTextMap = {
@@ -28,16 +29,18 @@ var moduleUrlMap = {
     'monthly_report_analysis': '/analysis/monthly_report'
 };
 
-var AnalysisMenu = React.createClass({
-    getCurrentPath: function() {
+class AnalysisMenu extends React.Component {
+    getCurrentPath = () => {
         var pathname = window.location.pathname;
         return pathname;
-    },
-    getCurrentLinkText: function() {
+    };
+
+    getCurrentLinkText = () => {
         var category = this.getCurrentPath();
         return urlTextMap[category];
-    },
-    render: function() {
+    };
+
+    render() {
         var menuListArray = [];
         const menuList = [];
         var modules = UserData.getUserData().modules;
@@ -53,7 +56,7 @@ var AnalysisMenu = React.createClass({
                 }
                 menuListArray.push((
                     <Menu.Item key={module}>
-                        <Link to={url} activeClassName="active">{name}</Link>
+                        <NavLink to={url} activeClassName="active">{name}</NavLink>
                     </Menu.Item>
                 ));
             }
@@ -78,6 +81,6 @@ var AnalysisMenu = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = AnalysisMenu;

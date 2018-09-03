@@ -1,8 +1,12 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const ContractDashboardPage = (props) => (
+    <Bundle load={() => import('./dashboard')}>
+        {(ContractDashboardPage) => <ContractDashboardPage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'dashboard',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./dashboard')); 
-        });
-    }
+    path: '/contract/dashboard',
+    component: ContractDashboardPage
 };

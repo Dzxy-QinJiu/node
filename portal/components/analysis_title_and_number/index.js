@@ -1,14 +1,15 @@
+var React = require('react');
 require('./index.less');
-var TitleAndNum = React.createClass({
-    getDefaultProps: function() {
-        return {
-            left_title: '新增用户',
-            right_title: '新增用户量',
-            number: '1132',
-            hideRightPart: false
-        };
-    },
-    render: function() {
+
+class TitleAndNum extends React.Component {
+    static defaultProps = {
+        left_title: '新增用户',
+        right_title: '新增用户量',
+        number: '1132',
+        hideRightPart: false
+    };
+
+    render() {
 
         var rightPart = this.props.right_title ? (
             <span className="pull-right">
@@ -24,6 +25,6 @@ var TitleAndNum = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = TitleAndNum;

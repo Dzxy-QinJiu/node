@@ -3,26 +3,26 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by liwenjun on 2018/6/21.
  */
-import TopNav from 'CMP_DIR/top-nav';
+var React = require('react');
+const PropTypes = require('prop-types');
 const history = require('../../public/sources/history');
-const PropTypes = React.PropTypes;
 import './public/style.less';
-class ContractContainer extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+import {renderRoutes} from 'react-router-config';
+import TopNav from 'CMP_DIR/top-nav';
 
-    checkRoute() {
-        var locationPath = window.location.pathname.replace(/^\//, '');
+
+class ContractContainer extends React.Component {
+    checkRoute = () => {
+        var locationPath = location.pathname;
         if (this.props.route && locationPath === this.props.route.path) {
             var routes = this.props.route.routesExports;
             if (routes && routes[0] && routes[0].path) {
-                history.replace('/' + locationPath + '/' + routes[0].path);
+                history.replace(routes[0].path);
                 return true;
             }
         }
         return false;
-    }
+    };
 
     render() {
         var jump = this.checkRoute();
@@ -34,16 +34,17 @@ class ContractContainer extends React.Component {
             <div className="rightContent">
                 <div className="main">
                     <TopNav>
-                        <TopNav.MenuList />
+                        <TopNav.MenuList/>
                     </TopNav>
                     <div className="contract-container">
-                        {this.props.children}
+                        {renderRoutes(this.props.route.routes)}
                     </div>
                 </div>
             </div>
         );
     }
 }
+
 ContractContainer.propTypes = {
     children: PropTypes.element,
     route: PropTypes.object,

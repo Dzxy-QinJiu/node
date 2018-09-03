@@ -1,30 +1,31 @@
+var React = require('react');
 require('../css/index.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
 import {Icon, Alert} from 'antd';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
-const competingProductManage = React.createClass({
-    getInitialState: function() {
-        return ({
-            //竞品列表
-            productList: [],
-            //点击竞品添加按钮的loading效果是否显示
-            isAddloading: false,
-            //当前正在删除的竞品
-            DeletingItem: '',
-            //点击刷新按钮的loading效果是否显示
-            isRefreshLoading: false,
-            //加载失败的提示信息
-            getErrMsg: '',
-            //添加失败的信息
-            addErrMsg: '',
-            // 删除竞品失败
-            deleteErrMsg: '',
-        });
-    },
+
+class competingProductManage extends React.Component {
+    state = {
+        //竞品列表
+        productList: [],
+        //点击竞品添加按钮的loading效果是否显示
+        isAddloading: false,
+        //当前正在删除的竞品
+        DeletingItem: '',
+        //点击刷新按钮的loading效果是否显示
+        isRefreshLoading: false,
+        //加载失败的提示信息
+        getErrMsg: '',
+        //添加失败的信息
+        addErrMsg: '',
+        // 删除竞品失败
+        deleteErrMsg: '',
+    };
+
     //获取竞品列表
-    getProductList: function() {
+    getProductList = () => {
         this.setState({
             isRefreshLoading: true
         });
@@ -46,20 +47,23 @@ const competingProductManage = React.createClass({
             }
         });
 
-    },
-    componentWillMount: function() {
+    };
+
+    componentWillMount() {
         this.getProductList();
-    },
+    }
+
     //点击刷新按钮
-    getRefreshInfo: function(e) {
+    getRefreshInfo = (e) => {
         this.setState({
             isRefreshLoading: true,
             productList: []
         });
         this.getProductList();
-    },
+    };
+
     //删除竞品标签
-    handleDeleteItem: function(item) {
+    handleDeleteItem = (item) => {
         //当前正在删除的竞品的id
         this.setState({
             DeletingItem: item
@@ -84,9 +88,10 @@ const competingProductManage = React.createClass({
             }
         });
 
-    },
+    };
+
     //增加竞品
-    handleSubmit: function(e) {
+    handleSubmit = (e) => {
         Trace.traceEvent(e, '点击添加竞品按钮');
         e.preventDefault();
         //输入的竞品名称去左右空格
@@ -121,9 +126,10 @@ const competingProductManage = React.createClass({
             }
         });
 
-    },
+    };
+
     //增加竞品失败
-    handleAddIndustryFail(){
+    handleAddIndustryFail = () => {
         var hide = () => {
             this.setState({
                 addErrMsg: '',
@@ -135,13 +141,13 @@ const competingProductManage = React.createClass({
                 {this.renderErrorAlert(this.state.addErrMsg, hide)}
             </div>
         );
-    },
+    };
 
-    renderErrorAlert: function(errorMsg, hide) {
+    renderErrorAlert = (errorMsg, hide) => {
         return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" showIcon onHide={hide}/>);
-    },
+    };
 
-    handleDeleteIndustryFail: function() {
+    handleDeleteIndustryFail = () => {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -152,9 +158,9 @@ const competingProductManage = React.createClass({
                 {this.renderErrorAlert(this.state.deleteErrMsg, hide)}
             </div>
         );
-    },
+    };
 
-    renderCompetingProductList: function() {
+    renderCompetingProductList = () => {
         let productList = this.state.productList;
         //正在获取数据的状态渲染
         if (this.state.isRefreshLoading) {
@@ -186,8 +192,9 @@ const competingProductManage = React.createClass({
             return <Alert type="info" showIcon
                 message={Intl.get('config.manage.no.product', '暂无竞品配置，请添加！')}/>;
         }
-    },
-    render: function() {
+    };
+
+    render() {
         return (
             <div className="box" data-tracename="竞品配置">
                 <div className="box-title">
@@ -221,6 +228,7 @@ const competingProductManage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = competingProductManage;
+

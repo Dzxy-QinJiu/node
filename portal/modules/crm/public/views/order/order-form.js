@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 import {Form, Input, Select, DatePicker} from 'antd';
 const FormItem = Form.Item;
@@ -8,7 +10,8 @@ import ValidateMixin from '../../../../../mixins/ValidateMixin';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
-const OrderForm = React.createClass({
+const OrderForm = createReactClass({
+    displayName: 'OrderForm',
     mixins: [ValidateMixin],
 
     getInitialState: function() {
@@ -21,7 +24,7 @@ const OrderForm = React.createClass({
     },
 
     handleCancel: function(e) {
-        Trace.traceEvent(this.getDOMNode(), '取消添加订单');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '取消添加订单');
         e.preventDefault();
         OrderAction.hideForm();
     },
@@ -29,7 +32,7 @@ const OrderForm = React.createClass({
     handleSubmit: function(e) {
         e.preventDefault();
         const validation = this.refs.validation;
-        Trace.traceEvent(this.getDOMNode(), '保存订单');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存订单');
         validation.validate(valid => {
             if (!valid) {
                 return;
@@ -60,11 +63,13 @@ const OrderForm = React.createClass({
             }
         });
     },
+
     onAppsChange: function(selectedApps) {
-        Trace.traceEvent(this.getDOMNode(), '点击选中/取消选中某个应用');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击选中/取消选中某个应用');
         this.state.formData.apps = _.map(selectedApps, 'client_id');
         this.setState(this.state);
     },
+
     changeExpectedTime: function(value) {
         let timestamp = value && value.valueOf() || '';
         let formData = this.state.formData;
@@ -73,9 +78,11 @@ const OrderForm = React.createClass({
             formDate: formData
         });
     },
+
     handleSelect: function() {
-        Trace.traceEvent(this.getDOMNode(), '选择销售阶段');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择销售阶段');
     },
+
     renderOrderForm: function() {
         const formData = this.state.formData;
         //添加时，app的添加，修改时不需要展示
@@ -99,7 +106,7 @@ const OrderForm = React.createClass({
             }
         }
         return (
-            <Form horizontal className="order-form" id="order-form">
+            <Form layout='horizontal' className="order-form" id="order-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         label={Intl.get('sales.stage.sales.stage', '销售阶段')}
@@ -181,6 +188,7 @@ const OrderForm = React.createClass({
             </Form>
         );
     },
+
     render(){
         return (<DetailCard content={this.renderOrderForm()}
             isEdit={true}
@@ -190,7 +198,8 @@ const OrderForm = React.createClass({
             handleSubmit={this.handleSubmit}
             handleCancel={this.handleCancel}
         />);
-    }
+    },
 });
 
 module.exports = OrderForm;
+

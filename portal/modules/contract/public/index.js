@@ -1,3 +1,4 @@
+var React = require('react');
 import './style.less';
 import classNames from 'classnames';
 import {message, Button, Icon, Modal, Radio, Select} from 'antd';
@@ -32,19 +33,21 @@ const getTypeByPath = () => {
 
 const defaultSorter = {field: 'date', order: 'descend'};
 
-const Contract = React.createClass({
-    getInitialState: function() {
-        const location = this.props.location;
+class Contract extends React.Component {
+    constructor(props) {
+        super(props);
+        const action = props.history.action;
+        const location = props.location;
         //通过订单生成的合同id
         const orderGenerateContractId = location.state && location.state.contractId;
         //是否是从订单转过来的
         let isFromOrder = false;
         //判断条件中的PUSH是用来判断是否是通过history.pushState重定向过来的，重定向过来的location.action的值是PUSH，刷新页面的时候location.action的值是POP
-        if (orderGenerateContractId && location.action === 'PUSH') {
+        if (orderGenerateContractId && action === 'PUSH') {
             isFromOrder = true;
         }
 
-        return {
+        this.state = {
             contractList: [],
             appList: [],
             teamList: [],
@@ -73,8 +76,9 @@ const Contract = React.createClass({
             exportRange: 'filtered',
             contractTemplateRightPanelShow: false
         };
-    },
-    componentDidMount: function() {
+    }
+
+    componentDidMount() {
         this.getTeamList();
         this.getAppList();
         this.getUserList();
@@ -89,21 +93,24 @@ const Contract = React.createClass({
         } else {
             this.getContractList(true, sorter, queryParams);
         }
-    },
-    componentWillReceiveProps: function(newProps) {
+    }
+
+    componentWillReceiveProps(newProps) {
         this.setState({
             type: getTypeByPath()
         }, () => {
             this.showContractList(this.state.type);
         });
-    },
-    getQueryParams: function() {
+    }
+
+    getQueryParams = () => {
         const queryStr = location.search.slice(1);
         const queryParams = querystring.parse(queryStr);
 
         return queryParams;
-    },
-    getSorter: function(type) {
+    };
+
+    getSorter = (type) => {
         let sorter = defaultSorter;
 
         if (type === VIEW_TYPE.REPAYMENT) {
@@ -111,8 +118,9 @@ const Contract = React.createClass({
         }
 
         return sorter;
-    },
-    getCondition: function() {
+    };
+
+    getCondition = () => {
         let reqData = {query: {}};
 
         const Filter = this.refs.filter;
@@ -128,8 +136,9 @@ const Contract = React.createClass({
         reqData.rang_params = this.state.rangeParams.concat(ContractList.state.rangeParams);
 
         return reqData;
-    },
-    showContractList: function(type) {
+    };
+
+    showContractList = (type) => {
         const Filter = this.refs.filter;
         const ContractList = this.refs.contractList;
         const DateSelector = this.refs.dateSelector;
@@ -155,8 +164,9 @@ const Contract = React.createClass({
         }, () => {
             this.getContractList(true);
         });
-    },
-    getContractList: function(reset, sorter, queryParams) {
+    };
+
+    getContractList = (reset, sorter, queryParams) => {
         if (reset) {
             this.setState({
                 isListLoading: true,
@@ -281,14 +291,14 @@ const Contract = React.createClass({
                 this.state.isScrollTop = false;
                 message.error((err && err.message) || Intl.get('contract.111', '获取数据失败'));
             });
-    },
+    };
 
     //重新获取当前合同信息
     //参数说明：
     //id：合同id
     //isUpdateList：是否更新列表中的对应项，默认为更新
     //newContract：更新后的合同
-    refreshCurrentContract: function(id, isUpdateList = true, newContract) {
+    refreshCurrentContract = (id, isUpdateList = true, newContract) => {
         //如果提供了更新后的合同，则直接使用，不用再发请求获取了
         if (newContract) {
             if (isUpdateList) {
@@ -337,9 +347,10 @@ const Contract = React.createClass({
                 this.setState(this.state);
             }
         });
-    },
+    };
+
     // 前端更新操作后的数据（不请求后端接口获取最新数据）
-    refreshCurrentContractNoAjax(propName, type, data = {}, id) {
+    refreshCurrentContractNoAjax = (propName, type, data = {}, id) => {
         let currentContract = this.state.currentContract;
         switch(type) {
             case 'add':
@@ -358,13 +369,15 @@ const Contract = React.createClass({
         this.setState({
             currentContract
         });
-    },
-    deleteContract: function(id) {
+    };
+
+    deleteContract = (id) => {
         let index = _.findIndex(this.state.contractList, item => item.id === id);
         if (index > -1) this.state.contractList.splice(index, 1);
         this.setState(this.state);
-    },
-    exportData: function() {
+    };
+
+    exportData = () => {
         let exportName = {};
         exportName[VIEW_TYPE.SELL] = '导出销售合同';
         exportName[VIEW_TYPE.BUY] = '导出采购合同';
@@ -400,24 +413,28 @@ const Contract = React.createClass({
         form.remove();
 
         this.hideExportModal();
-    },
-    addContract: function(contract) {
+    };
+
+    addContract = (contract) => {
         this.state.contractList.unshift(contract);
         this.setState(this.state);
-    },
-    getAppList: function() {
+    };
+
+    getAppList = () => {
         appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(list => {
             list = _.isArray(list) ? list : [];
             this.setState({appList: list});
         });
-    },
-    getTeamList: function() {
+    };
+
+    getTeamList = () => {
         teamAjaxTrans.getTeamListAjax().sendRequest().success(list => {
             list = _.isArray(list) ? list : [];
             this.setState({teamList: list});
         });
-    },
-    getUserList: function() {
+    };
+
+    getUserList = () => {
         salesmanAjax.getSalesmanListAjax().addQueryParam({with_ketao_member: true}).sendRequest()
             .success(result => {
                 if (_.isArray(result)) {
@@ -449,8 +466,9 @@ const Contract = React.createClass({
                     isGetUserSuccess: false,
                 });
             });
-    },
-    getTypeList: function() {
+    };
+
+    getTypeList = () => {
         const route = _.find(routeList, route => route.handler === 'getContractTypeList');
 
         const arg = {
@@ -464,23 +482,26 @@ const Contract = React.createClass({
                 this.setState(this.state);
             }
         });
-    },
-    showRightPanel: function(view, rowIndex) {
+    };
+
+    showRightPanel = (view, rowIndex) => {
         Trace.traceEvent('合同管理', '打开合同添加面板');
         this.state.currentContract = !isNaN(rowIndex) ? this.state.contractList[rowIndex] : {};
         this.state.isRightPanelShow = true;
         this.state.rightPanelView = view || '';
         this.setState(this.state);
-    },
-    hideRightPanel: function() {
+    };
+
+    hideRightPanel = () => {
         this.setState({
             isRightPanelShow: false,
         });
 
         //取消合同列表项选中状态
         $('.custom-tbody .ant-table-row').removeClass('current-row');
-    },
-    toggleTheadFilter: function() {
+    };
+
+    toggleTheadFilter = () => {
         this.setState({
             isTheadFilterShow: !this.state.isTheadFilterShow
         }, () => {
@@ -498,33 +519,39 @@ const Contract = React.createClass({
             }
 
         });
-    },
-    showExportModal: function() {
+    };
+
+    showExportModal = () => {
         this.setState({
             isExportModalShow: true,
         });
-    },
-    hideExportModal: function() {
+    };
+
+    hideExportModal = () => {
         this.setState({
             isExportModalShow: false,
         });
-    },
-    onExportRangeChange: function(e) {
+    };
+
+    onExportRangeChange = (e) => {
         this.setState({
             exportRange: e.target.value
         });
-    },
-    showContractTemplateRightPanel: function() {
+    };
+
+    showContractTemplateRightPanel = () => {
         this.setState({
             contractTemplateRightPanelShow: true
         });
-    },
-    closeContractTemplatePanel: function() {
+    };
+
+    closeContractTemplatePanel = () => {
         this.setState({
             contractTemplateRightPanelShow: false
         });
-    },
-    onDateChange: function(startTime, endTime) {
+    };
+
+    onDateChange = (startTime, endTime) => {
         if (!startTime && !endTime) {
             this.state.rangeParams = [];
         } else {
@@ -540,8 +567,9 @@ const Contract = React.createClass({
         this.setState(this.state, () => {
             this.getContractList(true);
         });
-    },
-    onDateTypeChange: function(type) {
+    };
+
+    onDateTypeChange = (type) => {
         Trace.traceEvent('合同管理', '选择签订时间' + type);
         const rangeParams = this.state.rangeParams;
 
@@ -553,9 +581,9 @@ const Contract = React.createClass({
         }, () => {
             this.getContractList(true);
         });
-    },
+    };
 
-    render: function() {
+    render() {
         //点击添加合同按钮时，默认打开哪个视图
         const addBtnView = this.state.type === VIEW_TYPE.SELL ? 'chooseType' : 'buyForm';
 
@@ -767,6 +795,7 @@ const Contract = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = Contract;
+

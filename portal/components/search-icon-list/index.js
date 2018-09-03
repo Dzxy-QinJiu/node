@@ -1,3 +1,5 @@
+const PropTypes = require('prop-types');
+var React = require('react');
 require('./index.less');
 const img_src = require('../../modules/common/public/image/user-info-logo.jpg');
 import {Input,Icon,Checkbox,Alert} from 'antd';
@@ -5,7 +7,6 @@ import {Input,Icon,Checkbox,Alert} from 'antd';
 import immutable from 'immutable';
 import classNames from 'classnames';
 import SearchInput from '../../components/searchInput';
-const PropTypes = React.PropTypes;
 
 class SearchIconList extends React.Component {
     constructor(props) {

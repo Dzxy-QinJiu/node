@@ -1,3 +1,5 @@
+var React = require('react');
+var createReactClass = require('create-react-class');
 import { AntcTable } from 'antc';
 var Spinner = require('../../../../components/spinner');
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
@@ -7,18 +9,22 @@ const messages = defineMessages({
 });
 const tableHeadHeight = 40;
 
-var UserInfoLog = React.createClass({
+var UserInfoLog = createReactClass({
+    displayName: 'UserInfoLog',
     mixins: [reactIntlMixin],
+
     isShowNoMoreDataTips() {
         return !this.props.logLoading &&
             this.props.logList.length >= 10 && !this.props.listenScrollBottom;
     },
+
     renderLoading() {
         if (this.props.logLoading && this.props.sortId === '') {
             return <Spinner className="isloading"/>;
         }
         return null;
     },
+
     renderLogTableContent() {
         var Columns = [{
             title: Intl.get('common.login.time','时间'),
@@ -90,6 +96,7 @@ var UserInfoLog = React.createClass({
             </div>
         );
     },
+
     render() {
         return (
             <div className="user-log">
@@ -97,8 +104,7 @@ var UserInfoLog = React.createClass({
                 {this.renderLogTableContent()}
             </div>
         );
-    }
-
+    },
 });
 
 module.exports = injectIntl(UserInfoLog);

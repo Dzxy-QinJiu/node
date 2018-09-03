@@ -1,3 +1,4 @@
+var React = require('react');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/main-es_VE.less');
@@ -7,14 +8,16 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 //顶部导航
 var SystemNotification = require('./views/system');
 
-var Notification = React.createClass({
-    componentDidMount: function() {
+class Notification extends React.Component {
+    componentDidMount() {
         $('body').css('overflow', 'hidden');
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         $('body').css('overflow', 'hidden');
-    },
-    render: function() {
+    }
+
+    render() {
         return (
             <div className="notification_wrap">
                 <div className="shade"></div>
@@ -25,6 +28,6 @@ var Notification = React.createClass({
            
         );
     }
-});
+}
 
 module.exports = Notification;

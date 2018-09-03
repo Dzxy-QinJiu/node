@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * 产品展示、编辑组件
  */

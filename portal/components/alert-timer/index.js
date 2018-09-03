@@ -1,23 +1,25 @@
+var React = require('react');
 var Alert = require('antd').Alert;
-var AlertTimer = React.createClass({
-    isUnmount: false,
-    getDefaultProps: function() {
-        return {
-            //默认两秒后消失
-            time: 2000,
-            onHide: function() {}
-        };
-    },
-    componentWillUnmount: function() {
+
+class AlertTimer extends React.Component {
+    static defaultProps = {
+        //默认两秒后消失
+        time: 2000,
+        onHide: function() {}
+    };
+
+    state = {
+        show: true
+    };
+
+    isUnmount = false;
+
+    componentWillUnmount() {
         this.isUnmount = true;
         clearTimeout(this.timer);
-    },
-    getInitialState: function() {
-        return {
-            show: true
-        };
-    },
-    componentDidMount: function() {
+    }
+
+    componentDidMount() {
         var _this = this;
         this.timer = setTimeout(function() {
             if(!_this.isUnmount) {
@@ -27,8 +29,9 @@ var AlertTimer = React.createClass({
             }
             _this.props.onHide();
         }, this.props.time);
-    },
-    render: function() {
+    }
+
+    render() {
         return (
             <div className="alert-timer">
                 {
@@ -40,6 +43,6 @@ var AlertTimer = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = AlertTimer;

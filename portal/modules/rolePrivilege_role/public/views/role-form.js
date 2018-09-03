@@ -1,9 +1,11 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * Created by jinfeng on 2015/12/28.
  */
-var Link = require('react-router').Link;
+import {NavLink} from 'react-router-dom';
 var Form = require('antd').Form;
 var Input = require('antd').Input;
 var Button = require('antd').Button;
@@ -34,8 +36,10 @@ let CONSTANTS = {
     SAVE_BTN_H: 65
 };
 
-var RoleForm = React.createClass({
+var RoleForm = createReactClass({
+    displayName: 'RoleForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             cancelRoleForm: noop,
@@ -47,6 +51,7 @@ var RoleForm = React.createClass({
             roleFormShow: false
         };
     },
+
     getFormData: function(props) {
         var formData = $.extend(true, {}, props.role);
         if (props.formType == 'add') {
@@ -54,6 +59,7 @@ var RoleForm = React.createClass({
         }
         return formData;
     },
+
     getInitialState: function() {
         var stateData = RoleFormStore.getState();
         return {
@@ -68,6 +74,7 @@ var RoleForm = React.createClass({
             saveMsg: stateData.saveMsg//保存失败后的提示信息
         };
     },
+
     onChange: function() {
         var stateData = RoleFormStore.getState();
         this.setState({
@@ -75,6 +82,7 @@ var RoleForm = React.createClass({
             saveMsg: stateData.saveMsg//保存失败后的提示信息
         });
     },
+
     componentDidMount: function() {
         RoleFormStore.listen(this.onChange);
     },
@@ -173,12 +181,13 @@ var RoleForm = React.createClass({
             );
         }
     },
+
     //全选、取消选中的处理
     handleSelectAllAuthority: function(curPermissionGroupName, flag) {
         if (flag) {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'选中全部的权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-name-btn-label'),'选中全部的权限');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'取消选中的权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-name-btn-label'),'取消选中的权限');
         }
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
@@ -201,7 +210,7 @@ var RoleForm = React.createClass({
 
     //反选
     reverseSelectAuthority: function(curPermissionGroupName) {
-        Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn-label'),'反选权限');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-name-btn-label'),'反选权限');
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
                 function(permisssionGroup) {
@@ -219,14 +228,17 @@ var RoleForm = React.createClass({
             );
         }
     },
+
     hideSaveTooltip: function() {
         RoleFormAction.clearSaveFlags();
     },
+
     //转到权限设置面板（我的应用中的处理）
     turnToAuthPanel: function(e) {
         this.handleCancel(e);
         this.props.setShowRoleAuthType('authority');
     },
+
     //展示收起单个权限组的处理
     toggleAuth: function(curPermissionGroupName) {
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
@@ -243,12 +255,13 @@ var RoleForm = React.createClass({
             );
         }
     },
+
     //展示收起所有权限分组的处理
     toggleAllAuth: function() {
         if (this.state.allAuthIsShow ) {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-container'),'全部收起权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-container'),'全部收起权限');
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-container'),'全部展开权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-container'),'全部展开权限');
         }
 
         let allAuthIsShow = !this.state.allAuthIsShow;//展示、收起所有权限分组的切换
@@ -277,7 +290,7 @@ var RoleForm = React.createClass({
         return (
             <RightPanel className="white-space-nowrap" showFlag={this.state.roleFormShow} >
                 <RightPanelClose onClick={this.handleCancel}/>
-                <Form horizontal className="role-form">
+                <Form layout='horizontal' className="role-form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label={Intl.get('common.role', '角色')}
@@ -363,8 +376,8 @@ var RoleForm = React.createClass({
                                     defaultMessage={'暂无权限,请先{add}'}
                                     values={{
                                         'add': (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}>{Intl.get('role.add.auth', '添加权限')}</a>) : (
-                                            <Link to="/backgroundManagement/authority" activeClassName="active">
-                                                {Intl.get('role.add.auth', '添加权限')}</Link>
+                                            <NavLink to="/backgroundManagement/authority" activeClassName="active">
+                                                {Intl.get('role.add.auth', '添加权限')}</NavLink>
                                         ))
                                     }}
                                 />
@@ -396,7 +409,8 @@ var RoleForm = React.createClass({
                 </div>) : null}
             </RightPanel>
         );
-    }
+    },
 });
 
 module.exports = RoleForm;
+

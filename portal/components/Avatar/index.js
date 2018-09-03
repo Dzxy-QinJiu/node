@@ -1,14 +1,15 @@
 'use strict';
-var ReactRouter = require('react-router');
+var React = require('react');
+import {NavLink} from 'react-router-dom';
 var DefaultUserLogoTitle = require('../default-user-logo-title');
-var Link = ReactRouter.Link;
+
 // 头像组件
-var Avatar = React.createClass({
-    render: function() {
+class Avatar extends React.Component {
+    render() {
         var innerStyle = {
             display: 'inline-block',
-            width: this.props.size ? this.props.size : 36,
-            height: this.props.size ? this.props.size : 36
+            width: this.props.size ? this.props.size : '36px',
+            height: this.props.size ? this.props.size : '36px'
         };
         var aStyle = {
             cursor: 'default'
@@ -25,23 +26,25 @@ var Avatar = React.createClass({
             </div>
         );
     }
-});
+}
+
 // 带链接图片组件
-var Aimg = React.createClass({
-    render: function() {
+class Aimg extends React.Component {
+    render() {
         return (
-            <Link to={this.props.url} activeClassName="active">
+            <NavLink to={this.props.url} activeClassName="active">
                 <Img alt={this.props.name} src={this.props.src} round={this.props.round}
                     userName={this.props.userName} nickName={this.props.nickName}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
-            </Link>
+            </NavLink>
         );
     }
-});
+}
+
 // 图片组件
-var Img = React.createClass({
-    render: function() {
+class Img extends React.Component {
+    render() {
         var imgStyle = {
             width: '100%',
             height: '100%',
@@ -59,10 +62,10 @@ var Img = React.createClass({
             </DefaultUserLogoTitle>
         );
     }
-});
+}
 
-var Name = React.createClass({
-    render: function() {
+class Name extends React.Component {
+    render() {
         var nameStyle = {
             lineHeight: '20px',
             color: '#fff'
@@ -71,6 +74,7 @@ var Name = React.createClass({
             <label style={nameStyle}>{this.props.name}</label>
         );
     }
-});
+}
 
 module.exports = Avatar;
+

@@ -1,6 +1,7 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
+var React = require('react');
 require('./css/sales-team.less');
 import {Icon,Input,Button} from 'antd';
 var SalesTeamStore = require('./store/sales-team-store');
@@ -23,8 +24,9 @@ var CONSTANT = {
     SAVE_ERROR: Intl.get('common.save.failed', '保存失败')
 };
 
-var SalesTeamPage = React.createClass({
-    getInitialState: function() {
+class SalesTeamPage extends React.Component {
+    constructor(props, context) {
+        super(props, context);
         var data = SalesTeamStore.getState();
         data.containerHeight = this.containerHeightFnc();
         data.containerWidth = this.containerWidthFnc();
@@ -33,26 +35,26 @@ var SalesTeamPage = React.createClass({
         data.isSavingSalesTeam = false;//是否正在添加团队
         data.saveSalesTeamMsg = '';//添加团队成功失败的提示
         data.saveSalesTeamResult = '';//添加团队成功还是失败（success/error）
-        return data;
-    },
+        this.state = data;
+    }
 
-    onChange: function() {
+    onChange = () => {
         var data = SalesTeamStore.getState();
         data.containerHeight = this.containerHeightFnc();
         data.containerWidth = this.containerWidthFnc();
         data.windowHeight = this.windowHeightFnc();
         this.setState(data);
-    },
+    };
 
-    resizeWindow: function() {
+    resizeWindow = () => {
         this.setState({
             containerHeight: this.containerHeightFnc(),
             containerWidth: this.containerWidthFnc(),
             windowHeight: this.windowHeightFnc()
         });
-    },
+    };
 
-    componentDidMount: function() {
+    componentDidMount() {
         $('body').css('overflow', 'hidden');
         $(window).on('resize', this.resizeWindow);
         SalesTeamStore.listen(this.onChange);
@@ -60,37 +62,38 @@ var SalesTeamPage = React.createClass({
         SalesTeamAction.setSalesTeamLoading(true);
         SalesTeamAction.getSalesTeamList();
         SalesTeamAction.getMemberList();
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         $(window).off('resize', this.resizeWindow);
         SalesTeamStore.unlisten(this.onChange);
         $('body').css('overflow', 'auto');
-    },
+    }
 
-    containerHeightFnc: function() {
+    containerHeightFnc = () => {
         return $(window).height() - topHeight - bootomHeight;
-    },
+    };
 
-    windowHeightFnc: function() {
+    windowHeightFnc = () => {
         return $(window).height();
-    },
+    };
 
-    containerWidthFnc: function() {
+    containerWidthFnc = () => {
         return $(window).width() - 75 - 40;
-    },
+    };
 
-    cancelAddGroup: function() {
+    cancelAddGroup = () => {
         SalesTeamAction.cancelAddGroup();
-    },
+    };
 
     //团队名称修改的处理
-    onSalesTeamNameChange: function(event) {
+    onSalesTeamNameChange = (event) => {
         this.state.salesTeamName = event.target.value;
         this.setState({salesTeamName: this.state.salesTeamName});
-    },
+    };
+
     //添加团队
-    addSalesTeam: function() {
+    addSalesTeam = () => {
         var _this = this;
         _this.setState({
             isSavingSalesTeam: true
@@ -113,25 +116,28 @@ var SalesTeamPage = React.createClass({
             _this.state.saveSalesTeamResult = CONSTANT.ERROR;
             _this.updateSaveState();
         });
-    },
+    };
+
     //更新添加团队返回结果的相关数据
-    updateSaveState: function() {
+    updateSaveState = () => {
         this.setState({
             isSavingSalesTeam: this.state.isSavingSalesTeam,
             saveSalesTeamMsg: this.state.saveSalesTeamMsg,
             saveSalesTeamResult: this.state.saveSalesTeamResult
         });
-    },
+    };
+
     //隐藏添加团队后的提示信息
-    hideSaveTooltip: function() {
+    hideSaveTooltip = () => {
         if (this.state.saveSalesTeamResult == CONSTANT.SUCCESS) {
             SalesTeamAction.getSalesTeamList();
         }
         this.state.saveSalesTeamMsg = '';
         this.state.saveSalesTeamResult = '';
-    },
+    };
+
     //无团队时，添加团队面板的渲染
-    renderAddSalesTeam: function() {
+    renderAddSalesTeam = () => {
         return (<PrivilegeChecker check="BGM_SALES_TEAM_ADD" className="sales-team-null-add-container">
             <div className="no-sales-team-tip">
                 <ReactIntl.FormattedMessage id="sales.team.no.sales.team.tip" defaultMessage="暂无团队，请先添加："/>
@@ -153,8 +159,9 @@ var SalesTeamPage = React.createClass({
                 </Button>
             </div>
         </PrivilegeChecker>);
-    },
-    render: function() {
+    };
+
+    render() {
         var containerHeight = this.state.containerHeight - 2;
         var containerWidth = this.state.containerWidth - 2;
         var salesTeamMemberWidth = containerWidth - 300 - 2;
@@ -206,6 +213,6 @@ var SalesTeamPage = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = SalesTeamPage;

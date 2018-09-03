@@ -1,3 +1,4 @@
+var React = require('react');
 require('../css/index.less');
 require('CMP_DIR/antd-table-pagination/index.less');
 import RightContent from 'CMP_DIR/privilege/right-content';
@@ -87,11 +88,13 @@ const filterOptions = FILTER_OPTION.map((x, index) => (
     <Option key={index} value={x.value}>{x.label}</Option>
 ));
 
-const CallRecord = React.createClass({
-    getInitialState() {
+class CallRecord extends React.Component {
+    constructor(props) {
+        super(props);
         CallRecordActions.resetState();
         let stateData = CallRecordStore.getState();
-        return {
+
+        this.state = {
             ...stateData,
             filterObj: {},//表头过滤条件
             isFilter: false, //是否是过滤状态，是：展示带搜索框的标题，否：展示可排序的表头
@@ -113,7 +116,7 @@ const CallRecord = React.createClass({
             isAddingInvalidPhone: false,//正在添加无效电话
             addingInvalidPhoneErrMsg: '',//添加无效电话出错的情况
         };
-    },
+    }
 
     componentDidMount() {
         $('body').css('overflow', 'hidden');
@@ -134,13 +137,15 @@ const CallRecord = React.createClass({
         this.getCallRecommendList();
         this.changeTableHeight();
         $(window).on('resize', this.changeTableHeight);
-    },
+    }
+
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
         CallRecordStore.unlisten(this.onStoreChange);
         CallRecordActions.resetState();
         $(window).off('resize', this.changeTableHeight);
-    },
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentId !== prevProps.currentId) {
             var _this = this;
@@ -156,22 +161,25 @@ const CallRecord = React.createClass({
                 });
             });
         }
-    },
+    }
+
     componentWillReceiveProps(newProps) {
         //外层右侧面板是否显示
         const {showRightPanel} = newProps;
         this.setState({showRightPanel});
-    },
+    }
+
     //计算表格高度
-    changeTableHeight: function() {
+    changeTableHeight = () => {
         var tableHeight = $(window).height() -
             LAYOUT_CONSTANTS.PADDING_TOP -
             LAYOUT_CONSTANTS.FIXED_THEAD -
             LAYOUT_CONSTANTS.TABLE_MARGIN_BOTTOM -
             LAYOUT_CONSTANTS.SUMMARY;
         this.setState({ tableHeight });
-    },
-    toggleFilter(e) {
+    };
+
+    toggleFilter = (e) => {
         if (this.state.isFilter) {
             Trace.traceEvent(e, '点击取消搜索按钮');
         } else {
@@ -194,9 +202,10 @@ const CallRecord = React.createClass({
             //表头展示过滤框、过滤框中没有内容时表头关闭过滤框
             this.setState({ isFilter: !this.state.isFilter });
         }
-    },
+    };
+
     //表头过滤框的内容修改的处理
-    onChangeFilterObj(filterKey, event) {
+    onChangeFilterObj = (filterKey, event) => {
         if (filterKey === 'nick_name') {
             Trace.traceEvent(event, '根据呼叫者过滤');
         } else if (filterKey === 'sales_team') {
@@ -209,8 +218,9 @@ const CallRecord = React.createClass({
             delete this.state.filterObj[filterKey];
         }
         this.setState({ filterObj: this.state.filterObj });
-    },
-    onSelectFilterObj(filterKey, value) {
+    };
+
+    onSelectFilterObj = (filterKey, value) => {
         this.state.filterObj[filterKey] = value;
         if (value === CALL_TYPE_OPTION.PHONE) {
             this.state.callType = <i className="iconfont icon-call-back" title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
@@ -227,9 +237,10 @@ const CallRecord = React.createClass({
         }
         this.setState({ filterObj: this.state.filterObj });
         this.filterCallRecord(filterKey);
-    },
+    };
+
     //获取过滤后的通话记录
-    filterCallRecord(filterKey) {
+    filterCallRecord = (filterKey) => {
         if (this.state.filterObj[filterKey] === undefined) {
             return;
         }
@@ -240,9 +251,10 @@ const CallRecord = React.createClass({
         this.updateStore({
             callRecord: callRecord
         }, () => this.getCallListByAjax());
-    },
+    };
+
     //清空过滤框中的内容
-    clearFilterContent(filterKey, event) {
+    clearFilterContent = (filterKey, event) => {
         if (filterKey === 'nick_name') {
             Trace.traceEvent(event, '清空呼叫者过滤框');
         } else if (filterKey === 'sales_team') {
@@ -253,8 +265,9 @@ const CallRecord = React.createClass({
         this.filterCallRecord(filterKey);
         delete this.state.filterObj[filterKey];
         this.setState({ filterObj: this.state.filterObj });
-    },
-    onSearchInputKeyUp: function(filterKey) {
+    };
+
+    onSearchInputKeyUp = (filterKey) => {
         if (searchInputTimeOut) {
             clearTimeout(searchInputTimeOut);
         }
@@ -262,18 +275,18 @@ const CallRecord = React.createClass({
             this.filterCallRecord(filterKey);
         }, delayTime);
 
-    },
+    };
 
-    handleSelect(filterKey) {
+    handleSelect = (filterKey) => {
         if (filterKey === 'disposition') {
-            Trace.traceEvent(this.getDOMNode(), '根据通话状态过滤');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '根据通话状态过滤');
         } else if (filterKey === 'type') {
-            Trace.traceEvent(this.getDOMNode(), '根据通话类型过滤');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '根据通话类型过滤');
         }
-    },
+    };
 
     // 通话类型和通话状态的选择框
-    filterTypeStatusKeySelect(filterKey, columnLabel) {
+    filterTypeStatusKeySelect = (filterKey, columnLabel) => {
         const placeholder = Intl.get('call.record.search.placeholder', '根据{search}过滤', { search: columnLabel });
         if (filterKey === 'disposition') { // 通话状态
             return (
@@ -321,10 +334,10 @@ const CallRecord = React.createClass({
                 </Select>
             );
         }
-    },
+    };
 
     // 文本框值变化时调用
-    handleChange(value) {
+    handleChange = (value) => {
         value = $.trim(value);
         this.setState({
             selectValue: value
@@ -335,11 +348,11 @@ const CallRecord = React.createClass({
                 this.filterCallRecord('dst');
             }
         });
-    },
+    };
 
     // 被选中时调用
-    onSelectContentChange(filterKey, value) {
-        Trace.traceEvent(this.getDOMNode(), '根据电话号码过滤');
+    onSelectContentChange = (filterKey, value) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '根据电话号码过滤');
         value = $.trim(value);
         if (this.state.recommendList.list.length) {
             this.state.filterObj[filterKey] = value;
@@ -354,9 +367,10 @@ const CallRecord = React.createClass({
             });
         }
         this.filterCallRecord(filterKey);
-    },
+    };
+
     // 电话内容为空的，获取的推荐列表
-    getCallRecommendList() {
+    getCallRecommendList = () => {
         let value = this.state.selectValue;
         var recommendObj = {
             filter_phone: this.state.filter_phone
@@ -375,10 +389,10 @@ const CallRecord = React.createClass({
             ]
         };
         CallRecordActions.getRecommendPhoneList(recommendObj, reqBody);
-    },
+    };
 
     // 搜索电话号码时，提供推荐列表
-    getSearchPhoneRecommendList(filterKey, columnLabel) {
+    getSearchPhoneRecommendList = (filterKey, columnLabel) => {
         const placeholder = Intl.get('call.record.search.placeholder', '根据{search}过滤', { search: columnLabel });
         const recommendList = this.state.recommendList.list;
         let searchContentOptions = [];
@@ -405,10 +419,10 @@ const CallRecord = React.createClass({
                 {searchContentOptions}
             </Select>
         </div>) : columnLabel;
-    },
+    };
 
     //filterKey:对应的过滤字段，columnLabel:该列的表头描述
-    getColumnTitle(filterKey, columnLabel) {
+    getColumnTitle = (filterKey, columnLabel) => {
         const placeholder = Intl.get('call.record.search.placeholder', '根据{search}过滤', { search: columnLabel });
         let filterValue = this.state.filterObj[filterKey];
 
@@ -424,28 +438,32 @@ const CallRecord = React.createClass({
             {filterValue && filterKey !== 'disposition' && filterKey !== 'type' ? (<Icon type="cross-circle-o"
                 onClick={this.clearFilterContent.bind(this, filterKey)} />) : null}
         </div>) : columnLabel;
-    },
+    };
+
     // 添加客户和联系人面板
-    showAddCustomerForm: function(phoneNumber) {
-        Trace.traceEvent(this.getDOMNode(), '点击+添加客户和联系人');
+    showAddCustomerForm = (phoneNumber) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击+添加客户和联系人');
         this.setState({
             isAddFlag: true,
             phoneNumber: phoneNumber
         });
-    },
+    };
+
     // 隐藏添加客户和联系人面板
-    hideAddCustomerForm: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.add-customer'), '关闭添加客户和联系人面板');
+    hideAddCustomerForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-customer'), '关闭添加客户和联系人面板');
         this.setState({
             isAddFlag: false
         });
-    },
-    addOne: function(customer) {
+    };
+
+    addOne = (customer) => {
         this.setState({
             isAddFlag: false
         });
-    },
-    showRightPanel: function(id) {
+    };
+
+    showRightPanel = (id) => {
         //舆情秘书角色不让看详情
         if (userData.hasRole(userData.ROLE_CONSTANS.SECRETARY)) {
             return;
@@ -463,16 +481,17 @@ const CallRecord = React.createClass({
                 ShowCustomerUserListPanel: this.ShowCustomerUserListPanel
             }
         });
-    },
-    hideRightPanel: function() {
+    };
+
+    hideRightPanel = () => {
         this.setState({
             rightPanelIsShow: false,
             seletedRecordId: ''
         });
-    },
+    };
 
     // 调整类型表格的宽度
-    getCallTypeColumnWidth() {
+    getCallTypeColumnWidth = () => {
         let widthPixel = 60;
         if (this.state.isFilter) {
             widthPixel = 100;
@@ -481,9 +500,10 @@ const CallRecord = React.createClass({
             }
         }
         return widthPixel;
-    },
+    };
+
     //点击播放录音
-    handleAudioPlay: function(item) {
+    handleAudioPlay = (item) => {
         //如果是点击切换不同的录音，找到上次点击播放的那一条记录，把他的playSelected属性去掉
         var oldItemId = '';
         var oldSelected = _.find(this.state.callRecord.data_list, function(item) { return item.playSelected; });
@@ -521,20 +541,23 @@ const CallRecord = React.createClass({
                 }
             }
         });
-    },
+    };
+
     //处理点击客户,存放当前选中的通话记录id
-    handleClickCustomer: function(record) {
+    handleClickCustomer = (record) => {
         this.setState({
             selectedRecordId: record.id,
             showRightPanel: true
         });
-    },
-    handleClickTextArea: function(item) {
+    };
+
+    handleClickTextArea = (item) => {
         item.showTextEdit = !item.showTextEdit;
         this.setState(this.state);
-    },
+    };
+
     //通话记录表格列
-    getCallRecordColumns() {
+    getCallRecordColumns = () => {
         return [
             {
                 title: this.getColumnTitle('type', Intl.get('common.type', '类型')),
@@ -705,17 +728,17 @@ const CallRecord = React.createClass({
                 }
             }
         ];
-    },
+    };
 
     // 检测回车，触发确认对话框
-    checkEnter(id, event) {
+    checkEnter = (id, event) => {
         if (event.keyCode === 13) {
             $('.new-custom-tbody #content' + id).blur();
         }
-    },
+    };
 
     // 失去焦点后，触发确认对话框
-    toggleConfirm(record, oldValue) {
+    toggleConfirm = (record, oldValue) => {
         const id = record.id;
         let value = $('.new-custom-tbody #content' + id).val();
         if (oldValue) { // 有内容时，对应的是修改
@@ -729,12 +752,12 @@ const CallRecord = React.createClass({
                 CallRecordActions.toggleConfirm({ id, flag: true });
             }
         }
-    },
+    };
 
     // 确认框点击不保存时
-    cancelConfirm(record, oldValue) {
+    cancelConfirm = (record, oldValue) => {
         const id = record.id;
-        Trace.traceEvent(this.getDOMNode(), '是否保存编辑的跟进内容，点击否');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '是否保存编辑的跟进内容，点击否');
         let value = $('.new-custom-tbody #content' + id).val();
         if (oldValue) { // oldValue是跟进内容原有的值，当有内容时
             $('.new-custom-tbody #content' + id).val(oldValue);
@@ -743,12 +766,12 @@ const CallRecord = React.createClass({
         }
         this.handleClickTextArea(record);
         CallRecordActions.toggleConfirm({ id, flag: false }); // 确认框关闭
-    },
+    };
 
     // 编辑跟进内容的提交
-    handleContentSubmit(record) {
+    handleContentSubmit = (record) => {
         const id = record.id;
-        Trace.traceEvent(this.getDOMNode(), '是否保存编辑的跟进内容，点击是');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '是否保存编辑的跟进内容，点击是');
         CallRecordActions.toggleConfirm({ id, flag: false });
         let value = $('.new-custom-tbody #content' + record.id).val();
         let queryObj = {
@@ -769,13 +792,14 @@ const CallRecord = React.createClass({
                 message.error(Intl.get('call.record.save.content.error', '保存跟进内容失败！'));
             }
         });
-    },
+    };
 
-    getRowKey: function(record, index) {
+    getRowKey = (record, index) => {
         return index;
-    },
+    };
+
     // 过滤小于7位的号码，如114、12580...
-    selectFilterPhone(value) {
+    selectFilterPhone = (value) => {
         switch (value) {
             case '114':
                 Trace.traceEvent('通话记录界面', '仅显示小于7位的号码');
@@ -795,28 +819,29 @@ const CallRecord = React.createClass({
             this.getCallRecommendList();
             this.getCallListByAjax();
         });
-    },
+    };
+
     // 刷新
-    handleRefresh() {
+    handleRefresh = () => {
         CallRecordActions.handleRefresh();
         setTimeout(() => {
             this.getCallListByAjax();
         });
-    },
+    };
 
     // 通话分析
-    handleCallAnalysis() {
+    handleCallAnalysis = () => {
         CallRecordActions.showCallAnalysisPanel(true);
-    },
+    };
 
     // 关闭通话分析界面
-    closeCallAnalysisPanel(e) {
+    closeCallAnalysisPanel = (e) => {
         Trace.traceEvent(e, '关闭通话分析界面');
         CallRecordActions.showCallAnalysisPanel(false);
-    },
+    };
 
     //关闭音频播放按钮
-    closeAudioPlayContainer: function(e) {
+    closeAudioPlayContainer = (e) => {
         Trace.traceEvent(e, '关闭播放器按钮');
         //找到当前正在播放的那条记录
         var oldSelected = _.find(this.state.callRecord.data_list, function(item) { return item.playSelected; });
@@ -830,21 +855,24 @@ const CallRecord = React.createClass({
         });
         //隐藏播放窗口
         $('.audio-play-container').animate({ height: '0' }).css('border', '0');
-    },
-    ShowCustomerUserListPanel: function(data) {
+    };
+
+    ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
         });
 
-    },
-    closeCustomerUserListPanel: function() {
+    };
+
+    closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
         });
-    },
+    };
+
     //上报客服电话
-    handleAddInvalidPhone: function(){
+    handleAddInvalidPhone = () => {
         var curPhone = this.state.playingItemPhone;
         if (!curPhone){
             return;
@@ -869,13 +897,15 @@ const CallRecord = React.createClass({
                 addingInvalidPhoneErrMsg: err.message || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
             });
         });
-    },
+    };
+
     //提示框隐藏后的处理
-    hideErrTooltip: function() {
+    hideErrTooltip = () => {
         this.setState({
             addingInvalidPhoneErrMsg: ''
         });
-    },
+    };
+
     render() {
         return (<RightContent>
             <div className="call_record_content">
@@ -955,7 +985,8 @@ const CallRecord = React.createClass({
             </div>
         </RightContent >
         );
-    },
+    }
+
     /**
      * 参数说明，ant-design的table组件
      * @param pagination   分页参数，当前不需要使用分页
@@ -963,7 +994,7 @@ const CallRecord = React.createClass({
      * @param sorter       排序参数，当前需要使用sorter
      *                      {field : 'xxx' //排序字段 , order : 'descend'/'ascend' //排序顺序}
      */
-    onSortChange(pagination, filters, sorter) {
+    onSortChange = (pagination, filters, sorter) => {
         var _this = this;
         var callRecord = this.state.callRecord;
         callRecord.sort_field = sorter.field;
@@ -976,9 +1007,9 @@ const CallRecord = React.createClass({
         }, function() {
             _this.getCallListByAjax();
         });
-    },
+    };
 
-    onSelectDate(start_time, end_time) {
+    onSelectDate = (start_time, end_time) => {
         var callRecord = this.state.callRecord;
         callRecord.page = 1;
         callRecord.data_list = [];
@@ -997,25 +1028,28 @@ const CallRecord = React.createClass({
             this.getCallRecommendList();
             this.getCallListByAjax();
         });
-    },
+    };
 
-    updateStore(obj, callback) {
+    updateStore = (obj, callback) => {
         $.extend(CallRecordStore.state, obj);
         this.setState(CallRecordStore.getState(), () => {
             callback && callback();
         });
-    },
+    };
+
     //获取请求参数
-    getReqParam(obj, prop) {
+    getReqParam = (obj, prop) => {
         var val = obj && prop in obj ? obj[prop] : this.state[prop];
         return val;
-    },
+    };
+
     //获取日志列表的请求参数
-    getCallListReqParam(obj, prop) {
+    getCallListReqParam = (obj, prop) => {
         var val = obj && prop in obj ? obj[prop] : this.state.callRecord[prop];
         return val;
-    },
-    getCallListByAjax(queryParam) {
+    };
+
+    getCallListByAjax = (queryParam) => {
         var queryObj = {
             start_time: this.getReqParam(queryParam, 'start_time'),
             end_time: this.getReqParam(queryParam, 'end_time'),
@@ -1029,38 +1063,42 @@ const CallRecord = React.createClass({
         };
         
         CallRecordActions.getCallRecordList(queryObj, this.state.filterObj);
-    },
+    };
 
-    handleScrollBottom() {
+    handleScrollBottom = () => {
         //下拉加载数据
         let callRecordList = this.state.callRecord.data_list, lastId;
         if (_.isArray(callRecordList) && callRecordList.length > 0) {
             lastId = callRecordList[callRecordList.length - 1].id;//最后一个客户的id
         }
         this.getCallListByAjax({ lastId: lastId });
-    },
-    renderCallRecordList() {
+    };
+
+    renderCallRecordList = () => {
         return (
             <div className="call-record-fix">
                 {this.renderCallRecordContent()}
             </div>
         );
-    },
-    showNoMoreDataTip: function() {
+    };
+
+    showNoMoreDataTip = () => {
         return !this.state.callRecord.is_loading &&
                this.state.callRecord.data_list.length >= this.state.callRecord.page_size &&
                !this.state.callRecord.listenScrollBottom;
-    },
+    };
+
     //处理选中行的样式
-    handleRowClassName: function(record, index) {
+    handleRowClassName = (record, index) => {
         if ((record.id === this.state.selectedRecordId) && this.state.showRightPanel) {
             return 'current_row';
         }
         else {
             return '';
         }
-    },
-    renderCallRecordContent() {
+    };
+
+    renderCallRecordContent = () => {
         //只有第一页的时候，显示loading和错误信息
         if (this.state.callRecord.page === 1) {
             if (this.state.callRecord.is_loading){
@@ -1118,11 +1156,12 @@ const CallRecord = React.createClass({
                 </div>
             </div>
         );
-    },
-    onStoreChange() {
+    };
+
+    onStoreChange = () => {
         this.setState(CallRecordStore.getState());
-    }
-});
+    };
+}
 
 
 export default injectIntl(CallRecord);

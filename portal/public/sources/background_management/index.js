@@ -23,15 +23,10 @@ function getChildRoutes() {
     return childRoutes;
 }
 
-
 module.exports = {
-    path: 'background_management',
+    path: '/background_management',
     //在RightContent中用来做跳转,重要
     routesExports: getChildRoutes(),
-    getChildRoutes: function(location, cb) {
-
-        var childRoutes = getChildRoutes();
-        cb(null, childRoutes);
-    },
+    routes: getChildRoutes(),
     component: RightContent
 };

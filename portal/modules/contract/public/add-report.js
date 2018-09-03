@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 服务信息添加表单
@@ -10,14 +12,17 @@ const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import { REPORT_SERVICE, SERVICE_TYPE, REPORT_TYPE } from '../consts';
 
-const AddReport = React.createClass({
+const AddReport = createReactClass({
+    displayName: 'AddReport',
     mixins: [ValidateMixin],
+
     getInitialState: function() {
         return {
             reports: [{}],
             formData: {},
         };
     },
+
     addReport: function() {
         this.state.reports.push({});
 
@@ -25,6 +30,7 @@ const AddReport = React.createClass({
             this.props.updateScrollBar();
         });
     },
+
     setField2: function(field, index, e) {
         let value = _.isObject(e) ? e.target.value : e;
         const currentItem = this.state.reports[index];
@@ -40,6 +46,7 @@ const AddReport = React.createClass({
 
         this.setState(this.state);
     },
+
     render: function() {
         const reports = this.state.reports;
 
@@ -153,8 +160,9 @@ const AddReport = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = AddReport;
+
 

@@ -40,7 +40,7 @@ function clickUserName(user_id, username_block) {
                 }
             });
         } else {
-            history.pushState({}, '/user/list', {});
+            history.push('/user/list', {});
             //清除表单内容
             AppUserFormActions.resetState();
             //展示详情

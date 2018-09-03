@@ -1,8 +1,12 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const RolePage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(RolePage) => <RolePage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'role',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public'));
-        });
-    }
+    path: '/background_management/role',
+    component: RolePage
 };

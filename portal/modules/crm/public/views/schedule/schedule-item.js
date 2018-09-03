@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * 单个日程
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -6,6 +7,7 @@
  */
 import {Button, Popover, message} from 'antd';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 import crmAjax from '../../ajax/index';
 import Trace from 'LIB_DIR/trace';
@@ -186,14 +188,14 @@ ScheduleItem.defaultProps = {
     }
 };
 ScheduleItem.propTypes = {
-    item: React.PropTypes.object,
-    hasSplitLine: React.PropTypes.boolean,
-    isMerge: React.PropTypes.boolean,
-    hideDelete: React.PropTypes.boolean,
-    toggleScheduleContact: React.PropTypes.func,
-    deleteSchedule: React.PropTypes.func,
-    handleItemStatus: React.PropTypes.func,
-    getCallNumberError: React.PropTypes.string,
-    callNumber: React.PropTypes.number
+    item: PropTypes.object,
+    hasSplitLine: PropTypes.boolean,
+    isMerge: PropTypes.boolean,
+    hideDelete: PropTypes.boolean,
+    toggleScheduleContact: PropTypes.func,
+    deleteSchedule: PropTypes.func,
+    handleItemStatus: PropTypes.func,
+    getCallNumberError: PropTypes.string,
+    callNumber: PropTypes.number
 };
 export default ScheduleItem;

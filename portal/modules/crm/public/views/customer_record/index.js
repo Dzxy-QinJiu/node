@@ -3,6 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
+var React = require('react');
 var language = require('../../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../css/customer-trace-es_VE.less');
@@ -68,34 +69,35 @@ const TRACE_NULL_TIP = Intl.get('customer.trace.content', '客户跟进记录内
 
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
-const CustomerRecord = React.createClass({
-    getInitialState: function() {
-        return {
-            playingItemAddr: '',//正在播放的那条记录的地址
-            phoneNumArray: [],//所有联系人的联系电话，通过电话和客户id获取跟进记录
-            customerId: this.props.curCustomer.id,
-            invalidPhoneLists: [],//无效电话列表
-            getInvalidPhoneErrMsg: '',//获取无效电话失败后的信息
-            playingItemPhone: '',//正在听的录音所属的电话号码
-            isAddingInvalidPhone: false,//正在添加无效电话
-            addingInvalidPhoneErrMsg: '',//添加无效电话出错的情况
-            addRecordPanelShow: false,//是否展示添加跟进记录面板
-            filterType: '',//跟进类型的过滤
-            filterStatus: '',//通话状态的过滤
-            appList: [],//应用列表，用来展示舆情上报的应用名称
-            callNumber: this.props.callNumber || '', // 座机号
-            getCallNumberError: '',
-            addRecordNullTip: '',//添加跟进记录内容为空的提示
-            editRecordNullTip: '', //编辑跟进内容为空的提示
-            ...CustomerRecordStore.getState()
-        };
-    },
-    onStoreChange: function() {
+
+class CustomerRecord extends React.Component {
+    state = {
+        playingItemAddr: '',//正在播放的那条记录的地址
+        phoneNumArray: [],//所有联系人的联系电话，通过电话和客户id获取跟进记录
+        customerId: this.props.curCustomer.id,
+        invalidPhoneLists: [],//无效电话列表
+        getInvalidPhoneErrMsg: '',//获取无效电话失败后的信息
+        playingItemPhone: '',//正在听的录音所属的电话号码
+        isAddingInvalidPhone: false,//正在添加无效电话
+        addingInvalidPhoneErrMsg: '',//添加无效电话出错的情况
+        addRecordPanelShow: false,//是否展示添加跟进记录面板
+        filterType: '',//跟进类型的过滤
+        filterStatus: '',//通话状态的过滤
+        appList: [],//应用列表，用来展示舆情上报的应用名称
+        callNumber: this.props.callNumber || '', // 座机号
+        getCallNumberError: '',
+        addRecordNullTip: '',//添加跟进记录内容为空的提示
+        editRecordNullTip: '', //编辑跟进内容为空的提示
+        ...CustomerRecordStore.getState()
+    };
+
+    onStoreChange = () => {
         var state = CustomerRecordStore.getState();
         this.setState(state);
-    },
+    };
+
     // 获取拨打电话的座席号
-    getUserPhoneNumber() {
+    getUserPhoneNumber = () => {
         CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
                 if (callNumberInfo.callNumber) {
@@ -116,8 +118,9 @@ const CustomerRecord = React.createClass({
                 });
             }
         });
-    },
-    componentDidMount: function() {
+    };
+
+    componentDidMount() {
         CustomerRecordStore.listen(this.onStoreChange);
         //  获取拨打电话的座席号
         if (this.state.callNumber === '') {
@@ -145,15 +148,17 @@ const CustomerRecord = React.createClass({
             });
         });
         this.getAppList();
-    },
-    getAppList: function() {
+    }
+
+    getAppList = () => {
         appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(list => {
             let appList = _.isArray(list) ? list : [];
             this.setState({appList: appList});
         });
-    },
+    };
+
     //获取所有联系人的联系电话
-    getContactPhoneNum: function(customerId, callback) {
+    getContactPhoneNum = (customerId, callback) => {
         setTimeout(() => {
             //设置customerRecordLoading为true
             CustomerRecordActions.setLoading();
@@ -185,9 +190,10 @@ const CustomerRecord = React.createClass({
             });
         });
 
-    },
+    };
+
     //获取客户跟踪列表
-    getCustomerTraceList: function(lastId) {
+    getCustomerTraceList = (lastId) => {
         let phoneNum = this.state.phoneNumArray.join(',');
         let queryObj = {
             customer_id: this.state.customerId || '',
@@ -224,8 +230,9 @@ const CustomerRecord = React.createClass({
                 });
             }
         });
-    },
-    componentWillReceiveProps: function(nextProps) {
+    };
+
+    componentWillReceiveProps(nextProps) {
         var nextCustomerId = nextProps.curCustomer.customer_id || nextProps.curCustomer.id || '';
         var oldCustomerId = this.props.curCustomer.customer_id || this.props.curCustomer.id || '';
         if (nextCustomerId !== oldCustomerId && nextCustomerId) {
@@ -243,27 +250,31 @@ const CustomerRecord = React.createClass({
                 });
             });
         }
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         CustomerRecordStore.unlisten(this.onStoreChange);
         setTimeout(() => {
             CustomerRecordActions.dismiss();
         });
-    },
-    handleChange: function(event) {
-        Trace.traceEvent($(this.getDOMNode()).find('#add-container .ant-select-selection'), '选择跟进记录的类型');
+    }
+
+    handleChange = (event) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('#add-container .ant-select-selection'), '选择跟进记录的类型');
         CustomerRecordActions.setType(event.target.value);
-    },
+    };
+
     //获取列表失败后重试
-    retryChangeRecord: function() {
+    retryChangeRecord = () => {
         CustomerRecordActions.setLoading();
         this.getCustomerTraceList();
-    },
-    saveAddTraceContent: function() {
+    };
+
+    saveAddTraceContent = () => {
         //顶部增加跟进记录的内容
         var customerId = this.state.customerId || '';
         if (this.state.saveButtonType === 'add') {
-            Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确认添加跟进内容');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
             //输入框中的内容
             var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
             var queryObj = {
@@ -280,7 +291,7 @@ const CustomerRecord = React.createClass({
             //补充跟进记录的内容
             var detail = $.trim(_.get(this.state, 'detailContent.value'));
             var item = this.state.edittingItem;
-            Trace.traceEvent($(this.getDOMNode()).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
             var queryObj = {
                 id: item.id,
                 customer_id: item.customer_id || customerId,
@@ -296,9 +307,10 @@ const CustomerRecord = React.createClass({
                 _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(customerId);
             });
         }
-    },
+    };
+
     //点击顶部取消按钮后
-    handleCancel: function(e) {
+    handleCancel = (e) => {
         Trace.traceEvent(e, '关闭添加跟进内容输入区');
         //下拉框的默认选项为拜访
         CustomerRecordActions.setType(this.state.initialType);
@@ -306,10 +318,10 @@ const CustomerRecord = React.createClass({
         this.toggleAddRecordPanel();
         this.setState({addRecordNullTip: ''});
         // $('.add-content-input').animate({height: '36px'});
-    },
+    };
 
     //顶部增加客户跟进记录输入时的处理
-    handleInputChange: function(e) {
+    handleInputChange = (e) => {
         let value = e.target.value;
         //有输入的内容，则清空必填项验证的提示
         if (value) {
@@ -317,11 +329,12 @@ const CustomerRecord = React.createClass({
         } else {
             CustomerRecordActions.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
         }
-    },
+    };
+
     //点击保存按钮，展示模态框
-    showModalDialog: function(item, e) {
+    showModalDialog = (item, e) => {
         if (item.id) {
-            Trace.traceEvent(this.getDOMNode(), '添加补充的跟进内容');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '添加补充的跟进内容');
             //点击补充客户跟踪记录编辑状态下的保存按钮
             var detail = $.trim(_.get(this.state, 'detailContent.value'));
             if (detail) {
@@ -332,7 +345,7 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
         } else {
-            Trace.traceEvent(this.getDOMNode(), '保存添加跟进内容');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '保存添加跟进内容');
             //点击顶部输入框下的保存按钮
             var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
             if (addcontent) {
@@ -342,9 +355,10 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
         }
-    },
+    };
+
     //渲染顶部增加记录的teaxare框
-    renderAddRecordPanel: function() {
+    renderAddRecordPanel = () => {
         const formItemLayout = {
             labelCol: {span: 4},
             wrapperCol: {span: 20},
@@ -385,23 +399,24 @@ const CustomerRecord = React.createClass({
                 />
             </Form>
         );
-    },
+    };
 
-    addDetailContent: function(item) {
+    addDetailContent = (item) => {
         if (this.state.isEdit) {
             message.error(Intl.get('crm.save.customertrace.first', '请先保存或取消保存已编辑的跟进记录内容'));
             return;
         }
-        Trace.traceEvent($(this.getDOMNode()).find('.show-container .item-detail-content .add-detail-tip'), '点击补充跟进内容区域');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.show-container .item-detail-content .add-detail-tip'), '点击补充跟进内容区域');
         item.showAdd = true;
         this.setState({
             customerRecord: this.state.customerRecord,
             isEdit: true,
             detailContent: {value: ''},
         });
-    },
-    handleCancelDetail: function(item) {
-        Trace.traceEvent($(this.getDOMNode()).find('.show-customer-trace .add-detail-container .cancel-btn'), '关闭补充跟进内容输入区');
+    };
+
+    handleCancelDetail = (item) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.show-customer-trace .add-detail-container .cancel-btn'), '关闭补充跟进内容输入区');
         //点击补充客户跟进记录编辑状态下的取消按钮
         item.showAdd = false;
         this.setState({
@@ -410,8 +425,9 @@ const CustomerRecord = React.createClass({
             isEdit: false,
             editRecordNullTip: ''
         });
-    },
-    handleAddDetailChange: function(e) {
+    };
+
+    handleAddDetailChange = (e) => {
         //补充客户跟进记录
         let value = e.target.value;
         if (value) {
@@ -419,8 +435,9 @@ const CustomerRecord = React.createClass({
         } else {
             CustomerRecordActions.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
         }
-    },
-    renderAddDetail: function(item) {
+    };
+
+    renderAddDetail = (item) => {
         //补充跟进记录
         return (
             <Form className="add-customer-trace">
@@ -444,9 +461,10 @@ const CustomerRecord = React.createClass({
                     handleCancel={this.handleCancelDetail.bind(this, item)}
                 />
             </Form >);
-    },
+    };
+
     //点击播放录音
-    handleAudioPlay: function(item) {
+    handleAudioPlay = (item) => {
         //如果是点击切换不同的录音，找到上次点击播放的那一条记录，把他的playSelected属性去掉
         var oldItemId = '';
         var oldSelected = _.find(this.state.customerRecord, function(record) {
@@ -487,9 +505,10 @@ const CustomerRecord = React.createClass({
                 }
             }
         });
-    },
+    };
+
     //关闭音频播放按钮
-    closeAudioPlayContainer: function(e) {
+    closeAudioPlayContainer = (e) => {
         Trace.traceEvent(e, '关闭播放器按钮');
         //找到当前正在播放的那条记录
         var oldSelected = _.find(this.state.customerRecord, function(item) {
@@ -503,20 +522,23 @@ const CustomerRecord = React.createClass({
             playingItemAddr: '',
             playingItemPhone: ''
         });
-    },
+    };
+
     //获取应用名
-    getAppNameById: function(appId) {
+    getAppNameById = (appId) => {
         if (appId) {
             let app = _.find(this.state.appList, item => item.app_id === appId);
             return app ? app.app_name : '';
         }
         return '';
-    },
+    };
+
     //在新标签页中打开原文的链接
-    openSourceUrl: function(url) {
+    openSourceUrl = (url) => {
         window.open(url);
-    },
-    renderReportContent: function(item) {
+    };
+
+    renderReportContent = (item) => {
         let reportObj = item.remark ? JSON.parse(item.remark) : {};
         if (!_.isObject(reportObj)) return null;
         //应用名称的获取
@@ -556,10 +578,11 @@ const CustomerRecord = React.createClass({
                 </div>
             </div>
         );
-    },
+    };
+
     // 自动拨号
-    handleClickCallOut(phone) {
-        Trace.traceEvent(this.getDOMNode(), '拨打电话');
+    handleClickCallOut = (phone) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
         if (this.props.getCallNumberError) {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {
@@ -579,8 +602,9 @@ const CustomerRecord = React.createClass({
                 message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
             }
         }
-    },
-    renderTimeLineItem: function(item, hasSplitLine) {
+    };
+
+    renderTimeLineItem = (item, hasSplitLine) => {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
         var iconClass = traceObj.iconClass, title = traceObj.title, traceDsc = traceObj.traceDsc;
@@ -630,9 +654,10 @@ const CustomerRecord = React.createClass({
                 </div>)}
             </div>
         );
-    },
+    };
+
     //监听下拉加载
-    handleScrollBarBottom: function() {
+    handleScrollBarBottom = () => {
         var length = this.state.customerRecord.length;
         if (length < this.state.total) {
             var lastId = this.state.customerRecord[length - 1].id;
@@ -642,9 +667,10 @@ const CustomerRecord = React.createClass({
                 listenScrollBottom: false
             });
         }
-    },
+    };
+
     //上报客服电话
-    handleAddInvalidPhone: function() {
+    handleAddInvalidPhone = () => {
         var curPhone = this.state.playingItemPhone;
         if (!curPhone) {
             return;
@@ -669,15 +695,16 @@ const CustomerRecord = React.createClass({
                 addingInvalidPhoneErrMsg: err.message || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
             });
         });
-    },
+    };
+
     //提示框隐藏后的处理
-    hideErrTooltip: function() {
+    hideErrTooltip = () => {
         this.setState({
             addingInvalidPhoneErrMsg: ''
         });
-    },
+    };
 
-    renderTimeLine(){
+    renderTimeLine = () => {
         return (
             <TimeLine
                 list={this.state.customerRecord}
@@ -687,9 +714,9 @@ const CustomerRecord = React.createClass({
                 renderTimeLineItem={this.renderTimeLineItem}
                 relativeDate={false}
             />);
-    },
+    };
 
-    getRecordListShowHeight: function() {
+    getRecordListShowHeight = () => {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
         let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
         //减头部的客户基本信息高度
@@ -704,9 +731,9 @@ const CustomerRecord = React.createClass({
             divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
         }
         return divHeight;
-    },
+    };
 
-    renderCustomerRecordLists: function() {
+    renderCustomerRecordLists = () => {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
@@ -744,31 +771,36 @@ const CustomerRecord = React.createClass({
                 </div>
             );
         }
-    },
-    hideModalDialog: function() {
+    };
+
+    hideModalDialog = () => {
         CustomerRecordActions.setModalDialogFlag(false);
-    },
+    };
+
     //添加跟进记录面板的展示与隐藏
-    toggleAddRecordPanel: function() {
+    toggleAddRecordPanel = () => {
         this.setState({addRecordPanelShow: !this.state.addRecordPanelShow});
-    },
-    onSelectFilterType({item, key, selectedKeys}){
+    };
+
+    onSelectFilterType = ({item, key, selectedKeys}) => {
         this.setState({filterType: key});
         CustomerRecordActions.dismiss();
         CustomerRecordActions.setLoading();
         setTimeout(() => {
             this.getCustomerTraceList();
         });
-    },
-    onSelectFilterStatus({item, key, selectedKeys}){
+    };
+
+    onSelectFilterStatus = ({item, key, selectedKeys}) => {
         this.setState({filterStatus: key});
         CustomerRecordActions.dismiss();
         CustomerRecordActions.setLoading();
         setTimeout(() => {
             this.getCustomerTraceList();
         });
-    },
-    getTypeMenu(){
+    };
+
+    getTypeMenu = () => {
         return (
             <Menu selectedKeys={[this.state.filterType]} onClick={this.onSelectFilterType}>
                 {_.map(CALL_TYPE_MAP, (value, key) => {
@@ -778,8 +810,9 @@ const CustomerRecord = React.createClass({
                 })}
             </Menu>
         );
-    },
-    getStatusMenu(){
+    };
+
+    getStatusMenu = () => {
         return (
             <Menu selectedKeys={[this.state.filterStatus]} onClick={this.onSelectFilterStatus}>
                 {_.map(CALL_STATUS_MAP, (value, key) => {
@@ -789,11 +822,13 @@ const CustomerRecord = React.createClass({
                 })}
             </Menu>
         );
-    },
-    turnToTraceRecordList(){
+    };
+
+    turnToTraceRecordList = () => {
         if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey('3');
-    },
-    renderTraceRecordBottom(){
+    };
+
+    renderTraceRecordBottom = () => {
         //概览页只展示最近的五条跟进记录，如果总数大于5条时，可以点击更多转到跟进记录列表进行查看
         if (this.props.isOverViewPanel && this.state.total > OVERVIEW_SHOW_COUNT) {
             return (
@@ -805,9 +840,9 @@ const CustomerRecord = React.createClass({
                 </div>);
         }
 
-    },
+    };
 
-    render: function() {
+    render() {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get('customer.confirm.trace', '是否添加此跟进内容？');
@@ -861,5 +896,7 @@ const CustomerRecord = React.createClass({
             </div>
         );
     }
-});
+}
+
 module.exports = CustomerRecord;
+

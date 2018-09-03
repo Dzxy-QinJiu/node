@@ -1,3 +1,4 @@
+var React = require('react');
 require('./index.less');
 import { Select, InputNumber,Radio } from 'antd';
 var RadioButton = Radio.Button;
@@ -6,30 +7,27 @@ function noop() {
 
 }
 let DATE_FORMAT = oplateConsts.DATE_FORMAT;
-var TimeSelect = React.createClass({
-    getDefaultProps: function() {
-        return {
-            showTimeTypeSelect: false,//是否展示年、月、周的类型选择
-            hideYearSelect: false,//是否展示年选择框
-            timeType: 'week',//时间类型的选择（年：year，月：month，周：week）
-            yearTime: '',//xxxx年
-            monthTime: '',//xx月
-            weekTime: '',//xx(传参数时，不用带周)
-            onChangeTimeType: noop,//时间类型选择的事件处理方法
-            onChangeYear: noop,//年的选择处理方法
-            onChangeMonth: noop,//月的选择处理方法
-            onChangeWeek: noop//周的选择处理方法
-        };
-    },
-    getInitialState: function() {
-        //{weekStartTime,weekEndTime}
-        return this.getWeekTimeRange(this.props.yearTime, this.props.weekTime);
-    },
-    componentWillReceiveProps: function(nextProps) {
+
+class TimeSelect extends React.Component {
+    static defaultProps = {
+        showTimeTypeSelect: false,//是否展示年、月、周的类型选择
+        hideYearSelect: false,//是否展示年选择框
+        timeType: 'week',//时间类型的选择（年：year，月：month，周：week）
+        yearTime: '',//xxxx年
+        monthTime: '',//xx月
+        weekTime: '',//xx(传参数时，不用带周)
+        onChangeTimeType: noop,//时间类型选择的事件处理方法
+        onChangeYear: noop,//年的选择处理方法
+        onChangeMonth: noop,//月的选择处理方法
+        onChangeWeek: noop//周的选择处理方法
+    };
+
+    componentWillReceiveProps(nextProps) {
         this.setState(this.getWeekTimeRange(nextProps.yearTime, nextProps.weekTime));
-    },
+    }
+
     //获取周的开始结束时间
-    getWeekTimeRange: function(yearTime, weekTime) {
+    getWeekTimeRange = (yearTime, weekTime) => {
         let weekStartTime = '', weekEndTime = '';
         //当前年中的第几周的日期
         let curYear = JSON.stringify(parseInt(yearTime));
@@ -50,27 +48,30 @@ var TimeSelect = React.createClass({
             weekStartTime: weekStartTime,
             weekEndTime: weekEndTime
         };
-    },
+    };
 
     //年选项的渲染
-    renderYearOptions: function() {
+    renderYearOptions = () => {
         var yearOptions = [];
         var curYear = moment().year();
         for (var i = 0; i <= 10; i++) {
             yearOptions.push(<Option key={i} Value={curYear - i}>{curYear - i}年</Option>);
         }
         return yearOptions;
-    },
+    };
+
     //月选项的渲染
-    renderMonthOptions: function() {
+    renderMonthOptions = () => {
         var monthOptions = [];
         for (var i = 1; i <= 12; i++) {
             monthOptions.push(<Option key={i} Value={i}>{i}月</Option>);
         }
         return monthOptions;
-    },
+    };
 
-    render: function() {
+    state = this.getWeekTimeRange(this.props.yearTime, this.props.weekTime);
+
+    render() {
         return (
             <div className="nature-time-select-container">
                 {this.props.showTimeTypeSelect ? (<div className="time-type-div">
@@ -102,6 +103,7 @@ var TimeSelect = React.createClass({
             </div>
         );
     }
-});
+}
 
 module.exports = TimeSelect;
+

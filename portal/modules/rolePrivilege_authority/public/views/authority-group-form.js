@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * Created by jinfeng on 2015/12/28.
@@ -26,8 +28,10 @@ function noop() {
 
 var saveGroupNameTimer = null;//保存组名结果展示时间的控制
 var TYPE_CONSTANT = 'myApp';
-var AuthorityGroupForm = React.createClass({
+var AuthorityGroupForm = createReactClass({
+    displayName: 'AuthorityGroupForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             cancelRoleForm: noop,
@@ -37,6 +41,7 @@ var AuthorityGroupForm = React.createClass({
             authorityGroupFromShow: false
         };
     },
+
     getInitialState: function() {
         //搜索框中输入的内容
         return {
@@ -53,6 +58,7 @@ var AuthorityGroupForm = React.createClass({
             isShowPopConfirm: false, // 是否显示确认框
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.refs.searchInput.refs.searchInput.value = nextProps.searchContent;
         this.refs.validation.reset();
@@ -61,6 +67,7 @@ var AuthorityGroupForm = React.createClass({
         stateData.searchContent = nextProps.searchContent;
         this.setState(stateData);
     },
+
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -95,9 +102,9 @@ var AuthorityGroupForm = React.createClass({
         //全选、取消选中的处理
         handleSelectAllAuthority: function(flag) {
             if (flag) {
-                Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-div'),'选中全部的权限');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-div'),'选中全部的权限');
             } else {
-                Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-div'),'取消选中的权限');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-div'),'取消选中的权限');
             }
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(permission) {
@@ -112,7 +119,7 @@ var AuthorityGroupForm = React.createClass({
 
         //反选
         reverseSelectAuthority: function() {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-div'),'反选权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-div'),'反选权限');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(permission) {
                     permission.status = !permission.status;
@@ -125,7 +132,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //将选中的权限转给哪个权限组的处理
         handleChangeGroup: function(group) {
-            Trace.traceEvent($(this.getDOMNode()).find('.icon-turn-arrow'),'将选中的权限转给权限组');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-turn-arrow'),'将选中的权限转给权限组');
             var selectIDs = [];
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(permission) {
@@ -152,7 +159,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //展示权限详细信息
         showAuthorityInfo: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.auth-item-icon'),'展示权限详细信息');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.auth-item-icon'),'展示权限详细信息');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(auth) {
                     if (auth.permissionId == authorityId) {
@@ -168,7 +175,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //关闭权限详细信息的展示
         closeAuthDetailInfo: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.auth-item-icon'),'关闭权限详细信息');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.auth-item-icon'),'关闭权限详细信息');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(auth) {
                     if (auth.permissionId == authorityId) {
@@ -180,7 +187,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //展示编辑详情表单页
         showAuthorityEditForm: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.auth-item-icon'),'展示编辑权限详情');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.auth-item-icon'),'展示编辑权限详情');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(auth) {
                     if (auth.permissionId == authorityId) {
@@ -196,7 +203,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //关闭编辑详情表单页
         closeAuthorityEditForm: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.auth-item-icon'),'关闭编辑权限详情');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.auth-item-icon'),'关闭编辑权限详情');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(auth) {
                     if (auth.permissionId == authorityId) {
@@ -208,7 +215,7 @@ var AuthorityGroupForm = React.createClass({
         },
         //添加权限表单页
         showAuthorityAddForm: function() {
-            Trace.traceEvent($(this.getDOMNode()).find('.form-authority-group-name-btn'),'添加一个新权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.form-authority-group-name-btn'),'添加一个新权限');
             this.setState({
                 showAddFormFlag: true
             });
@@ -294,13 +301,13 @@ var AuthorityGroupForm = React.createClass({
 
         //删除权限
         deleteAuthority: function(authorityId) {
-            Trace.traceEvent($(this.getDOMNode()).find('.edit-role-content-label'),'删除一个权限组');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.edit-role-content-label'),'删除一个权限组');
             this.props.deleteAuthority([authorityId]);
         },
         //删除多个权限
         deleteAuthoritys: function() {
             var authorityIds = [];
-            Trace.traceEvent($(this.getDOMNode()).find('.edit-role-content-label'),'删除权限');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.edit-role-content-label'),'删除权限');
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function(authority) {
                     if (authority.status) {
@@ -356,6 +363,7 @@ var AuthorityGroupForm = React.createClass({
 
 
     },
+
     renderAuthorityLi: function(authorityList) {
         var _this = this;
         //搜索框中的内容
@@ -497,20 +505,24 @@ var AuthorityGroupForm = React.createClass({
         }
         return hasSelectedLi;
     },
+
     hideDelTooltip: function() {
         this.props.clearDelAuthErrorMsg();
     },
+
     handleSearchEvent: function(inputContent) {
-        Trace.traceEvent($(this.getDOMNode()).find('.pull-right'),'按服务地址搜索');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-right'),'按服务地址搜索');
         inputContent = inputContent ? inputContent.trim() : '';
         AuthorityAction.setSearchContent(inputContent);
     },
+
     // 显示确认框
     showConfirm() {
         this.setState({
             isShowPopConfirm: true
         });
     },
+
     render: function() {
         var _this = this;
         var formData = this.state.formData;
@@ -541,7 +553,7 @@ var AuthorityGroupForm = React.createClass({
                 <RightPanelClose onClick={this.props.closeAuthorityGroupForm}/>
                 <div className="right-form-scroll-div" data-tracename="添加/编辑权限">
                     <GeminiScrollbar className="geminiScrollbar-vertical">
-                        <Form horizontal className="authority-group-form" onSubmit={this.events.cancelEnter}>
+                        <Form layout='horizontal' className="authority-group-form" onSubmit={this.events.cancelEnter}>
                             <Popconfirm title={Intl.get('authority.edit.is.save', '是否保存修改的权限组名')}
                                 visible={this.state.isShowPopConfirm}
                                 onConfirm={this.events.saveGroupName.bind(this)}
@@ -656,7 +668,8 @@ var AuthorityGroupForm = React.createClass({
                 }
             </RightPanel>
         );
-    }
+    },
 });
 
 module.exports = AuthorityGroupForm;
+

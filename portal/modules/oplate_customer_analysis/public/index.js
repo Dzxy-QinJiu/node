@@ -2,6 +2,7 @@
  * 客户分析
  */
 
+var React = require('react');
 require('./css/oplate-customer-analysis.less');
 import ajax from 'ant-ajax';
 import { AntcAnalysis } from 'antc';
@@ -57,41 +58,39 @@ const CUSTOMER_TYPE_OPTIONS = [
     }
 ];
 
-var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
-    getInitialState() {
-        return {
-            //行业列表
-            industry: [],
-            //订单阶段列表
-            stageList: [],
-        };
-    },
+class OPLATE_CUSTOMER_ANALYSIS extends React.Component {
+    state = {
+        //行业列表
+        industry: [],
+        //订单阶段列表
+        stageList: [],
+    };
 
     componentDidMount() {
         this.getIndustry();
         this.getStageList();
-    },
+    }
 
     //获取行业列表
-    getIndustry() {
+    getIndustry = () => {
         ajax.send({
             url: '/rest/customer/v2/customer/industries'
         }).then(result => {
             this.setState({ industry: result.result });
         });
-    },
+    };
 
     //获取订单阶段列表
-    getStageList() {
+    getStageList = () => {
         ajax.send({
             url: '/rest/customer/v2/salestage'
         }).then(result => {
             this.setState({ stageList: result.result });
         });
-    },
+    };
 
     //处理图表点击事件
-    handleChartClick(name, value, conditions) {
+    handleChartClick = (name, value, conditions) => {
         let conditionObj = {};
 
         _.each(conditions, condition => {
@@ -111,14 +110,14 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
         //跳转到客户列表
         window.open(url);
-    },
+    };
 
     //处理订单阶段数据
-    processOrderStageData: function(data) {
+    processOrderStageData = (data) => {
         return processOrderStageData(this.state.stageList, data);
-    },
+    };
 
-    getDataType: function() {
+    getDataType = () => {
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
@@ -126,16 +125,18 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         } else {
             return '';
         }
-    },
+    };
+
     //处理试用合格客户数统计数字点击事件
-    handleTrialQualifiedNumClick(customerIds) {
-        history.pushState({
+    handleTrialQualifiedNumClick = (customerIds) => {
+        history.push({
             from: 'sales_home',
             trialQualifiedCustomerIds: customerIds
         }, '/crm', {});
-    },
+    };
+
     //试用合格客户数统计数字渲染函数
-    trialQualifiedNumRender(customerIdsField, text, record) {
+    trialQualifiedNumRender = (customerIdsField, text, record) => {
         const customerIds = record[customerIdsField];
 
         if (customerIds) {
@@ -151,9 +152,10 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 </span>
             );
         }
-    },
+    };
+
     //获取试用合格客户数统计图表
-    getTrialQualifiedChart() {
+    getTrialQualifiedChart = () => {
         const dataType = this.getDataType();
 
         //统计列
@@ -266,9 +268,10 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });
 
         return chart;
-    },
+    };
+
     //获取图表定义
-    getCharts() {
+    getCharts = () => {
         let charts = [{
             title: 'Tabs',
             url: '/rest/analysis/customer/v1/:auth_type/summary',
@@ -653,9 +656,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         charts.push(trialQualifiedChart);
 
         return charts;
-    },
+    };
 
-    getEmitters() {
+    getEmitters = () => {
         return [{
             emitter: emitters.appSelectorEmitter,
             event: emitters.appSelectorEmitter.SELECT_APP,
@@ -671,7 +674,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 name: 'endtime',
             }],
         }];
-    },
+    };
 
     render() {
         const charts = this.getCharts();
@@ -707,7 +710,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 />
             </div>
         );
-    },
-});
+    }
+}
 
 module.exports = OPLATE_CUSTOMER_ANALYSIS;
+

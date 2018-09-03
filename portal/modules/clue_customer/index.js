@@ -1,8 +1,13 @@
+import Bundle from '../../public/sources/route-bundle';
+
+const CluePage = (props) => (
+    <Bundle load={() => import('./public')}>
+        {(CluePage) => <CluePage {...props}/>}
+    </Bundle>
+);
+
 module.exports = {
-    path: 'clue_customer',
-    getComponent: function(location, cb) {
-        require.ensure([], function(require){
-            cb(null, require('./public'));
-        });
-    }
+    path: '/clue_customer',
+    component: CluePage
 };
+

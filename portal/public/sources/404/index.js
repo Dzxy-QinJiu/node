@@ -1,13 +1,16 @@
+var React = require('react');
 var history = require('../history');
-var NotFound = React.createClass({
-    componentWillMount: function() {
-        history.replaceState(null,'/',{});
-    },
-    render: function() {
+
+class NotFound extends React.Component {
+    componentWillMount() {
+        history.replace('/',{});
+    }
+
+    render() {
         return (
             <div></div>
         );
     }
-});
+}
 
 module.exports = NotFound;

@@ -1,4 +1,4 @@
-const Validation = require('rc-form-validation');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 /**
  * 渲染用户名输入框

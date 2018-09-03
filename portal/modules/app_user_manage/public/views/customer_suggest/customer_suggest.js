@@ -1,4 +1,5 @@
 
+var React = require('react');
 var language = require('../../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./customer_suggest-es_VE.less');
@@ -7,33 +8,62 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var Select = require('antd').Select;
 var Icon = require('antd').Icon;
-var Link = require('react-router').Link;
+import {Link} from 'react-router-dom';
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('../../../../../public/sources/user-data');
 var classNames = require('classnames');
-var CustomerSuggest = React.createClass({
-    suggestTimer: null,
-    getDefaultProps: function() {
-        return {
-            //是否是必填项
-            required: true,
-            //是否显示错误提示，一般在点击提交的时候，这个值为true
-            show_error: false,
-            //客户的id
-            customer_id: '',
-            //客户的name
-            customer_name: '',
-            //当选中了customer的时候，会调用这个函数
-            onCustomerChoosen: function() {},
-            //告诉调用的父组件，隐藏错误提示
-            hideCustomerError: function() {},
-            //搜索关键词
-            keyword: '',
-            //外层的id
-            customerSuggestWrapId: ''
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
+
+class CustomerSuggest extends React.Component {
+    static defaultProps = {
+        //是否是必填项
+        required: true,
+        //是否显示错误提示，一般在点击提交的时候，这个值为true
+        show_error: false,
+        //客户的id
+        customer_id: '',
+        //客户的name
+        customer_name: '',
+        //当选中了customer的时候，会调用这个函数
+        onCustomerChoosen: function() {},
+        //告诉调用的父组件，隐藏错误提示
+        hideCustomerError: function() {},
+        //搜索关键词
+        keyword: '',
+        //外层的id
+        customerSuggestWrapId: ''
+    };
+
+    state = {
+        //类型
+        result_type: '',
+        //从服务端获取的客户列表
+        list: [],
+        //显示提示
+        show_tip: false,
+        //联想接口错误时候的提示信息
+        suggest_error_msg: '',
+        //销售团队
+        sales_team: {
+            id: '',
+            name: ''
+        },
+        //销售
+        sales: {
+            id: '',
+            name: ''
+        },
+        //客户
+        customer: {
+            id: this.props.customer_id,
+            name: this.props.customer_name
+        },
+        keyword: this.props.customer_name,
+        customerSuggestWrapId: this.props.customerSuggestWrapId || 'app',
+    };
+
+    suggestTimer = null;
+
+    componentWillReceiveProps(nextProps) {
         if(this.props.customer_id !== nextProps.customer_id || this.props.customer_name !== nextProps.customer_name) {
             this.setState({
                 customer: {
@@ -67,38 +97,11 @@ var CustomerSuggest = React.createClass({
                 customerSuggestWrapId: nextProps.customerSuggestWrapId
             });
         }
-    },
-    getInitialState: function() {
-        return {
-            //类型
-            result_type: '',
-            //从服务端获取的客户列表
-            list: [],
-            //显示提示
-            show_tip: false,
-            //联想接口错误时候的提示信息
-            suggest_error_msg: '',
-            //销售团队
-            sales_team: {
-                id: '',
-                name: ''
-            },
-            //销售
-            sales: {
-                id: '',
-                name: ''
-            },
-            //客户
-            customer: {
-                id: this.props.customer_id,
-                name: this.props.customer_name
-            },
-            keyword: this.props.customer_name,
-            customerSuggestWrapId: this.props.customerSuggestWrapId || 'app',
-        };
-    },
-    customerAjaxReq: null,
-    getCustomerList: function(suggestWord) {
+    }
+
+    customerAjaxReq = null;
+
+    getCustomerList = (suggestWord) => {
         var Deferred = $.Deferred();
         if(this.customerAjaxReq) {
             this.customerAjaxReq.abort();
@@ -115,9 +118,10 @@ var CustomerSuggest = React.createClass({
             Deferred.reject(xhr.responseJSON || Intl.get('errorcode.61','获取客户列表失败'));
         });
         return Deferred.promise();
-    },
+    };
+
     //调整右侧面板客户联想宽度
-    adjustDropDownRightPos: function() {
+    adjustDropDownRightPos = () => {
         var $dropDown = $('.customer_combobox_search.ant-select-dropdown');
         if($dropDown[0]){
             $dropDown.css('right','auto');
@@ -127,8 +131,9 @@ var CustomerSuggest = React.createClass({
                 $dropDown.css('right',0);
             }
         }
-    },
-    suggestChange: function(value) {
+    };
+
+    suggestChange = (value) => {
         clearTimeout(this.suggestTimer);
         var _this = this;
         //是否展示客户名后的对号或者叉号
@@ -191,8 +196,9 @@ var CustomerSuggest = React.createClass({
                 });
             });
         } , 300);
-    },
-    customerChoosen: function(value,field) {
+    };
+
+    customerChoosen = (value, field) => {
         var selectedCustomer = _.find(this.state.list , function(item) {
             if(item.customer_id === value) {
                 return true;
@@ -245,24 +251,28 @@ var CustomerSuggest = React.createClass({
             var resultClone = JSON.parse(JSON.stringify(result));
             this.props.onCustomerChoosen(resultClone);
         }
-    },
-    getCustomerSearchInput: function() {
+    };
+
+    getCustomerSearchInput = () => {
         var $search_input = $('.ant-select-search__field',this.refs.customer_searchbox);
         return $search_input;
-    },
-    retrySuggest: function() {
+    };
+
+    retrySuggest = () => {
         var $search_input = this.getCustomerSearchInput();
         var search_input_val = $search_input.val();
         this.suggestChange(search_input_val);
-    },
-    getCustomerLoadingBlock: function() {
+    };
+
+    getCustomerLoadingBlock = () => {
         if(this.state.result_type === 'loading') {
             return (
                 <Icon type="loading"/>
             );
         }
-    },
-    getCustomerTipBlock: function() {
+    };
+
+    getCustomerTipBlock = () => {
         var $search_input = this.getCustomerSearchInput();
         var search_input_val = $search_input.val();
         if(this.props.show_error) {
@@ -299,8 +309,9 @@ var CustomerSuggest = React.createClass({
                 );
             }
         }
-    },
-    resetCustomer: function() {
+    };
+
+    resetCustomer = () => {
 
         var result = {
             keyword: '',
@@ -327,8 +338,9 @@ var CustomerSuggest = React.createClass({
 
         var resultClone = JSON.parse(JSON.stringify(result));
         this.props.onCustomerChoosen(resultClone);
-    },
-    render: function() {
+    };
+
+    render() {
         if(this.state.sales.name) {
             return (
                 <div ref="customer_searchbox" className="customer_searchbox_wrap customer_searchbox_text_wrap">
@@ -375,6 +387,6 @@ var CustomerSuggest = React.createClass({
             );
         }
     }
-});
+}
 
 module.exports = CustomerSuggest;

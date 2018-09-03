@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2015/12/29.
  */
+var React = require('react');
 var language = require('../../public/language/getLanguage');
 if (language.lan() == 'es' || language.lan() == 'en') {
     require('./modalDialog-es_VE.less');
@@ -12,15 +13,17 @@ var Modal = require('react-bootstrap').Modal;
 var Button = require('react-bootstrap').Button;
 var classNames = require('classnames');
 
-var ModalDialog = React.createClass({
-    delete: function() {
+class ModalDialog extends React.Component {
+    delete = () => {
         this.props.delete();
         this.close();
-    },
-    close: function() {
+    };
+
+    close = () => {
         this.props.hideModalDialog();
-    },
-    render: function() {
+    };
+
+    render() {
         var btnClass = classNames('', this.props.className, {
             'transparentBgFlag modal': this.props.transparentBgFlag,
             'modal': !this.props.transparentBgFlag
@@ -50,6 +53,7 @@ var ModalDialog = React.createClass({
             </Modal>
         );
     }
-});
+}
 
 module.exports = ModalDialog;
+

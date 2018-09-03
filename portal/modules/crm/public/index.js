@@ -1,34 +1,38 @@
+var React = require('react');
 var util = require('./utils/contact-util');
 let CustomerRepeat = require('./views/customer-repeat');
 let CrmList = require('./crm-list');
 import Trace from 'LIB_DIR/trace';
 
-var CrmIndex = React.createClass({
-    getInitialState: function() {
-        return {
-            isRepeatCustomerShow: false//是否展示客户查重界面
-        };
-    },
-    componentDidMount: function() {
+class CrmIndex extends React.Component {
+    state = {
+        isRepeatCustomerShow: false//是否展示客户查重界面
+    };
+
+    componentDidMount() {
         $('body').css('overflow', 'hidden');
-    },
-    componentWillUnmount: function() {
+    }
+
+    componentWillUnmount() {
         $('body').css('overflow', 'auto');
-    },
+    }
+
     //展示重复客户界面的设置
-    showRepeatCustomer: function() {
-        Trace.traceEvent($(this.getDOMNode()).find('.filter-block .customer-repeat-btn'),'点击客户查重按钮');
+    showRepeatCustomer = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.filter-block .customer-repeat-btn'),'点击客户查重按钮');
         this.setState({
             isRepeatCustomerShow: true
         });
-    },
+    };
+
     //关闭重复客户界面的设置
-    closeRepeatCustomer: function() {
+    closeRepeatCustomer = () => {
         this.setState({
             isRepeatCustomerShow: false
         });
-    },
-    render: function() {
+    };
+
+    render() {
         if (this.state.isRepeatCustomerShow) {
             return (
                 <div data-tracename="重复客户列表">
@@ -42,6 +46,7 @@ var CrmIndex = React.createClass({
         }
 
     }
-});
+}
 
 module.exports = CrmIndex;
+

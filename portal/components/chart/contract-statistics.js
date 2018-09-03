@@ -1,3 +1,4 @@
+var React = require('react');
 /**
  * 合同分析统计表
  */

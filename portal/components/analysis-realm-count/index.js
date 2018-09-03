@@ -1,12 +1,13 @@
+var React = require('react');
 require('./index.less');
-var AnalysisRealmCount = React.createClass({
-    getDefaultProps: function() {
-        return {
-            title: '当前安全域开通总数',
-            total: 0
-        };
-    },
-    render: function() {
+
+class AnalysisRealmCount extends React.Component {
+    static defaultProps = {
+        title: '当前安全域开通总数',
+        total: 0
+    };
+
+    render() {
         return (
             <p className="analysis-realm-count">
                 <span>{this.props.title}</span>
@@ -14,6 +15,6 @@ var AnalysisRealmCount = React.createClass({
             </p>
         );
     }
-});
+}
 
 module.exports = AnalysisRealmCount;

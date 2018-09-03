@@ -1,4 +1,6 @@
-const Validation = require('rc-form-validation');
+var React = require('react');
+var createReactClass = require('create-react-class');
+const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 import { Alert } from 'antd';
 
@@ -35,8 +37,10 @@ function cx(classNames) {
 function noop() {
 }
 
-var SalesStageForm = React.createClass({
+var SalesStageForm = createReactClass({
+    displayName: 'SalesStageForm',
     mixins: [Validation.FieldMixin],
+
     getDefaultProps: function() {
         return {
             submitSalesStageForm: noop,
@@ -50,6 +54,7 @@ var SalesStageForm = React.createClass({
             }
         };
     },
+
     getInitialState: function() {
         return {
             status: {
@@ -62,6 +67,7 @@ var SalesStageForm = React.createClass({
             salesStageFormShow: this.props.salesStageFormShow
         };
     },
+
     componentWillReceiveProps: function(nextProps) {
         if(!this.state.salesStageFormShow) {
             this.refs.validation.reset();
@@ -71,12 +77,15 @@ var SalesStageForm = React.createClass({
             this.setState(stateData);
         }
     },
+
     onChange: function() {
         this.setState(SalesStageStore.getState());
     },
+
     componentWillUnmount: function() {
         SalesStageStore.unlisten(this.onChange);
     },
+
     componentDidUpdate: function() {
         var _this = this;
         SalesStageStore.listen(_this.onChange);
@@ -84,6 +93,7 @@ var SalesStageForm = React.createClass({
             this.refs.validation.validate(noop);
         }
     },
+
     renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -102,6 +112,7 @@ var SalesStageForm = React.createClass({
         e.preventDefault();
         this.props.cancelSalesStageForm();
     },
+
     //保存角色信息
     handleSubmit: function(e) {
         e.preventDefault();
@@ -142,7 +153,7 @@ var SalesStageForm = React.createClass({
                 <RightPanelClose onClick={this.handleCancel} data-tracename="关闭添加/编辑销售阶段"></RightPanelClose>
                 <div className="right-form-scroll-div">
 
-                    <Form horizontal className="form">
+                    <Form layout='horizontal' className="form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
                                 label={Intl.get('sales.stage.sales.stage', '销售阶段')}
@@ -200,7 +211,8 @@ var SalesStageForm = React.createClass({
                 </div>
             </ RightPanel >
         );
-    }
+    },
 });
 
 module.exports = SalesStageForm;
+

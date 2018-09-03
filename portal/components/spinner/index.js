@@ -1,13 +1,14 @@
+var React = require('react');
 require('./index.less');
 var classNames = require('classnames');
-var Spinner = React.createClass({
+
+class Spinner extends React.Component {
     //获取默认属性
-    getDefaultProps: function() {
-        return {
-            type: 'load8'
-        };
-    },
-    render: function() {
+    static defaultProps = {
+        type: 'load8'
+    };
+
+    render() {
 
         if(this.props.type === 'load8') {
             var cls = classNames('load8',this.props.className);
@@ -35,6 +36,6 @@ var Spinner = React.createClass({
             );
         }
     }
-});
+}
 
 module.exports = Spinner;

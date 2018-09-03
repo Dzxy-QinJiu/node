@@ -1,3 +1,4 @@
+var React = require('react');
 import filterEmitter from './emitter';
 import { Icon, Input, Button, Radio, Popover, Alert } from 'antd';
 import PropTypes from 'prop-types';
