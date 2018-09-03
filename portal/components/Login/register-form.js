@@ -45,6 +45,9 @@ class RegisterForm extends React.Component {
             if (/^[a-z\-]*$/.test(value)) {
                 callback();
             } else {
+                if (this.state.validateNameOnlyMsg) {
+                    this.setState({validateNameOnlyMsg: ''});
+                }
                 callback(Intl.get('register.company.valid.tip', '请输入小写字母和中划线组成的公司标识'));
             }
         } else {
