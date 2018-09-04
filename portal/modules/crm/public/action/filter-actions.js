@@ -20,7 +20,8 @@ function FilterAction() {
         'hidePanel',
         'setOtherSelectedItem',
         'setSalesRole',
-        'setCondition'
+        'setCondition',
+        'setInitialCondition'
     );
 
     this.getAppList = function() {

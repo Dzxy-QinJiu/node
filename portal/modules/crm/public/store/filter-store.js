@@ -11,6 +11,12 @@ function FilterStore() {
     this.provinceList = [];//地域列表
     this.salesRoleList = [];
     this.inputCondition = {};
+    this.setInitialCondition();
+    this.isPanelShow = false;
+
+    this.bindActions(FilterActions);
+}
+FilterStore.prototype.setInitialCondition = function() {
     this.condition = {
         sales_team_id: '',
         user_name: '',//负责人
@@ -29,11 +35,7 @@ function FilterStore() {
         administrative_level: '',//行政级别
         otherSelectedItem: '',//其他类型的筛选
     };
-    this.isPanelShow = false;
-
-    this.bindActions(FilterActions);
-}
-
+};
 //获取地域列表
 FilterStore.prototype.getFilterProvinces = function(list) {
     this.provinceList = list;
