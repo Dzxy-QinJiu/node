@@ -84,6 +84,10 @@ class MonthlyReport extends React.Component {
         );
     };
 
+    numberRender = text => {
+        return <span>{text.toFixed()}</span>;
+    };
+
     //电话量统计表格列定义
     getPhoneStatisticsColumns = () => {
         return [
@@ -101,16 +105,19 @@ class MonthlyReport extends React.Component {
                 title: Intl.get('common.assessment.index', '考核指标'),
                 dataIndex: 'assessment_index',
                 sorter: (a, b) => a.assessment_index - b.assessment_index,
+                render: this.numberRender,
                 width: '10%',
             },
             {
                 title: `${Intl.get('sales.home.average.duration', '日均时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'average_time',
+                render: this.numberRender,
                 width: '10%',
             },
             {
                 title: Intl.get('sales.home.average.connected', '日均接通数'),
                 dataIndex: 'average_num',
+                render: this.numberRender,
                 width: '10%',
             },
             {
@@ -182,6 +189,7 @@ class MonthlyReport extends React.Component {
             {
                 title: `${Intl.get('sales.home.phone.billing.time', '计费时长')}(${Intl.get('common.app.minute', '分钟')})`,
                 dataIndex: 'charged_duration',
+                render: this.numberRender,
                 sorter: (a, b) => a.charged_duration - b.charged_duration,
                 width: '10%',
             },
