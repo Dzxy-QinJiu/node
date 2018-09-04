@@ -84,49 +84,56 @@ class MonthlyReport extends React.Component {
         );
     };
 
+    numberRender = text => {
+        return <span>{text.toFixed()}</span>;
+    };
+
     //电话量统计表格列定义
     getPhoneStatisticsColumns = () => {
         return [
             {
                 title: Intl.get('common.ranking', '排名'),
                 dataIndex: 'rank',
-                width: '10%',
+                width: 50,
             },
             {
                 title: Intl.get('sales.home.sales', '销售'),
                 dataIndex: 'name',
-                width: '10%',
+                width: 80,
             },
             {
                 title: Intl.get('common.assessment.index', '考核指标'),
                 dataIndex: 'assessment_index',
                 sorter: (a, b) => a.assessment_index - b.assessment_index,
-                width: '10%',
+                render: this.numberRender,
+                width: 90,
             },
             {
                 title: `${Intl.get('sales.home.average.duration', '日均时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'average_time',
-                width: '10%',
+                render: this.numberRender,
+                width: 100,
             },
             {
                 title: Intl.get('sales.home.average.connected', '日均接通数'),
                 dataIndex: 'average_num',
-                width: '10%',
+                render: this.numberRender,
+                width: 90,
             },
             {
                 title: `${Intl.get('sales.home.total.duration', '总时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'total_time',
-                width: '10%',
+                width: 90,
             },
             {
                 title: Intl.get('sales.home.total.connected', '总接通数'),
                 dataIndex: 'total_num',
-                width: '10%',
+                width: 90,
             },
             {
                 title: Intl.get('weekly.report.assessment.days', '考核天数',),
                 dataIndex: 'real_work_day',
-                width: '10%',
+                width: 90,
             },
             {
                 title: Intl.get('common.remark', '备注'),
@@ -156,7 +163,6 @@ class MonthlyReport extends React.Component {
 
                     return content;
                 },
-                width: '20%',
             },
         ];
     };
@@ -182,6 +188,7 @@ class MonthlyReport extends React.Component {
             {
                 title: `${Intl.get('sales.home.phone.billing.time', '计费时长')}(${Intl.get('common.app.minute', '分钟')})`,
                 dataIndex: 'charged_duration',
+                render: this.numberRender,
                 sorter: (a, b) => a.charged_duration - b.charged_duration,
                 width: '10%',
             },
@@ -227,6 +234,10 @@ class MonthlyReport extends React.Component {
                 height: 'auto',
                 layout: {sm: 24},
                 url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
+                conditions: [{
+                    name: 'return_type',
+                    value: 'user'
+                }],
                 dataField: 'list',
                 processData: data => {
                     data = _.orderBy(data, 'assessment_index', 'desc');
@@ -250,6 +261,9 @@ class MonthlyReport extends React.Component {
                 layout: {sm: 24},
                 url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
                 conditions: [{
+                    name: 'return_type',
+                    value: 'user'
+                }, {
                     name: 'deviceType',
                     value: 'app'
                 }],
@@ -350,6 +364,7 @@ class MonthlyReport extends React.Component {
                 <MonthPicker
                     defaultValue={moment()}
                     onChange={this.onDateChange}
+                    allowClear={false}
                     disabledDate={current => current && current > moment()}
                 />
             </div>
