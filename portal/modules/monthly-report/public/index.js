@@ -94,46 +94,46 @@ class MonthlyReport extends React.Component {
             {
                 title: Intl.get('common.ranking', '排名'),
                 dataIndex: 'rank',
-                width: '10%',
+                width: 50,
             },
             {
                 title: Intl.get('sales.home.sales', '销售'),
                 dataIndex: 'name',
-                width: '10%',
+                width: 60,
             },
             {
                 title: Intl.get('common.assessment.index', '考核指标'),
                 dataIndex: 'assessment_index',
                 sorter: (a, b) => a.assessment_index - b.assessment_index,
                 render: this.numberRender,
-                width: '10%',
+                width: 90,
             },
             {
                 title: `${Intl.get('sales.home.average.duration', '日均时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'average_time',
                 render: this.numberRender,
-                width: '10%',
+                width: 100,
             },
             {
                 title: Intl.get('sales.home.average.connected', '日均接通数'),
                 dataIndex: 'average_num',
                 render: this.numberRender,
-                width: '10%',
+                width: 90,
             },
             {
                 title: `${Intl.get('sales.home.total.duration', '总时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'total_time',
-                width: '10%',
+                width: 90,
             },
             {
                 title: Intl.get('sales.home.total.connected', '总接通数'),
                 dataIndex: 'total_num',
-                width: '10%',
+                width: 90,
             },
             {
                 title: Intl.get('weekly.report.assessment.days', '考核天数',),
                 dataIndex: 'real_work_day',
-                width: '10%',
+                width: 90,
             },
             {
                 title: Intl.get('common.remark', '备注'),
@@ -163,7 +163,6 @@ class MonthlyReport extends React.Component {
 
                     return content;
                 },
-                width: '20%',
             },
         ];
     };
