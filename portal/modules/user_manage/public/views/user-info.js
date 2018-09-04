@@ -2,6 +2,7 @@
  * Created by wangliping on 2016/11/8.
  */
 var React = require('react');
+const PropTypes = require('prop-types');
 var language = require('../../../../public/language/getLanguage');
 require('PUB_DIR/css/card-info-common.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -30,6 +31,7 @@ import Trace from 'LIB_DIR/trace';
 import CommissionAndTarget from './commission-and-target';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from '../views/radio-card';
+import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 
 class UserInfo extends React.Component {
     state = {
@@ -156,13 +158,15 @@ class UserInfo extends React.Component {
     //团队的选择事件
     onSelectTeam = (teamId) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择所属团队');
-        this.state.userInfo.teamId = teamId;
-        this.setState({userInfo: this.state.userInfo});
+        let userInfo = this.state.userInfo;
+        userInfo.teamId = teamId;
+        this.setState({userInfo});
     };
 
     cancelEditTeam = () => {
-        this.state.userInfo.teamId = this.props.userInfo.teamId;
-        this.setState({userInfo: this.state.userInfo});
+        let userInfo = this.state.userInfo;
+        userInfo.teamId = this.props.userInfo.teamId;
+        this.setState({userInfo});
     };
 
     //修改的所属团队成功后的处理
@@ -223,13 +227,15 @@ class UserInfo extends React.Component {
 
     selectRole = (roleIds) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
-        this.state.userInfo.roleIds = roleIds;
-        this.setState({userInfo: this.state.userInfo});
+        let userInfo = this.state.userInfo;
+        userInfo.roleIds = roleIds;
+        this.setState({userInfo});
     };
 
     cancelEditRole = () => {
-        this.state.userInfo.roleIds = _.extend([], this.props.userInfo.roleIds);
-        this.setState({userInfo: this.state.userInfo});
+        let userInfo = this.state.userInfo;
+        userInfo.roleIds = _.extend([], this.props.userInfo.roleIds);
+        this.setState({userInfo});
     };
 
     onPasswordDisplayTypeChange = (type) => {
@@ -275,26 +281,6 @@ class UserInfo extends React.Component {
             callback();
         } else {
             callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-        }
-    };
-
-    checkPhone = (rule, value, callback) => {
-        value = $.trim(value);
-        if (value) {
-            if (
-                /^1[3456789]\d{9}$/.test(value)
-                ||
-                /^(0\d{2,3}-?)?[02-9]\d{6,7}$/.test(value)
-                ||
-                /^400-?\d{3}-?\d{4}$/.test(value)
-                ||
-                /^1010\d+$/.test(value)) {
-                callback();
-            } else {
-                callback(new Error(Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
-            }
-        } else {
-            callback();
         }
     };
 
@@ -432,7 +418,7 @@ class UserInfo extends React.Component {
                             field="phone"
                             type="text"
                             disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
-                            validators={[{validator: this.checkPhone}]}
+                            validators={[{validator: checkPhone}]}
                             placeholder={Intl.get('user.input.phone', '请输入手机号')}
                             saveEditInput={UserInfoAjax.editUser}
                             modifySuccess={this.changeUserFieldSuccess}
@@ -542,8 +528,9 @@ class UserInfo extends React.Component {
 
     uploadImg = (src) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '点击上传头像');
-        this.state.userInfo.image = src;
-        this.setState({userInfo: this.state.userInfo, showSaveIconTip: true});
+        let userInfo = this.state.userInfo;
+        userInfo.image = src;
+        this.setState({userInfo, showSaveIconTip: true});
     };
 
     saveUserIcon = () => {
@@ -594,8 +581,9 @@ class UserInfo extends React.Component {
 
     cancelEditIcon = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '取消头像的保存');
-        this.state.userInfo.image = this.props.userInfo.image;
-        this.setState({userInfo: this.state.userInfo, showSaveIconTip: false});
+        let userInfo = this.state.userInfo;
+        userInfo.image = this.props.userInfo.image;
+        this.setState({userInfo, showSaveIconTip: false});
     };
 
     render() {
@@ -733,6 +721,18 @@ class UserInfo extends React.Component {
         );
     }
 }
-
+UserInfo.propTypes = {
+    userInfo: PropTypes.object,
+    isContinueAddButtonShow: PropTypes.bool,
+    deleteCard: PropTypes.func,
+    afterEditTeamSuccess: PropTypes.func,
+    afterEditRoleSuccess: PropTypes.func,
+    changeUserFieldSuccess: PropTypes.func,
+    updateUserStatus: PropTypes.func,
+    userInfoShow: PropTypes.bool,
+    userFormShow: PropTypes.bool,
+    closeRightPanel: PropTypes.func,
+    showEditForm: PropTypes.func
+};
 module.exports = UserInfo;
 
