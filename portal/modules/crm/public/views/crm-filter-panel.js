@@ -104,6 +104,7 @@ class CrmFilterPanel extends React.Component {
     }
 
     componentWillUnmount() {
+        FilterAction.setInitialCondition();
         FilterStore.unlisten(this.onStoreChange);
     }
 
