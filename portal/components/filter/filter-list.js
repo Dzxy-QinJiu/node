@@ -48,7 +48,7 @@ class FilterList extends React.Component {
         }
         const pickNameValue = advancedData => {
             advancedData.forEach(group => {
-                group.data = group.data.map(x => ({name: x.name, value: x.value}));
+                group.data = group.data.map(x => ({name: x.name, value: x.value, selected: x.selected}));
             });
             return advancedData;
         };

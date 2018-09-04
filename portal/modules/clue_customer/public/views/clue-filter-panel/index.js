@@ -77,6 +77,7 @@ class ClueFilterPanel extends React.Component {
             end_time = moment().endOf('day').valueOf();
         }
         FilterAction.setTimeRange({start_time: start_time, end_time: end_time});
+        clueCustomerAction.setClueInitialData();
         setTimeout(() => {
             this.props.getClueList();
         });
@@ -87,7 +88,7 @@ class ClueFilterPanel extends React.Component {
                 <span className="consult-time">{Intl.get('clue.analysis.consult.time', '咨询时间')}</span>
                 <DatePicker
                     disableDateAfterToday={true}
-                    range="week"
+                    range={this.state.timeType}
                     onSelect={this.onSelectDate}>
                     <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
                     <DatePicker.Option
@@ -113,7 +114,7 @@ class ClueFilterPanel extends React.Component {
         const accessChannelArray = this.state.accessChannelArray;
         //线索分类
         const clueClassifyArray = this.state.clueClassifyArray;
-        var filterClueStatus = _.cloneDeep(this.state.filterClueStatus);
+        var filterClueStatus = this.state.filterClueStatus;
         filterClueStatus = _.filter(filterClueStatus, item => {
             return item.value;
         });

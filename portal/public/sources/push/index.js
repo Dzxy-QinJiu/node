@@ -21,7 +21,7 @@ import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege, getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
 const session = storageUtil.session;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -591,23 +591,7 @@ function getMessageCount(callback) {
     }
     //获取线索未处理数的权限（除运营人员外展示）
     if (getClueUnhandledPrivilege()){
-        let status = '';
-        //如果是域管理员，展示待分配的线索数量
-        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
-            status = SELECT_TYPE.WILL_DISTRIBUTE;
-        }else{
-            //销售展示待跟进的线索数量
-            status = SELECT_TYPE.WILL_TRACE;
-        }
-        var data = {
-            clueCustomerTypeFilter: JSON.stringify({status: status}),
-            rangParams: JSON.stringify([{//时间范围参数
-                from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
-                to: moment().valueOf(),
-                type: 'time',
-                name: 'source_time'
-            }]),
-        };
+        var data = getUnhandledClueCountParams();
         if (hasPrivilege('CLUECUSTOMER_QUERY_MANAGER')) {
             data.hasManageAuth = true;
         }

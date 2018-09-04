@@ -9,6 +9,7 @@ import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/so
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
+var clueFilterAction = require('./action/filter-action');
 import {clueEmitter} from 'OPLATE_EMITTER';
 var userData = require('../../../public/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
@@ -18,7 +19,7 @@ var SearchInput = require('CMP_DIR/searchInput');
 import {message, Icon, Row, Col, Button, Alert, Select} from 'antd';
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
-import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
+import {removeSpacesAndEnter,getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
 require('./css/index.less');
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
@@ -41,6 +42,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
+import {showUnhandledClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -73,9 +75,16 @@ class ClueCustomer extends React.Component {
         //获取线索分类
         this.getClueClassify();
         clueCustomerAction.getSalesManList();
-        this.getClueList();
+        //点击未处理线索的数量跳转过来的
+        if(_.get(this.props,'location.state.clickUnhandleNum')){
+            this.getUnhandledClue();
+        }else{
+            this.getClueList();
+        }
+
         this.getUserPhoneNumber();
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
+        showUnhandledClueEmitter.on(showUnhandledClueEmitter.SHOW_UNHANDLED_CLUE, this.getUnhandledClue);
     }
 
     showClueDetailOut = (item) => {
@@ -104,11 +113,31 @@ class ClueCustomer extends React.Component {
             previewList: list,
         });
     };
-
+    getUnhandledClue = () => {
+        var data = getUnhandledClueCountParams();
+        clueFilterAction.setTimeType('all');
+        clueFilterAction.setFilterType([{value: _.get(JSON.parse(data.clueCustomerTypeFilter),'status')}]);
+        setTimeout(() => {
+            this.getClueList(data);
+        });
+    };
+    componentWillReceiveProps(nextProps) {
+        if(_.get(nextProps,'location.state.clickUnhandleNum') === false){
+            clueFilterAction.setInitialData();
+            clueCustomerAction.resetState();
+            setTimeout(() => {
+                this.getClueList();
+            });
+        }
+    }
     componentWillUnmount() {
         clueCustomerStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
+        showUnhandledClueEmitter.removeListener(showUnhandledClueEmitter.SHOW_UNHANDLED_CLUE, this.getUnhandledClue);
         clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
+        //清空页面上的筛选条件
+        clueFilterAction.setInitialData();
+        clueCustomerAction.resetState();
     }
 
     onStoreChange = () => {
@@ -240,8 +269,8 @@ class ClueCustomer extends React.Component {
     };
 
     //获取线索列表
-    getClueList = () => {
-        var rangParams = clueFilterStore.getState().rangParams;
+    getClueList = (data) => {
+        var rangParams = _.get(data, 'rangParams') || clueFilterStore.getState().rangParams;
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         //跟据类型筛选
@@ -253,7 +282,7 @@ class ClueCustomer extends React.Component {
             rangeParams: JSON.stringify(rangParams),
             statistics_fields: 'status',
             userId: userData.getUserData().userId || '',
-            typeFilter: JSON.stringify(typeFilter)
+            typeFilter: _.get(data, 'clueCustomerTypeFilter') || JSON.stringify(typeFilter)
         };
         var filterStoreData = clueFilterStore.getState();
         //选中的线索来源

@@ -4,8 +4,7 @@ var showTypeConstant = require('../util/constant').SHOW_TYPE_CONSTANT;
 var DateSelectorUtils = require('../../../../components/datepicker/utils');
 var TimeUtil = require('../../../../public/sources/utils/time-format-util');
 let userData = require('../../../../public/sources/user-data');
-import {formatRoundingPercentData} from 'PUB_DIR/sources/utils/common-method-util';
-import {getStartEndTimeOfDiffRange} from '../util/constant';
+import {formatRoundingPercentData, getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 function SalesHomeStore() {
     this.setInitState();
     this.bindActions(SalesHomeActions);

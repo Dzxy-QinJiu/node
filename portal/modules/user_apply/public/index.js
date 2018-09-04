@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2017/3/15.
  */
 var React = require('react');
+const PropTypes = require('prop-types');
 require('./css/main.less');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -22,11 +23,17 @@ class UserApply extends React.Component {
         const query = queryString.parse(this.props.location.search);
         return (
             <div className="user_apply_page" data-tracename="用户审批">
-                <ApplyView applyId={query && query.id}/>
+                <ApplyView applyId={query && query.id} {...this.props}/>
             </div>
         );
     }
 }
+UserApply.defaultProps = {
+    location: {},
+};
+UserApply.propTypes = {
+    location: PropTypes.object,
+};
 
 module.exports = UserApply;
 

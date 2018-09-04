@@ -5,6 +5,8 @@
  */
 function FilterAction() {
     this.generateActions(
+        'setInitialData',
+        'setTimeType',
         'setTimeRange',
         'setFilterType',
         'setFilterClueSoure',

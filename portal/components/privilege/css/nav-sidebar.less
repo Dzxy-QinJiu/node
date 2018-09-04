@@ -103,7 +103,10 @@
         >li {
             //线索未读数
             &.clue-icon-container, &.sidebar-applyentry {
+                pointer-events:none;
                 &:before {
+                    pointer-events:auto;
+                    cursor: pointer;
                     position: absolute;
                     right: 17px;
                     top: 8px;   
@@ -118,6 +121,9 @@
                     text-align: center;
                     font-family: "SimHei", "Helvetica Neue", Helvetica, sans-serif;
                     z-index: 1000;
+                }
+                a{
+                    pointer-events:auto;
                 }
             }
             &.sidebar-applyentry:before {

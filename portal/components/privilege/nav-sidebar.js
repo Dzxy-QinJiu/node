@@ -1,3 +1,4 @@
+import { PropTypes } from 'prop-types';
 require('./css/nav-sidebar.less');
 var userData = require('../../public/sources/user-data');
 import {NavLink} from 'react-router-dom';
@@ -22,6 +23,7 @@ import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
+import {showUnhandledApplyEmitter, showUnhandledClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 const session = storageUtil.session;
 //需要加引导的模块
 const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -172,6 +174,14 @@ var hamburgerIntroModalLayout = {
 var NavSidebar = createReactClass({
     displayName: 'NavSidebar',
     mixins: [UnreadMixin],
+    getDefaultProps: function() {
+        return {
+            toggleNotificationPanel: function() {
+            },
+            closeNotificationPanel: function() {
+            },
+        };
+    },
 
     getInitialState: function() {
         return {
@@ -192,6 +202,10 @@ var NavSidebar = createReactClass({
             hasUnreadReply: false,//是否有未读的回复
             hideNavIcon: false,//是否隐藏图标（小屏幕只展示文字）
         };
+    },
+    propTypes: {
+        toggleNotificationPanel: PropTypes.func,
+        closeNotificationPanel: PropTypes.func,
     },
 
     //轮询获取未读数的清除器
@@ -232,9 +246,10 @@ var NavSidebar = createReactClass({
     changeUserInfoLogo: function(userLogoInfo) {
         //修改名称
         if (userLogoInfo.nickName) {
-            this.state.userInfo.nick_name = userLogoInfo.nickName;
+            var userInfo = this.state.userInfo;
+            userInfo.nick_name = userLogoInfo.nickName;
             this.setState({
-                userInfo: this.state.userInfo
+                userInfo: userInfo
             });
         }
         //logo
@@ -307,6 +322,24 @@ var NavSidebar = createReactClass({
             if (this.isIntroModlueNeverClicked(WebsiteConfigModuleRecord)) {
                 this.selectedIntroElement();
             }
+        });
+        //点击审批数字后，查看待审批的数量
+        $('.navbar').on('click', '.sidebar-applyentry', function(e) {
+            if ($(e.target).hasClass('iconfont')){
+                history.push('/apply',{clickUnhandleNum: false});
+            }else{
+                history.push('/apply',{clickUnhandleNum: true});
+                showUnhandledApplyEmitter.emit(showUnhandledApplyEmitter.SHOW_UNHANDLED_APPLY);
+            }
+        });
+        $('.navbar').on('click', '.clue-icon-container', function(e) {
+            if ($(e.target).hasClass('iconfont')){
+                history.push('/apply',{clickUnhandleNum: false});
+            }else{
+                history.push('/clue_customer',{clickUnhandleNum: true});
+                showUnhandledClueEmitter.emit(showUnhandledClueEmitter.SHOW_UNHANDLED_CLUE);
+            }
+
         });
     },
 
