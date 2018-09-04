@@ -1,4 +1,5 @@
 var React = require('react');
+const PropTypes = require('prop-types');
 import { Button, Icon } from 'antd';
 import Trace from 'LIB_DIR/trace';
 var SearchInput = require('../../../../components/searchInput');
@@ -24,6 +25,7 @@ class CrmFilter extends React.Component {
     }
 
     componentWillUnmount() {
+        FilterAction.setInputCondition({});
         FilterStore.unlisten(this.onStoreChange);
     }
 
@@ -80,6 +82,10 @@ class CrmFilter extends React.Component {
         );
     }
 }
-
+CrmFilter.propTypes = {
+    crmFilterValue: PropTypes.string,
+    changeTableHeight: PropTypes.func,
+    search: PropTypes.func
+};
 module.exports = CrmFilter;
 
