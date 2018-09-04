@@ -99,7 +99,7 @@ class MonthlyReport extends React.Component {
             {
                 title: Intl.get('sales.home.sales', '销售'),
                 dataIndex: 'name',
-                width: 60,
+                width: 80,
             },
             {
                 title: Intl.get('common.assessment.index', '考核指标'),
