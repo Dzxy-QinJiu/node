@@ -19,7 +19,7 @@ class UserLoginAnalysis extends React.Component {
     static defaultProps = {
         userId: '1'
     };
-
+        
     onStateChange = () => {
         this.setState(this.getStateData());
     };
@@ -376,6 +376,7 @@ class UserLoginAnalysis extends React.Component {
 
     state = {
         selectValue: 'LoginFrequency',
+        selectValueMap: {},          
         showDetailMap: {},//是否展示app详情的map
         ...this.getStateData()
     };
