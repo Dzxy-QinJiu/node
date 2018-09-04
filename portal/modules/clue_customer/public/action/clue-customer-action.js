@@ -7,6 +7,7 @@ var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 function ClueCustomerActions() {
     this.generateActions(
+        'resetState',
         'setClueInitialData',
         'setCurrentCustomer',
         'afterAddSalesClue',

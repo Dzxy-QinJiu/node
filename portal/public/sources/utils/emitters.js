@@ -160,4 +160,11 @@ export {clueEmitter};
 const resizeEmitter = new EventEmitter();
 resizeEmitter.WINDOW_SIZE_CHANGE = 'window_size_change';
 export { resizeEmitter };
-
+//点击审批的数字，查看待审批的申请数
+const showUnhandledApplyEmitter = new EventEmitter();
+showUnhandledApplyEmitter.SHOW_UNHANDLED_APPLY = 'show_unhandled_apply';
+export { showUnhandledApplyEmitter };
+//点击线索的数字，查看待处理的线索
+const showUnhandledClueEmitter = new EventEmitter();
+showUnhandledClueEmitter.SHOW_UNHANDLED_CLUE = 'show_clue_apply';
+export { showUnhandledClueEmitter };

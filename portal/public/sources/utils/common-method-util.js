@@ -13,6 +13,8 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 // 根据权限，判断获取团队和成员时所传字段的值
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
+import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -307,4 +309,50 @@ exports.renderClueStatus = function(status) {
 //获取线索未处理的权限
 exports.getClueUnhandledPrivilege = function(){
     return hasPrivilege('CLUECUSTOMER_QUERY_MANAGER') || hasPrivilege('CLUECUSTOMER_QUERY_USER') && !userData.hasOnlyRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+};
+//获取线索未读数的参数
+exports.getUnhandledClueCountParams = function() {
+    let status = '';
+    //如果是域管理员，展示待分配的线索数量
+    if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+        status = SELECT_TYPE.WILL_DISTRIBUTE;
+    }else{
+        //销售展示待跟进的线索数量
+        status = SELECT_TYPE.WILL_TRACE;
+    }
+    var data = {
+        clueCustomerTypeFilter: JSON.stringify({status: status}),
+        rangParams: JSON.stringify([{//时间范围参数
+            from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
+            to: moment().valueOf(),
+            type: 'time',
+            name: 'source_time'
+        }]),
+    };
+    return data;
+};
+//获取不同时间范围的开始和结束时间
+exports.getStartEndTimeOfDiffRange = function(timeRange,disableDateAfterToday) {
+    var timeObj = {};
+    switch (timeRange) {
+        case 'day':
+            timeObj = DateSelectorUtils.getTodayTime();
+            break;
+        case 'week':
+            timeObj = DateSelectorUtils.getThisWeekTime(disableDateAfterToday);
+            break;
+        case 'month':
+            timeObj = DateSelectorUtils.getThisMonthTime(disableDateAfterToday);
+            break;
+        case 'quarter':
+            timeObj = DateSelectorUtils.getThisQuarterTime(disableDateAfterToday);
+            break;
+        case 'year':
+            timeObj = DateSelectorUtils.getThisYearTime(disableDateAfterToday);
+            break;
+        default:
+            timeObj = DateSelectorUtils.getTodayTime();
+            break;
+    }
+    return timeObj;
 };

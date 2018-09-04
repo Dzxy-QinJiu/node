@@ -6,7 +6,8 @@
 var FilterAction = require('../action/filter-action');
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
 var userData = require('PUB_DIR/sources/user-data');
-import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS} from '../utils/clue-customer-utils';
+import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime} from '../utils/clue-customer-utils';
+import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueFilterStore() {
     this.setInitialData();
     //绑定action方法
@@ -25,6 +26,11 @@ ClueFilterStore.prototype.setInitialData = function() {
             item.selected = true;
         }
     });
+    this.dateRange = 'week';
+    //默认展示本周的时间
+    this.timeType = 'week';
+    // true:本周截止到今天为止
+    var timeObj = getStartEndTimeOfDiffRange(this.timeType, true);
     this.rangParams = [{//时间范围参数
         from: datePickerUtils.getMilliseconds(timeObj.start_time),
         to: datePickerUtils.getMilliseconds(timeObj.end_time, true),
@@ -49,6 +55,19 @@ ClueFilterStore.prototype.setCondition = function(list) {
 ClueFilterStore.prototype.setTimeRange = function(timeRange) {
     this.rangParams[0].from = timeRange.start_time;
     this.rangParams[0].to = timeRange.end_time;
+};
+//设置时间的类型
+ClueFilterStore.prototype.setTimeType = function(timeType) {
+    this.timeType = timeType;
+    if (timeType === 'all'){
+        this.setTimeRange({start_time: clueStartTime, end_time: moment().valueOf()});
+    }else{
+        var timeObj = getStartEndTimeOfDiffRange(this.timeType, true);
+        var start_time = datePickerUtils.getMilliseconds(timeObj.start_time);
+        var end_time = datePickerUtils.getMilliseconds(timeObj.end_time, true);
+        this.setTimeRange({start_time: start_time, end_time: end_time});
+    }
+
 };
 //设置筛选线索的类型
 ClueFilterStore.prototype.setFilterType = function(updateType) {
