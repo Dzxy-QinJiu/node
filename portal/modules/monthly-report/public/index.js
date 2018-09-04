@@ -350,6 +350,7 @@ class MonthlyReport extends React.Component {
                 <MonthPicker
                     defaultValue={moment()}
                     onChange={this.onDateChange}
+                    allowClear={false}
                     disabledDate={current => current && current > moment()}
                 />
             </div>
