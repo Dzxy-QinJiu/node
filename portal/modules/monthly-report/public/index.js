@@ -227,6 +227,10 @@ class MonthlyReport extends React.Component {
                 height: 'auto',
                 layout: {sm: 24},
                 url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
+                conditions: [{
+                    name: 'return_type',
+                    value: 'user'
+                }],
                 dataField: 'list',
                 processData: data => {
                     data = _.orderBy(data, 'assessment_index', 'desc');
@@ -250,6 +254,9 @@ class MonthlyReport extends React.Component {
                 layout: {sm: 24},
                 url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
                 conditions: [{
+                    name: 'return_type',
+                    value: 'user'
+                }, {
                     name: 'deviceType',
                     value: 'app'
                 }],
