@@ -578,8 +578,6 @@ class SalesHomePage extends React.Component {
                 currShowSalesman={this.state.currShowSalesman}
                 originSalesTeamTree={this.state.originSalesTeamTree}
                 getSaleIdByName={this.getSaleIdByName}
-                getChartLayoutParams={this.getChartLayoutParams}
-                updateScrollBar={this.state.updateScrollBar}
                 emitterConfigList={this.getEmitters()}
                 conditions={this.getConditions()}
                 appList={this.state.appList} 

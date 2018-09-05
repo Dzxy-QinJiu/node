@@ -2,9 +2,7 @@
  * 用户分析
  * Created by wangliping on 2016/11/23.
  */
-var React = require('react');
 import { AntcAnalysis } from 'antc';
-var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateUserAnalysisAction = require('../../../oplate_user_analysis/public/action/oplate-user-analysis.action');
 var OplateUserAnalysisStore = require('../../../oplate_user_analysis/public/store/oplate-user-analysis.store');
 var emitter = require('../../../oplate_user_analysis/public/utils/emitter');
@@ -17,14 +15,26 @@ let chartLegend = [{name: Intl.get('common.official', '签约'), key: 'formal'},
     {name: Intl.get('user.type.train', '培训'), key: 'training'},
     {name: Intl.get('user.type.employee', '员工'), key: 'internal'},
     {name: Intl.get('user.unknown', '未知'), key: 'unknown'}];
-const CHART_HEIGHT = 214;
-const LEGEND_RIGHT = 20;
 var constantUtil = require('../util/constant');
-//这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
-var delayConstant = constantUtil.DELAY.TIMERANG;
 
 //用户分析
 class UserAnlyis extends React.Component {
+    static propTypes = {
+        scrollbarEnabled: PropTypes.bool,
+        timeType: PropTypes.string,
+        startTime: PropTypes.number,
+        endTime: PropTypes.number,
+        originSalesTeamTree: PropTypes.object,
+        currShowSalesman: PropTypes.object,
+        currShowSalesTeam: PropTypes.object,
+        currShowType: PropTypes.string,
+        emitterConfigList: PropTypes.array,
+        conditions: PropTypes.array,
+        selectedAppId: PropTypes.string,
+        appList: PropTypes.array,
+
+    };
+
     getStateData = () => {
         let stateData = OplateUserAnalysisStore.getState();
         return {
@@ -49,17 +59,6 @@ class UserAnlyis extends React.Component {
             originSalesTeamTree: nextProps.originSalesTeamTree
         };
         this.setState(timeObj);
-        if (nextProps.updateScrollBar){
-            this.setState({
-                updateScrollBar: true
-            },() => {
-                setTimeout(() => {
-                    this.setState({
-                        updateScrollBar: false
-                    });
-                },delayConstant);
-            });
-        }
     }
 
     getDataType = () => {
@@ -99,32 +98,14 @@ class UserAnlyis extends React.Component {
         OplateUserAnalysisAction.getAddedIndustry(queryParams);
     };
 
-    //缩放延时，避免页面卡顿
-    resizeTimeout = null;
-
-    //窗口缩放时候的处理函数
-    windowResize = () => {
-        clearTimeout(this.resizeTimeout);
-        //窗口缩放的时候，调用setState，重新走render逻辑渲染
-        this.resizeTimeout = setTimeout(() => this.setState(this.getStateData()), 300);
-    };
-
     componentDidMount() {
         OplateUserAnalysisStore.listen(this.onStateChange);
-        //绑定window的resize，进行缩放处理
-        $(window).on('resize', this.windowResize);
         OplateUserAnalysisAction.changeCurrentTab('total');
         this.getChartData();
-        $('.statistic-data-analysis .thumb').hide();
     }
 
     componentWillUnmount() {
         OplateUserAnalysisStore.unlisten(this.onStateChange);
-        //$('body').css('overflow', 'visible');
-        //组件销毁时，清除缩放的延时
-        clearTimeout(this.resizeTimeout);
-        //解除window上绑定的resize函数
-        $(window).off('resize', this.windowResize);
     }
 
     getStartDateText = () => {
@@ -175,25 +156,11 @@ class UserAnlyis extends React.Component {
                     emitterConfigList={this.props.emitterConfigList}
                     conditions={this.props.conditions}
                     isGetDataOnMount={true}
-                    style={{marginLeft: -10, marginRight: -5}}
+                    isUseScrollBar={this.props.scrollbarEnabled}
                 />
             </div>
         );
     };
-
-    renderContent = () => {
-        if(this.state.updateScrollBar){
-            return this.renderChartContent();
-
-        }else{
-            return (
-                <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
-                    {this.renderChartContent()}
-                </GeminiScrollbar>
-            );
-        }
-    };
-
     // 获取一段时间开通账号登录情况的权限
     getAccountAuthType = () => {
         let type = 'self';
@@ -351,12 +318,10 @@ class UserAnlyis extends React.Component {
     state = this.getStateData();
 
     render() {
-        let layoutParams = this.props.getChartLayoutParams();
-        this.chartWidth = layoutParams.chartWidth;
         return (
             <div className="oplate_user_analysis">
-                <div ref="chart_list" style={{height: layoutParams.chartListHeight}}>
-                    {this.renderContent()}
+                <div ref="chart_list">
+                    {this.renderChartContent()}
                 </div>
             </div>
         );
