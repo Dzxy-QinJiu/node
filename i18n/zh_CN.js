@@ -2602,5 +2602,11 @@ var zh_CN = {
     'common.telephone.statistics': '电话量统计',
     'common.ketao.app.telephone.statistics': '客套APP电话量统计',
     'common.trial.qualified.customer.statistics': '试用合格客户数统计',
+    'common.memeber.all': '全部成员',
+    'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分钟占比30%',
+    'user.detail.analysis.tip.deep': '最近30天的在线分钟数/(30*24*60)。该分项在总分钟占比30%',
+    'user.detail.analysis.tip.fresh': '距离最近的登录时间。该分项在总分钟占比20%',
+    'user.detail.analysis.tip.historyActivity': '总活跃天数/开通的总天数。该分项在总分钟占比10%',
+    'user.detail.analysis.tip.historyFresh': '总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
 };
 export default zh_CN;
