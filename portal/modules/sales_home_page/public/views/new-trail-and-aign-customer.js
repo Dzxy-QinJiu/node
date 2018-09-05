@@ -82,8 +82,8 @@ class NewTrailCustomerTable extends React.Component {
             queryObj: {                
             },
             rangParams: [{
-                from: this.props.match.params.startTime,
-                to: this.props.match.params.endTime,
+                from: this.props.params.startTime,
+                to: this.props.params.endTime,
                 type: 'time',
                 name: 'start_time'
             }],
@@ -92,11 +92,11 @@ class NewTrailCustomerTable extends React.Component {
                 term_fields: ['customer_label'],                
             }
         };
-        if (this.props.match.params.teamId) {
-            params.condition.sales_team_id = this.props.match.params.teamId;
+        if (this.props.params.teamId) {
+            params.condition.sales_team_id = this.props.params.teamId;
         }
-        if (this.props.match.params.memberId) {
-            params.queryObj.user_id = this.props.match.params.memberId;
+        if (this.props.params.memberId) {
+            params.queryObj.user_id = this.props.params.memberId;
         }
         return (
             <div

@@ -30,7 +30,7 @@ class AppUserCustomerSwitch extends React.Component {
     };
 
     getCustomerId = () => {
-        return this.props.match.params.customerId;
+        return this.props.params.customerId;
     };
 
     changeTableHeight = () => {
@@ -327,7 +327,7 @@ class AppUserCustomerSwitch extends React.Component {
                     <ApplyUser
                         appList={JSON.parse(storageUtil.local.get('oplateCrmAppList'))}
                         users={this.state.selectedCustomerUserRows}
-                        customerId={this.props.match.params.customerId}
+                        customerId={this.props.params.customerId}
                         cancelApply={this.hideRightPanel}
                         emailData={emailData}
                     />
