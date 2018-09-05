@@ -43,7 +43,7 @@ const restApis = {
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
-    getClueFulltext: '/rest/customer/v2/clue/query/fulltext/:type/:page_size/:sort_field/:order',
+    getClueFulltext: '/rest/customer/v2/clue/query/range/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: '/rest/customer/v2/customerdynamic/clue/:clue_id/:page_size',
     //根据线索的id查询线索的详情
@@ -236,7 +236,8 @@ exports.getClueFulltext = function(req, res) {
     }
     var rangeParams = _.isString(reqBody.rangeParams) ? JSON.parse(reqBody.rangeParams) : reqBody.rangeParams;
     var typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
-    var url = restApis.getClueFulltext.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':sort_field',req.params.sort_field).replace(':order',req.params.order);
+
+    var url = restApis.getClueFulltext.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':order',req.params.order);
     if (rangeParams[0].from){
         url += `?start_time=${rangeParams[0].from}`;
     }
@@ -254,25 +255,44 @@ exports.getClueFulltext = function(req, res) {
         url += `&id=${reqBody.lastClueId}`;
     }
     var bodyObj = {
-        status: typeFilter.status
+        query: {status: typeFilter.status}
     };
     if (reqBody.userId){
-        bodyObj.userId = reqBody.userId;
+        bodyObj.query.userId = reqBody.userId;
     }
     if (reqBody.id){
-        bodyObj.id = reqBody.id;
+        bodyObj.query.id = reqBody.id;
     }
     if (reqBody.clue_source){
-        bodyObj.clue_source = reqBody.clue_source;
+        bodyObj.query.clue_source = reqBody.clue_source;
     }
     if (reqBody.access_channel){
-        bodyObj.access_channel = reqBody.access_channel;
+        bodyObj.query.access_channel = reqBody.access_channel;
     }
     if (reqBody.clue_classify){
-        bodyObj.clue_classify = reqBody.clue_classify;
+        bodyObj.query.clue_classify = reqBody.clue_classify;
     }
     if (reqBody.availability){
-        bodyObj.availability = reqBody.availability;
+        bodyObj.query.availability = reqBody.availability;
+    }
+    if (reqBody.province){
+        bodyObj.query.province = reqBody.province;
+    }
+    var exist_fields = reqBody.exist_fields ? JSON.parse(reqBody.exist_fields) : [];
+    var unexist_fields = reqBody.unexist_fields ? JSON.parse(reqBody.unexist_fields) : [];
+    if (_.isArray(exist_fields) && exist_fields.length){
+        bodyObj.exist_fields = exist_fields;
+        //如果是查询重复线索，要按repeat_id排序
+        if (_.indexOf(exist_fields,'repeat_id') > -1){
+            url = url.replace(':sort_field', 'repeat_id');
+        }else {
+            url = url.replace(':sort_field',req.params.sort_field);
+        }
+    }else {
+        url = url.replace(':sort_field',req.params.sort_field);
+    }
+    if (_.isArray(unexist_fields) && unexist_fields.length){
+        bodyObj.unexist_fields = unexist_fields;
     }
     return restUtil.authRest.post({
         url: url,

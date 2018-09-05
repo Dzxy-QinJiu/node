@@ -301,6 +301,8 @@ class ClueCustomer extends React.Component {
         var rangParams = _.get(data, 'rangParams') || JSON.stringify(clueFilterStore.getState().rangParams);
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        var existFilelds = filterStore.getState().exist_fields;
+        var unExistFileds = filterStore.getState().unexist_fields;
         //跟据类型筛选
         const queryObj = {
             lastClueId: this.state.lastCustomerId,
@@ -332,6 +334,18 @@ class ClueCustomer extends React.Component {
         var isFilterInavalibilityClue = filterStoreData.filterClueAvailability;
         if (isFilterInavalibilityClue){
             queryObj.availability = isFilterInavalibilityClue;
+        }
+        //选中的线索地域
+        var filterClueProvince = filterStoreData.filterClueProvince;
+        if (_.isArray(filterClueProvince) && filterClueProvince.length){
+            queryObj.province = filterClueProvince.join(',');
+        }
+        if(_.isArray(existFilelds) && existFilelds.length){
+            queryObj.exist_fields = JSON.stringify(existFilelds);
+        }
+
+        if(_.isArray(unExistFileds) && unExistFileds.length){
+            queryObj.unexist_fields = JSON.stringify(unExistFileds);
         }
         //取全部线索列表
         clueCustomerAction.getClueFulltext(queryObj);
@@ -638,7 +652,7 @@ class ClueCustomer extends React.Component {
     //是否有筛选过滤条件
     hasNoFilterCondition = () => {
         var filterStoreData = clueFilterStore.getState();
-        if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangParams[0].from') === clueStartTime && this.state.keyword === ''){
+        if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangParams[0].from') === clueStartTime && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields) && _.isEmpty(filterStoreData.unexist_fields) && _.isEmpty(filterStoreData.filterClueProvince)){
             return true;
         }else{
             return false;
@@ -779,7 +793,12 @@ class ClueCustomer extends React.Component {
                     <TopNav>
                         <div className="date-picker-wrap">
                             <div className="search-container">
-                                <Button className='filter-btn-container btn-item' type={this.state.showFilterList ? 'primary' : ''} onClick={this.toggleList}>{Intl.get('common.filter', '筛选')}</Button>
+                                <div className="search-input-wrapper">
+                                    <FilterInput
+                                        ref="filterinput"
+                                        toggleList={this.toggleList.bind(this)}
+                                    />
+                                </div>
                                 <SearchInput
                                     searchEvent={this.searchFullTextEvent}
                                     searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}

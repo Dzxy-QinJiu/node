@@ -45,6 +45,12 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterClueClassify = [];
     //筛选线索是否有效
     this.filterClueAvailability = '';
+    //筛选线索的地域
+    this.filterClueProvince = [];
+    //筛选存在的字段
+    this.exist_fields = [];
+    //筛选不存在的字段
+    this.unexist_fields = [];
 };
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {
@@ -107,4 +113,31 @@ ClueFilterStore.prototype.setFilterClueClassify = function(updateClassify) {
 ClueFilterStore.prototype.setFilterClueAvailbility = function() {
     this.filterClueAvailability = AVALIBILITYSTATUS.INAVALIBILITY;
 };
+ClueFilterStore.prototype.setFilterClueProvince = function(updateProvince) {
+    var selectedProvince = [];
+    _.forEach(updateProvince, (item) => {
+        if (item.value === ''){
+            this.unexist_fields.push('province');
+        }else{
+            selectedProvince.push(item.value);
+        }
+    });
+    this.filterClueProvince = selectedProvince;
+};
+ClueFilterStore.prototype.setExistedFiled = function(existedItem) {
+    if (existedItem){
+        this.exist_fields = [existedItem];
+    }else{
+        this.exist_fields = [];
+    }
+};
+ClueFilterStore.prototype.setUnexistedFiled = function(unexistedItem) {
+    if (unexistedItem){
+        this.unexist_fields = [unexistedItem];
+    }else{
+        this.unexist_fields = [];
+    }
+};
+
+
 module.exports = alt.createStore(ClueFilterStore, 'ClueFilterStore');

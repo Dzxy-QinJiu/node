@@ -15,19 +15,28 @@
     }
     .search-container{
       float: left;
-      .filter-btn-container{
-        font-size: 16px;
-        margin-right: 12px;
-        color: @FILTER-BUTTON;
-        height: 32px;
-        &:hover, &:active{
-          color: @BORDER-BLUE;
-          border-color:@BORDER-BLUE;
+      .search-input-wrapper{
+        float: left;
+        .search-wrapper.collapsed{
+          top: -4px;
+        }
+        .search-wrapper{
+          top:-1px;
+          margin-right: 10px;
+          .filter-contianer .show-zone ul.collapse {
+            padding: 2px 0;
+            margin-top: 0px;
+            margin-bottom: -2px;
+            &:hover {
+              margin: 0;
+              padding: 1px 0 2px 0;
+            }
+          }
         }
       }
       .search-input-container{
         width: auto;
-        display: inline-block;
+        float: left;
         .search-input {
           font-size: @SEARCH-INPUT-PLACEHOLDER
         }
@@ -114,7 +123,7 @@
        }
       }
       .time-range-wrap{
-        margin-top:10px;
+        margin:10px 0;
         padding-left: 10px;
         .consult-time{
           font-size: 12px;

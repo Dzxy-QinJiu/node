@@ -11,6 +11,17 @@ var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import DatePicker from 'CMP_DIR/datepicker';
 import {clueStartTime } from '../../utils/clue-customer-utils';
+var ClueAnalysisStore = require('../../store/clue-analysis-store');
+var ClueAnalysisAction = require('../../action/clue-analysis-action');
+const COMMON_OTHER_ITEM = 'otherSelectedItem';
+const otherFilterArray = [{
+    name: Intl.get('clue.repeat.clue.list', '重复线索'),
+    value: 'repeat_id'
+}, {
+    name: Intl.get('clue.has.no.relative.customer', '没有关联客户的线索'),
+    value: 'customer_id'
+}
+];
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -27,6 +38,7 @@ class ClueFilterPanel extends React.Component {
     };
     componentDidMount = () => {
         clueFilterStore.listen(this.onStoreChange);
+        this.getClueProvinceList();
     };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
@@ -38,9 +50,27 @@ class ClueFilterPanel extends React.Component {
     componentWillUnmount = () => {
         clueFilterStore.unlisten(this.onStoreChange);
     };
+    //获取地域统计数据
+    getClueProvinceList = () => {
+        const staticsPageSize = ClueAnalysisStore.getState().staticsPageSize;
+        const staticsNum = ClueAnalysisStore.getState().staticsNum;
+        const rangeParams = ClueAnalysisStore.getState().rangeParams;
+        rangeParams[0].from = clueStartTime;
+        rangeParams[0].to = moment().valueOf();
+        let pathParams = {
+            field: 'province',
+            page_size: staticsPageSize,
+            num: staticsNum,
+        };
+        ClueAnalysisAction.getClueStatics(pathParams, rangeParams);
+    };
 
     handleFilterChange = (data) => {
         clueCustomerAction.setClueInitialData();
+        if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
+            FilterAction.setExistedFiled();
+            FilterAction.setUnexistedFiled();
+        }
         data.forEach(item => {
             if (item.groupId) {
                 //线索状态
@@ -60,6 +90,26 @@ class ClueFilterPanel extends React.Component {
                 }else if (item.groupId === 'clue_classify'){
                     //线索分类
                     FilterAction.setFilterClueClassify( _.get(item,'data'));
+                }else if (item.groupId === 'clue_province'){
+                    //线索地域
+                    var provinceList = _.get(item,'data');
+                    _.forEach(provinceList,(item) => {
+                        if (item.value === Intl.get('common.unknown', '未知')){
+                            item.value = '';
+                        }
+                    });
+                    FilterAction.setFilterClueProvince(provinceList);
+                }else if (item.groupId === COMMON_OTHER_ITEM){
+                    //如果是筛选没有关联客户的线索
+                    //如果是筛选重复线索
+                    if (item.value === 'repeat_id'){
+                        FilterAction.setExistedFiled('repeat_id');
+                        FilterAction.setUnexistedFiled();
+                    }else if (item.value === 'customer_id'){
+                        FilterAction.setExistedFiled();
+                        FilterAction.setUnexistedFiled('customer_id');
+                    }
+
                 }
             }
         });
@@ -107,6 +157,20 @@ class ClueFilterPanel extends React.Component {
             </div>
         );
     };
+    handleClueProvinceList = () => {
+        //线索的省份
+        var clueProvince = _.get(ClueAnalysisStore.getState(), 'clueProvinceList.list');
+        var provinceList = [];
+        _.forEach(clueProvince, (item) => {
+            if (_.keys(item) && _.keys(item)[0] === ''){
+                provinceList.push(Intl.get('common.unknown', '未知'));
+            }else{
+                provinceList.push(_.keys(item));
+            }
+
+        });
+        return _.flattenDeep(provinceList);
+    };
     render(){
         //线索来源
         const clueSourceArray = this.state.clueSourceArray;
@@ -122,6 +186,29 @@ class ClueFilterPanel extends React.Component {
         filterClueStatus.push({
             name: Intl.get('sales.clue.is.enable', '无效'),
             value: 'avaibility',
+        });
+        const clueProvinceList = this.handleClueProvinceList();
+        const commonData = otherFilterArray.map(x => {
+            x.readOnly = true;
+            x.groupId = COMMON_OTHER_ITEM;
+            x.groupName = Intl.get('crm.186', '其他');
+            x.data = [{
+                name: x.name,
+                value: x.value,
+                groupId: COMMON_OTHER_ITEM,
+                groupName: Intl.get('crm.186', '其他'),
+                data: [{
+                    name: x.name,
+                    value: x.value,
+                    groupId: COMMON_OTHER_ITEM,
+                    groupName: Intl.get('crm.186', '其他'),
+                }]
+            }];
+            x.plainFilterList = [{
+                name: x.name,
+                value: x.value
+            }];
+            return x;
         });
         const advancedData = [
             {
@@ -150,15 +237,22 @@ class ClueFilterPanel extends React.Component {
                     name: x,
                     value: x
                 }))
+            },{
+                groupName: Intl.get('crm.96', '地域'),
+                groupId: 'clue_province',
+                data: clueProvinceList.map(x => ({
+                    name: x,
+                    value: x
+                }))
             }];
 
         return (
             <div data-tracename="筛选">
                 <div className="clue-filter-panel">
                     <FilterList
+                        commonData={commonData}
                         advancedData={advancedData}
                         onFilterChange={this.handleFilterChange.bind(this)}
-                        hideAdvancedTitle={true}
                         renderOtherDataContent={this.renderTimeRangeSelect}
                         style={this.props.style}
                     />

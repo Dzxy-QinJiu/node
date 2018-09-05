@@ -89,6 +89,12 @@ ClueAnalysisStore.prototype.setInitState = function() {
         errMsg: '',
         list: []
     };
+    //线索省份列表的统计
+    this.clueProvinceList = {
+        loading: false,
+        errMsg: '',
+        list: []
+    };
     //线索分类统计
     this.rangeParams = [{
         from: this.start_time,
@@ -144,6 +150,8 @@ ClueAnalysisStore.prototype.getClueStatics = function(result) {
         case 'status':
             this.clueStatusList = dataObj;
             break;
+        case 'province':
+            this.clueProvinceList = dataObj;
     }
 };
 ClueAnalysisStore.prototype.getClueTrendStatics = function(result) {
