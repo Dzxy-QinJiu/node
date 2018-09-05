@@ -1,4 +1,5 @@
 var React = require('react');
+const PropTypes = require('prop-types');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -35,6 +36,16 @@ var ContactForm = createReactClass({
             contact: ContactUtil.newViewContactObject(),
             type: 'add'
         };
+    },
+    propTypes: {
+        contact: PropTypes.object,
+        isMerge: PropTypes.bool,
+        type: PropTypes.string,
+        customer_id: PropTypes.string,
+        customer_name: PropTypes.string,
+        contactListLength: PropTypes.number,
+        updateMergeCustomerContact: PropTypes.func,
+        updateCustomerDefContact: PropTypes.func
     },
 
     //联系方式的数组展开放到对应的formData中
@@ -203,7 +214,7 @@ var ContactForm = createReactClass({
         var phoneArray = [], qqArray = [], weChatArray = [], emailArray = [];
         for (var key in formData) {
             let contactVal = $.trim(formData[key]);
-            if(contactVal){
+            if (contactVal) {
                 if (key.indexOf('phone') !== -1) {
                     phoneArray.push(contactVal);
                     delete formData[key];
@@ -302,8 +313,7 @@ var ContactForm = createReactClass({
 
     //提交完数据后
     afterSubmit: function(result) {
-        this.state.errorMsg = result.errorMsg || '';
-        this.state.isLoading = false;
+        this.setState({errorMsg: result.errorMsg || '', isLoading: false});
         if (result.contact && result.contact.def_contancts === 'true') {
             //只有在客户列表中才有更新列表中联系人的方法
             if (_.isFunction(this.props.updateCustomerDefContact)) {
@@ -311,7 +321,6 @@ var ContactForm = createReactClass({
                 this.props.updateCustomerDefContact(result.contact);
             }
         }
-        this.setState(this.state);
     },
 
     cancel: function() {
@@ -404,13 +413,11 @@ var ContactForm = createReactClass({
     //添加、删除联系方式的按钮
     renderContactWayBtns(index, size, type){
         return (<div className="contact-way-buttons">
-            {index === 0 && index === size - 1 ? null : <div className="circle-empty-button crm-contact-contactway-minus"
-                onClick={this.removeContactWay(type, index)}>
-                <Icon type="minus"/>
-            </div>}
-            {index === size - 1 ? ( <div className="circle-empty-button" onClick={this.addContactWay(type)}>
-                <Icon type="plus"/>
-            </div>) : null}
+            {index === 0 && index === size - 1 ? null :
+                <Icon type="minus-circle-o" theme="outlined" onClick={this.removeContactWay(type, index)}/>
+            }
+            {index === size - 1 ? <Icon type="plus-circle-o" theme="outlined" onClick={this.addContactWay(type)}/>
+                : null}
         </div>);
     },
 
