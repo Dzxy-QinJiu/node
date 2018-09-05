@@ -14,6 +14,14 @@ module.exports = {
             passport: {
                 needLogin: true
             }
+        }, {
+        //导出线索
+            'method': 'post',
+            'path': '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type',
+            'handler': 'exportData',
+            'passport': {
+                'needLogin': true
+            }
         },
         {
             method: 'get',

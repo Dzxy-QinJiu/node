@@ -65,7 +65,7 @@ class AntcDropdown extends React.Component {
                             <span className="un-select-data-tip">
                                 * {this.props.unSelectDataTip}
                             </span>) : null}
-                        {this.props.isSaving ? <Icon type="loading"/> : null}
+                        {this.props.isSaving && this.props.btnAtTop ? <Icon type="loading"/> : null}
                         {this.props.btnAtTop ?
                             <span>
                                 <span title={this.props.okTitle} className="inline-block iconfont icon-choose"

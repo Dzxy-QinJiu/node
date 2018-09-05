@@ -37,7 +37,6 @@ ClueFilterStore.prototype.setInitialData = function() {
         type: 'time',
         name: 'source_time'
     }];
-    // this.clueCustomerTypeFilter = {status: defaultValue};//线索客户的类型  0 待分配 1 已分配 2 已跟进
     this.filterClueStatus = filterClueStatus;
     this.filterClueSource = [];//筛选的线索来源
     //筛选的线索接入渠道

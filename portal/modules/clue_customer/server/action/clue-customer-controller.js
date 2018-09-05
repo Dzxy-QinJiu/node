@@ -6,6 +6,28 @@
 'use strict';
 var clueCustomerService = require('../service/clue-customer-service');
 var path = require('path');
+import Intl from '../../../../public/intl/intl';
+const _ = require('lodash');
+const moment = require('moment');
+const DATE_FORMAT = oplateConsts.DATE_FORMAT;
+const CLUE_DIFF_TYPE = [
+    {
+        name: Intl.get('common.all', '全部'),
+        value: '',
+    },
+    {
+        name: Intl.get('clue.customer.will.distribution', '待分配'),
+        value: '0',
+    },
+    {
+        name: Intl.get('sales.home.will.trace', '待跟进'),
+        value: '1',
+    },
+    {
+        name: Intl.get('clue.customer.has.follow', '已跟进'),
+        value: '2',
+    }];
+const contactWays = ['phone','qq','email','weChat'];
 //获取线索客户列表
 exports.getClueCustomerList = function(req, res) {
     clueCustomerService.getClueCustomerList(req, res)
@@ -188,4 +210,119 @@ exports.getClueDetailById = function(req, res) {
         }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });
+};
+
+const CLUE_LIST_COLUMNS = [
+    {
+        title: Intl.get('clue.customer.clue.name', '线索名称'),
+        dataIndex: 'name',
+    }, {
+        title: Intl.get('clue.filter.clue.status', '线索状态'),
+        dataIndex: 'status'
+    },
+    {
+        title: Intl.get('clue.analysis.consult.time', '咨询时间'),
+        dataIndex: 'source_time',
+    },
+    {
+        title: Intl.get('crm.sales.clue.source', '线索来源'),
+        dataIndex: 'clue_source',
+    },{
+        title: Intl.get('clue.customer.source.ip', '来源IP'),
+        dataIndex: 'source_ip',
+    },{
+        title: Intl.get('crm.96', '地域'),
+        dataIndex: 'province',
+    },{
+        title: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
+        dataIndex: 'access_channel',
+    },{
+        title: Intl.get('clue.customer.classify', '线索分类'),
+        dataIndex: 'clue_classify'
+    },{
+        title: Intl.get('crm.sales.clue.descr', '线索描述'),
+        dataIndex: 'source',
+    },{
+        title: Intl.get('crm.5', '联系方式'),
+        dataIndex: 'contacts',
+    },{
+        title: Intl.get('clue.customer.associate.customer', '关联客户'),
+        dataIndex: 'customer_name'
+    },{
+        title: Intl.get('clue.handle.clue.person', '当前跟进人'),
+        dataIndex: 'user_name'
+    },{
+        title: Intl.get('clue.list.clue.availibility','无效线索'),
+        dataIndex: 'availability'
+    }
+];
+
+//导出数据
+exports.exportData = function(req, res) {
+    clueCustomerService.getClueFulltext(req, res).on('success', result => {
+        doExport(result);
+    }).on('error', codeMessage => {
+        res.status(500).json(codeMessage);
+    });
+    //执行导出
+    function doExport(data) {
+        const columnTitles = _.map(CLUE_LIST_COLUMNS, 'title');
+        const list = _.isArray(data.result) ? data.result : [];
+        const rows = list.map(item => {
+            const values = CLUE_LIST_COLUMNS.map(column => {
+                let value = item[column.dataIndex];
+                if (!value && isNaN(value)) value = '';
+                if (column.dataIndex === 'province') {
+                    if (item['city']) {
+                        value += item['city'];
+                    }
+                }
+                if (column.dataIndex === 'status'){
+                    var targetObj = _.find(CLUE_DIFF_TYPE,(item) => {
+                        return value === item.value;
+                    });
+                    value = _.get(targetObj,'name') || value;
+                }
+
+                if (column.dataIndex === 'source_time'){
+                    value = moment(value).format(DATE_FORMAT);
+                }
+                if (column.dataIndex === 'contacts' && _.isArray(value)){
+                    var contactDes = '';
+                    _.forEach(value, (contactItem) => {
+                        contactDes += _.get(contactItem,'name');
+                        _.forEach(contactWays, (way) => {
+                            if (_.isArray(contactItem[way])){
+                                _.forEach(contactItem[way], (wayItem) => {
+                                    contactDes += wayItem;
+                                });
+                            }
+                        });
+                    });
+                    value = contactDes;
+                }
+                if (column.dataIndex === 'customer_traces' && _.isArray(value)){
+                    value = _.get(value,'[0].remark');
+                }
+                if (column.dataIndex === 'user_name' && item.sales_team){
+                    value += `—${item.sales_team}`;
+                }
+                if (column.dataIndex === 'availability'){
+                    value = value === '1' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
+                }
+                return value;
+            });
+            return values.join();
+        });
+        const head = columnTitles.join();
+        let csvArr = [];
+        csvArr.push(head);
+        csvArr = csvArr.concat(rows);
+        let csv = csvArr.join('\n');
+        //防止中文乱码
+        csv = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(csv)]);
+        res.setHeader('Content-disposition', 'attachement; filename=xiansuo.csv');
+        res.setHeader('Content-Type', 'application/csv');
+        res.send(csv);
+    }
 };

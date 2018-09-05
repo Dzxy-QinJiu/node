@@ -2581,5 +2581,7 @@ var en_US = {
     'common.telephone.statistics': 'Telephone statistics',//电话量统计
     'common.ketao.app.telephone.statistics': 'Ketao app telephone statistics',//客套APP电话量统计
     'common.trial.qualified.customer.statistics': 'Trial qualified customer statistics',//试用合格客户数统计
+    'clue.export.clue.list': 'Export clue',//导出线索
+    'clue.list.clue.availibility': 'Invalid clue'//无效线索
 };
 export default en_US;

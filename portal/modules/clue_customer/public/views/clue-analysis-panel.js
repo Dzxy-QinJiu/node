@@ -17,7 +17,7 @@ import {AntcAnalysis} from 'antc';
 import PropTypes from 'prop-types';
 import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
 const PIE_CENTER_POSITION = ['50%', '60%'];
-const CHART_HEIGHT = '400';
+const CHART_HEIGHT = '400px';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 const TABS = {
     'OVERVIEW': '1',

@@ -8,6 +8,7 @@
 var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
+const _ = require('lodash');
 const restApis = {
     //获取线索来源
     getClueSource: '/rest/customer/v2/clue/clue_source/100/1',
@@ -230,9 +231,11 @@ exports.getClueTrendStatics = function(req, res) {
 //线索全文搜索
 exports.getClueFulltext = function(req, res) {
     var reqBody = req.body;
-    var rangeParams = JSON.parse(reqBody.rangeParams);
-    var typeFilter = JSON.parse(reqBody.typeFilter);
-
+    if (_.isString(req.body.reqData)){
+        reqBody = JSON.parse(req.body.reqData);
+    }
+    var rangeParams = _.isString(reqBody.rangeParams) ? JSON.parse(reqBody.rangeParams) : reqBody.rangeParams;
+    var typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
     var url = restApis.getClueFulltext.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':sort_field',req.params.sort_field).replace(':order',req.params.order);
     if (rangeParams[0].from){
         url += `?start_time=${rangeParams[0].from}`;
