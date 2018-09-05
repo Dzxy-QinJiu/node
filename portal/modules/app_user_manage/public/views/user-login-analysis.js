@@ -13,13 +13,13 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
-import { Progress } from 'antd';
+import { Progress, Tooltip, Icon } from 'antd';
 
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
         userId: '1'
     };
-        
+
     onStateChange = () => {
         this.setState(this.getStateData());
     };
@@ -178,24 +178,44 @@ class UserLoginAnalysis extends React.Component {
                     </div>
                     <ul className="score-container">
                         <li>
-                            {Intl.get('user.login.latest.activity.score', '最新活跃度')}:
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}</span>
+                            <span>{Intl.get('user.login.latest.activity.score', '最新活跃度')}:</span>
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.activity', '最近30天的活跃天数/30。该分项在总分钟占比30%',)}>
+                                    <Icon type="question-circle-o" />
+                                </Tooltip>
+                            </span>
                         </li>
                         <li>
-                            {Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}</span>
+                            <span>{Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:</span>
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.deep', '最近30天的在线分钟数/(30*24*60)。该分项在总分钟占比30%',)}>
+                                    <Icon type="question-circle-o" />
+                                </Tooltip>
+                            </span>
                         </li>
                         <li>
-                            {Intl.get('user.login.freshness.score', '新鲜度')}:
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}</span>
+                            <span>{Intl.get('user.login.freshness.score', '新鲜度')}:</span>
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.fresh', '距离最近的登录时间。该分项在总分钟占比20%',)}>
+                                    <Icon type="question-circle-o" />
+                                </Tooltip>
+                            </span>
                         </li>
                         <li>
-                            {Intl.get('user.login.history.activity.score', '历史活跃度')}:
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}</span>
+                            <span>{Intl.get('user.login.history.activity.score', '历史活跃度')}:</span>
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyActivity', '总活跃天数/开通的总天数。该分项在总分钟占比10%',)}>
+                                    <Icon type="question-circle-o" />
+                                </Tooltip>
+                            </span>
                         </li>
                         <li>
-                            {Intl.get('user.login.history.immersion.score', '历史沉浸度')}:
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}</span>
+                            <span>{Intl.get('user.login.history.immersion.score', '历史沉浸度')}:</span>
+                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyFresh', '总在线分钟数/开通总分钟数。该分项在总分钟占比10%',)}>
+                                    <Icon type="question-circle-o" />
+                                </Tooltip>
+                            </span>
                         </li>
                     </ul>
                 </div>
@@ -376,7 +396,7 @@ class UserLoginAnalysis extends React.Component {
 
     state = {
         selectValue: 'LoginFrequency',
-        selectValueMap: {},          
+        selectValueMap: {},
         showDetailMap: {},//是否展示app详情的map
         ...this.getStateData()
     };

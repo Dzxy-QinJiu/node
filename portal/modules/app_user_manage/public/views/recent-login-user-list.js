@@ -4,18 +4,18 @@ var React = require('react');
  * Created by wangliping on 2017/8/31.
  */
 require('../css/recent-login-user-list.less');
-import {Select, Table} from 'antd';
+import { Select, Table } from 'antd';
 import ShareObj from '../util/app-id-share-util';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import TopNav from 'CMP_DIR/top-nav';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
-import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
+import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import DatePicker from 'CMP_DIR/datepicker';
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
-import {RightPanel} from 'CMP_DIR/rightPanel';
-import {topNavEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {userTypeList, filterTypeList} from 'PUB_DIR/sources/utils/consts';
+import { RightPanel } from 'CMP_DIR/rightPanel';
+import { topNavEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { scrollBarEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { userTypeList, filterTypeList } from 'PUB_DIR/sources/utils/consts';
 import {
     getUserByFromUserList,
     getAppNameList,
@@ -26,11 +26,14 @@ import {
 import userAjax from '../ajax/app-user-ajax';
 import UserDetail from './user-detail';
 const Option = Select.Option;
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
-import {storageUtil} from 'ant-utils';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
+import { storageUtil } from 'ant-utils';
 import PropTypes from 'prop-types';
-import {traversingSelectTeamTree, getRequestTeamIds} from 'PUB_DIR/sources/utils/common-method-util';
+import { traversingSelectTeamTree, getRequestTeamIds } from 'PUB_DIR/sources/utils/common-method-util';
+import RecentUserStore from '../store/recent-user-store';
+const RecentUserAction = require("../action/recent-user-action");
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 //存储个人配置的key
 const WEBSITE_CONFIG = oplateConsts.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG;
 //个人配置中存储的近期登录用户列表选择的应用id
@@ -42,14 +45,16 @@ const LAYOUT_CONSTANTS = {
 };
 
 const PAGE_SIZE = 20;//一页获取20条数据
+const ALL_MEMBER_VALUE = "ALL_MEMBER";
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
         let timeRange = this.getTodayTimeRange();
-        var defaultTeam = {group_id: '', group_name: Intl.get('user.list.all.teamlist', '全部团队')};
+        var defaultTeam = { group_id: '', group_name: Intl.get('user.list.all.teamlist', '全部团队') };
         var teamLists = _.flatten([[defaultTeam], this.props.teamlists]);
         this.state = {
+            ...RecentUserStore.getState(),
             selectedAppId: this.getSelectedAppId(this.props),
             teamlists: teamLists,
             start_time: timeRange.start_time,
@@ -66,15 +71,24 @@ class RecentLoginUsers extends React.Component {
             curUserDetail: {},//当前要查看的用户详情
             isShownExceptionTab: false,//是否展示异常登录信息
             filter_type: '', // 是否过期，默认（全部）
-            team_ids: '' //默认选中的团队(全部)
+            team_ids: '', //默认选中的团队(全部)
+            selectedSalesId: [ALL_MEMBER_VALUE],
         };
     }
 
     componentDidMount() {
+        RecentUserStore.listen(this.onStoreChange);
+        RecentUserAction.getSaleMemberList(commonMethodUtil.getParamByPrivilege());
         this.getRecentLoginUsers();
         $(this.refs.recentLoginUsersTable).on('click', 'tr', this.onRowClick.bind(this));
     }
-
+    componentWillUnmount() {
+        RecentUserStore.unlisten(this.onStoreChange);
+    }
+    onStoreChange = () => {
+        var stateData = RecentUserStore.getState();
+        this.setState(stateData);
+    };
     onRowClick(event) {
         let target = event.target;
         if ($(target).closest('.ant-table-selection-column').length) {
@@ -125,7 +139,7 @@ class RecentLoginUsers extends React.Component {
         let oldAppId = this.state.selectedAppId;
         let newAppId = this.getSelectedAppId(nextProps);
         if (oldAppId !== newAppId) {
-            this.setState({selectedAppId: newAppId}, this.getRecentLoginUsers());
+            this.setState({ selectedAppId: newAppId }, this.getRecentLoginUsers());
         }
     }
 
@@ -145,7 +159,7 @@ class RecentLoginUsers extends React.Component {
             login_end_date: this.state.end_time,
             page_size: PAGE_SIZE
         };
-        if(this.state.lastUserId){
+        if (this.state.lastUserId) {
             paramObj.id = this.state.lastUserId;
         }
         if (this.state.user_type) {
@@ -162,6 +176,10 @@ class RecentLoginUsers extends React.Component {
             totalRequestTeams = _.union(totalRequestTeams, getRequestTeamIds(teamTotalArr));
             paramObj.team_ids = totalRequestTeams.join(',');
         }
+        //销售成员筛选
+        if (this.state.selectedSalesId && this.state.selectedSalesId !== ALL_MEMBER_VALUE) {
+            paramObj.sales_id = this.state.selectedSalesId;
+        }
         if (this.state.filter_type) {
             paramObj.outdate = this.state.filter_type;
             if (this.state.filter_type === '1') {
@@ -177,7 +195,7 @@ class RecentLoginUsers extends React.Component {
         let params = this.getParamsObj();
         if (!this.state.lastUserId) {
             // 获取第一页数据时，展示等待效果，下拉加载时，不展示
-            this.setState({isLoadingUserList: true});
+            this.setState({ isLoadingUserList: true });
         }
         userAjax.getRecentLoginUsers(params).then((result) => {
             this.handleRecentLoginUsers(result);
@@ -202,7 +220,7 @@ class RecentLoginUsers extends React.Component {
             } else {
                 userList = userList.concat(result.data);
             }
-            lastUserId = _.get(userList, `[${ userList.length - 1 }].user.user_id`, '');
+            lastUserId = _.get(userList, `[${userList.length - 1}].user.user_id`, '');
             total = result.total || 0;
         }
 
@@ -226,7 +244,7 @@ class RecentLoginUsers extends React.Component {
                 appList = [];
             }
         }
-        return appList.map(function(item) {
+        return appList.map(function (item) {
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
     }
@@ -261,7 +279,7 @@ class RecentLoginUsers extends React.Component {
                 width: null,
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function($1, rowData, idx) {
+                render: function ($1, rowData, idx) {
                     var user_name = rowData.user && rowData.user.user_name || '';
                     var user_id = rowData.user && rowData.user.user_id || '';
                     const isShown = _.find(rowData.apps, app => {
@@ -272,9 +290,9 @@ class RecentLoginUsers extends React.Component {
                         <div title={user_name}>
                             {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
                                 <i className="iconfont icon-warn-icon unnormal-login"
-                                    title={Intl.get('user.login.abnormal', '异常登录')}/> : null}
+                                    title={Intl.get('user.login.abnormal', '异常登录')} /> : null}
                             {user_name}
-                            <input type="hidden" className="hidden_user_id" value={user_id}/>
+                            <input type="hidden" className="hidden_user_id" value={user_id} />
                         </div>
                     );
                 }
@@ -286,7 +304,7 @@ class RecentLoginUsers extends React.Component {
                 width: null,
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function($1, rowData, idx) {
+                render: function ($1, rowData, idx) {
                     var nick_name = rowData.user && rowData.user.nick_name || '';
                     return (
                         <div title={nick_name}>
@@ -302,7 +320,7 @@ class RecentLoginUsers extends React.Component {
                 width: null,
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function($1, rowData, idx) {
+                render: function ($1, rowData, idx) {
                     var customer_name = rowData.customer && rowData.customer.customer_name || '';
                     return (
                         <div title={customer_name}>{customer_name}</div>
@@ -314,7 +332,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'apps',
                 key: 'appName',
                 width: null,
-                render: function(apps, rowData, idx) {
+                render: function (apps, rowData, idx) {
                     return getAppNameList(apps, rowData);
                 }
             },
@@ -323,7 +341,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'apps',
                 width: Oplate.hideUserManageItem ? '100px' : '75px',
                 key: 'status',
-                render: function(apps, rowData, idx) {
+                render: function (apps, rowData, idx) {
                     return getAppStatusList(apps, rowData);
                 }
             },
@@ -332,7 +350,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'apps',
                 width: '75px',
                 key: 'accountType',
-                render: function(apps, rowData, idx) {
+                render: function (apps, rowData, idx) {
                     return getAccountTypeList(apps, rowData);
                 }
             },
@@ -343,7 +361,7 @@ class RecentLoginUsers extends React.Component {
                 key: 'grant_create_date',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function($1, rowData, idx) {
+                render: function ($1, rowData, idx) {
                     return getTimeList('create_time', rowData);
                 }
             },
@@ -354,7 +372,7 @@ class RecentLoginUsers extends React.Component {
                 key: 'end_date',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function($1, rowData, idx) {
+                render: function ($1, rowData, idx) {
                     return getTimeList('end_time', rowData);
                 }
             },
@@ -365,7 +383,7 @@ class RecentLoginUsers extends React.Component {
                 key: 'member_name',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function(sales, rowData, idx) {
+                render: function (sales, rowData, idx) {
                     var sales_name = rowData.sales && rowData.sales.sales_name || '';
                     return (
                         <div title={sales_name}>{sales_name}</div>
@@ -378,7 +396,7 @@ class RecentLoginUsers extends React.Component {
                 width: '100px',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function(text, rowData, idx) {
+                render: function (text, rowData, idx) {
                     let loginCount = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
                         loginCount = rowData.apps[0].logins || 0;
@@ -394,7 +412,7 @@ class RecentLoginUsers extends React.Component {
                 width: '100px',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function(text, rowData, idx) {
+                render: function (text, rowData, idx) {
                     let loginDays = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
                         loginDays = rowData.apps[0].login_day_count || 0;
@@ -409,7 +427,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'user',
                 key: 'description',
                 width: null,
-                render: function(user, rowData, idx) {
+                render: function (user, rowData, idx) {
                     return (
                         <div title={user.description}>{user.description}</div>
                     );
@@ -426,25 +444,63 @@ class RecentLoginUsers extends React.Component {
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();
         }
-        this.setState({start_time: start_time, end_time: end_time, lastUserId: ''});
+        this.setState({ start_time: start_time, end_time: end_time, lastUserId: '' });
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     onUserTypeChange(type) {
-        this.setState({user_type: type, lastUserId: ''});
+        this.setState({ user_type: type, lastUserId: '' });
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     // 是否过期类型的选择
     onFilterTypeChange(type) {
-        this.setState({filter_type: type, lastUserId: ''});
+        this.setState({ filter_type: type, lastUserId: '' });
         setTimeout(() => this.getRecentLoginUsers());
     }
 
     // 修改所选中的团队
     onTeamChange(team_ids) {
-        this.setState({team_ids: team_ids, lastUserId: ''});
+        this.setState({ team_ids: team_ids, lastUserId: '' });
         setTimeout(() => this.getRecentLoginUsers());
+    }
+
+    onMemberChange = (value) => {
+        this.setState({
+            selectedSalesId: value,
+            lastUserId: ''
+        }, () => {
+            this.getRecentLoginUsers()
+        });
+    };
+    // 团队和成员筛选框
+    renderTeamMembersSelect = () => {
+        let memberList = this.state.memberList.data;
+        let memberOptions = memberList.map((item, index) => {
+            return <Option value={item.id} key={index}>{item.name}</Option>;
+        });
+        memberOptions.unshift(
+            <Option value={ALL_MEMBER_VALUE} key={ALL_MEMBER_VALUE}>
+                {Intl.get('common.memeber.all', '全部成员')}
+            </Option>
+        )
+        return (
+            <div className="recent-login-type-select">
+                <Select
+                    value={this.state.selectedSalesId}
+                    onChange={this.onMemberChange}
+                    showSearch={true}
+                    className="team-member-select-options btn-item"
+                    filterOption={(inputValue, option) => {
+                        return option.props.children.includes(inputValue);
+                    }}
+                >
+                    {
+                        memberOptions
+                    }
+                </Select>
+            </div>
+        );
     }
 
     render() {
@@ -506,7 +562,8 @@ class RecentLoginUsers extends React.Component {
                             }
                         </SelectFullWidth>
                     </div>
-                    <div className="inline-block recent-login-filter-type-select btn-item">
+                    {this.renderTeamMembersSelect()}
+                    <div className="inline-block btn-item select-init-width">
                         <SelectFullWidth
                             value={this.state.filter_type}
                             onChange={this.onFilterTypeChange.bind(this)}
@@ -520,7 +577,7 @@ class RecentLoginUsers extends React.Component {
                         </SelectFullWidth>
                     </div>
                     <RightPanelClose title={Intl.get('common.app.status.close', '关闭')}
-                        onClick={this.props.hideRecentLoginPanel}/>
+                        onClick={this.props.hideRecentLoginPanel} />
                 </TopNav>
                 <div className="recent-login-users-table-wrap splice-table">
                     <div className="user-list-thead custom-thead">
@@ -530,7 +587,7 @@ class RecentLoginUsers extends React.Component {
                             pagination={false}
                         />
                     </div>
-                    <div className="user-list-tbody custom-tbody" style={{height: divHeight}}
+                    <div className="user-list-tbody custom-tbody" style={{ height: divHeight }}
                         ref="recentLoginUsersTable">
                         <GeminiScrollBar
                             listenScrollBottom={this.state.listenScrollBottom}
@@ -542,7 +599,7 @@ class RecentLoginUsers extends React.Component {
                                 columns={columns}
                                 loading={this.state.isLoadingUserList}
                                 pagination={false}
-                                locale={{emptyText: this.state.getUserListErrorMsg || Intl.get('common.no.more.user', '没有更多用户了')}}
+                                locale={{ emptyText: this.state.getUserListErrorMsg || Intl.get('common.no.more.user', '没有更多用户了') }}
                             />
                         </GeminiScrollBar>
                     </div>
@@ -562,7 +619,7 @@ class RecentLoginUsers extends React.Component {
                     className="app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
                     showFlag={this.state.isShowUserDetail}
                 >
-                    {this.state.isShowUserDetail ? ( <UserDetail userId={this.state.userId}
+                    {this.state.isShowUserDetail ? (<UserDetail userId={this.state.userId}
                         appLists={this.state.curUserDetail.apps}
                         isShownExceptionTab={this.state.curUserDetail.isShownExceptionTab}
                         selectedAppId={this.state.selectedAppId}

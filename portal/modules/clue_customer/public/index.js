@@ -44,7 +44,6 @@ import {pathParamRegex} from 'PUB_DIR/sources/utils/consts';
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
-import {showUnhandledClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -88,7 +87,33 @@ class ClueCustomer extends React.Component {
 
         this.getUserPhoneNumber();
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
-        showUnhandledClueEmitter.on(showUnhandledClueEmitter.SHOW_UNHANDLED_CLUE, this.getUnhandledClue);
+    }
+    getUnhandledClue = () => {
+        var data = getUnhandledClueCountParams();
+        clueFilterAction.setTimeType('all');
+        clueFilterAction.setFilterType([{value: _.get(JSON.parse(data.clueCustomerTypeFilter),'status')}]);
+        setTimeout(() => {
+            this.getClueList(data);
+        });
+    };
+    componentWillReceiveProps(nextProps) {
+        if(_.get(nextProps,'location.state.clickUnhandleNum')){
+            this.getUnhandledClue();
+        }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false){
+            clueFilterAction.setInitialData();
+            clueCustomerAction.resetState();
+            setTimeout(() => {
+                this.getClueList();
+            });
+        }
+    }
+    componentWillUnmount() {
+        clueCustomerStore.unlisten(this.onStoreChange);
+        this.hideRightPanel();
+        clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
+        //清空页面上的筛选条件
+        clueFilterAction.setInitialData();
+        clueCustomerAction.resetState();
     }
 
     showClueDetailOut = (item) => {
@@ -117,32 +142,7 @@ class ClueCustomer extends React.Component {
             previewList: list,
         });
     };
-    getUnhandledClue = () => {
-        var data = getUnhandledClueCountParams();
-        clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterType([{value: _.get(JSON.parse(data.clueCustomerTypeFilter),'status')}]);
-        setTimeout(() => {
-            this.getClueList(data);
-        });
-    };
-    componentWillReceiveProps(nextProps) {
-        if(_.get(nextProps,'location.state.clickUnhandleNum') === false){
-            clueFilterAction.setInitialData();
-            clueCustomerAction.resetState();
-            setTimeout(() => {
-                this.getClueList();
-            });
-        }
-    }
-    componentWillUnmount() {
-        clueCustomerStore.unlisten(this.onStoreChange);
-        this.hideRightPanel();
-        showUnhandledClueEmitter.removeListener(showUnhandledClueEmitter.SHOW_UNHANDLED_CLUE, this.getUnhandledClue);
-        clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
-        //清空页面上的筛选条件
-        clueFilterAction.setInitialData();
-        clueCustomerAction.resetState();
-    }
+
 
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());

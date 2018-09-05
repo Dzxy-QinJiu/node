@@ -23,7 +23,6 @@ import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
-import {showUnhandledApplyEmitter, showUnhandledClueEmitter} from 'PUB_DIR/sources/utils/emitters';
 const session = storageUtil.session;
 //需要加引导的模块
 const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -329,7 +328,6 @@ var NavSidebar = createReactClass({
                 history.push('/apply',{clickUnhandleNum: false});
             }else{
                 history.push('/apply',{clickUnhandleNum: true});
-                showUnhandledApplyEmitter.emit(showUnhandledApplyEmitter.SHOW_UNHANDLED_APPLY);
             }
         });
         $('.navbar').on('click', '.clue-icon-container', function(e) {
@@ -337,7 +335,6 @@ var NavSidebar = createReactClass({
                 history.push('/apply',{clickUnhandleNum: false});
             }else{
                 history.push('/clue_customer',{clickUnhandleNum: true});
-                showUnhandledClueEmitter.emit(showUnhandledClueEmitter.SHOW_UNHANDLED_CLUE);
             }
 
         });

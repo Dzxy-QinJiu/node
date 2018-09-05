@@ -17,7 +17,6 @@ var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 var SearchInput = require('../../../../components/searchInput');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 const session = storageUtil.session;
-import {showUnhandledApplyEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -80,7 +79,7 @@ class ApplyTabContent extends React.Component {
             UserApplyActions.getApplyById(this.state.applyId);
             //是通过点击未处理的审批数量跳转过来的
         } else if(_.get(this.props,'location.state.clickUnhandleNum')){
-            this.getUnhandledApply();
+            this.menuClick({key: 'false'});
         }else {
             this.fetchApplyList();
         }
@@ -89,12 +88,7 @@ class ApplyTabContent extends React.Component {
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED, this.pushDataListener);
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-        showUnhandledApplyEmitter.on(showUnhandledApplyEmitter.SHOW_UNHANDLED_APPLY, this.getUnhandledApply);
     }
-    getUnhandledApply = () => {
-        this.menuClick({key: 'false'});
-    };
-
     componentWillReceiveProps(nextProps) {
         if (nextProps.applyId !== this.props.applyId) {
             this.setState({applyId: nextProps.applyId}, () => {
@@ -103,7 +97,11 @@ class ApplyTabContent extends React.Component {
                     this.retryFetchApplyList();
                 }
             });
+        }else if (_.get(nextProps,'location.state.clickUnhandleNum')){
+            //取待审批的审批数
+            this.menuClick({key: 'false'});
         }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false){
+            //取全部的审批数
             this.menuClick({key: 'all'});
         }
     }
@@ -160,7 +158,6 @@ class ApplyTabContent extends React.Component {
         //销毁时，删除申请消息监听器
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED, this.pushDataListener);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
-        showUnhandledApplyEmitter.removeListener(showUnhandledApplyEmitter.SHOW_UNHANDLED_APPLY, this.getUnhandledApply);
     }
 
     retryFetchApplyList = (e) => {

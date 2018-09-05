@@ -59,12 +59,12 @@ class CustomerStageTable extends React.Component {
     handleScrollBottom() {
         this.props.handleScrollBottom({
             query: {
-                label: this.props.match.params.type,
-                nickname: this.props.match.params.nickname
+                label: this.props.params.type,
+                nickname: this.props.params.nickname
             },
             rang_params: [{
-                'from': moment(this.props.match.params.time).startOf('day').valueOf(),
-                'to': moment(this.props.match.params.time).endOf('day').valueOf(),
+                'from': moment(this.props.params.time).startOf('day').valueOf(),
+                'to': moment(this.props.params.time).endOf('day').valueOf(),
                 'name': 'time',
                 'type': 'time'
             }]
