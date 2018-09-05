@@ -16,7 +16,8 @@ import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var SearchInput = require('CMP_DIR/searchInput');
-import {message, Icon, Row, Col, Button, Alert, Select} from 'antd';
+import {message, Icon, Row, Col, Button, Alert, Select, Modal, Radio} from 'antd';
+const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import {removeSpacesAndEnter,getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
@@ -39,6 +40,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {pathParamRegex} from 'PUB_DIR/sources/utils/consts';
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
@@ -62,6 +64,8 @@ class ClueCustomer extends React.Component {
         previewList: [],//预览列表
         clueAnalysisPanelShow: false,//线索分析面板是否展示
         showFilterList: false,//是否展示线索筛选区域
+        exportRange: 'filtered',
+        isExportModalShow: false,//是否展示导出线索的模态框
         ...clueCustomerStore.getState()
     };
 
@@ -213,12 +217,36 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+    //渲染导出线索的按钮
+    renderExportClue = () => {
+        return (
+            <div className="export-clue-customer-container pull-right">
+                <Button onClick={this.showExportClueModal} className="btn-item">
+                    <span className="clue-container">
+                        {Intl.get('clue.export.clue.list','导出线索')}
+                    </span>
+                </Button>
+            </div>
+        );
+    };
 
     //点击导入线索按钮
     showImportClueTemplate = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue-customer-container'), '点击导入线索按钮');
         this.setState({
             clueImportTemplateFormShow: true
+        });
+    };
+    //点击导出线索按钮
+    showExportClueModal = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.export-clue-customer-container'), '点击导出线索按钮');
+        this.setState({
+            isExportModalShow: true
+        });
+    };
+    hideExportModal = () => {
+        this.setState({
+            isExportModalShow: false
         });
     };
 
@@ -270,7 +298,7 @@ class ClueCustomer extends React.Component {
 
     //获取线索列表
     getClueList = (data) => {
-        var rangParams = _.get(data, 'rangParams') || clueFilterStore.getState().rangParams;
+        var rangParams = _.get(data, 'rangParams') || JSON.stringify(clueFilterStore.getState().rangParams);
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         //跟据类型筛选
@@ -279,7 +307,7 @@ class ClueCustomer extends React.Component {
             pageSize: this.state.pageSize,
             sorter: this.state.sorter,
             keyword: this.state.keyword,
-            rangeParams: JSON.stringify(rangParams),
+            rangeParams: rangParams,
             statistics_fields: 'status',
             userId: userData.getUserData().userId || '',
             typeFilter: _.get(data, 'clueCustomerTypeFilter') || JSON.stringify(typeFilter)
@@ -307,6 +335,76 @@ class ClueCustomer extends React.Component {
         }
         //取全部线索列表
         clueCustomerAction.getClueFulltext(queryObj);
+    };
+    //获取请求参数
+    getCondition = (isGetAllClue) => {
+        var rangParams = isGetAllClue ? [{
+            from: clueStartTime,
+            to: moment().valueOf(),
+            type: 'time',
+            name: 'source_time'
+        }] : clueFilterStore.getState().rangParams;
+        var keyWord = isGetAllClue ? '' : this.state.keyword;
+        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
+        var typeFilter = isGetAllClue ? {status: ''} : getClueStatusValue(filterClueStatus);//线索类型
+        var queryObj = {
+            keyword: keyWord,
+            rangeParams: JSON.stringify(rangParams),
+            statistics_fields: 'status',
+            userId: userData.getUserData().userId || '',
+            typeFilter: JSON.stringify(typeFilter)
+        };
+        if (!isGetAllClue){
+            var filterStoreData = clueFilterStore.getState();
+            //选中的线索来源
+            var filterClueSource = filterStoreData.filterClueSource;
+            if (_.isArray(filterClueSource) && filterClueSource.length) {
+                queryObj.clue_source = filterClueSource.join(',');
+            }
+            //选中的线索接入渠道
+            var filterClueAccess = filterStoreData.filterClueAccess;
+            if (_.isArray(filterClueAccess) && filterClueAccess.length) {
+                queryObj.access_channel = filterClueAccess.join(',');
+            }
+            //选中的线索分类
+            var filterClueClassify = filterStoreData.filterClueClassify;
+            if (_.isArray(filterClueClassify) && filterClueClassify.length) {
+                queryObj.clue_classify = filterClueClassify.join(',');
+            }
+            //过滤无效线索
+            var isFilterInavalibilityClue = filterStoreData.filterClueAvailability;
+            if (isFilterInavalibilityClue) {
+                queryObj.availability = isFilterInavalibilityClue;
+            }
+        }
+        return queryObj;
+    };
+    exportData = () => {
+        Trace.traceEvent('线索管理', '导出线索');
+        const sorter = this.state.sorter;
+        var type = 'user';
+        if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+            type = 'manager';
+        }
+        const params = {
+            page_size: 10000,
+            sort_field: sorter.field,
+            order: sorter.order,
+            type: type
+        };
+        const route = '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type';
+        const url = route.replace(pathParamRegex, function($0, $1) {
+            return params[$1];
+        });
+        const reqData = this.state.exportRange === 'all' ? this.getCondition(true) : this.getCondition();
+        let form = $('<form>', {action: url, method: 'post'});
+        form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
+        //将构造的表单添加到body上
+        //Chrome 56 以后不在body上的表单不允许提交了
+        $(document.body).append(form);
+        form.submit();
+        form.remove();
+        this.hideExportModal();
     };
 
     errTipBlock = () => {
@@ -658,7 +756,11 @@ class ClueCustomer extends React.Component {
             showFilterList: !this.state.showFilterList
         });
     };
-
+    onExportRangeChange = (e) => {
+        this.setState({
+            exportRange: e.target.value
+        });
+    };
     render() {
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
@@ -690,10 +792,10 @@ class ClueCustomer extends React.Component {
                                 */}
                                 {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
                                 {this.renderHandleBtn()}
+                                {this.renderExportClue()}
                                 {this.renderImportClue()}
                             </div>
                         </div>
-
                     </TopNav>
                     <div className="clue-content-container">
                         <div
@@ -749,6 +851,32 @@ class ClueCustomer extends React.Component {
                             closeClueAnalysisPanel={this.closeClueAnalysisPanel}
                         />
                     </RightPanel> : null}
+                    <Modal
+                        className="clue-export-modal"
+                        visible={this.state.isExportModalShow}
+                        closable={false}
+                        onOk={this.exportData}
+                        onCancel={this.hideExportModal}
+                    >
+                        <div>
+                            {Intl.get('contract.116', '导出范围')}:
+                            <RadioGroup
+                                value={this.state.exportRange}
+                                onChange={this.onExportRangeChange}
+                            >
+                                <Radio key="all" value="all">
+                                    {Intl.get('common.all', '全部')}
+                                </Radio>
+                                <Radio key="filtered" value="filtered">
+                                    {Intl.get('contract.117', '符合当前筛选条件')}
+                                </Radio>
+                            </RadioGroup>
+                        </div>
+                        <div>
+                            {Intl.get('contract.118','导出类型')}:
+                            {Intl.get('contract.152','excel格式')}
+                        </div>
+                    </Modal>
                 </div>
             </RightContent>
         );
