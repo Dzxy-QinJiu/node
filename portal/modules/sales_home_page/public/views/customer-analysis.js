@@ -2,10 +2,9 @@
  * 客户分析
  * Created by wangliping on 2016/11/24.
  */
-var React = require('react');
+import PropTypes from 'prop-types'; 
 import { AntcAnalysis } from 'antc';
 let history = require('PUB_DIR/sources/history');
-var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
 var OplateCustomerAnalysisAction = require('../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action');
@@ -38,6 +37,18 @@ const showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;
 
 //客户分析
 class CustomerAnalysis extends React.Component {
+    static propTypes = {
+        scrollbarEnabled: PropTypes.bool,
+        timeType: PropTypes.string,
+        startTime: PropTypes.number,
+        endTime: PropTypes.number,
+        originSalesTeamTree: PropTypes.object,
+        currShowSalesman: PropTypes.object,
+        currShowSalesTeam: PropTypes.object,
+        currShowType: PropTypes.string,
+        emitterConfigList: PropTypes.array,
+        conditions: PropTypes.array,
+    };
     constructor(props, context) {
         super(props, context);
         let stateData = this.getStateData();
@@ -52,7 +63,6 @@ class CustomerAnalysis extends React.Component {
             startTime: this.props.startTime,
             endTime: this.props.endTime,
             originSalesTeamTree: this.props.originSalesTeamTree,
-            updateScrollBar: false
         };
     };
 
@@ -101,17 +111,6 @@ class CustomerAnalysis extends React.Component {
                 });
             }
         });
-        if (nextProps.updateScrollBar) {
-            this.setState({
-                updateScrollBar: true
-            }, () => {
-                setTimeout(() => {
-                    this.setState({
-                        updateScrollBar: false
-                    });
-                }, delayConstant);
-            });
-        }
     }
 
     onTeamChange = (team_id, allSubTeamIds) => {
@@ -153,9 +152,10 @@ class CustomerAnalysis extends React.Component {
             };
         }
         if (isFirst) {
-            this.state.stageChangedCustomerList.lastId = '';
-            this.state.stageChangedCustomerList.listenScrollBottom = true;
-            this.setState({ stageChangedCustomerList: this.state.stageChangedCustomerList }, () => {
+            let stageChangedCustomerList = _.cloneDeep(this.state.stageChangedCustomerList);
+            stageChangedCustomerList.lastId = '';
+            stageChangedCustomerList.listenScrollBottom = true;
+            this.setState({ stageChangedCustomerList: stageChangedCustomerList }, () => {
                 OplateCustomerAnalysisAction.getStageChangeCustomerList(paramObj);
             });
         } else {
@@ -228,16 +228,6 @@ class CustomerAnalysis extends React.Component {
         });
     };
 
-    //缩放延时，避免页面卡顿
-    resizeTimeout = null;
-
-    //窗口缩放时候的处理函数
-    windowResize = () => {
-        clearTimeout(this.resizeTimeout);
-        //窗口缩放的时候，调用setState，重新走render逻辑渲染
-        this.resizeTimeout = setTimeout(() => this.setState(this.getStateData()), 300);
-    };
-
     componentDidMount() {
         OplateCustomerAnalysisStore.listen(this.onStateChange);
         OplateCustomerAnalysisAction.getSalesStageList();
@@ -247,10 +237,6 @@ class CustomerAnalysis extends React.Component {
             this.getTransferCustomers({ isFirst: true });
             this.getCustomerStageAnalysis();
         });
-
-        //绑定window的resize，进行缩放处理
-        $(window).on('resize', this.windowResize);
-        $('.statistic-data-analysis .thumb').hide();
     }
 
     //切换展示客户阶段统计
@@ -263,8 +249,6 @@ class CustomerAnalysis extends React.Component {
         //$('body').css('overflow', 'visible');
         //组件销毁时，清除缩放的延时
         clearTimeout(this.resizeTimeout);
-        //解除window上绑定的resize函数
-        $(window).off('resize', this.windowResize);
         teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
         teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
     }
@@ -277,10 +261,11 @@ class CustomerAnalysis extends React.Component {
      *                      {field : 'xxx' //排序字段 , order : 'descend'/'ascend' //排序顺序}
      */
     onTransferSortChange = (pagination, filters, sorter) => {
-        this.state.transferCustomers.sorter = sorter;
-        this.state.transferCustomers.lastId = '';
+        let transferCustomers = _.cloneDeep(this.state.transferCustomers);
+        transferCustomers.sorter = sorter;
+        transferCustomers.lastId = '';
         this.setState({
-            transferCustomers: this.state.transferCustomers
+            transferCustomers
         }, () => {
             this.getTransferCustomers({ isFirst: true });
         });
@@ -314,9 +299,10 @@ class CustomerAnalysis extends React.Component {
             params.query.id = lastId;
         }
         if (isFirst) {
-            this.state.transferCustomers.lastId = '';
-            this.state.transferCustomers.listenScrollBottom = true;
-            this.setState({ transferCustomers: this.state.transferCustomers }, () => {
+            let transferCustomers = _.cloneDeep(this.state.transferCustomers);
+            transferCustomers.lastId = '';
+            transferCustomers.listenScrollBottom = true;
+            this.setState({ transferCustomers }, () => {
                 OplateCustomerAnalysisAction.getTransferCustomers(params);
             });
         } else {
@@ -1151,27 +1137,10 @@ class CustomerAnalysis extends React.Component {
                     emitterConfigList={this.props.emitterConfigList}
                     conditions={this.props.conditions}
                     isGetDataOnMount={true}
-                    style={{marginLeft: -10, marginRight: -5}}
+                    isUseScrollBar={this.props.scrollbarEnabled}
                 />
             </div>
         );
-    };
-
-    renderContent = () => {
-
-        if (this.state.updateScrollBar) {
-            return (
-                <div>
-                    {this.renderChartContent()}
-                </div>
-            );
-        } else {
-            return (
-                <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
-                    {this.renderChartContent()}
-                </GeminiScrollbar>
-            );
-        }
     };
 
     hideCustomerTable = () => {
@@ -1194,9 +1163,6 @@ class CustomerAnalysis extends React.Component {
     };
 
     render() {
-        let layoutParams = this.props.getChartLayoutParams();
-        this.chartWidth = layoutParams.chartWidth;
-
         const newAddedCustomerParams = {
             queryObj: {},
             rangParams: [{
@@ -1221,8 +1187,8 @@ class CustomerAnalysis extends React.Component {
 
         return (
             <div className="oplate_customer_analysis">
-                <div ref="chart_list" style={{ height: layoutParams.chartListHeight }}>
-                    {this.renderContent()}
+                <div ref="chart_list">
+                    {this.renderChartContent()}
                 </div>
                 <RightPanel
                     className="customer-stage-table-wrapper"

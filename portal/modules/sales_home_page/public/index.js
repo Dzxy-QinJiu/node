@@ -1,4 +1,3 @@
-var React = require('react');
 require('./css/index.less');
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
@@ -120,6 +119,8 @@ class SalesHomePage extends React.Component {
     }
 
     resizeLayout = () => {
+        let scrollbarEnabled;
+
         //宽屏不出现滚动条
         if ($(window).width() < Oplate.layout['screen-md']) {
             $('body').css({
@@ -127,16 +128,17 @@ class SalesHomePage extends React.Component {
                 'overflow-y': 'visible'
             });
             //窄屏出现滚动条
-            this.state.scrollbarEnabled = false;
+            scrollbarEnabled = false;
         } else {
             $('body').css({
                 'overflow-x': 'hidden',
                 'overflow-y': 'hidden'
             });
-            this.state.scrollbarEnabled = true;
+            scrollbarEnabled = true;
         }
+
         this.setState({
-            scrollbarEnabled: this.state.scrollbarEnabled
+            scrollbarEnabled,
         });
     };
 
@@ -513,16 +515,10 @@ class SalesHomePage extends React.Component {
 
     // 选择通话类型的值
     selectCallTypeValue = (value) => {
-        if (value === CALL_TYPE_OPTION.PHONE) {
-            this.state.callType = CALL_TYPE_OPTION.PHONE;
-        } else if (value === CALL_TYPE_OPTION.APP) {
-            this.state.callType = CALL_TYPE_OPTION.APP;
-        } else if (value === CALL_TYPE_OPTION.ALL) {
-            this.state.callType = CALL_TYPE_OPTION.ALL;
-        }
         this.setState({
             callType: value
         });
+
         this.getChangeCallTypeData();
         //发送点击事件
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.call-type-select'), '电话统计>选择' + value + '类型');
@@ -571,8 +567,6 @@ class SalesHomePage extends React.Component {
                 currShowSalesman={this.state.currShowSalesman}
                 originSalesTeamTree={this.state.originSalesTeamTree}
                 getSaleIdByName={this.getSaleIdByName}
-                getChartLayoutParams={this.getChartLayoutParams}
-                updateScrollBar={this.state.updateScrollBar}
                 emitterConfigList={this.getEmitters()}
                 conditions={this.getConditions()}
             />);
@@ -584,8 +578,6 @@ class SalesHomePage extends React.Component {
                 currShowSalesman={this.state.currShowSalesman}
                 originSalesTeamTree={this.state.originSalesTeamTree}
                 getSaleIdByName={this.getSaleIdByName}
-                getChartLayoutParams={this.getChartLayoutParams}
-                updateScrollBar={this.state.updateScrollBar}
                 emitterConfigList={this.getEmitters()}
                 conditions={this.getConditions()}
                 appList={this.state.appList} 
@@ -594,7 +586,7 @@ class SalesHomePage extends React.Component {
         } else if (this.state.activeView === viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
                 <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
-                    <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
+                    <GeminiScrollbar enabled={this.state.scrollbarEnabled} ref="phoneScrollbar">
                         <AntcAnalysis
                             charts={this.getPhoneAnalysisCharts()}
                             style={{padding: 0}}
