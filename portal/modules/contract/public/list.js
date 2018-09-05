@@ -98,6 +98,17 @@ class List extends React.Component {
         let selectShowColumnsValue = this.getSelectShowColumnsValue();
         // 根据当前获取的展示列的值设置当前展示的列
         this.handleSelectShowColumnsChange(selectShowColumnsValue);
+
+        //可滚动的表格
+        const scrollTable = $('.scroll-table .gm-scroll-view');
+        //固定列的表格
+        const fixedTable = $('.fixed-table .custom-tbody');
+
+        //可滚动的表格纵向滚动时，使固定列的表格随之同步滚动
+        scrollTable.scroll(() => {
+            const top = scrollTable.scrollTop();
+            fixedTable.scrollTop(top);
+        });
     }
 
     componentWillUnmount() {
@@ -633,7 +644,6 @@ class List extends React.Component {
                                 dataSource={this.props.contractList}
                                 columns={this.state.currentTypeShowColumns}
                                 rowKey={this.getRowKey}
-                                loading={this.props.isListLoading}
                                 pagination={false}
                                 rowClassName={this.handleRowClassName}
                                 onRowClick={this.onRowClick}
@@ -642,7 +652,7 @@ class List extends React.Component {
                     </div>
                 </div>
 
-                <div className="table-wrap-outer">
+                <div className="table-wrap-outer scroll-table">
                     <div className="table-wrap splice-table" style={style}>
                         <div className="custom-thead">
                             <Table
