@@ -2,6 +2,7 @@
  * 用户分析
  * Created by wangliping on 2016/11/23.
  */
+import PropTypes from 'prop-types';
 import { AntcAnalysis } from 'antc';
 var OplateUserAnalysisAction = require('../../../oplate_user_analysis/public/action/oplate-user-analysis.action');
 var OplateUserAnalysisStore = require('../../../oplate_user_analysis/public/store/oplate-user-analysis.store');
