@@ -151,9 +151,24 @@
             }
         }
     
+        .list-wrap {
+            position: relative;
+        }
+
         .table-wrap-outer {
             width: 100%;
             overflow-x: auto;
+        }
+    
+        .table-wrap-outer.fixed-table {
+            position: absolute;
+            top: 2px;
+            background: #fff;
+            z-index: 1;
+            overflow: hidden;
+            .ant-table-body {
+                overflow: hidden;
+            }
         }
     
         .table-wrap {
@@ -901,4 +916,10 @@
 .table-wrap .clearfix .ant-table tbody .current-row:hover,
 .table-wrap .ant-table tbody .current-row{
   background:#DFEAF3 !important;
+}
+
+#app .table-wrap-outer.fixed-table {
+    td:last-child, th:last-child {
+        border-right: 1px dashed #edf1f2 !important;
+    }
 }

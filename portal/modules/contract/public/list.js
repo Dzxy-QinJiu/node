@@ -2,7 +2,7 @@
  * 合同列表
  */
 
-var React = require('react');
+import PropTypes from 'prop-types'; 
 import { Table, Input, Select, Modal, message, Button, Checkbox } from 'antd';
 const CheckboxGroup = Checkbox.Group;
 import TableUtil from '../../../components/antd-table-pagination';
@@ -33,6 +33,24 @@ const LAYOUT_CONSTNTS = {
 };
 
 class List extends React.Component {
+    static propTypes = {
+        type: PropTypes.string,
+        sum: PropTypes.object,
+        isScrollTop: PropTypes.bool,
+        contractList: PropTypes.array,
+        isRightPanelShow: PropTypes.bool,
+        shouldRightPanelShow: PropTypes.bool,
+        showRightPanel: PropTypes.bool,
+        getContractList: PropTypes.func,
+        teamList: PropTypes.array,
+        userList: PropTypes.array,
+        typeList: PropTypes.array,
+        isTheadFilterShow: PropTypes.bool,
+        isListLoading: PropTypes.bool,
+        listenScrollBottom: PropTypes.bool,
+        contractCount: PropTypes.number,
+    };
+
     componentWillReceiveProps(nextProps) {
         // 切换视图时清空表头搜索筛选条件
         if (nextProps.type !== this.props.type) {
@@ -74,7 +92,7 @@ class List extends React.Component {
     componentDidMount() {
         //窗口大小改变事件
         resizeEmitter.on(resizeEmitter.WINDOW_SIZE_CHANGE, this.setTableHeight);
-        TableUtil.zoomInSortArea(this.refs.listTable);
+        TableUtil.zoomInSortArea($('.table-wrap'));
         contractEmitter.on(contractEmitter.IMPORT_CONTRACT, this.onContractImport);
         // 获取展示列的值
         let selectShowColumnsValue = this.getSelectShowColumnsValue();
@@ -102,7 +120,7 @@ class List extends React.Component {
             - LAYOUT_CONSTNTS.H_SCROLL_BAR_HEIGHT
             - LAYOUT_CONSTNTS.CONTENT_PADDING
             - LAYOUT_CONSTNTS.BOTTOM;
-        $(this.refs.listTable).find('.custom-tbody').height(newHeight);
+        $('.table-wrap').find('.custom-tbody').height(newHeight);
         this.refs.gemiScrollBar.update();
     };
 
@@ -115,8 +133,7 @@ class List extends React.Component {
         const $tr = $(e.target).closest('tr');
         $tr.addClass('current-row').siblings().removeClass('current-row');
         const view = this.props.type === VIEW_TYPE.COST ? 'detailCost' : 'detail';
-        this.state.selectedItemId = record.id;
-        this.setState(this.state);
+        this.setState({selectedItemId: record.id});
         this.props.showRightPanel(view, index);
     };
 
@@ -135,6 +152,9 @@ class List extends React.Component {
     };
 
     onFilterChange = (field, value) => {
+        let condition = _.cloneDeep(this.state.condition);
+        let params = _.cloneDeep(this.state.rangeParams);
+
         //value可能为undefined，需要处理一下
         if (!value) {
             value = '';
@@ -155,7 +175,6 @@ class List extends React.Component {
             if (matched) {
                 const operator = matched[1];
                 value = parseFloat(matched[2]);
-                const params = this.state.rangeParams;
                 const index = _.findIndex(params, item => item.name === field);
                 let param = params[index];
                 if (!param) {
@@ -180,16 +199,15 @@ class List extends React.Component {
                 if (!isNaN(value)) {
                     value = parseFloat(value);
                 }
-                this.state.condition[field] = value;
+                condition[field] = value;
             }
         } else {
-            delete this.state.condition[field];
-            const params = this.state.rangeParams;
+            delete condition[field];
             const index = _.findIndex(params, item => item.name === field);
             if (index > -1) params.splice(index, 1);
         }
 
-        this.setState(this.state);
+        this.setState({condition, params});
 
         if (searchTimeout) {
             clearTimeout(searchTimeout);
@@ -202,8 +220,9 @@ class List extends React.Component {
     };
 
     toggleDateSelector = (field) => {
-        this.state[field] = !this.state[field];
-        this.setState(this.state);
+        let newState = {};
+        newState[field] = !this.state[field];
+        this.setState(newState);
     };
 
     handleScrollBottom = () => {
@@ -260,7 +279,7 @@ class List extends React.Component {
     };
 
     onFilterSelectChange = (column, value) => {
-        let condition = this.state.condition;
+        let condition = _.cloneDeep(this.state.condition);
 
         if (value === 'all') {
             delete condition[column];
@@ -269,9 +288,10 @@ class List extends React.Component {
         }
 
         if (value !== this.state[column]) {
-            this.state.filterSelected[column] = value;
+            let filterSelected = _.cloneDeep(this.state.filterSelected);
+            filterSelected[column] = value;
 
-            this.setState(this.state, () => {
+            this.setState({condition, filterSelected}, () => {
                 this.props.getContractList(true);
             });
         }
@@ -570,8 +590,13 @@ class List extends React.Component {
             'hide-custom-column-div': this.state.hideCustomColumnDiv
         });
 
+        //固定列
+        const fixedColumns = _.filter(this.state.currentTypeShowColumns, column => ['num', 'buyer'].includes(column.dataIndex));
+        //固定列表格宽度
+        const fixedTableWidth = _.reduce(fixedColumns, (sum, column) => sum + column.width, 0);
+         
         return (
-            <div>
+            <div className="list-wrap">
                 <div>
                     <Button className='custom-column-button' title={Intl.get('common.table.customize', '自定义表格列')} onClick={this.toggleCustomColumnDivVisible}>
                         <i className='iconfont icon-down-twoline'></i>
@@ -584,8 +609,41 @@ class List extends React.Component {
                     </div>
                     <div className={customColumnBackgroundDivClassName} onClick={this.toggleCustomColumnDivVisible}></div>
                 </div>
+
+                {/*用绝对定位表格实现固定列效果*/}
+                <div className="table-wrap-outer fixed-table" style={{width: fixedTableWidth}}>
+                    <div className="table-wrap splice-table">
+                        <div className="custom-thead">
+                            <Table
+                                columns={fixedColumns}
+                                pagination={false}
+                                onChange={this.onChange}
+                            />
+                        </div>
+                        {this.props.isTheadFilterShow ? (
+                            <div className="custom-thead-filter">
+                                <Table
+                                    columns={filterColumns}
+                                    pagination={false}
+                                />
+                            </div>
+                        ) : null}
+                        <div className="custom-tbody">
+                            <Table
+                                dataSource={this.props.contractList}
+                                columns={this.state.currentTypeShowColumns}
+                                rowKey={this.getRowKey}
+                                loading={this.props.isListLoading}
+                                pagination={false}
+                                rowClassName={this.handleRowClassName}
+                                onRowClick={this.onRowClick}
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 <div className="table-wrap-outer">
-                    <div className="table-wrap splice-table" style={style} ref="listTable">
+                    <div className="table-wrap splice-table" style={style}>
                         <div className="custom-thead">
                             <Table
                                 columns={this.state.currentTypeShowColumns}
