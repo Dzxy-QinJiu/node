@@ -38,6 +38,7 @@ const showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;
 //客户分析
 class CustomerAnalysis extends React.Component {
     static propTypes = {
+        scrollbarEnabled: PropTypes.bool,
         timeType: PropTypes.string,
         startTime: PropTypes.number,
         endTime: PropTypes.number,
@@ -1136,7 +1137,7 @@ class CustomerAnalysis extends React.Component {
                     emitterConfigList={this.props.emitterConfigList}
                     conditions={this.props.conditions}
                     isGetDataOnMount={true}
-                    isUseScrollBar={true}
+                    isUseScrollBar={this.props.scrollbarEnabled}
                 />
             </div>
         );
