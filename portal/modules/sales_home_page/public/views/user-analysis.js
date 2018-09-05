@@ -32,7 +32,6 @@ class UserAnlyis extends React.Component {
         conditions: PropTypes.array,
         selectedAppId: PropTypes.string,
         appList: PropTypes.array,
-
     };
 
     getStateData = () => {
