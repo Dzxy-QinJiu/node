@@ -46,18 +46,32 @@ class FilterList extends React.Component {
                 commonData: this.sortByClickNum(commonData)
             });
         }
-        const pickNameValue = advancedData => {
-            advancedData.forEach(group => {
-                group.data = group.data.map(x => ({name: x.name, value: x.value, selected: x.selected}));
-            });
+        const pickNameValue = (advancedData, selectedFlag) => {
+            advancedData = _.cloneDeep(advancedData);
+            if (selectedFlag){
+                advancedData.forEach(group => {
+                    group.data = group.data.map(x => ({name: x.name, value: x.value, selected: x.selected}));
+                });
+            }else{
+                advancedData.forEach(group => {
+                    group.data = group.data.map(x => ({name: x.name, value: x.value}));
+                });
+            }
             return advancedData;
         };
-        if (advancedData && advancedData.length && (JSON.stringify(pickNameValue(advancedData)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData)))) {
-            this.setState({
-                rawAdvancedData: advancedData,
-                advancedData
-            });
+        if (advancedData && advancedData.length ) {
+            if (JSON.stringify(pickNameValue(advancedData, true)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData, true))){
+                this.setState({
+                    advancedData
+                });
+            }
+            if (JSON.stringify(pickNameValue(advancedData)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData))){
+                this.setState({
+                    rawAdvancedData: advancedData,
+                });
+            }
         }
+
         //没有常用筛选时，展开高级筛选
         if (!newProps.commonData.length && !this.props.commonData.length) {
             this.setState({

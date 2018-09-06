@@ -97,14 +97,16 @@ class ClueCustomer extends React.Component {
         });
     };
     componentWillReceiveProps(nextProps) {
-        if(_.get(nextProps,'location.state.clickUnhandleNum')){
-            this.getUnhandledClue();
-        }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false){
-            clueFilterAction.setInitialData();
-            clueCustomerAction.resetState();
-            setTimeout(() => {
-                this.getClueList();
-            });
+        if (_.get(nextProps,'history.action') === 'PUSH'){
+            if(_.get(nextProps,'location.state.clickUnhandleNum')){
+                this.getUnhandledClue();
+            }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false ){
+                clueFilterAction.setInitialData();
+                clueCustomerAction.resetState();
+                setTimeout(() => {
+                    this.getClueList();
+                });
+            }
         }
     }
     componentWillUnmount() {
@@ -301,8 +303,8 @@ class ClueCustomer extends React.Component {
         var rangParams = _.get(data, 'rangParams') || JSON.stringify(clueFilterStore.getState().rangParams);
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
-        var existFilelds = filterStore.getState().exist_fields;
-        var unExistFileds = filterStore.getState().unexist_fields;
+        var existFilelds = clueFilterStore.getState().exist_fields;
+        var unExistFileds = clueFilterStore.getState().unexist_fields;
         //跟据类型筛选
         const queryObj = {
             lastClueId: this.state.lastCustomerId,
@@ -810,8 +812,8 @@ class ClueCustomer extends React.Component {
                                  CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
                                 */}
                                 {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
-                                {this.renderHandleBtn()}
                                 {this.renderExportClue()}
+                                {this.renderHandleBtn()}
                                 {this.renderImportClue()}
                             </div>
                         </div>
