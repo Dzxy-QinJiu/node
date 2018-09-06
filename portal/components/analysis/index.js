@@ -5,10 +5,7 @@ var React = require('react');
 
 import LineChart from '../chart/line';
 import BarChart from '../chart/bar';
-import PieChart from '../chart/pie';
 import { AntcBarPieChart } from 'antc';
-import Retention from '../chart/retention';
-import Funnel from '../chart/funnel';
 import Box from '../chart/box';
 import SigningStatistics from '../chart/signing-statistics';
 import ContractStatistics from '../chart/contract-statistics';
@@ -33,10 +30,6 @@ const CHART_TYPE_MAP = {
     box: Box,
     bar: BarChart,
     line: LineChart,
-    pie: PieChart,
-    bar_pie: AntcBarPieChart,
-    retention: Retention,
-    funnel: Funnel,
     signingStatistics: SigningStatistics,
     contractStatistics: ContractStatistics // 合同分析统计表
 };
