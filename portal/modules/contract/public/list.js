@@ -657,6 +657,7 @@ class List extends React.Component {
                                     pagination={false}
                                     rowClassName={this.handleRowClassName}
                                     onRowClick={this.onRowClick}
+                                    loading={this.props.isListLoading}
                                 />
                             </div>
                         </div>
