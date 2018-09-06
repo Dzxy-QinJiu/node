@@ -2,6 +2,7 @@
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
 var React = require('react');
+const PropTypes = require('prop-types');
 import { Alert, Icon } from 'antd';
 import { Button as BootstrapButton, Modal as BootstrapModal } from 'react-bootstrap';
 import UserStatusSwitch from './user-status-switch';
@@ -27,6 +28,7 @@ import UserBasicCard from './user-basic/user-basic-card';
 import OrgCard from './user-basic/org-card';
 import ContactCard from './user-basic/contact-card';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
+import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 const FORMAT = oplateConsts.DATE_FORMAT;
 
 class UserDetailBasic extends React.Component {
@@ -90,16 +92,6 @@ class UserDetailBasic extends React.Component {
             AppUserDetailAction.dismiss();
         });
     }
-
-    checkPhone = (rule, value, callback) => {
-        if ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) ||
-            (/^\d{3,4}\-\d{7,8}$/.test(value)) ||
-            (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
-            callback();
-        } else {
-            callback(new Error(Intl.get('common.input.correct.phone', '请输入正确的电话号码')));
-        }
-    };
 
     showDisableAllAppsModal = (e) => {
         Trace.traceEvent(e,'全部停用');
@@ -601,7 +593,7 @@ class UserDetailBasic extends React.Component {
                         field: 'phone',
                         type: 'text',
                         disabled: hasPrivilege('APP_USER_EDIT') ? false : true,
-                        validators: [{ validator: this.checkPhone }],
+                        validators: [{ validator: checkPhone }],
                         placeholder: Intl.get('user.input.phone', '请输入手机号'),
                         title: Intl.get('user.phone.set.tip', '修改手机号')
                     }}
@@ -685,5 +677,10 @@ class UserDetailBasic extends React.Component {
         );
     }
 }
-
+UserDetailBasic.propTypes = {
+    userId: PropTypes.string,
+    getBasicInfo: PropTypes.func,
+    selectApp: PropTypes.object,
+    height: PropTypes.number
+};
 module.exports = UserDetailBasic;

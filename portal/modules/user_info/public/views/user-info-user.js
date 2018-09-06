@@ -13,7 +13,7 @@ import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
-
+import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -97,22 +97,6 @@ class UserInfo extends React.Component{
     }
     hideSaveTooltip() {
         this.setState({saveErrorMsg: ''});
-    }
-
-    //校验手机号码
-    checkPhone(rule, value, callback) {
-        value = $.trim(value);
-        if (value) {
-            if ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) ||
-                (/^\d{3,4}\-\d{7,8}$/.test(value)) ||
-                (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
-                callback();
-            } else {
-                callback(new Error(Intl.get('common.input.correct.phone','请输入正确的电话号码')));
-            }
-        } else {
-            callback();
-        }
     }
 
     uploadImg(src) {
@@ -408,7 +392,7 @@ class UserInfo extends React.Component{
                             {getFieldDecorator('phone',{
                                 initialValue: formData.phone,
                                 rules: [{
-                                    validator: this.checkPhone.bind(this)
+                                    validator: checkPhone.bind(this)
                                 }]
                             })(
                                 <Input placeholder={Intl.get('user.info.input.phone','请输入电话')}/>
