@@ -30,6 +30,8 @@ import ContactCard from './user-basic/contact-card';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 const FORMAT = oplateConsts.DATE_FORMAT;
+var Ajax = require('./v3/app-role-permission/ajax');
+var appAjaxTrans = require('MOD_DIR/common/public/ajax/app');
 
 class UserDetailBasic extends React.Component {
     static defaultProps = {
@@ -41,7 +43,9 @@ class UserDetailBasic extends React.Component {
     };
 
     getStateData = () => {
-        return AppUserDetailStore.getState();
+        return {
+            privilegeList: [],//权限列表
+            ...AppUserDetailStore.getState()};
     };
 
     componentDidMount() {
@@ -56,8 +60,88 @@ class UserDetailBasic extends React.Component {
             };
             this.props.getBasicInfo(userInfo);
         }
-    }
+        if(this.getRolesListPrivilege()){
+            this.getAppsRoles();
 
+        }
+    }
+    getAppsRoles = () => {
+        var apps = _.get(this.state,'initialUser.apps');
+        if (_.isArray(apps) && apps.length){
+            _.forEach(apps, (item) => {
+                if (_.isArray(item.roles) && item.roles.length){
+                    this.getRolesByAjax(item);
+                    this.getPermissionsByAjax(item);
+                }
+            });
+        }
+    };
+    getPermissionsByAjax = (item) => {
+        var app_id = item.app_id;
+        Ajax.getPermissionMap(app_id).then((ajaxPermissionList) => {
+            item.privilegeList = ajaxPermissionList;
+            var apps = _.get(this.state,'initialUser.apps');
+            _.forEach(apps, (appItem) => {
+                _.forEach(appItem.roleAndRelatePrivilege,(roleAndRelatePrivilegeItem) => {
+                    var privilegeId = roleAndRelatePrivilegeItem.privilegeId || [];
+                    var privilegeName = roleAndRelatePrivilegeItem.privilegeName || [];
+                    if (privilegeId.length && !privilegeName.length){
+                        this.handleRoleAndPrivilegeRelate(ajaxPermissionList,privilegeId,privilegeName);
+                    }
+                });
+            });
+        });
+    };
+    handleRoleAndPrivilegeRelate = (ajaxPermissionList,permissionIds,privilegeName) => {
+        if (_.isArray(ajaxPermissionList) && ajaxPermissionList.length){
+            _.forEach(ajaxPermissionList, (permissionGroupItem) => {
+                var permissionList = permissionGroupItem.permission_list;
+                if (_.isArray(permissionList) && permissionList.length){
+                    _.forEach(permissionIds,(privilege) => {
+                        var targetObj = _.find(permissionList,(item) => {
+                            return item.permission_id === privilege;
+                        });
+                        if (targetObj){
+                            privilegeName.push(targetObj.permission_name);
+                        }
+                    });
+
+                }
+            });
+        }
+    };
+
+    getRolesByAjax = (item) => {
+        var app_id = _.get(item, 'app_id');
+        var rolesList = _.isArray(_.get(item,'roles')) ? _.get(item,'roles') : [];
+        Ajax.getRoleList(app_id).then((ajaxRolesList) => {
+            var roleAndRelatePrivilege = [];
+            _.forEach(rolesList, (roleId) => {
+                var findedRole = _.find(ajaxRolesList, (role) => role.role_id === roleId);
+                if (findedRole) {
+                    //该角色对应的权限列表
+                    var permissionIds = findedRole.permission_ids || [];
+                    var roleAndPrivilege = {
+                        roleName: findedRole.role_name,
+                        roleId: findedRole.role_id,
+                        privilegeId: permissionIds,
+                        privilegeName: []
+                    };
+                    //该应用下的权限列表
+                    var ajaxPermissionList = item.privilegeList;
+                    this.handleRoleAndPrivilegeRelate(ajaxPermissionList,permissionIds,roleAndPrivilege.privilegeName);
+                    roleAndRelatePrivilege.push(roleAndPrivilege);
+                }
+            },
+            );
+            item['roleAndRelatePrivilege'] = roleAndRelatePrivilege;
+        }
+        );
+
+    };
+    getRolesListPrivilege(){
+        return _.get(this.state,'initialUser.apps');
+    }
     componentDidUpdate(prevProps, prevState) {
         var newUserId = this.props.userId;
         if (prevProps.userId !== newUserId && newUserId) {
@@ -74,6 +158,9 @@ class UserDetailBasic extends React.Component {
                 errorMsg: this.state.getDetailErrorMsg
             };
             this.props.getBasicInfo(userInfo);
+            if(this.getRolesListPrivilege()){
+                this.getAppsRoles();
+            }
         }
     }
 
@@ -281,7 +368,18 @@ class UserDetailBasic extends React.Component {
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
     };
-
+    renderAppRoleLists = (roleAndRelatePrivilege) => {
+        return (
+            <div className="role-list-container">
+                { _.map(roleAndRelatePrivilege,(item) => {
+                    var privilgeName = item.privilegeName.join(',');
+                    return <span className="role-name" title={privilgeName}>
+                        {item.roleName}
+                    </span>;
+                })}
+            </div>
+        );
+    };
     renderAppInfo = (app) => {
         var start_time = moment(new Date(+app.start_time)).format(FORMAT);
         var end_time = moment(new Date(+app.end_time)).format(FORMAT);
@@ -311,6 +409,7 @@ class UserDetailBasic extends React.Component {
         return (
             <div className="rows-3">
                 <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
+                    {_.isArray(app.roles) && app.roles.length ? this.renderAppRoleLists(_.get(app, 'roleAndRelatePrivilege')) : null}
                     <span><ReactIntl.FormattedMessage id="user.time.start"
                         defaultMessage="开通时间" />：{displayEstablishTime}</span>
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
