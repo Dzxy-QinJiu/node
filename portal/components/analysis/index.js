@@ -1,11 +1,9 @@
-var React = require('react');
 /**
  * 分析组件
  */
 
 import LineChart from '../chart/line';
 import BarChart from '../chart/bar';
-import { AntcBarPieChart } from 'antc';
 import Box from '../chart/box';
 import SigningStatistics from '../chart/signing-statistics';
 import ContractStatistics from '../chart/contract-statistics';
