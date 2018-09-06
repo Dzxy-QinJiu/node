@@ -1,4 +1,5 @@
 var React = require('react');
+const PropTypes = require('prop-types');
 require('../../../../components/antd-table-pagination/index.less');
 var Spinner = require('../../../../components/spinner');
 import {AntcTable} from 'antc';
@@ -175,8 +176,8 @@ class UserTabContent extends React.Component {
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
             UserDetailAddAppAction.resetState();
         } else if (panelSwitchCurrentView === 'editapp') {
-            AppUserPanelSwitchAction.cancelEditAppPanel();
             UserDetailEditAppAction.resetState();
+            AppUserPanelSwitchAction.cancelEditAppPanel();
         }
         if ($('.user_manage_user_detail_wrap').hasClass('move_left')) {
             $('.user_manage_user_detail_wrap').removeClass('move_left');
@@ -1232,5 +1233,11 @@ class UserTabContent extends React.Component {
     }
 }
 
+UserTabContent.defaultProps = {
+    customer_id: '',
+};
+UserTabContent.propTypes = {
+    customer_id: PropTypes.string,
 
+};
 module.exports = UserTabContent;
