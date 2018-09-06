@@ -111,6 +111,12 @@ class List extends React.Component {
                 const top = scrollTable.scrollTop();
                 fixedTable.scrollTop(top);
             });
+
+            //固定列表格纵向滚动时，使可滚动的表格表格随之同步滚动
+            fixedTable.scroll(() => {
+                const top = fixedTable.scrollTop();
+                scrollTable.scrollTop(top);
+            });
         }
     }
 
