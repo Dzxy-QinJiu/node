@@ -32,6 +32,9 @@ const LAYOUT_CONSTNTS = {
     CONTENT_PADDING: 16,
 };
 
+//滚动事件注册的延迟对象
+let scrollEventRegTimeout = null;
+
 class List extends React.Component {
     static propTypes = {
         type: PropTypes.string,
@@ -106,18 +109,24 @@ class List extends React.Component {
             //固定列的表格
             const fixedTable = $('.fixed-table .custom-tbody');
 
-            //可滚动的表格纵向滚动时，使固定列的表格随之同步滚动
-            scrollTable.scroll(() => {
-                const top = scrollTable.scrollTop();
-                fixedTable.scrollTop(top);
-            });
-
-            //固定列表格纵向滚动时，使可滚动的表格表格随之同步滚动
-            fixedTable.scroll(() => {
-                const top = fixedTable.scrollTop();
-                scrollTable.scrollTop(top);
-            });
+            //为固定列表格注册滚动事件
+            fixedTable.on('scroll', this.syncScroll.bind(this, fixedTable, scrollTable));
+            //为非固定列表格注册滚动事件
+            scrollTable.on('scroll', this.syncScroll.bind(this, scrollTable, fixedTable));
         }
+    }
+
+    //滚动条同步函数
+    syncScroll(source, target) {
+        const top = source.scrollTop();
+        //先去掉目标对象上的滚动事件，以防循环调用
+        target.off('scroll');
+        target.scrollTop(top);
+        //滚动完成后再将目标对象上的滚动事件加回去
+        clearTimeout(scrollEventRegTimeout);
+        scrollEventRegTimeout = setTimeout(() => {
+            target.on('scroll', this.syncScroll.bind(this, target, source));
+        }, 500);
     }
 
     componentWillUnmount() {
