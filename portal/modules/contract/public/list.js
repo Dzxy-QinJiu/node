@@ -99,16 +99,19 @@ class List extends React.Component {
         // 根据当前获取的展示列的值设置当前展示的列
         this.handleSelectShowColumnsChange(selectShowColumnsValue);
 
-        //可滚动的表格
-        const scrollTable = $('.scroll-table .gm-scroll-view');
-        //固定列的表格
-        const fixedTable = $('.fixed-table .custom-tbody');
+        //销售合同下使固定列可随非固定列一起上下滚动
+        if (this.props.type === VIEW_TYPE.SELL) {
+            //可滚动的表格
+            const scrollTable = $('.scroll-table .gm-scroll-view');
+            //固定列的表格
+            const fixedTable = $('.fixed-table .custom-tbody');
 
-        //可滚动的表格纵向滚动时，使固定列的表格随之同步滚动
-        scrollTable.scroll(() => {
-            const top = scrollTable.scrollTop();
-            fixedTable.scrollTop(top);
-        });
+            //可滚动的表格纵向滚动时，使固定列的表格随之同步滚动
+            scrollTable.scroll(() => {
+                const top = scrollTable.scrollTop();
+                fixedTable.scrollTop(top);
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -621,36 +624,38 @@ class List extends React.Component {
                     <div className={customColumnBackgroundDivClassName} onClick={this.toggleCustomColumnDivVisible}></div>
                 </div>
 
-                {/*用绝对定位表格实现固定列效果*/}
-                <div className="table-wrap-outer fixed-table" style={{width: fixedTableWidth}}>
-                    <div className="table-wrap splice-table">
-                        <div className="custom-thead">
-                            <Table
-                                columns={fixedColumns}
-                                pagination={false}
-                                onChange={this.onChange}
-                            />
-                        </div>
-                        {this.props.isTheadFilterShow ? (
-                            <div className="custom-thead-filter">
+                {/*销售合同下用绝对定位表格实现固定列效果*/}
+                {this.props.type === VIEW_TYPE.SELL ? (
+                    <div className="table-wrap-outer fixed-table" style={{width: fixedTableWidth}}>
+                        <div className="table-wrap splice-table">
+                            <div className="custom-thead">
                                 <Table
-                                    columns={filterColumns}
+                                    columns={fixedColumns}
                                     pagination={false}
+                                    onChange={this.onChange}
                                 />
                             </div>
-                        ) : null}
-                        <div className="custom-tbody">
-                            <Table
-                                dataSource={this.props.contractList}
-                                columns={this.state.currentTypeShowColumns}
-                                rowKey={this.getRowKey}
-                                pagination={false}
-                                rowClassName={this.handleRowClassName}
-                                onRowClick={this.onRowClick}
-                            />
+                            {this.props.isTheadFilterShow ? (
+                                <div className="custom-thead-filter">
+                                    <Table
+                                        columns={filterColumns}
+                                        pagination={false}
+                                    />
+                                </div>
+                            ) : null}
+                            <div className="custom-tbody">
+                                <Table
+                                    dataSource={this.props.contractList}
+                                    columns={this.state.currentTypeShowColumns}
+                                    rowKey={this.getRowKey}
+                                    pagination={false}
+                                    rowClassName={this.handleRowClassName}
+                                    onRowClick={this.onRowClick}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
+                ) : null}
 
                 <div className="table-wrap-outer scroll-table">
                     <div className="table-wrap splice-table" style={style}>
