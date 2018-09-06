@@ -48,6 +48,12 @@ class FilterList extends React.Component {
         }
         const pickNameValue = advancedData => {
             advancedData.forEach(group => {
+                group.data = group.data.map(x => ({name: x.name, value: x.value}));
+            });
+            return advancedData;
+        };
+        const pickNameValueAdvanced = advancedData => {
+            advancedData.forEach(group => {
                 group.data = group.data.map(x => ({name: x.name, value: x.value, selected: x.selected}));
             });
             return advancedData;
@@ -55,6 +61,10 @@ class FilterList extends React.Component {
         if (advancedData && advancedData.length && (JSON.stringify(pickNameValue(advancedData)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData)))) {
             this.setState({
                 rawAdvancedData: advancedData,
+            });
+        }
+        if (advancedData && advancedData.length && (JSON.stringify(pickNameValueAdvanced(advancedData)) !== JSON.stringify(pickNameValueAdvanced(this.state.rawAdvancedData)))) {
+            this.setState({
                 advancedData
             });
         }

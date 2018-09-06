@@ -290,7 +290,7 @@ exports.exportData = function(req, res) {
                 if (column.dataIndex === 'contacts' && _.isArray(value)){
                     var contactDes = '';
                     _.forEach(value, (contactItem) => {
-                        contactDes += _.get(contactItem,'name');
+                        contactDes += _.get(contactItem,'name','');
                         _.forEach(contactWays, (way) => {
                             if (_.isArray(contactItem[way])){
                                 _.forEach(contactItem[way], (wayItem) => {

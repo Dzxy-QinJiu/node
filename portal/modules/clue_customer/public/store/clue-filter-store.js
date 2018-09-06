@@ -111,7 +111,15 @@ ClueFilterStore.prototype.setFilterClueClassify = function(updateClassify) {
     this.filterClueClassify = selectedClassify;
 };
 ClueFilterStore.prototype.setFilterClueAvailbility = function() {
+    //点击线索无效，把线索状态选为全部
     this.filterClueAvailability = AVALIBILITYSTATUS.INAVALIBILITY;
+    _.forEach(this.filterClueStatus, (item) => {
+        item.selected = false;
+        if (item.value === SELECT_TYPE.ALL){
+            item.selected = true;
+        }
+    });
+
 };
 ClueFilterStore.prototype.setFilterClueProvince = function(updateProvince) {
     var selectedProvince = [];
