@@ -1,8 +1,6 @@
-var React = require('react');
 require('../css/user-login-analysis.less');
 var Spinner = require('../../../../components/spinner');
 var SelectFullWidth = require('../../../../components/select-fullwidth');
-var TimeSeriesBarChart = require('../../../../components/timeseries-barchart');
 var UserLoginAnalysisAction = require('../action/user-login-analysis-action');
 var UserLoginAnalysisStore = require('../store/user-login-analysis-store');
 import TimeUtil from '../../../../public/sources/utils/time-format-util';
@@ -14,10 +12,17 @@ var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
 import { Progress, Tooltip, Icon } from 'antd';
+import PropTypes from 'prop-types'; 
 
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
         userId: '1'
+    };
+
+    static propTypes = {
+        userId: PropTypes.string,
+        selectedAppId: PropTypes.string,
+        height: PropTypes.number,
     };
 
     onStateChange = () => {

@@ -16,7 +16,6 @@ var legend = [{ name: Intl.get('sales.home.new.add', '新增'), key: 'total' }];
 var constantUtil = require('../util/constant');
 //这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
 var delayConstant = constantUtil.DELAY.TIMERANG;
-import Analysis from 'CMP_DIR/analysis';
 import { processCustomerStageData, processOrderStageData } from 'PUB_DIR/sources/utils/analysis-util';
 import { AntcHorizontalStageChart, AntcTable } from 'antc';
 import { Button, Spin, Alert } from 'antd';

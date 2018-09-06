@@ -1,17 +1,13 @@
 /**
  * 柱状图
  */
-var React = require('react');
-var echarts = require('echarts');
 require('./style.less');
-var macronsTheme = require('./theme-macrons');
+import {AntcChart} from 'antc';
 var echartsTooltipCssText = require('../../lib/utils/echarts-tooltip-csstext');
 var textWidth = require('../../public/sources/utils/measure-text');
-var immutable = require('immutable');
-const querystring = require('querystring');
 import { XAXIS_COLOR } from './consts';
 import Trace from 'LIB_DIR/trace';
-import { packageTry } from 'LIB_DIR/func';
+import PropTypes from 'prop-types'; 
 
 var COLORSINGLE = '#1790cf';
 var COLORMULTIPLE = ['#1790cf', '#1bb2d8'];
@@ -19,7 +15,6 @@ var COLORMULTIPLE = ['#1790cf', '#1bb2d8'];
 class BarChart extends React.Component {
     static defaultProps = {
         chartData: [],
-        width: '100%',
         height: 214,
         resultType: 'loading',
         startDate: '',
@@ -29,31 +24,22 @@ class BarChart extends React.Component {
         xAxisRotateLength: 12,
     };
 
-    echartInstance = null;
-
-    componentDidMount() {
-        this.renderChart();
-    }
-
-    componentDidUpdate(prevProps) {
-        if(
-            this.props.chartData.length &&
-            prevProps.chartData.length &&
-            immutable.is(this.props.chartData , prevProps.chartData) &&
-            this.props.width === prevProps.width
-        ) {
-            return;
-        }
-        this.renderChart();
-    }
-
-    componentWillUnmount() {
-        if(this.echartInstance) {
-            packageTry(() => {
-                this.echartInstance.dispose();
-            });
-            this.echartInstance = null;
-        }
+    static propTypes = {
+        chartData: PropTypes.array,
+        height: PropTypes.number,
+        resultType: PropTypes.string,
+        valueField: PropTypes.string,
+        dataField: PropTypes.string,
+        name: PropTypes.string,
+        legend: PropTypes.array,
+        xAxisRotateLength: PropTypes.number,
+        autoAdjustXaxisLabel: PropTypes.bool,
+        showLabel: PropTypes.bool,
+        labelFormatter: PropTypes.func,
+        gridY2: PropTypes.number,
+        xAxisLabelAlign: PropTypes.string,
+        xAxisInterval: PropTypes.string,
+        xAxisRotate: PropTypes.number,
     }
 
     adjustXaxis = (categories, xAxisOptions) => {
@@ -92,12 +78,7 @@ class BarChart extends React.Component {
         if (this.props.dataField) {
             chartData = chartData[this.props.dataField];
         }
-        var categories = '';
-        if (this.props.reverseChart){
-            categories = _.map(chartData.slice().reverse() , 'name');
-        }else{
-            categories = _.map(chartData , 'name');
-        }
+        var categories = _.map(chartData , 'name');
         return categories;
     };
 
@@ -121,11 +102,7 @@ class BarChart extends React.Component {
 
         if (_.isEmpty(legend)) {
             const serie = _.clone(serieTpl);
-            if (this.props.reverseChart){
-                serie.data = _.map(chartData.slice().reverse(), this.props.valueField);
-            }else{
-                serie.data = _.map(chartData, this.props.valueField);
-            }
+            serie.data = _.map(chartData, this.props.valueField);
             serie.itemStyle = {
                 normal: {
                     color: COLORSINGLE,
@@ -263,100 +240,6 @@ class BarChart extends React.Component {
         return option;
     };
 
-    getReverseEchartOptions = () => {
-        //grid上的margin
-        var maxMargin = this.getMargin();
-        const categories = this.getCategories();
-        const xAxisOptions = {
-            interval: 'auto',//x轴坐标label间隔的控制,默认：自动调整，（0：所有label全部展示）
-            labelAlign: 'center',//x轴坐标label位置，默认：剧中（居左、右）
-            rotate: 0,//x轴坐标label倾斜的角度（避免重叠时设置）
-        };
-
-        if (this.props.autoAdjustXaxisLabel) {
-            this.adjustXaxis(categories, xAxisOptions);
-        }
-
-        const labelConf = {
-            show: typeof this.props.showLabel === 'boolean' ? this.props.showLabel : true,
-            position: 'outside',
-            formatter: this.props.labelFormatter || '{c}'
-        };
-
-        var option = {
-            title: null,
-            animation: false,
-            tooltip: this.getTooltip(),
-            legend: this.getLegend(),
-            toolbox: {
-                show: false
-            },
-            label: {
-                normal: labelConf,
-                emphasis: labelConf,
-            },
-            calculable: false,
-            grid: {
-                x: maxMargin,
-                y: 40,
-                x2: 33,
-                y2: 0,
-                borderWidth: 0
-            },
-            yAxis: [
-                {
-                    type: 'category',
-                    data: categories,
-                    splitLine: false,
-                    splitArea: false,
-                    axisLine: {
-                        lineStyle: {
-                            width: 1,
-                            color: '#d1d1d1'
-                        }
-                    },
-                    axisTick: {
-                        show: false
-                    },
-                    axisLabel: {
-                        textStyle: {
-                            color: XAXIS_COLOR,
-                        },
-                        formatter: function(text) {
-                            if(text === 'unknown') {
-                                text = Intl.get('common.unknown', '未知');
-                            } else if(!text) {
-                                text = 'null';
-                            }
-                            return text;
-                        }
-                    }
-                }
-            ],
-            xAxis: [
-                {
-                    type: 'value',
-                    splitLine: false,
-                    splitArea: false,
-                    position: 'top',
-                    axisLine: {
-                        lineStyle: {
-                            width: 1,
-                            color: '#d1d1d1'
-                        }
-                    },
-                    axisLabel: {
-                        textStyle: {
-                            color: '#939393'
-                        }
-                    }
-                }
-            ],
-            series: this.getSeries()
-        };
-        return option;
-    };
-
     getTooltip = () => {
         var _this = this;
         return {
@@ -393,46 +276,13 @@ class BarChart extends React.Component {
         };
     };
 
-    renderChart = () => {
-        if(this.echartInstance) {
-            packageTry(() => {
-                this.echartInstance.dispose();
-            });
-        }
-        this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
-        var options = '';
-        if (this.props.reverseChart) {
-            options = this.getReverseEchartOptions();
-        } else {
-            options = this.getEchartOptions();
-        }
-        this.echartInstance.setOption(options, true);
-        const jumpProps = this.props.jumpProps;
-        if (jumpProps) {
-            this.echartInstance.on('click', params => {
-                Trace.traceEvent(params.event.event, '跳转到\'' + params.name + '\'用户列表');
-                let query = {
-                    app_id: this.props.app_id,
-                    login_begin_date: this.props.startTime,
-                    login_end_date: this.props.endTime,
-                    analysis_filter_value: params.name,
-                };
-
-                if (jumpProps.query) _.extend(query, jumpProps.query);
-
-                //跳转到用户列表
-                window.open(jumpProps.url + '?' + querystring.stringify(query));
-            });
-        }
-
-    };
-
     render() {
         return (
-            <div className="analysis-chart">
-                <div ref="chart" style={{width: this.props.width, height: this.props.height}} className="chart"
-                    data-title={this.props.title}></div>
-            </div>
+            <AntcChart
+                option={this.getEchartOptions()}
+                resultType={this.props.resultType}
+                height={this.props.height}
+            />
         );
     }
 }
