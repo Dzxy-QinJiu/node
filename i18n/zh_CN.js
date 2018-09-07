@@ -1429,6 +1429,13 @@ var zh_CN = {
     'crm.no.order.lose.reason': '暂无丢单原因',
     'crm.fill.order.lose.reason': '补充丢单原因',
     'crm.filter.select.placeholder': '请选择要筛选的{groupName}',
+    'crm.score.label': '客户评分',
+    'crm.score.text': '{score}分',
+    'crm.qualify.user.error': '获取合格用户失败',
+    'crm.get.score.history.error': '获取历史分数失败',
+    'crm.qualify.account': '合格账号',
+    'crm.no.qualify.account': '暂无合格账号',
+    'crm.score.history.title': '历史分数',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',

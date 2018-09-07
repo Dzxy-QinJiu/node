@@ -10,6 +10,8 @@ var crmRestApis = {
     customer: '/rest/customer/v2/customer',
     //获取客户开通的用户列表
     getCrmUserList: '/rest/base/v1/user/customer/users',
+    //获取客户的历史分数
+    getHistoryScoreList: '/rest/customer/v2/customer/score/:customer_id/:start_time/:end_time',
     list: '/rest/customer/v2/customer/all',
     //我可以查看的客户列表（已分配销售的客户）
     query: '/rest/customer/v2/customer/range',
@@ -73,6 +75,17 @@ var crmRestApis = {
 };
 exports.urls = crmRestApis;
 
+//获取客户的历史分数
+exports.getHistoryScoreList = function(req, res, queryObj) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getHistoryScoreList.replace(':customer_id', queryObj.customer_id)
+                .replace(':start_time', queryObj.start_time).replace(':end_time', queryObj.end_time),
+            req: req,
+            res: res
+        }, null);
+};
+//获取客户的用户列表
 exports.getCrmUserList = function(req, res, queryObj) {
     return restUtil.authRest.get(
         {

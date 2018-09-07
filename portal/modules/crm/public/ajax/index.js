@@ -325,11 +325,9 @@ exports.getUserPhoneNumber = function(member_id) {
     });
     return Deferred.promise();
 };
-let crmUserListAjax;
 exports.getCrmUserList = function(reqData) {
-    crmUserListAjax && crmUserListAjax.abort();
     let Deferred = $.Deferred();
-    crmUserListAjax = $.ajax({
+    $.ajax({
         url: '/rest/crm/user_list',
         dataType: 'json',
         type: 'get',
@@ -339,7 +337,8 @@ exports.getCrmUserList = function(reqData) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get('user.list.get.failed', '获取用户列表失败'));
+                let defaultErrorMsg = reqData.qualify_label ? Intl.get('crm.qualify.user.error', '获取合格用户失败') : Intl.get('user.list.get.failed', '获取用户列表失败');
+                Deferred.reject(xhr.responseJSON || defaultErrorMsg);
             }
         }
     });
@@ -351,7 +350,7 @@ let getCustomerLimitAjax;
 exports.getCustomerLimit = function(reqData) {
     getCustomerLimitAjax && getCustomerLimitAjax.abort();
     let Deferred = $.Deferred();
-    $.ajax({
+    getCustomerLimitAjax = $.ajax({
         url: '/rest/crm/limit',
         dataType: 'json',
         type: 'get',
@@ -362,6 +361,28 @@ exports.getCustomerLimit = function(reqData) {
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+//获取客户历史分数
+let getHistoryScoreListAjax;
+exports.getHistoryScoreList = function(reqData) {
+    getHistoryScoreListAjax && getHistoryScoreListAjax.abort();
+    let Deferred = $.Deferred();
+    getHistoryScoreListAjax = $.ajax({
+        url: '/rest/history/score',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl('crm.get.score.history.error', '获取历史分数失败'));
             }
         }
     });

@@ -152,6 +152,7 @@ var pluginLists = [
     new webpack.ProvidePlugin({
         React: 'react',
         ReactDOM: 'react-dom',
+        PropTypes: 'prop-types',
         $: 'jquery',
         jQuery: 'jquery',
         'window.jQuery': 'jquery',

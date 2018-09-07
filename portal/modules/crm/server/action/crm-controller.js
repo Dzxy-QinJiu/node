@@ -69,6 +69,15 @@ exports.getCurCustomers = function(req, res) {
             res.json(err.message);
         });
 };
+//获取客户的历史分数
+exports.getHistoryScoreList = function(req, res) {
+    crmService.getHistoryScoreList(req, res, req.query)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};
 //获取客户的用列表
 exports.getCrmUserList = function(req, res) {
     crmService.getCrmUserList(req, res, req.query)

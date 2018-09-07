@@ -27,6 +27,7 @@ import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
+import CrmScoreCard from './basic_info/crm-score-card';
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS'//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
 };
@@ -230,8 +231,9 @@ class BasicOverview extends React.Component {
     onSelectAdministrativeLevel = (administrative_level) => {
         administrative_level = parseInt(administrative_level);
         if (!_.isNaN(administrative_level)) {
-            this.state.basicData.administrative_level = parseInt(administrative_level);
-            this.setState({basicData: this.state.basicData});
+            let basicData = this.state.basicData;
+            basicData.administrative_level = parseInt(administrative_level);
+            this.setState({basicData});
         }
     };
 
@@ -258,9 +260,10 @@ class BasicOverview extends React.Component {
                     if (_.isFunction(successFunc)) successFunc();
                     //更新列表中的标签
                     this.editBasicSuccess(submitData);
-                    this.state.basicData.labels = tags;
+                    let basicData = this.state.basicData;
+                    basicData.labels = tags;
                     this.setState({
-                        basicData: this.state.basicData,
+                        basicData,
                         recommendTags: _.union(this.state.recommendTags, tags)
                     });
                 } else {
@@ -287,9 +290,10 @@ class BasicOverview extends React.Component {
                     if (_.isFunction(successFunc)) successFunc();
                     //更新列表中的竞品
                     this.editBasicSuccess(submitData);
-                    this.state.basicData.competing_products = competitors;
+                    let basicData = this.state.basicData;
+                    basicData.competing_products = competitors;
                     this.setState({
-                        basicData: this.state.basicData,
+                        basicData,
                         competitorList: _.union(this.state.competitorList, competitors)
                     });
                 } else {
@@ -516,6 +520,8 @@ class BasicOverview extends React.Component {
                         salesTeamId={basicData.sales_team_id}
                         modifySuccess={this.editBasicSuccess}
                     />
+                    <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
+                        customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>
                     <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
                         placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
                         tags={basicData.competing_products}
@@ -546,6 +552,16 @@ class BasicOverview extends React.Component {
         );
     }
 }
-
+BasicOverview.propTypes = {
+    curCustomer: PropTypes.object,
+    callNumber: PropTypes.string,
+    ShowCustomerUserListPanel: PropTypes.func,
+    isMerge: PropTypes.bool,
+    updateMergeCustomer: PropTypes.func,
+    isRepeat: PropTypes.bool,
+    editCustomerBasic: PropTypes.func,
+    changeActiveKey: PropTypes.func,
+    refreshCustomerList: PropTypes.func
+};
 module.exports = BasicOverview;
 
