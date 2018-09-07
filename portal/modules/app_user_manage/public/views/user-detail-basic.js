@@ -407,7 +407,7 @@ class UserDetailBasic extends React.Component {
                 { _.map(roleAndRelatePrivilege,(item) => {
                     var privilgeName = item.privilegeName.join(',');
                     return <span className="role-name">
-                        <Tooltip title={privilgeName}>
+                        <Tooltip title={privilgeName} trigger="click">
                             {item.roleName}
                         </Tooltip>
 
