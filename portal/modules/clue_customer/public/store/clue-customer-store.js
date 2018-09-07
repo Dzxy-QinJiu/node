@@ -49,6 +49,10 @@ ClueCustomerStore.prototype.setClueInitialData = function() {
 ClueCustomerStore.prototype.setLastClueId = function(updateId) {
     this.lastCustomerId = updateId;
 };
+ClueCustomerStore.prototype.setSortField = function(updateSortField) {
+    this.sorter.field = updateSortField;
+};
+
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     if (clueData.loading) {

@@ -29,6 +29,7 @@ function ClueCustomerActions() {
         'afterAssignSales',//分配销售之后
         'setKeyWord',//设置关键字
         'setLastClueId',//用于设置下拉加载的最后一个线索的id
+        'setSortField'
     );
     //联系人电话唯一性的验证
     this.checkOnlyContactPhone = function(phone, callback) {
