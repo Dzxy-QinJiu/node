@@ -11,7 +11,7 @@ import {Tabs, Icon, Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
-
+import PropTypes from 'prop-types';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 //记录上下留白布局
@@ -28,7 +28,19 @@ const UserDetailEditApp = createReactClass({
     getInitialState() {
         return UserDetailEditAppStore.getState();
     },
+    propTypes: {
+        appInfo: PropTypes.object,
+        initialUser: PropTypes.object,
+        height: PropTypes.string,
+    },
 
+    getDefaultProps() {
+        return {
+            appInfo: {},
+            initialUser: {},
+            height: 'auto',
+        };
+    },
     onStoreChange() {
         this.setState(UserDetailEditAppStore.getState());
     },
@@ -192,6 +204,7 @@ const UserDetailEditApp = createReactClass({
                     height={height}
                     isSingleAppEdit={true}
                     appSelectRoleError={this.state.appSelectRoleError}
+                    appInfo={this.props.appInfo}
                 />
                 <OperationStepsFooter
                     currentStep={2}
