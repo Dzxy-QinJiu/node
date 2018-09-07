@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import crmAjax from '../../ajax';
 import {AntcChart} from 'antc';
 import {Tag} from 'antd';
+const PropTypes = require('prop-types');
 const QUALIFIED_USER_SIZE = 200;//客户的所有合格用户默认先用200个
 const QUALIFY_LABEL = 1; //合格的用户
 class CrmScoreCard extends React.Component {
