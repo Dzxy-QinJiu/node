@@ -60,7 +60,10 @@ const AppPropertySetting = createReactClass({
         //隐藏单个应用的表单界面
         hideSingleApp: PropTypes.bool,
         //显示多人登录
-        showMultiLogin: PropTypes.bool
+        showMultiLogin: PropTypes.bool,
+        appInfo: PropTypes.object,
+        appSelectRoleError: PropTypes.string,
+        height: PropTypes.string,
     },
 
     getDefaultProps() {
@@ -78,7 +81,9 @@ const AppPropertySetting = createReactClass({
             //隐藏单个应用
             hideSingleApp: false,
             //显示多人登录
-            showMultiLogin: true
+            showMultiLogin: true,
+            appInfo: {},
+            appSelectRoleError: ''
         };
     },
 
@@ -461,6 +466,7 @@ const AppPropertySetting = createReactClass({
                         selectedPermissions={selectedPermissions}
                         onRolesPermissionSelect={this.onRolesPermissionSelect}
                         updateScrollBar={this.updateScrollBar}
+                        appInfo={this.props.appInfo}
                     />                    
                 </div>
             </div>

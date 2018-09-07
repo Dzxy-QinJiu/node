@@ -93,7 +93,7 @@ UserLoginAnalysisStore.prototype.getUserLoginInfo = function(result){
 
 // 用户登录统计图中登录时长、登录频次
 UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
-    const appid = result.paramsObj.appid;
+    const appid = _.get(result,'paramsObj.appid');
     this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
         loading: false
     };
