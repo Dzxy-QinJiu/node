@@ -137,30 +137,30 @@ class RegisterForm extends React.Component {
     changeStep(step) {
         const REGISTER_STEPS = this.props.REGISTER_STEPS;
         const form = this.props.form;
-        form.validateFields((err, values) => {
-            if (err) return;
-            let formData = this.state.formData;
-            //公司唯一标识的设置
-            if (this.state.currentStep === REGISTER_STEPS.COMPANY_ID_SET) {
-                let name = $.trim(form.getFieldValue('name'));
-                this.validateNameOnly(name, () => {
-                    //验证通过，切换到下一步
-                    formData.name = name;
-                    this.setState({currentStep: step, formData});
-                    this.props.onRegisterStepChange(step);
-                });
-            } else if (this.state.currentStep === REGISTER_STEPS.PHONE_VALID) {
-                //手机验证
-                let code = $.trim(form.getFieldValue('code'));
-                let phone = $.trim(form.getFieldValue('phone'));
-                this.validatePhoneCode(phone, code, () => {
-                    formData.phone = phone;
-                    formData.code = code;
-                    this.setState({currentStep: step, formData});
-                    this.props.onRegisterStepChange(step);
-                });
-            }
-        });
+        // form.validateFields((err, values) => {
+        //     if (err) return;
+        //     let formData = this.state.formData;
+        //     //公司唯一标识的设置
+        //     if (this.state.currentStep === REGISTER_STEPS.COMPANY_ID_SET) {
+        //         let name = $.trim(form.getFieldValue('name'));
+        //         this.validateNameOnly(name, () => {
+        //             //验证通过，切换到下一步
+        //             formData.name = name;
+        //             this.setState({currentStep: step, formData});
+        //             this.props.onRegisterStepChange(step);
+        //         });
+        //     } else if (this.state.currentStep === REGISTER_STEPS.PHONE_VALID) {
+        //         //手机验证
+        //         let code = $.trim(form.getFieldValue('code'));
+        //         let phone = $.trim(form.getFieldValue('phone'));
+        //         this.validatePhoneCode(phone, code, () => {
+        //             formData.phone = phone;
+        //             formData.code = code;
+        this.setState({currentStep: step});
+        this.props.onRegisterStepChange(step);
+        //         });
+        //     }
+        // });
     }
 
     renderCaptchaCode() {
