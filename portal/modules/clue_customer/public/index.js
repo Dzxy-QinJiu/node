@@ -833,8 +833,10 @@ class ClueCustomer extends React.Component {
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
                     </div>
-                    <div className={cls}>
-                        {this.state.clueAddFormShow ? (
+                    {this.state.clueAddFormShow ?
+                        <div className={cls}>
+                            <span className="iconfont icon-close clue-add-btn" onClick={this.hideClueAddForm}
+                                data-tracename="关闭添加线索面板"></span>
                             <SalesClueAddForm
                                 hideAddForm={this.hideClueAddForm}
                                 accessChannelArray={this.state.accessChannelArray}
@@ -844,8 +846,8 @@ class ClueCustomer extends React.Component {
                                 updateClueChannel={this.updateClueChannel}
                                 updateClueClassify={this.updateClueClassify}
                             />
-                        ) : null}
-                    </div>
+                            )
+                        </div> : null}
                     <div className={importCls}>
                         <ClueImportRightDetail
                             showFlag={this.state.clueImportTemplateFormShow}
