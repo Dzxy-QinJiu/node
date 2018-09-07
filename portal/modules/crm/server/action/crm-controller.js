@@ -287,7 +287,7 @@ exports.getDynamicList = function(req, res) {
  * 查询客户
  */
 exports.queryCustomer = function(req, res) {
-    var reqData = req.body.reqData || req.body.data;
+    var reqData = req.body.data;
     var condition = JSON.parse(reqData);
     crmService.queryCustomer(req, res, condition)
         .on('success', function(data) {
