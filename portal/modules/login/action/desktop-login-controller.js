@@ -317,6 +317,42 @@ exports.wechatLogin = function(req, res) {
         .on('success', wechatLoginSuccess(req, res))
         .on('error', wechatLoginError(req, res));
 };
+//根据公司名获取公司
+exports.getCompanyByName = function(req, res) {
+    DesktopLoginService.getCompanyByName(req, res).on('success', function(data) {
+        if(!data){
+            res.status(200).json(false);
+        } else{
+            res.status(200).json(data);
+        }
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+//获取短信验证码
+exports.getVertificationCode = function(req, res) {
+    DesktopLoginService.getVertificationCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+//注册新公司账号
+exports.registerAccount = function(req, res) {
+    DesktopLoginService.registerAccount(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+//短信验证码的验证
+exports.validatePhoneCode = function(req, res) {
+    DesktopLoginService.validatePhoneCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
 
 //修改session数据
 function modifySessionData(req, data) {

@@ -242,6 +242,7 @@ var zh_CN = {
 
     //公共部分--end
     'login.login': '登录',
+    'login.register': '注册',
     'login.service.error': '很抱歉,服务器出现了异常状况',
     'login.error.retry': '登录服务暂时不可用，请稍后重试',
     'login.username.password.error': '用户名或密码错误',
@@ -276,6 +277,24 @@ var zh_CN = {
     'login.load.ketao.tip': '下载客套APP安卓端',
     'login.scan.ketao.qrcode.tip': '扫码下载客套APP安卓端',
     'login.qrcode.loading': '正在获取二维码...',
+    'register.set.company.id': '设置公司标识',
+    'register.valid.phone': '验证手机',
+    'register.fill.account': '账号设置',
+    'register.fill.company.name': '请输入公司标识',
+    'register.company.valid.tip': '请输入小写字母和中划线组成的公司标识',
+    'register.company.only.error': '公司标识唯一性验证失败',
+    'register.company.name.exist': '公司标识已存在',
+    'register.get.phone.captcha.code': '获取短信验证码',
+    'register.company.name.fill': '请输入公司名称',
+    'register.finished.button': '完成注册',
+    'register.phon.validat.tip': '请输入正确的手机号, 格式如：13877775555',
+    'register.code.has.send': '短信验证码已经发送，请勿重复发送',
+    'register.code.get.error': '获取短信验证码失败',
+    'register.code.effective.time': '{second}秒后重试',
+    'register.get.code.fill.in': '请获取验证码',
+    'register.error.tip': '注册失败',
+    'register.phon.has.registed': '该手机号已被注册',
+    'register.code.validate.error': '短信验证码验证错误',
 
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
