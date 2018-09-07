@@ -4,7 +4,8 @@
  * Created by wangliping on 2018/8/30.
  */
 require('./css/register.less');
-import {mobileRegex} from '../../public/sources/utils/consts';
+const PropTypes = require('prop-types');
+import {commonPhoneRegex} from '../../public/sources/utils/consts';
 import crypto from 'crypto';
 import {Form, Button, Steps, Input} from 'antd';
 import classNames from 'classnames';
@@ -198,7 +199,7 @@ class RegisterForm extends React.Component {
     getValidateCode() {
         if (this.state.captchaCode) return;
         let phone = $.trim(this.props.form.getFieldValue('phone'));
-        if (phone && mobileRegex.test(phone)) {
+        if (phone && commonPhoneRegex.test(phone)) {
             $.ajax({
                 url: '/phone/validate_code',
                 dataType: 'json',
@@ -229,7 +230,7 @@ class RegisterForm extends React.Component {
     validatePhone(rule, value, callback) {
         let phone = $.trim(value);
         if (phone) {
-            if (mobileRegex.test(phone)) {
+            if (commonPhoneRegex.test(phone)) {
                 callback();
             } else {
                 callback(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如:13877775555'));
@@ -264,7 +265,7 @@ class RegisterForm extends React.Component {
                             {getFieldDecorator('name', {
                                 rules: [{validator: this.validatorCompanyName.bind(this)}]
                             })(
-                                <Input placeholder={Intl.get('register.company.valid.tip', '请输入小写字母和中划线组成的公司标识')}
+                                <Input placeholder={Intl.get('register.company.name', '公司标识')}
                                     addonAfter={COMPANY_SUFFIX}/>
                             )}
                             {this.state.validateNameOnlyMsg ?
@@ -285,7 +286,7 @@ class RegisterForm extends React.Component {
                             {getFieldDecorator('phone', {
                                 rules: [{validator: this.validatePhone}]
                             })(
-                                <Input placeholder={Intl.get('user.input.phone', '请输入手机号')}/>
+                                <Input placeholder={Intl.get('user.phone', '手机号')}/>
                             )}
                         </FormItem>
                         <FormItem>
@@ -293,7 +294,7 @@ class RegisterForm extends React.Component {
                                 rules: [{validator: this.validateCode.bind(this)}],
                             })(
                                 <Input className='captcha-code-input'
-                                    placeholder={Intl.get('retry.input.captcha', '请输入验证码')}/>
+                                    placeholder={Intl.get('register.phone.code','短信验证码')}/>
                             )}
                             <div className="captcha-code-wrap" onClick={this.getValidateCode.bind(this)}>
                                 {this.renderCaptchaCode()}
@@ -317,7 +318,7 @@ class RegisterForm extends React.Component {
                             {getFieldDecorator('pwd', {
                                 rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}]
                             })(
-                                <Input type='password' placeholder={Intl.get('common.input.password', '请输入密码')}
+                                <Input type='password' placeholder={Intl.get('common.password', '密码')}
                                     autocomplete="off"/>
                             )}
                         </FormItem>
@@ -325,14 +326,14 @@ class RegisterForm extends React.Component {
                             {getFieldDecorator('nickname', {
                                 rules: [{required: true, message: Intl.get('user.info.input.nickname', '请输入昵称')}]
                             })(
-                                <Input placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}/>
+                                <Input placeholder={Intl.get('common.nickname', '昵称')}/>
                             )}
                         </FormItem>
                         <FormItem>
                             {getFieldDecorator('organization_name', {
                                 rules: [{required: true, message: Intl.get('register.company.name.fill', '请输入公司名称')}]
                             })(
-                                <Input placeholder={Intl.get('register.company.name.fill', '请输入公司名称')}/>
+                                <Input placeholder={Intl.get('register.company.nickname', '公司名称')}/>
                             )}
                         </FormItem>
                         <FormItem>
@@ -365,7 +366,6 @@ class RegisterForm extends React.Component {
     }
 }
 
-const PropTypes = React.PropTypes;
 RegisterForm.propTypes = {
     REGISTER_STEPS: PropTypes.object,
     onRegisterStepChange: PropTypes.func,

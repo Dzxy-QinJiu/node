@@ -76,7 +76,7 @@ exports.showLoginPage = function(req, res) {
             username: obj.username,
             captchaCode: obj.captchaCode || '',
             addShowingIoCode: global.config.formal,
-            company: backendIntl.get('company.name', '© 蚁坊软件 湘ICP备14007253号-1'),
+            company: backendIntl.get('company.name', '© 客套智能科技 鲁ICP备18038856号'),
             hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
             contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
             siteID: global.config.siteID,

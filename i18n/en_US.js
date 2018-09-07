@@ -273,6 +273,7 @@ var en_US = {
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
     'register.fill.account': 'Set up account',//账号设置
+    'register.company.name': 'Company identifier',//公司标识
     'register.fill.company.name': 'Please enter company identifier',//请输入公司标识
     'register.company.valid.tip': 'Please enter lowercase and middle line',//请输入小写字母和中划线组成的公司标识
     'register.company.only.error': 'Failed to validate company identifier',//公司标识唯一性验证失败
@@ -288,6 +289,8 @@ var en_US = {
     'register.error.tip': 'Failed to regist',//注册失败
     'register.phon.has.registed': 'The phone number has been registered',//该手机号已被注册
     'register.code.validate.error': 'Verification error of SMS verification code',//短信验证码验证错误
+    'register.phone.code': 'SMS verification code',//短信验证码
+    'register.company.nickname': 'Company nickname',//公司名称
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -2156,7 +2159,7 @@ var en_US = {
     'common.gross_profit_rate': 'gross profit rate', //毛利率
     'common.summation': 'summation',//合计
 
-    'company.name': '© Eefung Software 湘ICP备14007253号-1',//© 蚁坊软件 湘ICP备14007253号-1
+    'company.name': '© Curtao Smart Technology 鲁ICP备18038856号',//© 客套智能科技 鲁ICP备18038856号
     'companay.hotline': 'Service Hotline:400-677-0986',//服务热线: 400-677-0986
     'company.qq': 'QQ:{qq}',//企业QQ: 4006770986
     'login.fail.login': 'Login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试

@@ -280,6 +280,7 @@ var zh_CN = {
     'register.set.company.id': '设置公司标识',
     'register.valid.phone': '验证手机',
     'register.fill.account': '账号设置',
+    'register.company.name': '公司标识',
     'register.fill.company.name': '请输入公司标识',
     'register.company.valid.tip': '请输入小写字母和中划线组成的公司标识',
     'register.company.only.error': '公司标识唯一性验证失败',
@@ -295,6 +296,8 @@ var zh_CN = {
     'register.error.tip': '注册失败',
     'register.phon.has.registed': '该手机号已被注册',
     'register.code.validate.error': '短信验证码验证错误',
+    'register.phone.code': '短信验证码',
+    'register.company.nickname': '公司名称',
 
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
@@ -2195,7 +2198,7 @@ var zh_CN = {
     'user.open.account': '开户账号',
     'user.add.only.one': '用户名是邮箱格式时，只能添加1个用户',
     'common.search': '搜索',
-    'company.name': '© 蚁坊软件 湘ICP备14007253号-1',
+    'company.name': '© 客套智能科技 鲁ICP备18038856号',
     'companay.hotline': '服务热线: {phone}',
     'company.qq': '企业QQ: {qq}',
     'login.fail.login': '登录服务暂时不可用，请稍后重试',
