@@ -250,6 +250,17 @@ module.exports = {
             passport: {
                 needLogin: true
             }
+        },
+        {
+            method: 'get',
+            path: '/rest/history/score',
+            handler: 'getHistoryScoreList',
+            passport: {
+                needLogin: true
+            },
+            privileges: [
+                'CRM_CUSTOMER_SCORE_RECORD'
+            ]
         }
     ]
 };

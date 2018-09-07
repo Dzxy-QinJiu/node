@@ -1415,6 +1415,13 @@ var en_US = {
     'crm.no.order.lose.reason': 'no lose order reason',//暂无丢单原因
     'crm.fill.order.lose.reason': 'add the reason of lose order',//补充丢单原因
     'crm.filter.select.placeholder': 'Plaase select the {groupName} you want to filter',//请选择要筛选的${groupName}
+    'crm.score.label': 'Customer score',//客户评分
+    'crm.score.text': '{score} points',//{score}分
+    'crm.qualify.user.error': 'Failed to get qualified user',//获取客户的合格用户失败
+    'crm.get.score.history.error': 'Failed to get historical scores',//获取历史分数失败
+    'crm.qualify.account': 'Qualified account',//合格账号
+    'crm.no.qualify.account': 'No qualified account',//暂无合格账号
+    'crm.score.history.title': 'Historical score',//历史分数
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
