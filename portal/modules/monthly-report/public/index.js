@@ -20,7 +20,8 @@ class MonthlyReport extends React.Component {
         teamList: [],
         memberList: [],
         selectedTeam: '',
-        selectedMonth: moment(),
+        //当月的数据下月1号才能出来,所以初始默认选中月为上月而非本月
+        selectedMonth: moment().subtract(1, 'months'),
     };
 
     componentDidMount() {
@@ -312,11 +313,14 @@ class MonthlyReport extends React.Component {
             },
             {
                 name: 'start_time',
-                value: moment().startOf('month').valueOf(),
+                //当月的数据下月1号才能出来
+                //所以查询开始时间从当月2号开始
+                value: this.state.selectedMonth.clone().startOf('month').add(1, 'days').valueOf(),
             },
             {
                 name: 'end_time',
-                value: moment().valueOf(),
+                //查询结束时间为下月1号
+                value: this.state.selectedMonth.clone().endOf('month').add(1, 'days').valueOf(),
             },
             {
                 name: 'team_ids',
@@ -362,10 +366,10 @@ class MonthlyReport extends React.Component {
                 ) : null}
 
                 <MonthPicker
-                    defaultValue={moment()}
+                    defaultValue={this.state.selectedMonth}
                     onChange={this.onDateChange}
                     allowClear={false}
-                    disabledDate={current => current && current > moment()}
+                    disabledDate={current => current && current > moment().startOf('month')}
                 />
             </div>
         );
@@ -382,8 +386,11 @@ class MonthlyReport extends React.Component {
     onDateChange = (date) => {
         this.setState({selectedMonth: date});
 
-        const startTime = date.startOf('month').valueOf();
-        const endTime = date.endOf('month').valueOf();
+        //当月的数据下月1号才能出来
+        //所以查询开始时间从当月2号开始
+        const startTime = date.clone().startOf('month').add(1, 'days').valueOf();
+        //查询结束时间为下月1号
+        const endTime = date.clone().endOf('month').add(1, 'days').valueOf();
 
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
