@@ -28,12 +28,15 @@ exports.home = function(req, res) {
     if (global.config.lang && global.config.lang === 'es_VE') {
         hideSomeItem = 'true';
     }
+    let custome_service_lang = global.config.lang || 'zh_CN';
+    custome_service_lang = custome_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
     res.render('home/tpl/desktop-index', {
         addShowingIoCode: global.config.formal,
         userid: user.user_id,
         username: user.user_name,
         siteID: global.config.siteID,
         lang: global.config.lang || '',
+        custome_service_lang: custome_service_lang,
         hideSomeItem: hideSomeItem,
         projectName: global.config.processTitle || 'oplate',
         clientId: global.config.loginParams.clientId,
@@ -57,6 +60,7 @@ exports.getUserData = function(req, res) {
         }).on('error', function(codeMessage) {
             setLang(global.config.lang || 'zh_CN');
         });
+
     //设置语言环境
     function setLang(lang) {
         moment.locale(lang);
