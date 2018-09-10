@@ -34,7 +34,7 @@ class ContactCard extends React.Component {
     }
     render() {
         const { userInfo } = this.props;
-        const hasEditAuth = hasPrivilege('USER_ORGANIZATION_MEMBER_EDIT') && hasPrivilege('APP_USER_EDIT');
+        const hasEditAuth = hasPrivilege('APP_USER_EDIT');
         return (
             <DetailCard
                 className='contact-card-container'

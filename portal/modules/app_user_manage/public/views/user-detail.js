@@ -379,8 +379,7 @@ class UserDetail extends React.Component {
                                                         <UserDetailEditField
                                                             ref={ref => this.passwordRef = ref}
                                                             displayType="edit"
-                                                            user_id={_.get(userInfo, 'data.user_id')}
-                                                            value={Intl.get('user.password.tip', '保密中')}
+                                                            user_id={_.get(userInfo, 'data.user_id')}                                                            
                                                             field="password"
                                                             type="password"
                                                             hideButtonBlock={true}
