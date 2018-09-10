@@ -59,5 +59,7 @@ module.exports = {
     LAYOUT: {
         TOP_NAV: 64,
         PADDING_BOTTOM: 16
-    }
+    },
+    //发版客套的url,用来判断当前访问的是ketao还是curtao
+    CURTAO_URL: 'www.curtao.com'
 };
