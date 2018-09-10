@@ -129,6 +129,7 @@ function getLoginResult(data) {
     var userData = data.user;
     if (userData) {
         //realm_id
+        loginResult.auth.realm_id = userData.realm_id;//如果managed_realms不存在（curtao会不存在），就用realm_id
         if (userData.managed_realms && userData.managed_realms.length > 0) {
             loginResult.auth.realm_id = userData.managed_realms[0];
         }
