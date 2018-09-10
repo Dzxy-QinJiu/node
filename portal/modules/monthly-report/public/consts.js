@@ -14,15 +14,3 @@ export const LEAVE_TYPES = [
     },
 ];
 
-//请假时间
-export const LEAVE_DAYS = [
-    {
-        value: 1,
-        label: Intl.get('weekly.report.n.days','{n}天',{n: 1})
-    },
-    {
-        value: 0.5,
-        label: Intl.get('weekly.report.n.days','{n}天',{n: 0.5})
-    },
-];
-
