@@ -100,7 +100,7 @@ class ClueCustomer extends React.Component {
         if (_.get(nextProps,'history.action') === 'PUSH'){
             if(_.get(nextProps,'location.state.clickUnhandleNum')){
                 this.getUnhandledClue();
-            }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false ){
+            }else{
                 clueFilterAction.setInitialData();
                 clueCustomerAction.resetState();
                 setTimeout(() => {
@@ -304,6 +304,12 @@ class ClueCustomer extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         var existFilelds = clueFilterStore.getState().exist_fields;
+        //如果是筛选的重复线索，把排序字段改成repeat_id
+        if (_.indexOf(existFilelds, 'repeat_id') > -1){
+            clueCustomerAction.setSortField('repeat_id');
+        }else{
+            clueCustomerAction.setSortField('source_time');
+        }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
         //跟据类型筛选
         const queryObj = {
@@ -316,6 +322,7 @@ class ClueCustomer extends React.Component {
             userId: userData.getUserData().userId || '',
             typeFilter: _.get(data, 'clueCustomerTypeFilter') || JSON.stringify(typeFilter)
         };
+
         var filterStoreData = clueFilterStore.getState();
         //选中的线索来源
         var filterClueSource = filterStoreData.filterClueSource;

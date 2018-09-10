@@ -28,7 +28,6 @@ import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
-const PropTypes = require('prop-types');
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS'//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
 };
