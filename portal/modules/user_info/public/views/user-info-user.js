@@ -407,7 +407,10 @@ class UserInfo extends React.Component{
                             {getFieldDecorator('nickName',{
                                 initialValue: formData.nickName,
                                 rules: [{
-                                    required: true, message: Intl.get('user.info.nickname.required','昵称不能为空')
+                                    required: true,
+                                    min: 1,
+                                    max: 50,
+                                    message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
                                 }]
                             })(
                                 <Input type="text" placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}/>

@@ -359,8 +359,8 @@ class UserInfo extends React.Component {
                             validators={[{
                                 required: true,
                                 min: 1,
-                                max: 20,
-                                message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')
+                                max: 50,
+                                message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
                             }]}
                             placeholder={Intl.get('common.required.tip', '必填项*')}
                             saveEditInput={UserInfoAjax.editUser}

@@ -372,8 +372,8 @@ class UserForm extends React.Component {
                                         rules: [{
                                             required: true,
                                             min: 1,
-                                            max: 20,
-                                            message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')
+                                            max: 50,
+                                            message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
                                         }]
                                     })(
                                         <Input name="name" id="nickName"
@@ -508,7 +508,14 @@ class UserForm extends React.Component {
         );
     }
 }
-
-const UserFormForm = Form.create()(UserForm);
-module.exports = UserFormForm;
+UserForm.propTypes = {
+    form: PropTypes.form,
+    closeRightPanel: PropTypes.func,
+    user: PropTypes.object,
+    formType: PropTypes.string,
+    returnInfoPanel: PropTypes.func,
+    showContinueAddButton: PropTypes.func,
+    userFormShow: PropTypes.bool
+},
+module.exports = Form.create()(UserForm);
 

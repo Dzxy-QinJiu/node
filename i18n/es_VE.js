@@ -224,7 +224,7 @@ var en_VE = {
 
     'common.image.tip.size': 'El tamaño de imagen debe ser menos de {size}kb',//图片大小必须小于{size}kb!
 
-    'common.input.character.prompt': 'La longitud de carácteres debe ser ≥1 y ≤20',//最少1个字符,最多20个字符
+    'common.input.character.prompt': 'La longitud de carácteres debe ser ≥1 y ≤50',//最少1个字符,最多50个字符
 
     'common.input.character.rules': 'La longitud de carácteres debe ser ≥1 y ≤8',//最少1个字符,最多8个字符
 
