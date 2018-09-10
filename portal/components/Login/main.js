@@ -256,6 +256,7 @@ class LoginMain extends React.Component {
     render() {
         const bgStyle = {
             backgroundImage: `url(${bgImgUrl})`,
+            backgroundSize: 'cover'
         };
         //如果是初次渲染不展示表单;
         //如果有错误信息，则不显示loading状态
