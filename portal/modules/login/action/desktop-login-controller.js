@@ -49,6 +49,7 @@ exports.showLoginPage = function(req, res) {
     } else {
         renderHtml();
     }
+
     //展示登录页面前先获取验证码
     function getLoginCaptcha() {
         DesktopLoginService.getLoginCaptcha(req, res, last_login_user).on('success', function(data) {
@@ -69,6 +70,8 @@ exports.showLoginPage = function(req, res) {
         if (global.config.lang && global.config.lang === 'es_VE') {
             hideLangQRcode = 'true';
         }
+        let custome_service_lang = loginLang || 'zh_CN';
+        custome_service_lang = custome_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
         res.render('login/tpl/desktop-login', {
             styleContent: styleContent,
             loginForm: formHtml,
@@ -81,6 +84,8 @@ exports.showLoginPage = function(req, res) {
             contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
             siteID: global.config.siteID,
             lang: loginLang,
+            custome_service_lang: custome_service_lang,
+            userid: '',
             hideLangQRcode: hideLangQRcode,
             clientId: global.config.loginParams.clientId,
             stopcheck: stopcheck,
@@ -146,6 +151,7 @@ function loginSuccess(req, res) {
         });
     };
 }
+
 //登录失败处理
 function loginError(req, res) {
     return function(data) {
