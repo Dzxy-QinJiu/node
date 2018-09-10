@@ -12,7 +12,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 
 var PrivilegeChecker = require('../privilege/checker').PrivilegeChecker;
 var CardListView = require('../cardList');
-var SearchInput = require('../searchInput');
+import {SearchInput} from 'antc';
 var Icon = require('antd').Icon;
 var Button = require('antd').Button;
 var noop = function() {

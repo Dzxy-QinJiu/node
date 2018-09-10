@@ -8,7 +8,7 @@ var Option = Select.Option;
 var UserAuditLogAction = require('../action/user_audit_log_action');
 var UserAuditLogStore = require('../store/user_audit_log_store');
 import DatePicker from '../../../../components/datepicker';
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var GeminiScrollBar = require('../../../../components/react-gemini-scrollbar');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 //顶部导航

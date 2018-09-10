@@ -11,7 +11,7 @@ const salesmanAjax = require('../../common/public/ajax/salesman');
 //窗口改变的事件emitter
 import {resizeEmitter} from 'PUB_DIR/sources/utils/emitters';
 
-const SearchInput = require('CMP_DIR/searchInput');
+import {SearchInput} from 'antc';
 import DatePicker from 'CMP_DIR/datepicker';
 
 const SelectFullWidth = require('CMP_DIR/select-fullwidth');

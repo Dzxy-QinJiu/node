@@ -10,7 +10,7 @@ var DefaultUserLogoTitle = require('../../../../components/default-user-logo-tit
 var Spinner = require('../../../../components/spinner');
 var AlertTimer = require('../../../../components/alert-timer');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var classNames = require('classnames');
 var SalesTeamAction = require('../action/sales-team-actions');
 var MemberListEditAction = require('../action/member-list-edit-actions');

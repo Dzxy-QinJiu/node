@@ -10,7 +10,7 @@ var PrivilegeChecker = require('../../../../components/privilege/checker').Privi
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var ModalDialog = require('../../../../components/ModalDialog');
 var AlertTimer = require('../../../../components/alert-timer');
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var SalesTeamAction = require('../action/sales-team-actions');
 import Trace from 'LIB_DIR/trace';
 

@@ -2,7 +2,7 @@ var React = require('react');
 const PropTypes = require('prop-types');
 import { Button, Icon } from 'antd';
 import Trace from 'LIB_DIR/trace';
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var FilterAction = require('../action/filter-actions');
 var FilterStore = require('../store/filter-store');
 

@@ -12,7 +12,7 @@ const AntTableCommon = require('CMP_DIR/antd-table-pagination'); // 调整表格
 import ScrollLoad from 'CMP_DIR/scroll-load';
 import { topNavEmitter } from 'OPLATE_EMITTER';
 import * as LANGLOBAL from './consts';
-import SearchInput from 'CMP_DIR/searchInput';
+import {SearchInput} from 'antc';
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 150,

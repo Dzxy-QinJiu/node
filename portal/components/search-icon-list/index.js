@@ -6,7 +6,7 @@ import {Input,Icon,Checkbox,Alert} from 'antd';
 
 import immutable from 'immutable';
 import classNames from 'classnames';
-import SearchInput from '../../components/searchInput';
+import {SearchInput} from 'antc';
 
 class SearchIconList extends React.Component {
     constructor(props) {
