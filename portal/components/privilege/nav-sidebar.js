@@ -38,7 +38,7 @@ const menuShortNamesMap = {
     'clue_customer': Intl.get('crm.sales.clue', '线索'),
     'call_record': Intl.get('menu.shortName.call', '通话'),
     'user': Intl.get('crm.detail.user', '用户'),
-    'analysis/customer': Intl.get('menu.shortName.operate', '运营'),
+    'analysis/customer': Intl.get('user.detail.analysis', '分析'),
     'schedule_management': Intl.get('menu.shortName.schedule', '日程'),
     'contract': Intl.get('contract.125', '合同'),
     'apply': Intl.get('crm.109', '申请'),
