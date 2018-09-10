@@ -127,7 +127,7 @@ var en_US = {
     'common.time.connector': ' to ',// // ' 至 -'至
     'common.image.default': 'Images',//图像
     'common.image.tip.size': 'The size of image must be less than {size} kb!',//图片大小必须小于{size}kb!
-    'common.input.character.prompt': '1 ~ 20 characters',//最少1个字符,最多20个字符
+    'common.input.character.prompt': '1 ~ 50 characters',//最少1个字符,最多50个字符
     'common.input.character.rules': '1 ~ 8 characters',//最少1个字符,最多8个字符
     'common.phone.email.tip': 'Phone or email is required',//电话、邮箱必填其中一项
     'common.write.template': 'Select and import the file after filling in the template',//填写模板文件后，选择文件并导入 After filling in the template, select  the file and import it

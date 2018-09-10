@@ -3,7 +3,7 @@ var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 import { Alert } from 'antd';
-
+import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 var SalesStageStore = require('../store/sales-stage-store');
 var Spinner = require('../../../../components/spinner');
 
@@ -53,6 +53,12 @@ var SalesStageForm = createReactClass({
                 description: ''
             }
         };
+    },
+
+    propTypes: {
+        salesStage: PropTypes.object,
+        salesStageFormShow: PropTypes.bool,
+        cancelSalesStageForm: PropTypes.func
     },
 
     getInitialState: function() {
@@ -163,7 +169,7 @@ var SalesStageForm = createReactClass({
                                 validateStatus={this.renderValidateStyle('name')}
                                 hasFeedback
                                 help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}>
-                                <Validator rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')}]}>
+                                <Validator rules={[nameLengthRule]}>
                                     <Input name="name" id="name" value={formData.name}
                                         onChange={this.setField.bind(this, 'name')}
                                         placeholder={Intl.get('common.required.tip', '必填项*')}

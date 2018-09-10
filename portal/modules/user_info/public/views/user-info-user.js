@@ -13,7 +13,7 @@ import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
-import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -406,9 +406,7 @@ class UserInfo extends React.Component{
                         >
                             {getFieldDecorator('nickName',{
                                 initialValue: formData.nickName,
-                                rules: [{
-                                    required: true, message: Intl.get('user.info.nickname.required','昵称不能为空')
-                                }]
+                                rules: [nameLengthRule]
                             })(
                                 <Input type="text" placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}/>
                             )}

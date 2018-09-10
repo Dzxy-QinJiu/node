@@ -1,5 +1,13 @@
 import {commonPhoneRegex,hotlinePhoneRegex, areaPhoneRegex, phone1010Regex} from './consts';
 
+//名称长度的验证规则
+export const nameLengthRule = {
+    required: true,
+    min: 1,
+    max: 50,
+    message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
+};
+
 //验证电话号码
 exports.checkPhone = function(rule, value, callback) {
     value = $.trim(value);

@@ -26,6 +26,7 @@ var AlertTimer = require('../../../../components/alert-timer');
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import PhoneInput from 'CMP_DIR/phone-input';
+import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 
 function noop() {
 }
@@ -369,12 +370,7 @@ class UserForm extends React.Component {
                                     wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
                                 >
                                     {getFieldDecorator('name', {
-                                        rules: [{
-                                            required: true,
-                                            min: 1,
-                                            max: 20,
-                                            message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')
-                                        }]
+                                        rules: [nameLengthRule]
                                     })(
                                         <Input name="name" id="nickName"
                                             placeholder={Intl.get('common.required.tip', '必填项*')}
@@ -508,7 +504,14 @@ class UserForm extends React.Component {
         );
     }
 }
-
-const UserFormForm = Form.create()(UserForm);
-module.exports = UserFormForm;
+UserForm.propTypes = {
+    form: PropTypes.form,
+    closeRightPanel: PropTypes.func,
+    user: PropTypes.object,
+    formType: PropTypes.string,
+    returnInfoPanel: PropTypes.func,
+    showContinueAddButton: PropTypes.func,
+    userFormShow: PropTypes.bool
+},
+module.exports = Form.create()(UserForm);
 

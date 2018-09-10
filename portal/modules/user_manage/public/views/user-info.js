@@ -31,7 +31,7 @@ import Trace from 'LIB_DIR/trace';
 import CommissionAndTarget from './commission-and-target';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from '../views/radio-card';
-import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 
 class UserInfo extends React.Component {
     state = {
@@ -356,12 +356,7 @@ class UserInfo extends React.Component {
                             type="text"
                             modifySuccess={this.changeUserFieldSuccess}
                             disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
-                            validators={[{
-                                required: true,
-                                min: 1,
-                                max: 20,
-                                message: Intl.get('common.input.character.prompt', '最少1个字符,最多20个字符')
-                            }]}
+                            validators={[nameLengthRule]}
                             placeholder={Intl.get('common.required.tip', '必填项*')}
                             saveEditInput={UserInfoAjax.editUser}
                         />

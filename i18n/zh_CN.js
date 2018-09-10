@@ -126,7 +126,7 @@ var zh_CN = {
     'common.time.connector': '至', // " 至 -"
     'common.image.default': '图像',
     'common.image.tip.size': '图片大小必须小于{size}kb!',
-    'common.input.character.prompt': '最少1个字符,最多20个字符',
+    'common.input.character.prompt': '最少1个字符,最多50个字符',
     'common.input.character.rules': '最少1个字符,最多8个字符',
     'common.phone.email.tip': '电话、邮箱必填其中一项',
     'common.write.template': '填写模板文件选择文件，并开始导入',
