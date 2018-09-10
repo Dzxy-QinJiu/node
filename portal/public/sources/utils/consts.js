@@ -30,7 +30,7 @@ export const USER_TYPE_TEXT_MAP = {
 
 // 用户是否过期的下拉选项
 export const filterTypeList = [
-    {name: Intl.get('common.all', '全部'), value: ''},
+    {name: Intl.get('user.online.all.status', '全部状态'), value: ''},
     {name: Intl.get('user.overdue', '过期'), value: '1'},
     {name: Intl.get('user.overdue.not', '未过期'), value: '0'}
 ];
