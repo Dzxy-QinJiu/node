@@ -10,7 +10,7 @@ var PrivilegeChecker = require('../../../../components/privilege/checker').Privi
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var ModalDialog = require('../../../../components/ModalDialog');
 var AlertTimer = require('../../../../components/alert-timer');
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var OrganizationAction = require('../action/organization-actions');
 import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';

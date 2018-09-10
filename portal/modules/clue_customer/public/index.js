@@ -15,7 +15,7 @@ var userData = require('../../../public/sources/user-data');
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-var SearchInput = require('CMP_DIR/searchInput');
+import {SearchInput} from 'antc';
 import {message, Icon, Row, Col, Button, Alert, Select, Modal, Radio} from 'antd';
 const RadioGroup = Radio.Group;
 const Option = Select.Option;

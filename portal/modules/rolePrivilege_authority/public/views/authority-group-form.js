@@ -20,7 +20,7 @@ var AuthorityEditForm = require('./authority-edit-form');
 var ModalDialog = require('../../../../components/ModalDialog');
 var AlertTimer = require('../../../../components/alert-timer');
 var AuthorityAction = require('../action/authority-actions');
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 import Trace from 'LIB_DIR/trace';
 
 function noop() {

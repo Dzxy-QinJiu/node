@@ -9,7 +9,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {getSalesTeamRoleList} from '../../../common/public/ajax/role';
 import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateCustomerAnalysisAction = require('../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action');
 let userData = require('../../../../public/sources/user-data');

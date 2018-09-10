@@ -11,7 +11,7 @@ var AlertTimer = require('../../../../components/alert-timer');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var NoData = require('../../../../components/analysis-nodata');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var Table = require('antd').Table;
 var insertStyle = require('../../../../components/insert-style');
 var Button = require('antd').Button;

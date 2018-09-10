@@ -1,7 +1,7 @@
 var React = require('react');
 require('../css/main-es_VE.less');
 var AppUserUtil = require('../util/app-user-util');
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var AppUserCustomerSwitchActions = require('../action/app-user-customer-switch-actions');
 var AppUserCustomerSwitchStore = require('../store/app-user-customer-switch-store');
 var TopNav = require('../../../../components/top-nav');

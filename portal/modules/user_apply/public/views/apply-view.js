@@ -14,7 +14,7 @@ var NoData = require('../../../../components/analysis-nodata');
 var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
 var UserData = require('../../../../public/sources/user-data');
 var NoMoreDataTip = require('../../../../components/no_more_data_tip');
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 const session = storageUtil.session;
 

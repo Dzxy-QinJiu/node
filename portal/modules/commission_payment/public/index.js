@@ -4,7 +4,7 @@ import CommissionPaymentStore from './store/index';
 import CommissionPaymentActions from './action/index';
 //窗口改变的事件emitter
 import {resizeEmitter} from 'PUB_DIR/sources/utils/emitters';
-const SearchInput = require('CMP_DIR/searchInput');
+import {SearchInput} from 'antc';
 import DatePicker from 'CMP_DIR/datepicker';
 const SelectFullWidth = require('CMP_DIR/select-fullwidth');
 const Spinner = require('CMP_DIR/spinner');

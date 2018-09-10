@@ -12,7 +12,7 @@ var USER_LOG_LAYOUT_CONSTANTS = AppUserUtil.USER_LOG_LAYOUT_CONSTANTS;
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var SingleUserLogAction = require('../action/single_user_log_action');
 var SingleUserLogStore = require('../store/single_user_log_store');
-var SearchInput = require('../../../../components/searchInput');
+import {SearchInput} from 'antc';
 // 没有数据的提示信息
 var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 const AlertTimer = require('CMP_DIR/alert-timer');

@@ -22,7 +22,7 @@ var UserAuditLog = require('./views/user-audit-log-show-user-detail');
 
 var Select = require('antd').Select;
 var Icon = require('antd').Icon;
-var SearchInput = require('../../../components/searchInput');
+import {SearchInput} from 'antc';
 var Option = Select.Option;
 var classNames = require('classnames');
 import UserDetailAddApp from './views/user-detail-add-app';

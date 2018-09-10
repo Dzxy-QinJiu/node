@@ -1,6 +1,6 @@
 var React = require('react');
 import { Select, Icon } from 'antd';
-import SearchInput from '../../../components/searchInput';
+import {SearchInput} from 'antc';
 
 class Filter extends React.Component {
     state = {
