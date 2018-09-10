@@ -40,7 +40,7 @@ function UserInfoStore() {
     //获取操作记录失败的提示
     this.logErrorMsg = '';
     //用户所管理的安全域
-    this.managedRealm = {};
+    this.managedRealm = '';
     //正在获取安全域信息
     this.realmLoading = false;
     //获取安全域失败的提示
@@ -68,11 +68,11 @@ UserInfoStore.prototype.getLogList = function(logListObj) {
             var processedLogList = logListObj.list.map(function(log) {
                 return {
                     loginTime: log.timestamp ? moment(parseInt(log.timestamp)).format(oplateConsts.DATE_TIME_FORMAT) : '',
-                    loginAddress: (log.country && log.country != 'null' ? log.country : '') + (log.province && log.province != 'null' ? log.province : '') + (log.city && log.city != 'null' ? log.city : ''),
-                    loginIP: log.ip && log.ip != 'null' ? log.ip : '',
-                    loginBrowser: log.browser && log.browser != 'null' ? log.browser : '',
-                    loginEquipment: log.device && log.device != 'null' ? log.device : '',
-                    loginMessage: log.operate && log.operate != 'null' ? log.operate : '',
+                    loginAddress: (log.country && log.country !== 'null' ? log.country : '') + (log.province && log.province !== 'null' ? log.province : '') + (log.city && log.city !== 'null' ? log.city : ''),
+                    loginIP: log.ip && log.ip !== 'null' ? log.ip : '',
+                    loginBrowser: log.browser && log.browser !== 'null' ? log.browser : '',
+                    loginEquipment: log.device && log.device !== 'null' ? log.device : '',
+                    loginMessage: log.operate && log.operate !== 'null' ? log.operate : '',
                     lastId: log.sortValuse || ''
                 };
             });
@@ -153,14 +153,15 @@ UserInfoStore.prototype.editUserInfoPwd = function(result) {
 UserInfoStore.prototype.getManagedRealm = function(result) {
     if (result.error) {
         this.realmErrorMsg = result.errorMsg;
-        this.managedRealm = {};
+        this.managedRealm = '';
         this.realmLoading = false;
     } else {
         this.realmErrorMsg = '';
         if (result.loading) {
             this.realmLoading = true;
         } else {
-            this.managedRealm = result.realmInfo;
+            //发版的curtao上，是组织result.realmInfo.name; ketao上是安全域 result.realmInfo.realm_name
+            this.managedRealm = _.get(result,'realmInfo.realm_name') || _.get(result, 'realmInfo.name', '');
             this.realmLoading = false;
         }
     }
