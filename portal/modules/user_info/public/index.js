@@ -50,7 +50,7 @@ var UserInfoPage = createReactClass({
         $(window).on('resize', this.resizeWindow);
         UserInfoStore.listen(this.onChange);
         UserInfoAction.getUserInfo();
-        if (hasPrivilege('GET_MANAGED_REALM')) {
+        if (hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO')) {
             UserInfoAction.getManagedRealm();
         }
 

@@ -141,7 +141,9 @@ class LoginForm extends React.Component {
                 name="retcode" autoComplete="off"
                 tabIndex="3"
                 ref="captcha_input" maxLength="4"/>
-            {this.renderCaptchaImg(hasWindow)}
+            <span className="login-captcha">
+                {this.renderCaptchaImg(hasWindow)}
+            </span>
         </div>) : null);
     };
 
@@ -239,30 +241,27 @@ class LoginForm extends React.Component {
         const hasWindow = this.props.hasWindow;
 
         return (
-            <form action="/login" method="post" onSubmit={this.beforeSubmit} autoComplete="off">
+            <form action="/login" method="post" className="login-form" onSubmit={this.beforeSubmit} autoComplete="off">
                 <div className="input-area">
                     <div className="input-item">
                         <input
                             placeholder={hasWindow ? Intl.get('login.username.phone.email', '用户名/手机/邮箱') : null}
                             type="text"
-                            name="username" autoComplete="off" tabIndex="1"
+                            name="username"
+                            autoComplete="off" tabIndex="1"
                             ref="username" value={this.state.username} onChange={this.userNameChange}
                             onBlur={this.getLoginCaptcha}/>
                     </div>
 
                     <div className="input-item">
+                        <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
                         <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
                             type="password" tabIndex="2"
                             ref="password_input"
                             onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
                     </div>
-
-
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
-
-                <input type="hidden" name="password" id="hidedInput" ref="password"/>
-
                 <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
                     tabIndex="3"
                     disabled={this.state.loginButtonDisabled }

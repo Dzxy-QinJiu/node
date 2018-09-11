@@ -67,5 +67,33 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    },{
+        'method': 'get',
+        'path': '/company/name/validate',
+        'handler': 'getCompanyByName',
+        'passport': {
+            'needLogin': false
+        }
+    },{
+        'method': 'get',
+        'path': '/phone/validate_code',
+        'handler': 'getVertificationCode',
+        'passport': {
+            'needLogin': false
+        }
+    },{
+        'method': 'get',
+        'path': '/phone/code/validate',
+        'handler': 'validatePhoneCode',
+        'passport': {
+            'needLogin': false
+        }
+    }, {
+        'method': 'post',
+        'path': '/account/register',
+        'handler': 'registerAccount',
+        'passport': {
+            'needLogin': false
+        }
     }]
 };

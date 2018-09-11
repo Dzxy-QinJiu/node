@@ -1,6 +1,6 @@
 require('./sources/browser.sniff');
-//ketao的登录界面
-import LoginMain from '../components/Login/main';
+//curtao的登录界面
+import LoginMain from '../components/Login-curtao/main';
 import Translate from './intl/i18nTemplate';
 var history = require('PUB_DIR/sources/history');
 import {Router} from 'react-router-dom';

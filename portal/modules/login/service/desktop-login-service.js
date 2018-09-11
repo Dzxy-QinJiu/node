@@ -30,8 +30,15 @@ var urls = {
     //获取扫码登录的二维码
     getLoginQRCode: '/auth2/authc/scan_code/screen_code',
     //通过扫码登录
-    loginByQRCode: '/auth2/authc/scan_code/login'
-
+    loginByQRCode: '/auth2/authc/scan_code/login',
+    //根据公司标识获取公司
+    getCompanyByName: '/rest/open/resource/organization',
+    //获取短信验证码
+    getVertificationCode: '/rest/open/resource/verificationcode',
+    //注册新公司账号
+    registerAccount: '/rest/open/resource/organization',
+    //短信验证码的验证
+    validatePhoneCode: 'rest/open/resource/verificationcode/check'
 };
 //验证码的高和宽
 var captcha = {
@@ -122,6 +129,7 @@ function getLoginResult(data) {
     var userData = data.user;
     if (userData) {
         //realm_id
+        loginResult.auth.realm_id = userData.realm_id;//如果managed_realms不存在（curtao会不存在），就用realm_id
         if (userData.managed_realms && userData.managed_realms.length > 0) {
             loginResult.auth.realm_id = userData.managed_realms[0];
         }
@@ -377,6 +385,43 @@ exports.loginByQRCode = function(req, res, qrcode) {
                 emitter.emit('error', data);
             }
         });
+};
+
+//根据公司名获取公司
+exports.getCompanyByName = function(req, res) {
+    return restUtil.baseRest.get(
+        {
+            url: urls.getCompanyByName,
+            req: req,
+            res: res,
+        }, req.query);
+};
+//获取短信验证码
+exports.getVertificationCode = function(req, res) {
+    return restUtil.baseRest.get(
+        {
+            url: urls.getVertificationCode,
+            req: req,
+            res: res,
+        }, req.query);
+};
+//注册新公司账号
+exports.registerAccount = function(req, res) {
+    return restUtil.baseRest.post(
+        {
+            url: urls.registerAccount,
+            req: req,
+            res: res,
+        }, req.body);
+};
+//短信验证码的验证
+exports.validatePhoneCode = function(req, res) {
+    return restUtil.baseRest.get(
+        {
+            url: urls.validatePhoneCode,
+            req: req,
+            res: res,
+        }, req.query);
 };
 
 

@@ -68,7 +68,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'GET_MANAGED_REALM'
+            'GET_MANAGED_REALM', 'GET_MEMBER_SELF_INFO'
         ]
     },{
         'method': 'post',
