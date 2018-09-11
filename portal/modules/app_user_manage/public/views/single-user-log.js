@@ -153,7 +153,7 @@ class SingleUserLog extends React.Component {
     };
     // 应用下拉框的选择
     getAppOptions = () => {
-        var list = this.state.userOwnAppArray.map(function (item) {
+        var list = _.map(this.state.userOwnAppArray, function (item) {
             return <Option
                 key={item.app_id}
                 value={item.app_id}
@@ -162,9 +162,14 @@ class SingleUserLog extends React.Component {
                 {item.app_name}
             </Option>;
         });
+        const appIds = _.map(this.state.userOwnAppArray, x => x.app_id);
+        let value = "";
+        if (_.isArray(appIds)) {
+            value = appIds.join(",")
+        }
         list.unshift(
             <Option
-                value={this.state.userOwnAppArray.map(x => x.app_id).join(",")}
+                value={value}
                 key="all"
                 title={Intl.get('user.app.all', '全部应用')}
             >
