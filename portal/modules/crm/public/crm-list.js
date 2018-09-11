@@ -1222,12 +1222,18 @@ class Crm extends React.Component {
         }
     };
     renderAddAndImportBtns = () => {
-        return (
-            <div className="btn-containers">
-                <Button type='primary' className='import-btn' onClick={this.showCrmTemplateRightPanel}>{Intl.get('crm.2', '导入客户')}</Button>
-                <Button className='add-clue-btn' onClick={this.showAddForm}>{Intl.get('crm.3', '添加客户')}</Button>
-            </div>
-        );
+        if (hasPrivilege('CUSTOMER_ADD')) {
+            return (
+                <div className="btn-containers">
+                    <Button type='primary' className='import-btn'
+                        onClick={this.showCrmTemplateRightPanel}>{Intl.get('crm.2', '导入客户')}</Button>
+                    <Button className='add-clue-btn' onClick={this.showAddForm}>{Intl.get('crm.3', '添加客户')}</Button>
+                </div>
+            );
+        } else {
+            return null;
+        }
+
     };
     render() {
         var _this = this;

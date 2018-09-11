@@ -17,6 +17,7 @@ var focusTimeout = null;//focus事件的时间延迟设置
 var CONSTANTS = {
     LOG_PAGE_SIZE: 11//个人操作日志一页展示的条数
 };
+var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import Trace from 'LIB_DIR/trace';
 
 class UserManage extends React.Component {
@@ -207,11 +208,16 @@ class UserManage extends React.Component {
 
    };
     renderAddAndImportBtns = () => {
-        return (
-            <div className="btn-containers">
-                <Button className='add-clue-btn btn-item btn-m-r-2' onClick={this.events.showUserForm.bind(this,'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
-            </div>
-        );
+        if (hasPrivilege('USER_MANAGE_ADD_USER')){
+            return (
+                <div className="btn-containers">
+                    <Button className='add-clue-btn btn-item btn-m-r-2' onClick={this.events.showUserForm.bind(this,'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
+                </div>
+            );
+        }else{
+            return null;
+        }
+
     };
     render() {
         var firstLoading = this.state.isLoading;
