@@ -28,7 +28,8 @@ var webpackMode = config.webpackMode || 'dev';
 var entry = function() {
     var entryMap = {
         app: ['./portal/public/index'],
-        login: ['./portal/public/login']
+        login: ['./portal/public/login'],
+        login_curtao: ['./portal/public/login-curtao']
     };
     //开发模式下并且带test参数时打包测试文件
     if (webpackMode !== 'production' && process.argv.indexOf('test') !== -1) {

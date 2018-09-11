@@ -11,6 +11,7 @@ var ReactDOMServer = require('react-dom/server');
 global.__STYLE_COLLECTOR_MODULES__ = [];
 global.__STYLE_COLLECTOR__ = '';
 var LoginForm = React.createFactory(require('../../../../dist/server-render/login'));
+var LoginCurtaoForm = React.createFactory(require('../../../../dist/server-render/login_curtao'));
 var DesktopLoginService = require('../service/desktop-login-service');
 var UserDto = require('../../../lib/utils/user-dto');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
@@ -61,7 +62,13 @@ exports.showLoginPage = function(req, res) {
 
     function renderHtml() {
         var styleContent = global.__STYLE_COLLECTOR__;
-        var formHtml = ReactDOMServer.renderToString(LoginForm(obj));
+        let isCurtao = req.host === oplateConsts.CURTAO_URL;
+        //ketao上的登录页
+        let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
+        //正式发版的curtao上，展示带注册的登录界面，
+        if(isCurtao){
+            formHtml = ReactDOMServer.renderToString(LoginCurtaoForm(obj));
+        }
         var phone = '400-677-0986';
         var qq = '4006770986';
         let backendIntl = new BackendIntl(req);
@@ -84,7 +91,8 @@ exports.showLoginPage = function(req, res) {
             hideLangQRcode: hideLangQRcode,
             clientId: global.config.loginParams.clientId,
             stopcheck: stopcheck,
-            useSso: global.config.useSso
+            useSso: global.config.useSso,
+            isCurtao: isCurtao
         });
     }
 };
