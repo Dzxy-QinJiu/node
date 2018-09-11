@@ -14,6 +14,7 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import OrganizationAjax from 'MOD_DIR/common/public/ajax/organization';
 const Option = Select.Option;
+const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
 
 class OrgCard extends React.Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class OrgCard extends React.Component {
             this.setState({
                 list: []
             });
-        }).timeout(function() {
+        }).timeout(function () {
             this.setState({
                 list: []
             });
@@ -78,7 +79,7 @@ class OrgCard extends React.Component {
             return item.group_id === this.state.organization_id;
         });
         return target ? target.group_name : <span>&nbsp;</span>;
-    }   
+    }
     submit() {
         if (this.state.submitType === 'loading') {
             return;
@@ -128,12 +129,22 @@ class OrgCard extends React.Component {
             }
         });
     }
+    // 获取子部门
+    getChildDepartment = (childGroup) => {
+        let childDepartName = [];
+        if (_.isArray(childGroup) && childGroup.length) {
+            _.each(childGroup, (childItem) => {
+                childDepartName.push(childItem.group_name);
+                this.getChildDepartment(childItem.child_groups);
+            });
+        }
+        return childDepartName;
+    };
     render() {
         const options = this.getOrganizationOptions();
-        var showBtn = this.props.showBtn;
-        const { userInfo, sales_team } = this.props;
+        const { groupsInfo } = this.props;
         const hasEditAuth = hasPrivilege('USER_ORGANIZATION_MEMBER_EDIT') && hasPrivilege('APP_USER_EDIT');
-        return (
+        const renderOrgCard = ({groupsData=null, departmentData=null, teamData=null }) => (
             <DetailCard
                 loading={this.state.submitType === 'loading'}
                 titleBottomBorderNone={true}
@@ -147,7 +158,7 @@ class OrgCard extends React.Component {
                                 {Intl.get('user.detail.belongToOrg', '所属组织')}
                             </span>
                             <span className="sales-team-text">
-                                {userInfo.group_name}
+                                {groupsData}
                             </span>
                             {
                                 hasEditAuth ?
@@ -161,7 +172,7 @@ class OrgCard extends React.Component {
                     </div>
                 )}
                 content={(
-                    <div className="sales-team-show-block">                       
+                    <div className="sales-team-show-block">
                         {
                             this.state.showEdit ?
                                 <div className='user-organization' ref="wrap" id="organization-select-wrap">
@@ -179,27 +190,72 @@ class OrgCard extends React.Component {
                                         errorMsg={this.state.errorMsg}
                                     />
                                 </div> :
-                                <div className="sales-team">
-                                    <span className="sales-team-label">
-                                        {Intl.get('user.user.team', '团队')}:
-                                    </span>
-                                    <span className="sales-team-text">
-                                        {sales_team.sales_team_name}
-                                    </span>
+                                <div>
+                                    {departmentData}
+                                    {teamData}
                                 </div>
                         }
                     </div>
                 )}
             />
-        );
+        )
+        if (groupsInfo.length === 0) { // 没有组织信息时，只显示标题
+            return (
+                <div>
+                    {renderOrgCard({})}
+                </div>
+            );
+        }
+        // 有组织信息时，显示组织信息以及组织信息下的部门和团队信息
+        let groups = null;
+        let groupsData = null;
+        groups = _.map(groupsInfo, (groupItem) => {
+            if (groupItem.category === +CATEGORY_TYPE.ORGANIZATION) { // 组织
+                groupsData = groupItem.group_name;
+            }
+            let departmentData = null;
+            let teamData = null;
+            // 组织下的部门或是团队信息
+            if (groupItem.child_groups && _.isArray(groupItem.child_groups) && groupItem.child_groups.length) {
+                let childGroups = groupItem.child_groups;
+                _.map(childGroups, (childItem) => {
+                    if (childItem.category === +CATEGORY_TYPE.DEPARTMENT) { // 部门
+                        departmentData = <div className="sales-team">
+                            <span className="sales-team-label">
+                                {Intl.get('crm.113', '部门')}:
+                            </span>
+                            <span className="sales-team-text">
+                                {childItem.group_name}
+                                {this.getChildDepartment(childItem.child_groups).length ? (
+                                    '/' + this.getChildDepartment(childItem.child_groups).join('/')
+                                ) : ''}
+                            </span>
+                        </div>;
+                    } else if (childItem.category === +CATEGORY_TYPE.TEAM) { // 团队
+                        teamData = <div className="sales-team">
+                            <span className="sales-team-label">
+                                {Intl.get('user.user.team', '团队')}:
+                            </span>
+                            <span className="sales-team-text">{childItem.group_name}</span>
+                        </div>;
+                    }
+                });
+            }
+            return (
+                <div>
+                    {renderOrgCard({groupsData, teamData, departmentData})}
+                </div>
+            );
+        });
+        return groups;
     }
 }
 
 OrgCard.defaultProps = {
-    onChange: function() { },
+    onChange: function () { },
     showBtn: false,
     organization_id: '',
-    onModifySuccess: function() { }
+    onModifySuccess: function () { }
 };
 
 OrgCard.propTypes = {
