@@ -10,6 +10,7 @@ var restLogger = require('../../../lib/utils/logger').getLogger('rest');
 var pageLogger = require('../../../lib/utils/logger').getLogger('page');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var EventEmitter = require('events');
+let BackendIntl = require('../../../lib/utils/backend_intl');
 function _getLeftMenus(req) {
     let leftMenus = new LeftMenus(req);
     return leftMenus.getLeftMenuList();
@@ -264,22 +265,25 @@ exports.getUserInfo = function(req, res, userId) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
     }
     Promise.all(promiseList).then(resultList => {
-        let userInfoResult = resultList[0] ? resultList[0] : {};
+        let userInfoResult = _.get(resultList,'[0]',{});
         //成功获取用户信息
         if (userInfoResult.successData) {
             let userData = userInfoResult.successData;
             //角色
-            userData.roles = _.isArray(resultList[1].successData) ? resultList[1].successData : [];
+            userData.roles = _.get(resultList, '[1].successData', []);
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = resultList[2] && resultList[2].successData;
+                let teamTreeList = _.get(resultList, '[2].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
             }
             emitter.emit('success', userData);
         } else if (userInfoResult.errorData) {//只有用户信息获取失败时，才返回失败信息
             emitter.emit('error', userInfoResult.errorData);
+        } else {//未获取到用户信息或返回状态为204时
+            let backendIntl = new BackendIntl(req);
+            emitter.emit('error', {httpCode: 500, message: backendIntl.get('user.get.user.info.null', '获取不到登录用户的信息')});
         }
     }).catch(errorObj => {
         emitter.emit('error', errorObj);
