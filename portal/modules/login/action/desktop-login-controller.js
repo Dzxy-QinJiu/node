@@ -85,7 +85,7 @@ exports.showLoginPage = function(req, res) {
             siteID: global.config.siteID,
             lang: loginLang,
             custome_service_lang: custome_service_lang,
-            userid: '',
+            userid: obj.username,
             hideLangQRcode: hideLangQRcode,
             clientId: global.config.loginParams.clientId,
             stopcheck: stopcheck,
