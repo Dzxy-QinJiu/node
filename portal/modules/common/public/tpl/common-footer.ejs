@@ -32,5 +32,31 @@
             </div>
 		</div>
         <% } %>
+        <% if(isCurtao && custome_service_lang) { %>
+            <style>
+                #chatBtn{
+                    right: 0px !important;;
+                    bottom: 1px !important;;
+                    padding: 4px 3px 0px !important;
+                    line-height: initial;
+                }
+                #chatBtn img{
+                    margin:0px !important;
+                }
+                #chatBtn  span{
+                    display: none !important;
+                }
+            </style>
+        <% } %>
 	</body>
+    <% if(isCurtao && custome_service_lang) { %>
+    <!-- custome service-->
+    <script type='text/javascript'
+            src='https://webchat.7moor.com/javascripts/7moorInit.js?accessId=54b78f00-b4bb-11e8-b0d9-4953cb7c5819&autoShow=true&language=<%= custome_service_lang %>'
+    >
+    </script>
+    <script type='text/javascript'>
+        var qimoClientId = '<%= userid %>';
+    </script>
+    <% } %>
 </html>
