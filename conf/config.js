@@ -18,7 +18,7 @@
      CASTER_USERNAME：oplate-test-session
      CASTER_PASSWORD：plate-test-session
      GATEWAY：http://172.19.103.21:9090
-     PUSH_SERVER_ADDRESS：http://172.19.103.102:8382
+     PUSH_SERVER_ADDRESS：http://172.19.103.211:9093
  * zipkin、调用链跟踪记录（只有线上的正式环境有的配置）
      ZIPKINURL：http://172.19.103.39:9002
      METRIC_ADDRESS：http://172.19.103.123:8086/oplate_web
@@ -196,7 +196,7 @@ var config = {
     loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的
     errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用
     siteID: process.env.SITE_ID || '1',//piwik需配置site_id,1:oplate,4:ketao
-    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://172.19.103.102:8382',//推送的服务地址（测试： http://172.19.103.102:8382，正式:http://notify-ketao.antfact.com:80）
+    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://172.19.103.211:9093',//推送的服务地址（测试： http://172.19.103.211:9093，正式:http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG, //语言环境(优先)
     useSso: process.env.USESSO,//是否使用sso
     storageKey: process.env.storageKey || 'ketao-storage',//在localstorage中存储的key
