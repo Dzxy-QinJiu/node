@@ -226,7 +226,7 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
-    pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
+    // pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.isArray(unreadList) && unreadList.length) {
         //所有未读回复的列表按接收者分组{userId1:[{member_id,update_time...},{}],userId2:[{...},{...}]}
         let memberUnreadObj = _.groupBy(unreadList, 'member_id');

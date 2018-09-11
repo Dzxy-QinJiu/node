@@ -287,9 +287,8 @@ class LoginMain extends React.Component {
                                     setErrorMsg={this.setErrorMsg}
                                     {...this.props}
                                 />}
-                            {this.state.errorMsg ? (
-                                <Alert message={this.state.errorMsg} type="error" showIcon className="login-error-msg"/>
-                            ) : null}
+                            {this.state.errorMsg ?
+                                <div className="login-error-tip">{this.state.errorMsg}</div> : null}
                         </div>
                     ) : null
                     }
