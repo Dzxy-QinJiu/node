@@ -64,6 +64,7 @@ class UserDetailBasic extends React.Component {
             this.getAppsRolesListAndPrivilegeLists();
         }
     }
+
     //获取应用的角色和权限列表
     getAppsRolesListAndPrivilegeLists = () => {
         var apps = _.get(this.state,'initialUser.apps');
@@ -77,6 +78,7 @@ class UserDetailBasic extends React.Component {
                 }
             });
         }
+
     };
     //获取每个应用对应的权限
     getPermissionsByAjax = (item) => {
@@ -94,7 +96,13 @@ class UserDetailBasic extends React.Component {
                 var privilegeName = roleAndRelatePrivilegeItem.privilegeName || [];
                 if (privilegeId.length && !privilegeName.length) {
                     roleAndRelatePrivilegeItem.privilegeName = this.handleRoleAndPrivilegeRelate(item,privilegeId);
+                    //重新setState一下，否则不会调用render方法，应用的角色标签不展示
+                    var initialUser = this.state.initialUser;
+                    this.setState({
+                        initialUser: initialUser
+                    });
                 }
+
             });
         }, (ajaxPermissionErrorMsg) => {
             item.ajaxPermissionResult = CONSTANTS.ERROR;
@@ -129,6 +137,11 @@ class UserDetailBasic extends React.Component {
                     };
                     roleAndPrivilege.privilegeName = this.handleRoleAndPrivilegeRelate(item, permissionIds);
                     roleAndRelatePrivilege.push(roleAndPrivilege);
+                    //重新setState一下，否则不会调用render方法，应用的角色标签不展示
+                    var initialUser = this.state.initialUser;
+                    this.setState({
+                        initialUser: initialUser
+                    });
                 }
             },
             );
@@ -170,6 +183,7 @@ class UserDetailBasic extends React.Component {
                 }
             });
         }
+
         return privilegeName;
     };
     getRolesListPrivilege(){
@@ -405,12 +419,11 @@ class UserDetailBasic extends React.Component {
         return (
             <div className="role-list-container">
                 { _.map(roleAndRelatePrivilege,(item) => {
-                    var privilgeName = item.privilegeName.join(',');
+                    var privilgeName = item.privilegeName.join('， ');
                     return <span className="role-name">
                         <Tooltip title={privilgeName} trigger="click">
                             {item.roleName}
                         </Tooltip>
-
                     </span>;
                 })}
             </div>
