@@ -22,7 +22,8 @@ let moment = require('moment');
  * home page handler.
  */
 exports.home = function(req, res) {
-    var user = auth.getUser(req);
+    let isCurtao = req.host === global.config.curtaoUrl;
+    let user = auth.getUser(req);
     // 委内维拉项目隐藏一些项的属性
     let hideSomeItem = '';
     if (global.config.lang && global.config.lang === 'es_VE') {
@@ -40,7 +41,8 @@ exports.home = function(req, res) {
         hideSomeItem: hideSomeItem,
         projectName: global.config.processTitle || 'oplate',
         clientId: global.config.loginParams.clientId,
-        useSso: global.config.useSso
+        useSso: global.config.useSso,
+        isCurtao: isCurtao
     });
 };
 
