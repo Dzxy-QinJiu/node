@@ -95,14 +95,13 @@ class UserDetailBasic extends React.Component {
                 var privilegeId = roleAndRelatePrivilegeItem.privilegeId || [];
                 var privilegeName = roleAndRelatePrivilegeItem.privilegeName || [];
                 if (privilegeId.length && !privilegeName.length) {
-                    roleAndRelatePrivilegeItem.privilegeName = this.handleRoleAndPrivilegeRelate(item,privilegeId);
-                    //重新setState一下，否则不会调用render方法，应用的角色标签不展示
-                    var initialUser = this.state.initialUser;
-                    this.setState({
-                        initialUser: initialUser
-                    });
+                    roleAndRelatePrivilegeItem.privilegeName = this.handleRoleAndPrivilegeRelate(item, privilegeId);
                 }
-
+            });
+            //重新setState一下，否则不会调用render方法，应用的角色标签不展示
+            var initialUser = this.state.initialUser;
+            this.setState({
+                initialUser: initialUser
             });
         }, (ajaxPermissionErrorMsg) => {
             item.ajaxPermissionResult = CONSTANTS.ERROR;
@@ -117,7 +116,7 @@ class UserDetailBasic extends React.Component {
         item.ajaxRolesErrorMsg = '';
         var app_id = _.get(item, 'app_id');
         //已有的角色列表
-        var rolesSelectedList = _.isArray(_.get(item,'roles')) ? _.get(item,'roles') : [];
+        var rolesSelectedList = _.isArray(_.get(item, 'roles')) ? _.get(item, 'roles') : [];
         Ajax.getRoleList(app_id).then((ajaxRolesList) => {
             //每个角色对应的角色列表
             item.ajaxRolesResult = CONSTANTS.SUCCESS;
@@ -137,15 +136,15 @@ class UserDetailBasic extends React.Component {
                     };
                     roleAndPrivilege.privilegeName = this.handleRoleAndPrivilegeRelate(item, permissionIds);
                     roleAndRelatePrivilege.push(roleAndPrivilege);
-                    //重新setState一下，否则不会调用render方法，应用的角色标签不展示
-                    var initialUser = this.state.initialUser;
-                    this.setState({
-                        initialUser: initialUser
-                    });
                 }
             },
             );
             item['roleAndRelatePrivilege'] = roleAndRelatePrivilege;
+            //重新setState一下，否则不会调用render方法，应用的角色标签不展示
+            var initialUser = this.state.initialUser;
+            this.setState({
+                initialUser: initialUser
+            });
         }, (ajaxRolesErrorMsg) => {
             item.ajaxRolesResult = CONSTANTS.ERROR;
             item.ajaxRolesList = [];
