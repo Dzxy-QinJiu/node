@@ -132,12 +132,15 @@ class OrgCard extends React.Component {
     // 获取子部门
     getChildDepartment = (childGroup) => {
         let childDepartName = [];
-        if (_.isArray(childGroup) && childGroup.length) {
-            _.each(childGroup, (childItem) => {
-                childDepartName.push(childItem.group_name);
-                this.getChildDepartment(childItem.child_groups);
-            });
+        const getChildDepartmentData = (childGroup) => {
+            if (_.isArray(childGroup) && childGroup.length) {
+                _.each(childGroup, (childItem) => {
+                    childDepartName.push(childItem.group_name);
+                    getChildDepartmentData(childItem.child_groups);
+                });
+            }
         }
+        getChildDepartmentData(childGroup);
         return childDepartName;
     };
     render() {
