@@ -16,7 +16,6 @@ var DesktopLoginService = require('../service/desktop-login-service');
 var UserDto = require('../../../lib/utils/user-dto');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 const Promise = require('bluebird');
-let restLogger = require('../../../lib/utils/logger').getLogger('rest');
 /**
  * 首页
  * @param req
@@ -63,7 +62,6 @@ exports.showLoginPage = function(req, res) {
 
     function renderHtml() {
         var styleContent = global.__STYLE_COLLECTOR__;
-        restLogger.info('req.host=' + req.host + ',req.hostname=' + req.hostname + ',req.baseUrl=' + req.baseUrl + ',global.config.curtaoUrl=' + global.config.curtaoUrl);
         let isCurtao = req.host === global.config.curtaoUrl;
         //ketao上的登录页
         let formHtml = ReactDOMServer.renderToString(LoginForm(obj));

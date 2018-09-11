@@ -22,7 +22,6 @@ let moment = require('moment');
  * home page handler.
  */
 exports.home = function(req, res) {
-    restLogger.info('req.host=' + req.host + ',req.hostname=' + req.hostname + ',req.baseUrl=' + req.baseUrl + ',global.config.curtaoUrl=' + global.config.curtaoUrl);
     let isCurtao = req.host === global.config.curtaoUrl;
     let user = auth.getUser(req);
     // 委内维拉项目隐藏一些项的属性
