@@ -4,11 +4,15 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 import {RightPanel} from 'CMP_DIR/rightPanel';
+require('../css/add-leave-apply.less');
+import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 class AddLeaveApply extends React.Component {
-    state = {
 
+    constructor(props) {
+        super(props);
 
-    };
+        this.state = {};}
 
     onStoreChange = () => {
 
@@ -23,11 +27,25 @@ class AddLeaveApply extends React.Component {
     componentWillUnmount() {
 
     }
+    hideLeaveApplyAddForm = () => {
+        this.props.hideLeaveApplyAddForm();
+    }
 
     render() {
         return (
             <RightPanel showFlag={true} data-tracename="添加出差申请" className="add-leave-apply-container">
-                <div className="add-leave-apply">
+                <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideLeaveApplyAddForm}
+                    data-tracename="关闭添加出差申请面板"></span>
+
+                <div className="add-leave-apply-wrap">
+                    <BasicData
+                        clueTypeTitle={Intl.get('leave.apply.add.leave.apply','出差申请')}
+                    />
+                    <div className="add-leave-apply-form-wrap">
+                        <GeminiScrollbar>
+                            
+                        </GeminiScrollbar>
+                    </div>
 
                 </div>
             </RightPanel>
@@ -35,4 +53,11 @@ class AddLeaveApply extends React.Component {
         );
     }
 }
+AddLeaveApply.defaultProps = {
+    hideLeaveApplyAddForm: function() {
+    },
+};
+AddLeaveApply.propTypes = {
+    hideLeaveApplyAddForm: PropTypes.func,
+};
 module.exports = AddLeaveApply;

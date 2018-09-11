@@ -10,7 +10,9 @@ import TopNav from 'CMP_DIR/top-nav';
 require('./css/index.less');
 var userData = require('PUB_DIR/sources/user-data');
 import {Button} from 'antd';
-var addLeaveApplyPanel = require('./view/add-leave-apply');
+var AddLeaveApplyPanel = require('./view/add-leave-apply');
+var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+var className = require('classnames');
 class LeaveApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加出差申请面板
@@ -20,41 +22,61 @@ class LeaveApplyManagement extends React.Component {
     onStoreChange = () => {
         this.setState(leaveApplyStore.getState());
     };
+
     componentDidMount() {
         leaveApplyStore.listen(this.onStoreChange);
         this.getAllLeaveApplyList();
 
-
     }
+
     //获取全部请假申请
-    getAllLeaveApplyList(){
+    getAllLeaveApplyList() {
         leaveApplyAction.getAllApplyList();
     }
+
     //获取自己发起的请假申请
-    getSelfLeaveApplyList(){
+    getSelfLeaveApplyList() {
         leaveApplyAction.getSelfApplyList();
     }
+
     //获取由自己审批的请假申请
-    getWorklistLeaveApplyList(){
+    getWorklistLeaveApplyList() {
         leaveApplyAction.getWorklistLeaveApplyList();
     }
+
     componentWillUnmount() {
         leaveApplyStore.unlisten(this.onStoreChange);
     }
-    showAddApplyPanel = () => {
 
+    showAddApplyPanel = () => {
+        this.setState({
+            showAddApplyPanel: true
+        });
     };
-    render(){
+    hideLeaveApplyAddForm = () => {
+        this.setState({
+            showAddApplyPanel: false
+        });
+    };
+
+    render() {
+        var addPanelWrap = className({'show-add-modal': this.state.showAddApplyPanel});
         return (
             <div className="leave-apply-container">
                 <TopNav>
-                    <Button className='pull-right' onClick={this.showAddApplyPanel}
-                    >{Intl.get('add.leave.apply','添加出差申请')}</Button>
+                    {hasPrivilege('BUSINESS_TRIP_APPLY') ?
+                        <Button className='pull-right btn-item' onClick={this.showAddApplyPanel}
+                        >{Intl.get('add.leave.apply', '添加出差申请')}</Button> : null}
                 </TopNav>
                 <div>
 
                 </div>
-                {this.state.showAddApplyPanel ? <addLeaveApplyPanel/> : null}
+                {this.state.showAddApplyPanel ?
+                    <div className={addPanelWrap}>
+                        <AddLeaveApplyPanel
+                            hideLeaveApplyAddForm={this.hideLeaveApplyAddForm} />
+                    </div>
+                    : null}
 
             </div>
         );

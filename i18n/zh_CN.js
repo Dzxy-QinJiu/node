@@ -2623,7 +2623,8 @@ var zh_CN = {
     'failed.get.self.leave.apply': '获取我的出差申请失败',
     'failed.get.worklist.leave.apply': '获取由我审批的出差申请失败',
     'add.leave.apply': '添加出差申请',
-    'failed.add.apply.list': '添加出差申请失败'
+    'failed.add.apply.list': '添加出差申请失败',
+    'leave.apply.add.leave.apply': '出差申请'
 
 
 };
