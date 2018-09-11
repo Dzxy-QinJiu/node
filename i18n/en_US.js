@@ -2620,6 +2620,6 @@ var en_US = {
     'user.detail.analysis.tip.fresh': 'Last login time, this takes 20% in total score', //'距离最近的登录时间。该分项在总分钟占比20%',
     'user.detail.analysis.tip.historyActivity': 'Total active day number, this takes 10% in total score', //'总活跃天数/开通的总天数。该分项在总分钟占比10%',
     'user.detail.analysis.tip.historyFresh': 'Total online minutes, this takes 10% in total score', //'总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
-
+    'user.get.user.info.null': 'The information that gets the logged in user is empty',//获取不到登录用户的信息
 };
 export default en_US;

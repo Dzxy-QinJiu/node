@@ -2641,6 +2641,6 @@ var zh_CN = {
     'user.detail.analysis.tip.fresh': '距离最近的登录时间。该分项在总分钟占比20%',
     'user.detail.analysis.tip.historyActivity': '总活跃天数/开通的总天数。该分项在总分钟占比10%',
     'user.detail.analysis.tip.historyFresh': '总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
-
+    'user.get.user.info.null': '获取不到登录用户的信息',
 };
 export default zh_CN;
