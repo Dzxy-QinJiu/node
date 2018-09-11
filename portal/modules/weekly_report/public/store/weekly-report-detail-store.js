@@ -46,12 +46,6 @@ weeklyReportDetailStore.prototype.setInitState = function() {
     };
     //销售阶段
     this.salesStageList = [];
-    //保存员工请假信息
-    this.addAskForLeave = {
-        submitting: false,//正在保存
-        errMsg: '' //保存出错
-    };
-
 };
 //获取电话统计
 weeklyReportDetailStore.prototype.getCallInfo = function(result) {
@@ -121,11 +115,4 @@ weeklyReportDetailStore.prototype.getCustomerStageInfo = function(result) {
     }
 };
 
-//保存员工请假信息
-weeklyReportDetailStore.prototype.addForLeave = function(result) {
-    this.addAskForLeave.submitting = result.submitting;
-    if (result.error) {
-        this.addAskForLeave.errMsg = result.errMsg;
-    }
-};
 module.exports = alt.createStore(weeklyReportDetailStore, 'weeklyReportDetailStore');
