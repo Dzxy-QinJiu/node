@@ -27,6 +27,8 @@ ScheduleManagementStore.prototype.setInitState = function() {
     this.handleStatusLoading = false;//正在修改日程的状态
     this.handleStatusErrMsg = '';//修改日程状态失败
     this.curViewDate = '';//当前页面展示的日期
+    this.isShowExpiredPanel = false;//是否展示左侧超时面板
+    this.isFirstLogin = true;//是否是第一次登录的时候
 };
 //把数据转换成组件需要的类型
 ScheduleManagementStore.prototype.processForList = function(originList,dateType) {
@@ -36,7 +38,7 @@ ScheduleManagementStore.prototype.processForList = function(originList,dateType)
         let curSchedule = list[i];
         curSchedule.dateType = dateType;//日期的类型 比如周，天，月
         curSchedule.title = curSchedule.topic;
-        if (curSchedule.end_time - curSchedule.start_time == 86399000){
+        if (curSchedule.end_time - curSchedule.start_time === 86399000){
             curSchedule.end_time = curSchedule.end_time + 1000;
             curSchedule.allDay = true;
         }
@@ -60,6 +62,9 @@ ScheduleManagementStore.prototype.getScheduleList = function(data) {
     } else {
         let list = data.scheduleListObj ? data.scheduleListObj.list : [];
         this.scheduleExpiredSize = data.scheduleListObj ? data.scheduleListObj.total : 0;
+        if (this.scheduleExpiredSize){
+            this.isShowExpiredPanel = true;
+        }
         if (this.lastScheduleExpiredId) {
             this.scheduleExpiredList = this.scheduleExpiredList.concat(list);
         } else {
@@ -96,5 +101,9 @@ ScheduleManagementStore.prototype.getViewDate = function(date) {
 //设置当前页面展示的日期
 ScheduleManagementStore.prototype.setViewDate = function(date) {
     this.curViewDate = date;
+};
+ScheduleManagementStore.prototype.updateExpiredPanelState = function(newStates) {
+    this.isShowExpiredPanel = newStates.isShowExpiredPanel;
+    this.isFirstLogin = false;
 };
 module.exports = alt.createStore(ScheduleManagementStore, 'ScheduleManagementStore');

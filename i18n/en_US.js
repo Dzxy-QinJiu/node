@@ -2366,7 +2366,7 @@ var en_US = {
     'clue.customer.register.user': 'registered user',//注册用户
     'batch.failed.add.schedule': '{customerName} failed to add schedule',//{customerName}添加联系计划失败
     'batch.success.add.schedule': 'All schedules are added successfully',//所有联系计划均添加成功
-    'shedule.list.add.todo': 'To do',//待办
+    'shedule.list.add.todo': 'Add to do',//待办
     'crm.get.phone.failed': 'Failed to get phone number',//获取座机号失败!
     'crm.call.phone.success': 'Call out successlly',//拨打成功
     'crm.call.phone.failed': 'Failed to call out',//拨打失败
@@ -2620,6 +2620,8 @@ var en_US = {
     'user.detail.analysis.tip.fresh': 'Last login time, this takes 20% in total score', //'距离最近的登录时间。该分项在总分钟占比20%',
     'user.detail.analysis.tip.historyActivity': 'Total active day number, this takes 10% in total score', //'总活跃天数/开通的总天数。该分项在总分钟占比10%',
     'user.detail.analysis.tip.historyFresh': 'Total online minutes, this takes 10% in total score', //'总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
+    'user.info.binding.email': '',//绑定邮箱
+    'schedule.manage.has.no.expired.tasks': 'You have no expired tasks',//您没有超期未完成的任务
     'user.get.user.info.null': 'The information that gets the logged in user is empty',//获取不到登录用户的信息
 };
 export default en_US;

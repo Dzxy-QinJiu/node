@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 @Icon-Purple-Color: #9C5DF5;
 @Icon-Green-Color: #5DD778;
 @Icon-Gray-Color: #ddd;
@@ -30,7 +31,6 @@
   #expire-list-content{
     float: left;
     width: @left-panel-show-width;
-    padding: 10px 0 0 0;
     background: rgba(222,223,227,0.5);
     position: relative;
     .expire-list-innerwrap{
@@ -38,11 +38,10 @@
       //过期日程标题
       .expire-list-title{
         font-size: 24px;
-        border-bottom: 1px solid #aaa;
-        height: 30px;
+        border-bottom: 1px solid @bd-grey;
         line-height: 30px;
         color: #636768;
-        margin: 0px 16px 0 16px;
+        padding: 10px 16px 9px 16px;
         min-width: 200px;
       }
       //过期日程内容
@@ -60,6 +59,15 @@
         }
         .is-loading-schedule-list.show-spinner{
           margin-top: 200px;
+        }
+        .schedule-list-no-data{
+          background: #fff;
+          padding-top: 50px;
+          width: 100%;
+         .ant-alert{
+           width: 230px;
+           margin:0 auto;
+         }
         }
         .list-container{
           .list-item{
@@ -162,7 +170,7 @@
     .scroll-tip{
       position: absolute;
       top: @fix-btn-top;
-      right: -40px;
+      right: -42px;
       height: 26px;
       width: 40px;
       border-top-right-radius: 4px;
@@ -191,13 +199,22 @@
       right: -150px;
       z-index: 10;
       cursor: pointer;
-      .ant-btn{
+      button.ant-btn-primary{
         height: 26px;
+        background-color: @BORDER-BLUE;
+        border-color: @BORDER-BLUE;
+        color: #ffffff;
+        &:hover{
+          color: #ffffff;
+          background-color:  @BUTTON-HOVER;
+          border-color: @BUTTON-HOVER;
+        }
       }
     }
 
   }
   #expire-list-content.show-expire-panel{
+    border-right: 1px solid @bd-grey;
     animation: expired-show 1s 1;
     width: @left-panel-show-width;
     .scroll-tip {
@@ -216,12 +233,17 @@
     }
   }
   #expire-list-content.nodata-left-expired-panel{
-    width: @panel-width-zero ;
+    width: @panel-width-zero;
+    .scroll-tip {
+      .scroll-flag {
+        padding-right: 0;
+      }
+    }
   }
   #calendar-wrap{
     float: left;
     width:@right-panle-initial;
-    padding:20px;
+    padding:20px 20px 20px 40px;
     #calendar{
       position: relative;
       .fc-time-grid-event.fc-short .fc-time:after{
@@ -264,6 +286,7 @@
       .rbc-calendar .rbc-toolbar{
             position:relative;
             display:block;
+            margin-bottom: 24px;
             .rbc-btn-group:nth-child(1){
               button{
                 position: absolute;
@@ -273,7 +296,7 @@
                 right: 410px;
               }
               button:nth-child(2){
-                right: 640px;
+                right: 630px;
               }
               button:nth-child(3){
                 right: 460px;
@@ -288,6 +311,9 @@
           flex-grow:0;
           position: absolute;
           right: 500px;
+          top:4px;
+          padding:0;
+          width: 120px;
         }
 
       }

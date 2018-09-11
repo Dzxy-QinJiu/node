@@ -2404,7 +2404,7 @@ var zh_CN = {
     'clue.customer.register.user': '注册用户',
     'batch.failed.add.schedule': '{customerName}添加联系计划失败',
     'batch.success.add.schedule': '所有联系计划均添加成功',
-    'shedule.list.add.todo': '待办',
+    'shedule.list.add.todo': '添加待办',
     'crm.get.phone.failed': '获取座机号失败!',
     'crm.call.phone.success': '拨打成功',
     'crm.call.phone.failed': '拨打失败',
@@ -2641,6 +2641,8 @@ var zh_CN = {
     'user.detail.analysis.tip.fresh': '距离最近的登录时间。该分项在总分钟占比20%',
     'user.detail.analysis.tip.historyActivity': '总活跃天数/开通的总天数。该分项在总分钟占比10%',
     'user.detail.analysis.tip.historyFresh': '总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
+    'user.info.binding.email': '绑定邮箱',
+    'schedule.manage.has.no.expired.tasks': '您没有超期未完成的任务',
     'user.get.user.info.null': '获取不到登录用户的信息',
 };
 export default zh_CN;
