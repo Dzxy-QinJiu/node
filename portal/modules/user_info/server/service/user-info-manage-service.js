@@ -133,7 +133,7 @@ exports.getManagedRealm = function(req, res) {
     //ketao上， 获取当前登录用户所在的安全域
     let url = userInfoRestApis.getManagedRealm;
     //正式发版的curtao上，获取的是当前登录用户所在的组织
-    if(frontUrl === oplateConsts.CURTAO_URL){
+    if(frontUrl === global.config.curtaoUrl){
         url = userInfoRestApis.getOrganization;
     }
     return restUtil.authRest.get(

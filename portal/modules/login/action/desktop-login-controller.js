@@ -62,7 +62,7 @@ exports.showLoginPage = function(req, res) {
 
     function renderHtml() {
         var styleContent = global.__STYLE_COLLECTOR__;
-        let isCurtao = req.host === oplateConsts.CURTAO_URL;
+        let isCurtao = req.host === global.config.curtaoUrl;
         //ketao上的登录页
         let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
         //正式发版的curtao上，展示带注册的登录界面，

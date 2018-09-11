@@ -7,6 +7,7 @@
 
 var React = require('react');
 var crypto = require('crypto');
+const PropTypes = require('prop-types');
 const classnames = require('classnames');
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
 import {Icon} from 'antd';
