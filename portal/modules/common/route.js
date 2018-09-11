@@ -366,4 +366,12 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
+}, {    
+    //获取指定用户全部应用的审计日志
+    'method': 'post',
+    'path': '/rest/analysis/auditlog/v1/apps/userdetail/:user_id',
+    'handler': 'getSingleUserAllAuditLog',
+    'passport': {
+        'needLogin': true
+    }
 }];
