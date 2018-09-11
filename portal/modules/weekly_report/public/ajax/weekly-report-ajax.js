@@ -65,68 +65,6 @@ exports.getCallInfo = function(reqData, type) {
     });
     return Deferred.promise();
 };
-//添加员工请假信息
-var addAskForLeaveAjax = null;
-exports.addAskForLeave = function(reqData) {
-    var Deferred = $.Deferred();
-    addAskForLeaveAjax && addAskForLeaveAjax.abort();
-    addAskForLeaveAjax = $.ajax({
-        url: '/rest/weekly_report/add/askForLeave',
-        dataType: 'json',
-        type: 'post',
-        data: reqData,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr,statusText) {
-            if(statusText !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
-//更新员工请假信息
-var updateAskForLeaveAjax = null;
-exports.updateAskForLeave = function(reqData) {
-    var Deferred = $.Deferred();
-    updateAskForLeaveAjax && updateAskForLeaveAjax.abort();
-    updateAskForLeaveAjax = $.ajax({
-        url: '/rest/weekly_report/update/askForLeave',
-        dataType: 'json',
-        type: 'put',
-        data: reqData,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr,statusText) {
-            if(statusText !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
-//删除员工请假信息
-var deleteAskForLeaveAjax = null;
-exports.deleteAskForLeave = function(id) {
-    var Deferred = $.Deferred();
-    deleteAskForLeaveAjax && deleteAskForLeaveAjax.abort();
-    deleteAskForLeaveAjax = $.ajax({
-        url: '/rest/weekly_report/delete/askForLeave/' + id,
-        dataType: 'json',
-        type: 'delete',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr,statusText) {
-            if(statusText !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
 // 获取合同信息
 var getContractInfoAjax = null;
 exports.getContractInfo = function(reqData, type) {

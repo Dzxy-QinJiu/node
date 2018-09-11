@@ -10,8 +10,6 @@ const restApis = {
     getSaleMemberList: '/rest/base/v1/group/team/members/:type',
     // 获取电话的接通情况
     getCallInfo: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
-    //添加, 更新，删除员工请假信息
-    AskForLeave: '/rest/callrecord/v2/askforleave',
     //合同报表统计
     getContractInfo: '/rest/analysis/contract/report/contract/:type',
     //合同回款统计
@@ -52,33 +50,6 @@ exports.getCallInfo = function(req, res, params, reqData) {
             req: req,
             res: res
         }, reqData);
-};
-//添加员工请假信息
-exports.addAskForLeave = function(req, res, reqObj) {
-    return restUtil.authRest.post(
-        {
-            url: restApis.AskForLeave,
-            req: req,
-            res: res
-        }, reqObj);
-};
-//更新员工请假信息
-exports.updateAskForLeave = function(req, res, reqObj) {
-    return restUtil.authRest.put(
-        {
-            url: restApis.AskForLeave,
-            req: req,
-            res: res
-        }, reqObj);
-};
-//删除某条员工请假信息
-exports.deleteAskForLeave = function(req, res) {
-    return restUtil.authRest.del(
-        {
-            url: restApis.AskForLeave + '?ids=' + req.params.id,
-            req: req,
-            res: res
-        });
 };
 //获取合同情况
 exports.getContractInfo = function(req, res, params, reqData) {
