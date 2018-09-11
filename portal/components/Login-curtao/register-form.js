@@ -90,6 +90,7 @@ class RegisterForm extends React.Component {
             formData.pwd = md5Hash.digest('hex');
             formData.nickname = values.nickname;
             formData.organization_name = values.organization_name;
+            this.setState({registerErrorMsg: ''});
             $.ajax({
                 url: '/account/register',
                 dataType: 'json',
