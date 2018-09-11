@@ -98,7 +98,7 @@ function SingleUserLogAction() {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({ loading: false, error: false, data: data });
         }, (errorMsg) => {
-            this.dispatch({ loading: false, error: true, errorMsg: errorMsg });
+            this.dispatch({ loading: false, error: true, errorMsg: errorMsg || Intl.get('errorcode.7', '获取审计日志失败') });
         });
     };
   
