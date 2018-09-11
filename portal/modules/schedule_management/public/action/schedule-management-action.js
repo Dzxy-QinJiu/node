@@ -10,6 +10,7 @@ function ScheduleManagementActions() {
     this.generateActions(
         'setInitState',
         'afterHandleStatus',
+        'updateExpiredPanelState'
     );
     //获取日程列表
     this.getScheduleList = function(queryObj, listType) {

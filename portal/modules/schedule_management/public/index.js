@@ -7,8 +7,7 @@ var React = require('react');
 require('./css/index.less');
 require('react-big-calendar/lib/css/react-big-calendar.css');
 import Trace from 'LIB_DIR/trace';
-import {message, Icon, Button, Alert, Checkbox} from 'antd';
-const CheckboxGroup = Checkbox.Group;
+import {message} from 'antd';
 var scheduleManagementStore = require('./store/schedule-management-store');
 var scheduleManagementAction = require('./action/schedule-management-action');
 var classNames = require('classnames');
@@ -34,14 +33,11 @@ class ScheduleManagement extends React.Component {
     state = {
         rightPanelIsShow: false,//是否展示右侧客户详情
         scheduleTableListTotal: 0,//日程列表是数量
-        isShowExpiredPanel: true,//是否展示左侧超时面板
-        isFirstLogin: true,//是否是第一次登录的时候
         dayLists: [],//天视图所用的日程数据
         weekLists: [],//周视图所用的日程数据
         calendarLists: [],//右侧日程列表中的日程数据
         curViewName: 'day',//当前被按下的视图的名称
         curCustomerId: '',//查看详情的客户的id
-        filterScheduleType: 'calls,visit,other',//要过滤的日程类型 默认展示全部类型的
         ...scheduleManagementStore.getState()
     };
 
@@ -121,18 +117,12 @@ class ScheduleManagement extends React.Component {
         var _this = this;
         var startTime = dateObj.start_time;
         var endTime = dateObj.end_time;
-        //如果三个类型都不选，就不用发请求，直接返回空数组
-        if(!this.state.filterScheduleType){
-            this.handleScheduleData([],viewType);
-            return;
-        }
         var constObj = {
             page_size: 1000,//现在是把所有的日程都取出来，先写一个比较大的数字，后期可能会改成根据切换的视图类型选择不同的pagesize
             start_time: startTime,
             end_time: endTime,
             sort_field: 'start_time',//排序字段 按开始时间排序
             order: 'ascend',//排序方式，按升序排列
-            type: this.state.filterScheduleType//过滤日程的类型
         };
         $.ajax({
             url: '/rest/get/schedule/list',
@@ -190,6 +180,7 @@ class ScheduleManagement extends React.Component {
     };
 
     componentWillUnmount() {
+        scheduleManagementAction.setInitState();
         scheduleManagementStore.unlisten(this.onStoreChange);
     }
 
@@ -259,14 +250,6 @@ class ScheduleManagement extends React.Component {
             </div>
         );
     };
-
-    updateExpiredPanelState = (newStates) => {
-        this.setState({
-            isShowExpiredPanel: newStates.isShowExpiredPanel,
-            isFirstLogin: false,
-        });
-    };
-
     //切换不同的视图
     changeView = (viewName) => {
         var preViewName = this.state.curViewName;
@@ -322,20 +305,6 @@ class ScheduleManagement extends React.Component {
         this.getAgendaData(dateObj, view);
         Trace.traceEvent('日程管理界面', '点击 前，后翻页图,或者返回今天的按钮');
     };
-
-    onCheckChange = (checkedValue) => {
-        var filterScheduleType = checkedValue.join(',');
-        this.setState({
-            filterScheduleType: filterScheduleType
-        },() => {
-            var viewName = this.state.curViewName;
-            var dateObj = this.getDifTypeStartAndEnd(scheduleManagementStore.getViewDate(), viewName);
-            //重新获取数据
-            this.getAgendaData(dateObj,viewName);
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.check-group-container'), '点击日程联系类型按钮');
-        });
-    };
-
     render() {
         //右侧日程列表动画 如果没有超时日程，那么左侧日程列表不显示
         var calendarCls = classNames({
@@ -350,25 +319,15 @@ class ScheduleManagement extends React.Component {
                 return localizer.format(date, 'YYYY' + Intl.get('common.time.unit.year', '年') + 'MM' + Intl.get('common.time.unit.month', '月'), culture);
             }
         };
-        const options = [
-            { label: <span><i className="iconfont icon-phone-busy"></i>{Intl.get('schedule.phone.connect','电联')}</span>, value: 'calls' },
-            { label: <span><i className="iconfont icon-schedule-visit"></i>{Intl.get('common.visit', '拜访')}</span>, value: 'visit' },
-            { label: <span><i className="iconfont icon-schedule-other"></i>{Intl.get('common.others', '其他')}</span>, value: 'other' },
-        ];
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
             <div data-tracename="日程管理界面" className="schedule-list-content">
                 <ExpireScheduleLists
-                    isShowExpiredPanel={this.state.isShowExpiredPanel}
-                    isFirstLogin={this.state.isFirstLogin}
                     updateExpiredPanelState={this.updateExpiredPanelState}
                     showCustomerDetail={this.showCustomerDetail}
                 />
                 <div id="calendar-wrap" className={calendarCls} data-tracename="日程列表界面">
                     <div id="calendar" style={{height: height}}>
-                        <div className="check-group-container" data-tracename="日程列表界面右侧按钮">
-                            <CheckboxGroup options={options} defaultValue={['calls','visit','other']} onChange={this.onCheckChange} />
-                        </div>
                         <BigCalendar
                             events = {this.state.calendarLists}
                             onView = {this.changeView}

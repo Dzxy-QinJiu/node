@@ -162,20 +162,23 @@ class Crm extends React.Component {
     };
 
     setRange = (obj) => {
+        var rangParams = this.state.rangParams;
         if (obj.startTime) {
-            this.state.rangParams[0].from = obj.startTime;
+            rangParams[0].from = obj.startTime;
         }
         if (obj.endTime) {
-            this.state.rangParams[0].to = obj.endTime;
+            rangParams[0].to = obj.endTime;
         }
     };
 
     setStartRange = (value) => {
-        this.state.rangParams[0].from = value;
+        var rangParams = this.state.rangParams;
+        rangParams[0].from = value;
     };
 
     setEndRange = (value) => {
-        this.state.rangParams[0].to = value;
+        var rangParams = this.state.rangParams;
+        rangParams[0].to = value;
     };
 
     // 获取拨打电话的座机号
@@ -270,7 +273,7 @@ class Crm extends React.Component {
             }
             this.setFilterField({filterField, filterValue});
 
-        } else if (locationState) {
+        } else if (!_.isEmpty(locationState)) {
             const from = locationState.from;
 
             if (from === 'sales_home') {
@@ -1614,6 +1617,20 @@ class Crm extends React.Component {
         </RightContent>);
     }
 }
+Crm.defaultProps = {
+    location: {},
+    fromSalesHome: false,
+    showRepeatCustomer: function() {
+
+    },
+    params: {},
+};
+Crm.propTypes = {
+    location: PropTypes.object,
+    fromSalesHome: PropTypes.bool,
+    showRepeatCustomer: PropTypes.func,
+    params: PropTypes.object,
+};
 
 module.exports = Crm;
 

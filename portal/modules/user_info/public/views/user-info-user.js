@@ -273,9 +273,9 @@ class UserInfo extends React.Component{
                                 <span>
                                     <ReactIntl.FormattedMessage
                                         id="user.info.no.email"
-                                        defaultMessage={'该用户没有任何邮箱信息，{add-email}'}
+                                        defaultMessage={'该用户没有邮箱，{add-email}'}
                                         values={{
-                                            'add-email': <a data-tracename="点击添加邮箱" onClick={this.showUserInfoForm.bind(this)}>{Intl.get('user.info.add.email','添加邮箱')}</a>,}}/>
+                                            'add-email': <a data-tracename="点击绑定邮箱" onClick={this.showUserInfoForm.bind(this)}>{Intl.get('user.info.binding.email','绑定邮箱')}</a>,}}/>
                                 </span>}
                         </span>
                         {formData.email ? (formData.emailEnable ? <span>（
