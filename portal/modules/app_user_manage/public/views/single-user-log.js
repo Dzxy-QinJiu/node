@@ -19,7 +19,7 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
 import classNames from 'classnames';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import {AntcTimeLine} from 'antc';
+import { AntcTimeLine } from 'antc';
 const TOP_PADDING = 80;//top padding for inputs
 
 class SingleUserLog extends React.Component {
@@ -76,7 +76,7 @@ class SingleUserLog extends React.Component {
     getQueryParams = (queryParams) => {
         return {
             user_id: this.props.userId,
-            appid: queryParams && queryParams.appid || this.state.selectedLogAppId,
+            appid: queryParams && queryParams.appid,
             page: queryParams && queryParams.page || this.state.curPage,
             page_size: this.state.pageSize,
             starttime: queryParams && queryParams.starttime || this.state.startTime,
@@ -90,6 +90,10 @@ class SingleUserLog extends React.Component {
         let search = queryParams && 'search' in queryParams ? queryParams.search : this.state.searchName;
         if (search) {
             queryObj.search = (search.toString().trim()).toLowerCase();
+        }
+        else {
+            //参数不能为空
+            queryObj.search = '';
         }
         let type_filter = queryParams && 'type_filter' in queryParams ? queryParams.type_filter : this.state.typeFilter;
         if (type_filter) {
@@ -133,7 +137,8 @@ class SingleUserLog extends React.Component {
         this.getSingleUserAuditLogList({
             starttime: startTime,
             endtime: endTime,
-            page: 1
+            page: 1,
+            appid: this.state.selectedLogAppId
         });
     };
 
@@ -146,9 +151,35 @@ class SingleUserLog extends React.Component {
             page: 1
         });
     };
-
+    // 应用下拉框的选择
+    getAppOptions = () => {
+        var list = _.map(this.state.userOwnAppArray, function (item) {
+            return <Option
+                key={item.app_id}
+                value={item.app_id}
+                title={item.app_name}
+            >
+                {item.app_name}
+            </Option>;
+        });
+        const appIds = _.map(this.state.userOwnAppArray, x => x.app_id);
+        let value = "";
+        if (_.isArray(appIds)) {
+            value = appIds.join(",")
+        }
+        list.unshift(
+            <Option
+                value={value}
+                key="all"
+                title={Intl.get('user.app.all', '全部应用')}
+            >
+                {Intl.get("user.app.all", "全部应用")}
+            </Option>);
+        return list;
+    };
     renderUserLogSelectInfo = () => {
         let showAppSelect = this.props.selectedAppId;
+        const appOptions = this.getAppOptions();
         return (
             <div className="log-info-header clearfix">
                 {showAppSelect ? null : <div className="select-app">
@@ -162,16 +193,7 @@ class SingleUserLog extends React.Component {
                         maxWidth={270}
                         notFoundContent={Intl.get('common.not.found', '无法找到')}
                     >
-                        {_.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
-                            return (
-                                <Option
-                                    value={item.app_id}
-                                    key={item.app_id}
-                                >
-                                    {item.app_name}
-                                </Option>
-                            );
-                        }) : null}
+                        {appOptions}
                     </SelectFullWidth>
                 </div>}
                 <div className="select-time">
@@ -237,7 +259,7 @@ class SingleUserLog extends React.Component {
                     </dd>) : null}
                 <dd className="hightlight">
                     {item.user_ip ? `ip: ${item.user_ip}` : null} {item.location} {item.area}
-                    <br/>
+                    <br />
                     {Intl.get('common.client', '客户端')}:  {item.os}
                 </dd>
                 <dt>{moment(item.timestamp).format(oplateConsts.TIME_FORMAT)}</dt>
@@ -248,11 +270,11 @@ class SingleUserLog extends React.Component {
     // 日志列表信息
     userLogInformationBlock = (height) => {
         if (this.state.logListLoading === 'loading' && this.state.curPage === 1) {
-            return <StatusWrapper loading={true} height={height}/>;
+            return <StatusWrapper loading={true} height={height} />;
         }
         if (this.state.getUserLogErrorMsg) {
             return (
-                <div className="alert-wrap">
+                <div className="alert-container">
                     <Alert
                         message={this.state.getUserLogErrorMsg}
                         type="error"
@@ -260,7 +282,7 @@ class SingleUserLog extends React.Component {
                     />
                 </div>
             );
-        }        
+        }
         var auditLogListLength = this.state.auditLogList.length;
         if (auditLogListLength !== 0) {
             return (
@@ -275,7 +297,7 @@ class SingleUserLog extends React.Component {
                         timeField="timestamp"
                         contentRender={this.renderTimeLineItem}
                         dot={<span className="iconfont icon-foot"></span>}
-                    />                    
+                    />
                 </div>
             );
         } else {

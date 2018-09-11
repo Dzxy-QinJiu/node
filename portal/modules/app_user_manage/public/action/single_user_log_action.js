@@ -69,24 +69,39 @@ function SingleUserLogAction() {
             this.actions.getSingleAuditLogList(getLogParam);
         } else {
             // 请求参数错误
-            this.dispatch({error: true, errorMsg: Intl.get('user.log.param.error', '请求参数错误!')});
+            this.dispatch({ error: true, errorMsg: Intl.get('user.log.param.error', '请求参数错误!') });
         }
     };
 
     // 获取单个用户的审计日志信息
-    this.getSingleAuditLogList = function(searchObj) {
-        if (searchObj && searchObj.appid) {
-            this.dispatch({loading: true, error: false});
-            userAuditLogAjax.getSingleAuditLogList(searchObj).then( (data) => {
-                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-                this.dispatch({loading: false, error: false, data: data});
-            }, (errorMsg) => {
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-            });
+    this.getSingleAuditLogList = function (searchObj) {
+        this.dispatch({ loading: true, error: false });
+        let promise = null;
+        //查询全部应用的日志调用另一个接口
+        if (searchObj.appid.includes(",")) {
+            let data = {
+                ...searchObj,
+                app_id: searchObj.appid,
+                page_num: searchObj.page
+            };
+            delete data.appid;
+            promise= userAuditLogAjax.getSingleUserAllAuditLog({
+                params: {
+                    user_id: searchObj.user_id
+                },
+                data
+            })
         } else {
-            this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.get.log.fail', '获取操作日志信息失败！')});
+            promise = userAuditLogAjax.getSingleAuditLogList(searchObj);
         }
+        promise.then((data) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({ loading: false, error: false, data: data });
+        }, (errorMsg) => {
+            this.dispatch({ loading: false, error: true, errorMsg: errorMsg || Intl.get('errorcode.7', '获取审计日志失败') });
+        });
     };
+  
 }
 
 module.exports = alt.createActions(SingleUserLogAction);
