@@ -66,6 +66,7 @@
         }
         //隐藏密码输入框的样式
         .password-hidden-input{
+            width: 0;
             height: 0;
             border: none;
             padding: 0;
@@ -76,14 +77,16 @@
             margin: 0 auto;
         }
     }
-    .login-error-tip {
-        background: no-repeat url("./image/error.png") 0 2px;
+    .login-error-tip, .register-error-tip {
+        margin-top: 4px;
+        padding-left: 21px;
         line-height: 22px;
         font-size: 14px;
         color: #ee5b44;
-        padding-left: 21px;
-        margin-top: 5px;
-        position: absolute;
+        background: no-repeat url("./image/error.png") 0 2px;
     }
-
+    .login-error-tip{
+        width: 276px;
+        margin: 0 auto;
+    }
 }
