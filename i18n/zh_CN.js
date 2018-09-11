@@ -298,6 +298,7 @@ var zh_CN = {
     'register.code.validate.error': '短信验证码验证错误',
     'register.phone.code': '短信验证码',
     'register.company.nickname': '公司名称',
+    'register.code.validate.expire': '短信验证码已过期',
 
 
     //"superHello": "{appName}有{number}名{user_type}过期！",

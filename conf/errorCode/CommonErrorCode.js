@@ -30,6 +30,7 @@ function getConfigJson(req) {
         '10111': {'httpCode': 500, 'message': backendIntl.get('errorcode.9', '该邮箱已激活，无需重复激活')},
         '10113': {'httpCode': 500, 'message': backendIntl.get('errorcode.10', '已发送过激活邮件了，无需重复发送')},
         '10116': {'httpCode': 500, 'message': backendIntl.get('register.phon.has.registed', '该手机号已被注册')},
+        '10118': {'httpCode': 500, 'message': backendIntl.get('register.code.validate.expire', '短信验证码已过期')},
         '10119': {'httpCode': 500, 'message': backendIntl.get('register.code.validate.error', '短信验证码验证错误')},
         '10120': {'httpCode': 500, 'message': backendIntl.get('errorcode.12', '您的邮箱未激活，请先激活邮箱')},
         '10121': {'httpCode': 500, 'message': backendIntl.get('register.code.has.send', '短信验证码已经发送，请勿重复发送')},

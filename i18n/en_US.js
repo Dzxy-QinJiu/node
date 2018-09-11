@@ -291,6 +291,7 @@ var en_US = {
     'register.code.validate.error': 'Verification error of SMS verification code',//短信验证码验证错误
     'register.phone.code': 'SMS verification code',//短信验证码
     'register.company.nickname': 'Company nickname',//公司名称
+    'register.code.validate.expire': 'SMS verification code has expired',//短信验证码已过期
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
