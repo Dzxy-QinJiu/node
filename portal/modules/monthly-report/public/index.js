@@ -79,7 +79,7 @@ class MonthlyReport extends React.Component {
             <AntcAttendanceRemarks
                 data={data}
                 userId={userId}
-                selectedMonth={this.state.selectedMonth}
+                selectedDate={this.state.selectedMonth}
             />
         );
     };
