@@ -11,6 +11,7 @@ var ReactDOMServer = require('react-dom/server');
 global.__STYLE_COLLECTOR_MODULES__ = [];
 global.__STYLE_COLLECTOR__ = '';
 var LoginForm = React.createFactory(require('../../../../dist/server-render/login'));
+var LoginCurtaoForm = React.createFactory(require('../../../../dist/server-render/login_curtao'));
 var DesktopLoginService = require('../service/desktop-login-service');
 var UserDto = require('../../../lib/utils/user-dto');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
@@ -62,7 +63,13 @@ exports.showLoginPage = function(req, res) {
 
     function renderHtml() {
         var styleContent = global.__STYLE_COLLECTOR__;
-        var formHtml = ReactDOMServer.renderToString(LoginForm(obj));
+        let isCurtao = req.host === global.config.curtaoUrl;
+        //ketao上的登录页
+        let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
+        //正式发版的curtao上，展示带注册的登录界面，
+        if(isCurtao){
+            formHtml = ReactDOMServer.renderToString(LoginCurtaoForm(obj));
+        }
         var phone = '400-677-0986';
         var qq = '4006770986';
         let backendIntl = new BackendIntl(req);
@@ -79,17 +86,18 @@ exports.showLoginPage = function(req, res) {
             username: obj.username,
             captchaCode: obj.captchaCode || '',
             addShowingIoCode: global.config.formal,
-            company: backendIntl.get('company.name', '© 蚁坊软件 湘ICP备14007253号-1'),
+            company: backendIntl.get('company.name', '© 客套智能科技 鲁ICP备18038856号'),
             hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
             contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
             siteID: global.config.siteID,
             lang: loginLang,
             custome_service_lang: custome_service_lang,
-            userid: '',
+            userid: obj.username,
             hideLangQRcode: hideLangQRcode,
             clientId: global.config.loginParams.clientId,
             stopcheck: stopcheck,
-            useSso: global.config.useSso
+            useSso: global.config.useSso,
+            isCurtao: isCurtao
         });
     }
 };
@@ -322,6 +330,42 @@ exports.wechatLogin = function(req, res) {
     DesktopLoginService.login(req, res, username, password, captcha)
         .on('success', wechatLoginSuccess(req, res))
         .on('error', wechatLoginError(req, res));
+};
+//根据公司名获取公司
+exports.getCompanyByName = function(req, res) {
+    DesktopLoginService.getCompanyByName(req, res).on('success', function(data) {
+        if(!data){
+            res.status(200).json(false);
+        } else{
+            res.status(200).json(data);
+        }
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+//获取短信验证码
+exports.getVertificationCode = function(req, res) {
+    DesktopLoginService.getVertificationCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+//注册新公司账号
+exports.registerAccount = function(req, res) {
+    DesktopLoginService.registerAccount(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+//短信验证码的验证
+exports.validatePhoneCode = function(req, res) {
+    DesktopLoginService.validatePhoneCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
 };
 
 //修改session数据

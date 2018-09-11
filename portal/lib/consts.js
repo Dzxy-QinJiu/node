@@ -59,5 +59,5 @@ module.exports = {
     LAYOUT: {
         TOP_NAV: 64,
         PADDING_BOTTOM: 16
-    }
+    },
 };

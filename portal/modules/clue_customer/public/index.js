@@ -651,12 +651,17 @@ class ClueCustomer extends React.Component {
     };
 
     renderAddAndImportBtns = () => {
-        return (
-            <div className="btn-containers">
-                <Button type='primary' className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入线索')}</Button>
-                <Button className='add-clue-btn' onClick={this.showClueAddForm}>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
-            </div>
-        );
+        if (hasPrivilege('CUSTOMER_ADD_CLUE')){
+            return (
+                <div className="btn-containers">
+                    <Button type='primary' className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入线索')}</Button>
+                    <Button className='add-clue-btn' onClick={this.showClueAddForm}>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
+                </div>
+            );
+        }else{
+            return null;
+        }
+
     };
     //是否有筛选过滤条件
     hasNoFilterCondition = () => {

@@ -1,4 +1,6 @@
 var appAjaxTrans = require('../../../common/public/ajax/app');
+import routeList from 'MOD_DIR/common/route';
+import ajax from 'MOD_DIR/common/ajax';
 
 //获取审计日志用户的应用
 exports.getUserApp = function(){
@@ -59,6 +61,24 @@ exports.getSingleAuditLogList = function(searchObj){
     });
     return Deferred.promise();
 };
+
+//获取单个用户全部审计日志
+exports.getSingleUserAllAuditLog = function(paramsObj) {
+    const route = routeList.find(x => x.handler === 'getSingleUserAllAuditLog');
+    const config = {
+        url: route.path,
+        type: route.method
+    };
+    if (paramsObj) { 
+        if (paramsObj.params) {
+            config.params = paramsObj.params;
+        }
+        if (paramsObj.data) {
+            config.data = paramsObj.data;
+        }        
+    }
+    return ajax(config);
+}
 
 // 根据单个用户user_id获取用户应用列表
 var singleUserLogAppAjax = null;

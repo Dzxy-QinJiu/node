@@ -81,11 +81,11 @@ class LeftTree extends React.Component {
             return;
         }
 
-        if (event.target.className.indexOf('tree-operation-icon') != -1
-            || event.target.className.indexOf('tree-operation-btn-div-item') != -1
-            || event.target.className.indexOf('icon-operation') != -1
-            || event.target.className.indexOf('operation-btn-item-span') != -1
-            || event.target.className.indexOf('tree-operation-btn-div') != -1) {
+        if (event.target.className.indexOf('tree-operation-icon') !== -1
+            || event.target.className.indexOf('tree-operation-btn-div-item') !== -1
+            || event.target.className.indexOf('icon-operation') !== -1
+            || event.target.className.indexOf('operation-btn-item-span') !== -1
+            || event.target.className.indexOf('tree-operation-btn-div') !== -1) {
             return;
         }
         SalesTeamAction.toggleGroupTree(groupId);
@@ -98,11 +98,11 @@ class LeftTree extends React.Component {
             return;
         }
 
-        if (event.target.className.indexOf('tree-operation-icon') != -1
-            || event.target.className.indexOf('tree-operation-btn-div-item') != -1
-            || event.target.className.indexOf('icon-operation') != -1
-            || event.target.className.indexOf('operation-btn-item-span') != -1
-            || event.target.className.indexOf('tree-operation-btn-div') != -1) {
+        if (event.target.className.indexOf('tree-operation-icon') !== -1
+            || event.target.className.indexOf('tree-operation-btn-div-item') !== -1
+            || event.target.className.indexOf('icon-operation') !== -1
+            || event.target.className.indexOf('operation-btn-item-span') !== -1
+            || event.target.className.indexOf('tree-operation-btn-div') !== -1) {
             return;
         }
         //如果正在打开其他团队成员列表
@@ -170,7 +170,8 @@ class LeftTree extends React.Component {
                 <div className="sales-team-group-info">
                     <div className="sales-team-group-name" title={item.title}>
                         <span className="sales-team-name-text">{item.title}</span>
-                        <span className="sales-team-member-statistic"> (
+                        <span className="sales-team-member-statistic">
+                            <span>(</span>
                             <ReactIntl.FormattedMessage
                                 id="sales.team.member.count"
                                 defaultMessage={'{teamMemberCount}人'}
@@ -178,7 +179,8 @@ class LeftTree extends React.Component {
                                     'teamMemberCount': teamMemberCount
                                 }}
                             />
-                            )</span>
+                            <span>)</span>
+                        </span>
                     </div>
                     <div className="tree-operation-div">
                         <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
@@ -352,5 +354,15 @@ class LeftTree extends React.Component {
         );
     }
 }
-
+LeftTree.propTypes = {
+    searchContent: PropTypes.string,
+    isLoadingTeamMember: PropTypes.bool,
+    deleteGroupItem: PropTypes.object,
+    teamMemberCountList: PropTypes.array,
+    salesTeamList: PropTypes.array,
+    salesTeamGroupList: PropTypes.array,
+    containerHeight: PropTypes.number,
+    isAddSalesTeamRoot: PropTypes.bool,
+    delTeamErrorMsg: PropTypes.string
+};
 module.exports = LeftTree;

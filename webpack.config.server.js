@@ -23,11 +23,14 @@ module.exports = {
     mode: webpackMode === 'production' ? 'production' : 'development',
     // The configuration for the server-side rendering
     name: "server-side rendering",
-    entry: "./portal/components/Login/index",
+    entry: {
+        login_curtao: ['./portal/components/Login-curtao/index'],
+        login: ['./portal/components/Login/index']
+    },
     target: "node",
     output: {
         path:path.join(__dirname, 'dist'),
-        filename: "server-render/login.js",
+        filename: "server-render/[name].js",
         publicPath:  '/resources/' ,
         libraryTarget: "commonjs2"
     },

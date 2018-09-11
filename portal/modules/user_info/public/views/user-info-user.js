@@ -170,7 +170,7 @@ class UserInfo extends React.Component{
             );
 
         } else {
-            return (<span>{this.props.managedRealm.realm_name}</span>);
+            return (<span>{this.props.managedRealm}</span>);
         }
     }
     retryUserInfo() {
@@ -326,13 +326,13 @@ class UserInfo extends React.Component{
                             />
                         </dd>
                     </dl>}
-                    <PrivilegeChecker check="GET_MANAGED_REALM">
+                    {hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
                         <div className="user-info-item">
                             <span>
                                 <ReactIntl.FormattedMessage id="realm.company" defaultMessage="公司"/>：</span>
                             {this.renderRealm()}
                         </div>
-                    </PrivilegeChecker>
+                    ) : null}
                 </div>
             );
         }
@@ -459,7 +459,7 @@ UserInfo.propTypes = {
     form: PropTypes.object,
     realmLoading: PropTypes.bool,
     realmErrorMsg: PropTypes.string,
-    managedRealm: PropTypes.object,
+    managedRealm: PropTypes.string,
     userInfoErrorMsg: PropTypes.string,
     userInfoLoading: PropTypes.bool,
 };

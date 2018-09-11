@@ -1358,7 +1358,7 @@ var en_VE = {
     'user.open.account': 'Abrir una cuenta',//开户账号
     'user.add.only.one': 'Cuando el nombre de usuario es correo electrónico, sólo se puede agregar un usuario.',//用户名是邮箱格式时，只能添加1个用户
     'common.search': 'Búsqueda',//搜索
-    'company.name': 'Eefung software 湘ICP备14007253号-1',//© 蚁坊软件 湘ICP备14007253号-1
+    'company.name': '© Curtao Smart Technology 鲁ICP备18038856号',//© 客套智能科技 鲁ICP备18038856号
     'companay.hotline': 'Servicios al cliente:{phone}',//服务热线: {phone}
     'company.qq': 'QQ:{qq}',//企业QQ:{qq}
     'login.fail.login': 'El servicio de inicio de sesión no está disponible temporalmente.Por favor inténtelo de nuevo más tarde',//登录服务暂时不可用，请稍后重试

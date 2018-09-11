@@ -1,0 +1,92 @@
+/*登录界面的样式文件*/
+@wihte-color: #ffffff;
+@font-color: #333333;
+@title-border-color: #dedfe2;
+@form-width: 276px;
+.login-wrap {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-image: url('./image/login-bg.jpg');
+    background-size: cover;
+    //等待效果
+    .isloading{
+        position:absolute;
+        top:45%;
+        left:48%;
+    }
+    a.logo{
+        margin-top: 12px;
+        margin-left: 12px;
+        .image{
+            margin-right: 8px!important;
+        }
+        >span{
+            font-size: 24px!important;
+        }
+    }
+    //登录、注册按钮
+    .login-register-btn{
+        float: right;
+        width: 96px;
+        height: 32px;
+        margin-top: 16px;
+        margin-right: 24px;
+        border: 1px solid #fff;
+        line-height: 1.2;
+        font-size: 16px;
+        color: #ffffff;
+        background: transparent;
+        &:hover{
+            border: 1px solid #2196f3;
+            background: transparent;
+        }
+    }
+
+    .form-wrap {
+        position: absolute;
+        width: 492px;
+        height: 300px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        background-color: @wihte-color;
+        .form-title{
+            height: 68px;
+            margin-bottom: 20px;
+            line-height: 64px;
+            border-bottom: 1px solid @title-border-color;
+            font-size: 20px;
+            text-align: center;
+            color: @font-color;
+        }
+        //隐藏密码输入框的样式
+        .password-hidden-input{
+            width: 0;
+            height: 0;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+        .login-error-msg{
+            width: @form-width;
+            margin: 0 auto;
+        }
+    }
+    .login-error-tip, .register-error-tip {
+        margin-top: 4px;
+        padding-left: 21px;
+        line-height: 22px;
+        font-size: 14px;
+        color: #ee5b44;
+        background: no-repeat url("./image/error.png") 0 2px;
+    }
+    .login-error-tip{
+        width: 276px;
+        margin: 0 auto;
+    }
+}

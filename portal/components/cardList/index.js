@@ -4,9 +4,6 @@ var scrollBarEmitter = require('../../public/sources/utils/emitters').scrollBarE
 var cardEmitter = require('../../public/sources/utils/emitters').cardEmitter;
 
 var Card = require('../card');
-
-//没有数据
-import NoDataIntro from 'CMP_DIR/no-data-intro';
 //滚动条
 var GeminiScrollbar = require('../react-gemini-scrollbar');
 

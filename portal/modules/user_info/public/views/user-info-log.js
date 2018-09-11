@@ -29,7 +29,7 @@ var UserInfoLog = createReactClass({
         var Columns = [{
             title: Intl.get('common.login.time','时间'),
             dataIndex: 'loginTime',
-            width: '16%'
+            width: '23%'
         }, {
             title: Intl.get('user.info.login.address','地点'),
             dataIndex: 'loginAddress',

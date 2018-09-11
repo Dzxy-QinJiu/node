@@ -6,7 +6,7 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import { LEAVE_TYPES } from './consts';
-import Remarks from './remarks';
+import {AntcAttendanceRemarks} from 'antc';
 const TopNav = require('CMP_DIR/top-nav');
 const AnalysisMenu = require('CMP_DIR/analysis_menu');
 const Option = Select.Option;
@@ -77,10 +77,10 @@ class MonthlyReport extends React.Component {
         const userId = record.user_id;
 
         return (
-            <Remarks
+            <AntcAttendanceRemarks
                 data={data}
                 userId={userId}
-                selectedMonth={this.state.selectedMonth}
+                selectedDate={this.state.selectedMonth}
             />
         );
     };

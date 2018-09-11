@@ -1,0 +1,109 @@
+/**
+ * 登录页样式
+ *
+ * Created by yubin.
+ */
+
+@font-color: #d8eaf4;
+@blue-color: #2196f3;
+@form-width: 276px;
+.login-form {
+    width: @form-width;
+    margin: 0 auto;
+    //登录按钮
+    .login-button {
+        font-size: 16px;
+        cursor: pointer;
+        .anticon-loading{
+            margin-left:10px;
+        }
+    }
+
+    .not-allowed {
+        cursor: not-allowed;
+    }
+
+    .input-area {
+        margin: 24px 0 20px;
+    }
+    .input-item{
+        margin-bottom: 12px;
+    }
+    .input-item input {
+        border-radius: 2px;
+    }
+
+    .input-area input {
+        width: 100%;
+        height: 40px;
+        line-height: 42px;
+        color: #333;
+        font-size: 16px;
+        padding: 0 15px;
+        outline: none;
+        border: 1px solid #b9b9b9;
+        &:hover{
+            border: 1px solid @blue-color;
+        }
+    }
+
+    button {
+        width: 100%;
+        height: 48px;
+        line-height: 48px;
+        border-radius: 5px;
+        background-color: @blue-color;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        outline: none;
+        margin-bottom: 8px;
+    }
+    .login-captcha{
+        display: inline-block;
+        float: right;
+        border: 1px solid #b9b9b9;
+    }
+    .input-area .captcha_wrap {
+        text-align: left;
+        overflow: hidden;
+    }
+
+    .input-area .captcha_wrap input {
+        width: 148px;
+        float: left;
+    }
+
+    .input-area .captcha_wrap img {
+        float: right;
+        width: 120px;
+        height: 38px;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    .btn-change-view {
+        text-align: right;
+        margin-top: 12px;
+        cursor: pointer;
+        outline: none;
+        color: @font-color;
+    }
+
+    .success-msg {
+        color: #cfefdf;
+        padding-top: 10px;
+        text-align: left;
+    }
+
+    .ant-alert-error {
+        color: #ee5b44;
+        background: none;
+        font-size: 14px;
+        line-height: 17px;
+        border: none;
+        margin: 2px 0 -20px -10px;
+    }
+}
+

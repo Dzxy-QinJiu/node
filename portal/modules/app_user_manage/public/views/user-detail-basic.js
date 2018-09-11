@@ -720,6 +720,7 @@ class UserDetailBasic extends React.Component {
             return null;
         })();
         let userInfo = this.state.initialUser.user;
+        let groupsInfo = this.state.initialUser.groups || [];
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
             <div className='user-detail-baisc-v3'>
                 <UserBasicCard
@@ -761,9 +762,8 @@ class UserDetailBasic extends React.Component {
                 />
                 <OrgCard
                     user_id={userInfo.user_id}
-                    showBtn={true}
-                    organization_id={userInfo.group_id}
-                    organization_name={userInfo.group_name}
+                    showBtn={true} 
+                    groupsInfo={groupsInfo}
                     onModifySuccess={this.organizationChangeSuccess}
                     userInfo={this.state.initialUser.user}
                     sales_team={this.state.initialUser.sales_team}
