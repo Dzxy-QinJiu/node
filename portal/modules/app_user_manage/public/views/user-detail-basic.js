@@ -61,97 +61,28 @@ class UserDetailBasic extends React.Component {
             this.props.getBasicInfo(userInfo);
         }
         if(this.getRolesListPrivilege()){
-            this.getAppsRolesListAndPrivilegeLists();
+            this.getBatchRoleInfo();
         }
     }
 
     //获取应用的角色和权限列表
-    getAppsRolesListAndPrivilegeLists = () => {
+    getBatchRoleInfo = () => {
         var apps = _.get(this.state,'initialUser.apps');
         if (_.isArray(apps) && apps.length){
             //获取每个应用对应的权限和角色列表
-            _.forEach(apps, (item) => {
-                //该应用有选中的角色时才发请求，否则没必要发请求
-                if (_.isArray(item.roles) && item.roles.length){
-                    this.getRolesByAjax(item);
-                    this.getPermissionsByAjax(item);
-                }
-            });
+            const hasRoleApps = apps.filter(x => x.roles && x.roles.length);
+            const roleIdList = hasRoleApps.map(x => x.roles).reduce((prev, cur) => prev.concat(cur));
+            setTimeout(() => {
+                AppUserDetailAction.getBatchRoleInfo({
+                    data: {
+                        ids: roleIdList
+                    }
+                })
+            });            
         }
 
-    };
-    //获取每个应用对应的权限
-    getPermissionsByAjax = (item) => {
-        item.ajaxPermissionResult = CONSTANTS.LOADING;
-        item.ajaxPermissionList = [];
-        item.ajaxPermissionErrorMsg = '';
-        var app_id = _.get(item, 'app_id');
-        Ajax.getPermissionMap(app_id).then((ajaxPermissionList) => {
-            //每个角色对应的所有的权限列表
-            item.ajaxPermissionResult = CONSTANTS.SUCCESS;
-            item.ajaxPermissionList = ajaxPermissionList;
-            item.ajaxPermissionErrorMsg = '';
-            _.forEach(item.roleAndRelatePrivilege, (roleAndRelatePrivilegeItem) => {
-                var privilegeId = roleAndRelatePrivilegeItem.privilegeId || [];
-                var privilegeName = roleAndRelatePrivilegeItem.privilegeName || [];
-                if (privilegeId.length && !privilegeName.length) {
-                    roleAndRelatePrivilegeItem.privilegeName = this.handleRoleAndPrivilegeRelate(item, privilegeId);
-                }
-            });
-            //重新setState一下，否则不会调用render方法，应用的角色标签不展示
-            var initialUser = this.state.initialUser;
-            this.setState({
-                initialUser: initialUser
-            });
-        }, (ajaxPermissionErrorMsg) => {
-            item.ajaxPermissionResult = CONSTANTS.ERROR;
-            item.ajaxPermissionList = [];
-            item.ajaxPermissionErrorMsg = ajaxPermissionErrorMsg || CONSTANTS.PERMISSION_ERROR_MSG;
-
-        });
-    };
-    getRolesByAjax = (item) => {
-        item.ajaxRolesResult = CONSTANTS.LOADING;
-        item.ajaxRolesList = [];
-        item.ajaxRolesErrorMsg = '';
-        var app_id = _.get(item, 'app_id');
-        //已有的角色列表
-        var rolesSelectedList = _.isArray(_.get(item, 'roles')) ? _.get(item, 'roles') : [];
-        Ajax.getRoleList(app_id).then((ajaxRolesList) => {
-            //每个角色对应的角色列表
-            item.ajaxRolesResult = CONSTANTS.SUCCESS;
-            item.ajaxRolesList = ajaxRolesList;
-            item.ajaxRolesErrorMsg = '';
-            var roleAndRelatePrivilege = [];
-            _.forEach(rolesSelectedList, (roleId) => {
-                var findedRole = _.find(ajaxRolesList, (role) => role.role_id === roleId);
-                if (findedRole) {
-                    //该角色对应的权限列表
-                    var permissionIds = findedRole.permission_ids || [];
-                    var roleAndPrivilege = {
-                        roleName: findedRole.role_name,
-                        roleId: findedRole.role_id,
-                        privilegeId: permissionIds,
-                        privilegeName: []
-                    };
-                    roleAndPrivilege.privilegeName = this.handleRoleAndPrivilegeRelate(item, permissionIds);
-                    roleAndRelatePrivilege.push(roleAndPrivilege);
-                }
-            },
-            );
-            item['roleAndRelatePrivilege'] = roleAndRelatePrivilege;
-            //重新setState一下，否则不会调用render方法，应用的角色标签不展示
-            var initialUser = this.state.initialUser;
-            this.setState({
-                initialUser: initialUser
-            });
-        }, (ajaxRolesErrorMsg) => {
-            item.ajaxRolesResult = CONSTANTS.ERROR;
-            item.ajaxRolesList = [];
-            item.ajaxRolesErrorMsg = ajaxRolesErrorMsg || CONSTANTS.ROLE_ERROR_MSG;
-        }
-        );
-    };
+    };   
+    
     handleRoleAndPrivilegeRelate = (item, permissionIds,) => {
         /*
         * ajaxPermissionList 该应用下对应的所有的权限列表
@@ -205,7 +136,7 @@ class UserDetailBasic extends React.Component {
             };
             this.props.getBasicInfo(userInfo);
             if(this.getRolesListPrivilege()){
-                this.getAppsRolesListAndPrivilegeLists();
+                this.getBatchRoleInfo();
             }
         }
     }
@@ -414,18 +345,29 @@ class UserDetailBasic extends React.Component {
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
     };
-    renderAppRoleLists = (roleAndRelatePrivilege) => {
+    renderAppRoleLists = (roleItems) => {
         return (
-            <div className="role-list-container">
-                { _.map(roleAndRelatePrivilege,(item) => {
-                    var privilgeName = item.privilegeName.join('， ');
-                    return <span className="role-name">
-                        <Tooltip title={privilgeName} trigger="click">
-                            {item.roleName}
-                        </Tooltip>
-                    </span>;
-                })}
-            </div>
+            <StatusWrapper
+                size='small'
+                loading={this.state.getBatchRoleInfoResult.loading}
+                errorMsg={this.state.getBatchRoleInfoResult.errorMsg}
+            >
+                {!this.state.getBatchRoleInfoResult.loading && _.get(roleItems, 'length')?(<div className="role-list-container">
+                    { _.map(roleItems,(item) => {
+                        if (!_.get(item, 'permission_ids.length')) {
+                            return <span className="role-name">
+                                {item.role_name}
+                            </span>;
+                        }
+                        var privilgeName = item.permission_ids.join('， ');
+                        return <span className="role-name">
+                            <Tooltip title={privilgeName} trigger="click">
+                                {item.role_name}
+                            </Tooltip>
+                        </span>;
+                    })}
+                </div>):null}
+            </StatusWrapper>
         );
     };
     renderAppInfo = (app) => {
@@ -457,7 +399,7 @@ class UserDetailBasic extends React.Component {
         return (
             <div className="rows-3">
                 <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
-                    {_.isArray(app.roles) && app.roles.length ? this.renderAppRoleLists(_.get(app, 'roleAndRelatePrivilege')) : null}
+                    {_.isArray(app.roles) && app.roles.length ? this.renderAppRoleLists(_.get(app, 'roleItems')) : null}
                     <span><ReactIntl.FormattedMessage id="user.time.start"
                         defaultMessage="开通时间" />：{displayEstablishTime}</span>
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"

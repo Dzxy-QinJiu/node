@@ -1,5 +1,7 @@
 var AppUserUtil = require('../util/app-user-util');
 var AppUserDetailActions = require('../action/app-user-detail-actions');
+import { altAsyncUtil } from 'ant-utils';
+const { resultHandler } = altAsyncUtil;
 
 //app用户详情的store
 function AppUserDetailStore() {
@@ -65,6 +67,10 @@ AppUserDetailStore.prototype.resetState = function() {
     };
     this.customer_id = '';
     this.customer_name = '';
+    this.getBatchRoleInfoResult = {
+        loading: false,
+        errorMsg: ''
+    }
 };
 
 //恢复默认状态
@@ -206,6 +212,20 @@ AppUserDetailStore.prototype.changeAppFieldSuccess = function(result) {
         }
     }
 };
+
+//批量获取应用的角色信息
+AppUserDetailStore.prototype.getBatchRoleInfo = resultHandler('getBatchRoleInfoResult', function({data, paramsObj}) {
+    if (data && data.length) {
+        if (_.get(this.initialUser, 'apps.length') > 0) {
+            this.initialUser.apps.forEach((app, index) => {
+                if (_.get(app, 'roles.length')) {
+                    //filter过滤没有对应角色信息的roleId
+                    this.initialUser.apps[index].roleItems = app.roles.map(roleId => data.find(x => x.role_id === roleId)).filter(x => x);
+                }
+            })
+        }        
+    }
+})
 
 //使用alt导出store
 module.exports = alt.createStore(AppUserDetailStore , 'AppUserDetailStore');

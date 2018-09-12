@@ -4,7 +4,8 @@
 //用户管理的ajax
 var AppUserAjax = require('../ajax/app-user-ajax');
 var AppUserUtil = require('../util/app-user-util');
-
+import { altAsyncUtil } from 'ant-utils';
+const {asyncDispatcher} = altAsyncUtil;
 function AppUserDetailAction() {
 
     this.generateActions(
@@ -32,7 +33,9 @@ function AppUserDetailAction() {
         'changeUserOrganization',
         //修改应用单个字段成功
         'changeAppFieldSuccess',
-        'showAppDetail'
+        'showAppDetail',
+        //存放应用角色
+        'setAppsRoles'
     );
 
     //获取用户详情
@@ -56,6 +59,9 @@ function AppUserDetailAction() {
             _this.dispatch({error: true , errorMsg: errorMsg});
         });
     };
+
+    //批量获取应用的角色信息
+    this.getBatchRoleInfo = asyncDispatcher(AppUserAjax.getBatchRoleInfo);
 
 }
 
