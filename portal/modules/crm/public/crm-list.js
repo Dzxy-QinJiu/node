@@ -1531,7 +1531,7 @@ class Crm extends React.Component {
                                 </div> : null
                         }
                         <div className={contentClassName} style={{display: shouldTableShow ? 'block' : 'none'}}>
-                            {this.state.customersSize ? <AntcTable
+                            {this.state.customersSize || this.state.getErrMsg ? <AntcTable
                                 rowSelection={rowSelection}
                                 rowKey={rowKey}
                                 columns={columns}
@@ -1557,7 +1557,6 @@ class Crm extends React.Component {
                                 showAddBtn={this.hasNoFilterCondition()}
                                 noDataTip={Intl.get('common.no.filter.crm', '没有符合条件的客户')}
                             />}
-
                         </div>
 
                     </div>

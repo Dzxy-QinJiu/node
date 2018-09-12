@@ -265,15 +265,23 @@
         padding-left: 10px;
         padding-right: 10px;
 
-        .isloading {
-          position: absolute;
-          width: 70px;
-          height: 70px;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          right: 0;
-          margin: auto;
+        .load-content, .errmsg-wrap {
+          margin: 220px auto;
+          text-align: center;
+          .iconfont{
+            font-size: 96px;
+            color:@LOADING_ERR_ICON;
+          }
+          .load8 {
+            transform: scale(1, 1);
+            position: initial;
+          }
+          .abnornal-status-tip {
+            margin-top: 10px;
+            font-size: 20px;
+            color:@LOADING_ERR_TIP;
+          }
+
         }
 
         //表格样式
