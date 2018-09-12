@@ -99,13 +99,8 @@ class ClueCustomer extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps,'history.action') === 'PUSH'){
             if(_.get(nextProps,'location.state.clickUnhandleNum')){
+                delete nextProps.location.state.clickUnhandleNum;
                 this.getUnhandledClue();
-            }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false ){
-                clueFilterAction.setInitialData();
-                clueCustomerAction.resetState();
-                setTimeout(() => {
-                    this.getClueList();
-                });
             }
         }
     }
@@ -917,6 +912,8 @@ class ClueCustomer extends React.Component {
         );
     }
 }
-
+ClueCustomer.propTypes = {
+    location: PropTypes.object
+};
 module.exports = ClueCustomer;
 
