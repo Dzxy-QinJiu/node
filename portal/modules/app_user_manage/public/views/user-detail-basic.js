@@ -71,16 +71,17 @@ class UserDetailBasic extends React.Component {
         if (_.isArray(apps) && apps.length){
             //获取每个应用对应的权限和角色列表
             const hasRoleApps = apps.filter(x => x.roles && x.roles.length);
-            const roleIdList = hasRoleApps.map(x => x.roles).reduce((prev, cur) => prev.concat(cur));
-            setTimeout(() => {
-                AppUserDetailAction.getBatchRoleInfo({
-                    data: {
-                        ids: roleIdList
-                    }
-                })
-            });            
+            if (_.get(hasRoleApps, 'length') > 0) {
+                const roleIdList = hasRoleApps.map(x => x.roles).reduce((prev, cur) => prev.concat(cur));
+                setTimeout(() => {
+                    AppUserDetailAction.getBatchRoleInfo({
+                        data: {
+                            ids: roleIdList
+                        }
+                    });
+                }); 
+            }                     
         }
-
     };   
     
     handleRoleAndPrivilegeRelate = (item, permissionIds,) => {
@@ -352,7 +353,7 @@ class UserDetailBasic extends React.Component {
                 loading={this.state.getBatchRoleInfoResult.loading}
                 errorMsg={this.state.getBatchRoleInfoResult.errorMsg}
             >
-                {!this.state.getBatchRoleInfoResult.loading && _.get(roleItems, 'length')?(<div className="role-list-container">
+                {!this.state.getBatchRoleInfoResult.loading && _.get(roleItems, 'length') ? (<div className="role-list-container">
                     { _.map(roleItems,(item) => {
                         if (!_.get(item, 'permission_ids.length')) {
                             return <span className="role-name">
@@ -366,7 +367,7 @@ class UserDetailBasic extends React.Component {
                             </Tooltip>
                         </span>;
                     })}
-                </div>):null}
+                </div>) : null}
             </StatusWrapper>
         );
     };

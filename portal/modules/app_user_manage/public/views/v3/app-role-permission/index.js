@@ -500,5 +500,21 @@ class AppRolePermission extends React.Component {
         );
     }
 }
+AppRolePermission.defaultProps = {
+    app_id: '',
+    appInfo: {},
+    updateScrollBar: function() {
+    },
+    onRolesPermissionSelect: function() {
+    },
+    className: ''
+};
+AppRolePermission.propTypes = {
+    app_id: PropTypes.string,
+    appInfo: PropTypes.object,
+    updateScrollBar: PropTypes.func,
+    onRolesPermissionSelect: PropTypes.func,
+    className: PropTypes.string,
+};
 
 module.exports = AppRolePermission;
