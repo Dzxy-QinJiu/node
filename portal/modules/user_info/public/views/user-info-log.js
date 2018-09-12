@@ -1,7 +1,6 @@
 var React = require('react');
 var createReactClass = require('create-react-class');
 import { AntcTable } from 'antc';
-var Spinner = require('../../../../components/spinner');
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 const messages = defineMessages({
@@ -17,14 +16,6 @@ var UserInfoLog = createReactClass({
         return !this.props.logLoading &&
             this.props.logList.length >= 10 && !this.props.listenScrollBottom;
     },
-
-    renderLoading() {
-        if (this.props.logLoading && this.props.sortId === '') {
-            return <Spinner className="isloading"/>;
-        }
-        return null;
-    },
-
     renderLogTableContent() {
         var Columns = [{
             title: Intl.get('common.login.time','时间'),
@@ -54,25 +45,17 @@ var UserInfoLog = createReactClass({
         var rowKey = function(record) {
             return record.id;
         };
-        let localeObj = {emptyText: this.props.logErrorMsg || this.formatMessage(messages.common_no_data)};
-        let isLoading = this.props.logLoading;
-        let doNotShow = false;
-        if (isLoading && this.props.sortId === '') {
-            doNotShow = true;
-        }
+        let localeObj = {emptyText: this.formatMessage(messages.common_no_data)};
         const dropLoadConfig = {
             listenScrollBottom: this.props.listenScrollBottom,
             handleScrollBottom: this.props.handleScrollBottom,
-            loading: isLoading,
+            loading: this.props.logLoading,
             showNoMoreDataTip: this.isShowNoMoreDataTips(),
             noMoreDataText: Intl.get('noMoreTip.log', '没有更多日志了')
         };
         const tableHeight = this.props.height - tableHeadHeight;
         return (
-            <div className="user-log-list-table-wrap scroll-load"
-
-                style={{display: doNotShow ? 'none' : 'block'}}
-            >
+            <div className="user-log-list-table-wrap scroll-load">
                 <div className="log-table" style={{ height: this.props.height }}>
                     <AntcTable
                         dropLoad={dropLoadConfig}
@@ -100,7 +83,6 @@ var UserInfoLog = createReactClass({
     render() {
         return (
             <div className="user-log">
-                {this.renderLoading()}
                 {this.renderLogTableContent()}
             </div>
         );
