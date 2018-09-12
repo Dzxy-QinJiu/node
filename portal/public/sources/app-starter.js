@@ -151,7 +151,7 @@ function init() {
 
     childRoutes.push({
         path: '*',
-        components: require('./404')
+        component: require('./404')
     });
     //根路径路由
     const IndexRoute = (props) => {
