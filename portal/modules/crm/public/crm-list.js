@@ -40,6 +40,7 @@ var classNames = require('classnames');
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import queryString from 'query-string';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import CrmOverviewActions from './action/basic-overview-actions';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -1098,22 +1099,37 @@ class Crm extends React.Component {
         };
         var myUserId = crmUtil.getMyUserId();
         if (_.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, myUserId) > -1) {
+            //取消关注客户
             interestObj.user_id = '';
         } else {
+            //关注客户
             interestObj.user_id = myUserId;
         }
+        var curPageCustomers = this.state.curPageCustomers;
+        //暂存修改前的客户列表，（取消）关注客户失败后还原数据
+        var initalCurPageCustomers = JSON.parse(JSON.stringify(curPageCustomers));
         //先更改星星的颜色,再发请求，这样页面不会显的比较卡
-        var customerArr = _.find(this.state.curPageCustomers, (customer) => {
+        var curCustomer = _.find(curPageCustomers, (customer) => {
             return record.id === customer.id;
         });
-        if (customerArr) {
-            customerArr.interest_member_ids = [interestObj.user_id];
+        if (curCustomer) {
+            if(interestObj.user_id){//关注
+                if (_.isArray(curCustomer.interest_member_ids)) {
+                    curCustomer.interest_member_ids.push(interestObj.user_id);
+                } else {
+                    curCustomer.interest_member_ids = [interestObj.user_id];
+                }
+            } else {//取消关注
+                curCustomer.interest_member_ids = _.filter(curCustomer.interest_member_ids, interestId => interestId !== myUserId);
+            }
+        }
+        //更新详情中的关注图标颜色
+        if(this.state.currentId === interestObj.id){
+            CrmOverviewActions.updateBasicData(curCustomer);
         }
         //如果当前筛选的是我关注的客户，在列表中取消关注后要在列表中删除该条客户
         var condition = this.state.condition;
-        var curPageCustomers = this.state.curPageCustomers;
-        var initalCurPageCustomers = JSON.parse(JSON.stringify(curPageCustomers));
-        if (condition && _.isArray(condition.interest_member_ids) && condition.interest_member_ids[0] && !interestObj.user_id) {
+        if (condition && _.get(condition, 'interest_member_ids[0]') && !interestObj.user_id) {
             curPageCustomers = _.filter(curPageCustomers, (item) => {
                 return item.id !== interestObj.id;
             });
@@ -1122,8 +1138,14 @@ class Crm extends React.Component {
             {curPageCustomers: curPageCustomers}
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
+            //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
             if (errorMsg) {
-                //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
+                //还原详情中的关注图标颜色
+                if(this.state.currentId === interestObj.id) {
+                    let detailCustomer = _.find(initalCurPageCustomers, item => item.id === interestObj.id);
+                    CrmOverviewActions.updateBasicData(detailCustomer);
+                }
+                //还原列表中的数据
                 this.setState(
                     {curPageCustomers: initalCurPageCustomers}
                 );
@@ -1411,6 +1433,9 @@ class Crm extends React.Component {
                 }
             }
         ];
+        if(!hasPrivilege('CRM_CUSTOMER_SCORE_RECORD')){
+            columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
+        }
 
         let previewColumns = [];
 
