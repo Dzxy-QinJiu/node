@@ -101,7 +101,7 @@ class ApplyTabContent extends React.Component {
             if (_.get(nextProps,'location.state.clickUnhandleNum')){
                 //取待审批的审批数
                 this.menuClick({key: 'false'});
-            }else{
+            }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false){
                 //取全部的审批数
                 this.menuClick({key: 'all'});
             }

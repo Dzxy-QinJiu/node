@@ -100,7 +100,7 @@ class ClueCustomer extends React.Component {
         if (_.get(nextProps,'history.action') === 'PUSH'){
             if(_.get(nextProps,'location.state.clickUnhandleNum')){
                 this.getUnhandledClue();
-            }else{
+            }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false ){
                 clueFilterAction.setInitialData();
                 clueCustomerAction.resetState();
                 setTimeout(() => {
