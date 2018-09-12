@@ -72,8 +72,16 @@ class AppRolePermission extends React.Component {
             ajaxRolesErrorMsg: ''
         });
         Ajax.getRoleList(app_id).then((ajaxRolesList) => {
-            this.handleAfterGetRolesList(ajaxRolesList);
+            //计算selectedRolesAlreadyContainedPermissionIds
+            var selectedRolesAlreadyContainedPermissionIds = _.chain(this.state.selectedRolesList).map((roleId) => {
+                var findedRole = _.find(ajaxRolesList, (role) => role.role_id === roleId);
+                return findedRole ? findedRole.permission_ids : [];
+            }).flatten().value();
+            //计算selectedPermissionList
+            var selectedPermissionList = _.filter(this.state.selectedPermissionList, (permission_id) => selectedRolesAlreadyContainedPermissionIds.indexOf(permission_id) < 0);
             this.setState({
+                selectedPermissionList: selectedPermissionList,
+                selectedRolesAlreadyContainedPermissionIds: selectedRolesAlreadyContainedPermissionIds,
                 ajaxRolesResult: CONSTANTS.SUCCESS,
                 ajaxRolesList: ajaxRolesList,
                 ajaxRolesErrorMsg: ''
@@ -86,19 +94,6 @@ class AppRolePermission extends React.Component {
             });
         });
     };
-    handleAfterGetRolesList = (ajaxRolesList) => {
-        //计算selectedRolesAlreadyContainedPermissionIds
-        var selectedRolesAlreadyContainedPermissionIds = _.chain(this.state.selectedRolesList).map((roleId) => {
-            var findedRole = _.find(ajaxRolesList, (role) => role.role_id === roleId);
-            return findedRole ? findedRole.permission_ids : [];
-        }).flatten().value();
-        //计算selectedPermissionList
-        var selectedPermissionList = _.filter(this.state.selectedPermissionList, (permission_id) => selectedRolesAlreadyContainedPermissionIds.indexOf(permission_id) < 0);
-        this.setState({
-            selectedPermissionList: selectedPermissionList,
-            selectedRolesAlreadyContainedPermissionIds: selectedRolesAlreadyContainedPermissionIds}
-        );
-    };
 
     getPermissionsByAjax = (app_id) => {
         this.setState({
@@ -107,8 +102,19 @@ class AppRolePermission extends React.Component {
             ajaxPermissionErrorMsg: ''
         });
         Ajax.getPermissionMap(app_id).then((ajaxPermissionList) => {
-            this.handleAfterGetPermissionsList(ajaxPermissionList);
+            //计算defaultActivePermissionTabKey
+            //默认选中的tab key，以便让用户能够看到第一个选中的权限
+            var selectedPermissionList = this.state.selectedPermissionList;
+            var defaultActivePermissionTabKey = _.findIndex(ajaxPermissionList, function(permissionGroup, i) {
+                return _.find(permissionGroup.permission_list, function(permission) {
+                    return selectedPermissionList.indexOf(permission.permission_id) >= 0;
+                });
+            });
+            if (defaultActivePermissionTabKey === -1) {
+                defaultActivePermissionTabKey = 0;
+            }
             this.setState({
+                defaultActivePermissionTabKey: defaultActivePermissionTabKey + '',
                 ajaxPermissionResult: CONSTANTS.SUCCESS,
                 ajaxPermissionList: ajaxPermissionList,
                 ajaxPermissionErrorMsg: ''
@@ -121,67 +127,26 @@ class AppRolePermission extends React.Component {
             });
         });
     };
-    handleAfterGetPermissionsList(ajaxPermissionList){
-        //计算defaultActivePermissionTabKey
-        //默认选中的tab key，以便让用户能够看到第一个选中的权限
-        var selectedPermissionList = this.state.selectedPermissionList;
-        var defaultActivePermissionTabKey = _.findIndex(ajaxPermissionList, function(permissionGroup, i) {
-            return _.find(permissionGroup.permission_list, function(permission) {
-                return selectedPermissionList.indexOf(permission.permission_id) >= 0;
-            });
-        });
-        if (defaultActivePermissionTabKey === -1) {
-            defaultActivePermissionTabKey = 0;
-        }
-        this.setState({
-            defaultActivePermissionTabKey: defaultActivePermissionTabKey + ''});
-    }
 
     componentDidMount() {
         var app_id = this.props.app_id;
         if (this.props.app_id) {
-            if (this.sendGetRolePrivilegAjax(this.props.appInfo)){
-                this.getRolesPermissionsByAjax(app_id);
-            }else{
-                var ajaxRolesList = _.get(this.props.appInfo,'ajaxRolesList');
-                var ajaxPermissionList = _.get(this.props.appInfo,'ajaxPermissionList');
-                this.handleAfterGetRolesList(ajaxRolesList);
-                this.handleAfterGetPermissionsList(ajaxPermissionList);
-            }
+            this.getRolesPermissionsByAjax(app_id);
         }
         if (userData.hasRole(userData.ROLE_CONSTANS.APP_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.APP_OWNER)) {
             this.getMyApps();
         }
     }
 
-    sendGetRolePrivilegAjax(appInfo) {
-        if (_.isObject(appInfo) && !_.isEmpty(appInfo)) {
-            var roleAllList = _.get(appInfo, 'roleAllList');
-            var ajaxRolesErrorMsg = _.get(appInfo, 'ajaxRolesErrorMsg');
-            if (_.isArray(roleAllList) || ajaxRolesErrorMsg) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return true;
-    }
     componentDidUpdate() {
         this.props.updateScrollBar();
     }
 
     componentWillReceiveProps(nextProps) {
         var app_id = nextProps.app_id;
-        if(this.props.app_id !== app_id) {
-            if (this.sendGetRolePrivilegAjax(nextProps.appInfo)){
-                //应用id变化，更新
-                this.getRolesPermissionsByAjax(app_id);
-            }else{
-                var ajaxRolesList = _.get(this.props.appInfo,'ajaxRolesList');
-                var ajaxPermissionList = _.get(this.props.appInfo,'ajaxPermissionList');
-                this.handleAfterGetRolesList(ajaxRolesList);
-                this.handleAfterGetPermissionsList(ajaxPermissionList);
-            }
+        //应用id变化，更新
+        if (this.props.app_id !== app_id) {
+            this.getRolesPermissionsByAjax(app_id);
             var state = this.getStateByProps(nextProps);
             this.setState(state);
         }
@@ -191,25 +156,21 @@ class AppRolePermission extends React.Component {
     getStateByProps = (props) => {
         var selectedRoles = _.isArray(props.selectedRoles) ? props.selectedRoles : [];
         var selectedPermissions = _.isArray(props.selectedPermissions) ? props.selectedPermissions : [];
-        var ajaxRolesList = _.isArray(_.get(props, 'appInfo.ajaxRolesList')) ? _.get(props, 'appInfo.ajaxRolesList') : [];
-        var ajaxRolesErrorMsg = _.get(props,'appInfo.ajaxRolesErrorMsg');
-        var ajaxPermissionList = _.isArray(_.get(props, 'appInfo.ajaxPermissionList')) ? _.get(props, 'appInfo.ajaxPermissionList') : [];
-        var ajaxPermissionErrorMsg = _.get(props,'appInfo.ajaxPermissionErrorMsg');
         return {
             //ajax角色获取状态   loading success error
             ajaxRolesResult: CONSTANTS.LOADING,
             //ajax获取的角色数组
-            ajaxRolesList: ajaxRolesList,
+            ajaxRolesList: [],
             //ajax获取的角色，如果有错误的话，错误信息
-            ajaxRolesErrorMsg: ajaxRolesErrorMsg,
+            ajaxRolesErrorMsg: '',
             //用户选中的角色数组
             selectedRolesList: selectedRoles.slice(),
             //ajax权限获取状态   loading success error
             ajaxPermissionResult: CONSTANTS.LOADING,
             //ajax获取的权限数组
-            ajaxPermissionList: ajaxPermissionList,
+            ajaxPermissionList: [],
             //ajax获取的权限，如果有错误的话，错误信息
-            ajaxPermissionErrorMsg: ajaxPermissionErrorMsg,
+            ajaxPermissionErrorMsg: '',
             //用户选中的权限数组
             selectedPermissionList: selectedPermissions.slice(),
             //默认选中的权限tab页的key，当做修改操作时，默认展示第一个选中了的权限tab
@@ -539,21 +500,5 @@ class AppRolePermission extends React.Component {
         );
     }
 }
-AppRolePermission.defaultProps = {
-    app_id: '',
-    appInfo: {},
-    updateScrollBar: function() {
-    },
-    onRolesPermissionSelect: function() {
-    },
-    className: ''
-};
-AppRolePermission.propTypes = {
-    app_id: PropTypes.string,
-    appInfo: PropTypes.object,
-    updateScrollBar: PropTypes.func,
-    onRolesPermissionSelect: PropTypes.func,
-    className: PropTypes.string,
-};
 
 module.exports = AppRolePermission;
