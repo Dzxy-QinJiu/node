@@ -25,7 +25,7 @@ var minUserInfoContainerWidth = 1035;//个人资料界面可并排展示时的�
 var userLogHeight = 690;//如果界面宽度低于最小宽度时，登录日志高度默认值
 var minUserInfoHeight = 380;//如果并排展示时，登录日志展示区域最小高度
 var PrivilegeChecker = require('../../../components/privilege/checker');
-var Spinner = require('../../../components/spinner');
+
 
 import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../components/react-intl-mixin';
@@ -91,37 +91,6 @@ var UserInfoPage = createReactClass({
             load_size: this.state.loadSize
         });
     },
-    renderLogList(){
-        var height = this.state.userInfoContainerHeight;
-        if (this.state.sortId === '' && this.state.logLoading){
-            return (
-                <div className="load-content">
-                    <Spinner className="isloading"/>
-                    <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
-                </div>
-            );
-        } else if (this.state.logErrorMsg) {
-            return <div className="errmsg-wrap">
-                <i className="iconfont icon-data-error"></i>
-                <p className="abnornal-status-tip">{this.state.logErrorMsg}</p>
-            </div>;
-        } else {
-            return (
-                <UserInfoLog
-                    logLoading={this.state.logLoading}
-                    logList={this.state.logList}
-                    logTotal={this.state.logTotal}
-                    sortId={this.state.sortId}
-                    loadSize={this.state.loadSize}
-                    listenScrollBottom={this.state.listenScrollBottom}
-                    height={height - logTitleHeight - logBottomHeight}
-                    handleScrollBottom={this.handleScrollBottom}
-                >
-                </UserInfoLog>
-            );
-        }
-
-    },
 
     render: function() {
         var height = this.state.userInfoContainerHeight;
@@ -161,7 +130,18 @@ var UserInfoPage = createReactClass({
 
                                 </label>
                             </div>
-                            {this.renderLogList()}
+                            <UserInfoLog
+                                logErrorMsg={this.state.logErrorMsg}
+                                logLoading={this.state.logLoading}
+                                logList={this.state.logList}
+                                logTotal={this.state.logTotal}
+                                sortId={this.state.sortId}
+                                loadSize={this.state.loadSize}
+                                listenScrollBottom={this.state.listenScrollBottom}
+                                height={height - logTitleHeight - logBottomHeight}
+                                handleScrollBottom={this.handleScrollBottom}
+                            >
+                            </UserInfoLog>
                         </div>
 
                     </div>

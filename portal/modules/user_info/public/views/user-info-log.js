@@ -3,6 +3,7 @@ var createReactClass = require('create-react-class');
 import { AntcTable } from 'antc';
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
+var Spinner = require('../../../../components/spinner');
 const messages = defineMessages({
     common_no_data: {id: 'common.no.data'},//暂无数据
 });
@@ -79,11 +80,29 @@ var UserInfoLog = createReactClass({
             </div>
         );
     },
+    renderLogList(){
+        if (this.props.sortId === '' && this.props.logLoading){
+            return (
+                <div className="load-content">
+                    <Spinner className="isloading"/>
+                    <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
+                </div>
+            );
+        } else if (this.props.logErrorMsg) {
+            return <div className="errmsg-wrap">
+                <i className="iconfont icon-data-error"></i>
+                <p className="abnornal-status-tip">{this.props.logErrorMsg}</p>
+            </div>;
+        } else {
+            return this.renderLogTableContent();
+        }
+
+    },
 
     render() {
         return (
             <div className="user-log">
-                {this.renderLogTableContent()}
+                {this.renderLogList()}
             </div>
         );
     },

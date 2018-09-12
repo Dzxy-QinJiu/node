@@ -33,6 +33,7 @@ function UserInfoActions() {
     //获取登录日志
     this.getLogList = function(params) {
         var _this = this;
+        _this.dispatch({isLoading: true});
         userInfoAjax.getLogList(params).then(function(logList) {
             _this.dispatch(logList);
         }, function(errorMsg) {
