@@ -82,6 +82,10 @@ class BasicData extends React.Component {
                 this.props.editCustomerBasic(newBasic);
             }
         }
+        let basicData = _.extend(this.state.basicData, newBasic);
+        delete basicData.type;
+        delete basicData.urlType;
+        CrmOverviewActions.updateBasicData(basicData);
     };
 
     getAdministrativeLevelOptions = () => {
@@ -165,13 +169,11 @@ class BasicData extends React.Component {
             interestObj.user_id = myUserId;
         }
         basicData.interest_member_ids = [interestObj.user_id];
-        this.setState({basicData: basicData});
+        CrmOverviewActions.updateBasicData(basicData);
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
             if (errorMsg) {
                 //将星星的颜色修改回原来的状态
-                this.setState({
-                    basicData: initialBasicData
-                });
+                CrmOverviewActions.updateBasicData(initialBasicData);
             } else {
                 interestObj.interest_member_ids = [interestObj.user_id];
                 delete interestObj.type;
@@ -349,7 +351,15 @@ class BasicData extends React.Component {
         );
     }
 }
-
+BasicData.propTypes = {
+    curCustomer: PropTypes.object,
+    isMerge: PropTypes.bool,
+    updateMergeCustomer: PropTypes.func,
+    isRepeat: PropTypes.bool,
+    editCustomerBasic: PropTypes.func,
+    setTabsContainerHeight: PropTypes.func,
+    showRightPanel: PropTypes.func
+};
 module.exports = BasicData;
 
 

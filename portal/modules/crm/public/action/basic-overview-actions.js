@@ -6,7 +6,8 @@ function CrmOverviewActions() {
         'setBasicState',
         'afterHandleStatus',
         'setCrmUserList',
-        'afterAddSchedule'
+        'afterAddSchedule',
+        'updateBasicData'
     );
 
     this.getBasicData = function(curCustomer) {
