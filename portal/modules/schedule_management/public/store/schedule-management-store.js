@@ -7,6 +7,7 @@ var ScheduleManagementAction = require('../action/schedule-management-action');
 let userData = require('PUB_DIR/sources/user-data');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const TimeStampUtil = require('PUB_DIR/sources/utils/time-stamp-util');
+import {LESSONESECOND} from '../utils/schedule-manage-utils';
 function ScheduleManagementStore() {
     //初始化state数据
     this.setInitState();
@@ -38,7 +39,7 @@ ScheduleManagementStore.prototype.processForList = function(originList,dateType)
         let curSchedule = list[i];
         curSchedule.dateType = dateType;//日期的类型 比如周，天，月
         curSchedule.title = curSchedule.topic;
-        if (curSchedule.end_time - curSchedule.start_time === 86399000){
+        if (curSchedule.end_time - curSchedule.start_time === (oplateConsts.ONE_DAY_TIME_RANGE - 1000)){
             curSchedule.end_time = curSchedule.end_time + 1000;
             curSchedule.allDay = true;
         }

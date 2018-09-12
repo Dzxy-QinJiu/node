@@ -18,6 +18,7 @@ var user_id = userData.getUserData().user_id;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').scheduleManagementEmitter;
 let history = require('PUB_DIR/sources/history');
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 const DELAY_RANGE = {
     ANIMATION: 1000,//动画结束的时间
 };
@@ -64,7 +65,7 @@ class ExpireScheduleLists extends React.Component {
     //展示没有数据的提示
     showNoMoreDataTip = () => {
         return !this.state.isLoadingScheduleExpired &&
-            this.state.scheduleExpiredList.length >= this.state.scheduleExpiredSize &&
+            this.state.scheduleExpiredList.length >= 10 &&
             !this.state.listenScrollBottom;
     };
     //获取过期日程列表(不包含今天)
@@ -164,7 +165,6 @@ class ExpireScheduleLists extends React.Component {
                 <NoMoreDataTip
                     show={this.showNoMoreDataTip}
                     message={Intl.get('common.no.more.expired','没有更多超时未完成了')}
-
                 />
             </div>
         );
@@ -203,10 +203,9 @@ class ExpireScheduleLists extends React.Component {
             var nodataHeight = $(window).height();
             return (
                 <div className="schedule-list-no-data" style={{height: nodataHeight}}>
-                    <Alert
-                        message={Intl.get('schedule.manage.has.no.expired.tasks', 'You have no expired tasks')}
-                        type="info"
-                        showIcon={true}
+                    <NoDataIntro
+                        showAddBtn={false}
+                        noDataTip={Intl.get('schedule.manage.has.no.expired.tasks', '您没有超期未完成的任务')}
                     />
                 </div>
             );

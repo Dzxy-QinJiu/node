@@ -162,23 +162,20 @@ class Crm extends React.Component {
     };
 
     setRange = (obj) => {
-        var rangParams = this.state.rangParams;
         if (obj.startTime) {
-            rangParams[0].from = obj.startTime;
+            this.state.rangParams[0].from = obj.startTime;
         }
         if (obj.endTime) {
-            rangParams[0].to = obj.endTime;
+            this.state.rangParams[0].to = obj.endTime;
         }
     };
 
     setStartRange = (value) => {
-        var rangParams = this.state.rangParams;
-        rangParams[0].from = value;
+        this.state.rangParams[0].from = value;
     };
 
     setEndRange = (value) => {
-        var rangParams = this.state.rangParams;
-        rangParams[0].to = value;
+        this.state.rangParams[0].to = value;
     };
 
     // 获取拨打电话的座机号

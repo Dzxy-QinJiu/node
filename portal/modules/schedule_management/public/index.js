@@ -27,7 +27,7 @@ const CALENDAR_LAYOUT = {
 };
 //自定义的点击日程数字后，日程列表的样式
 import CustomEvent from './views/customer-event';
-const LESSONESECOND = 24 * 60 * 60 * 1000 - 1000;//之前添加日程时，一天的开始时间是00:00:00 到24:59:59秒，但是这个组件中认为的一天是从第一天的00;00：00 到第二天的00:00：00 。所以存储的全天的日程就被认为少了1000毫秒 但是可以通过加allday这个属性，被分到全天的日程中
+import {LESSONESECOND} from './utils/schedule-manage-utils';
 
 class ScheduleManagement extends React.Component {
     state = {

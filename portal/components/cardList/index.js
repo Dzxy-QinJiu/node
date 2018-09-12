@@ -6,6 +6,7 @@ var cardEmitter = require('../../public/sources/utils/emitters').cardEmitter;
 var Card = require('../card');
 //滚动条
 var GeminiScrollbar = require('../react-gemini-scrollbar');
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 
 var CONSTANTS = {
     TOP_NAV_HEIGHT: 64,//头部导航的高度
@@ -31,10 +32,21 @@ function noop() {
 
 class CardList extends React.Component {
     static defaultProps = {
+        updatePageSize: noop,
+        changePageEvent: noop,
+        pageSize: 20,
+        isPanelShow: false,
+        type: '',
         editCard: noop,
         deleteCard: noop,
         showAddBtn: false,
-        renderAddAndImportBtns: noop
+        renderAddAndImportBtns: noop,
+        addSelectCard: noop,
+        subtractSelectCard: noop,
+        showCardInfo: noop,
+        curPage: 1,
+        cardListSize: 0,
+        listTipMsg: '',
     };
 
     state = {
@@ -291,7 +303,12 @@ class CardList extends React.Component {
         return (
             <div className="card-list-container" style={{paddingTop: paddingTop}}>
                 {
-                    this.props.listTipMsg ? (<NoData msg={this.props.listTipMsg}/>) : (
+                    this.props.listTipMsg ? ((<NoDataIntro
+                        noDataTip={this.props.listTipMsg}
+                        renderAddAndImportBtns={this.props.renderAddAndImportBtns}
+                        showAddBtn={this.props.showAddBtn}
+                        noDataAndAddBtnTip={this.props.listTipMsg}/>)
+                    ) : (
                         <div ref="scrolltoTop">
                             <div className="card-list" style={{height: cardListHeight}}>
                                 <GeminiScrollbar
@@ -319,5 +336,22 @@ class CardList extends React.Component {
         );
     }
 }
+CardList.propTypes = {
+    updatePageSize: PropTypes.func,
+    changePageEvent: PropTypes.func,
+    pageSize: PropTypes.number,
+    isPanelShow: PropTypes.bool,
+    type: PropTypes.string,
+    editCard: PropTypes.func,
+    deleteCard: PropTypes.func,
+    showAddBtn: PropTypes.bool,
+    renderAddAndImportBtns: PropTypes.func,
+    addSelectCard: PropTypes.func,
+    subtractSelectCard: PropTypes.func,
+    showCardInfo: PropTypes.func,
+    curPage: PropTypes.number,
+    cardListSize: PropTypes.number,
+    listTipMsg: PropTypes.string,
+};
 
 module.exports = CardList;
