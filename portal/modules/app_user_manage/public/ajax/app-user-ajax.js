@@ -2,6 +2,10 @@ var AppUserUtil = require('../util/app-user-util');
 var appAjaxTrans = require('../../../common/public/ajax/app');
 import { storageUtil } from 'ant-utils';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import ajaxPro from 'MOD_DIR/common/ajaxUtil';
+
+//批量获取应用的角色信息
+exports.getBatchRoleInfo = params => ajaxPro('getBatchRoleInfo', params);
 
 //获取近期登录的用户列表
 var recentLoginUsersAjax = null;

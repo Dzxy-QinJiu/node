@@ -374,4 +374,13 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
+}, {
+    //批量获取角色信息
+    
+    'method': 'post',
+    'path': '/rest/base/v1/role/batch_ids',
+    'handler': 'getBatchRoleInfo',
+    'passport': {
+        'needLogin': true
+    }
 }];
