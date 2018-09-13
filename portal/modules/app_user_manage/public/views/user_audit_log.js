@@ -116,22 +116,23 @@ class LogView extends React.Component {
 
     // 获取团队或成员的参数
     getTeamMemberParam = () => {
-        let teamList = this.state.teamList.list; // 团队数据
-        let memberList = this.state.memberList.list; // 成员数据
+        let teamList = _.get(this.state,'teamList.list',[]); // 团队数据
+        let memberList = _.get(this.state, 'memberList.list',[]); // 成员数据
         let secondSelectValue = this.state.secondSelectValue;
         let params = {};
-        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
-            if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && teamList.length > 1) { // 团队时
+            if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL){//选择全部团队时，把所有团队的id传过去
+                let teamIdArray = _.map(teamList, 'id');
+                params.sale_team_ids = teamIdArray;
+            }else { // 具体团队时
                 let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue, true);
-                params.sales_team_id = secondSelectTeamId.join(',');
+                params.sale_team_ids = secondSelectTeamId;
             }
         } else { // 成员时
-            if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) { // 全部时
-                let userIdArray = _.map(this.state.memberList.list, 'id');
-                params.user_id = userIdArray.join(',');
-            } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
+            // 全部成员时，什么都不用传，具体成员，传成员的id
+            if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
                 let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
-                params.user_id = secondSelectMemberId.join(','); // 成员
+                params.sale_ids = secondSelectMemberId; // 成员
             }
         }
         return params;
@@ -162,12 +163,12 @@ class LogView extends React.Component {
         // 开始时间
         var starttime = queryParams && 'starttime' in queryParams ? queryParams.starttime : this.state.startTime;
         if (starttime) {
-            bodyObj.starttime = starttime;
+            bodyObj.start_time = starttime + '';
         }
         // 结束时间
         var endtime = queryParams && 'endtime' in queryParams ? queryParams.endtime : this.state.endTime;
         if (endtime) {
-            bodyObj.endtime = endtime;
+            bodyObj.end_time = endtime + '';
         }
         let searchObj = {
             queryObj: JSON.stringify(queryObj),
