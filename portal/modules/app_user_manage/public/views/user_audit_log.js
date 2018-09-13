@@ -592,6 +592,16 @@ class LogView extends React.Component {
                     <TopNav.MenuList />
                     <div className="user_audit_log_header">
                         <div className="user_audit_log_select_time btn-item" data-tracename="时间筛选">
+                            {/**
+                             * 团队和成员筛选框
+                             * */}
+                            <div className="team-member-select">
+                                {
+                                    this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
+                                        this.renderTeamMembersSelect() :
+                                        null
+                                }
+                            </div>
                             <DatePicker
                                 disableDateAfterToday={true}
                                 dateSelectRange={THREE_MONTH_TIME_RANGE}
@@ -623,16 +633,6 @@ class LogView extends React.Component {
                             </SelectFullWidth>
                         </div>
                         {Oplate.hideSomeItem ? null : this.renderFilterUserType()} {/**委内维拉项目隐藏*/}
-                        {/**
-                         * 团队和成员筛选框
-                         * */}
-                        <div className="team-member-select">
-                            {
-                                this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
-                                    this.renderTeamMembersSelect() :
-                                    null
-                            }
-                        </div>
                         <div className="user_audit_log_search_content btn-item">
                             <SearchInput
                                 type="input"
