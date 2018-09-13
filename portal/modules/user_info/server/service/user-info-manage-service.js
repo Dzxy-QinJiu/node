@@ -20,8 +20,9 @@ var userInfoRestApis = {
     activeUserEmail: '/rest/base/v1/user/bunding/email',//邮箱激活接口
     getManagedRealm: '/rest/base/v1/realm/managedrealm',//所管理的安全域
     getOrganization: '/rest/base/v1/user/organization',//获取当前登录用户所在的组织
-    setSubscribeEmail: '/rest/base/v1/user/email/rejection'//是否订阅通知邮件
-
+    setSubscribeEmail: '/rest/base/v1/user/email/rejection',//是否订阅通知邮件
+    getUserInfoPhoneCode: '/rest/base/v1/user/bunding/phone',//获取短信验证码
+    bindUserInfoPhone: '/rest/base/v1/user/basicinfo'//绑定邮箱
 };
 
 exports.urls = userInfoRestApis;
@@ -152,4 +153,21 @@ exports.setSubscribeEmail = function(req, res, config) {
             res: res
         }, {config: config});
 };
-
+//获取短信验证码
+exports.getUserInfoPhoneCode = function(req, res) {
+    return restUtil.baseRest.get(
+        {
+            url: userInfoRestApis.getUserInfoPhoneCode,
+            req: req,
+            res: res,
+        }, req.query);
+};
+//绑定用户的手机号
+exports.bindUserInfoPhone = function(req, res) {
+    return restUtil.baseRest.put(
+        {
+            url: userInfoRestApis.bindUserInfoPhone,
+            req: req,
+            res: res,
+        }, req.body);
+};

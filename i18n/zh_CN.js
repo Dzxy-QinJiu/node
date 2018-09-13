@@ -2644,5 +2644,7 @@ var zh_CN = {
     'user.info.binding.email': '绑定邮箱',
     'schedule.manage.has.no.expired.tasks': '您没有超期未完成的任务',
     'user.get.user.info.null': '获取不到登录用户的信息',
+    'user.info.binding.phone': '绑定手机号',
+    'user.info.no.set.phone': '该用户还没有手机号，{bindPhone}',
 };
 export default zh_CN;

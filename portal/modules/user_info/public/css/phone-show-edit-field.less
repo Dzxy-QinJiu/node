@@ -1,0 +1,107 @@
+//展示、绑定手机号的样式
+@edit-icon-color: #b6c2c9;
+.phone-show-edit-wrap {
+  display: inline-block;
+  width: 80%;
+  //展示区域
+  .phone-show-wrap {
+    .icon-update {
+      margin: 0 0 0 10px;
+      color: @edit-icon-color;
+      cursor: pointer;
+      &:hover {
+        color: darken(@edit-icon-color, 30%);
+      }
+    }
+  }
+
+  //绑定区域
+  form{
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    margin-top: 4px;
+    .ant-form-item{
+      margin-bottom: 8px;
+      input{
+        font-size: 14px;
+      }
+    }
+    //验证码输入框
+    input.captcha-code-input{
+      width: 50%;
+    }
+    .captcha-code-wrap{
+      float: right;
+      width: 48%;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #8da8c5;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      .get-captcha-code{
+        cursor: pointer;
+      }
+    }
+
+  }
+}
+
+//.user-basic-edit-field {
+//  margin-top: -2px;
+//  .ant-input {
+//    padding-top: 3px;
+//    padding-bottom: 3px;
+//    width: 260px;
+//  }
+//  .inline-block {
+//    display: inline-block;
+//    vertical-align: middle;
+//  }
+//  @color: #b6c2c9;
+//  .icon-update {
+//    margin: 0 0 0 10px;
+//    color: @color;
+//    cursor: pointer;
+//    &:hover {
+//      color: darken(@color, 30%);
+//    }
+//  }
+//  form {
+//    position: relative;
+//    display: table;
+//    &:after {
+//      content: " ";
+//      clear: both;
+//    }
+//    & > div {
+//      float: left;
+//    }
+//    .icon-choose {
+//      padding: 5px 5px 2px 5px;
+//    }
+//    .icon-close {
+//      padding: 5px 5px 2px 5px;
+//    }
+//    .ant-form-explain {
+//      float: none;
+//    }
+//  }
+//  .buttons {
+//    float: left;
+//    width: 48px;
+//    position: relative;
+//    z-index: 1;
+//    text-align: right;
+//  }
+//  .ant-form-item {
+//    width: auto !important;
+//    margin-bottom: 0 !important;
+//  }
+//  .anticon-loading {
+//    margin-right: 3px;
+//    margin-top: 3px;
+//  }
+//}

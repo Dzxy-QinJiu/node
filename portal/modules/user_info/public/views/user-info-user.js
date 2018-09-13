@@ -14,6 +14,7 @@ import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import PhoneShowEditField from './phone-show-edit-field';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -301,7 +302,7 @@ class UserInfo extends React.Component{
                         <span>
                             <ReactIntl.FormattedMessage id="common.phone" defaultMessage="电话"/>
                             ：</span>
-                        <span>{formData.phone}</span>
+                        <PhoneShowEditField id={formData.id} phone={formData.phone}/>
                     </div>
                     <div className="user-info-item">
                         <span>
@@ -382,20 +383,6 @@ class UserInfo extends React.Component{
                                 }]
                             })(
                                 <Input type="text" placeholder={Intl.get('member.input.email', '请输入邮箱')}/>
-                            )}
-                        </FormItem>
-                        <FormItem
-                            label={Intl.get('common.phone','电话')}
-                            labelCol={{span: 4}}
-                            wrapperCol={{span: 18}}
-                        >
-                            {getFieldDecorator('phone',{
-                                initialValue: formData.phone,
-                                rules: [{
-                                    validator: checkPhone.bind(this)
-                                }]
-                            })(
-                                <Input placeholder={Intl.get('user.info.input.phone','请输入电话')}/>
                             )}
                         </FormItem>
                         <FormItem

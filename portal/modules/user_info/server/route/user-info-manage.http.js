@@ -80,5 +80,22 @@ module.exports = {
         'privileges': [
             'MEMBER_APPLY_EMAIL_REJECTION'
         ]
+    },{
+        'method': 'get',
+        'path': '/rest/user_info/phone_code',
+        'handler': 'getUserInfoPhoneCode',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            'USER_PHONE_BINDING'
+        ]
+    },{
+        'method': 'put',
+        'path': '/rest/user_info/bind/phone',
+        'handler': 'bindUserInfoPhone',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };
