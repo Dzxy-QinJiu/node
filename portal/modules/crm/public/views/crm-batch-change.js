@@ -41,7 +41,12 @@ var CrmScheduleForm = require('./schedule/form');
 var CrmBatchChange = createReactClass({
     displayName: 'CrmBatchChange',
     mixins: [ValidateMixin],
-
+    propTypes: {
+        selectedCustomer: PropTypes.object,
+        selectAllMatched: PropTypes.bool,
+        matchedNum: PropTypes.number,
+        condition: PropTypes.object,
+    },
     getInitialState: function() {
         return {
             ...BatchChangeStore.getState(),
@@ -74,7 +79,7 @@ var CrmBatchChange = createReactClass({
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.op-type'), '点击切换变更类型');
         BatchChangeActions.setCurrentTab(tab);
         if (tab === BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS) {
-            this.state.stopContentHide = true;
+            this.setState({stopContentHide: true});
         }
     },
 
@@ -471,9 +476,8 @@ var CrmBatchChange = createReactClass({
 
     //取消添加日程
     cancelAddSchedule: function() {
-        this.state.stopContentHide = false;
         this.setState({
-            stopContentHide: this.state.stopContentHide
+            stopContentHide: false
         });
         this.refs.crmScheduleForm.handleCancel();
     },
@@ -616,9 +620,15 @@ var CrmBatchChange = createReactClass({
             topic: '',
             edit: true
         };
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 4},
+            wrapperCol: {span: 20},
+        };
         return (
             <div className="batch-add-schedule">
                 <CrmScheduleForm
+                    formItemLayout={formItemLayout}
                     currentSchedule={newSchedule}
                     selectedCustomer={selectedCustomer}
                     ref="crmScheduleForm"
@@ -806,7 +816,6 @@ var CrmBatchChange = createReactClass({
         );
     },
 });
-
 module.exports = CrmBatchChange;
 
 
