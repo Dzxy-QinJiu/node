@@ -3,6 +3,8 @@ var filterStore = require('./filter-store');
 var orderStore = require('./order-store');
 var crmUtil = require('./../utils/crm-util');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
+import { altAsyncUtil } from 'ant-utils';
+const {resultHandler} = altAsyncUtil;
 
 function CrmStore() {
     this.setInitialState();
@@ -56,6 +58,10 @@ CrmStore.prototype.setInitialState = function() {
     this.nextPageNum = 0;
     //展示的线索详情的id
     this.clueId = '';
+    this.addCommonFilterResult = {
+        loading: false,
+        errorMsg: ""
+    }
 };
 CrmStore.prototype.updateCurrentCustomerRemark = function(submitObj) {
     let customer = _.find(this.curCustomers, (customer) => {
@@ -542,6 +548,7 @@ CrmStore.prototype.showClueDetail = function(clueId) {
 CrmStore.prototype.setCurCustomers = function(curCustomers) {
     this.curCustomers = curCustomers;
 };
+CrmStore.prototype.addCommonFilter = resultHandler('addCommonFilterResult');
 
 
 module.exports = alt.createStore(CrmStore, 'CrmStore');

@@ -1,6 +1,9 @@
 var crmAjax = require('../ajax');
+var FilterAjax = require('../ajax/filter-ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 import {message} from 'antd';
+import { altAsyncUtil } from 'ant-utils';
+const {asyncDispatcher} = altAsyncUtil;
 
 function CrmActions() {
     this.generateActions(
@@ -151,6 +154,8 @@ function CrmActions() {
             _.isFunction(callback) && callback(errorMsg);
         });
     };
+
+    this.addCommonFilter = asyncDispatcher(FilterAjax.addCommonFilter, true);
 }
 
 module.exports = alt.createActions(CrmActions);
