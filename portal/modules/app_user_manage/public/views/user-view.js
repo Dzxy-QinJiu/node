@@ -411,6 +411,7 @@ class UserTabContent extends React.Component {
         $(this.refs.userListTable).off('click', 'tr', this.onRowClick);
         $(window).off('resize', this.changeScrollBarHeight);
         this.unbindEventEmitter();
+        AppUserAction.resetState();
     }
 
     getTableColumns = () => {
