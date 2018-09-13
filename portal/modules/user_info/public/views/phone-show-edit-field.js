@@ -116,7 +116,7 @@ class PhoneShowEditField extends React.Component {
                 codeEffectiveTime -= 1;
                 this.setState({codeEffectiveTime});
                 if (codeEffectiveTime === 0) {
-                    this.setState({isGetSMSCode: false});
+                    this.setState({hasGetSMSCode: false});
                     this.clearCodeEffectiveInterval();
                 }
             }
