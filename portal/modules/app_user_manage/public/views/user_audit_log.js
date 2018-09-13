@@ -25,6 +25,7 @@ var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
+import userData from 'PUB_DIR/sources/user-data';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -630,7 +631,7 @@ class LogView extends React.Component {
                          * */}
                         <div className="team-member-select">
                             {
-                                this.state.teamList.list.length ?
+                                this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
                                     this.renderTeamMembersSelect() :
                                     null
                             }
