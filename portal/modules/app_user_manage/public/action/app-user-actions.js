@@ -91,7 +91,9 @@ function AppUserAction() {
         //恢复初始数据
         'setInitialData',
         //用户生成线索客户后，更新apps中的clue_created属性
-        'updateUserAppsInfo'
+        'updateUserAppsInfo',
+        //恢复初始化数据
+        'resetState'
     );
 
     //关闭右侧面板
