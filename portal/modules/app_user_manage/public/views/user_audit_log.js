@@ -508,16 +508,12 @@ class LogView extends React.Component {
     };
     // 团队和成员框的选择
     handleFirstSelectChange = (value) => {
+        UserAuditLogAction.handleFilterUserType();
         this.setState({
             firstSelectValue: value,
             secondSelectValue: LITERAL_CONSTANT.ALL
         }, () => {
-            if (value === LITERAL_CONSTANT.MEMBER) {
-                let userIdArray = _.map(this.state.memberList.list, 'id');
-                this.getAuditLog({user_id: userIdArray.join(',')});
-            } else {
-                this.getAuditLog();
-            }
+            this.getAuditLog();
         });
     };
 
@@ -529,6 +525,7 @@ class LogView extends React.Component {
         } else if (value[0] !== LITERAL_CONSTANT.ALL && _.indexOf(value, LITERAL_CONSTANT.ALL) !== -1 || value.length === 0) {
             value = LITERAL_CONSTANT.ALL; // 选择全部时，其他选项应该不显示
         }
+        UserAuditLogAction.handleFilterUserType();
         this.setState({
             secondSelectValue: value,
         }, () => {
