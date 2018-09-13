@@ -36,6 +36,19 @@ UserAuditLogStore.prototype.resetAuditLog = function() {
     this.selectLogType = ''; // 选择的日志类型
     // 下拉加载
     this.listenScrollBottom = true;
+    //团队和销售列表
+    this.teamTreeList = [];
+    this.teamList = {
+        list: [],
+        errMsg: '' // 获取失败的提示
+    };
+    //销售列表
+    // 成员数据
+    this.memberList = {
+        list: [],
+        errMsg: '' // 获取失败的提示
+    };
+
 },
 UserAuditLogStore.prototype.resetState = function() {
     // 今天
@@ -157,6 +170,42 @@ UserAuditLogStore.prototype.handleFilterLogType = function() {
     this.sortId = '';
     this.auditLogList = [];
     this.firstLoading = true;
+};
+//获取团队列表
+UserAuditLogStore.prototype.getTeamList = function(result) {
+    if (result.errorMsg) {
+        this.teamList.errMsg = result.errorMsg;
+    } else if (result.teamList) {
+        this.teamTreeList = result.teamTreeList;
+        this.teamList.errMsg = '';
+        let resData = result.teamList;
+        if (_.isArray(resData) && resData.length) {
+            this.teamList.list = _.map(resData, (item) => {
+                return {
+                    name: item.group_name,
+                    id: item.group_id
+                };
+            });
+        }
+    }
+};
+// 获取成员信息
+UserAuditLogStore.prototype.getSaleMemberList = function(result) {
+    if (result.error) {
+        this.memberList.errMsg = result.errMsg;
+    } else if (result.resData) {
+        this.memberList.errMsg = '';
+        let resData = result.resData;
+        let memberList = [];
+        if (_.isArray(resData) && resData.length) {
+            _.each(resData, (item) => {
+                if (item.status) {
+                    memberList.push({name: item.nick_name, id: item.user_id, user_name: item.user_name});
+                }
+            });
+        }
+        this.memberList.list = memberList;
+    }
 };
 
 module.exports = alt.createStore(UserAuditLogStore);

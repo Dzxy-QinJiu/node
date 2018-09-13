@@ -11,6 +11,7 @@ import DatePicker from '../../../../components/datepicker';
 import {SearchInput} from 'antc';
 var GeminiScrollBar = require('../../../../components/react-gemini-scrollbar');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
+import {LITERAL_CONSTANT, FIRSR_SELECT_DATA} from 'PUB_DIR/sources/utils/consts';
 //顶部导航
 var TopNav = require('../../../../components/top-nav');
 var classnames = require('classnames');
@@ -22,6 +23,8 @@ import RefreshButton from 'CMP_DIR/refresh-button';
 var websiteConfig = require('../../../../lib/utils/websiteConfig');
 var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import Trace from 'LIB_DIR/trace';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -44,6 +47,8 @@ class LogView extends React.Component {
         userType: USER_TYPE_OPTION.ALL, // 用户类型类型
         selectedRowIndex: null, // 点击的行索引
         isShowRightPanel: this.props.isShowRightPanel,
+        firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
+        secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
         ...UserAuditLogStore.getState()
     };
 
@@ -64,6 +69,11 @@ class LogView extends React.Component {
             });
         });
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
+        //获取团队信息
+        UserAuditLogAction.getTeamList();
+        let reqData = commonMethodUtil.getParamByPrivilege();
+        //获取成员信息
+        UserAuditLogAction.getSaleMemberList(reqData);
     }
 
     componentWillReceiveProps(newProps) {
@@ -78,39 +88,91 @@ class LogView extends React.Component {
         $(window).off('resize', this.changeTableHeight);
         UserAuditLogAction.resetState();
     }
+    // 获取团队或是成员的id
+    getTeamOrMemberId = (list, selectValue,isSelectedTeam) => {
+        //如果选中的不是最低级的团队的时候，要取到低级团队的id
+        if(isSelectedTeam){
+            //在团队树中查看该团队是否有下级团队
+            var teamArr = _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
+            _.map(teamArr,(teamId) => {
+                var targetObj = _.find(this.state.teamTreeList,(item) => {
+                    return item.group_id === teamId;
+                });
+                if (!_.isEmpty(targetObj) && _.isArray(targetObj.child_groups)){
+                    _.forEach(targetObj.child_groups, (childTeam) => {
+                        teamArr.push(childTeam.group_id);
+                    });
+                }
+            });
 
+            return _.uniq(teamArr);
+
+
+        }else{
+            return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
+        }
+
+    };
+
+    // 获取团队或成员的参数
+    getTeamMemberParam = () => {
+        let teamList = this.state.teamList.list; // 团队数据
+        let memberList = this.state.memberList.list; // 成员数据
+        let secondSelectValue = this.state.secondSelectValue;
+        let params = {};
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
+            if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
+                let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue, true);
+                params.sales_team_id = secondSelectTeamId.join(',');
+            }
+        } else { // 成员时
+            if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) { // 全部时
+                let userIdArray = _.map(this.state.memberList.list, 'id');
+                params.user_id = userIdArray.join(',');
+            } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
+                let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
+                params.user_id = secondSelectMemberId.join(','); // 成员
+            }
+        }
+        return params;
+    };
     // 根据选择条件获取对应的数据
     getAuditLog = (queryParams) => {
-        var searchObj = {
+        var queryObj = {
             load_size: this.state.loadSize, // 每次加载的条数
             appid: queryParams && 'appid' in queryParams ? queryParams.appid : this.state.selectAppId,
-            sort_field: queryParams.sort_field || this.state.sortField,
-            sort_order: queryParams.sort_order || this.state.sortOrder,
-            type_filter: this.state.typeFilter.join()
+            sort_field: _.get(queryParams,'sort_field') || this.state.sortField,
+            sort_order: _.get(queryParams, 'sort_order') || this.state.sortOrder,
         };
-        // 用户类型
-        var userType = queryParams.user_type || this.state.userType;
-        if (userType) {
-            searchObj.user_type = userType;
-        }
         // 搜索字段
         var search = queryParams && 'search' in queryParams ? queryParams.search : this.state.searchName;
-        searchObj.search = search ? (search.toString().trim()).toLowerCase() : '';
+        queryObj.search = search ? (search.toString().trim()).toLowerCase() : '';
         // 日志信息的id
         var sort_id = queryParams && 'sort_id' in queryParams ? queryParams.sort_id : this.state.sortId;
         if (sort_id) {
-            searchObj.sort_id = sort_id;
+            queryObj.sort_id = sort_id;
+        }
+        var bodyObj = this.getTeamMemberParam();
+        bodyObj.type_filter = this.state.typeFilter.join();
+        // 用户类型
+        var userType = _.get(queryParams, 'user_type') || this.state.userType;
+        if (userType) {
+            bodyObj.user_type = userType;
         }
         // 开始时间
         var starttime = queryParams && 'starttime' in queryParams ? queryParams.starttime : this.state.startTime;
         if (starttime) {
-            searchObj.starttime = starttime;
+            bodyObj.starttime = starttime;
         }
         // 结束时间
         var endtime = queryParams && 'endtime' in queryParams ? queryParams.endtime : this.state.endTime;
         if (endtime) {
-            searchObj.endtime = endtime;
+            bodyObj.endtime = endtime;
         }
+        let searchObj = {
+            queryObj: JSON.stringify(queryObj),
+            bodyObj: JSON.stringify(bodyObj)
+        };
         UserAuditLogAction.getAuditLogList(searchObj, this.addNoIdUserClass);
     };
 
@@ -424,7 +486,105 @@ class LogView extends React.Component {
             </Select>
         );
     };
+    handleFirstSelect = () => {
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择成员过滤');
+        } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择团队过滤');
+        }
+    };
+    handleSelectTeamOrMember = () => {
+        if (this.state.teamList.length > 1) {
+            if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '根据团队过滤');
+            } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '根据成员过滤');
+            }
+        } else if (this.state.teamList.length === 1) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '根据成员过滤');
+        }
+    };
+    // 团队和成员框的选择
+    handleFirstSelectChange = (value) => {
+        this.setState({
+            firstSelectValue: value,
+            secondSelectValue: LITERAL_CONSTANT.ALL
+        }, () => {
+            if (value === LITERAL_CONSTANT.MEMBER) {
+                let userIdArray = _.map(this.state.memberList.list, 'id');
+                this.getAuditLog({user_id: userIdArray.join(',')});
+            } else {
+                this.getAuditLog();
+            }
+        });
+    };
 
+    // 第二个选择框，具体的值：全部和多个选择之间的切换显示
+    onSecondSelectChange = (value) => {
+        // 处理选择全部和多个的情况
+        if (value[0] === LITERAL_CONSTANT.ALL && value.length > 1) {
+            value.shift(); // 选择具体的某个成员后或团队时，‘全部’应该删除
+        } else if (value[0] !== LITERAL_CONSTANT.ALL && _.indexOf(value, LITERAL_CONSTANT.ALL) !== -1 || value.length === 0) {
+            value = LITERAL_CONSTANT.ALL; // 选择全部时，其他选项应该不显示
+        }
+        this.setState({
+            secondSelectValue: value,
+        }, () => {
+            this.getAuditLog();
+        });
+    };
+    renderTeamMembersSelect(){
+        let teamList = this.state.teamList.list; // 团队数据
+        let memberList = this.state.memberList.list; // 成员数据
+
+        // 第一个选择框渲染的数据
+        let firstOptions = FIRSR_SELECT_DATA.map((item, index) => {
+            return <Option value={item} key={index}>{item}</Option>;
+        });
+
+        // 第二个选择框的数据
+        let secondOptions = [];
+        if (teamList.length === 1) { // 只展示成员选择框时
+            secondOptions = memberList.map((item, index) => {
+                return <Option value={item.name} key={index}>{item.name}</Option>;
+            });
+        } else if (teamList.length > 1) { // 展示团队和成员
+            if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
+                secondOptions = teamList.map((item, index) => {
+                    return <Option value={item.name} key={index}>{item.name}</Option>;
+                });
+            } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
+                secondOptions = memberList.map((item, index) => {
+                    return <Option value={item.name} key={index}>{item.name}</Option>;
+                });
+            }
+        }
+        secondOptions.unshift(<Option value={LITERAL_CONSTANT.ALL}>{LITERAL_CONSTANT.ALL}</Option>);
+
+        return (
+            <div>
+                {teamList.length > 1 ? (
+                    <SelectFullWidth
+                        defaultValue={FIRSR_SELECT_DATA[0]}
+                        onChange={this.handleFirstSelectChange}
+                        onSelect={this.handleFirstSelect}
+                        className="btn-item"
+                    >
+                        {firstOptions}
+                    </SelectFullWidth>
+                ) : null }
+                <SelectFullWidth
+                    multiple
+                    value={this.state.secondSelectValue}
+                    onChange={this.onSecondSelectChange}
+                    className="team-member-select-options btn-item"
+                    onSelect={this.handleSelectTeamOrMember}
+                >
+                    {secondOptions}
+                </SelectFullWidth>
+            </div>
+        );
+    }
     renderLogHeader = () => {
         var appOptions = this.getAppOptions();
         return (
@@ -464,6 +624,16 @@ class LogView extends React.Component {
                             </SelectFullWidth>
                         </div>
                         {Oplate.hideSomeItem ? null : this.renderFilterUserType()} {/**委内维拉项目隐藏*/}
+                        {/**
+                         * 团队和成员筛选框
+                         * */}
+                        <div className="team-member-select">
+                            {
+                                this.state.teamList.list.length ?
+                                    this.renderTeamMembersSelect() :
+                                    null
+                            }
+                        </div>
                         <div className="user_audit_log_search_content btn-item">
                             <SearchInput
                                 type="input"

@@ -36,7 +36,7 @@
     top:@filter_area_margin_top;
     right:@container_padding;
     z-index:11;
-    .select-user-type, .user_audit_log_select_time, .user_audit_log_select_app, .user-audit-log-select{
+    .select-user-type, .user_audit_log_select_time, .user_audit_log_select_app, .user-audit-log-select, .team-member-select{
       .filter_btn_default;
     }
     .user_audit_log_search_content{
@@ -44,6 +44,27 @@
       .search-input-container{
         .search-input{
           height:@input_height;
+        }
+      }
+    }
+    .team-member-select{
+      .team-member-select-options {
+        .ant-select-selection--multiple {
+          .ant-select-selection__rendered {
+            .ant-select-selection__choice {
+              background-color: #fff;
+              padding-top: 4px;
+              padding-left: 2px;
+              .ant-select-selection__choice__content {
+                color: @btn-font-color;
+                line-height: 23px;
+              }
+            }
+          }
+          ul li {
+            margin-top: 0;
+            height: 24px;
+          }
         }
       }
     }

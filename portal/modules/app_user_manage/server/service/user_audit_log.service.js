@@ -8,7 +8,7 @@ var auth = require('../../../../lib/utils/auth');
 
 var AppUserRestApis = {
     //获取用户审计日志列表
-    getUserLogs: '/rest/analysis/auditlog/v1/app/drop_down_load',
+    getUserLogs: '/rest/analysis/auditlog/v1/app/sales/drop_down_load',
     // 获取单个用户审计日志列表
     getSingleAuditLogList: '/rest/analysis/auditlog/v1/app/userdetail/',
     // 获取用户登录时长
@@ -30,9 +30,34 @@ var AppUserRestApis = {
 exports.urls = AppUserRestApis;
 
 // 获取用户审计日志
-exports.getUserLogList = function(req, res, obj){
-    return restUtil.authRest.get({
-        url: AppUserRestApis.getUserLogs,
+exports.getUserLogList = function(req, res){
+    var searchObj = req.body;
+    let obj = {};
+    if (_.isString(searchObj.bodyObj)){
+        obj = JSON.parse(searchObj.bodyObj);
+    }
+    var url = AppUserRestApis.getUserLogs;
+    if (_.isString(searchObj.queryObj)){
+        var queryObj = JSON.parse(searchObj.queryObj);
+        if (queryObj.appid){
+            url += `?appid=${queryObj.appid}`;
+            if (queryObj.sort_field){
+                url += `&sort_field=${queryObj.sort_field}`;
+            }
+            if (queryObj.sort_order){
+                url += `&sort_order=${queryObj.sort_order}`;
+            }
+            if (queryObj.sort_id){
+                url += `&sort_id=${queryObj.sort_id}`;
+            }
+            if (queryObj.load_size){
+                url += `&load_size=${queryObj.load_size}`;
+            }
+        }
+    }
+
+    return restUtil.authRest.post({
+        url: url,
         req: req,
         res: res
     }, obj);

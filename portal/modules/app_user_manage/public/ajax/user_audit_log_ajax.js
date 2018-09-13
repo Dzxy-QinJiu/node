@@ -23,7 +23,7 @@ exports.getAuditLogList = function(searchObj){
     auditLogAjax && auditLogAjax.abort();
     auditLogAjax = $.ajax({
         url: '/rest/user/log',
-        type: 'get',
+        type: 'post',
         data: searchObj,
         dateType: 'json',
         success: function(data){
@@ -78,7 +78,7 @@ exports.getSingleUserAllAuditLog = function(paramsObj) {
         }        
     }
     return ajax(config);
-}
+};
 
 // 根据单个用户user_id获取用户应用列表
 var singleUserLogAppAjax = null;
@@ -168,6 +168,22 @@ exports.getLoginUserScore = function(reqData, type){
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get('user.get.score.failed', '获取用户分数失败') );
             }
+        }
+    });
+    return Deferred.promise();
+};
+// 获取成员信息
+exports.getSaleMemberList = function(reqData) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/sale/member/' + reqData.type,
+        dataType: 'json',
+        type: 'get',
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
