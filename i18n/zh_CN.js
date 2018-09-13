@@ -2651,6 +2651,10 @@ var zh_CN = {
     'user.info.binding.email': '绑定邮箱',
     'schedule.manage.has.no.expired.tasks': '您没有超期未完成的任务',
     'user.get.user.info.null': '获取不到登录用户的信息',
+    'leave.apply.add.leave.time': '出差时间',
+    'leave.apply.add.leave.person': '出差人员',
+    'leave.apply.add.leave.destination': '目的地',
+    'leave.apply.add.leave.reason': '出差事由'
 
 
 };

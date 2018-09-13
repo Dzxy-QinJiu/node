@@ -8,9 +8,9 @@ function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
     );
-    this.getAllApplyList = function() {
+    this.getAllApplyList = function(queryObj) {
         this.dispatch({error: false, loading: true});
-        LeaveApplyAjax.getAllApplyList().then((list) => {
+        LeaveApplyAjax.getAllApplyList(queryObj).then((list) => {
             this.dispatch({error: false, loading: false, list: list});
         }, (errorMsg) => {
             this.dispatch({

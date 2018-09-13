@@ -19,9 +19,11 @@ exports.restUrls = restApis;
 var _ = require('lodash');
 //获取所有的出差申请
 exports.getAllLeaveApplyList = function(req, res) {
+    var queryObj = req.query;
+    var url = restApis.allBussinessTrip;
     return restUtil.authRest.get(
         {
-            url: restApis.allBussinessTrip,
+            url: url,
             req: req,
             res: res
         }, null);

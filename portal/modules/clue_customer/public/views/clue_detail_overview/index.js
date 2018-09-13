@@ -9,7 +9,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import {Button, Icon} from 'antd';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DatePickerField from 'CMP_DIR/basic-edit-field-new/date-picker';
-import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
+import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_suggest/customer_suggest';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerAjax = require('../../ajax/clue-customer-ajax');
@@ -895,6 +895,31 @@ class ClueDetailOverview extends React.Component {
         );
     }
 }
+ClueDetailOverview.defaultProps = {
+    curClue: {},
+    divHeight: '',
+    clueSourceArray: [],
+    accessChannelArray: [],
+    clueClassifyArray: [],
+    updateClueSource: function() {
+    },
+    updateClueChannel: function() {
+    },
+    updateClueClassify: function() {
+    },
+    salesManList: [],
+};
+ClueDetailOverview.propTypes = {
+    curClue: PropTypes.object,
+    divHeight: PropTypes.string,
+    clueSourceArray: PropTypes.object,
+    accessChannelArray: PropTypes.object,
+    clueClassifyArray: PropTypes.object,
+    updateClueSource: PropTypes.func,
+    updateClueChannel: PropTypes.func,
+    updateClueClassify: PropTypes.func,
+    salesManList: PropTypes.object,
+};
 
 module.exports = ClueDetailOverview;
 

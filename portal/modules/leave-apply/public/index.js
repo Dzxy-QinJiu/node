@@ -10,7 +10,7 @@ import TopNav from 'CMP_DIR/top-nav';
 require('./css/index.less');
 var userData = require('PUB_DIR/sources/user-data');
 import {Button} from 'antd';
-var AddLeaveApplyPanel = require('./view/add-leave-apply');
+import AddLeaveApplyPanel from './view/add-leave-apply';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var className = require('classnames');
 class LeaveApplyManagement extends React.Component {
@@ -25,13 +25,31 @@ class LeaveApplyManagement extends React.Component {
 
     componentDidMount() {
         leaveApplyStore.listen(this.onStoreChange);
-        this.getAllLeaveApplyList();
+        //如果是普通销售，就获取自己的申请列表
+        if (userData.getUserData().isCommonSales){
+            this.getSelfLeaveApplyList();
+        }else{
+            //如果是管理员或者是销售领导，就获取要由自己审批的申请列表
+            this.getWorklistLeaveApplyList();
+        }
 
+
+    }
+    getQueryParams(){
+        var params = {
+            sort_field: this.state.sort_field,//排序字段
+            status: this.state.status,//请假申请的状态
+            order: this.state.order,
+            page_size: this.state.page_size,
+            id: this.state.lastLeaveApplyId, //用于下拉加载的id
+        };
+        return params;
     }
 
     //获取全部请假申请
     getAllLeaveApplyList() {
-        leaveApplyAction.getAllApplyList();
+        var queryObj = this.getQueryParams();
+        leaveApplyAction.getAllApplyList(queryObj);
     }
 
     //获取自己发起的请假申请

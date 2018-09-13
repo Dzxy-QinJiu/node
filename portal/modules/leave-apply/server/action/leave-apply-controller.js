@@ -7,13 +7,24 @@ var leaveApplyService = require('../service/leave-apply-service');
 
 exports.getAllLeaveApplyList = function(req, res) {
     leaveApplyService.getAllLeaveApplyList(req, res).on('success', function(data) {
+        data = handleNodata(data);
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+function handleNodata(data) {
+    if (!data){
+        data = {
+            list: [],
+            total: 0
+        };
+    }
+    return data;
+}
 exports.getSelfLeaveApplyList = function(req, res) {
     leaveApplyService.getSelfLeaveApplyList(req, res).on('success', function(data) {
+        data = handleNodata(data);
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -21,6 +32,7 @@ exports.getSelfLeaveApplyList = function(req, res) {
 };
 exports.getWorklistLeaveApplyList = function(req, res) {
     leaveApplyService.getWorklistLeaveApplyList(req, res).on('success', function(data) {
+        data = handleNodata(data);
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -28,6 +40,7 @@ exports.getWorklistLeaveApplyList = function(req, res) {
 };
 exports.addLeaveApply = function(req, res) {
     leaveApplyService.addLeaveApply(req, res).on('success', function(data) {
+        data = handleNodata(data);
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

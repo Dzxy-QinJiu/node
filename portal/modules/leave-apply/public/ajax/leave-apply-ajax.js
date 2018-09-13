@@ -4,13 +4,14 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 let getAllApplyListAjax = null;
-exports.getAllApplyList = function() {
+exports.getAllApplyList = function(queryObj) {
     var Deferred = $.Deferred();
     getAllApplyListAjax && getAllApplyListAjax.abort();
     getAllApplyListAjax = $.ajax({
         url: '/rest/get/all/leave_apply/list',
         dataType: 'json',
         type: 'get',
+        data: queryObj,
         success: function(data) {
             Deferred.resolve(data);
         },

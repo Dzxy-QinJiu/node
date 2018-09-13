@@ -22,7 +22,11 @@ LeaveApplyStore.prototype.setInitState = function() {
     this.isLoadingWrokList = true;
     this.workListErrMsg = '';
     this.workLisApplyList = [];
-
+    this.sort_field = 'create_time';//排序字段
+    this.status = '';//请假申请的状态
+    this.order = '';
+    this.page_size = 20;
+    this.lastLeaveApplyId = '';//用于下拉加载的id
 };
 LeaveApplyStore.prototype.getAllApplyList = function(data) {
     if (data.loading){

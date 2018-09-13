@@ -13,7 +13,7 @@
     float: left;
     font-size: 14px;
   }
-  //点击展开某个线索客户的详情
+  //添加出差申请的面板
   .add-leave-apply-wrap{
     float: left;
     height: 100%;
@@ -21,6 +21,27 @@
     background-color: @NOTICE-BACKGROUND !important;
     position: relative;
     box-shadow: -4px 0 20px @box_shadow_color;
+    .add-leave-apply-form-wrap{
+      padding: 20px 0 20px 0;
+      margin-right: 20px;
+        form .ant-form-item{
+          width:100%;
+          .ant-calendar-picker{
+            width: 100%;
+          }
+          input, textarea, .ant-select{
+            width: 100%
+          }
+          .ant-form-item-label label{
+            font-size: 14px;
+            color:#999;
+          }
+          .ant-form-explain{
+            text-align: left;
+          }
+        }
+
+    }
   }
 
 }
