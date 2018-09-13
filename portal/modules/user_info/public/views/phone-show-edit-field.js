@@ -65,7 +65,7 @@ class PhoneShowEditField extends React.Component {
                     loading: true
                 });
                 $.ajax({
-                    url: '/rest/user_info/bind/phone',
+                    url: '/rest/bind/phone',
                     dataType: 'json',
                     type: 'put',
                     data: {user_id: this.state.user_id, phone: values.phone, code: values.code},
@@ -129,7 +129,7 @@ class PhoneShowEditField extends React.Component {
         let phone = $.trim(this.props.form.getFieldValue('phone'));
         if (phone && commonPhoneRegex.test(phone)) {
             $.ajax({
-                url: '/rest/user_info/phone_code',
+                url: '/rest/phone_code',
                 dataType: 'json',
                 type: 'get',
                 data: {number: phone},

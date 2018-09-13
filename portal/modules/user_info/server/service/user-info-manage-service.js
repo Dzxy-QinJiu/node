@@ -155,7 +155,7 @@ exports.setSubscribeEmail = function(req, res, config) {
 };
 //获取短信验证码
 exports.getUserInfoPhoneCode = function(req, res) {
-    return restUtil.baseRest.get(
+    return restUtil.authRest.get(
         {
             url: userInfoRestApis.getUserInfoPhoneCode,
             req: req,
@@ -164,7 +164,7 @@ exports.getUserInfoPhoneCode = function(req, res) {
 };
 //绑定用户的手机号
 exports.bindUserInfoPhone = function(req, res) {
-    return restUtil.baseRest.put(
+    return restUtil.authRest.put(
         {
             url: userInfoRestApis.bindUserInfoPhone,
             req: req,

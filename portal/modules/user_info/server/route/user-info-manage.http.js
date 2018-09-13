@@ -82,7 +82,7 @@ module.exports = {
         ]
     },{
         'method': 'get',
-        'path': '/rest/user_info/phone_code',
+        'path': '/rest/phone_code',
         'handler': 'getUserInfoPhoneCode',
         'passport': {
             'needLogin': true
@@ -92,7 +92,7 @@ module.exports = {
         ]
     },{
         'method': 'put',
-        'path': '/rest/user_info/bind/phone',
+        'path': '/rest/bind/phone',
         'handler': 'bindUserInfoPhone',
         'passport': {
             'needLogin': true
