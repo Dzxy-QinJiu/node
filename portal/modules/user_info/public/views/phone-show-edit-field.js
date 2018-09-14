@@ -121,9 +121,9 @@ class PhoneShowEditField extends React.Component {
 
     getValidateCode() {
         if (this.state.hasGetSMSCode) return;
-        this.setState({hasGetSMSCode: true});
         let phone = $.trim(this.props.form.getFieldValue('phone'));
         if (phone && commonPhoneRegex.test(phone)) {
+            this.setState({hasGetSMSCode: true});
             $.ajax({
                 url: '/rest/phone_code',
                 dataType: 'json',
