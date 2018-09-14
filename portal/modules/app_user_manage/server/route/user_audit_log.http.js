@@ -1,7 +1,7 @@
 module.exports = {
     module: 'app_user_manage/server/action/user_audit_log_controller',
     routes: [{
-        'method': 'get',
+        'method': 'post',
         'path': '/rest/user/log',
         'handler': 'getUserLogList',
         'passport': {

@@ -235,3 +235,10 @@ export const ContractLabel = [
     {value: 'new', name: Intl.get('crm.contract.new.sign', '新签')},
     {value: 'extension', name: Intl.get('contract.163', '续约')},
 ];
+
+export const LITERAL_CONSTANT = {
+    ALL: Intl.get('common.all', '全部'),
+    TEAM: Intl.get('user.user.team', '团队'),
+    MEMBER: Intl.get('member.member', '成员')
+};
+export const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];

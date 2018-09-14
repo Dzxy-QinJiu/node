@@ -3,6 +3,7 @@ var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scro
 var ShareObj = require('../util/app-id-share-util');
 var AppUserUtil = require('../util/app-user-util');
 import { storageUtil } from 'ant-utils';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function UserAuditLogAction() {
     this.generateActions(
@@ -59,7 +60,23 @@ function UserAuditLogAction() {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
-
+    this.getTeamList = function(cb) {
+        getMyTeamTreeList(data => {
+            let list = data.teamList || [];
+            // list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
+            this.dispatch({teamList: list, teamTreeList: data.teamTreeList, errorMsg: data.errorMsg});
+            if (_.isFunction(cb)) cb(list);
+        });
+    };
+    // 成员信息
+    this.getSaleMemberList = function(reqData) {
+        userAuditLogAjax.getSaleMemberList(reqData).then((resData) => {
+            this.dispatch({error: false, resData: resData});
+        }, (errorMsg) => {
+            this.dispatch({error: true, errMsg: errorMsg});
+        }
+        );
+    };
 }
 
 module.exports = alt.createActions(UserAuditLogAction);
