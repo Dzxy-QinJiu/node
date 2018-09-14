@@ -41,25 +41,29 @@ class PhoneShowEditField extends React.Component {
 
     }
 
+    resetState(phone) {
+        let initState = {
+            loading: false,
+            hasGetSMSCode: false,
+            submitErrorMsg: '',
+            displayType: 'show',
+            codeEffectiveTime: CODE_EFFECTIVE_TIME,//验证码的有效时间：60s
+            getCodeErrorMsg: '',//获取验证码的
+        };
+        if (phone) {
+            initState.phone = phone;
+        }
+        this.setState(initState);
+    }
+
     handleSubmit(e) {
         Trace.traceEvent(e, '保存手机号的修改');
         const form = this.props.form;
         form.validateFields((err, values) => {
             if (err) return;
-            function setDisplayState() {
-                this.setState({
-                    loading: false,
-                    hasGetSMSCode: false,
-                    submitErrorMsg: '',
-                    phone: values.phone,
-                    displayType: 'show',
-                    codeEffectiveTime: CODE_EFFECTIVE_TIME,//验证码的有效时间：60s
-                    getCodeErrorMsg: '',//获取验证码的
-                });
-            }
-
-            if (this.state.phone === values.phone) {
-                setDisplayState();
+            let newPhone = values.phone;
+            if (this.state.phone === newPhone) {
+                this.resetState();
             } else {
                 this.setState({
                     loading: true
@@ -68,10 +72,10 @@ class PhoneShowEditField extends React.Component {
                     url: '/rest/bind/phone',
                     dataType: 'json',
                     type: 'put',
-                    data: {user_id: this.state.user_id, phone: values.phone, code: values.code},
+                    data: {user_id: this.state.user_id, phone: newPhone, code: values.code},
                     success: data => {
                         if (data) {
-                            setDisplayState();
+                            this.resetState(newPhone);
                         } else {
                             this.setState({submitErrorMsg: Intl.get('crm.219', '修改失败'), loading: false,});
                         }
@@ -90,15 +94,7 @@ class PhoneShowEditField extends React.Component {
 
     handleCancel(e) {
         Trace.traceEvent(e, '取消编辑手机号');
-        this.setState({
-            loading: false,
-            hasGetSMSCode: false,
-            submitErrorMsg: '',
-            displayType: 'show',//展示类型：show,edit
-            codeEffectiveTime: CODE_EFFECTIVE_TIME,//验证码的有效时间：60s
-            getCodeErrorMsg: '',//获取验证码的
-        });
-
+        this.resetState();
     }
 
     clearCodeEffectiveInterval() {
@@ -180,6 +176,9 @@ class PhoneShowEditField extends React.Component {
 
     validatePhone(rule, value, callback) {
         let phone = $.trim(value);
+        if (this.state.getCodeErrorMsg) {
+            this.setState({getCodeErrorMsg: ''});
+        }
         if (phone) {
             if (commonPhoneRegex.test(phone)) {
                 callback();
@@ -199,7 +198,7 @@ class PhoneShowEditField extends React.Component {
                 <FormItem>
                     {getFieldDecorator('phone', {
                         initialValue: this.state.phone,
-                        rules: [{validator: this.validatePhone}]
+                        rules: [{validator: this.validatePhone.bind(this)}]
                     })(
                         <Input placeholder={Intl.get('user.input.phone', '请输入手机号')}/>
                     )}
@@ -214,11 +213,11 @@ class PhoneShowEditField extends React.Component {
                     <div className="captcha-code-wrap" onClick={this.getValidateCode.bind(this)}>
                         {this.renderCaptchaCode()}
                     </div>
-                    {this.state.getCodeErrorMsg ?
-                        <div className="bind-phone-error-tip">
-                            {this.state.getCodeErrorMsg}
-                        </div> : null}
                 </FormItem>)}
+                {this.state.getCodeErrorMsg ?
+                    <div className="bind-phone-error-tip">
+                        {this.state.getCodeErrorMsg}
+                    </div> : null}
                 <FormItem>
                     <SaveCancelButton loading={this.state.loading}
                         saveErrorMsg={this.state.submitErrorMsg}
