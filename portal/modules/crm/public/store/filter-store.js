@@ -300,8 +300,8 @@ const getFilterItemFromConditionItem = function (item) {
                 nameObj.groupName = Intl.get('crm.186', '其他');
                 break;
             case "interest_member_ids":
-                nameObj.name = Intl.get('crm.concerned.customer', '被关注的客户')
-                nameObj.value = 'interest_member_ids';
+                nameObj.name = Intl.get('crm.my.concerned.customer', '我关注的客户')
+                nameObj.value = 'my_interest';
                 nameObj.groupId = COMMON_OTHER_ITEM;
                 nameObj.groupName = Intl.get('crm.186', '其他');
                 break;
@@ -338,16 +338,17 @@ const getFilterItemFromConditionItem = function (item) {
                 break;
             case "exist_fields":
                 switch (value) {
-                    // case "interest_member_ids":
-                    //     nameObj.name = Intl.get('crm.concerned.customer', '被关注的客户');
-                    //     nameObj.value = 'interest_member_ids';
-                    //     nameObj.groupId = COMMON_OTHER_ITEM;
-                    //     nameObj.groupName = Intl.get('crm.186', '其他');
-                    //     break;
+                    case "interest_member_ids":
+                        nameObj.name = Intl.get('crm.concerned.customer', '被关注的客户');
+                        nameObj.value = 'interest_member_ids';
+                        nameObj.groupId = COMMON_OTHER_ITEM;
+                        nameObj.groupName = Intl.get('crm.186', '其他');
+                        break;
 
                     default:
                         break;
                 }
+                break;
             case "availability":
                 nameObj.groupId = COMMON_OTHER_ITEM;
                 nameObj.name = Intl.get('crm.available.customer', '有效客户');
@@ -431,6 +432,7 @@ const getFilterItemFromConditionItem = function (item) {
                         nameObj.name = Intl.get('crm.order.more.customer', '多个订单的客户');
                         nameObj.value = OTHER_FILTER_ITEMS.MULTI_ORDER;
                         break;
+                    //开始时间跳过处理
                     case 'start_time':
                         return false;
                     default:
