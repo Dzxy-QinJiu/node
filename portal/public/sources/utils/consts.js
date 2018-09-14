@@ -294,5 +294,15 @@ export const STAGE_OPTIONS = [
     }
 ];
 
-const UNKNOWN = Intl.get('user.unknown', '未知');
+export const UNKNOWN = Intl.get('user.unknown', '未知');
+
+export const COMMON_OTHER_ITEM = 'otherSelectedItem';
+
+//标签选项下的特殊标签
+export const SPECIAL_LABEL = {
+    NON_TAGGED_CUSTOMER: Intl.get('crm.tag.unknown', '未打标签的客户'),
+    TURN_OUT: Intl.get('crm.qualified.roll.out', '转出'),
+    CLUE: Intl.get('crm.sales.clue', '线索'),
+    HAS_CALL_BACK: Intl.get('common.has.callback', '已回访'),
+};
 

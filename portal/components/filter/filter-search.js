@@ -114,26 +114,36 @@ class FilterSearch extends React.Component {
         this.setState({
             showAddZone: false
         });
-        this.props.onSubmit({
-            filterName: this.state.filterName,
-            range: this.state.selectedRange,
-            filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
-        }).then(({data}) => {
-            if (!data && data.errorMsg) {                    
-                message.error(err.message || Intl.get('common.save.failed', '保存失败'))
-            }
-            else {
-                filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {
-                    id: data.result.id,
-                    filterName: this.state.filterName,
-                    range: this.state.selectedRange,
-                    plainFilterList: this.state.plainFilterList,//压平的数组，每项包含groupId、groupName、name、value
-                    data: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
-                });
-            }
-       }).catch(err=> {
-           message.error(err.message || Intl.get('common.save.failed', '保存失败'))
-       });
+        if (this.props.onSubmit) {
+            this.props.onSubmit({
+                filterName: this.state.filterName,
+                range: this.state.selectedRange,
+                filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
+            }).then(({data}) => {
+                if (!data && data.errorMsg) {                    
+                    message.error(err.message || Intl.get('common.save.failed', '保存失败'))
+                }
+                else {
+                    filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {
+                        id: data.result.id,
+                        filterName: this.state.filterName,
+                        range: this.state.selectedRange,
+                        plainFilterList: this.state.plainFilterList,//压平的数组，每项包含groupId、groupName、name、value
+                        data: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
+                    });
+                }
+           }).catch(err=> {
+               message.error(err.message || Intl.get('common.save.failed', '保存失败'))
+           });
+        }
+        else {
+            filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {               
+                filterName: this.state.filterName,
+                range: this.state.selectedRange,
+                plainFilterList: this.state.plainFilterList,//压平的数组，每项包含groupId、groupName、name、value
+                data: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
+            });
+        }
     }
     render() {
         //是否展示输入框形式的已选择的筛选项
@@ -246,7 +256,7 @@ class FilterSearch extends React.Component {
 }
 
 FilterSearch.defaultProps = {
-    onSubmit: function() { },
+    onSubmit: null,
     style: {
         maxWidth: 320
     },

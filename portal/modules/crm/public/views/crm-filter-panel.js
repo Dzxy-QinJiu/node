@@ -8,11 +8,11 @@ import { administrativeLevels, CUSTOMER_TAGS } from '../utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import userData from 'PUB_DIR/sources/user-data';
 import { FilterList } from 'CMP_DIR/filter';
-import { FILTER_RANGE, STAGE_OPTIONS, DAY_TIME, UNKNOWN } from 'PUB_DIR/sources/utils/consts';
+import { FILTER_RANGE, STAGE_OPTIONS, DAY_TIME, UNKNOWN, COMMON_OTHER_ITEM } from 'PUB_DIR/sources/utils/consts';
 //行政级别筛选项
 let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
 
-const COMMON_OTHER_ITEM = 'otherSelectedItem';
+
 const otherFilterArray = [{
     name: Intl.get('common.all', '全部'),
     value: ''
@@ -87,8 +87,7 @@ class CrmFilterPanel extends React.Component {
         FilterAction.getCompetitorList();
         FilterAction.getIndustries();
         //负责任人名称列表
-        FilterAction.getOwnerNameList();
-        this.getCommonFilterList();
+        FilterAction.getOwnerNameList();        
         //地域列表的获取
         let type = 'user';
         //管理员获取地域列表的权限
@@ -96,6 +95,9 @@ class CrmFilterPanel extends React.Component {
             type = 'manager';
         }
         FilterAction.getFilterProvinces(type);
+        setTimeout(() => {
+            this.getCommonFilterList();
+        })
     }
 
     componentDidUpdate(prevProps) {

@@ -1,9 +1,19 @@
 var FilterActions = require('../action/filter-actions');
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
-const COMMON_OTHER_ITEM = 'otherSelectedItem';
-import { OTHER_FILTER_ITEMS, DAY_TIME, STAGE_OPTIONS, UNKNOWN } from 'PUB_DIR/sources/utils/consts';
-
+import {
+    OTHER_FILTER_ITEMS, DAY_TIME, STAGE_OPTIONS, UNKNOWN,
+    COMMON_OTHER_ITEM, SPECIAL_LABEL
+} from 'PUB_DIR/sources/utils/consts';
+import { administrativeLevels, CUSTOMER_TAGS } from '../utils/crm-util';
+//合格标签的筛选
+const qualifiedTagList = [{
+    name: CUSTOMER_TAGS.QUALIFIED, value: '1'
+}, {
+    name: CUSTOMER_TAGS.HISTORY_QUALIFIED, value: '2'
+}, {
+    name: CUSTOMER_TAGS.NEVER_QUALIFIED, value: '3'
+}];
 function FilterStore() {
     this.appList = [];
     this.teamList = [];
@@ -171,109 +181,262 @@ FilterStore.prototype.setCondition = function (conditionObj) {
     this.condition = $.extend({}, this.condition, conditionObj);
 };
 
-//将查询条件
-const getFilterItemFromConditionItem = function(item) {
+//将查询条件转换为前端展示用的格式
+const getFilterItemFromConditionItem = function (item) {
+    let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
+    const stageArray = this.stageList.concat(STAGE_OPTIONS);
+    const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.industryList);
     let filters = [];
     let plainFilters = [];
-    if (item.query_condition) {
-        _.each(item.query_condition.query, (value, key) => {
-            let name = value;
-            switch (key) {
-                case 'sales_team_id':
-                    name = this.teamList.find(x => x.group_id === value).group_name
-                    break;
-                case "contain_sales_opportunity"://订单阶段value由name表示
-                    const stageArray = this.stageList.concat(STAGE_OPTIONS);
-                    const stateItem = stageArray.find(x => x.name === value);
-                    if (stateItem) {
-                        name = stateItem.show_name;
-                    }
-                default:
+    const handleAddItem = nameObj => {
+        let filterItem = null;
+        plainFilters.push(nameObj);
+        filterItem = {
+            ...nameObj,
+            data: [{
+                ...nameObj,
+                selected: true
+            }]
+        }
+        const sameGroupItem = filters.find(x => x.groupId === filterItem.groupId);
+        if (sameGroupItem) {
+            sameGroupItem.data.push({
+                ...nameObj,
+                selected: true
+            })
+        }
+        else {
+            filters.push(filterItem)
+        }
+    }
+    const handleValue = (value, key) => {
+        if (['term_fields'].includes(key)) {
+            return
+        }
+        let item = null;
+        const nameObj = {
+            groupId: key,
+            groupName: key,//todo
+            value: value,
+            name: value
+        };
+        //处理value（实际的筛选项值）
+        nameObj.value = value;
+        if (_.get(value, 'sale_stages')) {
+            nameObj.value = value.sale_stages;
+            nameObj.name = value.sale_stages;
+        }
+        //处理name（展示的筛选项文字）
+        switch (key) {
+            case "term_fields":
+                break;
+            case 'sales_team_id':
+                item = this.teamList.find(x => x.group_id === value);
+                if (item) {
+                    nameObj.name = item.group_name
+                }
+                //todo 销售部无法处理
+                break;
+            case "contain_sales_opportunity"://订单阶段value由name表示
+                item = stageArray.find(x => x.name === value);
+                if (item) {
+                    nameObj.name = item.show_name;
+                }
+                if (value === "false") {
+                    nameObj.name = UNKNOWN;
+                    nameObj.value = UNKNOWN;
+                }
+                nameObj.groupId = "sales_opportunities";
+                break;
+            case "sales_opportunities":
+                item = stageArray.find(x => x.name === value);
+                if (item) {
+                    nameObj.name = item.show_name;
+                }
+                break;
+            case "administrative_level":
+                item = filterLevelArray.find(x => x.id === value);
+                if (item) {
+                    nameObj.name = item.level;
+                }
+                break;
+            case "labels":
+                item = this.tagList.find(x => x.name === value);
+                if (item) {
+                    nameObj.name = item.show_name
+                }
+                if (nameObj.name === Intl.get('crm.tag.unknown', '未打标签的客户')) {
+                    nameObj.selectOnly = true;
+                }
+                break;
+            case "competing_products":
+                item = this.competitorList.find(x => x.name === value);
+                if (item) {
+                    nameObj.name = item.show_name;
+                }
+                break;
+            case "qualify_label":
+                item = qualifiedTagList.find(x => x.value === value);
+                if (item) {
+                    nameObj.name = item.name
+                }
+                break;
+            case "contain_contact":
+                nameObj.name = Intl.get('crm.no.contact.way', '无联系方式客户');
+                nameObj.value = 'no_contact_way';
+                nameObj.groupId = COMMON_OTHER_ITEM;
+                nameObj.groupName = Intl.get('crm.186', '其他');
+                break;
+            case "call_and_remark":
+                nameObj.name = Intl.get('crm.call.no.remark', '最后联系但未写跟进记录')
+                nameObj.value = 'last_call_no_record';
+                nameObj.groupId = COMMON_OTHER_ITEM;
+                nameObj.groupName = Intl.get('crm.186', '其他');
+                break;
+            case "last_trace":
+                nameObj.name = Intl.get('crm.call.no.remark.over30', '超30天未写跟进记录')
+                nameObj.value = 'last_trace';
+                nameObj.groupId = COMMON_OTHER_ITEM;
+                nameObj.groupName = Intl.get('crm.186', '其他');
+                break;
+            case "interest_member_ids":
+                nameObj.name = Intl.get('crm.concerned.customer', '被关注的客户')
+                nameObj.value = 'interest_member_ids';
+                nameObj.groupId = COMMON_OTHER_ITEM;
+                nameObj.groupName = Intl.get('crm.186', '其他');
+                break;
+            case "unexist_fields":
+                switch (value) {
+                    case "industry":
+                        nameObj.name = UNKNOWN;
+                        nameObj.value = UNKNOWN;
+                        nameObj.groupId = "industry";
+                        break;
+                    case "province":
+                        nameObj.groupId = "province";
+                        nameObj.name = UNKNOWN;
+                        nameObj.value = UNKNOWN;
+                        break;
+                    case "qualify_label":
+                        nameObj.groupId = "qualify_label";
+                        nameObj.name = CUSTOMER_TAGS.NEVER_QUALIFIED;
+                        nameObj.value = '3';
+                        break;
+                    case "labels":
+                        nameObj.groupId = "labels";
+                        nameObj.name = Intl.get('crm.tag.unknown', '未打标签的客户');
+                        nameObj.value = SPECIAL_LABEL.NON_TAGGED_CUSTOMER;
+                        break;
+                    case "member_id":
+                        nameObj.groupId = "member_id";
+                        nameObj.name = Intl.get('crm.213', '未分配客户');
+                        nameObj.value = OTHER_FILTER_ITEMS.UNDISTRIBUTED;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case "exist_fields":
+                switch (value) {
+                    // case "interest_member_ids":
+                    //     nameObj.name = Intl.get('crm.concerned.customer', '被关注的客户');
+                    //     nameObj.value = 'interest_member_ids';
+                    //     nameObj.groupId = COMMON_OTHER_ITEM;
+                    //     nameObj.groupName = Intl.get('crm.186', '其他');
+                    //     break;
 
-                    break;
-            }
-            const plainFilterItem = {
-                groupId: key,
-                groupName: key,//todo
-                value: value,
-                name,
-            }
-            const filterItem = {
-                name,
-                groupId: key,
-                groupName: key,//todo
-                value: value,
-                data: [{
-                    name,
-                    groupId: key,
-                    groupName: key,//todo
-                    value: value,
-                }]
-            };
-            //非空字符串或非空数组
-            if ((value && !Array.isArray(value))) {
-                plainFilters.push(filterItem);
-                filters.push(filterItem)
-            }
-            else if (_.get(value, 'length') > 0) {
-                plainFilters.concat(value.map(x => ({
-                    groupId: key,
-                    groupName: key,//todo
-                    name: x,
-                    value: x
-                })));
-                filters.concat(value.map(x => ({
-                    groupId: key,
-                    groupName: key,//todo
-                    name: x,
-                    value: x,
-                    data: [{
-                        groupId: key,
-                        groupName: key,//todo
-                        name: x,
-                        value: x,
-                    }]
-                })))
-            }
-        });
+                    default:
+                        break;
+                }
+            case "availability":
+                nameObj.groupId = COMMON_OTHER_ITEM;
+                nameObj.name = Intl.get('crm.available.customer', '有效客户');
+                nameObj.value = 'availability';
+                break;
+        }
+        handleAddItem(nameObj)
+    }
+
+    if (_.get(item, 'query_condition')) {
+        if (_.get(item.query_condition, 'query')) {
+            _.each(item.query_condition.query, (value, key) => {
+                if (value) {
+                    let valueList = [];
+                    if (value.length) {
+                        valueList = value;
+                    }
+                    if (typeof value === 'string') {
+                        if (value.includes(",")) {
+                            valueList = value.split(",");
+                        }
+                        else {
+                            handleValue(value, key);
+                        }
+                    }
+                    if (Array.isArray(valueList) && valueList.length > 0) {
+                        valueList.forEach(x => {
+                            handleValue(x, key);
+                        })
+                    }
+                }
+            });
+        }
         //todo 日期范围无法判断，需修改接口,或传from to 判断范围
         if (_.get(item.query_condition, 'rang_params.length')) {
             item.query_condition.rang_params.forEach(rangeItem => {
                 const item = {
                     groupId: COMMON_OTHER_ITEM
                 };
+                const nameObj = {
+                    groupId: COMMON_OTHER_ITEM,
+                    groupName: Intl.get('crm.186', '其他'),
+                    value: "",
+                    name: rangeItem.name
+                };
                 switch (rangeItem.name) {
                     case 'last_contact_time':
-                        switch (rangeItem.to) {
-                            case DAY_TIME.THIRTY_DAY:
-                                item.name = OTHER_FILTER_ITEMS.THIRTY_UNCONTACT;
+                        switch (rangeItem.interval) {
+                            case 30:
+                                item.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 30 });
                                 item.value = OTHER_FILTER_ITEMS.THIRTY_UNCONTACT;
                                 //超30天未联系的客户                                
                                 break;
-                            case DAY_TIME.FIFTEEN_DAY:
-                                item.name = OTHER_FILTER_ITEMS.FIFTEEN_UNCONTACT;
+                            case 15:
+                                item.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 15 });
                                 item.value = OTHER_FILTER_ITEMS.FIFTEEN_UNCONTACT;
                                 //超15天未联系的客户
                                 break;
-                            case DAY_TIME.SEVEN_DAY:
-                                item.name = OTHER_FILTER_ITEMS.SEVEN_UNCONTACT;
+                            case 7:
+                                item.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 7 });
                                 item.value = OTHER_FILTER_ITEMS.SEVEN_UNCONTACT;
                                 //超7天未联系的客户
                                 break;
                         }
                         break;
                     case 'last_login_time':
-                        switch (rangeItem.from) {
-                            case value:
-
+                        switch (rangeItem.interval) {
+                            case 30:
+                                item.name = Intl.get('crm.recent.month.active', '近一个月的活跃客户');
+                                item.value = 'month_login';
+                                //超30天未联系的客户                                
                                 break;
-
-                            default:
+                            case 7:
+                                item.name = Intl.get('crm.recent.week.active', '近一周的活跃客户');
+                                item.value = 'seven_login';
+                                //超7天未联系的客户
                                 break;
                         }
+                        break;
+                    case 'sales_opportunity_count':
+                        nameObj.name = Intl.get('crm.order.more.customer', '多个订单的客户');
+                        nameObj.value = OTHER_FILTER_ITEMS.MULTI_ORDER;
+                        break;
+                    case 'start_time':
+                        return false;
                     default:
                         break;
                 }
+                handleAddItem(nameObj);
             })
         }
     }

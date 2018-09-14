@@ -706,23 +706,30 @@ class Crm extends React.Component {
 
         //其他筛选
         let dayTime = '';
+        //存储筛选条件所需，用于标识时间间隔
+        let interval = '';
         let dayTimeLogin = '';
         //超xxx天未联系客户
         switch (condition.otherSelectedItem) {
             case OTHER_FILTER_ITEMS.THIRTY_UNCONTACT://超30天未联系的客户
                 dayTime = DAY_TIME.THIRTY_DAY;
+                interval = 30;
                 break;
             case OTHER_FILTER_ITEMS.FIFTEEN_UNCONTACT://超15天未联系的客户
                 dayTime = DAY_TIME.FIFTEEN_DAY;
+                interval = 15;
                 break;
             case OTHER_FILTER_ITEMS.SEVEN_UNCONTACT://超7天未联系的客户
                 dayTime = DAY_TIME.SEVEN_DAY;
+                interval = 7;
                 break;
             case OTHER_FILTER_ITEMS.SEVEN_LOGIN://近一周活跃客户
                 dayTimeLogin = DAY_TIME.SEVEN_DAY;
+                interval = 7;
                 break;
             case OTHER_FILTER_ITEMS.MONTH_LOGIN://近一个月活跃客户
                 dayTimeLogin = DAY_TIME.THIRTY_DAY;
+                interval = 30;
                 break;
             case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
                 condition.contain_contact = 'false';
@@ -758,6 +765,7 @@ class Crm extends React.Component {
         if (dayTime) {
             this.state.rangParams[0] = {
                 to: moment().valueOf() - dayTime,
+                // from: moment().valueOf(),
                 name: 'last_contact_time',
                 type: 'time'
             };
@@ -773,6 +781,9 @@ class Crm extends React.Component {
         else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
             //既不是超xx天未联系的客户、也不是xx天的活跃、还不是多个订单客户的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
+        }
+        if (interval) {
+            this.state.rangParams[0].interval = interval;
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;

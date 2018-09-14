@@ -244,7 +244,7 @@ class FilterList extends React.Component {
                 oldGroup.data = oldGroup.data.map(x => {
                     x.selected = false;
                     let changedItem = null;
-                    const changedGroup = filterList.find(item => item.groupName === oldGroup.groupName);
+                    const changedGroup = filterList.find(item => item.groupId === oldGroup.groupId);
                     if (_.get(changedGroup, 'data.length')) {
                         changedItem = changedGroup.data.find(filter => filter.value === x.value);
                         if (changedItem) {
@@ -270,12 +270,17 @@ class FilterList extends React.Component {
     }
     //整合常用筛选和高级筛选的筛选项, isMix为true时，将commonData中的高级筛选项从advancedData中剔除
     unionFilterList(commonData, advancedData, isMix) {
+        //将原筛选项与常用筛选项中包含的高级筛选项合并
+        const newCommonData = commonData.map(x => ({
+            ...advancedData.find(oldItem => oldItem.groupId === x.groupId),
+            ...x
+        }));
         if (isMix) {
-            const commonGroupIds = commonData.map(x => x.groupId);
+            const commonGroupIds = _.uniq(commonData.map(x => x.groupId));
             const filterList = advancedData.filter(group => !commonGroupIds.includes(group.groupId));
-            return commonData.concat(this.processSelectedFilters(filterList));
+            return newCommonData.concat(this.processSelectedFilters(filterList));
         } else {
-            return commonData.concat(this.processSelectedFilters(advancedData));
+            return newCommonData.concat(this.processSelectedFilters(advancedData));
         }
     }
     //过滤出选中状态的组
