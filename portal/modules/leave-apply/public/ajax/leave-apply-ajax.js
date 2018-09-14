@@ -60,7 +60,7 @@ exports.addLeaveApply = function(data) {
     var Deferred = $.Deferred();
     addLeaveApplyAjax && addLeaveApplyAjax.abort();
     addLeaveApplyAjax = $.ajax({
-        url: '/rest/get/worklist/leave_apply/list',
+        url: '/rest/add/apply/list',
         dataType: 'json',
         type: 'post',
         data: data,

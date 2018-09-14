@@ -44,17 +44,5 @@ function LeaveApplyActions() {
             });
         });
     };
-    this.addLeaveApply = function(data) {
-        this.dispatch({error: false, loading: true});
-        LeaveApplyAjax.addLeaveApply(data).then((list) => {
-            this.dispatch({error: false, loading: false, list: list});
-        }, (errorMsg) => {
-            this.dispatch({
-                error: true,
-                loading: false,
-                errMsg: errorMsg || Intl.get('failed.add.apply.list', '添加出差申请失败')
-            });
-        });
-    };
 }
 module.exports = alt.createActions(LeaveApplyActions);

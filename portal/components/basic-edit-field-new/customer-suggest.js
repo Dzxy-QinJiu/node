@@ -203,11 +203,17 @@ class CustomerSuggest extends React.Component {
     };
 
     customerChoosen = (value, field) => {
+        var customerForLeave = {
+            id: '',
+            name: '',
+            address: ''
+        };//出差申请的目的地
         var selectedCustomer = _.find(this.state.list, function(item) {
             if (item.customer_id === value) {
                 return true;
             }
         });
+
         if (selectedCustomer) {
             var result = {
                 sales_team: {
@@ -223,7 +229,16 @@ class CustomerSuggest extends React.Component {
                     name: selectedCustomer.customer_name
                 }
             };
-
+            customerForLeave.id = value;
+            customerForLeave.name = selectedCustomer.customer_name;
+            var address = '';
+            if (selectedCustomer.province){
+                address += selectedCustomer.province;
+            }
+            if (selectedCustomer.city){
+                address += selectedCustomer.city;
+            }
+            customerForLeave.address = address;
             this.setState({
                 ...result,
                 show_tip: false
@@ -243,12 +258,15 @@ class CustomerSuggest extends React.Component {
                     name: value
                 }
             };
+            customerForLeave.id = '';
+            customerForLeave.name = value;
             this.setState({
                 ...result,
                 show_tip: false,
                 list: []
             });
         }
+        _.isFunction(this.props.customerChoosen) && this.props.customerChoosen(customerForLeave);
     };
 
     getCustomerSearchInput = () => {

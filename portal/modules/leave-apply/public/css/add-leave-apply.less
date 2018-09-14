@@ -24,22 +24,46 @@
     .add-leave-apply-form-wrap{
       padding: 20px 0 20px 0;
       margin-right: 20px;
-        form .ant-form-item{
-          width:100%;
-          .ant-calendar-picker{
-            width: 100%;
+        form {
+          .ant-form-item{
+            width:100%;
+            .ant-calendar-picker{
+              width: 100%;
+            }
+            input, textarea, .ant-select{
+              width: 100%
+            }
+            .ant-form-item-label label{
+              font-size: 14px;
+              color:#999;
+            }
+            .ant-form-explain{
+              text-align: left;
+            }
           }
-          input, textarea, .ant-select{
-            width: 100%
+          .customer_search_wrap {
+            float: left;
+            width: 70%;
+            .customer_suggest_tip{
+              text-align: left;
+            }
           }
-          .ant-form-item-label label{
-            font-size: 14px;
-            color:#999;
+          .customer-milestone{
+            float: left;
+            margin-left: 10px;
+            color: #999;
           }
-          .ant-form-explain{
-            text-align: left;
+          .submit-button-container{
+            text-align: right;
+            .submit-btn{
+              margin-right:10px;
+            }
+            button{
+              font-size: 14px;
+            }
           }
         }
+
 
     }
   }
