@@ -94,21 +94,17 @@ class LogView extends React.Component {
         //如果选中的不是最低级的团队的时候，要取到低级团队的id
         if(isSelectedTeam){
             //在团队树中查看该团队是否有下级团队
-            var teamArr = _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
-            _.map(teamArr,(teamId) => {
-                var targetObj = _.find(this.state.teamTreeList,(item) => {
-                    return item.group_id === teamId;
-                });
-                if (!_.isEmpty(targetObj) && _.isArray(targetObj.child_groups)){
-                    _.forEach(targetObj.child_groups, (childTeam) => {
-                        teamArr.push(childTeam.group_id);
-                    });
-                }
+            var selectedTeams = _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
+            //实际要传到后端的团队,默认是选中的团队
+            let totalRequestTeams = JSON.parse(JSON.stringify(selectedTeams));
+            let teamTotalArr = [];
+            //跟据实际选中的id，获取包含下级团队的所有团队详情的列表teamTotalArr
+            _.each(selectedTeams, (teamId) => {
+                teamTotalArr = _.union(teamTotalArr, commonMethodUtil.traversingSelectTeamTree(this.state.teamTreeList, teamId));
             });
-
-            return _.uniq(teamArr);
-
-
+            //跟据包含下级团队的所有团队详情的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
+            totalRequestTeams = _.union(totalRequestTeams, commonMethodUtil.getRequestTeamIds(teamTotalArr));
+            return _.uniq(totalRequestTeams);
         }else{
             return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
         }
@@ -164,12 +160,12 @@ class LogView extends React.Component {
         // 开始时间
         var starttime = queryParams && 'starttime' in queryParams ? queryParams.starttime : this.state.startTime;
         if (starttime) {
-            bodyObj.start_time = starttime + '';
+            bodyObj.start_time = starttime;
         }
         // 结束时间
         var endtime = queryParams && 'endtime' in queryParams ? queryParams.endtime : this.state.endTime;
         if (endtime) {
-            bodyObj.end_time = endtime + '';
+            bodyObj.end_time = endtime;
         }
         let searchObj = {
             queryObj: JSON.stringify(queryObj),
