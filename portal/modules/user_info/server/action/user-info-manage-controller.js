@@ -66,7 +66,7 @@ exports.checkUserInfoPwd = function(req, res) {
     var flag = false;
 
     if (oldPwd) {
-        if (oldPwd == passwd) {
+        if (oldPwd === passwd) {
             flag = true;
         }
     }
@@ -117,6 +117,24 @@ exports.setSubscribeEmail = function(req, res) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+//获取短信验证码
+exports.getUserInfoPhoneCode = function(req, res) {
+    userInfoManageServic.getUserInfoPhoneCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+
+//绑定用户的手机号
+exports.bindUserInfoPhone = function(req, res) {
+    userInfoManageServic.bindUserInfoPhone(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
     });
 };
 

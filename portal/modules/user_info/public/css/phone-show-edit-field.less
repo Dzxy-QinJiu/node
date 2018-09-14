@@ -1,0 +1,54 @@
+//展示、绑定手机号的样式
+@edit-icon-color: #b6c2c9;
+.phone-show-edit-wrap {
+  display: inline-block;
+  width: 80%;
+  //展示区域
+  .phone-show-wrap {
+    .icon-update {
+      margin: 0 0 0 10px;
+      color: @edit-icon-color;
+      cursor: pointer;
+      &:hover {
+        color: darken(@edit-icon-color, 30%);
+      }
+    }
+  }
+
+  //绑定区域
+  form{
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    margin-top: 4px;
+    .ant-form-item{
+      margin-bottom: 8px;
+      input{
+        font-size: 14px;
+      }
+    }
+    //验证码输入框
+    input.captcha-code-input{
+      width: 50%;
+    }
+    .captcha-code-wrap{
+      float: right;
+      width: 48%;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #8da8c5;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      .get-captcha-code{
+        cursor: pointer;
+      }
+    }
+    .bind-phone-error-tip{
+      line-height: 20px;
+      font-size: 12px;
+      color: #ee5b44;
+    }
+  }
+}
