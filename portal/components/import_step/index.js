@@ -54,14 +54,14 @@ class ImportTemplate extends React.Component {
         }
     }
 
-    onClueImport = (list) => {
-        this.props.onClueImport(list);
+    onItemListImport = (list) => {
+        this.props.onItemListImport(list);
         this.setState({
             isPreviewShow: true,
         });
     };
     handleCancel = (e) => {
-        this.props.closeClueTemplatePanel();
+        this.props.closeTemplatePanel();
         setTimeout(() => {
             this.setState({
                 current: 0,
@@ -85,13 +85,13 @@ class ImportTemplate extends React.Component {
                     isLoading={this.state.isLoading}
                     afterUpload={this.afterUpload}
                     uploadHref={this.props.uploadHref}
-                    onClueImport={this.onClueImport}
+                    onItemListImport={this.onItemListImport}
                     uploadActionName={this.props.uploadActionName}
                     importType={this.props.importType}
                 />
                 <div className="down-load-template">
                     <a data-tracename="点击下载模板" href={this.props.templateHref}>
-                        {this.props.downLoadTip}
+                        {Intl.get('clue.download.clue.csv', '下载导入{type}表格',{type: this.props.importType})}
                     </a>
                 </div>
             </div>
@@ -107,7 +107,6 @@ class ImportTemplate extends React.Component {
             setTimeout(() => {
                 message.success(Intl.get('clue.customer.import.clue.suceess', '导入{type}成功',{type: this.props.importType}));
                 this.handleCancel();
-                this.props.getClueList();
             },SET_TIME_OUT.LOADING_TIME);
         },(errMsg) => {
             this.setState({isImporting: false});
@@ -183,7 +182,7 @@ class ImportTemplate extends React.Component {
                         data-tracename="点击关闭导入面板"></span>
                     <div className="clue-import-detail-wrap" style={{width: width - LAYOUT.SMALLWIDTH}}>
                         <div className="clue-top-title">
-                            {this.props.clueTopTitle}
+                            {Intl.get('clue.manage.import.clue', '导入{type}',{type: this.props.importType})}
                         </div>
                         <div className="import-title-top">
                             <Steps current={current}>
@@ -201,36 +200,28 @@ class ImportTemplate extends React.Component {
 }
 
 ImportTemplate.defaultProps = {
-    refreshClueList: noop,
-    showFlag: false,
-    closeClueTemplatePanel: noop,
-    getClueList: noop,
-    previewList: [],
-    onClueImport: noop,
-    uploadActionName: '',
-    uploadHref: '',
-    importType: '',
-    templateHref: '',
-    downLoadTip: '',
-    doImportAjax: noop,
-    getItemPrevList: noop,
-    clueTopTitle: ''
-
+    uploadActionName: '',//导入类型的英文描述
+    uploadHref: '',//导入的url
+    importType: '',//导入类型的中文描述
+    templateHref: '',//下载导入模板的url
+    //todo 导入的表格传入时，一定把标识重复的字段设置为repeat，在重复item的名称上加类名时，统一加成repeat-item-name
+    previewList: [],//展示的内容
+    showFlag: false,//控制导入面板是否展示
+    getItemPrevList: noop,//获取要展示的列
+    closeTemplatePanel: noop,//关闭面板的回调
+    onItemListImport: noop,//导入时的函数
+    doImportAjax: noop,//确认导入时的函数
 };
 ImportTemplate.propTypes = {
-    refreshClueList: PropTypes.func,
-    showFlag: PropTypes.bool,
-    closeClueTemplatePanel: PropTypes.func,
-    getClueList: PropTypes.func,
-    previewList: PropTypes.object,
-    onClueImport: PropTypes.func,
     uploadActionName: PropTypes.string,
     uploadHref: PropTypes.string,
     importType: PropTypes.string,
     templateHref: PropTypes.string,
-    downLoadTip: PropTypes.string,
+    showFlag: PropTypes.bool,
+    closeTemplatePanel: PropTypes.func,
+    previewList: PropTypes.object,
+    onItemListImport: PropTypes.func,
     doImportAjax: PropTypes.func,
     getItemPrevList: PropTypes.func,
-    clueTopTitle: PropTypes.string
 };
 export default ImportTemplate;
