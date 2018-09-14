@@ -1160,7 +1160,6 @@ var en_US = {
     'crm.30': 'No match sales', // 无相关销售
     'crm.31': 'Please select sales team', // 请选择销售团队
     'crm.32': 'Change', // 变更
-    'crm.34': 'Import customer Template', // 导入客户模板
     'crm.37': 'You are not authorized to view customer details because it\'s not belong to you.', //  此客户不属于您,您无权查看客户详情!
     'crm.39': 'dynamic', // 动态
     'crm.40': 'remind', // 提醒
@@ -1201,9 +1200,6 @@ var en_US = {
     'crm.94': 'Please enter role', // 请输入角色
     'crm.95': 'Please enter the phone of contact', // 请输入联系人电话
     'crm.96': 'Area', // 地域
-    'crm.97': 'Import complete', // 导入完成
-    'crm.98': 'Import customer success', // 导入客户成功
-    'crm.99': 'Import customer error, please retry', // 导入客户失败
     'crm.100': 'Existing users applied for trail users', // 老用户申请试用用户
     'crm.101': 'Existing users applied for official users', // 老用户转签约用户
     'crm.102': 'The username must be a combination of letters, numbers, underlines, or a valid email', // 用户名必须为字母、数字、下划线的组合或合法格式的邮箱
@@ -1287,7 +1283,6 @@ var en_US = {
     'crm.207': 'A total of {count} customer',//共{count}个客户
     'crm.208': 'Failed to get the customer details', // 查看客户详情失败!
     'crm.209': 'Note: no more than 300 customers can be imported each time',//注意：每次导入的客户数量不能超过300条
-    'crm.210': 'Some repeated customers already in the system,  have been marked in red color, please delete these record fist, then import',//存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     'crm.211': 'Trace content',//跟进内容
     'crm.212': 'Please select labels',//请选择标签
     'crm.213': 'Undistributed Customer',//未分配客户
@@ -2494,13 +2489,12 @@ var en_US = {
     'clue.customer.no.related.customer': 'None of the above customers are associated customers, search for customers',//上述客户都不是相关联的客户，搜索客户
     'config.sales.role.has.repeat': 'This sales role name is existed',//该销售角色名称已存在
     'sales.frontpage.has.no.conneted': 'You have missed the call',//您有电话未接听
-    'clue.manage.import.clue': 'Import clues',//导入线索
-    'clue.manage.import.clue.template': 'Import clues template',//导入线索模板
-    'clue.manage.failed.import.clue': 'Failed to import clues.Please try again!',//导入线索失败，请重试!
-    'clue.customer.import.clue.suceess': 'Import clues successfully',//导入线索成功
-    'clue.customer.import.clue.failed': 'Failed to import clues',//导入线索失败
+    'clue.manage.import.clue': 'Import {type}',//导入{type}
+    'clue.manage.failed.import.clue': 'Failed to import {type}.Please try again!',//导入{type}失败，请重试!
+    'clue.customer.import.clue.suceess': 'Import {type} successfully',//导入{type}成功
+    'clue.customer.import.clue.failed': 'Failed to import {type}',//导入{type}失败
     'clue.delete.duplicate.failed': 'Failed to delete clue',//删除重复线索失败
-    'clue.repeat.delete': 'Some repeated clues already in the system, which have been marked in red color, please delete these record fist, then import',//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
+    'clue.repeat.delete': 'Some repeated {type} already in the system, which have been marked in red color, please delete these record fist, then import',//存在和系统中重复的{type}名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
     'clue.analysis.consult.time': 'Consult time',//咨询时间
@@ -2587,7 +2581,7 @@ var en_US = {
     'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
     'user.get.suggest.name.error': 'Failed to get suggest username',//获取建议用户名失败
     'clue.import.csv': 'Upload form',//上传表格
-    'clue.download.clue.csv': 'Download the import clue form',//下载导入线索表格
+    'clue.download.clue.csv': 'Download the import {type} form',//下载导入{type}表格
     'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
     'clue.not.complete.schedule': 'The schedule of today',//今天的联系计划
     'menu.shortName.call': 'call', //'通话',

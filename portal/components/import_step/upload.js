@@ -6,9 +6,8 @@ var React = require('react');
  * Created by zhangshujuan on 2018/8/21.
  */
 import {Upload, Icon, message, Button} from 'antd';
-import {clueEmitter} from 'OPLATE_EMITTER';
 import Trace from 'LIB_DIR/trace';
-class ClueUpload extends React.Component {
+class UploadBtn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,9 +29,9 @@ class ClueUpload extends React.Component {
             const response = info.file.response;
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue'), '上传表格');
             if (_.isArray(response) && response.length) {
-                clueEmitter.emit(clueEmitter.IMPORT_CLUE, response);
+                this.props.onItemListImport(response);
             } else {
-                message.error(Intl.get('clue.manage.failed.import.clue', '导入线索失败，请重试!'));
+                message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: this.props.importType}));
             }
             this.props.afterUpload();
         }
@@ -40,8 +39,8 @@ class ClueUpload extends React.Component {
 
     render() {
         var props = {
-            name: 'clues',
-            action: '/rest/clue/upload',
+            name: this.props.uploadActionName,
+            action: this.props.uploadHref,
             showUploadList: false,
             onChange: this.handleChange
         };
@@ -53,14 +52,24 @@ class ClueUpload extends React.Component {
         );
     }
 }
-ClueUpload.defaultProps = {
+UploadBtn.defaultProps = {
     isLoading: false,
     afterUpload: function() {
-    }
+    },
+    onItemListImport: function() {
+
+    },
+    importType: '',
+    uploadActionName: '',
+    uploadHref: ''
 };
-ClueUpload.propTypes = {
+UploadBtn.propTypes = {
     isLoading: PropTypes.bool,
     afterUpload: PropTypes.func,
+    onItemListImport: PropTypes.func,
+    importType: PropTypes.string,
+    uploadActionName: PropTypes.string,
+    uploadHref: PropTypes.string,
 };
 
-export default ClueUpload;
+export default UploadBtn;
