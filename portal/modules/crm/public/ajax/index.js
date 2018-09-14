@@ -15,7 +15,7 @@ exports.addCustomer = function(newCus) {
         type: 'post',
         data: newCus,
         success: function(added) {
-            Deferred.resolve(added);
+            Deferred.reject(added);
         },
         error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
