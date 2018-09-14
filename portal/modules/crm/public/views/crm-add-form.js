@@ -1,4 +1,4 @@
-var React = require('react');
+require('../css/crm-add-form.less');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -27,16 +27,8 @@ import PhoneInput from 'CMP_DIR/phone-input';
 import Trace from 'LIB_DIR/trace';
 import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
 const PHONE_INPUT_ID = 'phoneInput';
-
-function cx(classNames) {
-    if (typeof classNames === 'object') {
-        return Object.keys(classNames).filter(function(className) {
-            return classNames[className];
-        }).join(' ');
-    } else {
-        return Array.prototype.join.call(arguments, ' ');
-    }
-}
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+const ADD_TITLE_HEIGHT = 70;//添加客户标题的高度
 var CRMAddForm = createReactClass({
     displayName: 'CRMAddForm',
     mixins: [FieldMixin],
@@ -77,8 +69,16 @@ var CRMAddForm = createReactClass({
             existCustomerList: [],//已存在的客户列表
             checkNameError: false,//客户名唯一性验证出错
             checkPhoneErrorMsg: '',//联系人电话验证提示信息
-            isLoadingIndustry: false//是否正在加载行业列表
+            isLoadingIndustry: false,//是否正在加载行业列表
+            submitErrorMsg: ''//保存失败的错误提示
         };
+    },
+    propTypes: {
+        showRightPanel: PropTypes.func,
+        hideAddForm: PropTypes.func,
+        phoneNum: PropTypes.string,
+        isAssociateClue: PropTypes.bool,
+        formData: PropTypes.object
     },
 
     componentDidMount: function() {
@@ -100,12 +100,13 @@ var CRMAddForm = createReactClass({
 
     //更新地址
     updateLocation: function(addressObj) {
-        this.state.formData.province = addressObj.provName || '';
-        this.state.formData.city = addressObj.cityName || '';
-        this.state.formData.county = addressObj.countyName || '';
-        this.state.formData.province_code = addressObj.provCode || '';
-        this.state.formData.city_code = addressObj.cityCode || '';
-        this.state.formData.county_code = addressObj.countyCode || '';
+        let formData = this.state.formData;
+        formData.province = addressObj.provName || '';
+        formData.city = addressObj.cityName || '';
+        formData.county = addressObj.countyName || '';
+        formData.province_code = addressObj.provCode || '';
+        formData.city_code = addressObj.cityCode || '';
+        formData.county_code = addressObj.countyCode || '';
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
     },
 
@@ -114,8 +115,7 @@ var CRMAddForm = createReactClass({
         if (this.state.isLoading) {
             return;
         }
-        this.state.isLoading = true;
-        this.setState(this.state);
+        this.setState({isLoading: true});
         e.preventDefault();
         var validation = this.refs.validation;
         validation.validate(valid => {
@@ -123,12 +123,12 @@ var CRMAddForm = createReactClass({
             this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {}, (errors, values) => {
                 //验证不通过、电话验证不通过、客户名是否已存在、客户名唯一性验证出错时不能保存
                 if (!valid || errors || this.state.customerNameExist || this.state.checkNameError) {
-                    this.state.isLoading = false;
-                    this.setState(this.state);
+                    this.setState({isLoading: false});
                     return;
                 } else {
+                    let formData = this.state.formData;
                     //先填写电话后编辑客户名或行业等带验证的字段时，电话内容会丢失，这里再加一下
-                    this.state.formData.contacts0_phone = values[PHONE_INPUT_ID].replace(/-/g, '');
+                    formData.contacts0_phone = values[PHONE_INPUT_ID].replace(/-/g, '');
                     //导入客户前先校验，是不是超过了本人的客户上限
                     let member_id = userData.getUserData().user_id;
                     CrmAction.getCustomerLimit({member_id: member_id, num: 1}, (result) => {
@@ -137,14 +137,11 @@ var CRMAddForm = createReactClass({
                                 //可以添加
                                 this.addCustomer();
                             } else if (result > 0) {
-                                this.state.isLoading = false;
-                                this.setState(this.state);
                                 //不可以添加
-                                message.warn(Intl.get('crm.should.add.customer', '您拥有的客户已达到上限，请不要再添加客户了'));
+                                this.setState({isLoading: false, submitErrorMsg: Intl.get('crm.should.add.customer', '您拥有的客户已达到上限，请不要再添加客户了')});
                             }
                         } else {
-                            this.state.isLoading = false;
-                            this.setState(this.state);
+                            this.setState({isLoading: false});
                         }
                     });
                 }
@@ -169,7 +166,6 @@ var CRMAddForm = createReactClass({
         commonMethodUtil.removeEmptyItem(formData);
         function afterAddCustomer(result, _this) {
             if (result.code === 0) {
-                message.success(Intl.get('user.user.add.success', '添加成功'));
                 if (_.isFunction(_this.props.addOne)) {
                     _this.props.addOne(result.result);
                 }
@@ -179,9 +175,7 @@ var CRMAddForm = createReactClass({
                 }
                 _this.setState(_this.getInitialState());
             } else {
-                _this.state.isLoading = false;
-                message.error(result);
-                _this.setState(_this.state);
+                _this.setState({isLoading: false, submitErrorMsg: result});
             }
         }
         //由线索创建的客户和普通的添加客户不是一个接口
@@ -212,18 +206,17 @@ var CRMAddForm = createReactClass({
 
         ajax(arg).then(result => {
             if (_.isEmpty(result)) return;
-
-            this.state.formData.address = result.address;
-            this.state.formData.location = result.location;
-            this.state.formData.province = result.pname;
-            this.state.formData.city = result.cityname;
-            this.state.formData.county = result.adname;
-            this.state.formData.province_code = result.pcode;
-            this.state.formData.city_code = result.citycode;
-            this.state.formData.county_code = result.adcode;
-            this.state.formData.contacts0_phone = result.tel;
-
-            this.setState(this.state);
+            let formData = this.state.formData;
+            formData.address = result.address;
+            formData.location = result.location;
+            formData.province = result.pname;
+            formData.city = result.cityname;
+            formData.county = result.adname;
+            formData.province_code = result.pcode;
+            formData.city_code = result.citycode;
+            formData.county_code = result.adcode;
+            formData.contacts0_phone = result.tel;
+            this.setState({formData});
         });
     },
 
@@ -231,8 +224,9 @@ var CRMAddForm = createReactClass({
     getAdministrativeLevelByName: function(customerName) {
         crmAjax.getAdministrativeLevel({name: customerName}).then(result => {
             if (_.isEmpty(result)) return;
-            this.state.formData.administrative_level = crmUtil.filterAdministrativeLevel(result.level);
-            this.setState({formData: this.state.formData});
+            let formData = this.state.formData;
+            formData.administrative_level = crmUtil.filterAdministrativeLevel(result.level);
+            this.setState({formData});
         });
     },
 
@@ -337,6 +331,7 @@ var CRMAddForm = createReactClass({
     //获取联系人电话验证规则
     getPhoneInputValidateRules() {
         return [{
+            required: true,
             validator: (rule, value, callback) => {
                 value = $.trim(value);
                 if (value) {
@@ -394,18 +389,32 @@ var CRMAddForm = createReactClass({
         });
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
         var initialValue = this.props.phoneNum || '';
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 5},
+            wrapperCol: {span: 19},
+        };
+        let formHeight = $('body').height() - ADD_TITLE_HEIGHT;
         return (
-            <RightPanel showFlag={true} data-tracename="添加客户">
-                <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加客户面板"/>
-                <div className="add-form-wrap">
-                    <GeminiScrollbar>
-                        <Form layout='horizontal' className="crm-add-form" id="crm-add-form">
+            <div className='right-panel-modal show-modal' data-tracename="添加客户">
+                <span className="iconfont icon-close crm-close-btn" onClick={this.closeAddPanel}
+                    data-tracename="关闭添加客户面板"/>
+                <RightPanel showFlag={true} className="crm-add-container">
+                    <div className="top-title-container">
+                        {Intl.get('crm.3', '添加客户')}
+                    </div>
+                    <Form layout='horizontal' className="crm-add-form" id="crm-add-form" style={{height: formHeight}}>
+                        <GeminiScrollbar>
                             <Validation ref="validation" onValidate={this.handleValidate}>
+                                <div className="add-info-title">
+                                    <span className="iconfont icon-detail-list"/>
+                                    {Intl.get('user.user.basic', '基本信息')}
+                                </div>
                                 <FormItem
+                                    {...formItemLayout}
                                     label={Intl.get('crm.4', '客户名称')}
                                     id="crm-name"
-                                    labelCol={{span: 6}}
-                                    wrapperCol={{span: 18}}
+                                    required={true}
                                     validateStatus={this.renderValidateStyle('name')}
                                     help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}
                                 >
@@ -422,10 +431,10 @@ var CRMAddForm = createReactClass({
                                 </FormItem>
                                 {this.renderCustomerNameMsg()}
                                 <FormItem
+                                    {...formItemLayout}
                                     label={Intl.get('realm.industry', '行业')}
                                     id="industry"
-                                    labelCol={{span: 6}}
-                                    wrapperCol={{span: 18}}
+                                    required={true}
                                     validateStatus={this.renderValidateStyle('industry')}
                                     help={status.industry.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.industry.errors && status.industry.errors.join(','))}
                                 >
@@ -453,8 +462,7 @@ var CRMAddForm = createReactClass({
                                 </FormItem >
                                 <FormItem
                                     label={Intl.get('crm.administrative.level', '行政级别')}
-                                    labelCol={{span: 6}}
-                                    wrapperCol={{span: 18}}
+                                    {...formItemLayout}
                                 >
                                     <Select placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
                                         name="administrative_level"
@@ -465,15 +473,15 @@ var CRMAddForm = createReactClass({
                                         {this.getAdministrativeLevelOptions()}
                                     </Select>
                                 </FormItem >
-                                <AntcAreaSelection labelCol="6" wrapperCol="18" width="420"
+                                <AntcAreaSelection labelCol="5" wrapperCol="19" width="100%"
+                                    colon={false}
                                     label={Intl.get('crm.96', '地域')}
                                     placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
                                     provName={formData.province} cityName={formData.city}
                                     countyName={formData.county} updateLocation={this.updateLocation}/>
                                 <FormItem
                                     label={Intl.get('realm.address', '地址')}
-                                    labelCol={{span: 6}}
-                                    wrapperCol={{span: 18}}
+                                    {...formItemLayout}
                                 >
                                     <Input name="address" value={formData.address}
                                         placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
@@ -483,8 +491,7 @@ var CRMAddForm = createReactClass({
                                 < FormItem
                                     label={Intl.get('common.remark', '备注')}
                                     id="remarks"
-                                    labelCol={{span: 6}}
-                                    wrapperCol={{span: 18}}
+                                    {...formItemLayout}
                                     validateStatus={this.renderValidateStyle('remarks')}
                                 >
                                     <Input type="textarea" id="remarks" rows="3" value={formData.remarks}
@@ -494,19 +501,13 @@ var CRMAddForm = createReactClass({
                                         }}
                                     />
                                 </FormItem>
-                                <div className="crm-contact-title"
-                                    style={{
-                                        fontSize: '14px',
-                                        textAlign: 'center',
-                                        marginTop: '20px',
-                                        marginBottom: '10px'
-                                    }}>
-                                    <ReactIntl.FormattedMessage id="call.record.contacts" defaultMessage="联系人"/>
+                                <div className="add-info-title">
+                                    <span className="iconfont icon-contact-head"/>
+                                    {Intl.get('call.record.contacts', '联系人')}
                                 </div>
                                 <FormItem
                                     label={Intl.get('realm.change.owner.name', '姓名')}
-                                    labelCol={{span: 6}}
-                                    wrapperCol={{span: 18}}
+                                    {...formItemLayout}
                                     validateStatus={this.renderValidateStyle('contacts0_name')}
                                     help={status.contacts0_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
                                 >
@@ -525,8 +526,7 @@ var CRMAddForm = createReactClass({
                                 </FormItem>
                                 <FormItem
                                     label={Intl.get('crm.91', '职位')}
-                                    labelCol={{span: 6}}
-                                    wrapperCol={{span: 18}}
+                                    {...formItemLayout}
                                     validateStatus={this.renderValidateStyle('contacts0_position')}
                                     help={status.contacts0_position.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
                                 >
@@ -540,10 +540,9 @@ var CRMAddForm = createReactClass({
                                     </Validator>
                                 </FormItem>
                                 <FormItem
+                                    {...formItemLayout}
                                     label={Intl.get('user.apply.detail.table.role', '角色')}
-                                    labelCol={{span: 6}}
                                     id="contacts0_role"
-                                    wrapperCol={{span: 18}}
                                     validateStatus={this.renderValidateStyle('contacts0_role')}
                                     help={status.contacts0_role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
                                 >
@@ -560,6 +559,9 @@ var CRMAddForm = createReactClass({
                                     </Validator>
                                 </FormItem>
                                 <PhoneInput
+                                    labelCol={{span: 5}}
+                                    wrapperCol={{span: 19}}
+                                    colon={false}
                                     wrappedComponentRef={(inst) => this.phoneInputRef = inst}
                                     placeholder={Intl.get('crm.95', '请输入联系人电话')}
                                     validateRules={this.getPhoneInputValidateRules()}
@@ -570,25 +572,17 @@ var CRMAddForm = createReactClass({
 
                                 <FormItem
                                     wrapperCol={{span: 24}}>
-                                    <RightPanelCancel onClick={this.closeAddPanel} data-tracename="点击取消添加客户信息按钮">
-                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                                    </RightPanelCancel>
-                                    <RightPanelSubmit onClick={this.handleSubmit} disabled={this.state.isLoading}
-                                        data-tracename="点击保存添加客户信息按钮">
-                                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                                    </RightPanelSubmit>
+                                    <SaveCancelButton loading={this.state.isLoading}
+                                        saveErrorMsg={this.state.submitErrorMsg}
+                                        handleSubmit={this.handleSubmit}
+                                        handleCancel={this.closeAddPanel}
+                                    />
                                 </FormItem>
                             </Validation>
-                        </Form>
-                        {
-                            this.state.isLoading ?
-                                (<Spinner className="isloading crm-add-form-loading"/>) :
-                                (null)
-                        }
-                    </GeminiScrollbar>
-                </div>
-            </RightPanel>
-
+                        </GeminiScrollbar>
+                    </Form>
+                </RightPanel>
+            </div>
         );
     },
 });
