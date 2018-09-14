@@ -34,7 +34,7 @@ class PhoneShowEditField extends React.Component {
     }
 
     setEditable(e) {
-        Trace.traceEvent(e, '点击编辑手机号');
+        Trace.traceEvent(e, '修改手机号');
         this.setState({
             displayType: 'edit',
         });
@@ -203,6 +203,7 @@ class PhoneShowEditField extends React.Component {
                         <Input placeholder={Intl.get('user.input.phone', '请输入手机号')}/>
                     )}
                 </FormItem>
+                {/* 手机号为空或修改手机号时，不需要展示验证码输入框 */}
                 {!curPhone || curPhone === this.state.phone ? null : ( <FormItem>
                     {getFieldDecorator('code', {
                         rules: [{validator: this.validateCode.bind(this)}],
@@ -241,7 +242,7 @@ class PhoneShowEditField extends React.Component {
                                 defaultMessage={'该用户没有手机号，{bindPhone}'}
                                 values={{
                                     'bindPhone': (
-                                        <a data-tracename="点击绑定手机" onClick={this.setEditable.bind(this)}>
+                                        <a onClick={this.setEditable.bind(this)}>
                                             {Intl.get('user.info.binding.phone', '绑定手机号')}
                                         </a>),
                                 }}/>
