@@ -300,7 +300,7 @@ class UserInfo extends React.Component{
                     </div>
                     <div className="user-info-item">
                         <span>
-                            <ReactIntl.FormattedMessage id="common.phone" defaultMessage="电话"/>
+                            {Intl.get('user.phone', '手机号')}
                             ：</span>
                         <PhoneShowEditField id={formData.id} phone={formData.phone}/>
                     </div>
