@@ -1,4 +1,4 @@
-var React = require('react');
+require('../css/crm-add-form.less');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
