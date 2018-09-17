@@ -34,7 +34,6 @@ export default function (arg) {
         url: url,
         dataType: arg.dataType || 'json',
         type: type,
-        contentType : "application/x-www-form-urlencoded",
         data
     }
     if (arg.usePromise) {
