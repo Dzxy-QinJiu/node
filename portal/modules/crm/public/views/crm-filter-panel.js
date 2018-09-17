@@ -87,7 +87,7 @@ class CrmFilterPanel extends React.Component {
         FilterAction.getCompetitorList();
         FilterAction.getIndustries();
         //负责任人名称列表
-        FilterAction.getOwnerNameList();        
+        FilterAction.getOwnerNameList();
         //地域列表的获取
         let type = 'user';
         //管理员获取地域列表的权限
@@ -504,14 +504,15 @@ class CrmFilterPanel extends React.Component {
         ];
         //非普通销售才有销售角色和团队
         if (!userData.getUserData().isCommonSales) {
-            advancedData.unshift({
-                groupName: Intl.get('crm.detail.sales.role', '销售角色'),
-                groupId: 'member_role',
-                data: _.drop(this.state.salesRoleList).map(x => ({
-                    name: x.show_name,
-                    value: x.name
-                }))
-            },
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('crm.detail.sales.role', '销售角色'),
+                    groupId: 'member_role',
+                    data: _.drop(this.state.salesRoleList).map(x => ({
+                        name: x.show_name,
+                        value: x.name
+                    }))
+                },
                 {
                     groupName: Intl.get('user.sales.team', '销售团队'),
                     groupId: 'sales_team_id',
@@ -528,7 +529,8 @@ class CrmFilterPanel extends React.Component {
                         name: x,
                         value: x
                     }))
-                });
+                }
+            );
         }
         return (
             <div data-tracename="筛选">
