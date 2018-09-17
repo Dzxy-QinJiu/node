@@ -24,6 +24,13 @@ var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 var leaveApplyAction = require('../action/leave-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
+import {AntcAreaSelection} from 'antc';
+import Trace from 'LIB_DIR/trace';
+const DELAY_TIME_RANGE = {
+    SUCCESS_RANGE: 600 ,
+    ERROR_RANGE: 3000,
+    CLOSE_RANGE: 500
+};
 class AddLeaveApply extends React.Component {
     constructor(props) {
         super(props);
@@ -37,6 +44,10 @@ class AddLeaveApply extends React.Component {
                 customer_name: '',
                 reason: INITIALDESC,
                 milestone: '',
+                province: '',
+                city: '',
+                county: '',
+                address: ''
             },
         };
     }
@@ -46,8 +57,7 @@ class AddLeaveApply extends React.Component {
     };
 
     componentDidMount() {
-
-
+        this.addLabelRequiredCls();
     }
 
     //获取全部请假申请
@@ -55,34 +65,48 @@ class AddLeaveApply extends React.Component {
     componentWillUnmount() {
 
     }
+    componentDidUpdate() {
+        this.addLabelRequiredCls();
+    }
+    addLabelRequiredCls(){
+        if (!$('.add-leave-apply-form-wrap form .customer-name label').hasClass('ant-form-item-required')){
+            $('.add-leave-apply-form-wrap form .customer-name label').addClass('ant-form-item-required');
+        }
+    }
+
 
     hideLeaveApplyAddForm = () => {
         this.props.hideLeaveApplyAddForm();
     };
-    // onSelectDate = (start_time, end_time) => {
-    //     var formData = this.state.formData;
-    //     //todo 如果不选时间，时间的默认值是什么
-    //     //如果选择的是全部时间
-    //     if (!start_time) {
-    //         start_time = moment().startOf('year').valueOf();
-    //     }
-    //     if (!end_time) {
-    //         end_time = moment().endOf('year').valueOf();
-    //     }
-    //     formData.begin_time = start_time;
-    //     formData.end_time = end_time;
-    //     this.setState({formData: formData});
-    // };
+    onBeginTimeChange = (date, dateString) => {
+        var formData = this.state.formData;
+        formData.begin_time = moment(date).valueOf();
+        this.setState({
+            formData: formData
+        },() => {
+            if (this.props.form.getFieldValue('end_time')) {
+                this.props.form.validateFields(['end_time'], {force: true});
+            }
+        });
+    };
+    onEndTimeChange = (date, dateString) => {
+        var formData = this.state.formData;
+        formData.end_time = moment(date).valueOf();
+        this.setState({
+            formData: formData
+        },() => {
+            if (this.props.form.getFieldValue('begin_time')) {
+                this.props.form.validateFields(['begin_time'], {force: true});
+            }
+        });
+    };
+
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.setState({
             saveMsg: '',
             saveResult: ''
         });
-        setTimeout(() => {
-            this.props.hideLeaveApplyAddForm();
-        }, 1000);
-
     };
     //保存结果的处理
     setResultData(saveMsg, saveResult) {
@@ -95,12 +119,8 @@ class AddLeaveApply extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-            var formData = this.state.formData;
+            var formData = _.cloneDeep(this.state.formData);
             if (err) return;
-            if (!formData.customer_id){
-                message.error(Intl.get('leave.apply.select.customer','请先选择客户'));
-                return;
-            }
             this.setState({
                 isSaving: true,
                 saveMsg: '',
@@ -109,6 +129,17 @@ class AddLeaveApply extends React.Component {
             if (values.reason){
                 formData.reason = values.reason;
             }
+            if (values.address){
+                formData.address = values.address;
+            }
+            //拼接出差地址
+            let addressItem = ['province','city','county','address'];
+            _.forEach(addressItem,(key) => {
+                if (formData[key]){
+                    formData.milestone += formData[key];
+                }
+                delete formData[key];
+            });
             $.ajax({
                 url: '/rest/add/apply/list',
                 dataType: 'json',
@@ -117,7 +148,9 @@ class AddLeaveApply extends React.Component {
                 success: (data) => {
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideLeaveApplyAddForm();
+                    setTimeout(() => {
+                        this.hideLeaveApplyAddForm();
+                    },DELAY_TIME_RANGE.CLOSE_RANGE);
                 },
                 error: (errorMsg) => {
                     this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
@@ -138,7 +171,6 @@ class AddLeaveApply extends React.Component {
     };
     //渲染添加客户内容
     renderAddCustomer = () => {
-        var phoneNum = this.state.curClue ? this.state.curClue.contact_way : '';
         return (
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
@@ -149,13 +181,14 @@ class AddLeaveApply extends React.Component {
         var formData = this.state.formData;
         formData.customer_name = selectedCustomer.name;
         formData.customer_id = selectedCustomer.id;
-        formData.milestone = selectedCustomer.address;
-        if (this.props.form.getFieldValue('leave_for_customer')) {
-            this.props.form.validateFields(['leave_for_customer'], {force: true});
-        }
-        // this.props.form.resetFields();
+        formData.province = selectedCustomer.province;
+        formData.city = selectedCustomer.city;
+        formData.county = selectedCustomer.county;
+        formData.address = selectedCustomer.address;
         this.setState({
             formData: formData
+        },() => {
+            this.props.form.validateFields(['leave_for_customer'], {force: true});
         });
     };
     checkCustomerName = (rule, value, callback) => {
@@ -193,6 +226,15 @@ class AddLeaveApply extends React.Component {
         };
     }
 
+    //更新地址
+    updateLocation = (addressObj) => {
+        let formData = this.state.formData;
+        formData.province = addressObj.provName || '';
+        formData.city = addressObj.cityName || '';
+        formData.county = addressObj.countyName || '';
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
+    };
+
     render() {
         var _this = this;
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
@@ -211,7 +253,7 @@ class AddLeaveApply extends React.Component {
         let saveResult = this.state.saveResult;
         const disabledDate = function(current) {
             //不允许选择大于当前天的日期
-            return current && current.valueOf() > Date.now();
+            return current && current.valueOf() < Date.now();
         };
         return (
             <RightPanel showFlag={true} data-tracename="添加出差申请" className="add-leave-apply-container">
@@ -257,7 +299,7 @@ class AddLeaveApply extends React.Component {
                                         })(
                                             <DatePicker
                                                 onChange={this.onEndTimeChange}
-                                                value={formData.begin_time ? moment(formData.begin_time) : moment()}
+                                                value={formData.end_time ? moment(formData.end_time) : moment()}
                                                 disabledDate={disabledDate}
                                             />
                                         )}
@@ -274,7 +316,7 @@ class AddLeaveApply extends React.Component {
                                         )}
                                     </FormItem>
                                     <FormItem
-                                        className="form-item-label ant-form-item-required"
+                                        className="form-item-label customer-name"
                                         label={Intl.get('call.record.customer', '客户')}
                                         {...formItemLayout}
                                     >
@@ -299,7 +341,27 @@ class AddLeaveApply extends React.Component {
                                                 required={true}
                                             />
                                         )}
-                                        {formData.milestone ? <span className="customer-milestone">{formData.milestone}</span> : null}
+
+                                    </FormItem>
+                                    <AntcAreaSelection labelCol="5" wrapperCol="19" width="100%"
+                                        colon={false}
+                                        label={Intl.get('crm.96', '地域')}
+                                        placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
+                                        provName={formData.province} cityName={formData.city}
+                                        countyName={formData.county} updateLocation={this.updateLocation}/>
+                                    <FormItem
+                                        className="form-item-label"
+                                        label={Intl.get('realm.address', '地址')}
+                                        {...formItemLayout}
+                                    >
+                                        {getFieldDecorator('address', {
+                                            initialValue: formData.address
+                                        })(
+                                            <Input
+                                                name="address"
+                                                placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                                            />
+                                        )}
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label"
@@ -328,7 +390,7 @@ class AddLeaveApply extends React.Component {
                                         <div className="indicator">
                                             {saveResult ?
                                                 (
-                                                    <AlertTimer time={saveResult === 'error' ? 3000 : 600}
+                                                    <AlertTimer time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
                                                         message={this.state.saveMsg}
                                                         type={saveResult} showIcon
                                                         onHide={this.hideSaveTooltip}/>

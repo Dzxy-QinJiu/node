@@ -232,14 +232,10 @@ class CustomerSuggest extends React.Component {
             };
             customerForLeave.id = value;
             customerForLeave.name = selectedCustomer.customer_name;
-            var address = '';
-            if (selectedCustomer.province){
-                address += selectedCustomer.province;
-            }
-            if (selectedCustomer.city){
-                address += selectedCustomer.city;
-            }
-            customerForLeave.address = address;
+            customerForLeave.province = selectedCustomer.province;
+            customerForLeave.city = selectedCustomer.city;
+            customerForLeave.county = selectedCustomer.county;
+            customerForLeave.address = selectedCustomer.address;
             this.setState({
                 ...result,
                 show_tip: false
