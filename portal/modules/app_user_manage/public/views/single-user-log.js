@@ -76,7 +76,7 @@ class SingleUserLog extends React.Component {
     getQueryParams = (queryParams) => {
         return {
             user_id: this.props.userId,
-            appid: queryParams && queryParams.appid,
+            appid: (queryParams && queryParams.appid) || this.state.selectedLogAppId,
             page: queryParams && queryParams.page || this.state.curPage,
             page_size: this.state.pageSize,
             starttime: queryParams && queryParams.starttime || this.state.startTime,
@@ -153,7 +153,7 @@ class SingleUserLog extends React.Component {
     };
     // 应用下拉框的选择
     getAppOptions = () => {
-        var list = _.map(this.state.userOwnAppArray, function (item) {
+        var list = _.map(this.state.userOwnAppArray, function(item) {
             return <Option
                 key={item.app_id}
                 value={item.app_id}
@@ -163,9 +163,9 @@ class SingleUserLog extends React.Component {
             </Option>;
         });
         const appIds = _.map(this.state.userOwnAppArray, x => x.app_id);
-        let value = "";
+        let value = '';
         if (_.isArray(appIds)) {
-            value = appIds.join(",")
+            value = appIds.join(',');
         }
         list.unshift(
             <Option
@@ -173,7 +173,7 @@ class SingleUserLog extends React.Component {
                 key="all"
                 title={Intl.get('user.app.all', '全部应用')}
             >
-                {Intl.get("user.app.all", "全部应用")}
+                {Intl.get('user.app.all', '全部应用')}
             </Option>);
         return list;
     };
