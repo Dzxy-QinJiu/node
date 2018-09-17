@@ -215,7 +215,7 @@ class ContractRightPanel extends React.Component {
                         (acc, cur) => cur.total_price ? calc(`${acc} + ${cur.total_price}`) : acc,
                         0
                     );
-                    if (this.refs.addBasic.state.formData.contract_amount !== totalProductsPrice) {
+                    if (this.refs.addBasic.state.formData.contract_amount !== totalProductsPrice.toString()) {
                         this.setState({showDiffAmountWarning: true});
                     } else {
                         this.setState({showDiffAmountWarning: false}, this.goNext());
