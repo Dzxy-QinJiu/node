@@ -14,6 +14,12 @@ import { AntcChart } from 'antc';
 import { Progress, Tooltip, Icon } from 'antd';
 import PropTypes from 'prop-types'; 
 
+//日历热力图颜色
+const CALENDER_COLOR = {
+    BORDER: '#A2A2A2',
+    CONTENT: '#7190B4'
+}
+
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
         userId: '1'
@@ -334,9 +340,19 @@ class UserLoginAnalysis extends React.Component {
                 cellSize: [7, 7],
                 left: 'center',
                 top: 20,
+                splitLine: {
+                    lineStyle: {
+                        color: CALENDER_COLOR.BORDER
+                    }
+                }
             }],
             tooltip: {
                 formatter: charTips
+            },
+            visualMap: {                
+                inRange: {
+                    color: ['#fff', CALENDER_COLOR.CONTENT]
+                }
             },
         };
 
