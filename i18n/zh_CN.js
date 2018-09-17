@@ -2635,10 +2635,24 @@ var zh_CN = {
     'user.detail.analysis.tip.fresh': '距离最近的登录时间。该分项在总分钟占比20%',
     'user.detail.analysis.tip.historyActivity': '总活跃天数/开通的总天数。该分项在总分钟占比10%',
     'user.detail.analysis.tip.historyFresh': '总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
+    'menu.leave_apply': '出差审批',
+    'failed.get.all.leave.apply': '获取全部出差申请失败',
+    'failed.get.self.leave.apply': '获取我的出差申请失败',
+    'failed.get.worklist.leave.apply': '获取由我审批的出差申请失败',
+    'add.leave.apply': '添加出差申请',
+    'failed.add.apply.list': '添加出差申请失败',
+    'leave.apply.add.leave.apply': '出差申请',
     'user.info.binding.email': '绑定邮箱',
     'schedule.manage.has.no.expired.tasks': '您没有超期未完成的任务',
     'user.get.user.info.null': '获取不到登录用户的信息',
     'user.info.binding.phone': '绑定手机号',
     'user.info.no.set.phone': '该用户还没有手机号，{bindPhone}',
+    'leave.apply.add.leave.time': '出差时间',
+    'leave.apply.add.leave.person': '出差人员',
+    'leave.apply.add.leave.destination': '目的地',
+    'leave.apply.add.leave.reason': '出差事由',
+    'leave.apply.select.customer': '请先选择客户'
+
+
 };
 export default zh_CN;

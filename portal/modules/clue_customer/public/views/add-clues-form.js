@@ -458,7 +458,7 @@ class ClueAddForm extends React.Component {
                                         {this.state.isSaving ? <Icon type="loading"/> : null}
                                     </Button>
                                     <Button className="cancel-btn" onClick={this.props.hideAddForm}
-                                        data-tracename="点击取消添加客户信息按钮">
+                                        data-tracename="点击取消添加线索信息按钮">
                                         {Intl.get('common.cancel', '取消')}
                                     </Button>
                                 </FormItem>

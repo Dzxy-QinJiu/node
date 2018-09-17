@@ -33,7 +33,7 @@ class CustomerSuggest extends React.Component {
         hideCustomerError: function() {
         },
         //搜索关键词
-        // keyword: '',
+        keyword: '',
         //外层的id
         customerSuggestWrapId: '',
         //展示内容（非编辑状态）
@@ -50,6 +50,7 @@ class CustomerSuggest extends React.Component {
         hasEditPrivilege: false,
         hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
         customerLable: '',//客户标签
+        customer_id: '',//客户id
     };
 
     state = {
@@ -203,11 +204,17 @@ class CustomerSuggest extends React.Component {
     };
 
     customerChoosen = (value, field) => {
+        var customerForLeave = {
+            id: '',
+            name: '',
+            address: ''
+        };//出差申请的目的地
         var selectedCustomer = _.find(this.state.list, function(item) {
             if (item.customer_id === value) {
                 return true;
             }
         });
+
         if (selectedCustomer) {
             var result = {
                 sales_team: {
@@ -223,7 +230,16 @@ class CustomerSuggest extends React.Component {
                     name: selectedCustomer.customer_name
                 }
             };
-
+            customerForLeave.id = value;
+            customerForLeave.name = selectedCustomer.customer_name;
+            var address = '';
+            if (selectedCustomer.province){
+                address += selectedCustomer.province;
+            }
+            if (selectedCustomer.city){
+                address += selectedCustomer.city;
+            }
+            customerForLeave.address = address;
             this.setState({
                 ...result,
                 show_tip: false
@@ -243,12 +259,15 @@ class CustomerSuggest extends React.Component {
                     name: value
                 }
             };
+            customerForLeave.id = '';
+            customerForLeave.name = value;
             this.setState({
                 ...result,
                 show_tip: false,
                 list: []
             });
         }
+        _.isFunction(this.props.customerChoosen) && this.props.customerChoosen(customerForLeave);
     };
 
     getCustomerSearchInput = () => {
@@ -515,5 +534,31 @@ class CustomerSuggest extends React.Component {
         );
     }
 }
+CustomerSuggest.propTypes = {
+    customer_id: PropTypes.string,
+    customer_name: PropTypes.string,
+    customerSuggestWrapId: PropTypes.string,
+    id: PropTypes.string,
+    displayType: PropTypes.string,
+    displayText: PropTypes.string,
+    isShowSales: PropTypes.boolean,
+    keyword: PropTypes.string,
+    show_error: PropTypes.boolean,
+    required: PropTypes.boolean,
+    hideCustomerError: PropTypes.func,
+    customerChoosen: PropTypes.func,
+    noJumpToCrm: PropTypes.boolean,
+    addAssignedCustomer: PropTypes.func,
+    field: PropTypes.string,
+    handleCancel: PropTypes.func,
+    saveEditSelectCustomer: PropTypes.func,
+    hoverShowEdit: PropTypes.boolean,
+    hasEditPrivilege: PropTypes.boolean,
+    customerLable: PropTypes.string,
+    editBtnTip: PropTypes.string,
+    addDataTip: PropTypes.string,
+    noDataTip: PropTypes.string,
+    hideButtonBlock: PropTypes.boolean,
+};
 
 module.exports = CustomerSuggest;
