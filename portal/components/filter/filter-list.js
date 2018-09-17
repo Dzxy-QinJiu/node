@@ -102,10 +102,6 @@ class FilterList extends React.Component {
     handleAddCommon = (item) => {
         const { data, filterName, plainFilterList, range, id } = item;
         const commonData = this.state.commonData;
-        if (commonData.find(x => x.name === filterName)) {
-            message.error('常用筛选已存在');
-            return;
-        }
         commonData.push({
             name: filterName,
             value: filterName,
@@ -183,7 +179,7 @@ class FilterList extends React.Component {
     shareCommonItem(item) {
 
     }
-    delCommonItem(item) {
+    delCommonItem(item, index) {
         let commonData = this.state.commonData;
         this.handleShowPop('click', false);
         if (item.id) {
@@ -194,8 +190,10 @@ class FilterList extends React.Component {
                     } else {
                         commonData = commonData.filter(x => x.name !== item.name);
                         this.setState({
-                            commonData
-                        });
+                            commonData,
+                            //当删除选中的筛选项时，去除选中状态
+                            selectedCommonIndex: this.state.selectedCommonIndex === index? "": this.state.selectedCommonIndex
+                        });                        
                     }
                 }).catch(err => {
                     message.error((err && err.message) || Intl.get('crm.139', '删除失败'));
@@ -204,8 +202,9 @@ class FilterList extends React.Component {
         } else {
             commonData = commonData.filter(x => x.name !== item.name);
             this.setState({
-                commonData
-            });
+                commonData,
+                selectedCommonIndex: this.state.selectedCommonIndex === index? "": this.state.selectedCommonIndex
+            });            
         }
 
     }
@@ -564,9 +563,9 @@ class FilterList extends React.Component {
                                                     }
                                                 </ul>
                                             );
-                                            const getClickContent = item => (
+                                            const getClickContent = (item, index) => (
                                                 <ul className="btn-container">
-                                                    <li onClick={this.delCommonItem.bind(this, item)}>删除</li>
+                                                    <li onClick={this.delCommonItem.bind(this, item, index)}>删除</li>
                                                 </ul>
                                             );
                                             const commonItemClass = classNames('titlecut', {
@@ -590,7 +589,7 @@ class FilterList extends React.Component {
                                                             {
                                                                 x.readOnly ?
                                                                     null :
-                                                                    <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
+                                                                    <Popover placement="bottom" content={getClickContent(x, index)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
                                                                         <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
                                                                     </Popover>
                                                             }
