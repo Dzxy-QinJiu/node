@@ -1,0 +1,43 @@
+/**
+ * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by wangliping on 2018/9/17.
+ * 带遮罩层和关闭按钮的右侧面板
+ */
+require('./index.less');
+import classNames from 'classnames';
+class RightPanelModal extends React.Component {
+    render() {
+        let panelClass = classNames('right-panel-modal', this.props.className, {
+            'show-modal': this.props.isShowMadal
+        });
+        return (
+            <div className={panelClass}>
+                {this.props.isShowCloseBtn ? (
+                    <span className="iconfont icon-close close-modal-btn" onClick={this.props.onClosePanel}/>) : null}
+                <div className="right-panel-modal-content">
+                    {this.props.title ? (
+                        <div className="top-title-container">
+                            {this.props.title}
+                        </div>
+                    ) : null}
+                    {this.props.content || ''}
+                </div>
+            </div>);
+    }
+}
+
+RightPanelModal.propTypes = {
+    className: PropTypes.string,
+    //是否展示遮罩层
+    isShowMadal: PropTypes.bool,
+    //是否展示关闭按钮
+    isShowCloseBtn: PropTypes.bool,
+    //关闭面板的事件
+    onClosePanel: PropTypes.func,
+    //标题
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    //面板中展示的内容
+    content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+};
+export default RightPanelModal;
