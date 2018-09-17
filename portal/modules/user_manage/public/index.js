@@ -211,7 +211,7 @@ class UserManage extends React.Component {
         if (hasPrivilege('USER_MANAGE_ADD_USER')){
             return (
                 <div className="btn-containers">
-                    <Button className='add-clue-btn btn-item btn-m-r-2' onClick={this.events.showUserForm.bind(this,'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
+                    <Button className='add-clue-btn btn-item btn-m-r-2' onClick={this.events_showUserForm.bind(this,'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
                 </div>
             );
         }else{
