@@ -29,7 +29,8 @@ import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
 const PRIVILEGE_MAP = {
-    USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS'//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
+    USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
+    CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD'//获取分数趋势的权限
 };
 
 class BasicOverview extends React.Component {
@@ -520,8 +521,10 @@ class BasicOverview extends React.Component {
                         salesTeamId={basicData.sales_team_id}
                         modifySuccess={this.editBasicSuccess}
                     />
-                    <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
-                        customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>
+                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) ? (
+                        <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
+                            customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>) : null
+                    }
                     <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
                         placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
                         tags={basicData.competing_products}

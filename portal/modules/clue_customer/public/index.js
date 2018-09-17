@@ -30,7 +30,8 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 import SalesClueItem from 'MOD_DIR/common_sales_home_page/public/view/sales-clue-item';
 import ClueAnalysisPanel from './views/clue-analysis-panel';
 import SalesClueAddForm from './views/add-clues-form';
-import ClueImportRightDetail from './views/import_clue/clue_import_right_detail';
+// import ClueImportRightDetail from './views/import_clue/clue_import_right_detail';
+import ClueImportRightDetail from 'CMP_DIR/import_step';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
@@ -84,9 +85,7 @@ class ClueCustomer extends React.Component {
         }else{
             this.getClueList();
         }
-
         this.getUserPhoneNumber();
-        clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
     }
     getUnhandledClue = () => {
         var data = getUnhandledClueCountParams();
@@ -99,20 +98,14 @@ class ClueCustomer extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps,'history.action') === 'PUSH'){
             if(_.get(nextProps,'location.state.clickUnhandleNum')){
+                delete nextProps.location.state.clickUnhandleNum;
                 this.getUnhandledClue();
-            }else if(_.get(nextProps,'location.state.clickUnhandleNum') === false ){
-                clueFilterAction.setInitialData();
-                clueCustomerAction.resetState();
-                setTimeout(() => {
-                    this.getClueList();
-                });
             }
         }
     }
     componentWillUnmount() {
         clueCustomerStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
-        clueEmitter.removeListener(clueEmitter.IMPORT_CLUE, this.onClueImport);
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
@@ -140,7 +133,6 @@ class ClueCustomer extends React.Component {
 
     onClueImport = (list) => {
         this.setState({
-            isPreviewShow: true,
             previewList: list,
         });
     };
@@ -212,7 +204,7 @@ class ClueCustomer extends React.Component {
                 {hasPrivilege('CUSTOMER_ADD_CLUE') ?
                     <Button type="primary" onClick={this.showImportClueTemplate} className="btn-item">
                         <span className="clue-container">
-                            {Intl.get('clue.manage.import.clue', '导入线索')}
+                            {Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}
                         </span>
                     </Button>
                     : null}
@@ -255,7 +247,8 @@ class ClueCustomer extends React.Component {
     //关闭导入线索模板
     closeClueTemplatePanel = () => {
         this.setState({
-            clueImportTemplateFormShow: false
+            clueImportTemplateFormShow: false,
+            previewList: [],
         });
     };
 
@@ -287,17 +280,6 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
-
-    handleClickCallOut = (phoneNumber, record) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        handleCallOutResult({
-            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
-            callNumber: this.state.callNumber,//坐席号
-            contactName: record.contact,//联系人姓名
-            phoneNumber: phoneNumber,//拨打的电话
-        });
-    };
-
     //获取线索列表
     getClueList = (data) => {
         var rangParams = _.get(data, 'rangParams') || JSON.stringify(clueFilterStore.getState().rangParams);
@@ -654,7 +636,7 @@ class ClueCustomer extends React.Component {
         if (hasPrivilege('CUSTOMER_ADD_CLUE')){
             return (
                 <div className="btn-containers">
-                    <Button type='primary' className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入线索')}</Button>
+                    <Button type='primary' className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}</Button>
                     <Button className='add-clue-btn' onClick={this.showClueAddForm}>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
                 </div>
             );
@@ -732,11 +714,6 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
-
-    refreshClueList = () => {
-        this.getClueList();
-    };
-
     searchFullTextEvent = (keyword) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
@@ -788,6 +765,132 @@ class ClueCustomer extends React.Component {
         this.setState({
             exportRange: e.target.value
         });
+    };
+    doImportAjax = (successCallback,errCallback) => {
+        $.ajax({
+            url: '/rest/clue/confirm/upload/' + true,
+            dataType: 'json',
+            type: 'get',
+            async: false,
+            success: (data) => {
+                this.getClueList();
+                _.isFunction(successCallback) && successCallback();
+            },
+            error: (errorMsg) => {
+                _.isFunction(errCallback) && errCallback(errorMsg);
+            }
+        });
+    };
+    //删除重复的线索
+    deleteDuplicatImportClue = (index) => {
+        var _this = this;
+        $.ajax({
+            url: '/rest/clue/repeat/delete/' + index,
+            dataType: 'json',
+            type: 'delete',
+            success: function(result) {
+                if (result && result.result === 'success') {
+                    var previewList = _this.state.previewList;
+                    previewList.splice(index, 1);
+                    _this.setState({
+                        previewList: previewList
+                    });
+                } else {
+                    message.error(Intl.get('clue.delete.duplicate.failed', '删除重复线索失败'));
+                }
+            },
+            error: function(errorMsg) {
+                message.error(Intl.get('clue.delete.duplicate.failed', '删除重复线索失败') || errorMsg);
+            }
+        });
+    };
+    getCluePrevList = () => {
+        var _this = this;
+        let previewColumns = [
+            {
+                title: Intl.get('clue.customer.clue.name', '线索名称'),
+                dataIndex: 'name',
+                render: function(text, record, index) {
+                    var cls = record.repeat ? 'repeat-item-name' : '';
+                    return (
+                        <span className={cls}>
+                            {record.name}
+                        </span>
+                    );
+                }
+            },
+            {
+                title: Intl.get('call.record.contacts', '联系人'),
+                render: function(text, record, index) {
+                    if (_.isArray(record.contacts)) {
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].name : null}</span>
+                        );
+                    }
+                }
+            },
+            {
+                title: Intl.get('common.phone', '电话'),
+                render: function(text, record, index) {
+                    if (_.isArray(record.contacts)) {
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].phone : null}</span>
+                        );
+                    }
+                }
+            },
+            {
+                title: Intl.get('common.email', '邮箱'),
+                render: function(text, record, index) {
+                    if (_.isArray(record.contacts)) {
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].email : null}</span>
+                        );
+                    }
+                }
+            },
+            {
+                title: 'QQ',
+                render: function(text, record, index) {
+                    if (_.isArray(record.contacts) && _.isArray(record.contacts[0].qq)) {
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].qq[0] : null}</span>
+                        );
+                    }
+                }
+            },
+            {
+                title: Intl.get('crm.sales.clue.source', '线索来源'),
+                dataIndex: 'clue_source',
+            }, {
+                title: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
+                dataIndex: 'access_channel',
+            }, {
+                title: Intl.get('crm.sales.clue.descr', '线索描述'),
+                dataIndex: 'source',
+            }, {
+                title: 'IP',
+                dataIndex: 'source_ip',
+            }, {
+                title: Intl.get('common.operate', '操作'),
+                width: '60px',
+                render: (text, record, index) => {
+                    //是否在导入预览列表上可以删除
+                    const isDeleteBtnShow = record.repeat;
+                    return (
+                        <span className="cus-op">
+                            {isDeleteBtnShow ? (
+                                <i className="order-btn-class iconfont icon-delete "
+                                    onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
+                                    data-tracename="删除重复线索"
+                                    title={Intl.get('common.delete', '删除')}/>
+                            ) : null}
+                        </span>
+                    );
+                }
+            }
+        ];
+        return previewColumns;
     };
     render() {
         var cls = classNames('right-panel-modal',
@@ -860,14 +963,18 @@ class ClueCustomer extends React.Component {
                             />
                             )
                         </div> : null}
-                    <div className={importCls}>
-                        <ClueImportRightDetail
-                            showFlag={this.state.clueImportTemplateFormShow}
-                            closeClueTemplatePanel={this.closeClueTemplatePanel}
-                            refreshClueList={this.refreshClueList}
-                            getClueList={this.getClueList}
-                        />
-                    </div>
+                    <ClueImportRightDetail
+                        importType={Intl.get('crm.sales.clue', '线索')}
+                        uploadActionName='clues'
+                        templateHref='/rest/clue/download_template'
+                        uploadHref='/rest/clue/upload'
+                        previewList={this.state.previewList}
+                        getItemPrevList={this.getCluePrevList}
+                        showFlag={this.state.clueImportTemplateFormShow}
+                        closeTemplatePanel={this.closeClueTemplatePanel}
+                        doImportAjax={this.doImportAjax}
+                        onItemListImport={this.onClueImport}
+                    />
                     {this.state.rightPanelIsShow ?
                         <ClueRightPanel
                             showFlag={this.state.rightPanelIsShow}
@@ -917,6 +1024,8 @@ class ClueCustomer extends React.Component {
         );
     }
 }
-
+ClueCustomer.propTypes = {
+    location: PropTypes.object
+};
 module.exports = ClueCustomer;
 

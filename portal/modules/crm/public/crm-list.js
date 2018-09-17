@@ -7,7 +7,7 @@ var FilterBlock = require('../../../components/filter-block');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 var Spinner = require('../../../components/spinner');
-var ImportCrmTemplate = require('./views/crm-import-template');
+import ImportCrmTemplate from 'CMP_DIR/import_step';
 var BootstrapButton = require('react-bootstrap').Button;
 var BootstrapModal = require('react-bootstrap').Modal;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -40,6 +40,7 @@ var classNames = require('classnames');
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import queryString from 'query-string';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import CrmOverviewActions from './action/basic-overview-actions';
 var userData = require('PUB_DIR/sources/user-data');
 const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
@@ -204,7 +205,6 @@ class Crm extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_LEVEL, this.batchChangeLevel);
         //批量更新地域
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
-        crmEmitter.on(crmEmitter.IMPORT_CUSTOMER, this.onCustomerImport);
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
         this.getUserPhoneNumber();
@@ -270,7 +270,7 @@ class Crm extends React.Component {
         $(window).on('resize', e => this.changeTableHeight());
         var _this = this;
         //点击客户列表某一行时打开对应的详情
-        $('.tbody').on('click', 'td.has-filter', function (e) {
+        $('.tbody').on('click', 'td.has-filter', function(e) {
             //td中的表示关注的星星元素不能触发打开右侧面板的事件
             if ($(e.target).hasClass('focus-customer')) {
                 return;
@@ -281,7 +281,7 @@ class Crm extends React.Component {
             _this.showRightPanel(id);
         });
         //点击表头时关闭详情区
-        $(this.refs.crmList).on('click', 'thead .has-filter', function () {
+        $(this.refs.crmList).on('click', 'thead .has-filter', function() {
             if (_this.state.rightPanelIsShow) {
                 _this.hideRightPanel();
             }
@@ -339,7 +339,6 @@ class Crm extends React.Component {
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_INDUSTRY, this.batchChangeIndustry);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_LEVEL, this.batchChangeLevel);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
-        crmEmitter.removeListener(crmEmitter.IMPORT_CUSTOMER, this.onCustomerImport);
         $(window).off('resize', this.changeTableHeight);
         //将store中的值设置初始值
         CrmAction.setInitialState();
@@ -384,13 +383,13 @@ class Crm extends React.Component {
             user_id: userInfo.user_id,
             name: params.filterName,
             type: params.range
-        }
+        };
         if (query.sales_team_id) {
             data.sales_team_id = query.sales_team_id;
         }
         return CrmAction.addCommonFilter({
             data
-        })
+        });
     }
 
     onChange = () => {
@@ -983,13 +982,11 @@ class Crm extends React.Component {
         });
     };
 
-    confirmImport = (flag, cb) => {
-        this.setState({ isImporting: true });
-
+    doImport = (successCallback,errCallback) => {
         const route = _.find(routeList, route => route.handler === 'uploadCustomerConfirm');
 
         const params = {
-            flag: flag,
+            flag: true,
         };
 
         const arg = {
@@ -999,56 +996,14 @@ class Crm extends React.Component {
         };
 
         ajax(arg).then(result => {
-            this.setState({ isImporting: false });
-
-            if (_.isFunction(cb)) cb();
-        }, () => {
-            this.setState({ isImporting: false });
-
-            message.error(Intl.get('crm.99', '导入客户失败'));
-        });
-    };
-
-    doImport = () => {
-        this.confirmImport(true, () => {
-            this.setState({
-                isPreviewShow: false,
-            });
-            message.success(Intl.get('crm.98', '导入客户成功'));
             //刷新客户列表
             this.search();
-        });
-    };
-
-    cancelImport = () => {
-        this.setState({
-            isPreviewShow: false,
+            _.isFunction(successCallback) && successCallback();
+        }, (errorMsg) => {
+            _.isFunction(errCallback) && errCallback(errorMsg);
         });
 
-        this.confirmImport(false);
-    };
 
-    renderImportModalFooter = () => {
-        const repeatCustomer = _.find(this.state.previewList, item => (item.name_repeat || item.phone_repeat));
-        const loading = this.state.isImporting || false;
-
-        return (
-            <div data-tracename="导入预览">
-                {repeatCustomer ? (
-                    <span className="import-warning">
-                        {Intl.get('crm.210', '存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入')}
-                    </span>
-                ) : null}
-                <Button type="ghost" onClick={this.cancelImport} data-tracename="点击取消导入按钮">
-                    {Intl.get('common.cancel', '取消')}
-                </Button>
-                {!repeatCustomer ? (
-                    <Button type="primary" onClick={this.doImport} loading={loading} data-tracename="点击确定导入按钮">
-                        {Intl.get('common.sure', '确定') + Intl.get('common.import', '导入')}
-                    </Button>
-                ) : null}
-            </div>
-        );
     };
 
     // 自动拨号
@@ -1145,22 +1100,37 @@ class Crm extends React.Component {
         };
         var myUserId = crmUtil.getMyUserId();
         if (_.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, myUserId) > -1) {
+            //取消关注客户
             interestObj.user_id = '';
         } else {
+            //关注客户
             interestObj.user_id = myUserId;
         }
+        var curPageCustomers = this.state.curPageCustomers;
+        //暂存修改前的客户列表，（取消）关注客户失败后还原数据
+        var initalCurPageCustomers = JSON.parse(JSON.stringify(curPageCustomers));
         //先更改星星的颜色,再发请求，这样页面不会显的比较卡
-        var customerArr = _.find(this.state.curPageCustomers, (customer) => {
+        var curCustomer = _.find(curPageCustomers, (customer) => {
             return record.id === customer.id;
         });
-        if (customerArr) {
-            customerArr.interest_member_ids = [interestObj.user_id];
+        if (curCustomer) {
+            if(interestObj.user_id){//关注
+                if (_.isArray(curCustomer.interest_member_ids)) {
+                    curCustomer.interest_member_ids.push(interestObj.user_id);
+                } else {
+                    curCustomer.interest_member_ids = [interestObj.user_id];
+                }
+            } else {//取消关注
+                curCustomer.interest_member_ids = _.filter(curCustomer.interest_member_ids, interestId => interestId !== myUserId);
+            }
+        }
+        //更新详情中的关注图标颜色
+        if(this.state.currentId === interestObj.id){
+            CrmOverviewActions.updateBasicData(curCustomer);
         }
         //如果当前筛选的是我关注的客户，在列表中取消关注后要在列表中删除该条客户
         var condition = this.state.condition;
-        var curPageCustomers = this.state.curPageCustomers;
-        var initalCurPageCustomers = JSON.parse(JSON.stringify(curPageCustomers));
-        if (condition && _.isArray(condition.interest_member_ids) && condition.interest_member_ids[0] && !interestObj.user_id) {
+        if (condition && _.get(condition, 'interest_member_ids[0]') && !interestObj.user_id) {
             curPageCustomers = _.filter(curPageCustomers, (item) => {
                 return item.id !== interestObj.id;
             });
@@ -1169,8 +1139,14 @@ class Crm extends React.Component {
             { curPageCustomers: curPageCustomers }
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
+            //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
             if (errorMsg) {
-                //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
+                //还原详情中的关注图标颜色
+                if(this.state.currentId === interestObj.id) {
+                    let detailCustomer = _.find(initalCurPageCustomers, item => item.id === interestObj.id);
+                    CrmOverviewActions.updateBasicData(detailCustomer);
+                }
+                //还原列表中的数据
                 this.setState(
                     { curPageCustomers: initalCurPageCustomers }
                 );
@@ -1219,8 +1195,11 @@ class Crm extends React.Component {
         ajax(arg).then(result => {
             //    Trace.traceEvent('导入预览', '点击删除重复客户按钮');
             if (result && result.result === 'success') {
-                this.state.previewList.splice(index, 1);
-                this.setState(this.state);
+                var previewList = this.state.previewList;
+                previewList.splice(index, 1);
+                this.setState({
+                    previewList: previewList
+                });
             } else {
                 message.error(Intl.get('crm.delete.duplicate.customer.failed', '删除重复客户失败'));
             }
@@ -1285,6 +1264,26 @@ class Crm extends React.Component {
         }
 
     };
+
+    getItemPrevList(columns) {
+        let previewColumns = [];
+        previewColumns = extend([], columns);
+        //导入预览表格中去掉最后联系列
+        previewColumns = _.filter(previewColumns, column => column.dataIndex !== 'last_contact_time');
+        let remarksColumn = _.find(previewColumns, column => column.dataIndex === 'remarks');
+
+        if (!remarksColumn) {
+            remarksColumn = {
+                dataIndex: 'remarks',
+                title: Intl.get('common.remark', '备注'),
+            };
+            //添加备注列
+            previewColumns.splice(-1, 0, remarksColumn);
+        }
+        return previewColumns;
+
+    }
+
     render() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1292,7 +1291,7 @@ class Crm extends React.Component {
         let rowSelection = showSelectionFlag ? {
             type: 'checkbox',
             selectedRowKeys: _.map(this.state.selectedCustomer, 'id'),
-            onSelect: function (record, selected, selectedRows) {
+            onSelect: function(record, selected, selectedRows) {
                 //如果一开始批量选择了全部，后来又取消了，则去掉选择全部
                 if (selectedRows.length !== _this.state.curPageCustomers.length) {
                     _this.state.selectAllMatched = false;
@@ -1302,7 +1301,7 @@ class Crm extends React.Component {
                 Trace.traceEvent($(ReactDOM.findDOMNode(_this)).find('.ant-table-selection-column'), '点击选中/取消选中某个客户');
             },
             //对客户列表当前页进行全选或取消全选操作时触发
-            onSelectAll: function (selected, selectedRows, changeRows) {
+            onSelectAll: function(selected, selectedRows, changeRows) {
                 if (_this.state.selectAllMatched && selectedRows.length === 0) {
                     _this.state.selectAllMatched = false;
                 }
@@ -1323,17 +1322,17 @@ class Crm extends React.Component {
                 dataIndex: 'name',
                 className: 'has-filter',
                 sorter: this.getSorter(),
-                render: function (text, record, index) {
+                render: function(text, record, index) {
                     var tagsArray = _.isArray(record.labels) ? record.labels : [];
                     //线索、转出标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
                     if (_.isArray(record.immutable_labels) && record.immutable_labels.length) {
                         tagsArray = record.immutable_labels.concat(tagsArray);
                     }
-                    var tags = tagsArray.map(function (tag, index) {
+                    var tags = tagsArray.map(function(tag, index) {
                         return (<Tag key={index}>{tag}</Tag>);
                     });
 
-                    const className = record.name_repeat ? 'customer-repeat customer_name' : 'customer_name';
+                    const className = record.repeat ? 'repeat-item-name customer_name' : 'customer_name';
                     var isInterested = _.isArray(record.interest_member_ids) && _.indexOf(record.interest_member_ids, crmUtil.getMyUserId()) > -1;
                     var interestClassName = 'iconfont focus-customer';
                     interestClassName += (isInterested ? ' icon-interested' : ' icon-uninterested');
@@ -1400,7 +1399,7 @@ class Crm extends React.Component {
                 dataIndex: 'last_contact_time',
                 sorter: this.getSorter(),
                 className: 'has-filter',
-                render: function (text, record, index) {
+                render: function(text, record, index) {
                     //最后联系时间和跟进记录的合并
                     let time = record.last_contact_time ? record.last_contact_time : '';
                     let last_contact = '';
@@ -1436,9 +1435,9 @@ class Crm extends React.Component {
                 width: 50,
                 render: (text, record, index) => {
                     //是否是重复的客户
-                    const isRepeat = record.name_repeat || record.phone_repeat;
-                    //是否处于导入预览状态
-                    const isPreview = this.state.isPreviewShow;
+                    const isRepeat = record.repeat;
+                    //是否处于导入状态
+                    const isPreview = this.state.crmTemplateRightPanelShow;
                     //是否在客户列表上可以删除
                     const canDeleteOnCrmList = !isPreview && hasPrivilege('CRM_DELETE_CUSTOMER');
                     //是否在导入预览列表上可以删除
@@ -1458,23 +1457,8 @@ class Crm extends React.Component {
                 }
             }
         ];
-
-        let previewColumns = [];
-
-        if (this.state.isPreviewShow) {
-            previewColumns = extend([], columns);
-            //导入预览表格中去掉最后联系列
-            previewColumns = _.filter(previewColumns, column => column.dataIndex !== 'last_contact_time');
-            let remarksColumn = _.find(previewColumns, column => column.dataIndex === 'remarks');
-
-            if (!remarksColumn) {
-                remarksColumn = {
-                    dataIndex: 'remarks',
-                    title: Intl.get('common.remark', '备注'),
-                };
-                //添加备注列
-                previewColumns.splice(-1, 0, remarksColumn);
-            }
+        if(!hasPrivilege('CRM_CUSTOMER_SCORE_RECORD')){
+            columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
         }
 
         //只对域管理员开放删除功能
@@ -1557,7 +1541,7 @@ class Crm extends React.Component {
                                 </div> : null
                         }
                         <div className={contentClassName} style={{ display: shouldTableShow ? 'block' : 'none' }}>
-                            {this.state.customersSize ? <AntcTable
+                            {this.state.customersSize || this.state.getErrMsg ? <AntcTable
                                 rowSelection={rowSelection}
                                 rowKey={rowKey}
                                 columns={columns}
@@ -1578,12 +1562,11 @@ class Crm extends React.Component {
                                     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                                 }}
                             /> : <NoDataIntro
-                                    noDataAndAddBtnTip={Intl.get('contract.60', '暂无客户')}
-                                    renderAddAndImportBtns={this.renderAddAndImportBtns}
-                                    showAddBtn={this.hasNoFilterCondition()}
-                                    noDataTip={Intl.get('common.no.filter.crm', '没有符合条件的客户')}
-                                />}
-
+                                noDataAndAddBtnTip={Intl.get('contract.60', '暂无客户')}
+                                renderAddAndImportBtns={this.renderAddAndImportBtns}
+                                showAddBtn={this.hasNoFilterCondition()}
+                                noDataTip={Intl.get('common.no.filter.crm', '没有符合条件的客户')}
+                            />}
                         </div>
 
                     </div>
@@ -1594,9 +1577,16 @@ class Crm extends React.Component {
                     </div>
                 ) : null}
                 <ImportCrmTemplate
+                    uploadActionName='customers'
+                    importType={Intl.get('sales.home.customer', '客户')}
+                    templateHref='/rest/crm/download_template'
+                    uploadHref='/rest/crm/customers'
+                    previewList={this.state.previewList}
                     showFlag={this.state.crmTemplateRightPanelShow}
-                    refreshCustomerList={this.search.bind(this, true)}
-                    closeCrmTemplatePanel={this.closeCrmTemplatePanel}
+                    getItemPrevList={this.getItemPrevList.bind(this, columns)}
+                    closeTemplatePanel={this.closeCrmTemplatePanel}
+                    onItemListImport={this.onCustomerImport}
+                    doImportAjax={this.doImport}
                 />
 
                 {this.state.mergePanelIsShow ? (<CrmRightMergePanel
@@ -1649,24 +1639,6 @@ class Crm extends React.Component {
                                 defaultMessage="取消" /></BootstrapButton>
                     </BootstrapModal.Footer>
                 </BootstrapModal>
-                <Modal
-                    visible={this.state.isPreviewShow}
-                    width="90%"
-                    prefixCls="customer-import-modal ant-modal"
-                    title={Intl.get('crm.2', '导入客户') + Intl.get('common.preview', '预览')}
-                    footer={this.renderImportModalFooter()}
-                    onCancel={this.cancelImport}
-                >
-                    {this.state.isPreviewShow ? (
-                        <AntcTable
-                            dataSource={this.state.previewList}
-                            columns={previewColumns}
-                            rowKey={this.getRowKey}
-                            pagination={false}
-                            scroll={{ x: tableScrollX, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT }}
-                        />
-                    ) : null}
-                </Modal>
             </div>
         </RightContent>);
     }
@@ -1674,7 +1646,7 @@ class Crm extends React.Component {
 Crm.defaultProps = {
     location: {},
     fromSalesHome: false,
-    showRepeatCustomer: function () {
+    showRepeatCustomer: function() {
 
     },
     params: {},

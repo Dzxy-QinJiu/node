@@ -82,6 +82,10 @@ class BasicData extends React.Component {
                 this.props.editCustomerBasic(newBasic);
             }
         }
+        let basicData = _.extend(this.state.basicData, newBasic);
+        delete basicData.type;
+        delete basicData.urlType;
+        CrmOverviewActions.updateBasicData(basicData);
     };
 
     getAdministrativeLevelOptions = () => {
@@ -159,24 +163,26 @@ class BasicData extends React.Component {
             id: basicData.id,
             type: 'customer_interest',
         };
-        if (hasFocusedCustomer) {
+        if (hasFocusedCustomer) {//取消关注
             interestObj.user_id = '';
-        } else {
+            basicData.interest_member_ids = _.filter(basicData.interest_member_ids, interestId => interestId !== myUserId);
+        } else {//关注
             interestObj.user_id = myUserId;
+            if (_.isArray(basicData.interest_member_ids)) {
+                basicData.interest_member_ids.push(myUserId);
+            } else {
+                basicData.interest_member_ids = [myUserId];
+            }
         }
-        basicData.interest_member_ids = [interestObj.user_id];
-        this.setState({basicData: basicData});
+        CrmOverviewActions.updateBasicData(basicData);
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
             if (errorMsg) {
                 //将星星的颜色修改回原来的状态
-                this.setState({
-                    basicData: initialBasicData
-                });
+                CrmOverviewActions.updateBasicData(initialBasicData);
             } else {
                 interestObj.interest_member_ids = [interestObj.user_id];
                 delete interestObj.type;
                 delete interestObj.user_id;
-
                 CrmAction.editBasicSuccess(interestObj);
             }
         });
@@ -349,7 +355,15 @@ class BasicData extends React.Component {
         );
     }
 }
-
+BasicData.propTypes = {
+    curCustomer: PropTypes.object,
+    isMerge: PropTypes.bool,
+    updateMergeCustomer: PropTypes.func,
+    isRepeat: PropTypes.bool,
+    editCustomerBasic: PropTypes.func,
+    setTabsContainerHeight: PropTypes.func,
+    showRightPanel: PropTypes.func
+};
 module.exports = BasicData;
 
 

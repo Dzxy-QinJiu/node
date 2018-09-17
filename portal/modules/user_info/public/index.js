@@ -131,8 +131,8 @@ var UserInfoPage = createReactClass({
                                 </label>
                             </div>
                             <UserInfoLog
-                                logLoading={this.state.logLoading}
                                 logErrorMsg={this.state.logErrorMsg}
+                                logLoading={this.state.logLoading}
                                 logList={this.state.logList}
                                 logTotal={this.state.logTotal}
                                 sortId={this.state.sortId}

@@ -60,7 +60,7 @@ export const emailRegex = /^(((([a-z]|\d|[!#$%&'*+-/=?^_`{|}~]|[\u00A0-\uD7FF\uF
 export const pathParamRegex = /:([a-zA-Z_\-0-9]+)/g;
 //电话号码的校验
 //普通的电话号码
-export const commonPhoneRegex = /^1[34578]\d{9}$/;
+export const commonPhoneRegex = /^1[345789]\d{9}$/;
 // 区号 座机电话
 export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
 // 可自动填充横线的 座机电话
@@ -234,6 +234,14 @@ export const CategoryList = [
 export const ContractLabel = [
     {value: 'new', name: Intl.get('crm.contract.new.sign', '新签')},
     {value: 'extension', name: Intl.get('contract.163', '续约')},
+];
+
+export const LITERAL_CONSTANT = {
+    ALL: Intl.get('common.all', '全部'),
+    TEAM: Intl.get('user.user.team', '团队'),
+    MEMBER: Intl.get('member.member', '成员')
+};
+export const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
 ];
 
 //常用筛选范围

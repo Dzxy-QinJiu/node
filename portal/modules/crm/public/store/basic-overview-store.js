@@ -76,12 +76,11 @@ CrmOverviewStore.prototype.setBasicState = function(state) {
     this.basicIsLoading = state;
 };
 
-CrmOverviewStore.prototype.submitBaiscForm = function(newBasicData) {
+CrmOverviewStore.prototype.updateBasicData = function(newBasicData) {
     //如果当前展示的是要修改的客户资料，则更新，否则，不更新
     if (newBasicData.id === this.basicData.id) {
         this.basicData = newBasicData;
     }
-    this.editShowFlag = false;
 };
 
 module.exports = alt.createStore(CrmOverviewStore, 'CrmOverviewStore');

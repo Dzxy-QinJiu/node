@@ -55,15 +55,18 @@ function UserInfoStore() {
 }
 
 UserInfoStore.prototype.getLogList = function(logListObj) {
-    this.logLoading = false;
-    if (_.isString(logListObj)) {
+    if (logListObj.isLoading){
+        this.logLoading = true;
+    }else if (_.isString(logListObj)) {
         //获取操作记录失败
         this.logErrorMsg = logListObj;
         this.logList = [];
         this.logTotal = 0;
         this.listenScrollBottom = false;
+        this.logLoading = false;
     } else if (logListObj && _.isObject(logListObj)) {
         this.logTotal = logListObj.total || 0;
+        this.logLoading = false;
         if (_.isArray(logListObj.list) && logListObj.list.length > 0) {
             var processedLogList = logListObj.list.map(function(log) {
                 return {
@@ -88,6 +91,7 @@ UserInfoStore.prototype.getLogList = function(logListObj) {
             this.listenScrollBottom = false;
         }
     } else {
+        this.logLoading = false;
         this.listenScrollBottom = false;
         this.logList = [];
         this.logTotal = 0;
