@@ -242,7 +242,6 @@ export const LITERAL_CONSTANT = {
     MEMBER: Intl.get('member.member', '成员')
 };
 export const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
-];
 
 //常用筛选范围
 export const FILTER_RANGE = {
