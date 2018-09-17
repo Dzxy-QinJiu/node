@@ -12,7 +12,6 @@ var WeekReportUtil = require('./utils/weekly-report-utils');
 import WeeklyReportDetail from './view/weekly-report-detail';
 import { Alert } from 'antd';
 var TopNav = require('CMP_DIR/top-nav');
-var AnalysisMenu = require('CMP_DIR/analysis_menu');
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import NatureTimeSelect from 'CMP_DIR/nature-time-select';
 
@@ -145,7 +144,7 @@ class WeeklyReport extends React.Component {
         return (
             <div className="weekly-report-container" data-tracename='销售周报'>
                 <TopNav>
-                    <AnalysisMenu showTab={true}/>
+                    <TopNav.MenuList/>
                     {this.renderWeekSelect()}
                     {this.renderTeamSelect()}
                 </TopNav>

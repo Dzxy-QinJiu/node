@@ -8,7 +8,6 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import { LEAVE_TYPES } from './consts';
 import {AntcAttendanceRemarks} from 'antc';
 const TopNav = require('CMP_DIR/top-nav');
-const AnalysisMenu = require('CMP_DIR/analysis_menu');
 const Option = Select.Option;
 const MonthPicker = DatePicker.MonthPicker;
 const Emitters = require('PUB_DIR/sources/utils/emitters');
@@ -402,7 +401,7 @@ class MonthlyReport extends React.Component {
         return (
             <div className="monthly-report" data-tracename='销售月报'>
                 <TopNav>
-                    <AnalysisMenu showTab={true}/>
+                    <TopNav.MenuList/>
                     {this.renderFilter(selectedTeamId)}
                 </TopNav>
                 <div className="monthly-report-content">

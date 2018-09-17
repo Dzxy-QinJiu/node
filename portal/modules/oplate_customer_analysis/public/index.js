@@ -11,7 +11,6 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { parseAmount } from 'LIB_DIR/func';
 import { processCustomerStageData, processOrderStageData } from 'PUB_DIR/sources/utils/analysis-util';
 const TopNav = require('CMP_DIR/top-nav');
-const AnalysisMenu = require('CMP_DIR/analysis_menu');
 const userData = require('PUB_DIR/sources/user-data');
 const emitters = require('PUB_DIR/sources/utils/emitters');
 const querystring = require('querystring');

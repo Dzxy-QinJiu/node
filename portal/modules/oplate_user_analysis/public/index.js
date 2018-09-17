@@ -8,7 +8,6 @@ import { AntcAnalysis } from 'antc';
 import AnalysisFilter from 'CMP_DIR/analysis/filter';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 const TopNav = require('CMP_DIR/top-nav');
-const AnalysisMenu = require('CMP_DIR/analysis_menu');
 const userData = require('PUB_DIR/sources/user-data');
 const emitters = require('PUB_DIR/sources/utils/emitters');
 

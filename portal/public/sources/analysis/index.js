@@ -7,12 +7,16 @@ var RightContent = require('../../../components/privilege/right-content');
 var Checker = require('../../../components/privilege/checker');
 const userAnalysis = require("MOD_DIR/oplate_user_analysis");
 const customerAnalysis = require("MOD_DIR/oplate_customer_analysis");
+const weeklyReport = require("MOD_DIR/weekly_report");
+const monthlyReport = require("MOD_DIR/monthly-report");
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('analysis',
         [
             customerAnalysis,
             userAnalysis,
+            weeklyReport,
+            monthlyReport
         ]
     );
     return childRoutes;
