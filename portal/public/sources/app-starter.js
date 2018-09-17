@@ -95,11 +95,8 @@ function init() {
                     childRoutes.push(require('../../modules/sales_home_page'));
                 }
                 break;
-            case 'oplate_user_analysis':
-                childRoutes.push(require('../../modules/oplate_user_analysis'));
-                break;
-            case 'oplate_customer_analysis':
-                childRoutes.push(require('../../modules/oplate_customer_analysis'));
+            case 'analysis':
+                childRoutes.push(require('./analysis'));
                 break;
             //后台管理
             case 'background_management':

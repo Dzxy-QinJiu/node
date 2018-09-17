@@ -889,7 +889,7 @@ class OPLATE_USER_ANALYSIS extends React.Component {
                 data-tracename="用户分析"
             >
                 <TopNav>
-                    <AnalysisMenu showTab={true}/>
+                    <TopNav.MenuList/>
                     <AnalysisFilter />
                 </TopNav>
 

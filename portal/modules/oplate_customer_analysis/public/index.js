@@ -684,7 +684,7 @@ class OPLATE_CUSTOMER_ANALYSIS extends React.Component {
                 data-tracename="客户分析"
             >
                 <TopNav>
-                    <AnalysisMenu showTab={true}/>
+                    <TopNav.MenuList/>
                     <AnalysisFilter />
                 </TopNav>
 
