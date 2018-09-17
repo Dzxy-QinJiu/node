@@ -934,6 +934,7 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('common.trial', '试用'),
                         dataIndex: 'trial',
                         key: 'trial',
+                        width: '50%',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
@@ -944,6 +945,7 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('sales.stage.signed', '签约'),
                         dataIndex: 'signed',
                         key: 'signed',
+                        width: '50%',
                         render: (text, item, index) => {
                             return (
                                 <span className="customer-stage-number"
