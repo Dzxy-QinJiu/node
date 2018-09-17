@@ -15,7 +15,7 @@ var restApis = {
     //过期或者即将到期的客户
     getExpiredCustomers: '/rest/analysis/customer/v2/statistic/:type/expire/customer',
     //查询线索 用户查询
-    querySalesClue: '/rest/customer/v2/clue/query/user',
+    querySalesClue: '/rest/clue/v1/query/user',
 };
 exports.restUrls = restApis;
 exports.getSalesClueList = function(req, res) {

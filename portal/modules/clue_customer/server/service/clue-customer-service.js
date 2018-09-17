@@ -9,47 +9,48 @@ var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 const _ = require('lodash');
+const clueBaseUrl = '/rest/clue/v1';
 const restApis = {
     //获取线索来源
-    getClueSource: '/rest/customer/v2/clue/clue_source/100/1',
+    getClueSource: clueBaseUrl + '/clue_source/100/1',
     //获取线索渠道
-    getClueChannel: '/rest/customer/v2/clue/access_channel/100/1',
+    getClueChannel: clueBaseUrl + '/access_channel/100/1',
     //获取线索分类
-    getClueClassify: '/rest/customer/v2/clue/clue_classify/100/1',
+    getClueClassify: clueBaseUrl + '/clue_classify/100/1',
     //查询线索客户用户查询
-    queryCluecustomer: '/rest/customer/v2/clue/query/user',
+    queryCluecustomer: clueBaseUrl + '/query/user',
     //查询线索客户 管理员查询
-    queryCluecustomerManager: '/rest/customer/v2/clue/query/manager',
+    queryCluecustomerManager: clueBaseUrl + '/query/manager',
     //添加跟进内容
-    addCluecustomerTrace: '/rest/customer/v2/clue/trace',
+    addCluecustomerTrace: clueBaseUrl + '/trace',
     //把线索客户分配给对应的销售
-    distributeCluecustomerToSale: '/rest/customer/v2/clue/distribute/:type',
+    distributeCluecustomerToSale: clueBaseUrl + '/distribute/:type',
     //对线索客户的详情进行更新
-    updateCluecustomerDetail: '/rest/customer/v2/clue/update/:type/:updateItem',
+    updateCluecustomerDetail: clueBaseUrl + '/update/:type/:updateItem',
     //线索名、电话唯一性验证
-    checkOnlySalesClue: '/rest/customer/v2/clue/repeat/search',
+    checkOnlySalesClue: clueBaseUrl + '/repeat/search',
     //将线索和客户进行关联
-    RelateClueAndCustomer: '/rest/customer/v2/clue/:type/customer_clue_relation',
+    RelateClueAndCustomer: clueBaseUrl + '/:type/customer_clue_relation',
     //导入线索
-    upload: '/rest/customer/v2/clue/upload/preview',
+    upload: clueBaseUrl + '/upload/preview',
     //确认导入线索预览
-    uploadClueConfirm: '/rest/customer/v2/clue/upload/confirm/:flag',
+    uploadClueConfirm: clueBaseUrl + '/upload/confirm/:flag',
     //删除某条线索
-    deleteRepeatClue: 'rest/customer/v2/clue/upload/preview/:index',
+    deleteRepeatClue: clueBaseUrl + '/upload/preview/:index',
     //获取线索分析
     getClueAnalysis: '/rest/analysis/customer/v2/clue/customer/label',
     //获取线索统计
-    getClueStatics: '/rest/customer/v2/clue/:type/statistical/:field/:page_size/:num',
+    getClueStatics: clueBaseUrl + '/:type/statistical/:field/:page_size/:num',
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
-    getClueFulltext: '/rest/customer/v2/clue/query/range/fulltext/:type/:page_size/:sort_field/:order',
+    getClueFulltext: clueBaseUrl + '/query/range/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: '/rest/customer/v2/customerdynamic/clue/:clue_id/:page_size',
     //根据线索的id查询线索的详情
-    getClueDetailById: '/rest/customer/v2/clue/query/clue/:clueId',
+    getClueDetailById: clueBaseUrl + '/query/clue/:clueId',
     //删除某个线索
-    deleteClueById: '/rest/customer/v2/clue/delete',
+    deleteClueById: clueBaseUrl + '/delete',
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -153,13 +154,12 @@ exports.relateClueAndCustomer = function(req, res) {
         }, req.body);
 };
 //上传线索
-exports.uploadClues = function(req, res) {
+exports.uploadClues = function(req, res, formData) {
     return restUtil.authRest.post({
         url: restApis.upload,
         req: req,
         res: res,
-        gzip: true,
-        'pipe-upload-file': true,
+        formData: formData,
         timeout: uploadTimeOut
     }, null);
 };
