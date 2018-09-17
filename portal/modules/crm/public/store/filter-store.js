@@ -188,6 +188,7 @@ const getFilterItemFromConditionItem = function (item) {
     const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.industryList);
     let filters = [];
     let plainFilters = [];
+    //将处理好的筛选项组装成FilterList所需的格式
     const handleAddItem = nameObj => {
         let filterItem = null;
         plainFilters.push(nameObj);
@@ -199,6 +200,7 @@ const getFilterItemFromConditionItem = function (item) {
             }]
         }
         const sameGroupItem = filters.find(x => x.groupId === filterItem.groupId);
+        //将已存在的高级筛选合并成commonData的结构
         if (sameGroupItem) {
             sameGroupItem.data.push({
                 ...nameObj,
@@ -209,6 +211,7 @@ const getFilterItemFromConditionItem = function (item) {
             filters.push(filterItem)
         }
     }
+    //处理筛选项的value，处理成前端的格式
     const handleValue = (value, key) => {
         if (['term_fields'].includes(key)) {
             return
@@ -367,13 +370,16 @@ const getFilterItemFromConditionItem = function (item) {
                         valueList = value;
                     }
                     if (typeof value === 'string') {
+                        //拼接字符串（数组value）
                         if (value.includes(",")) {
                             valueList = value.split(",");
                         }
+                        //单个字符串
                         else {
                             handleValue(value, key);
                         }
                     }
+                    //数组value
                     if (Array.isArray(valueList) && valueList.length > 0) {
                         valueList.forEach(x => {
                             handleValue(x, key);
