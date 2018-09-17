@@ -7,9 +7,8 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-leave-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon,message} from 'antd';
+import {Form, Input, Button, Icon,message, DatePicker} from 'antd';
 const FormItem = Form.Item;
-import DatePicker from 'CMP_DIR/datepicker';
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
@@ -60,20 +59,20 @@ class AddLeaveApply extends React.Component {
     hideLeaveApplyAddForm = () => {
         this.props.hideLeaveApplyAddForm();
     };
-    onSelectDate = (start_time, end_time) => {
-        var formData = this.state.formData;
-        //todo 如果不选时间，时间的默认值是什么
-        //如果选择的是全部时间
-        if (!start_time) {
-            start_time = moment().startOf('year').valueOf();
-        }
-        if (!end_time) {
-            end_time = moment().endOf('year').valueOf();
-        }
-        formData.begin_time = start_time;
-        formData.end_time = end_time;
-        this.setState({formData: formData});
-    };
+    // onSelectDate = (start_time, end_time) => {
+    //     var formData = this.state.formData;
+    //     //todo 如果不选时间，时间的默认值是什么
+    //     //如果选择的是全部时间
+    //     if (!start_time) {
+    //         start_time = moment().startOf('year').valueOf();
+    //     }
+    //     if (!end_time) {
+    //         end_time = moment().endOf('year').valueOf();
+    //     }
+    //     formData.begin_time = start_time;
+    //     formData.end_time = end_time;
+    //     this.setState({formData: formData});
+    // };
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.setState({
@@ -151,12 +150,51 @@ class AddLeaveApply extends React.Component {
         formData.customer_name = selectedCustomer.name;
         formData.customer_id = selectedCustomer.id;
         formData.milestone = selectedCustomer.address;
+        if (this.props.form.getFieldValue('leave_for_customer')) {
+            this.props.form.validateFields(['leave_for_customer'], {force: true});
+        }
+        // this.props.form.resetFields();
         this.setState({
             formData: formData
         });
     };
+    checkCustomerName = (rule, value, callback) => {
+        value = $.trim(_.get(this.state, 'formData.customer_id'));
+        if (!value) {
+            callback(new Error(Intl.get('leave.apply.select.customer','请先选择客户')));
+        }else{
+            callback();
+        }
+    };
+    // 验证起始时间是否小于结束时间
+    validateStartAndEndTime(timeType) {
+        return (rule, value, callback) => {
+            // 如果没有值，则没有错误
+            if (!value) {
+                callback();
+                return;
+            }
+            const begin_time = this.state.formData.begin_time;
+            const endTime = this.state.formData.end_time;
+            const isBeginTime = timeType === 'begin_time' ? true : false;
+            if (endTime && begin_time) {
+                if (moment(endTime).isBefore(begin_time)) {
+                    if (isBeginTime) {
+                        callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
+                    } else {
+                        callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
+                    }
+                } else {
+                    callback();
+                }
+            } else {
+                callback();
+            }
+        };
+    }
 
     render() {
+        var _this = this;
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
@@ -171,6 +209,10 @@ class AddLeaveApply extends React.Component {
         };
         var formData = this.state.formData;
         let saveResult = this.state.saveResult;
+        const disabledDate = function(current) {
+            //不允许选择大于当前天的日期
+            return current && current.valueOf() > Date.now();
+        };
         return (
             <RightPanel showFlag={true} data-tracename="添加出差申请" className="add-leave-apply-container">
                 <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideLeaveApplyAddForm}
@@ -186,31 +228,38 @@ class AddLeaveApply extends React.Component {
                                 <Form layout='horizontal' className="sales-clue-form" id="leave-apply-form">
                                     <FormItem
                                         className="form-item-label"
-                                        label={Intl.get('leave.apply.add.leave.time', '出差时间')}
+                                        label={Intl.get('contract.120', '开始时间')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('leave_time_range', {
+                                        {getFieldDecorator('begin_time', {
                                             rules: [{
                                                 required: true,
-                                            }],
+                                            },{validator: _this.validateStartAndEndTime('begin_time')}],
                                             initialValue: moment()
                                         })(
                                             <DatePicker
-                                                range="day"
-                                                onSelect={this.onSelectDate}>
-                                                <DatePicker.Option
-                                                    value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
-                                                <DatePicker.Option
-                                                    value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                                                <DatePicker.Option
-                                                    value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                                                <DatePicker.Option
-                                                    value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                                                <DatePicker.Option
-                                                    value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
-                                                <DatePicker.Option
-                                                    value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                                            </DatePicker>
+                                                onChange={this.onBeginTimeChange}
+                                                value={formData.begin_time ? moment(formData.begin_time) : moment()}
+                                                disabledDate={disabledDate}
+                                            />
+                                        )}
+                                    </FormItem>
+                                    <FormItem
+                                        className="form-item-label"
+                                        label={Intl.get('contract.105', '结束时间')}
+                                        {...formItemLayout}
+                                    >
+                                        {getFieldDecorator('end_time', {
+                                            rules: [{
+                                                required: true,
+                                            },{validator: _this.validateStartAndEndTime('end_time')}],
+                                            initialValue: moment()
+                                        })(
+                                            <DatePicker
+                                                onChange={this.onEndTimeChange}
+                                                value={formData.begin_time ? moment(formData.begin_time) : moment()}
+                                                disabledDate={disabledDate}
+                                            />
                                         )}
                                     </FormItem>
                                     <FormItem
@@ -225,14 +274,12 @@ class AddLeaveApply extends React.Component {
                                         )}
                                     </FormItem>
                                     <FormItem
-                                        className="form-item-label"
+                                        className="form-item-label ant-form-item-required"
                                         label={Intl.get('call.record.customer', '客户')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('leave_for_customer', {
-                                            // rules: [{
-                                            //     required: true,
-                                            // }],
+                                            rules: [{validator: _this.checkCustomerName}],
                                             initialValue: ''
                                         })(
                                             <CustomerSuggest
@@ -249,7 +296,7 @@ class AddLeaveApply extends React.Component {
                                                 noDataTip={Intl.get('clue.has.no.data', '暂无')}
                                                 hideButtonBlock={true}
                                                 customerChoosen={this.customerChoosen}
-
+                                                required={true}
                                             />
                                         )}
                                         {formData.milestone ? <span className="customer-milestone">{formData.milestone}</span> : null}
