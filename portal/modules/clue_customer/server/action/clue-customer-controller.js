@@ -9,6 +9,9 @@ var path = require('path');
 import Intl from '../../../../public/intl/intl';
 const _ = require('lodash');
 const moment = require('moment');
+const multiparty = require('multiparty');
+const fs = require('fs');
+
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 const CLUE_DIFF_TYPE = [
     {
@@ -119,15 +122,32 @@ exports.getClueTemplate = function(req, res) {
 };
 
 exports.uploadClues = function(req, res) {
-    //调用上传请求服务
-    clueCustomerService.uploadClues(req, res)
-        .on('success', function(data) {
-            res.json(data.result);
-        })
-        .on('error', function(err) {
-            res.json(err.message);
-        });
+    var form = new multiparty.Form();
+    //开始处理上传请求
+    form.parse(req, function(err, fields, files) {
+        // 获取上传文件的临时路径
+        let tmpPath = files['clues'][0].path;
+        // 文件内容为空的处理
+        let file_size = files['clues'][0].size;
+        if(file_size === 0) {
+            res.json(false);
+            return;
+        }
+        // 文件不为空的处理
+        let formData = {
+            attachments: [fs.createReadStream(tmpPath)]
+        };
+        //调用上传请求服务
+        clueCustomerService.uploadClues(req, res, formData)
+            .on('success', function(data) {
+                res.json(data.result);
+            })
+            .on('error', function(err) {
+                res.json(err.message);
+            });
+    });
 };
+
 exports.confirmUploadClues = function(req, res) {
     clueCustomerService.confirmUploadClues(req, res)
         .on('success', function(data) {
