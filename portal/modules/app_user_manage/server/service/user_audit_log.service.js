@@ -47,6 +47,9 @@ exports.getUserLogList = function(req, res){
             if (queryObj.sort_order){
                 url += `&sort_order=${queryObj.sort_order}`;
             }
+            if (queryObj.search){
+                url += `&search=${queryObj.search}`;
+            }
             if (queryObj.sort_id){
                 url += `&sort_id=${queryObj.sort_id}`;
             }
