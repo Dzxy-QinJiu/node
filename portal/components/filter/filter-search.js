@@ -3,20 +3,8 @@ import filterEmitter from './emitter';
 import { Icon, Input, Button, Radio, Popover, Alert } from 'antd';
 import PropTypes from 'prop-types';
 import Trace from 'LIB_DIR/trace';
+import{FILTER_RANGE_OPTIONS as RANGE_OPTIONS, FILTER_RANGE} from 'PUB_DIR/sources/utils/consts';
 
-const RANGE_OPTIONS = [
-    {
-        name: '自己可见',
-        value: '1'
-    },
-    {
-        name: '团队可见',
-        value: '2'
-    }, {
-        name: '全部可见',
-        value: '3'
-    },
-];
 class FilterSearch extends React.Component {
     constructor(props) {
         super();
@@ -24,7 +12,7 @@ class FilterSearch extends React.Component {
             selectedFilterList: [],
             filterName: '',
             showAddZone: false,
-            selectedRange: RANGE_OPTIONS[0].value,
+            selectedRange: FILTER_RANGE.USER.value,
             showConfirmPop: false,
             changeRequestData: null,
             showList: false
@@ -121,22 +109,41 @@ class FilterSearch extends React.Component {
         if (this.props.submitting) {
             return;
         }
-        Trace.traceEvent(e, '保存为常用筛选');
-        filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {
-            filterName: this.state.filterName,
-            range: this.state.selectedRange,
-            plainFilterList: this.state.plainFilterList,//压平的数组，每项包含groupId、groupName、name、value
-            data: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
-        });
+        Trace.traceEvent(e, '保存为常用筛选');        
         //todo remove add emitter
         this.setState({
             showAddZone: false
         });
-        this.props.onSubmit({
-            filterName: this.state.filterName,
-            range: this.state.selectedRange,
-            filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
-        });
+        if (this.props.onSubmit) {
+            this.props.onSubmit({
+                filterName: this.state.filterName,
+                range: this.state.selectedRange,
+                filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
+            }).then(({data}) => {
+                if (!data && data.errorMsg) {                    
+                    message.error(err.message || Intl.get('common.save.failed', '保存失败'))
+                }
+                else {
+                    filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {
+                        id: data.result.id,
+                        filterName: this.state.filterName,
+                        range: this.state.selectedRange,
+                        plainFilterList: this.state.plainFilterList,//压平的数组，每项包含groupId、groupName、name、value
+                        data: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
+                    });
+                }
+           }).catch(err=> {
+               message.error(err.message || Intl.get('common.save.failed', '保存失败'))
+           });
+        }
+        else {
+            filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {               
+                filterName: this.state.filterName,
+                range: this.state.selectedRange,
+                plainFilterList: this.state.plainFilterList,//压平的数组，每项包含groupId、groupName、name、value
+                data: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
+            });
+        }
     }
     render() {
         //是否展示输入框形式的已选择的筛选项
@@ -249,7 +256,7 @@ class FilterSearch extends React.Component {
 }
 
 FilterSearch.defaultProps = {
-    onSubmit: function() { },
+    onSubmit: null,
     style: {
         maxWidth: 320
     },

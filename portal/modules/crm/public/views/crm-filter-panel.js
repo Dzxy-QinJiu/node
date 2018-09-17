@@ -8,10 +8,11 @@ import { administrativeLevels, CUSTOMER_TAGS } from '../utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import userData from 'PUB_DIR/sources/user-data';
 import { FilterList } from 'CMP_DIR/filter';
+import { FILTER_RANGE, STAGE_OPTIONS, DAY_TIME, UNKNOWN, COMMON_OTHER_ITEM } from 'PUB_DIR/sources/utils/consts';
 //行政级别筛选项
 let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
-const UNKNOWN = Intl.get('user.unknown', '未知');
-const COMMON_OTHER_ITEM = 'otherSelectedItem';
+
+
 const otherFilterArray = [{
     name: Intl.get('common.all', '全部'),
     value: ''
@@ -45,10 +46,10 @@ const otherFilterArray = [{
 }, {
     name: Intl.get('crm.available.customer', '有效客户'),
     value: 'availability'
-},{
+}, {
     name: Intl.get('crm.recent.week.active', '近一周的活跃客户'),
     value: 'seven_login'
-},{
+}, {
     name: Intl.get('crm.recent.month.active', '近一个月的活跃客户'),
     value: 'month_login'
 },];
@@ -94,6 +95,9 @@ class CrmFilterPanel extends React.Component {
             type = 'manager';
         }
         FilterAction.getFilterProvinces(type);
+        setTimeout(() => {
+            this.getCommonFilterList();
+        })
     }
 
     componentDidUpdate(prevProps) {
@@ -106,6 +110,21 @@ class CrmFilterPanel extends React.Component {
     componentWillUnmount() {
         FilterAction.setInitialCondition();
         FilterStore.unlisten(this.onStoreChange);
+    }
+
+    getCommonFilterList() {
+        const paramsObj = {
+            params: {
+                type: FILTER_RANGE.USER.value,
+                order: 'descend',
+                sort_field: 'operate_time',
+                page_size: 1000
+            },
+            //post请求不传body参数会报415
+            data: { emptyFix: "" }
+
+        }
+        FilterAction.getCommonFilterList(paramsObj);
     }
 
     appSelected = (app) => {
@@ -346,8 +365,6 @@ class CrmFilterPanel extends React.Component {
                         condition[item.groupId] = condition[item.groupId][0] || '';
                     }
 
-                } else if (item.groupId === COMMON_OTHER_ITEM) {
-
                 } else {
                     condition.sales_opportunities = [];
                     condition.sales_opportunities.push($.extend(true, {}, this.state.condition.sales_opportunities[0], {
@@ -363,7 +380,13 @@ class CrmFilterPanel extends React.Component {
             this.props.search();
         });
     };
-
+    onDelete(item) {
+        return FilterAction.delCommonFilter({
+            params: {
+                id: item.id
+            }
+        })
+    };
     render() {
         const appListJsx = this.state.appList.map((app, idx) => {
             let className = app.client_id === this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
@@ -380,10 +403,7 @@ class CrmFilterPanel extends React.Component {
         //所以这个地方需要判断一下sale_stages属性是否存在，若不存在则用空值替代
         const currentStage = this.state.condition.sales_opportunities[0].sale_stages || '';
         const selectedStages = currentStage.split(',');
-        const stageArray = [{ name: '', show_name: Intl.get('common.all', '全部') }, {
-            name: Intl.get('user.unknown', '未知'),
-            show_name: Intl.get('user.unknown', '未知')
-        }].concat(this.state.stageList);
+        const stageArray = STAGE_OPTIONS.concat(this.state.stageList);
         const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.state.industryList);
         const commonData = _.drop(otherFilterArray).map(x => {
             x.readOnly = true;
@@ -484,31 +504,33 @@ class CrmFilterPanel extends React.Component {
         ];
         //非普通销售才有销售角色和团队
         if (!userData.getUserData().isCommonSales) {
-            advancedData.unshift({
-                groupName: Intl.get('crm.detail.sales.role', '销售角色'),
-                groupId: 'member_role',
-                data: _.drop(this.state.salesRoleList).map(x => ({
-                    name: x.show_name,
-                    value: x.name
-                }))
-            },
-            {
-                groupName: Intl.get('user.sales.team', '销售团队'),
-                groupId: 'sales_team_id',
-                data: _.drop(this.state.teamList).map(x => ({
-                    name: x.group_name,
-                    value: x.group_id
-                }))
-            },
-            {
-                groupName: Intl.get('crm.6', '负责人'),
-                groupId: 'user_name',
-                singleSelect: true,
-                data: _.map(this.state.ownerNameList, x => ({
-                    name: x,
-                    value: x
-                }))
-            });
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('crm.detail.sales.role', '销售角色'),
+                    groupId: 'member_role',
+                    data: _.drop(this.state.salesRoleList).map(x => ({
+                        name: x.show_name,
+                        value: x.name
+                    }))
+                },
+                {
+                    groupName: Intl.get('user.sales.team', '销售团队'),
+                    groupId: 'sales_team_id',
+                    data: _.drop(this.state.teamList).map(x => ({
+                        name: x.group_name,
+                        value: x.group_id
+                    }))
+                },
+                {
+                    groupName: Intl.get('crm.6', '负责人'),
+                    groupId: 'user_name',
+                    singleSelect: true,
+                    data: _.map(this.state.ownerNameList, x => ({
+                        name: x,
+                        value: x
+                    }))
+                }
+            );
         }
         return (
             <div data-tracename="筛选">
@@ -517,8 +539,10 @@ class CrmFilterPanel extends React.Component {
                         ref="filterlist"
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
-                        commonData={commonData}
+                        commonLoading={this.state.commonFilterList.loading}
+                        commonData={commonData.concat(this.state.commonFilterList.data)}
                         advancedData={advancedData}
+                        onDelete={this.onDelete.bind(this)}
                         onFilterChange={this.handleFilterChange.bind(this)}
                     />
                 </div>

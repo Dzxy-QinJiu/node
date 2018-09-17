@@ -376,10 +376,41 @@ module.exports = [{
     }
 }, {
     //批量获取角色信息
-    
     'method': 'post',
     'path': '/rest/base/v1/role/batch_ids',
     'handler': 'getBatchRoleInfo',
+    'passport': {
+        'needLogin': true
+    }
+}, {    
+    //add查询条件
+    'method': 'post',
+    'path': '/rest/condition/v1/condition',
+    'handler': 'addCommonFilter',
+    'passport': {
+        'needLogin': true
+    }
+}, {    
+    //update查询条件
+    'method': 'put',
+    'path': '/rest/condition/v1/condition',
+    'handler': 'updateCommonFilter',
+    'passport': {
+        'needLogin': true
+    }
+}, {    
+    //get查询条件
+    'method': 'post',
+    'path': '/rest/condition/v1/condition/range/:type/:page_size/:sort_field/:order',
+    'handler': 'getCommonFilterList',
+    'passport': {
+        'needLogin': true
+    }
+}, {    
+    //delete查询条件
+    'method': 'delete',
+    'path': '/rest/condition/v1/condition/:id',
+    'handler': 'delCommonFilter',
     'passport': {
         'needLogin': true
     }

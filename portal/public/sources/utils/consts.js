@@ -242,3 +242,75 @@ export const LITERAL_CONSTANT = {
     MEMBER: Intl.get('member.member', '成员')
 };
 export const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
+];
+
+//常用筛选范围
+export const FILTER_RANGE = {
+    ALL: {
+        name: '全部可见',
+        value: 'all'
+    },
+    TEAM: {
+        name: '团队可见',
+        value: 'team'
+    },
+    USER: {
+        name: '自己可见',
+        value: 'user'
+    }
+};
+
+//常用筛选范围
+export const  FILTER_RANGE_OPTIONS = [
+    FILTER_RANGE.USER,
+    FILTER_RANGE.TEAM,
+    FILTER_RANGE.ALL
+];
+
+//其他类型筛选中的选项
+export const OTHER_FILTER_ITEMS = {
+    THIRTY_UNCONTACT: 'thirty_uncontact',
+    FIFTEEN_UNCONTACT: 'fifteen_uncontact',
+    SEVEN_UNCONTACT: 'seven_uncontact',
+    UNDISTRIBUTED: 'undistributed',//未分配的客户
+    NO_CONTACT_WAY: 'no_contact_way',//无联系方式的客户
+    LAST_CALL_NO_RECORD: 'last_call_no_record',//最后联系但未写跟进记录的客户
+    NO_RECORD_OVER_30DAYS: 'last_trace',//超30天未写跟进记录的客户
+    INTEREST_MEMBER_IDS: 'interest_member_ids',//被关注的客户
+    MY_INTERST: 'my_interest',//我关注的客户
+    MULTI_ORDER: 'multi_order',//多个订单的客户
+    AVAILABILITY: 'availability',//有效客户
+    SEVEN_LOGIN: 'seven_login',//一周内登录
+    MONTH_LOGIN: 'month_login',//一个月内登录
+};
+
+const day = 24 * 60 * 60 * 1000;
+export const DAY_TIME = {
+    THIRTY_DAY: 30 * day,//30天
+    FIFTEEN_DAY: 15 * day,//15天
+    SEVEN_DAY: 7 * day//7天
+};
+
+export const STAGE_OPTIONS = [
+    {
+        name: '',
+        show_name: Intl.get('common.all', '全部')
+    },
+    {
+        name: Intl.get('user.unknown', '未知'),
+        show_name: Intl.get('user.unknown', '未知')
+    }
+];
+
+export const UNKNOWN = Intl.get('user.unknown', '未知');
+
+export const COMMON_OTHER_ITEM = 'otherSelectedItem';
+
+//标签选项下的特殊标签
+export const SPECIAL_LABEL = {
+    NON_TAGGED_CUSTOMER: Intl.get('crm.tag.unknown', '未打标签的客户'),
+    TURN_OUT: Intl.get('crm.qualified.roll.out', '转出'),
+    CLUE: Intl.get('crm.sales.clue', '线索'),
+    HAS_CALL_BACK: Intl.get('common.has.callback', '已回访'),
+};
+

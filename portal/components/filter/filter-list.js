@@ -1,6 +1,6 @@
 var React = require('react');
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import { Alert, Icon, Popover, message, Select} from 'antd';
+import { Alert, Icon, Popover, message, Select } from 'antd';
 const Option = Select.Option;
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
@@ -48,24 +48,24 @@ class FilterList extends React.Component {
         }
         const pickNameValue = (advancedData, selectedFlag) => {
             advancedData = _.cloneDeep(advancedData);
-            if (selectedFlag){
+            if (selectedFlag) {
                 advancedData.forEach(group => {
-                    group.data = group.data.map(x => ({name: x.name, value: x.value, selected: x.selected}));
+                    group.data = group.data.map(x => ({ name: x.name, value: x.value, selected: x.selected }));
                 });
-            }else{
+            } else {
                 advancedData.forEach(group => {
-                    group.data = group.data.map(x => ({name: x.name, value: x.value}));
+                    group.data = group.data.map(x => ({ name: x.name, value: x.value }));
                 });
             }
             return advancedData;
         };
-        if (advancedData && advancedData.length ) {
-            if (JSON.stringify(pickNameValue(advancedData, true)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData, true))){
+        if (advancedData && advancedData.length) {
+            if (JSON.stringify(pickNameValue(advancedData, true)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData, true))) {
                 this.setState({
                     advancedData
                 });
             }
-            if (JSON.stringify(pickNameValue(advancedData)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData))){
+            if (JSON.stringify(pickNameValue(advancedData)) !== JSON.stringify(pickNameValue(this.state.rawAdvancedData))) {
                 this.setState({
                     rawAdvancedData: advancedData,
                 });
@@ -84,7 +84,7 @@ class FilterList extends React.Component {
         filterEmitter.removeListener(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.removeListener(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.removeListener(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
-    }    
+    }
     toggleCollapse(type) {
         switch (type) {
             case 'common':
@@ -100,17 +100,15 @@ class FilterList extends React.Component {
         }
     }
     handleAddCommon = (item) => {
-        const { data, filterName, plainFilterList } = item;
+        const { data, filterName, plainFilterList, range, id } = item;
         const commonData = this.state.commonData;
-        if (commonData.find(x => x.name === filterName)) {
-            message.error('常用筛选已存在');
-            return;
-        }
         commonData.push({
             name: filterName,
             value: filterName,
             data,
-            plainFilterList
+            plainFilterList,
+            range,
+            id
         });
         this.setState({
             stopListenCommonData: true,//修改过常用筛选后，不在从外部接收新的数据todo
@@ -137,12 +135,12 @@ class FilterList extends React.Component {
                 x.selected = false;
             });
         }
-        
+
         if (this.state.selectedCommonIndex &&
             _.get(this.state, ['commonData', this.state.selectedCommonIndex, 'data', 'length'])
         ) {
             //已选中的常用筛选中包含高级筛选时，直接清空常用筛选
-            if (this.isContainAdvanced(this.state.commonData[this.state.selectedCommonIndex].data)) {                
+            if (this.isContainAdvanced(this.state.commonData[this.state.selectedCommonIndex].data)) {
                 selectedCommonIndex = '';
                 this.setState({
                     selectedCommonIndex,
@@ -176,24 +174,46 @@ class FilterList extends React.Component {
                 this.props.onFilterChange(filterList);
             });
         }
-        
+
     }
     shareCommonItem(item) {
 
     }
-    delCommonItem(item) {
+    delCommonItem(item, index) {
         let commonData = this.state.commonData;
-        commonData = commonData.filter(x => x.name !== item.name);
-        this.setState({
-            commonData
-        });
+        this.handleShowPop('click', false);
+        if (item.id) {
+            if (this.props.onDelete) {
+                this.props.onDelete(item).then(({data}) => {
+                    if (!data || data.errorMsg) {
+                        message.error(Intl.get('crm.139', '删除失败'));
+                    } else {
+                        commonData = commonData.filter(x => x.name !== item.name);
+                        this.setState({
+                            commonData,
+                            //当删除选中的筛选项时，去除选中状态
+                            selectedCommonIndex: this.state.selectedCommonIndex === index? "": this.state.selectedCommonIndex
+                        });                        
+                    }
+                }).catch(err => {
+                    message.error((err && err.message) || Intl.get('crm.139', '删除失败'));
+                })
+            }
+        } else {
+            commonData = commonData.filter(x => x.name !== item.name);
+            this.setState({
+                commonData,
+                selectedCommonIndex: this.state.selectedCommonIndex === index? "": this.state.selectedCommonIndex
+            });            
+        }
+
     }
     showCommonItemModal(commonItem) {
 
     }
     //根据点击次数对commonData进行排序
     sortByClickNum(commonData) {
-        const clickNumList = local.get(FILTER_COMMON_RATE_KEY) || Array.from({length: commonData.length}, x => 0);
+        const clickNumList = local.get(FILTER_COMMON_RATE_KEY) || Array.from({ length: commonData.length }, x => 0);
         const sortedCommonData = commonData.map((item, index) => {
             return {
                 clickNum: clickNumList[index],
@@ -211,7 +231,7 @@ class FilterList extends React.Component {
                 rawIndex = index;
             }
         });
-        const clickNumList = local.get(key) || Array.from({length: this.state.rawCommonData.length}, x => 0);
+        const clickNumList = local.get(key) || Array.from({ length: this.state.rawCommonData.length }, x => 0);
         ++clickNumList[rawIndex];
         local.set(key, clickNumList);
     }
@@ -223,7 +243,7 @@ class FilterList extends React.Component {
                 oldGroup.data = oldGroup.data.map(x => {
                     x.selected = false;
                     let changedItem = null;
-                    const changedGroup = filterList.find(item => item.groupName === oldGroup.groupName);
+                    const changedGroup = filterList.find(item => item.groupId === oldGroup.groupId);
                     if (_.get(changedGroup, 'data.length')) {
                         changedItem = changedGroup.data.find(filter => filter.value === x.value);
                         if (changedItem) {
@@ -249,12 +269,17 @@ class FilterList extends React.Component {
     }
     //整合常用筛选和高级筛选的筛选项, isMix为true时，将commonData中的高级筛选项从advancedData中剔除
     unionFilterList(commonData, advancedData, isMix) {
+        //将原筛选项与常用筛选项中包含的高级筛选项合并
+        const newCommonData = commonData.map(x => ({
+            ...advancedData.find(oldItem => oldItem.groupId === x.groupId),
+            ...x
+        }));
         if (isMix) {
-            const commonGroupNames = commonData.map(x => x.groupName);
-            const filterList = advancedData.filter(group => !commonGroupNames.includes(group.groupName));
-            return commonData.concat(this.processSelectedFilters(filterList));
+            const commonGroupIds = _.uniq(commonData.map(x => x.groupId));
+            const filterList = advancedData.filter(group => !commonGroupIds.includes(group.groupId));
+            return newCommonData.concat(this.processSelectedFilters(filterList));
         } else {
-            return commonData.concat(this.processSelectedFilters(advancedData));
+            return newCommonData.concat(this.processSelectedFilters(advancedData));
         }
     }
     //过滤出选中状态的组
@@ -268,7 +293,7 @@ class FilterList extends React.Component {
     //判断Filterlist中是否包含高级筛选项组
     isContainAdvanced(data) {
         const filterList = this.processSelectedFilters(data);
-        return _.difference(this.state.advancedData.map(x => x.groupName), filterList.map(x => x.groupName)).length < this.state.advancedData.length;
+        return _.difference(this.state.advancedData.map(x => x.groupId), filterList.map(x => x.groupId)).length < this.state.advancedData.length;
     }
     //向search发送修改筛选条件的请求
     handleChangePermitted = ({ type, data, index }) => {
@@ -453,7 +478,7 @@ class FilterList extends React.Component {
             showClickPop
         });
     }
-    handleSelectChange(groupItem, values){
+    handleSelectChange(groupItem, values) {
         //找到此次选择的筛选项
         let curSelectedItem = _.find(groupItem.data, item => !item.selected && values.indexOf(item.value) !== -1);
         if (curSelectedItem) {
@@ -465,7 +490,7 @@ class FilterList extends React.Component {
         }
     }
     //筛选项超8条后，用可搜索的下拉框展示
-    renderGroupItemSelect(groupItem){
+    renderGroupItemSelect(groupItem) {
         let selectItems = _.filter(groupItem.data, item => item.selected);
         let selectValues = _.map(selectItems, 'value');
         return (
@@ -473,7 +498,7 @@ class FilterList extends React.Component {
                 <Select
                     className="filter-select"
                     mode="multiple"
-                    placeholder={Intl.get('crm.filter.select.placeholder', '请选择要筛选的{groupName}', {groupName: groupItem.groupName})}
+                    placeholder={Intl.get('crm.filter.select.placeholder', '请选择要筛选的{groupName}', { groupName: groupItem.groupName })}
                     value={selectValues}
                     onChange={this.handleSelectChange.bind(this, groupItem)}
                     optionFilterProp="children"
@@ -538,9 +563,9 @@ class FilterList extends React.Component {
                                                     }
                                                 </ul>
                                             );
-                                            const getClickContent = item => (
+                                            const getClickContent = (item, index) => (
                                                 <ul className="btn-container">
-                                                    <li onClick={this.delCommonItem.bind(this, item)}>删除</li>
+                                                    <li onClick={this.delCommonItem.bind(this, item, index)}>删除</li>
                                                 </ul>
                                             );
                                             const commonItemClass = classNames('titlecut', {
@@ -564,7 +589,7 @@ class FilterList extends React.Component {
                                                             {
                                                                 x.readOnly ?
                                                                     null :
-                                                                    <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
+                                                                    <Popover placement="bottom" content={getClickContent(x, index)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
                                                                         <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
                                                                     </Popover>
                                                             }
@@ -642,7 +667,7 @@ class FilterList extends React.Component {
                                                                                 </span> : null
                                                                         }
                                                                     </h4>
-                                                                    { _.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) : (
+                                                                    {_.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) : (
                                                                         <ul className="item-container">
                                                                             {_.map(groupItem.data, (x, idx) => {
                                                                                 return (
@@ -680,8 +705,8 @@ FilterList.defaultProps = {
     advancedLoading: false,
     showCommonListLength: 7,
     key: '',
-    onFilterChange: function() { },
-    renderOtherDataContent: function() {
+    onFilterChange: function () { },
+    renderOtherDataContent: function () {
 
     },
     hideAdvancedTitle: false
@@ -732,6 +757,7 @@ FilterList.propTypes = {
     className: PropTypes.string,
     showSelectTip: PropTypes.bool,
     renderOtherDataContent: PropTypes.func,
+    onDelete: PropTypes.func,
     hideAdvancedTitle: PropTypes.bool,
 };
 export default FilterList;

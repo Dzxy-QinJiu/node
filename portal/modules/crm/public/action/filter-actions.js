@@ -1,5 +1,7 @@
 var FilterAjax = require('../ajax/filter-ajax');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import { altAsyncUtil } from 'ant-utils';
+const {asyncDispatcher} = altAsyncUtil;
 
 function FilterAction() {
     this.generateActions(
@@ -131,6 +133,11 @@ function FilterAction() {
             console.log(errorMsg);
         });
     };
+    
+    this.getCommonFilterList = asyncDispatcher(FilterAjax.getCommonFilterList);
+
+    this.delCommonFilter = asyncDispatcher(FilterAjax.delCommonFilter, true);
+    
 }
 
 module.exports = alt.createActions(FilterAction);
