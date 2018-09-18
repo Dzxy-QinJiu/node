@@ -1,224 +1,154 @@
-var React = require('react');
-var createReactClass = require('create-react-class');
-const Validation = require('rc-form-validation-for-react16');
-const Validator = Validation.Validator;
-import { Alert } from 'antd';
-import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
-var SalesStageStore = require('../store/sales-stage-store');
-var Spinner = require('../../../../components/spinner');
-
-
-
 /**
  * Created by jinfeng on 2015/12/28.
  */
-
-var Form = require('antd').Form;
-var Input = require('antd').Input;
-var Button = require('antd').Button;
-var Checkbox = require('antd').Checkbox;
+import {Form, Input} from 'antd';
 var FormItem = Form.Item;
+import Trace from 'LIB_DIR/trace';
+import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+var SalesStageStore = require('../store/sales-stage-store');
 
-var rightPanelUtil = require('../../../../components/rightPanel/index');
-var RightPanel = rightPanelUtil.RightPanel;
-var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
-var RightPanelCancel = rightPanelUtil.RightPanelCancel;
-var RightPanelClose = rightPanelUtil.RightPanelClose;
-function cx(classNames) {
-    if (typeof classNames === 'object') {
-        return Object.keys(classNames).filter(function(className) {
-            return classNames[className];
-        }).join(' ');
-    } else {
-        return Array.prototype.join.call(arguments, ' ');
+class SalesStageForm extends React.Component {
+    constructor(props) {
+        super(props);
+        return {
+            // ...SalesStageStore.getState(),
+            formData: props.salesStage,
+            salesStageFormShow: props.salesStageFormShow
+        };
     }
-}
 
-function noop() {
-}
-
-var SalesStageForm = createReactClass({
-    displayName: 'SalesStageForm',
-    mixins: [Validation.FieldMixin],
-
-    getDefaultProps: function() {
-        return {
-            submitSalesStageForm: noop,
-            cancelSalesStageForm: noop,
-            salesStageFormShow: false,
-            salesStage: {
-                id: '',
-                name: '',
-                index: '',
-                description: ''
-            }
-        };
-    },
-
-    propTypes: {
-        salesStage: PropTypes.object,
-        salesStageFormShow: PropTypes.bool,
-        cancelSalesStageForm: PropTypes.func
-    },
-
-    getInitialState: function() {
-        return {
-            status: {
-                id: {},
-                name: {},
-                index: {},
-                description: {}
-            },
-            formData: this.props.salesStage,
-            salesStageFormShow: this.props.salesStageFormShow
-        };
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        if(!this.state.salesStageFormShow) {
-            this.refs.validation.reset();
-            var stateData = this.getInitialState();
-            stateData.formData = nextProps.salesStage;
-            stateData.salesStageFormShow = nextProps.salesStageFormShow;
-            this.setState(stateData);
+    componentWillReceiveProps(nextProps) {
+        if (!this.state.salesStageFormShow) {
+            this.setState({
+                formData: nextProps.salesStage,
+                salesStageFormShow: nextProps.salesStageFormShow
+            });
         }
-    },
+    }
 
-    onChange: function() {
-        this.setState(SalesStageStore.getState());
-    },
+    componentDidMount() {
+        SalesStageStore.listen(this.onChange);
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         SalesStageStore.unlisten(this.onChange);
-    },
+    }
 
-    componentDidUpdate: function() {
-        var _this = this;
-        SalesStageStore.listen(_this.onChange);
-        if (this.state.formData.id) {
-            this.refs.validation.validate(noop);
-        }
-    },
-
-    renderValidateStyle: function(item) {
-        var formData = this.state.formData;
-        var status = this.state.status;
-
-        var classes = cx({
-            'error': status[item].errors,
-            'validating': status[item].isValidating,
-            'success': formData[item] && !status[item].errors && !status[item].isValidating
-        });
-
-        return classes;
-    },
+    onChange() {
+        this.setState(SalesStageStore.getState());
+    }
 
     //取消事件
-    handleCancel: function(e) {
+    handleCancel(e) {
         e.preventDefault();
+        Trace.traceEvent(e, _.get(this.state, 'formData.id') ? '关闭添加订单阶段面板' : '关闭编辑订单阶段面板');
         this.props.cancelSalesStageForm();
-    },
+    }
 
-    //保存角色信息
-    handleSubmit: function(e) {
+    //保存订单阶段
+    handleSubmit(e) {
         e.preventDefault();
-        var _this = this;
-        var validation = this.refs.validation;
-        validation.validate(function(valid) {
-            if (!valid) {
-                return;
-            } else {
-                _this.props.submitSalesStageForm(_this.state.formData);
+        Trace.traceEvent(e, '保存订单阶段的信息');
+        this.props.form.validateFields((err, values) => {
+            if (err) return;
+            let formData = this.state.formData;
+            let submitObj = {
+                name: $.trim(values.name),
+                description: values.description
+            };
+            if (formData.id) {
+                submitObj.id = formData.id;
             }
+            this.props.submitSalesStageForm(submitObj);
         });
-    },
+    }
 
-    render: function() {
-        var _this = this;
+    renderFormContent() {
         var formData = this.state.formData;
-        var status = this.state.status;
-        var errorMsg = this.state.saveStageErrMsg;
-
-        //如果存在添加失败或者修改失败的错误信息，则提示
-        const renderErr = () => {
-            if (errorMsg) {
-                return (
-                    <div className="alert-error-msg">
-                        <Alert
-                            message={errorMsg}
-                            type="error"
-                            showIcon
-                        />
-                    </div>
-                );
-            }
+        const {getFieldDecorator} = this.props.form;
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 5},
+            wrapperCol: {span: 19},
         };
         return (
-
-            <RightPanel showFlag={this.state.salesStageFormShow} data-tracename="添加/编辑销售阶段">
-                <RightPanelClose onClick={this.handleCancel} data-tracename="关闭添加/编辑销售阶段"></RightPanelClose>
-                <div className="right-form-scroll-div">
-
-                    <Form layout='horizontal' className="form">
-                        <Validation ref="validation" onValidate={this.handleValidate}>
-                            <FormItem
-                                label={Intl.get('sales.stage.sales.stage', '销售阶段')}
-                                id="name"
-                                labelCol={{span: 5}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('name')}
-                                hasFeedback
-                                help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}>
-                                <Validator rules={[nameLengthRule]}>
-                                    <Input name="name" id="name" value={formData.name}
-                                        onChange={this.setField.bind(this, 'name')}
-                                        placeholder={Intl.get('common.required.tip', '必填项*')}
-                                        data-tracename="填写/编辑销售阶段"
-                                    />
-                                </Validator>
-                            </FormItem>
-                            <div className="sales-stage-table-block-right">
-                                {this.state.isSavingSalesStage ? (<div className="sales-stage-block">
-                                    <Spinner className="sales-stage-saving"/>
-                                </div>) : null}
-                                <FormItem
-                                    label={Intl.get('common.describe', '描述：')}
-                                    id="description"
-                                    labelCol={{span: 5}}
-                                    wrapperCol={{span: 18}}
-                                    validateStatus={_this.renderValidateStyle('description')}
-                                    hasFeedback
-                                    help={status.description.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.description.errors && status.description.errors.join(','))}
-                                >
-                                    <Validator
-                                        rules={[{required: true, min: 1, max: 200 , message: Intl.get('authority.input.length.tip', '最少1个字符,最多200个字符')}]}>
-                                        <Input name="description" id="description"
-                                            value={formData.description}
-                                            onChange={_this.setField.bind(_this, 'description')}
-                                            type="textarea"
-                                            rows="3"
-                                            data-tracename="填写/编辑销售阶段描述"
-                                        />
-                                    </Validator>
-                                </FormItem>
-                                <FormItem
-                                    wrapperCol={{span: 23}}>
-                                    {renderErr()}
-                                    <RightPanelCancel onClick={this.handleCancel} data-tracename="取消销售阶段的添加/编辑">
-                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
-                                    </RightPanelCancel>
-                                    <RightPanelSubmit onClick={this.handleSubmit} data-tracename="保存销售阶段的添加/编辑">
-                                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存" />
-                                    </RightPanelSubmit>
-                                </FormItem>
-                            </div>
-                        </Validation>
-                    </Form>
-                </div>
-            </ RightPanel >
+            <Form layout='horizontal' className="form">
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get('crm.order.stage.name', '阶段名称')}
+                >
+                    {getFieldDecorator('name', {
+                        initialValue: formData.name,
+                        rules: [{
+                            required: true,
+                            message: Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')
+                        }, nameLengthRule]
+                    })(
+                        <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get('common.describe', '描述')}
+                >
+                    {getFieldDecorator('description', {
+                        initialValue: formData.description,
+                        rules: [{
+                            required: true,
+                            min: 1,
+                            max: 200,
+                            message: Intl.get('authority.input.length.tip', '最少1个字符,最多200个字符')
+                        }]
+                    })(
+                        <Input
+                            placeholder={Intl.get('crm.order.stage.destrip.palceholder', '请输入阶段的描述信息')}
+                        />
+                    )}
+                </FormItem>
+                <FormItem>
+                    <SaveCancelButton loading={this.state.isSavingSalesStage}
+                        saveErrorMsg={this.state.saveStageErrMsg}
+                        handleSubmit={this.handleSubmit.bind(this)}
+                        handleCancel={this.handleCancel.bind(this)}
+                    />
+                </FormItem>
+            </Form>
         );
-    },
-});
+    }
 
-module.exports = SalesStageForm;
-
+    render() {
+        return (
+            <RightPanelModal
+                className="stage-add-container"
+                isShowMadal={true}
+                isShowCloseBtn={true}
+                onClosePanel={this.handleCancel.bind(this)}
+                title={_.get(this.state, 'formData.id') ? Intl.get('crm.order.stage.edit', '编辑订单阶段') : Intl.get('crm.order.stage.add', '添加订单阶段')}
+                content={this.renderFormContent()}
+                dataTracename={_.get(this.state, 'formData.id') ? '编辑订单阶段' : '添加订单阶段'}
+            />);
+    }
+}
+function noop() {
+}
+SalesStageForm.defaultProps = {
+    submitSalesStageForm: noop,
+    cancelSalesStageForm: noop,
+    salesStageFormShow: false,
+    salesStage: {
+        id: '',
+        name: '',
+        index: '',
+        description: ''
+    }
+};
+SalesStageForm.propTypes = {
+    form: PropTypes.object,
+    salesStage: PropTypes.object,
+    salesStageFormShow: PropTypes.bool,
+    cancelSalesStageForm: PropTypes.func,
+    submitSalesStageForm: PropTypes.func
+};
+module.exports = Form.create()(SalesStageForm);

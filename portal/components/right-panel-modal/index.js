@@ -12,7 +12,7 @@ class RightPanelModal extends React.Component {
             'show-modal': this.props.isShowMadal
         });
         return (
-            <div className={panelClass}>
+            <div className={panelClass} data-tracename={this.props.dataTracename || ''}>
                 {this.props.isShowCloseBtn ? (
                     <span className="iconfont icon-close close-modal-btn" onClick={this.props.onClosePanel}/>) : null}
                 <div className="right-panel-modal-content">
@@ -39,5 +39,7 @@ RightPanelModal.propTypes = {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     //面板中展示的内容
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    //事件跟踪的描述
+    dataTracename: PropTypes.string
 };
 export default RightPanelModal;

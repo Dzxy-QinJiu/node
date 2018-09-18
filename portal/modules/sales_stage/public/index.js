@@ -10,9 +10,9 @@ var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var leftWidth = 281; // 75+45+117+44 左侧导航宽度+右侧内容左边距+右侧右侧边距+销售阶段内容左侧边距
 var SalesStageStore = require('./store/sales-stage-store');
 var SalesStageAction = require('./action/sales-stage-actions');
-var SalesStageForm = require('./views/sales-stage-form');
 var SalesStageInfo = require('./views/sales-stage-info');
 var Spinner = require('../../../components/spinner');
+import SalesStageForm from './views/sales-stage-form';
 import Trace from 'LIB_DIR/trace';
 import {message} from 'antd';
 

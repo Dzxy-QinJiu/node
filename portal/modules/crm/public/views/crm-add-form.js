@@ -188,7 +188,8 @@ var CRMAddForm = createReactClass({
         }
     },
 
-    closeAddPanel: function() {
+    closeAddPanel: function(e) {
+        Trace.traceEvent(e, '关闭添加客户面板');
         this.props.hideAddForm();
         this.setState(this.getInitialState());
     },
@@ -575,14 +576,15 @@ var CRMAddForm = createReactClass({
 
     render: function() {
         return (
-            <RightPanelModal className="crm-add-container"
+            <RightPanelModal
+                className="crm-add-container"
                 isShowMadal={true}
                 isShowCloseBtn={true}
                 onClosePanel={this.closeAddPanel}
                 title= {Intl.get('crm.3', '添加客户')}
                 content={this.renderFormContent()}
-                data-tracename="添加客户">
-            </RightPanelModal>
+                dataTracename="添加客户"
+            />
         );
     },
 });
