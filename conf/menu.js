@@ -152,14 +152,14 @@ class LeftMenuClass {
                     // },
                     {
                         id: 'SALESSTAGE',
-                        name: backendIntl.get('menu.salesstage', '销售阶段管理'),
+                        name: backendIntl.get('crm.order.stage.manage', '订单阶段管理'),
                         routePath: 'background_management/sales_stage',
                         privileges: [
-                            'BGM_SALES_STAGE_LIST',//查看销售阶段
-                            'BGM_SALES_STAGE_DELETE',//删除销售阶段
-                            'BGM_SALES_STAGE__EDIT',//修改销售阶段
-                            'BGM_SALES_STAGE_ADD',//添加销售阶段
-                            'BGM_SALES_STAGE_SORT'//销售阶段排序
+                            'BGM_SALES_STAGE_LIST',//查看订单阶段
+                            'BGM_SALES_STAGE_DELETE',//删除订单阶段
+                            'BGM_SALES_STAGE__EDIT',//修改订单阶段
+                            'BGM_SALES_STAGE_ADD',//添加订单阶段
+                            'BGM_SALES_STAGE_SORT'//订单阶段排序
                         ],
                         //有这个权限，才显示入口图标
                         showPrivileges: ['BGM_SALES_STAGE_ADD']

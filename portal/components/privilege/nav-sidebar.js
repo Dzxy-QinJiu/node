@@ -86,7 +86,7 @@ const BackendConfigLinkList = [
         key: 'user',
         privilege: 'USER_MANAGE_LIST_USERS'
     }, {
-        name: Intl.get('menu.salesstage', '销售阶段管理'),
+        name: Intl.get('crm.order.stage.manage', '订单阶段管理'),
         href: '/background_management/sales_stage',
         key: 'sales_stage',
         privilege: 'BGM_SALES_STAGE_ADD'

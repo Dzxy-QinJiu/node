@@ -138,7 +138,7 @@ class SalesStagePage extends React.Component {
         var width = this.state.salesStageWidth;
         var salesStageList = this.state.salesStageList;
         return (
-            <div className="sales-stage-manage-container" data-tracename="销售阶段管理">
+            <div className="sales-stage-manage-container" data-tracename="订单阶段管理">
                 <TopNav>
                     <TopNav.MenuList/>
                     {
@@ -174,15 +174,13 @@ class SalesStagePage extends React.Component {
                     }
 
                 </TopNav>
-
-                <SalesStageForm
-                    salesStage={this.state.currentSalesStage}
-                    salesStageFormShow={this.state.salesStageFormShow}
-                    cancelSalesStageForm={this.events_hideSalesStageeForm}
-                    submitSalesStageForm={this.events_submitSalesStageForm}
-                >
-                </SalesStageForm>
-
+                {this.state.salesStageFormShow ? (
+                    <SalesStageForm
+                        salesStage={this.state.currentSalesStage}
+                        salesStageFormShow={this.state.salesStageFormShow}
+                        cancelSalesStageForm={this.events_hideSalesStageeForm}
+                        submitSalesStageForm={this.events_submitSalesStageForm}
+                    />) : null}
                 <div className="sales-stage-table-block">
                     {this.state.isSavingSalesStageHome ? (<div className="sales-stage-block">
                         <Spinner className="sales-stage-saving"/>

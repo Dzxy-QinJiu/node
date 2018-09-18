@@ -2,18 +2,19 @@
  * Created by jinfeng on 2015/12/28.
  */
 import {Form, Input} from 'antd';
-var FormItem = Form.Item;
+const FormItem = Form.Item;
+const {TextArea} = Input;
 import Trace from 'LIB_DIR/trace';
 import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-var SalesStageStore = require('../store/sales-stage-store');
+const SalesStageStore = require('../store/sales-stage-store');
 
 class SalesStageForm extends React.Component {
     constructor(props) {
         super(props);
-        return {
-            // ...SalesStageStore.getState(),
+        this.state = {
+            ...SalesStageStore.getState(),
             formData: props.salesStage,
             salesStageFormShow: props.salesStageFormShow
         };
@@ -36,7 +37,7 @@ class SalesStageForm extends React.Component {
         SalesStageStore.unlisten(this.onChange);
     }
 
-    onChange() {
+    onChange = () => {
         this.setState(SalesStageStore.getState());
     }
 
@@ -102,7 +103,7 @@ class SalesStageForm extends React.Component {
                             message: Intl.get('authority.input.length.tip', '最少1个字符,最多200个字符')
                         }]
                     })(
-                        <Input
+                        <TextArea autosize={{minRows: 2, maxRows: 6}}
                             placeholder={Intl.get('crm.order.stage.destrip.palceholder', '请输入阶段的描述信息')}
                         />
                     )}

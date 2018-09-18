@@ -492,7 +492,7 @@ var CRMAddForm = createReactClass({
                             }}
                         />
                     </FormItem>
-                    <div className="add-info-title">
+                    <div className="add-info-title contact-info-title">
                         <span className="iconfont icon-contact-head"/>
                         {Intl.get('call.record.contacts', '联系人')}
                     </div>
