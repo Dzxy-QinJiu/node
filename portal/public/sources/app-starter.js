@@ -137,12 +137,6 @@ function init() {
             case 'schedule_management':
                 childRoutes.push(require('../../modules/schedule_management'));
                 break;
-            case 'weekly_report_analysis':
-                childRoutes.push(require('../../modules/weekly_report'));
-                break;
-            case 'monthly_report_analysis':
-                childRoutes.push(require('../../modules/monthly-report'));
-                break;
         }
     });
 
